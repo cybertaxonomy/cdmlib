@@ -19,6 +19,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.dto.portal.CommonNameDto;
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
@@ -36,6 +37,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -86,16 +88,52 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //facts
         ContainerDto<FeatureDto> features = dto.getTaxonFacts();
-        Assert.assertEquals("There should be 2 features, distribution and description", 2, features.getCount());
-        testDescription(features);
+        Assert.assertEquals("There should be 3 features, distribution and description and common names",
+                3, features.getCount());
 
-        testDistributions(features);
+        //... common taxon name
+        FeatureDto commonNameDto = features.getItems().get(0);
+        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically. Also as >1 common name exists it should use plural.",
+                "Common Names", commonNameDto.getLabel());
+        testCommonNames(commonNameDto);
+
+        //... textData
+        FeatureDto descriptionDto = features.getItems().get(1);
+        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically. Also as >1 'Description' exists it should use plural.",
+                "Descriptions", descriptionDto.getLabel());
+        testDescription(descriptionDto);
+
+        //... distribution
+        FeatureDto distributionDto = features.getItems().get(2);
+        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
+                "Distribution", distributionDto.getLabel());
+        testDistributions(distributionDto);
+
+        //...categorical data
+
+        //quantitative data
+
+        //termporal data
+
+        //individuals association
+
+        //taxon interaction
+
+        //use data
     }
 
-    private void testDescription(ContainerDto<FeatureDto> features) {
-        FeatureDto descriptionDto = features.getItems().get(0);
-        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
-                "Description", descriptionDto.getLabel());
+    private void testCommonNames(FeatureDto commonNameDto) {
+        ContainerDto<IFactDto> commonNames = commonNameDto.getFacts();
+        Assert.assertEquals(2, commonNames.getCount());
+        CommonNameDto cn1 = (CommonNameDto)commonNames.getItems().get(0);
+        CommonNameDto cn2 = (CommonNameDto)commonNames.getItems().get(1);
+        Assert.assertEquals("For now common names without sortindex are should be ordered alphabetically by name. This may change in future",
+                "Meine Blume", cn1.getName());
+        Assert.assertEquals("For now common names without sortindex are should be ordered alphabetically by name. This may change in future",
+                "My flower", cn2.getName());
+    }
+
+    private void testDescription(FeatureDto descriptionDto) {
         ContainerDto<IFactDto> descriptions = descriptionDto.getFacts();
         Assert.assertEquals(4, descriptions.getCount());
         FactDto description1 = (FactDto)descriptions.getItems().get(0);
@@ -115,10 +153,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "My third description", description4.getTypedLabel().get(0).getLabel().toString());
     }
 
-    private void testDistributions(ContainerDto<FeatureDto> features) {
-        FeatureDto distributionDto = features.getItems().get(1);
-        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
-                "Distribution", distributionDto.getLabel());
+    private void testDistributions(FeatureDto distributionDto) {
         ContainerDto<IFactDto> distributions = distributionDto.getFacts();
         Assert.assertEquals(1, distributions.getCount());
         IFactDto distribution = distributions.getItems().get(0);
@@ -187,8 +222,12 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         td3.addPrimaryTaxonomicSource(franceRef, "63");
         TextData td4 = TextData.NewInstance(Feature.DESCRIPTION(), "My fourth description", Language.DEFAULT(), null);
         td4.setSortIndex(1);
-
         taxDesc.addElements(td1, td2, td3, td4);
+
+        //common names
+        CommonTaxonName cn1 = CommonTaxonName.NewInstance("My flower", Language.ENGLISH(), Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND());
+        CommonTaxonName cn2 = CommonTaxonName.NewInstance("Meine Blume", Language.GERMAN(), Country.GERMANY());
+        taxDesc.addElements(cn1, cn2);
     }
 
     @Override

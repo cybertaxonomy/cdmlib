@@ -339,9 +339,42 @@ public abstract class TermBase
         }
     }
 
+    @Transient
+    public String getPluralLabel() {
+        if(isNotBlank(getPluralLabel(Language.DEFAULT()))){
+            return getPluralLabel(Language.DEFAULT());
+        }else if(isNotBlank(getLabel(Language.DEFAULT()))){
+            return getLabel(Language.DEFAULT());
+        }else{
+            for (Representation r : representations){
+                if (isNotBlank(r.getPlural())){
+                    return r.getPlural();
+                }
+            }
+            for (Representation r : representations){
+                if (isNotBlank(r.getLabel())){
+                    return r.getLabel();
+                }
+            }
+            if (representations.size()>0){
+                return null;
+            }else{
+                if (this.getTitleCache() != null) {
+                    return this.getTitleCache();
+                }
+                return super.getUuid().toString();
+            }
+        }
+    }
+
     public String getLabel(Language lang) {
         Representation repr = this.getRepresentation(lang);
         return (repr == null) ? null : repr.getLabel();
+    }
+
+    public String getPluralLabel(Language lang) {
+        Representation repr = this.getRepresentation(lang);
+        return (repr == null) ? null : repr.getPlural();
     }
 
     public void setLabel(String label){

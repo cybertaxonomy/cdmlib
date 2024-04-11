@@ -98,11 +98,16 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    private TaxonFactsDtoLoader_Old factLoader;
+    private TaxonFactsDtoLoaderBase factLoader;
+    private boolean useOld = true;
 
     public TaxonPageDtoLoader(ICdmRepository repository, ICdmGenericDao dao, IGeoServiceAreaMapping areaMapping) {
         super(repository, dao);
-        this.factLoader = new TaxonFactsDtoLoader_Old(repository, dao, areaMapping);
+        if (useOld) {
+            this.factLoader = new TaxonFactsDtoLoader_Old(repository, dao, areaMapping);
+        }else {
+            this.factLoader = new TaxonFactsDtoLoader(repository, dao, areaMapping);
+        }
     }
 
     //TODO can we handle the area mapping better?

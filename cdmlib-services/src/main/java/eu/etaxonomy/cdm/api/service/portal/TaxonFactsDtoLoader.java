@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDtoBase;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
-import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
@@ -144,23 +143,21 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
  * @author muellera
  * @since 27.02.2024
  */
-public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
+public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
 
     private ProxyDtoLoader factProxyLoader = new ProxyDtoLoader();
 
     private TaxonPageDto pageDto;
-
-    private IGeoServiceAreaMapping areaMapping;
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     public TaxonFactsDtoLoader(ICdmRepository repository, ICdmGenericDao dao,
             IGeoServiceAreaMapping areaMapping) {
-        super(repository, dao);
-        this.areaMapping = areaMapping;
+        super(repository, dao, areaMapping);
     }
 
+    @Override
     void loadTaxonFacts(Taxon taxon, TaxonPageDto taxonPageDto, TaxonPageDtoConfiguration config) {
 
         this.pageDto = taxonPageDto;
@@ -218,6 +215,7 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
     }
 
     //TODO merge with loadFacts, it is almost the same, see //DIFFERENT
+    @Override
     void loadNameFacts(TaxonName name, TaxonBaseDto nameDto, TaxonPageDtoConfiguration config, TaxonPageDto pageDto) {
 
         try {
@@ -346,24 +344,6 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
 
         featureDto.addFact(dto);
     }
-
-    //should not be necessary anymore as distribution data is now loaded directly in DIstributionServiceImpl
-    //by calling TaxonPageDtoLoader.loadBaseData() directly
-//    private static void handleDistributionDtoNode(Map<UUID, Distribution> map,
-//            TreeNode<Set<DistributionDto>, NamedAreaDto> root) {
-//       if (root.getData() != null) {
-//           root.getData().stream().forEach(dto->{
-//               Distribution distr  = map.get(dto.getUuid());
-//               loadBaseData(distr, dto);
-//               dto.setTimeperiod(distr.getTimeperiod() == null ? null : distr.getTimeperiod().toString());
-//           });
-//       }
-//
-//       //handle children
-//       if (root.getChildren() != null) {
-//           root.getChildren().stream().forEach(c->handleDistributionDtoNode(map, c));
-//       }
-//    }
 
     private FactDtoBase handleFactDto(FeatureDto featureDto, AllFactTypesDto fact, TaxonPageDto pageDto) {
         //TODO locale
@@ -678,6 +658,9 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
 
     private FactDtoBase allFactTypesDto2FactDtoBase(AllFactTypesDto aftd) {
 
+        //TODO i18n
+        List<Language> languages = new ArrayList<>();
+
         FactDtoBase dto;
         //TODO label
         if (aftd.type == Distribution.class) {
@@ -697,10 +680,8 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
             dto = td;
         }else if (aftd.type == CommonTaxonName.class) {
             CommonNameDto ctn = new CommonNameDto();
-//            NamedAreaDto areaDto = new NamedAreaDto(null, id, null);
-//            ctn.setArea(factProxyLoader.add(NamedArea.class, areaDto));
-            ctn.setArea("Testarea");  //TODO  //String
-            ctn.setLanguage("Testlanguage");  //String //TODO
+            ctn.setArea(aftd.area.getPreferredLabel(languages));
+            ctn.setLanguage(aftd.language.getPreferredLabel(languages));
             ctn.setName(aftd.name);
             ctn.setTransliteration(aftd.transliteration);
             dto = ctn;
@@ -744,6 +725,7 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
         UUID uuid;
         int id;
         NamedArea area;
+        Language language;
         String name;
         TimePeriod timePeriod;
         Integer sortIndex;
@@ -757,6 +739,7 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
             this.uuid = (UUID)map.get("uuid");
             this.id = (int)map.get("id");
             this.area = (NamedArea) map.get("area");
+            this.language = (Language)map.get("language");
             this.name = (String) map.get("name");
             this.timePeriod = (TimePeriod) map.get("timePeriod");
             this.sortIndex = (Integer)map.get("sortIndex");
@@ -778,8 +761,8 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
         String describedAttr = clazz.equals(Taxon.class) ? "taxon" : clazz.equals(TaxonName.class) ? "name" : "describedSpecimenOrObservation";
         String hql = "SELECT new map(deb.feature.uuid as featureUuid, type(deb) as type "
                    +    " ,deb.uuid as uuid, deb.id as id "
-                   +    " ,a as area, deb.name as name "
-                   +    " ,st as status "
+                   +    " ,a as area, st as status, l as language"
+                   +    " ,deb.name as name "
                    +    " ,deb.timeperiod as timePeriod, deb.sortIndex as sortIndex"
                    +    " ,deb.transliteration as transliteration "
                    +    " ,mlt as i18nText "
@@ -787,6 +770,7 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
                    + " FROM DescriptionElementBase deb "
                    + "     LEFT OUTER JOIN deb.status st "
                    + "     LEFT OUTER JOIN deb.area a "
+                   + "     LEFT OUTER JOIN deb.language l "
                    + "     LEFT OUTER JOIN deb.multilanguageText mlt "
                    + " WHERE deb.inDescription." + describedAttr +".uuid = '" + entityUuid +"'"
                    + " AND deb.inDescription.imageGallery = false ";
@@ -827,7 +811,7 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
         UUID featureUuid = node.getNodeId();
         Set<FactDtoBase> facts = featureMap.get(featureUuid);
         FeatureDto featureDto;
-        if(facts == null){
+        if(facts == null){   //can this happen?
             if (node.getChildren().isEmpty()) {
                 return;
             }else {
@@ -836,7 +820,8 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
             }
         }else {
             //TODO locale und früher
-            featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
+            String featureLabel = facts.size() > 1 ?  feature.getPluralLabel() : feature.getLabel();
+            featureDto = new FeatureDto(feature.getUuid(), feature.getId(), featureLabel);
 
             List<DistributionDto> distributions = new ArrayList<>();
 
@@ -870,59 +855,5 @@ public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
         if (childFeatures.getCount() > 0) {
             featureDto.setSubFeatures(childFeatures);
         }
-    }
-
-    //TODO needs discussion if needed and how to implement.
-    //we could also move compareTo methods to DTO classes but with this
-    //remove from having only data in the DTO, no logic
-    private void orderFacts(FeatureDto featureDto) {
-        List<IFactDto> list = featureDto.getFacts().getItems();
-        Collections.sort(list, (f1,f2)->{
-            if (!f1.getClass().equals(f2.getClass())) {
-                //if fact classes differ we first order by class for now
-                return f1.getClass().getSimpleName().compareTo(f2.getClass().getSimpleName());
-            }else {
-                if (f1 instanceof FactDto) {
-                   FactDto fact1 = (FactDto)f1;
-                   FactDto fact2 = (FactDto)f2;
-                   int c = CdmUtils.nullSafeCompareTo(fact1.getSortIndex(), fact2.getSortIndex());
-                   if (c == 0) {
-                       //TODO correct order for facts without sortindex is not discussed yet. But there is a
-                       // dataportal test that requires defined behavior. Ordering by id usually implies that the
-                       // fact added first is shown first.
-                       c = CdmUtils.nullSafeCompareTo(fact1.getId(), fact2.getId());
-                   }
-                   if (c == 0) {
-                       c = CdmUtils.nullSafeCompareTo(fact1.getTypedLabel().toString(), fact2.getTypedLabel().toString());
-                   }
-                   return c;
-                } else if (f1 instanceof CommonNameDto) {
-                    CommonNameDto fact1 = (CommonNameDto)f1;
-                    CommonNameDto fact2 = (CommonNameDto)f2;
-                    int c = CdmUtils.nullSafeCompareTo(fact1.getSortIndex(), fact2.getSortIndex());
-                    if (c == 0) {
-                        //TODO unclear if name or language should come first
-                        c = CdmUtils.nullSafeCompareTo(fact1.getName(), fact2.getName());
-                    }
-                    if (c == 0) {
-                        //TODO unclear if name or language should come first
-                        c = CdmUtils.nullSafeCompareTo(fact1.getLanguage(), fact2.getLanguage());
-                    }
-                    if (c == 0) {
-                        //to have deterministic behavior we finally order by id if everything else is equal
-                        c = CdmUtils.nullSafeCompareTo(fact1.getId(), fact2.getId());
-                    }
-
-                    return c;
-                }else if (f1 instanceof FactDtoBase) {
-                    //TODO add compare for DistributionDto, IndividualsAssocitationDto and TaxonInteractionDto
-                    //default, to have deterministic behavior at least
-                    FactDtoBase fact1 = (FactDto)f1;
-                    FactDtoBase fact2 = (FactDto)f2;
-                    return CdmUtils.nullSafeCompareTo(fact1.getId(), fact2.getId());
-                }
-            }
-            return 0; //TODO
-        });
     }
 }

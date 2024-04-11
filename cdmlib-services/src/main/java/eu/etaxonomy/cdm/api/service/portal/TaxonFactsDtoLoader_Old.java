@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDtoBase;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
-import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
@@ -137,21 +136,17 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
  * @author muellera
  * @since 27.02.2024
  */
-public class TaxonFactsDtoLoader_Old extends TaxonPageDtoLoaderBase {
-
-    private TaxonPageDto pageDto;
-
-    private IGeoServiceAreaMapping areaMapping;
+public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     public TaxonFactsDtoLoader_Old(ICdmRepository repository, ICdmGenericDao dao
             , IGeoServiceAreaMapping areaMapping) {
-        super(repository, dao);
-        this.areaMapping = areaMapping;
+        super(repository, dao, areaMapping);
     }
 
+    @Override
     void loadTaxonFacts(Taxon taxon, TaxonPageDto taxonPageDto, TaxonPageDtoConfiguration config) {
         try {
             //compute the features that do exist for this taxon
@@ -241,8 +236,10 @@ public class TaxonFactsDtoLoader_Old extends TaxonPageDtoLoaderBase {
                 featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
             }
         }else {
+            Set<DescriptionElementBase> facts = featureMap.get(feature.getUuid());
             //TODO locale
-            featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
+            String featureLabel = facts.size() > 1 ?  feature.getPluralLabel() : feature.getLabel();
+            featureDto = new FeatureDto(feature.getUuid(), feature.getId(), featureLabel);
             List<Distribution> distributions = new ArrayList<>();
 
             //
@@ -508,61 +505,10 @@ public class TaxonFactsDtoLoader_Old extends TaxonPageDtoLoaderBase {
         return root;
     }
 
-    //TODO needs discussion if needed and how to implement.
-    //we could also move compareTo methods to DTO classes but with this
-    //remove from having only data in the DTO, no logic
-    private void orderFacts(FeatureDto featureDto) {
-        List<IFactDto> list = featureDto.getFacts().getItems();
-        Collections.sort(list, (f1,f2)->{
-            if (!f1.getClass().equals(f2.getClass())) {
-                //if fact classes differ we first order by class for now
-                return f1.getClass().getSimpleName().compareTo(f2.getClass().getSimpleName());
-            }else {
-                if (f1 instanceof FactDto) {
-                   FactDto fact1 = (FactDto)f1;
-                   FactDto fact2 = (FactDto)f2;
-                   int c = CdmUtils.nullSafeCompareTo(fact1.getSortIndex(), fact2.getSortIndex());
-                   if (c == 0) {
-                       //TODO correct order for facts without sortindex is not discussed yet. But there is a
-                       // dataportal test that requires defined behavior. Ordering by id usually implies that the
-                       // fact added first is shown first.
-                       c = CdmUtils.nullSafeCompareTo(fact1.getId(), fact2.getId());
-                   }
-                   if (c == 0) {
-                       c = CdmUtils.nullSafeCompareTo(fact1.getTypedLabel().toString(), fact2.getTypedLabel().toString());
-                   }
-                   return c;
-                } else if (f1 instanceof CommonNameDto) {
-                    CommonNameDto fact1 = (CommonNameDto)f1;
-                    CommonNameDto fact2 = (CommonNameDto)f2;
-                    int c = CdmUtils.nullSafeCompareTo(fact1.getSortIndex(), fact2.getSortIndex());
-                    if (c == 0) {
-                        //TODO unclear if name or language should come first
-                        c = CdmUtils.nullSafeCompareTo(fact1.getName(), fact2.getName());
-                    }
-                    if (c == 0) {
-                        //TODO unclear if name or language should come first
-                        c = CdmUtils.nullSafeCompareTo(fact1.getLanguage(), fact2.getLanguage());
-                    }
-                    if (c == 0) {
-                        //to have deterministic behavior we finally order by id if everything else is equal
-                        c = CdmUtils.nullSafeCompareTo(fact1.getId(), fact2.getId());
-                    }
 
-                    return c;
-                }else if (f1 instanceof FactDtoBase) {
-                    //TODO add compare for DistributionDto, IndividualsAssocitationDto and TaxonInteractionDto
-                    //default, to have deterministic behavior at least
-                    FactDtoBase fact1 = (FactDto)f1;
-                    FactDtoBase fact2 = (FactDto)f2;
-                    return CdmUtils.nullSafeCompareTo(fact1.getId(), fact2.getId());
-                }
-            }
-            return 0; //TODO
-        });
-    }
 
     //TODO merge with loadFacts, it is almost the same, see //DIFFERENT
+    @Override
     void loadNameFacts(TaxonName name, TaxonBaseDto nameDto, TaxonPageDtoConfiguration config, TaxonPageDto pageDto) {
 
         try {
