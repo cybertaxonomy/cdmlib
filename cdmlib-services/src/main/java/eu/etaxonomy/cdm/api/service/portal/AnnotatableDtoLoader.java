@@ -17,13 +17,18 @@ import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.api.dto.portal.AnnotatableDto;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
+import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
 import eu.etaxonomy.cdm.common.SetMap;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
 /**
+ * Bulk loader for all {@link AnnotatableEntity annotatable entities}.
+ *
  * @author muellera
- * @since 07.03.2024
+ * @since 10.04.2024
  */
 public class AnnotatableDtoLoader {
 
@@ -35,49 +40,76 @@ public class AnnotatableDtoLoader {
      * DTOs must have id initialized
      */
     public void loadAll(Set<AnnotatableDto> dtos, Class baseClass, ICdmGenericDao commonDao,
-            Set<UUID> annotationTypeFilter, LazyDtoLoader lazyLoader) {
+            Set<UUID> annotationTypeFilter, Set<UUID> markerTypeFilter, ProxyDtoLoader lazyLoader) {
 
         Set<Integer> baseIds = dtos.stream().map(d->d.getId()).collect(Collectors.toSet());
-        SetMap<Integer,AnnotatableDto> dtosForAnnotatable = new SetMap<>();
-        dtos.stream().forEach(dto->dtosForAnnotatable.putItem(dto.getId(), dto));
 
-        String hql = "SELECT new map(bc.id as id, a.id as annotationId) "
-                + " FROM "+baseClass.getSimpleName()+" bc JOIN bc.annotations a "
-                //TODO allow empty type filter
-                + " WHERE a.annotationType.uuid IN :annotationTypes AND bc.id IN :baseIds";
+        SetMap<Integer,AnnotatableDto> id2AnnotatableInstancesMap = new SetMap<>(); //it is a set because there might be multiple instances for the same object
+        dtos.stream().forEach(dto->id2AnnotatableInstancesMap.putItem(dto.getId(), dto));
+
+        handleAnnotations(baseClass, commonDao, annotationTypeFilter, lazyLoader, baseIds, id2AnnotatableInstancesMap);
+        //TODO not yet used as a marker loader does not exist yet
+        //handleMarkers(baseClass, commonDao, markerTypeFilter, lazyLoader, baseIds, id2AnnotatableInstancesMap);
+    }
+
+    private void handleAnnotations(Class baseClass, ICdmGenericDao commonDao, Set<UUID> annotationTypeFilter,
+            ProxyDtoLoader lazyLoader, Set<Integer> baseIds,
+            SetMap<Integer, AnnotatableDto> id2AnnotatableInstancesMap) {
 
         Map<String,Object> params = new HashMap<>();
-        params.put("annotationTypes", annotationTypeFilter);
+        String hql = "SELECT new map(bc.id as id, a.id as annotationId) "
+                + " FROM "+baseClass.getSimpleName()+" bc JOIN bc.annotations a "
+                + " WHERE bc.id IN :baseIds";
         params.put("baseIds", baseIds);
+        if (annotationTypeFilter != null) {
+            hql += " AND a.annotationType.uuid IN :annotationTypes ";
+            params.put("annotationTypes", annotationTypeFilter);
+        }
 
-        List<Map<String, Integer>> annotationIdMapping;
         try {
-            annotationIdMapping = commonDao.getHqlMapResult(hql, params, Integer.class);
+            List<Map<String, Integer>> baseId2annotationIdMapping = commonDao.getHqlMapResult(hql, params, Integer.class);
 
-            annotationIdMapping.stream().forEach(e->{
+            baseId2annotationIdMapping.stream().forEach(e->{
                 Integer annotationId = e.get("annotationId");
                 AnnotationDto annotationDto = new AnnotationDto();
                 annotationDto.setId(annotationId);
                 Integer annotatableId = e.get("id");
-                dtosForAnnotatable.get(annotatableId).stream().forEach(a->a.addAnnotation(annotationDto));
+                id2AnnotatableInstancesMap.get(annotatableId).stream().forEach(a->a.addAnnotation(annotationDto));
                 lazyLoader.add(Annotation.class, annotationDto);
             });
         } catch (UnsupportedOperationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException("Exception while loading supplemental data for annotatable entities", e);
         }
     }
 
-    //
-//  //load supplemental data
-//  String hqlSourcesMap = "SELECT new map(deb.id as factId, s.id as sourceId) "
-//          + " FROM DescriptionElementBase deb JOIN deb.sources s "
-//          + " WHERE s.type IN :osbTypes AND deb.id IN :factIds";
-//  Object[] params = new Object[] {config.getSourceTypes()};
-//  List<Map<String,Integer>> sourceIdMapping = dao.getHqlMapResult(hqlSourcesMap, params, Integer.class);
-//  sourceIdMapping.stream().forEach(e->{
-//      SourceDto sourceDto = new SourceDto(e.get("sourceId"));
-//      AllFactTypesDto fact = factsForSource.get(e.get("factid"));
-////    //TODO add source to fact
-//  });
+    private void handleMarkers(Class baseClass, ICdmGenericDao commonDao, Set<UUID> markerTypeFilter,
+            ProxyDtoLoader lazyLoader, Set<Integer> baseIds,
+            SetMap<Integer, AnnotatableDto> id2AnnotatableInstancesMap) {
+
+        Map<String,Object> params = new HashMap<>();
+        String hql = "SELECT new map(bc.id as baseId, m.id as markerId) "
+                + " FROM "+baseClass.getSimpleName()+" bc JOIN bc.markers m "
+                + " WHERE bc.id IN :baseIds";
+        params.put("baseIds", baseIds);
+
+        if (markerTypeFilter != null) {
+            hql += " AND m.markerType.uuid IN :markerTypes ";
+            params.put("markerTypes", markerTypeFilter);
+        }
+
+        try {
+            List<Map<String, Integer>> baseId2markerIdMapping = commonDao.getHqlMapResult(hql, params, Integer.class);
+
+            baseId2markerIdMapping.stream().forEach(e->{
+                Integer markerId = e.get("markerId");
+                MarkerDto markerDto = new MarkerDto();
+                markerDto.setId(markerId);
+                Integer baseId = e.get("baseId");
+                id2AnnotatableInstancesMap.get(baseId).stream().forEach(m->m.addMarker(markerDto));
+                lazyLoader.add(Marker.class, markerDto);
+            });
+        } catch (UnsupportedOperationException e) {
+            throw new RuntimeException("Exception while loading supplemental data for annotatable entities", e);
+        }
+    }
 }

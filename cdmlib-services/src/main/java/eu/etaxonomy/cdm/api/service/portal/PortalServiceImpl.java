@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
  */
 @Service
 @Transactional(readOnly = true)
-public class PortalDtoServiceImpl implements IPortalDtoService {
+public class PortalServiceImpl implements IPortalService {
 
     @Autowired
     private ICdmGenericDao genericDao;
@@ -48,7 +48,7 @@ public class PortalDtoServiceImpl implements IPortalDtoService {
     @Override
     public TaxonPageDto taxonPageDto(TaxonPageDtoConfiguration config) {
 
-        PortalDtoLoader loader = new PortalDtoLoader(repository, genericDao, areaMapping);
+        TaxonPageDtoLoader loader = new TaxonPageDtoLoader(repository, genericDao, areaMapping);
         Taxon taxon = (Taxon)taxonDao.load(config.getTaxonUuid());
         TaxonPageDto dto = null;
         try {

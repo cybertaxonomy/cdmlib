@@ -51,8 +51,8 @@ public class AnnotationDtoLoader {
 
         Set<Integer> baseIds = dtos.stream().map(d->d.getId()).collect(Collectors.toSet());
 
-        SetMap<Integer,AnnotationDto> dtosForAnnotation = new SetMap<>();
-        dtos.stream().forEach(dto->dtosForAnnotation.putItem(dto.getId(), dto));
+        SetMap<Integer,AnnotationDto> id2AnnotationMap = new SetMap<>();
+        dtos.stream().forEach(dto->id2AnnotationMap.putItem(dto.getId(), dto));
 
 
         String hql = "SELECT new map(a.id as id, a.uuid as uuid, "
@@ -70,7 +70,7 @@ public class AnnotationDtoLoader {
             annotationMap.stream().forEach(e->{
                 Integer id = (Integer)e.get("id");
 
-                dtosForAnnotation.get(id).stream().forEach(dto->{
+                id2AnnotationMap.get(id).stream().forEach(dto->{
                     UUID uuid = (UUID)e.get("uuid");
                     dto.setUuid(uuid);
                     dto.setText((String)e.get("text"));
@@ -79,8 +79,7 @@ public class AnnotationDtoLoader {
                 });
             });
         } catch (UnsupportedOperationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException("Exception while loading annotation data", e);
         }
         return;
     }

@@ -93,16 +93,16 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
  * @author a.mueller
  * @date 09.01.2023
  */
-public class PortalDtoLoader extends PortalDtoLoaderBase {
+public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    private PortalDtoFactLoader_Old factLoader;
+    private TaxonFactsDtoLoader_Old factLoader;
 
-    public PortalDtoLoader(ICdmRepository repository, ICdmGenericDao dao, IGeoServiceAreaMapping areaMapping) {
+    public TaxonPageDtoLoader(ICdmRepository repository, ICdmGenericDao dao, IGeoServiceAreaMapping areaMapping) {
         super(repository, dao);
-        this.factLoader = new PortalDtoFactLoader_Old(repository, dao, areaMapping);
+        this.factLoader = new TaxonFactsDtoLoader_Old(repository, dao, areaMapping);
     }
 
     //TODO can we handle the area mapping better?

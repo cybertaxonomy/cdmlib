@@ -54,12 +54,12 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @author muellera
  * @since 27.02.2024
  */
-public abstract class PortalDtoLoaderBase {
+public abstract class TaxonPageDtoLoaderBase {
 
     protected ICdmRepository repository;
     protected ICdmGenericDao dao;
 
-    public PortalDtoLoaderBase(ICdmRepository repository, ICdmGenericDao dao) {
+    public TaxonPageDtoLoaderBase(ICdmRepository repository, ICdmGenericDao dao) {
         this.repository = repository;
         this.dao = dao;
     }

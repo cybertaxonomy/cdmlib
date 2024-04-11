@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.portal.IPortalDtoService;
+import eu.etaxonomy.cdm.api.service.portal.IPortalService;
 import eu.etaxonomy.cdm.api.service.portal.format.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -126,7 +126,7 @@ public class TaxonPortalController extends TaxonController{
     private IMediaToolbox mediaToolbox;
 
     @Autowired
-    private IPortalDtoService portalDtoService;
+    private IPortalService portalService;
 
 
     public static final EntityInitStrategy TAXON_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
@@ -474,7 +474,7 @@ public class TaxonPortalController extends TaxonController{
         iucnDistributionConfig.setFallbackAreaMarkerTypes(fallbackAreaMarkerTypes);
         iucnDistributionConfig.setAlternativeRootAreaMarkerTypes(alternativeRootAreaMarkerTypes);
 
-        TaxonPageDto dto = portalDtoService.taxonPageDto(config);
+        TaxonPageDto dto = portalService.taxonPageDto(config);
         return dto;
     }
 

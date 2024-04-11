@@ -40,11 +40,11 @@ public class DistributionDtoLoader {
     }
 
     private <T extends DefinedTermBase<T>> void load(DistributionDto dto, Distribution entity) {
-        //copied from PortalDtoLoader
-        PortalDtoLoaderBase.loadSources(entity, dto);
+        //copied from TaxonPageDtoLoader
+        TaxonPageDtoLoaderBase.loadSources(entity, dto);
 
         //annotatable
-        PortalDtoLoaderBase.loadAnnotatable(entity, dto);
+        TaxonPageDtoLoaderBase.loadAnnotatable(entity, dto);
 
         dto.setTimeperiod(entity.getTimeperiod() == null ? null : entity.getTimeperiod().toString());
         dto.setDescriptionType(entity.getInDescription() == null? EnumSet.noneOf(DescriptionType.class)

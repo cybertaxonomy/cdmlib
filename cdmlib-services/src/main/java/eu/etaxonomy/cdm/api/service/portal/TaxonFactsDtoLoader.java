@@ -143,9 +143,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
  * @author muellera
  * @since 27.02.2024
  */
-public class PortalDtoFactLoader extends PortalDtoLoaderBase {
+public class TaxonFactsDtoLoader extends TaxonPageDtoLoaderBase {
 
-    private LazyDtoLoader factLazyLoader = new LazyDtoLoader();
+    private ProxyDtoLoader factProxyLoader = new ProxyDtoLoader();
 
     private TaxonPageDto pageDto;
 
@@ -154,7 +154,7 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    public PortalDtoFactLoader(ICdmRepository repository, ICdmGenericDao dao,
+    public TaxonFactsDtoLoader(ICdmRepository repository, ICdmGenericDao dao,
             IGeoServiceAreaMapping areaMapping) {
         super(repository, dao);
         this.areaMapping = areaMapping;
@@ -194,8 +194,9 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
 
             //TODO make configurable
             Set<UUID> annotationTypes = new HashSet<>();
+            Set<UUID> markerTypes = null;
             annotationTypes.add(AnnotationType.uuidEditorial);
-            factLazyLoader.loadAll(dao, config.getSourceTypes(), annotationTypes);
+            factProxyLoader.loadAll(dao, config.getSourceTypes(), annotationTypes, markerTypes);
 
             //load final result
             if (!filteredRootNode.getChildren().isEmpty()) {
@@ -206,14 +207,14 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
                 taxonPageDto.setTaxonFacts(features);
             }
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             taxonPageDto.addMessage(MessagesDto.NewErrorInstance("Error when loading factual data.", e));
         }
     }
 
 
     private void handleSupplementalData(FactDtoBase f) {
-        factLazyLoader.add(DescriptionElementBase.class, f);
+        factProxyLoader.add(DescriptionElementBase.class, f);
         return;
     }
 
@@ -334,7 +335,7 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
                     distributionStatusColors, areaMapping);
 
         //should not be necessary anymore as distribution data is now loaded directly in DistributionServiceImpl
-        //by calling PortalDtoLoader.loadBaseData() directly
+        //by calling TaxonPageDtoLoader.loadBaseData() directly
 //        if (distributionConfig.isUseTreeDto() && dto.getTree() != null) {
 //            DistributionTreeDto tree = (DistributionTreeDto)dto.getTree();
 //            TreeNode<Set<DistributionDto>, NamedAreaDto> root = tree.getRootElement();
@@ -348,7 +349,7 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
     }
 
     //should not be necessary anymore as distribution data is now loaded directly in DIstributionServiceImpl
-    //by calling PortalDtoLoader.loadBaseData() directly
+    //by calling TaxonPageDtoLoader.loadBaseData() directly
 //    private static void handleDistributionDtoNode(Map<UUID, Distribution> map,
 //            TreeNode<Set<DistributionDto>, NamedAreaDto> root) {
 //       if (root.getData() != null) {
@@ -721,10 +722,10 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
             if (type == Distribution.class) {
                 DistributionDto dd = new DistributionDto(null, this.id, null, null);
                 NamedAreaDto areaDto = TermDtoLoader.INSTANCE().fromEntity(this.area);
-                //factLazyLoader.add(NamedArea.class, areaDto)
+                //factProxyLoader.add(NamedArea.class, areaDto)
                 dd.setArea(areaDto);
                 TermDto statusDto = TermDtoLoader.INSTANCE().fromEntity(this.status);
-                //OLD: factLazyLoader.add(PresenceAbsenceTerm.class, statusDto)
+                //OLD: factProxyLoader.add(PresenceAbsenceTerm.class, statusDto)
                 dd.setStatus(statusDto);
                 dto = dd;
             } else if (type == TextData.class) {
@@ -735,7 +736,7 @@ public class PortalDtoFactLoader extends PortalDtoLoaderBase {
             }else if (type == CommonTaxonName.class) {
                 CommonNameDto ctn = new CommonNameDto();
 //                NamedAreaDto areaDto = new NamedAreaDto(null, id, null);
-//                ctn.setArea(factLazyLoader.add(NamedArea.class, areaDto));
+//                ctn.setArea(factProxyLoader.add(NamedArea.class, areaDto));
                 ctn.setArea("Testarea");  //TODO  //String
                 ctn.setLanguage("Testlanguage");  //String //TODO
                 ctn.setName(name);

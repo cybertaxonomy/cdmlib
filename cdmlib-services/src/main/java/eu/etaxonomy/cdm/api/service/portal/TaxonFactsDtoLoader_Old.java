@@ -137,7 +137,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
  * @author muellera
  * @since 27.02.2024
  */
-public class PortalDtoFactLoader_Old extends PortalDtoLoaderBase {
+public class TaxonFactsDtoLoader_Old extends TaxonPageDtoLoaderBase {
 
     private TaxonPageDto pageDto;
 
@@ -146,7 +146,7 @@ public class PortalDtoFactLoader_Old extends PortalDtoLoaderBase {
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    public PortalDtoFactLoader_Old(ICdmRepository repository, ICdmGenericDao dao
+    public TaxonFactsDtoLoader_Old(ICdmRepository repository, ICdmGenericDao dao
             , IGeoServiceAreaMapping areaMapping) {
         super(repository, dao);
         this.areaMapping = areaMapping;

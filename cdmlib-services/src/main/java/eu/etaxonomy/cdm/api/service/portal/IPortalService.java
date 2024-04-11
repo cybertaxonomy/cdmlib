@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
  * @author a.mueller
  * @date 07.01.2023
  */
-public interface IPortalDtoService {
+public interface IPortalService {
 
     public TaxonPageDto taxonPageDto(TaxonPageDtoConfiguration config);
 }

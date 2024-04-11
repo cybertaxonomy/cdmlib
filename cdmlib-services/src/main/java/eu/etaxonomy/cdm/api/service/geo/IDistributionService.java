@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 /**
  * This service has been extracted from cdmlib-ext IEditGeoService
  * to allow access to composeDistributionInfoFor also from within
- * service layer. This was needed e.g. by PortalDtoLoader.
+ * service layer. This was needed e.g. by TaxonPageDtoLoader.
  *
  * @author a.mueller
  * @date 08.02.2023

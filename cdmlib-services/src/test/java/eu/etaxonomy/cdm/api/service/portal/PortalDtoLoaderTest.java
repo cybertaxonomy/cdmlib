@@ -62,7 +62,7 @@ public class PortalDtoLoaderTest extends CdmTransactionalIntegrationTest {
     private ITaxonService taxonService;
 
     @SpringBeanByType
-    private IPortalDtoService portalDtoService;
+    private IPortalService portalService;
 
     @Test
     @DataSets({
@@ -75,7 +75,7 @@ public class PortalDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
         config.setWithSpecimens(false);
         config.setTaxonUuid(taxonUuid1);
-        TaxonPageDto dto = portalDtoService.taxonPageDto(config);
+        TaxonPageDto dto = portalService.taxonPageDto(config);
 
         Assert.assertNotNull(dto);
         List<TaggedText> list = dto.getTaggedName();

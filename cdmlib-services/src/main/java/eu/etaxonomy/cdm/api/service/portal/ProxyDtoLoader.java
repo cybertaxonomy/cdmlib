@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
  * @author muellera
  * @since 07.03.2024
  */
-public class LazyDtoLoader {
+public class ProxyDtoLoader {
 
     private SetMap<Class<? extends CdmBase>,AnnotatableDto> annotatableProxies = new SetMap<>();
 
@@ -72,7 +72,7 @@ public class LazyDtoLoader {
     }
 
     public void loadAll(ICdmGenericDao dao, EnumSet<OriginalSourceType> sourceTypes,
-            Set<UUID> annotationTypes) {
+            Set<UUID> annotationTypes, Set<UUID> markerTypes) {
 
         while (hasUnloaded()) {
             for (Class<? extends CdmBase> clazz : sourcedProxies.keySet()) {
@@ -86,7 +86,7 @@ public class LazyDtoLoader {
                 Set<AnnotatableDto> anDto = new HashSet<>(annotatableProxies.get(clazz));
                 annotatableProxies.clear();
                 AnnotatableDtoLoader.INSTANCE().loadAll(anDto,
-                        clazz, dao, annotationTypes, this);
+                        clazz, dao, annotationTypes, markerTypes, this);
             }
 
             Set<SourceDto> sp = new HashSet<>(sourceProxies);

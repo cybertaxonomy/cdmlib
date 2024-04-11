@@ -18,11 +18,14 @@ import java.util.stream.Collectors;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
 import eu.etaxonomy.cdm.common.SetMap;
+import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
 /**
+ * Bulk loader for all {@link SourcedEntityBase sourced entities}.
+ *
  * @author muellera
  * @since 07.03.2024
  */
@@ -38,13 +41,14 @@ public class SourcedDtoLoader {
      * DTOs must have id initialized
      */
     public void loadAll(Set<SourcedDto> dtos, Class baseClass, ICdmGenericDao commonDao,
-            EnumSet<OriginalSourceType> sourceTypes, LazyDtoLoader lazyLoader) {
+            EnumSet<OriginalSourceType> sourceTypes, ProxyDtoLoader lazyLoader) {
 
         Set<Integer> baseIds = dtos.stream().map(d->d.getId()).collect(Collectors.toSet());
-        SetMap<Integer,SourcedDto> dtosForSource = new SetMap<>();
-        dtos.stream().forEach(dto->dtosForSource.putItem(dto.getId(), dto));
 
-        String hql = "SELECT new map(bc.id as factId, s.id as sourceId) "
+        SetMap<Integer,SourcedDto> id2SourcedInstancesMap = new SetMap<>(); //it is a set because there might be multiple instances for the same object
+        dtos.stream().forEach(dto->id2SourcedInstancesMap.putItem(dto.getId(), dto));
+
+        String hql = "SELECT new map(bc.id as baseId, s.id as sourceId) "
                 + " FROM "+baseClass.getSimpleName()+" bc JOIN bc.sources s "
                 + " WHERE s.type IN :osbTypes AND bc.id IN :baseIds";
 
@@ -57,28 +61,14 @@ public class SourcedDtoLoader {
             sourceIdMapping = commonDao.getHqlMapResult(hql, params, Integer.class);
 
             sourceIdMapping.stream().forEach(e->{
-                Integer id = e.get("sourceId");
-                SourceDto sourceDto = new SourceDto(id);
-                Integer factId = e.get("factId");
-                dtosForSource.get(factId).stream().forEach(sdd->sdd.addSource(sourceDto));
+                Integer sourceId = e.get("sourceId");
+                SourceDto sourceDto = new SourceDto(sourceId);
+                Integer baseId = e.get("baseId");
+                id2SourcedInstancesMap.get(baseId).stream().forEach(sdd->sdd.addSource(sourceDto));
                 lazyLoader.add(OriginalSourceBase.class, sourceDto);
             });
         } catch (UnsupportedOperationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException("Exception while loading sources for sourced entities", e);
         }
     }
-
-    //
-//  //load supplemental data
-//  String hqlSourcesMap = "SELECT new map(deb.id as factId, s.id as sourceId) "
-//          + " FROM DescriptionElementBase deb JOIN deb.sources s "
-//          + " WHERE s.type IN :osbTypes AND deb.id IN :factIds";
-//  Object[] params = new Object[] {config.getSourceTypes()};
-//  List<Map<String,Integer>> sourceIdMapping = dao.getHqlMapResult(hqlSourcesMap, params, Integer.class);
-//  sourceIdMapping.stream().forEach(e->{
-//      SourceDto sourceDto = new SourceDto(e.get("sourceId"));
-//      AllFactTypesDto fact = factsForSource.get(e.get("factid"));
-////    //TODO add source to fact
-//  });
 }
