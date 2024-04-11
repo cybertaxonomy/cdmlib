@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.ConceptRelationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.HomotypicGroupDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.KeyDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaDTO;
-import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaRepresentationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NameRelationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.SpecimenDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeAgentsRelDTO;
@@ -58,10 +57,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
-import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -295,7 +291,6 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             return;
         }
         try {
-            ContainerDto<MediaDTO> container = new ContainerDto<TaxonPageDto.MediaDTO>();
 
             List<Media> medias = new ArrayList<>();
             for (TaxonDescription taxonDescription : taxon.getDescriptions()) {
@@ -313,41 +308,15 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 medias.addAll(newMedia);
             }
             //TODO collect media from elsewhere
-            for (Media media : medias) {
-                MediaDTO dto = new TaxonPageDto.MediaDTO();
-                loadBaseData(media, dto);
-                dto.setLabel(media.getTitleCache());
-                ContainerDto<MediaRepresentationDTO> representations = new ContainerDto<>();
-                for (MediaRepresentation rep : media.getRepresentations()) {
-                    MediaRepresentationDTO repDto = new MediaRepresentationDTO();
-                    loadBaseData(rep, dto);
-                    repDto.setMimeType(rep.getMimeType());
-                    repDto.setSuffix(rep.getSuffix());
-                    if (!rep.getParts().isEmpty()) {
-                        //TODO handle message if n(parts) > 1
-                        MediaRepresentationPart part = rep.getParts().get(0);
-                        repDto.setUri(part.getUri());
-                        repDto.setClazz(part.getClass());
-                        repDto.setSize(part.getSize());
-                        if (part.isInstanceOf(ImageFile.class)) {
-                            ImageFile image = CdmBase.deproxy(part, ImageFile.class);
-                            repDto.setHeight(image.getHeight());
-                            repDto.setWidth(image.getWidth());
-                        }
-                        //TODO AudioFile etc.
-                    }
-                    representations.addItem(repDto);
-                }
-                if (representations.getCount() > 0) {
-                    dto.setRepresentations(representations);
-                }
-                //TODO load representation data
-                container.addItem(dto);
-            }
 
+            ContainerDto<MediaDTO> container = new ContainerDto<>();
+            for (Media media : medias) {
+                handleSingleMedia(container, media);
+            }
             if (container.getCount() > 0) {
                 result.setMedia(container);
             }
+
         } catch (Exception e) {
             //e.printStackTrace();
             result.addMessage(MessagesDto.NewErrorInstance("Error when loading media data.", e));

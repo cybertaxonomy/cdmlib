@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.geo.DistributionInfoBuilderTest;
 import eu.etaxonomy.cdm.common.TreeNode;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -44,6 +45,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -151,6 +153,10 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "My fourth description", description3.getTypedLabel().get(0).getLabel().toString());
         Assert.assertEquals("If sortindex is given it should be used for sorting.",
                 "My third description", description4.getTypedLabel().get(0).getLabel().toString());
+
+        //media
+        Assert.assertEquals(2, description1.getMedia().getCount());
+
     }
 
     private void testDistributions(FeatureDto distributionDto) {
@@ -223,6 +229,11 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TextData td4 = TextData.NewInstance(Feature.DESCRIPTION(), "My fourth description", Language.DEFAULT(), null);
         td4.setSortIndex(1);
         taxDesc.addElements(td1, td2, td3, td4);
+        //... with media
+        Media media1 = Media.NewInstance(URI.create("http://media.de/file.jpg"), 2, "JPG", "jpg");
+        Media media2 = Media.NewInstance(URI.create("http://media.de/file2.gif"), 3, "GIF", "gif");
+        td1.addMedia(media1);
+        td1.addMedia(media2);
 
         //common names
         CommonTaxonName cn1 = CommonTaxonName.NewInstance("My flower", Language.ENGLISH(), Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND());

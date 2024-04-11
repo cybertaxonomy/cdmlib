@@ -19,10 +19,14 @@ import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotatableDto;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
 import eu.etaxonomy.cdm.api.dto.portal.CdmBaseDto;
+import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
 import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
 import eu.etaxonomy.cdm.api.dto.portal.SingleSourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaDTO;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaRepresentationDTO;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -38,6 +42,10 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
+import eu.etaxonomy.cdm.model.media.ImageFile;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.NamedSource;
@@ -267,5 +275,49 @@ public abstract class TaxonPageDtoLoaderBase {
             //TODO 3 make source type configurable
             return type.isPublicSource();
         }
+    }
+
+    protected void makeMediaContainer(TaxonPageDto result, List<Media> medias) {
+        ContainerDto<MediaDTO> container = new ContainerDto<>();
+
+        for (Media media : medias) {
+            handleSingleMedia(container, media);
+        }
+
+        if (container.getCount() > 0) {
+            result.setMedia(container);
+        }
+    }
+
+    protected void handleSingleMedia(ContainerDto<MediaDTO> container, Media media) {
+        MediaDTO dto = new TaxonPageDto.MediaDTO();
+        loadBaseData(media, dto);
+        dto.setLabel(media.getTitleCache());
+        ContainerDto<MediaRepresentationDTO> representations = new ContainerDto<>();
+        for (MediaRepresentation rep : media.getRepresentations()) {
+            MediaRepresentationDTO repDto = new MediaRepresentationDTO();
+            loadBaseData(rep, dto);
+            repDto.setMimeType(rep.getMimeType());
+            repDto.setSuffix(rep.getSuffix());
+            if (!rep.getParts().isEmpty()) {
+                //TODO handle message if n(parts) > 1
+                MediaRepresentationPart part = rep.getParts().get(0);
+                repDto.setUri(part.getUri());
+                repDto.setClazz(part.getClass());
+                repDto.setSize(part.getSize());
+                if (part.isInstanceOf(ImageFile.class)) {
+                    ImageFile image = CdmBase.deproxy(part, ImageFile.class);
+                    repDto.setHeight(image.getHeight());
+                    repDto.setWidth(image.getWidth());
+                }
+                //TODO AudioFile etc.
+            }
+            representations.addItem(repDto);
+        }
+        if (representations.getCount() > 0) {
+            dto.setRepresentations(representations);
+        }
+        //TODO load representation data
+        container.addItem(dto);
     }
 }

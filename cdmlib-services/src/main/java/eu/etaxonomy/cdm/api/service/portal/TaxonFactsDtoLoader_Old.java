@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonInteractionDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
@@ -68,6 +69,7 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -252,7 +254,7 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
 //                             -- Area|
 //                                    --name
                     // a bit like for distribution??
-                    handleFact(featureDto, fact, pageDto);
+                    handleFact(featureDto, fact, pageDto, config);
                 }
             }
 
@@ -272,7 +274,9 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
         }
     }
 
-    private FactDtoBase handleFact(FeatureDto featureDto, DescriptionElementBase fact, TaxonPageDto pageDto) {
+    private FactDtoBase handleFact(FeatureDto featureDto, DescriptionElementBase fact,
+            TaxonPageDto pageDto, TaxonPageDtoConfiguration config) {
+
         //TODO locale
         Language localeLang = null;
 
@@ -395,6 +399,7 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
         }
         result.setTimeperiod(fact.getTimeperiod() == null ? null : fact.getTimeperiod().toString());
         result.setSortIndex(fact.getSortIndex());
+        loadMedia(fact, result, pageDto, config);
         return result;
     }
 
@@ -543,6 +548,25 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
             //e.printStackTrace();
             //DIFFERENT
             pageDto.addMessage(MessagesDto.NewErrorInstance("Error when loading factual data.", e));
+        }
+    }
+
+    private void loadMedia(DescriptionElementBase fact, FactDtoBase factDto, TaxonPageDto pageDto, TaxonPageDtoConfiguration config) {
+        try {
+            List<Media> medias = new ArrayList<>();
+            medias.addAll(fact.getMedia());
+            ContainerDto<MediaDTO> container = new ContainerDto<>();
+
+            for (Media media : medias) {
+                handleSingleMedia(container, media);
+            }
+
+            if (container.getCount() > 0) {
+                factDto.setMedia(container);
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            pageDto.addMessage(MessagesDto.NewErrorInstance("Error when loading media data for facts.", e));
         }
     }
 }
