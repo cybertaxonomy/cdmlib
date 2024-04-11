@@ -155,7 +155,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "My third description", description4.getTypedLabel().get(0).getLabel().toString());
 
         //media
-        Assert.assertEquals(2, description1.getMedia().getCount());
+        Assert.assertEquals(2, description4.getMedia().getCount());
 
     }
 
@@ -232,8 +232,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //... with media
         Media media1 = Media.NewInstance(URI.create("http://media.de/file.jpg"), 2, "JPG", "jpg");
         Media media2 = Media.NewInstance(URI.create("http://media.de/file2.gif"), 3, "GIF", "gif");
-        td1.addMedia(media1);
-        td1.addMedia(media2);
+        td3.addMedia(media1);
+        td3.addMedia(media2);
 
         //common names
         CommonTaxonName cn1 = CommonTaxonName.NewInstance("My flower", Language.ENGLISH(), Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND());
