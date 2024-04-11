@@ -36,7 +36,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
-import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
@@ -64,8 +63,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class IndividualsAssociation extends DescriptionElementBase
-        implements IMultiLanguageTextHolder {
+public class IndividualsAssociation extends DescriptionElementBase {
 
 	private static final long serialVersionUID = -4117554860254531809L;
     @SuppressWarnings("unused")
@@ -84,7 +82,7 @@ public class IndividualsAssociation extends DescriptionElementBase
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private SpecimenOrObservationBase associatedSpecimenOrObservation;
+	private SpecimenOrObservationBase<?> associatedSpecimenOrObservation;
 
 	/**
 	 * Class constructor: creates a new empty individuals association instance.
