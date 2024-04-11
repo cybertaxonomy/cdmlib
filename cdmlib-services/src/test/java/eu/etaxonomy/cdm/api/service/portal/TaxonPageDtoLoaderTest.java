@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author muellera
  * @since 26.02.2024
  */
-public class PortalDtoLoaderTest extends CdmTransactionalIntegrationTest {
+public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
     private UUID taxonUuid1 = UUID.fromString("075d1b8c-91d3-4b10-93b7-08ac872d09e8");
 
