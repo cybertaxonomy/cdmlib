@@ -54,6 +54,7 @@ public class ProxyDtoLoader {
 
 
     public <T extends CdmBaseDto> T add(Class<? extends CdmBase> clazz, T dto) {
+
         if (dto instanceof AnnotatableDto) {
             annotatableProxies.putItem(clazz, (AnnotatableDto)dto);
         }
@@ -68,6 +69,7 @@ public class ProxyDtoLoader {
         } else if(dto instanceof AnnotationDto) {
             annotationProxies.add((AnnotationDto)dto);
         }
+
         return dto;
     }
 
@@ -76,9 +78,9 @@ public class ProxyDtoLoader {
 
         while (hasUnloaded()) {
             for (Class<? extends CdmBase> clazz : sourcedProxies.keySet()) {
-                Set<SourcedDto> sp = new HashSet<>(sourcedProxies.get(clazz));
+                Set<SourcedDto> sourcedDto = new HashSet<>(sourcedProxies.get(clazz));
                 sourcedProxies.clear();
-                SourcedDtoLoader.INSTANCE().loadAll(sp,
+                SourcedDtoLoader.INSTANCE().loadAll(sourcedDto,
                         clazz, dao, sourceTypes, this);
             }
 
@@ -89,14 +91,14 @@ public class ProxyDtoLoader {
                         clazz, dao, annotationTypes, markerTypes, this);
             }
 
-            Set<SourceDto> sp = new HashSet<>(sourceProxies);
+            Set<SourceDto> sourceDtos = new HashSet<>(sourceProxies);
             sourceProxies.clear();
-            SourceDtoLoader.INSTANCE().loadAll(sp,
+            SourceDtoLoader.INSTANCE().loadAll(sourceDtos,
                     dao, sourceTypes, this);
 
-            Set<AnnotationDto> ad = new HashSet<>(annotationProxies);
+            Set<AnnotationDto> annotationDtos = new HashSet<>(annotationProxies);
             annotationProxies.clear();
-            AnnotationDtoLoader.INSTANCE().loadAll(ad, dao);
+            AnnotationDtoLoader.INSTANCE().loadAll(annotationDtos, dao);
 
             if (!identifiableProxies.isEmpty()) {
                 System.out.println("ERROR removing identifiableProxies!!!");

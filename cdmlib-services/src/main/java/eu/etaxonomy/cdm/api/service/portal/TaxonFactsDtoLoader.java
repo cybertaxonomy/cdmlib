@@ -183,7 +183,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
             }
 
             //load facts per feature
-            SetMap<UUID, FactDtoBase> factsPerFeature = loadFactsPerFeature(taxon, config);
+            SetMap<UUID, FactDtoBase> factsPerFeature = loadFactsPerFeature(taxon, config, taxonPageDto);
 
             //handle supplemental data
             factsPerFeature.values().stream().forEach(s->s.stream().forEach(f->handleSupplementalData(f)));
@@ -211,7 +211,6 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
 
     private void handleSupplementalData(FactDtoBase f) {
         factProxyLoader.add(DescriptionElementBase.class, f);
-        return;
     }
 
     //TODO merge with loadFacts, it is almost the same, see //DIFFERENT
@@ -235,7 +234,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
 //            }  //DIFFERENT END
 
             //load facts per feature
-            SetMap<UUID,FactDtoBase> featureMap = loadFactsPerFeature(name, config);
+            SetMap<UUID,FactDtoBase> featureMap = loadFactsPerFeature(name, config, pageDto);
 
             //load final result
             if (!filteredRootNode.getChildren().isEmpty()) {
@@ -753,7 +752,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
     }
 
     private SetMap<UUID, FactDtoBase> loadFactsPerFeature(IDescribable<?> describable,
-            TaxonPageDtoConfiguration config) {
+            TaxonPageDtoConfiguration config, TaxonPageDto taxonPageDto) {
 
         Class<? extends IDescribable> clazz = Taxon.class;
         UUID entityUuid = describable.getUuid();
@@ -795,12 +794,10 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
             return result;
 
         } catch (Exception e) {
-            e.printStackTrace();
-//                TODO logging
+//            e.printStackTrace();
+            taxonPageDto.addMessage(MessagesDto.NewErrorInstance("Error while loading facts per feature", e));
             return new SetMap<>();
         }
-
-
     }
 
     private void handleFeatureNode(TaxonPageDtoConfiguration config,
@@ -830,16 +827,8 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
                 if (fact instanceof DistributionDto) {
                     distributions.add((DistributionDto)fact);
                 }else {
-                    //TODO how to handle CommonNames, do we also want to have a data structure
-                    //with Language|
-//                             -- Area|
-//                                    --name
-                    // a bit like for distribution??
-
-                    //normal facts (usually 1 per feature or at least not hierarchically ordered)
                     featureDto.addFact(fact);
                 }
-
             }
 
             handleDistributions(config, featureDto, distributions, pageDto);
