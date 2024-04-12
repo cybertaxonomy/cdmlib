@@ -181,7 +181,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 .filter(f->((IndividualsAssociationDto)f).getOccurrenceUuid().equals(specimenUuid1))
                 .findFirst().get();
         Assert.assertEquals("My specimen", materialExaminedToCheck.getOccurrence());
-        Assert.assertEquals(specimenUuid1, materialExamined1.getOccurrenceUuid());
+        Assert.assertEquals(specimenUuid1, materialExaminedToCheck.getOccurrenceUuid());
         //FIXME description can not yet be loaded by DTO only loader, see comment in TaxonFactsDtoLoader.loadFactsPerFeature()
 //        Assert.assertEquals("Associated specimen description1", materialExamined1.getDescritpion());
     }
