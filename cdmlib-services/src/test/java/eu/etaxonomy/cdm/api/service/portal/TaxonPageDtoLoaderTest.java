@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonInteractionDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.geo.DistributionInfoBuilderTest;
@@ -90,6 +91,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         createTestData();
         commitAndStartNewTransaction();
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
+        CondensedDistributionConfiguration cc = config.getDistributionInfoConfiguration().getCondensedDistributionConfiguration();
+        cc.showAreaOfScopeLabel = true;
         config.setWithSpecimens(false);
         config.setTaxonUuid(taxonUuid1);
         TaxonPageDto dto = portalService.taxonPageDto(config);
@@ -201,16 +204,16 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(DistributionInfoDto.class.getSimpleName(), distribution.getClazz());
         DistributionInfoDto distributionInfo = (DistributionInfoDto)distribution;
         //... condensed distribution
-        //TODO this still fails
-        System.out.println(distributionInfo.getCondensedDistribution().getHtmlString() + ": TODO");
+        //TODO maybe the order is not deterministic
+        Assert.assertEquals("FRA – DEU", distributionInfo.getCondensedDistribution().getHtmlString());
         //TODO probably the order is not deterministic, so we may need to check single parts only, same as in according builder test
         String mapUriParamsStart = distributionInfo.getMapUriParams().substring(0, 50);
         String mapUriParamsEnd = distributionInfo.getMapUriParams().replace(mapUriParamsStart, "");
         Assert.assertEquals("as=a:,,0.1,|b:,,0.1,&ad=country_earth%3Agmi_cntry:", mapUriParamsStart);
-        Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:introduced"));
+        Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:native%3A\\+doubtfully\\+native"));
         //...tree
         DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
-        Assert.assertEquals("Tree:2<FRA:introduced{Miller, M.M. 1978: My French distribution. p 44}:0><Germany:present{}:0>", new DistributionInfoBuilderTest().tree2String(tree));
+        Assert.assertEquals("Tree:2<FRA:native: doubtfully native{Miller, M.M. 1978: My French distribution. p 44}:0><Germany:present{}:0>", new DistributionInfoBuilderTest().tree2String(tree));
         Assert.assertEquals("Should be France and Germany", 2, tree.getRootElement().children.size());
         TreeNode<Set<DistributionDto>, NamedAreaDto> germanyNode = tree.getRootElement().getChildren().get(1);
         Assert.assertEquals("Germany", germanyNode.getNodeId().getLabel());
@@ -239,8 +242,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         taxDesc.addElement(germany);
         Country.FRANCE().setSymbol("Fr");
-        PresenceAbsenceTerm.INTRODUCED().setSymbol("i");
-        Distribution franceDist = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.INTRODUCED());
+//        PresenceAbsenceTerm.INTRODUCED().setSymbol("i");
+        Distribution franceDist = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
         taxDesc.addElement(franceDist);
 
         //... sources
