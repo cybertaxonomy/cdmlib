@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.portal;
 
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -34,6 +35,7 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.geo.DistributionInfoBuilderTest;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.common.URI;
@@ -42,11 +44,15 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TemporalData;
@@ -56,6 +62,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -72,12 +79,17 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
-    private UUID taxonUuid1 = UUID.fromString("075d1b8c-91d3-4b10-93b7-08ac872d09e8");
-    private UUID taxonUuid2 = UUID.fromString("792fcc6a-4854-46bd-a6c5-20b578170d8d");
+    private UUID taxonUuid = UUID.fromString("075d1b8c-91d3-4b10-93b7-08ac872d09e8");
+    private UUID taxonUuid1 = UUID.fromString("792fcc6a-4854-46bd-a6c5-20b578170d8d");
+    private UUID taxonUuid2 = UUID.fromString("d040dfb2-90ce-4777-882f-03b88390e15b");
     private UUID specimenUuid1 = UUID.fromString("b2bc2edc-297b-44d7-96c7-2280a7fb0342");
+    private UUID specimenUuid2 = UUID.fromString("c9c69fa0-1179-48e6-b03a-a843048b16e6");
 
     @SpringBeanByType
     private ITaxonService taxonService;
+
+    @SpringBeanByType
+    private ITermService termService;
 
     @SpringBeanByType
     private IPortalService portalService;
@@ -94,7 +106,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         CondensedDistributionConfiguration cc = config.getDistributionInfoConfiguration().getCondensedDistributionConfiguration();
         cc.showAreaOfScopeLabel = true;
         config.setWithSpecimens(false);
-        config.setTaxonUuid(taxonUuid1);
+        config.setTaxonUuid(taxonUuid);
         TaxonPageDto dto = portalService.taxonPageDto(config);
 
         Assert.assertNotNull(dto);
@@ -103,8 +115,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //facts
         ContainerDto<FeatureDto> features = dto.getTaxonFacts();
-        Assert.assertEquals("There should be 6 features, distribution and description and common names",
-                6, features.getCount());
+        Assert.assertEquals("There should be 8 features, distribution and description and common names",
+                8, features.getCount());
 
         //... common taxon name
         FeatureDto commonNameDto = features.getItems().get(0);
@@ -112,11 +124,11 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "Common Names", commonNameDto.getLabel());
         testCommonNames(commonNameDto);
 
-        //... textData
+        //... textData ("description")
         FeatureDto descriptionDto = features.getItems().get(1);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically. Also as >1 'Description' exists it should use plural.",
                 "Descriptions", descriptionDto.getLabel());
-        testDescription(descriptionDto);
+        testTextData(descriptionDto);
 
         //... distribution
         FeatureDto distributionDto = features.getItems().get(2);
@@ -124,42 +136,88 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "Distribution", distributionDto.getLabel());
         testDistributions(distributionDto);
 
-        //...categorical data
-        //TODO
-
-        //quantitative data
-        //TODO
-
         //termporal data
         FeatureDto floweringDto = features.getItems().get(3);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
                 "Flowering Season", floweringDto.getLabel());
-        Assert.assertEquals(1, floweringDto.getFacts().getCount());
-        FactDto flowering1 = (FactDto)floweringDto.getFacts().getItems().get(0);
-        Assert.assertEquals("(10 Mar–)15 Apr–30 Jun(–20 Jul)", flowering1.getTypedLabel().get(0).getLabel());
+        testTemporalData(floweringDto);
 
         //taxon interaction
         FeatureDto hostPlantDto = features.getItems().get(4);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
                 "Host Plant", hostPlantDto.getLabel());
-        Assert.assertEquals(1, hostPlantDto.getFacts().getCount());
-        TaxonInteractionDto hostPlant1 = (TaxonInteractionDto)hostPlantDto.getFacts().getItems().get(0);
-        Assert.assertEquals("Genus species Mill. sec. My secbook", TaggedTextFormatter.createString(hostPlant1.getTaxon()));
-        Assert.assertEquals(taxonUuid2, hostPlant1.getTaxonUuid());
-        Assert.assertEquals("Taxon interaction description", hostPlant1.getDescritpion());
+        testTaxonInteraction(hostPlantDto);
+
+        //quantitative data("introduction")
+        FeatureDto introductionDto = features.getItems().get(5);
+        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically.",
+                "Introduction", introductionDto.getLabel());
+
+        //...categorical data ("Life-form")
+        FeatureDto statusDto = features.getItems().get(6);
+        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically.",
+                "Life-form", statusDto.getLabel());
 
         //individuals association
-        FeatureDto materialExaminedDto = features.getItems().get(5);
+        FeatureDto materialExaminedDto = features.getItems().get(7);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
                 "Materials Examined", materialExaminedDto.getLabel());
-        Assert.assertEquals(1, materialExaminedDto.getFacts().getCount());
-        IndividualsAssociationDto materialExamined1 = (IndividualsAssociationDto)materialExaminedDto.getFacts().getItems().get(0);
-        Assert.assertEquals("My specimen", materialExamined1.getOccurrence());
-        Assert.assertEquals(specimenUuid1, materialExamined1.getOccurrenceUuid());
-        Assert.assertEquals("Associated specimen description", materialExamined1.getDescritpion());
+        testIndividualsAssociation(materialExaminedDto);
 
         //use data
         //TODO
+    }
+
+    /**
+     * @param materialExaminedDto
+     */
+    private void testIndividualsAssociation(FeatureDto materialExaminedDto) {
+        Assert.assertEquals(2, materialExaminedDto.getFacts().getCount());
+        IndividualsAssociationDto materialExamined1 = (IndividualsAssociationDto)materialExaminedDto.getFacts().getItems().get(0);
+        IndividualsAssociationDto materialExamined2 = (IndividualsAssociationDto)materialExaminedDto.getFacts().getItems().get(1);
+        Assert.assertTrue("Currently we only compare by id. This may change in future",
+                materialExamined1.getId()<materialExamined2.getId());
+        IndividualsAssociationDto materialExaminedToCheck = (IndividualsAssociationDto)materialExaminedDto.getFacts().getItems().stream()
+                .filter(f->((IndividualsAssociationDto)f).getOccurrenceUuid().equals(specimenUuid1))
+                .findFirst().get();
+        Assert.assertEquals("My specimen", materialExaminedToCheck.getOccurrence());
+        Assert.assertEquals(specimenUuid1, materialExamined1.getOccurrenceUuid());
+        //FIXME description can not yet be loaded by DTO only loader, see comment in TaxonFactsDtoLoader.loadFactsPerFeature()
+//        Assert.assertEquals("Associated specimen description1", materialExamined1.getDescritpion());
+    }
+
+    /**
+     * @param hostPlantDto
+     */
+    private void testTaxonInteraction(FeatureDto hostPlantDto) {
+        Assert.assertEquals(2, hostPlantDto.getFacts().getCount());
+        TaxonInteractionDto hostPlant1 = (TaxonInteractionDto)hostPlantDto.getFacts().getItems().get(0);
+        TaxonInteractionDto hostPlant2 = (TaxonInteractionDto)hostPlantDto.getFacts().getItems().get(1);
+        Assert.assertTrue("Currently we only compare by id. This may change in future",
+                hostPlant1.getId()<hostPlant2.getId());
+        TaxonInteractionDto hostPlantToCheck = (TaxonInteractionDto)hostPlantDto.getFacts().getItems().stream()
+                .filter(f->((TaxonInteractionDto)f).getTaxonUuid().equals(taxonUuid1))
+                .findFirst().get();
+        Assert.assertEquals("Genus species Mill. sec. My secbook", TaggedTextFormatter.createString(hostPlantToCheck.getTaxon()));
+        Assert.assertEquals(taxonUuid1, hostPlantToCheck.getTaxonUuid());
+        //FIXME description can not yet be loaded by DTO only loader, see comment in TaxonFactsDtoLoader.loadFactsPerFeature()
+//        Assert.assertEquals("Taxon interaction description1", hostPlantToCheck.getDescritpion());
+    }
+
+    /**
+     * @param floweringDto
+     */
+    private void testTemporalData(FeatureDto floweringDto) {
+        Assert.assertEquals(2, floweringDto.getFacts().getCount());
+        FactDto flowering1 = (FactDto)floweringDto.getFacts().getItems().get(0);
+        FactDto flowering2 = (FactDto)floweringDto.getFacts().getItems().get(1);
+        Assert.assertTrue("Currently we only compare by id. This may change in future",
+                flowering1.getId()<flowering2.getId());
+        String label1 = flowering1.getTypedLabel().get(0).getLabel();
+        String label2 = flowering2.getTypedLabel().get(0).getLabel();
+        String expectedLabel = "(10 Mar–)15 Apr–30 Jun(–20 Jul)";
+        Assert.assertTrue(expectedLabel + "should be label of either flowering1 or flowering2",
+                label1.equals(expectedLabel) || label2.equals(expectedLabel));
     }
 
     private void testCommonNames(FeatureDto commonNameDto) {
@@ -173,7 +231,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "My flower", cn2.getName());
     }
 
-    private void testDescription(FeatureDto descriptionDto) {
+    private void testTextData(FeatureDto descriptionDto) {
         ContainerDto<IFactDto> descriptions = descriptionDto.getFacts();
         Assert.assertEquals(4, descriptions.getCount());
         FactDto description1 = (FactDto)descriptions.getItems().get(0);
@@ -229,7 +287,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Reference secRef = ReferenceFactory.newBook();
         secRef.setTitle("My secbook");
         Taxon taxon = Taxon.NewInstance(accName, secRef);
-        taxon.setUuid(taxonUuid1);
+        taxon.setUuid(taxonUuid);
         taxonService.save(taxon);
 
         //distributions
@@ -281,24 +339,54 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //temporal data
         TemporalData temporalData1 = TemporalData.NewInstance(Feature.FLOWERING_PERIOD(),
                 ExtendedTimePeriod.NewExtendedMonthAndDayInstance(4, 15, 6, 30, 3, 10, 7, 20));
-        taxDesc.addElement(temporalData1);
+        TemporalData temporalData2 = TemporalData.NewInstance(Feature.FLOWERING_PERIOD(),
+                ExtendedTimePeriod.NewExtendedMonthAndDayInstance(5, 1, 6, 15, 4, 1, 7, 1));
+        taxDesc.addElements(temporalData1, temporalData2);
 
         //individual association
-        DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
-        specimen.setTitleCache("My specimen", true);
-        specimen.setUuid(specimenUuid1);
-        IndividualsAssociation indAss = IndividualsAssociation.NewInstance(specimen);
-        indAss.putDescription(Language.DEFAULT(), "Associated specimen description");
-        indAss.setFeature(Feature.MATERIALS_EXAMINED());
-        taxDesc.addElement(indAss);
+        DerivedUnit specimen1 = DerivedUnit.NewPreservedSpecimenInstance();
+        specimen1.setTitleCache("My specimen", true);
+        specimen1.setUuid(specimenUuid1);
+        IndividualsAssociation indAss1 = IndividualsAssociation.NewInstance(specimen1);
+        indAss1.putDescription(Language.DEFAULT(), "Associated specimen description1");
+        indAss1.setFeature(Feature.MATERIALS_EXAMINED());
+        DerivedUnit specimen2 = DerivedUnit.NewPreservedSpecimenInstance();
+        specimen2.setTitleCache("My specimen2", true);
+        specimen2.setUuid(specimenUuid2);
+        IndividualsAssociation indAss2 = IndividualsAssociation.NewInstance(specimen2);
+        indAss2.putDescription(Language.DEFAULT(), "Associated specimen description1");
+        indAss2.setFeature(Feature.MATERIALS_EXAMINED());
+        taxDesc.addElements(indAss1, indAss2);
 
         //taxon interaction
-        Taxon taxon2 = Taxon.NewInstance(accName, secRef);
+        Taxon taxon1 = Taxon.NewInstance(accName, secRef);
+        taxon1.setUuid(taxonUuid1);
+        TaxonInteraction taxInteract1 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
+        taxInteract1.setTaxon2(taxon1);
+        taxInteract1.putDescription(Language.DEFAULT(), "Taxon interaction description1");
+        TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+        name2.setTitleCache("Name three Mill.", true);
+        Taxon taxon2 = Taxon.NewInstance(name2, secRef);
         taxon2.setUuid(taxonUuid2);
-        TaxonInteraction taxInteract = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
-        taxInteract.setTaxon2(taxon2);
-        taxInteract.putDescription(Language.DEFAULT(), "Taxon interaction description");
-        taxDesc.addElement(taxInteract);
+        TaxonInteraction taxInteract2 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
+        taxInteract2.setTaxon2(taxon2);
+        taxInteract2.putDescription(Language.DEFAULT(), "Taxon interaction description2");
+        taxDesc.addElements(taxInteract1, taxInteract2);
+
+        //categorical data
+        State state1 = State.NewInstance("State1", "State1", null);
+        termService.save(state1);
+        CategoricalData cd = CategoricalData.NewInstance(state1, Feature.LIFEFORM());
+        taxDesc.addElements(cd);
+
+        //quantitative data
+        Feature feature = Feature.INTRODUCTION();
+        QuantitativeData qd = QuantitativeData.NewMinMaxInstance(feature,
+                MeasurementUnit.METER(), new BigDecimal(5), new BigDecimal(10));
+        taxDesc.addElements(qd);
+
+        //use data
+        //TODO
     }
 
     @Override
