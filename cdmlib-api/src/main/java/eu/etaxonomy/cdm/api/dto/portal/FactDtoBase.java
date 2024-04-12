@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
-import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaDTO;
-
 /**
  * @author a.mueller
  * @date 15.02.2023
@@ -19,7 +17,7 @@ public class FactDtoBase extends SourcedDto implements IFactDto {
     private String timeperiod;
     private Integer sortIndex;
 
-    private ContainerDto<MediaDTO> media;
+    private ContainerDto<MediaDto2> media;
 
     @Override
     public String getClazz() {
@@ -40,10 +38,16 @@ public class FactDtoBase extends SourcedDto implements IFactDto {
         this.sortIndex = sortIndex;
     }
 
-    public ContainerDto<MediaDTO> getMedia() {
+    public ContainerDto<MediaDto2> getMedia() {
         return media;
     }
-    public void setMedia(ContainerDto<MediaDTO> mediaContainer) {
+    public void addMedia(MediaDto2 mediaDto2) {
+        if(media == null) {
+            media = new ContainerDto<>();
+        }
+        media.addItem(mediaDto2);
+    }
+    public void setMedia(ContainerDto<MediaDto2> mediaContainer) {
         this.media = mediaContainer;
     }
 }

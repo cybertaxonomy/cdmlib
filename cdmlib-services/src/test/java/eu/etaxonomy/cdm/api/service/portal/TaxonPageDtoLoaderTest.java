@@ -29,9 +29,11 @@ import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
 import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
+import eu.etaxonomy.cdm.api.dto.portal.MediaDto2;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonInteractionDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaRepresentationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -58,7 +60,9 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -84,6 +88,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     private UUID taxonUuid2 = UUID.fromString("d040dfb2-90ce-4777-882f-03b88390e15b");
     private UUID specimenUuid1 = UUID.fromString("b2bc2edc-297b-44d7-96c7-2280a7fb0342");
     private UUID specimenUuid2 = UUID.fromString("c9c69fa0-1179-48e6-b03a-a843048b16e6");
+    private UUID mediaUuid1 = UUID.fromString("7e6a7d5e-a579-4ba8-98b0-cd10b48d1c04");
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -128,7 +133,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         FeatureDto descriptionDto = features.getItems().get(1);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically. Also as >1 'Description' exists it should use plural.",
                 "Descriptions", descriptionDto.getLabel());
-        testTextData(descriptionDto);
+        testTextDataAndMedia(descriptionDto);
 
         //... distribution
         FeatureDto distributionDto = features.getItems().get(2);
@@ -168,9 +173,6 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //TODO
     }
 
-    /**
-     * @param materialExaminedDto
-     */
     private void testIndividualsAssociation(FeatureDto materialExaminedDto) {
         Assert.assertEquals(2, materialExaminedDto.getFacts().getCount());
         IndividualsAssociationDto materialExamined1 = (IndividualsAssociationDto)materialExaminedDto.getFacts().getItems().get(0);
@@ -186,9 +188,6 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 //        Assert.assertEquals("Associated specimen description1", materialExamined1.getDescritpion());
     }
 
-    /**
-     * @param hostPlantDto
-     */
     private void testTaxonInteraction(FeatureDto hostPlantDto) {
         Assert.assertEquals(2, hostPlantDto.getFacts().getCount());
         TaxonInteractionDto hostPlant1 = (TaxonInteractionDto)hostPlantDto.getFacts().getItems().get(0);
@@ -204,9 +203,6 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 //        Assert.assertEquals("Taxon interaction description1", hostPlantToCheck.getDescritpion());
     }
 
-    /**
-     * @param floweringDto
-     */
     private void testTemporalData(FeatureDto floweringDto) {
         Assert.assertEquals(2, floweringDto.getFacts().getCount());
         FactDto flowering1 = (FactDto)floweringDto.getFacts().getItems().get(0);
@@ -231,7 +227,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "My flower", cn2.getName());
     }
 
-    private void testTextData(FeatureDto descriptionDto) {
+    private void testTextDataAndMedia(FeatureDto descriptionDto) {
         ContainerDto<IFactDto> descriptions = descriptionDto.getFacts();
         Assert.assertEquals(4, descriptions.getCount());
         FactDto description1 = (FactDto)descriptions.getItems().get(0);
@@ -251,8 +247,21 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "My third description", description4.getTypedLabel().get(0).getLabel().toString());
 
         //media
-        Assert.assertEquals(2, description4.getMedia().getCount());
+        ContainerDto<MediaDto2> factMedia = description4.getMedia();
+        Assert.assertEquals(2, factMedia.getCount());
+        MediaDto2 media1 = factMedia.getItems().stream()
+                .filter(m->m.getUuid().equals(mediaUuid1))
+                .findFirst().get();
+        Assert.assertEquals(2, media1.getRepresentations().getCount());
+        Assert.assertEquals("Media title", media1.getLabel());  //this is computed from the path, may change in future
+        //TODO supplemental data
 
+        MediaRepresentationDTO rep = media1.getRepresentations().getItems().stream()
+                .filter(r->r.getMimeType().equals("JPG2"))
+                .findFirst().get();
+        Assert.assertEquals("http://media.de/file/rep2.jpg", rep.getUri().toString());
+        Assert.assertEquals(200, rep.getWidth());
+        Assert.assertEquals("ImageFile", rep.getClazz());
     }
 
     private void testDistributions(FeatureDto distributionDto) {
@@ -327,6 +336,12 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         taxDesc.addElements(td1, td2, td3, td4);
         //... with media
         Media media1 = Media.NewInstance(URI.create("http://media.de/file.jpg"), 2, "JPG", "jpg");
+        media1.setTitleCache("Media title", true);
+        media1.setUuid(mediaUuid1);
+        ImageFile image = ImageFile.NewInstance(URI.create("http://media.de/file/rep2.jpg"), 5, 100, 200);
+        MediaRepresentation rep = MediaRepresentation.NewInstance("JPG2", "jpg");
+        rep.addRepresentationPart(image);
+        media1.addRepresentation(rep);
         Media media2 = Media.NewInstance(URI.create("http://media.de/file2.gif"), 3, "GIF", "gif");
         td3.addMedia(media1);
         td3.addMedia(media2);

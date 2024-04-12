@@ -33,11 +33,11 @@ import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDtoBase;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
+import eu.etaxonomy.cdm.api.dto.portal.MediaDto2;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonInteractionDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
-import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
@@ -555,7 +555,7 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
         try {
             List<Media> medias = new ArrayList<>();
             medias.addAll(fact.getMedia());
-            ContainerDto<MediaDTO> container = new ContainerDto<>();
+            ContainerDto<MediaDto2> container = new ContainerDto<>();
 
             for (Media media : medias) {
                 handleSingleMedia(container, media);

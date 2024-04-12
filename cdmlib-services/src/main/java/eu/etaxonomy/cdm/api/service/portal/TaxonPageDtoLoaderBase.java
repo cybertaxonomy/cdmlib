@@ -22,11 +22,11 @@ import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
 import eu.etaxonomy.cdm.api.dto.portal.CdmBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
 import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
+import eu.etaxonomy.cdm.api.dto.portal.MediaDto2;
 import eu.etaxonomy.cdm.api.dto.portal.SingleSourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
-import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaRepresentationDTO;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
@@ -281,7 +281,7 @@ public abstract class TaxonPageDtoLoaderBase {
     }
 
     protected void makeMediaContainer(TaxonPageDto result, List<Media> medias) {
-        ContainerDto<MediaDTO> container = new ContainerDto<>();
+        ContainerDto<MediaDto2> container = new ContainerDto<>();
 
         for (Media media : medias) {
             handleSingleMedia(container, media);
@@ -292,25 +292,30 @@ public abstract class TaxonPageDtoLoaderBase {
         }
     }
 
-    protected void handleSingleMedia(ContainerDto<MediaDTO> container, Media media) {
-        MediaDTO dto = new TaxonPageDto.MediaDTO();
+    protected void handleSingleMedia(ContainerDto<MediaDto2> container, Media media) {
+
+        MediaDto2 dto = new MediaDto2();
         loadBaseData(media, dto);
+
+        //media
         dto.setLabel(media.getTitleCache());
         //TODO i18n
         List<Language> languages = new ArrayList<>();
         LanguageString description = MultilanguageTextHelper.getPreferredLanguageString(media.getAllDescriptions(), languages);
         dto.setDescription(description == null ? null : description.getText());
+
+        //representations
         ContainerDto<MediaRepresentationDTO> representations = new ContainerDto<>();
         for (MediaRepresentation rep : media.getRepresentations()) {
             MediaRepresentationDTO repDto = new MediaRepresentationDTO();
-            loadBaseData(rep, dto);
+            loadBaseData(rep, repDto);
             repDto.setMimeType(rep.getMimeType());
             repDto.setSuffix(rep.getSuffix());
             if (!rep.getParts().isEmpty()) {
                 //TODO handle message if n(parts) > 1
                 MediaRepresentationPart part = rep.getParts().get(0);
                 repDto.setUri(part.getUri());
-                repDto.setClazz(part.getClass());
+                repDto.setClazz(part.getClass().getSimpleName());
                 repDto.setSize(part.getSize());
                 if (part.isInstanceOf(ImageFile.class)) {
                     ImageFile image = CdmBase.deproxy(part, ImageFile.class);

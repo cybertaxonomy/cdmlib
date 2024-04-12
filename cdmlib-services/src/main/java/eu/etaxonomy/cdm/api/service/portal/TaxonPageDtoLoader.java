@@ -25,6 +25,7 @@ import org.joda.time.DateTime;
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
+import eu.etaxonomy.cdm.api.dto.portal.MediaDto2;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
 import eu.etaxonomy.cdm.api.dto.portal.OccurrenceInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
@@ -33,7 +34,6 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.ConceptRelationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.HomotypicGroupDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.KeyDTO;
-import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NameRelationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.SpecimenDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeAgentsRelDTO;
@@ -310,7 +310,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             }
             //TODO collect media from elsewhere
 
-            ContainerDto<MediaDTO> container = new ContainerDto<>();
+            ContainerDto<MediaDto2> container = new ContainerDto<>();
             for (Media media : medias) {
                 handleSingleMedia(container, media);
             }

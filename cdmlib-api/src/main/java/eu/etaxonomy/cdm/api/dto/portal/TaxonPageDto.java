@@ -17,7 +17,6 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -45,7 +44,7 @@ public class TaxonPageDto extends TaxonBaseDto {
 
     private OccurrenceInfoDto occurrenceInfo;
 
-    private ContainerDto<MediaDTO> media;
+    private ContainerDto<MediaDto2> media;
 
     private String secTitleCache;
 
@@ -307,28 +306,9 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
     }
 
-    public static class MediaDTO extends IdentifiableDto{
-
-        private String description;
-        private ContainerDto<MediaRepresentationDTO> representations;
-
-        public String getDescription() {
-            return description;
-        }
-        public void setDescription(String description) {
-            this.description = description;
-        }
-        public ContainerDto<MediaRepresentationDTO> getRepresentations() {
-            return representations;
-        }
-        public void setRepresentations(ContainerDto<MediaRepresentationDTO> representations) {
-            this.representations = representations;
-        }
-    }
-
     public static class MediaRepresentationDTO extends CdmBaseDto{
 
-        private Class<? extends MediaRepresentationPart> clazz;
+        private String clazz;
         private String mimeType;
         private String suffix;  //TODO needed?
         private URI uri;
@@ -336,10 +316,10 @@ public class TaxonPageDto extends TaxonBaseDto {
         private int height;
         private int width;
 
-        public Class<? extends MediaRepresentationPart> getClazz() {
+        public String getClazz() {
             return clazz;
         }
-        public void setClazz(Class<? extends MediaRepresentationPart> clazz) {
+        public void setClazz(String clazz) {
             this.clazz = clazz;
         }
         public String getMimeType() {
@@ -424,10 +404,10 @@ public class TaxonPageDto extends TaxonBaseDto {
         this.specimens = specimens;
     }
 
-    public ContainerDto<MediaDTO> getMedia() {
+    public ContainerDto<MediaDto2> getMedia() {
         return media;
     }
-    public void setMedia(ContainerDto<MediaDTO> media) {
+    public void setMedia(ContainerDto<MediaDto2> media) {
         this.media = media;
     }
 
