@@ -161,6 +161,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
         taxonDto.setNameType(name.getNameType().toString());
         loadNameFacts(name, taxonDto, config, pageDto);
         nameDto.setTaggedName(formatter.getTaggedFullTitle(name));
+        nameDto.setInvalid(name.isInvalid());
     }
 
     private List<TaggedText> getTaggedTaxon(TaxonBase<?> taxon, TaxonPageDtoConfiguration config) {

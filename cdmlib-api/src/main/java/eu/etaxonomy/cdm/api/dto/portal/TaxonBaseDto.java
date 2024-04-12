@@ -36,6 +36,8 @@ public class TaxonBaseDto extends IdentifiableDto {
         //TODO maybe later this can be combined with taggedLabel (merge taxon and name taggedText)
         private List<TaggedText> taggedName;
 
+        private boolean isInvalid;
+
         //*********** GETTER / SETTER *******************/
 
         public List<TaggedText> getTaggedName() {
@@ -81,6 +83,13 @@ public class TaxonBaseDto extends IdentifiableDto {
         }
         public void setType(String nameType) {
             this.nameType = nameType;
+        }
+
+        public boolean isInvalid() {
+            return isInvalid;
+        }
+        public void setInvalid(boolean isInvalid) {
+            this.isInvalid = isInvalid;
         }
     }
 
