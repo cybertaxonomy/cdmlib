@@ -89,9 +89,9 @@ public abstract class TaxonFactsDtoLoaderBase extends TaxonPageDtoLoaderBase {
                     return c;
                 }else if (f1 instanceof FactDtoBase) {
                     //TODO add compare for DistributionDto, IndividualsAssocitationDto and TaxonInteractionDto
-                    //default, to have deterministic behavior at least
-                    FactDtoBase fact1 = (FactDto)f1;
-                    FactDtoBase fact2 = (FactDto)f2;
+                    //current implementation compares only id, to have deterministic behavior at least
+                    FactDtoBase fact1 = (FactDtoBase)f1;
+                    FactDtoBase fact2 = (FactDtoBase)f2;
                     return CdmUtils.nullSafeCompareTo(fact1.getId(), fact2.getId());
                 }
             }
