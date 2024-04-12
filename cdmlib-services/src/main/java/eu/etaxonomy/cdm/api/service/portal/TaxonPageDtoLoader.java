@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
+import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -390,7 +390,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
         try {
             //        List<HomotypicalGroup> homotypicGroups = taxon.getHomotypicSynonymyGroups();
 
-            TaxonComparator comparator = new TaxonComparator();
+            HomotypicGroupTaxonComparator comparator = new HomotypicGroupTaxonComparator(taxon);
 
             TaxonName name = taxon.getName();
 
