@@ -141,9 +141,9 @@ public abstract class SpecimenOrObservationBaseDtoLoader<DTO extends SpecimenOrO
         return collectedMedia;
     }
 
-    private void addMediaAsDTO(SpecimenOrObservationBaseDTO dto, Set<Media> media) {
+    private void addMediaAsDTO(SpecimenOrObservationBaseDTO<?> dto, Set<Media> media) {
         for(Media m : media) {
-            List<MediaDTO> dtos = MediaDtoLoader.fromEntity(m);
+            List<MediaDTO> dtos = MediaDtoLoader.INSTANCE().fromEntity(m);
             dto.getListOfMedia().addAll(dtos);
         }
     }

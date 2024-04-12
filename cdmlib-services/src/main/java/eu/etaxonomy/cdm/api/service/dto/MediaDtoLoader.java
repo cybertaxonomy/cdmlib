@@ -26,13 +26,17 @@ import eu.etaxonomy.cdm.model.media.MediaUtils;
  */
 public class MediaDtoLoader {
 
+    public static MediaDtoLoader INSTANCE() {
+        return new MediaDtoLoader();
+    }
+
     /**
      * Creates a list of DTOs from the Media entity.
      * For each MediaRepresentationPart a single MediaDTO is being created.
      * TODO this needs to be changed so that it is possible to filter the representations by preferences,
      * see {@link MediaUtils#findBestMatchingRepresentation(Media, Class, Integer, Integer, Integer, String[], eu.etaxonomy.cdm.model.media.MediaUtils.MissingValueStrategy)}
      */
-    public static List<MediaDTO> fromEntity(Media entity) {
+    public List<MediaDTO> fromEntity(Media entity) {
         List<MediaDTO> dtos = new ArrayList<>();
         entity.getAllTitles(); // initialize all titles!!!
         @SuppressWarnings("unchecked")

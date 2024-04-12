@@ -52,7 +52,7 @@ public class SingleReadDtoLoader {
         }
 
         if (entity.getPherogram() != null) {
-            List<MediaDTO> mediaDtos = MediaDtoLoader.fromEntity(entity.getPherogram());
+            List<MediaDTO> mediaDtos = MediaDtoLoader.INSTANCE().fromEntity(entity.getPherogram());
             if (mediaDtos != null && !mediaDtos.isEmpty()) {
                 //TODO filter best fit
                 dto.setPherogram(mediaDtos.get(0));

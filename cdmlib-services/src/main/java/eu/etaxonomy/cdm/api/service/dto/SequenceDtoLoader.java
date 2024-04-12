@@ -33,7 +33,7 @@ public class SequenceDtoLoader {
     private static void load(SequenceDTO dto, Sequence seq){
 
         if (seq.getContigFile() != null) {
-            List<MediaDTO> mediaDtos = MediaDtoLoader.fromEntity(seq.getContigFile());
+            List<MediaDTO> mediaDtos = MediaDtoLoader.INSTANCE().fromEntity(seq.getContigFile());
             if (mediaDtos != null && !mediaDtos.isEmpty()) {
                 //TODO filter best fit
                 dto.setContigFile(mediaDtos.get(0));

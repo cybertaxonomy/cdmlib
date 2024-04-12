@@ -75,7 +75,7 @@ public class TypeDesignationController extends AbstractController<TaxonName, INa
             DerivedUnit du = HibernateProxyHelper.deproxy(std.getTypeSpecimen());
             if(du != null && du instanceof MediaSpecimen) {
                 Media media = ((MediaSpecimen)du).getMediaSpecimen();
-                dtos = MediaDtoLoader.fromEntity(media);
+                dtos = MediaDtoLoader.INSTANCE().fromEntity(media);
             }
         }
         return dtos;

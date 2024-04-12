@@ -210,7 +210,7 @@ public class OccurrenceServiceImpl
             results = dao.getMedia(occurence, pageSize, pageNumber, null);
         }
         List<MediaDTO> mediaDTOs = results.stream()
-                .map(m -> MediaDtoLoader.fromEntity(m))
+                .map(m -> MediaDtoLoader.INSTANCE().fromEntity(m))
                 .flatMap(dtos -> dtos.stream())
                 .collect(Collectors.toList()
                 );

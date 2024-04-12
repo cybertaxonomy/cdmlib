@@ -69,7 +69,7 @@ public class AmplificationResultDtoLoader {
             }
         }
         if (entity.getGelPhoto() != null) {
-            List<MediaDTO> mediaDtos = MediaDtoLoader.fromEntity(entity.getGelPhoto());
+            List<MediaDTO> mediaDtos = MediaDtoLoader.INSTANCE().fromEntity(entity.getGelPhoto());
             if (mediaDtos != null && !mediaDtos.isEmpty()) {
                 //TODO filter best fit
                 dto.setGelPhoto(mediaDtos.get(0));
