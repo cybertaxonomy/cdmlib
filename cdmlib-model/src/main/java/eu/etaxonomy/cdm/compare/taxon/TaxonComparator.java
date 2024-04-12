@@ -24,9 +24,18 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
- * This class makes available a method to compare two {@link TaxonBase taxa} by
+ * This class makes allows to compare two {@link TaxonBase taxa} by
  * comparing the publication dates of the corresponding
  * {@link eu.etaxonomy.cdm.model.name.TaxonName taxon names}.
+ *
+ * For ordering taxa within a homotypic group it is prefered
+ * to use the {@link HomotypicGroupTaxonComparator} instead
+ * which gives more exact result.
+ *
+ * This comparator here is mostly for comparing taxa outside
+ * a homotypic group e.g. comparing two taxa that belong to
+ * 2 different homotypic groups. This is e.g. relevant when
+ * ordering homotypic groups by there "first" taxon name.
  *
  * @author a.mueller
  * @since 11.06.2008
