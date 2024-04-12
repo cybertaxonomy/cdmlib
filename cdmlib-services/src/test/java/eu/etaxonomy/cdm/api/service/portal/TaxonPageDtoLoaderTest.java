@@ -252,15 +252,15 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         MediaDto2 media1 = factMedia.getItems().stream()
                 .filter(m->m.getUuid().equals(mediaUuid1))
                 .findFirst().get();
-        Assert.assertEquals(2, media1.getRepresentations().getCount());
         Assert.assertEquals("Media title", media1.getLabel());  //this is computed from the path, may change in future
         //TODO supplemental data
 
+        Assert.assertEquals(2, media1.getRepresentations().getCount());
         MediaRepresentationDTO rep = media1.getRepresentations().getItems().stream()
                 .filter(r->r.getMimeType().equals("JPG2"))
                 .findFirst().get();
         Assert.assertEquals("http://media.de/file/rep2.jpg", rep.getUri().toString());
-        Assert.assertEquals(200, rep.getWidth());
+        Assert.assertEquals((Integer)200, rep.getWidth());
         Assert.assertEquals("ImageFile", rep.getClazz());
     }
 

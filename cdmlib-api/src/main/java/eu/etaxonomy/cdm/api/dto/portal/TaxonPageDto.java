@@ -313,8 +313,8 @@ public class TaxonPageDto extends TaxonBaseDto {
         private String suffix;  //TODO needed?
         private URI uri;
         private Integer size;
-        private int height;
-        private int width;
+        private Integer height;
+        private Integer width;
 
         public String getClazz() {
             return clazz;
@@ -346,16 +346,16 @@ public class TaxonPageDto extends TaxonBaseDto {
         public void setSize(Integer size) {
             this.size = size;
         }
-        public int getHeight() {
+        public Integer getHeight() {
             return height;
         }
-        public void setHeight(int height) {
+        public void setHeight(Integer height) {
             this.height = height;
         }
-        public int getWidth() {
+        public Integer getWidth() {
             return width;
         }
-        public void setWidth(int width) {
+        public void setWidth(Integer width) {
             this.width = width;
         }
     }

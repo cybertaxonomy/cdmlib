@@ -21,10 +21,18 @@ public class MediaDto2 extends IdentifiableDto{
     public void setDescription(String description) {
         this.description = description;
     }
+
     public ContainerDto<MediaRepresentationDTO> getRepresentations() {
         return representations;
     }
     public void setRepresentations(ContainerDto<MediaRepresentationDTO> representations) {
         this.representations = representations;
     }
+    public void addRepresentation(MediaRepresentationDTO representationDTO) {
+        if (this.representations == null) {
+            this.representations = new ContainerDto<>();
+        }
+        this.representations.addItem(representationDTO);
+    }
+
 }

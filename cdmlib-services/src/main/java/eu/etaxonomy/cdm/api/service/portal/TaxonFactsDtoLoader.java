@@ -10,9 +10,9 @@ package eu.etaxonomy.cdm.api.service.portal;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDtoBase;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
+import eu.etaxonomy.cdm.api.dto.portal.MediaDto2;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
@@ -52,14 +53,11 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
-import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
-import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -75,6 +73,7 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -145,7 +144,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
  */
 public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
 
-    private ProxyDtoLoader factProxyLoader = new ProxyDtoLoader();
+    private ProxyDtoLoader factProxyLoader = new ProxyDtoLoader(this);
 
     private TaxonPageDto pageDto;
 
@@ -410,13 +409,11 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
         FactDtoBase dto;
         //TODO label
         if (aftd.type == Distribution.class) {
-            DistributionDto distDto = new DistributionDto(null, aftd.id, null, null);
             NamedAreaDto areaDto = TermDtoLoader.INSTANCE().fromEntity(aftd.area);
             //factProxyLoader.add(NamedArea.class, areaDto)
-            distDto.setArea(areaDto);
             TermDto statusDto = TermDtoLoader.INSTANCE().fromEntity(aftd.status);
             //OLD: factProxyLoader.add(PresenceAbsenceTerm.class, statusDto)
-            distDto.setStatus(statusDto);
+            DistributionDto distDto = new DistributionDto(aftd.uuid, aftd.id, areaDto, statusDto);
             dto = distDto;
         } else if (aftd.type == TextData.class) {
             FactDto td = new FactDto();
@@ -433,13 +430,19 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
             dto = ctn;
         } else if (aftd.type == IndividualsAssociation.class) {
             IndividualsAssociationDto ia = new IndividualsAssociationDto();
-            ia.setOccurrence(null);  //TODO
-            ia.setDescritpion(null); //TODO xxx
+            if (aftd.associatedOccurrence != null) {
+                ia.setOccurrence(aftd.associatedOccurrence.getTitleCache());
+                ia.setOccurrenceUuid(aftd.associatedOccurrence.getUuid());
+            }
+            ia.setDescritpion(aftd.description);
             dto = ia;
         } else if (aftd.type == TaxonInteraction.class) {
             TaxonInteractionDto ti = new TaxonInteractionDto();
-            ti.setTaxon(null);  //TODO
-            ti.setDescritpion(null);  //TODO xxx
+            if (aftd.interactingTaxon != null) {
+                ti.setTaxon(aftd.interactingTaxon.getTaggedTitle());
+                ti.setTaxonUuid(aftd.interactingTaxon.getUuid());
+            }
+            ti.setDescritpion(aftd.description);
             dto = ti;
         }else if (aftd.type == CategoricalData.class) {
             FactDto fd = new FactDto();
@@ -451,7 +454,9 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
             dto = fd;
         }else if (aftd.type == TemporalData.class) {
             FactDto fd = new FactDto();
-            //TODO text
+            if (aftd.period != null) {
+                fd.addTypedLabel(new TypedLabel(aftd.period.toString()));
+            }
             dto = fd;
         }else {
             pageDto.addMessage(MessagesDto.NewWarnInstance("DescriptionElement type not yet handled: " + aftd.type.getSimpleName()));
@@ -478,6 +483,10 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
         PresenceAbsenceTerm status;
         String transliteration;
         String text;
+        String description;
+        ExtendedTimePeriod period;
+        SpecimenOrObservationBase<?> associatedOccurrence;  //for now we load the cdm instance as it does not appear often in facts (instead it it loaded separately in specimen part)
+        Taxon interactingTaxon; //for now we load the cdm instance as it does not appear often
 
         public AllFactTypesDto(Map<String,Object> map) {
             this.featureUuid = (UUID)map.get("featureUuid");
@@ -487,14 +496,20 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
             this.area = (NamedArea) map.get("area");
             this.status = (PresenceAbsenceTerm) map.get("status");
             this.language = (Language)map.get("language");
+            this.associatedOccurrence = (SpecimenOrObservationBase<?>)map.get("associatedOccurrence");
+            this.interactingTaxon = (Taxon)map.get("interactingTaxon");
             this.name = (String) map.get("name");
             this.timePeriod = (TimePeriod) map.get("timePeriod");
+            this.period = (ExtendedTimePeriod)map.get("extendedPeriod");
             this.sortIndex = (Integer)map.get("sortIndex");
             this.transliteration = (String)map.get("transliteration");
-            LanguageString i18n = (LanguageString)map.get("i18nText");
+            LanguageString textDataTextI18n = (LanguageString)map.get("textDataText");
             //TODO why is this already a language string and not a multi-language string
             //FIXME probably we need to deduplicate if >1 language representation exists!!
-            this.text = i18n == null ? null : i18n.getText();
+            this.text = textDataTextI18n == null ? null : textDataTextI18n.getText();
+            LanguageString descriptionI18n = (LanguageString)map.get("description");
+           //FIXME probably we need to deduplicate if >1 language representation exists!!
+            this.description = descriptionI18n == null ? null : descriptionI18n.getText();
         }
     }
 
@@ -510,15 +525,23 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
                    +    " ,deb.uuid as uuid, deb.id as id "
                    +    " ,a as area, st as status, l as language"
                    +    " ,deb.name as name "
-                   +    " ,deb.timeperiod as timePeriod, deb.sortIndex as sortIndex"
+                   +    " ,deb.timeperiod as timePeriod, deb.period as extendedPeriod "
+                   +    " ,deb.sortIndex as sortIndex"
                    +    " ,deb.transliteration as transliteration "
-                   +    " ,mlt as i18nText "
+                   +    " ,mlt as textDataText "
+                   +    " ,occ as associatedOccurrence "
+                   +    " ,taxon2 as interactingTaxon "
+//                   +    " ,descr as description2 "
                    +    ")"
                    + " FROM DescriptionElementBase deb "
                    + "     LEFT OUTER JOIN deb.status st "
                    + "     LEFT OUTER JOIN deb.area a "
                    + "     LEFT OUTER JOIN deb.language l "
                    + "     LEFT OUTER JOIN deb.multilanguageText mlt "
+                   + "     LEFT OUTER JOIN deb.associatedSpecimenOrObservation occ "
+                   + "     LEFT OUTER JOIN deb.taxon2 taxon2 "
+                   //FIXME for some reason this throws an exception as DescriptionElementBase.description is not recognized
+//                   + "     LEFT OUTER JOIN deb.description descr "
                    + " WHERE deb.inDescription." + describedAttr +".uuid = '" + entityUuid +"'"
                    + " AND deb.inDescription.imageGallery = false ";
         if (!config.isIncludeUnpublished()) {
@@ -591,6 +614,39 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
         }
         if (childFeatures.getCount() > 0) {
             featureDto.setSubFeatures(childFeatures);
+        }
+    }
+
+    void loadProxyFacts(Set<FactDtoBase> factDtos){
+
+        @SuppressWarnings("rawtypes")
+        Class baseClass = DescriptionElementBase.class;
+
+        Set<Integer> baseIds = factDtos.stream().map(d->d.getId()).collect(Collectors.toSet());
+
+        SetMap<Integer,FactDtoBase> id2factInstancesMap = new SetMap<>(); //it is a set because there might be multiple instances for the same object
+        factDtos.stream().forEach(dto->id2factInstancesMap.putItem(dto.getId(), dto));
+
+        String hql = "SELECT new map(bc.id as baseId, m.id as mediaId) "
+                + " FROM "+baseClass.getSimpleName()+" bc JOIN bc.media m "
+                + " WHERE bc.id IN :baseIds";
+
+        Map<String,Object> params = new HashMap<>();
+        params.put("baseIds", baseIds);
+
+        try {
+            List<Map<String, Integer>> fact2mediaMapping = dao.getHqlMapResult(hql, params, Integer.class);
+
+            fact2mediaMapping.stream().forEach(e->{
+                Integer mediaId = e.get("mediaId");
+                MediaDto2 mediaDto2 = new MediaDto2();
+                mediaDto2.setId(mediaId);
+                Integer baseId = e.get("baseId");
+                id2factInstancesMap.get(baseId).stream().forEach(sdd->sdd.addMedia(mediaDto2));
+                factProxyLoader.add(Media.class, mediaDto2);
+            });
+        } catch (UnsupportedOperationException e) {
+            throw new RuntimeException("Exception while loading sources for sourced entities", e);
         }
     }
 }
