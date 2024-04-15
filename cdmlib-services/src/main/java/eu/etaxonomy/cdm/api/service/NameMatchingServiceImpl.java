@@ -326,7 +326,8 @@ public class NameMatchingServiceImpl
 
             List<SingleNameMatchingResult> preFilteredInfraSpecificListWithDist= new ArrayList<>();
             for (int i = 0; i < taxonNamePartsWithDistance.size(); i++) {
-                if (taxonNamePartsWithDistance.get(i).getInfraGenericEpithet().isEmpty()) {
+                String x = taxonNamePartsWithDistance.get(i).getInfraGenericEpithet();
+                if (x == null || x.isEmpty()) {
                 	preFilteredInfraSpecificListWithDist.add(taxonNamePartsWithDistance.get(i));
                 }
             }
@@ -394,10 +395,10 @@ public class NameMatchingServiceImpl
         for (int i = 0; i < taxonNamePartsWithDistance.size(); i++) {
             String infrageneric = taxonNamePartsWithDistance.get(i).getInfraGenericEpithet();
             String infraspecific = taxonNamePartsWithDistance.get(i).getInfraSpecificEpithet();
-            if (infrageneric == null ||  infrageneric.isEmpty() &&
-                    (infraspecific == null || infraspecific.isEmpty())) {
-                preFilteredEpithetListWithDist.add(taxonNamePartsWithDistance.get(i));
-
+            if (infrageneric == null ||  infrageneric.isEmpty()){
+                if (infraspecific == null || infraspecific.isEmpty()) {
+                    preFilteredEpithetListWithDist.add(taxonNamePartsWithDistance.get(i));
+                }
             }
         }
     }
@@ -433,8 +434,10 @@ public class NameMatchingServiceImpl
 			String epi = taxonNamePartsWithDistance.get(i).getSpecificEpithet();
 			String infge= taxonNamePartsWithDistance.get(i).getInfraGenericEpithet();
 			String infraspec = taxonNamePartsWithDistance.get(i).getInfraSpecificEpithet();
-			if (StringUtils.isAllEmpty(epi, infge, infraspec)) {
-			    resultSetOnlyGenusOrUninominal.add(taxonNamePartsWithDistance.get(i));
+			if ((epi == null || epi.isEmpty()) &&
+			        (infge == null || infge.isEmpty()) &&
+			        (infraspec == null || infraspec.isEmpty())) {
+			        resultSetOnlyGenusOrUninominal.add(taxonNamePartsWithDistance.get(i));
 			}
 		}
 	}
@@ -709,6 +712,18 @@ public class NameMatchingServiceImpl
         return exactResults;
     }
 
+//    @Override
+//    public List <SingleNameMatchingResult> superExactResults (List<SingleNameMatchingResult> exactResults, String nameCache){
+//        List <SingleNameMatchingResult> superExactResults = new ArrayList<>();
+//        for (int i = 0 ; i < exactResults.size(); i++) {
+//            String nameCacheOutput = exactResults.get(i).getNameCache();
+//            if (nameCacheOutput.equals(nameCache)) {
+//                superExactResults.add(exactResults.get(i));
+//            }
+//        }
+//        return superExactResults;
+//    }
+
     public static List<SingleNameMatchingResult> bestResults(
             List<SingleNameMatchingResult> list) {
         List<SingleNameMatchingResult> bestResults = new ArrayList<>();
@@ -739,7 +754,12 @@ public class NameMatchingServiceImpl
 			String normalizedInfraSpecificQuery, Integer maxDistance) {
 		List<SingleNameMatchingResult> fullNameMatchingPartsListTemp = new ArrayList<>();
 		for (SingleNameMatchingResult fullNameMatchingParts : taxonNamePartsWithDistance) {
-			if (fullNameMatchingParts.getInfraSpecificEpithet().length() - normalizedInfraSpecificQuery.length() <= maxDistance) {
+		    if (fullNameMatchingParts.getInfraSpecificEpithet() == null) {
+		        continue;
+		    }
+		    int infraSpecificEpithetLength = fullNameMatchingParts.getInfraSpecificEpithet().length();
+		    int infraSpecificEpithetQueryLength = normalizedInfraSpecificQuery.length();
+			if (infraSpecificEpithetLength - infraSpecificEpithetQueryLength <= maxDistance) {
 				fullNameMatchingPartsListTemp.add(fullNameMatchingParts);
 				taxonNamePartsWithDistance = fullNameMatchingPartsListTemp;
 			}

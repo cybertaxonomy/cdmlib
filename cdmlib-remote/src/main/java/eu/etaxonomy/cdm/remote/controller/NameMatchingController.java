@@ -51,15 +51,25 @@ public class NameMatchingController {
             method = RequestMethod.GET)
     public NameMatchingCombinedResult doGetNameMatching(
             @RequestParam(value="namecache", required = true) String nameCache,
+            @RequestParam(value="author", required = false) boolean compareAuthor,
             HttpServletRequest request,
             @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("doGetNameMatching()" + request.getRequestURI());
 
+        NameMatchingResult result;
+
         if (nameCache!= null && !nameCache.isEmpty()) {
-            nameCache= nameCache.substring(0,1).toUpperCase() + nameCache.substring(1).toLowerCase();
+            nameCache= nameCache.substring(0,1).toUpperCase() + nameCache.substring(1);
         }
-        NameMatchingResult result = nameMatchingservice.findMatchingNames(nameCache, null, false);
+        if (compareAuthor) {
+            result = nameMatchingservice.findMatchingNames(nameCache, null, true);
+//            List <SingleNameMatchingResult> temp = nameMatchingservice.superExactResults(result.getExactResults(), nameCache);
+//            result.setExactResults(temp);
+//            result = nameMatchingservice.findMatchingNames(nameCache, null, true);
+        } else {
+            result = nameMatchingservice.findMatchingNames(nameCache, null, false);
+        }
 
         return NameMatchingAdapter.invoke(result);
     }
