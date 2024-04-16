@@ -341,6 +341,9 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "doTaxonNodes", required = false) boolean doTaxonNodes,
             @RequestParam(value = "doTaxonRelations", required = false) boolean doTaxonRelations,
             @RequestParam(value = "taxOccRelFilter", required = false) String taxOccRelFilter,
+            @RequestParam(value = "annotationTypes", required = false) List<UUID> annotationTypes,
+            @RequestParam(value = "markerTypes", required = false) List<UUID> markerTypes,
+
 
             //TODO annotation type filter
 
