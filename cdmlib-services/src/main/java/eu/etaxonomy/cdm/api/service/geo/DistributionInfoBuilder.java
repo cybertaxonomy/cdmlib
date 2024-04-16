@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
@@ -180,11 +179,10 @@ public class DistributionInfoBuilder {
     private TermTreeDto normalizeConfiguration(DistributionInfoConfiguration config,
             Collection<DistributionDto> distributions, TermTreeDto areaTree, Set<UUID> fallbackAreaMarkerTypeUuids) {
 
-        //TODO use non-model
-        Set<NamedAreaLevel> omitLevels = config.getOmitLevels();
+        Set<UUID> omitLevels = config.getOmitLevels();
         if(omitLevels == null) {
             @SuppressWarnings("unchecked")  //2 lines to allow unchecked annotation
-            Set<NamedAreaLevel> emptySet = Collections.EMPTY_SET;
+            Set<UUID> emptySet = Collections.EMPTY_SET;
             omitLevels = emptySet;
             config.setOmitLevels(omitLevels);
         }
@@ -203,8 +201,7 @@ public class DistributionInfoBuilder {
 
         IDistributionTree distributionTree;
 
-        //TODO use non-model
-        Set<NamedAreaLevel> omitLevels = config.getOmitLevels();
+        Set<UUID> omitLevels = config.getOmitLevels();
         //TODO use uuid
         Set<MarkerType> alternativeRootAreaMarkerTypes = config.getAlternativeRootAreaMarkerTypes();
         Set<UUID> alternativeRootAreaMarkerTypeUuids = alternativeRootAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());

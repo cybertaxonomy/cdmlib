@@ -356,7 +356,7 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
             //TODO still needs to be used
             @RequestParam(value = "statusTree", required = false ) UUID statusTreeUuid,
-            @RequestParam(value = "omitLevels", required = false) List<UUID> omitLevelList,
+            @RequestParam(value = "omitLevels", required = false) Set<UUID> omitLevelList,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
             @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
 //          @RequestParam(value = "neverUseFallbackAreaAsParent", required = false) boolean neverUseFallbackAreaAsParent,

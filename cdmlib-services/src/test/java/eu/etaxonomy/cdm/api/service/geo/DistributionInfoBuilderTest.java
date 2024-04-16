@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
@@ -112,7 +111,7 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
     private MarkerType fallbackMarkerType;
     private Reference ref1;
 
-    private Set<NamedAreaLevel> omitLevels;
+    private Set<UUID> omitLevels;
     private Set<UUID> fallBackAreaMarkerTypes;
     private boolean neverUseFallbackAreasAsParents;
     private Set<UUID> alternativeRootAreaMarkerTypes = null;

@@ -15,7 +15,6 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 /**
  * @author a.mueller
@@ -31,7 +30,7 @@ public class DistributionInfoConfiguration {
 
     private Set<MarkerType> alternativeRootAreaMarkerTypes = new HashSet<>();
 
-    private Set<NamedAreaLevel> omitLevels = new HashSet<>();
+    private Set<UUID> omitLevels = new HashSet<>();
 
     private String statusColorsString;
 
@@ -82,10 +81,10 @@ public class DistributionInfoConfiguration {
         this.alternativeRootAreaMarkerTypes = alternativeRootAreaMarkerTypes == null? new HashSet<>() : alternativeRootAreaMarkerTypes;
     }
 
-    public Set<NamedAreaLevel> getOmitLevels() {
+    public Set<UUID> getOmitLevels() {
         return omitLevels;
     }
-    public void setOmitLevels(Set<NamedAreaLevel> omitLevels) {
+    public void setOmitLevels(Set<UUID> omitLevels) {
         this.omitLevels = omitLevels == null? new HashSet<>() : omitLevels;
     }
 

@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.portal.DistributionTreeDtoLoader;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -152,7 +151,7 @@ public class DistributionServiceUtilities {
         return DistributionServiceUtilities.presenceAbsenceTermVocabularyUuids;
     }
 
-    public static DistributionTreeDto buildOrderedTreeDto(Set<NamedAreaLevel> omitLevels,
+    public static DistributionTreeDto buildOrderedTreeDto(Set<UUID> omitLevels,
             Collection<DistributionDto> distributions,
             SetMap<NamedAreaDto,NamedAreaDto> area2ParentAreaMap,
             TermTreeDto areaTree,

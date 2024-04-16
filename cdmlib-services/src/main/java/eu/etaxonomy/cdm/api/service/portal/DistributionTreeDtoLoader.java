@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +34,6 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 
@@ -101,7 +99,7 @@ public class DistributionTreeDtoLoader {
    *      if <code>true</code> a fallback area never has children even if a record exists for the area
    */
   public void orderAsTree(DistributionTreeDto dto, Collection<DistributionDto> distributions,
-          SetMap<NamedAreaDto,NamedAreaDto> area2ParentAreaMap, Set<NamedAreaLevel> omitLevels,
+          SetMap<NamedAreaDto,NamedAreaDto> area2ParentAreaMap, Set<UUID> omitLevels,
           Set<UUID> fallbackAreaMarkerTypes,
           boolean neverUseFallbackAreasAsParents){
 
@@ -113,15 +111,10 @@ public class DistributionTreeDtoLoader {
       // preload all areas which are a parent of another one, this is a performance improvement
 //      loadAllParentAreasIntoSession(relevantAreas, parentAreaMap);
 
-      Set<UUID> omitLevelIds = new HashSet<>(omitLevels.size());
-      for(NamedAreaLevel level : omitLevels) {
-          omitLevelIds.add(level.getUuid());
-      }
-
       for (DistributionDto distribution : distributions) {
           // get path through area hierarchy
           List<NamedAreaDto> namedAreaPath = getAreaLevelPath(distribution.getArea(), area2ParentAreaMap,
-                  omitLevelIds, relevantAreas, fallbackAreaMarkerTypes, neverUseFallbackAreasAsParents);
+                  omitLevels, relevantAreas, fallbackAreaMarkerTypes, neverUseFallbackAreasAsParents);
           addDistributionToSubTree(distribution, namedAreaPath, dto.getRootElement());
       }
   }
@@ -137,7 +130,7 @@ public class DistributionTreeDtoLoader {
      * @see #orderAsTree(DistributionTreeDto, Collection, SetMap, Set, Set, boolean)
      */
     public void orderAsTree2(DistributionTreeDto dto, Collection<DistributionDto> distributions,
-            TermTreeDto areaTree, Set<NamedAreaLevel> omitLevels,
+            TermTreeDto areaTree, Set<UUID> omitLevels,
             Set<UUID> fallbackAreaMarkerTypes,
             boolean neverUseFallbackAreasAsParents){
 
@@ -145,11 +138,10 @@ public class DistributionTreeDtoLoader {
         dto.setRootElement(rootAreaNode);
 
         addDistributions(rootAreaNode, distributions);
-        Set<UUID> omitLevelUuids = omitLevels.stream().map(e->e.getUuid()).collect(Collectors.toSet());
         removeEmptySubtrees(rootAreaNode);
         //TODO empty children should not be necessary anymore due to removeEmptySubtrees()
         removeFallbackAreasAndOmitLevelRecursive(rootAreaNode, fallbackAreaMarkerTypes,
-                omitLevelUuids, neverUseFallbackAreasAsParents);
+                omitLevels, neverUseFallbackAreasAsParents);
         //TODO deduplicate
         //TODO alternativeRootArea
         //TODO ...,
