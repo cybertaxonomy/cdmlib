@@ -277,7 +277,7 @@ public class DescriptionListController
             @RequestParam(value = "features", required = false ) Set<UUID> featureUuids,
             @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
             @RequestParam(value = "statusTree", required = false ) UUID statusTreeUuid,
-            @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
+            @RequestParam(value = "omitLevels", required = false) Set<UUID> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
             @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
             @RequestParam(value = "recipe", required = false, defaultValue="EuroPlusMed") CondensedDistributionRecipe recipe,

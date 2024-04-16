@@ -60,7 +60,6 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -427,10 +426,7 @@ public class TaxonPortalController extends TaxonController{
         if(!CdmUtils.isNullSafeEmpty(alternativeRootAreaMarkerTypeList)){
             alternativeRootAreaMarkerTypes = alternativeRootAreaMarkerTypeList.asSet();
         }
-        Set<NamedAreaLevel> omitLevels = new HashSet<>();
-        if(!CdmUtils.isNullSafeEmpty(omitLevelList)){
-            omitLevelList.forEach(omitLevelUuid->omitLevels.add(NamedAreaLevel.getTermByUUID(omitLevelUuid, NamedAreaLevel.class)));
-        }
+        Set<UUID> omitLevels = new HashSet<>();
 
         //default distribution info config
         DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
