@@ -355,7 +355,7 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
             //TODO still needs to be used
             @RequestParam(value = "statusTree", required = false ) UUID statusTreeUuid,
-            @RequestParam(value = "omitLevels", required = false) Set<UUID> omitLevelList,
+            @RequestParam(value = "omitLevels", required = false) Set<UUID> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
             @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
 //          @RequestParam(value = "neverUseFallbackAreaAsParent", required = false) boolean neverUseFallbackAreaAsParent,
@@ -393,6 +393,13 @@ public class TaxonPortalController extends TaxonController{
         if (partSet == null) {
             partSet = EnumSet.of(InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);
         }
+        //TODO null check needed?
+        if (annotationTypes == null) {
+            annotationTypes = new HashSet<>();
+        }
+        if (markerTypes == null) {
+            markerTypes = new HashSet<>();
+        }
 
 //      //TODO is this performant?
 //      IVocabularyService vocabularyService = null;
@@ -411,6 +418,8 @@ public class TaxonPortalController extends TaxonController{
         config.setWithSynonyms(doSynonyms);
         config.setWithTaxonNodes(doTaxonNodes);
         config.setWithTaxonRelationships(doTaxonRelations);
+        config.setAnnotationTypes(annotationTypes);
+        config.setMarkerTypes(markerTypes);
 
 
         //filter
@@ -426,9 +435,12 @@ public class TaxonPortalController extends TaxonController{
         if(!CdmUtils.isNullSafeEmpty(alternativeRootAreaMarkerTypeList)){
             alternativeRootAreaMarkerTypes = alternativeRootAreaMarkerTypeList.asSet();
         }
-        Set<UUID> omitLevels = new HashSet<>();
+
 
         //default distribution info config
+        if (omitLevels ==null) {
+            omitLevels = new HashSet<>();
+        }
         DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
         distributionConfig.setIncludeUnpublished(includeUnpublished);
         distributionConfig.setInfoParts(EnumSet.copyOf(partSet));

@@ -12,9 +12,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
@@ -43,6 +45,8 @@ public class TaxonPageDtoConfiguration implements Serializable {
 
     private EnumSet<TaxonOccurrenceRelationType> specimenAssociationFilter;
 
+    private Set<UUID> annotationTypes = new HashSet<>();
+    private Set<UUID> markerTypes = new HashSet<>();
 
     //synonymy
     //TODO taxonrelations
@@ -189,4 +193,19 @@ public class TaxonPageDtoConfiguration implements Serializable {
     public void setSourceTypes(EnumSet<OriginalSourceType> sourceTypes) {
         this.sourceTypes = sourceTypes;
     }
+
+    public Set<UUID> getMarkerTypes() {
+        return markerTypes;
+    }
+    public void setMarkerTypes(Set<UUID> markerTypes) {
+        this.markerTypes = markerTypes;
+    }
+
+    public Set<UUID> getAnnotationTypes() {
+        return annotationTypes;
+    }
+    public void setAnnotationTypes(Set<UUID> annotationTypes) {
+        this.annotationTypes = annotationTypes;
+    }
+
 }
