@@ -93,7 +93,7 @@ public class DistributionInfoBuilder {
     //TODO shouldn't we use the loader instead?
     DistributionDto toDistributionDto(Distribution distribution) {
 
-        DistributionDto dto = DistributionDtoLoader.INSTANCE().fromEntity(distribution);
+        DistributionDto dto = DistributionDtoLoader.INSTANCE().fromEntity(distribution, null);
         return dto;
     }
 

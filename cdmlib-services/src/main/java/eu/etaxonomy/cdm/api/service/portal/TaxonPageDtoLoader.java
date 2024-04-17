@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NomenclaturalStatusDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.SpecimenDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeAgentsRelDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeDTO;
+import eu.etaxonomy.cdm.api.dto.portal.config.IAnnotatableLoaderConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.dto.DtoUtil;
@@ -131,7 +132,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
             //load 1:1
             //TODO supplementalData for name
-            loadBaseData(taxon, result);
+            loadBaseData(config, taxon, result);
             result.setLastUpdated(getLastUpdated(null, taxon));
             result.setLabel(CdmUtils.Nz(taxon.getTitleCache()));
 //          result.setTypedTaxonLabel(getTypedTaxonLabel(taxon, config));
@@ -150,7 +151,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
     private void handleName(TaxonPageDtoConfiguration config, TaxonBaseDto taxonDto, TaxonName name, TaxonPageDto pageDto) {
         TaxonNameDto nameDto = taxonDto.new TaxonNameDto();
-        loadBaseData(name, nameDto);
+        loadBaseData(config, name, nameDto);
 
         INameCacheStrategy formatter = name.cacheStrategy();
         formatter.setEtAlPosition(config.getEtAlPosition());
@@ -185,7 +186,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             Pager<PolytomousKey> keys = repository.getIdentificationKeyService().findKeysConvering(taxon, PolytomousKey.class, null, null, null);
             for (PolytomousKey key : keys.getRecords()) {
                 KeyDTO dto = new KeyDTO();
-                loadBaseData(key, dto);
+                loadBaseData(config, key, dto);
                 dto.setLabel(key.getTitleCache());
                 dto.setKeyClass(key.getClass().getSimpleName());
                 container.addItem(dto);
@@ -251,7 +252,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             //TODO maybe still need to check full derivate path #4484, #8424, #9559
             for (SpecimenOrObservationBase<?> specimen : filterPublished(specimens)) {
                 SpecimenDTO dto = new SpecimenDTO();
-                loadBaseData(specimen, dto);
+                loadBaseData(config, specimen, dto);
                 dto.setLabel(specimen.getTitleCache());
                 container.addItem(dto);
             }
@@ -315,7 +316,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
             ContainerDto<MediaDto2> container = new ContainerDto<>();
             for (Media media : medias) {
-                handleSingleMedia(container, media);
+                handleSingleMedia(config, container, media);
             }
             if (container.getCount() > 0) {
                 result.setMedia(container);
@@ -335,7 +336,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             ContainerDto<TaxonNodeDTO> container = new ContainerDto<TaxonPageDto.TaxonNodeDTO>();
             for (TaxonNode node : taxon.getTaxonNodes()) {
                 TaxonNodeDTO dto = new TaxonNodeDTO();
-                loadBaseData(node, dto);
+                loadBaseData(config, node, dto);
                 //classification
                 Classification classification = node.getClassification();
                 if (classification != null) {
@@ -358,7 +359,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 if (!agents.isEmpty()) {
                     for (TaxonNodeAgentRelation rel : agents) {
                         TaxonNodeAgentsRelDTO agentDto = new TaxonNodeAgentsRelDTO();
-                        loadBaseData(rel, agentDto);
+                        loadBaseData(config, rel, agentDto);
 
                         //TODO laod
                         if (rel.getAgent() != null) {
@@ -405,7 +406,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
             TaxonPageDto.HomotypicGroupDTO homotypicGroupDto = new TaxonPageDto.HomotypicGroupDTO();
             if (homotypicSynonmys != null && !homotypicSynonmys.isEmpty()) {
-                loadBaseData(name.getHomotypicalGroup(), homotypicGroupDto);
+                loadBaseData(config, name.getHomotypicalGroup(), homotypicGroupDto);
 
                 for (Synonym syn : homotypicSynonmys) {
                     loadSynonymsInGroup(homotypicGroupDto, syn, config, result);
@@ -426,7 +427,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
             for (HomotypicalGroup hg : heteroGroups) {
                 TaxonPageDto.HomotypicGroupDTO hgDto = new TaxonPageDto.HomotypicGroupDTO();
-                loadBaseData(taxon.getName().getHomotypicalGroup(), hgDto);
+                loadBaseData(config, taxon.getName().getHomotypicalGroup(), hgDto);
                 heteroContainer.addItem(hgDto);
 
                 List<Synonym> heteroSyns = filterPublished(taxon.getSynonymsInGroup(hg, comparator));
@@ -474,7 +475,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             for (TaxonRelationship rel : misappliedRels) {
                 boolean inverse = true;
                 boolean withoutName = false;
-                loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName);
+                loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName, config);
             }
 
             //... pro parte Synonyms
@@ -482,7 +483,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             for (TaxonRelationship rel : proParteRels) {
                 boolean inverse = true;
                 boolean withoutName = false;
-                loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName);
+                loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName, config);
             }
 
             //TODO MAN and pp from this taxon
@@ -494,7 +495,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             for (TaxonRelationship rel : toRels) {
                 boolean inverse = true;
                 boolean withoutName = false;
-                loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName);
+                loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName, config);
             }
 
             //... from-relations
@@ -502,7 +503,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             for (TaxonRelationship rel : fromRels) {
                 boolean inverse = false;
                 boolean withoutName = false;
-                loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName);
+                loadConceptRelation(taxRelFormatter, rel, conceptRelContainer, inverse, withoutName, config);
             }
 
             if (conceptRelContainer.getCount() > 0) {
@@ -515,19 +516,19 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
     }
 
     private void loadConceptRelation(TaxonRelationshipFormatter taxRelFormatter, TaxonRelationship rel, ContainerDto<ConceptRelationDTO> conceptRelContainer, boolean inverse,
-            boolean withoutName) {
+            boolean withoutName, IAnnotatableLoaderConfiguration config) {
 
         List<Language> languages = Arrays.asList(new Language[] {Language.DEFAULT()}); // TODO config.locales;
         List<TaggedText> tags = taxRelFormatter.getTaggedText(rel, inverse, languages, withoutName);
         String relLabel = TaggedTextFormatter.createString(tags);
         ConceptRelationDTO dto = new TaxonPageDto.ConceptRelationDTO();
-        loadBaseData(rel, dto);
-        dto.setRelSource(makeSource(rel.getSource()));
+        loadBaseData(config, rel, dto);
+        dto.setRelSource(makeSource(config, rel.getSource()));
         Taxon relTaxon = inverse ? rel.getFromTaxon() : rel.getToTaxon();
         dto.setRelTaxonId(relTaxon.getId());
         dto.setRelTaxonUuid(relTaxon.getUuid());
         dto.setRelTaxonLabel(relTaxon.getTitleCache());
-        dto.setSecSource(makeSource(relTaxon.getSecSource()));
+        dto.setSecSource(makeSource(config, relTaxon.getSecSource()));
         dto.setLabel(relLabel);
         dto.setTaggedLabel(tags);
         dto.setNameUuid(relTaxon.getName() != null ? relTaxon.getName().getUuid() : null);
@@ -548,7 +549,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             TaxonPageDtoConfiguration config, TaxonPageDto pageDto) {
 
         TaxonBaseDto synDto = new TaxonBaseDto();
-        loadBaseData(syn, synDto);
+        loadBaseData(config, syn, synDto);
         synDto.setLabel(syn.getTitleCache());
         synDto.setTaggedLabel(getTaggedTaxon(syn, config));
 
@@ -614,7 +615,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 continue;
             }
             NameRelationDTO dto = new NameRelationDTO();
-            loadBaseData(rel, dto);
+            loadBaseData(config, rel, dto);
             //name
             dto.setNameUuid(relatedName.getUuid());
             dto.setNameLabel(relatedName.getTaggedName());
@@ -638,7 +639,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 continue;
             }
             NameRelationDTO dto = new NameRelationDTO();
-            loadBaseData(rel, dto);
+            loadBaseData(config, rel, dto);
             //name
             dto.setNameUuid(relatedName.getUuid());
             dto.setNameLabel(relatedName.getTaggedName());

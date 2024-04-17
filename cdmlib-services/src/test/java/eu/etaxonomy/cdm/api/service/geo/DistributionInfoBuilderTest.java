@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
+import eu.etaxonomy.cdm.api.dto.portal.config.IAnnotatableLoaderConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.tmp.TermNodeDto;
 import eu.etaxonomy.cdm.api.dto.portal.tmp.TermTreeDto;
 import eu.etaxonomy.cdm.api.service.ICommonService;
@@ -220,20 +221,32 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
     }
 
     private void createDefaultDistributionDtos() {
+        IAnnotatableLoaderConfiguration config = new IAnnotatableLoaderConfiguration() {
+
+            @Override
+            public Set<UUID> getMarkerTypes() {
+                return new HashSet<>();
+            }
+
+            @Override
+            public Set<UUID> getAnnotationTypes() {
+                return new HashSet<>();
+            }
+        };
         distributionDtos.clear();
-        distributionDtos.add(dist2Dto(europeDist));
-        distributionDtos.add(dist2Dto(germanyDist));
-        bawueDistribution = dist2Dto(bawueDist);
+        distributionDtos.add(dist2Dto(europeDist, config));
+        distributionDtos.add(dist2Dto(germanyDist, config));
+        bawueDistribution = dist2Dto(bawueDist, config);
         distributionDtos.add(bawueDistribution);  //TODO needed?
-        distributionDtos.add(dist2Dto(berlinDist));
-        distributionDtos.add(dist2Dto(italyDist));
-        distributionDtos.add(dist2Dto(ileDeFranceDist));
-        distributionDtos.add(dist2Dto(spainDist));
+        distributionDtos.add(dist2Dto(berlinDist, config));
+        distributionDtos.add(dist2Dto(italyDist, config));
+        distributionDtos.add(dist2Dto(ileDeFranceDist, config));
+        distributionDtos.add(dist2Dto(spainDist, config));
         if (westEuropeDist != null) {
-            distributionDtos.add(dist2Dto(westEuropeDist));
+            distributionDtos.add(dist2Dto(westEuropeDist, config));
         }
         if (saarDist != null) {
-            distributionDtos.add(dist2Dto(saarDist));
+            distributionDtos.add(dist2Dto(saarDist, config));
         }
     }
 
@@ -255,8 +268,8 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
         }
     }
 
-    private DistributionDto dist2Dto(Distribution distribution) {
-        return DistributionDtoLoader.INSTANCE().fromEntity(distribution);
+    private DistributionDto dist2Dto(Distribution distribution, IAnnotatableLoaderConfiguration config) {
+        return DistributionDtoLoader.INSTANCE().fromEntity(distribution, config);
     }
 
     private void createWesternEuropeDistribution() {

@@ -292,7 +292,7 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
             TypedLabel typedLabel = new TypedLabel(text);
             typedLabel.setClassAndId(td);
             factDto.getTypedLabel().add(typedLabel);
-            loadBaseData(td, factDto);
+            loadBaseData(config, td, factDto);
             //TODO
             result = factDto;
         }else if (fact.isInstanceOf(CommonTaxonName.class)) {
@@ -318,7 +318,7 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
             }
             dto.setName(ctn.getName());
             dto.setTransliteration(ctn.getTransliteration());
-            loadBaseData(ctn, dto);
+            loadBaseData(config, ctn, dto);
             //TODO sort all common names (not urgent as this is done by portal code)
             result = dto;
         } else if (fact.isInstanceOf(IndividualsAssociation.class)) {
@@ -337,7 +337,7 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
             }
 
             featureDto.addFact(dto);
-            loadBaseData(ia, dto);
+            loadBaseData(config, ia, dto);
             result = dto;
         } else if (fact.isInstanceOf(TaxonInteraction.class)) {
             TaxonInteraction ti = CdmBase.deproxy(fact, TaxonInteraction.class);
@@ -355,7 +355,7 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
                 dto.setTaxonUuid(taxon.getUuid());
             }
             featureDto.addFact(dto);
-            loadBaseData(ti, dto);
+            loadBaseData(config, ti, dto);
             result = dto;
         }else if (fact.isInstanceOf(CategoricalData.class)) {
             CategoricalData cd = CdmBase.deproxy(fact, CategoricalData.class);
@@ -367,7 +367,7 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
             typedLabel.setClassAndId(cd);
             factDto.getTypedLabel().add(typedLabel);
             //TODO
-            loadBaseData(cd, factDto);
+            loadBaseData(config, cd, factDto);
             result = factDto;
         }else if (fact.isInstanceOf(QuantitativeData.class)) {
             QuantitativeData qd = CdmBase.deproxy(fact, QuantitativeData.class);
@@ -379,7 +379,7 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
             typedLabel.setClassAndId(qd);
             factDto.getTypedLabel().add(typedLabel);
             //TODO
-            loadBaseData(qd, factDto);
+            loadBaseData(config, qd, factDto);
             result = factDto;
         }else if (fact.isInstanceOf(TemporalData.class)) {
             TemporalData td = CdmBase.deproxy(fact, TemporalData.class);
@@ -391,7 +391,7 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
             typedLabel.setClassAndId(td);
             factDto.getTypedLabel().add(typedLabel);
             //TODO
-            loadBaseData(td, factDto);
+            loadBaseData(config, td, factDto);
             result = factDto;
         }else {
             pageDto.addMessage(MessagesDto.NewWarnInstance("DescriptionElement type not yet handled: " + fact.getClass().getSimpleName()));
@@ -551,14 +551,15 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
         }
     }
 
-    private void loadMedia(DescriptionElementBase fact, FactDtoBase factDto, TaxonPageDto pageDto, TaxonPageDtoConfiguration config) {
+    private void loadMedia(DescriptionElementBase fact,
+            FactDtoBase factDto, TaxonPageDto pageDto, TaxonPageDtoConfiguration config) {
         try {
             List<Media> medias = new ArrayList<>();
             medias.addAll(fact.getMedia());
             ContainerDto<MediaDto2> container = new ContainerDto<>();
 
             for (Media media : medias) {
-                handleSingleMedia(container, media);
+                handleSingleMedia(config, container, media);
             }
 
             if (container.getCount() > 0) {

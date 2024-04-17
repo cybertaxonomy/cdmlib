@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
  * @author a.mueller
  * @date 07.01.2023
  */
-public class TaxonPageDtoConfiguration implements Serializable {
+public class TaxonPageDtoConfiguration implements IAnnotatableLoaderConfiguration, Serializable {
 
     private static final long serialVersionUID = -3017154740995350103L;
 
@@ -194,6 +194,7 @@ public class TaxonPageDtoConfiguration implements Serializable {
         this.sourceTypes = sourceTypes;
     }
 
+    @Override
     public Set<UUID> getMarkerTypes() {
         return markerTypes;
     }
@@ -201,6 +202,7 @@ public class TaxonPageDtoConfiguration implements Serializable {
         this.markerTypes = markerTypes;
     }
 
+    @Override
     public Set<UUID> getAnnotationTypes() {
         return annotationTypes;
     }

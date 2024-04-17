@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
  * @author a.mueller
  * @date 09.02.2023
  */
-public class DistributionInfoConfiguration {
+public class DistributionInfoConfiguration implements IAnnotatableLoaderConfiguration{
 
     private boolean preferSubAreas = true;
 
@@ -49,6 +49,9 @@ public class DistributionInfoConfiguration {
     private boolean includeUnpublished = false;
 
     boolean neverUseFallbackAreaAsParent = true;  //true is E+M status
+
+    private Set<UUID> annotationTypes = new HashSet<>();
+    private Set<UUID> markerTypes = new HashSet<>();
 
 //********************* GETTER / SETTER ***************************/
 
@@ -155,5 +158,21 @@ public class DistributionInfoConfiguration {
     }
     public void setNeverUseFallbackAreaAsParent(boolean neverUseFallbackAreaAsParent) {
         this.neverUseFallbackAreaAsParent = neverUseFallbackAreaAsParent;
+    }
+
+    @Override
+    public Set<UUID> getMarkerTypes() {
+        return markerTypes;
+    }
+    public void setMarkerTypes(Set<UUID> markerTypes) {
+        this.markerTypes = markerTypes;
+    }
+
+    @Override
+    public Set<UUID> getAnnotationTypes() {
+        return annotationTypes;
+    }
+    public void setAnnotationTypes(Set<UUID> annotationTypes) {
+        this.annotationTypes = annotationTypes;
     }
 }

@@ -92,7 +92,7 @@ public class CondensedDistributionComposer {
             CondensedDistributionConfiguration config) {
 
         Set<DistributionDto> distributionDtos = distributions.stream()
-                .map(d->DistributionDtoLoader.INSTANCE().fromEntity(d))
+                .map(d->DistributionDtoLoader.INSTANCE().fromEntity(d, null))
                 .collect(Collectors.toSet());
         SetMap<NamedAreaDto,TermNodeDto> area2TermNodesMap = TermTreeDtoLoader.getTerm2NodeMap(TermTreeDtoLoader.INSTANCE().fromEntity(areaTree), NamedAreaDto.class);
         return createCondensedDistribution(distributionDtos, area2TermNodesMap, languages, config);

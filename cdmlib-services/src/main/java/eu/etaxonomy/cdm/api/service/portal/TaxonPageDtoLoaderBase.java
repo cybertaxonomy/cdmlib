@@ -28,11 +28,11 @@ import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaRepresentationDTO;
+import eu.etaxonomy.cdm.api.dto.portal.config.IAnnotatableLoaderConfiguration;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
@@ -102,30 +102,30 @@ public abstract class TaxonPageDtoLoaderBase {
         }
     }
 
-    public static void loadBaseData(CdmBase cdmBase, CdmBaseDto dto) {
+    public static void loadBaseData(IAnnotatableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
         dto.setId(cdmBase.getId());
         dto.setUuid(cdmBase.getUuid());
 
-        loadAnnotatable(cdmBase, dto);
-        loadSources(cdmBase, dto);
+        loadAnnotatable(config, cdmBase, dto);
+        loadSources(config, cdmBase, dto);
         //loadIdentifiable(cdmBase, dto);
     }
 
-    static void loadAnnotatable(CdmBase cdmBase, CdmBaseDto dto) {
+    static void loadAnnotatable(IAnnotatableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
         if (dto instanceof AnnotatableDto && cdmBase.isInstanceOf(AnnotatableEntity.class)) {
             AnnotatableEntity annotatable = CdmBase.deproxy(cdmBase, AnnotatableEntity.class);
             AnnotatableDto annotatableDto = (AnnotatableDto)dto;
             //annotation
             for (Annotation annotation : annotatable.getAnnotations()) {
                 if (annotation.getAnnotationType() != null
-                        //TODO annotation type filter
-                        && annotation.getAnnotationType().getUuid().equals(AnnotationType.uuidEditorial)
+                        //config == null currently needs to be allowed as it is also used by DistributionInfoBuilder an
+                        && (config == null || config.getAnnotationTypes().contains(annotation.getAnnotationType().getUuid()))
                         && StringUtils.isNotBlank(annotation.getText())) {
 
                     AnnotationDto annotationDto = new AnnotationDto();
                     annotatableDto.addAnnotation(annotationDto);
                     //TODO id needed? but need to adapt dto and container then
-                    loadBaseData(annotation, annotationDto);
+                    loadBaseData(config, annotation, annotationDto);
                     annotationDto.setText(annotation.getText());
                     UUID uuidAnnotationType = annotation.getAnnotationType() == null ? null :annotation.getAnnotationType().getUuid();
                     annotationDto.setTypeUuid(uuidAnnotationType);
@@ -143,7 +143,7 @@ public abstract class TaxonPageDtoLoaderBase {
                     MarkerDto markerDto = new MarkerDto();
                     annotatableDto.addMarker(markerDto);
                     //TODO id needed? but need to adapt dto and container then
-                    loadBaseData(marker, markerDto);
+                    loadBaseData(config, marker, markerDto);
                     if (marker.getMarkerType() != null) {
                         markerDto.setTypeUuid(marker.getMarkerType().getUuid());
                         //TODO locale
@@ -155,14 +155,14 @@ public abstract class TaxonPageDtoLoaderBase {
         }
     }
 
-    static void loadSources(CdmBase cdmBase, CdmBaseDto dto) {
+    static void loadSources(IAnnotatableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
         if (dto instanceof SingleSourcedDto && cdmBase.isInstanceOf(SingleSourcedEntityBase.class)) {
             //TODO other sourced
             SingleSourcedEntityBase sourced = CdmBase.deproxy(cdmBase, SingleSourcedEntityBase.class);
             SingleSourcedDto sourcedDto = (SingleSourcedDto)dto;
             NamedSource source = sourced.getSource();
             if (source != null && isPublicSource(source)) { //TODO  && !source.isEmpty() - does not exist yet
-                SourceDto sourceDto = makeSource(source);
+                SourceDto sourceDto = makeSource(config, source);
                 sourcedDto.setSource(sourceDto);
             }
         } else if (dto instanceof SourcedDto && cdmBase instanceof ISourceable) {
@@ -171,7 +171,7 @@ public abstract class TaxonPageDtoLoaderBase {
             SourcedDto sourcedDto = (SourcedDto)dto;
             for (OriginalSourceBase source : sourced.getSources()) {
                 if (isPublicSource(source)) {
-                    SourceDto sourceDto = makeSource(source);
+                    SourceDto sourceDto = makeSource(config, source);
                     sourcedDto.addSource(sourceDto);
                 }
             }
@@ -184,7 +184,7 @@ public abstract class TaxonPageDtoLoaderBase {
                 for (OriginalSourceBase source : db.getSources()) {
                     if (isPublicSource(source)) {
                         SourceDto sourceDto = new SourceDto();
-                        loadSource(source, sourceDto);
+                        loadSource(config, source, sourceDto);
                         sourcedDto.addSource(sourceDto);
                     }
                 }
@@ -192,11 +192,11 @@ public abstract class TaxonPageDtoLoaderBase {
         }
     }
 
-    private static void loadSource(OriginalSourceBase source, SourceDto sourceDto) {
+    private static void loadSource(IAnnotatableLoaderConfiguration config, OriginalSourceBase source, SourceDto sourceDto) {
 
         source = CdmBase.deproxy(source);
         //base data
-        loadBaseData(source, sourceDto);
+        loadBaseData(config, source, sourceDto);
 
         ICdmBase linkedObject = source.getCitation();
         if (linkedObject == null) {
@@ -257,12 +257,12 @@ public abstract class TaxonPageDtoLoaderBase {
         sourceDto.setLinkedClass(linkedObjectStr);
     }
 
-    protected static SourceDto makeSource(OriginalSourceBase source) {
+    protected static SourceDto makeSource(IAnnotatableLoaderConfiguration config, OriginalSourceBase source) {
         if (source == null) {
             return null;
         }
         SourceDto sourceDto = new SourceDto();
-        loadSource(source, sourceDto);
+        loadSource(config, source, sourceDto);
         return sourceDto;
     }
 
@@ -280,11 +280,11 @@ public abstract class TaxonPageDtoLoaderBase {
         }
     }
 
-    protected void makeMediaContainer(TaxonPageDto result, List<Media> medias) {
+    protected void makeMediaContainer(IAnnotatableLoaderConfiguration config, TaxonPageDto result, List<Media> medias) {
         ContainerDto<MediaDto2> container = new ContainerDto<>();
 
         for (Media media : medias) {
-            handleSingleMedia(container, media);
+            handleSingleMedia(config, container, media);
         }
 
         if (container.getCount() > 0) {
@@ -292,10 +292,10 @@ public abstract class TaxonPageDtoLoaderBase {
         }
     }
 
-    protected void handleSingleMedia(ContainerDto<MediaDto2> container, Media media) {
+    protected void handleSingleMedia(IAnnotatableLoaderConfiguration config, ContainerDto<MediaDto2> container, Media media) {
 
         MediaDto2 dto = new MediaDto2();
-        loadBaseData(media, dto);
+        loadBaseData(config, media, dto);
 
         //media
         dto.setLabel(media.getTitleCache());
@@ -308,7 +308,7 @@ public abstract class TaxonPageDtoLoaderBase {
         ContainerDto<MediaRepresentationDTO> representations = new ContainerDto<>();
         for (MediaRepresentation rep : media.getRepresentations()) {
             MediaRepresentationDTO repDto = new MediaRepresentationDTO();
-            loadBaseData(rep, repDto);
+            loadBaseData(config, rep, repDto);
             repDto.setMimeType(rep.getMimeType());
             repDto.setSuffix(rep.getSuffix());
             if (!rep.getParts().isEmpty()) {

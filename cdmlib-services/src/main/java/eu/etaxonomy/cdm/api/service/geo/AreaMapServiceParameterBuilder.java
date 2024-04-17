@@ -108,7 +108,7 @@ public class AreaMapServiceParameterBuilder {
     }
 
     private DistributionDto distToDto(Distribution dist) {
-        DistributionDto dto = DistributionDtoLoader.INSTANCE().fromEntity(dist);
+        DistributionDto dto = DistributionDtoLoader.INSTANCE().fromEntity(dist, null);
         return dto;
     }
 

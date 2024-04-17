@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service.portal;
 import java.util.EnumSet;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
+import eu.etaxonomy.cdm.api.dto.portal.config.IAnnotatableLoaderConfiguration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -26,7 +27,7 @@ public class DistributionDtoLoader {
         return new DistributionDtoLoader();
     }
 
-    public DistributionDto fromEntity(Distribution entity) {
+    public DistributionDto fromEntity(Distribution entity, IAnnotatableLoaderConfiguration config) {
         if (entity == null) {
             return null;
         }
@@ -35,16 +36,16 @@ public class DistributionDtoLoader {
         DistributionDto dto = new DistributionDto(entity.getUuid(), entity.getId(),
                 TermDtoLoader.INSTANCE().fromEntity(entity.getArea()),
                 TermDtoLoader.INSTANCE().fromEntity(entity.getStatus()));
-        load(dto, entity);
+        load(dto, entity, config);
         return dto;
     }
 
-    private <T extends DefinedTermBase<T>> void load(DistributionDto dto, Distribution entity) {
+    private <T extends DefinedTermBase<T>> void load(DistributionDto dto, Distribution entity, IAnnotatableLoaderConfiguration config) {
         //copied from TaxonPageDtoLoader
-        TaxonPageDtoLoaderBase.loadSources(entity, dto);
+        TaxonPageDtoLoaderBase.loadSources(config, entity, dto);
 
         //annotatable
-        TaxonPageDtoLoaderBase.loadAnnotatable(entity, dto);
+        TaxonPageDtoLoaderBase.loadAnnotatable(config, entity, dto);
 
         dto.setTimeperiod(entity.getTimeperiod() == null ? null : entity.getTimeperiod().toString());
         dto.setDescriptionType(entity.getInDescription() == null? EnumSet.noneOf(DescriptionType.class)
