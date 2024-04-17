@@ -571,7 +571,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
 
     public IdentifiableSource getSource() {
         if (getCitation() != null) {
-            return IdentifiableSource.NewPrimaryMediaSourceInstance(getCitation(), null);
+            return IdentifiableSource.NewPrimarySourceInstance(getCitation(), null);
         } else {
             return null;
         }

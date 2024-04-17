@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.ConceptRelationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.HomotypicGroupDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.KeyDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NameRelationDTO;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NomenclaturalStatusDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.SpecimenDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeAgentsRelDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeDTO;
@@ -62,6 +63,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -156,6 +158,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
         taxonDto.setName(nameDto);
         taxonDto.setNameLabel(formatter.getTitleCache(name));
         handleRelatedNames(name, taxonDto, config);
+        handleNomenclaturalStatus(name, taxonDto, config);
         loadProtologues(name, taxonDto);
         taxonDto.setNameUuid(name.getUuid());
         taxonDto.setNameType(name.getNameType().toString());
@@ -567,6 +570,29 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                     taxonBaseDto.addProtologue(link.getUri());
                 }
             }
+        }
+    }
+
+    //needed to show rule considered and codeEdition (with source)
+    private void handleNomenclaturalStatus(TaxonName name, TaxonBaseDto taxonDto, TaxonPageDtoConfiguration config) {
+        //TODO config.getLocales();
+        Language locale = Language.DEFAULT();
+
+        for (NomenclaturalStatus status : name.getStatus()) {
+            NomenclaturalStatusDTO dto = new NomenclaturalStatusDTO();
+            loadBaseData(config, status, dto);
+            //type
+            dto.setStatusTypeUuid(status.getType().getUuid());
+            Representation rep = status.getType().getPreferredRepresentation(locale);
+            dto.setStatusType(rep == null ? status.getType().toString() : rep.getLabel());
+            //ruleConsidered
+            dto.setRuleConsidered(status.getRuleConsidered());
+            //TODO i18n
+            if (status.getCodeEdition() != null) {
+                dto.setCodeEdition(status.getCodeEdition().getLabel(/*locale*/));
+                dto.setCodeEditionSource(makeSource(config, status.getCodeEditionSource()));
+            }
+            taxonDto.addNomenclaturalStatus(dto);
         }
     }
 

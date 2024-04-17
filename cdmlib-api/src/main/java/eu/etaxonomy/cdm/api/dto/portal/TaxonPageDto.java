@@ -171,6 +171,45 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
     }
 
+    public static class NomenclaturalStatusDTO extends SingleSourcedDto {
+        private String ruleConsidered;
+        private String codeEdition;
+        private SourceDto codeEditionSource;
+        private UUID statusTypeUuid;
+        private String statusType;
+
+        public String getRuleConsidered() {
+            return ruleConsidered;
+        }
+        public void setRuleConsidered(String ruleConsidered) {
+            this.ruleConsidered = ruleConsidered;
+        }
+        public UUID getStatusTypeUuid() {
+            return statusTypeUuid;
+        }
+        public void setStatusTypeUuid(UUID statusTypeUuid) {
+            this.statusTypeUuid = statusTypeUuid;
+        }
+        public String getStatusType() {
+            return statusType;
+        }
+        public void setStatusType(String statusType) {
+            this.statusType = statusType;
+        }
+        public String getCodeEdition() {
+            return codeEdition;
+        }
+        public void setCodeEdition(String codeEdition) {
+            this.codeEdition = codeEdition;
+        }
+        public SourceDto getCodeEditionSource() {
+            return codeEditionSource;
+        }
+        public void setCodeEditionSource(SourceDto codeEditionSource) {
+            this.codeEditionSource = codeEditionSource;
+        }
+    }
+
     public static class NameRelationDTO extends SingleSourcedDto {
 
         private List<TaggedText> nameLabel;

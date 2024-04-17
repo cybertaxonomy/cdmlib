@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NameRelationDTO;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NomenclaturalStatusDTO;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
@@ -26,6 +27,8 @@ public class TaxonBaseDto extends IdentifiableDto {
 
         //nomenclatural code
         private String nameType;
+
+        private ContainerDto<NomenclaturalStatusDTO> status;
 
         private ContainerDto<NameRelationDTO> relatedNames;
 
@@ -76,6 +79,21 @@ public class TaxonBaseDto extends IdentifiableDto {
         //TODO either set or add
         public void setRelatedNames(ContainerDto<NameRelationDTO> relatedNames) {
             this.relatedNames = relatedNames;
+        }
+
+
+        public ContainerDto<NomenclaturalStatusDTO> getStatus(){
+            return status;
+        }
+        public void addStatus(NomenclaturalStatusDTO nomenclaturalStatus) {
+            if (this.status == null) {
+                this.status = new ContainerDto<>();
+            }
+            this.status.addItem(nomenclaturalStatus);
+        }
+        //TODO either set or add
+        public void setStatus(ContainerDto<NomenclaturalStatusDTO> nomenclaturalStatuss) {
+            this.status = nomenclaturalStatuss;
         }
 
         public String getType() {
@@ -164,6 +182,17 @@ public class TaxonBaseDto extends IdentifiableDto {
         getName().setRelatedNames(relatedNames);
     }
 
+    public ContainerDto<NomenclaturalStatusDTO> getNomenclaturalStatus() {
+        return getName().getStatus();
+    }
+    public void addNomenclaturalStatus(NomenclaturalStatusDTO status) {
+        getName().addStatus(status);
+    }
+    //TODO either set or add
+    public void setNomenclaturalStatus(ContainerDto<NomenclaturalStatusDTO> status) {
+        getName().setStatus(status);
+    }
+
     public ContainerDto<FeatureDto> getNameFacts() {
         return getName().getNameFacts();
     }
@@ -189,6 +218,8 @@ public class TaxonBaseDto extends IdentifiableDto {
     public void setName(TaxonNameDto name) {
         this.name = name;
     }
+
+
 
 
     //TaxonBase info
