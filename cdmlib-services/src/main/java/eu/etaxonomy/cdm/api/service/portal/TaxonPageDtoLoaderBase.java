@@ -119,7 +119,10 @@ public abstract class TaxonPageDtoLoaderBase {
             for (Annotation annotation : annotatable.getAnnotations()) {
                 if (annotation.getAnnotationType() != null
                         //config == null currently needs to be allowed as it is also used by DistributionInfoBuilder an
-                        && (config == null || config.getAnnotationTypes().contains(annotation.getAnnotationType().getUuid()))
+                        //also for now empty annotation types needs to be interpreted as "no filter" as we do not distinguish
+                        //null and empty yet, this may change in future
+                        && (config == null || config.getAnnotationTypes().isEmpty()
+                            || config.getAnnotationTypes().contains(annotation.getAnnotationType().getUuid()))
                         && StringUtils.isNotBlank(annotation.getText())) {
 
                     AnnotationDto annotationDto = new AnnotationDto();

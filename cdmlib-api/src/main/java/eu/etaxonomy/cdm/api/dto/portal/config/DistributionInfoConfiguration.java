@@ -8,12 +8,14 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal.config;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 
 /**
@@ -50,7 +52,8 @@ public class DistributionInfoConfiguration implements IAnnotatableLoaderConfigur
 
     boolean neverUseFallbackAreaAsParent = true;  //true is E+M status
 
-    private Set<UUID> annotationTypes = new HashSet<>();
+    private Set<UUID> annotationTypes = new HashSet<>(
+            Arrays.asList(new UUID[] {AnnotationType.uuidEditorial}));
     private Set<UUID> markerTypes = new HashSet<>();
 
 //********************* GETTER / SETTER ***************************/

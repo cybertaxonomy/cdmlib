@@ -82,7 +82,7 @@ public class DistributionInfoBuilder {
             Map<UUID,Color> distributionStatusColorMap,
             IGeoServiceAreaMapping areaMapping){
 
-        List<DistributionDto> distTmps = distributions.stream().map(d->toDistributionDto(d)).collect(Collectors.toList());
+        List<DistributionDto> distTmps = distributions.stream().map(d->toDistributionDto(d, config)).collect(Collectors.toList());
         TermTreeDto areaTreeDto = TermTreeDtoLoader.INSTANCE().fromEntity(areaTree);
         TermTreeDto statusTreeDto = TermTreeDtoLoader.INSTANCE().fromEntity(statusTree);
 
@@ -91,9 +91,9 @@ public class DistributionInfoBuilder {
     }
 
     //TODO shouldn't we use the loader instead?
-    DistributionDto toDistributionDto(Distribution distribution) {
+    DistributionDto toDistributionDto(Distribution distribution, DistributionInfoConfiguration config) {
 
-        DistributionDto dto = DistributionDtoLoader.INSTANCE().fromEntity(distribution, null);
+        DistributionDto dto = DistributionDtoLoader.INSTANCE().fromEntity(distribution, config);
         return dto;
     }
 

@@ -361,7 +361,7 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
 
         Collection<DistributionDto> dists =
                 distributions.stream().map(d->new DistributionInfoBuilder(null,null)
-                        .toDistributionDto(d)).collect(Collectors.toSet());
+                        .toDistributionDto(d, null)).collect(Collectors.toSet());
 
         Set<DistributionDto> result = new DistributionInfoBuilder(null, commonService)
                 .filterDistributions(dists, areaTreeDto,

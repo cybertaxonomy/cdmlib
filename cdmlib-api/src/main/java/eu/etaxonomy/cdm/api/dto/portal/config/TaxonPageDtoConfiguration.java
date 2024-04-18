@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.dto.portal.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 
 /**
@@ -45,7 +47,8 @@ public class TaxonPageDtoConfiguration implements IAnnotatableLoaderConfiguratio
 
     private EnumSet<TaxonOccurrenceRelationType> specimenAssociationFilter;
 
-    private Set<UUID> annotationTypes = new HashSet<>();
+    private Set<UUID> annotationTypes = new HashSet<>(
+            Arrays.asList(new UUID[] {AnnotationType.uuidEditorial}));
     private Set<UUID> markerTypes = new HashSet<>();
 
     //synonymy
@@ -198,16 +201,27 @@ public class TaxonPageDtoConfiguration implements IAnnotatableLoaderConfiguratio
     public Set<UUID> getMarkerTypes() {
         return markerTypes;
     }
+    /**
+     * Note: this method also sets the marker type filter
+     * for the included distributionInfoConfiguration. If the latter
+     * needs a separate filter this has to be set afterwards.
+     */
     public void setMarkerTypes(Set<UUID> markerTypes) {
         this.markerTypes = markerTypes;
+        this.distributionInfoConfiguration.setMarkerTypes(markerTypes);
     }
 
     @Override
     public Set<UUID> getAnnotationTypes() {
         return annotationTypes;
     }
+    /**
+     * Note: this method also sets the annotation type filter
+     * for the included distributionInfoConfiguration. If the latter
+     * needs a separate filter this has to be set afterwards.
+     */
     public void setAnnotationTypes(Set<UUID> annotationTypes) {
         this.annotationTypes = annotationTypes;
+        this.distributionInfoConfiguration.setAnnotationTypes(annotationTypes);
     }
-
 }
