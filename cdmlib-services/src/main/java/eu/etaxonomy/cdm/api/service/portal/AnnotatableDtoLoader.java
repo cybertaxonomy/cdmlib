@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotatableDto;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
+import eu.etaxonomy.cdm.api.dto.portal.config.IAnnotatableLoaderConfiguration;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -40,30 +41,31 @@ public class AnnotatableDtoLoader {
      * DTOs must have id initialized
      */
     public void loadAll(Set<AnnotatableDto> dtos, Class baseClass, ICdmGenericDao commonDao,
-            Set<UUID> annotationTypeFilter, Set<UUID> markerTypeFilter, ProxyDtoLoader lazyLoader) {
+            IAnnotatableLoaderConfiguration config, ProxyDtoLoader lazyLoader) {
 
         Set<Integer> baseIds = dtos.stream().map(d->d.getId()).collect(Collectors.toSet());
 
         SetMap<Integer,AnnotatableDto> id2AnnotatableInstancesMap = new SetMap<>(); //it is a set because there might be multiple instances for the same object
         dtos.stream().forEach(dto->id2AnnotatableInstancesMap.putItem(dto.getId(), dto));
 
-        handleAnnotations(baseClass, commonDao, annotationTypeFilter, lazyLoader, baseIds, id2AnnotatableInstancesMap);
+        handleAnnotations(baseClass, commonDao, config, lazyLoader, baseIds, id2AnnotatableInstancesMap);
         //TODO not yet used as a marker loader does not exist yet
         //handleMarkers(baseClass, commonDao, markerTypeFilter, lazyLoader, baseIds, id2AnnotatableInstancesMap);
     }
 
-    private void handleAnnotations(Class baseClass, ICdmGenericDao commonDao, Set<UUID> annotationTypeFilter,
-            ProxyDtoLoader lazyLoader, Set<Integer> baseIds,
-            SetMap<Integer, AnnotatableDto> id2AnnotatableInstancesMap) {
+    private void handleAnnotations(Class baseClass, ICdmGenericDao commonDao,
+            IAnnotatableLoaderConfiguration config, ProxyDtoLoader lazyLoader,
+            Set<Integer> baseIds,
+            SetMap<Integer,AnnotatableDto> id2AnnotatableInstancesMap) {
 
         Map<String,Object> params = new HashMap<>();
         String hql = "SELECT new map(bc.id as id, a.id as annotationId) "
                 + " FROM "+baseClass.getSimpleName()+" bc JOIN bc.annotations a "
                 + " WHERE bc.id IN :baseIds";
         params.put("baseIds", baseIds);
-        if (annotationTypeFilter != null) {
+        if (config.getAnnotationTypes() != null) {
             hql += " AND a.annotationType.uuid IN :annotationTypes ";
-            params.put("annotationTypes", annotationTypeFilter);
+            params.put("annotationTypes", config.getAnnotationTypes());
         }
 
         try {

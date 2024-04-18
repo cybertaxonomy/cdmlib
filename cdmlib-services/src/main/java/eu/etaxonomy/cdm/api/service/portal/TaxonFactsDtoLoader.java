@@ -53,7 +53,6 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
-import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -187,11 +186,9 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
             //handle supplemental data
             factsPerFeature.values().stream().forEach(s->s.stream().forEach(f->handleSupplementalData(f)));
 
+            //annotations + marker
             //TODO make configurable
-            Set<UUID> annotationTypes = new HashSet<>();
-            Set<UUID> markerTypes = null;
-            annotationTypes.add(AnnotationType.uuidEditorial);
-            factProxyLoader.loadAll(dao, config.getSourceTypes(), annotationTypes, markerTypes);
+            factProxyLoader.loadAll(dao, config.getSourceTypes(), config);
 
             //load final result
             if (!filteredRootNode.getChildren().isEmpty()) {
