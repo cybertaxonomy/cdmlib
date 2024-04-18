@@ -306,8 +306,7 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
                 dto.setLanguage(langLabel);
                 dto.setLanguageUuid(lang.getUuid());
             }else {
-                //TODO
-                dto.setLanguage("-");
+                dto.setLanguage(""); //there is an old portal test that expects empty string here
             }
             //area
             NamedArea area = ctn.getArea();
