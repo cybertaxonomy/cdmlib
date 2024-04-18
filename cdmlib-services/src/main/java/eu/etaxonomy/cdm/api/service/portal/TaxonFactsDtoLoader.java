@@ -199,7 +199,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
                 taxonPageDto.setTaxonFacts(features);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             taxonPageDto.addMessage(MessagesDto.NewErrorInstance("Error when loading factual data.", e));
         }
     }
@@ -271,23 +271,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
         }
         List<UUID> result = dao.getHqlResult(hql, UUID.class);
 
-//        boolean includeImageGallery = false;
         return new HashSet<>(result);
-
-//
-//        Map<UUID, Feature> result = new HashMap<>();
-//        for (DescriptionBase<?> description : filterPublished(describable.getDescriptions())) {
-//            if (description.isImageGallery()) {
-//                continue;
-//            }
-//            for (DescriptionElementBase deb : description.getElements()) {
-//                Feature feature = deb.getFeature();
-//                if (feature != null) {  //null should not happen
-//                    result.put(feature.getUuid(), feature);
-//                }
-//            }
-//        }
-//        return result.keySet();
     }
 
     private void handleDistributions(TaxonPageDtoConfiguration config, FeatureDto featureDto,
