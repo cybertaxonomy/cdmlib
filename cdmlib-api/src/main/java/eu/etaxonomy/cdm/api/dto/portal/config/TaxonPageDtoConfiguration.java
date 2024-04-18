@@ -65,12 +65,12 @@ public class TaxonPageDtoConfiguration implements IAnnotatableLoaderConfiguratio
     private Map<UUID,DistributionInfoConfiguration> perFeatureDistributionInfoConfiguration = new HashMap<>();
 
     //supplemental data
-    EnumSet<OriginalSourceType> sourceTypes = EnumSet.of(OriginalSourceType.PrimaryTaxonomicSource,
+    private EnumSet<OriginalSourceType> sourceTypes = EnumSet.of(OriginalSourceType.PrimaryTaxonomicSource,
             OriginalSourceType.PrimaryMediaSource);
 
     //formatting
     private List<Locale> locales = new ArrayList<>();  //is this data or formatting??
-    public boolean formatSec = false;  //!!
+
     private Integer etAlPosition;
 
 
