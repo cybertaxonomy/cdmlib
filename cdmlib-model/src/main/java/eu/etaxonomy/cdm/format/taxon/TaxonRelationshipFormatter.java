@@ -125,7 +125,9 @@ public class TaxonRelationshipFormatter {
                 String endQuote = QUOTE_END;
                 builder.add(TagEnum.postSeparator, endQuote);
             }else{
-                builder.addSeparator(" " + doubtfulTaxonStr);
+                if (isNotBlank(doubtfulTaxonStr)){
+                    builder.addSeparator(" " + doubtfulTaxonStr);
+                }
                 //name full title cache
                 List<TaggedText> nameCacheTags = getNameTitleCacheTags(name);
                 builder.addAll(nameCacheTags);
