@@ -428,7 +428,7 @@ public class TaxonDaoHibernateImpl
 
             if(synonymIDs.size()>0 && taxonIDs.size()>0){
                 hql = "SELECT " + selectWhat;
-                // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                // in doNotReturnFullEntities mode it is necessary to also return the type of the matching entities:
                 // also return the computed isOrphaned flag
                 if (returnIdAndTitle &&  !doCount ){
                     hql += ", CASE WHEN t.id in (:taxa) THEN 'taxon' ELSE 'synonym' END, " +
@@ -442,7 +442,7 @@ public class TaxonDaoHibernateImpl
                         " WHERE (t.id in (:taxa) OR t.id IN (:synonyms)) ";
             }else if (synonymIDs.size()>0 ){
                 hql = "SELECT " + selectWhat;
-                // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                // in doNotReturnFullEntities mode it is necessary to also return the type of the matching entities:
                 // also return the computed isOrphaned flag
                 if (returnIdAndTitle &&  !doCount ){
                     hql += ", 'synonym', 'false' ";
@@ -453,7 +453,7 @@ public class TaxonDaoHibernateImpl
 
             } else if (taxonIDs.size()>0 ){
                 hql = "SELECT " + selectWhat;
-                // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                // in doNotReturnFullEntities mode it is necessary to also return the type of the matching entities:
                 // also return the computed isOrphaned flag
                 if (returnIdAndTitle &&  !doCount ){
                     hql += ", 'taxon', " +
