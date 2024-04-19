@@ -36,6 +36,7 @@ public class TaggedTextBuilder {
      * @see TagEnum#separator
      */
     public void addSeparator(String separator) {
+        //TODO maybe we should test " ".equals(separator) here as such a separator is not needed
         taggedText.add(TaggedText.NewSeparatorInstance(separator));
     }
 

@@ -17,11 +17,11 @@ import javax.swing.text.html.HTML;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 
 /**
- * A class representing a condensed distribution stored as as list of {@link TaggedText}
+ * A class representing a condensed distribution stored as list of {@link TaggedText}
  * with TaggedText being extended by an isBold indicator.
  *
  * The class offers a method representing a string representation which uses {@link HTML}
@@ -36,7 +36,9 @@ public class CondensedDistribution {
     private List<TaggedText> taggedText = new ArrayList<>();
 
     public static class DistributionTaggedText extends TaggedText{
+
         private static final long serialVersionUID = 3904027767908153947L;
+
         private boolean bold = false;
 
         public static DistributionTaggedText NewInstance(TagEnum type, String text){
