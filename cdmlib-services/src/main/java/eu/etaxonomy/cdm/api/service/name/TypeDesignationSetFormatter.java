@@ -45,6 +45,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
 
 /**
+ * Formatter to format a {@link TypeDesignationSet}
+ *
  * @author a.mueller
  * @since 24.11.2020
  */
@@ -194,7 +196,7 @@ public class TypeDesignationSetFormatter {
         }
 
         //TODO why is typeDesingationSet not a list
-        List<TypeDesignationStatusBase> statusList = new ArrayList<>(typeDesignationSet.keySet());
+        List<TypeDesignationStatusBase<?>> statusList = new ArrayList<>(typeDesignationSet.keySet());
         statusList.sort(statusComparator);
 
         boolean hasPrecedingStatusLabel = withPrecedingMainType && !statusList.isEmpty();
