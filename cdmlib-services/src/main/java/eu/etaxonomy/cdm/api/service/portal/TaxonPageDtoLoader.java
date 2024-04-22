@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.dto.DtoUtil;
 import eu.etaxonomy.cdm.api.service.geo.IGeoServiceAreaMapping;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainerFormatter;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
@@ -445,7 +445,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
     private void handleTypification(HomotypicalGroup homotypicalGroup, HomotypicGroupDTO hgDto,
             TaxonPageDto result, TaxonPageDtoConfiguration config) {
 
-        TypeDesignationSetFormatter formatter = new TypeDesignationSetFormatter();
+        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter();
         Set<TypeDesignationBase<?>> designations = homotypicalGroup.getTypeDesignations();
         try {
             TypeDesignationSetContainer manager = TypeDesignationSetContainer.NewDefaultInstance((Set)designations);

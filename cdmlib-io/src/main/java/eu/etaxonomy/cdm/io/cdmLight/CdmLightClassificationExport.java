@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainerFormatter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.name.TypeComparator;
@@ -2186,7 +2186,7 @@ public class CdmLightClassificationExport
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
                 TypeDesignationSetContainer manager = new TypeDesignationSetContainer(group);
-                list.addAll(new TypeDesignationSetFormatter().withStartingTypeLabel(false)
+                list.addAll(new TypeDesignationSetContainerFormatter().withStartingTypeLabel(false)
                         .toTaggedText(manager));
             }
             String typeTextDesignations = "";

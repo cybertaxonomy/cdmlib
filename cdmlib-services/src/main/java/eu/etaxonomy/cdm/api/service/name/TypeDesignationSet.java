@@ -64,7 +64,7 @@ public class TypeDesignationSet {
     public TypeDesignationSet(VersionableEntity baseEntity) {
         this.baseEntity = baseEntity;
         //init base entity label to avoid LazyInitializationExceptions
-        TypeDesignationSetFormatter.entityLabel(baseEntity);
+        TypeDesignationSetContainerFormatter.entityLabel(baseEntity);
     }
 
 // ***********************************************************************/
@@ -159,7 +159,7 @@ public class TypeDesignationSet {
     public static TypedEntityReference<? extends VersionableEntity> makeEntityReference(VersionableEntity baseEntity) {
 
         baseEntity = CdmBase.deproxy(baseEntity);
-        String label = TypeDesignationSetFormatter.entityLabel(baseEntity);
+        String label = TypeDesignationSetContainerFormatter.entityLabel(baseEntity);
 
         TypedEntityReference<? extends VersionableEntity> baseEntityReference =
                 TypedEntityReferenceFactory.fromEntityWithLabel(baseEntity, label);

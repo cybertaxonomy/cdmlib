@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
  * <BR>
  * All type designations belonging to one base type are handled in a {@link TypeDesignationSet}.
  * <BR>
- * The {@link TypeDesignationSetContainer} can be formatted by using the {@link TypeDesignationSetFormatter}
+ * The {@link TypeDesignationSetContainer} can be formatted by using the {@link TypeDesignationSetContainerFormatter}
  *
  * @author a.kohlbecker
  * @since Mar 10, 2017
@@ -195,7 +195,7 @@ public class TypeDesignationSetContainer {
 
             TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
             boolean withCitation = true;
-            TypeDesignationSetFormatter.buildTaggedTextForSingleType(td, withCitation, workingsetBuilder, 0);
+            TypeDesignationSetContainerFormatter.buildTaggedTextForSingleType(td, withCitation, workingsetBuilder, 0);
 
             @SuppressWarnings({ "unchecked", "rawtypes" })
             TypeDesignationDTO<?> typeDesignationDTO
@@ -410,11 +410,11 @@ public class TypeDesignationSetContainer {
     }
 
     public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType) {
-        return new TypeDesignationSetFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType).format(this);
+        return new TypeDesignationSetContainerFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType).format(this);
     }
 
     public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType, HTMLTagRules htmlRules) {
-        return new TypeDesignationSetFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType).format(this, htmlRules);
+        return new TypeDesignationSetContainerFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType).format(this, htmlRules);
     }
 
 

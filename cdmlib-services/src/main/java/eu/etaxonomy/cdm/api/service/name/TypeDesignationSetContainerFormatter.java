@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrateg
  * @author a.mueller
  * @since 24.11.2020
  */
-public class TypeDesignationSetFormatter {
+public class TypeDesignationSetContainerFormatter {
 
     private static final String TYPE_STATUS_SEPARATOR = "; ";
     private static final String TYPE_SEPARATOR = "; ";
@@ -86,16 +86,16 @@ public class TypeDesignationSetFormatter {
         return label;
     }
 
-    public TypeDesignationSetFormatter() {
+    public TypeDesignationSetContainerFormatter() {
     }
 
-    public TypeDesignationSetFormatter(boolean withCitation, boolean withStartingTypeLabel,
+    public TypeDesignationSetContainerFormatter(boolean withCitation, boolean withStartingTypeLabel,
             boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType) {
         this(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType,
                 withAccessionNoType, false);
     }
 
-    public TypeDesignationSetFormatter(boolean withCitation, boolean withStartingTypeLabel,
+    public TypeDesignationSetContainerFormatter(boolean withCitation, boolean withStartingTypeLabel,
             boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType,
             boolean ignoreSyntypesWithLectotype) {
 
@@ -107,27 +107,27 @@ public class TypeDesignationSetFormatter {
         this.ignoreSyntypesWithLectotype = ignoreSyntypesWithLectotype;
     }
 
-    public TypeDesignationSetFormatter withCitation(boolean withCitation) {
+    public TypeDesignationSetContainerFormatter withCitation(boolean withCitation) {
         this.withCitation = withCitation;
         return this;
     }
 
-    public TypeDesignationSetFormatter withStartingTypeLabel(boolean withStartingTypeLabel) {
+    public TypeDesignationSetContainerFormatter withStartingTypeLabel(boolean withStartingTypeLabel) {
         this.withStartingTypeLabel = withStartingTypeLabel;
         return this;
     }
 
-    public TypeDesignationSetFormatter withNameIfAvailable(boolean withNameIfAvailable) {
+    public TypeDesignationSetContainerFormatter withNameIfAvailable(boolean withNameIfAvailable) {
         this.withNameIfAvailable = withNameIfAvailable;
         return this;
     }
 
-    public TypeDesignationSetFormatter withPrecedingMainType(boolean withPrecedingMainType) {
+    public TypeDesignationSetContainerFormatter withPrecedingMainType(boolean withPrecedingMainType) {
         this.withPrecedingMainType = withPrecedingMainType;
         return this;
     }
 
-    public TypeDesignationSetFormatter withAccessionNoType(boolean withAccessionNoType) {
+    public TypeDesignationSetContainerFormatter withAccessionNoType(boolean withAccessionNoType) {
         this.withAccessionNoType = withAccessionNoType;
         return this;
     }

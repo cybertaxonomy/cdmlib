@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationDTO;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainerFormatter;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -127,7 +127,7 @@ public class RegistrationWrapperDTO {
         default:
             try {
                 typeDesignationSetContainer = TypeDesignationSetContainer.NewDefaultInstance(reg.getTypeDesignations());
-                summaryTaggedText.addAll(new TypeDesignationSetFormatter(false, true, true, true, false)
+                summaryTaggedText.addAll(new TypeDesignationSetContainerFormatter(false, true, true, true, false)
                         .toTaggedText(typeDesignationSetContainer));
                 summary = TaggedTextFormatter.createString(summaryTaggedText);
             } catch (TypeDesignationSetException e) {
