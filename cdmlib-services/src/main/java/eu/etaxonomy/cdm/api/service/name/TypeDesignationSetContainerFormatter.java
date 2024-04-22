@@ -157,14 +157,14 @@ public class TypeDesignationSetContainerFormatter {
         }
 
         int typeSetCount = 0;
-        Map<VersionableEntity,TypeDesignationSet> orderedByTypesByBaseEntity
+        Map<VersionableEntity,TypeDesignationSet> orderedBaseEntity2TypesMap
                     = manager.getOrderedTypeDesignationSets();
         TypeDesignationSetType lastWsType = null;
-        if (orderedByTypesByBaseEntity != null){
-            for(VersionableEntity baseEntity : orderedByTypesByBaseEntity.keySet()) {
+        if (orderedBaseEntity2TypesMap != null){
+            for(VersionableEntity baseEntity : orderedBaseEntity2TypesMap.keySet()) {
                 buildTaggedTextForSingleTypeSet(manager, withBrackets, finalBuilder,
                         typeSetCount, baseEntity, lastWsType);
-                lastWsType = orderedByTypesByBaseEntity.get(baseEntity).getWorkingsetType();
+                lastWsType = orderedBaseEntity2TypesMap.get(baseEntity).getWorkingsetType();
                 typeSetCount++;
             }
         }
@@ -175,8 +175,8 @@ public class TypeDesignationSetContainerFormatter {
             TaggedTextBuilder finalBuilder, int typeSetCount, VersionableEntity baseEntity, TypeDesignationSetType lastWsType) {
 
         Map<VersionableEntity,TypeDesignationSet>
-                orderedByTypesByBaseEntity = manager.getOrderedTypeDesignationSets();
-        TypeDesignationSet typeDesignationSet = orderedByTypesByBaseEntity.get(baseEntity);
+                orderedBaseEntity2TypesMap = manager.getOrderedTypeDesignationSets();
+        TypeDesignationSet typeDesignationSet = orderedBaseEntity2TypesMap.get(baseEntity);
 
         TaggedTextBuilder taggedTextBuilder = new TaggedTextBuilder();
         if(typeSetCount > 0){
@@ -185,7 +185,7 @@ public class TypeDesignationSetContainerFormatter {
             //TODO this is not really exact as we may want to handle specimen types and
             //name types separately, but this is such a rare case (if at all) and
             //increases complexity so it is not yet implemented
-            boolean isPlural = hasMultipleTypes(orderedByTypesByBaseEntity);
+            boolean isPlural = hasMultipleTypes(orderedBaseEntity2TypesMap);
             if(typeDesignationSet.getWorkingsetType().isSpecimenType()){
                 taggedTextBuilder.add(TagEnum.label, (isPlural? "Types:": "Type:"));
             } else if (typeDesignationSet.getWorkingsetType().isNameType()){
