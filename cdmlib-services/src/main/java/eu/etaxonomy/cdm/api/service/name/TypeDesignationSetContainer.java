@@ -260,7 +260,7 @@ public class TypeDesignationSetContainer {
     private static TypedEntityReference<? extends VersionableEntity> makeEntityReference(VersionableEntity baseEntity) {
 
         baseEntity = CdmBase.deproxy(baseEntity);
-        String label = TypeDesignationSetFormatter.entityLabel(baseEntity);
+        String label = TypeDesignationSetContainerFormatter.entityLabel(baseEntity);
 
         TypedEntityReference<? extends VersionableEntity> baseEntityReference =
                 TypedEntityReferenceFactory.fromEntityWithLabel(baseEntity, label);
