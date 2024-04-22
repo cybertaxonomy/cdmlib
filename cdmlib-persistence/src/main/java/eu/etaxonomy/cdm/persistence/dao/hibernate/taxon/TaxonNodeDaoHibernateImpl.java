@@ -187,20 +187,29 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
     @Override
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent) {
-        String queryString =
+        /*String queryString =
                  " SELECT tn "
                + " FROM TaxonNode tn "
                + "    INNER JOIN tn.taxon AS t "
-               + " WHERE tn.parent.uuid = :parentId";
-        Query<TaxonNode> query =  getSession().createQuery(queryString, TaxonNode.class);
-        query.setParameter("parentId", parent.getUuid());
+               + " WHERE tn.parent.uuid = :parentId";*/
 
-        List<TaxonNode> result = query.list();
-
-        List<TaxonNodeDto> list = new ArrayList<>();
-        for(TaxonNode object : result){
-            list.add(new TaxonNodeDto(object));
+        Query<SortableTaxonNodeQueryResult> query =  createQueryForUuidAndTitleCacheForChildren(parent);
+        //query.setParameter("parentId", parent.getUuid());
+        List<SortableTaxonNodeQueryResult> result = query.list();
+        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
+        if(logger.isTraceEnabled()){
+            logger.trace("number of matches:" + result.size());
+            result.stream().forEach(o -> logger.trace("uuid: " + o.getTaxonNodeUuid() + " titleCache:" + o.getTaxonTitleCache() + " rank: " + o.getNameRank()));
         }
+        List<TaxonNodeDto> list = new ArrayList<>();
+        for(SortableTaxonNodeQueryResult stnqr : result){
+            TaxonNodeDto newNode = new TaxonNodeDto(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonUuid(), stnqr.getTreeIndex(), stnqr.getNameTitleCache(),stnqr.getTaxonTitleCache(),
+                    stnqr.getNameRank().getOrderIndex(), parent.getUuid(),stnqr.getSortIndex(),parent.getClassificationUUID(), stnqr.isTaxonIsPublish(), stnqr.getStatus(), stnqr.getStatusNote(), stnqr.getChildrenCount(), stnqr.getSecUuid(), null);
+
+            list.add(newNode);
+        }
+
+
         return list;
     }
 
@@ -280,6 +289,24 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
       return query;
     }
 
+
+    private Query<SortableTaxonNodeQueryResult> createQueryForUuidAndTitleCacheForChildren(TaxonNodeDto parent){
+
+//        UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid,
+//        String taxonTitleCache, String nameTitleCache, Rank nameRank, UUID parentNodeUuid,
+//        Integer sortIndex, UUID classificationUuid, Boolean taxonPublish, TaxonNodeStatus status,
+//        Integer childrenCount, UUID secUuid
+        String queryString = getTaxonNodeDtoQuery();
+        queryString += " WHERE p.id = :parent_id ";
+
+
+      Query<SortableTaxonNodeQueryResult> query =  getSession().createQuery(queryString, SortableTaxonNodeQueryResult.class);
+      if (parent != null){
+          query.setParameter("parent_id", parent.getId());
+      }
+
+      return query;
+    }
 
 
     @Override
@@ -1164,14 +1191,18 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
     }
 
     private String getTaxonNodeDtoQuery() {
+
+
 	        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid, index(tn), cl.uuid,  t.publish, tn.status, note "
+                + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid, index(tn), cl.uuid,  t.publish, tn.status, note, tn.countChildren, sec.uuid "
                 + ") "
                 + " FROM TaxonNode p "
                 + "   INNER JOIN p.childNodes AS tn"
                 + "   INNER JOIN tn.taxon AS t "
                 + "   INNER JOIN t.name AS name "
                 + "   INNER JOIN tn.classification AS cl "
+                + "   LEFT OUTER JOIN t.secSource as secSource "
+                + "   LEFT OUTER JOIN secSource.citation as sec "
                 + "	  LEFT OUTER JOIN tn.statusNote as note "
                 + "   LEFT OUTER JOIN name.rank AS rank ";
         return queryString;

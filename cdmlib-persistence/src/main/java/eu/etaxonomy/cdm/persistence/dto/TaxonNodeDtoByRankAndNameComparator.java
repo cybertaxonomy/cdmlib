@@ -73,6 +73,13 @@ public class TaxonNodeDtoByRankAndNameComparator
                 }
 				int result = sortableName1.compareTo(sortableName2);
 				if (result == 0){
+				    if (node1.getTaxonUuid() == null && node2.getTaxonUuid() == null) {
+				        return 0;
+				    }else if (node1.getTaxonUuid() == null) {
+				        return -1;
+				    }else if (node2.getTaxonUuid() == null) {
+				        return 1;
+				    }
 					return node1.getTaxonUuid().compareTo(node2.getTaxonUuid());
 				}else{
 					return result;
