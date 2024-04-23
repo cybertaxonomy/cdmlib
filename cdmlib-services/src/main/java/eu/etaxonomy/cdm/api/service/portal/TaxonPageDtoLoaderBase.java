@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
@@ -117,13 +118,14 @@ public abstract class TaxonPageDtoLoaderBase {
             AnnotatableDto annotatableDto = (AnnotatableDto)dto;
             //annotation
             for (Annotation annotation : annotatable.getAnnotations()) {
-                if (annotation.getAnnotationType() != null
+                if ((annotation.getAnnotationType() != null
                         //config == null currently needs to be allowed as it is also used by DistributionInfoBuilder an
                         //also for now empty annotation types needs to be interpreted as "no filter" as we do not distinguish
                         //null and empty yet, this may change in future
                         && (config == null || config.getAnnotationTypes().isEmpty()
-                            || config.getAnnotationTypes().contains(annotation.getAnnotationType().getUuid()))
-                        && StringUtils.isNotBlank(annotation.getText())) {
+                            || config.getAnnotationTypes().contains(annotation.getAnnotationType().getUuid())))
+                        || (annotation.getAnnotationType() == null && config != null && config.getAnnotationTypes().contains(AnnotationType.uuidUntyped))
+                                && StringUtils.isNotBlank(annotation.getText())) {
 
                     AnnotationDto annotationDto = new AnnotationDto();
                     annotatableDto.addAnnotation(annotationDto);
@@ -133,6 +135,15 @@ public abstract class TaxonPageDtoLoaderBase {
                     UUID uuidAnnotationType = annotation.getAnnotationType() == null ? null :annotation.getAnnotationType().getUuid();
                     annotationDto.setTypeUuid(uuidAnnotationType);
                     //language etc. currently not yet used
+                }else if (config != null && !config.getAnnotationTypes().isEmpty() && config.getAnnotationTypes().contains(AnnotationType.uuidUntyped) &&  (annotation.getAnnotationType() == null)){
+                    AnnotationDto annotationDto = new AnnotationDto();
+                    annotatableDto.addAnnotation(annotationDto);
+                    //TODO id needed? but need to adapt dto and container then
+                    loadBaseData(config, annotation, annotationDto);
+                    annotationDto.setText(annotation.getText());
+                    UUID uuidAnnotationType = null;
+                    annotationDto.setTypeUuid(uuidAnnotationType);
+
                 }
             }
 

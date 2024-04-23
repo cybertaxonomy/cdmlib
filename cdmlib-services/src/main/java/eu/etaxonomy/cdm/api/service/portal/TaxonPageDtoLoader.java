@@ -437,7 +437,6 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 handleTypification(hg, hgDto, result, config);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             result.addMessage(MessagesDto.NewErrorInstance("Error when loading synonym data.", e));
         }
     }
