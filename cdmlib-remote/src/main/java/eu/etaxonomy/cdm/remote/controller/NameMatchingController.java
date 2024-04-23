@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCandidateResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCombinedResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingExactResult;
+import eu.etaxonomy.cdm.api.nameMatching.NameMatchingOtherCandidateResult;
 import eu.etaxonomy.cdm.api.service.INameMatchingService;
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.NameMatchingResult;
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.SingleNameMatchingResult;
@@ -53,6 +54,8 @@ public class NameMatchingController {
             @RequestParam(value="namecache", required = true) String nameCache,
             @RequestParam(value="author", required = false) boolean compareAuthor,
             @RequestParam(value="distance", required = false) int distance,
+            @RequestParam(value="relaxedsearch", required = false) boolean relaxedSearch,
+            @RequestParam(value="otherCandidates", required = false) boolean otherCandidates,
             HttpServletRequest request,
             @SuppressWarnings("unused") HttpServletResponse response) {
 
@@ -60,24 +63,8 @@ public class NameMatchingController {
 
         NameMatchingResult result;
 
-        result = nameMatchingservice.findMatchingNames(nameCache, null, compareAuthor, distance);
+        result = nameMatchingservice.wrapperResults(nameCache, compareAuthor, distance, relaxedSearch, otherCandidates);
         return NameMatchingAdapter.invoke(result);
-
-
-//
-//        if (nameCache!= null && !nameCache.isEmpty()) {
-//            nameCache= nameCache.substring(0,1).toUpperCase() + nameCache.substring(1);
-//        }
-//        if (compareAuthor) {
-//            List <SingleNameMatchingResult> temp = nameMatchingservice.superExactResults(result.getExactResults(), nameCache, true);
-//            result.setExactResults(temp);
-//        } else {
-//            result = nameMatchingservice.findMatchingNames(nameCache, null, false);
-//            List <SingleNameMatchingResult> xy= result.getExactResults();
-//            List <SingleNameMatchingResult> temp = nameMatchingservice.superExactResults(xy, nameCache, false);
-//            result.setExactResults(temp);
-//        }
-
     }
 
     private static class NameMatchingAdapter {
@@ -85,7 +72,8 @@ public class NameMatchingController {
         private static NameMatchingCombinedResult invoke(NameMatchingResult nameMatchingResult) {
             NameMatchingCombinedResult result = new NameMatchingCombinedResult();
             result.setExactMatches(loadResultListFromPartsList(nameMatchingResult.getExactResults()));
-            result.setCandidates(loadCandiateResultListFromPartsList(nameMatchingResult.getClosestResults()));
+            result.setClosestMatches(loadCandiateResultListFromPartsList(nameMatchingResult.getClosestResults()));
+            result.setOtherCandidates(loadOtherCandiateResultListFromPartsList(nameMatchingResult.getOtherCandidatesResults()));
             return result;
         }
 
@@ -97,12 +85,23 @@ public class NameMatchingController {
             return partsList.stream().map(p->loadCandidateResultFromParts(p)).collect(Collectors.toList());
         }
 
+        private static List<NameMatchingOtherCandidateResult> loadOtherCandiateResultListFromPartsList(List<SingleNameMatchingResult> partsList) {
+            return partsList.stream().map(p->loadOtherCandidateResultFromParts(p)).collect(Collectors.toList());
+        }
+
         private static NameMatchingExactResult loadResultFromParts(NameMatchingParts parts) {
            return loadResultFromParts(parts, new NameMatchingExactResult());
         }
 
         private static NameMatchingCandidateResult loadCandidateResultFromParts(SingleNameMatchingResult parts) {
             NameMatchingCandidateResult result = new NameMatchingCandidateResult();
+            loadResultFromParts(parts, result);
+            result.setDistance(parts.getDistance());
+            return result;
+        }
+
+        private static NameMatchingOtherCandidateResult loadOtherCandidateResultFromParts(SingleNameMatchingResult parts) {
+            NameMatchingOtherCandidateResult result = new NameMatchingOtherCandidateResult();
             loadResultFromParts(parts, result);
             result.setDistance(parts.getDistance());
             return result;

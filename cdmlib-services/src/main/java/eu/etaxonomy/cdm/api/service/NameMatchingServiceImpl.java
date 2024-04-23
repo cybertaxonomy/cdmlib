@@ -322,7 +322,8 @@ public class NameMatchingServiceImpl
         // 4. infra specific pre-filter
         List<SingleNameMatchingResult> preFilteredInfraSpecificListWithDistTemp = new ArrayList<>();
         for (int i = 0; i < taxonNamePartsWithDistance.size(); i++) {
-            if (!(taxonNamePartsWithDistance.get(i).getInfraSpecificEpithet()).isEmpty()) {
+           String x = taxonNamePartsWithDistance.get(i).getInfraSpecificEpithet();
+            if (x != null && !x.isEmpty()) {
                 preFilteredInfraSpecificListWithDistTemp.add(taxonNamePartsWithDistance.get(i));
             }
         }
