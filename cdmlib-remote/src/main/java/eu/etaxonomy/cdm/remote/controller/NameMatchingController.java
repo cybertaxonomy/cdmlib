@@ -52,6 +52,7 @@ public class NameMatchingController {
     public NameMatchingCombinedResult doGetNameMatching(
             @RequestParam(value="namecache", required = true) String nameCache,
             @RequestParam(value="author", required = false) boolean compareAuthor,
+            @RequestParam(value="distance", required = false) int distance,
             HttpServletRequest request,
             @SuppressWarnings("unused") HttpServletResponse response) {
 
@@ -59,19 +60,24 @@ public class NameMatchingController {
 
         NameMatchingResult result;
 
-        if (nameCache!= null && !nameCache.isEmpty()) {
-            nameCache= nameCache.substring(0,1).toUpperCase() + nameCache.substring(1);
-        }
-        if (compareAuthor) {
-            result = nameMatchingservice.findMatchingNames(nameCache, null, true);
-//            List <SingleNameMatchingResult> temp = nameMatchingservice.superExactResults(result.getExactResults(), nameCache);
-//            result.setExactResults(temp);
-//            result = nameMatchingservice.findMatchingNames(nameCache, null, true);
-        } else {
-            result = nameMatchingservice.findMatchingNames(nameCache, null, false);
-        }
-
+        result = nameMatchingservice.findMatchingNames(nameCache, null, compareAuthor, distance);
         return NameMatchingAdapter.invoke(result);
+
+
+//
+//        if (nameCache!= null && !nameCache.isEmpty()) {
+//            nameCache= nameCache.substring(0,1).toUpperCase() + nameCache.substring(1);
+//        }
+//        if (compareAuthor) {
+//            List <SingleNameMatchingResult> temp = nameMatchingservice.superExactResults(result.getExactResults(), nameCache, true);
+//            result.setExactResults(temp);
+//        } else {
+//            result = nameMatchingservice.findMatchingNames(nameCache, null, false);
+//            List <SingleNameMatchingResult> xy= result.getExactResults();
+//            List <SingleNameMatchingResult> temp = nameMatchingservice.superExactResults(xy, nameCache, false);
+//            result.setExactResults(temp);
+//        }
+
     }
 
     private static class NameMatchingAdapter {
@@ -79,7 +85,7 @@ public class NameMatchingController {
         private static NameMatchingCombinedResult invoke(NameMatchingResult nameMatchingResult) {
             NameMatchingCombinedResult result = new NameMatchingCombinedResult();
             result.setExactMatches(loadResultListFromPartsList(nameMatchingResult.getExactResults()));
-            result.setCandidates(loadCandiateResultListFromPartsList(nameMatchingResult.getBestResults()));
+            result.setCandidates(loadCandiateResultListFromPartsList(nameMatchingResult.getClosestResults()));
             return result;
         }
 

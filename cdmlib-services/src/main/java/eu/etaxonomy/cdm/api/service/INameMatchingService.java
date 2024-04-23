@@ -8,11 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.List;
-import java.util.Map;
-
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.NameMatchingResult;
-import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.SingleNameMatchingResult;
 import eu.etaxonomy.cdm.api.service.config.NameMatchingConfigurator;
 
 /**
@@ -21,9 +17,13 @@ import eu.etaxonomy.cdm.api.service.config.NameMatchingConfigurator;
  */
 public interface INameMatchingService  {
 
-	public NameMatchingResult findMatchingNames(String taxonName, NameMatchingConfigurator config, boolean compareAuthor);
+	public NameMatchingResult findMatchingNames(String taxonName, NameMatchingConfigurator config, boolean compareAuthor, Integer inputDistance);
 
-	public Map<String, List<SingleNameMatchingResult>> compareTaxonListNameCache(List<String> input);
+	 public NameMatchingResult listShaping(String nameCache, boolean compareAuthor, Integer distance);
 
-	//public List <SingleNameMatchingResult> superExactResults (List<SingleNameMatchingResult> exactResults, String nameCache);
+	 public NameMatchingResult wrapperResults(String nameCache, boolean compareAuthor, Integer distance, boolean relaxedSearch, boolean otherCandidates);
+
+//	public Map<String, List<SingleNameMatchingResult>> compareTaxonListNameCache(List<String> input);
+//
+//	public List <SingleNameMatchingResult> superExactResults (List<SingleNameMatchingResult> exactResults, String nameCache, boolean compareAutor);
 }
