@@ -164,8 +164,6 @@ public class MultilanguageTextHelper {
 
 	/**
 	 * Returns a {@link Set} of {@link Language Languages} that are contained in the given multi-language map
-	 * @param multilanguageText
-	 * @return
 	 */
 	public static Set<Language> getLanguages(Map<Language, LanguageString> multilanguageText){
 		return multilanguageText.keySet();

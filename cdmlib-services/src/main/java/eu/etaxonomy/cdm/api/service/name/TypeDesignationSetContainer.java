@@ -82,10 +82,14 @@ public class TypeDesignationSetContainer {
     private Comparator<TypeDesignationSet> typeDesignationSetComparator = TypeDesignationSetComparator.INSTANCE();
 
     /**
-     * Groups the EntityReferences for each of the TypeDesignations by the according TypeDesignationStatus.
-     * The TypeDesignationStatusBase keys are already ordered by the term order defined in the vocabulary.
+     * TODO is this documentation still valid?
+     *
+     * Groups the EntityReferences for each of the TypeDesignations by the
+     * according TypeDesignationStatus.
+     * The TypeDesignationStatusBase keys are already ordered by the term
+     * order defined in the vocabulary.
      */
-    private LinkedHashMap<VersionableEntity,TypeDesignationSet> orderedByTypesByBaseEntity = new LinkedHashMap<>();
+    private LinkedHashMap<VersionableEntity,TypeDesignationSet> baseEntity = new LinkedHashMap<>();
 
     private List<String> problems = new ArrayList<>();
 
@@ -181,10 +185,10 @@ public class TypeDesignationSetContainer {
 
         Map<VersionableEntity,TypeDesignationSet> byBaseEntityByTypeStatus = new HashMap<>();
         this.typeDesignations.values().forEach(td -> mapTypeDesignation(byBaseEntityByTypeStatus, td));
-        orderedByTypesByBaseEntity = orderByTypeByBaseEntity(byBaseEntityByTypeStatus);
+        baseEntity = orderByTypeByBaseEntity(byBaseEntityByTypeStatus);
     }
 
-    private void mapTypeDesignation(Map<VersionableEntity,TypeDesignationSet> byBaseEntityByTypeStatus,
+    private void mapTypeDesignation(Map<VersionableEntity,TypeDesignationSet> baseEntity2typeDesigSet,
             TypeDesignationBase<?> td){
 
         td = HibernateProxyHelper.deproxy(td);
@@ -205,10 +209,10 @@ public class TypeDesignationSetContainer {
                     workingsetBuilder.getTaggedText(),
                     getTypeUuid(td));
 
-            if(!byBaseEntityByTypeStatus.containsKey(baseEntity)){
-                byBaseEntityByTypeStatus.put(baseEntity, new TypeDesignationSet(baseEntity));
+            if(!baseEntity2typeDesigSet.containsKey(baseEntity)){
+                baseEntity2typeDesigSet.put(baseEntity, new TypeDesignationSet(baseEntity));
             }
-            byBaseEntityByTypeStatus.get(baseEntity).insert(status, typeDesignationDTO);
+            baseEntity2typeDesigSet.get(baseEntity).insert(status, typeDesignationDTO);
 
         } catch (DataIntegrityException e){
             problems.add(e.getMessage());
@@ -380,7 +384,7 @@ public class TypeDesignationSetContainer {
     }
 
     public Map<VersionableEntity,TypeDesignationSet> getOrderedTypeDesignationSets() {
-        return orderedByTypesByBaseEntity;
+        return baseEntity;
     }
 
     private FieldUnit findFieldUnit(DerivedUnit du) {
