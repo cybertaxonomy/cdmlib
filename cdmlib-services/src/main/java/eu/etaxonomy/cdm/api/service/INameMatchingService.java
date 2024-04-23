@@ -25,5 +25,4 @@ public interface INameMatchingService  {
 
 //	public Map<String, List<SingleNameMatchingResult>> compareTaxonListNameCache(List<String> input);
 //
-//	public List <SingleNameMatchingResult> superExactResults (List<SingleNameMatchingResult> exactResults, String nameCache, boolean compareAutor);
 }

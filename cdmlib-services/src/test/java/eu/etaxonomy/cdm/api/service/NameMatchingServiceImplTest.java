@@ -639,7 +639,14 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(0, matchResult.size());
 
-        //when relaxed search is set to true,
+        //when relaxed search is set to true, the "closest results" should include all names that matched
+        //each component of the name individually. The rank is not included in the distance, hence
+        // the distance is 0 (perfect match)
+
+        /**TODO
+         * Discuss the value of the distance for a not-matching rank.
+         */
+
         matchResult = matchResults.getClosestResults();
         matchRes = matchResult.get(0);
 
@@ -648,8 +655,8 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(0, (int)matchRes.getDistance());
 
         matchResult = matchResults.getOtherCandidatesResults();
-        Assert.assertEquals(3, matchResult.size());
-        matchRes = matchResult.get(1);
+        Assert.assertEquals(2, matchResult.size());
+        matchRes = matchResult.get(0);
         Assert.assertEquals("Yucca gloriosa f. genuina Engelm.", matchRes.getTitleCache());
         Assert.assertEquals(5, (int)matchRes.getDistance());
 
