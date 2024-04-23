@@ -55,7 +55,7 @@ public class NameMatchingController {
             @RequestParam(value="author", required = false) boolean compareAuthor,
             @RequestParam(value="distance", required = false) int distance,
             @RequestParam(value="relaxedsearch", required = false) boolean relaxedSearch,
-            @RequestParam(value="otherCandidates", required = false) boolean otherCandidates,
+            @RequestParam(value="othercandidates", required = false) boolean otherCandidates,
             HttpServletRequest request,
             @SuppressWarnings("unused") HttpServletResponse response) {
 

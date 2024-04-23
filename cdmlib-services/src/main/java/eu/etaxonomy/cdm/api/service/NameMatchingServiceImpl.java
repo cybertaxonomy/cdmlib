@@ -166,7 +166,7 @@ public class NameMatchingServiceImpl
             result.closestResults = new ArrayList<>();
         }
         if (otherCandidates == false) {
-            result.closestResults = new ArrayList<>();
+            result.otherCandidatesResults = new ArrayList<>();
         }
         return result;
     }
