@@ -83,7 +83,7 @@ public abstract class TypeDesignationSetFormatterBase<T extends VersionableEntit
         }
     }
 
-    protected int buildTaggedTextForSingleTypeStatus(TypeDesignationSetContainer manager,
+    protected int buildTaggedTextForSingleTypeStatus(TypeDesignationSetContainer container,
             TaggedTextBuilder builder, TypeDesignationSet typeDesignationSet,
             int typeStatusCount, TypeDesignationStatusBase<?> typeStatus,
             TypeDesignationSetType lastWsType, int typeSetCount, boolean hasPrecedingStatusLabel,
@@ -104,7 +104,8 @@ public abstract class TypeDesignationSetFormatterBase<T extends VersionableEntit
         //designation + sources
         int typeDesignationCount = 0;
         for(TypeDesignationDTO<?> typeDesignationDTO : createSortedList(typeDesignationSet, typeStatus)) {
-            TypeDesignationBase<?> typeDes = manager.findTypeDesignation(typeDesignationDTO.getUuid());
+            //"revert" DTO to entity
+            TypeDesignationBase<?> typeDes = container.findTypeDesignation(typeDesignationDTO.getUuid());
 
             typeDesignationCount = buildTaggedTextForSingleType(typeDes, config,
                     builder, typeDesignationCount);

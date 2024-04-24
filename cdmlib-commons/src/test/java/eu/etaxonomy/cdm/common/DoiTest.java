@@ -43,7 +43,6 @@ public class DoiTest {
 		doi = DOI.fromString(validDoi);
 		Assert.assertEquals("10.1579", doi.getPrefix());
 		Assert.assertEquals("0044-7447(2006)35\\[89:RDUICP\\]2.0.CO;2", doi.getSuffix());
-
 	}
 
 	@Test
@@ -108,7 +107,6 @@ public class DoiTest {
         doi = DOI.fromString(validDoi);
         Assert.assertEquals("10.1002", doi.getPrefix());
         Assert.assertEquals("1234", doi.getSuffix());
-
 	}
 
 	@Test
@@ -152,5 +150,4 @@ public class DoiTest {
 			//OK
 		}
 	}
-
 }

@@ -57,11 +57,9 @@ public class TaggedText implements Serializable{
 //************************** CONSTRUCTOR ********************************/
 
     public TaggedText() {
-		super();
 	}
 
 	public TaggedText(TagEnum type, String text, TypedEntityReference<?> entityReference) {
-        super();
         this.text = text;
         this.type = type;
         this.entityReference = entityReference;
