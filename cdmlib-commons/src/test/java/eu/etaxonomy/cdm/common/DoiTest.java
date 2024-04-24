@@ -129,22 +129,20 @@ public class DoiTest {
 		String validDoi = "10.1002/1234%56\"78#90 12?34";
 		DOI doi1 = DOI.fromString(validDoi);
 		String uri = doi1.asURI();
-		Assert.assertEquals(DOI.HTTP_DOI_ORG + "10.1002/1234%2556%2278%2390%2012%3f34", uri);
+		Assert.assertEquals(DOI.HTTPS_DOI_ORG + "10.1002/1234%2556%2278%2390%2012%3f34", uri);
 
 		//recommendedEncoding
 		validDoi = "10.1002/1234<56>78{90}12^34";
 		doi1 = DOI.fromString(validDoi);
 		uri = doi1.asURI();
-		Assert.assertEquals(DOI.HTTP_DOI_ORG + "10.1002/1234%3c56%3e78%7b90%7d12%5e34", uri);
+		Assert.assertEquals(DOI.HTTPS_DOI_ORG + "10.1002/1234%3c56%3e78%7b90%7d12%5e34", uri);
 
 		//recommendedEncoding (cont.)
 		validDoi = "10.1002/1234[56]78`90|12\\34+56";
 		doi1 = DOI.fromString(validDoi);
 		uri = doi1.asURI();
-		Assert.assertEquals(DOI.HTTP_DOI_ORG + "10.1002/1234%5b56%5d78%6090%7c12%5c34%2b56", uri);
-
+		Assert.assertEquals(DOI.HTTPS_DOI_ORG + "10.1002/1234%5b56%5d78%6090%7c12%5c34%2b56", uri);
 	}
-
 
 	private void testInvalid(String invalidDoi) {
 		try {
