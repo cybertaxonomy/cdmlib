@@ -1301,19 +1301,22 @@ public class CdmLightClassificationExport
             String protologueUriString = extractProtologueURIs(state, name);
 
             csvLine[table.getIndex(CdmLightExportTable.PROTOLOGUE_URI)] = protologueUriString;
+
+            //type designations
             Collection<TypeDesignationBase> nonTextualTypeDesignations = new ArrayList<>();
             List<TextualTypeDesignation> textualTypeDesignations = new ArrayList<>();
+            //... collect
             for (TypeDesignationBase<?> typeDesignation : name.getTypeDesignations()) {
                 if (typeDesignation.isInstanceOf(TextualTypeDesignation.class)) {
 
                     if (((TextualTypeDesignation) typeDesignation).isVerbatim() ){
-                        Set<IdentifiableSource> sources =  typeDesignation.getSources();
-                        boolean isProtologue = false;
-                        if (sources != null && !sources.isEmpty()){
-                            IdentifiableSource source = sources.iterator().next();
-                            if (name.getNomenclaturalReference() != null){
-                                isProtologue = source.getCitation() != null? source.getCitation().getUuid().equals(name.getNomenclaturalReference().getUuid()): false;
-                            }
+                        Set<IdentifiableSource> sources = typeDesignation.getSources();
+                        boolean isProtologue =  false;
+                        if (sources != null && name.getNomenclaturalReference() != null){
+                            UUID nomRefUuid = name.getNomenclaturalReference().getUuid();
+                            isProtologue = sources.stream()
+                                    .filter(s->s.getCitation() != null)
+                                    .anyMatch(s->s.getCitation().getUuid().equals(nomRefUuid));
                         }
                         if (isProtologue){
                             csvLine[table.getIndex(CdmLightExportTable.PROTOLOGUE_TYPE_STATEMENT)] = ((TextualTypeDesignation) typeDesignation)
@@ -1367,7 +1370,7 @@ public class CdmLightClassificationExport
                 i++;
             }
             csvLine[table.getIndex(CdmLightExportTable.TYPE_STATEMENT)] = stringbuilder.toString();
-
+            //end type designation
 
             if (name.getStatus() == null || name.getStatus().isEmpty()) {
                 csvLine[table.getIndex(CdmLightExportTable.NOM_STATUS)] = "";

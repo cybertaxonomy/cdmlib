@@ -8,11 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.service.name;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,6 +20,7 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -30,13 +29,14 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceWithLink;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -52,32 +52,29 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrateg
  */
 public class TypeDesignationSetContainerFormatter {
 
-    private static final String TYPE_STATUS_SEPARATOR = "; ";
-    private static final String TYPE_SEPARATOR = "; ";
-    private static final String TYPE_DESIGNATION_SEPARATOR = ", ";
-    private static final String TYPE_STATUS_PARENTHESIS_LEFT = " (";
-    private static final String TYPE_STATUS_PARENTHESIS_RIGHT = ")";
-    private static final String REFERENCE_PARENTHESIS_RIGHT = "]";
-    private static final String REFERENCE_PARENTHESIS_LEFT = " [";
-    private static final String REFERENCE_DESIGNATED_BY = " designated by ";
-    private static final String REFERENCE_FIDE = "fide ";
-    private static final String SOURCE_SEPARATOR = ", ";
-    private static final String POST_STATUS_SEPARATOR = ": ";
+    static final String TYPE_STATUS_SEPARATOR = "; ";
+    static final String TYPE_DESIGNATION_SEPARATOR = ", ";
+    static final String REFERENCE_PARENTHESIS_RIGHT = "]";
+    static final String REFERENCE_PARENTHESIS_LEFT = " [";
+    static final String REFERENCE_DESIGNATED_BY = " designated by ";
+    static final String REFERENCE_FIDE = "fide ";
+    static final String SOURCE_SEPARATOR = ", ";
+    static final String POST_STATUS_SEPARATOR = ": ";
     private static final String POST_NAME_SEPARTOR = UTF8.EN_DASH_SPATIUM.toString();
 
-    private boolean withCitation = true;
-    private boolean withStartingTypeLabel = true;
-    private boolean withNameIfAvailable = false;
-    private boolean withPrecedingMainType = true;
-    private boolean withAccessionNoType = false;
-    private boolean ignoreSyntypesWithLectotype = false;
+    private TypeDesignationSetFormatterConfiguration configuration = new TypeDesignationSetFormatterConfiguration();
 
     private TypeDesignationStatusComparator statusComparator = new TypeDesignationStatusComparator<>();
 
-    public static String entityLabel(VersionableEntity baseEntity) {
+    public static String entityLabel(VersionableEntity baseEntity,
+            TypeDesignationSetFormatterConfiguration config) {
+
         String label = "";
         if(baseEntity instanceof IdentifiableEntity<?>){
             label = ((IdentifiableEntity<?>)baseEntity).getTitleCache();
+        }else if (baseEntity instanceof TextualTypeDesignation) {
+            label = TextualTypeDesignationSetFormatter.INSTANCE()
+                    .entityLabel((TextualTypeDesignation)baseEntity, config);
         }
         //TODO first check if it will not break code
 //        else {
@@ -86,51 +83,54 @@ public class TypeDesignationSetContainerFormatter {
         return label;
     }
 
+// ********************** CONSTRUCTOR **********************************/
+
     public TypeDesignationSetContainerFormatter() {
     }
 
     public TypeDesignationSetContainerFormatter(boolean withCitation, boolean withStartingTypeLabel,
             boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType) {
-        this(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType,
-                withAccessionNoType, false);
+
+        configuration.setWithCitation(withCitation)
+            .setWithStartingTypeLabel(withStartingTypeLabel)
+            .setWithNameIfAvailable(withNameIfAvailable)
+            .setWithPrecedingMainType(withPrecedingMainType)
+            .setWithAccessionNoType(withAccessionNoType)
+            .setIgnoreSyntypesWithLectotype(false);
     }
 
-    public TypeDesignationSetContainerFormatter(boolean withCitation, boolean withStartingTypeLabel,
-            boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType,
-            boolean ignoreSyntypesWithLectotype) {
+// *********************** CONFIGURATION **************************************/
 
-        this.withCitation = withCitation;
-        this.withStartingTypeLabel = withStartingTypeLabel;
-        this.withNameIfAvailable = withNameIfAvailable;
-        this.withPrecedingMainType = withPrecedingMainType;
-        this.withAccessionNoType = withAccessionNoType;
-        this.ignoreSyntypesWithLectotype = ignoreSyntypesWithLectotype;
+    public TypeDesignationSetContainerFormatter(TypeDesignationSetFormatterConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     public TypeDesignationSetContainerFormatter withCitation(boolean withCitation) {
-        this.withCitation = withCitation;
+        configuration.setWithCitation(withCitation);
         return this;
     }
 
     public TypeDesignationSetContainerFormatter withStartingTypeLabel(boolean withStartingTypeLabel) {
-        this.withStartingTypeLabel = withStartingTypeLabel;
+        configuration.setWithStartingTypeLabel(withStartingTypeLabel);
         return this;
     }
 
     public TypeDesignationSetContainerFormatter withNameIfAvailable(boolean withNameIfAvailable) {
-        this.withNameIfAvailable = withNameIfAvailable;
+        configuration.setWithNameIfAvailable(withNameIfAvailable);
         return this;
     }
 
     public TypeDesignationSetContainerFormatter withPrecedingMainType(boolean withPrecedingMainType) {
-        this.withPrecedingMainType = withPrecedingMainType;
+        configuration.setWithPrecedingMainType(withPrecedingMainType);
         return this;
     }
 
     public TypeDesignationSetContainerFormatter withAccessionNoType(boolean withAccessionNoType) {
-        this.withAccessionNoType = withAccessionNoType;
+        configuration.setWithAccessionNoType(withAccessionNoType);
         return this;
     }
+
+// ***************** formatting methods ********************************/
 
     public String format(TypeDesignationSetContainer manager){
         return TaggedTextFormatter.createString(toTaggedText(manager));
@@ -145,12 +145,11 @@ public class TypeDesignationSetContainerFormatter {
     }
 
     private List<TaggedText> buildTaggedText(TypeDesignationSetContainer manager){
-        boolean withBrackets = true;  //still unclear if this should become a parameter or should be always true
 
         TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
 
         //name, if available
-        if(withNameIfAvailable && manager.getTypifiedNameCache() != null){
+        if(configuration.isWithNameIfAvailable() && manager.getTypifiedNameCache() != null){
             finalBuilder.add(TagEnum.name, manager.getTypifiedNameCache(),
                     TypedEntityReferenceFactory.fromEntity(manager.getTypifiedName(), false));
             finalBuilder.addPostSeparator(POST_NAME_SEPARTOR);
@@ -162,139 +161,35 @@ public class TypeDesignationSetContainerFormatter {
         TypeDesignationSetType lastWsType = null;
         if (orderedBaseEntity2TypesMap != null){
             for(VersionableEntity baseEntity : orderedBaseEntity2TypesMap.keySet()) {
-                buildTaggedTextForSingleTypeSet(manager, withBrackets, finalBuilder,
-                        typeSetCount, baseEntity, lastWsType);
+                baseEntity = CdmBase.deproxy(baseEntity);
+                if (baseEntity.isInstanceOf(SpecimenOrObservationBase.class)) {
+                    SpecimenTypeDesignationSetFormatter.INSTANCE().format(finalBuilder, manager,
+                            orderedBaseEntity2TypesMap,
+                            typeSetCount, configuration,
+                            (SpecimenOrObservationBase<?>)baseEntity,
+                            lastWsType);
+                }else if (baseEntity.isInstanceOf(NameTypeDesignation.class)) {
+                    NameTypeDesignationSetFormatter.INSTANCE().format(finalBuilder, manager,
+                            orderedBaseEntity2TypesMap,
+                            typeSetCount, configuration,
+                            (NameTypeDesignation)baseEntity, lastWsType);
+                }else if (baseEntity.isInstanceOf(TextualTypeDesignation.class)) {
+                    TextualTypeDesignationSetFormatter.INSTANCE().format(finalBuilder, manager,
+                            orderedBaseEntity2TypesMap,
+                            typeSetCount, configuration,
+                            (TextualTypeDesignation)baseEntity, lastWsType);
+                }else {
+                    throw new RuntimeException("Base type not supported: " + baseEntity.getClass().getSimpleName());
+                }
+//                }else {
+//                    buildTaggedTextForSingleTypeSet(manager, withBrackets, finalBuilder,
+//                            typeSetCount, baseEntity, lastWsType);
+//                }
                 lastWsType = orderedBaseEntity2TypesMap.get(baseEntity).getWorkingsetType();
                 typeSetCount++;
             }
         }
         return finalBuilder.getTaggedText();
-    }
-
-    private void buildTaggedTextForSingleTypeSet(TypeDesignationSetContainer manager, boolean withBrackets,
-            TaggedTextBuilder finalBuilder, int typeSetCount, VersionableEntity baseEntity, TypeDesignationSetType lastWsType) {
-
-        Map<VersionableEntity,TypeDesignationSet>
-                orderedBaseEntity2TypesMap = manager.getOrderedTypeDesignationSets();
-        TypeDesignationSet typeDesignationSet = orderedBaseEntity2TypesMap.get(baseEntity);
-
-        TaggedTextBuilder taggedTextBuilder = new TaggedTextBuilder();
-        if(typeSetCount > 0){
-            taggedTextBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
-        }else if (withStartingTypeLabel && !withPrecedingMainType){
-            //TODO this is not really exact as we may want to handle specimen types and
-            //name types separately, but this is such a rare case (if at all) and
-            //increases complexity so it is not yet implemented
-            boolean isPlural = hasMultipleTypes(orderedBaseEntity2TypesMap);
-            if(typeDesignationSet.getWorkingsetType().isSpecimenType()){
-                taggedTextBuilder.add(TagEnum.label, (isPlural? "Types:": "Type:"));
-            } else if (typeDesignationSet.getWorkingsetType().isNameType()){
-                taggedTextBuilder.add(TagEnum.label, (isPlural? "Nametypes:": "Nametype:"));
-            } else {
-                //do nothing for now
-            }
-        }
-
-        //TODO why is typeDesingationSet not a list
-        List<TypeDesignationStatusBase<?>> statusList = new ArrayList<>(typeDesignationSet.keySet());
-        statusList.sort(statusComparator);
-
-        boolean hasPrecedingStatusLabel = withPrecedingMainType && !statusList.isEmpty();
-        if (hasPrecedingStatusLabel){
-            addStatusLabel(taggedTextBuilder, typeDesignationSet, statusList.get(0), lastWsType, typeSetCount, true);
-        }
-
-        boolean hasExplicitBaseEntity = hasExplicitBaseEntity(baseEntity, typeDesignationSet);
-        if(hasExplicitBaseEntity && !entityLabel(baseEntity).isEmpty()){
-            taggedTextBuilder.add(TagEnum.specimenOrObservation, entityLabel(baseEntity), baseEntity);
-        }
-        int typeStatusCount = 0;
-        if (withBrackets && hasExplicitBaseEntity){
-            taggedTextBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
-        }
-        for(TypeDesignationStatusBase<?> typeStatus : statusList) {
-            typeStatusCount = buildTaggedTextForSingleTypeStatus(manager, taggedTextBuilder,
-                    typeDesignationSet, typeStatusCount, typeStatus,
-                    lastWsType, typeSetCount, hasPrecedingStatusLabel);
-        }
-        if (withBrackets && hasExplicitBaseEntity){
-            taggedTextBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
-        }
-        typeDesignationSet.setRepresentation(taggedTextBuilder.toString());
-        finalBuilder.addAll(taggedTextBuilder);
-        return;
-    }
-
-    /**
-     * Checks if the baseType is the same as the (only?) type in the type designation workingset.
-     */
-    private boolean hasExplicitBaseEntity(VersionableEntity baseEntity,
-            TypeDesignationSet typeDesignationSet) {
-        if (!typeDesignationSet.isSpecimenWorkingSet()){
-            return false;   //name type designations are not handled here
-        }else{
-            UUID baseUuid = baseEntity.getUuid();
-            for (TypeDesignationDTO<?> dto: typeDesignationSet.getTypeDesignations()){
-                if (!baseUuid.equals(dto.getTypeUuid())){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private int buildTaggedTextForSingleTypeStatus(TypeDesignationSetContainer manager,
-            TaggedTextBuilder workingsetBuilder, TypeDesignationSet typeDesignationSet,
-            int typeStatusCount, TypeDesignationStatusBase<?> typeStatus,
-            TypeDesignationSetType lastWsType, int typeSetCount, boolean hasPrecedingStatusLabel) {
-
-        //starting separator
-        if(typeStatusCount++ > 0){
-            workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_SEPARATOR);
-        }
-        boolean statusLabelPreceding = hasPrecedingStatusLabel && typeStatusCount == 1;
-
-        //status label
-        if (!statusLabelPreceding) {
-            addStatusLabel(workingsetBuilder, typeDesignationSet, typeStatus, lastWsType, typeSetCount, false);
-        }
-
-        //designation + sources
-        int typeDesignationCount = 0;
-        for(TypeDesignationDTO<?> typeDesignationDTO : createSortedList(typeDesignationSet, typeStatus)) {
-            TypeDesignationBase<?> typeDes = manager.findTypeDesignation(typeDesignationDTO.getUuid());
-
-            typeDesignationCount = buildTaggedTextForSingleType(typeDes, withCitation,
-                    workingsetBuilder, typeDesignationCount);
-        }
-        return typeStatusCount;
-    }
-
-    private void addStatusLabel(TaggedTextBuilder workingsetBuilder, TypeDesignationSet typeDesignationSet,
-            TypeDesignationStatusBase<?> typeStatus, TypeDesignationSetType lastWsType,
-            int typeSetCount, boolean capitalize) {
-
-        boolean isPlural = typeDesignationSet.get(typeStatus).size() > 1;
-        String statusLabel = null;
-        if(typeStatus != TypeDesignationSet.NULL_STATUS){
-            statusLabel = typeStatus.getLabel();
-        }else if (typeDesignationSet.getWorkingsetType() != lastWsType
-                && (workingsetBuilder.size() > 0 && typeSetCount > 0 )){
-            //only for the first name type (coming after a specimen type add the label (extremely rare case, if at all existing)
-            if (typeDesignationSet.getWorkingsetType().isNameType()) {
-                statusLabel = "nametype";
-            }else if (typeDesignationSet.getWorkingsetType().isSpecimenType()) {
-                statusLabel = "type";
-            }
-        }
-        if (statusLabel != null){
-            statusLabel = (isPlural ? statusLabel + "s" : statusLabel);
-            if (workingsetBuilder.size() == 0 || capitalize){
-                statusLabel = StringUtils.capitalize(statusLabel);
-            }
-            workingsetBuilder.add(TagEnum.label, statusLabel);
-            workingsetBuilder.add(TagEnum.postSeparator, POST_STATUS_SEPARATOR);
-        }
     }
 
     protected static int buildTaggedTextForSingleType(TypeDesignationBase<?> typeDes, boolean withCitation,
@@ -348,30 +243,6 @@ public class TypeDesignationSetContainerFormatter {
                      );
     }
 
-    private List<TypeDesignationDTO> createSortedList(
-            TypeDesignationSet typeDesignationSet, TypeDesignationStatusBase<?> typeStatus) {
-
-        List<TypeDesignationDTO> typeDesignationDTOs = new ArrayList<>(typeDesignationSet.get(typeStatus));
-        Collections.sort(typeDesignationDTOs);
-        return typeDesignationDTOs;
-    }
-
-    /**
-     * Returns <code>true</code> if the working set has either multiple working sets
-     * or if it has a single working set but this workingset has multiple type designations.
-     */
-    private boolean hasMultipleTypes(
-            Map<VersionableEntity,TypeDesignationSet> typeWorkingSets) {
-
-        if (typeWorkingSets == null || typeWorkingSets.isEmpty()){
-            return false;
-        }else if (typeWorkingSets.keySet().size() > 1) {
-            return true;
-        }
-        TypeDesignationSet singleSet = typeWorkingSets.values().iterator().next();
-        return singleSet.getTypeDesignations().size() > 1;
-    }
-
     private static void buildTaggedTextForTypeDesignationBase(TypeDesignationBase<?> td,
             TaggedTextBuilder workingsetBuilder) {
 
@@ -381,7 +252,7 @@ public class TypeDesignationSetContainerFormatter {
         } else if (td instanceof TextualTypeDesignation){
             buildTaggedTextForTextualTypeDesignation((TextualTypeDesignation)td, workingsetBuilder, typeDesignationEntity);
         } else if (td instanceof SpecimenTypeDesignation){
-            buildTaggedTextForSpecimenTypeDesignation((SpecimenTypeDesignation)td, false, workingsetBuilder, typeDesignationEntity);
+            buildTaggedTextForSpecimenTypeDesignation((SpecimenTypeDesignation)td, workingsetBuilder, typeDesignationEntity);
         }else{
             throw new RuntimeException("Unknown TypeDesignation type");
         }
@@ -420,63 +291,65 @@ public class TypeDesignationSetContainerFormatter {
         workingsetBuilder.add(TagEnum.typeDesignation, result, typeDesignationEntity);
     }
 
-    private static void buildTaggedTextForSpecimenTypeDesignation(SpecimenTypeDesignation td, boolean useTitleCache,
+    private static void buildTaggedTextForSpecimenTypeDesignation(SpecimenTypeDesignation td,
             TaggedTextBuilder workingsetBuilder, TypedEntityReference<?> typeDesignationEntity) {
 
-        if(useTitleCache){
-            String typeDesigTitle = "";
-            if(td.getTypeSpecimen() != null){
-                String nameTitleCache = td.getTypeSpecimen().getTitleCache();
-                //TODO is this needed?
-//                if(getTypifiedNameCache() != null){
-//                    nameTitleCache = nameTitleCache.replace(getTypifiedNameCache(), "");
-//                }
-                typeDesigTitle += nameTitleCache;
-            }
-            workingsetBuilder.add(TagEnum.typeDesignation, typeDesigTitle, typeDesignationEntity);
-        } else {
-            if (td.getTypeSpecimen() == null){
-                workingsetBuilder.add(TagEnum.typeDesignation, "", typeDesignationEntity);
-            }else{
-                DerivedUnit du = td.getTypeSpecimen();
-                if(du.isProtectedTitleCache()){
-                    workingsetBuilder.add(TagEnum.typeDesignation, du.getTitleCache(), typeDesignationEntity);
-                } else {
-                    du = HibernateProxyHelper.deproxy(du);
-                    boolean isMediaSpecimen = du instanceof MediaSpecimen;
-                    String typeSpecimenTitle = (isMediaSpecimen ? "[icon] " : "");
-                    if(isMediaSpecimen
-                                && HibernateProxyHelper.deproxyOrNull(du.getCollection()) == null  //TODO not sure if only checking the collection is enough, but as we also check existence of sources now the case that only an accession number exists is also covered here
-                                && ((MediaSpecimen)du).getMediaSpecimen() != null
-                                && !((MediaSpecimen)du).getMediaSpecimen().getSources().isEmpty()
-                            ){
-                        // special case of a published image which is not covered by the DerivedUnitFacadeCacheStrategy
-                        workingsetBuilder.add(TagEnum.typeDesignation, "[icon] in", typeDesignationEntity); //TODO how to better use tagged text here, the type designation itself has no real text; we could include the sources but that makes them unusable as sources :-(
-                        MediaSpecimen msp = (MediaSpecimen)du;
-                        int count = 0;
-                        for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
-                            if (source.getType().isPrimarySource()){
-                                if (count++ > 0){
-                                    workingsetBuilder.add(TagEnum.separator, SOURCE_SEPARATOR);
-                                }
-                                addSource(workingsetBuilder, source);
+        if (td.getTypeSpecimen() == null){
+            workingsetBuilder.add(TagEnum.typeDesignation, "", typeDesignationEntity);
+        }else{
+            DerivedUnit du = td.getTypeSpecimen();
+            if(du.isProtectedTitleCache()){
+                //protected title cache
+                workingsetBuilder.add(TagEnum.typeDesignation, du.getTitleCache(), typeDesignationEntity);
+            } else {
+                du = HibernateProxyHelper.deproxy(du);
+                boolean isMediaSpecimen = du instanceof MediaSpecimen;
+                String typeSpecimenTitle = (isMediaSpecimen ? "[icon] " : "");
+
+                //media specimen
+                if(isMediaSpecimen
+                            && HibernateProxyHelper.deproxyOrNull(du.getCollection()) == null  //TODO not sure if only checking the collection is enough, but as we also check existence of sources now the case that only an accession number exists is also covered here
+                            && ((MediaSpecimen)du).getMediaSpecimen() != null
+                            && !((MediaSpecimen)du).getMediaSpecimen().getSources().isEmpty()
+                        ){
+                    // special case of a published image which is not covered by the DerivedUnitFacadeCacheStrategy
+                    workingsetBuilder.add(TagEnum.typeDesignation, "[icon] in", typeDesignationEntity); //TODO how to better use tagged text here, the type designation itself has no real text; we could include the sources but that makes them unusable as sources :-(
+                    MediaSpecimen msp = (MediaSpecimen)du;
+                    int count = 0;
+                    for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
+                        if (source.getType().isPublicSource()){
+                            if (count++ > 0){
+                                workingsetBuilder.add(TagEnum.separator, SOURCE_SEPARATOR);
                             }
+                            addSource(workingsetBuilder, source);
                         }
-                    } else {
-                        DerivedUnitDefaultCacheStrategy cacheStrategy = DerivedUnitDefaultCacheStrategy.NewInstance(true, false, true, " ");
-                        String titleCache = cacheStrategy.getTitleCache(du, true);
-                        // removing parentheses from code + accession number, see https://dev.e-taxonomy.eu/redmine/issues/8365
-                        titleCache = titleCache.replaceAll("[\\(\\)]", "");
-                        typeSpecimenTitle += titleCache;
-                        workingsetBuilder.add(TagEnum.typeDesignation, typeSpecimenTitle, typeDesignationEntity);
                     }
-                } //protected titleCache
-            }//fi specimen == null
-        }//fi useTitelCache
+                //other specimen
+                } else {
+                    DerivedUnitDefaultCacheStrategy cacheStrategy = DerivedUnitDefaultCacheStrategy.NewInstance(true, false, true, " ");
+                    String titleCache = cacheStrategy.getTitleCache(du, true);
+                    // removing parentheses from code + accession number, see https://dev.e-taxonomy.eu/redmine/issues/8365
+                    titleCache = titleCache.replaceAll("[\\(\\)]", "");
+                    typeSpecimenTitle += titleCache;
+                    URI link = getLink(du);  //
+                    TypedEntityReferenceWithLink entity = new TypedEntityReferenceWithLink(du.getClass(),
+                            du.getUuid(), typeSpecimenTitle, link);
+                    workingsetBuilder.add(TagEnum.typeDesignation, typeSpecimenTitle, typeDesignationEntity);
+                }
+            } //protected titleCache
+        }//fi specimen == null
 
         if(td.isNotDesignated()){
             //this should not happen together with a defined specimen, therefore we may handle it in a separate tag
             workingsetBuilder.add(TagEnum.typeDesignation, "not designated", typeDesignationEntity);
+        }
+    }
+
+    private static URI getLink(DerivedUnit du) {
+        if (du.getPreferredStableUri() != null) {
+            return du.getPreferredStableUri().getJavaUri();
+        }else {
+            return null;
         }
     }
 

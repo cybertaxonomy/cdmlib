@@ -29,31 +29,30 @@ import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator.ORDER_BY;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.ref.TypedEntityReference;
-import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 
 /**
  * Container for or collection of {@link TypeDesignationBase type designations} for a single typified name.
  *
- * Type designations are ordered by the base type which is a {@link TaxonName} for
+ * Type designations are ordered by the base type which is a {@link NameTypeDesignation} for
  * {@link NameTypeDesignation name type designations} or a {@link FieldUnit} in case of
  * {@link SpecimenTypeDesignation specimen type designations} (or a {@link DerivedUnit} if the
- * field unit is missing). <BR>
- * The type designations per base type are furthermore ordered by the {@link TypeDesignationStatusBase type designation status}.
+ * field unit is missing). For {@link TextualTypeDesignation}s it is the textualTypeDesignation itself.<BR>
+ * The type designations per base type are furthermore ordered by the
+ * {@link TypeDesignationStatusBase type designation status}.
  * <BR>
  * All type designations belonging to one base type are handled in a {@link TypeDesignationSet}.
  * <BR>
@@ -66,16 +65,10 @@ public class TypeDesignationSetContainer {
 
     private static final Logger logger = LogManager.getLogger();
 
-    //currently not really in use
-    enum NameTypeBaseEntityType{
-        NAME_TYPE_DESIGNATION,
-        TYPE_NAME;
-    }
+    //TODO remove FieldUnit workaround
+    final static FieldUnit NOT_DESIGNATED = FieldUnit.NewInstance();
 
-
-    private NameTypeBaseEntityType nameTypeBaseEntityType = NameTypeBaseEntityType.NAME_TYPE_DESIGNATION;
-
-    private Map<UUID,TypeDesignationBase<?>> typeDesignations = new HashMap<>();
+     private Map<UUID,TypeDesignationBase<?>> typeDesignations = new HashMap<>();
 
     private TaxonName typifiedName;
 
@@ -89,7 +82,7 @@ public class TypeDesignationSetContainer {
      * The TypeDesignationStatusBase keys are already ordered by the term
      * order defined in the vocabulary.
      */
-    private LinkedHashMap<VersionableEntity,TypeDesignationSet> baseEntity = new LinkedHashMap<>();
+    private LinkedHashMap<VersionableEntity,TypeDesignationSet> orderedBaseEntity2typeDesignationsMap = new LinkedHashMap<>();
 
     private List<String> problems = new ArrayList<>();
 
@@ -133,7 +126,7 @@ public class TypeDesignationSetContainer {
         	this.typifiedName = typifiedName;
         }
 
-        mapAndSort();
+        groupAndSort();
     }
 
     public TypeDesignationSetContainer(HomotypicalGroup group) {
@@ -141,7 +134,7 @@ public class TypeDesignationSetContainer {
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
         //findTypifiedName();
-        mapAndSort();
+        groupAndSort();
     }
 
     public TypeDesignationSetContainer(TaxonName typifiedName) {
@@ -154,26 +147,17 @@ public class TypeDesignationSetContainer {
      * Add one or more TypeDesignations to the manager. This causes re-grouping and re-ordering
      * of all managed TypeDesignations.
      *
-     * @param containgEntity
      * @param typeDesignations
      */
     public void addTypeDesigations(TypeDesignationBase<?> ... typeDesignations){
         for (TypeDesignationBase<?> typeDes: typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
-        mapAndSort();
+        groupAndSort();
     }
 
     public TaxonName getTypifiedName() {
         return typifiedName;
-    }
-
-    public void setNameTypeBaseEntityType(NameTypeBaseEntityType nameTypeBaseEntityType){
-        this.nameTypeBaseEntityType = nameTypeBaseEntityType;
-    }
-
-    public NameTypeBaseEntityType getNameTypeBaseEntityType(){
-        return nameTypeBaseEntityType;
     }
 
 // ******************************** METHODS *********************************/
@@ -181,14 +165,15 @@ public class TypeDesignationSetContainer {
     /**
      * Groups and orders all managed TypeDesignations.
      */
-    protected void mapAndSort() {
+    protected void groupAndSort() {
 
-        Map<VersionableEntity,TypeDesignationSet> byBaseEntityByTypeStatus = new HashMap<>();
-        this.typeDesignations.values().forEach(td -> mapTypeDesignation(byBaseEntityByTypeStatus, td));
-        baseEntity = orderByTypeByBaseEntity(byBaseEntityByTypeStatus);
+        Map<VersionableEntity,TypeDesignationSet> baseEntity2TypeDesignationsMap = new HashMap<>();
+        this.typeDesignations.values().forEach(td -> addTypeDesignationToGroup(baseEntity2TypeDesignationsMap, td));
+
+        orderedBaseEntity2typeDesignationsMap = orderBaseEntity2TypeDesignationsMap(baseEntity2TypeDesignationsMap);
     }
 
-    private void mapTypeDesignation(Map<VersionableEntity,TypeDesignationSet> baseEntity2typeDesigSet,
+    private void addTypeDesignationToGroup(Map<VersionableEntity,TypeDesignationSet> baseEntity2typeDesignationsMap,
             TypeDesignationBase<?> td){
 
         td = HibernateProxyHelper.deproxy(td);
@@ -209,10 +194,10 @@ public class TypeDesignationSetContainer {
                     workingsetBuilder.getTaggedText(),
                     getTypeUuid(td));
 
-            if(!baseEntity2typeDesigSet.containsKey(baseEntity)){
-                baseEntity2typeDesigSet.put(baseEntity, new TypeDesignationSet(baseEntity));
+            if(!baseEntity2typeDesignationsMap.containsKey(baseEntity)){
+                baseEntity2typeDesignationsMap.put(baseEntity, new TypeDesignationSet(baseEntity));
             }
-            baseEntity2typeDesigSet.get(baseEntity).insert(status, typeDesignationDTO);
+            baseEntity2typeDesignationsMap.get(baseEntity).add(status, typeDesignationDTO);
 
         } catch (DataIntegrityException e){
             problems.add(e.getMessage());
@@ -245,14 +230,15 @@ public class TypeDesignationSetContainer {
                 baseEntity = fu;
             } else if(((SpecimenTypeDesignation) td).getTypeSpecimen() != null){
                 baseEntity = ((SpecimenTypeDesignation) td).getTypeSpecimen();
+            } else if (td.isNotDesignated()) {
+                baseEntity = NOT_DESIGNATED;
             }
         } else if(td instanceof NameTypeDesignation){
-            if(nameTypeBaseEntityType == NameTypeBaseEntityType.NAME_TYPE_DESIGNATION){
-                baseEntity = td;
-            } else {
-                // only other option is TaxonName
-                baseEntity = ((NameTypeDesignation)td).getTypeName();
-            }
+            baseEntity = td;
+            // only other option is TaxonName
+            //baseEntity = ((NameTypeDesignation)td).getTypeName();
+        } else if (td instanceof TextualTypeDesignation) {
+            baseEntity = td;
         }
         if(baseEntity == null) {
             throw new DataIntegrityException("Incomplete TypeDesignation, no type (specimen or name) found in " + td.toString());
@@ -260,35 +246,23 @@ public class TypeDesignationSetContainer {
         return baseEntity;
     }
 
-    //TODO maybe not needed anymore
-    private static TypedEntityReference<? extends VersionableEntity> makeEntityReference(VersionableEntity baseEntity) {
-
-        baseEntity = CdmBase.deproxy(baseEntity);
-        String label = TypeDesignationSetContainerFormatter.entityLabel(baseEntity);
-
-        TypedEntityReference<? extends VersionableEntity> baseEntityReference =
-                TypedEntityReferenceFactory.fromEntityWithLabel(baseEntity, label);
-
-        return baseEntityReference;
-    }
-
-    private LinkedHashMap<VersionableEntity,TypeDesignationSet> orderByTypeByBaseEntity(
-            Map<VersionableEntity,TypeDesignationSet> stringsByTypeByBaseEntity){
+    private LinkedHashMap<VersionableEntity,TypeDesignationSet> orderBaseEntity2TypeDesignationsMap(
+            Map<VersionableEntity,TypeDesignationSet> baseEntity2TypeDesignationsMap){
 
        // order the FieldUnit TypeName keys
-       Collection<TypeDesignationSet> entrySet
-               = stringsByTypeByBaseEntity.values();
+       Collection<TypeDesignationSet> typeDesignations
+               = baseEntity2TypeDesignationsMap.values();
        LinkedList<TypeDesignationSet> baseEntityKeyList
-               = new LinkedList<>(entrySet);
+               = new LinkedList<>(typeDesignations);
        Collections.sort(baseEntityKeyList, typeDesignationSetComparator);
 
        // new LinkedHashMap for the ordered FieldUnitOrTypeName keys
-       LinkedHashMap<VersionableEntity,TypeDesignationSet> stringsOrderedbyBaseEntityOrderdByType
-           = new LinkedHashMap<>(stringsByTypeByBaseEntity.size());
+       LinkedHashMap<VersionableEntity,TypeDesignationSet> orderedBaseEntity2TypeDesignationsMap
+           = new LinkedHashMap<>(baseEntity2TypeDesignationsMap.size());
 
        for(TypeDesignationSet entry : baseEntityKeyList){
            VersionableEntity baseEntity = entry.getBaseEntity();
-           TypeDesignationSet typeDesignationSet = stringsByTypeByBaseEntity.get(baseEntity);
+           TypeDesignationSet typeDesignationSet = baseEntity2TypeDesignationsMap.get(baseEntity);
            // order the TypeDesignationStatusBase keys
             List<TypeDesignationStatusBase<?>> keyList = new LinkedList<>(typeDesignationSet.keySet());
             Collections.sort(keyList, new TypeDesignationStatusComparator());
@@ -296,10 +270,10 @@ public class TypeDesignationSetContainer {
             TypeDesignationSet orderedStringsByOrderedTypes = new TypeDesignationSet(
                     typeDesignationSet.getBaseEntity());
             keyList.forEach(key -> orderedStringsByOrderedTypes.put(key, typeDesignationSet.get(key)));
-            stringsOrderedbyBaseEntityOrderdByType.put(baseEntity, orderedStringsByOrderedTypes);
+            orderedBaseEntity2TypeDesignationsMap.put(baseEntity, orderedStringsByOrderedTypes);
         }
 
-        return stringsOrderedbyBaseEntityOrderdByType;
+        return orderedBaseEntity2TypeDesignationsMap;
     }
 
     /**
@@ -384,7 +358,7 @@ public class TypeDesignationSetContainer {
     }
 
     public Map<VersionableEntity,TypeDesignationSet> getOrderedTypeDesignationSets() {
-        return baseEntity;
+        return orderedBaseEntity2typeDesignationsMap;
     }
 
     private FieldUnit findFieldUnit(DerivedUnit du) {

@@ -108,8 +108,10 @@ public class TypeDesignationSetComparator implements Comparator<TypeDesignationS
                 return type2.equals(TaxonName.class) || type2.equals(NameTypeDesignation.class) ? -1 : 1;
             }
         } else {
-            String label1 = TypeDesignationSetContainerFormatter.entityLabel(o1.getBaseEntity());
-            String label2 = TypeDesignationSetContainerFormatter.entityLabel(o2.getBaseEntity());
+            //TODO i18n, how to get the configurator in here without creating the comparator anew each time
+            TypeDesignationSetFormatterConfiguration config = null;
+            String label1 = TypeDesignationSetFormatterBase.getFormatter(o1).entityLabel(o1.getBaseEntity(), config);
+            String label2 = TypeDesignationSetFormatterBase.getFormatter(o2).entityLabel(o2.getBaseEntity(), config);
             return label1.compareTo(label2);
         }
     }

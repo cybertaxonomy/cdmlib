@@ -46,8 +46,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 
 /**
  * Note by AM: this class was originally RegistrationDTO. As it holds
@@ -251,7 +251,7 @@ public class RegistrationWrapperDTO {
         Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationSet> result = new LinkedHashMap<>(orderedTypeDesignationSets.size());
 
         orderedTypeDesignationSets.entrySet().forEach(e->
-            result.put(TypeDesignationSet.makeEntityReference(e.getKey()), e.getValue()));
+            result.put(e.getValue().makeEntityReference(e.getKey()), e.getValue()));
         return result;
     }
 

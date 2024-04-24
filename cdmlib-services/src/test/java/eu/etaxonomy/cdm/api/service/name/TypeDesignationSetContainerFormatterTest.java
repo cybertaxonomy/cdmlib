@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -199,18 +200,18 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         Assert.assertEquals("first entry should be the typified name",
                 new TaggedText(TagEnum.name, "Prionus L.",TypedEntityReferenceFactory.fromEntity(typifiedName, false)), taggedText.get(0));
         Assert.assertEquals("fourth entry should be the name type nameCache",
-                new TaggedText(TagEnum.name, "Prionus"), taggedText.get(3));  //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
+                new TaggedText(TagEnum.name, "Prionus"), taggedText.get(4));  //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
         Assert.assertEquals("fourth entry should be the name type nameCache",
-                new TaggedText(TagEnum.name, "coriatius"), taggedText.get(4)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
+                new TaggedText(TagEnum.name, "coriatius"), taggedText.get(5)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
         Assert.assertEquals("fifth entry should be the name type authorship cache",
-                new TaggedText(TagEnum.authors, "L."), taggedText.get(5));
+                new TaggedText(TagEnum.authors, "L."), taggedText.get(6));
 
         //protected titleCache
         ntd.getTypeName().setTitleCache("Prionus coriatius L.", true);
         taggedText = formatter.toTaggedText(manager);
         Assert.assertEquals("fourth entry should be the name type titleCache",
-                new TaggedText(TagEnum.name, "Prionus coriatius L."), taggedText.get(3)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
-        Assert.assertEquals("there should be 4 tags only", 4, taggedText.size());
+                new TaggedText(TagEnum.name, "Prionus coriatius L."), taggedText.get(4)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
+        Assert.assertEquals("there should be 5 tags only", 5, taggedText.size());
     }
 
     @Test
@@ -229,7 +230,12 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         std_HT.getTypeSpecimen().addStatus(OccurrenceStatus.NewInstance(DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed), statusSource, "335"));
 
         TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tds);
-        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter(true, true, true, false, false);
+        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter()
+                .withCitation(true)
+                .withStartingTypeLabel(true)
+                .withNameIfAvailable(true)
+                .withPrecedingMainType(false)
+                .withAccessionNoType(false);
 
         String text = formatter.format(container);
         Assert.assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA 1234, destroyed)", text);
@@ -272,5 +278,140 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         String text = formatter.format(container);
         int holotypeIndex = text.indexOf("holotype");
         Assert.assertTrue("Holotype must be first, isotype second", holotypeIndex>0 && (holotypeIndex < text.indexOf("isotype")) );
+    }
+
+    @Test
+    public void testTextualTypeDesignation() throws TypeDesignationSetException {
+        List<TypeDesignationBase> tdList = new ArrayList<>();
+        TextualTypeDesignation ttd = TextualTypeDesignation.NewInstance("My text type designation",
+                null, false, book, DASH_W, DASH_W);
+        TextualTypeDesignation ttd2 = TextualTypeDesignation.NewInstance("My second type designation",
+                null, false, book, DASH_W, DASH_W);
+        ttd2.setVerbatim(true);
+        ttd2.addPrimaryTaxonomicSource(book, "55");
+
+        tdList.add(ttd);
+        tdList.add(ttd2);
+
+        //add to name
+        TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        typifiedName.setTitleCache("Prionus coriatius L.", true);
+        typifiedName.addTypeDesignation(ttd, false);
+        typifiedName.addTypeDesignation(ttd2, false);
+
+        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tdList);
+        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter();
+        String text = formatter.format(container);
+        Assert.assertEquals("Types: \"My second type designation\" [fide Decandolle & al. 1962: 55]; My text type designation", text);
+
+        List<TaggedText> tags = formatter.toTaggedText(container);
+        Assert.assertEquals(8, tags.size());
+        int i = 0;
+        Assert.assertEquals(TagEnum.label, tags.get(i).getType());
+        Assert.assertEquals("Types", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
+        Assert.assertEquals(": ", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
+        Assert.assertEquals("\"My second type designation\"", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
+        Assert.assertEquals(" [fide ", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.reference, tags.get(i).getType());
+        Assert.assertEquals(Reference.class, tags.get(i).getEntityReference().getType());
+        Assert.assertEquals("Decandolle & al. 1962: 55", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
+        Assert.assertEquals("]", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
+        Assert.assertEquals("; ", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
+        Assert.assertEquals("My text type designation", tags.get(i++).getText());
+    }
+
+    @Test
+    public void testNotDesignated() throws TypeDesignationSetException {
+
+        //create data
+        @SuppressWarnings("rawtypes")
+        List<TypeDesignationBase> tdList = new ArrayList<>();
+        SpecimenTypeDesignation std = SpecimenTypeDesignation.NewInstance();
+        std.setNotDesignated(true);
+        std.addPrimaryTaxonomicSource(book, "66");
+
+        NameTypeDesignation ntd = NameTypeDesignation.NewInstance();
+        ntd.setNotDesignated(true);
+        ntd.addPrimaryTaxonomicSource(book, "55");
+
+        tdList.add(std);
+        tdList.add(ntd);
+
+        TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        typifiedName.setTitleCache("Prionus coriatius L.", true);
+
+        typifiedName.addTypeDesignation(std, false);
+        typifiedName.addTypeDesignation(ntd, false);
+
+        //test
+        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tdList);
+        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter()
+                .withCitation(false);
+        String text = formatter.format(container);
+        //Type*s* might become Type in future (not defined yet as this is a very rare or even unrealistic combination of specimen and name types, see according comment in formatter
+        Assert.assertEquals("Types: not designated; Nametype: not designated", text);
+
+        List<TaggedText> tags = formatter.toTaggedText(container);
+        Assert.assertEquals(7, tags.size());
+        int i = 0;
+        Assert.assertEquals(TagEnum.label, tags.get(i).getType());
+        Assert.assertEquals("Types", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
+        Assert.assertEquals(": ", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
+        Assert.assertEquals("not designated", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
+        Assert.assertEquals("; ", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.label, tags.get(i).getType());
+        //TODO maybe not correct and should be nametype, not Nametype
+        Assert.assertEquals("Nametype", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
+        Assert.assertEquals(": ", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
+        Assert.assertEquals("not designated", tags.get(i++).getText());
+
+        //with citation
+        formatter = new TypeDesignationSetContainerFormatter().withCitation(true);
+        text = formatter.format(container);
+
+        Assert.assertEquals("Types: not designated [fide Decandolle & al. 1962: 66]; Nametype: not designated [fide Decandolle & al. 1962: 55]", text);
+        tags = formatter.toTaggedText(container);
+        Assert.assertEquals(13, tags.size());
+        i = 0;
+        Assert.assertEquals(TagEnum.label, tags.get(i).getType());
+        Assert.assertEquals("Types", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
+        Assert.assertEquals(": ", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
+        Assert.assertEquals("not designated", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
+        Assert.assertEquals(" [fide ", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.reference, tags.get(i).getType());
+        Assert.assertEquals(Reference.class, tags.get(i).getEntityReference().getType());
+        Assert.assertEquals("Decandolle & al. 1962: 66", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
+        Assert.assertEquals("]", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
+        Assert.assertEquals("; ", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.label, tags.get(i).getType());
+        //TODO maybe not correct and should be nametype, not Nametype
+        Assert.assertEquals("Nametype", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
+        Assert.assertEquals(": ", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
+        Assert.assertEquals("not designated", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
+        Assert.assertEquals(" [fide ", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.reference, tags.get(i).getType());
+        Assert.assertEquals(Reference.class, tags.get(i).getEntityReference().getType());
+        Assert.assertEquals("Decandolle & al. 1962: 55", tags.get(i++).getText());
+        Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
+        Assert.assertEquals("]", tags.get(i++).getText());;
     }
 }
