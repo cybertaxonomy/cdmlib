@@ -28,6 +28,10 @@ public class TaggedTextBuilder {
 
     private List<TaggedText> taggedText = new ArrayList<>();
 
+    public void add(TaggedText taggedText){
+        this.taggedText.add(taggedText);
+    }
+
     public void add(TagEnum type, String text){
         taggedText.add(new TaggedText(type, text));
     }

@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -44,6 +45,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextWithLink;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
@@ -217,9 +220,10 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
     @Test
     public void testSpecimenTypeDesignationTaggedTextWithStatus() throws TypeDesignationSetException {
 
+        //create data
         @SuppressWarnings("rawtypes")
-        List<TypeDesignationBase> tds = new ArrayList<>();
-        tds.add(std_HT);
+        List<TypeDesignationBase> tdList = new ArrayList<>();
+        tdList.add(std_HT);
 
         TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         typifiedName.setTitleCache("Prionus coriatius L.", true);
@@ -228,8 +232,12 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         Reference statusSource = ReferenceFactory.newBook(); //TODO not yet handled in cache strategy as we do not have tagged text here
         statusSource.setTitle("Status test");
         std_HT.getTypeSpecimen().addStatus(OccurrenceStatus.NewInstance(DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed), statusSource, "335"));
+        URI stableIdentifier = URI.create("http://stable.uri.de/xyz");
+        DerivedUnit derivedUnit = std_HT.getTypeSpecimen();
+        derivedUnit.setPreferredStableUri(stableIdentifier);
 
-        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tds);
+        //create formatter
+        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tdList);
         TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter()
                 .withCitation(true)
                 .withStartingTypeLabel(true)
@@ -237,22 +245,84 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
                 .withPrecedingMainType(false)
                 .withAccessionNoType(false);
 
-        String text = formatter.format(container);
+        //test text
+        List<TaggedText> taggedText = formatter.toTaggedText(container);
+        String text = TaggedTextFormatter.createString(taggedText);
         Assert.assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA 1234, destroyed)", text);
 
-        List<TaggedText> taggedText = formatter.toTaggedText(container);
+        //test tags
+//        //TODO the name should be split so it can be put in italics
         Assert.assertEquals("first entry should be the typified name",
-                new TaggedText(TagEnum.name, "Prionus coriatius L.",TypedEntityReferenceFactory.fromEntity(typifiedName, false)), taggedText.get(0));
+                new TaggedText(TagEnum.name, "Prionus coriatius L.",TypedEntityReferenceFactory.fromEntity(typifiedName, false))
+                , taggedText.get(0));
 //        Assert.assertEquals("fourth entry should be the name type nameCache",
 //                new TaggedText(TagEnum.name, "Prionus"), taggedText.get(3));  //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
 //        Assert.assertEquals("fourth entry should be the name type nameCache",
 //                new TaggedText(TagEnum.name, "coriatius"), taggedText.get(4)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
 //        Assert.assertEquals("fifth entry should be the name type authorship cache",
 //                new TaggedText(TagEnum.authors, "L."), taggedText.get(5));
-//
+
+        int i = 2;  //start specimen
+        Assert.assertEquals("entry "+(i+1)+" should be the starting of specimen type designation",
+                "Type", taggedText.get(i++).getText());
+        Assert.assertEquals("entry "+(i+1)+" should be the separator",
+                ": ", taggedText.get(i++).getText());
+        Assert.assertEquals("entry "+(i+1)+" should be the field unit", //may get explicit field unit tag type in future
+                TagEnum.specimenOrObservation, taggedText.get(i).getType());
+        Assert.assertEquals("entry "+(i+1)+" should be the field unit", //may be split into more pieces in future
+                "Testland, near Bughausen, A.Kohlbecker 81989, 2017", taggedText.get(i++).getText());
+        i++;
+        Assert.assertEquals("entry "+(i+1)+" should be the type status", //may be split into more pieces in future
+                "holotype", taggedText.get(i++).getText());
+        //TODO split collection and field number and specimen status (here 'destroyed') into their own tags
+        i = 9; //unit number
+        Assert.assertEquals("entry "+(i+1)+" should be the unit number with link",
+                "1234", taggedText.get(i).getText());
+        Assert.assertEquals("entry "+(i+1)+" should have a link for the stable identifier",
+                TaggedTextWithLink.class, taggedText.get(i).getClass());
+        TaggedTextWithLink ttwl = (TaggedTextWithLink)taggedText.get(i);
+        Assert.assertEquals("entry "+(i+1)+" link should be the stable identifier",
+                stableIdentifier, ttwl.getLink());
+
+        //without unit number
+        derivedUnit.setAccessionNumber(null);
+        taggedText = formatter.toTaggedText(container);
+        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA, destroyed)", TaggedTextFormatter.createString(taggedText));
+        i = 8; //collection
+        Assert.assertEquals("entry "+(i+1)+" should be the collection with link",
+                "OHA", taggedText.get(i).getText());
+        Assert.assertEquals("entry "+(i+1)+" should have a link for the stable identifier on the collection because unit number is missing",
+                TaggedTextWithLink.class, taggedText.get(i).getClass());
+        ttwl = (TaggedTextWithLink)taggedText.get(i);
+        Assert.assertEquals("entry "+(i+1)+" link should be the stable identifier",
+                stableIdentifier, ttwl.getLink());
+
+        //without collection
+        derivedUnit.setCollection(null);
+        taggedText = formatter.toTaggedText(container);
+        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: destroyed)", TaggedTextFormatter.createString(taggedText));
+        i = 8; //destroyed
+        Assert.assertEquals("entry "+(i+1)+" should be the specimen status with link",
+                "destroyed", taggedText.get(i).getText());
+        Assert.assertEquals("entry "+(i+1)+" should have a link for the stable identifier on the specimen status because unit number and collection are missing",
+                TaggedTextWithLink.class, taggedText.get(i).getClass());
+        ttwl = (TaggedTextWithLink)taggedText.get(i);
+        Assert.assertEquals("entry "+(i+1)+" link should be the stable identifier",
+                stableIdentifier, ttwl.getLink());
+
+        //no link
+        derivedUnit.setPreferredStableUri(null);
+        taggedText = formatter.toTaggedText(container);
+        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: destroyed)", TaggedTextFormatter.createString(taggedText));
+        i = 8; //destroyed
+        Assert.assertEquals("entry "+(i+1)+" should be the specimen status with link",
+                "destroyed", taggedText.get(i).getText());
+        Assert.assertEquals("entry "+(i+1)+" should have no link for the stable identifier",
+                TaggedText.class, taggedText.get(i).getClass());
+
 //        //protected titleCache
 //        ntd.getTypeName().setTitleCache("Prionus coriatius L.", true);
-//        taggedText = formatter.toTaggedText(manager);
+//        taggedText = formatter.toTaggedText(container);
 //        Assert.assertEquals("fourth entry should be the name type titleCache",
 //                new TaggedText(TagEnum.name, "Prionus coriatius L."), taggedText.get(3)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
 //        Assert.assertEquals("there should be 4 tags only", 4, taggedText.size());

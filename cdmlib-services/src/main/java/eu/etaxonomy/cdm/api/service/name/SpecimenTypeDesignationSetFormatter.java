@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.api.service.name;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
+
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet.TypeDesignationSetType;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -26,9 +28,9 @@ import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
-import eu.etaxonomy.cdm.ref.TypedEntityReferenceWithLink;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextWithLink;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
 
 /**
@@ -108,7 +110,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
     }
 
     /**
-     * Checks if the baseType is the same as the (only?) type in the type designation workingset.
+     * Checks if the baseType is the same as the (only?) type in the type designation set.
      */
     private boolean hasExplicitBaseEntity(SpecimenOrObservationBase<?> sob,
             TypeDesignationSet typeDesignationSet) {
@@ -162,11 +164,6 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
             TaggedTextBuilder workingsetBuilder) {
 
         TypedEntityReference<?> typeDesignationEntity = TypedEntityReferenceFactory.fromEntity(td, false);
-//        if(td instanceof NameTypeDesignation){
-//            buildTaggedTextForNameTypeDesignation((NameTypeDesignation)td, workingsetBuilder, typeDesignationEntity);
-//        } else if (td instanceof TextualTypeDesignation){
-//            buildTaggedTextForTextualTypeDesignation((TextualTypeDesignation)td, workingsetBuilder, typeDesignationEntity);
-//        } else
         if (td instanceof SpecimenTypeDesignation){
             buildTaggedTextForSpecimenTypeDesignation((SpecimenTypeDesignation)td, workingsetBuilder, typeDesignationEntity);
         }else{
@@ -209,15 +206,48 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
                     }
                 //other specimen
                 } else {
+                    //TODO split collection and field number and specimen status into their own tags
+                    //     in cache strategy, use TaggedText there for this part
+
                     DerivedUnitDefaultCacheStrategy cacheStrategy = DerivedUnitDefaultCacheStrategy.NewInstance(true, false, true, " ");
                     String titleCache = cacheStrategy.getTitleCache(du, true);
                     // removing parentheses from code + accession number, see https://dev.e-taxonomy.eu/redmine/issues/8365
                     titleCache = titleCache.replaceAll("[\\(\\)]", "");
-                    typeSpecimenTitle += titleCache;
                     URI link = getLink(du);  //
-                    TypedEntityReferenceWithLink entity = new TypedEntityReferenceWithLink(du.getClass(),
-                            du.getUuid(), typeSpecimenTitle, link);
-                    builder.add(TagEnum.typeDesignation, typeSpecimenTitle, typeDesignationEntity);
+
+                    if (link != null) {
+                        //if the specimen has a link we split the specimen text and try to
+                        //add the link to the accession number
+                        String linkedText = cacheStrategy.getUnitNumber(du);
+                        if (StringUtils.isBlank(linkedText)) {
+                            linkedText = cacheStrategy.getCollectionCode(du);
+                        }
+
+                        if (StringUtils.isNotBlank(linkedText) && titleCache.contains(linkedText)) {
+                            int pos = titleCache.indexOf(linkedText);
+                            String before = titleCache.substring(0, pos);
+                            String after = titleCache.substring(pos + linkedText.length());
+                            if (StringUtils.isNoneEmpty(before)) {
+                                builder.add(TagEnum.typeDesignation, before.trim());
+                            }
+                            TaggedTextWithLink taggedTextWithLink = TaggedTextWithLink.NewInstance(
+                                    TagEnum.typeDesignation, linkedText, typeDesignationEntity, link);
+                            builder.add(taggedTextWithLink);
+                            if (StringUtils.isNotBlank(after)) {
+                                if (after.startsWith(", ")) {
+                                    builder.addSeparator(", ");
+                                    after = after.substring(2);
+                                }
+                                builder.add(TagEnum.typeDesignation, after);
+                            }
+                        }else {
+                            TaggedTextWithLink taggedTextWithLink = TaggedTextWithLink.NewInstance(
+                                    TagEnum.typeDesignation, titleCache, typeDesignationEntity, link);
+                            builder.add(taggedTextWithLink);
+                        }
+                    }else {
+                        builder.add(TagEnum.typeDesignation, titleCache, typeDesignationEntity);
+                    }
                 }
             } //protected titleCache
         }//fi specimen == null
@@ -230,7 +260,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
 
     private static URI getLink(DerivedUnit du) {
         if (du.getPreferredStableUri() != null) {
-            return du.getPreferredStableUri().getJavaUri();
+            return du.getPreferredStableUri();
         }else {
             return null;
         }

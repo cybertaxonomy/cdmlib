@@ -96,7 +96,7 @@ public abstract class TypeDesignationSetFormatterBase<T extends VersionableEntit
         }
         boolean statusLabelPreceding = hasPrecedingStatusLabel && typeStatusCount == 1 /*check if is first */;
 
-        //status label
+        //status label - only if it has not been added before already
         if (!statusLabelPreceding) {
             addStatusLabel(builder, typeDesignationSet, typeStatus, lastWsType, typeSetCount, false);
         }

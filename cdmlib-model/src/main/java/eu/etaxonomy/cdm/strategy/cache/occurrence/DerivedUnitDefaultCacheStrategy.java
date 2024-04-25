@@ -204,7 +204,8 @@ public class DerivedUnitDefaultCacheStrategy
      * it might be replaced.
      * @param derivedUnit the derived unit facade
      */
-    private String getUnitNumber(DerivedUnit derivedUnit) {
+    //is public as it is used by SpecimenTypeDesignationSetFormatter to extract the unit number
+    public String getUnitNumber(DerivedUnit derivedUnit) {
         String result;
         if (isNotBlank(derivedUnit.getAccessionNumber())){
             result = derivedUnit.getAccessionNumber();
@@ -225,7 +226,7 @@ public class DerivedUnitDefaultCacheStrategy
         return result;
     }
 
-    private String getCollectionCode(DerivedUnit derivedUnit) {
+    public String getCollectionCode(DerivedUnit derivedUnit) {
         String code = "";
         if(derivedUnit.getCollection() != null){
             code = derivedUnit.getCollection().getCode();

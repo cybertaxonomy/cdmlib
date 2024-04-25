@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
-import eu.etaxonomy.cdm.ref.TypedEntityReferenceWithLink;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -332,8 +331,7 @@ public class TypeDesignationSetContainerFormatter {
                     titleCache = titleCache.replaceAll("[\\(\\)]", "");
                     typeSpecimenTitle += titleCache;
                     URI link = getLink(du);  //
-                    TypedEntityReferenceWithLink entity = new TypedEntityReferenceWithLink(du.getClass(),
-                            du.getUuid(), typeSpecimenTitle, link);
+
                     workingsetBuilder.add(TagEnum.typeDesignation, typeSpecimenTitle, typeDesignationEntity);
                 }
             } //protected titleCache
