@@ -184,7 +184,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
             } else {
                 du = HibernateProxyHelper.deproxy(du);
                 boolean isMediaSpecimen = du instanceof MediaSpecimen;
-                String typeSpecimenTitle = (isMediaSpecimen ? "[icon] " : "");
+                String icon = (isMediaSpecimen ? "[icon] " : "");
 
                 //media specimen
                 if(isMediaSpecimen
@@ -210,7 +210,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
                     //     in cache strategy, use TaggedText there for this part
 
                     DerivedUnitDefaultCacheStrategy cacheStrategy = DerivedUnitDefaultCacheStrategy.NewInstance(true, false, true, " ");
-                    String titleCache = cacheStrategy.getTitleCache(du, true);
+                    String titleCache = icon + cacheStrategy.getTitleCache(du, true);
                     // removing parentheses from code + accession number, see https://dev.e-taxonomy.eu/redmine/issues/8365
                     titleCache = titleCache.replaceAll("[\\(\\)]", "");
                     URI link = getLink(du);  //
