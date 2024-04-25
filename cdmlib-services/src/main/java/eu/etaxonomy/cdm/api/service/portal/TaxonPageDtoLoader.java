@@ -618,6 +618,8 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             //name
             dto.setNameUuid(relatedName.getUuid());
             dto.setNameLabel(relatedName.getTaggedName());
+            //... annotations
+            loadAnnotatable(config, relatedName, dto);
             //type
             dto.setRelTypeUuid(rel.getType().getUuid());
             Representation rep = rel.getType().getPreferredRepresentation(locale);

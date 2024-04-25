@@ -31,11 +31,16 @@ import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MediaDto2;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto.TaxonNameDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonInteractionDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.HomotypicGroupDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaRepresentationDTO;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NameRelationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
+import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.geo.DistributionInfoBuilderTest;
@@ -63,6 +68,7 @@ import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -94,6 +100,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     private ITaxonService taxonService;
 
     @SpringBeanByType
+    private INameService nameService;
+
+    @SpringBeanByType
     private ITermService termService;
 
     @SpringBeanByType
@@ -104,7 +113,49 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
-    public void test() {
+    public void testSynonymy() {
+        createTestData();
+        commitAndStartNewTransaction();
+        TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
+        CondensedDistributionConfiguration cc = config.getDistributionInfoConfiguration().getCondensedDistributionConfiguration();
+        cc.showAreaOfScopeLabel = true;
+        config.setWithSpecimens(false);
+        config.setTaxonUuid(taxonUuid);
+        TaxonPageDto dto = portalService.taxonPageDto(config);
+
+        Assert.assertNotNull(dto);
+        List<TaggedText> list = dto.getTaggedName();
+        Assert.assertEquals("Genus", list.get(0).getText());
+        Assert.assertEquals("Genus species Mill. sec. My secbook", dto.getLabel());
+        Assert.assertNull(dto.getKeys());
+        //TODO check if there is not some duplication between nameDto and dto
+        TaxonNameDto nameDto = dto.getName();
+        Assert.assertEquals("Basionym relations are not necessary", null, dto.getName().getRelatedNames());
+
+        //homotypic synonyms
+        HomotypicGroupDTO homoSyns = dto.getHomotypicSynonyms();
+        Assert.assertEquals(1, homoSyns.getSynonyms().getCount());
+        TaxonBaseDto homoSyn = homoSyns.getSynonyms().getItems().get(0);
+        Assert.assertEquals("Genusnovus species (Mill.) Noll. syn. sec. My secbook", homoSyn.getLabel());
+        Assert.assertEquals(1, homoSyn.getRelatedNames().getCount());
+        NameRelationDTO homonym = homoSyn.getRelatedNames().getItems().get(0);
+        Assert.assertEquals("Genusnovus species Woll.", TaggedTextFormatter.createString(homonym.getNameLabel()));
+        Assert.assertEquals(1, homonym.getAnnotations().getCount());
+
+        //heterotypic synonyms
+
+        //types
+
+        //misapplications
+        //TODO
+    }
+
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    })
+    public void testFacts() {
         createTestData();
         commitAndStartNewTransaction();
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
@@ -291,6 +342,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Person author = Person.NewInstance("Mill.", "Miller", "M.M.", "Michael");
         Reference nomRef = ReferenceFactory.newBook();
         nomRef.setTitle("My book");
+        Reference nomRef2 = ReferenceFactory.newBook();
+        nomRef.setTitle("My book2");
         TaxonName accName = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Genus", null, "species", null, author, nomRef, "55", null);
         Reference secRef = ReferenceFactory.newBook();
@@ -298,6 +351,21 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = Taxon.NewInstance(accName, secRef);
         taxon.setUuid(taxonUuid);
         taxonService.save(taxon);
+
+        //homotyp. synonym
+        Person author2 = Person.NewInstance("Noll.", "Noller", "N.N.", "Norman");
+        TaxonName homSynName = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Genusnovus", null, "species", null, author2, nomRef2, "66", accName.getHomotypicalGroup());
+        homSynName.setBasionymAuthorship(author);
+        taxon.addHomotypicSynonymName(homSynName);
+        accName.addBasionym(homSynName);
+        //... with homonym relation
+        Person author3 = Person.NewInstance("Woll.", "Woller", "W.W.", "Wotan");
+        TaxonName earlierHomonym = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Genusnovus", null, "species", null, author3, nomRef, "666", null);
+        homSynName.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM());
+        earlierHomonym.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Homonym annotation"));
+        nameService.save(earlierHomonym);;
 
         //distributions
         TaxonDescription taxDesc = TaxonDescription.NewInstance(taxon);
