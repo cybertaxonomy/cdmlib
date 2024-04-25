@@ -57,7 +57,7 @@ public class NomenclaturalCodeEditionTest {
         for (NomenclaturalCodeEdition edition: NomenclaturalCodeEdition.values()){
             edition.getDoi();
         }
-        Assert.assertEquals("http://doi.org/10.12705/Code.2018", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getDoi().asURI().toString());
+        Assert.assertEquals("https://doi.org/10.12705/Code.2018", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getDoi().asURI().toString());
         Assert.assertEquals("As long as Tokyo code has no doi no exception should be thrown", null, NomenclaturalCodeEdition.ICN_1993_TOKYO.getDoi());
     }
 
