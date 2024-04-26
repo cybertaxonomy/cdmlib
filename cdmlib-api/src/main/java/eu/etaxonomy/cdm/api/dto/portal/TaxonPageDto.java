@@ -210,6 +210,7 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
     }
 
+    //Note: annotations may include annotations on the related name, too.
     public static class NameRelationDTO extends SingleSourcedDto {
 
         private List<TaggedText> nameLabel;
