@@ -339,6 +339,11 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     }
 
     private void createTestData() {
+        Taxon taxon = createSynonymy();
+        createFactualData(taxon);
+    }
+
+    private Taxon createSynonymy() {
         Person author = Person.NewInstance("Mill.", "Miller", "M.M.", "Michael");
         Reference nomRef = ReferenceFactory.newBook();
         nomRef.setTitle("My book");
@@ -365,8 +370,11 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "Genusnovus", null, "species", null, author3, nomRef, "666", null);
         homSynName.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM());
         earlierHomonym.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Homonym annotation"));
-        nameService.save(earlierHomonym);;
+        nameService.save(earlierHomonym);
+        return taxon;
+    }
 
+    private void createFactualData(Taxon taxon) {
         //distributions
         TaxonDescription taxDesc = TaxonDescription.NewInstance(taxon);
         Country.GERMANY().setSymbol("De");
@@ -384,7 +392,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //... sources
         //... ... primary
         Reference franceRef = ReferenceFactory.newBook();
-        franceRef.setAuthorship(author);
+        franceRef.setAuthorship(taxon.getName().getCombinationAuthorship());
         franceRef.setTitle("My French distribution");
         franceRef.setDatePublished(TimePeriodParser.parseStringVerbatim("1978"));
         franceDist.addPrimaryTaxonomicSource(franceRef, "44");
@@ -442,14 +450,14 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         taxDesc.addElements(indAss1, indAss2);
 
         //taxon interaction
-        Taxon taxon1 = Taxon.NewInstance(accName, secRef);
+        Taxon taxon1 = Taxon.NewInstance(taxon.getName(), taxon.getSec());
         taxon1.setUuid(taxonUuid1);
         TaxonInteraction taxInteract1 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
         taxInteract1.setTaxon2(taxon1);
         taxInteract1.putDescription(Language.DEFAULT(), "Taxon interaction description1");
         TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         name2.setTitleCache("Name three Mill.", true);
-        Taxon taxon2 = Taxon.NewInstance(name2, secRef);
+        Taxon taxon2 = Taxon.NewInstance(name2, taxon.getSec());
         taxon2.setUuid(taxonUuid2);
         TaxonInteraction taxInteract2 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
         taxInteract2.setTaxon2(taxon2);
