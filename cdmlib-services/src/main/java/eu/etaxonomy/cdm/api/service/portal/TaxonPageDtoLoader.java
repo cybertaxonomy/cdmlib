@@ -610,55 +610,48 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
         for (NameRelationship rel : name.getRelationsFromThisName()) {
             TaxonName relatedName = rel.getToName();
-            if (relatedName == null || rel.getType() == null || excludedFromTypes.contains(rel.getType().getUuid())) {
-                continue;
-            }
-            NameRelationDTO dto = new NameRelationDTO();
-            loadBaseData(config, rel, dto);
-            //name
-            dto.setNameUuid(relatedName.getUuid());
-            dto.setNameLabel(relatedName.getTaggedName());
-            //... annotations
-            loadAnnotatable(config, relatedName, dto);
-            //type
-            dto.setRelTypeUuid(rel.getType().getUuid());
             Representation rep = rel.getType().getPreferredRepresentation(locale);
-            dto.setRelType(rep == null ? rel.getType().toString() : rep.getLabel());
-            //inverse
-            dto.setInverse(false);
-            //ruleConsidered
-            dto.setRuleConsidered(rel.getRuleConsidered());
-            //TODO i18n
-            if (rel.getCodeEdition() != null) {
-                dto.setCodeEdition(rel.getCodeEdition().getLabel(/*locale*/));
-                dto.setCodeEditionSource(makeSource(config, rel.getCodeEditionSource()));
-            }
-            //year
-            dto.setYear(relatedName.getReferenceYear());
-            taxonDto.addRelatedName(dto);
+            handleRelatedName(taxonDto, config, rel, relatedName, rep, excludedFromTypes, false);
         }
 
         //to relations
         for (NameRelationship rel : name.getRelationsToThisName()) {
             TaxonName relatedName = rel.getFromName();
-            if (relatedName == null || rel.getType() == null || excludedFromTypes.contains(rel.getType().getUuid())) {
-                continue;
-            }
-            NameRelationDTO dto = new NameRelationDTO();
-            loadBaseData(config, rel, dto);
-            //name
-            dto.setNameUuid(relatedName.getUuid());
-            dto.setNameLabel(relatedName.getTaggedName());
-            //type
-            dto.setRelTypeUuid(rel.getType().getUuid());
             Representation rep = rel.getType().getPreferredInverseRepresentation(Arrays.asList(new Language[] {locale}));
-            dto.setRelType(rep == null ? rel.getType().toString() : rep.getLabel());
-            //inverse
-            dto.setInverse(true);
-            //year
-            dto.setYear(relatedName.getReferenceYear());
-            taxonDto.addRelatedName(dto);
+            handleRelatedName(taxonDto, config, rel, relatedName, rep, excludedToTypes, true);
         }
+    }
+
+    private void handleRelatedName(TaxonBaseDto taxonDto, TaxonPageDtoConfiguration config,
+            NameRelationship rel, TaxonName relatedName, Representation rep,
+            Set<UUID> excludedTypes, boolean inverse) {
+
+        if (relatedName == null || rel.getType() == null || excludedTypes.contains(rel.getType().getUuid())) {
+            return ;
+        }
+        NameRelationDTO dto = new NameRelationDTO();
+        loadBaseData(config, rel, dto);
+        //name
+        dto.setNameUuid(relatedName.getUuid());
+        dto.setNameLabel(relatedName.getTaggedName());
+        //... annotations
+        loadAnnotatable(config, relatedName, dto);
+        //type
+        dto.setRelTypeUuid(rel.getType().getUuid());
+        dto.setRelType(rep == null ? rel.getType().toString() : rep.getLabel());
+        //inverse
+        dto.setInverse(inverse);
+        //ruleConsidered
+        dto.setRuleConsidered(rel.getRuleConsidered());
+        //TODO i18n
+        if (rel.getCodeEdition() != null) {
+            dto.setCodeEdition(rel.getCodeEdition().getLabel(/*locale*/));
+            dto.setCodeEditionSource(makeSource(config, rel.getCodeEditionSource()));
+        }
+        //year
+        dto.setYear(relatedName.getReferenceYear());
+        taxonDto.addRelatedName(dto);
+        return;
     }
 
     private void loadFacts(Taxon taxon, TaxonPageDto taxonPageDto, TaxonPageDtoConfiguration config) {
