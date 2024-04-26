@@ -178,12 +178,6 @@ public class TaxonPageDto extends TaxonBaseDto {
         private UUID statusTypeUuid;
         private String statusType;
 
-        public String getRuleConsidered() {
-            return ruleConsidered;
-        }
-        public void setRuleConsidered(String ruleConsidered) {
-            this.ruleConsidered = ruleConsidered;
-        }
         public UUID getStatusTypeUuid() {
             return statusTypeUuid;
         }
@@ -195,6 +189,12 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
         public void setStatusType(String statusType) {
             this.statusType = statusType;
+        }
+        public String getRuleConsidered() {
+            return ruleConsidered;
+        }
+        public void setRuleConsidered(String ruleConsidered) {
+            this.ruleConsidered = ruleConsidered;
         }
         public String getCodeEdition() {
             return codeEdition;
@@ -219,6 +219,8 @@ public class TaxonPageDto extends TaxonBaseDto {
         private UUID relTypeUuid;
         private boolean inverse;
         private String ruleConsidered;
+        private String codeEdition;
+        private SourceDto codeEditionSource;
         private String year;  //needed e.g. for homonyms
         //TODO relatedTaxon in this classification
 
@@ -252,17 +254,29 @@ public class TaxonPageDto extends TaxonBaseDto {
         public void setInverse(boolean inverse) {
             this.inverse = inverse;
         }
+        public String getYear() {
+            return year;
+        }
+        public void setYear(String year) {
+            this.year = year;
+        }
+        public String getCodeEdition() {
+            return codeEdition;
+        }
         public String getRuleConsidered() {
             return ruleConsidered;
         }
         public void setRuleConsidered(String ruleConsidered) {
             this.ruleConsidered = ruleConsidered;
         }
-        public String getYear() {
-            return year;
+        public void setCodeEdition(String codeEdition) {
+            this.codeEdition = codeEdition;
         }
-        public void setYear(String year) {
-            this.year = year;
+        public SourceDto getCodeEditionSource() {
+            return codeEditionSource;
+        }
+        public void setCodeEditionSource(SourceDto codeEditionSource) {
+            this.codeEditionSource = codeEditionSource;
         }
     }
 

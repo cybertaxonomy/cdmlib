@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.geo.DistributionInfoBuilderTest;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -68,8 +69,10 @@ import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCodeEdition;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -138,9 +141,13 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TaxonBaseDto homoSyn = homoSyns.getSynonyms().getItems().get(0);
         Assert.assertEquals("Genusnovus species (Mill.) Noll. syn. sec. My secbook", homoSyn.getLabel());
         Assert.assertEquals(1, homoSyn.getRelatedNames().getCount());
-        NameRelationDTO homonym = homoSyn.getRelatedNames().getItems().get(0);
-        Assert.assertEquals("Genusnovus species Woll.", TaggedTextFormatter.createString(homonym.getNameLabel()));
-        Assert.assertEquals(1, homonym.getAnnotations().getCount());
+        NameRelationDTO homonymRel = homoSyn.getRelatedNames().getItems().get(0);
+        Assert.assertEquals("Genusnovus species Woll.", TaggedTextFormatter.createString(homonymRel.getNameLabel()));
+        Assert.assertEquals(1, homonymRel.getAnnotations().getCount());
+        Assert.assertEquals("Art. 5", homonymRel.getRuleConsidered());
+        Assert.assertEquals("Shenzhen 2017", homonymRel.getCodeEdition());
+        Assert.assertEquals("Turland, N.J., Wiersema, J.H., Barrie, F.R., Greuter, W., Hawksworth, D.L., Herendeen, P.S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T.W., McNeill, J., Monro, A.M., Prado, J., Price, M.J. & Smith, G.F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017. Regnum Vegetabile 159. – Glash"+UTF8.U_UMLAUT+"tten: Koeltz Botanical Books",
+                homonymRel.getCodeEditionSource().getLabel().get(0).getLabel());
 
         //heterotypic synonyms
 
@@ -368,7 +375,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Person author3 = Person.NewInstance("Woll.", "Woller", "W.W.", "Wotan");
         TaxonName earlierHomonym = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Genusnovus", null, "species", null, author3, nomRef, "666", null);
-        homSynName.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM());
+        NameRelationship rel = homSynName.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM());
+        rel.setRuleConsidered("Art. 5");
+        rel.setCodeEdition(NomenclaturalCodeEdition.ICN_2017_SHENZHEN);
         earlierHomonym.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Homonym annotation"));
         nameService.save(earlierHomonym);
         return taxon;

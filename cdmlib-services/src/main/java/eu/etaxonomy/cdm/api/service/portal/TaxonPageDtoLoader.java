@@ -628,6 +628,11 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             dto.setInverse(false);
             //ruleConsidered
             dto.setRuleConsidered(rel.getRuleConsidered());
+            //TODO i18n
+            if (rel.getCodeEdition() != null) {
+                dto.setCodeEdition(rel.getCodeEdition().getLabel(/*locale*/));
+                dto.setCodeEditionSource(makeSource(config, rel.getCodeEditionSource()));
+            }
             //year
             dto.setYear(relatedName.getReferenceYear());
             taxonDto.addRelatedName(dto);
