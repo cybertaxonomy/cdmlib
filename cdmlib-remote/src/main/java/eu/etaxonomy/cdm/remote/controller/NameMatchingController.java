@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCandidateResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCombinedResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingExactResult;
-import eu.etaxonomy.cdm.api.nameMatching.NameMatchingOtherCandidateResult;
 import eu.etaxonomy.cdm.api.service.INameMatchingService;
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.NameMatchingResult;
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.SingleNameMatchingResult;
@@ -52,28 +51,24 @@ public class NameMatchingController {
             method = RequestMethod.GET)
     public NameMatchingCombinedResult doGetNameMatching(
             @RequestParam(value="namecache", required = true) String nameCache,
-            @RequestParam(value="author", required = false) boolean compareAuthor,
-            @RequestParam(value="distance", required = false) int distance,
-            @RequestParam(value="relaxedsearch", required = false) boolean relaxedSearch,
-            @RequestParam(value="othercandidates", required = false) boolean otherCandidates,
+            @RequestParam(value="compareauthor", required = false) boolean compareAuthor,
+            @RequestParam(value="distance", required = false) Integer distance,
             HttpServletRequest request,
             @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("doGetNameMatching()" + request.getRequestURI());
 
-        NameMatchingResult result;
+        NameMatchingResult result = nameMatchingservice.listShaping(nameCache, compareAuthor, distance);
 
-        result = nameMatchingservice.wrapperResults(nameCache, compareAuthor, distance, relaxedSearch, otherCandidates);
         return NameMatchingAdapter.invoke(result);
     }
 
     private static class NameMatchingAdapter {
 
-        private static NameMatchingCombinedResult invoke(NameMatchingResult nameMatchingResult) {
+        private static NameMatchingCombinedResult invoke(NameMatchingResult innerResult) {
             NameMatchingCombinedResult result = new NameMatchingCombinedResult();
-            result.setExactMatches(loadResultListFromPartsList(nameMatchingResult.getExactResults()));
-            result.setClosestMatches(loadCandiateResultListFromPartsList(nameMatchingResult.getClosestResults()));
-            result.setOtherCandidates(loadOtherCandiateResultListFromPartsList(nameMatchingResult.getOtherCandidatesResults()));
+            result.setExactMatches(loadResultListFromPartsList(innerResult.getExactResults()));
+            result.setCandidates(loadCandiateResultListFromPartsList(innerResult.getBestResults()));
             return result;
         }
 
@@ -85,23 +80,12 @@ public class NameMatchingController {
             return partsList.stream().map(p->loadCandidateResultFromParts(p)).collect(Collectors.toList());
         }
 
-        private static List<NameMatchingOtherCandidateResult> loadOtherCandiateResultListFromPartsList(List<SingleNameMatchingResult> partsList) {
-            return partsList.stream().map(p->loadOtherCandidateResultFromParts(p)).collect(Collectors.toList());
-        }
-
         private static NameMatchingExactResult loadResultFromParts(NameMatchingParts parts) {
            return loadResultFromParts(parts, new NameMatchingExactResult());
         }
 
         private static NameMatchingCandidateResult loadCandidateResultFromParts(SingleNameMatchingResult parts) {
             NameMatchingCandidateResult result = new NameMatchingCandidateResult();
-            loadResultFromParts(parts, result);
-            result.setDistance(parts.getDistance());
-            return result;
-        }
-
-        private static NameMatchingOtherCandidateResult loadOtherCandidateResultFromParts(SingleNameMatchingResult parts) {
-            NameMatchingOtherCandidateResult result = new NameMatchingOtherCandidateResult();
             loadResultFromParts(parts, result);
             result.setDistance(parts.getDistance());
             return result;

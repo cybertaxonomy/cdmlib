@@ -14,8 +14,7 @@ import java.util.List;
 public class NameMatchingCombinedResult{
 
     private List<NameMatchingExactResult> exactMatches = new ArrayList<>();
-    private List<NameMatchingCandidateResult> closestMatches = new ArrayList<>();
-    private List<NameMatchingOtherCandidateResult> otherCandidates = new ArrayList<>();
+    private List<NameMatchingCandidateResult> candidates = new ArrayList<>();
 
     public List<NameMatchingExactResult> getExactMatches() {
         return exactMatches;
@@ -24,16 +23,10 @@ public class NameMatchingCombinedResult{
         this.exactMatches = exactMatches;
     }
 
-    public List<NameMatchingCandidateResult> getClosestMatches() {
-        return closestMatches;
+    public List<NameMatchingCandidateResult> getCandidates() {
+        return candidates;
     }
-    public void setClosestMatches(List<NameMatchingCandidateResult> closestMatches) {
-        this.closestMatches = closestMatches;
-    }
-    public List<NameMatchingOtherCandidateResult> getOtherCandidates() {
-        return otherCandidates;
-    }
-    public void setOtherCandidates(List<NameMatchingOtherCandidateResult> otherCandidates) {
-        this.otherCandidates = otherCandidates;
+    public void setCandidates(List<NameMatchingCandidateResult> candidates) {
+        this.candidates = candidates;
     }
 }

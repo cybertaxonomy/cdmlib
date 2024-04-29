@@ -74,7 +74,7 @@ public class NameMatchingDaoHibernateImpl
         StringBuilder hql = new StringBuilder();
 
         hql.append("select new eu.etaxonomy.cdm.persistence.dto.NameMatchingParts(n.id, n.uuid, n.titleCache, n.authorshipCache, "
-              + "n.genusOrUninomial, n.infraGenericEpithet, n.specificEpithet, n.infraSpecificEpithet, n.nameCache)");
+              + "n.genusOrUninomial, n.infraGenericEpithet, n.specificEpithet, n.infraSpecificEpithet, n.nameCache, n.rank)");
         hql.append(" from TaxonName n ");
         hql.append("where 1 = 1 ");
         hql.append("and n."+column+ " in (");

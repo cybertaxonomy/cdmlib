@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.persistence.dto;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.name.Rank;
+
 /**
  * @author andreabee90
  */
@@ -34,13 +36,15 @@ public class NameMatchingParts {
 
     private String nameCache;
 
+    private Rank rank;
+
 //************ CONSTRUCTOR ***********************/
 
     public NameMatchingParts() {
     }
 
     public NameMatchingParts(Integer taxonNameId, UUID taxonNameUuid, String titleCache, String authorshipCache,
-            String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String nameCache) {
+            String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String nameCache, Rank rank) {
 
         this.taxonNameId = taxonNameId;
         this.taxonNameUuid = taxonNameUuid;
@@ -51,9 +55,11 @@ public class NameMatchingParts {
         this.specificEpithet = specificEpithet;
         this.infraSpecificEpithet = infraSpecificEpithet;
         this.nameCache = nameCache;
+        this.rank = rank;
     }
 
 //***************** GETTER / SETTER ********************************/
+
     public Integer getTaxonNameId() {
         return taxonNameId;
     }
@@ -126,12 +132,21 @@ public class NameMatchingParts {
         this.nameCache = nameCache;
     }
 
+    public Rank getRank() {
+        return rank;
+    }
+
+    public void setRank(Rank rank) {
+        this.rank = rank;
+    }
+
+
  // ************************** TO STRING *************************************/
 
     @Override
     public String toString() {
         return "NameMatchingParts [taxonNameId=" + taxonNameId + ", genusOrUninomial=" + genusOrUninomial
                 + ", infraGenericEpithet=" + infraGenericEpithet + ", specificEpithet=" + specificEpithet
-                + ", infraSpecificEpithet=" + infraSpecificEpithet + ", nameCache=" + nameCache + "]";
+                + ", infraSpecificEpithet=" + infraSpecificEpithet + ", nameCache=" + nameCache + ", rank=" + rank + "]";
     }
 }
