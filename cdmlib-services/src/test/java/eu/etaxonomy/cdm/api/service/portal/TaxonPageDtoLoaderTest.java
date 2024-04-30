@@ -380,6 +380,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         rel.setCodeEdition(NomenclaturalCodeEdition.ICN_2017_SHENZHEN);
         earlierHomonym.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Homonym annotation"));
         nameService.save(earlierHomonym);
+
         return taxon;
     }
 
