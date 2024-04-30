@@ -175,7 +175,7 @@ public abstract class TaxonPageDtoLoaderBase {
             SingleSourcedEntityBase sourced = CdmBase.deproxy(cdmBase, SingleSourcedEntityBase.class);
             SingleSourcedDto sourcedDto = (SingleSourcedDto)dto;
             NamedSource source = sourced.getSource();
-            if (source != null && isPublicSource(source) && !source.checkEmpty()) {
+            if (source != null && isPublicSource(source) && !source.checkEmpty(true)) {
                 SourceDto sourceDto = makeSource(config, source);
                 sourcedDto.setSource(sourceDto);
             }
