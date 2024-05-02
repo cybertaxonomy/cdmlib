@@ -605,7 +605,8 @@ public class WfoBackboneExport
             }
 
             //TODO 9 add IPNI ID if exists, scientific name ID
-            csvLine[table.getIndex(WfoBackboneExportTable.NAME_SCIENTIFIC_NAME_ID)] = null;
+            boolean warnIfNotExists = false;
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_SCIENTIFIC_NAME_ID)] = getIpniId(state, name, warnIfNotExists);
 
             //localID
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_LOCAL_ID)] = getId(state, name);
@@ -795,6 +796,15 @@ public class WfoBackboneExport
             state.getResult().addWarning(message);  //TODO 5 data location
         }
         return wfoId == null ? null : wfoId.getIdentifier();
+    }
+
+    private String getIpniId(WfoBackboneExportState state, TaxonName name, boolean warnIfNotExists) {
+        Identifier ipniId = name.getIdentifier(IdentifierType.uuidIpniNameIdentifier);
+        if (ipniId == null && warnIfNotExists) {
+            String message = "No ipni-id given for name: " + name.getTitleCache()+"/"+ name.getUuid();
+            state.getResult().addWarning(message);  //TODO 5 data location
+        }
+        return ipniId == null ? null : ipniId.getIdentifier();
     }
 
     private String makeNameStatus(WfoBackboneExportState state, TaxonName name) {
