@@ -37,6 +37,8 @@ public class WfoExportTransformerBase extends ExportTransformerBase {
         else if(rank.equals(Rank.SUBTRIBE())) {return "subtribe";}
         else if(rank.equals(Rank.GENUS())) {return "genus";}
         else if(rank.equals(Rank.SUBGENUS())) {return "subgenus";}
+        else if(rank.equals(Rank.SECTION_BOTANY())) {return "sect.";}
+        else if(rank.equals(Rank.SUBSECTION_BOTANY())) {return "subsect.";}
         else if(rank.equals(Rank.SPECIES())) {return "species";}
         else if(rank.equals(Rank.SUBSPECIES())) {return "subspecies";}
         else if(rank.equals(Rank.VARIETY())) {return "variety";}
