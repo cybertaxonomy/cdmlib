@@ -182,7 +182,7 @@ public abstract class TypeDesignationSetFormatterBase<T extends VersionableEntit
         Reference ref = source.getCitation();
         if (ref != null){
             String citation = OriginalSourceFormatter.INSTANCE.format(source);
-            workingsetBuilder.add(TagEnum.reference, citation, TypedEntityReferenceFactory.fromEntity(ref, false));
+            workingsetBuilder.add(TagEnum.reference, citation, TypedEntityReferenceFactory.fromEntity(ref, true));
         }
     }
 

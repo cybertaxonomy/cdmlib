@@ -265,5 +265,4 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
             return null;
         }
     }
-
 }

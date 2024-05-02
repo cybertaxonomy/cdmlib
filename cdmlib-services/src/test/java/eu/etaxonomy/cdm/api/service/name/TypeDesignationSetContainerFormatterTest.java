@@ -83,6 +83,7 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
 
         book = ReferenceFactory.newBook();
         book.setAuthorship(team);
+        book.setTitle("My interesting book");
         book.setDatePublished(TimePeriodParser.parseStringVerbatim("11 Apr 1962"));
 
         ntd = NameTypeDesignation.NewInstance();
@@ -215,6 +216,44 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         Assert.assertEquals("fourth entry should be the name type titleCache",
                 new TaggedText(TagEnum.name, "Prionus coriatius L."), taggedText.get(4)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
         Assert.assertEquals("there should be 5 tags only", 5, taggedText.size());
+    }
+
+
+    @Test
+    public void testSpecimenLectotype() throws TypeDesignationSetException {
+
+        //create data
+        @SuppressWarnings("rawtypes")
+        List<TypeDesignationBase> tdList = new ArrayList<>();
+        tdList.add(std_LT);
+        std_LT.setCitationMicroReference("22");
+
+        TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        typifiedName.setTitleCache("Prionus coriatius L.", true);
+
+        typifiedName.addTypeDesignation(std_LT, false);
+
+        //create formatter
+        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tdList);
+        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter()
+                .withCitation(true)
+                .withStartingTypeLabel(true)
+                .withNameIfAvailable(true)
+                .withPrecedingMainType(false)
+                .withAccessionNoType(false);
+
+        //test text
+        List<TaggedText> taggedText = formatter.toTaggedText(container);
+        String text = TaggedTextFormatter.createString(taggedText);
+        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC designated by Decandolle & al. 1962: 22)", text);
+
+
+        int i = 9;  //start specimen
+        Assert.assertEquals("entry "+(i+1)+" should be the designated by separator",
+                " designated by ", taggedText.get(i++).getText());
+        Assert.assertEquals("entry "+(i+1)+" should be the starting of specimen type designation",
+                "Decandolle, A., Haber, M. & Moler, A.P. 1962: My interesting book",
+                taggedText.get(i++).getEntityReference().getLabel());
     }
 
     @Test
