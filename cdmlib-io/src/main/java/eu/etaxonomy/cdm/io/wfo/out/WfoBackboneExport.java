@@ -604,7 +604,6 @@ public class WfoBackboneExport
                 csvLine[table.getIndex(WfoBackboneExportTable.TAXON_ID)] = wfoId;
             }
 
-            //TODO 9 add IPNI ID if exists, scientific name ID
             boolean warnIfNotExists = false;
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_SCIENTIFIC_NAME_ID)] = getIpniId(state, name, warnIfNotExists);
 

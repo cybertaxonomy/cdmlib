@@ -207,6 +207,7 @@ public class WfoContentExport
                 allowedRanks.add(Rank.GENUS());
                 allowedRanks.add(Rank.SUBGENUS());
                 allowedRanks.add(Rank.SECTION_BOTANY());
+                allowedRanks.add(Rank.SUBSECTION_BOTANY());
                 allowedRanks.add(Rank.SPECIES());
                 allowedRanks.add(Rank.SUBSPECIES());
                 allowedRanks.add(Rank.VARIETY());
@@ -707,7 +708,8 @@ public class WfoContentExport
 
             //scientificNameID
             //TODO 9 add IPNI ID if exists
-            csvLine[table.getIndex(WfoContentExportTable.NAME_SCIENTIFIC_NAME_ID)] = null;
+            boolean warnIfNotExists = false;
+            csvLine[table.getIndex(WfoContentExportTable.NAME_SCIENTIFIC_NAME_ID)] = getIpniId(state, name, warnIfNotExists);
 
             //scientificName
             if (name.isProtectedTitleCache()) {
@@ -762,6 +764,15 @@ public class WfoContentExport
         }
 
         return wfoId;
+    }
+
+    private String getIpniId(WfoContentExportState state, TaxonName name, boolean warnIfNotExists) {
+        Identifier ipniId = name.getIdentifier(IdentifierType.uuidIpniNameIdentifier);
+        if (ipniId == null && warnIfNotExists) {
+            String message = "No ipni-id given for name: " + name.getTitleCache()+"/"+ name.getUuid();
+            state.getResult().addWarning(message);  //TODO 5 data location
+        }
+        return ipniId == null ? null : ipniId.getIdentifier();
     }
 
     private String getWfoId(WfoContentExportState state, TaxonName name, boolean warnIfNotExists) {
