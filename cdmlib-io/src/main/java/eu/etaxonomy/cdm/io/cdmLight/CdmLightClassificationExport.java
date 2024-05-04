@@ -1019,28 +1019,29 @@ public class CdmLightClassificationExport
      */
     private void handleProPartePartialMisapplied(CdmLightExportState state, Taxon taxon, Taxon accepted, boolean isProParte, boolean isMisapplied, int index) {
         try {
-            Taxon ppSyonym = taxon;
-            if (isUnpublished(state.getConfig(), ppSyonym)) {
+            Taxon ppSynonym = taxon;
+            if (isUnpublished(state.getConfig(), ppSynonym)) {
                 return;
             }
-            TaxonName name = ppSyonym.getName();
+            TaxonName name = ppSynonym.getName();
             handleName(state, name, accepted);
 
             CdmLightExportTable table = CdmLightExportTable.SYNONYM;
             String[] csvLine = new String[table.getSize()];
 
-            csvLine[table.getIndex(CdmLightExportTable.SYNONYM_ID)] = getId(state, ppSyonym);
+            csvLine[table.getIndex(CdmLightExportTable.SYNONYM_ID)] = getId(state, ppSynonym);
             csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, accepted);
             csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
 
-            Reference secRef = ppSyonym.getSec();
+            Reference secRef = ppSynonym.getSec();
 
             if (secRef != null && !state.getReferenceStore().contains(secRef.getUuid())) {
                 handleReference(state, secRef);
             }
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(secRef);
-            Set<TaxonRelationship> rels = accepted.getTaxonRelations(ppSyonym);
+
+            Set<TaxonRelationship> rels = accepted.getTaxonRelations(ppSynonym);
             TaxonRelationship rel = null;
             boolean isPartial = false;
             if (rels.size() == 1){
@@ -1080,7 +1081,7 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.IS_PARTIAL)] = isPartial ? "1" : "0";
             csvLine[table.getIndex(CdmLightExportTable.IS_MISAPPLIED)] = isMisapplied ? "1" : "0";
             csvLine[table.getIndex(CdmLightExportTable.SORT_INDEX)] = String.valueOf(index);
-            state.getProcessor().put(table, ppSyonym, csvLine);
+            state.getProcessor().put(table, ppSynonym, csvLine);
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling "
                     + "pro parte/partial synonym or misapplied name  " + cdmBaseStr(taxon) + ": " + e.getMessage());
