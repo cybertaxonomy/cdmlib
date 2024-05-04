@@ -1040,6 +1040,7 @@ public class CdmLightClassificationExport
             }
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(secRef);
+            csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = ppSynonym.isPublish() ? "1" : "0" ;
 
             Set<TaxonRelationship> rels = accepted.getTaxonRelations(ppSynonym);
             TaxonRelationship rel = null;
