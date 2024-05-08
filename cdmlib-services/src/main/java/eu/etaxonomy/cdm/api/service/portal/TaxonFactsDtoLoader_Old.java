@@ -440,7 +440,7 @@ public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
         UUID areaTreeUuid = distributionConfig.getAreaTree();
         @SuppressWarnings("unchecked")
         TermTree<NamedArea> areaTree = repository.getTermTreeService().find(areaTreeUuid);
-        UUID statusTreeUuid = distributionConfig.getAreaTree();
+        UUID statusTreeUuid = distributionConfig.getStatusTree();
         @SuppressWarnings("unchecked")
         TermTree<PresenceAbsenceTerm> statusTree = repository.getTermTreeService().find(statusTreeUuid);
 
