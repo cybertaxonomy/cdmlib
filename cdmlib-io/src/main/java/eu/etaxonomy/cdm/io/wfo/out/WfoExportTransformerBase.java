@@ -46,6 +46,10 @@ public class WfoExportTransformerBase extends ExportTransformerBase {
         else if(rank.equals(Rank.FORM())) {return "form";}
         else if(rank.equals(Rank.SUBFORM())) {return "subform";}
         else if(rank.equals(Rank.INFRASPECIFICTAXON())) {return "infraspecificName";}
+        else if(rank.equals(Rank.PROLES())) {return "proles";}
+        else if(rank.equals(Rank.SUBPROLES())) {return "subproles";}
+        else if(rank.equals(Rank.RACE())) {return "race";}
+
         return null;
     }
 }

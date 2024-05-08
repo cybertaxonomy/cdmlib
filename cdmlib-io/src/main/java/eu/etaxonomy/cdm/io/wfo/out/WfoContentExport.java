@@ -732,9 +732,10 @@ public class WfoContentExport
             Rank rank = name.getRank();
             String rankStr = state.getTransformer().getCacheByRank(rank);
             if (rankStr == null) {
-                String message = rank == null ? "No rank" : ("Rank not supported by WFO:" + rank.getLabel())
+                String message = rank == null ? "No rank" : ("Rank not supported by WFO: " + rank.getLabel())
                         + "Taxon not handled in export: " + name.getTitleCache();
                 state.getResult().addWarning(message);  //TODO 2 warning sufficient for missing rank? + location
+                //TODO 2 handling of not-recognized rank, move up as this creates an have ready record otherwise
                 return wfoId;
             }
             csvLine[table.getIndex(WfoContentExportTable.RANK)] = rankStr;
