@@ -286,7 +286,7 @@ public class DistributionInfoBuilder {
         Set<UUID> statusPositiveFilter = null;
         if (statusTree != null) {
             statusPositiveFilter = new HashSet<>();
-            for (TermDto status : TermTreeDtoLoader.toList(areaTree, TermDto.class)) {
+            for (TermDto status : TermTreeDtoLoader.toList(statusTree, TermDto.class)) {
                 statusPositiveFilter.add(status.getUuid());
             }
         }
