@@ -1200,7 +1200,7 @@ public class CdmLightClassificationExport
             if (nomenclaturalSource != null &&nomenclaturalSource.getNameUsedInSource() != null){
                 handleName(state, nomenclaturalSource.getNameUsedInSource(), null);
                 csvLine[table.getIndex(CdmLightExportTable.ORIGINAL_SPELLING_FK)] = getId(state, nomenclaturalSource.getNameUsedInSource());
-                csvLine[table.getIndex(CdmLightExportTable.ORIGINAL_SPELLING)] = nomenclaturalSource.getNameUsedInSource().getTitleCache();
+                csvLine[table.getIndex(CdmLightExportTable.ORIGINAL_SPELLING)] = createNameWithItalics(nomenclaturalSource.getNameUsedInSource().getTaggedFullTitle());
             }
 
             if (nomRef != null) {
