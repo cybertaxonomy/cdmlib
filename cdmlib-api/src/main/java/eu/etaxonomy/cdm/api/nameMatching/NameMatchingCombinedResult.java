@@ -13,9 +13,18 @@ import java.util.List;
 
 public class NameMatchingCombinedResult{
 
+    private RequestedParam request;
     private List<NameMatchingExactResult> exactMatches = new ArrayList<>();
     private List<NameMatchingCandidateResult> candidates = new ArrayList<>();
 
+    public RequestedParam getRequest() {
+        return request;
+    }
+    
+    public void setRequest(RequestedParam request) {
+        this.request = request;
+    }
+    
     public List<NameMatchingExactResult> getExactMatches() {
         return exactMatches;
     }
@@ -29,4 +38,5 @@ public class NameMatchingCombinedResult{
     public void setCandidates(List<NameMatchingCandidateResult> candidates) {
         this.candidates = candidates;
     }
+
 }

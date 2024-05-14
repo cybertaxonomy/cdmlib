@@ -566,15 +566,20 @@ public class NameMatchingServiceImpl
     		Map<String, Integer> postFilteredGenusOrUninominalWithDis) {
 
         List<SingleNameMatchingResult> genusOrUninomialWithDistance = new ArrayList<>();
-    	List<NameMatchingParts> fullNameMatchingPartsListTemp = nameMatchingDao.findNameMatchingParts(postFilteredGenusOrUninominalWithDis, null);
-        postFilteredGenusOrUninominalWithDis.forEach((key, value) -> {
-        	for (NameMatchingParts fullNameMatchingParts : fullNameMatchingPartsListTemp) {
-        		if (fullNameMatchingParts.getGenusOrUninomial().equals(key)) {
+
+        if (postFilteredGenusOrUninominalWithDis.isEmpty()) {
+            return genusOrUninomialWithDistance;
+        } else {
+            List<NameMatchingParts> fullNameMatchingPartsListTemp = nameMatchingDao.findNameMatchingParts(postFilteredGenusOrUninominalWithDis, null);
+            postFilteredGenusOrUninominalWithDis.forEach((key, value) -> {
+                for (NameMatchingParts fullNameMatchingParts : fullNameMatchingPartsListTemp) {
+                    if (fullNameMatchingParts.getGenusOrUninomial().equals(key)) {
         			genusOrUninomialWithDistance.add(new SingleNameMatchingResult(fullNameMatchingParts, value));
-                 }
-            }
-        });
+                    }
+                }
+            });
         return genusOrUninomialWithDistance;
+        }
     }
 
     /**

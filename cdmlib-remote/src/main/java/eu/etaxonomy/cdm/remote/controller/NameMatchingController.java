@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCandidateResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCombinedResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingExactResult;
+import eu.etaxonomy.cdm.api.nameMatching.RequestedParam;
 import eu.etaxonomy.cdm.api.service.INameMatchingService;
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.NameMatchingResult;
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.SingleNameMatchingResult;
@@ -50,23 +51,24 @@ public class NameMatchingController {
             value = {"match"},
             method = RequestMethod.GET)
     public NameMatchingCombinedResult doGetNameMatching(
-            @RequestParam(value="namecache", required = true) String nameCache,
-            @RequestParam(value="compareauthor", required = false) boolean compareAuthor,
-            @RequestParam(value="distance", required = false) Integer distance,
+            @RequestParam(value="scientificName", required = true) String scientificName,
+            @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
+            @RequestParam(value="maxDistance", required = false) Integer maxDistance,
             HttpServletRequest request,
             @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("doGetNameMatching()" + request.getRequestURI());
 
-        NameMatchingResult result = nameMatchingservice.listShaping(nameCache, compareAuthor, distance);
-
-        return NameMatchingAdapter.invoke(result);
+        NameMatchingResult result = nameMatchingservice.listShaping(scientificName, compareAuthor, maxDistance);
+        RequestedParam requestedParam = new RequestedParam(scientificName, compareAuthor, maxDistance);
+        return NameMatchingAdapter.invoke(result, requestedParam);
     }
 
     private static class NameMatchingAdapter {
 
-        private static NameMatchingCombinedResult invoke(NameMatchingResult innerResult) {
+        private static NameMatchingCombinedResult invoke(NameMatchingResult innerResult, RequestedParam requestedParam) {
             NameMatchingCombinedResult result = new NameMatchingCombinedResult();
+            result.setRequest(requestedParam);
             result.setExactMatches(loadResultListFromPartsList(innerResult.getExactResults()));
             result.setCandidates(loadCandiateResultListFromPartsList(innerResult.getBestResults()));
             return result;
@@ -83,6 +85,7 @@ public class NameMatchingController {
         private static NameMatchingExactResult loadResultFromParts(NameMatchingParts parts) {
            return loadResultFromParts(parts, new NameMatchingExactResult());
         }
+
 
         private static NameMatchingCandidateResult loadCandidateResultFromParts(SingleNameMatchingResult parts) {
             NameMatchingCandidateResult result = new NameMatchingCandidateResult();
