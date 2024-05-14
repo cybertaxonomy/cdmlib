@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.api.service.portal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -620,7 +622,34 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             Representation rep = rel.getType().getPreferredInverseRepresentation(Arrays.asList(new Language[] {locale}));
             handleRelatedName(taxonDto, config, rel, relatedName, rep, excludedToTypes, true);
         }
+
+        //order
+        ContainerDto<NameRelationDTO> relatedNames = taxonDto.getRelatedNames();
+        if (relatedNames != null) {
+            List<NameRelationDTO> items = relatedNames.getItems();
+            Collections.sort(items, relatedNamesComparator);
+
+        }
     }
+
+    private static Comparator<NameRelationDTO> relatedNamesComparator = new Comparator<NameRelationDTO>() {
+
+        @Override
+        public int compare(NameRelationDTO o1, NameRelationDTO o2) {
+            int c = CdmUtils.nullSafeCompareTo(o1.getYear(), o2.getYear(), true);
+            if (c != 0) {
+                return c;
+            }
+            String label1 = TaggedTextFormatter.createString(o1.getNameLabel());
+            String label2 = TaggedTextFormatter.createString(o1.getNameLabel());
+            c = CdmUtils.nullSafeCompareTo(label1, label2, true);
+            if (c != 0) {
+                return c;
+            }
+            return CdmUtils.nullSafeCompareTo(o1.getUuid(), o2.getUuid());
+        }
+    };
+
 
     private void handleRelatedName(TaxonBaseDto taxonDto, TaxonPageDtoConfiguration config,
             NameRelationship rel, TaxonName relatedName, Representation rep,
