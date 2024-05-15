@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
@@ -204,7 +205,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             }
         }
         if (secRef != null){
-            tags.add(new TaggedText(TagEnum.secReference, secRef));
+            tags.add(new TaggedText(TagEnum.secReference, secRef, TypedEntityReferenceFactory.fromEntity(sec, false)));
         }
         //secMicroReference
         if (isNotBlank(taxonBase.getSecMicroReference())){
