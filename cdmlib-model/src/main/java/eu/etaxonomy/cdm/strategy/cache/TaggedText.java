@@ -12,8 +12,6 @@ import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.validation.constraints.NotNull;
-
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -60,7 +58,11 @@ public class TaggedText implements Serializable{
 	    return new TaggedText(type, text);
 	}
 
-    public static TaggedText NewReferenceInstance(TagEnum type, String shortRef, @NotNull Reference ref){
+    /**
+     * Tagged Text representing a reference and all the data needed for showing related data
+     * in the data portal. If ref == null an ordinary TaggedText is created.
+     */
+    public static TaggedText NewReferenceInstance(TagEnum type, String shortRef, Reference ref){
         if (ref != null) {
             ref = CdmBase.deproxy(ref); //just in case
             TypedEntityReference<Reference> ter = TypedEntityReferenceFactory.fromEntity(ref, true);
@@ -73,7 +75,6 @@ public class TaggedText implements Serializable{
             return result;
 
         }else {
-            //should not happen
             return new TaggedText(type, shortRef);
         }
     }

@@ -207,7 +207,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                 }
             }
         }
-        if (sec != null){
+        if (secRef != null){
             tags.add(TaggedText.NewReferenceInstance(TagEnum.secReference, secRef, sec));
         }
         //secMicroReference
