@@ -12,10 +12,16 @@ import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 
 /**
  * @author a.kohlbecker
@@ -53,6 +59,24 @@ public class TaggedText implements Serializable{
 	public static TaggedText NewInstance(TagEnum type, String text){
 	    return new TaggedText(type, text);
 	}
+
+    public static TaggedText NewReferenceInstance(TagEnum type, String shortRef, @NotNull Reference ref){
+        if (ref != null) {
+            ref = CdmBase.deproxy(ref); //just in case
+            TypedEntityReference<Reference> ter = TypedEntityReferenceFactory.fromEntity(ref, true);
+            URI uri = null;
+            if (ref.getDoi() != null) {
+                //for now we only handle DOIs, may be extended later
+               uri = URI.create(ref.getDoiString());
+            }
+            TaggedTextWithLink result = TaggedTextWithLink.NewInstance(type, shortRef, ter, uri);
+            return result;
+
+        }else {
+            //should not happen
+            return new TaggedText(type, shortRef);
+        }
+    }
 
 //************************** CONSTRUCTOR ********************************/
 

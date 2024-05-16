@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -23,14 +22,11 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.ref.TypedEntityReference;
-import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
-import eu.etaxonomy.cdm.strategy.cache.TaggedTextWithLink;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 
@@ -212,9 +208,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             }
         }
         if (sec != null){
-            URI uri = sec.getDoi() == null ? null : URI.create(sec.getDoiString());
-            tags.add(TaggedTextWithLink.NewInstance(TagEnum.secReference, secRef,
-                    (TypedEntityReference)TypedEntityReferenceFactory.fromEntity(sec, true), uri));
+            tags.add(TaggedText.NewReferenceInstance(TagEnum.secReference, secRef, sec));
         }
         //secMicroReference
         if (isNotBlank(taxonBase.getSecMicroReference())){
