@@ -526,6 +526,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
         loadBaseData(config, rel, dto);
         dto.setRelSource(makeSource(config, rel.getSource()));
         Taxon relTaxon = inverse ? rel.getFromTaxon() : rel.getToTaxon();
+        loadAnnotatable(config, relTaxon, dto);
         dto.setRelTaxonId(relTaxon.getId());
         dto.setRelTaxonUuid(relTaxon.getUuid());
         dto.setRelTaxonLabel(relTaxon.getTitleCache());
