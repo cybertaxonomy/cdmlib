@@ -561,7 +561,7 @@ public class ManifestComposer {
             html.append(OriginalSourceFormatter.INSTANCE.format(source)).append(" ");
             if(citation.getDoi() != null) {
                 try {
-                    html.append(" ").append(htmlLink(new URI("http://doi.org/" + citation.getDoiString()), citation.getDoiString()));
+                    html.append(" ").append(htmlLink(new URI("https://doi.org/" + citation.getDoiString()), citation.getDoiString()));
                 } catch (URISyntaxException e) {
                     // IGNORE, should never happen
                 }
