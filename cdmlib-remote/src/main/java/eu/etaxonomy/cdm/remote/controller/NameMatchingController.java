@@ -44,7 +44,7 @@ public class NameMatchingController {
     private static final Logger logger = LogManager.getLogger();
 
     @Autowired
-    private INameMatchingService nameMatchingservice;
+    private INameMatchingService nameMatchingService;
 
 
     @RequestMapping(
@@ -59,7 +59,7 @@ public class NameMatchingController {
 
         logger.info("doGetNameMatching()" + request.getRequestURI());
 
-        NameMatchingResult result = nameMatchingservice.listShaping(scientificName, compareAuthor, maxDistance);
+        NameMatchingResult result = nameMatchingService.listShaping(scientificName, compareAuthor, maxDistance);
         RequestedParam requestedParam = new RequestedParam(scientificName, compareAuthor, maxDistance);
         return NameMatchingAdapter.invoke(result, requestedParam);
     }

@@ -171,7 +171,6 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
     }
 
     private List<TaggedText> getTaggedTaxon(TaxonBase<?> taxon, TaxonPageDtoConfiguration config) {
-//        List<TypedLabel> result = new ArrayList<>();
         TaxonBaseDefaultCacheStrategy<TaxonBase<?>> formatter = new TaxonBaseDefaultCacheStrategy<>();
         List<TaggedText> tags = formatter.getTaggedTitle(taxon);
         return tags;
@@ -395,8 +394,6 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
         }
 
         try {
-            //        List<HomotypicalGroup> homotypicGroups = taxon.getHomotypicSynonymyGroups();
-
             HomotypicGroupTaxonComparator comparator = new HomotypicGroupTaxonComparator(taxon);
 
             TaxonName name = taxon.getName();
