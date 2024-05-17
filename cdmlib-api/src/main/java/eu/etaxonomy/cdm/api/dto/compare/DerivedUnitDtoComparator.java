@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.dto.compare;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +25,9 @@ import eu.etaxonomy.cdm.api.dto.DerivedUnitDTO;
  * @author muellera
  * @since 21.02.2024
  */
-public class DerivedUnitDtoComparator implements Comparator<DerivedUnitDTO> {
+public class DerivedUnitDtoComparator implements Comparator<DerivedUnitDTO>, Serializable {
+
+    private static final long serialVersionUID = -1170568897099544442L;
 
     private static final DerivedUnitDtoComparator instance = new DerivedUnitDtoComparator();
 
