@@ -2923,6 +2923,27 @@ public class TaxonName
     }
 
     /**
+     * Returns the default description if exist {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon descriptions}
+     * concerning <i>this</i> taxon.
+     *
+     * @see eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
+     */
+    @Transient
+    public TaxonNameDescription getDefaultDescription() {
+        if(descriptions == null) {
+            return null;
+        }
+
+        Set<TaxonNameDescription> descriptions= getDescriptions();
+        for (TaxonNameDescription desc: descriptions) {
+            if (desc.isDefault()) {
+                return desc;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Adds a new {@link eu.etaxonomy.cdm.model.description.TaxonNameDescription taxon name description}
      * to the set of taxon name descriptions assigned to <i>this</i> taxon name. The
      * content of the {@link eu.etaxonomy.cdm.model.description.TaxonNameDescription#getTaxonName() taxonName attribute} of the
