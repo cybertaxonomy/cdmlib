@@ -138,6 +138,24 @@ public class OriginalSourceFormatterTest {
                 "A beautiful taxon page 2001c: detail", formatter.format((Reference)webpage, "detail", null, "c"));
     }
 
+
+    @Test
+    public void testProtectedTitleCacheCitation(){
+
+        Reference ref = ReferenceFactory.newGeneric();
+        ref.setTitleCache("Miller: Protected title cache reference", true);
+        Assert.assertEquals("", "Miller: Protected title cache reference", formatter.format(ref, null, null));
+
+        ref.setDatePublished(TimePeriodParser.parseStringVerbatim("1982"));
+        Assert.assertEquals("", "Miller: Protected title cache reference 1982", formatter.format(ref, null, null));
+
+        ref.setTitleCache("Miller 1982. Protected title cache reference", true);
+        Assert.assertEquals("", "Miller 1982. Protected title cache reference", formatter.format(ref, null, null));
+
+        ref.setTitleCache("Miller 1982: Protected title cache reference", true);
+        Assert.assertEquals("", "Miller 1982: Protected title cache reference", formatter.format(ref, null, null));
+    }
+
     @Test
     public void testCreateLongCitation(){
         //TODO this is still preliminary, formatting may change in future.

@@ -250,14 +250,13 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
             }
         }
 
-        //is accessed date included in titleCache?
-        if (isNotBlank(dateStr)) {
-            if (titleCache.endsWith(dateStr) || titleCache.contains(dateStr + ": ")){
-                dateStr = null;
+        String dateAndDetail = getShortCitationDateAndDetail(reference, citationDetail, accessed, uniqueString);
+        if (isNotBlank(dateAndDetail)) {
+            //remove date (and detail?) if it is contained in titleCache already
+            if (titleCache.endsWith(dateAndDetail) || titleCache.contains(dateAndDetail + ": ") || titleCache.contains(" " + dateAndDetail + ".")){
+                dateAndDetail = "";
             }
         }
-
-        String dateAndDetail = getShortCitationDateAndDetail(reference, citationDetail, accessed, uniqueString);
         String result = titleCache + (dateAndDetail.startsWith(":")? "": " ") + dateAndDetail;
         return result.trim();
     }
