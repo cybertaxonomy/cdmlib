@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.NameMatchingConfigurator;
-import eu.etaxonomy.cdm.api.service.exception.NameMatchingParserException;
 import eu.etaxonomy.cdm.common.NameMatchingUtils;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -84,7 +83,6 @@ public class NameMatchingServiceImpl
 
         List<SingleNameMatchingResult> exactResults = new ArrayList<>();
         List<SingleNameMatchingResult> bestResults = new ArrayList<>();
-        String warning;
         //List<SingleNameMatchingResult> otherCandidatesResults = new ArrayList<>();
 
         public List<SingleNameMatchingResult> getExactResults() {
@@ -99,13 +97,6 @@ public class NameMatchingServiceImpl
         public void setBestResults(List<SingleNameMatchingResult> bestResults) {
             this.bestResults = bestResults;
         }
-        public void setWarning (String warning) {
-            this.warning = warning;
-        }
-        public String getWarning () {
-            return warning;
-        }
-
 
     }
 
@@ -116,48 +107,45 @@ public class NameMatchingServiceImpl
      * Compares a list of input names with names in the Database.
      * @return A map with input names as key, and results as values.
      * Matches without a perfect match return a list of best matches
-     * @throws NameMatchingParserException
      *
      */
 
+//    @Override
+//    public Map<String, List<SingleNameMatchingResult>> compareTaxonListNameCache(List<String> input){
+//
+//        //TODO make a method that normalizes input names
+//        //delete empty spaces (beginning-end), tab delim., and others
+//        for (int i = 0 ; i < input.size(); i++) {
+//            String name = input.get(i);
+//            name = name.replaceAll("^\\s+", "");
+//            name = name.replaceAll("\\s+$", "");
+//            input.set(i,name);
+//        }
+//
+//        Map<String, List<SingleNameMatchingResult>> result = new HashMap<>();
+//        List<NameMatchingParts> matchingNamesCacheList = nameMatchingDao.findNameMatchingParts(null, input);
+//
+//        for(NameMatchingParts parts: matchingNamesCacheList) {
+//            List<SingleNameMatchingResult> exactResults = new ArrayList<>();
+//            exactResults.add(new SingleNameMatchingResult(parts, 0));
+//            result.put(parts.getNameCache(), exactResults);
+//            input.remove(parts.getNameCache());
+//        }
+//
+//        for(String remainingTaxonName: input) {
+//            NameMatchingResult matchingNames = findMatchingNames(remainingTaxonName, null, false);
+//            result.put(remainingTaxonName, matchingNames.bestResults);
+//        }
+//        return result;
+//    }
+
+
     @Override
-    public Map<String, NameMatchingResult> compareTaxonListName(List<String> input, boolean compareAuthor, Integer maxDistance) throws NameMatchingParserException{
-
-        //TODO make a method that normalizes input names
-        //delete empty spaces (beginning-end), tab delim., and others
-        for (int i = 0 ; i < input.size(); i++) {
-            String name = input.get(i);
-            name = name.replaceAll("^\\s+", "");
-            name = name.replaceAll("\\s+$", "");
-            input.set(i,name);
-        }
-
-        Map<String, NameMatchingResult> inputAndResults = new HashMap<>();
-        for (String inputName : input) {
-            NameMatchingResult individualResults = new NameMatchingResult();
-            individualResults = findMatchingNames(inputName, compareAuthor, maxDistance);
-            inputAndResults.put(inputName, individualResults);
-        }
-
-        return inputAndResults;
-    }
-
-
-    @Override
-    public NameMatchingResult findMatchingNames(String nameCache, boolean compareAuthor, Integer distance) throws NameMatchingParserException{
+    public NameMatchingResult listShaping(String nameCache, boolean compareAuthor, Integer distance) {
 
         NameMatchingResult result = new NameMatchingResult();
-        List<SingleNameMatchingResult> resultInput;
 
-        try {
-            resultInput = findMatchingNamesUnshaped(nameCache, null, compareAuthor, distance);
-        } catch (NameMatchingParserException e) {
-            result.setWarning(e.getWarning());
-            result.exactResults = new ArrayList<>();
-            result.bestResults = new ArrayList<>();
-            return result;
-
-        }
+        List<SingleNameMatchingResult> resultInput = findMatchingNames(nameCache, null, compareAuthor, distance);
 
         for (SingleNameMatchingResult part : resultInput) {
             if (compareAuthor) {
@@ -182,8 +170,8 @@ public class NameMatchingServiceImpl
      *
      * @return list of exact matching names (distance = 0), or list of best matches if exact matches are not found.
      */
-
-    private List<SingleNameMatchingResult> findMatchingNamesUnshaped(String taxonName, NameMatchingConfigurator config, boolean compareAuthor, Integer inputDistance) throws NameMatchingParserException{
+    @Override
+    public List<SingleNameMatchingResult> findMatchingNames(String taxonName, NameMatchingConfigurator config, boolean compareAuthor, Integer inputDistance) {
 
         List<SingleNameMatchingResult> result = new ArrayList<>();
 
@@ -203,10 +191,6 @@ public class NameMatchingServiceImpl
         String infraSpecificQuery = name.getInfraSpecificEpithet();
         String authorshipCacheQuery = name.getAuthorshipCache();
         Rank rank = name.getRank();
-
-        if (genusQuery == null) {
-            throw new NameMatchingParserException ("input name could not be parsed");
-        }
 
         if (name.getCombinationAuthorship() != null)  {
             authorshipCacheQuery = name.getCombinationAuthorship().getNomenclaturalTitleCache();

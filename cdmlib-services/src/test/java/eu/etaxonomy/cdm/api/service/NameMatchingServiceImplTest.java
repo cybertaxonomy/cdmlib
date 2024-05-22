@@ -19,7 +19,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.NameMatchingResult;
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.SingleNameMatchingResult;
-import eu.etaxonomy.cdm.api.service.exception.NameMatchingParserException;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -99,7 +98,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
 	@Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
-    public void testFindingMatchingNamesGenus() throws NameMatchingParserException {
+    public void testFindingMatchingNamesGenus() {
 
 		String inputName;
         NameMatchingResult matchResults;
@@ -110,7 +109,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // exact match
         inputName = "Nectandra";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, null);
+        matchResults = nameMatchingService.listShaping(inputName, false, null);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(1, matchResult.size());
         matchRes = matchResult.get(0);
@@ -121,7 +120,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // not exact match
         inputName = "Nextondra";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, null);
+        matchResults = nameMatchingService.listShaping(inputName, false, null);
         matchResult = matchResults.getBestResults();
         Assert.assertEquals(2, matchResult.size());
 
@@ -140,7 +139,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
-    public void testFindingMatchingNamesSpecies() throws NameMatchingParserException {
+    public void testFindingMatchingNamesSpecies() {
 
         String inputName;
         NameMatchingResult matchResults;
@@ -149,7 +148,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // exact match
         inputName = "Nectandra magnoliifolia";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, null);
+        matchResults = nameMatchingService.listShaping(inputName, false, null);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(1, matchResult.size());
         matchRes = matchResult.get(0);
@@ -163,7 +162,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         */
 
         inputName = "Nectandra surinamensis";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, null);
+        matchResults = nameMatchingService.listShaping(inputName, false, null);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(2, matchResult.size());
 
@@ -181,7 +180,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // not exact match
         inputName = "Nectendra nigre";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, null);
+        matchResults = nameMatchingService.listShaping(inputName, false, null);
         matchResult = matchResults.getBestResults();
         Assert.assertEquals(2, matchResult.size());
         matchRes = matchResult.get(0);
@@ -197,7 +196,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(4,(int) matchRes.getDistance());
 
         inputName = "Bectendra nigri";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, null);
+        matchResults = nameMatchingService.listShaping(inputName, false, null);
         matchResult = matchResults.getBestResults();
         Assert.assertEquals(2, matchResult.size());
         matchRes = matchResult.get(0);
@@ -215,7 +214,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
-    public void testFindingMatchingNamesSubgenus() throws NameMatchingParserException {
+    public void testFindingMatchingNamesSubgenus() {
 
     	String inputName;
         NameMatchingResult matchResults;
@@ -224,13 +223,13 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // exact match
         inputName = "Nectandra subgen. Nectrina";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, null);
+        matchResults = nameMatchingService.listShaping(inputName, false, null);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(0, matchResult.size());
 
         // not exact match
         inputName = "Nectandra subgen. Nextrina";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, null);
+        matchResults = nameMatchingService.listShaping(inputName, false, null);
         matchResult = matchResults.getBestResults();
         Assert.assertEquals(2, matchResult.size());
         matchRes = matchResult.get(0);
@@ -248,7 +247,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
-    public void testFindingMatchingNamesSubspecies() throws NameMatchingParserException {
+    public void testFindingMatchingNamesSubspecies() {
 
         String inputName;
         NameMatchingResult matchResults;
@@ -257,7 +256,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // exact match
         inputName = "Nectandra mollis subsp. laurel";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, null);
+        matchResults = nameMatchingService.listShaping(inputName, false, null);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(1, matchResult.size());
         matchRes = matchResult.get(0);
@@ -269,7 +268,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // not exact match
         inputName = "Nectandra mollis var. laurol";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, null);
+        matchResults = nameMatchingService.listShaping(inputName, false, null);
         matchResult = matchResults.getBestResults();
         Assert.assertEquals(2, matchResult.size());
         matchRes = matchResult.get(0);
@@ -289,7 +288,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
-    public void testFindingMatchingGenusWithAuthors() throws NameMatchingParserException {
+    public void testFindingMatchingGenusWithAuthors() {
 
         String inputName;
         NameMatchingResult matchResults;
@@ -297,7 +296,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         SingleNameMatchingResult matchRes;
 
         inputName = "Nectandra Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
@@ -305,7 +304,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(1,(int) matchRes.getDistance());
 
         inputName = "Nectindra Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectondra", matchRes.getGenusOrUninomial());
@@ -320,7 +319,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
-    public void testFindingMatchingSpeciesWithAuthors() throws NameMatchingParserException {
+    public void testFindingMatchingSpeciesWithAuthors() {
 
         String inputName;
         NameMatchingResult matchResults;
@@ -330,7 +329,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         // the exact match results show all species names that retrieve a distance of 0
         // EXCLUDING the authorship
         inputName = "Nectandra laevis Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
@@ -339,7 +338,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(1,(int) matchRes.getDistance());
 
         inputName = "Nectindra levis Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
@@ -348,7 +347,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(2,(int) matchRes.getDistance());
 
         inputName = "Nectindra cinnamomoides Turm. & Kilian";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
@@ -359,7 +358,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         //TODO matching non-parsable names is still an open issue (#10178)
 
         inputName = "Nectindra cinnamomoides Turm. and Kilian";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
@@ -370,7 +369,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
-    public void testFindingMatchingGenusWithExAuthors() throws NameMatchingParserException {
+    public void testFindingMatchingGenusWithExAuthors() {
 
         String inputName;
         NameMatchingResult matchResults;
@@ -379,7 +378,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // exact match
         inputName = "Nectandra (Kilian) Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
@@ -387,7 +386,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(1,(int) matchRes.getDistance());
 
         inputName = "Nectandra (Kilian ex Turm.) Kilian ex Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
@@ -397,7 +396,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
-    public void testFindingMatchingSpeciesWithExAuthors() throws NameMatchingParserException {
+    public void testFindingMatchingSpeciesWithExAuthors() {
 
         String inputName;
         NameMatchingResult matchResults;
@@ -406,7 +405,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // exact match
         inputName = "Nectandra laevis (Kilian) Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
@@ -415,7 +414,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(1,(int) matchRes.getDistance());
 
         inputName = "Nectandra laevis (Kilian ex Turm.) Kilian ex Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
@@ -425,7 +424,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // not exact match
         inputName = "Mectandra laevis (Kilian) Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
@@ -434,7 +433,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(2,(int) matchRes.getDistance());
 
         inputName = "Mectandra laevis (Kilian ex Turm.) Kilian ex Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
@@ -445,7 +444,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
-    public void testFindingMatchingSubspeciesWithExAuthors() throws NameMatchingParserException {
+    public void testFindingMatchingSubspeciesWithExAuthors() {
 
         String inputName;
         NameMatchingResult matchResults;
@@ -454,7 +453,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // exact match
         inputName = "Nectandra mollis subsp. laurel Kilian ex Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         Assert.assertEquals(2, matchResult.size());
         matchRes = matchResult.get(0);
@@ -467,7 +466,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // not exact match
         inputName = "Nectandra mollis var. laurol (Kilian) Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, null);
+        matchResults = nameMatchingService.listShaping(inputName, true, null);
         matchResult = matchResults.getBestResults();
         Assert.assertEquals(2, matchResult.size());
         matchRes = matchResult.get(0);
@@ -489,7 +488,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
-    public void testListShapingWithoutAuthorComparison() throws NameMatchingParserException {
+    public void testListShapingWithoutAuthorComparison() {
 
         String nameCache;
         NameMatchingResult matchResults;
@@ -498,7 +497,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // exact match when author is not in the input name and boolean author is false
         nameCache = "Yucca filamentosa";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, false, null);
+        matchResults = nameMatchingService.listShaping(nameCache, false, null);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(2, matchResult.size());
         matchRes = matchResult.get(0);
@@ -509,7 +508,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
      // exact match when author is given in the input name but boolean is still false
         nameCache = "Yucca filamentosa L.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, false, null);
+        matchResults = nameMatchingService.listShaping(nameCache, false, null);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(2, matchResult.size());
         matchRes = matchResult.get(0);
@@ -520,7 +519,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // other candidates results without author input
         nameCache = "Yucca filamentoza";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, false, null);
+        matchResults = nameMatchingService.listShaping(nameCache, false, null);
 
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(0, matchResult.size());
@@ -535,7 +534,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
      // other candidates results with author
         nameCache = "Yucca filamentoz L.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, false, null);
+        matchResults = nameMatchingService.listShaping(nameCache, false, null);
 
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(0, matchResult.size());
@@ -551,7 +550,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
-    public void testListShapingWithAuthorComparison() throws NameMatchingParserException {
+    public void testListShapingWithAuthorComparison() {
 
         String nameCache;
         NameMatchingResult matchResults;
@@ -560,7 +559,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // exact match when author is given in the input name and boolean author is true
         nameCache = "Yucca filamentosa L.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, null);
+        matchResults = nameMatchingService.listShaping(nameCache, true, null);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(2, matchResult.size());
         matchRes = matchResult.get(0);
@@ -572,7 +571,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
      // exact match when author is missing in the input name and boolean author is true
 ////////this is wrong. This should return a warning: please give an author in the input name
         nameCache = "Yucca filamentosa";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, null);
+        matchResults = nameMatchingService.listShaping(nameCache, true, null);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(0, matchResult.size());
         matchResult = matchResults.getBestResults();
@@ -584,7 +583,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(2,(int) matchRes.getDistance()); // distance is 2 because the abbreviation dot counts as a character too
 
         nameCache = "Yucca filamentosa M.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, null);
+        matchResults = nameMatchingService.listShaping(nameCache, true, null);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(0, matchResult.size());
         matchResult = matchResults.getBestResults();
@@ -597,7 +596,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 }
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
-    public void testListShapingDistance() throws NameMatchingParserException {
+    public void testListShapingDistance() {
 
         String nameCache;
         NameMatchingResult matchResults;
@@ -605,14 +604,14 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // exact match is always a list of matches with distance = 0
         nameCache = "Yucca filamentosa L.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, false, 10);
+        matchResults = nameMatchingService.listShaping(nameCache, false, 10);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(2, matchResult.size());
         matchResult = matchResults.getBestResults();
         Assert.assertEquals(11, matchResult.size());
 
         nameCache = "Yucca filamentosa Len.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, 10);
+        matchResults = nameMatchingService.listShaping(nameCache, true, 10);
         matchResult = matchResults.getBestResults();
         Assert.assertEquals(6, matchResult.size());
 
