@@ -293,8 +293,9 @@ public class ManifestComposer {
         canvas = addAttributionAndLicense(media, canvas, representationMetadata, metaDataSource);
         representationMetadata = deduplicateMetadata(representationMetadata);
 
-        orderMedatadaItems(canvas);
+
         canvas.addMetadata(representationMetadata.toArray(new MetadataEntry[representationMetadata.size()]));
+        orderMedatadaItems(canvas);
         return Optional.of(canvas);
     }
 
