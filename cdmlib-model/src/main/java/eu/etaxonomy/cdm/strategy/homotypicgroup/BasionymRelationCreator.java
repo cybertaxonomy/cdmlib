@@ -162,12 +162,12 @@ public class BasionymRelationCreator extends StrategyBase {
     }
 
     public static boolean matchLastNamePart(TaxonName name1, TaxonName name2) {
-        String familyNamePart1 = name1.getLastNamePart();
-        String familyNamePart2 = name2.getLastNamePart();
-        if (familyNamePart1 != null && familyNamePart2 != null){
-            familyNamePart1 = normalizeBasionymNamePart(familyNamePart1);
-            familyNamePart2 = normalizeBasionymNamePart(familyNamePart2);
-            return (familyNamePart1.equals(familyNamePart2));
+        String lastNamePart1 = name1.getLastNamePart();
+        String lastNamePart2 = name2.getLastNamePart();
+        if (lastNamePart1 != null && lastNamePart2 != null){
+            lastNamePart1 = normalizeBasionymNamePart(lastNamePart1);
+            lastNamePart2 = normalizeBasionymNamePart(lastNamePart2);
+            return (lastNamePart1.equals(lastNamePart2));
         }else{
             return false;
         }
