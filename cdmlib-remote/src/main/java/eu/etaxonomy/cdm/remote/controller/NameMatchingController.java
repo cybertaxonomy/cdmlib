@@ -56,16 +56,16 @@ public class NameMatchingController {
     @RequestMapping(
             value = {"match"},
             method = RequestMethod.GET)
-    public NameMatchingCombinedResult doGetNameMatching(
+    public NameMatchingOutputObject doGetNameMatching(
             @RequestParam(value="scientificName", required = true) String scientificName,
             @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
             @RequestParam(value="maxDistance", required = false) Integer maxDistance,
             HttpServletRequest request,
-            @SuppressWarnings("unused") HttpServletResponse response) {
+            @SuppressWarnings("unused") HttpServletResponse response) throws NameMatchingParserException {
 
         logger.info("doGetNameMatching()" + request.getRequestURI());
 
-        NameMatchingResult result = nameMatchingService.listShaping(scientificName, compareAuthor, maxDistance);
+        NameMatchingResult result = nameMatchingservice.findMatchingNames(scientificName, compareAuthor, maxDistance);
         RequestedParam requestedParam = new RequestedParam(scientificName, compareAuthor, maxDistance);
         return NameMatchingAdapter.invoke(result, requestedParam);
     }

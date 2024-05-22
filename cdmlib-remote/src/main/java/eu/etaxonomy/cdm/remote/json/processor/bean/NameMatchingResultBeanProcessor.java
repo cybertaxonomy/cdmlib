@@ -27,9 +27,9 @@ public class NameMatchingResultBeanProcessor extends AbstractBeanProcessor<NameM
 
     @Override
     public JSONObject processBeanSecondStep(NameMatchingCombinedResult bean, JSONObject json, JsonConfig jsonConfig) {
-        json.element("request", bean.getRequest(), jsonConfig);
         json.element("exactMatches", bean.getExactMatches(), jsonConfig);
         json.element("candidates", bean.getCandidates(), jsonConfig);
+
         return json;
     }
 }
