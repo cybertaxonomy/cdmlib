@@ -8,7 +8,10 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,10 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCandidateResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCombinedResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingExactResult;
+import eu.etaxonomy.cdm.api.nameMatching.NameMatchingOutputListObject;
+import eu.etaxonomy.cdm.api.nameMatching.NameMatchingOutputObject;
 import eu.etaxonomy.cdm.api.nameMatching.RequestedParam;
 import eu.etaxonomy.cdm.api.service.INameMatchingService;
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.NameMatchingResult;
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.SingleNameMatchingResult;
+import eu.etaxonomy.cdm.api.service.exception.NameMatchingParserException;
 import eu.etaxonomy.cdm.persistence.dto.NameMatchingParts;
 import io.swagger.annotations.Api;
 
@@ -50,28 +56,67 @@ public class NameMatchingController {
     @RequestMapping(
             value = {"match"},
             method = RequestMethod.GET)
-    public NameMatchingCombinedResult doGetNameMatching(
+    public NameMatchingOutputObject doGetNameMatching(
             @RequestParam(value="scientificName", required = true) String scientificName,
             @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
             @RequestParam(value="maxDistance", required = false) Integer maxDistance,
             HttpServletRequest request,
-            @SuppressWarnings("unused") HttpServletResponse response) {
+            @SuppressWarnings("unused") HttpServletResponse response) throws NameMatchingParserException {
 
         logger.info("doGetNameMatching()" + request.getRequestURI());
 
-        NameMatchingResult result = nameMatchingService.listShaping(scientificName, compareAuthor, maxDistance);
+        NameMatchingResult result = nameMatchingservice.findMatchingNames(scientificName, compareAuthor, maxDistance);
         RequestedParam requestedParam = new RequestedParam(scientificName, compareAuthor, maxDistance);
         return NameMatchingAdapter.invoke(result, requestedParam);
     }
 
+    @RequestMapping(
+            value = "matchingList",
+            method = RequestMethod.POST)
+    public NameMatchingOutputListObject doPostNameMatching (
+            @RequestParam(value="scientificNames", required = true) String scientificName,
+            @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
+            @RequestParam(value="maxDistance", required = false) Integer maxDistance,
+            HttpServletRequest request,
+            @SuppressWarnings("unused") HttpServletResponse response) throws NameMatchingParserException {
+
+        logger.info("doPostNameMatching()" + request.getRequestURI());
+
+        List<String> scientificNamesList = new ArrayList <>(Arrays.asList(scientificName.split(",")));
+
+        Map<String, NameMatchingResult> results = nameMatchingservice.compareTaxonListName(scientificNamesList, compareAuthor, maxDistance);
+
+        RequestedParam requestedParam = new RequestedParam(scientificNamesList, compareAuthor, maxDistance);
+
+        return NameMatchingAdapter.invokeList (results, requestedParam);
+    }
+
     private static class NameMatchingAdapter {
 
-        private static NameMatchingCombinedResult invoke(NameMatchingResult innerResult, RequestedParam requestedParam) {
-            NameMatchingCombinedResult result = new NameMatchingCombinedResult();
-            result.setRequest(requestedParam);
-            result.setExactMatches(loadResultListFromPartsList(innerResult.getExactResults()));
-            result.setCandidates(loadCandiateResultListFromPartsList(innerResult.getBestResults()));
-            return result;
+        private static NameMatchingOutputListObject invokeList (Map<String, NameMatchingResult> input, RequestedParam paramteres) {
+            NameMatchingOutputListObject resultObject = new NameMatchingOutputListObject();
+            List <NameMatchingOutputObject> outputList = new ArrayList<>();
+            int i = 0 ;
+            for (NameMatchingResult x : input.values()) {
+                    String inputName = paramteres.getScientificNameList().get(i);
+                    i++;
+                    RequestedParam individualInputName = new RequestedParam (inputName, paramteres.isCompareAuthor(),paramteres.getMaxDistance());
+                    outputList.add(NameMatchingAdapter.invoke(x, individualInputName));
+            }
+            resultObject.setOutputObject(outputList);
+            return resultObject;
+        }
+
+        private static NameMatchingOutputObject invoke(NameMatchingResult innerResult, RequestedParam requestedParam) {
+            NameMatchingOutputObject outputObject = new NameMatchingOutputObject();
+            NameMatchingCombinedResult resultNameMatching = new NameMatchingCombinedResult();
+            resultNameMatching.setExactMatches(loadResultListFromPartsList(innerResult.getExactResults()));
+            resultNameMatching.setCandidates(loadCandiateResultListFromPartsList(innerResult.getBestResults()));
+
+            outputObject.setRequest(requestedParam);
+            outputObject.setResults(resultNameMatching);
+            outputObject.setWarning(innerResult.getWarning());
+            return outputObject;
         }
 
         private static List<NameMatchingExactResult> loadResultListFromPartsList(List<SingleNameMatchingResult> partsList) {
@@ -85,7 +130,6 @@ public class NameMatchingController {
         private static NameMatchingExactResult loadResultFromParts(NameMatchingParts parts) {
            return loadResultFromParts(parts, new NameMatchingExactResult());
         }
-
 
         private static NameMatchingCandidateResult loadCandidateResultFromParts(SingleNameMatchingResult parts) {
             NameMatchingCandidateResult result = new NameMatchingCandidateResult();
