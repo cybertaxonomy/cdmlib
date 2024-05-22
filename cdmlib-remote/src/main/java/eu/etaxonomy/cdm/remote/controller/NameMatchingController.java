@@ -65,7 +65,7 @@ public class NameMatchingController {
 
         logger.info("doGetNameMatching()" + request.getRequestURI());
 
-        NameMatchingResult result = nameMatchingservice.findMatchingNames(scientificName, compareAuthor, maxDistance);
+        NameMatchingResult result = nameMatchingService.findMatchingNames(scientificName, compareAuthor, maxDistance);
         RequestedParam requestedParam = new RequestedParam(scientificName, compareAuthor, maxDistance);
         return NameMatchingAdapter.invoke(result, requestedParam);
     }
@@ -84,7 +84,7 @@ public class NameMatchingController {
 
         List<String> scientificNamesList = new ArrayList <>(Arrays.asList(scientificName.split(",")));
 
-        Map<String, NameMatchingResult> results = nameMatchingservice.compareTaxonListName(scientificNamesList, compareAuthor, maxDistance);
+        Map<String, NameMatchingResult> results = nameMatchingService.compareTaxonListName(scientificNamesList, compareAuthor, maxDistance);
 
         RequestedParam requestedParam = new RequestedParam(scientificNamesList, compareAuthor, maxDistance);
 
