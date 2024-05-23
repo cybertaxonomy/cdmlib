@@ -280,7 +280,7 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
     }
 
-    public static class ConceptRelationDTO extends TaxonBaseDto{
+    public static class ConceptRelationDTO extends AnnotatableDto {
 
         //TODO really needed or only in linkedLabel?
         private int relTaxonId;
@@ -291,6 +291,9 @@ public class TaxonPageDto extends TaxonBaseDto {
         private Set<UUID> classificationUuids;
         private SourceDto secSource;
         private SourceDto relSource;
+        private String label;
+        private UUID nameUuid;
+        private List<TaggedText> taggedLabel;
 
         public int getRelTaxonId() {
             return relTaxonId;
@@ -342,6 +345,24 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
         public void setRelSource(SourceDto relSource) {
             this.relSource = relSource;
+        }
+        public String getLabel() {
+            return label;
+        }
+        public void setLabel(String label) {
+            this.label = label;
+        }
+        public UUID getNameUuid() {
+            return nameUuid;
+        }
+        public void setNameUuid(UUID nameUuid) {
+            this.nameUuid = nameUuid;
+        }
+        public List<TaggedText> getTaggedLabel() {
+            return taggedLabel;
+        }
+        public void setTaggedLabel(List<TaggedText> taggedLabel) {
+            this.taggedLabel = taggedLabel;
         }
     }
 
