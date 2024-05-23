@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCandidateResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCombinedResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingExactResult;
-import eu.etaxonomy.cdm.api.nameMatching.NameMatchingOutputListObject;
+import eu.etaxonomy.cdm.api.nameMatching.NameMatchingOutputList;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingOutputObject;
 import eu.etaxonomy.cdm.api.nameMatching.RequestedParam;
 import eu.etaxonomy.cdm.api.service.INameMatchingService;
@@ -73,7 +73,7 @@ public class NameMatchingController {
     @RequestMapping(
             value = "matchingList",
             method = RequestMethod.POST)
-    public NameMatchingOutputListObject doPostNameMatching (
+    public NameMatchingOutputList doPostNameMatching (
             @RequestParam(value="scientificNames", required = true) String scientificName,
             @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
             @RequestParam(value="maxDistance", required = false) Integer maxDistance,
@@ -93,8 +93,8 @@ public class NameMatchingController {
 
     private static class NameMatchingAdapter {
 
-        private static NameMatchingOutputListObject invokeList (Map<String, NameMatchingResult> input, RequestedParam paramteres) {
-            NameMatchingOutputListObject resultObject = new NameMatchingOutputListObject();
+        private static NameMatchingOutputList invokeList (Map<String, NameMatchingResult> input, RequestedParam paramteres) {
+            NameMatchingOutputList resultObject = new NameMatchingOutputList();
             List <NameMatchingOutputObject> outputList = new ArrayList<>();
             int i = 0 ;
             for (NameMatchingResult x : input.values()) {
@@ -114,7 +114,7 @@ public class NameMatchingController {
             resultNameMatching.setCandidates(loadCandiateResultListFromPartsList(innerResult.getBestResults()));
 
             outputObject.setRequest(requestedParam);
-            outputObject.setResults(resultNameMatching);
+            outputObject.setResult(resultNameMatching);
             outputObject.setWarning(innerResult.getWarning());
             return outputObject;
         }

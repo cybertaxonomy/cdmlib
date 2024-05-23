@@ -14,14 +14,14 @@ package eu.etaxonomy.cdm.api.nameMatching;
  */
 public class NameMatchingOutputObject {
     private RequestedParam request;
-    private NameMatchingCombinedResult results = new NameMatchingCombinedResult();
+    private NameMatchingCombinedResult result = new NameMatchingCombinedResult();
     private String warning;
 
-    public NameMatchingCombinedResult getResults() {
-        return results;
+    public NameMatchingCombinedResult getResult() {
+        return result;
     }
-    public void setResults(NameMatchingCombinedResult results) {
-        this.results = results;
+    public void setResult(NameMatchingCombinedResult result) {
+        this.result = result;
     }
     public RequestedParam getRequest() {
         return request;

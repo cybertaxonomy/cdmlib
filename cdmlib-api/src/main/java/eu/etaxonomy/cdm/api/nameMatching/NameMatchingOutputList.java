@@ -14,7 +14,7 @@ import java.util.List;
  * @author andreabee90
  * @since 22.05.2024
  */
-public class NameMatchingOutputListObject extends NameMatchingOutputObject{
+public class NameMatchingOutputList {
 
     private List <NameMatchingOutputObject> outputObjectList;
 
