@@ -865,7 +865,7 @@ public class Reference
 	/**
 	 * Returns a string representation for the year of publication / creation
 	 * of <i>this</i> reference. If the {@link #getDatePublished() datePublished}
-	 * of this reference contains more date information then (starting) year
+	 * of this reference contains more date information than (starting) year
 	 * only the year is returned.
 	 */
 	@Override
