@@ -40,6 +40,7 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
     private List<URI> links;
 
     private String citationDetail;
+    private String sortableDate;
 
 // ******************** CONSTRUCTOR ****************/
 
@@ -149,5 +150,13 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
     }
     public void setCitationDetail(String citationDetail) {
         this.citationDetail = citationDetail;
+    }
+
+    public String getSortableDate() {
+        return sortableDate;
+    }
+
+    public void setSortableDate(String sortableDate) {
+        this.sortableDate = sortableDate;
     }
 }

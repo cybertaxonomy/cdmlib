@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.format.common;
 
 import org.joda.time.ReadablePartial;
@@ -57,5 +56,13 @@ public class TimePeriodPartialFormatter extends DateTimeFormatter{
 		String result = CdmUtils.concat(" ", dayStr, monthStr, yearStr);
 
 		return result;
+	}
+
+	public String printSortableDateString(ReadablePartial partial) {
+        String yearStr = (partial.isSupported(TimePeriod.YEAR_TYPE))? String.valueOf(partial.get(TimePeriod.YEAR_TYPE)):"zzzz";
+        String monthStr = (partial.isSupported(TimePeriod.MONTH_TYPE))? String.valueOf(partial.get(TimePeriod.MONTH_TYPE)):"zz";
+        String dayStr = (partial.isSupported(TimePeriod.DAY_TYPE))? String.valueOf(partial.get(TimePeriod.DAY_TYPE)):"zz";
+        String result = CdmUtils.concat("-", dayStr, monthStr, yearStr);
+        return result;
 	}
 }

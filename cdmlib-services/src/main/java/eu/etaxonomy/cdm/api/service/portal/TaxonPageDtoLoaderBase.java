@@ -235,6 +235,7 @@ public abstract class TaxonPageDtoLoaderBase {
                     sourceDto.addLink(link.getUri());
                 }
             }
+            sourceDto.setSortableDate(ref.getSortableDateString());
         }
 
         //label
