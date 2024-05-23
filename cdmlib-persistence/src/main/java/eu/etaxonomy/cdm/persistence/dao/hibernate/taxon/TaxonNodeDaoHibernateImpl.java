@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonRelationshipDao;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResultComparator;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeWithoutSecQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -296,7 +297,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 //        String taxonTitleCache, String nameTitleCache, Rank nameRank, UUID parentNodeUuid,
 //        Integer sortIndex, UUID classificationUuid, Boolean taxonPublish, TaxonNodeStatus status,
 //        Integer childrenCount, UUID secUuid
-        String queryString = getTaxonNodeDtoQuery();
+        String queryString = getTaxonNodeDtoWithoutSecQuery();
         queryString += " WHERE p.id = :parent_id ";
 
 
@@ -1207,6 +1208,21 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
                 + "   LEFT OUTER JOIN name.rank AS rank ";
         return queryString;
     }
+
+    private String getTaxonNodeDtoWithoutSecQuery() {
+
+        String queryString = "SELECT new " + SortableTaxonNodeWithoutSecQueryResult.class.getName() + "("
+            + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid, index(tn), cl.uuid,  t.publish, tn.status, note, tn.countChildren "
+            + ") "
+            + " FROM TaxonNode p "
+            + "   INNER JOIN p.childNodes AS tn"
+            + "   INNER JOIN tn.taxon AS t "
+            + "   INNER JOIN t.name AS name "
+            + "   INNER JOIN tn.classification AS cl "
+            + "   LEFT OUTER JOIN tn.statusNote as note "
+            + "   LEFT OUTER JOIN name.rank AS rank ";
+    return queryString;
+}
 
     public String getTaxonNodeDtoQueryWithoutParent() {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
