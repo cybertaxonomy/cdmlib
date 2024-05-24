@@ -100,6 +100,10 @@ public class RegistrationWorkingSet {
 
     protected Reference publicationUnit(RegistrationWrapperDTO regDto) {
         Reference ref = regDto.getCitation();
+        return sectionSafePublicationUnit(ref);
+    }
+
+    public static Reference sectionSafePublicationUnit(Reference ref) {
         while(ref.isOfType(ReferenceType.Section)&& ref.getInReference() != null){
             ref = ref.getInReference();
             if(!ref.isOfType(ReferenceType.Section)){
