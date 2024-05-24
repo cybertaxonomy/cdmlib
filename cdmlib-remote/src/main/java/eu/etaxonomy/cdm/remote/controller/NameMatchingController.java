@@ -82,7 +82,7 @@ public class NameMatchingController {
 
         logger.info("doPostNameMatching()" + request.getRequestURI());
 
-        List<String> scientificNamesList = new ArrayList <>(Arrays.asList(scientificName.split(",")));
+        List<String> scientificNamesList = new ArrayList <>(Arrays.asList(scientificName.split(";")));
 
         Map<String, NameMatchingResult> results = nameMatchingService.compareTaxonListName(scientificNamesList, compareAuthor, maxDistance);
 
