@@ -320,9 +320,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return nowLocal.isAfter(pubDateTime);
     }
 
-    /**
-     * @param reference
-     */
     protected Reference resolveSection(Reference reference) {
         repo.getReferenceService().load(reference.getUuid(), Arrays.asList(new String[]{"inReference"})); // needed to avoid the problem described in #7331
         if(reference.isOfType(ReferenceType.Section) && reference.getInReference() != null) {
@@ -331,10 +328,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return reference;
     }
 
-    /**
-     * {@inheritDoc}
-     * @throws TypeDesignationSetException
-     */
     @Override
     public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws TypeDesignationSetException, PermissionDeniedException {
 

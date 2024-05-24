@@ -267,18 +267,18 @@ public class Registration extends AnnotatableEntity {
         return this.getName() != null;
     }
 
-    public NamedSourceBase findPublishedUnit() {
-        NamedSourceBase publishedUnit = null;
+    public NamedSourceBase findCitedSource() {
+        NamedSourceBase citedSource = null;
         if(hasName()){
-            publishedUnit = this.getName().getNomenclaturalSource();
+            citedSource = this.getName().getNomenclaturalSource();
         } else if(hasTypifications()){
             for(TypeDesignationBase<?> td : this.getTypeDesignations()){
                 if(td.getDesignationSource() != null) {
-                    publishedUnit = td.getDesignationSource();
+                    citedSource = td.getDesignationSource();
                 }
             }
         }
-        return publishedUnit;
+        return citedSource;
     }
 
     public boolean hasTypifications() {

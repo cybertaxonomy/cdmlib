@@ -24,8 +24,8 @@ import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 
 /**
  * Loader for {@link RegistrationWrapperDTO}s. Extracted from DTO class.
@@ -89,12 +89,12 @@ public class RegistrationDtoLoader {
         }
 
         Reference citation = null;
-        NamedSourceBase publishedUnit = reg.findPublishedUnit();
-        if(publishedUnit != null) {
-            dto.setCitationDetail(publishedUnit.getCitationMicroReference());
+        NamedSourceBase citedSource = reg.findCitedSource();
+        if(citedSource != null) {
+            dto.setCitationDetail(citedSource.getCitationMicroReference());
             //TODO DTO
 //            dto.setCitationPure(publishedUnit.getCitation());
-            citation = publishedUnit.getCitation();
+            citation = citedSource.getCitation();
         }
 
         makeBibliographicCitationStrings(dto, citation, dto.getCitationDetail());

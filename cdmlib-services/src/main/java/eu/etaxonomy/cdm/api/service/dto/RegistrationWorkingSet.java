@@ -33,7 +33,7 @@ public class RegistrationWorkingSet {
 
     private List<RegistrationWrapperDTO> registrationWrapperDTOs = new ArrayList<>();
 
-    private UUID citationUuid = null;
+    private UUID publicationUnitUuid = null;
 
     private DateTime created = null;
 
@@ -43,9 +43,8 @@ public class RegistrationWorkingSet {
      * Creates an empty working set
      */
     public RegistrationWorkingSet(Reference citation) {
-        citationUuid = citation.getUuid();
+        publicationUnitUuid = citation.getUuid();
         this.citationString= citation.getTitleCache();
-
     }
 
     public RegistrationWorkingSet(List<RegistrationWrapperDTO> registrationWrapperDTOs) throws TypeDesignationSetException {
@@ -77,12 +76,12 @@ public class RegistrationWorkingSet {
             problems = new ArrayList<>();
         }
         for(RegistrationWrapperDTO regDto : candidates){
-                Reference citation = publicationUnit(regDto);
-                if(citationUuid == null){
-                    citationUuid = citation.getUuid();
-                    citationString = citation.getTitleCache();
+                Reference publicationUnit = publicationUnit(regDto);
+                if(publicationUnitUuid == null){
+                    publicationUnitUuid = publicationUnit.getUuid();
+                    citationString = publicationUnit.getTitleCache();
                 } else {
-                    if(!citation.getUuid().equals(citationUuid)){
+                    if(!publicationUnit.getUuid().equals(publicationUnitUuid)){
                         problems.add("Removing Registration " + regDto.getSummary() + " from set since this refers to a different citationString.");
                         continue;
                     }
@@ -120,9 +119,6 @@ public class RegistrationWorkingSet {
         validateAndAddDTOs(Arrays.asList(regDTO), null);
     }
 
-    /**
-     * @return the registrations
-     */
     public List<Registration> getRegistrations() {
         List<Registration> regs = new ArrayList<>(registrationWrapperDTOs.size());
         registrationWrapperDTOs.forEach(dto -> regs.add(dto.registration()));
@@ -146,8 +142,6 @@ public class RegistrationWorkingSet {
     /**
      * Finds the lowest status in the registrations contained
      * in the working set.
-     *
-     * @return
      */
     public RegistrationStatus lowestStatus() {
         RegistrationStatus status = RegistrationStatus.REJECTED;
@@ -159,10 +153,6 @@ public class RegistrationWorkingSet {
         return status;
     }
 
-
-    /**
-     * @return the registrations
-     */
     public List<RegistrationWrapperDTO> getRegistrationWrapperDTOs() {
         return registrationWrapperDTOs;
     }
@@ -171,8 +161,8 @@ public class RegistrationWorkingSet {
         return registrationWrapperDTOs.stream().filter(r -> r.getUuid().equals(registrationUuid) ).findFirst();
     }
 
-    public UUID getCitationUuid() {
-        return citationUuid;
+    public UUID getPublicationUnitUuid() {
+        return publicationUnitUuid;
     }
 
     public String getCitation() {
@@ -190,9 +180,6 @@ public class RegistrationWorkingSet {
     /**
      * The creation time stamp of a registration set always is
      * the creation DateTime of the oldest Registration contained
-     * in the set.
-     *
-     * @return
      */
     public DateTime getCreated(){
         return created;
@@ -204,5 +191,4 @@ public class RegistrationWorkingSet {
         registrationWrapperDTOs.forEach(dto -> str.append(dto.getIdentifier() + " : " + dto.getSummary()).append("\n"));
         return str.toString();
     }
-
 }

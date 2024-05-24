@@ -97,19 +97,12 @@ public class TaxonNamePartsFilter extends TaxonNameParts {
             return query + "*";
         }
         return query;
-
     }
 
-    /**
-     * @return the exludedNames
-     */
     public Set<UUID> getExludedNamesUuids() {
         return exludedNamesUuids;
     }
 
-    /**
-     * @param exludedNames the exludedNames to set
-     */
     public void setExludedNames(Set<TaxonName> exludedNames) {
         for(TaxonName name : exludedNames){
             exludedNamesUuids.add(name.getUuid());

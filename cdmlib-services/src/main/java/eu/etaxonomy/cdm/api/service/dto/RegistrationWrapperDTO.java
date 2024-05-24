@@ -107,10 +107,10 @@ public class RegistrationWrapperDTO {
             name = new RankedNameReference(taxonName.getUuid(),
                     taxonName.getTitleCache(), taxonName.isSupraSpecific());
         }
-        NamedSourceBase publishedUnit = reg.findPublishedUnit();
-        if(publishedUnit != null) {
-            citation = publishedUnit.getCitation();
-            citationDetail = publishedUnit.getCitationMicroReference();
+        NamedSourceBase citedSource = reg.findCitedSource();
+        if(citedSource != null) {
+            citation = citedSource.getCitation();
+            citationDetail = citedSource.getCitationMicroReference();
         }
 
         switch (registrationType) {
