@@ -8,7 +8,10 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -26,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -484,6 +488,166 @@ public class TaxonPortalController extends TaxonController{
         }
         iucnDistributionConfig.setFallbackAreaMarkerTypes(fallbackAreaMarkerTypes);
         iucnDistributionConfig.setAlternativeRootAreaMarkerTypes(alternativeRootAreaMarkerTypes);
+
+        TaxonPageDto dto = portalService.taxonPageDto(config);
+        return dto;
+    }
+
+
+    /**
+     * TODO documentation
+     *
+     * @param taxonUuid the taxon uuid
+     * @param subtreeUuid the taxon node subtree filter
+     * @throws IOException
+     */
+    @RequestMapping(
+            value = {"page"},
+            method = RequestMethod.POST,
+            consumes = "application/json")
+
+    @ResponseBody
+    public TaxonPageDto doGetTaxonPagePOST(@PathVariable("uuid") UUID taxonUuid,
+            InputStream requestDto,
+
+
+            //TODO configuration data
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        //maybe become a parameter, but first test if
+        Boolean neverUseFallbackAreaAsParent = null;   //currently default is true in configuration
+        String param_value = request.getParameter("annotationTypes");
+        Map<String, String[]> param_map = request.getParameterMap();
+        StringBuilder jsonStringBuilder = new StringBuilder();
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(requestDto));
+            String line = null;
+            while ((line = in.readLine()) != null) {
+                jsonStringBuilder.append(line);
+            }
+        } catch (Exception e) {
+            System.out.println("Error Parsing: - ");
+        }
+        System.out.println("Data Received: " + jsonStringBuilder.toString());
+        JSONObject jsonObject = new JSONObject(jsonStringBuilder.toString());
+        boolean includeUnpublished = NO_UNPUBLISHED;
+        //EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = bindAssociationFilter(taxOccRelFilter);
+        if(request != null){
+            logger.info("doGetTaxonPage() " + requestPathAndQuery(request));
+        }
+
+        //TODO for now hardcoded
+//        alternativeRootAreaMarkerTypeList = new DefinedTermBaseList<>();
+//        UUID alternativeRootAreaMarkerTypeUuid = MarkerType.uuidAlternativeRootArea;
+//        MarkerType defaultAlternativeRootAreaMarkerType = (MarkerType)termService.find(alternativeRootAreaMarkerTypeUuid);
+//        if (defaultAlternativeRootAreaMarkerType != null) {
+//            alternativeRootAreaMarkerTypeList.add(defaultAlternativeRootAreaMarkerType);
+//        }
+//
+//        //TODO is this current state of art?
+////        ModelAndView mv = new ModelAndView();
+//
+//        //check taxon exists and not filtered
+//        Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, getTaxonNodeInitStrategy().getPropertyPaths());
+//        TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
+//        taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
+//
+//        if (partSet == null) {
+//            partSet = EnumSet.of(InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);
+//        }
+//        //TODO null check needed?
+//        if (annotationTypes == null) {
+//            annotationTypes = new HashSet<>();
+//        }
+//        if (markerTypes == null) {
+//            markerTypes = new HashSet<>();
+//        }
+//
+////      //TODO is this performant?
+////      IVocabularyService vocabularyService = null;
+////      Map<PresenceAbsenceTerm, Color> distributionStatusColors = DistributionServiceUtilities.buildStatusColorMap(
+////              statusColorsString, termService, vocabularyService);
+//
+//        TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
+//
+//        config.setTaxonUuid(taxonUuid);
+//        config.setFeatureTree(featureTreeUuid);
+//        config.setEtAlPosition(etAlPosition);
+//        config.setWithFacts(doFacts);
+//        config.setWithKeys(doKeys);
+//        config.setWithMedia(doMedia);
+//        config.setWithSpecimens(doSpecimens);
+//        config.setWithSynonyms(doSynonyms);
+//        config.setWithTaxonNodes(doTaxonNodes);
+//        config.setWithTaxonRelationships(doTaxonRelations);
+//        config.setAnnotationTypes(annotationTypes);
+//        config.setMarkerTypes(markerTypes);
+//
+//
+//        //filter
+//        config.setIncludeUnpublished(includeUnpublished);
+//        config.setSpecimenAssociationFilter(taxonOccurrenceRelTypes);
+//
+//        Set<MarkerType> fallbackAreaMarkerTypes = new HashSet<>();
+//        if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){
+//            fallbackAreaMarkerTypes = fallbackAreaMarkerTypeList.asSet();
+//        }
+//
+//        Set<MarkerType> alternativeRootAreaMarkerTypes = new HashSet<>();
+//        if(!CdmUtils.isNullSafeEmpty(alternativeRootAreaMarkerTypeList)){
+//            alternativeRootAreaMarkerTypes = alternativeRootAreaMarkerTypeList.asSet();
+//        }
+//
+//
+//        //default distribution info config
+//        if (omitLevels ==null) {
+//            omitLevels = new HashSet<>();
+//        }
+//        DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
+//        distributionConfig.setIncludeUnpublished(includeUnpublished);
+//        distributionConfig.setInfoParts(EnumSet.copyOf(partSet));
+//        distributionConfig.setPreferSubAreas(preferSubAreas);
+//        distributionConfig.setStatusOrderPreference(statusOrderPreference);
+//        distributionConfig.setAreaTree(areaTreeUuid);
+//        distributionConfig.setStatusTree(statusTreeUuid);
+//        distributionConfig.setOmitLevels(omitLevels);
+//        distributionConfig.setStatusColorsString(statusColorsString);
+//        distributionConfig.setDistributionOrder(distributionOrder);
+//        if (neverUseFallbackAreaAsParent != null) {
+//            distributionConfig.setNeverUseFallbackAreaAsParent(neverUseFallbackAreaAsParent);
+//        }
+//        if (recipe != null) {
+//            CondensedDistributionConfiguration condensedConfig = recipe.toConfiguration();
+//            condensedConfig.alternativeRootAreaMarkers = getUuids(alternativeRootAreaMarkerTypes);
+//            distributionConfig.setCondensedDistributionConfiguration(condensedConfig);
+//        }
+//        distributionConfig.setFallbackAreaMarkerTypes(fallbackAreaMarkerTypes); //was (remove if current implementation works): fallbackAreaMarkerTypes.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+//        distributionConfig.setAlternativeRootAreaMarkerTypes(alternativeRootAreaMarkerTypes);
+//
+//        //IUCN distribution info config
+//        DistributionInfoConfiguration iucnDistributionConfig = new DistributionInfoConfiguration();
+//        iucnDistributionConfig.setIncludeUnpublished(includeUnpublished);
+//        config.putDistributionInfoConfiguration(Feature.uuidIucnStatus, iucnDistributionConfig);
+//        EnumSet<InfoPart> iucnPartSet = EnumSet.of(InfoPart.condensedDistribution);
+//        iucnDistributionConfig.setInfoParts(iucnPartSet);
+//
+//        iucnDistributionConfig.setPreferSubAreas(preferSubAreas);
+//        iucnDistributionConfig.setStatusOrderPreference(statusOrderPreference);
+//        iucnDistributionConfig.setAreaTree(areaTreeUuid);
+//        //TODO IUCN status tree?
+//        iucnDistributionConfig.setOmitLevels(omitLevels);
+////        distributionConfig.setStatusColorsString(statusColorsString);
+//        iucnDistributionConfig.setDistributionOrder(distributionOrder);
+//        CondensedDistributionRecipe iucnRecipe = CondensedDistributionRecipe.IUCN;
+//        if (iucnRecipe != null) {
+//            CondensedDistributionConfiguration condensedConfig = iucnRecipe.toConfiguration();
+//            condensedConfig.alternativeRootAreaMarkers = getUuids(alternativeRootAreaMarkerTypes);
+//            iucnDistributionConfig.setCondensedDistributionConfiguration(condensedConfig);
+//        }
+//        iucnDistributionConfig.setFallbackAreaMarkerTypes(fallbackAreaMarkerTypes);
+//        iucnDistributionConfig.setAlternativeRootAreaMarkerTypes(alternativeRootAreaMarkerTypes);
+        TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
 
         TaxonPageDto dto = portalService.taxonPageDto(config);
         return dto;
