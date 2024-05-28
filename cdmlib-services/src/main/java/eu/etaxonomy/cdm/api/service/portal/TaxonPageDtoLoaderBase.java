@@ -218,6 +218,7 @@ public abstract class TaxonPageDtoLoaderBase {
             linkedObject = source.getCdmSource();
         }
 
+        sourceDto.setCitationDetail(source.getCitationMicroReference());
         //citation doi & uri & links
         Reference ref = source.getCitation();
         if (ref != null) {
