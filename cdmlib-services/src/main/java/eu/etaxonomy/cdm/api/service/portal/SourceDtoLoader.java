@@ -22,9 +22,12 @@ import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * Loader for {@link SourceDto}
@@ -58,7 +61,8 @@ public class SourceDtoLoader {
         String hql = "SELECT new map(osb.id as id, osb.uuid as uuid, osb.accessed as accessed, "
                 +     " osb.originalInfo as originalInfo, "
                 +     " osb.citation as ref, osb.citationMicroReference as detail, "
-                +     " osb.type as type) "
+                +     " osb.type as type, osb.accessed as accessed,"
+                +     " osb.nameUsedInSource as nameInSource) "
                 //cdmSource, links
                 + " FROM OriginalSourceBase osb "
                 + " WHERE osb.id IN :baseIds"
@@ -82,31 +86,44 @@ public class SourceDtoLoader {
                     OriginalSourceType type = (OriginalSourceType)e.get("type");
                     dto.setType(type != null ? type.toString() : null);
                     //accessed
-                    dto.setAccessed(null);  //TODO timeperiod
+                    TimePeriod accessed = (TimePeriod)e.get("accessed");
+                    dto.setAccessed(accessed == null ? null : accessed.toString());
                     //originalInfo
                     dto.setOriginalInfo((String)e.get("originalInfo"));
                     //detail
                     String detail = (String)e.get("detail");
                     dto.setCitationDetail(detail);
                     //ref
+                    //TODO use DTO for citation
                     Reference citation = (Reference)e.get("ref");
                     if (citation != null) {
                         dto.setReferenceUuid(citation.getUuid());
+                        //doi
+                        dto.setDoi(citation.getDoiUriString());
+                        //uri
+                        dto.setUri(citation.getUri());
+                        //sortableDate
+                        dto.setSortableDate(citation.getSortableDateString());
                     }
                     String label = OriginalSourceFormatter.INSTANCE_LONG_CITATION.format(citation, detail);
-                    Class<? extends ICdmBase> clazz = null;  //TODO
+                    //TODO
+                    Class<? extends ICdmBase> clazz = null;
                     TypedLabel typedLabel = new TypedLabel(uuid, clazz, label, null);
                     dto.addLabel(typedLabel);
-                    //doi
-                    dto.setDoi(null); //TODO doi
                     //link
                     dto.addLink(null); //TODO
                     dto.setLinkedClass(null); //TODO
-                    //name in source
-                    dto.setNameInSource(null); //TODO
-                    dto.setNameInSourceUuid(null); //TODO
-                    //uri
-                    dto.setUri(null); //TODO
+
+                    //nameUsedInSource
+                    //TODO use DTO
+                    TaxonName name =  (TaxonName)e.get("nameInSource");
+                    if (name != null) {
+                        List<TaggedText> taggedName = name.cacheStrategy().getTaggedTitle(name);
+                        //TODO nom status?
+                        dto.setNameInSource(taggedName);
+                        dto.setNameInSourceUuid(name.getUuid());
+                    }
+
                     //last updated
                     dto.setLastUpdated(null); //TODO
                 });

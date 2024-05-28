@@ -221,8 +221,9 @@ public abstract class TaxonPageDtoLoaderBase {
         //citation doi & uri & links
         Reference ref = source.getCitation();
         if (ref != null) {
-            sourceDto.setDoi(ref.getDoiString());
+            sourceDto.setDoi(ref.getDoiUriString());
             sourceDto.setUri(ref.getUri());
+            //TODO do we really want to take the sourceDto.uuid from the ref.uuid?
             sourceDto.setUuid(ref.getUuid());
             sourceDto.setOriginalInfo(source.getOriginalInfo());
             Set<ExternalLink> links = ref.getLinks();

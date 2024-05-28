@@ -567,6 +567,13 @@ public class Reference
     public String getDoiString() {
         return doi == null? null : doi.toString();
     }
+    /**
+     * Convenience method to retrieve doi as uri string
+     */
+    @Transient @XmlTransient @java.beans.Transient
+    public String getDoiUriString() {
+        return doi == null? null : doi.asURI();
+    }
 
 	@Override
     public String getSeriesPart() {

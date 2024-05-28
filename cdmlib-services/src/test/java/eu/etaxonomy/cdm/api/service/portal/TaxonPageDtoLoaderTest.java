@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.geo.DistributionInfoBuilderTest;
+import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -53,8 +54,10 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
@@ -354,7 +357,10 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         SourceDto source = franceDistributionDto.getSources().getItems().get(0);
         Assert.assertEquals("PrimaryTaxonomicSource", source.getType());
         Assert.assertEquals("44", source.getCitationDetail());
-
+        Assert.assertEquals("1792", source.getAccessed());
+        Assert.assertEquals("https://doi.org/10.10.0123/suf-456", source.getDoi());
+        Assert.assertEquals("https://uri.org", source.getUri().toString());
+        Assert.assertEquals("Genus insourcus", TaggedTextFormatter.createString(source.getNameInSource()));
     }
 
     private void createTestData() {
@@ -417,7 +423,15 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         franceRef.setAuthorship(taxon.getName().getCombinationAuthorship());
         franceRef.setTitle("My French distribution");
         franceRef.setDatePublished(TimePeriodParser.parseStringVerbatim("1978"));
-        franceDist.addPrimaryTaxonomicSource(franceRef, "44");
+        franceRef.setDoi(DOI.fromRegistrantCodeAndSuffix("10.0123", "suf-456"));
+        franceRef.setUri(URI.create("https://uri.org"));;
+        DescriptionElementSource source = franceDist.addPrimaryTaxonomicSource(franceRef, "44");
+        source.setAccessed(TimePeriod.NewInstance(1792));
+        TaxonName nameInSource = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        nameInSource.setGenusOrUninomial("Genus");
+        nameInSource.setSpecificEpithet("insourcus");
+        source.setNameUsedInSource(nameInSource);
+
         //... ... import
         Reference importRef = ReferenceFactory.newDatabase();
         importRef.setTitle("French distribution import");  //should not be shown in output
