@@ -40,10 +40,12 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.HomotypicGroupDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaRepresentationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NameRelationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.geo.DistributionInfoBuilderTest;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DOI;
@@ -71,6 +73,7 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -85,6 +88,8 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -104,6 +109,10 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     private UUID specimenUuid2 = UUID.fromString("c9c69fa0-1179-48e6-b03a-a843048b16e6");
     private UUID mediaUuid1 = UUID.fromString("7e6a7d5e-a579-4ba8-98b0-cd10b48d1c04");
 
+    private UUID statusTreeUuid = UUID.fromString("4f018fe2-97c3-4818-9aa4-7a6ba70fc4a1");
+    private UUID areaTreeUuid = UUID.fromString("39cae3d4-36e4-4cc7-84a2-b748bbcbe800");
+    private UUID featureTreeUuid = UUID.fromString("d7089eb1-2fdc-4ec7-b5b5-2bb74f8fe578");
+
     @SpringBeanByType
     private ITaxonService taxonService;
 
@@ -112,6 +121,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private ITermService termService;
+
+    @SpringBeanByType
+    private ITermTreeService termTreeService;
 
     @SpringBeanByType
     private IPortalService portalService;
@@ -168,14 +180,133 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testFacts() {
+        //create test data
         createTestData();
         commitAndStartNewTransaction();
+
+        //test
+        testAllFacts();
+        testDistributionWithFilter();
+    }
+
+    private void testDistributionWithFilter() {
+        //config general
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
-        CondensedDistributionConfiguration cc = config.getDistributionInfoConfiguration().getCondensedDistributionConfiguration();
+        DistributionInfoConfiguration distConfig = config.getDistributionInfoConfiguration();
+        CondensedDistributionConfiguration cc = distConfig.getCondensedDistributionConfiguration();
         cc.showAreaOfScopeLabel = true;
         config.setWithSpecimens(false);
         config.setTaxonUuid(taxonUuid);
+        config.setFeatureTree(featureTreeUuid);
+
         config.setUseDtoLoading(true);
+        testDistributionWithFilterDo(config);
+        config.setUseDtoLoading(false);
+        testDistributionWithFilterDo(config);
+    }
+
+    private void testDistributionWithFilterDo(TaxonPageDtoConfiguration config) {
+        DistributionInfoConfiguration distConfig = config.getDistributionInfoConfiguration();
+
+        //with area filter
+        distConfig.setAreaTree(areaTreeUuid);
+        distConfig.setStatusTree(null);
+        testDistributionWithAreaFilter(config);
+
+        //with status filter
+        distConfig.setAreaTree(null);
+        distConfig.setStatusTree(statusTreeUuid);
+        testDistributionWithStatusFilter(config);
+    }
+
+    private void testDistributionWithAreaFilter(TaxonPageDtoConfiguration config) {
+
+        TaxonPageDto dto = portalService.taxonPageDto(config);
+        Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
+
+        //facts
+        ContainerDto<FeatureDto> features = dto.getTaxonFacts();
+        Assert.assertEquals("There should be 1 feature (distribution)",
+                1, features.getCount());
+
+        //... distribution
+        FeatureDto distributionDto = features.getItems().get(0);
+        Assert.assertEquals("Distribution", distributionDto.getLabel());
+
+        ContainerDto<IFactDto> distributions = distributionDto.getFacts();
+        Assert.assertEquals(1, distributions.getCount());
+        IFactDto distribution = distributions.getItems().get(0);
+        Assert.assertEquals(DistributionInfoDto.class.getSimpleName(), distribution.getClazz());
+        DistributionInfoDto distributionInfo = (DistributionInfoDto)distribution;
+
+        //... condensed distribution
+        Assert.assertEquals("DEU", distributionInfo.getCondensedDistribution().getHtmlString());
+        Assert.assertEquals("as=a:,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
+
+        //...tree
+        DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
+        Assert.assertEquals("Tree:1<Germany:present{Second ref article. – The journal. p 22}:0>", new DistributionInfoBuilderTest().tree2String(tree));
+        Assert.assertEquals("Should be Germany only", 1, tree.getRootElement().children.size());
+        TreeNode<Set<DistributionDto>, NamedAreaDto> germanyNode = tree.getRootElement().getChildren().get(0);
+        Assert.assertEquals("Germany", germanyNode.getNodeId().getLabel());
+        DistributionDto germanyDistribution = germanyNode.getData().iterator().next();
+        Assert.assertEquals(1, germanyDistribution.getAnnotations().getCount());
+        Assert.assertEquals("There should be 1 source (even if it has no name used in source)", 1, germanyDistribution.getSources().getCount());
+    }
+
+    private void testDistributionWithStatusFilter(TaxonPageDtoConfiguration config) {
+        TaxonPageDto dto = portalService.taxonPageDto(config);
+        Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
+
+        //facts
+        ContainerDto<FeatureDto> features = dto.getTaxonFacts();
+        Assert.assertEquals("There should be 1 feature (distribution)", 1, features.getCount());
+
+        //... distribution
+        FeatureDto distributionDto = features.getItems().get(0);
+        Assert.assertEquals("Distribution", distributionDto.getLabel());
+
+        ContainerDto<IFactDto> distributions = distributionDto.getFacts();
+        Assert.assertEquals(1, distributions.getCount());
+        IFactDto distribution = distributions.getItems().get(0);
+        Assert.assertEquals(DistributionInfoDto.class.getSimpleName(), distribution.getClazz());
+        DistributionInfoDto distributionInfo = (DistributionInfoDto)distribution;
+
+        //... condensed distribution
+        Assert.assertEquals("DEU", distributionInfo.getCondensedDistribution().getHtmlString());
+        Assert.assertEquals("as=a:,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
+
+        //...tree
+        DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
+        Assert.assertEquals("Tree:1<Germany:present{Second ref article. – The journal. p 22}:0>", new DistributionInfoBuilderTest().tree2String(tree));
+        Assert.assertEquals("Should be Germany only", 1, tree.getRootElement().children.size());
+        TreeNode<Set<DistributionDto>, NamedAreaDto> germanyNode = tree.getRootElement().getChildren().get(0);
+        Assert.assertEquals("Germany", germanyNode.getNodeId().getLabel());
+        DistributionDto germanyDistribution = germanyNode.getData().iterator().next();
+        Assert.assertEquals(1, germanyDistribution.getAnnotations().getCount());
+        Assert.assertEquals("There should be 1 source (even if it has no name used in source)", 1, germanyDistribution.getSources().getCount());
+    }
+
+    /**
+     * Tests all facts without feature tree filter, distribution area filter
+     * and distributions status filter
+     */
+    private void testAllFacts() {
+        TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
+        DistributionInfoConfiguration distConfig = config.getDistributionInfoConfiguration();
+
+        CondensedDistributionConfiguration cc = distConfig.getCondensedDistributionConfiguration();
+        cc.showAreaOfScopeLabel = true;
+        config.setWithSpecimens(false);
+        config.setTaxonUuid(taxonUuid);
+
+        config.setUseDtoLoading(true);
+        testAllFactsDo(config); //with dto loading
+        config.setUseDtoLoading(false);
+        testAllFactsDo(config);  //with model instance loading
+    }
+
+    private void testAllFactsDo(TaxonPageDtoConfiguration config) {
         TaxonPageDto dto = portalService.taxonPageDto(config);
         Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
 
@@ -429,6 +560,33 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 //        PresenceAbsenceTerm.INTRODUCED().setSymbol("i");
         Distribution franceDist = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
         taxDesc.addElement(franceDist);
+
+        //area tree
+        TermTree<NamedArea> areaTree = termTreeService.find(areaTreeUuid);
+        if (areaTree == null) {
+            areaTree = TermTree.NewInstance(TermType.NamedArea, NamedArea.class);
+            areaTree.setUuid(areaTreeUuid);
+            areaTree.getRoot().addChild(Country.GERMANY());
+            termTreeService.save(areaTree);
+        }
+
+        //status tree
+        TermTree<PresenceAbsenceTerm> statusTree = termTreeService.find(statusTreeUuid);
+        if (statusTree == null) {
+            statusTree = TermTree.NewInstance(TermType.PresenceAbsenceTerm, PresenceAbsenceTerm.class);
+            statusTree.setUuid(statusTreeUuid);;
+            statusTree.getRoot().addChild(PresenceAbsenceTerm.PRESENT());
+            termTreeService.save(statusTree);
+        }
+
+        //feature tree
+        TermTree<Feature> featureTree = termTreeService.find(featureTreeUuid);
+        if (featureTree == null) {
+            featureTree = TermTree.NewInstance(TermType.Feature, Feature.class);
+            featureTree.setUuid(featureTreeUuid);
+            featureTree.getRoot().addChild(Feature.DISTRIBUTION());
+            termTreeService.save(featureTree);
+        }
 
         //... sources
         //... ... primary
