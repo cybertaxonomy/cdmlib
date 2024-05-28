@@ -41,10 +41,11 @@ public class SourceDtoLoader {
         return new SourceDtoLoader();
     }
 
-
     /**
      * DTOs must have id initialized
      */
+    //TODO do we really need the sourceTypeFilter here? In SourcedDtoLoader they are filtered already.
+    //     are there other places were filtering is still needed?
     public void loadAll(Set<SourceDto> dtos, ICdmGenericDao commonDao,
             EnumSet<OriginalSourceType> sourceTypeFilter, ProxyDtoLoader lazyLoader) {
 
@@ -56,8 +57,9 @@ public class SourceDtoLoader {
 
         String hql = "SELECT new map(osb.id as id, osb.uuid as uuid, osb.accessed as accessed, "
                 +     " osb.originalInfo as originalInfo, "
-                +     " osb.citation as ref, osb.citationMicroReference as detail) "
-                //cdmSource, type, links
+                +     " osb.citation as ref, osb.citationMicroReference as detail, "
+                +     " osb.type as type) "
+                //cdmSource, links
                 + " FROM OriginalSourceBase osb "
                 + " WHERE osb.id IN :baseIds"
                 ;
@@ -73,27 +75,39 @@ public class SourceDtoLoader {
                 Integer id = (Integer)e.get("id");
 
                 dtosForSource.get(id).stream().forEach(dto->{
+                    //uuid
                     UUID uuid = (UUID)e.get("uuid");
                     dto.setUuid(uuid);
+                    //type
+                    OriginalSourceType type = (OriginalSourceType)e.get("type");
+                    dto.setType(type != null ? type.toString() : null);
+                    //accessed
                     dto.setAccessed(null);  //TODO timeperiod
-                    dto.setDoi(null); //TODO doi
+                    //originalInfo
                     dto.setOriginalInfo((String)e.get("originalInfo"));
+                    //detail
                     String detail = (String)e.get("detail");
                     dto.setCitationDetail(detail);
+                    //ref
                     Reference citation = (Reference)e.get("ref");
+                    if (citation != null) {
+                        dto.setReferenceUuid(citation.getUuid());
+                    }
                     String label = OriginalSourceFormatter.INSTANCE_LONG_CITATION.format(citation, detail);
                     Class<? extends ICdmBase> clazz = null;  //TODO
                     TypedLabel typedLabel = new TypedLabel(uuid, clazz, label, null);
                     dto.addLabel(typedLabel);
+                    //doi
+                    dto.setDoi(null); //TODO doi
+                    //link
                     dto.addLink(null); //TODO
                     dto.setLinkedClass(null); //TODO
+                    //name in source
                     dto.setNameInSource(null); //TODO
                     dto.setNameInSourceUuid(null); //TODO
-                    if (citation != null) {
-                        dto.setReferenceUuid(citation.getUuid());
-                    }
-                    dto.setType(null); //TODO
+                    //uri
                     dto.setUri(null); //TODO
+                    //last updated
                     dto.setLastUpdated(null); //TODO
                 });
 //                lazyLoader.add(OriginalSourceBase.class, sourceDto);

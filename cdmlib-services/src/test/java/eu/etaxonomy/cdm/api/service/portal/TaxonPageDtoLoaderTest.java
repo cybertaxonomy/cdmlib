@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MediaDto2;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
+import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto.TaxonNameDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonInteractionDto;
@@ -170,6 +171,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         cc.showAreaOfScopeLabel = true;
         config.setWithSpecimens(false);
         config.setTaxonUuid(taxonUuid);
+        config.setUseDtoLoading(true);
         TaxonPageDto dto = portalService.taxonPageDto(config);
 
         Assert.assertNotNull(dto);
@@ -343,6 +345,16 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TreeNode<Set<DistributionDto>, NamedAreaDto> germanyNode = tree.getRootElement().getChildren().get(1);
         Assert.assertEquals("Germany", germanyNode.getNodeId().getLabel());
         Assert.assertEquals(1, germanyNode.getData().iterator().next().getAnnotations().getCount());
+        //.../...source
+        TreeNode<Set<DistributionDto>, NamedAreaDto> franceNode = tree.getRootElement().getChildren().get(0);
+        Assert.assertEquals("FRA", franceNode.getNodeId().getLabel());
+        Assert.assertTrue("Size was not 1, but " + franceNode.getData().size(), franceNode.getData().size() == 1);
+        DistributionDto franceDistributionDto = franceNode.getData().iterator().next();
+        Assert.assertEquals(1, franceDistributionDto.getSources().getCount());
+        SourceDto source = franceDistributionDto.getSources().getItems().get(0);
+        Assert.assertEquals("PrimaryTaxonomicSource", source.getType());
+        Assert.assertEquals("44", source.getCitationDetail());
+
     }
 
     private void createTestData() {
