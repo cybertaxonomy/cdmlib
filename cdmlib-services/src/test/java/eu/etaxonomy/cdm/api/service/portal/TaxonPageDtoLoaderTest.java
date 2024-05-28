@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.geo.DistributionInfoBuilderTest;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.common.URI;
@@ -176,6 +177,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         config.setTaxonUuid(taxonUuid);
         config.setUseDtoLoading(true);
         TaxonPageDto dto = portalService.taxonPageDto(config);
+        Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
 
         Assert.assertNotNull(dto);
         List<TaggedText> list = dto.getTaggedName();
@@ -343,16 +345,20 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:native%3A\\+doubtfully\\+native"));
         //...tree
         DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
-        Assert.assertEquals("Tree:2<FRA:native: doubtfully native{Miller, M.M. 1978: My French distribution. p 44}:0><Germany:present{}:0>", new DistributionInfoBuilderTest().tree2String(tree));
+        Assert.assertEquals("Tree:2<FRA:native: doubtfully native{Miller, M.M. 1978: My French distribution. p 44}:0><Germany:present{Second ref article. – The journal. p 22}:0>", new DistributionInfoBuilderTest().tree2String(tree));
         Assert.assertEquals("Should be France and Germany", 2, tree.getRootElement().children.size());
         TreeNode<Set<DistributionDto>, NamedAreaDto> germanyNode = tree.getRootElement().getChildren().get(1);
         Assert.assertEquals("Germany", germanyNode.getNodeId().getLabel());
-        Assert.assertEquals(1, germanyNode.getData().iterator().next().getAnnotations().getCount());
-        //.../...source
+        DistributionDto germanyDistribution = germanyNode.getData().iterator().next();
+        Assert.assertEquals(1, germanyDistribution.getAnnotations().getCount());
+        Assert.assertEquals("There should be 1 source (even if it has no name used in source)", 1, germanyDistribution.getSources().getCount());
+
+        //france
         TreeNode<Set<DistributionDto>, NamedAreaDto> franceNode = tree.getRootElement().getChildren().get(0);
         Assert.assertEquals("FRA", franceNode.getNodeId().getLabel());
         Assert.assertTrue("Size was not 1, but " + franceNode.getData().size(), franceNode.getData().size() == 1);
         DistributionDto franceDistributionDto = franceNode.getData().iterator().next();
+        //...source
         Assert.assertEquals(1, franceDistributionDto.getSources().getCount());
         SourceDto source = franceDistributionDto.getSources().getItems().get(0);
         Assert.assertEquals("PrimaryTaxonomicSource", source.getType());
@@ -410,8 +416,15 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Distribution germany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT());
         germany.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Abc Annotation"));
         germany.addAnnotation(Annotation.NewInstance("Technical Annotation", AnnotationType.TECHNICAL(), Language.DEFAULT()));
+        //.... germany source
+        Reference germanRef = ReferenceFactory.newArticle();
+        germanRef.setInJournal(ReferenceFactory.newJournal());
+        germanRef.setTitle("Second ref article");
+        germanRef.getInJournal().setTitle("The journal");
+        germany.addPrimaryTaxonomicSource(germanRef, "22");
 
         taxDesc.addElement(germany);
+
         Country.FRANCE().setSymbol("Fr");
 //        PresenceAbsenceTerm.INTRODUCED().setSymbol("i");
         Distribution franceDist = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
