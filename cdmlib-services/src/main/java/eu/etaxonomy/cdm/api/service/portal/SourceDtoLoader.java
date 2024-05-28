@@ -130,9 +130,9 @@ public class SourceDtoLoader {
                 });
 //                lazyLoader.add(OriginalSourceBase.class, sourceDto);
             });
-        } catch (UnsupportedOperationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e) {
+//          e.printStackTrace();
+            throw e;
         }
     }
 }
