@@ -346,6 +346,7 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "taxOccRelFilter", required = false) String taxOccRelFilter,
             @RequestParam(value = "annotationTypes", required = false) Set<UUID> annotationTypes,
             @RequestParam(value = "markerTypes", required = false) Set<UUID> markerTypes,
+            @RequestParam(value = "dtoLoading", required = false, defaultValue = "true") boolean dtoLoading,
 
 
             //TODO annotation type filter
@@ -425,6 +426,7 @@ public class TaxonPortalController extends TaxonController{
         config.setAnnotationTypes(annotationTypes);
         config.setMarkerTypes(markerTypes);
 
+        config.setUseDtoLoading(dtoLoading);
 
         //filter
         config.setIncludeUnpublished(includeUnpublished);

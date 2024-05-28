@@ -35,6 +35,8 @@ public class TaxonPageDtoConfiguration implements IAnnotatableLoaderConfiguratio
     //TODO should this be part of the configuration??
     private UUID taxonUuid;
 
+    private boolean useDtoLoading = false;
+
     //data
     private boolean withFacts = true;
     private boolean withSynonyms = true;
@@ -223,5 +225,12 @@ public class TaxonPageDtoConfiguration implements IAnnotatableLoaderConfiguratio
     public void setAnnotationTypes(Set<UUID> annotationTypes) {
         this.annotationTypes = annotationTypes;
         this.distributionInfoConfiguration.setAnnotationTypes(annotationTypes);
+    }
+
+    public boolean isUseDtoLoading() {
+        return useDtoLoading;
+    }
+    public void setUseDtoLoading(boolean useDtoLoading) {
+        this.useDtoLoading = useDtoLoading;
     }
 }

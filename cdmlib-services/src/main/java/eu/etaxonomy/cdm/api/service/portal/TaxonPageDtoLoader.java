@@ -100,11 +100,11 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
     private static final Logger logger = LogManager.getLogger();
 
     private TaxonFactsDtoLoaderBase factLoader;
-    private boolean useOld = true;
 
-    public TaxonPageDtoLoader(ICdmRepository repository, ICdmGenericDao dao, IGeoServiceAreaMapping areaMapping) {
+    public TaxonPageDtoLoader(ICdmRepository repository, ICdmGenericDao dao, IGeoServiceAreaMapping areaMapping,
+            boolean useDtoLoading) {
         super(repository, dao);
-        if (useOld) {
+        if (!useDtoLoading) {
             this.factLoader = new TaxonFactsDtoLoader_Old(repository, dao, areaMapping);
         }else {
             this.factLoader = new TaxonFactsDtoLoader(repository, dao, areaMapping);

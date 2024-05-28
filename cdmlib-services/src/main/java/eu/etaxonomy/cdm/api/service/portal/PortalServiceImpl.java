@@ -48,7 +48,8 @@ public class PortalServiceImpl implements IPortalService {
     @Override
     public TaxonPageDto taxonPageDto(TaxonPageDtoConfiguration config) {
 
-        TaxonPageDtoLoader loader = new TaxonPageDtoLoader(repository, genericDao, areaMapping);
+        TaxonPageDtoLoader loader = new TaxonPageDtoLoader(repository,
+                genericDao, areaMapping, config.isUseDtoLoading());
         Taxon taxon = (Taxon)taxonDao.load(config.getTaxonUuid());
         TaxonPageDto dto = null;
         try {
