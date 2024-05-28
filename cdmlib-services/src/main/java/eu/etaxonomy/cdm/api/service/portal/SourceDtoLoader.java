@@ -62,9 +62,10 @@ public class SourceDtoLoader {
                 +     " osb.originalInfo as originalInfo, "
                 +     " osb.citation as ref, osb.citationMicroReference as detail, "
                 +     " osb.type as type, osb.accessed as accessed,"
-                +     " osb.nameUsedInSource as nameInSource) "
+                +     " nameInSource as nameInSource) "
                 //cdmSource, links
-                + " FROM OriginalSourceBase osb "
+                //TODO can we avoid outer join?
+                + " FROM OriginalSourceBase osb LEFT JOIN osb.nameUsedInSource nameInSource "
                 + " WHERE osb.id IN :baseIds"
                 ;
 
