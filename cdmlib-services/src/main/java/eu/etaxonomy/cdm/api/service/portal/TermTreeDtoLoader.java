@@ -156,7 +156,6 @@ public class TermTreeDtoLoader {
         try {
             queryResult = (List)service.getHqlResult(hql, params, Map.class);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             throw new RuntimeException("Error in hql while retrieving termtree");
         }

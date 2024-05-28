@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.tmp.TermDto;
+import eu.etaxonomy.cdm.api.dto.portal.tmp.TermTreeDto;
 import eu.etaxonomy.cdm.api.service.geo.DistributionInfoBuilder;
 import eu.etaxonomy.cdm.api.service.geo.DistributionServiceUtilities;
 import eu.etaxonomy.cdm.api.service.geo.IGeoServiceAreaMapping;
@@ -162,7 +163,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
         try {
             //compute the features that do exist for this taxon
             //TODO should be uuidAndTitleCache e.g. for sorting in createDefaultFeatureNode
-            Set<UUID> existingFeatureUuids = getExistingFeatureUuids(taxon,config.isIncludeUnpublished());
+            Set<UUID> existingFeatureUuids = getExistingFeatureUuids(taxon, config.isIncludeUnpublished());
 
             //featureTree (filter, sort and structure according to feature tree)
             TreeNode<Feature, UUID> filteredRootNode = null;
@@ -304,10 +305,25 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
             distributionStatusColors = null;
         }
 
+        //area tree
+        TermTreeDto areaTreeDto = null;
+        if (distributionConfig.getAreaTree() != null) {
+            //TODO load as DTO
+            TermTree<NamedArea> areaTree = repository.getTermTreeService().find(distributionConfig.getAreaTree());
+            areaTreeDto = TermTreeDtoLoader.INSTANCE().fromEntity(areaTree);
+        }
+        //status tree
+        TermTreeDto statusTreeDto = null;
+        if (distributionConfig.getStatusTree() != null) {
+            //TODO load as DTO
+            TermTree<PresenceAbsenceTerm> statusTree = repository.getTermTreeService().find(distributionConfig.getStatusTree());
+            statusTreeDto = TermTreeDtoLoader.INSTANCE().fromEntity(statusTree);
+        }
+
         DistributionInfoDto dto = new DistributionInfoBuilder(LocaleContext.getLanguages(), repository.getCommonService())
                 .buildFromDto(distributionConfig,
                     distributions,
-                    null, null,   //TODO areaTree and statusTree ??
+                    areaTreeDto, statusTreeDto,
                     distributionStatusColors, areaMapping);
 
         //should not be necessary anymore as distribution data is now loaded directly in DistributionServiceImpl
