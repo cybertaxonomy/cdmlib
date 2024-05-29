@@ -113,6 +113,10 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     private UUID areaTreeUuid = UUID.fromString("39cae3d4-36e4-4cc7-84a2-b748bbcbe800");
     private UUID featureTreeUuid = UUID.fromString("d7089eb1-2fdc-4ec7-b5b5-2bb74f8fe578");
 
+    private UUID td4Uuid = UUID.fromString("9582cd0e-caa4-4c4e-a1c6-ec37f8b6df86");
+//    453923bb-b2a9-4843-a97f-9f02e6e13fbb
+//    28df5e01-0248-40d4-bff0-618a5aae3a30
+
     @SpringBeanByType
     private ITaxonService taxonService;
 
@@ -424,12 +428,15 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     }
 
     private void testTextDataAndMedia(FeatureDto descriptionDto) {
+
         ContainerDto<IFactDto> descriptions = descriptionDto.getFacts();
         Assert.assertEquals(4, descriptions.getCount());
         FactDto description1 = (FactDto)descriptions.getItems().get(0);
         FactDto description2 = (FactDto)descriptions.getItems().get(1);
         FactDto description3 = (FactDto)descriptions.getItems().get(2);
         FactDto description4 = (FactDto)descriptions.getItems().get(3);
+
+        //test sorting
         Assert.assertNull("Current sorting should sort null to the top. This may change in future.",
                 description1.getSortIndex());
         Assert.assertNull("Current sorting should sort null to the top. This may change in future.",
@@ -441,6 +448,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "My fourth description", description3.getTypedLabel().get(0).getLabel().toString());
         Assert.assertEquals("If sortindex is given it should be used for sorting.",
                 "My third description", description4.getTypedLabel().get(0).getLabel().toString());
+
+        FactDto td4Fact = description3; //renaming to original name td4 for better understanding
+        Assert.assertEquals(td4Uuid, td4Fact.getUuid());
 
         //media
         ContainerDto<MediaDto2> factMedia = description4.getMedia();
@@ -616,6 +626,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         td3.addPrimaryTaxonomicSource(franceRef, "63");
         TextData td4 = TextData.NewInstance(Feature.DESCRIPTION(), "My fourth description", Language.DEFAULT(), null);
         td4.setSortIndex(1);
+        td4.setUuid(td4Uuid);
         taxDesc.addElements(td1, td2, td3, td4);
         //... with media
         Media media1 = Media.NewInstance(URI.create("http://media.de/file.jpg"), 2, "JPG", "jpg");

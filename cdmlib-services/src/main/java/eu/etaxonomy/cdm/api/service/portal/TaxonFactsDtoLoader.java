@@ -462,6 +462,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
 
         dto.setTimeperiod(aftd.timePeriod == null ? null : aftd.timePeriod.toString());
         dto.setId(aftd.id);
+        dto.setUuid(aftd.uuid);
         dto.setSortIndex(aftd.sortIndex);
         return dto;
     }
