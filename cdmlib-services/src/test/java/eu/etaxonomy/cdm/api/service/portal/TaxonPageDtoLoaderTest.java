@@ -459,6 +459,14 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(td4Uuid, td4TypedLabel.getUuid());
         Assert.assertEquals("TextData", td4TypedLabel.getCdmClass());
 
+        FactDto td3Fact = description4; //renaming to original name td3 for better understanding
+        Assert.assertEquals(1, td3Fact.getSources().getCount());
+        SourceDto source = td3Fact.getSources().getItems().get(0);
+        Assert.assertEquals(1, source.getLabel().size());
+        TypedLabel sourceTypedLabel = source.getLabel().get(0);
+        Assert.assertEquals("DescriptionElementSource", sourceTypedLabel.getCdmClass());
+
+
         //media
         ContainerDto<MediaDto2> factMedia = description4.getMedia();
         Assert.assertEquals(2, factMedia.getCount());

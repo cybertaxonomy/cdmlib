@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
-import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -58,7 +57,8 @@ public class SourceDtoLoader {
         dtos.stream().forEach(dto->dtosForSource.putItem(dto.getId(), dto));
 
 
-        String hql = "SELECT new map(osb.id as id, osb.uuid as uuid, osb.accessed as accessed, "
+        String hql = "SELECT new map(osb.class as cdmClass, "
+                +     " osb.id as id, osb.uuid as uuid, osb.accessed as accessed, "
                 +     " osb.originalInfo as originalInfo, "
                 +     " osb.citation as ref, osb.citationMicroReference as detail, "
                 +     " osb.type as type, osb.accessed as accessed,"
@@ -107,9 +107,8 @@ public class SourceDtoLoader {
                         dto.setSortableDate(citation.getSortableDateString());
                     }
                     String label = OriginalSourceFormatter.INSTANCE_LONG_CITATION.format(citation, detail);
-                    //TODO
-                    Class<? extends ICdmBase> clazz = null;
-                    TypedLabel typedLabel = new TypedLabel(uuid, clazz, label, null);
+                    String clazz = (String)e.get("cdmClass");
+                    TypedLabel typedLabel = new TypedLabel(uuid, clazz, label);
                     dto.addLabel(typedLabel);
                     //link
                     dto.addLink(null); //TODO
