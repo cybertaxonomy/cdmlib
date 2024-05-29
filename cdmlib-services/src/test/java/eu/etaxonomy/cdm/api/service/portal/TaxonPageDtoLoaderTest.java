@@ -304,10 +304,10 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         config.setWithSpecimens(false);
         config.setTaxonUuid(taxonUuid);
 
+        config.setUseDtoLoading(false);
+        testAllFactsDo(config); //with model instance loading
         config.setUseDtoLoading(true);
         testAllFactsDo(config); //with dto loading
-        config.setUseDtoLoading(false);
-        testAllFactsDo(config);  //with model instance loading
     }
 
     private void testAllFactsDo(TaxonPageDtoConfiguration config) {
@@ -550,6 +550,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     }
 
     private void createFactualData(Taxon taxon) {
+
         //distributions
         TaxonDescription taxDesc = TaxonDescription.NewInstance(taxon);
         Country.GERMANY().setSymbol("De");
