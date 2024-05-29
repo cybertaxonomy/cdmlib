@@ -56,8 +56,8 @@ public class AnnotationDtoLoader {
 
 
         String hql = "SELECT new map(a.id as id, a.uuid as uuid, "
-                +     " a.text as text, a.annotationType.uuid as typeUuid) "
-                + " FROM Annotation a "
+                +     " a.text as text, at.uuid as typeUuid) "
+                + " FROM Annotation a LEFT JOIN a.annotationType at "
                 + " WHERE a.id IN :baseIds "
                 ;
 

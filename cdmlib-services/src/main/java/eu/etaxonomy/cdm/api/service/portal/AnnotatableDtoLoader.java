@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.api.dto.portal.config.IAnnotatableLoaderConfiguration;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
@@ -60,11 +61,16 @@ public class AnnotatableDtoLoader {
 
         Map<String,Object> params = new HashMap<>();
         String hql = "SELECT new map(bc.id as id, a.id as annotationId) "
-                + " FROM "+baseClass.getSimpleName()+" bc JOIN bc.annotations a "
+                + " FROM "+baseClass.getSimpleName()+" bc JOIN bc.annotations a"
+                        + " LEFT JOIN a.annotationType at"
                 + " WHERE bc.id IN :baseIds";
         params.put("baseIds", baseIds);
-        if (config.getAnnotationTypes() != null) {
-            hql += " AND a.annotationType.uuid IN :annotationTypes ";
+        if (config.getAnnotationTypes() != null ) {
+            hql += " AND (at.uuid IN :annotationTypes ";
+            if (config.getAnnotationTypes().contains(AnnotationType.uuidUntyped)) {
+                hql += " OR a.id IS NOT NULL AND at IS NULL ";
+            }
+            hql += ")";
             params.put("annotationTypes", config.getAnnotationTypes());
         }
 

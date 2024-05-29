@@ -58,6 +58,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -304,6 +305,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         cc.showAreaOfScopeLabel = true;
         config.setWithSpecimens(false);
         config.setTaxonUuid(taxonUuid);
+        config.addAnnotationType(AnnotationType.uuidUntyped);
 
         config.setUseDtoLoading(false);
         testAllFactsDo(config); //with model instance loading
@@ -524,7 +526,10 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TreeNode<Set<DistributionDto>, NamedAreaDto> germanyNode = tree.getRootElement().getChildren().get(1);
         Assert.assertEquals("Germany", germanyNode.getNodeId().getLabel());
         DistributionDto germanyDistribution = germanyNode.getData().iterator().next();
-        Assert.assertEquals(1, germanyDistribution.getAnnotations().getCount());
+        Assert.assertEquals(2, germanyDistribution.getAnnotations().getCount());
+        Assert.assertEquals("Missing type annotation should exist",
+                + 1, germanyDistribution.getAnnotations().getItems().stream()
+                     .filter(a->"Missing Type Annotation".equals(a.getText())).count());
         Assert.assertEquals("There should be 1 source (even if it has no name used in source)", 1, germanyDistribution.getSources().getCount());
 
         //france
@@ -589,8 +594,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Country.GERMANY().setSymbol("De");
         PresenceAbsenceTerm.PRESENT().setSymbol("");
         Distribution germany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT());
-        germany.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Abc Annotation"));
+        germany.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Editorial Annotation"));
         germany.addAnnotation(Annotation.NewInstance("Technical Annotation", AnnotationType.TECHNICAL(), Language.DEFAULT()));
+        germany.addAnnotation(Annotation.NewInstance("Missing Type Annotation", null, Language.DEFAULT()));
         //.... germany source
         Reference germanRef = ReferenceFactory.newArticle();
         germanRef.setInJournal(ReferenceFactory.newJournal());
@@ -677,6 +683,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //empty text
         TextData emptyTd = TextData.NewInstance(Feature.DISCUSSION(), "", Language.DEFAULT(), null);
         taxDesc.addElements(emptyTd);
+        //annotation
+        taxDesc.addAnnotation(Annotation.NewInstance("Missing Type Annotation for empty", null, Language.DEFAULT()));
+        taxDesc.addMarker(MarkerType.IS_DOUBTFUL(), true);
 
         //common names
         CommonTaxonName cn1 = CommonTaxonName.NewInstance("My flower", Language.ENGLISH(), Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND());

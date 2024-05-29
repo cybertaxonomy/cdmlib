@@ -227,6 +227,11 @@ public class TaxonPageDtoConfiguration implements IAnnotatableLoaderConfiguratio
         this.distributionInfoConfiguration.setAnnotationTypes(annotationTypes);
     }
 
+    public void addAnnotationType(UUID annotationType) {
+        this.annotationTypes.add(annotationType);
+        this.distributionInfoConfiguration.addAnnotationType(annotationType);
+    }
+
     public boolean isUseDtoLoading() {
         return useDtoLoading;
     }
