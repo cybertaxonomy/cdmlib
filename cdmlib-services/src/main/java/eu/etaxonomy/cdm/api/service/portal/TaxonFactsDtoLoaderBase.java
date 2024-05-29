@@ -49,6 +49,9 @@ public abstract class TaxonFactsDtoLoaderBase extends TaxonPageDtoLoaderBase {
     //we could also move compareTo methods to DTO classes but with this
     //remove from having only data in the DTO, no logic
     protected void orderFacts(FeatureDto featureDto) {
+        if (featureDto.getFacts() == null) {
+            return;
+        }
         List<IFactDto> list = featureDto.getFacts().getItems();
         Collections.sort(list, (f1,f2)->{
             if (!f1.getClass().equals(f2.getClass())) {
