@@ -91,6 +91,38 @@ public class NameMatchingController {
         return NameMatchingAdapter.invokeList (results, requestedParam);
     }
 
+    /**POST Request with MultipartFile allows the usage of more than one parameters. It works calling the following command
+    *curl -v -X POST -F "compareAuthor=false" -F "maxDistance=2" -F "file=@realTest.txt" http://localhost:8082/namematch/matchingList
+    the option -v in curl gives more information about the http response (u.a.)
+    */
+
+//    @PostMapping(
+//            value = "matchingList" )
+//    public String doPostNameMatching (
+//            @RequestPart("file") MultipartFile file,
+//            @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
+//            @RequestParam(value="maxDistance", required = false) Integer maxDistance,
+//            HttpServletRequest request,
+//            @SuppressWarnings("unused") HttpServletResponse response) {
+//
+//        System.out.println("checkpoint");
+//
+//        logger.info("doPostNameMatching()" + request.getRequestURI());
+//
+//        List <String> scientificNamesList = new ArrayList <>();
+//        try {
+//            if (!file.isEmpty()) {
+//                byte[] content = file.getBytes();
+//                String fileContent = new String(content, StandardCharsets.UTF_8.name());
+//                scientificNamesList = Arrays.asList(fileContent.split(";"));
+//            }
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//        return "Checkpoint2 : scientific name: " + scientificNamesList.get(0) + " compare author: " + compareAuthor + " max distance: " + maxDistance;
+//    }
+
     private static class NameMatchingAdapter {
 
         private static NameMatchingOutputList invokeList (Map<String, NameMatchingResult> input, RequestedParam paramteres) {

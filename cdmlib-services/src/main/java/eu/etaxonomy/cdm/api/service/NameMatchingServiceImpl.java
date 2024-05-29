@@ -759,7 +759,7 @@ public class NameMatchingServiceImpl
         int halfLength = Math.max(genusQueryLength, genusDBLength) / 2;
         boolean postFilter = false;
 
-        if (genusComputedDistance < maxDistance) {
+        if (genusComputedDistance <= maxDistance) {
             postFilter = true;
 
             // Genera that match in at least 50% are kept. i.e., if genus length
