@@ -321,51 +321,58 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //facts
         ContainerDto<FeatureDto> features = dto.getTaxonFacts();
-        Assert.assertEquals("There should be 8 features, distribution and description and common names",
-                8, features.getCount());
+        Assert.assertEquals("There should be 9 features, distribution and description and common names",
+                9, features.getCount());
 
         //... common taxon name
-        FeatureDto commonNameDto = features.getItems().get(0);
+        int i = 0;
+        FeatureDto commonNameDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically. Also as >1 common name exists it should use plural.",
                 "Common Names", commonNameDto.getLabel());
         testCommonNames(commonNameDto);
 
         //... textData ("description")
-        FeatureDto descriptionDto = features.getItems().get(1);
+        FeatureDto descriptionDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically. Also as >1 'Description' exists it should use plural.",
                 "Descriptions", descriptionDto.getLabel());
         testTextDataAndMedia(descriptionDto);
 
+        //... discussion
+        FeatureDto discussionDto = features.getItems().get(i++);
+        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
+                "Discussion", discussionDto.getLabel());
+        testTextDataEmpty(discussionDto);
+
         //... distribution
-        FeatureDto distributionDto = features.getItems().get(2);
+        FeatureDto distributionDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
                 "Distribution", distributionDto.getLabel());
         testDistributions(distributionDto);
 
         //termporal data
-        FeatureDto floweringDto = features.getItems().get(3);
+        FeatureDto floweringDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
                 "Flowering Season", floweringDto.getLabel());
         testTemporalData(floweringDto);
 
         //taxon interaction
-        FeatureDto hostPlantDto = features.getItems().get(4);
+        FeatureDto hostPlantDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
                 "Host Plant", hostPlantDto.getLabel());
         testTaxonInteraction(hostPlantDto);
 
         //quantitative data("introduction")
-        FeatureDto introductionDto = features.getItems().get(5);
+        FeatureDto introductionDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically.",
                 "Introduction", introductionDto.getLabel());
 
         //...categorical data ("Life-form")
-        FeatureDto statusDto = features.getItems().get(6);
+        FeatureDto statusDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically.",
                 "Life-form", statusDto.getLabel());
 
         //individuals association
-        FeatureDto materialExaminedDto = features.getItems().get(7);
+        FeatureDto materialExaminedDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
                 "Materials Examined", materialExaminedDto.getLabel());
         testIndividualsAssociation(materialExaminedDto);
@@ -429,6 +436,17 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "Meine Blume", cn1.getName());
         Assert.assertEquals("For now common names without sortindex are should be ordered alphabetically by name. This may change in future",
                 "My flower", cn2.getName());
+    }
+
+    private void testTextDataEmpty(FeatureDto discussionDto) {
+        ContainerDto<IFactDto> discussions = discussionDto.getFacts();
+        Assert.assertEquals(1, discussions.getCount());
+        FactDto discussion1 = (FactDto)discussions.getItems().get(0);
+        Assert.assertEquals(1, discussion1.getTypedLabel().size());
+        TypedLabel typedLabel = discussion1.getTypedLabel().get(0);
+        Assert.assertEquals("", typedLabel.getLabel());
+        Assert.assertEquals("TextData", typedLabel.getCdmClass());
+        Assert.assertNotNull(typedLabel.getUuid());
     }
 
     private void testTextDataAndMedia(FeatureDto descriptionDto) {
@@ -655,6 +673,10 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Media media2 = Media.NewInstance(URI.create("http://media.de/file2.gif"), 3, "GIF", "gif");
         td3.addMedia(media1);
         td3.addMedia(media2);
+
+        //empty text
+        TextData emptyTd = TextData.NewInstance(Feature.DISCUSSION(), "", Language.DEFAULT(), null);
+        taxDesc.addElements(emptyTd);
 
         //common names
         CommonTaxonName cn1 = CommonTaxonName.NewInstance("My flower", Language.ENGLISH(), Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND());

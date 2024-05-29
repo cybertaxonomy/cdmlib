@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -164,7 +163,6 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
             //compute the features that do exist for this taxon
             //TODO should be uuidAndTitleCache e.g. for sorting in createDefaultFeatureNode
             Set<UUID> existingFeatureUuids = getExistingFeatureUuids(taxon, config.isIncludeUnpublished());
-
             //featureTree (filter, sort and structure according to feature tree)
             TreeNode<Feature, UUID> filteredRootNode = null;
             if (config.getFeatureTree() != null) {
@@ -414,10 +412,9 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
             dto = distDto;
         } else if (aftd.type == TextData.class) {
             FactDto td = new FactDto();
-            if (StringUtils.isNotBlank(aftd.text)) {
-                TypedLabel label = new TypedLabel(aftd.uuid, aftd.type, aftd.text, null);
-                td.addTypedLabel(label);
-            }
+            //for now we allow also isBlank(aftd.text)
+            TypedLabel label = new TypedLabel(aftd.uuid, aftd.type, aftd.text, null);
+            td.addTypedLabel(label);
             dto = td;
         }else if (aftd.type == CommonTaxonName.class) {
             CommonNameDto ctn = new CommonNameDto();
