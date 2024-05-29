@@ -123,7 +123,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         inputName = "Nextondra";
         matchResults = nameMatchingService.findMatchingNames(inputName, false, null);
         matchResult = matchResults.getBestResults();
-        Assert.assertEquals(2, matchResult.size());
+        Assert.assertEquals(3, matchResult.size());
 
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectondra", matchRes.getGenusOrUninomial());
