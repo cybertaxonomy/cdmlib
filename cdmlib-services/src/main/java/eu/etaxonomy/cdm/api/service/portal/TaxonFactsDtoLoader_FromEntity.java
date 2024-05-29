@@ -138,12 +138,12 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
  * @author muellera
  * @since 27.02.2024
  */
-public class TaxonFactsDtoLoader_Old extends TaxonFactsDtoLoaderBase {
+public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    public TaxonFactsDtoLoader_Old(ICdmRepository repository, ICdmGenericDao dao
+    public TaxonFactsDtoLoader_FromEntity(ICdmRepository repository, ICdmGenericDao dao
             , IGeoServiceAreaMapping areaMapping) {
         super(repository, dao, areaMapping);
     }

@@ -105,7 +105,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             boolean useDtoLoading) {
         super(repository, dao);
         if (!useDtoLoading) {
-            this.factLoader = new TaxonFactsDtoLoader_Old(repository, dao, areaMapping);
+            this.factLoader = new TaxonFactsDtoLoader_FromEntity(repository, dao, areaMapping);
         }else {
             this.factLoader = new TaxonFactsDtoLoader(repository, dao, areaMapping);
         }
