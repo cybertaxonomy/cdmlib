@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -409,11 +410,14 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         FactDto flowering2 = (FactDto)floweringDto.getFacts().getItems().get(1);
         Assert.assertTrue("Currently we only compare by id. This may change in future",
                 flowering1.getId()<flowering2.getId());
-        String label1 = flowering1.getTypedLabel().get(0).getLabel();
+        TypedLabel typedLabel1 = flowering1.getTypedLabel().get(0);
+        String label1 = typedLabel1.getLabel();
         String label2 = flowering2.getTypedLabel().get(0).getLabel();
         String expectedLabel = "(10 Mar–)15 Apr–30 Jun(–20 Jul)";
         Assert.assertTrue(expectedLabel + "should be label of either flowering1 or flowering2",
                 label1.equals(expectedLabel) || label2.equals(expectedLabel));
+        Assert.assertEquals("TemporalData", typedLabel1.getCdmClass());
+        Assert.assertNotNull(typedLabel1.getUuid());
     }
 
     private void testCommonNames(FeatureDto commonNameDto) {
@@ -445,12 +449,15 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 description1.getId() < description2.getId());
         //TODO use typed label formatter (once implemented)
         Assert.assertEquals("If sortindex is given it should be used for sorting.",
-                "My fourth description", description3.getTypedLabel().get(0).getLabel().toString());
+                "My fourth description", description3.getTypedLabel().get(0).getLabel());
         Assert.assertEquals("If sortindex is given it should be used for sorting.",
-                "My third description", description4.getTypedLabel().get(0).getLabel().toString());
+                "My third description", description4.getTypedLabel().get(0).getLabel());
 
         FactDto td4Fact = description3; //renaming to original name td4 for better understanding
         Assert.assertEquals(td4Uuid, td4Fact.getUuid());
+        TypedLabel td4TypedLabel = td4Fact.getTypedLabel().get(0);
+        Assert.assertEquals(td4Uuid, td4TypedLabel.getUuid());
+        Assert.assertEquals("TextData", td4TypedLabel.getCdmClass());
 
         //media
         ContainerDto<MediaDto2> factMedia = description4.getMedia();

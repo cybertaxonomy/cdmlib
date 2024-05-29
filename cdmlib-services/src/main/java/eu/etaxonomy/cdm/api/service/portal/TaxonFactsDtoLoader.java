@@ -415,7 +415,8 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
         } else if (aftd.type == TextData.class) {
             FactDto td = new FactDto();
             if (StringUtils.isNotBlank(aftd.text)) {
-                td.addTypedLabel(new TypedLabel(aftd.text));
+                TypedLabel label = new TypedLabel(aftd.uuid, aftd.type, aftd.text, null);
+                td.addTypedLabel(label);
             }
             dto = td;
         }else if (aftd.type == CommonTaxonName.class) {
@@ -452,7 +453,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
         }else if (aftd.type == TemporalData.class) {
             FactDto fd = new FactDto();
             if (aftd.period != null) {
-                fd.addTypedLabel(new TypedLabel(aftd.period.toString()));
+                fd.addTypedLabel(new TypedLabel(aftd.uuid, aftd.type, aftd.period.toString(), null));
             }
             dto = fd;
         }else {
