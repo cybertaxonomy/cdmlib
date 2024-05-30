@@ -21,6 +21,8 @@ import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -110,9 +112,17 @@ public class SourceDtoLoader {
                     String clazz = (String)e.get("cdmClass");
                     TypedLabel typedLabel = new TypedLabel(uuid, clazz, label);
                     dto.addLabel(typedLabel);
-                    //link
-                    dto.addLink(null); //TODO
-                    dto.setLinkedClass(null); //TODO
+
+                    ICdmBase linkedObject = citation;
+                    if (linkedObject == null) {
+                        //cdmsource
+                        //TODO
+//                        linkedObject = source.getCdmSource();
+                        //TODO specimen references
+                    }
+                    dto.setLinkedUuid(linkedObject == null ? null : linkedObject.getUuid());
+                    String linkedObjectStr = linkedObject == null ? null : CdmBase.deproxy(linkedObject).getClass().getSimpleName();
+                    dto.setLinkedClass(linkedObjectStr);
 
                     //nameUsedInSource
                     //TODO use DTO
@@ -123,6 +133,9 @@ public class SourceDtoLoader {
                         dto.setNameInSource(taggedName);
                         dto.setNameInSourceUuid(name.getUuid());
                     }
+
+                    //links
+                    dto.addLink(null); //TODO
 
                     //last updated
                     dto.setLastUpdated(null); //TODO
