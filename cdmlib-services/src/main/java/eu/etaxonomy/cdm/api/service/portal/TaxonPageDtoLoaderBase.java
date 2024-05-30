@@ -118,14 +118,8 @@ public abstract class TaxonPageDtoLoaderBase {
             AnnotatableDto annotatableDto = (AnnotatableDto)dto;
             //annotation
             for (Annotation annotation : annotatable.getAnnotations()) {
-                if ((annotation.getAnnotationType() != null
-                        //config == null currently needs to be allowed as it is also used by DistributionInfoBuilder and
-                        //also for now empty annotation types needs to be interpreted as "no filter" as we do not distinguish
-                        //null and empty yet, this may change in future
-                        && (config == null || config.getAnnotationTypes().isEmpty()
-                            || config.getAnnotationTypes().contains(annotation.getAnnotationType().getUuid())))
-                        || (annotation.getAnnotationType() == null && config != null && config.getAnnotationTypes().contains(AnnotationType.uuidUntyped))
-                                && StringUtils.isNotBlank(annotation.getText())) {
+                UUID annotationTypeUuid = annotation.getAnnotationType() == null ? null : annotation.getAnnotationType().getUuid();
+                if (checkAnnotationType(config, annotationTypeUuid, annotation.getText() )) {
 
                     AnnotationDto annotationDto = new AnnotationDto();
                     annotatableDto.addAnnotation(annotationDto);
@@ -135,15 +129,6 @@ public abstract class TaxonPageDtoLoaderBase {
                     UUID uuidAnnotationType = annotation.getAnnotationType() == null ? null :annotation.getAnnotationType().getUuid();
                     annotationDto.setTypeUuid(uuidAnnotationType);
                     //language etc. currently not yet used
-                }else if (config != null && config.getAnnotationTypes().contains(AnnotationType.uuidUntyped) &&  (annotation.getAnnotationType() == null)){
-                    AnnotationDto annotationDto = new AnnotationDto();
-                    annotatableDto.addAnnotation(annotationDto);
-                    //TODO id needed? but need to adapt dto and container then
-                    loadBaseData(config, annotation, annotationDto);
-                    annotationDto.setText(annotation.getText());
-                    UUID uuidAnnotationType = null;
-                    annotationDto.setTypeUuid(uuidAnnotationType);
-
                 }
             }
 
@@ -167,6 +152,19 @@ public abstract class TaxonPageDtoLoaderBase {
                 }
             }
         }
+    }
+
+    protected static boolean checkAnnotationType(IAnnotatableLoaderConfiguration config, UUID typeUuid, String annotationText) {
+        return (typeUuid != null
+                //config == null currently needs to be allowed as it is also used by DistributionInfoBuilder and
+                //also for now empty annotation types needs to be interpreted as "no filter" as we do not distinguish
+                //null and empty yet, this may change in future
+                && (config == null || config.getAnnotationTypes().isEmpty()
+                    || config.getAnnotationTypes().contains(typeUuid)))
+             || (typeUuid == null && config != null && config.getAnnotationTypes().contains(AnnotationType.uuidUntyped))
+                        //TODO do we really want to exclude empty annotations?
+                        && StringUtils.isNotBlank(annotationText)
+                        ;
     }
 
     static void loadSources(IAnnotatableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
