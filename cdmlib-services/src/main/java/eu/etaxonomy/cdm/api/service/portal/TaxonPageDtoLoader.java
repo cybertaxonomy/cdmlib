@@ -101,13 +101,19 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
     private TaxonFactsDtoLoaderBase factLoader;
 
+    //
+    private TaxonFactsDtoLoaderBase nameFactLoader;
+
     public TaxonPageDtoLoader(ICdmRepository repository, ICdmGenericDao dao, IGeoServiceAreaMapping areaMapping,
             boolean useDtoLoading) {
         super(repository, dao);
         if (!useDtoLoading) {
             this.factLoader = new TaxonFactsDtoLoader_FromEntity(repository, dao, areaMapping);
+            this.nameFactLoader = this.factLoader;
         }else {
             this.factLoader = new TaxonFactsDtoLoader(repository, dao, areaMapping);
+            //TODO implement DTO loading for name facts
+            this.nameFactLoader = new TaxonFactsDtoLoader_FromEntity(repository, dao, areaMapping);
         }
     }
 
@@ -686,7 +692,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
     }
 
     private void loadNameFacts(TaxonName name, TaxonBaseDto nameDto, TaxonPageDtoConfiguration config, TaxonPageDto pageDto) {
-        factLoader.loadNameFacts(name, nameDto, config, pageDto);
+        nameFactLoader.loadNameFacts(name, nameDto, config, pageDto);
     }
 
     /**
