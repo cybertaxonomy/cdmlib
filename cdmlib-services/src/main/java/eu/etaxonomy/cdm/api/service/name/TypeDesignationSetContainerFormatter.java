@@ -316,6 +316,7 @@ public class TypeDesignationSetContainerFormatter {
                     MediaSpecimen msp = (MediaSpecimen)du;
                     int count = 0;
                     for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
+                        //TODO add sourceTypes to configuration
                         if (source.getType().isPublicSource()){
                             if (count++ > 0){
                                 workingsetBuilder.add(TagEnum.separator, SOURCE_SEPARATOR);

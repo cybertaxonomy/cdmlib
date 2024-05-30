@@ -17,12 +17,13 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 
 /**
  * @author a.mueller
  * @date 09.02.2023
  */
-public class DistributionInfoConfiguration implements IAnnotatableLoaderConfiguration{
+public class DistributionInfoConfiguration implements ISourceableLoaderConfiguration{
 
     private boolean preferSubAreas = true;
 
@@ -52,9 +53,11 @@ public class DistributionInfoConfiguration implements IAnnotatableLoaderConfigur
 
     boolean neverUseFallbackAreaAsParent = true;  //true is E+M status
 
+    //supplemental data
     private Set<UUID> annotationTypes = new HashSet<>(
             Arrays.asList(new UUID[] {AnnotationType.uuidEditorial}));
     private Set<UUID> markerTypes = new HashSet<>();
+    private EnumSet<OriginalSourceType> sourceTypes = OriginalSourceType.allPublicTypes();
 
 //********************* GETTER / SETTER ***************************/
 
@@ -183,5 +186,13 @@ public class DistributionInfoConfiguration implements IAnnotatableLoaderConfigur
     }
     public void setAnnotationTypes(Set<UUID> annotationTypes) {
         this.annotationTypes = annotationTypes;
+    }
+
+    @Override
+    public EnumSet<OriginalSourceType> getSourceTypes() {
+        return sourceTypes;
+    }
+    public void setSourceTypes(EnumSet<OriginalSourceType> sourceTypes) {
+        this.sourceTypes = sourceTypes;
     }
 }

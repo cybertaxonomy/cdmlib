@@ -197,6 +197,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
                     MediaSpecimen msp = (MediaSpecimen)du;
                     int count = 0;
                     for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
+                        //TODO add sourceTypes to configuration
                         if (source.getType().isPublicSource()){
                             if (count++ > 0){
                                 builder.add(TagEnum.separator, TypeDesignationSetContainerFormatter.SOURCE_SEPARATOR);

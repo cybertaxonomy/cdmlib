@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NomenclaturalStatusDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.SpecimenDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeAgentsRelDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.TaxonNodeDTO;
-import eu.etaxonomy.cdm.api.dto.portal.config.IAnnotatableLoaderConfiguration;
+import eu.etaxonomy.cdm.api.dto.portal.config.ISourceableLoaderConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.dto.DtoUtil;
@@ -514,7 +514,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
     }
 
     private void loadConceptRelation(TaxonRelationshipFormatter taxRelFormatter, TaxonRelationship rel, ContainerDto<ConceptRelationDTO> conceptRelContainer, boolean inverse,
-            boolean withoutName, IAnnotatableLoaderConfiguration config) {
+            boolean withoutName, ISourceableLoaderConfiguration config) {
 
         List<Language> languages = Arrays.asList(new Language[] {Language.DEFAULT()}); // TODO config.locales;
         List<TaggedText> tags = taxRelFormatter.getTaggedText(rel, inverse, languages, withoutName);

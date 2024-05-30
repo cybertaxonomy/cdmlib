@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service.geo;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +29,7 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
-import eu.etaxonomy.cdm.api.dto.portal.config.IAnnotatableLoaderConfiguration;
+import eu.etaxonomy.cdm.api.dto.portal.config.ISourceableLoaderConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.tmp.TermNodeDto;
 import eu.etaxonomy.cdm.api.dto.portal.tmp.TermTreeDto;
 import eu.etaxonomy.cdm.api.service.ICommonService;
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
@@ -221,7 +223,7 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
     }
 
     private void createDefaultDistributionDtos() {
-        IAnnotatableLoaderConfiguration config = new IAnnotatableLoaderConfiguration() {
+        ISourceableLoaderConfiguration config = new ISourceableLoaderConfiguration() {
 
             @Override
             public Set<UUID> getMarkerTypes() {
@@ -231,6 +233,11 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
             @Override
             public Set<UUID> getAnnotationTypes() {
                 return new HashSet<>();
+            }
+
+            @Override
+            public EnumSet<OriginalSourceType> getSourceTypes() {
+                return OriginalSourceType.allPublicTypes();
             }
         };
         distributionDtos.clear();
@@ -268,7 +275,7 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
         }
     }
 
-    private DistributionDto dist2Dto(Distribution distribution, IAnnotatableLoaderConfiguration config) {
+    private DistributionDto dist2Dto(Distribution distribution, ISourceableLoaderConfiguration config) {
         return DistributionDtoLoader.INSTANCE().fromEntity(distribution, config);
     }
 

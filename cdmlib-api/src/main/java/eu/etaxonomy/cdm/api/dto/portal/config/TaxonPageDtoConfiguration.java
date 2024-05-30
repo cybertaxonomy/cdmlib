@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
  * @author a.mueller
  * @date 07.01.2023
  */
-public class TaxonPageDtoConfiguration implements IAnnotatableLoaderConfiguration, Serializable {
+public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration, Serializable {
 
     private static final long serialVersionUID = -3017154740995350103L;
 
@@ -67,8 +67,7 @@ public class TaxonPageDtoConfiguration implements IAnnotatableLoaderConfiguratio
     private Map<UUID,DistributionInfoConfiguration> perFeatureDistributionInfoConfiguration = new HashMap<>();
 
     //supplemental data
-    private EnumSet<OriginalSourceType> sourceTypes = EnumSet.of(OriginalSourceType.PrimaryTaxonomicSource,
-            OriginalSourceType.PrimaryMediaSource);
+    private EnumSet<OriginalSourceType> sourceTypes = OriginalSourceType.allPublicTypes();
 
     //formatting
     private List<Locale> locales = new ArrayList<>();  //is this data or formatting??
@@ -192,11 +191,13 @@ public class TaxonPageDtoConfiguration implements IAnnotatableLoaderConfiguratio
         this.specimenAssociationFilter = specimenAssociationFilter;
     }
 
+    @Override
     public EnumSet<OriginalSourceType> getSourceTypes() {
         return sourceTypes;
     }
     public void setSourceTypes(EnumSet<OriginalSourceType> sourceTypes) {
         this.sourceTypes = sourceTypes;
+        this.distributionInfoConfiguration.setSourceTypes(sourceTypes);
     }
 
     @Override

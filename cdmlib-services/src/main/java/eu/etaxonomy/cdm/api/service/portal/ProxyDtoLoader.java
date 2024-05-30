@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.api.dto.portal.FactDtoBase;
 import eu.etaxonomy.cdm.api.dto.portal.MediaDto2;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
-import eu.etaxonomy.cdm.api.dto.portal.config.IAnnotatableLoaderConfiguration;
+import eu.etaxonomy.cdm.api.dto.portal.config.ISourceableLoaderConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.AnnotationDtoLoader;
 import eu.etaxonomy.cdm.api.service.dto.MediaDto2Loader;
 import eu.etaxonomy.cdm.common.SetMap;
@@ -83,7 +83,7 @@ public class ProxyDtoLoader {
     }
 
     public void loadAll(ICdmGenericDao dao, EnumSet<OriginalSourceType> sourceTypes,
-            IAnnotatableLoaderConfiguration config) {
+            ISourceableLoaderConfiguration config) {
 
         while (hasUnloaded()) {
 

@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaRepresentationDTO;
-import eu.etaxonomy.cdm.api.dto.portal.config.IAnnotatableLoaderConfiguration;
+import eu.etaxonomy.cdm.api.dto.portal.config.ISourceableLoaderConfiguration;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -103,7 +103,7 @@ public abstract class TaxonPageDtoLoaderBase {
         }
     }
 
-    public static void loadBaseData(IAnnotatableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
+    public static void loadBaseData(ISourceableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
         dto.setId(cdmBase.getId());
         dto.setUuid(cdmBase.getUuid());
 
@@ -112,7 +112,7 @@ public abstract class TaxonPageDtoLoaderBase {
         //loadIdentifiable(cdmBase, dto);
     }
 
-    static void loadAnnotatable(IAnnotatableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
+    static void loadAnnotatable(ISourceableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
         if (dto instanceof AnnotatableDto && cdmBase.isInstanceOf(AnnotatableEntity.class)) {
             AnnotatableEntity annotatable = CdmBase.deproxy(cdmBase, AnnotatableEntity.class);
             AnnotatableDto annotatableDto = (AnnotatableDto)dto;
@@ -154,7 +154,7 @@ public abstract class TaxonPageDtoLoaderBase {
         }
     }
 
-    protected static boolean checkAnnotationType(IAnnotatableLoaderConfiguration config, UUID typeUuid, String annotationText) {
+    protected static boolean checkAnnotationType(ISourceableLoaderConfiguration config, UUID typeUuid, String annotationText) {
         return (typeUuid != null
                 //config == null currently needs to be allowed as it is also used by DistributionInfoBuilder and
                 //also for now empty annotation types needs to be interpreted as "no filter" as we do not distinguish
@@ -167,13 +167,13 @@ public abstract class TaxonPageDtoLoaderBase {
                         ;
     }
 
-    static void loadSources(IAnnotatableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
+    static void loadSources(ISourceableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
         if (dto instanceof SingleSourcedDto && cdmBase.isInstanceOf(SingleSourcedEntityBase.class)) {
             //TODO other sourced
             SingleSourcedEntityBase sourced = CdmBase.deproxy(cdmBase, SingleSourcedEntityBase.class);
             SingleSourcedDto sourcedDto = (SingleSourcedDto)dto;
             NamedSource source = sourced.getSource();
-            if (source != null && isPublicSource(source) && !source.checkEmpty(true)) {
+            if (source != null && isPublicSource(source, config) && !source.checkEmpty(true)) {
                 SourceDto sourceDto = makeSource(config, source);
                 sourcedDto.setSource(sourceDto);
             }
@@ -182,7 +182,7 @@ public abstract class TaxonPageDtoLoaderBase {
             ISourceable<OriginalSourceBase> sourced = (ISourceable<OriginalSourceBase>)cdmBase;
             SourcedDto sourcedDto = (SourcedDto)dto;
             for (OriginalSourceBase source : sourced.getSources()) {
-                if (isPublicSource(source)) {
+                if (isPublicSource(source, config)) {
                     SourceDto sourceDto = makeSource(config, source);
                     sourcedDto.addSource(sourceDto);
                 }
@@ -194,7 +194,7 @@ public abstract class TaxonPageDtoLoaderBase {
             if (db != null) {  //test sometime do not have a description for facts
                 SourcedDto sourcedDto = (SourcedDto)dto;
                 for (OriginalSourceBase source : db.getSources()) {
-                    if (isPublicSource(source)) {
+                    if (isPublicSource(source, config)) {
                         SourceDto sourceDto = new SourceDto();
                         loadSource(config, source, sourceDto);
                         sourcedDto.addSource(sourceDto);
@@ -204,7 +204,7 @@ public abstract class TaxonPageDtoLoaderBase {
         }
     }
 
-    private static void loadSource(IAnnotatableLoaderConfiguration config, OriginalSourceBase source, SourceDto sourceDto) {
+    private static void loadSource(ISourceableLoaderConfiguration config, OriginalSourceBase source, SourceDto sourceDto) {
 
         source = CdmBase.deproxy(source);
         //base data
@@ -279,7 +279,7 @@ public abstract class TaxonPageDtoLoaderBase {
         sourceDto.setLinkedClass(linkedObjectStr);
     }
 
-    protected static SourceDto makeSource(IAnnotatableLoaderConfiguration config, OriginalSourceBase source) {
+    protected static SourceDto makeSource(ISourceableLoaderConfiguration config, OriginalSourceBase source) {
         if (source == null) {
             return null;
         }
@@ -292,17 +292,16 @@ public abstract class TaxonPageDtoLoaderBase {
         return cdmBase == null ? null : cdmBase.getUuid();
     }
 
-    protected static boolean isPublicSource(OriginalSourceBase source) {
+    protected static boolean isPublicSource(OriginalSourceBase source, ISourceableLoaderConfiguration config) {
         if (source.getType() == null) {
             return false; //should not happen
         }else {
             OriginalSourceType type = source.getType();
-            //TODO 3 make source type configurable
-            return type.isPublicSource();
+            return config.getSourceTypes().contains(type);
         }
     }
 
-    protected void makeMediaContainer(IAnnotatableLoaderConfiguration config, TaxonPageDto result, List<Media> medias) {
+    protected void makeMediaContainer(ISourceableLoaderConfiguration config, TaxonPageDto result, List<Media> medias) {
         ContainerDto<MediaDto2> container = new ContainerDto<>();
 
         for (Media media : medias) {
@@ -314,7 +313,7 @@ public abstract class TaxonPageDtoLoaderBase {
         }
     }
 
-    protected void handleSingleMedia(IAnnotatableLoaderConfiguration config, ContainerDto<MediaDto2> container, Media media) {
+    protected void handleSingleMedia(ISourceableLoaderConfiguration config, ContainerDto<MediaDto2> container, Media media) {
 
         MediaDto2 dto = new MediaDto2();
         loadBaseData(config, media, dto);

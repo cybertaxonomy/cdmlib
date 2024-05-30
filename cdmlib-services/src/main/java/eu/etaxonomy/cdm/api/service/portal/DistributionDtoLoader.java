@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service.portal;
 import java.util.EnumSet;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
-import eu.etaxonomy.cdm.api.dto.portal.config.IAnnotatableLoaderConfiguration;
+import eu.etaxonomy.cdm.api.dto.portal.config.ISourceableLoaderConfiguration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -27,7 +27,7 @@ public class DistributionDtoLoader {
         return new DistributionDtoLoader();
     }
 
-    public DistributionDto fromEntity(Distribution entity, IAnnotatableLoaderConfiguration config) {
+    public DistributionDto fromEntity(Distribution entity, ISourceableLoaderConfiguration config) {
         if (entity == null) {
             return null;
         }
@@ -40,7 +40,7 @@ public class DistributionDtoLoader {
         return dto;
     }
 
-    private <T extends DefinedTermBase<T>> void load(DistributionDto dto, Distribution entity, IAnnotatableLoaderConfiguration config) {
+    private <T extends DefinedTermBase<T>> void load(DistributionDto dto, Distribution entity, ISourceableLoaderConfiguration config) {
         //copied from TaxonPageDtoLoader
         TaxonPageDtoLoaderBase.loadSources(config, entity, dto);
 

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotatableDto;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
-import eu.etaxonomy.cdm.api.dto.portal.config.IAnnotatableLoaderConfiguration;
+import eu.etaxonomy.cdm.api.dto.portal.config.ISourceableLoaderConfiguration;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -43,7 +43,7 @@ public class AnnotatableDtoLoader {
      * DTOs must have id initialized
      */
     public void loadAll(Set<AnnotatableDto> dtos, Class baseClass, ICdmGenericDao commonDao,
-            IAnnotatableLoaderConfiguration config, ProxyDtoLoader lazyLoader) {
+            ISourceableLoaderConfiguration config, ProxyDtoLoader lazyLoader) {
 
         Set<Integer> baseIds = dtos.stream().map(d->d.getId()).collect(Collectors.toSet());
 
@@ -56,7 +56,7 @@ public class AnnotatableDtoLoader {
     }
 
     private void handleAnnotations(Class baseClass, ICdmGenericDao commonDao,
-            IAnnotatableLoaderConfiguration config, ProxyDtoLoader lazyLoader,
+            ISourceableLoaderConfiguration config, ProxyDtoLoader lazyLoader,
             Set<Integer> baseIds,
             SetMap<Integer,AnnotatableDto> id2AnnotatableInstancesMap) {
 

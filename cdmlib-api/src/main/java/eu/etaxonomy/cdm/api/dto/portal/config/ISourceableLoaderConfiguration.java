@@ -8,16 +8,24 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal.config;
 
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
+
 /**
+ * Interface for loader configurations that do load supplemental
+ * data like markers, annotations and sources.
+ *
  * @author muellera
  * @since 16.04.2024
  */
-public interface IAnnotatableLoaderConfiguration {
+public interface ISourceableLoaderConfiguration {
 
     public Set<UUID> getMarkerTypes();
 
     public Set<UUID> getAnnotationTypes();
+
+    public EnumSet<OriginalSourceType> getSourceTypes();
 }

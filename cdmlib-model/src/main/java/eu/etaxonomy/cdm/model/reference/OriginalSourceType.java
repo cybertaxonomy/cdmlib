@@ -39,7 +39,6 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
 	/**
 	 * Unknown provenance is the type to be used if no information is available about the type
 	 * of activity that happened.
-	 *
 	 */
 	@XmlEnumValue("Unknown")
 	Unknown(UUID.fromString("b48a443c-05f2-47ff-b885-1d3bd31118e1"), "Unknown Provenance", "UNK", null),
@@ -52,7 +51,6 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
 	 * He/she will store these references as original source of type Primary Taxonomic Source.
 	 * This is a specialization of PROV-O Primary Source
 	 * ({@link http://www.w3.org/TR/2013/REC-prov-o-20130430/#PrimarySource})
-	 *
 	 */
 	@XmlEnumValue("Primary Taxonomic Source")
 	PrimaryTaxonomicSource(UUID.fromString("c990beb3-3bc9-4dad-bbdf-9c11683493da"), "Primary Taxonomic Source", "PTS", null),
