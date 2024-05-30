@@ -222,21 +222,28 @@ public abstract class TaxonPageDtoLoaderBase {
         if (ref != null) {
             sourceDto.setDoi(ref.getDoiUriString());
             sourceDto.setUri(ref.getUri());
-            //TODO do we really want to take the sourceDto.uuid from the ref.uuid?
-            sourceDto.setUuid(ref.getUuid());
-            sourceDto.setOriginalInfo(source.getOriginalInfo());
+            sourceDto.setReferenceUuid(ref.getUuid());
             Set<ExternalLink> links = ref.getLinks();
 
-            if(source.getAccessed() != null) {
-                sourceDto.setAccessed(source.getAccessed().toString());
-            }
             for (ExternalLink link : links) {
                 if (link.getUri() != null) {
                     sourceDto.addLink(link.getUri());
                 }
             }
             sourceDto.setSortableDate(ref.getSortableDateString());
+
         }
+
+        //accessed
+        if(source.getAccessed() != null) {
+            sourceDto.setAccessed(source.getAccessed().toString());
+        }else if (ref != null && ref.getAccessed() != null) {
+            //TODO better formatting
+            sourceDto.setAccessed(ref.getAccessed().toString());
+        }
+
+        //original info
+        sourceDto.setOriginalInfo(source.getOriginalInfo());
 
         //label
         //TODO this probably does not use specimen or cdmSource if necessary,
