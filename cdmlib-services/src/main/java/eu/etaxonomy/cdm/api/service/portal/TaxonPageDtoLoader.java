@@ -688,7 +688,9 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
     }
 
     private void loadFacts(Taxon taxon, TaxonPageDto taxonPageDto, TaxonPageDtoConfiguration config) {
-        factLoader.loadTaxonFacts(taxon, taxonPageDto, config);
+        if (config.isWithFacts()) {
+            factLoader.loadTaxonFacts(taxon, taxonPageDto, config);
+        }
     }
 
     private void loadNameFacts(TaxonName name, TaxonBaseDto nameDto, TaxonPageDtoConfiguration config, TaxonPageDto pageDto) {
