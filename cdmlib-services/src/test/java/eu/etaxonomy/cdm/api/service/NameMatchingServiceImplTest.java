@@ -136,6 +136,12 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("", matchRes.getSpecificEpithet());
         Assert.assertEquals(UUID_NAME_NEXTANDRA, matchRes.getTaxonNameUuid());
         Assert.assertEquals(1,(int) matchRes.getDistance());
+
+        matchRes = matchResult.get(2);
+        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
+        Assert.assertEquals("", matchRes.getSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_NECTANDRA, matchRes.getTaxonNameUuid());
+        Assert.assertEquals(2,(int) matchRes.getDistance());
     }
 
     @Test
