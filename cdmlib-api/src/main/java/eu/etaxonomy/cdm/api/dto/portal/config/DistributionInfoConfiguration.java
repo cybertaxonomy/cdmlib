@@ -176,6 +176,9 @@ public class DistributionInfoConfiguration implements IAnnotatableLoaderConfigur
         return annotationTypes;
     }
     public void addAnnotationType(UUID annotationType) {
+        if (this.annotationTypes == null) {
+            this.annotationTypes = new HashSet<>();
+        }
         annotationTypes.add(annotationType);
     }
     public void setAnnotationTypes(Set<UUID> annotationTypes) {

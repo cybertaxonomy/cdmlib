@@ -228,6 +228,9 @@ public class TaxonPageDtoConfiguration implements IAnnotatableLoaderConfiguratio
     }
 
     public void addAnnotationType(UUID annotationType) {
+        if (this.annotationTypes == null) {
+            this.annotationTypes = new HashSet<>();
+        }
         this.annotationTypes.add(annotationType);
         this.distributionInfoConfiguration.addAnnotationType(annotationType);
     }
