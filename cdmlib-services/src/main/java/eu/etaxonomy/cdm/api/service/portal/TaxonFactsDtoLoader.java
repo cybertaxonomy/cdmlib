@@ -418,7 +418,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
             dto = td;
         }else if (aftd.type == CommonTaxonName.class) {
             CommonNameDto ctn = new CommonNameDto();
-            ctn.setArea(aftd.area.getPreferredLabel(languages));
+            ctn.setArea(aftd.area == null ? null : aftd.area.getPreferredLabel(languages));
             ctn.setLanguage(aftd.language == null ? null : aftd.language.getPreferredLabel(languages));
             ctn.setName(aftd.name);
             ctn.setTransliteration(aftd.transliteration);
