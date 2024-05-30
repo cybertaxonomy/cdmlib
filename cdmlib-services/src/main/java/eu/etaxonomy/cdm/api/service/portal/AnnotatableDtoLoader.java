@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.api.dto.portal.AnnotatableDto;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.IAnnotatableLoaderConfiguration;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -65,7 +66,7 @@ public class AnnotatableDtoLoader {
                         + " LEFT JOIN a.annotationType at"
                 + " WHERE bc.id IN :baseIds";
         params.put("baseIds", baseIds);
-        if (config.getAnnotationTypes() != null ) {
+        if (!CdmUtils.isNullSafeEmpty(config.getAnnotationTypes())) {
             hql += " AND (at.uuid IN :annotationTypes ";
             if (config.getAnnotationTypes().contains(AnnotationType.uuidUntyped)) {
                 hql += " OR a.id IS NOT NULL AND at IS NULL ";
