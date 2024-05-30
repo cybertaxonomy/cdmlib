@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,10 +22,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCandidateResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCombinedResult;
@@ -96,32 +101,32 @@ public class NameMatchingController {
     the option -v in curl gives more information about the http response (u.a.)
     */
 
-//    @PostMapping(
-//            value = "matchingList" )
-//    public String doPostNameMatching (
-//            @RequestPart("file") MultipartFile file,
-//            @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
-//            @RequestParam(value="maxDistance", required = false) Integer maxDistance,
-//            HttpServletRequest request,
-//            @SuppressWarnings("unused") HttpServletResponse response) {
-//
-//        System.out.println("checkpoint");
-//
-//        logger.info("doPostNameMatching()" + request.getRequestURI());
-//
-//        List <String> scientificNamesList = new ArrayList <>();
-//        try {
-//            if (!file.isEmpty()) {
-//                byte[] content = file.getBytes();
-//                String fileContent = new String(content, StandardCharsets.UTF_8.name());
-//                scientificNamesList = Arrays.asList(fileContent.split(";"));
-//            }
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//        return "Checkpoint2 : scientific name: " + scientificNamesList.get(0) + " compare author: " + compareAuthor + " max distance: " + maxDistance;
-//    }
+    @PostMapping(
+            value = "matchingListTest")
+    public String doPostNameMatchingTest (
+            @RequestPart("file") MultipartFile file,
+            @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
+            @RequestParam(value="maxDistance", required = false) Integer maxDistance,
+            HttpServletRequest request,
+            @SuppressWarnings("unused") HttpServletResponse response) {
+
+        System.out.println("checkpoint1");
+
+        logger.info("doPostNameMatching()" + request.getRequestURI());
+
+        List <String> scientificNamesList = new ArrayList <>();
+        try {
+            if (!file.isEmpty()) {
+                byte[] content = file.getBytes();
+                String fileContent = new String(content, StandardCharsets.UTF_8.name());
+                scientificNamesList = Arrays.asList(fileContent.split(";"));
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return "Checkpoint2 : scientific name: " + scientificNamesList.get(0) + " compare author: " + compareAuthor + " max distance: " + maxDistance;
+    }
 
     private static class NameMatchingAdapter {
 
