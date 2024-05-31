@@ -174,6 +174,12 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
         loadNameFacts(name, taxonDto, config, pageDto);
         nameDto.setTaggedName(formatter.getTaggedFullTitle(name));
         nameDto.setInvalid(name.isInvalid());
+        nameDto.setHasRegistration(getPublicRegistrations(name));
+    }
+
+    private boolean getPublicRegistrations(TaxonName name) {
+        return name.getRegistrations().stream()
+                .filter(r->r.isPublished()).findAny().isPresent();
     }
 
     private List<TaggedText> getTaggedTaxon(TaxonBase<?> taxon, TaxonPageDtoConfiguration config) {

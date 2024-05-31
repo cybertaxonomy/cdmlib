@@ -39,6 +39,8 @@ public class TaxonBaseDto extends IdentifiableDto {
         //TODO maybe later this can be combined with taggedLabel (merge taxon and name taggedText)
         private List<TaggedText> taggedName;
 
+        private boolean hasRegistration;
+
         private boolean isInvalid;
 
         //*********** GETTER / SETTER *******************/
@@ -108,6 +110,13 @@ public class TaxonBaseDto extends IdentifiableDto {
         }
         public void setInvalid(boolean isInvalid) {
             this.isInvalid = isInvalid;
+        }
+
+        public boolean isHasRegistration() {
+            return hasRegistration;
+        }
+        public void setHasRegistration(boolean hasRegistration) {
+            this.hasRegistration = hasRegistration;
         }
     }
 

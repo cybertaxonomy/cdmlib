@@ -267,6 +267,10 @@ public class Registration extends AnnotatableEntity {
         return this.getName() != null;
     }
 
+    public boolean isPublished() {
+        return getStatus().equals(RegistrationStatus.PUBLISHED);
+    }
+
     public NamedSourceBase findCitedSource() {
         NamedSourceBase citedSource = null;
         if(hasName()){
