@@ -434,9 +434,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(2, commonNames.getCount());
         CommonNameDto cn1 = (CommonNameDto)commonNames.getItems().get(0);
         CommonNameDto cn2 = (CommonNameDto)commonNames.getItems().get(1);
-        Assert.assertEquals("For now common names without sortindex are should be ordered alphabetically by name. This may change in future",
+        Assert.assertEquals("For now common names without sortindex should be ordered alphabetically by name. This may change in future",
                 "Meine Blume", cn1.getName());
-        Assert.assertEquals("For now common names without sortindex are should be ordered alphabetically by name. This may change in future",
+        Assert.assertEquals("For now common names without sortindex should be ordered alphabetically by name. This may change in future",
                 "My flower", cn2.getName());
         Assert.assertNull(cn2.getSources());
         Assert.assertEquals("cn1 should have the source of the indescription", 1, cn1.getSources().getCount());
@@ -591,6 +591,16 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
     private void createFactualData(Taxon taxon) {
 
+        //feature tree
+        @SuppressWarnings("unchecked")
+        TermTree<Feature> featureTree = termTreeService.find(featureTreeUuid);
+        if (featureTree == null) {
+            featureTree = TermTree.NewInstance(TermType.Feature, Feature.class);
+            featureTree.setUuid(featureTreeUuid);
+            featureTree.getRoot().addChild(Feature.DISTRIBUTION());
+            termTreeService.save(featureTree);
+        }
+
         //distributions
         TaxonDescription taxDesc = TaxonDescription.NewInstance(taxon);
         Country.GERMANY().setSymbol("De");
@@ -614,6 +624,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         taxDesc.addElement(franceDist);
 
         //area tree
+        @SuppressWarnings("unchecked")
         TermTree<NamedArea> areaTree = termTreeService.find(areaTreeUuid);
         if (areaTree == null) {
             areaTree = TermTree.NewInstance(TermType.NamedArea, NamedArea.class);
@@ -623,21 +634,13 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         }
 
         //status tree
+        @SuppressWarnings("unchecked")
         TermTree<PresenceAbsenceTerm> statusTree = termTreeService.find(statusTreeUuid);
         if (statusTree == null) {
             statusTree = TermTree.NewInstance(TermType.PresenceAbsenceTerm, PresenceAbsenceTerm.class);
-            statusTree.setUuid(statusTreeUuid);;
+            statusTree.setUuid(statusTreeUuid);
             statusTree.getRoot().addChild(PresenceAbsenceTerm.PRESENT());
             termTreeService.save(statusTree);
-        }
-
-        //feature tree
-        TermTree<Feature> featureTree = termTreeService.find(featureTreeUuid);
-        if (featureTree == null) {
-            featureTree = TermTree.NewInstance(TermType.Feature, Feature.class);
-            featureTree.setUuid(featureTreeUuid);
-            featureTree.getRoot().addChild(Feature.DISTRIBUTION());
-            termTreeService.save(featureTree);
         }
 
         //... sources
@@ -647,7 +650,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         franceRef.setTitle("My French distribution");
         franceRef.setDatePublished(TimePeriodParser.parseStringVerbatim("1978"));
         franceRef.setDoi(DOI.fromRegistrantCodeAndSuffix("10.0123", "suf-456"));
-        franceRef.setUri(URI.create("https://uri.org"));;
+        franceRef.setUri(URI.create("https://uri.org"));
         DescriptionElementSource source = franceDist.addPrimaryTaxonomicSource(franceRef, "44");
         source.setAccessed(TimePeriod.NewInstance(1792));
         TaxonName nameInSource = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());

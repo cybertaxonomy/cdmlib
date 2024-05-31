@@ -153,19 +153,6 @@ public class TaxonBaseDto extends IdentifiableDto {
         getName().setType(nameType);
     }
 
-    //    public List<TypedLabel> getTypedTaxonLabel() {
-//        return typedTaxonLabel;
-//    }
-//    public void setTypedTaxonLabel(List<TypedLabel> typedTaxonLabel) {
-//        this.typedTaxonLabel = typedTaxonLabel;
-//    }
-//
-//    public List<TypedLabel> getTypedNameLabel() {
-//        return typedNameLabel;
-//    }
-//    public void setTypedNameLabel(List<TypedLabel> typedNameLabel) {
-//        this.typedNameLabel = typedNameLabel;
-//    }
     public List<TaggedText> getTaggedLabel() {
         return taggedLabel;
     }
@@ -229,8 +216,6 @@ public class TaxonBaseDto extends IdentifiableDto {
     }
 
 
-
-
     //TaxonBase info
     //appendedPhras, useNameCache, doubtful, name, publish
     // => should all be part of the typedLabel
@@ -238,14 +223,8 @@ public class TaxonBaseDto extends IdentifiableDto {
     //secsource  ?? how to handle? part of bibliography
 
     //TaxonName info
-    //TODO do we need
     //rank, nameparts => all in typedLabel
 
-
-    //relatedNames  //as RelatedDTO?
-
     //types ?? => Teil der homotypischen Gruppe, außer der Fall von Walter (für  name types?)
-
-
 
 }

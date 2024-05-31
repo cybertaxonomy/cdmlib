@@ -30,11 +30,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Registration;
-import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
@@ -254,12 +254,13 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
         logger.info("doGetRegistrations" + requestPathAndQuery(request));
-        TaxonName tnb = getCdmBaseInstance(uuid, response, NAME_REGISTRATIONS_INIT_STRATEGY.getPropertyPaths());
-        Set<Registration> regs = tnb.getRegistrations();
-        if(regs != null && regs.size() > 0){
+        TaxonName tn = getCdmBaseInstance(uuid, response, NAME_REGISTRATIONS_INIT_STRATEGY.getPropertyPaths());
+
+        Set<Registration> regs = tn.getRegistrations();
+        if(!CdmUtils.isNullSafeEmpty(regs)){
             Set<Registration> regsFiltered = new HashSet<>(regs.size());
             for(Registration reg : regs){
-                if(userHelper.userIsAutheticated() && reg.getStatus().equals(RegistrationStatus.PUBLISHED)) {
+                if(userHelper.userIsAutheticated() && reg.isPublished()) {
                     regsFiltered.add(reg);
                 } else {
                     logger.debug("skipping unpublished registration");
