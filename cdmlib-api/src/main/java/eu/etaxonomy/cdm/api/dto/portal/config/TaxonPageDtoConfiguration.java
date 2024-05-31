@@ -23,6 +23,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 
 /**
  * @author a.mueller
@@ -52,6 +53,7 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
     private Set<UUID> annotationTypes = new HashSet<>(
             Arrays.asList(new UUID[] {AnnotationType.uuidEditorial}));
     private Set<UUID> markerTypes = new HashSet<>();
+    private Set<UUID> identifierTypes = new HashSet<>(Arrays.asList(new UUID[] {IdentifierType.uuidWfoNameIdentifier}));
 
     private Set<UUID> directNameRelTyes = null;
     private Set<UUID> inverseNameRelTyes = null;
@@ -237,6 +239,11 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
         }
         this.annotationTypes.add(annotationType);
         this.distributionInfoConfiguration.addAnnotationType(annotationType);
+    }
+
+    @Override
+    public Set<UUID> getIdentifierTypes() {
+        return identifierTypes;
     }
 
     //name relationship types

@@ -227,6 +227,11 @@ public class TaxonBaseDto extends IdentifiableDto {
         this.name = name;
     }
 
+    @Override
+    public ContainerDto<IdentifierDto> getIdentifiers() {
+        //TODO we also need to support taxon identifiers
+        return getName().getIdentifiers();
+    }
 
     //TaxonBase info
     //appendedPhras, useNameCache, doubtful, name, publish

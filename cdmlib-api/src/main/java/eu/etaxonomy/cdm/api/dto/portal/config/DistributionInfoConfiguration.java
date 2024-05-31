@@ -189,6 +189,11 @@ public class DistributionInfoConfiguration implements ISourceableLoaderConfigura
     }
 
     @Override
+    public Set<UUID> getIdentifierTypes() {
+        return null;  //we do not expect identifiers for distributions
+    }
+
+    @Override
     public EnumSet<OriginalSourceType> getSourceTypes() {
         return sourceTypes;
     }

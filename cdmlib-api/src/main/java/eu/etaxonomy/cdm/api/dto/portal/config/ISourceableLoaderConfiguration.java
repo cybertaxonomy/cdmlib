@@ -27,5 +27,7 @@ public interface ISourceableLoaderConfiguration {
 
     public Set<UUID> getAnnotationTypes();
 
+    public Set<UUID> getIdentifierTypes();
+
     public EnumSet<OriginalSourceType> getSourceTypes();
 }

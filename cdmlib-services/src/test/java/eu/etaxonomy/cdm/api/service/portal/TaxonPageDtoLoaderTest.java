@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.FactDto;
 import eu.etaxonomy.cdm.api.dto.portal.FeatureDto;
 import eu.etaxonomy.cdm.api.dto.portal.IFactDto;
+import eu.etaxonomy.cdm.api.dto.portal.IdentifierDto;
 import eu.etaxonomy.cdm.api.dto.portal.IndividualsAssociationDto;
 import eu.etaxonomy.cdm.api.dto.portal.MediaDto2;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
@@ -57,6 +58,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -90,6 +92,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -140,8 +143,16 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testSynonymy() {
+
         createTestData();
+        //for some reason the urlpattern is not loaded in testdata
+        IdentifierType wfoIdType = (IdentifierType)termService.find(IdentifierType.uuidWfoNameIdentifier);
+        String urlPattern = wfoIdType.getUrlPattern();
+        if (urlPattern == null) {
+            wfoIdType.setUrlPattern("https://wfoplantlist.org/taxon/{@ID}");
+        }
         commitAndStartNewTransaction();
+
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
         CondensedDistributionConfiguration cc = config.getDistributionInfoConfiguration().getCondensedDistributionConfiguration();
         cc.showAreaOfScopeLabel = true;
@@ -157,6 +168,13 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //TODO check if there is not some duplication between nameDto and dto
         TaxonNameDto nameDto = dto.getName();
         Assert.assertEquals("Basionym relations are not necessary", null, dto.getName().getRelatedNames());
+        Assert.assertNotNull(nameDto.getIdentifiers());
+        IdentifierDto wfoIdentifier = nameDto.getIdentifiers().getItems().get(0);
+        Assert.assertEquals("wfo-12345", wfoIdentifier.getIdentifier());
+        Assert.assertEquals(IdentifierType.uuidWfoNameIdentifier, wfoIdentifier.getTypeUuid());
+        Assert.assertEquals("WFO Name Identifier", wfoIdentifier.getType());
+        Assert.assertEquals("https://wfoplantlist.org/taxon/wfo-12345", wfoIdentifier.getLink());
+        Assert.assertNotNull(dto.getIdentifiers());
 
         //homotypic synonyms
         HomotypicGroupDTO homoSyns = dto.getHomotypicSynonyms();
@@ -556,6 +574,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     }
 
     private Taxon createSynonymy() {
+
         Person author = Person.NewInstance("Mill.", "Miller", "M.M.", "Michael");
         Reference nomRef = ReferenceFactory.newBook();
         nomRef.setTitle("My book");
@@ -565,6 +584,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "Genus", null, "species", null, author, nomRef, "55", null);
         Reference secRef = ReferenceFactory.newBook();
         secRef.setTitle("My secbook");
+        accName.addIdentifier(Identifier.NewInstance("wfo-12345", IdentifierType.IDENTIFIER_NAME_WFO()));
         Taxon taxon = Taxon.NewInstance(accName, secRef);
         taxon.setUuid(taxonUuid);
         taxonService.save(taxon);

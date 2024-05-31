@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.portal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -21,6 +22,8 @@ import eu.etaxonomy.cdm.api.dto.portal.AnnotatableDto;
 import eu.etaxonomy.cdm.api.dto.portal.AnnotationDto;
 import eu.etaxonomy.cdm.api.dto.portal.CdmBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
+import eu.etaxonomy.cdm.api.dto.portal.IdentifiableDto;
+import eu.etaxonomy.cdm.api.dto.portal.IdentifierDto;
 import eu.etaxonomy.cdm.api.dto.portal.MarkerDto;
 import eu.etaxonomy.cdm.api.dto.portal.MediaDto2;
 import eu.etaxonomy.cdm.api.dto.portal.SingleSourcedDto;
@@ -37,6 +40,8 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -57,6 +62,7 @@ import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
@@ -109,7 +115,38 @@ public abstract class TaxonPageDtoLoaderBase {
 
         loadAnnotatable(config, cdmBase, dto);
         loadSources(config, cdmBase, dto);
-        //loadIdentifiable(cdmBase, dto);
+        loadIdentifiable(config, cdmBase, dto);
+    }
+
+    private static void loadIdentifiable(ISourceableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
+        Set<UUID> identifierTypes = new HashSet<>();
+        identifierTypes.add(IdentifierType.uuidWfoNameIdentifier);
+
+        if (dto instanceof IdentifiableDto && cdmBase.isInstanceOf(IdentifiableEntity.class)) {
+            IdentifiableEntity<?> identifiable = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
+            IdentifiableDto identifiableDto = (IdentifiableDto)dto;
+            //annotation
+            for (Identifier identifier : identifiable.getIdentifiers()) {
+                UUID typeUuid = identifier.getType() == null ? null : identifier.getType().getUuid();
+                if (config.getIdentifierTypes() == null || config.getIdentifierTypes().contains(typeUuid)) {
+
+                    IdentifierDto identifierDto = new IdentifierDto();
+                    identifiableDto.addIdentifier(identifierDto);
+                    //TODO id needed? but need to adapt dto and container then
+                    loadBaseData(config, identifier, identifierDto);
+                    identifierDto.setIdentifier(identifier.getIdentifier());
+                    if (typeUuid != null) { //not sure, if null is allowed at all here
+                        //TODO i18n
+                        List<Language> languages = new ArrayList<>();
+                        identifierDto.setType(identifier.getType().getPreferredLabel(languages));
+                        identifierDto.setTypeUuid(typeUuid);
+                        if (identifier.getType().getUrlPattern() != null) {
+                            identifierDto.setLink(identifier.getUrl());
+                        }
+                    }
+                }
+            }
+        }
     }
 
     static void loadAnnotatable(ISourceableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {

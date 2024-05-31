@@ -239,6 +239,11 @@ public class DistributionInfoBuilderTest extends CdmTransactionalIntegrationTest
             public EnumSet<OriginalSourceType> getSourceTypes() {
                 return OriginalSourceType.allPublicTypes();
             }
+
+            @Override
+            public Set<UUID> getIdentifierTypes() {
+                return new HashSet<>();
+            }
         };
         distributionDtos.clear();
         distributionDtos.add(dist2Dto(europeDist, config));
