@@ -80,8 +80,7 @@ public class AnnotatableDtoLoader {
 
             baseId2annotationIdMapping.stream().forEach(e->{
                 Integer annotationId = e.get("annotationId");
-                AnnotationDto annotationDto = new AnnotationDto();
-                annotationDto.setId(annotationId);
+                AnnotationDto annotationDto = new AnnotationDto(null, annotationId);
                 Integer annotatableId = e.get("id");
                 id2AnnotatableInstancesMap.get(annotatableId).stream().forEach(a->a.addAnnotation(annotationDto));
                 lazyLoader.add(Annotation.class, annotationDto);
