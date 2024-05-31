@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
@@ -34,8 +35,6 @@ public class SourcedDtoLoader {
     public static SourcedDtoLoader INSTANCE(){
         return new SourcedDtoLoader();
     }
-
-    //TODO config sourceTypes
 
     /**
      * DTOs must have id initialized
@@ -67,6 +66,39 @@ public class SourcedDtoLoader {
                 id2SourcedInstancesMap.get(baseId).stream().forEach(sdd->sdd.addSource(sourceDto));
                 lazyLoader.add(OriginalSourceBase.class, sourceDto);
             });
+
+            if (baseClass.equals(DescriptionElementBase.class)) {
+                loadIndescriptionAll(dtos, baseClass, commonDao, sourceTypes, lazyLoader, baseIds, id2SourcedInstancesMap);
+            }
+        } catch (UnsupportedOperationException e) {
+            throw new RuntimeException("Exception while loading sources for sourced entities", e);
+        }
+    }
+
+    private void loadIndescriptionAll(Set<SourcedDto> dtos, Class baseClass, ICdmGenericDao commonDao,
+            EnumSet<OriginalSourceType> sourceTypes, ProxyDtoLoader lazyLoader, Set<Integer> baseIds, SetMap<Integer, SourcedDto> id2SourcedInstancesMap) {
+
+        String hql = "SELECT new map(deb.id as baseId, s.id as sourceId) "
+                + " FROM "+baseClass.getSimpleName()+" deb "
+                        + " JOIN deb.inDescription d JOIN d.sources s "
+                + " WHERE s.type IN :osbTypes AND deb.id IN :baseIds";
+
+        Map<String,Object> params = new HashMap<>();
+        params.put("osbTypes", sourceTypes);
+        params.put("baseIds", baseIds);
+
+        List<Map<String, Integer>> sourceIdMapping;
+        try {
+            sourceIdMapping = commonDao.getHqlMapResult(hql, params, Integer.class);
+
+            sourceIdMapping.stream().forEach(e->{
+                Integer sourceId = e.get("sourceId");
+                SourceDto sourceDto = new SourceDto(sourceId);
+                Integer baseId = e.get("baseId");
+                id2SourcedInstancesMap.get(baseId).stream().forEach(sdd->sdd.addSource(sourceDto));
+                lazyLoader.add(OriginalSourceBase.class, sourceDto);
+            });
+
         } catch (UnsupportedOperationException e) {
             throw new RuntimeException("Exception while loading sources for sourced entities", e);
         }

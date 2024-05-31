@@ -438,6 +438,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "Meine Blume", cn1.getName());
         Assert.assertEquals("For now common names without sortindex are should be ordered alphabetically by name. This may change in future",
                 "My flower", cn2.getName());
+        Assert.assertNull(cn2.getSources());
+        Assert.assertEquals("cn1 should have the source of the indescription", 1, cn1.getSources().getCount());
     }
 
     private void testTextDataEmpty(FeatureDto discussionDto) {
@@ -690,7 +692,13 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //common names
         CommonTaxonName cn1 = CommonTaxonName.NewInstance("My flower", Language.ENGLISH(), Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND());
         CommonTaxonName cn2 = CommonTaxonName.NewInstance("Meine Blume", Language.GERMAN(), Country.GERMANY());
-        taxDesc.addElements(cn1, cn2);
+        taxDesc.addElements(cn1);
+        TaxonDescription taxDesc2 = TaxonDescription.NewInstance(taxon);
+        taxDesc2.addElement(cn2);
+        Reference descRef = ReferenceFactory.newBook();
+        descRef.setTitle("Common name description reference");
+        //... with in-description source
+        taxDesc2.addPrimaryTaxonomicSource(descRef, "91");
 
         //temporal data
         TemporalData temporalData1 = TemporalData.NewInstance(Feature.FLOWERING_PERIOD(),
