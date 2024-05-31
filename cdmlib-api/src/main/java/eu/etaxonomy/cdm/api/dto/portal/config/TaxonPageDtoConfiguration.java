@@ -53,6 +53,10 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
             Arrays.asList(new UUID[] {AnnotationType.uuidEditorial}));
     private Set<UUID> markerTypes = new HashSet<>();
 
+    private Set<UUID> directNameRelTyes = null;
+    private Set<UUID> inverseNameRelTyes = null;
+
+
     //synonymy
     //TODO taxonrelations
     //should withSynonyms includeProparte and misapplications
@@ -227,13 +231,27 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
         this.annotationTypes = annotationTypes;
         this.distributionInfoConfiguration.setAnnotationTypes(annotationTypes);
     }
-
     public void addAnnotationType(UUID annotationType) {
         if (this.annotationTypes == null) {
             this.annotationTypes = new HashSet<>();
         }
         this.annotationTypes.add(annotationType);
         this.distributionInfoConfiguration.addAnnotationType(annotationType);
+    }
+
+    //name relationship types
+    public Set<UUID> getDirectNameRelTyes() {
+        return directNameRelTyes;
+    }
+    public void setDirectNameRelTyes(Set<UUID> directNameRelTyes) {
+        this.directNameRelTyes = directNameRelTyes;
+    }
+
+    public Set<UUID> getInverseNameRelTyes() {
+        return inverseNameRelTyes;
+    }
+    public void setInverseNameRelTyes(Set<UUID> inverseNameRelTyes) {
+        this.inverseNameRelTyes = inverseNameRelTyes;
     }
 
     public boolean isUseDtoLoading() {

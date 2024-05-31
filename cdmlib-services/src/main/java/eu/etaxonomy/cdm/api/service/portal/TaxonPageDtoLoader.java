@@ -609,6 +609,15 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
         excludedTypes.add(NameRelationshipType.uuidReplacedSynonym);
         Set<UUID> excludedFromTypes = new HashSet<>(excludedTypes);
         Set<UUID> excludedToTypes = new HashSet<>(excludedTypes);
+
+        Set<UUID> includedFromTypes = null;
+        if (!CdmUtils.isNullSafeEmpty(config.getDirectNameRelTyes())) {
+            includedFromTypes = new HashSet<>(config.getDirectNameRelTyes());
+        }
+        Set<UUID> includedToTypes = null;
+        if (!CdmUtils.isNullSafeEmpty(config.getInverseNameRelTyes())) {
+            includedToTypes = new HashSet<>(config.getDirectNameRelTyes());
+        }
         //TODO non-types
 
         //TODO config.getLocales();
@@ -617,14 +626,14 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
         for (NameRelationship rel : name.getRelationsFromThisName()) {
             TaxonName relatedName = rel.getToName();
             Representation rep = rel.getType().getPreferredRepresentation(locale);
-            handleRelatedName(taxonDto, config, rel, relatedName, rep, excludedFromTypes, false);
+            handleRelatedName(taxonDto, config, rel, relatedName, rep, excludedFromTypes, includedFromTypes, false);
         }
 
         //to relations
         for (NameRelationship rel : name.getRelationsToThisName()) {
             TaxonName relatedName = rel.getFromName();
             Representation rep = rel.getType().getPreferredInverseRepresentation(Arrays.asList(new Language[] {locale}));
-            handleRelatedName(taxonDto, config, rel, relatedName, rep, excludedToTypes, true);
+            handleRelatedName(taxonDto, config, rel, relatedName, rep, excludedToTypes, includedToTypes, true);
         }
 
         //order
@@ -657,9 +666,12 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
     private void handleRelatedName(TaxonBaseDto taxonDto, TaxonPageDtoConfiguration config,
             NameRelationship rel, TaxonName relatedName, Representation rep,
-            Set<UUID> excludedTypes, boolean inverse) {
+            Set<UUID> excludedTypes, Set<UUID> includedTypes, boolean inverse) {
 
-        if (relatedName == null || rel.getType() == null || excludedTypes.contains(rel.getType().getUuid())) {
+        if (relatedName == null
+                || rel.getType() == null
+                || excludedTypes.contains(rel.getType().getUuid())
+                || (includedTypes != null && !includedTypes.contains(rel.getType().getUuid()))) {
             return ;
         }
         NameRelationDTO dto = new NameRelationDTO();

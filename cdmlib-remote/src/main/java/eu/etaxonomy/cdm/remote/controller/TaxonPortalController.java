@@ -426,7 +426,8 @@ public class TaxonPortalController extends TaxonController{
         config.setWithTaxonRelationships(doTaxonRelations);
         config.setAnnotationTypes(annotationTypes);
         config.setMarkerTypes(markerTypes);
-
+        config.setDirectNameRelTyes(directNameRelations);
+        config.setInverseNameRelTyes(inverseNameRelations);
         config.setUseDtoLoading(dtoLoading);
 
         //filter
