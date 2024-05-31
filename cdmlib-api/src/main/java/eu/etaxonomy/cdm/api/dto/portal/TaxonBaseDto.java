@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -196,6 +197,14 @@ public class TaxonBaseDto extends IdentifiableDto {
         getName().setNameFacts(nameFacts);
     }
 
+    public boolean isInvalid() {
+        return getName().isInvalid();
+    }
+
+    public boolean isHasRegistration() {
+        return getName().isHasRegistration();
+    }
+
     //protologues
 
     public List<URI> getProtologues() {
@@ -205,6 +214,9 @@ public class TaxonBaseDto extends IdentifiableDto {
         getName().addProtologue(uri);
     }
 
+    //TODO we shouldn't have @transient on a DTO, try to solve this in a better way
+    @Transient
+    @javax.persistence.Transient
     public TaxonNameDto getName() {
         if (name == null) {
             name = new TaxonNameDto();
