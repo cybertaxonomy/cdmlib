@@ -149,7 +149,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         IdentifierType wfoIdType = (IdentifierType)termService.find(IdentifierType.uuidWfoNameIdentifier);
         String urlPattern = wfoIdType.getUrlPattern();
         if (urlPattern == null) {
-            wfoIdType.setUrlPattern("https://wfoplantlist.org/taxon/{@ID}");
+            wfoIdType.setUrlPattern("https://www.worldfloraonline.org/taxon/{@ID}");
         }
         commitAndStartNewTransaction();
 
@@ -173,7 +173,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("wfo-12345", wfoIdentifier.getIdentifier());
         Assert.assertEquals(IdentifierType.uuidWfoNameIdentifier, wfoIdentifier.getTypeUuid());
         Assert.assertEquals("WFO Name Identifier", wfoIdentifier.getType());
-        Assert.assertEquals("https://wfoplantlist.org/taxon/wfo-12345", wfoIdentifier.getLink());
+        Assert.assertEquals("https://www.worldfloraonline.org/taxon/wfo-12345", wfoIdentifier.getLink());
         Assert.assertNotNull(dto.getIdentifiers());
 
         //homotypic synonyms
