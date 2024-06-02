@@ -118,7 +118,7 @@ public abstract class TaxonPageDtoLoaderBase {
         loadIdentifiable(config, cdmBase, dto);
     }
 
-    private static void loadIdentifiable(ISourceableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
+    protected static void loadIdentifiable(ISourceableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
         Set<UUID> identifierTypes = new HashSet<>();
         identifierTypes.add(IdentifierType.uuidWfoNameIdentifier);
 

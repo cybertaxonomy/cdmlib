@@ -159,12 +159,20 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
     private void handleName(TaxonPageDtoConfiguration config, TaxonBaseDto taxonDto, TaxonName name, TaxonPageDto pageDto) {
         TaxonNameDto nameDto = taxonDto.new TaxonNameDto();
-        loadBaseData(config, name, nameDto);
+        taxonDto.setName(nameDto);
 
+        //we load base data into the taxonDto to avoid sending the nameDto over the wire
+        //sources and annotations are handled in the same DTO
+//        loadBaseData(config, name, nameDto);
+        loadAnnotatable(config, name, taxonDto);
+        loadSources(config, name, taxonDto);
+        loadIdentifiable(config, name, taxonDto);
+        taxonDto.setNameUuid(name.getUuid());
+
+        //formatting
         INameCacheStrategy formatter = name.cacheStrategy();
         formatter.setEtAlPosition(config.getEtAlPosition());
 
-        taxonDto.setName(nameDto);
         taxonDto.setNameLabel(formatter.getTitleCache(name));
         handleRelatedNames(name, taxonDto, config);
         handleNomenclaturalStatus(name, taxonDto, config);

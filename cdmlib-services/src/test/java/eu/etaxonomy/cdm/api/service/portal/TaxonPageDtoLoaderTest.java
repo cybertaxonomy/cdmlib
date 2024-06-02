@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.api.dto.portal.MediaDto2;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
-import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto.TaxonNameDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonInteractionDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.HomotypicGroupDTO;
@@ -91,6 +90,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -166,10 +166,10 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Genus species Mill. sec. My secbook", dto.getLabel());
         Assert.assertNull(dto.getKeys());
         //TODO check if there is not some duplication between nameDto and dto
-        TaxonNameDto nameDto = dto.getName();
         Assert.assertEquals("Basionym relations are not necessary", null, dto.getName().getRelatedNames());
-        Assert.assertNotNull(nameDto.getIdentifiers());
-        IdentifierDto wfoIdentifier = nameDto.getIdentifiers().getItems().get(0);
+        //... identifier
+        Assert.assertNotNull(dto.getIdentifiers());
+        IdentifierDto wfoIdentifier = dto.getIdentifiers().getItems().get(0);
         Assert.assertEquals("wfo-12345", wfoIdentifier.getIdentifier());
         Assert.assertEquals(IdentifierType.uuidWfoNameIdentifier, wfoIdentifier.getTypeUuid());
         Assert.assertEquals("WFO Name Identifier", wfoIdentifier.getType());
@@ -181,6 +181,11 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(1, homoSyns.getSynonyms().getCount());
         TaxonBaseDto homoSyn = homoSyns.getSynonyms().getItems().get(0);
         Assert.assertEquals("Genusnovus species (Mill.) Noll. syn. sec. My secbook", homoSyn.getLabel());
+        //... annotation on name and synonym
+        Assert.assertEquals("The synonym must have 2 annotations, a synonym annotation and a name annotation",
+                2, homoSyn.getAnnotations().getCount());
+
+        //... related homonym
         Assert.assertEquals(1, homoSyn.getRelatedNames().getCount());
         NameRelationDTO homonymRel = homoSyn.getRelatedNames().getItems().get(0);
         Assert.assertEquals("Genusnovus species Woll.", TaggedTextFormatter.createString(homonymRel.getNameLabel()));
@@ -189,6 +194,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Shenzhen 2017", homonymRel.getCodeEdition());
         Assert.assertEquals("Turland, N.J., Wiersema, J.H., Barrie, F.R., Greuter, W., Hawksworth, D.L., Herendeen, P.S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T.W., McNeill, J., Monro, A.M., Prado, J., Price, M.J. & Smith, G.F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017. Regnum Vegetabile 159. – Glash"+UTF8.U_UMLAUT+"tten: Koeltz Botanical Books",
                 homonymRel.getCodeEditionSource().getLabel().get(0).getLabel());
+        //
 
         //heterotypic synonyms
 
@@ -594,8 +600,12 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TaxonName homSynName = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Genusnovus", null, "species", null, author2, nomRef2, "66", accName.getHomotypicalGroup());
         homSynName.setBasionymAuthorship(author);
-        taxon.addHomotypicSynonymName(homSynName);
+        Synonym homSyn = taxon.addHomotypicSynonymName(homSynName);
         accName.addBasionym(homSynName);
+        //... annotation
+        homSyn.addAnnotation(Annotation.NewInstance("HomSyn Annotation", AnnotationType.EDITORIAL(), Language.DEFAULT()));
+        homSynName.addAnnotation(Annotation.NewInstance("HomSynName Annotation", AnnotationType.EDITORIAL(), Language.DEFAULT()));
+
         //... with homonym relation
         Person author3 = Person.NewInstance("Woll.", "Woller", "W.W.", "Wotan");
         TaxonName earlierHomonym = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
