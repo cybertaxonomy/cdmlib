@@ -147,10 +147,6 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         createTestData();
         //for some reason the urlpattern is not loaded in testdata
         IdentifierType wfoIdType = (IdentifierType)termService.find(IdentifierType.uuidWfoNameIdentifier);
-        String urlPattern = wfoIdType.getUrlPattern();
-        if (urlPattern == null) {
-            wfoIdType.setUrlPattern("https://www.worldfloraonline.org/taxon/{@ID}");
-        }
         commitAndStartNewTransaction();
 
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
