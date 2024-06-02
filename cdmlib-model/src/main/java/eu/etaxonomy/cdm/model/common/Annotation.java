@@ -121,6 +121,7 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 
 	protected Annotation(String text, Language language) {
 		super(text, language);
+		this.setAnnotationType(AnnotationType.UNTYPED());
 	}
 
 //******************** GETTER /SETTER *************************/
