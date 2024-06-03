@@ -145,8 +145,6 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     public void testSynonymy() {
 
         createTestData();
-        //for some reason the urlpattern is not loaded in testdata
-        IdentifierType wfoIdType = (IdentifierType)termService.find(IdentifierType.uuidWfoNameIdentifier);
         commitAndStartNewTransaction();
 
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
