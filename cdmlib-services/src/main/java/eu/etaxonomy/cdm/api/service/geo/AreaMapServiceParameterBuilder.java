@@ -199,7 +199,7 @@ public class AreaMapServiceParameterBuilder {
             }
 
             //getting the area color
-            Color statusColor = distributionStatusUuid2ColorsMap.get(status);
+            Color statusColor = distributionStatusUuid2ColorsMap.get(status.getUuid());
             String fillColorRgb;
             if (statusColor != null){
                 fillColorRgb = Integer.toHexString(statusColor.getRGB()).substring(2);
