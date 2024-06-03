@@ -42,6 +42,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
@@ -533,7 +536,8 @@ public class TaxonPortalController extends TaxonController{
         } catch (Exception e) {
             logger.error("doGetTaxonPage() - parsing error" + e.getMessage());
         }
-
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(jsonStringBuilder.toString());
         JSONObject jsonObject = new JSONObject(jsonStringBuilder.toString());
         boolean includeUnpublished = NO_UNPUBLISHED;
 
@@ -554,12 +558,12 @@ public class TaxonPortalController extends TaxonController{
 //
 //        //check taxon exists and not filtered
         Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, getTaxonNodeInitStrategy().getPropertyPaths());
-        UUID subtreeUuid = jsonObject.has("subtreeUuid")? UUID.fromString(jsonObject.getString("subtreeUuid")): null;
+        UUID subtreeUuid = jsonNode.has("subtreeUuid")? UUID.fromString(jsonNode.get("subtreeUuid").textValue()): null;
 
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
         taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
 
-        String partSetString = jsonObject.has("part")? jsonObject.getString("part"): null;
+        String partSetString = jsonNode.has("part")? jsonNode.get("part").textValue(): null;
 
         EnumSet<InfoPart> partSet = null;
         if (partSetString == null) {
@@ -569,13 +573,13 @@ public class TaxonPortalController extends TaxonController{
         }
 //        //TODO null check needed?
         Set<UUID> annotationTypes = new HashSet<>();
-        String annotationTypeString = jsonObject.has("annotationTypes")? jsonObject.getString("annotationTypes"): null;
+        String annotationTypeString = jsonNode.has("annotationTypes")? jsonNode.get("annotationTypes").textValue(): null;
         if (annotationTypeString != null) {
             annotationTypes = (Arrays.stream(annotationTypeString.split(",")).map(a->UUID.fromString(a)).collect(Collectors.toSet()));
         }
 
         Set<UUID> markerTypes = new HashSet<>();
-        String markerTypeString = jsonObject.has("markerTypes")? jsonObject.getString("markerTypes"): null;
+        String markerTypeString = jsonNode.has("markerTypes")? jsonNode.get("markerTypes").textValue(): null;
         if (markerTypeString != null) {
             markerTypes = (Arrays.stream(markerTypeString.split(",")).map(a->UUID.fromString(a)).collect(Collectors.toSet()));
         }
@@ -588,23 +592,23 @@ public class TaxonPortalController extends TaxonController{
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
 //
         config.setTaxonUuid(taxonUuid);
-        UUID featureTreeUuid = jsonObject.has("featureTreeUuid")?UUID.fromString(jsonObject.getString("featureTreeUuid")): null;
+        UUID featureTreeUuid = jsonNode.has("featureTreeUuid")?UUID.fromString(jsonNode.get("featureTreeUuid").textValue()): null;
         config.setFeatureTree(featureTreeUuid);
-        Integer etAlPosition = jsonObject.has("etAlPosition")?jsonObject.getInt("etAlPosition"): null;
+        Integer etAlPosition = jsonNode.has("etAlPosition")?jsonNode.get("etAlPosition").intValue(): null;
         config.setEtAlPosition(etAlPosition);
-        Boolean doFacts = jsonObject.has("doFacts")? (jsonObject.getInt("doFacts")> 0): false;
+        Boolean doFacts = jsonNode.has("doFacts")? (jsonNode.get("doFacts").intValue()> 0): false;
         config.setWithFacts(doFacts);
-        Boolean doKeys = jsonObject.has("doKeys")? (jsonObject.getInt("doKeys")>0): false;
+        Boolean doKeys = jsonNode.has("doKeys")? (jsonNode.get("doKeys").intValue()>0): false;
         config.setWithKeys(doKeys);
-        Boolean doMedia = jsonObject.has("doMedia")? (jsonObject.getInt("doMedia")>0): false;
+        Boolean doMedia = jsonNode.has("doMedia")? (jsonNode.get("doMedia").intValue()>0): false;
         config.setWithMedia(doMedia);
-        Boolean doSpecimens = jsonObject.has("doSpecimens")? (jsonObject.getInt("doSpecimens")>0): false;
+        Boolean doSpecimens = jsonNode.has("doSpecimens")? (jsonNode.get("doSpecimens").intValue()>0): false;
         config.setWithSpecimens(doSpecimens);
-        Boolean doSynonyms = jsonObject.has("doSynonyms")? (jsonObject.getInt("doSynonyms")>0): false;
+        Boolean doSynonyms = jsonNode.has("doSynonyms")? (jsonNode.get("doSynonyms").intValue()>0): false;
         config.setWithSynonyms(doSynonyms);
-        Boolean doTaxonNodes = jsonObject.has("doTaxonNodes")? (jsonObject.getInt("doTaxonNodes")>0): false;
+        Boolean doTaxonNodes = jsonNode.has("doTaxonNodes")? (jsonNode.get("doTaxonNodes").intValue()>0): false;
         config.setWithTaxonNodes(doTaxonNodes);
-        Boolean doTaxonRelations = jsonObject.has("doTaxonRelations")? (jsonObject.getInt("doTaxonRelations")>0): false;
+        Boolean doTaxonRelations = jsonNode.has("doTaxonRelations")? (jsonNode.get("doTaxonRelations").intValue()>0): false;
         config.setWithTaxonRelationships(doTaxonRelations);
 
         config.setAnnotationTypes(annotationTypes);
@@ -614,50 +618,50 @@ public class TaxonPortalController extends TaxonController{
 //        //filter
         config.setIncludeUnpublished(includeUnpublished);
 
-        String taxOccRelFilter = jsonObject.has("taxOccRelFilter")? jsonObject.getString("taxOccRelFilter"): null;
+        String taxOccRelFilter = jsonNode.has("taxOccRelFilter")? jsonNode.get("taxOccRelFilter").textValue(): null;
         EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = bindAssociationFilter(taxOccRelFilter);
 
         config.setSpecimenAssociationFilter(taxonOccurrenceRelTypes);
 //
         Set<MarkerType> fallbackAreaMarkerTypes = new HashSet<>();
 
-        String fallbackAreaMarkerTypesString = jsonObject.has("fallbackAreaMarkerTypes")? jsonObject.getString("fallbackAreaMarkerTypes"): null;
+        String fallbackAreaMarkerTypesString = jsonNode.has("fallbackAreaMarkerTypes")? jsonNode.get("fallbackAreaMarkerTypes").textValue(): null;
         if (fallbackAreaMarkerTypesString != null) {
             fallbackAreaMarkerTypes = (Arrays.stream(fallbackAreaMarkerTypesString.split(",")).map(a->(MarkerType.getTermByUUID(UUID.fromString(a), MarkerType.class) )).collect(Collectors.toSet()));
         }
 
         Set<MarkerType> alternativeRootAreaMarkerTypes = new HashSet<>();
-        String alternativeRootAreaMarkerTypesString = jsonObject.has("alternativeRootAreaMarkerTypes")? jsonObject.getString("alternativeRootAreaMarkerTypes"): null;
+        String alternativeRootAreaMarkerTypesString = jsonNode.has("alternativeRootAreaMarkerTypes")? jsonNode.get("alternativeRootAreaMarkerTypes").textValue(): null;
         if (alternativeRootAreaMarkerTypesString != null) {
             alternativeRootAreaMarkerTypes = (Arrays.stream(alternativeRootAreaMarkerTypesString.split(",")).map(a->(MarkerType.getTermByUUID(UUID.fromString(a), MarkerType.class) )).collect(Collectors.toSet()));
         }
 
         Set<UUID> omitLevels = new HashSet<>();
-        String omitLevelsString = jsonObject.has("omitLevels")? jsonObject.getString("omitLevels"): null;
+        String omitLevelsString = jsonNode.has("omitLevels")? jsonNode.get("omitLevels").textValue(): null;
         if (StringUtils.isNotBlank(omitLevelsString)) {
             omitLevels = (Arrays.stream(omitLevelsString.split(",")).map(a->UUID.fromString(a)).collect(Collectors.toSet()));
         }
         DistributionInfoConfiguration distributionConfig = config.getDistributionInfoConfiguration();
         distributionConfig.setIncludeUnpublished(includeUnpublished);
         distributionConfig.setInfoParts(EnumSet.copyOf(partSet));
-        Boolean preferSubAreas = jsonObject.has("preferSubAreas")? (jsonObject.getInt("preferSubAreas")>0): false;
+        Boolean preferSubAreas = jsonNode.has("preferSubAreas")? (jsonNode.get("preferSubAreas").intValue()>0): false;
         distributionConfig.setPreferSubAreas(preferSubAreas);
-        Boolean statusOrderPreference = jsonObject.has("statusOrderPreference")? (jsonObject.getInt("statusOrderPreference")>0): false;
+        Boolean statusOrderPreference = jsonNode.has("statusOrderPreference")? (jsonNode.get("statusOrderPreference").intValue()>0): false;
         distributionConfig.setStatusOrderPreference(statusOrderPreference);
-        UUID areaTreeUuid = jsonObject.has("areaTreeUuid")? UUID.fromString(jsonObject.getString("areaTreeUuid")): null;
+        UUID areaTreeUuid = jsonNode.has("areaTreeUuid")? UUID.fromString(jsonNode.get("areaTreeUuid").textValue()): null;
         distributionConfig.setAreaTree(areaTreeUuid);
-        UUID statusTreeUuid = jsonObject.has("statusTreeUuid")? UUID.fromString(jsonObject.getString("statusTreeUuid")): null;
+        UUID statusTreeUuid = jsonNode.has("statusTreeUuid")? UUID.fromString(jsonNode.get("statusTreeUuid").textValue()): null;
         distributionConfig.setStatusTree(statusTreeUuid);
         distributionConfig.setOmitLevels(omitLevels);
-        String statusColorsString = jsonObject.has("statusColorsString")? jsonObject.getString("statusColorsString"): null;
+        String statusColorsString = jsonNode.has("statusColorsString")? jsonNode.get("statusColorsString").textValue(): null;
         distributionConfig.setStatusColorsString(statusColorsString);
-        DistributionOrder distributionOrder = jsonObject.has("distributionOrder")? DistributionOrder.valueOf(jsonObject.getString("statusTreeUuid")): null;
+        DistributionOrder distributionOrder = jsonNode.has("distributionOrder")? DistributionOrder.valueOf(jsonNode.get("statusTreeUuid").textValue()): null;
         distributionConfig.setDistributionOrder(distributionOrder);
-        neverUseFallbackAreaAsParent = jsonObject.has("neverUseFallbackAreaAsParent")? (jsonObject.getInt("neverUseFallbackAreaAsParent")>0): null;
+        neverUseFallbackAreaAsParent = jsonNode.has("neverUseFallbackAreaAsParent")? (jsonNode.get("neverUseFallbackAreaAsParent").intValue()>0): null;
         if (neverUseFallbackAreaAsParent != null) {
             distributionConfig.setNeverUseFallbackAreaAsParent(neverUseFallbackAreaAsParent);
         }
-        CondensedDistributionRecipe recipe = jsonObject.has("recipe")? CondensedDistributionRecipe.valueOf(jsonObject.getString("recipe")): null;
+        CondensedDistributionRecipe recipe = jsonNode.has("recipe")? CondensedDistributionRecipe.valueOf(jsonNode.get("recipe").textValue()): null;
         if (recipe != null) {
             CondensedDistributionConfiguration condensedConfig = recipe.toConfiguration();
             condensedConfig.alternativeRootAreaMarkers = getUuids(alternativeRootAreaMarkerTypes);
