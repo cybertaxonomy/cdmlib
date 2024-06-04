@@ -77,7 +77,7 @@ public class SchemaUpdater_5401_5430 extends SchemaUpdaterBase {
         stepName = "deduplicate etymology";
         sql = "     SELECT count(*) as n "
                 + " FROM DescriptionElementBase deb INNER JOIN DefinedTermBase dtb ON deb.feature_id = dtb.id "
-                + " WHERE deb.feature_id = 'dd653d48-355c-4aec-a4e7-724f6eb29f8d' ";
+                + " WHERE dtb.uuid = 'dd653d48-355c-4aec-a4e7-724f6eb29f8d' ";
         String uuidTerm = "dd653d48-355c-4aec-a4e7-724f6eb29f8d";
         SingleTermRemover.NewInstance(stepList, stepName, uuidTerm, sql);
 
