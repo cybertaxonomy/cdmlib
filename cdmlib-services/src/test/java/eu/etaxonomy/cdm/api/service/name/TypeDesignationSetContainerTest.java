@@ -400,6 +400,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
     @Test
     public void test_withoutStatus(){
         //for another important test without status see also test_withoutFieldUnit()
+        //TODO how far is this "without status", both types do have a (lectotype) status
 
         TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         typifiedName.setTitleCache("Prionus coriatius L.", true);
@@ -424,4 +425,21 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         assertEquals("Prionus L."+DASH_W+"Lectotype: Prionus arealus L.",
                 typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
     }
+
+    @Test
+    public void test_withMissingStatus(){
+        //name types
+        TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+        typifiedName.setTitleCache("Prionus L.", true);
+        TypeDesignationSetContainer typeDesignationContainer = new TypeDesignationSetContainer(typifiedName);
+        typeDesignationContainer.addTypeDesigations(ntd);
+        assertEquals("Prionus L."+DASH_W+"Nametype: Prionus coriatius L.",
+                typeDesignationContainer.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+        assertEquals("Prionus L."+DASH_W+"Nametype: Prionus coriatius L.",
+                typeDesignationContainer.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+        assertEquals("Prionus L."+DASH_W+"Prionus coriatius L.",
+                typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+
+    }
+
 }

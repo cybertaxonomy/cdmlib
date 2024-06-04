@@ -44,7 +44,8 @@ public class NameTypeDesignationSetFormatter extends TypeDesignationSetFormatter
         TaggedTextBuilder localBuilder = new TaggedTextBuilder();
         if(typeSetCount > 0){
             localBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
-        }else if (config.isWithStartingTypeLabel() && !config.isWithPrecedingMainType()){
+        }else if (config.isWithStartingTypeLabel() &&
+                (!config.isWithPrecedingMainType() || baseEntity.getTypeStatus() == null )){
             //TODO this is not really exact as we may want to handle specimen types and
             //name types separately, but this is such a rare case (if at all) and
             //increases complexity so it is not yet implemented
