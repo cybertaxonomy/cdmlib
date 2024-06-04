@@ -29,7 +29,7 @@ public class TypeDesignationPortalController extends TypeDesignationController {
     public static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "typeName.$",
             "typeSpecimen",
-            "typeStatus.representations",
+            "typeStatus",
             "typifiedNames.nomenclaturalReference.authorship.$",
             "typifiedNames.nomenclaturalReference.inReference.authorship.$",
             "typifiedNames.nomenclaturalReference.inReference.inReference.authorship.$",

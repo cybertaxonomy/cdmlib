@@ -56,7 +56,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
     private static final Logger logger = LogManager.getLogger();
 
     public static final EntityInitStrategy TYPEDESIGNATION_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
-            "typeStatus.representations",
+            "typeStatus",
             "typifiedNames",
             "typeSpecimen",
             "typeName",

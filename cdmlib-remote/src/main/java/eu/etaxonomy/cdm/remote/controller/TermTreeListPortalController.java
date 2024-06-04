@@ -28,8 +28,8 @@ public class TermTreeListPortalController extends TermTreeListController {
     private static final List<String> TERMTREE_INIT_STRATEGY = Arrays.asList(
             new String[]{
                 "representations",
-                "root.term.representations",
-                "root.childNodes.term.representations"
+                "root.term",
+                "root.childNodes.term"
             });
 
     public TermTreeListPortalController() {

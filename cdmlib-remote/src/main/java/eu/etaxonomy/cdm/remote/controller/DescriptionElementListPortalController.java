@@ -44,8 +44,8 @@ public class DescriptionElementListPortalController extends DescriptionElementLi
             "multilanguageText",
             "media",
             "name.$",
-            "name.rank.representations",
-            "name.status.type.representations",
+            "name.rank",
+            "name.status.type",
             "taxon2.name"
     });
 
