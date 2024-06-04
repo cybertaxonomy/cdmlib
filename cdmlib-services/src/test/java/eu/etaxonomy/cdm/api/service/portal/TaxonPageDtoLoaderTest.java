@@ -617,14 +617,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     private void createFactualData(Taxon taxon) {
 
         //feature tree
-        @SuppressWarnings("unchecked")
-        TermTree<Feature> featureTree = termTreeService.find(featureTreeUuid);
-        if (featureTree == null) {
-            featureTree = TermTree.NewInstance(TermType.Feature, Feature.class);
-            featureTree.setUuid(featureTreeUuid);
-            featureTree.getRoot().addChild(Feature.DISTRIBUTION());
-            termTreeService.save(featureTree);
-        }
+        createTermTrees();
 
         //distributions
         TaxonDescription taxDesc = TaxonDescription.NewInstance(taxon);
@@ -647,26 +640,6 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 //        PresenceAbsenceTerm.INTRODUCED().setSymbol("i");
         Distribution franceDist = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
         taxDesc.addElement(franceDist);
-
-        //area tree
-        @SuppressWarnings("unchecked")
-        TermTree<NamedArea> areaTree = termTreeService.find(areaTreeUuid);
-        if (areaTree == null) {
-            areaTree = TermTree.NewInstance(TermType.NamedArea, NamedArea.class);
-            areaTree.setUuid(areaTreeUuid);
-            areaTree.getRoot().addChild(Country.GERMANY());
-            termTreeService.save(areaTree);
-        }
-
-        //status tree
-        @SuppressWarnings("unchecked")
-        TermTree<PresenceAbsenceTerm> statusTree = termTreeService.find(statusTreeUuid);
-        if (statusTree == null) {
-            statusTree = TermTree.NewInstance(TermType.PresenceAbsenceTerm, PresenceAbsenceTerm.class);
-            statusTree.setUuid(statusTreeUuid);
-            statusTree.getRoot().addChild(PresenceAbsenceTerm.PRESENT());
-            termTreeService.save(statusTree);
-        }
 
         //... sources
         //... ... primary
@@ -779,6 +752,39 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //use data
         //TODO
+    }
+
+    private void createTermTrees() {
+
+        //feature tree
+        @SuppressWarnings("unchecked")
+        TermTree<Feature> featureTree = termTreeService.find(featureTreeUuid);
+        if (featureTree == null) {
+            featureTree = TermTree.NewInstance(TermType.Feature, Feature.class);
+            featureTree.setUuid(featureTreeUuid);
+            featureTree.getRoot().addChild(Feature.DISTRIBUTION());
+            termTreeService.save(featureTree);
+        }
+
+        //area tree
+        @SuppressWarnings("unchecked")
+        TermTree<NamedArea> areaTree = termTreeService.find(areaTreeUuid);
+        if (areaTree == null) {
+            areaTree = TermTree.NewInstance(TermType.NamedArea, NamedArea.class);
+            areaTree.setUuid(areaTreeUuid);
+            areaTree.getRoot().addChild(Country.GERMANY());
+            termTreeService.save(areaTree);
+        }
+
+        //status tree
+        @SuppressWarnings("unchecked")
+        TermTree<PresenceAbsenceTerm> statusTree = termTreeService.find(statusTreeUuid);
+        if (statusTree == null) {
+            statusTree = TermTree.NewInstance(TermType.PresenceAbsenceTerm, PresenceAbsenceTerm.class);
+            statusTree.setUuid(statusTreeUuid);
+            statusTree.getRoot().addChild(PresenceAbsenceTerm.PRESENT());
+            termTreeService.save(statusTree);
+        }
     }
 
     @Override
