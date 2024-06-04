@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import io.swagger.annotations.Api;
 
 /**
- *
  * @author a.kohlbecker
  * @since 26.08.2014
  */

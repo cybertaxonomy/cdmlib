@@ -282,7 +282,6 @@ public class TaxonPortalController extends TaxonController{
             "taxonNodes.source.citation.inReference.authorship",
             "acceptedTaxon.taxonNodes.classification",
             "secSource.nameUsedInSource"
-
     }));
 
     @Override

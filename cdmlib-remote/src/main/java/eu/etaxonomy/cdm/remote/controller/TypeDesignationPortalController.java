@@ -45,6 +45,4 @@ public class TypeDesignationPortalController extends TypeDesignationController {
     public TypeDesignationPortalController() {
         setInitializationStrategy(DEFAULT_INIT_STRATEGY);
     }
-
-
 }

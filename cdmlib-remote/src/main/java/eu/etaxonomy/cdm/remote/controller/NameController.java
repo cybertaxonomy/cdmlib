@@ -67,7 +67,6 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "annotations.$",
             "annotations.annotationType.$",
             "annotations.annotationType.includes.$"
-
     }));
 
     public static final EntityInitStrategy FULL_TITLE_CACHE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
@@ -82,7 +81,6 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "annotations.$",
             "annotations.annotationType.$",
             "annotations.annotationType.includes.$"
-
     }));
 
     public static final EntityInitStrategy NAME_RELATIONS_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
@@ -113,7 +111,6 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
     public void setService(INameService service) {
         this.service = service;
     }
-
 
     @Override
     protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
@@ -153,7 +150,6 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         return initStrategy.getPropertyPaths();
     }
 
-
     /**
      * Get the list of {@link TypeDesignationBase}s of the
      * {@link TaxonName} instance identified by the <code>{name-uuid}</code>.
@@ -180,7 +176,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         }
         Pager<TypeDesignationBase> pager = service.getTypeDesignations(tnb, null,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY.getPropertyPaths());
-        return new ArrayList(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(pager.getRecords()));
+        return new ArrayList<>(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(pager.getRecords()));
     }
 
     /**
@@ -205,7 +201,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         }
         List<TypeDesignationBase> result = service.getTypeDesignationsInHomotypicalGroup(uuid,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY.getPropertyPaths());
-        return new ArrayList(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(result));
+        return new ArrayList<>(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(result));
     }
 
 
@@ -224,14 +220,13 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         List<String> result = new ArrayList<>();
         result.add(nameCacheString);
         return result;
-
     }
 
     @RequestMapping(value = "taggedName", method = RequestMethod.GET)
     public List<TaggedText> doGetTaggedName(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) {
         logger.info("doGetDescriptionElementsByType() - " + requestPathAndQuery(request));
         return service.getTaggedName(uuid);
     }
@@ -240,7 +235,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
     public List<TaggedText> doGetTaggedFullTitle(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response){
         logger.info("doGetTaggedFullTitle() - " + requestPathAndQuery(request));
 
         TaxonName name = service.load(uuid, FULL_TITLE_CACHE_INIT_STRATEGY.getPropertyPaths());
@@ -300,13 +295,12 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
 
     /**
      * Provides the  „Protologue / original publication“ of the names nomenclatural reference.
-     *
      */
     @RequestMapping(value = "protologueLinks", method = RequestMethod.GET)
     public Set<ExternalLink> doGetProtologueLinks(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) {
         logger.info("doGetProtologueLinks() - " + requestPathAndQuery(request));
         TaxonName name = service.load(uuid, Arrays.asList("nomenclaturalSource.links"));
         if(name.getNomenclaturalSource() != null) {
@@ -314,5 +308,4 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         }
         return null;
     }
-
 }
