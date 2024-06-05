@@ -296,7 +296,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
         Map<UUID,Color> distributionStatusColors;
         try {
             distributionStatusColors = DistributionServiceUtilities.buildStatusColorMap(
-                    statusColorsString, repository.getTermService(), repository.getVocabularyService());
+                    statusColorsString);
         } catch (JsonProcessingException e) {
             pageDto.addMessage(MessagesDto.NewErrorInstance("JsonProcessingException when reading distribution status colors", e));
             //TODO is null allowed?

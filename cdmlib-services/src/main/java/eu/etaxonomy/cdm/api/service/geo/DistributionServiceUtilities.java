@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,9 +32,9 @@ import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
 import eu.etaxonomy.cdm.api.dto.portal.tmp.TermTreeDto;
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.portal.DistributionTreeDtoLoader;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -69,26 +70,12 @@ public class DistributionServiceUtilities {
         return defaultSpecimenOrObservationTypeColors;
     }
 
-    private static HashMap<PresenceAbsenceTerm, Color> defaultPresenceAbsenceTermBaseColors =  new HashMap<>();
-    static {
-        defaultPresenceAbsenceTermBaseColors = new HashMap<>();
-        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.PRESENT(), Color.decode("0x4daf4a"));
-        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATIVE(), Color.decode("0x4daf4a"));
-        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE(), Color.decode("0x377eb8"));
-        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.CULTIVATED(), Color.decode("0x984ea3"));
-        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED(), Color.decode("0xff7f00"));
-        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.CASUAL(), Color.decode("0xffff33"));
-        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED_CULTIVATED(), Color.decode("0xa65628"));
-        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATURALISED(), Color.decode("0xf781bf"));
-    }
-
     private static List<UUID>  presenceAbsenceTermVocabularyUuids = null;
 
     /**
      * @param statusColorJson for example: {@code {"n":"#ff0000","p":"#ffff00"}}
      */
-    public static Map<UUID,Color> buildStatusColorMap(String statusColorJson,
-            ITermService termService, IVocabularyService vocabularyService)
+    public static Map<UUID,Color> buildStatusColorMap(String statusColorJson)
             throws JsonProcessingException {
 
         Map<UUID,Color> presenceAbsenceTermColors = null;
@@ -102,20 +89,25 @@ public class DistributionServiceUtilities {
 
             Map<String,String> statusColorMap = mapper.readValue(statusColorJson, mapType);
             presenceAbsenceTermColors = new HashMap<>();
-            UUID paTermUuid = null;
             for(String statusId : statusColorMap.keySet()){
                 try {
                     Color color = Color.decode(statusColorMap.get(statusId));
-                    // the below loop is  a hack for #4522 (custom status colors not working in cyprus portal)
-                    // remove it once the ticket is solved
-                    for(UUID vocabUuid : presenceAbsenceTermVocabularyUuids(vocabularyService)) {
-                        paTermUuid = termService.findUuidByIdInVocabulary(statusId, vocabUuid, PresenceAbsenceTerm.class);
-                        if(paTermUuid != null) {
-                            break;
+                    UUID statusUuid = CdmUtils.errorSafeUuid(statusId);
+                    if (statusUuid == null) {
+                        //for the default vocabulary we allow idInVocabulary instead of UUIDs
+                        TermVocabulary<PresenceAbsenceTerm> defaultVocabulary =
+                                PresenceAbsenceTerm.PRESENT().getVocabulary();
+                        Optional<PresenceAbsenceTerm> term = defaultVocabulary.getTerms()
+                            .stream()
+                            .filter(t->statusId.equals(t.getIdInVocabulary()))
+                            .findFirst();
+                        if (term.isPresent()) {
+                            statusUuid = term.get().getUuid();
                         }
                     }
-                    if(paTermUuid != null){
-                        presenceAbsenceTermColors.put(paTermUuid, color);
+
+                    if(statusUuid != null){
+                        presenceAbsenceTermColors.put(statusUuid, color);
                     }
                 } catch (NumberFormatException e){
                     logger.error("Cannot decode color", e);

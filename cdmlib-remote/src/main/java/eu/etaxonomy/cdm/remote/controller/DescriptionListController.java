@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.description.AggregationMode;
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregation;
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregationConfiguration;
@@ -89,9 +88,6 @@ public class DescriptionListController
 
     @Autowired
     private ITermService termService;
-
-    @Autowired
-    private IVocabularyService vocabularyService ;
 
     @Autowired
     private IDistributionService distributionService;
@@ -305,7 +301,7 @@ public class DescriptionListController
                 EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
 
                 Map<UUID,Color> distributionStatusColors = DistributionServiceUtilities
-                        .buildStatusColorMap(statusColorsString, termService, vocabularyService);
+                        .buildStatusColorMap(statusColorsString);
 
                 DistributionInfoConfiguration config = new DistributionInfoConfiguration();
                 config.setIncludeUnpublished(includeUnpublished);

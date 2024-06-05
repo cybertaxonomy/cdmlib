@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -577,6 +578,21 @@ public class CdmUtils {
      */
     public static boolean isNullSafeEmpty(Collection<?> collection) {
         return collection == null || collection.isEmpty();
+    }
+
+    /**
+     * If the given String represents a UUID it returns this UUID.
+     * Otherwise <code>null</code> is returned.
+     */
+    public static UUID errorSafeUuid(String uuidStr) {
+        if (uuidStr.length() < 32) {
+            return null;
+        }
+        try {
+            return UUID.fromString(uuidStr);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }
