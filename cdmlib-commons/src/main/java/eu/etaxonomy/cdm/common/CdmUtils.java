@@ -419,7 +419,7 @@ public class CdmUtils {
      */
     public static Map<String, Field> getAllFields(Class clazz, Class highestClass, boolean includeStatic, boolean includeTransient, boolean makeAccessible, boolean includeHighestClass) {
         Map<String, Field> result = new HashMap<>();
-        if ( highestClass.isAssignableFrom(clazz) && (clazz != highestClass || includeHighestClass)){
+        if (highestClass.isAssignableFrom(clazz) && (clazz != highestClass || includeHighestClass)){
             //exclude static
             for (Field field: clazz.getDeclaredFields()){
                 if (includeStatic || ! Modifier.isStatic(field.getModifiers())){
@@ -595,4 +595,17 @@ public class CdmUtils {
         }
     }
 
+    /**
+     * Returns a merged new map which contains all values of the override map and
+     * for those keys that do not exist in the override map it contains the default
+     * map values.
+     */
+    public  static  <T, S> Map<T, S>mergeMaps(Map<T, S> defaultMap, Map<T, S> overrideMap) {
+        Map<T, S> tmpMap = new HashMap<T, S>();
+        tmpMap.putAll(defaultMap);
+        if(overrideMap != null){
+            tmpMap.putAll(overrideMap);
+        }
+        return tmpMap;
+    }
 }
