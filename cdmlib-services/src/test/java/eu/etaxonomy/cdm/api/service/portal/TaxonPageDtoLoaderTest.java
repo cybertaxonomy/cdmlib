@@ -265,7 +265,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //... condensed distribution
         Assert.assertEquals("DEU", distributionInfo.getCondensedDistribution().getHtmlString());
-        Assert.assertEquals("as=a:8dd3c7,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
+        Assert.assertEquals("as=a:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
 
         //...tree
         DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
@@ -298,7 +298,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //... condensed distribution
         Assert.assertEquals("DEU", distributionInfo.getCondensedDistribution().getHtmlString());
-        Assert.assertEquals("as=a:8dd3c7,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
+        Assert.assertEquals("as=a:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
 
         //...tree
         DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
@@ -537,8 +537,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //TODO probably the order is not deterministic, so we may need to check single parts only, same as in according builder test
         String mapUriParamsStart = distributionInfo.getMapUriParams().substring(0, 62);
         String mapUriParamsEnd = distributionInfo.getMapUriParams().replace(mapUriParamsStart, "");
-        Assert.assertTrue("was:" + mapUriParamsStart, "as=a:8dd3c7,,0.1,|b:80b1d3,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart)
-                || "as=a:80b1d3,,0.1,|b:8dd3c7,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart));
+        Assert.assertTrue("was:" + mapUriParamsStart, "as=a:4daf4a,,0.1,|b:377eb8,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart)
+                || "as=a:377eb8,,0.1,|b:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart));
         Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:native%3A\\+doubtfully\\+native"));
         //...tree
         DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
