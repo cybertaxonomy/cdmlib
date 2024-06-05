@@ -472,10 +472,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             String label = TaggedTextFormatter.createString(tags);
             hgDto.setTypes(label);
             hgDto.setTaggedTypes(tags);
-//            hgDto.setTypedTypes(null);
-
         } catch (Exception e) {
-//          e.printStackTrace();
             result.addMessage(MessagesDto.NewErrorInstance("Error when creating type designation information", e));
         }
     }
