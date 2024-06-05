@@ -54,26 +54,6 @@ public class AreaMapServiceParameterBuilder {
     private static final String VALUE_LIST_ENTRY_SEPARATOR = "|";
     private static final String VALUE_SUPER_LIST_ENTRY_SEPARATOR = "||";
 
-    //TODO do we really want to store these colors here?
-    //     if yes the list should be expanded to all entries
-    //TODO 2 make it a Map<UUID,Color> map
-    private static HashMap<UUID, Color> defaultDistributionStatusColors =  new HashMap<>();
-    static {
-        defaultDistributionStatusColors = new HashMap<>();
-        defaultDistributionStatusColors.put(PresenceAbsenceTerm.uuidPresent, Color.decode("0x4daf4a"));
-        defaultDistributionStatusColors.put(PresenceAbsenceTerm.uuidNative, Color.decode("0x4daf4a"));
-        defaultDistributionStatusColors.put(PresenceAbsenceTerm.uuidNativeDoubtfullyNative, Color.decode("0x377eb8"));
-        defaultDistributionStatusColors.put(PresenceAbsenceTerm.uuidCultivated, Color.decode("0x984ea3"));
-        defaultDistributionStatusColors.put(PresenceAbsenceTerm.uuidIntroduced, Color.decode("0xff7f00"));
-        defaultDistributionStatusColors.put(PresenceAbsenceTerm.uuidIntroducedAdventitious, Color.decode("0xffff33"));
-        defaultDistributionStatusColors.put(PresenceAbsenceTerm.uuidIntroducedCultiated, Color.decode("0xa65628"));
-        defaultDistributionStatusColors.put(PresenceAbsenceTerm.uuidNaturalised, Color.decode("0xf781bf"));
-    }
-
-    private static HashMap<UUID,Color> getDefaultDistributionStatusColors() {
-        return defaultDistributionStatusColors;
-    }
-
     public String buildFromEntities(
             Collection<Distribution> filteredDistributions,
             IGeoServiceAreaMapping mapping,
@@ -147,13 +127,6 @@ public class AreaMapServiceParameterBuilder {
             String projectToLayer,
             List<Language> languages){
 
-//        Collector<Map.Entry<PresenceAbsenceTerm,Color>,?,Map<UUID,Color>> collector
-//            = Collectors.toMap(e->e.getKey().getUuid(), e->e.getValue());
-
-//        Map<UUID,Color> distributionStatusUuid2ColorsMap = distributionStatusEntity2ColorsMap
-//                .entrySet().stream()
-//                .collect(Collectors.toMap(e->e.getKey().getUuid(), e->e.getValue()));
-
         /*
          * generateMultipleAreaDataParameters switches between the two possible styles:
          * 1. ad=layername1:area-data||layername2:area-data
@@ -174,7 +147,7 @@ public class AreaMapServiceParameterBuilder {
             return "";
         }
 
-        distributionStatusUuid2ColorsMap = mergeMaps(getDefaultDistributionStatusColors(),
+        distributionStatusUuid2ColorsMap = mergeMaps(getDefaultDistributionStatusColors(filteredDistributions),
                 distributionStatusUuid2ColorsMap);
 
         Map<String, Map<Integer, Set<DistributionDto>>> layerMap = new HashMap<>();
@@ -289,6 +262,25 @@ public class AreaMapServiceParameterBuilder {
         return queryString;
     }
 
+    private Map<UUID,Color> getDefaultDistributionStatusColors(Collection<DistributionDto> filteredDistributions) {
+        Map<UUID,Color> result = new HashMap<>();
+        for (DistributionDto distDto : filteredDistributions) {
+            TermDto status = distDto.getStatus();
+            if (status != null && !result.containsKey(status.getUuid())){
+                String defaultColorStr = status.getDefaultColor();
+                if (StringUtils.isNotEmpty(defaultColorStr)) {
+                    Color color;
+                    try {
+                        color = Color.decode("#"+defaultColorStr);
+                        result.put(status.getUuid(), color);
+                    } catch (NumberFormatException e) {
+                        logger.warn("Color not recognized: " +  defaultColorStr);
+                    }
+                }
+            }
+        }
+        return result;
+    }
 
     /**
      * Fills the layerMap and the statusList

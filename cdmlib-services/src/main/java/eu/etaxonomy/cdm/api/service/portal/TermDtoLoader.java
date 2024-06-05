@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.api.service.geo.GeoServiceArea;
 import eu.etaxonomy.cdm.api.service.geo.GeoServiceAreaAnnotatedMapping;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
@@ -55,11 +56,15 @@ public class TermDtoLoader {
         entity = CdmBase.deproxy(entity);
         if (entity instanceof NamedArea) {  //calling fromEntity(NamedArea)directly does not always work as the term is sometimes casted to a lower class before
             return fromEntity((NamedArea)entity);
+        }else {
+            //TODO i18n
+            TermDto dto = new TermDto(entity.getUuid(), entity.getId(), getPreferredLabel(entity));
+            if (entity instanceof PresenceAbsenceTerm) {
+                dto.setDefaultColor(((PresenceAbsenceTerm)entity).getDefaultColor());
+            }
+            load(dto, entity);
+            return dto;
         }
-        //TODO i18n
-        TermDto dto = new TermDto(entity.getUuid(), entity.getId(), getPreferredLabel(entity));
-        load(dto, entity);
-        return dto;
     }
 
     private void load(NamedAreaDto dto, NamedArea term) {
@@ -74,6 +79,7 @@ public class TermDtoLoader {
         //TODO only on demand
         dto.setGeoServiceMapping(getGeoServiceMapping(term));
     }
+
 
     private <T extends DefinedTermBase<T>> void load(TermDto dto, T term) {
         dto.setSymbol1(term.getSymbol());
