@@ -142,13 +142,14 @@ public class AreaMapServiceParameterBuilder {
         String borderColorRgb = "";
         String borderDashingPattern = "";
 
+        if (distributionStatusUuid2ColorsMap == null) {
+            distributionStatusUuid2ColorsMap = new HashMap<>();
+        }
+
         //handle empty set
         if(filteredDistributions == null || filteredDistributions.size() == 0){
             return "";
         }
-
-        distributionStatusUuid2ColorsMap = mergeMaps(getDefaultDistributionStatusColors(filteredDistributions),
-                distributionStatusUuid2ColorsMap);
 
         Map<String, Map<Integer, Set<DistributionDto>>> layerMap = new HashMap<>();
         List<TermDto> statusList = new ArrayList<>();
@@ -236,7 +237,7 @@ public class AreaMapServiceParameterBuilder {
         if(legendSortList.size() > 0){
             // sort the label entries after the status terms
             Collections.sort(legendSortList);
-            // since the status terms are have an inverse natural order
+            // since the status terms have an inverse natural order
             // (as all other ordered term, see DefinedTermBase.performCompareTo(T orderedTerm, boolean skipVocabularyCheck)
             // the sorted list must be reverted
 //            Collections.reverse(legendSortList);
@@ -260,26 +261,6 @@ public class AreaMapServiceParameterBuilder {
         logger.debug("getDistributionServiceRequestParameterString(): " + queryString);
 
         return queryString;
-    }
-
-    private Map<UUID,Color> getDefaultDistributionStatusColors(Collection<DistributionDto> filteredDistributions) {
-        Map<UUID,Color> result = new HashMap<>();
-        for (DistributionDto distDto : filteredDistributions) {
-            TermDto status = distDto.getStatus();
-            if (status != null && !result.containsKey(status.getUuid())){
-                String defaultColorStr = status.getDefaultColor();
-                if (StringUtils.isNotEmpty(defaultColorStr)) {
-                    Color color;
-                    try {
-                        color = Color.decode("#"+defaultColorStr);
-                        result.put(status.getUuid(), color);
-                    } catch (NumberFormatException e) {
-                        logger.warn("Color not recognized: " +  defaultColorStr);
-                    }
-                }
-            }
-        }
-        return result;
     }
 
     /**
@@ -486,20 +467,5 @@ public class AreaMapServiceParameterBuilder {
             ascii = 64 + i;
         }
         return (char)ascii;
-    }
-
-    /**
-     * Returns a merged new map which contains all values of the override map and
-     * for those keys that do not exist in the override map it contains the default
-     * map values.
-     * TODO move to CdmUtils?
-     */
-    private <T, S> Map<T, S> mergeMaps(Map<T, S> defaultMap, Map<T, S> overrideMap) {
-        Map<T, S> tmpMap = new HashMap<T, S>();
-        tmpMap.putAll(defaultMap);
-        if(overrideMap != null){
-            tmpMap.putAll(overrideMap);
-        }
-        return tmpMap;
     }
 }

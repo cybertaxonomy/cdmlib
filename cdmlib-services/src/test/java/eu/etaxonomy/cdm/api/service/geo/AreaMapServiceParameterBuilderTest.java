@@ -126,12 +126,12 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
 
         Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<>();
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.PRESENT(), Color.BLUE);
-        presenceAbsenceColorMap.put(PresenceAbsenceTerm.INTRODUCED(), Color.BLACK);
+        //we take the color for "introduced from the term default color (#ff7f00)
+        //to test the correct fallback behavior
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.CULTIVATED(), Color.YELLOW);
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.ABSENT(), Color.DARK_GRAY);
-//        String backLayer ="";
-        presenceAbsenceColorMap = null;
-//        String bbox="-20,0,120,70";
+//      String backLayer ="";
+//      String bbox="-20,0,120,70";
         List<Language> languages = new ArrayList<>();
 
 //        boolean subAreaPreference = false;
@@ -139,7 +139,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
         String result = builder.buildFromEntities(
                 distributions,
                 mapping,
-                null, // presenceAbsenceTermColors
+                presenceAbsenceColorMap,
                 null, // projectToLayer
                 languages );
         //TODO Set semantics is not determined
@@ -151,6 +151,13 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
         assertTrue("but is: " + result, result.matches(".*[a-d]:GER[\\|&].*") );
         assertTrue("but is: " + result, result.matches(".*[a-d]:SPA[\\|&].*") );
         assertTrue("but is: " + result, result.matches(".*tdwg4:[a-d]:INDAP[\\|&].*") );
+
+        //colors
+        assertTrue("should include #ffff00 (yellow) for cultivated. But was: " + result, result.matches(".*[a-d]:ffff00,,0\\.1,.*"));
+        assertTrue("should include #404040 (dark grey) for absent. But was: " + result, result.matches(".*[a-d]:404040,,0\\.1,.*"));
+        assertTrue("should include #ff7f00 (flush orange) for introduced. But was: " + result, result.matches(".*[a-d]:ff7f00,,0\\.1,.*"));
+        assertTrue("should include #0000ff (blue) for present. But was: " + result, result.matches(".*[a-d]:0000ff,,0\\.1,.*"));
+
         //assertTrue(result.matches("0000ff"));
         //TODO continue
 
