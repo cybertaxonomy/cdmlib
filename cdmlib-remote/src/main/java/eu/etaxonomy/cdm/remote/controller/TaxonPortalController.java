@@ -350,6 +350,7 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "annotationTypes", required = false) Set<UUID> annotationTypes,
             @RequestParam(value = "markerTypes", required = false) Set<UUID> markerTypes,
             @RequestParam(value = "dtoLoading", required = false, defaultValue = "true") boolean dtoLoading,
+            @RequestParam(value = "withAccessionType", required = false, defaultValue = "true" ) boolean withAccessionType,
 
 
             //TODO annotation type filter
@@ -430,6 +431,7 @@ public class TaxonPortalController extends TaxonController{
         config.setMarkerTypes(markerTypes);
         config.setDirectNameRelTyes(directNameRelations);
         config.setInverseNameRelTyes(inverseNameRelations);
+        config.setWithAccessionType(withAccessionType);
         config.setUseDtoLoading(dtoLoading);
 
         //filter

@@ -66,6 +66,9 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
     private boolean withTaxonRelationships = true;
     private UUID taxonRelationshipTypeTree = null;
 
+    //typification
+    private boolean withAccessionType = true;
+
     //facts
     private UUID featureTree = null;
     private DistributionInfoConfiguration distributionInfoConfiguration = new DistributionInfoConfiguration();
@@ -266,5 +269,12 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
     }
     public void setUseDtoLoading(boolean useDtoLoading) {
         this.useDtoLoading = useDtoLoading;
+    }
+
+    public boolean isWithAccessionType() {
+        return withAccessionType;
+    }
+    public void setWithAccessionType(boolean withAccessionType) {
+        this.withAccessionType = withAccessionType;
     }
 }

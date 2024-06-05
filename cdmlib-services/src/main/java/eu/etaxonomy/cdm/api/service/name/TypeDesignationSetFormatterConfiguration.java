@@ -25,7 +25,7 @@ public class TypeDesignationSetFormatterConfiguration {
     private boolean withStartingTypeLabel = true;
     private boolean withPrecedingMainType = true;
     private boolean withNameIfAvailable = false;
-    private boolean withAccessionNoType = false;
+    private boolean withAccessionNoType = false; //TODO should this be true by default?
     private boolean ignoreSyntypesWithLectotype = false;
     //should become List<Locale>
     private List<Language> languages = new ArrayList<>();
