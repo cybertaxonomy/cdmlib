@@ -16,12 +16,14 @@ import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet.TypeDesignationSetTy
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
+import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 /**
  * @author muellera
@@ -104,8 +106,11 @@ public class NameTypeDesignationSetFormatter extends TypeDesignationSetFormatter
     private void buildTaggedTextForNameTypeDesignation(NameTypeDesignation td, TaggedTextBuilder workingsetBuilder,
             TypedEntityReference<?> typeDesignationEntity) {
 
-        if (td.getTypeName() != null){
-            workingsetBuilder.addAll(td.getTypeName().cacheStrategy().getTaggedTitle(td.getTypeName()));
+        TaxonName typeName = td.getTypeName();
+        if (typeName != null){
+            INameCacheStrategy formatter = typeName.cacheStrategy();
+            workingsetBuilder.addAll(formatter.getTaggedTitle(typeName));
+            workingsetBuilder.addAll(formatter.getNomStatusTags(typeName, true, false));
         }
 
         String flags = null;

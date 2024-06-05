@@ -24,6 +24,8 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -216,6 +218,19 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         Assert.assertEquals("fourth entry should be the name type titleCache",
                 new TaggedText(TagEnum.name, "Prionus coriatius L."), taggedText.get(4)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
         Assert.assertEquals("there should be 5 tags only", 5, taggedText.size());
+        ntd.getTypeName().setTitleCache(null, false);
+
+        //with status
+        ntd.getTypeName().addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
+        formatter.withNameIfAvailable(false); //to simplify the evaluation
+        text = formatter.format(manager);
+        Assert.assertEquals("Nametype: Prionus coriatius L., nom. illeg.", text);
+
+        taggedText = formatter.toTaggedText(manager);
+        Assert.assertEquals("sixth entry should be the status separator",
+                new TaggedText(TagEnum.separator, ", "), taggedText.get(5));
+        Assert.assertEquals("seventh entry should be the abbreviated status",
+                "nom. illeg.", taggedText.get(6).getText());
     }
 
 
