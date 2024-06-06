@@ -40,8 +40,6 @@ public class CdmMetaData extends CdmBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
-	private static final String UNNAMED = "- UNNAMED -";
-
 	/**
 	 * The database schema version number.
 	 * It is recommended to have the first two numbers equal to the CDM Library version number.
@@ -53,7 +51,7 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-	private static final String dbSchemaVersion = CdmVersion.V_05_43_00.versionString;
+	private static final String dbSchemaVersion = CdmVersion.V_05_43_01.versionString;
 
 	public enum CdmVersion {
 	    V_05_12_00("5.12.0.0.20191202"),
@@ -83,7 +81,8 @@ public class CdmMetaData extends CdmBase{
         V_05_38_00("5.38.0.0.20230510"),
         V_05_40_00("5.40.0.0.20230627"),
         V_05_40_01("5.40.1.0.20230829"),
-        V_05_43_00("5.43.0.0.20240531")
+        V_05_43_00("5.43.0.0.20240531"),
+        V_05_43_01("5.43.1.0.20240605")
         ;
 
         private String versionString;
@@ -94,6 +93,8 @@ public class CdmMetaData extends CdmBase{
 	        return versionString;
 	    }
 	}
+
+    private static final String UNNAMED = "- UNNAMED -";
 
 	/**
      * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term}
