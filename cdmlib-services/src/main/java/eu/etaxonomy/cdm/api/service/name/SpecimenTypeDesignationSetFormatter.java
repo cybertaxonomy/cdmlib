@@ -16,10 +16,12 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet.TypeDesignationSetType;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
@@ -86,7 +88,8 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
             });
         }else {
 
-            boolean hasExplicitBaseEntity = hasExplicitBaseEntity(sob, typeDesignationSet);
+            boolean hasExplicitBaseEntity = hasExplicitBaseEntity(sob, typeDesignationSet)
+                    && !entityLabel(sob, config).isEmpty();  //current literature media specimen do often have an empty field unit attached as this is the only way to create them #10426, #10425
             if(hasExplicitBaseEntity && !entityLabel(sob, config).isEmpty()){
                 localBuilder.add(TagEnum.specimenOrObservation, entityLabel(sob, config), sob);
             }
@@ -127,7 +130,12 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
 
     @Override
     protected String entityLabel(SpecimenOrObservationBase sob, TypeDesignationSetFormatterConfiguration config) {
-        return sob.getTitleCache();
+        String label = sob.getTitleCache();
+        if (label.startsWith("FieldUnit#")) {
+            return "";
+        }else {
+            return label;
+        }
     }
 
 //    int buildTaggedTextForSingleTypeStatus(TypeDesignationSetContainer manager,
@@ -186,15 +194,18 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
                 boolean isMediaSpecimen = du instanceof MediaSpecimen;
                 String icon = (isMediaSpecimen ? "[icon] " : "");
 
-                //media specimen
+                //media specimen with media and source (= literature media specimen)
                 if(isMediaSpecimen
                             && HibernateProxyHelper.deproxyOrNull(du.getCollection()) == null  //TODO not sure if only checking the collection is enough, but as we also check existence of sources now the case that only an accession number exists is also covered here
                             && ((MediaSpecimen)du).getMediaSpecimen() != null
                             && !((MediaSpecimen)du).getMediaSpecimen().getSources().isEmpty()
                         ){
                     // special case of a published image which is not covered by the DerivedUnitFacadeCacheStrategy
-                    builder.add(TagEnum.typeDesignation, "[icon] in", typeDesignationEntity); //TODO how to better use tagged text here, the type designation itself has no real text; we could include the sources but that makes them unusable as sources :-(
                     MediaSpecimen msp = (MediaSpecimen)du;
+                    Media media = msp.getMediaSpecimen();
+                    String mediaTitle = media.getTitle() == null ? "" : media.getTitle().getText();
+                    String specimenLabel = CdmUtils.concat(" ", "[icon]", mediaTitle, "in");
+                    builder.add(TagEnum.typeDesignation, specimenLabel, typeDesignationEntity); //TODO how to better use tagged text here, the type designation itself has no real text; we could include the sources but that makes them unusable as sources :-(
                     int count = 0;
                     for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
                         //TODO add sourceTypes to configuration
