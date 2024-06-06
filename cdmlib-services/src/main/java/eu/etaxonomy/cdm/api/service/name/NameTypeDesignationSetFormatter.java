@@ -89,7 +89,7 @@ public class NameTypeDesignationSetFormatter extends TypeDesignationSetFormatter
 
     @Override
     protected void buildTaggedTextForTypeDesignationBase(TypeDesignationBase<?> td,
-            TaggedTextBuilder workingsetBuilder) {
+            TaggedTextBuilder workingsetBuilder, TypeDesignationSetFormatterConfiguration config) {
 
         TypedEntityReference<?> typeDesignationEntity = TypedEntityReferenceFactory.fromEntity(td, false);
         if(td instanceof NameTypeDesignation){

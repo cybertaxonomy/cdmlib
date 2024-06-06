@@ -86,7 +86,7 @@ public class TextualTypeDesignationSetFormatter extends TypeDesignationSetFormat
 
     @Override
     protected void buildTaggedTextForTypeDesignationBase(TypeDesignationBase<?> typeDes,
-            TaggedTextBuilder workingsetBuilder) {
+            TaggedTextBuilder workingsetBuilder, TypeDesignationSetFormatterConfiguration config) {
         //not needed here
     }
 }

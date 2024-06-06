@@ -326,7 +326,10 @@ public class TypeDesignationSetContainerFormatter {
                     }
                 //other specimen
                 } else {
-                    DerivedUnitDefaultCacheStrategy cacheStrategy = DerivedUnitDefaultCacheStrategy.NewInstance(true, false, true, " ");
+                    //TODO make configurable/or can this code be deleted somehow, it is mostly duplication for Name-/SpecimenTypeDesignationSetFormatter?
+                    DerivedUnitDefaultCacheStrategy.CollectionAccessionSeperator sep
+                        = DerivedUnitDefaultCacheStrategy.CollectionAccessionSeperator.SPACE;
+                    DerivedUnitDefaultCacheStrategy cacheStrategy = DerivedUnitDefaultCacheStrategy.NewInstance(true, false, true, sep);
                     String titleCache = cacheStrategy.getTitleCache(du, true);
                     // removing parentheses from code + accession number, see https://dev.e-taxonomy.eu/redmine/issues/8365
                     titleCache = titleCache.replaceAll("[\\(\\)]", "");

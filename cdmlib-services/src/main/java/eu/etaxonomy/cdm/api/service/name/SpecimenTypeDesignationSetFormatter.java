@@ -161,18 +161,18 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
 
     @Override
     protected void buildTaggedTextForTypeDesignationBase(TypeDesignationBase<?> td,
-            TaggedTextBuilder workingsetBuilder) {
+            TaggedTextBuilder workingsetBuilder, TypeDesignationSetFormatterConfiguration config) {
 
         TypedEntityReference<?> typeDesignationEntity = TypedEntityReferenceFactory.fromEntity(td, false);
         if (td instanceof SpecimenTypeDesignation){
-            buildTaggedTextForSpecimenTypeDesignation((SpecimenTypeDesignation)td, workingsetBuilder, typeDesignationEntity);
+            buildTaggedTextForSpecimenTypeDesignation((SpecimenTypeDesignation)td, workingsetBuilder, typeDesignationEntity, config);
         }else{
             throw new RuntimeException("Unhandled TypeDesignation type");
         }
     }
 
     private void buildTaggedTextForSpecimenTypeDesignation(SpecimenTypeDesignation td,
-            TaggedTextBuilder builder, TypedEntityReference<?> typeDesignationEntity) {
+            TaggedTextBuilder builder, TypedEntityReference<?> typeDesignationEntity, TypeDesignationSetFormatterConfiguration config) {
 
         if (td.getTypeSpecimen() == null){
             builder.add(TagEnum.typeDesignation, "", typeDesignationEntity);
@@ -209,8 +209,11 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
                 } else {
                     //TODO split collection and field number and specimen status into their own tags
                     //     in cache strategy, use TaggedText there for this part
-
-                    DerivedUnitDefaultCacheStrategy cacheStrategy = DerivedUnitDefaultCacheStrategy.NewInstance(true, false, true, " ");
+                    DerivedUnitDefaultCacheStrategy.CollectionAccessionSeperator sep
+                        = config.isWithAccessionNoType()?
+                                DerivedUnitDefaultCacheStrategy.CollectionAccessionSeperator.ACCESION_NO_TYPE
+                                : DerivedUnitDefaultCacheStrategy.CollectionAccessionSeperator.SPACE;
+                    DerivedUnitDefaultCacheStrategy cacheStrategy = DerivedUnitDefaultCacheStrategy.NewInstance(true, false, true, sep);
                     String titleCache = icon + cacheStrategy.getTitleCache(du, true);
                     // removing parentheses from code + accession number, see https://dev.e-taxonomy.eu/redmine/issues/8365
                     titleCache = titleCache.replaceAll("[\\(\\)]", "");
@@ -263,6 +266,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
         if (du.getPreferredStableUri() != null) {
             return du.getPreferredStableUri();
         }else {
+            //TODO there may come more link options
             return null;
         }
     }

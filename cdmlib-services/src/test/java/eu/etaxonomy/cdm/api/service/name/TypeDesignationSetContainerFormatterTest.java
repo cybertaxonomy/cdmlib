@@ -297,12 +297,12 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
                 .withStartingTypeLabel(true)
                 .withNameIfAvailable(true)
                 .withPrecedingMainType(false)
-                .withAccessionNoType(false);
+                .withAccessionNoType(true);
 
         //test text
         List<TaggedText> taggedText = formatter.toTaggedText(container);
         String text = TaggedTextFormatter.createString(taggedText);
-        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA 1234, destroyed)", text);
+        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA accession no. 1234, destroyed)", text);
 
         //test tags
 //        //TODO the name should be split so it can be put in italics
@@ -398,7 +398,7 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         typifiedName.addTypeDesignation(std_IT_3, false);
 
         TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tds);
-        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter(false, false, false, false, false);
+        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter(false, false, false, false, true);
         String text = formatter.format(container);
         int holotypeIndex = text.indexOf("holotype");
         Assert.assertTrue("Holotype must be first, isotype second", holotypeIndex>0 && (holotypeIndex < text.indexOf("isotype")) );

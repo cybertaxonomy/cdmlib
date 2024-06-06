@@ -14,6 +14,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,8 +52,32 @@ public class DerivedUnitDefaultCacheStrategy
     private boolean addTrailingDot = false;
     //according to #6865 deduplication is usually not wanted
     private boolean deduplicateCollectionCodeInNumber = false;
-    private String collectionAccessionSeperator = ": ";
+    private CollectionAccessionSeperator collectionAccessionSeperator = CollectionAccessionSeperator.COLON;
 
+    public enum CollectionAccessionSeperator {
+        SPACE, COLON, ACCESION_NO_TYPE;
+
+        private String getSeperator(DerivedUnit du) {
+            switch (this) {
+                case COLON:
+                    return ": ";
+                case ACCESION_NO_TYPE:
+                    if (StringUtils.isNotEmpty(du.getBarcode())) {
+                        return " barcode ";
+                    }else if (StringUtils.isNotEmpty(du.getAccessionNumber())) {
+                        return " accession no. ";
+                    }else if (StringUtils.isNotEmpty(du.getCatalogNumber())) {
+                        return " catalog no. ";
+                    }else {
+                        //TODO more types to come?
+                        return " ";
+                    }
+                case SPACE:
+                default:
+                    return " ";
+            }
+        }
+    }
 
     private static final FieldUnitDefaultCacheStrategy fieldUnitCacheStrategy
         = FieldUnitDefaultCacheStrategy.NewInstance(false, false);
@@ -67,7 +92,7 @@ public class DerivedUnitDefaultCacheStrategy
     }
 
     public static DerivedUnitDefaultCacheStrategy NewInstance(boolean skipFieldUnit, boolean addTrailingDot,
-            boolean deduplicateCollectionCodeInNumber, String collectionAccessionSeperator){
+            boolean deduplicateCollectionCodeInNumber, CollectionAccessionSeperator collectionAccessionSeperator){
         return new DerivedUnitDefaultCacheStrategy(skipFieldUnit, addTrailingDot, deduplicateCollectionCodeInNumber,
                 collectionAccessionSeperator);
     }
@@ -79,7 +104,7 @@ public class DerivedUnitDefaultCacheStrategy
 
 
     private DerivedUnitDefaultCacheStrategy(boolean skipFieldUnit, boolean addTrailingDot,
-            boolean deduplicateCollectionCodeInNumber, String collectionAccessionSeperator) {
+            boolean deduplicateCollectionCodeInNumber, CollectionAccessionSeperator collectionAccessionSeperator) {
         this.skipFieldUnit = skipFieldUnit;
         this.addTrailingDot = addTrailingDot;
         this.deduplicateCollectionCodeInNumber = deduplicateCollectionCodeInNumber;
@@ -194,7 +219,8 @@ public class DerivedUnitDefaultCacheStrategy
     public String getSpecimenLabel(DerivedUnit derivedUnit) {
         String code = getCollectionCode(derivedUnit);
         String identifier = getUnitNumber(derivedUnit /*, code*/);
-        String collectionData = CdmUtils.concat(collectionAccessionSeperator, code, identifier);
+        CharSequence separator = collectionAccessionSeperator.getSeperator(derivedUnit);
+        String collectionData = CdmUtils.concat(separator, code, identifier);
         return collectionData;
     }
 

@@ -128,7 +128,7 @@ public abstract class TypeDesignationSetFormatterBase<T extends VersionableEntit
         if(typeDesignationCount++ > 0){
             builder.add(TagEnum.separator, TypeDesignationSetContainerFormatter.TYPE_DESIGNATION_SEPARATOR);
         }
-        buildTaggedTextForTypeDesignationBase(typeDes, builder);
+        buildTaggedTextForTypeDesignationBase(typeDes, builder, config);
         if (config.isWithCitation()){
 
             //lectotype source
@@ -172,7 +172,7 @@ public abstract class TypeDesignationSetFormatterBase<T extends VersionableEntit
     }
 
     protected abstract void buildTaggedTextForTypeDesignationBase(TypeDesignationBase<?> typeDes,
-            TaggedTextBuilder workingsetBuilder);
+            TaggedTextBuilder workingsetBuilder, TypeDesignationSetFormatterConfiguration config);
 
     /**
      * Adds the tags for the given source.
