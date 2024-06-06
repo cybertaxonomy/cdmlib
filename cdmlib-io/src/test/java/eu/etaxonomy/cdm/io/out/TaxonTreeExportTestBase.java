@@ -190,9 +190,15 @@ public abstract class TaxonTreeExportTestBase
     }
 
     protected void testExceptionsErrorsWarnings(ExportResult result, int exceptions, int errors,int warnings) {
-        Assert.assertEquals(exceptions, result.getExceptions().size());
-        Assert.assertEquals(errors, result.getErrors().size());
-        Assert.assertEquals(warnings, result.getWarnings().size());
+        if (result.getExceptions().size() > 0 && exceptions == 0) {
+            result.getExceptions().iterator().next().getException().printStackTrace();
+        }
+        Assert.assertEquals("The number of exceptions differs from the expected number of exceptions",
+                exceptions, result.getExceptions().size());
+        Assert.assertEquals("The number of errors differs from the expected number of errors",
+                errors, result.getErrors().size());
+        Assert.assertEquals("The number of warnings differs from the expected number of warnings",
+                warnings, result.getWarnings().size());
     }
 
     protected void setUuid(CdmBase cdmBase, String uuidStr) {

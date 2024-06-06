@@ -19,11 +19,13 @@ import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 
 /**
  * Type designations which refer to the same base entity (e.g. FieldUnit for SpecimenTypeDesignations
@@ -53,9 +55,11 @@ public class TypeDesignationSet {
 
     public enum TypeDesignationSetType {
         SPECIMEN_TYPE_DESIGNATION_SET,
-        NAME_TYPE_DESIGNATION_SET;
+        NAME_TYPE_DESIGNATION_SET,
+        TEXTUAL_TYPE_DESIGNATION_SET;
         boolean isSpecimenType(){return this == SPECIMEN_TYPE_DESIGNATION_SET;}
         boolean isNameType(){return this == NAME_TYPE_DESIGNATION_SET;}
+        boolean isTextualType(){return this == TEXTUAL_TYPE_DESIGNATION_SET;}
     }
 
 // ********************************* CONSTRUCTOR **************************/
@@ -63,7 +67,7 @@ public class TypeDesignationSet {
     public TypeDesignationSet(VersionableEntity baseEntity) {
         this.baseEntity = baseEntity;
         //init base entity label to avoid LazyInitializationExceptions
-        TypeDesignationSetFormatter.entityLabel(baseEntity);
+        TypeDesignationSetFormatterBase.getFormatter(this).entityLabel(baseEntity, null);
     }
 
 // ***********************************************************************/
@@ -74,7 +78,9 @@ public class TypeDesignationSet {
 
     public List<TypeDesignationDTO> getTypeDesignations() {
         List<TypeDesignationDTO> typeDesignations = new ArrayList<>();
-        designationByStatusMap.values().forEach(typeDesignationDtos -> typeDesignationDtos.forEach(td -> typeDesignations.add(td)));
+        designationByStatusMap.values()
+            .forEach(typeDesignationDtos -> typeDesignationDtos
+                    .forEach(td -> typeDesignations.add(td)));
         return typeDesignations;
     }
 
@@ -86,7 +92,7 @@ public class TypeDesignationSet {
         return designationByStatusMap.get(typeStatus);
     }
 
-    public void insert(TypeDesignationStatusBase<?> status,
+    public void add(TypeDesignationStatusBase<?> status,
             TypeDesignationDTO<?> typeDesignationDto) {
 
         if(status == null){
@@ -121,9 +127,10 @@ public class TypeDesignationSet {
      *
      * @return the baseEntityReference
      */
-    public TypedEntityReference<? extends VersionableEntity> getBaseEntityAsReference() {
-        return makeEntityReference(baseEntity);
-    }
+//    public TypedEntityReference<? extends VersionableEntity> getBaseEntityAsReference(
+//            TypeDesignationSetFormatterConfiguration config) {
+//        return makeEntityReference(baseEntity, config);
+//    }
 
     public boolean isSpecimenWorkingSet() {
         return getWorkingsetType().isSpecimenType();
@@ -136,8 +143,16 @@ public class TypeDesignationSet {
         return SpecimenOrObservationBase.class.isAssignableFrom(baseEntity.getClass());
     }
 
+    private boolean isTextualTypeDesigationWorkingSet() {
+        return TextualTypeDesignation.class.isAssignableFrom(baseEntity.getClass());
+    }
+
     public TypeDesignationSetType getWorkingsetType() {
-        return isSpecimenTypeDesigationWorkingSet() ? TypeDesignationSetType.SPECIMEN_TYPE_DESIGNATION_SET : TypeDesignationSetType.NAME_TYPE_DESIGNATION_SET;
+        return isSpecimenTypeDesigationWorkingSet() ?
+                TypeDesignationSetType.SPECIMEN_TYPE_DESIGNATION_SET
+                : isTextualTypeDesigationWorkingSet()?
+                        TypeDesignationSetType.TEXTUAL_TYPE_DESIGNATION_SET
+                        : TypeDesignationSetType.NAME_TYPE_DESIGNATION_SET;
     }
 
     /**
@@ -155,13 +170,15 @@ public class TypeDesignationSet {
         return highestTypeStatus;
     }
 
-    public static TypedEntityReference<? extends VersionableEntity> makeEntityReference(VersionableEntity baseEntity) {
+    //only needed for RegistrationDTOWrapper
+    public TypedEntityReference<? extends VersionableEntity> makeEntityReference(
+            VersionableEntity baseEntity) {
 
         baseEntity = CdmBase.deproxy(baseEntity);
-        String label = TypeDesignationSetFormatter.entityLabel(baseEntity);
+        String label = TypeDesignationSetFormatterBase.getFormatter(this).entityLabel(baseEntity, null);
 
         TypedEntityReference<? extends VersionableEntity> baseEntityReference =
-                TypedEntityReference.fromEntityWithLabel(baseEntity, label);
+                TypedEntityReferenceFactory.fromEntityWithLabel(baseEntity, label);
 
         return baseEntityReference;
     }

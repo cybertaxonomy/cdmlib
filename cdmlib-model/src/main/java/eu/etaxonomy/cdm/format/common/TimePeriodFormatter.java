@@ -28,6 +28,8 @@ public class TimePeriodFormatter {
     public static final DateTimeFieldType HOUR_TYPE = DateTimeFieldType.hourOfDay();
     public static final DateTimeFieldType MINUTE_TYPE = DateTimeFieldType.minuteOfHour();
 
+    private DateTimeFormatter partialFormatter = TimePeriodPartialFormatter.INSTANCE();
+
     public static final TimePeriodFormatter NewDefaultInstance(){
         return new TimePeriodFormatter();
     }
@@ -49,9 +51,8 @@ public class TimePeriodFormatter {
      */
     public String getTimePeriod(TimePeriod tp){
         String result = null;
-        DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
         if (tp.isContinued()){
-            String strStart = tp.getStart() != null ? tp.getStart().toString(formatter): null;
+            String strStart = tp.getStart() != null ? tp.getStart().toString(partialFormatter): null;
             result = CdmUtils.concat("", strStart, "+");
         }else{
             Partial start = tp.getStart();
@@ -71,9 +72,9 @@ public class TimePeriodFormatter {
                 }
             }
             @SuppressWarnings("null")
-            String strStart = isNotEmpty(start) ? start.toString(formatter): null;
+            String strStart = isNotEmpty(start) ? start.toString(partialFormatter): null;
             @SuppressWarnings("null")
-            String strEnd = isNotEmpty(end) ? end.toString(formatter): null;
+            String strEnd = isNotEmpty(end) ? end.toString(partialFormatter): null;
             result = CdmUtils.concat(TimePeriod.SEP, strStart, strEnd);
         }
 

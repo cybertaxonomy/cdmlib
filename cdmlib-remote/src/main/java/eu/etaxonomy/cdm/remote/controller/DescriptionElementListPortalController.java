@@ -26,6 +26,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/portal/descriptionElement"})
 public class DescriptionElementListPortalController extends DescriptionElementListController {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
@@ -43,8 +44,8 @@ public class DescriptionElementListPortalController extends DescriptionElementLi
             "multilanguageText",
             "media",
             "name.$",
-            "name.rank.representations",
-            "name.status.type.representations",
+            "name.rank",
+            "name.status.type",
             "taxon2.name"
     });
 

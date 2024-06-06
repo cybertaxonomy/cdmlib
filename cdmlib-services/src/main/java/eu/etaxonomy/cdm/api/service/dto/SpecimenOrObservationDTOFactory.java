@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import eu.etaxonomy.cdm.api.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -24,21 +26,22 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  */
 public class SpecimenOrObservationDTOFactory {
 
-    public static SpecimenOrObservationBaseDTO fromEntity(SpecimenOrObservationBase<?> entity) {
+    public static SpecimenOrObservationBaseDTO<?> fromEntity(SpecimenOrObservationBase<?> entity) {
        return fromEntity(entity, null);
     }
 
-    public static SpecimenOrObservationBaseDTO fromEntity(SpecimenOrObservationBase<?> entity, Integer maxDepth) {
+    public static SpecimenOrObservationBaseDTO<?> fromEntity(SpecimenOrObservationBase<?> entity, Integer maxDepth) {
         if(entity == null) {
             return null;
         }
         if (entity.isInstanceOf(FieldUnit.class)) {
-            return FieldUnitDTO.fromEntity(HibernateProxyHelper.deproxy(entity, FieldUnit.class), maxDepth, null);
+            return FieldUnitDtoLoader.INSTANCE().fromEntity(HibernateProxyHelper.deproxy(entity, FieldUnit.class), maxDepth, null);
         } else {
             if (entity.isInstanceOf(DnaSample.class)){
-                return new DNASampleDTO(HibernateProxyHelper.deproxy(entity, DnaSample.class)); // FIXME use factory method
+                DnaSample dnaSample = HibernateProxyHelper.deproxy(entity, DnaSample.class);
+                return DnaSampleDtoLoader.INSTANCE().fromEntity(dnaSample);
             } else {
-                return DerivedUnitDTO.fromEntity(HibernateProxyHelper.deproxy(entity, DerivedUnit.class), maxDepth, null);
+                return DerivedUnitDtoLoader.INSTANCE().fromEntity(HibernateProxyHelper.deproxy(entity, DerivedUnit.class), maxDepth, null);
             }
         }
     }
@@ -47,14 +50,6 @@ public class SpecimenOrObservationDTOFactory {
         if(entity == null) {
             return null;
         }
-        return FieldUnitDTO.fromEntity(entity);
+        return FieldUnitDtoLoader.INSTANCE().fromEntity(entity);
     }
-
-    public static SpecimenOrObservationBaseDTO fromDerivedUnit(DerivedUnit entity){
-        if(entity == null) {
-            return null;
-        }
-        return DerivedUnitDTO.fromEntity(entity);
-    }
-
 }

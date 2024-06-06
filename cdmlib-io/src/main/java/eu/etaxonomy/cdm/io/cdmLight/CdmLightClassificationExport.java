@@ -26,10 +26,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainerFormatter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.name.TypeComparator;
@@ -37,7 +38,6 @@ import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
 import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
@@ -1019,28 +1019,30 @@ public class CdmLightClassificationExport
      */
     private void handleProPartePartialMisapplied(CdmLightExportState state, Taxon taxon, Taxon accepted, boolean isProParte, boolean isMisapplied, int index) {
         try {
-            Taxon ppSyonym = taxon;
-            if (isUnpublished(state.getConfig(), ppSyonym)) {
+            Taxon ppSynonym = taxon;
+            if (isUnpublished(state.getConfig(), ppSynonym)) {
                 return;
             }
-            TaxonName name = ppSyonym.getName();
+            TaxonName name = ppSynonym.getName();
             handleName(state, name, accepted);
 
             CdmLightExportTable table = CdmLightExportTable.SYNONYM;
             String[] csvLine = new String[table.getSize()];
 
-            csvLine[table.getIndex(CdmLightExportTable.SYNONYM_ID)] = getId(state, ppSyonym);
+            csvLine[table.getIndex(CdmLightExportTable.SYNONYM_ID)] = getId(state, ppSynonym);
             csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, accepted);
             csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
 
-            Reference secRef = ppSyonym.getSec();
+            Reference secRef = ppSynonym.getSec();
 
             if (secRef != null && !state.getReferenceStore().contains(secRef.getUuid())) {
                 handleReference(state, secRef);
             }
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(secRef);
-            Set<TaxonRelationship> rels = accepted.getTaxonRelations(ppSyonym);
+            csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = ppSynonym.isPublish() ? "1" : "0" ;
+
+            Set<TaxonRelationship> rels = accepted.getTaxonRelations(ppSynonym);
             TaxonRelationship rel = null;
             boolean isPartial = false;
             if (rels.size() == 1){
@@ -1080,7 +1082,7 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.IS_PARTIAL)] = isPartial ? "1" : "0";
             csvLine[table.getIndex(CdmLightExportTable.IS_MISAPPLIED)] = isMisapplied ? "1" : "0";
             csvLine[table.getIndex(CdmLightExportTable.SORT_INDEX)] = String.valueOf(index);
-            state.getProcessor().put(table, ppSyonym, csvLine);
+            state.getProcessor().put(table, ppSynonym, csvLine);
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling "
                     + "pro parte/partial synonym or misapplied name  " + cdmBaseStr(taxon) + ": " + e.getMessage());
@@ -1143,7 +1145,7 @@ public class CdmLightClassificationExport
                 csvLine[table.getIndex(CdmLightExportTable.FULL_NAME_WITH_REF)] = name.getFullTitleCache();
             } else {
                 List<TaggedText> taggedFullTitleCache = name.getTaggedFullTitle();
-                List<TaggedText> taggedName = name.getTaggedName();
+//                List<TaggedText> taggedName = name.getTaggedName();
 
                 String fullTitleWithHtml = createNameWithItalics(taggedFullTitleCache);
                 // TODO: adapt the tropicos titlecache creation
@@ -1197,7 +1199,8 @@ public class CdmLightClassificationExport
             NomenclaturalSource nomenclaturalSource = name.getNomenclaturalSource();
             if (nomenclaturalSource != null &&nomenclaturalSource.getNameUsedInSource() != null){
                 handleName(state, nomenclaturalSource.getNameUsedInSource(), null);
-                csvLine[table.getIndex(CdmLightExportTable.NAME_USED_IN_SOURCE_FK)] = getId(state, nomenclaturalSource.getNameUsedInSource());
+                csvLine[table.getIndex(CdmLightExportTable.ORIGINAL_SPELLING_FK)] = getId(state, nomenclaturalSource.getNameUsedInSource());
+                csvLine[table.getIndex(CdmLightExportTable.ORIGINAL_SPELLING)] = createNameWithItalics(nomenclaturalSource.getNameUsedInSource().getTaggedFullTitle());
             }
 
             if (nomRef != null) {
@@ -1300,19 +1303,22 @@ public class CdmLightClassificationExport
             String protologueUriString = extractProtologueURIs(state, name);
 
             csvLine[table.getIndex(CdmLightExportTable.PROTOLOGUE_URI)] = protologueUriString;
-            Collection<TypeDesignationBase> specimenTypeDesignations = new ArrayList<>();
+
+            //type designations
+            Collection<TypeDesignationBase> nonTextualTypeDesignations = new ArrayList<>();
             List<TextualTypeDesignation> textualTypeDesignations = new ArrayList<>();
+            //... collect
             for (TypeDesignationBase<?> typeDesignation : name.getTypeDesignations()) {
                 if (typeDesignation.isInstanceOf(TextualTypeDesignation.class)) {
 
                     if (((TextualTypeDesignation) typeDesignation).isVerbatim() ){
-                        Set<IdentifiableSource> sources =  typeDesignation.getSources();
-                        boolean isProtologue = false;
-                        if (sources != null && !sources.isEmpty()){
-                            IdentifiableSource source = sources.iterator().next();
-                            if (name.getNomenclaturalReference() != null){
-                                isProtologue = source.getCitation() != null? source.getCitation().getUuid().equals(name.getNomenclaturalReference().getUuid()): false;
-                            }
+                        Set<IdentifiableSource> sources = typeDesignation.getSources();
+                        boolean isProtologue =  false;
+                        if (sources != null && name.getNomenclaturalReference() != null){
+                            UUID nomRefUuid = name.getNomenclaturalReference().getUuid();
+                            isProtologue = sources.stream()
+                                    .filter(s->s.getCitation() != null)
+                                    .anyMatch(s->s.getCitation().getUuid().equals(nomRefUuid));
                         }
                         if (isProtologue){
                             csvLine[table.getIndex(CdmLightExportTable.PROTOLOGUE_TYPE_STATEMENT)] = ((TextualTypeDesignation) typeDesignation)
@@ -1326,18 +1332,19 @@ public class CdmLightClassificationExport
                     }
                 } else if (typeDesignation.isInstanceOf(SpecimenTypeDesignation.class)) {
                     SpecimenTypeDesignation specimenType = HibernateProxyHelper.deproxy(typeDesignation, SpecimenTypeDesignation.class);
-                    specimenTypeDesignations.add(specimenType);
+                    nonTextualTypeDesignations.add(specimenType);
                     handleSpecimenType(state, specimenType);
-
-
                 }else if (typeDesignation instanceof NameTypeDesignation){
-                    specimenTypeDesignations.add(HibernateProxyHelper.deproxy(typeDesignation, NameTypeDesignation.class));
+                    NameTypeDesignation nameTypeDesignation = CdmBase.deproxy(typeDesignation, NameTypeDesignation.class);
+                    nonTextualTypeDesignations.add(nameTypeDesignation);
                 }
             }
-            TypeDesignationSetContainer manager = new TypeDesignationSetContainer(specimenTypeDesignations, name, TypeDesignationSetComparator.ORDER_BY.TYPE_STATUS);
+            TypeDesignationSetContainer manager = new TypeDesignationSetContainer(nonTextualTypeDesignations,
+                    name, TypeDesignationSetComparator.ORDER_BY.TYPE_STATUS);
             HTMLTagRules rules = new HTMLTagRules();
             rules.addRule(TagEnum.name, "i");
-            csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = manager.print(false, false, false, rules);
+            //TODO params
+            csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = manager.print(false, false, false, true, false, rules);
 
             StringBuilder stringbuilder = new StringBuilder();
             int i = 1;
@@ -1365,7 +1372,7 @@ public class CdmLightClassificationExport
                 i++;
             }
             csvLine[table.getIndex(CdmLightExportTable.TYPE_STATEMENT)] = stringbuilder.toString();
-
+            //end type designation
 
             if (name.getStatus() == null || name.getStatus().isEmpty()) {
                 csvLine[table.getIndex(CdmLightExportTable.NOM_STATUS)] = "";
@@ -2184,7 +2191,8 @@ public class CdmLightClassificationExport
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
                 TypeDesignationSetContainer manager = new TypeDesignationSetContainer(group);
-                list.addAll(new TypeDesignationSetFormatter(true, false, false).toTaggedText(manager));
+                list.addAll(new TypeDesignationSetContainerFormatter().withStartingTypeLabel(false)
+                        .toTaggedText(manager));
             }
             String typeTextDesignations = "";
             //The typeDesignationManager does not handle the textual typeDesignations
@@ -2448,6 +2456,12 @@ public class CdmLightClassificationExport
             // TODO short citations correctly
             String shortCitation = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(reference, null); // Should be Author(year) like in Taxon.sec
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;
+            csvLine[table.getIndex(CdmLightExportTable.BIBLIO_LONG_CITATION)] = reference.getTitleCache();
+            String uniqueString = state.incrementShortCitation(shortCitation);
+            String uniqueShortCitation = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(reference, null, null, uniqueString);
+            csvLine[table.getIndex(CdmLightExportTable.UNIQUE_SHORT_CITATION)] = shortCitation;
+
+
             // TODO get preferred title
             csvLine[table.getIndex(CdmLightExportTable.REF_TITLE)] = reference.isProtectedTitleCache()
                     ? reference.getTitleCache() : reference.getTitle();
@@ -2491,6 +2505,7 @@ public class CdmLightClassificationExport
                 csvLine[table.getIndex(CdmLightExportTable.URI)] = reference.getUri().toString();
             }
             csvLine[table.getIndex(CdmLightExportTable.REF_TYPE)] = reference.getType().getKey();
+
 
             state.getProcessor().put(table, reference, csvLine);
         } catch (Exception e) {
@@ -2595,9 +2610,9 @@ public class CdmLightClassificationExport
                                 csvLine[table.getIndex(CdmLightExportTable.COLLECTOR_STRING)] = createCollectorString(
                                         state, gathering, fieldUnit);
 
-                                if (gathering.getGatheringDate() != null) {
+                                if (gathering.getTimeperiod() != null) {
                                     csvLine[table.getIndex(CdmLightExportTable.COLLECTION_DATE)] = gathering
-                                            .getGatheringDate().toString();
+                                            .getTimeperiod().toString();
                                 }
                                 if (!gathering.getCollectingAreas().isEmpty()) {
                                     int index = 0;

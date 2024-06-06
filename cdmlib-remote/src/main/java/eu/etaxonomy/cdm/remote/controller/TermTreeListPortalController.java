@@ -19,7 +19,6 @@ import io.swagger.annotations.Api;
 /**
  * @author a.kohlbecker
  * @since Jun 24, 2013
- *
  */
 @Controller
 @Api("portal_termTree")
@@ -29,8 +28,8 @@ public class TermTreeListPortalController extends TermTreeListController {
     private static final List<String> TERMTREE_INIT_STRATEGY = Arrays.asList(
             new String[]{
                 "representations",
-                "root.term.representations",
-                "root.childNodes.term.representations"
+                "root.term",
+                "root.childNodes.term"
             });
 
     public TermTreeListPortalController() {

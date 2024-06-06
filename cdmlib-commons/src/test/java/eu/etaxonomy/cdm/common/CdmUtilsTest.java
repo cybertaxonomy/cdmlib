@@ -8,11 +8,12 @@
  */
 package eu.etaxonomy.cdm.common;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
@@ -132,5 +133,25 @@ public class CdmUtilsTest {
         Assert.assertEquals("Str1;Str3", CdmUtils.concat(";", str1, "", str3));
         Assert.assertEquals("Str1; ;Str3", CdmUtils.concat(";", str1, " ", str3));
     }
-    
+
+    @Test
+    public void testMergeMaps(){
+        Map<Integer,String> map1 = new HashMap<>();
+        Map<Integer,String> map2 = new HashMap<>();
+
+        map1.put(1, "one");
+        map1.put(2, "two");
+
+        map2.put(2, "zwei");
+        map1.put(3, "drei");
+
+        Map<Integer, String> mergedMap = CdmUtils.mergeMaps(map1, map2);
+
+        Assert.assertEquals("one", mergedMap.get(1));
+        Assert.assertEquals("zwei", mergedMap.get(2));
+        Assert.assertEquals("drei", mergedMap.get(3));
+
+
+    }
+
 }

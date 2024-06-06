@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -91,9 +90,6 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
     private IDistributionService distributionService;
 
     @Autowired
-    private IDescriptionService descriptionService;
-
-    @Autowired
     private IOccurrenceService occurrenceService;
 
     @Autowired
@@ -144,12 +140,12 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
-        List<SpecimenOrObservationBase> specimensOrObersvations = occurencesForTaxon(taxonUuid, relationshipUuids,
+        List<SpecimenOrObservationBase> specimensOrObservations = occurencesForTaxon(taxonUuid, relationshipUuids,
 				relationshipInversUuids, includeUnpublished,
 				taxonOccurrenceRelTypes,
 				maxDepth, response);
 
-        OccurrenceServiceRequestParameterDto dto = geoService.getOccurrenceServiceRequestParameters(specimensOrObersvations,
+        OccurrenceServiceRequestParameterDto dto = geoService.getOccurrenceServiceRequestParameters(specimensOrObservations,
                 specimenOrObservationTypeColors );
 
         return dto;

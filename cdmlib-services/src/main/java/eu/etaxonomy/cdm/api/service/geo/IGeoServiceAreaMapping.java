@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service.geo;
 
 import javax.xml.stream.XMLStreamException;
 
+import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
@@ -25,10 +26,13 @@ public interface IGeoServiceAreaMapping {
 
     /**
      * Transforms a CDM area to an geoservice area
+     *
      * @param area the CDM NamedArea
      * @return GeoServiceArea the geoservice area representing the CDM area
      */
     public GeoServiceArea valueOf(NamedArea area);
+
+    public GeoServiceArea valueOf(NamedAreaDto area);
 
     /**
      * Set the mapping. Usually the mapping should be set in a persistent way, so it is

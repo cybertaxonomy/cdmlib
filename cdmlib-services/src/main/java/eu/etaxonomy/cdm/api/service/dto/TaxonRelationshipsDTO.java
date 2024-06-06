@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.api.dto.SourceDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.ConceptRelationDTO;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -28,7 +29,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -90,7 +91,7 @@ public class TaxonRelationshipsDTO {
             List<TaggedText> tags = TaxonRelationshipFormatter.INSTANCE().getTaggedText(
                     relation, direction == Direction.relatedFrom, languages);
             this.taggedText = tags;
-            this.setCache(TaggedCacheHelper.createString(tags));
+            this.setCache(TaggedTextFormatter.createString(tags));
         }
 
 

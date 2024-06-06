@@ -97,7 +97,8 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         List<String> nodeProperties = new ArrayList<>();
         nodeProperties.add("term");
         nodeProperties.add("term.media");
-        TermTree<Feature> tree = termTreeServcie.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        TermTree<Feature> tree = (TermTree)termTreeServcie.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
         assertNotNull("featureTree should not be null", tree);
 
         assertEquals("Tree has wrong term type", TermType.Structure, tree.getTermType());

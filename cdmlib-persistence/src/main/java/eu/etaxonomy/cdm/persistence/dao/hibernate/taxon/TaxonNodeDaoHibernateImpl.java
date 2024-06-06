@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonRelationshipDao;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResultComparator;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeWithoutSecQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -187,20 +188,29 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
     @Override
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent) {
-        String queryString =
+        /*String queryString =
                  " SELECT tn "
                + " FROM TaxonNode tn "
                + "    INNER JOIN tn.taxon AS t "
-               + " WHERE tn.parent.uuid = :parentId";
-        Query<TaxonNode> query =  getSession().createQuery(queryString, TaxonNode.class);
-        query.setParameter("parentId", parent.getUuid());
+               + " WHERE tn.parent.uuid = :parentId";*/
 
-        List<TaxonNode> result = query.list();
-
-        List<TaxonNodeDto> list = new ArrayList<>();
-        for(TaxonNode object : result){
-            list.add(new TaxonNodeDto(object));
+        Query<SortableTaxonNodeQueryResult> query =  createQueryForUuidAndTitleCacheForChildren(parent);
+        //query.setParameter("parentId", parent.getUuid());
+        List<SortableTaxonNodeQueryResult> result = query.list();
+        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
+        if(logger.isTraceEnabled()){
+            logger.trace("number of matches:" + result.size());
+            result.stream().forEach(o -> logger.trace("uuid: " + o.getTaxonNodeUuid() + " titleCache:" + o.getTaxonTitleCache() + " rank: " + o.getNameRank()));
         }
+        List<TaxonNodeDto> list = new ArrayList<>();
+        for(SortableTaxonNodeQueryResult stnqr : result){
+            TaxonNodeDto newNode = new TaxonNodeDto(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonUuid(), stnqr.getTreeIndex(), stnqr.getNameTitleCache(),stnqr.getTaxonTitleCache(),
+                    stnqr.getNameRank().getOrderIndex(), parent.getUuid(),stnqr.getSortIndex(),parent.getClassificationUUID(), stnqr.isTaxonIsPublish(), stnqr.getStatus(), stnqr.getStatusNote(), stnqr.getChildrenCount(), stnqr.getSecUuid(), null);
+
+            list.add(newNode);
+        }
+
+
         return list;
     }
 
@@ -215,13 +225,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             result.stream().forEach(o -> logger.trace("uuid: " + o.getTaxonNodeUuid() + " titleCache:" + o.getTaxonTitleCache() + " rank: " + o.getNameRank()));
         }
         List<TaxonNodeDto> list = new ArrayList<>();
-//        int index = limit;
         for(SortableTaxonNodeQueryResult stnqr : result){
-//            if (index > 0){
-                list.add(new TaxonNodeDto(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
-//                index --;
-//            }
-
+            list.add(new TaxonNodeDto(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
         }
 
         return list;
@@ -285,6 +290,24 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
       return query;
     }
 
+
+    private Query<SortableTaxonNodeQueryResult> createQueryForUuidAndTitleCacheForChildren(TaxonNodeDto parent){
+
+//        UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid,
+//        String taxonTitleCache, String nameTitleCache, Rank nameRank, UUID parentNodeUuid,
+//        Integer sortIndex, UUID classificationUuid, Boolean taxonPublish, TaxonNodeStatus status,
+//        Integer childrenCount, UUID secUuid
+        String queryString = getTaxonNodeDtoWithoutSecQuery();
+        queryString += " WHERE p.id = :parent_id ";
+
+
+      Query<SortableTaxonNodeQueryResult> query =  getSession().createQuery(queryString, SortableTaxonNodeQueryResult.class);
+      if (parent != null){
+          query.setParameter("parent_id", parent.getId());
+      }
+
+      return query;
+    }
 
 
     @Override
@@ -1131,6 +1154,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
     @Override
     public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid) {
+
         String queryString = getTaxonNodeDtoQuery();
         queryString += "  INNER JOIN tn.classification AS cls " + " WHERE t.titleCache LIKE :pattern ";
 
@@ -1146,7 +1170,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         }
 
         List<SortableTaxonNodeQueryResult> result = query.list();
-        List<TaxonNodeDto> list = createNodeDtos(result);
+        List<TaxonNodeDto> list = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
 
         return list;
     }
@@ -1160,7 +1184,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         query.setParameter("uuid", nodeUuid);
 
         List<SortableTaxonNodeQueryResult> result = query.list();
-        List<TaxonNodeDto> list = createNodeDtos(result);
+        List<TaxonNodeDto> list = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
         if (list.isEmpty()) {
         	return null;
         }
@@ -1168,18 +1192,37 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
     }
 
     private String getTaxonNodeDtoQuery() {
+
+
 	        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid, index(tn), cl.uuid,  t.publish, tn.status, note "
+                + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid, index(tn), cl.uuid,  t.publish, tn.status, note, tn.countChildren, sec.uuid "
                 + ") "
                 + " FROM TaxonNode p "
                 + "   INNER JOIN p.childNodes AS tn"
                 + "   INNER JOIN tn.taxon AS t "
                 + "   INNER JOIN t.name AS name "
                 + "   INNER JOIN tn.classification AS cl "
+                + "   LEFT OUTER JOIN t.secSource as secSource "
+                + "   LEFT OUTER JOIN secSource.citation as sec "
                 + "	  LEFT OUTER JOIN tn.statusNote as note "
                 + "   LEFT OUTER JOIN name.rank AS rank ";
         return queryString;
     }
+
+    private String getTaxonNodeDtoWithoutSecQuery() {
+
+        String queryString = "SELECT new " + SortableTaxonNodeWithoutSecQueryResult.class.getName() + "("
+            + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid, index(tn), cl.uuid,  t.publish, tn.status, note, tn.countChildren "
+            + ") "
+            + " FROM TaxonNode p "
+            + "   INNER JOIN p.childNodes AS tn"
+            + "   INNER JOIN tn.taxon AS t "
+            + "   INNER JOIN t.name AS name "
+            + "   INNER JOIN tn.classification AS cl "
+            + "   LEFT OUTER JOIN tn.statusNote as note "
+            + "   LEFT OUTER JOIN name.rank AS rank ";
+    return queryString;
+}
 
     public String getTaxonNodeDtoQueryWithoutParent() {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
@@ -1203,7 +1246,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
         List<SortableTaxonNodeQueryResult> result = query.list();
 
-        List<TaxonNodeDto> list = createNodeDtos(result);
+        List<TaxonNodeDto> list = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
 
         return list;
     }
@@ -1218,7 +1261,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
         List<SortableTaxonNodeQueryResult> result = query.list();
 
-        List<TaxonNodeDto> list = createNodeDtos(result);
+        List<TaxonNodeDto> list = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
 
         return list;
     }
@@ -1237,23 +1280,11 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         }
 
         List<SortableTaxonNodeQueryResult> result = query.list();
-        List<TaxonNodeDto> list = createNodeDtos(result);
+        List<TaxonNodeDto> list = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
         if (list.isEmpty()) {
         	return null;
         }
         return list;
-    }
-
-
-    @Override
-    public List<TaxonNodeDto> createNodeDtos(List<SortableTaxonNodeQueryResult> result) {
-        List<TaxonNodeDto> nodeDtos = new ArrayList<>();
-        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
-        for(SortableTaxonNodeQueryResult queryDTO : result){
-            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTaxonUuid(), queryDTO.getTreeIndex(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank()!= null? queryDTO.getNameRank().getOrderIndex(): null, queryDTO.getParentNodeUuid(), queryDTO.getSortIndex(), queryDTO.getClassificationUuid(), queryDTO.isTaxonIsPublish(), queryDTO.getStatus(), queryDTO.getStatusNote());
-            nodeDtos.add(nodeDto);
-        }
-        return nodeDtos;
     }
 
     @Override
@@ -1273,7 +1304,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         }
 
         List<SortableTaxonNodeQueryResult> result = query.list();
-        List<TaxonNodeDto> list = createNodeDtos(result);
+        List<TaxonNodeDto> list = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
         return list;
     }
 

@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
-import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -187,38 +186,13 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
             Classification classification, Integer limit, String pattern, boolean searchForClassifications,
             boolean includeDoubtful);
 
-    /**
-     * @param taxonUUID
-     * @param classificationUuid
-     * @return
-     */
-    List<TaxonNodeDto> getTaxonNodeForTaxonInClassificationDto(UUID taxonUUID, UUID classificationUuid);
+    public List<TaxonNodeDto> getTaxonNodeForTaxonInClassificationDto(UUID taxonUUID, UUID classificationUuid);
 
-    /**
-     * @param nodeUuid
-     * @return
-     */
-    TaxonNodeDto getTaxonNodeDto(UUID nodeUuid);
+    public TaxonNodeDto getTaxonNodeDto(UUID nodeUuid);
 
-    /**
-     * @param nodeUuid
-     * @return
-     */
-    List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuid);
+    public List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuid);
 
-    /**
-     * @param result
-     * @return
-     */
-    List<TaxonNodeDto> createNodeDtos(List<SortableTaxonNodeQueryResult> result);
-    /**
-     * @param taxonUuid
-     * @param subTreeIndex
-     * @return
-     */
-	List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid, String subTreeIndex);
+    public List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid, String subTreeIndex);
 
-	List<TaxonNodeDto> getTaxonNodeDtosWithoutParent(List<UUID> nodeUuids);
-
-
+    public List<TaxonNodeDto> getTaxonNodeDtosWithoutParent(List<UUID> nodeUuids);
 }

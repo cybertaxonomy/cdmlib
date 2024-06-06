@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author a.mueller
@@ -68,6 +69,13 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
 
     public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree, boolean includeUnpublished,
             Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+
+    /**
+     * Same as {@link #listChildrenOf(Taxon, Classification, TaxonNode, boolean, Integer, Integer, List)} but returns
+     * DTOs (and has therefore has no property path)
+     */
+    public List<TaxonNodeDto> listChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree,
+            boolean includeUnpublished, Integer pageSize, Integer pageIndex);
 
     public Long countChildrenOf(Taxon taxon, Classification classification, TaxonNode subtree, boolean includeUnpublished);
 

@@ -9,16 +9,17 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author a.kohlbecker
@@ -26,32 +27,97 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
  */
 public class SortableTaxonNodeQueryResult {
 
-    protected UUID taxonNodeUuid;
-    protected Integer taxonNodeId;
-    protected String treeIndex;
-    protected UUID taxonUuid;
-    protected String taxonTitleCache;
-    protected String nameTitleCache;
-    protected Rank nameRank = Rank.UNKNOWN_RANK();
-    protected UUID parentNodeUuid;
-    protected Integer sortIndex;
-    protected UUID classificationUuid;
-    protected Boolean taxonIsPublish = true;
-    protected TaxonNodeStatus status;
- 
-
+    private UUID taxonNodeUuid;
+    private Integer taxonNodeId;
+    private String treeIndex;
+    private UUID taxonUuid;
+    private String taxonTitleCache;
+    private String nameTitleCache;
+    private Rank nameRank = Rank.UNKNOWN_RANK();
+    private UUID parentNodeUuid;
+    private Integer sortIndex;
+    private UUID classificationUuid;
+    private Boolean taxonIsPublish = true;
+    private TaxonNodeStatus status;
+    private Integer childrenCount;
+    private UUID secUuid;
+    private List<TaggedText> taggedName;
 
     private List<LanguageString> statusNote = new ArrayList<>();
 
+    //  (rank.label, rank.orderIndex) => orderIndex may become a problem once rank does not include the orderindex anymore
+    //taxonStatus (Accepted, Synonym, SynonymObjective)
 
-    /**Is this the reason
-     * @param taxonNodeUuid
-     * @param taxonNodeId
-     * @param taxonTitleCache
+
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid,
+            String taxonTitleCache, String nameTitleCache, Rank nameRank, UUID parentNodeUuid,
+            Integer sortIndex, UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status,
+            Integer childrenCount, UUID secUuid,
+            NomenclaturalCode nameType,
+            String genusOrUninomial,
+            String infragenericEpithet,
+            String specificEpithet,
+            String infraspecificEpithet,
+            String apendedPhrase,
+            Boolean protectedTitleCache,
+            Boolean protectedNameCache,
+            String nameCache,
+            String authorshipCache,
+            Integer publicationYear,
+            Boolean nomomHybrid,
+            Boolean binomHybrid,
+            Boolean trinomHybrid
+
+            ) {
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, nameRank, parentNodeUuid, sortIndex, classificationUuid, taxonIsPublished, status, childrenCount, secUuid);
+        TaxonName name = getName(nameRank, nameType,
+                genusOrUninomial,
+                infragenericEpithet,
+                specificEpithet,
+                infraspecificEpithet,
+                apendedPhrase,
+                nameTitleCache,
+                protectedTitleCache,
+                protectedNameCache,
+                nameCache,
+                authorshipCache,
+                publicationYear,
+                nomomHybrid,
+                binomHybrid,
+                trinomHybrid);
+        setTaggedName(name.getTaggedName());
+    }
+
+    private TaxonName getName(Rank rank, NomenclaturalCode nameType, String genusOrUninomial, String infragenericEpithet,
+            String specificEpithet, String infraspecificEpithet, String apendedPhrase,
+            String titleCache, Boolean protectedTitleCache,
+            Boolean protectedNameCache, String nameCache, String authorshipCache, Integer publicationYear,
+            Boolean monomHybrid, Boolean binomHybrid, Boolean trinomHybrid) {
+        TaxonName name = (TaxonName)TaxonNameFactory.NewNonViralInstance(rank, genusOrUninomial, infragenericEpithet, specificEpithet,
+                infraspecificEpithet, null, null, null, null);
+        name.setNameType(nameType);
+        name.setAppendedPhrase(apendedPhrase);
+        name.setTitleCache(titleCache, protectedTitleCache);
+        name.setNameCache(nameCache, protectedNameCache);
+        name.setAuthorshipCache(authorshipCache);
+        name.setPublicationYear(publicationYear);
+        name.setMonomHybrid(monomHybrid);
+        name.setBinomHybrid(binomHybrid);
+        name.setTrinomHybrid(trinomHybrid);
+        return name;
+    }
+
+    /**
      * @param nameRank {@link Rank.#UNKNOWN_RANK()} will be used in case this is <code>null</code>
      */
-    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache, String nameTitleCache,
-            Rank nameRank, UUID parentNodeUuid, Integer sortIndex, UUID classificationUuid,  Boolean taxonIsPublished, TaxonNodeStatus status, LanguageString statusNote) {
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid,
+            String taxonTitleCache, String nameTitleCache, Rank nameRank, UUID parentNodeUuid,
+            Integer sortIndex, UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status,
+            LanguageString statusNote,
+            Integer childrenCount, UUID secUuid
+
+            ) {
+
         this.taxonNodeUuid = taxonNodeUuid;
         this.taxonNodeId = taxonNodeId;
         this.treeIndex = treeIndex;
@@ -65,11 +131,13 @@ public class SortableTaxonNodeQueryResult {
         this.sortIndex = sortIndex;
         this.classificationUuid = classificationUuid;
         this.taxonIsPublish = taxonIsPublished;
+        this.setChildrenCount(childrenCount);
+        this.setSecUuid(secUuid);
         this.status = status;
         if (statusNote != null) {
-		this.statusNote.add(statusNote);
+            this.statusNote.add(statusNote);
         }
-        
+
 //        if (statusNote != null) {
 //        	this.statusNote = new HashMap<Language, String>();
 //        	for (Entry<Language, LanguageString> entry :statusNote.entrySet()) {
@@ -78,35 +146,57 @@ public class SortableTaxonNodeQueryResult {
 //        }
     }
 
-    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache, String nameTitleCache,
-            Rank nameRank, UUID parentNodeUuid) {
-	this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, nameRank, parentNodeUuid, null, null,null, null, null);
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid,
+            String taxonTitleCache, String nameTitleCache, Rank nameRank, UUID parentNodeUuid,
+            Integer sortIndex, UUID classificationUuid, Boolean taxonPublish, TaxonNodeStatus status,
+            Integer childrenCount, UUID secUuid
+            ) {
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, nameRank, parentNodeUuid,
+            sortIndex, classificationUuid, taxonPublish, status, null, childrenCount, secUuid);
     }
+
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid,
+            String taxonTitleCache, String nameTitleCache, Rank nameRank, UUID parentNodeUuid,
+            Integer sortIndex, UUID classificationUuid, Boolean taxonPublish, TaxonNodeStatus status, LanguageString note
+            ) {
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, nameRank, parentNodeUuid,
+            sortIndex, classificationUuid, taxonPublish, status, note, null, null);
+    }
+
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid,
+            String taxonTitleCache, String nameTitleCache, Rank nameRank, UUID parentNodeUuid) {
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, nameRank, parentNodeUuid,
+            null, null,null, null, null);
+    }
+
     /**
-     * @param taxonNodeUuid
-     * @param taxonNodeId
-     * @param taxonTitleCache
      * @param nameRank {@link Rank.#UNKNOWN_RANK()} will be used in case this is <code>null</code>
      */
-    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache,
-            Rank nameRank, UUID parentNodeUuid) {
-        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, parentNodeUuid, null, null, null, null, null);
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex,
+            UUID taxonUuid, String taxonTitleCache, Rank nameRank, UUID parentNodeUuid) {
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, parentNodeUuid,
+                null, null, null, null, null);
     }
 
-
-    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid, String taxonTitleCache,
-            Rank nameRank) {
-        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, null, null, null, null, null, null);
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex,
+            UUID taxonUuid, String taxonTitleCache, Rank nameRank) {
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, nameRank, null,
+                null, null, null, null, null);
     }
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache,
             Rank nameRank) {
-        this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, nameRank, null, null, null, null, null, null);
+        this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, nameRank, null,
+                null, null, null, null, null);
     }
-    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, UUID taxonUuid, String taxonTitleCache, UUID parentNodeUuid) {
+
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, UUID taxonUuid,
+            String taxonTitleCache, UUID parentNodeUuid) {
         this(taxonNodeUuid, taxonNodeId, null, taxonUuid, taxonTitleCache, null, parentNodeUuid);
     }
-    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache, UUID parentNodeUuid) {
+
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache,
+            UUID parentNodeUuid) {
         this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, parentNodeUuid);
     }
 
@@ -116,7 +206,7 @@ public class SortableTaxonNodeQueryResult {
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache) {
         this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, null);
     }
-    
+
     //tn.uuid, tn.id, t.uuid, t.titleCache, name.titleCache, rank, cl.uuid,  t.publish, tn.status, note
 
     public UUID getTaxonNodeUuid() {
@@ -129,11 +219,10 @@ public class SortableTaxonNodeQueryResult {
     public String getTreeIndex() {
         return treeIndex;
     }
-    
     public void setTreeIndex(String treeIndex) {
         this.treeIndex = treeIndex;
     }
-    
+
     public Integer getSortIndex() {
 		return sortIndex;
 	}
@@ -141,7 +230,7 @@ public class SortableTaxonNodeQueryResult {
 	public void setSortIndex(Integer sortIndex) {
 		this.sortIndex = sortIndex;
 	}
-	
+
     public UUID getTaxonUuid() {
         return taxonUuid;
     }
@@ -149,38 +238,23 @@ public class SortableTaxonNodeQueryResult {
         this.taxonUuid = taxonUuid;
     }
 
-    /**
-     * @return the parentNodeUuid
-     */
     public UUID getParentNodeUuid() {
         return parentNodeUuid;
     }
-
-    /**
-     * @param parentNodeUuid the parentNodeUuid to set
-     */
     public void setParentNodeUuid(UUID parentNodeUuid) {
         this.parentNodeUuid = parentNodeUuid;
     }
-    /**
-     * @return the parentNodeUuid
-     */
+
     public UUID getClassificationUuid() {
         return classificationUuid;
     }
-
-    /**
-     * @param parentNodeUuid the parentNodeUuid to set
-     */
     public void setClassificationUuid(UUID classificationUuid) {
         this.classificationUuid = classificationUuid;
     }
 
-    
     public Boolean isTaxonIsPublish() {
 		return taxonIsPublish;
 	}
-
 	public void setTaxonIsPublish(boolean taxonIsPublish) {
 		this.taxonIsPublish = taxonIsPublish;
 	}
@@ -199,6 +273,7 @@ public class SortableTaxonNodeQueryResult {
     public void setTaxonNodeId(Integer taxonNodeId) {
         this.taxonNodeId = taxonNodeId;
     }
+
     public String getTaxonTitleCache() {
         return taxonTitleCache;
     }
@@ -219,13 +294,52 @@ public class SortableTaxonNodeQueryResult {
         this.nameTitleCache = nameTitleCache;
     }
 
+
+    public Integer getChildrenCount() {
+        return childrenCount;
+    }
+    public void setChildrenCount(Integer childrenCount) {
+        this.childrenCount = childrenCount;
+    }
+
+    public UUID getSecUuid() {
+        return secUuid;
+    }
+    public void setSecUuid(UUID secUuid) {
+        this.secUuid = secUuid;
+    }
+
+
+    public List<TaggedText> getTaggedName() {
+        return taggedName;
+    }
+    public void setTaggedName(List<TaggedText> taggedName) {
+        this.taggedName = taggedName;
+    }
+
 	public TaxonNodeStatus getStatus() {
 		return status;
 	}
-
 	public void setStatus(TaxonNodeStatus status) {
 		this.status = status;
 	}
 
+    public static List<TaxonNodeDto> toTaxonNodeDtoList(List<SortableTaxonNodeQueryResult> result) {
+
+        List<TaxonNodeDto> nodeDtos = new ArrayList<>();
+        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
+        for(SortableTaxonNodeQueryResult queryDTO : result){
+            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(),
+                    queryDTO.getTaxonNodeId(), queryDTO.getTaxonUuid(), queryDTO.getTreeIndex(),
+                    queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(),
+                    queryDTO.getNameRank()!= null? queryDTO.getNameRank().getOrderIndex(): null,
+                    queryDTO.getParentNodeUuid(), queryDTO.getSortIndex(), queryDTO.getClassificationUuid(),
+                    queryDTO.isTaxonIsPublish(), queryDTO.getStatus(), queryDTO.getStatusNote(),
+                    queryDTO.getChildrenCount(), queryDTO.getSecUuid(),
+                    queryDTO.getTaggedName());
+            nodeDtos.add(nodeDto);
+        }
+        return nodeDtos;
+    }
 
 }

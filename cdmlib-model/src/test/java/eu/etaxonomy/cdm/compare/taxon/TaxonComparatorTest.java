@@ -155,11 +155,11 @@ public class TaxonComparatorTest extends TermTestBase {
 
     private String getYear(TaxonBase<?> taxon) {
         String year = "";
-        TaxonName tnb = taxon.getName();
-        if (tnb.isZoological()){
-            year = String.valueOf(tnb.getPublicationYear());
+        TaxonName tn = taxon.getName();
+        if (tn.isZoological()){
+            year = String.valueOf(tn.getPublicationYear());
         }else{
-            year = tnb.getNomenclaturalReference().getYear();
+            year = tn.getNomenclaturalReference().getYear();
         }
         return year;
     }

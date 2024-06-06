@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import eu.etaxonomy.cdm.api.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -27,13 +28,13 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
     private static final long serialVersionUID = 5198447592554976471L;
 
     private TaxonRowWrapperDTO defaultDescription;
-    private SpecimenOrObservationBaseDTO specimenDto;
+    private SpecimenOrObservationBaseDTO<?> specimenDto;
     private UuidAndTitleCache<FieldUnit> fieldUnit;
     private SpecimenOrObservationType type;
     private String identifier;
     private NamedArea country;
 
-    public SpecimenRowWrapperDTO(DescriptionBaseDto description, SpecimenOrObservationBaseDTO specimen, SpecimenOrObservationType type, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
+    public SpecimenRowWrapperDTO(DescriptionBaseDto description, SpecimenOrObservationBaseDTO<?> specimen, SpecimenOrObservationType type, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
                 NamedArea country, Language lang) {
         super(description, taxonNode, lang);
         if (fieldUnit != null){

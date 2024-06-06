@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 public class PreferenceServiceImplTest  extends CdmIntegrationTest {
 
 	@SpringBeanByType
-	IPreferenceService service;
+	private IPreferenceService service;
 
 /************ TESTS ********************************/
 

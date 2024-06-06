@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +17,6 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -39,9 +39,12 @@ public class TaxonPageDto extends TaxonBaseDto {
 
     private ContainerDto<KeyDTO> keys;
 
+    //for now this is transient and therefore not visible in the webservice
     private ContainerDto<SpecimenDTO> specimens;
 
-    private ContainerDto<MediaDTO> media;
+    private OccurrenceInfoDto occurrenceInfo;
+
+    private ContainerDto<MediaDto2> media;
 
     private String secTitleCache;
 
@@ -92,6 +95,7 @@ public class TaxonPageDto extends TaxonBaseDto {
     }
 
     public static class TaxonNodeDTO extends CdmBaseDto {
+
         private UUID classificationUuid;
         private String classificationLabel;
         private String status;
@@ -131,7 +135,6 @@ public class TaxonPageDto extends TaxonBaseDto {
             }
             agents.addItem(agent);
         }
-
     }
 
     public static class HomotypicGroupDTO extends CdmBaseDto{
@@ -168,13 +171,57 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
     }
 
+    public static class NomenclaturalStatusDTO extends SingleSourcedDto {
+        private String ruleConsidered;
+        private String codeEdition;
+        private SourceDto codeEditionSource;
+        private UUID statusTypeUuid;
+        private String statusType;
+
+        public UUID getStatusTypeUuid() {
+            return statusTypeUuid;
+        }
+        public void setStatusTypeUuid(UUID statusTypeUuid) {
+            this.statusTypeUuid = statusTypeUuid;
+        }
+        public String getStatusType() {
+            return statusType;
+        }
+        public void setStatusType(String statusType) {
+            this.statusType = statusType;
+        }
+        public String getRuleConsidered() {
+            return ruleConsidered;
+        }
+        public void setRuleConsidered(String ruleConsidered) {
+            this.ruleConsidered = ruleConsidered;
+        }
+        public String getCodeEdition() {
+            return codeEdition;
+        }
+        public void setCodeEdition(String codeEdition) {
+            this.codeEdition = codeEdition;
+        }
+        public SourceDto getCodeEditionSource() {
+            return codeEditionSource;
+        }
+        public void setCodeEditionSource(SourceDto codeEditionSource) {
+            this.codeEditionSource = codeEditionSource;
+        }
+    }
+
+    //Note: annotations may include annotations on the related name, too.
     public static class NameRelationDTO extends SingleSourcedDto {
+
         private List<TaggedText> nameLabel;
         private UUID nameUuid;
         private String relType;
         private UUID relTypeUuid;
         private boolean inverse;
         private String ruleConsidered;
+        private String codeEdition;
+        private SourceDto codeEditionSource;
+        private String year;  //needed e.g. for homonyms
         //TODO relatedTaxon in this classification
 
         public List<TaggedText> getNameLabel() {
@@ -207,15 +254,33 @@ public class TaxonPageDto extends TaxonBaseDto {
         public void setInverse(boolean inverse) {
             this.inverse = inverse;
         }
+        public String getYear() {
+            return year;
+        }
+        public void setYear(String year) {
+            this.year = year;
+        }
+        public String getCodeEdition() {
+            return codeEdition;
+        }
         public String getRuleConsidered() {
             return ruleConsidered;
         }
         public void setRuleConsidered(String ruleConsidered) {
             this.ruleConsidered = ruleConsidered;
         }
+        public void setCodeEdition(String codeEdition) {
+            this.codeEdition = codeEdition;
+        }
+        public SourceDto getCodeEditionSource() {
+            return codeEditionSource;
+        }
+        public void setCodeEditionSource(SourceDto codeEditionSource) {
+            this.codeEditionSource = codeEditionSource;
+        }
     }
 
-    public static class ConceptRelationDTO extends TaxonBaseDto{
+    public static class ConceptRelationDTO extends AnnotatableDto {
 
         //TODO really needed or only in linkedLabel?
         private int relTaxonId;
@@ -226,6 +291,9 @@ public class TaxonPageDto extends TaxonBaseDto {
         private Set<UUID> classificationUuids;
         private SourceDto secSource;
         private SourceDto relSource;
+        private String label;
+        private UUID nameUuid;
+        private List<TaggedText> taggedLabel;
 
         public int getRelTaxonId() {
             return relTaxonId;
@@ -278,6 +346,24 @@ public class TaxonPageDto extends TaxonBaseDto {
         public void setRelSource(SourceDto relSource) {
             this.relSource = relSource;
         }
+        public String getLabel() {
+            return label;
+        }
+        public void setLabel(String label) {
+            this.label = label;
+        }
+        public UUID getNameUuid() {
+            return nameUuid;
+        }
+        public void setNameUuid(UUID nameUuid) {
+            this.nameUuid = nameUuid;
+        }
+        public List<TaggedText> getTaggedLabel() {
+            return taggedLabel;
+        }
+        public void setTaggedLabel(List<TaggedText> taggedLabel) {
+            this.taggedLabel = taggedLabel;
+        }
     }
 
     public static class SpecimenDTO extends IdentifiableDto {
@@ -295,39 +381,20 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
     }
 
-    public static class MediaDTO extends IdentifiableDto{
-
-        private String description;
-        private ContainerDto<MediaRepresentationDTO> representations;
-
-        public String getDescription() {
-            return description;
-        }
-        public void setDescription(String description) {
-            this.description = description;
-        }
-        public ContainerDto<MediaRepresentationDTO> getRepresentations() {
-            return representations;
-        }
-        public void setRepresentations(ContainerDto<MediaRepresentationDTO> representations) {
-            this.representations = representations;
-        }
-    }
-
     public static class MediaRepresentationDTO extends CdmBaseDto{
 
-        private Class<? extends MediaRepresentationPart> clazz;
+        private String clazz;
         private String mimeType;
         private String suffix;  //TODO needed?
         private URI uri;
         private Integer size;
-        private int height;
-        private int width;
+        private Integer height;
+        private Integer width;
 
-        public Class<? extends MediaRepresentationPart> getClazz() {
+        public String getClazz() {
             return clazz;
         }
-        public void setClazz(Class<? extends MediaRepresentationPart> clazz) {
+        public void setClazz(String clazz) {
             this.clazz = clazz;
         }
         public String getMimeType() {
@@ -354,16 +421,16 @@ public class TaxonPageDto extends TaxonBaseDto {
         public void setSize(Integer size) {
             this.size = size;
         }
-        public int getHeight() {
+        public Integer getHeight() {
             return height;
         }
-        public void setHeight(int height) {
+        public void setHeight(Integer height) {
             this.height = height;
         }
-        public int getWidth() {
+        public Integer getWidth() {
             return width;
         }
-        public void setWidth(int width) {
+        public void setWidth(Integer width) {
             this.width = width;
         }
     }
@@ -403,6 +470,8 @@ public class TaxonPageDto extends TaxonBaseDto {
         this.keys = keys;
     }
 
+    //for now this is transient and therefore not visible in the webservice
+    @Transient
     public ContainerDto<SpecimenDTO> getSpecimens() {
         return specimens;
     }
@@ -410,10 +479,10 @@ public class TaxonPageDto extends TaxonBaseDto {
         this.specimens = specimens;
     }
 
-    public ContainerDto<MediaDTO> getMedia() {
+    public ContainerDto<MediaDto2> getMedia() {
         return media;
     }
-    public void setMedia(ContainerDto<MediaDTO> media) {
+    public void setMedia(ContainerDto<MediaDto2> media) {
         this.media = media;
     }
 
@@ -438,5 +507,12 @@ public class TaxonPageDto extends TaxonBaseDto {
     }
     public void setSecTitleCache(String secTitleCache) {
         this.secTitleCache = secTitleCache;
+    }
+
+    public OccurrenceInfoDto getOccurrenceInfo() {
+        return occurrenceInfo;
+    }
+    public void setOccurrenceInfo(OccurrenceInfoDto occurrenceInfo) {
+        this.occurrenceInfo = occurrenceInfo;
     }
 }

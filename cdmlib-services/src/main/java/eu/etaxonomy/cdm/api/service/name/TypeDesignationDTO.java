@@ -19,7 +19,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @author a.mueller
  * @since 24.11.2020
  */
-public class TypeDesignationDTO<T extends TypeDesignationBase> extends TaggedEntityReference<T> {
+public class TypeDesignationDTO<T extends TypeDesignationBase>
+            extends TaggedEntityReference<T> {
 
     private static final long serialVersionUID = -7638336499975494954L;
 
@@ -39,5 +40,4 @@ public class TypeDesignationDTO<T extends TypeDesignationBase> extends TaggedEnt
     public UUID getTypeUuid() {
         return typeUuid;
     }
-
 }

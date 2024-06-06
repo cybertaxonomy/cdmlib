@@ -196,8 +196,11 @@
          <entry key="org.apache.lucene.document.Document">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
          </entry>
-         <entry key="eu.etaxonomy.cdm.api.service.dto.RegistrationDTO">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RegistrationDtoBeanProcessor" />
+         <entry key="eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RegistrationWrapperDtoBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.api.nameMatching.NameMatchingCombinedResult">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.NameMatchingResultBeanProcessor" />
         </entry>
       </map>
     </property>
@@ -499,8 +502,8 @@
         <entry key="eu.etaxonomy.cdm.model.description.KeyStatement">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.KeyStatementBeanProcessor" />
         </entry>
-        <entry key="eu.etaxonomy.cdm.api.service.dto.RegistrationDTO">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RegistrationDtoBeanProcessor" />
+        <entry key="eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RegistrationWrapperDtoBeanProcessor" />
         </entry>
       </map>
     </property>

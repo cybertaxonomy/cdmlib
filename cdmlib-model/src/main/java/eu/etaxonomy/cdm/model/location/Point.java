@@ -403,6 +403,7 @@ public class Point implements Cloneable, Serializable {
             return result;
         }
         private String getTertiersString(Double tertiers, boolean removeTertiers) {
+
             if (tertiers == null || removeTertiers){
                 return "";
             }else{
@@ -430,11 +431,8 @@ public class Point implements Cloneable, Serializable {
                 }
                 return result;
             }
-
         }
-
     }
-
 
     @Transient
     public Sexagesimal getLongitudeSexagesimal (){

@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -34,15 +35,29 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
     private URI uri;
     private String type;
     //TODO external links
+    private String accessed;
 
     private List<URI> links;
 
+    private String citationDetail;
+    private String sortableDate;
+
+// ******************** CONSTRUCTOR ****************/
+
+    public SourceDto() {
+        super();
+    }
+
+    public SourceDto(int id) {
+        super(null, id, null);
+    }
 
 //************* GETTER/SETTER ***********************/
 
     public List<TypedLabel> getLabel() {
         return label;
     }
+
     public void addLabel(TypedLabel label) {
         if (this.label == null) {
             this.label = new ArrayList<>();
@@ -120,5 +135,28 @@ public class SourceDto extends CdmBaseDto {  //but could be annotatable
     }
     public void setOriginalInfo(String originalInfo) {
         this.originalInfo = originalInfo;
+    }
+
+    public String getAccessed() {
+        return accessed;
+    }
+    public void setAccessed(String accessed) {
+        this.accessed = accessed;
+    }
+
+    @Transient //TODO transient for now not needed as API, only for loading persistent data
+    public String getCitationDetail() {
+        return citationDetail;
+    }
+    public void setCitationDetail(String citationDetail) {
+        this.citationDetail = citationDetail;
+    }
+
+    public String getSortableDate() {
+        return sortableDate;
+    }
+
+    public void setSortableDate(String sortableDate) {
+        this.sortableDate = sortableDate;
     }
 }

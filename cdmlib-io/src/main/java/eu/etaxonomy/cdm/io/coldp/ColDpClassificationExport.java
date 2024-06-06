@@ -423,24 +423,47 @@ public class ColDpClassificationExport
         for (Identifier identifier : entity.getIdentifiers()) {
             //TODO 4 alternativeID filter Identifiers
             IdentifierType type = identifier.getType();
-            String prefix = null;
-            String value = identifier.getIdentifier();
             String url = identifier.getUrl();
-            if (type != null) {
-                //TODO 4 alternativeID handle other identifier types
-                if (type.equals(IdentifierType.IDENTIFIER_NAME_WFO())) {
-                    prefix = "wfo";
-                    value = value.replace("wfo-", "");
-                }
-            }else if (url != null && !url.isEmpty() && isUrl(url)) {
-                value = url;
+            if (isCuriType(type)){
+                //TODO 4 alternativeID handle other identifier types, e.g. those providing an URI pattern
+                alternativeIdStr = handleCuriTypes(alternativeIdStr, type, identifier);
+            } else if (url != null && !url.isEmpty() && isUrl(url)) {
+                alternativeIdStr = CdmUtils.concat(",", alternativeIdStr, url);
             }else {
                 //TODO 4 alternativeID log failing identifier
             }
-            alternativeIdStr = CdmUtils.concat(",", alternativeIdStr, CdmUtils.concat(":", prefix, value));
         }
 
         csvLine[table.getIndex(ColDpExportTable.ALTERNATIVE_ID)] = alternativeIdStr;
+    }
+
+    //TODO 4 curiType handle as Map<UUID,prefix>
+    private boolean isCuriType(IdentifierType type) {
+        return (type != null &&
+                (type.equals(IdentifierType.IDENTIFIER_NAME_WFO())
+                        || type.equals(IdentifierType.IDENTIFIER_NAME_IPNI())
+                        || type.equals(IdentifierType.IDENTIFIER_NAME_TROPICOS())
+                        || type.equals(IdentifierType.IDENTIFIER_NAME_IF())
+                ));
+    }
+
+    /**
+     * Handle CURI (compact URI) types - see https://github.com/CatalogueOfLife/coldp/blob/master/README.md#identifiers
+     */
+    private String handleCuriTypes(String alternativeIdStr, IdentifierType type, Identifier identifier) {
+        String prefix = null;
+        String value = identifier.getIdentifier();
+        if (type.equals(IdentifierType.IDENTIFIER_NAME_WFO())) {
+            prefix = "wfo";
+        } else if (type.equals(IdentifierType.IDENTIFIER_NAME_IPNI())) {
+            prefix = "ipni";
+        } else if (type.equals(IdentifierType.IDENTIFIER_NAME_TROPICOS())) {
+            prefix = "tropicos";
+        } else if (type.equals(IdentifierType.IDENTIFIER_NAME_IF())) {
+            prefix = "if";
+        }
+        alternativeIdStr = CdmUtils.concat(",", alternativeIdStr, CdmUtils.concat(":", prefix, value));
+        return alternativeIdStr;
     }
 
     private boolean isUrl(String url) {
@@ -1267,7 +1290,7 @@ public class ColDpClassificationExport
             TypeDesignationSetContainer typeContainer = new TypeDesignationSetContainer(specimenTypeDesignations, name, TypeDesignationSetComparator.ORDER_BY.TYPE_STATUS);
             HTMLTagRules rules = new HTMLTagRules();
             //rules.addRule(TagEnum.name, "i");
-            csvLine[table.getIndex(ColDpExportTable.TYPE_CITATION)] = typeContainer.print(false, false, false, rules);
+            csvLine[table.getIndex(ColDpExportTable.TYPE_CITATION)] = typeContainer.print(false, false, false, true, false, rules);
 
             //TODO 2 type material what is this second type computation? Is it only about sources?
             StringBuilder stringbuilder = new StringBuilder();
@@ -1493,10 +1516,10 @@ public class ColDpClassificationExport
         csvLine[table.getIndex(ColDpExportTable.TYPE_HOST)] = null;
 
         //date
-        if (gathering.getGatheringDate() != null) {
+        if (gathering.getTimeperiod() != null) {
             //TODO 3 specimen type ISO 8601
             csvLine[table.getIndex(ColDpExportTable.TYPE_DATE)] = gathering
-                    .getGatheringDate().toString();
+                    .getTimeperiod().toString();
         }
 
 
@@ -2099,7 +2122,7 @@ public class ColDpClassificationExport
 
         String referenceID = null;
         for (IOriginalSource osb : sourceable.getSources()) {
-            if (osb.getCitation() != null && osb.getType().isPrimarySource()) {
+            if (osb.getCitation() != null && osb.getType().isPublicSource()) {
                 referenceID = CdmUtils.concat(";", getId(state, osb.getCitation()));
                 handleReference(state, osb.getCitation());
             }

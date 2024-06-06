@@ -17,7 +17,6 @@ import java.util.UUID;
  */
 public class CdmBaseDto implements IPortalDtoBase {
 
-
     //the taxon uuid
     //TODO move to base class
     private UUID uuid;

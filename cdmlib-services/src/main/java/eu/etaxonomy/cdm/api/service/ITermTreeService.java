@@ -37,7 +37,7 @@ public interface ITermTreeService extends IIdentifiableEntityService<TermTree> {
 	 * to initialize (e.g. feature).
 	 *
 	 */
-	public TermTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths);
+	public TermTree<?> loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths);
 
 	public Map<UUID, TermNode> saveNodesAll(Collection<TermNode> featureNodeCollection);
 

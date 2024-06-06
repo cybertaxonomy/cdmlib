@@ -8,97 +8,92 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import java.beans.Transient;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.common.SetMap;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.api.dto.portal.tmp.TermDto;
+import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author a.mueller
  * @date 09.02.2023
  */
-public class NamedAreaDto extends CdmBaseDto {
+public class NamedAreaDto extends TermDto {
 
-    private String label;
-    private LabeledEntityDto level;
-    private NamedAreaDto parent;
-    private Set<Marker> markers;
+    //for all terms
+    private UUID vocabularyUuid;
+    private Set<UUID> positiveMarkers = new HashSet<>();
+    //specific for area
+    private UUID levelUuid;
+    private String areaMapping;
+    //TODO quickfix, better decision needs to wait if TermDto will inherit from IdentifiableDto
+    private String geoServiceMapping;
 
-//    public class NamedAreaLevelDTO extends CdmBaseDto {
-//        private String label;
-//        public NamedAreaLevelDTO(NamedAreaLevel level) {
-//            super(level.getUuid(), level.getId(), null);
-//            this.label = level.getLabel();
-//        }
-//        public String getLabel() {
-//            return label;
-//        }
-//    }
-
-    public NamedAreaDto(UUID uuid, int id, String label, NamedAreaLevel level, NamedAreaDto parent, Set<Marker> markers) {
-        super(uuid, id, null);
-        setUuid(uuid);
-        this.label = label;
-        if (level != null) {
-            this.level = new LabeledEntityDto(level.getUuid(), level.getId(), level.getLabel());
-        }
-        this.parent = parent;
-        this.markers = markers;
+    //uuid should not be null to allow equals()
+    public NamedAreaDto(UUID uuid, int id, String label) {
+        super(uuid, id, label);
     }
 
-    //TODO should not exist
-    public NamedAreaDto(NamedArea area, SetMap<NamedArea, NamedArea> parentAreaMap) {
-        super(area.getUuid(), area.getId(), null);
-        this.label = area.getLabel();   //TODO i18n
-        if (area.getLevel() != null) {
-            NamedAreaLevel aLevel = area.getLevel();
-            //TODO i18n
-            level = new LabeledEntityDto(aLevel.getUuid(), aLevel.getId(), aLevel.getLabel());
-        }
-        if (parentAreaMap != null) {
-            NamedArea parent = parentAreaMap.getFirstValue(area);  //TODO handle >1 parents
-            if (parent != null) {
-                this.parent = new NamedAreaDto(parent, parentAreaMap);
-            }
-        }
-        this.markers = area.getMarkers();
+    public UUID getLevelUuid() {
+        return this.levelUuid;
+    }
+    public void setLevelUuid(UUID levelUuid) {
+        this.levelUuid = levelUuid;
     }
 
-    public String getLabel() {
-        return label;
+    //only needed transient for computation TODO
+    @Transient
+    public Set<UUID> getMarkers() {
+        return positiveMarkers;
+    }
+    public boolean hasMarker(UUID markerTypeUuid) {
+        return positiveMarkers.contains(markerTypeUuid);
+    }
+    public boolean addMarker(UUID markerTypeUuid) {
+        return positiveMarkers.add(markerTypeUuid);
     }
 
-    public LabeledEntityDto getLevel() {
-        return level;
+    public UUID getVocabularyUuid() {
+        return vocabularyUuid;
+    }
+    public void setVocabularyUuid(UUID vocabularyUuid) {
+        this.vocabularyUuid = vocabularyUuid;
     }
 
-    public NamedAreaDto getParent() {
-        return parent;
+    @Transient  //TODO
+    public String getAreaMapping() {
+        return areaMapping;
     }
 
-    public boolean hasMarker(MarkerType markerType, boolean value) {
-        for (Marker marker : markers) {
-            if (marker.getMarkerType().equals(markerType) && marker.getFlag() == value) {
-               return true;
-            }
-        }
-        return false;
+    @Transient  //TODO
+    public String getGeoServiceMapping() {
+        return geoServiceMapping;
+    }
+    public void setGeoServiceMapping(String geoServiceMapping) {
+        this.geoServiceMapping = geoServiceMapping;
     }
 
-//    @Override
+    //@Override
     public int compareTo(NamedAreaDto area) {
-        // TODO Auto-generated method stub
-        return 0;
+
+        Integer orderThis = this.getOrderIndex();
+        Integer orderThat = area.getOrderIndex();
+
+        if (orderThis > orderThat){
+            return -1;
+        }else if (orderThis < orderThat){
+            return 1;
+        } else {
+            return CdmUtils.nullSafeCompareTo(this.vocabularyUuid, area.vocabularyUuid);
+        }
     }
 
 //************************ toString() *********************************/
 
     @Override
     public String toString() {
-        return "NamedAreaDto [label=" + label + ", level=" + level + "]";
+        return "NamedAreaDto [label=" + getLabel() + ", level=" + levelUuid + "]";
     }
 }

@@ -28,7 +28,6 @@ public class AnnotatableDto extends CdmBaseDto {
         annotations.addItem(annotation);
     }
 
-
     public ContainerDto<MarkerDto> getMarkers() {
         return markers;
     }

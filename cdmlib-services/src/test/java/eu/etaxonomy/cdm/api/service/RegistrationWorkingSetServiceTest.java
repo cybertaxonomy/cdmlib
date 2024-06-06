@@ -21,7 +21,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
-import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO;
+import eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -54,7 +54,7 @@ public class RegistrationWorkingSetServiceTest extends CdmTransactionalIntegrati
 
         repo.authenticate("user1", "00000");
 
-        Pager<RegistrationDTO> pager = service.pageDTOs((UUID)null, null, null, null, null, null, null, null, null);
+        Pager<RegistrationWrapperDTO> pager = service.pageDTOs((UUID)null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals("with authenticated user expecting all 3 Registrations", 4l, pager.getCount().longValue());
 
@@ -181,7 +181,7 @@ public class RegistrationWorkingSetServiceTest extends CdmTransactionalIntegrati
     @Test
     @DataSet("RegistrationServiceTest.xml")
     public void testPageDTOs_unautheticated(){
-        Pager<RegistrationDTO> pager = service.pageDTOs((UUID)null, null, null, null, null, null, null, null, null);
+        Pager<RegistrationWrapperDTO> pager = service.pageDTOs((UUID)null, null, null, null, null, null, null, null, null);
         assertEquals(pager.getRecords().size(), pager.getCount().intValue());
         assertEquals("expecting only the PUBLISHED Registration, since the user is not authenticated", 1l, pager.getCount().longValue());
     }

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -25,13 +25,23 @@ public class TaggedEntityReference<T extends CdmBase> extends TypedEntityReferen
 
     private List<TaggedText> taggedText;
 
-    public TaggedEntityReference(Class<T> type, UUID uuid, List<TaggedText> taggedText) {
-        super(type, uuid, TaggedCacheHelper.createString(taggedText));
+    //**************** FACTORY ***********************/
+
+    public static <T extends CdmBase> TaggedEntityReference<T> from(
+            Class<T> type, UUID uuid, List<TaggedText> taggedText) {
+        return new TaggedEntityReference<>(type, uuid, taggedText);
+    }
+
+    //**************** CONSTRUCTOR ***********************/
+
+    protected TaggedEntityReference(Class<T> type, UUID uuid, List<TaggedText> taggedText) {
+        super(type, uuid, TaggedTextFormatter.createString(taggedText));
         this.taggedText = taggedText;
     }
+
+    //**************** GETTER ***********************/
 
     public List<TaggedText> getTaggedText() {
         return taggedText;
     }
-
 }

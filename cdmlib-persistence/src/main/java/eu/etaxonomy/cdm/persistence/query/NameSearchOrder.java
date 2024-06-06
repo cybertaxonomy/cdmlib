@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.persistence.query;
 /**
  * @author a.mueller
  * @since 02.12.2016
- *
  */
 public enum NameSearchOrder {
     ALPHA,
@@ -19,9 +18,6 @@ public enum NameSearchOrder {
     LENGTH_ALPHA_TITLE,
     ;
 
-    /**
-     * @return
-     */
     public static NameSearchOrder DEFAULT() {
         return ALPHA;
     }

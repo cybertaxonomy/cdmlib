@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.permission.User;
+import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
@@ -260,6 +261,32 @@ public class Registration extends AnnotatableEntity {
         if (designation.getRegistrations().contains(this)){
             designation.getRegistrations().remove(this);
         }
+    }
+
+    public boolean hasName() {
+        return this.getName() != null;
+    }
+
+    public boolean isPublished() {
+        return getStatus().equals(RegistrationStatus.PUBLISHED);
+    }
+
+    public NamedSourceBase findCitedSource() {
+        NamedSourceBase citedSource = null;
+        if(hasName()){
+            citedSource = this.getName().getNomenclaturalSource();
+        } else if(hasTypifications()){
+            for(TypeDesignationBase<?> td : this.getTypeDesignations()){
+                if(td.getDesignationSource() != null) {
+                    citedSource = td.getDesignationSource();
+                }
+            }
+        }
+        return citedSource;
+    }
+
+    public boolean hasTypifications() {
+        return this.getTypeDesignations() != null && this.getTypeDesignations().size() > 0;
     }
 
     @Override

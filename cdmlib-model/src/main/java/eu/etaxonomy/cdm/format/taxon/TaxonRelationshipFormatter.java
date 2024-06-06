@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.Representation;
-import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
@@ -125,7 +124,9 @@ public class TaxonRelationshipFormatter {
                 String endQuote = QUOTE_END;
                 builder.add(TagEnum.postSeparator, endQuote);
             }else{
-                builder.addSeparator(" " + doubtfulTaxonStr);
+                if (isNotBlank(doubtfulTaxonStr)){
+                    builder.addSeparator(" " + doubtfulTaxonStr);
+                }
                 //name full title cache
                 List<TaggedText> nameCacheTags = getNameTitleCacheTags(name);
                 builder.addAll(nameCacheTags);
@@ -215,8 +216,7 @@ public class TaxonRelationshipFormatter {
                 secRef = ref.getTitleCache();
             }
             TagEnum secType = /*isSensu? TagEnum.sensuReference : */ isRelation? TagEnum.relSecReference : TagEnum.secReference;
-            TaggedText refTag = TaggedText.NewInstance(secType, secRef);
-            refTag.setEntityReference(new TypedEntityReference<>(CdmBase.deproxy(ref).getClass(), ref.getUuid()));
+            TaggedText refTag = TaggedText.NewReferenceInstance(secType, secRef, ref);
             result.add(refTag);
         }
         if (isNotBlank(detail)){

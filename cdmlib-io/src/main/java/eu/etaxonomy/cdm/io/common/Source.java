@@ -152,7 +152,7 @@ public class Source {
         this(dbms, server, db);
         if (port != -1){
         	this.setPort(port);
-        };
+        }
     }
 
     /**
@@ -389,9 +389,6 @@ public class Source {
 
 /* ******************** SETTER *************************************/
 
-    /**
-     * @param query
-     */
     public Source setQuery (String query){
         mQuery = query;
         return this;
@@ -399,7 +396,6 @@ public class Source {
 
     /**
      * Sets the username.
-     * @param userName
      */
     public Source setUsername (String userName){
     	if (userName == null){
@@ -413,7 +409,6 @@ public class Source {
 
     /**
      * Sets the password.
-     * @param pwd
      */
     public Source setPassword (String pwd){
     	if (pwd == null){
@@ -427,8 +422,6 @@ public class Source {
 
     /**
      * Sets the username and password.
-     * @param userName
-     * @param pwd
      */
     public Source setUserAndPwd (String userName, String pwd){
     	setUsername(userName);
@@ -438,8 +431,6 @@ public class Source {
 
     /**
      * Sets the port.
-     * @param userName
-     * @param pwd
      */
     public Source setPort (int port){
     	this.mPort = port;
@@ -506,5 +497,4 @@ public class Source {
         	return mUrl;
     	}
     }
-
 }

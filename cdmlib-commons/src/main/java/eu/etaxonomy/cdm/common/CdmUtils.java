@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -418,7 +419,7 @@ public class CdmUtils {
      */
     public static Map<String, Field> getAllFields(Class clazz, Class highestClass, boolean includeStatic, boolean includeTransient, boolean makeAccessible, boolean includeHighestClass) {
         Map<String, Field> result = new HashMap<>();
-        if ( highestClass.isAssignableFrom(clazz) && (clazz != highestClass || includeHighestClass)){
+        if (highestClass.isAssignableFrom(clazz) && (clazz != highestClass || includeHighestClass)){
             //exclude static
             for (Field field: clazz.getDeclaredFields()){
                 if (includeStatic || ! Modifier.isStatic(field.getModifiers())){
@@ -579,4 +580,32 @@ public class CdmUtils {
         return collection == null || collection.isEmpty();
     }
 
+    /**
+     * If the given String represents a UUID it returns this UUID.
+     * Otherwise <code>null</code> is returned.
+     */
+    public static UUID errorSafeUuid(String uuidStr) {
+        if (uuidStr.length() < 32) {
+            return null;
+        }
+        try {
+            return UUID.fromString(uuidStr);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns a merged new map which contains all values of the override map and
+     * for those keys that do not exist in the override map it contains the default
+     * map values.
+     */
+    public  static  <T, S> Map<T, S>mergeMaps(Map<T, S> defaultMap, Map<T, S> overrideMap) {
+        Map<T, S> tmpMap = new HashMap<T, S>();
+        tmpMap.putAll(defaultMap);
+        if(overrideMap != null){
+            tmpMap.putAll(overrideMap);
+        }
+        return tmpMap;
+    }
 }

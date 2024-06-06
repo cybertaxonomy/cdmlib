@@ -212,30 +212,16 @@ public class TermTreeDto extends TermCollectionDto {
         return null;
     }
 
-    /**
-     * @return the inapplicableMap
-     */
     public Map<UUID, Set<FeatureStateDto>> getInapplicableMap() {
         return inapplicableMap;
     }
-
-    /**
-     * @param inapplicableMap the inapplicableMap to set
-     */
     public void setInapplicableMap(Map<UUID, Set<FeatureStateDto>> inapplicableMap) {
         this.inapplicableMap = inapplicableMap;
     }
 
-    /**
-     * @return the onlyApplicable
-     */
     public Map<UUID, Set<FeatureStateDto>> getOnlyApplicable() {
         return onlyApplicableMap;
     }
-
-    /**
-     * @param onlyApplicable the onlyApplicable to set
-     */
     public void setOnlyApplicable(Map<UUID, Set<FeatureStateDto>> onlyApplicable) {
         this.onlyApplicableMap = onlyApplicable;
     }

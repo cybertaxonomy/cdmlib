@@ -94,7 +94,7 @@ public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
 	public static final UUID uuidIntroducedUncertainDegreeNaturalisation = UUID.fromString("da159544-b0dd-4599-a9c9-640826af8c17");
 	public static final UUID uuidIntroducedAdventitious = UUID.fromString("42946bd6-9c22-45ad-a910-7427e8f60bfd");
 	public static final UUID uuidNaturalised = UUID.fromString("e191e89a-a751-4b0c-b883-7f1de70915c9");
-	private static final UUID uuidIntroducedCultiated = UUID.fromString("fac8c347-8262-44a1-b0a4-db4de451c021");
+	public static final UUID uuidIntroducedCultiated = UUID.fromString("fac8c347-8262-44a1-b0a4-db4de451c021");
 	public static final UUID uuidEndemic = UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
 
 	public static final UUID uuidNotEndemic = UUID.fromString("2fda5393-7423-4076-814c-1fa7678d7d33");
@@ -703,8 +703,12 @@ public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
 	}
 
 	@Transient
-	private Set<UUID> isAnyIntroduced;
-    public boolean isAnyIntroduced() {
+	private static Set<UUID> isAnyIntroduced;
+	@Transient
+	public boolean isAnyIntroduced() {
+	    return isAnyIntroduced(uuid);
+	}
+	public static boolean isAnyIntroduced(UUID uuid) {
         if (isAnyIntroduced == null){
             isAnyIntroduced = new HashSet<>(Arrays.asList(new UUID[]{
                    uuidCasualPresenceQuestionable, uuidCasualReportedError,
@@ -722,8 +726,9 @@ public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
         return isAnyIntroduced.contains(uuid);
     }
 
-    @Transient
+	@Transient
     private Set<UUID> isAnyNative;
+	@Transient
     public boolean isAnyNative() {
         if (isAnyNative == null){
             isAnyNative = new HashSet<>(Arrays.asList(new UUID[]{

@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
 import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 
 /**
  * Factory class for creating iiif manifests.
@@ -293,8 +293,9 @@ public class ManifestComposer {
         canvas = addAttributionAndLicense(media, canvas, representationMetadata, metaDataSource);
         representationMetadata = deduplicateMetadata(representationMetadata);
 
-        orderMedatadaItems(canvas);
+
         canvas.addMetadata(representationMetadata.toArray(new MetadataEntry[representationMetadata.size()]));
+        orderMedatadaItems(canvas);
         return Optional.of(canvas);
     }
 
@@ -448,7 +449,7 @@ public class ManifestComposer {
             List taggedTitle = ((TaxonBase)entity).getTaggedTitle();
             if(taggedTitle != null){
                 //FIXME taggedTitel to HTML!!!!
-                metadata.add(new MetadataEntry(entity.getClass().getSimpleName(), TaggedCacheHelper.createString(taggedTitle)));
+                metadata.add(new MetadataEntry(entity.getClass().getSimpleName(), TaggedTextFormatter.createString(taggedTitle)));
             }
         } else {
             String titleCache = entity.getTitleCache();
@@ -561,7 +562,7 @@ public class ManifestComposer {
             html.append(OriginalSourceFormatter.INSTANCE.format(source)).append(" ");
             if(citation.getDoi() != null) {
                 try {
-                    html.append(" ").append(htmlLink(new URI("http://doi.org/" + citation.getDoiString()), citation.getDoiString()));
+                    html.append(" ").append(htmlLink(new URI(citation.getDoiUriString()), citation.getDoiString()));
                 } catch (URISyntaxException e) {
                     // IGNORE, should never happen
                 }

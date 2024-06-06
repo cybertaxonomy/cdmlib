@@ -40,7 +40,7 @@ public class ExtendedTimePeriodFormatter {
             return tp.getFreeText();
         }else{
             String result = timePeriodFormatter.getTimePeriod(tp);
-            DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
+            DateTimeFormatter formatter = TimePeriodPartialFormatter.INSTANCE();
             if (tp.getExtremeStart() != null){
                 result = "(" + tp.getExtremeStart().toString(formatter) + TimePeriod.SEP + ")" + result;
             }

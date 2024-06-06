@@ -108,7 +108,7 @@ public class TermTreeServiceImpl
     }
 
     @Override
-    public TermTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
+    public TermTree<?> loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
 
         if(nodePaths==null){
             nodePaths = new ArrayList<>();

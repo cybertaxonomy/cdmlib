@@ -19,10 +19,10 @@ import eu.etaxonomy.cdm.persistence.dto.EntityDTOBase;
  * @author a.mueller
  * @since 2015-01-19
  */
-public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTOBase<T> implements Serializable{
+public class IdentifiedEntityDTO<T extends IdentifiableEntity>
+            extends EntityDTOBase<T> {
 
 	private static final long serialVersionUID = -6993723067086766695L;
-
 
     public class AlternativeIdentifier implements Serializable{
 
@@ -47,7 +47,6 @@ public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTO
 
 	private AlternativeIdentifier identifier;
 
-
 	public IdentifiedEntityDTO(IdentifierType identifierType, String identifier, T entity){
 	    super(entity);
 	    this.identifier = new AlternativeIdentifier(identifierType, identifier);
@@ -55,22 +54,20 @@ public class IdentifiedEntityDTO<T extends IdentifiableEntity> extends EntityDTO
 
 	public IdentifiedEntityDTO(IdentifierType identifierType, String identifier,
 	        UUID entityUuid, String titleCache, String abbrevTitleCache){
+
 	    super(entityUuid, titleCache, abbrevTitleCache);
 	    if (identifier != null){
 	        this.identifier = new AlternativeIdentifier(identifierType, identifier);
 	    }
-
 	}
 
 	public AlternativeIdentifier getIdentifier() {
 		return identifier;
 	}
 
+	//********************** TO STRING *******************************************/
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+	@Override
     public String toString() {
         return "(" + identifier.typeLabel + "; "  + cdmEntity.getTitleCache() + "; " + cdmEntity.getUuid() +  ")";
     }

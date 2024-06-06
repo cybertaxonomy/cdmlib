@@ -32,20 +32,20 @@ public class TaggedCacheHelperTest {
 
     @Test
     public void test() {
-        Assert.assertEquals("My taxon", TaggedCacheHelper.createString(tags));
+        Assert.assertEquals("My taxon", TaggedTextFormatter.createString(tags));
 
         tags.add(1, TaggedText.NewInstance(TagEnum.separator, ":"));
-        Assert.assertEquals("My:taxon", TaggedCacheHelper.createString(tags));
+        Assert.assertEquals("My:taxon", TaggedTextFormatter.createString(tags));
     }
 
     @Test
     public void testHtmlRules() {
         HTMLTagRules rules = new HTMLTagRules();
         rules.addRule(TagEnum.label, "b");
-        Assert.assertEquals("<b>My taxon</b>", TaggedCacheHelper.createString(tags, rules));
+        Assert.assertEquals("<b>My taxon</b>", TaggedTextFormatter.createString(tags, rules));
 
         tags.add(1, TaggedText.NewInstance(TagEnum.separator, ":"));
-        Assert.assertEquals("<b>My</b>:<b>taxon</b>", TaggedCacheHelper.createString(tags, rules));
+        Assert.assertEquals("<b>My</b>:<b>taxon</b>", TaggedTextFormatter.createString(tags, rules));
     }
 
 }

@@ -25,8 +25,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 
@@ -159,6 +159,10 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
     }
 
 
+    /**
+     * Handle all data related to the secundum part of a taxon. This includes also
+     * the appended phrase field (beside the
+     */
     private List<TaggedText> getSecundumTags(T taxonBase, boolean isMisapplication) {
         List<TaggedText> tags = new ArrayList<>();
 
@@ -204,7 +208,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             }
         }
         if (secRef != null){
-            tags.add(new TaggedText(TagEnum.secReference, secRef));
+            tags.add(TaggedText.NewReferenceInstance(TagEnum.secReference, secRef, sec));
         }
         //secMicroReference
         if (isNotBlank(taxonBase.getSecMicroReference())){
@@ -236,7 +240,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         if (tags == null){
             return null;
         }else{
-            String result = TaggedCacheHelper.createString(tags, htmlTagRules);
+            String result = TaggedTextFormatter.createString(tags, htmlTagRules);
             return result;
         }
     }

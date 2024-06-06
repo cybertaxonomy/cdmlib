@@ -22,6 +22,7 @@ public class DistributionNodeByAreaLabelComparator
 
     @Override
     public int compare(TreeNode<Set<Distribution>, NamedArea> node1, TreeNode<Set<Distribution>, NamedArea> node2) {
+
         String label1 = node1.getNodeId().getLabel();
         String label2 = node2.getNodeId().getLabel();
         if (StringUtils.isBlank(label1)){

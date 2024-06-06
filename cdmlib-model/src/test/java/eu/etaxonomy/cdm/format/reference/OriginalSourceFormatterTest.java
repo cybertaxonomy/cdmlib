@@ -60,6 +60,10 @@ public class OriginalSourceFormatterTest {
         Assert.assertEquals("Unexpected title cache.", "Book Author 1975: 55", formatter.format(book1, "55"));
         Assert.assertEquals("Unexpected title cache.", "Book Author (1975: 55)",
                 formatterWithBrackets.format(book1, "55"));
+        Assert.assertEquals("Unexpected title cache.", "Book Author (1975b)",
+                formatterWithBrackets.format(book1, null, null, "b"));
+        Assert.assertEquals("Unexpected title cache.", "Book Author (1975b: 66)",
+                formatterWithBrackets.format(book1, "66", null, "b"));
 
         //1 person
         Person person1 = Person.NewInstance("Pers.", "Person", "P.", "Percy");
@@ -93,6 +97,7 @@ public class OriginalSourceFormatterTest {
     //#10057 see also ReferenceDefaultCacheStrategy
     @Test
     public void testWebPage(){
+
         //create webpage
         IWebPage webpage = ReferenceFactory.newWebPage();
         webpage.setAbbrevTitle("A beautiful taxon page");
@@ -111,6 +116,7 @@ public class OriginalSourceFormatterTest {
         Assert.assertEquals("Should be author and webpage.accessed year", "Miller 2010", formatter.format((Reference)webpage, null, null));
         webpage.setAccessed(null);
         Assert.assertEquals("Should be author and webpage.datePublished year", "Miller 2001", formatter.format((Reference)webpage, null, null));
+        Assert.assertEquals("Should be author and webpage.datePublished unique year", "Miller 2001c", formatter.format((Reference)webpage, null, null, "c"));
 
         //assert without author (the expected behavior is still undefined)
         webpage.setAuthorship(null);
@@ -128,6 +134,26 @@ public class OriginalSourceFormatterTest {
                 "A beautiful taxon page 2001", formatter.format((Reference)webpage, null, null));
         Assert.assertEquals("Formatting of webpages without author is still undefined",
                 "A beautiful taxon page 2001: detail", formatter.format((Reference)webpage, "detail", null));
+        Assert.assertEquals("Formatting of webpages without author is still undefined",
+                "A beautiful taxon page 2001c: detail", formatter.format((Reference)webpage, "detail", null, "c"));
+    }
+
+
+    @Test
+    public void testProtectedTitleCacheCitation(){
+
+        Reference ref = ReferenceFactory.newGeneric();
+        ref.setTitleCache("Miller: Protected title cache reference", true);
+        Assert.assertEquals("", "Miller: Protected title cache reference", formatter.format(ref, null, null));
+
+        ref.setDatePublished(TimePeriodParser.parseStringVerbatim("1982"));
+        Assert.assertEquals("", "Miller: Protected title cache reference 1982", formatter.format(ref, null, null));
+
+        ref.setTitleCache("Miller 1982. Protected title cache reference", true);
+        Assert.assertEquals("", "Miller 1982. Protected title cache reference", formatter.format(ref, null, null));
+
+        ref.setTitleCache("Miller 1982: Protected title cache reference", true);
+        Assert.assertEquals("", "Miller 1982: Protected title cache reference", formatter.format(ref, null, null));
     }
 
     @Test

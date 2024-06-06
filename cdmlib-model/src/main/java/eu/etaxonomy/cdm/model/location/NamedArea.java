@@ -585,8 +585,10 @@ public class NamedArea extends DefinedTermBase<NamedArea> {
      * There is a somehow similar implementation in {@link eu.etaxonomy.cdm.api.service.DistributionTree}
      *
      * @param areaList
-     * @return
+     *
+     * @Deprecated
      */
+    @Deprecated
     public static NamedAreaNode getHiearchieList(List<NamedArea> areaList){
         NamedAreaNode result = new NamedAreaNode();
         for (NamedArea area : areaList){

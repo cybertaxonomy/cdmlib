@@ -17,8 +17,4 @@ package eu.etaxonomy.cdm.api.dto.portal;
  */
 public interface IDistributionTree {
 
-//    void orderAsTree(Collection<Distribution> distributions, Set<NamedAreaLevel> omitLevels,
-//            Set<MarkerType> fallbackAreaMarkerTypes, boolean neverUseFallbackAreaAsParent);
-//
-//    void recursiveSortChildren(DistributionOrder distributionOrder);
 }

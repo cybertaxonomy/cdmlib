@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlRootElement(name = "SingleReadAlignment")
 @Entity
 @Audited
-public class SingleReadAlignment extends VersionableEntity implements Serializable {
+public class SingleReadAlignment extends VersionableEntity {
 	private static final long serialVersionUID = 6141518347067279304L;
 
 	/** @see #getDnaMarker() */
@@ -79,10 +79,12 @@ public class SingleReadAlignment extends VersionableEntity implements Serializab
 
 
 	public static class Shift implements Cloneable, Serializable {
-		public int position;
+        private static final long serialVersionUID = 1520907434703028506L;
+
+        public int position;
 		public int shift;
 
-		public Shift(){};
+		public Shift(){}
 		public Shift(int position, int steps) {
 			this.position = position;
 			this.shift = steps;
@@ -111,7 +113,7 @@ public class SingleReadAlignment extends VersionableEntity implements Serializab
 
 // ***************** CONSTRUCTOR *************************/
 
-	protected SingleReadAlignment(){};
+	protected SingleReadAlignment(){}
 
 	private SingleReadAlignment(Sequence consensusAlignment, SingleRead singleRead,
 			Shift[] shifts, String editedSequence){

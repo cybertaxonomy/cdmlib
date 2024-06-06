@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -451,7 +452,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 //TODO eds.
                 team.addTeamMember(Person.NewInstance(null, "Smith", "G.F. (eds.)", null));
                 citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2018"));
-                citation.setPublisher("Koeltz Botanical Books", "Glashütten");
+                citation.setPublisher("Koeltz Botanical Books", "Glash"+UTF8.U_UMLAUT+"tten");
                 citation.setDoi(ICN_2017_SHENZHEN.getDoi());
                 citation.setSeriesPart("Regnum Vegetabile 159");
                 //removed as it is not part of the official How to cite https://www.iapt-taxon.org/nomen/pages/intro/citation.html
@@ -479,7 +480,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
 
                 citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2012"));
-                citation.setPublisher("Koeltz Scientific Books", "Königstein");
+                citation.setPublisher("Koeltz Scientific Books", "K"+UTF8.O_UMLAUT+"nigstein");
                 citation.setDoi(ICN_2011_MELBOURNE.getDoi());
                 citation.setSeriesPart("Regnum Vegetabile 154");
                 //removed as it is not part of the official How to cite https://www.iapt-taxon.org/nomen/pages/intro/citation.html
@@ -533,7 +534,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 team.addTeamMember(Person.NewInstance(null, "Hawksworth", "D.L.", null));
 
                 citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2000"));
-                citation.setPublisher("Koeltz Scientific Books", "Königstein");
+                citation.setPublisher("Koeltz Scientific Books", "K"+UTF8.O_UMLAUT+"nigstein");
                 citation.setDoi(getDoi());
                 citation.setSeriesPart("Regnum Vegetabile 138");
                 //removed as it is not part of the official How to cite https://www.iapt-taxon.org/nomen/pages/intro/citation.html
@@ -571,7 +572,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
 
     public IdentifiableSource getSource() {
         if (getCitation() != null) {
-            return IdentifiableSource.NewPrimaryMediaSourceInstance(getCitation(), null);
+            return IdentifiableSource.NewPrimarySourceInstance(getCitation(), null);
         } else {
             return null;
         }

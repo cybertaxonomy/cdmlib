@@ -60,6 +60,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 
 /**
  * This class is a facade to the eu.etaxonomy.cdm.model.occurrence package from
@@ -1894,14 +1895,14 @@ public class DerivedUnitFacade {
 	}
 
 	public TypedEntityReference<DerivedUnit> getDerivedUnitEntityReference() {
-	   return new TypedEntityReference(derivedUnit.getClass(), derivedUnit.getUuid());
+	   return TypedEntityReferenceFactory.fromEntity(derivedUnit, false);
 	}
 
     public TypedEntityReference<FieldUnit> getFieldUnitEntityReference() {
         if(fieldUnit == null) {
             return null;
         } else {
-            return new TypedEntityReference(FieldUnit.class, fieldUnit.getUuid());
+            return TypedEntityReferenceFactory.fromTypeAndId(FieldUnit.class, fieldUnit.getUuid());
         }
      }
 

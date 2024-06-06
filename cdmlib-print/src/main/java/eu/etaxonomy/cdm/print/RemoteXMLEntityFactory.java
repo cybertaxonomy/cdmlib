@@ -171,7 +171,7 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 		// http://dev.e-taxonomy.eu/cdmserver/palmae/portal/taxon/d58c0b44-29f8-4071-aa49-32baa185296f/taxonNodes
 		Element taxonNodes = null;
 
-		List <NameValuePair> params = new ArrayList<NameValuePair>();
+		List <NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("doTaxa", "1"));
 		params.add(new BasicNameValuePair("matchMode", "EXACT"));
 		params.add(new BasicNameValuePair("query", taxonName));

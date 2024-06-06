@@ -30,11 +30,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Registration;
-import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
@@ -56,7 +56,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
     private static final Logger logger = LogManager.getLogger();
 
     public static final EntityInitStrategy TYPEDESIGNATION_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
-            "typeStatus.representations",
+            "typeStatus",
             "typifiedNames",
             "typeSpecimen",
             "typeName",
@@ -67,7 +67,6 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "annotations.$",
             "annotations.annotationType.$",
             "annotations.annotationType.includes.$"
-
     }));
 
     public static final EntityInitStrategy FULL_TITLE_CACHE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
@@ -82,7 +81,6 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "annotations.$",
             "annotations.annotationType.$",
             "annotations.annotationType.includes.$"
-
     }));
 
     public static final EntityInitStrategy NAME_RELATIONS_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
@@ -113,7 +111,6 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
     public void setService(INameService service) {
         this.service = service;
     }
-
 
     @Override
     protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
@@ -153,7 +150,6 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         return initStrategy.getPropertyPaths();
     }
 
-
     /**
      * Get the list of {@link TypeDesignationBase}s of the
      * {@link TaxonName} instance identified by the <code>{name-uuid}</code>.
@@ -180,7 +176,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         }
         Pager<TypeDesignationBase> pager = service.getTypeDesignations(tnb, null,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY.getPropertyPaths());
-        return new ArrayList(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(pager.getRecords()));
+        return new ArrayList<>(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(pager.getRecords()));
     }
 
     /**
@@ -205,7 +201,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         }
         List<TypeDesignationBase> result = service.getTypeDesignationsInHomotypicalGroup(uuid,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY.getPropertyPaths());
-        return new ArrayList(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(result));
+        return new ArrayList<>(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(result));
     }
 
 
@@ -224,14 +220,13 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         List<String> result = new ArrayList<>();
         result.add(nameCacheString);
         return result;
-
     }
 
     @RequestMapping(value = "taggedName", method = RequestMethod.GET)
     public List<TaggedText> doGetTaggedName(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) {
         logger.info("doGetDescriptionElementsByType() - " + requestPathAndQuery(request));
         return service.getTaggedName(uuid);
     }
@@ -240,7 +235,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
     public List<TaggedText> doGetTaggedFullTitle(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response){
         logger.info("doGetTaggedFullTitle() - " + requestPathAndQuery(request));
 
         TaxonName name = service.load(uuid, FULL_TITLE_CACHE_INIT_STRATEGY.getPropertyPaths());
@@ -254,12 +249,13 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
         logger.info("doGetRegistrations" + requestPathAndQuery(request));
-        TaxonName tnb = getCdmBaseInstance(uuid, response, NAME_REGISTRATIONS_INIT_STRATEGY.getPropertyPaths());
-        Set<Registration> regs = tnb.getRegistrations();
-        if(regs != null && regs.size() > 0){
+        TaxonName tn = getCdmBaseInstance(uuid, response, NAME_REGISTRATIONS_INIT_STRATEGY.getPropertyPaths());
+
+        Set<Registration> regs = tn.getRegistrations();
+        if(!CdmUtils.isNullSafeEmpty(regs)){
             Set<Registration> regsFiltered = new HashSet<>(regs.size());
             for(Registration reg : regs){
-                if(userHelper.userIsAutheticated() && reg.getStatus().equals(RegistrationStatus.PUBLISHED)) {
+                if(userHelper.userIsAutheticated() && reg.isPublished()) {
                     regsFiltered.add(reg);
                 } else {
                     logger.debug("skipping unpublished registration");
@@ -299,13 +295,12 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
 
     /**
      * Provides the  „Protologue / original publication“ of the names nomenclatural reference.
-     *
      */
     @RequestMapping(value = "protologueLinks", method = RequestMethod.GET)
     public Set<ExternalLink> doGetProtologueLinks(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) {
         logger.info("doGetProtologueLinks() - " + requestPathAndQuery(request));
         TaxonName name = service.load(uuid, Arrays.asList("nomenclaturalSource.links"));
         if(name.getNomenclaturalSource() != null) {
@@ -313,5 +308,4 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         }
         return null;
     }
-
 }

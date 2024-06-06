@@ -15,6 +15,9 @@ package eu.etaxonomy.cdm.api.dto.portal;
 public class FactDtoBase extends SourcedDto implements IFactDto {
 
     private String timeperiod;
+    private Integer sortIndex;
+
+    private ContainerDto<MediaDto2> media;
 
     @Override
     public String getClazz() {
@@ -24,8 +27,27 @@ public class FactDtoBase extends SourcedDto implements IFactDto {
     public String getTimeperiod() {
         return timeperiod;
     }
-
     public void setTimeperiod(String timeperiod) {
         this.timeperiod = timeperiod;
+    }
+
+    public Integer getSortIndex() {
+        return sortIndex;
+    }
+    public void setSortIndex(Integer sortIndex) {
+        this.sortIndex = sortIndex;
+    }
+
+    public ContainerDto<MediaDto2> getMedia() {
+        return media;
+    }
+    public void addMedia(MediaDto2 mediaDto2) {
+        if(media == null) {
+            media = new ContainerDto<>();
+        }
+        media.addItem(mediaDto2);
+    }
+    public void setMedia(ContainerDto<MediaDto2> mediaContainer) {
+        this.media = mediaContainer;
     }
 }

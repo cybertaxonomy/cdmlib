@@ -86,9 +86,15 @@ public class SetMap<K,V> implements Map<K, Set<V>>{
      * that if no set exists yet for key and if key is instanceof K
      * an empty Set will be returned which will be stored in the internal map
      * and can therefore be used externally to add values if needed.
+     *
+     * If key == null no set is created and null is returned instead
+     * as we don't expect that this SetMap is used with keys = null.
      */
     @Override
     public Set<V> get(Object key) {
+        if (key == null) {
+            return null;
+        }
         Set<V> result = map.get(key);
         if (result == null){
             result = new HashSet<>();

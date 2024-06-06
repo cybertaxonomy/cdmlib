@@ -302,37 +302,10 @@ public class ClassificationServiceImpl
     }
 
     @Override
-    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid,
-            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
-        try {
-            return listChildNodesOfTaxon(taxonUuid, classificationUuid, null, includeUnpublished, pageSize, pageIndex, propertyPaths);
-        } catch (FilterException e) {
-            throw new RuntimeException(e);  //this should not happen as filter is null
-        }
-    }
-
-    @Override
-    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, UUID subtreeUuid,
-            boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) throws FilterException{
-
-        Classification classification = dao.load(classificationUuid);
-        Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
-        TaxonNode subtree = taxonNodeDao.load(subtreeUuid);
-        if (subtreeUuid != null && subtree == null){
-            throw new FilterException("Taxon node for subtree filter can not be found in database", true);
-        }
-
-        List<TaxonNode> results = dao.listChildrenOf(
-                taxon, classification, subtree, includeUnpublished, pageSize, pageIndex, propertyPaths);
-        Collections.sort(results, taxonNodeComparator); // FIXME this is only a HACK, order during the hibernate query in the dao
-        return results;
-    }
-
-    @Override
     public List<TaxonNodeDto> listChildNodeDtosOfTaxon(UUID taxonUuid, UUID classificationUuid,
             UUID subtreeUuid, boolean includeUnpublished,
             Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode sortMode,
-            List<String> propertyPaths) throws FilterException{
+            String loadingMode) throws FilterException{
 
         Classification classification = dao.load(classificationUuid);
         Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
@@ -341,15 +314,27 @@ public class ClassificationServiceImpl
             throw new FilterException("Taxon node for subtree filter can not be found in database", true);
         }
 
-        List<TaxonNode> results = dao.listChildrenOf(
-                taxon, classification, subtree, includeUnpublished, pageSize, pageIndex, propertyPaths);
-        Comparator<TaxonNodeDto> comparator = sortMode.comparator();
-        // TODO order during the hibernate query in the dao?
-        List<TaxonNodeDto> dtos = results.stream()
-                .map(tn -> new TaxonNodeDto(tn))
-                .sorted(comparator)
-                .collect(Collectors.toList());
-        return dtos;
+        if (!"instance".equals(loadingMode)) {
+            List<TaxonNodeDto> results = dao.listChildrenOf(
+                    taxon, classification, subtree, includeUnpublished, pageSize, pageIndex);
+            Comparator<TaxonNodeDto> comparator = sortMode.comparator();
+            // TODO order during the hibernate query in the dao?
+            List<TaxonNodeDto> dtos = results.stream()
+                    .sorted(comparator)
+                    .collect(Collectors.toList());
+            return dtos;
+        } else {
+            List<TaxonNode> results = dao.listChildrenOf(
+                    taxon, classification, subtree, includeUnpublished, pageSize, pageIndex,
+                    new ArrayList<>());
+            Comparator<TaxonNodeDto> comparator = sortMode.comparator();
+            // TODO order during the hibernate query in the dao?
+            List<TaxonNodeDto> dtos = results.stream()
+                    .map(tn -> new TaxonNodeDto(tn))
+                    .sorted(comparator)
+                    .collect(Collectors.toList());
+            return dtos;
+        }
     }
 
     @Override

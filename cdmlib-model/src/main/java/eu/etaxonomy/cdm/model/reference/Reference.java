@@ -50,9 +50,11 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.joda.time.DateTime;
+import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
@@ -565,6 +567,13 @@ public class Reference
     public String getDoiString() {
         return doi == null? null : doi.toString();
     }
+    /**
+     * Convenience method to retrieve doi as uri string
+     */
+    @Transient @XmlTransient @java.beans.Transient
+    public String getDoiUriString() {
+        return doi == null? null : doi.asURI();
+    }
 
 	@Override
     public String getSeriesPart() {
@@ -863,7 +872,7 @@ public class Reference
 	/**
 	 * Returns a string representation for the year of publication / creation
 	 * of <i>this</i> reference. If the {@link #getDatePublished() datePublished}
-	 * of this reference contains more date information then (starting) year
+	 * of this reference contains more date information than (starting) year
 	 * only the year is returned.
 	 */
 	@Override
@@ -893,6 +902,31 @@ public class Reference
 			return null;
 		}
 	}
+
+    /**
+     * Returns a sortable string of the datePublished.start attribute.<BR>
+     * If datePublished is null in-references are called recursively.
+     * Only structured publication data is considered, no freetext or
+     * verbatim date.
+     */
+    @Transient
+    public String getSortableDateString(){
+        VerbatimTimePeriod datePublished = this.getDatePublished();
+        if (datePublished != null ){
+            Partial partial = getDatePublished().getStart();
+            if (partial == null) {
+                partial = getDatePublished().getEnd();
+            }
+            if (partial != null ) {
+                return TimePeriodPartialFormatter.INSTANCE().printSortableDateString(partial);
+            }
+        }
+        if (this.inReference != null){
+            return this.inReference.getSortableDateString();
+        }else {
+            return "zzzz-zz-zz";
+        }
+    }
 
 	/**
      * Convenience method that returns a string representation for the publication date / creation

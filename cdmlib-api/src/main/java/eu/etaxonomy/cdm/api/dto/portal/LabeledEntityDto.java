@@ -34,8 +34,6 @@ public class LabeledEntityDto extends CdmBaseDto {
 
     @Override
     public String toString() {
-        return "LabeledEntityDto [label=" + label + "]";
+        return  getClass().getSimpleName() + " [label=" + label + "]";
     }
-
-
 }

@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -42,11 +43,18 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
     private ITermService termService;
 
     @Override
+    public GeoServiceArea valueOf(NamedAreaDto area) {
+        return GeoServiceArea.valueOf(area.getGeoServiceMapping());
+    }
+
+    @Override
     public GeoServiceArea valueOf(NamedArea area) {
         for (Annotation annotation : area.getAnnotations()){
             if (AnnotationType.TECHNICAL().equals(annotation.getAnnotationType())){
-                GeoServiceArea areas = GeoServiceArea.valueOf(annotation.getText());
-                return areas;
+                GeoServiceArea gsArea = GeoServiceArea.valueOf(annotation.getText());
+                if (gsArea != null) {
+                    return gsArea;
+                }
             }
         }
 

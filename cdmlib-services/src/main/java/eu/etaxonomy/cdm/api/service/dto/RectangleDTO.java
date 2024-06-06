@@ -21,6 +21,7 @@ public class RectangleDTO {
 
     public RectangleDTO(double lowerLeftLatitude, double lowerLeftLongitude, double upperRightLatitude,
             double upperRightLongitude) {
+
         this.lowerLeftLatitude = lowerLeftLatitude;
         this.lowerLeftLongitude = lowerLeftLongitude;
         this.upperRightLatitude = upperRightLatitude;

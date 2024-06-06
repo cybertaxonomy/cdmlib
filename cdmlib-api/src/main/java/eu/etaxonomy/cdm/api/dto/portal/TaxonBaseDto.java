@@ -8,11 +8,13 @@
 */
 package eu.etaxonomy.cdm.api.dto.portal;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NameRelationDTO;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NomenclaturalStatusDTO;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
@@ -27,6 +29,8 @@ public class TaxonBaseDto extends IdentifiableDto {
         //nomenclatural code
         private String nameType;
 
+        private ContainerDto<NomenclaturalStatusDTO> status;
+
         private ContainerDto<NameRelationDTO> relatedNames;
 
         private List<URI> protologues;
@@ -35,6 +39,10 @@ public class TaxonBaseDto extends IdentifiableDto {
 
         //TODO maybe later this can be combined with taggedLabel (merge taxon and name taggedText)
         private List<TaggedText> taggedName;
+
+        private boolean hasRegistration;
+
+        private boolean isInvalid;
 
         //*********** GETTER / SETTER *******************/
 
@@ -76,11 +84,40 @@ public class TaxonBaseDto extends IdentifiableDto {
             this.relatedNames = relatedNames;
         }
 
+
+        public ContainerDto<NomenclaturalStatusDTO> getStatus(){
+            return status;
+        }
+        public void addStatus(NomenclaturalStatusDTO nomenclaturalStatus) {
+            if (this.status == null) {
+                this.status = new ContainerDto<>();
+            }
+            this.status.addItem(nomenclaturalStatus);
+        }
+        //TODO either set or add
+        public void setStatus(ContainerDto<NomenclaturalStatusDTO> nomenclaturalStatuss) {
+            this.status = nomenclaturalStatuss;
+        }
+
         public String getType() {
             return nameType;
         }
         public void setType(String nameType) {
             this.nameType = nameType;
+        }
+
+        public boolean isInvalid() {
+            return isInvalid;
+        }
+        public void setInvalid(boolean isInvalid) {
+            this.isInvalid = isInvalid;
+        }
+
+        public boolean isHasRegistration() {
+            return hasRegistration;
+        }
+        public void setHasRegistration(boolean hasRegistration) {
+            this.hasRegistration = hasRegistration;
         }
     }
 
@@ -117,19 +154,6 @@ public class TaxonBaseDto extends IdentifiableDto {
         getName().setType(nameType);
     }
 
-    //    public List<TypedLabel> getTypedTaxonLabel() {
-//        return typedTaxonLabel;
-//    }
-//    public void setTypedTaxonLabel(List<TypedLabel> typedTaxonLabel) {
-//        this.typedTaxonLabel = typedTaxonLabel;
-//    }
-//
-//    public List<TypedLabel> getTypedNameLabel() {
-//        return typedNameLabel;
-//    }
-//    public void setTypedNameLabel(List<TypedLabel> typedNameLabel) {
-//        this.typedNameLabel = typedNameLabel;
-//    }
     public List<TaggedText> getTaggedLabel() {
         return taggedLabel;
     }
@@ -155,11 +179,30 @@ public class TaxonBaseDto extends IdentifiableDto {
         getName().setRelatedNames(relatedNames);
     }
 
+    public ContainerDto<NomenclaturalStatusDTO> getNomenclaturalStatus() {
+        return getName().getStatus();
+    }
+    public void addNomenclaturalStatus(NomenclaturalStatusDTO status) {
+        getName().addStatus(status);
+    }
+    //TODO either set or add
+    public void setNomenclaturalStatus(ContainerDto<NomenclaturalStatusDTO> status) {
+        getName().setStatus(status);
+    }
+
     public ContainerDto<FeatureDto> getNameFacts() {
         return getName().getNameFacts();
     }
     public void setNameFacts(ContainerDto<FeatureDto> nameFacts) {
         getName().setNameFacts(nameFacts);
+    }
+
+    public boolean isInvalid() {
+        return getName().isInvalid();
+    }
+
+    public boolean isHasRegistration() {
+        return getName().isHasRegistration();
     }
 
     //protologues
@@ -171,6 +214,9 @@ public class TaxonBaseDto extends IdentifiableDto {
         getName().addProtologue(uri);
     }
 
+    //TODO we shouldn't have @transient on a DTO, try to solve this in a better way
+    @Transient
+    @javax.persistence.Transient
     public TaxonNameDto getName() {
         if (name == null) {
             name = new TaxonNameDto();
@@ -181,7 +227,6 @@ public class TaxonBaseDto extends IdentifiableDto {
         this.name = name;
     }
 
-
     //TaxonBase info
     //appendedPhras, useNameCache, doubtful, name, publish
     // => should all be part of the typedLabel
@@ -189,14 +234,8 @@ public class TaxonBaseDto extends IdentifiableDto {
     //secsource  ?? how to handle? part of bibliography
 
     //TaxonName info
-    //TODO do we need
     //rank, nameparts => all in typedLabel
 
-
-    //relatedNames  //as RelatedDTO?
-
     //types ?? => Teil der homotypischen Gruppe, außer der Fall von Walter (für  name types?)
-
-
 
 }

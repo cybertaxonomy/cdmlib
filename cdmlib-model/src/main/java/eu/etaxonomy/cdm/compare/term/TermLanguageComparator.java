@@ -61,16 +61,10 @@ public class TermLanguageComparator<T extends TermBase> implements Comparator<T>
 		return result;
 	}
 
-	/**
-	 * @return the defaultLanguage
-	 */
 	public Language getDefaultLanguage() {
 		return defaultLanguage;
 	}
 
-	/**
-	 * @return the compareLanguage
-	 */
 	public Language getCompareLanguage() {
 		return compareLanguage;
 	}

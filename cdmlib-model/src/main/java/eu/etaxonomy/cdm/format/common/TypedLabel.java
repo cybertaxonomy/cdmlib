@@ -56,6 +56,13 @@ public class TypedLabel {
         this.tagType = tagType;
     }
 
+    public TypedLabel(UUID uuid, String classSimpleName, String label) {
+        this.uuid = uuid;
+        this.clazz = classSimpleName;
+        this.label = label;
+    }
+
+
 //***************** GETTER / SETTER ********************************/
 
     public UUID getUuid() {
@@ -110,6 +117,8 @@ public class TypedLabel {
         innerLabels.addAll(innerLabels);
     }
 
-
-
+    @Override
+    public String toString() {
+        return "TypedLabel [label=" + label + "]";
+    }
 }

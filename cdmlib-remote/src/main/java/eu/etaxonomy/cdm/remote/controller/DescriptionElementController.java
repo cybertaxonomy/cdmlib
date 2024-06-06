@@ -58,7 +58,7 @@ public class DescriptionElementController
     private static final Logger logger = LogManager.getLogger();
 
     private static final List<String> STATE_INIT_STRATEGY = Arrays.asList( new String[]{
-            "states.state.representations",
+            "states.state",
             "modifiers",
             "modifyingText"
             } );

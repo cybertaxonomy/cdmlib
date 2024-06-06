@@ -196,28 +196,6 @@ public class TaxonDaoHibernateImpl
         return result;
     }
 
-    //TODO needed? Currently only used by tests.
-    public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean includeUnpublished,
-            String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
-        return getTaxaByName(doTaxa, doSynonyms, false, false, false,
-                queryString, null, null, matchMode, null, includeUnpublished, null, pageSize, pageNumber, null);
-    }
-
-    @Override
-    public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode,
-            Boolean accepted, boolean includeUnpublished, Integer pageSize, Integer pageNumber) {
-
-        boolean doTaxa = true;
-        boolean doSynonyms = true;
-
-        if (accepted == true) {
-            doSynonyms = false;
-        } else {
-           doTaxa = false;
-        }
-        return getTaxaByName(doTaxa, doSynonyms, includeUnpublished, queryString, matchMode, pageSize, pageNumber);
-    }
-
     @Override
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
             boolean includeAuthors,
@@ -247,7 +225,6 @@ public class TaxonDaoHibernateImpl
 
     //new search for the editor, for performance issues the return values are only uuid and titleCache, to avoid the initialisation of all objects
     @Override
-    @SuppressWarnings("unchecked")
     public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
             boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished, boolean includeAuthors, String queryString, Classification classification, TaxonNode subtree,
             MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order) {
@@ -451,7 +428,7 @@ public class TaxonDaoHibernateImpl
 
             if(synonymIDs.size()>0 && taxonIDs.size()>0){
                 hql = "SELECT " + selectWhat;
-                // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                // in doNotReturnFullEntities mode it is necessary to also return the type of the matching entities:
                 // also return the computed isOrphaned flag
                 if (returnIdAndTitle &&  !doCount ){
                     hql += ", CASE WHEN t.id in (:taxa) THEN 'taxon' ELSE 'synonym' END, " +
@@ -465,7 +442,7 @@ public class TaxonDaoHibernateImpl
                         " WHERE (t.id in (:taxa) OR t.id IN (:synonyms)) ";
             }else if (synonymIDs.size()>0 ){
                 hql = "SELECT " + selectWhat;
-                // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                // in doNotReturnFullEntities mode it is necessary to also return the type of the matching entities:
                 // also return the computed isOrphaned flag
                 if (returnIdAndTitle &&  !doCount ){
                     hql += ", 'synonym', 'false' ";
@@ -476,7 +453,7 @@ public class TaxonDaoHibernateImpl
 
             } else if (taxonIDs.size()>0 ){
                 hql = "SELECT " + selectWhat;
-                // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                // in doNotReturnFullEntities mode it is necessary to also return the type of the matching entities:
                 // also return the computed isOrphaned flag
                 if (returnIdAndTitle &&  !doCount ){
                     hql += ", 'taxon', " +
@@ -511,7 +488,7 @@ public class TaxonDaoHibernateImpl
             }
             if(!doCount){
                 String orderBy = " ORDER BY ";
-                String alphabeticBase = " t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
+                String alphabeticBase = " t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache, t.name.authorshipCache, t.name.uuid, t.uuid ";  //the later parameters are for having deterministic behavior only
 
                 if (order == NameSearchOrder.LENGTH_ALPHA_NAME){
                     orderBy += " length(t.name.nameCache), " + alphabeticBase;

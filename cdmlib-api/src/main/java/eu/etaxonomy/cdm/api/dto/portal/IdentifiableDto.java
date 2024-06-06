@@ -16,10 +16,22 @@ public class IdentifiableDto extends SourcedDto {
 
     private String label;
 
+    private ContainerDto<IdentifierDto> identifiers;
+
     public String getLabel() {
         return label;
     }
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public ContainerDto<IdentifierDto> getIdentifiers() {
+        return identifiers;
+    }
+    public void addIdentifier(IdentifierDto identifierDto) {
+        if (identifiers == null) {
+            identifiers = new ContainerDto<>();
+        }
+        identifiers.addItem(identifierDto);
     }
 }

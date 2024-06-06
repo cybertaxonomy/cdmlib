@@ -40,5 +40,4 @@ public class TermSymbol1Comparator<T extends DefinedTermBase> implements Compara
 
         return  label1.compareTo(label2);
     }
-
 }

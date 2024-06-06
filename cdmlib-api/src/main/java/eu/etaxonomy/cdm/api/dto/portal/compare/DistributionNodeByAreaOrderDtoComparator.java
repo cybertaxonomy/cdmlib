@@ -41,6 +41,7 @@ public class DistributionNodeByAreaOrderDtoComparator
         }else if (area2 == null){
             return 1;
         }else{
+            //TODO not yet implemented, is it used?
             return - area1.compareTo(area2);  //term compare methods currently use wrong direction
         }
     }

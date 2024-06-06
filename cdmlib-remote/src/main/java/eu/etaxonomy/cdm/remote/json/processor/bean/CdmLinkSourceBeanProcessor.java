@@ -15,6 +15,7 @@ import org.hibernate.Hibernate;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.CdmLinkSource;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonBeanProcessor;
@@ -35,7 +36,7 @@ public class CdmLinkSourceBeanProcessor implements JsonBeanProcessor {
             CdmLinkSource cdmLinkSource = (CdmLinkSource)bean;
             if(Hibernate.isInitialized(cdmLinkSource.getTarget())){
                     if(cdmLinkSource .getTarget() != null){
-                        TypedEntityReference<CdmLinkSource> entityReference = new TypedEntityReference<>(CdmLinkSource.class, ((CdmBase)cdmLinkSource .getTarget()).getUuid());
+                        TypedEntityReference<CdmLinkSource> entityReference = TypedEntityReferenceFactory.fromTypeAndId(CdmLinkSource.class, ((CdmBase)cdmLinkSource .getTarget()).getUuid());
                         return JSONObject.fromObject(entityReference);
                     }
             } else {

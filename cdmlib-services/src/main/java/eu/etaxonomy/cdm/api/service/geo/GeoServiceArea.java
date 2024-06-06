@@ -57,6 +57,7 @@ public class GeoServiceArea {
     private static final String MAP_SERVICE = "mapService";
 
 
+
     public enum GeoServiceType{
         EDIT("Edit Geo Service"),
         WMS("WMS Service");
@@ -207,9 +208,7 @@ public class GeoServiceArea {
                 }
                 return result;
             }
-        } catch (JDOMException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (JDOMException| IOException e) {
             throw new RuntimeException(e);
         }
     }

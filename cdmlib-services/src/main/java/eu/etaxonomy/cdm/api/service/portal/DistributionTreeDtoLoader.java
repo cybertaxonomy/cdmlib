@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service.portal;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,17 +16,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.proxy.HibernateProxy;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionTreeDto;
-import eu.etaxonomy.cdm.api.dto.portal.LabeledEntityDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
+import eu.etaxonomy.cdm.api.dto.portal.tmp.TermDto;
+import eu.etaxonomy.cdm.api.dto.portal.tmp.TermNodeDto;
+import eu.etaxonomy.cdm.api.dto.portal.tmp.TermTreeDto;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.TreeNode;
@@ -35,8 +34,6 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 
@@ -102,8 +99,8 @@ public class DistributionTreeDtoLoader {
    *      if <code>true</code> a fallback area never has children even if a record exists for the area
    */
   public void orderAsTree(DistributionTreeDto dto, Collection<DistributionDto> distributions,
-          SetMap<NamedArea, NamedArea> parentAreaMap, Set<NamedAreaLevel> omitLevels,
-          Set<MarkerType> fallbackAreaMarkerTypes,
+          SetMap<NamedAreaDto,NamedAreaDto> area2ParentAreaMap, Set<UUID> omitLevels,
+          Set<UUID> fallbackAreaMarkerTypes,
           boolean neverUseFallbackAreasAsParents){
 
       //compute all areas
@@ -112,17 +109,12 @@ public class DistributionTreeDtoLoader {
           relevantAreas.add(distribution.getArea());
       }
       // preload all areas which are a parent of another one, this is a performance improvement
-      loadAllParentAreasIntoSession(relevantAreas, parentAreaMap);
-
-      Set<Integer> omitLevelIds = new HashSet<>(omitLevels.size());
-      for(NamedAreaLevel level : omitLevels) {
-          omitLevelIds.add(level.getId());
-      }
+//      loadAllParentAreasIntoSession(relevantAreas, parentAreaMap);
 
       for (DistributionDto distribution : distributions) {
           // get path through area hierarchy
-          List<NamedAreaDto> namedAreaPath = getAreaLevelPath(distribution.getArea(), parentAreaMap,
-                  omitLevelIds, relevantAreas, fallbackAreaMarkerTypes, neverUseFallbackAreasAsParents);
+          List<NamedAreaDto> namedAreaPath = getAreaLevelPath(distribution.getArea(), area2ParentAreaMap,
+                  omitLevels, relevantAreas, fallbackAreaMarkerTypes, neverUseFallbackAreasAsParents);
           addDistributionToSubTree(distribution, namedAreaPath, dto.getRootElement());
       }
   }
@@ -138,23 +130,21 @@ public class DistributionTreeDtoLoader {
      * @see #orderAsTree(DistributionTreeDto, Collection, SetMap, Set, Set, boolean)
      */
     public void orderAsTree2(DistributionTreeDto dto, Collection<DistributionDto> distributions,
-            TermTree<NamedArea> areaTree, Set<NamedAreaLevel> omitLevels,
-            Set<MarkerType> fallbackAreaMarkerTypes,
+            TermTreeDto areaTree, Set<UUID> omitLevels,
+            Set<UUID> fallbackAreaMarkerTypes,
             boolean neverUseFallbackAreasAsParents){
 
         TreeNode<Set<DistributionDto>,NamedAreaDto> rootAreaNode = transformToDtoTree(areaTree.getRoot());
         dto.setRootElement(rootAreaNode);
 
         addDistributions(rootAreaNode, distributions);
-        Set<UUID> omitLevelUuids = omitLevels.stream().map(e->e.getUuid()).collect(Collectors.toSet());
         removeEmptySubtrees(rootAreaNode);
         //TODO empty children should not be necessary anymore due to removeEmptySubtrees()
         removeFallbackAreasAndOmitLevelRecursive(rootAreaNode, fallbackAreaMarkerTypes,
-                omitLevelUuids, neverUseFallbackAreasAsParents);
+                omitLevels, neverUseFallbackAreasAsParents);
         //TODO deduplicate
         //TODO alternativeRootArea
         //TODO ...,
-        System.out.println();
     }
 
     private void addDistributions(TreeNode<Set<DistributionDto>,NamedAreaDto> rootNode, Collection<DistributionDto> distributions) {
@@ -200,7 +190,7 @@ public class DistributionTreeDtoLoader {
     }
 
     private void removeFallbackAreasAndOmitLevelRecursive(TreeNode<Set<DistributionDto>,NamedAreaDto> rootNode,
-            Set<MarkerType> fallbackAreaMarkerTypes,
+            Set<UUID> fallbackAreaMarkerTypes,
             Set<UUID> omitLevelUuids, boolean neverUseFallbackAreasAsParents) {
 
         List<TreeNode<Set<DistributionDto>,NamedAreaDto>> children = new ArrayList<>(rootNode.getChildren());
@@ -225,20 +215,20 @@ public class DistributionTreeDtoLoader {
             Set<UUID> omitLevelUuids) {
         //omit level
         NamedAreaDto areaNode = treeNode.getNodeId();
-        UUID uuidLevel = areaNode.getLevel() == null ? null : areaNode.getLevel().getUuid();
+        UUID uuidLevel = areaNode.getLevelUuid();
         return omitLevelUuids.contains(uuidLevel);
     }
 
     private boolean isFallback(TreeNode<Set<DistributionDto>,NamedAreaDto> treeNode,
-            Set<MarkerType> fallbackAreaMarkerTypes,
+            Set<UUID> fallbackAreaMarkerTypes,
             boolean neverUseFallbackAreasAsParents) {
 
         NamedAreaDto areaNode = treeNode.getNodeId();
 
         //fall back and empty
         boolean isFallback = false;
-        for (MarkerType mt : fallbackAreaMarkerTypes) {
-            if (areaNode.hasMarker(mt, true)) {
+        for (UUID mt : fallbackAreaMarkerTypes) {
+            if (areaNode.hasMarker(mt)) {
                 isFallback = true;
                 break;
             }
@@ -248,7 +238,7 @@ public class DistributionTreeDtoLoader {
         boolean isEmpty = CdmUtils.isNullSafeEmpty(treeNode.getData()); //TODO only false with sources
 
         if (isFallback){
-            return neverUseFallbackAreasAsParents || childrenHaveData(treeNode);
+            return neverUseFallbackAreasAsParents || (childrenHaveData(treeNode) && isEmpty);
         } else {
             //should not happen since empty subtrees are removed before
             return isEmpty && !childrenHaveData(treeNode);
@@ -268,24 +258,19 @@ public class DistributionTreeDtoLoader {
         return false;
     }
 
-    private TreeNode<Set<DistributionDto>, NamedAreaDto> transformToDtoTree(TermNode<NamedArea> areaNode) {
+    private TreeNode<Set<DistributionDto>, NamedAreaDto> transformToDtoTree(TermNodeDto areaNode) {
 
-        NamedArea area = areaNode.getTerm();
-        NamedAreaDto nodeId = area == null ? null : new NamedAreaDto(
-                //TODO areaNode uuid
-                area.getUuid(),
-                areaNode.getId(),
-                area.getLabel(),
-                area.getLevel(),
-                null,  //TODO parent
-                areaNode.getMarkers()
-           );
+        NamedAreaDto nodeId = (NamedAreaDto)areaNode.getTerm();
+//        NamedAreaDto nodeId = NamedAreaDtoLoader.INSTANCE().fromEntity(area);
+
         Set<DistributionDto> data = new HashSet<>();
-        TreeNode<Set<DistributionDto>, NamedAreaDto> treeNode = new TreeNode<Set<DistributionDto>, NamedAreaDto>(nodeId, data);
+        TreeNode<Set<DistributionDto>, NamedAreaDto> treeNode = new TreeNode<>(nodeId, data);
 
-        for (TermNode<NamedArea> childNode : areaNode.getChildNodes()) {
-            TreeNode<Set<DistributionDto>, NamedAreaDto> child = transformToDtoTree(childNode);
-            treeNode.addChild(child);
+        if (areaNode.getChildren() != null) {
+            for (TermNodeDto childNode : areaNode.getChildren()) {
+                TreeNode<Set<DistributionDto>, NamedAreaDto> child = transformToDtoTree(childNode);
+                treeNode.addChild(child);
+            }
         }
         return treeNode;
     }
@@ -295,17 +280,20 @@ public class DistributionTreeDtoLoader {
    * all initialization of the NamedArea term instances is ready. This improves the
    * performance of the tree building
    */
-  private void loadAllParentAreasIntoSession(Set<NamedAreaDto> areas, SetMap<NamedArea, NamedArea> parentAreaMap) {
+  //TODO still needed? If not, we can maybe also remove the termDao dependency
+    //call is currently commented
+  private void loadAllParentAreasIntoSession(Set<NamedAreaDto> areas,
+          SetMap<NamedArea,NamedArea> parentAreaMap) {
 
       if (areas == null || parentAreaMap == null || termDao == null) {
           return;
       }
-      List<NamedAreaDto> parentAreas = null;
       Set<UUID> childAreas = new HashSet<>(areas.size());
-      for(NamedAreaDto area : areas) {
+      for(TermDto area : areas) {
           childAreas.add(area.getUuid());
       }
 
+      List<NamedAreaDto> parentAreas = null;
       if(!childAreas.isEmpty()) {
           parentAreas = termDao.getPartOfNamedAreas(childAreas, parentAreaMap);
           childAreas.clear();
@@ -401,85 +389,89 @@ public class DistributionTreeDtoLoader {
    * @param omitLevels
    * @return the path through the area hierarchy
    */
-  private List<NamedAreaDto> getAreaLevelPath(NamedAreaDto area, SetMap<NamedArea, NamedArea> parentAreaMap,
-          Set<Integer> omitLevelIds,
-          Set<NamedAreaDto> distributionAreas, Set<MarkerType> fallbackAreaMarkerTypes,
+  private List<NamedAreaDto> getAreaLevelPath(NamedAreaDto area,
+          SetMap<NamedAreaDto,NamedAreaDto> area2parentAreaMap,
+          Set<UUID> omitLevelIds,
+          Set<NamedAreaDto> distributionAreas,
+          Set<UUID> fallbackAreaMarkerTypes,
           boolean neverUseFallbackAreasAsParents){
 
-      List<NamedAreaDto> result = new ArrayList<>();
+      List<NamedAreaDto> path = new ArrayList<>();
       if (!matchesLevels(area, omitLevelIds)){
-          result.add(area);
+          path.add(area);
       }
 
-      if (parentAreaMap == null) { //TODO should this happen?
-          while (area.getParent() != null) {
-              area = area.getParent();
-              if (!matchesLevels(area, omitLevelIds)){
-                  if(!isFallback(fallbackAreaMarkerTypes, area) ||
-                          (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents ) ) {
-                      result.add(0, area);
-                  } else {
-                      if(logger.isDebugEnabled()) {logger.debug("positive fallback area detection, skipping " + area );}
-                  }
-              }
-          }
-      } else {
-          //FIXME same as above case, maybe we do not need to distinguish as parent handling is done
-          // in NamedAreaDTO constructor
-          while (area.getParent() != null) {
-              area = area.getParent();
-              //omit omit-levels
-              if (!matchesLevels(area, omitLevelIds)){
-                  if(!isFallback(fallbackAreaMarkerTypes, area)
-                          || (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents )
-                          ) {
-                      //add parent if it is not a fallback or if it is a fallback but data for this area exists and
-                      //   the neverUse... parameter allows adding fallback areas in this case
-                      result.add(0, area);
-                  } else {
-                      if(logger.isDebugEnabled()) {logger.debug("positive fallback area detection, skipping " + area );}
-                  }
-              }
-          }
-
-      }
-      return result;
-  }
-
-  private boolean isFallback(Set<MarkerType> fallbackAreaMarkerTypes, NamedAreaDto area) {
-
-      //was: DescriptionUtility.isMarkedHidden(area, fallbackAreaMarkerTypes);
-      return isMarkedAs(area, fallbackAreaMarkerTypes);
-  }
-
-  private static boolean isMarkedAs(NamedAreaDto area, Set<MarkerType> markerTypes) {
-      if(markerTypes != null) {
-          for(MarkerType markerType : markerTypes){
-              if(area.hasMarker(markerType, true)){
-                  return true;
+      while (area2parentAreaMap.get(area) != null) {
+          area = getPreferredParent(area2parentAreaMap.get(area), fallbackAreaMarkerTypes);  //new parent
+          //omit omit-levels
+          if (area != null && !matchesLevels(area, omitLevelIds)){
+              if(!isFallback(fallbackAreaMarkerTypes, area)
+                      || (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents )
+                      ) {
+                  //add parent if it is not a fallback or if it is a fallback but data for this area exists and
+                  //   the neverUse... parameter allows adding fallback areas in this case
+                  path.add(0, area);
+              } else {
+                  if(logger.isDebugEnabled()) {logger.debug("positive fallback area detection, skipping " + area );}
               }
           }
       }
-      return false;
+      return path;
   }
 
-  private boolean matchesLevels(NamedAreaDto area, Set<Integer> omitLevelIds) {
-      if(omitLevelIds.isEmpty()) {
-          return false;
-      }
-      Serializable areaLevelId;
-      LabeledEntityDto areaLevel = area.getLevel();
-      //TODO remove Proxy check
-      if (areaLevel instanceof HibernateProxy) {
-          areaLevelId = ((HibernateProxy) areaLevel).getHibernateLazyInitializer().getIdentifier();
-      } else {
-          areaLevelId = areaLevel==null ? null : areaLevel.getId();
-      }
-      return omitLevelIds.contains(areaLevelId);
-  }
+    /**
+     * Most areas have only 1 parent. If they have >1 parent then usually
+     * one of the parents is a fallback area which is not preferred.
+     * If this is not the case for now we return an arbitrary parent.<BR>
+     * Note: This method does not filter out fallback areas. It only gives
+     *       them lower priority if >1 parents exist.
+     */
+    private NamedAreaDto getPreferredParent(Set<NamedAreaDto> parentSet, Set<UUID> fallbackAreas) {
+        if (parentSet == null) {
+            return null;
+        }
+        for (NamedAreaDto parent : parentSet) {
+            boolean isFallback = false;
+            for (UUID uuid : fallbackAreas) {
+                if (parent.hasMarker(uuid)) {
+                    isFallback = true;
+                }
+            }
+            if (!isFallback) {
+                return parent;
+            }
+        }
+        return parentSet.stream().findAny().orElse(null);
+    }
 
-    public void handleAlternativeRootArea(DistributionTreeDto dto, Set<MarkerType> alternativeRootAreaMarkerTypes) {
-        //don't anything if no alternative area markers exist
+    private boolean isFallback(Set<UUID> fallbackAreaMarkerTypes, NamedAreaDto area) {
+
+        //was: DescriptionUtility.isMarkedHidden(area, fallbackAreaMarkerTypes);
+        return isMarkedAs(area, fallbackAreaMarkerTypes);
+    }
+
+    private static boolean isMarkedAs(NamedAreaDto area, Set<UUID> markerTypes) {
+        if(markerTypes != null) {
+            for(UUID markerType : markerTypes){
+                if(area.hasMarker(markerType)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean matchesLevels(NamedAreaDto area, Set<UUID> omitLevelIds) {
+        if(omitLevelIds.isEmpty()) {
+            return false;
+        }
+        UUID areaLevelUuid = area.getLevelUuid();
+        return omitLevelIds.contains(areaLevelUuid);
+    }
+
+    public void handleAlternativeRootArea(DistributionTreeDto dto, Set<UUID> alternativeRootAreaMarkerTypes) {
+
+        //don't do anything if no alternative area markers exist
         if (CdmUtils.isNullSafeEmpty(alternativeRootAreaMarkerTypes)) {
             return;
         }

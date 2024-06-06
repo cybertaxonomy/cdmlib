@@ -52,15 +52,10 @@ public class IdentifierType
     public static final UUID uuidPlantListIdentifier = UUID.fromString("06e4c3bd-7bf6-447a-b96e-2844b279f276");
     public static final UUID uuidIndexFungorumIdentifier = UUID.fromString("f405be9f-359a-49ba-b09b-4a7920386190");
 
-	protected static Map<UUID, IdentifierType> termMap = null;
-
-	public static IdentifierType getTermByUuid(UUID uuid){
-	    if (termMap == null || termMap.isEmpty()){
-            return getTermByClassAndUUID(IdentifierType.class, uuid);
-        } else{
-			return termMap.get(uuid);
-		}
-	}
+    //#10260
+    //a pattern representing an URL and which includes the placeholde "{@ID}"
+    //which will be replaced by the actual identifier
+    private String urlPattern;
 
 	/**
      * Creates a new empty {@link IdentifierType} instance.
@@ -86,11 +81,6 @@ public class IdentifierType
 		return new IdentifierType(description, label, labelAbbrev, null);
 	}
 
-	//#10260
-	//a pattern representing an URL and which includes the placeholde "{@ID}"
-	//which will be replaced by the actual identifier
-	private String urlPattern;
-
 //******************* CONSTRUCTOR ***********************************/
 
 	IdentifierType(){
@@ -105,6 +95,17 @@ public class IdentifierType
 	}
 
 //*************************** TERM MAP *********************/
+
+
+    protected static Map<UUID, IdentifierType> termMap = null;
+
+    public static IdentifierType getTermByUuid(UUID uuid){
+        if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(IdentifierType.class, uuid);
+        } else{
+            return termMap.get(uuid);
+        }
+    }
 
     public static IdentifierType IDENTIFIER_NAME_TROPICOS(){
         return getTermByUuid(uuidTropicosNameIdentifier);
@@ -123,16 +124,14 @@ public class IdentifierType
 
 
     /**
-     * A pattern which represents an URL and which includes the placeholde "{@ID}"
+     * A pattern which represents an URL and which includes the placeholder "{@ID}"
      * which will be replaced by the actual identifier
      * @see https://dev.e-taxonomy.eu/redmine/issues/10260
      */
     public String getUrlPattern() {
         return urlPattern;
     }
-
     /**
-     * @param urlPattern the url pattern
      * @see #getUrlPattern()
      */
     public void setUrlPattern(String urlPattern) {

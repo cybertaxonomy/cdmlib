@@ -10,25 +10,33 @@ package eu.etaxonomy.cdm.api.dto.portal.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 
 /**
  * @author a.mueller
  * @date 07.01.2023
  */
-public class TaxonPageDtoConfiguration implements Serializable {
+public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration, Serializable {
 
     private static final long serialVersionUID = -3017154740995350103L;
 
     //TODO should this be part of the configuration??
     private UUID taxonUuid;
+
+    private boolean useDtoLoading = false;
 
     //data
     private boolean withFacts = true;
@@ -42,6 +50,14 @@ public class TaxonPageDtoConfiguration implements Serializable {
 
     private EnumSet<TaxonOccurrenceRelationType> specimenAssociationFilter;
 
+    private Set<UUID> annotationTypes = new HashSet<>(
+            Arrays.asList(new UUID[] {AnnotationType.uuidEditorial}));
+    private Set<UUID> markerTypes = new HashSet<>();
+    private Set<UUID> identifierTypes = new HashSet<>(Arrays.asList(new UUID[] {IdentifierType.uuidWfoNameIdentifier}));
+
+    private Set<UUID> directNameRelTyes = null;
+    private Set<UUID> inverseNameRelTyes = null;
+
 
     //synonymy
     //TODO taxonrelations
@@ -50,15 +66,21 @@ public class TaxonPageDtoConfiguration implements Serializable {
     private boolean withTaxonRelationships = true;
     private UUID taxonRelationshipTypeTree = null;
 
+    //typification
+    private boolean withAccessionType = true;
+
     //facts
     private UUID featureTree = null;
     private DistributionInfoConfiguration distributionInfoConfiguration = new DistributionInfoConfiguration();
 
     private Map<UUID,DistributionInfoConfiguration> perFeatureDistributionInfoConfiguration = new HashMap<>();
 
+    //supplemental data
+    private EnumSet<OriginalSourceType> sourceTypes = OriginalSourceType.allPublicTypes();
+
     //formatting
     private List<Locale> locales = new ArrayList<>();  //is this data or formatting??
-    public boolean formatSec = false;  //!!
+
     private Integer etAlPosition;
 
 
@@ -142,6 +164,7 @@ public class TaxonPageDtoConfiguration implements Serializable {
     public void setTaxonRelationshipTypeTree(UUID taxonRelationshipTypeTree) {
         this.taxonRelationshipTypeTree = taxonRelationshipTypeTree;
     }
+
     public UUID getFeatureTree() {
         return featureTree;
     }
@@ -177,4 +200,81 @@ public class TaxonPageDtoConfiguration implements Serializable {
         this.specimenAssociationFilter = specimenAssociationFilter;
     }
 
+    @Override
+    public EnumSet<OriginalSourceType> getSourceTypes() {
+        return sourceTypes;
+    }
+    public void setSourceTypes(EnumSet<OriginalSourceType> sourceTypes) {
+        this.sourceTypes = sourceTypes;
+        this.distributionInfoConfiguration.setSourceTypes(sourceTypes);
+    }
+
+    @Override
+    public Set<UUID> getMarkerTypes() {
+        return markerTypes;
+    }
+    /**
+     * Note: this method also sets the marker type filter
+     * for the included distributionInfoConfiguration. If the latter
+     * needs a separate filter this has to be set afterwards.
+     */
+    public void setMarkerTypes(Set<UUID> markerTypes) {
+        this.markerTypes = markerTypes;
+        this.distributionInfoConfiguration.setMarkerTypes(markerTypes);
+    }
+
+    @Override
+    public Set<UUID> getAnnotationTypes() {
+        return annotationTypes;
+    }
+    /**
+     * Note: this method also sets the annotation type filter
+     * for the included distributionInfoConfiguration. If the latter
+     * needs a separate filter this has to be set afterwards.
+     */
+    public void setAnnotationTypes(Set<UUID> annotationTypes) {
+        this.annotationTypes = annotationTypes;
+        this.distributionInfoConfiguration.setAnnotationTypes(annotationTypes);
+    }
+    public void addAnnotationType(UUID annotationType) {
+        if (this.annotationTypes == null) {
+            this.annotationTypes = new HashSet<>();
+        }
+        this.annotationTypes.add(annotationType);
+        this.distributionInfoConfiguration.addAnnotationType(annotationType);
+    }
+
+    @Override
+    public Set<UUID> getIdentifierTypes() {
+        return identifierTypes;
+    }
+
+    //name relationship types
+    public Set<UUID> getDirectNameRelTyes() {
+        return directNameRelTyes;
+    }
+    public void setDirectNameRelTyes(Set<UUID> directNameRelTyes) {
+        this.directNameRelTyes = directNameRelTyes;
+    }
+
+    public Set<UUID> getInverseNameRelTyes() {
+        return inverseNameRelTyes;
+    }
+    public void setInverseNameRelTyes(Set<UUID> inverseNameRelTyes) {
+        this.inverseNameRelTyes = inverseNameRelTyes;
+    }
+
+    public boolean isUseDtoLoading() {
+        return useDtoLoading;
+    }
+    public void setUseDtoLoading(boolean useDtoLoading) {
+        this.useDtoLoading = useDtoLoading;
+    }
+
+    public boolean isWithAccessionType() {
+        return withAccessionType;
+    }
+    public void setWithAccessionType(boolean withAccessionType) {
+        this.withAccessionType = withAccessionType;
+    }
 }

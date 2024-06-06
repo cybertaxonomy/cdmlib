@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  * @author a.mueller
  * @since 06.09.2013
- *
  */
 public class TermMover extends SchemaUpdaterStepBase{
 
@@ -38,7 +37,6 @@ public class TermMover extends SchemaUpdaterStepBase{
 		terms.add(uuidTerm);
 		return new TermMover(stepList, stepName, newVocabulary, terms);
 	}
-
 
 	public static final TermMover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, UUID newVocabulary, List<String> terms){
 		return new TermMover(stepList, stepName, newVocabulary, terms);

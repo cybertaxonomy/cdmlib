@@ -29,8 +29,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.application.CdmRepository;
-import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
+import eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -55,7 +55,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 /**
- * Provides RegistrationDTOs and RegistrationWorkingsets for Registrations in the database.
+ * Provides {@link RegistrationWrapperDTO}s and {@link RegistrationWorkingSet}s
+ * for Registrations in the database.
  *
  * @author a.kohlbecker
  * @since Mar 10, 2017
@@ -156,37 +157,37 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      * @param id the Registration entity id
      */
     @Override
-    public RegistrationDTO loadDtoById(Integer id) {
+    public RegistrationWrapperDTO loadDtoById(Integer id) {
         Registration reg = repo.getRegistrationService().load(id, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
         inititializeSpecimen(reg);
-        return new RegistrationDTO(reg);
+        return new RegistrationWrapperDTO(reg);
     }
 
     /**
      * @param id the Registration entity uuid
      */
     @Override
-    public RegistrationDTO loadDtoByUuid(UUID uuid) {
+    public RegistrationWrapperDTO loadDtoByUuid(UUID uuid) {
         Registration reg = repo.getRegistrationService().load(uuid, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
         inititializeSpecimen(reg);
-        return new RegistrationDTO(reg);
+        return new RegistrationWrapperDTO(reg);
     }
 
     @Override
-    public Pager<RegistrationDTO> pageDTOs(String identifier, Integer pageIndex,  Integer pageSize) throws IOException {
+    public Pager<RegistrationWrapperDTO> pageDTOs(String identifier, Integer pageIndex,  Integer pageSize) throws IOException {
 
         Pager<Registration> regPager = repo.getRegistrationService().pageByIdentifier(identifier, pageIndex, pageSize, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
         return convertToDTOPager(regPager);
     }
 
     @Override
-    public Pager<RegistrationDTO> convertToDTOPager(Pager<Registration> regPager) {
+    public Pager<RegistrationWrapperDTO> convertToDTOPager(Pager<Registration> regPager) {
         return new DefaultPagerImpl<>(regPager.getCurrentIndex(), regPager.getCount(),
                 regPager.getPageSize(), makeDTOs(regPager.getRecords()));
     }
 
     @Override
-    public Pager<RegistrationDTO> pageDTOs(Integer pageSize, Integer pageIndex) {
+    public Pager<RegistrationWrapperDTO> pageDTOs(Integer pageSize, Integer pageIndex) {
         return pageDTOs((UUID)null, null, null, null, null, null, pageSize, pageIndex, null);
     }
 
@@ -213,7 +214,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
      */
 
     @Override
-    public Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
+    public Pager<RegistrationWrapperDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints){
 
@@ -229,7 +230,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
                     identifierFilterPattern, taxonNameFilterPattern,
                     referenceFilterPattern, typeDesignationStatusUuids, PAGE_SIZE , pageIndex, orderHints, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
 
-            Pager<RegistrationDTO> dtoPager = convertToDTOPager(pager);
+            Pager<RegistrationWrapperDTO> dtoPager = convertToDTOPager(pager);
             if(logger.isDebugEnabled()){
                 logger.debug(String.format("pageDTOs() pageIndex: $1%d, pageSize: $2%d, includedStatusUuids: $3%s, typeDesignationStatusUuids: $4%s, taxonNameFilterPattern: $5%s, submitterUuid: $6%s",
                         pageIndex, pageSize, includedStatus, identifierFilterPattern, taxonNameFilterPattern, submitterUuid));
@@ -240,7 +241,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     }
 
     @Override
-    public Pager<RegistrationDTO> findInTaxonGraph(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+    public Pager<RegistrationWrapperDTO> findInTaxonGraph(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             String taxonNameFilterPattern, MatchMode matchMode,
             Integer pageSize, Integer pageIndex, List<OrderHint> orderHints) {
 
@@ -319,9 +320,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return nowLocal.isAfter(pubDateTime);
     }
 
-    /**
-     * @param reference
-     */
     protected Reference resolveSection(Reference reference) {
         repo.getReferenceService().load(reference.getUuid(), Arrays.asList(new String[]{"inReference"})); // needed to avoid the problem described in #7331
         if(reference.isOfType(ReferenceType.Section) && reference.getInReference() != null) {
@@ -330,10 +328,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return reference;
     }
 
-    /**
-     * {@inheritDoc}
-     * @throws TypeDesignationSetException
-     */
     @Override
     public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws TypeDesignationSetException, PermissionDeniedException {
 
@@ -355,7 +349,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     }
 
     @Override
-    public Pager<RegistrationDTO> pageWorkingSetsByNameUUID(Collection<UUID> taxonNameUuids, Integer pageIndex, Integer pageSize, List<OrderHint> orderHints) throws TypeDesignationSetException, PermissionDeniedException {
+    public Pager<RegistrationWrapperDTO> pageWorkingSetsByNameUUID(Collection<UUID> taxonNameUuids, Integer pageIndex, Integer pageSize, List<OrderHint> orderHints) throws TypeDesignationSetException, PermissionDeniedException {
 
         if(orderHints == null){
             orderHints = Arrays.asList(new OrderHint("identifier", SortOrder.ASCENDING));
@@ -381,23 +375,23 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     }
 
     @Override
-    public Set<RegistrationDTO> loadBlockingRegistrations(UUID blockedRegistrationUuid){
+    public Set<RegistrationWrapperDTO> loadBlockingRegistrations(UUID blockedRegistrationUuid){
 
         Registration registration = repo.getRegistrationService().load(blockedRegistrationUuid, BLOCKING_REGISTRATION_INIT_STRATEGY);
         Set<Registration> registrations = registration.getBlockedBy();
 
-        Set<RegistrationDTO> blockingSet = new HashSet<>();
+        Set<RegistrationWrapperDTO> blockingSet = new HashSet<>();
         for(Registration reg : registrations){
-            blockingSet.add(new RegistrationDTO(reg));
+            blockingSet.add(new RegistrationWrapperDTO(reg));
         }
         return blockingSet;
     }
 
     @Override
-    public List<RegistrationDTO> makeDTOs(Collection<Registration> regs) {
+    public List<RegistrationWrapperDTO> makeDTOs(Collection<Registration> regs) {
         initializeSpecimens(regs);
-        List<RegistrationDTO> dtos = new ArrayList<>(regs.size());
-        regs.forEach(reg -> {dtos.add(new RegistrationDTO(reg));});
+        List<RegistrationWrapperDTO> dtos = new ArrayList<>(regs.size());
+        regs.forEach(reg -> {dtos.add(new RegistrationWrapperDTO(reg));});
         return dtos;
     }
 

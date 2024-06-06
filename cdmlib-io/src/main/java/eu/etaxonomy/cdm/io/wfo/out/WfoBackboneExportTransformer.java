@@ -11,10 +11,7 @@ package eu.etaxonomy.cdm.io.wfo.out;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
-import eu.etaxonomy.cdm.io.common.mapping.out.ExportTransformerBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.Rank;
 
 /**
  * Transformer for WFO Backbone export.
@@ -24,7 +21,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
  * @author a.mueller
  * @date 2023-12-08
  */
-public class WfoBackboneExportTransformer extends ExportTransformerBase {
+public class WfoBackboneExportTransformer extends WfoExportTransformerBase {
 
     private static final long serialVersionUID = -527652844010832994L;
 
@@ -53,27 +50,6 @@ public class WfoBackboneExportTransformer extends ExportTransformerBase {
             return "not established";
         }
 
-        return null;
-    }
-
-    @Override
-    public String getCacheByRank(Rank rank) throws UndefinedTransformerMethodException {
-        if (rank == null) {
-            return null;
-        }
-        if (rank.equals(Rank.FAMILY())) {return "family";}
-        else if(rank.equals(Rank.SUBFAMILY())) {return "subfamily";}
-        else if(rank.equals(Rank.TRIBE())) {return "tribe";}
-        else if(rank.equals(Rank.SUBTRIBE())) {return "subtribe";}
-        else if(rank.equals(Rank.GENUS())) {return "genus";}
-        else if(rank.equals(Rank.SUBGENUS())) {return "subgenus";}
-        else if(rank.equals(Rank.SPECIES())) {return "species";}
-        else if(rank.equals(Rank.SUBSPECIES())) {return "subspecies";}
-        else if(rank.equals(Rank.VARIETY())) {return "variety";}
-        else if(rank.equals(Rank.SUBVARIETY())) {return "subvariety";}
-        else if(rank.equals(Rank.FORM())) {return "form";}
-        else if(rank.equals(Rank.SUBFORM())) {return "subform";}
-        else if(rank.equals(Rank.INFRASPECIFICTAXON())) {return "infraspecificName";}
         return null;
     }
 }

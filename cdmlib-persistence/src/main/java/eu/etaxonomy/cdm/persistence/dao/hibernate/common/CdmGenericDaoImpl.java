@@ -536,14 +536,52 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
+    @Override
+    public <T> List<T> getHqlResult(String hqlQuery, Class<T> clazz){
+        return getHqlResult(hqlQuery, new Object[0], clazz);
+    }
+
+
 	@Override
 	public <T> List<T> getHqlResult(String hqlQuery, Object[] params, Class<T> clazz){
+		params = params == null ? new Object[0] : params;
 		Query<T> query = getSession().createQuery(hqlQuery, clazz);
 		for(int i = 0; i<params.length; i++){
-		    query.setParameter(String.valueOf(i), params[i]);  //for some reason using int, not String, throws exceptions, this seems to be a hibernate bug
+		    query.setParameter(i+1, params[i]); //param numbering in query should start with 1
 		}
         List<T> result = query.list();
 		return result;
+	}
+
+	@Override
+    public <T> List<T> getHqlResult(String hqlQuery, Map<String,Object> params, Class<T> clazz){
+        params = params == null ? new HashMap<>() : params;
+        Query<T> query = getSession().createQuery(hqlQuery, clazz);
+        for(Map.Entry<String,Object> entry : params.entrySet()){
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        List<T> result = query.list();
+        return result;
+    }
+
+    @Override
+    public <T> List<Map<String,T>> getHqlMapResult(String hqlQuery, Map<String,Object> params, Class<T> clazz) throws UnsupportedOperationException{
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        List<Map<String,T>> result = (List)getHqlResult(hqlQuery, params, Map.class);
+        return result;
+    }
+
+    @Override
+    public <T> List<Map<String,T>> getHqlMapResult(String hqlQuery, Class<T> clazz) throws UnsupportedOperationException{
+        return getHqlMapResult(hqlQuery, new Object[] {}, clazz);
+    }
+
+
+	@Override
+    public <T> List<Map<String,T>> getHqlMapResult(String hqlQuery, Object[] params, Class<T> clazz) throws UnsupportedOperationException{
+	    @SuppressWarnings({ "rawtypes", "unchecked" })
+        List<Map<String,T>> result = (List)getHqlResult(hqlQuery, params, Map.class);
+	    return result;
 	}
 
 	@Override

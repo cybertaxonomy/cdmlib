@@ -591,7 +591,6 @@ public class WfoBackboneExport
         String wfoId = null;
         try {
 
-            Rank rank = name.getRank();
             state.getNameStore().put(name.getId(), name.getUuid());
 
             //taxon ID
@@ -605,8 +604,8 @@ public class WfoBackboneExport
                 csvLine[table.getIndex(WfoBackboneExportTable.TAXON_ID)] = wfoId;
             }
 
-            //TODO 9 add IPNI ID if exists, scientific name ID
-            csvLine[table.getIndex(WfoBackboneExportTable.NAME_SCIENTIFIC_NAME_ID)] = null;
+            boolean warnIfNotExists = false;
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_SCIENTIFIC_NAME_ID)] = getIpniId(state, name, warnIfNotExists);
 
             //localID
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_LOCAL_ID)] = getId(state, name);
@@ -629,11 +628,13 @@ public class WfoBackboneExport
             }
 
             //rank
+            Rank rank = name.getRank();
             String rankStr = state.getTransformer().getCacheByRank(rank);
             if (rankStr == null) {
-                String message = rank == null ? "No rank" : ("Rank not supported by WFO:" + rank.getLabel())
+                String message = rank == null ? "No rank" : ("Rank not supported by WFO: " + rank.getLabel())
                         + "Taxon not handled in export: " + name.getTitleCache();
                 state.getResult().addWarning(message);  //TODO 2 warning sufficient for missing rank? + location
+                //TODO 2 handling of not-recognized rank, move up as this creates an have ready record otherwise
                 return wfoId;
             }
             csvLine[table.getIndex(WfoBackboneExportTable.RANK)] = rankStr;
@@ -795,6 +796,15 @@ public class WfoBackboneExport
             state.getResult().addWarning(message);  //TODO 5 data location
         }
         return wfoId == null ? null : wfoId.getIdentifier();
+    }
+
+    private String getIpniId(WfoBackboneExportState state, TaxonName name, boolean warnIfNotExists) {
+        Identifier ipniId = name.getIdentifier(IdentifierType.uuidIpniNameIdentifier);
+        if (ipniId == null && warnIfNotExists) {
+            String message = "No ipni-id given for name: " + name.getTitleCache()+"/"+ name.getUuid();
+            state.getResult().addWarning(message);  //TODO 5 data location
+        }
+        return ipniId == null ? null : ipniId.getIdentifier();
     }
 
     private String makeNameStatus(WfoBackboneExportState state, TaxonName name) {

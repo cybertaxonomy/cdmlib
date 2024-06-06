@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +30,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * @author k.luther
  * @since Mar 18, 2020
  */
-public class TermNodeDto extends CdmBaseDto implements Serializable, IAnnotatableDto{
+public class TermNodeDto extends CdmBaseDto implements IAnnotatableDto{
 
     private static final long serialVersionUID = 7568459208397248126L;
 

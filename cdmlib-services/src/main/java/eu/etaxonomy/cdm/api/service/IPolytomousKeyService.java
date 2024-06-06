@@ -47,4 +47,10 @@ public interface IPolytomousKeyService extends IIdentifiableEntityService<Polyto
      */
     public UpdateResult updateAllNodeNumberings();
 
+    /**
+     * @param taxonUuid
+     * @return
+     */
+    long countByTaxonomicScope(UUID taxonUuid);
+
 }

@@ -228,20 +228,11 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
             Rank baseRank,
             boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException;
 
-    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, boolean includeUnpublished,
-            Integer pageSize, Integer pageIndex, List<String> propertyPaths);
-
-    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, UUID subtreeUuid, boolean includeUnpublished,
-            Integer pageSize, Integer pageIndex, List<String> propertyPaths) throws FilterException;
-
     public List<TaxonNodeDto> listChildNodeDtosOfTaxon(UUID taxonUuid, UUID classificationUuid, UUID subtreeUuid, boolean includeUnpublished,
-            Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode comparator, List<String> propertyPaths) throws FilterException;
+            Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode comparator, String loadingMode) throws FilterException;
 
     /**
-     * @param taxonNode
-     * @param propertyPaths
      * @deprecated move to TaxonNodeService
-     * @return
      */
     @Deprecated
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);

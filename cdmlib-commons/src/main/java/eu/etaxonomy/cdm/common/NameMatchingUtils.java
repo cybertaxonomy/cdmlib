@@ -1,9 +1,21 @@
+/**
+* Copyright (C) 2023 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author andreabee90
+ * @since 13.08.2023
+ */
 public class NameMatchingUtils {
 
 //  Delete known text elements such as cf. aff. and subgenera if it is enclosed in brackets
@@ -164,15 +176,18 @@ public class NameMatchingUtils {
 
 	public static String replaceGenderEnding(String input) {
 		input = input.toUpperCase();
-		String firstPart = input.substring(0, input.length() - 2);
-		String lastTwoChar = input.substring((input.length() - 2), input.length());
-		String[] endingChar = new String[] {"IS", "US", "YS", "ES", "IM", "AS", "UM", "OS"};
-		for (String i : endingChar) {
-			if (lastTwoChar.contains(i)) {
-				lastTwoChar = lastTwoChar.replace(i, "A");
-			}
+		String output = input;
+		if (input.length() >= 2) {
+		    String firstPart = input.substring(0, input.length() - 2);
+		    String lastTwoChar = input.substring((input.length() - 2), input.length());
+		    String[] endingChar = new String[] {"IS", "US", "YS", "ES", "IM", "AS", "UM", "OS"};
+		    for (String i : endingChar) {
+		        if (lastTwoChar.contains(i)) {
+		            lastTwoChar = lastTwoChar.replace(i, "A");
+		        }
+		    }
+		    output = firstPart + lastTwoChar;
 		}
-		String output = firstPart + lastTwoChar;
 		return output;
 	}
 

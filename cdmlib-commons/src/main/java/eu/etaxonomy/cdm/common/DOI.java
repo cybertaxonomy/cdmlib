@@ -43,6 +43,8 @@ public final class DOI implements java.io.Serializable{
 	 */
 	public static final String HTTP_DOI_ORG = "http://" + DOI_ORG;
 
+	public static final String HTTPS_DOI_ORG = "https://" + DOI_ORG;
+
 	/**
 	 * The former default public DOI proxy server, still supported but no longer preferred.
 	 * @see #HTTP_DOI_ORG
@@ -200,7 +202,7 @@ public final class DOI implements java.io.Serializable{
 	}
 
 	public String asURI(){
-		return HTTP_DOI_ORG + makePrefix() + "/" + uriEncodedSuffix();
+		return HTTPS_DOI_ORG + makePrefix() + "/" + uriEncodedSuffix();
 	}
 
 	private String uriEncodedSuffix() {

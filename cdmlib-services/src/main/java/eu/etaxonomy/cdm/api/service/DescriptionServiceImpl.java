@@ -1074,10 +1074,10 @@ public class DescriptionServiceImpl
         //get specimen used in description
         //get individial associations with this specimen
         //get taxon node for the classification
-        List<SortableTaxonNodeQueryResult> result =  dao.getNodeOfIndividualAssociationForSpecimen(specimenUuid, classificationUuid);
+        List<SortableTaxonNodeQueryResult> result = dao.getNodeOfIndividualAssociationForSpecimen(specimenUuid, classificationUuid);
 
         if (!result.isEmpty()){
-            List<TaxonNodeDto> dtos = taxonNodeDao.createNodeDtos(result);
+            List<TaxonNodeDto> dtos = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
             if (dtos.size() == 1){
                 return dtos.get(0);
             }else{

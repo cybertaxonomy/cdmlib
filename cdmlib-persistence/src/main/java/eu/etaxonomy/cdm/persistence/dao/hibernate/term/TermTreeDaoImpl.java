@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.compare.term.DefinedTermComparator;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -63,11 +65,11 @@ public class TermTreeDaoImpl
     }
 
     @Override
-    public void deepLoadNodes(List<TermNode> nodes, List<String> nodePaths) {
+    public void deepLoadNodes(List<TermNode<?>> nodes, List<String> nodePaths) {
 
         defaultBeanInitializer.initializeAll(nodes, nodePaths);
 
-        List<TermNode> childrenOfChildren = new ArrayList<>();
+        List<TermNode<?>> childrenOfChildren = new ArrayList<>();
         for(TermNode<?> node : nodes) {
             if(node.getChildCount() > 0){
                 childrenOfChildren.addAll(node.getChildNodes());
@@ -103,6 +105,7 @@ public class TermTreeDaoImpl
                 selectedFeatures.add(feature);
             }
         }
+        Collections.sort(selectedFeatures, new DefinedTermComparator());
         TermTree<Feature> featureTree = TermTree.NewFeatureInstance(selectedFeatures);
         featureTree.setUuid(DefaultFeatureTreeUuid);
         return featureTree;

@@ -40,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.dto.TaxonFindDto;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
@@ -72,6 +73,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
+import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
@@ -884,6 +886,37 @@ public class TaxonServiceImpl
             return new ArrayList<>();
         }
     }
+
+
+    @Override
+    public Pager<TaxonFindDto> findTaxaAndNamesDto(IFindTaxaAndNamesConfigurator configurator) {
+        //TODO do we really need IdentifiableEntity instead of TaxonBase?
+        //Currently in portal search search for pure names is not possible
+        Pager<IdentifiableEntity> config = findTaxaAndNames(configurator);
+
+        Pager<TaxonFindDto> result = (Pager)config;
+        for (int i=0; i < config.getRecords().size(); i++) {
+            IdentifiableEntity<?> entity = config.getRecords().get(i);
+            TaxonFindDto dto = new TaxonFindDto();
+            //entity
+            dto.setEntity(entity);
+            //accUuid
+            if (entity.isInstanceOf(Synonym.class)) {
+                Taxon taxon = CdmBase.deproxy(entity, Synonym.class).getAcceptedTaxon();
+                if (taxon != null) {
+                    dto.setAcceptedTaxonUuid(taxon.getUuid());
+                }
+            }
+            //source
+            TaxonName name = entity.isInstanceOf(TaxonName.class)? CdmBase.deproxy(entity, TaxonName.class) : CdmBase.deproxy(entity, TaxonBase.class).getName();
+            String source = NomenclaturalSourceFormatter.INSTANCE().format(name.getNomenclaturalSource());
+            dto.setSourceString(source);
+            result.getRecords().set(i, dto);
+        }
+
+        return result;
+    }
+
 
     @Override
     public Pager<IdentifiableEntity> findTaxaAndNames(IFindTaxaAndNamesConfigurator configurator) {
@@ -3473,6 +3506,7 @@ public class TaxonServiceImpl
             Direction direction, boolean groupMisapplications,
             boolean includeUnpublished,
             Integer pageSize, Integer pageNumber) {
+
         TaxonBase<?> taxonBase = dao.load(taxonUuid);
         if (taxonBase == null || !taxonBase.isInstanceOf(TaxonBase.class)){
             //TODO handle

@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import eu.etaxonomy.cdm.remote.dto.common.StringResultDTO;
 import io.swagger.annotations.Api;
 
 /**
@@ -73,5 +74,19 @@ public class PolytomousKeyListController extends AbstractIdentifiableListControl
         TaxonBase taxon = taxonService.find(taxonUuid);
         Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), null, null);
         return pager;
+    }
+
+    @RequestMapping(
+            params = {"countByTaxonomicScope"},
+            method = RequestMethod.GET)
+    public StringResultDTO doCountByTaxonomicScope(
+            @RequestParam(value = "countByTaxonomicScope") UUID taxonUuid,
+            HttpServletRequest request,
+            HttpServletResponse response)throws IOException {
+
+        logger.info("doCountByTaxonomicScope: " + request.getRequestURI() + request.getQueryString());
+
+        long count = service.countByTaxonomicScope(taxonUuid);
+        return new StringResultDTO(String.valueOf(count));
     }
 }

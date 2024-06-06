@@ -20,9 +20,6 @@ public class AbstractRequestToken {
     protected String token;
     private Date expiryDate;
 
-    /**
-     * 
-     */
     public AbstractRequestToken() {
         super();
     }

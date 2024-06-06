@@ -50,7 +50,7 @@ public class TermTreePortalController extends TermTreeController {
         setInitializationStrategy(TERMTREE_INIT_STRATEGY);
 
         termTreeNodeInitStrategy = new ArrayList<>(2);
-        termTreeNodeInitStrategy.add("term.representations");
+        termTreeNodeInitStrategy.add("term");
     }
 
     @Override

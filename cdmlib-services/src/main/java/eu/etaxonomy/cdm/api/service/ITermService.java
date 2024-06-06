@@ -156,45 +156,40 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * Returns the term with the given idInVocabulary for the given vocabulary.
      * If the same idInVocabulary exists with same vocabulary for multiple terms (though this is against the general
      * contract of idInVocabulary) always the same term should be returned.
+     *
      * @param id idInVocabulary
      * @param vocabularyUuid uuid of vocabulary
      * @param clazz term clazz filter on certain term classes. May be <code>null</code> for no filter.
      * @return the term
      * @throws IllegalArgumentException if id or vocabularyUuid is <code>null</code>
+     * @see #findUuidByIdInVocabulary(String, UUID, Class)
      */
     public <TERM extends DefinedTermBase> TERM findByIdInVocabulary(String id, UUID vocabularyUuid, Class<TERM> clazz)
     	throws IllegalArgumentException;
 
     /**
-     * @param termUuid
-     * @param config
-     * @return
+     * Returns the UUID of the term with the given idInVocabulary for the given vocabulary.
+     * If the same idInVocabulary exists with same vocabulary for multiple terms (though this is against the general
+     * contract of idInVocabulary) always the same term should be returned.
+     *
+     * @param id idInVocabulary
+     * @param vocabularyUuid uuid of vocabulary
+     * @param clazz term clazz filter on certain term classes. May be <code>null</code> for no filter.
+     * @return the term
+     * @throws IllegalArgumentException if id or vocabularyUuid is <code>null</code>
+     * @see #findByIdInVocabulary(String, UUID, Class)
      */
+    public UUID findUuidByIdInVocabulary(String id, UUID vocabularyUuid, Class<? extends DefinedTermBase<?>> clazz)
+            throws IllegalArgumentException;
+
     public DeleteResult delete(UUID termUuid, TermDeletionConfigurator config);
 
-    /**
-     * @param termUuids
-     * @param config
-     * @return
-     */
     public DeleteResult delete(List<UUID> termUuids, TermDeletionConfigurator config);
 
-    /**
-     * @param termUuids
-     * @param config
-     * @return
-     */
     public DeleteResult deleteTerms(List<DefinedTermBase> terms, TermDeletionConfigurator config);
-    /**
-     * @param label
-     * @return
-     */
+
     public Language getLanguageByLabel(String label);
 
-    /**
-     * @param representations
-     * @return
-     */
     public Map<UUID, Representation> saveOrUpdateRepresentations(Collection<Representation> representations);
 
     /**
@@ -272,17 +267,14 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
 
     public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList);
 
-
     public Collection<TermDto> findFeatureByTitleAsDto(String title);
 
     public Country getCountryByIso(String iso639);
 
     public List<Country> getCountryByName(String name);
+
     /**
      * Returns a map of {@link UUID} and {@link TermDto} of terms with uuid matches one of uuids in list
-     * @param uuidList
-     * @return
      */
     public Map<UUID, TermDto> findFeatureByUUIDsAsDtos(List<UUID> uuidList);
-
 }

@@ -26,16 +26,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainerFormatter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.name.TypeComparator;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
-import eu.etaxonomy.cdm.format.description.distribution.CondensedDistribution;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.cdmLight.OrderHelper;
@@ -1233,7 +1233,7 @@ public class WordClassificationExport
             HTMLTagRules rules = new HTMLTagRules();
             rules.addRule(TagEnum.name, "i");
 
-            csvLine[table.getIndex(WordClassificationExportTable.TYPE_SPECIMEN)] = manager.print(false, false, false, rules);
+            csvLine[table.getIndex(WordClassificationExportTable.TYPE_SPECIMEN)] = manager.print(false, false, false, true, false, rules);
 
             StringBuilder stringbuilder = new StringBuilder();
             int i = 1;
@@ -2068,7 +2068,8 @@ public class WordClassificationExport
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
                 TypeDesignationSetContainer manager = new TypeDesignationSetContainer(group);
-                list.addAll(new TypeDesignationSetFormatter(true, false, false).toTaggedText(manager));
+                list.addAll(new TypeDesignationSetContainerFormatter().withStartingTypeLabel(false)
+                        .toTaggedText(manager));
             }
             String typeTextDesignations = "";
             //The typeDesignationManager does not handle the textual typeDesignations
@@ -2479,9 +2480,9 @@ public class WordClassificationExport
                                 csvLine[table.getIndex(WordClassificationExportTable.COLLECTOR_STRING)] = createCollectorString(
                                         state, gathering, fieldUnit);
 
-                                if (gathering.getGatheringDate() != null) {
+                                if (gathering.getTimeperiod() != null) {
                                     csvLine[table.getIndex(WordClassificationExportTable.COLLECTION_DATE)] = gathering
-                                            .getGatheringDate().toString();
+                                            .getTimeperiod().toString();
                                 }
                                 if (!gathering.getCollectingAreas().isEmpty()) {
                                     int index = 0;

@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,7 +39,6 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
 	/**
 	 * Unknown provenance is the type to be used if no information is available about the type
 	 * of activity that happened.
-	 *
 	 */
 	@XmlEnumValue("Unknown")
 	Unknown(UUID.fromString("b48a443c-05f2-47ff-b885-1d3bd31118e1"), "Unknown Provenance", "UNK", null),
@@ -50,7 +51,6 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
 	 * He/she will store these references as original source of type Primary Taxonomic Source.
 	 * This is a specialization of PROV-O Primary Source
 	 * ({@link http://www.w3.org/TR/2013/REC-prov-o-20130430/#PrimarySource})
-	 *
 	 */
 	@XmlEnumValue("Primary Taxonomic Source")
 	PrimaryTaxonomicSource(UUID.fromString("c990beb3-3bc9-4dad-bbdf-9c11683493da"), "Primary Taxonomic Source", "PTS", null),
@@ -176,8 +176,44 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
         return this == PrimaryTaxonomicSource;
     }
 
+    public boolean isOther() {
+        return this == Other;
+    }
+
+    public boolean isAggregation() {
+        return this == Aggregation;
+    }
+
+    public boolean isUnknown() {
+        return this == Unknown;
+    }
+    /**
+     * Checks if this is any of the primary source types (currently either {@link #PrimaryTaxonomicSource}
+     * or {@link #isPrimaryMediaSource()})
+     */
     public boolean isPrimarySource() {
         return isPrimaryMediaSource() || isPrimaryTaxonomicSource();
     }
 
+    /**
+     * Returns all source types that should be publicly shown by default.
+     * As the dataportal hardcoded it until now for the following 5 source types
+     * we implement it for these source types for now. However, I removed {@link #Lineage}
+     * as this does not make sense.<BR>
+     *
+     * See also #10322.
+     */
+    public boolean isPublicSource() {
+        return isPrimarySource() || isOther() || isUnknown() || isAggregation();
+    }
+
+    public static EnumSet<OriginalSourceType> allPublicTypes(){
+        Set<OriginalSourceType> enumset = new HashSet<>();
+        for (OriginalSourceType ost : values()) {
+            if (ost.isPublicSource()) {
+                enumset.add(ost);
+            }
+        }
+        return EnumSet.copyOf(enumset);
+    }
 }

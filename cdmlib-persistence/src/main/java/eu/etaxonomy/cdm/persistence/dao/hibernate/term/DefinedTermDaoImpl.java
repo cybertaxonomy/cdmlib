@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -210,21 +211,44 @@ public class DefinedTermDaoImpl
 		return (Long)criteria.uniqueResult();
 	}
 
-	@Override
-	public <T extends DefinedTermBase> List<T> getDefinedTermByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber) {
-		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber)");
+    @Override
+    public <T extends DefinedTermBase> List<T> getDefinedTermByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+        checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber)");
 
-		Criteria criteria = getCriteria(clazz);
+        Criteria criteria = getCriteria(clazz);
 
-		criteria.createAlias("vocabulary", "voc")
-		    .add(Restrictions.like("voc.uuid", vocUuid))
-			.add(Restrictions.like("idInVocabulary", label, org.hibernate.criterion.MatchMode.EXACT));
+        criteria.createAlias("vocabulary", "voc")
+            .add(Restrictions.like("voc.uuid", vocUuid))
+            .add(Restrictions.like("idInVocabulary", label, org.hibernate.criterion.MatchMode.EXACT));
 
-		addPageSizeAndNumber(criteria, pageSize, pageNumber);
+        addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
-		@SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked")
         List<T> result = deduplicateResult(criteria.list());
-		return result;
+        return result;
+   }
+
+	@Override
+	public <T extends DefinedTermBase> List<UUID> getUuidByIdInVocabulary(String idInVoc, UUID vocUuid, Class<T> clazz) {
+		checkNotInPriorView("DefinedTermDaoImpl.getUuidByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber)");
+
+//		Criteria criteria = getCriteria(clazz);
+//
+//		criteria.createAlias("vocabulary", "voc")
+//		    .add(Restrictions.like("voc.uuid", vocUuid))
+//			.add(Restrictions.like("idInVocabulary", idInVoc, org.hibernate.criterion.MatchMode.EXACT));
+
+		String hql = " SELECT DISTINCT t.uuid "
+		        + " FROM DefinedTermBase t JOIN t.vocabulary voc "
+		        + " WHERE voc.uuid = :vocUuid "
+		        + "   AND type(t) = :clazz "
+		        + "   AND t.idInVocabulary = :idInVoc ";
+		Query<UUID> query = getSession().createQuery(hql, UUID.class);
+		query.setParameter("vocUuid", vocUuid);
+		query.setParameter("clazz", clazz);
+		query.setParameter("idInVoc", idInVoc);
+
+		return query.getResultList();
 	}
 
     @Override
@@ -551,9 +575,10 @@ public class DefinedTermDaoImpl
 	}
 
 	//preliminary until term structure has been finalized
-	//areaTree already added by not in use yet
+	//areaTree already added but not in use yet
     @Override
     public List<NamedAreaDto> getPartOfNamedAreas(Set<UUID> areaUuids, SetMap<NamedArea,NamedArea> parentAreaMap) {
+
         Query<NamedArea> query = getSession().createQuery("SELECT DISTINCT definedTerm "
                 + " FROM NamedArea definedTerm "
                 + " JOIN definedTerm.includes included "
@@ -563,8 +588,19 @@ public class DefinedTermDaoImpl
 
         List<NamedAreaDto> list = new ArrayList<>();
         for (NamedArea area : terms) {
-            NamedAreaDto partOf = area.getPartOf() != null ? new NamedAreaDto(area.getPartOf(), parentAreaMap) : null;
-            NamedAreaDto dto = new NamedAreaDto(area.getUuid(), area.getId(), area.getLabel(), area.getLevel(), partOf, area.getMarkers());
+            NamedArea partOf = area.getPartOf();
+            NamedAreaDto partOfDto = null;
+            if (partOf != null) {
+//                UUID partOfPartOf = partOf.getPartOf() == null? null : partOf.getPartOf().getUuid();
+                partOfDto = new NamedAreaDto(partOf.getUuid(), partOf.getId(), partOf.getLabel());
+            }
+//            UUID partOfUuid = partOfDto != null ? partOfDto.getUuid(): null;
+            NamedAreaDto dto = new NamedAreaDto(area.getUuid(), area.getId(), area.getLabel());
+            dto.setLevelUuid(area.getLevel() == null ? null : area.getLevel().getUuid());
+            area.getMarkers().stream()
+                .filter(m->m.getValue() && m.getMarkerType() != null)
+                .map(m->m.getMarkerType().getUuid())
+                .collect(Collectors.toSet());
             dto.setUuid(area.getUuid());
             list.add(dto);
         }

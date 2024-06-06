@@ -116,7 +116,7 @@ public class MultilanguageTextHelper {
      * See {@link #getPreferredLanguageString(Map, List)}. If restrictToGivenLanguages is <code>true</code>
      * a non-<code>null</code> result is returned if a language representation for one
      * of the given languages exists. No default or arbitrary representation is used.
-     * @param lstringMap Map with LAnguate as key and LSTRNG as value
+     * @param lstringMap Map with Language as key and LSTRNG as value
      * @param languages the ordered list of preferred languages
      * @param restrictToGivenLanguages flag to indicate if a fall-back language string should be used or not
      * @return
@@ -131,7 +131,7 @@ public class MultilanguageTextHelper {
      * See {@link #getPreferredLanguageString(Map, List)}. If restrictToGivenLanguages is <code>true</code>
      * a non-<code>null</code> result is returned if a language representation for one
      * of the given languages exists. No default or arbitrary representation is used.
-     * @param lstringMap Map with LAnguate as key and LSTRNG as value
+     * @param lstringMap Map with Language as key and LSTRNG as value
      * @param languages the ordered list of preferred languages
      * @param restrictToGivenLanguages flag to indicate if a fall-back language string should be used or not
 	 * @return
@@ -164,8 +164,6 @@ public class MultilanguageTextHelper {
 
 	/**
 	 * Returns a {@link Set} of {@link Language Languages} that are contained in the given multi-language map
-	 * @param multilanguageText
-	 * @return
 	 */
 	public static Set<Language> getLanguages(Map<Language, LanguageString> multilanguageText){
 		return multilanguageText.keySet();

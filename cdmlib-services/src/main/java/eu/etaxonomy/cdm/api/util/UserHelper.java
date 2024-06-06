@@ -28,23 +28,23 @@ import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
  */
 public interface UserHelper {
 
-    boolean userHasPermission(Class<? extends CdmBase> cdmType, UUID entitiyUUID, Object ... args);
+    public boolean userHasPermission(Class<? extends CdmBase> cdmType, UUID entitiyUUID, Object ... args);
 
-    boolean userHasPermission(Class<? extends CdmBase> cdmType, Object ... args);
+    public boolean userHasPermission(Class<? extends CdmBase> cdmType, Object ... args);
 
-    boolean userHasPermission(CdmBase entity, Object ... args);
+    public boolean userHasPermission(CdmBase entity, Object ... args);
 
-    User user();
+    public User user();
 
-    String userName();
+    public String userName();
 
-    boolean userIsAnnonymous();
+    public boolean userIsAnnonymous();
 
-    boolean userIsAutheticated();
+    public boolean userIsAutheticated();
 
-    boolean userIsAdmin();
+    public boolean userIsAdmin();
 
-    boolean userIs(IRoleProber iRoleProbe);
+    public boolean userIs(IRoleProber iRoleProbe);
 
     /**
      * @return the newly created CdmAuthority only if a new CdmAuthority has been added to the user otherwise

@@ -14,6 +14,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 
 /**
  * @author a.kohlbecker
@@ -27,6 +28,10 @@ public class TaggedTextBuilder {
 
     private List<TaggedText> taggedText = new ArrayList<>();
 
+    public void add(TaggedText taggedText){
+        this.taggedText.add(taggedText);
+    }
+
     public void add(TagEnum type, String text){
         taggedText.add(new TaggedText(type, text));
     }
@@ -35,6 +40,7 @@ public class TaggedTextBuilder {
      * @see TagEnum#separator
      */
     public void addSeparator(String separator) {
+        //TODO maybe we should test " ".equals(separator) here as such a separator is not needed
         taggedText.add(TaggedText.NewSeparatorInstance(separator));
     }
 
@@ -56,7 +62,7 @@ public class TaggedTextBuilder {
 
     public void add(TagEnum type, String text, CdmBase entity){
         CdmBase deproxiedEntity = HibernateProxyHelper.deproxy(entity);
-        taggedText.add(new TaggedText(type, text, new TypedEntityReference<>(deproxiedEntity.getClass(), deproxiedEntity.getUuid())));
+        taggedText.add(new TaggedText(type, text, TypedEntityReferenceFactory.fromEntity(deproxiedEntity, false)));
     }
 
     public void  clear() {
@@ -81,6 +87,6 @@ public class TaggedTextBuilder {
 
     @Override
     public String toString(){
-        return TaggedCacheHelper.createString(taggedText);
+        return TaggedTextFormatter.createString(taggedText);
     }
 }

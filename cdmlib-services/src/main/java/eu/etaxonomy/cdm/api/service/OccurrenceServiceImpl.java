@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,7 +22,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -38,18 +36,22 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.dto.DerivedUnitDTO;
+import eu.etaxonomy.cdm.api.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.dto.MediaDTO;
+import eu.etaxonomy.cdm.api.dto.SpecimenOrObservationBaseDTO;
+import eu.etaxonomy.cdm.api.dto.compare.OccurrenceDtoComparator;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.DNASampleDTO;
-import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
-import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
-import eu.etaxonomy.cdm.api.service.dto.MediaDTO;
+import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDtoLoader;
+import eu.etaxonomy.cdm.api.service.dto.DnaSampleDtoLoader;
+import eu.etaxonomy.cdm.api.service.dto.FieldUnitDtoLoader;
+import eu.etaxonomy.cdm.api.service.dto.MediaDtoLoader;
 import eu.etaxonomy.cdm.api.service.dto.RectangleDTO;
-import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationDTOFactory;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
@@ -65,7 +67,7 @@ import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.compare.common.PartialComparator;
+import eu.etaxonomy.cdm.compare.occurrence.SpecimenOrObservationBaseComparator;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacadeNotSupportedException;
@@ -208,7 +210,7 @@ public class OccurrenceServiceImpl
             results = dao.getMedia(occurence, pageSize, pageNumber, null);
         }
         List<MediaDTO> mediaDTOs = results.stream()
-                .map(m -> MediaDTO.fromEntity(m))
+                .map(m -> MediaDtoLoader.INSTANCE().fromEntity(m))
                 .flatMap(dtos -> dtos.stream())
                 .collect(Collectors.toList()
                 );
@@ -378,30 +380,8 @@ public class OccurrenceServiceImpl
             e.printStackTrace();
         }
 
-        Collections.sort(castedUnits, new Comparator<SpecimenOrObservationBase>() {
-
-            @Override
-            public int compare(SpecimenOrObservationBase o1, SpecimenOrObservationBase o2) {
-                if(o1 instanceof FieldUnit && o2 instanceof FieldUnit) {
-                    FieldUnit fu1 = (FieldUnit)o1;
-                    FieldUnit fu2 = (FieldUnit)o2;
-
-                    return PartialComparator.INSTANCE().compare(fu1.getGatheringEvent().getGatheringDate(), fu2.getGatheringEvent().getGatheringDate());
-                }
-                if(o1 instanceof DerivedUnit && o2 instanceof DerivedUnit) {
-                    SpecimenOrObservationBase<?> du1 = o1;
-                    SpecimenOrObservationBase<?> du2 = o2;
-                    return StringUtils.compare(du1.getTitleCache(), du2.getTitleCache());
-                }
-                if(o1 instanceof FieldUnit && o2 instanceof DerivedUnit) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            }
-
-        });
-
+        //NOTE: the comparator should work the same way as the OccurrenceDtoComparator
+        Collections.sort(castedUnits, SpecimenOrObservationBaseComparator.INSTANCE());
 
         return new DefaultPagerImpl<>(pageNumber, totalCount, pageSize, castedUnits);
     }
@@ -416,7 +396,7 @@ public class OccurrenceServiceImpl
         // it is questionable if this filter makes sense for all use cases or if it is only a sensible default for the
         // compressed specimen table in the cdm-dataportal (see #6816, #6870)
         EnumSet<SpecimenOrObservationType> typeIncludeFilter = EnumSet.of(SpecimenOrObservationType.PreservedSpecimen);
-        FieldUnitDTO fieldUnitDTO = FieldUnitDTO.fromEntity(fieldUnit, null, typeIncludeFilter);
+        FieldUnitDTO fieldUnitDTO = FieldUnitDtoLoader.INSTANCE().fromEntity(fieldUnit, null, typeIncludeFilter);
         return fieldUnitDTO;
     }
 
@@ -428,7 +408,7 @@ public class OccurrenceServiceImpl
         if (!getSession().contains(derivedUnit)) {
             derivedUnit = (DerivedUnit) load(derivedUnit.getUuid());
         }
-        DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, null, null);
+        DerivedUnitDTO derivedUnitDTO = DerivedUnitDtoLoader.INSTANCE().fromEntity(derivedUnit, null, null);
 
         // individuals associations
         Collection<IndividualsAssociation> individualsAssociations = listIndividualsAssociations(derivedUnit, null, null, null, null);
@@ -535,7 +515,7 @@ public class OccurrenceServiceImpl
         taxa.add(associatedTaxon);
 
         //resulting collections
-        Set<SpecimenOrObservationBaseDTO> rootUnitDTOs = new HashSet<>();
+        Set<SpecimenOrObservationBaseDTO<?>> rootUnitDTOs = new HashSet<>();
         Map<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedUnits = new HashMap<>();
 
         //for each taxon
@@ -573,7 +553,7 @@ public class OccurrenceServiceImpl
                         for (TaxonDescription desc: taxon.getDescriptions()) {
                             for (DescriptionElementBase descElement: desc.getElements()) {
                                 if (descElement instanceof IndividualsAssociation) {
-                                    if (((IndividualsAssociation)descElement).getAssociatedSpecimenOrObservation().getUuid().equals(derivedUnit.getUuid())) {
+                                    if (((IndividualsAssociation)descElement).getAssociatedSpecimenOrObservation() != null &&((IndividualsAssociation)descElement).getAssociatedSpecimenOrObservation().getUuid().equals(derivedUnit.getUuid())) {
                                         isAssociated = true;
                                         break;
                                     }
@@ -583,7 +563,7 @@ public class OccurrenceServiceImpl
 
                         for (TypeDesignationBase<?> desc: taxon.getName().getHomotypicalGroup().getTypeDesignations()) {
                             if (desc instanceof SpecimenTypeDesignation) {
-                                if (((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
+                                if (((SpecimenTypeDesignation)desc).getTypeSpecimen() != null && ((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
                                     isAssociated = true;
                                     break;
                                 }
@@ -594,7 +574,7 @@ public class OccurrenceServiceImpl
                             for (TypeDesignationBase<?> desc :name.getHomotypicalGroup().getTypeDesignations()) {
 
                                 if (desc instanceof SpecimenTypeDesignation) {
-                                    if (((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
+                                    if (((SpecimenTypeDesignation)desc).getTypeSpecimen() != null && ((SpecimenTypeDesignation)desc).getTypeSpecimen().getUuid().equals(derivedUnit.getUuid())) {
                                         isAssociated = true;
                                         break;
                                     }
@@ -613,51 +593,26 @@ public class OccurrenceServiceImpl
                     rootUnitDTOs.addAll(findRootUnitDTOs(derivativeDTO, alreadyCollectedUnits));
                 } else {
                     // only other option is FieldUnit
-                    rootUnitDTOs.add(FieldUnitDTO.fromEntity((FieldUnit)unit, 0, null));
+                    rootUnitDTOs.add(FieldUnitDtoLoader.INSTANCE().fromEntity((FieldUnit)unit, 0, null));
                 }
             }
         }
 
-        List<SpecimenOrObservationBaseDTO> orderdDTOs = new ArrayList<>(rootUnitDTOs);
-        // TODO order dtos by date can only be done by string comparison
-        // the FieldUnitDTO.date needs to be a Partial object for sensible ordering
-        Collections.sort(orderdDTOs, new Comparator<SpecimenOrObservationBaseDTO>() {
+        List<SpecimenOrObservationBaseDTO<?>> orderdRootUnitDTOs = new ArrayList<>(rootUnitDTOs);
+        Collections.sort(orderdRootUnitDTOs, OccurrenceDtoComparator.INSTANCE());
 
-            @Override
-            public int compare(SpecimenOrObservationBaseDTO o1, SpecimenOrObservationBaseDTO o2) {
-                if(o1 instanceof FieldUnitDTO && o2 instanceof FieldUnitDTO) {
-                    FieldUnitDTO fu1 = (FieldUnitDTO)o1;
-                    FieldUnitDTO fu2 = (FieldUnitDTO)o2;
-                    //TODO if we want null values and values with missing year as smallest we should use
-                    //PartialComparator.INSTANCE_NULL_SMALLEST() here
-                    return PartialComparator.INSTANCE().compare(fu1.getDate(), fu2.getDate());
-                }
-                if(o1 instanceof DerivedUnitDTO && o2 instanceof DerivedUnitDTO) {
-                    SpecimenOrObservationBaseDTO du1 = o1;
-                    SpecimenOrObservationBaseDTO du2 = o2;
-                    return StringUtils.compare(du1.getLabel(), du2.getLabel());
-                 }
-                if(o1 instanceof FieldUnitDTO && o2 instanceof DerivedUnitDTO) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            }
-
-        });
-
-        return orderdDTOs;
+        return (List)orderdRootUnitDTOs;
     }
 
     @Override
     @Transactional
-    public  SpecimenOrObservationBaseDTO findByGeneticAccessionNumber(String accessionNumberString, List<OrderHint> orderHints)  {
+    public SpecimenOrObservationBaseDTO findByGeneticAccessionNumber(String accessionNumberString, List<OrderHint> orderHints)  {
 
         DnaSample dnaSample = dao.findByGeneticAccessionNumber(accessionNumberString, null);
         DerivedUnitDTO dnaSampleDTO;
         if (dnaSample != null){
-            dnaSampleDTO = new DNASampleDTO(dnaSample);
-            Collection<SpecimenOrObservationBaseDTO> fieldUnitDTOs = this.findRootUnitDTOs(dnaSampleDTO, new HashMap<>());
+            dnaSampleDTO = DnaSampleDtoLoader.INSTANCE().fromEntity(dnaSample);
+            Collection<SpecimenOrObservationBaseDTO<?>> fieldUnitDTOs = this.findRootUnitDTOs(dnaSampleDTO, new HashMap<>());
             // FIXME change return type to Collection<FieldUnitDTO>
             if(fieldUnitDTOs.isEmpty()) {
                 return null;
@@ -781,17 +736,17 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public Collection<SpecimenOrObservationBaseDTO> findRootUnitDTOs(UUID unitUUID) {
+    public Collection<SpecimenOrObservationBaseDTO<?>> findRootUnitDTOs(UUID unitUUID) {
 
         SpecimenOrObservationBase<?> entity = load(unitUUID);
-        SpecimenOrObservationBaseDTO derivedUnitDTO = SpecimenOrObservationDTOFactory.fromEntity(entity);
-        Collection<SpecimenOrObservationBaseDTO> rootUnitDTOs = new ArrayList<>();
+        SpecimenOrObservationBaseDTO<?> derivedUnitDTO = SpecimenOrObservationDTOFactory.fromEntity(entity);
+        Collection<SpecimenOrObservationBaseDTO<?>> rootUnitDTOs = new ArrayList<>();
         if(derivedUnitDTO != null) {
             if(derivedUnitDTO instanceof FieldUnitDTO) {
                 rootUnitDTOs.add(derivedUnitDTO);
             } else {
                 Map<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen = new HashMap<>();
-                rootUnitDTOs  = findRootUnitDTOs((DerivedUnitDTO)derivedUnitDTO, alreadyCollectedSpecimen);
+                rootUnitDTOs = findRootUnitDTOs((DerivedUnitDTO)derivedUnitDTO, alreadyCollectedSpecimen);
             }
         }
 
@@ -813,10 +768,10 @@ public class OccurrenceServiceImpl
      * @return
      *  The collection of all Field Units that are accessible from the derivative from where the search was started.
      */
-    public Collection<SpecimenOrObservationBaseDTO> findRootUnitDTOs(DerivedUnitDTO derivedUnitDTO,
+    public Collection<SpecimenOrObservationBaseDTO<?>> findRootUnitDTOs(DerivedUnitDTO derivedUnitDTO,
             Map<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
 
-        HashMap<UUID, SpecimenOrObservationBaseDTO> rootUnitDTOs = new HashMap<>();
+        Map<UUID, SpecimenOrObservationBaseDTO<?>> rootUnitDTOs = new HashMap<>();
         _findRootUnitDTOs(derivedUnitDTO, rootUnitDTOs, alreadyCollectedSpecimen);
         return rootUnitDTOs.values();
 
@@ -828,8 +783,9 @@ public class OccurrenceServiceImpl
      * It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
      * from which this DerivedUnit was derived until all FieldUnits are found.
      */
-    private void _findRootUnitDTOs(DerivedUnitDTO derivedUnitDTO, Map<UUID, SpecimenOrObservationBaseDTO> rootUnitDTOs,
-                Map<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
+    private void _findRootUnitDTOs(DerivedUnitDTO derivedUnitDTO,
+            Map<UUID, SpecimenOrObservationBaseDTO<?>> rootUnitDTOs,
+            Map<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
 
         List<String> propertyPaths = new ArrayList<>();
 
@@ -860,7 +816,7 @@ public class OccurrenceServiceImpl
                     // Don't assemble derivatives for originals since we have them collected already
                     // when ascending to the originals, we only want to collect those derivatives which are on the path up to the root
                     final Integer maxDepth = 0;
-                    SpecimenOrObservationBaseDTO originalDTO = SpecimenOrObservationDTOFactory.fromEntity(original, maxDepth);
+                    SpecimenOrObservationBaseDTO<?> originalDTO = SpecimenOrObservationDTOFactory.fromEntity(original, maxDepth);
                     originalDTO.addDerivative(derivedUnitDTO);
                     alreadyCollectedSpecimen.put(originalDTO.getUuid(), originalDTO);
                     if (original instanceof FieldUnit){
@@ -869,7 +825,7 @@ public class OccurrenceServiceImpl
                         _findRootUnitDTOs((DerivedUnitDTO) originalDTO, rootUnitDTOs, alreadyCollectedSpecimen);
                     }
                 } else {
-                    SpecimenOrObservationBaseDTO previouslyFoundRootUnit = rootUnitDTOs.get(original.getUuid());
+                    SpecimenOrObservationBaseDTO<?> previouslyFoundRootUnit = rootUnitDTOs.get(original.getUuid());
                     if(!previouslyFoundRootUnit.getDerivatives().stream().anyMatch(uDTO -> uDTO.getUuid().equals(derivedUnitDTO.getUuid()))) {
                         previouslyFoundRootUnit.addDerivative(derivedUnitDTO);
                     }
@@ -892,11 +848,11 @@ public class OccurrenceServiceImpl
         SpecimenOrObservationBase<?> derivative = dao.load(derivedUnitUuid);
         if(derivative != null){
             if (derivative instanceof FieldUnit){
-                fieldUnitDTO = FieldUnitDTO.fromEntity((FieldUnit)derivative);
+                fieldUnitDTO = FieldUnitDtoLoader.INSTANCE().fromEntity((FieldUnit)derivative);
                 return fieldUnitDTO;
             } else {
                 // must be a DerivedUnit otherwise
-                derivedUnitDTO = DerivedUnitDTO.fromEntity((DerivedUnit)derivative);
+                derivedUnitDTO = DerivedUnitDtoLoader.INSTANCE().fromEntity((DerivedUnit)derivative);
                 while(true){
 
                     Set<SpecimenOrObservationBaseDTO> originals = originalDTOs(derivedUnitDTO.getUuid());
@@ -921,8 +877,8 @@ public class OccurrenceServiceImpl
                         // to solve the situation for the output we remove the derivate from the more distant graph node
                         // by removing it from the derivatives of its original
                         // but let the derivate to be added to the original which is closer to the FieldUnit (below at originalDTO.addDerivate(derivedUnitDTO);)
-                        for(SpecimenOrObservationBaseDTO seenOriginal: cycleDetectionMap.values()){
-                            for(SpecimenOrObservationBaseDTO derivateDTO : seenOriginal.getDerivatives()){
+                        for(SpecimenOrObservationBaseDTO<?> seenOriginal: cycleDetectionMap.values()){
+                            for(DerivedUnitDTO derivateDTO : seenOriginal.getDerivatives()){
                                 if(derivateDTO.equals(originalDTO)){
                                     seenOriginal.getDerivatives().remove(originalDTO);
                                 }
@@ -950,19 +906,16 @@ public class OccurrenceServiceImpl
 
     }
 
-    /**
-     * @param originalDTO
-     * @return
-     */
     private Set<SpecimenOrObservationBaseDTO> originalDTOs(UUID derivativeUuid) {
 
         Set<SpecimenOrObservationBaseDTO> dtos = new HashSet<>();
         List<SpecimenOrObservationBase> specimens = dao.findOriginalsForDerivedUnit(derivativeUuid, null);
-        for(SpecimenOrObservationBase sob : specimens){
+        for(SpecimenOrObservationBase<?> sob : specimens){
+            //TODO use SpecimenOrObservationDTOFactory instead
             if(sob instanceof FieldUnit) {
-                dtos.add(FieldUnitDTO.fromEntity((FieldUnit)sob));
+                dtos.add(FieldUnitDtoLoader.INSTANCE().fromEntity((FieldUnit)sob));
             } else {
-                dtos.add(DerivedUnitDTO.fromEntity((DerivedUnit)sob));
+                dtos.add(DerivedUnitDtoLoader.INSTANCE().fromEntity((DerivedUnit)sob));
             }
         }
         return dtos;

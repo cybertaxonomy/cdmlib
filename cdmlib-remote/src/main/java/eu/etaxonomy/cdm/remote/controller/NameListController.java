@@ -94,7 +94,7 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
             value = {"typeDesignationStatusFilterTerms"},
             method = RequestMethod.GET)
     public Collection<TypeDesignationStatusFilter> doGetTypeDesignationStatusFilterTermsInUse(
-            HttpServletRequest request, HttpServletResponse response)throws IOException {
+            HttpServletRequest request, @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("doGetTypeDesignationStatusFilterTermsInUse() " + requestPathAndQuery(request));
         return service.getTypeDesignationStatusFilterTerms(localeContext.getLanguages());

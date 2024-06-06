@@ -221,5 +221,4 @@ public class SortIndexUpdaterWrapper implements Serializable {
         transactionManager.commit(txStatus);
         return;
     }
-
 }

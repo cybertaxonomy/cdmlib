@@ -189,7 +189,4 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
         }
         return false;
     }
-
-
-
 }

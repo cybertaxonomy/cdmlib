@@ -91,7 +91,6 @@ public class DnaQuality extends VersionableEntity {
 
     private String purificationMethod;
 
-
 	private Double ratioOfAbsorbance260_230;
 
 	private Double ratioOfAbsorbance260_280;
@@ -103,7 +102,6 @@ public class DnaQuality extends VersionableEntity {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private MeasurementUnit concentrationUnit;
-
 
 	@XmlElement(name = "Type")
     @XmlIDREF

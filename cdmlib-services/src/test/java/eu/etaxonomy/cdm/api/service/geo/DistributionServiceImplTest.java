@@ -19,7 +19,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -59,7 +58,6 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -97,115 +95,9 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         editMapServiceUri = new URI(EDIT_MAPSERVICE_URI_STRING);
     }
 
-//******************************************** TESTS**************
+//******************************************** TESTS************************************
 
-    @Test
-    public void testGetWebServiceUrlCountry() {
-        Set<Distribution> distributions = new HashSet<>();
-        Country germany = termService.findByIdInVocabulary("DEU", Country.uuidCountryVocabulary, Country.class);
 
-        distributions.add(Distribution.NewInstance(germany, PresenceAbsenceTerm.PRESENT()));
-        distributions.add(Distribution.NewInstance(termService.findByIdInVocabulary("DE", Country.uuidCountryVocabulary, Country.class), PresenceAbsenceTerm.INTRODUCED()));
-        Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<>();
-        presenceAbsenceColorMap.put(PresenceAbsenceTerm.PRESENT(), Color.BLUE);
-        presenceAbsenceColorMap.put(PresenceAbsenceTerm.INTRODUCED(), Color.BLACK);
-        List<Language> languages = new ArrayList<>();
-
-        boolean subAreaPreference = false;
-        boolean statusOrderPreference = false;
-        TermTree<NamedArea> areaTree = null;
-        TermTree<PresenceAbsenceTerm> statusTree = null;
-        Set<MarkerType> fallbackAreaMarkerTypes = null;
-
-        Collection<Distribution> filteredDistributions = DistributionServiceUtilities.filterDistributions(
-                distributions, areaTree, statusTree, fallbackAreaMarkerTypes, false,
-                statusOrderPreference, subAreaPreference, true);
-
-        String result = DistributionServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
-                mapping, null, null, languages );
-        logger.warn(result);
-        Assert.assertTrue("WebServiceUrl must contain country part for Germany", result.matches(".*ad=country_earth(%3A|:)gmi_cntry:.:DEU.*"));
-    }
-
-    @Test
-    public void testGetWebServiceUrlTdwg() throws MalformedURLException, IOException {
-        //String webServiceUrl = "http://www.test.de/webservice";
-        Set<Distribution> distributions = new HashSet<>();
-        distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("SPA"), PresenceAbsenceTerm.PRESENT()));
-        distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("GER"), PresenceAbsenceTerm.INTRODUCED()));
-        distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("14"), PresenceAbsenceTerm.CULTIVATED()));
-        distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("BGM"), PresenceAbsenceTerm.ABSENT()));
-        distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("FRA"), PresenceAbsenceTerm.ABSENT()));
-        distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("IND-AP"), PresenceAbsenceTerm.PRESENT()));
-
-        Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<>();
-        presenceAbsenceColorMap.put(PresenceAbsenceTerm.PRESENT(), Color.BLUE);
-        presenceAbsenceColorMap.put(PresenceAbsenceTerm.INTRODUCED(), Color.BLACK);
-        presenceAbsenceColorMap.put(PresenceAbsenceTerm.CULTIVATED(), Color.YELLOW);
-        presenceAbsenceColorMap.put(PresenceAbsenceTerm.ABSENT(), Color.DARK_GRAY);
-//        String backLayer ="";
-        presenceAbsenceColorMap = null;
-//        String bbox="-20,0,120,70";
-        List<Language> languages = new ArrayList<>();
-
-//        boolean subAreaPreference = false;
-//        boolean statusOrderPreference = false;
-        String result = DistributionServiceUtilities.getDistributionServiceRequestParameterString(
-                distributions,
-                mapping,
-                null, // presenceAbsenceTermColors
-                null, // projectToLayer
-                languages );
-        //TODO Set semantics is not determined
-        //String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
-        logger.debug(result);
-        assertTrue(result.matches(".*ad=tdwg[1-4].*"));
-        assertTrue(result.matches(".*tdwg2:[a-d]:14[\\|&].*") );
-        assertTrue(result.matches(".*[a-d]:FRA,BGM[\\|&].*") || result.matches(".*[a-d]:BGM,FRA[\\|&].*") );
-        assertTrue(result.matches(".*[a-d]:GER[\\|&].*") );
-        assertTrue(result.matches(".*[a-d]:SPA[\\|&].*") );
-        assertTrue(result.matches(".*tdwg4:[a-d]:INDAP[\\|&].*") );
-        //assertTrue(result.matches("0000ff"));
-        //TODO continue
-
-        // request map image from webservice
-        subTestWithEditMapService(result);
-    }
-
-    @Test
-    public void testGetWebServiceUrlCyprus() throws ClientProtocolException, IOException {
-        makeCyprusAreas();
-        Set<Distribution> distributions = new HashSet<>();
-        distributions.add(Distribution.NewInstance(divisions.get("1"), PresenceAbsenceTerm.PRESENT()));
-        distributions.add(Distribution.NewInstance(divisions.get("2"), PresenceAbsenceTerm.INTRODUCED()));
-        distributions.add(Distribution.NewInstance(divisions.get("3"), PresenceAbsenceTerm.CULTIVATED()));
-        distributions.add(Distribution.NewInstance(divisions.get("4"), PresenceAbsenceTerm.ABSENT()));
-        distributions.add(Distribution.NewInstance(divisions.get("5"), PresenceAbsenceTerm.ABSENT()));
-        distributions.add(Distribution.NewInstance(divisions.get("6"), PresenceAbsenceTerm.PRESENT()));
-
-        Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<>();
-        presenceAbsenceColorMap.put(PresenceAbsenceTerm.PRESENT(), Color.BLUE);
-        presenceAbsenceColorMap.put(PresenceAbsenceTerm.INTRODUCED(), Color.BLACK);
-        presenceAbsenceColorMap.put(PresenceAbsenceTerm.CULTIVATED(), Color.YELLOW);
-        presenceAbsenceColorMap.put(PresenceAbsenceTerm.ABSENT(), Color.DARK_GRAY);
-        presenceAbsenceColorMap = null;
-        List<Language> languages = new ArrayList<>();
-
-        String result = DistributionServiceUtilities.getDistributionServiceRequestParameterString(
-                distributions,
-                mapping,
-                null, null, languages );
-        //TODO Set semantics is not determined
-        //String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
-        assertTrue(result.matches(".*ad=cyprusdivs%3Abdcode:.*"));
-        assertTrue(result.matches(".*[a-d]:5,4[\\|&].*") || result.matches(".*[a-d]:4,5[\\|&].*") );
-        assertTrue(result.matches(".*[a-d]:1,6[\\|&].*") || result.matches(".*[a-d]:6,1[\\|&].*") );
-        assertTrue(result.matches(".*[a-d]:2[\\|&].*") );
-        assertTrue(result.matches(".*[a-d]:3[\\|&].*") );
-
-        // request map image from webservice
-        subTestWithEditMapService(result);
-    }
 
     private void subTestWithEditMapService(String queryString)throws MalformedURLException, IOException {
         if(UriUtils.isServiceAvailable(editMapServiceUri)){
@@ -231,9 +123,46 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
     public static final UUID uuidCyprusDivisionsVocabulary = UUID.fromString("2119f610-1f93-4d87-af28-40aeefaca100");
     private final Map<String, NamedArea> divisions = new HashMap<>();
 
-    private boolean makeCyprusAreas() throws IOException {
-        //divisions
 
+    //TODO move to AreaMapServiceParameterBuilder and simplify dependencies
+    @Test
+    public void testGetWebServiceUrlCyprus() throws ClientProtocolException, IOException {
+        makeCyprusAreas();
+        Set<Distribution> distributions = new HashSet<>();
+        distributions.add(Distribution.NewInstance(divisions.get("1"), PresenceAbsenceTerm.PRESENT()));
+        distributions.add(Distribution.NewInstance(divisions.get("2"), PresenceAbsenceTerm.INTRODUCED()));
+        distributions.add(Distribution.NewInstance(divisions.get("3"), PresenceAbsenceTerm.CULTIVATED()));
+        distributions.add(Distribution.NewInstance(divisions.get("4"), PresenceAbsenceTerm.ABSENT()));
+        distributions.add(Distribution.NewInstance(divisions.get("5"), PresenceAbsenceTerm.ABSENT()));
+        distributions.add(Distribution.NewInstance(divisions.get("6"), PresenceAbsenceTerm.PRESENT()));
+
+        Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<>();
+        presenceAbsenceColorMap.put(PresenceAbsenceTerm.PRESENT(), Color.BLUE);
+        presenceAbsenceColorMap.put(PresenceAbsenceTerm.INTRODUCED(), Color.BLACK);
+        presenceAbsenceColorMap.put(PresenceAbsenceTerm.CULTIVATED(), Color.YELLOW);
+        presenceAbsenceColorMap.put(PresenceAbsenceTerm.ABSENT(), Color.DARK_GRAY);
+        presenceAbsenceColorMap = null;
+        List<Language> languages = new ArrayList<>();
+
+        String result = new AreaMapServiceParameterBuilder().buildFromEntities(
+                distributions,
+                mapping,
+                presenceAbsenceColorMap, null, languages );
+        //TODO Set semantics is not determined
+        //String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
+        assertTrue(result.matches(".*ad=cyprusdivs%3Abdcode:.*"));
+        assertTrue(result.matches(".*[a-d]:5,4[\\|&].*") || result.matches(".*[a-d]:4,5[\\|&].*") );
+        assertTrue(result.matches(".*[a-d]:1,6[\\|&].*") || result.matches(".*[a-d]:6,1[\\|&].*") );
+        assertTrue(result.matches(".*[a-d]:2[\\|&].*") );
+        assertTrue(result.matches(".*[a-d]:3[\\|&].*") );
+
+        // request map image from webservice
+        subTestWithEditMapService(result);
+    }
+
+    private void makeCyprusAreas() throws IOException {
+
+        //divisions
         NamedAreaType areaType = NamedAreaType.NATURAL_AREA();
         NamedAreaLevel areaLevel = NamedAreaLevel.NewInstance("Cyprus Division", "Cyprus Division", null);
 
@@ -273,13 +202,13 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
             divisions.put(dtb.getIdInVocabulary(), (NamedArea) dtb);
         }
 
-//		indigenousStatus = (PresenceTerm)getTermService().find(CyprusTransformer.indigenousUuid);
-//		casualStatus = (PresenceTerm)getTermService().find(CyprusTransformer.casualUuid);
-//		nonInvasiveStatus = (PresenceTerm)getTermService().find(CyprusTransformer.nonInvasiveUuid);
-//		invasiveStatus = (PresenceTerm)getTermService().find(CyprusTransformer.invasiveUuid);
-//		questionableStatus = (PresenceTerm)getTermService().find(CyprusTransformer.questionableUuid);
+//      indigenousStatus = (PresenceTerm)getTermService().find(CyprusTransformer.indigenousUuid);
+//      casualStatus = (PresenceTerm)getTermService().find(CyprusTransformer.casualUuid);
+//      nonInvasiveStatus = (PresenceTerm)getTermService().find(CyprusTransformer.nonInvasiveUuid);
+//      invasiveStatus = (PresenceTerm)getTermService().find(CyprusTransformer.invasiveUuid);
+//      questionableStatus = (PresenceTerm)getTermService().find(CyprusTransformer.questionableUuid);
 
-        return true;
+        return;
     }
 
     public static final UUID uuidDivision1 = UUID.fromString("ab17eee9-1abb-4ce9-a9a2-563f840cdbfc");
@@ -316,45 +245,7 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         return namedArea;
     }
 
-    @Test
-    public void testGetWebServiceUrlBangka() throws ClientProtocolException, IOException {
-        NamedArea areaBangka = NamedArea.NewInstance("Bangka", "Bangka", null);
-        TermVocabulary<NamedArea> voc = TermVocabulary.NewInstance(TermType.NamedArea,
-                NamedArea.class, "test Voc", "test voc", null, null);
-        voc.addTerm(areaBangka);
-
-        GeoServiceArea geoServiceArea = new GeoServiceArea();
-        String geoServiceLayer="vmap0_as_bnd_political_boundary_a";
-        String layerFieldName ="nam";
-        String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
-        geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
-        geoServiceArea.add(geoServiceLayer, layerFieldName, "BALI");
-
-        mapping.set(areaBangka, geoServiceArea);
-        Set<Distribution> distributions = new HashSet<>();
-        distributions.add(Distribution.NewInstance(areaBangka, PresenceAbsenceTerm.PRESENT()));
-
-        Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<>();
-        presenceAbsenceColorMap.put(PresenceAbsenceTerm.PRESENT(), Color.BLUE);
-
-        presenceAbsenceColorMap = null;
-        List<Language> languages = new ArrayList<>();
-
-        String result = DistributionServiceUtilities.getDistributionServiceRequestParameterString(distributions,
-                mapping,
-                null, null, languages );
-        //TODO Set semantics is not determined
-        //String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
-
-        logger.debug(result);
-        assertTrue(result.matches(".*ad=vmap0_as_bnd_political_boundary_a%3Anam:.*"));
-        assertTrue(result.matches(".*(PULAU\\+BANGKA%23SUMATERA\\+SELATAN).*") );
-        assertTrue(result.matches(".*(BALI).*") );
-
-        // request map image from webservice
-        subTestWithEditMapService(result);
-    }
-
+    //TODO move to AreaMapServiceParameterBuilder and simplify dependencies
     @Test
     @Ignore
     @DataSet( value="EditGeoServiceTest.getDistributionServiceRequestParameterString.xml")
@@ -368,7 +259,7 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
         Set<MarkerType> hideMarkedAreas = null;
-        Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = null;
+        Map<UUID, Color> presenceAbsenceTermColors = null;
         List<Language> langs = null;
 
         List<TaxonDescription> taxonDescriptions = new ArrayList<>();

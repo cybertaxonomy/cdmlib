@@ -48,7 +48,7 @@ public class TestModelUpdate {
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm538" : "cdm540");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm540" : "cdm543");
 //		database = "cdm_test1";
 
 		CdmDataSource dataSource = getDatasource(dbType, database);
@@ -131,7 +131,7 @@ public class TestModelUpdate {
 	 */
 	private void updateRemoteWebappTestH2(){
 	    System.out.println("Update remoteWebappTestH2");
-	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib2\\cdmlib-remote-webapp\\";
+	    String pathToProject = "C:\\Users\\muellera\\git\\cdmlib\\cdmlib-remote-webapp\\";
 	    updateH2(pathToProject);
 	}
 
@@ -141,7 +141,7 @@ public class TestModelUpdate {
      */
     private void updateTaxEditorH2(){
         System.out.println("Update TaxEditorTestH2");
-        String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor2\\eu.etaxonomy.taxeditor.test\\";
+        String pathToProject = "C:\\Users\\muellera\\git\\taxeditor\\eu.etaxonomy.taxeditor.test\\";
         updateH2(pathToProject);
     }
 
@@ -151,7 +151,7 @@ public class TestModelUpdate {
      */
     private void updateVaadinH2(){
         System.out.println("Update VaadinTestH2");
-        String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin2\\";
+        String pathToProject = "C:\\Users\\muellera\\git\\cdm-vaadin\\";
         updateH2(pathToProject);
     }
 

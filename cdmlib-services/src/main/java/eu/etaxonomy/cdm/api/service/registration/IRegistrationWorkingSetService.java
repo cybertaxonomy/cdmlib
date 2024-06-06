@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO;
+import eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -34,13 +34,13 @@ public interface IRegistrationWorkingSetService {
      * @param id the CDM Entity id
      * @return
      */
-    public RegistrationDTO loadDtoById(Integer id);
+    public RegistrationWrapperDTO loadDtoById(Integer id);
 
-    public RegistrationDTO loadDtoByUuid(UUID uuid);
+    public RegistrationWrapperDTO loadDtoByUuid(UUID uuid);
 
-    public Pager<RegistrationDTO> pageDTOs(Integer pageSize, Integer pageIndex);
+    public Pager<RegistrationWrapperDTO> pageDTOs(Integer pageSize, Integer pageIndex);
 
-    public Pager<RegistrationDTO> pageDTOs(String identifier, Integer pageIndex,  Integer pageSize) throws IOException;
+    public Pager<RegistrationWrapperDTO> pageDTOs(String identifier, Integer pageIndex,  Integer pageSize) throws IOException;
 
     /**
      * @param referenceID
@@ -53,7 +53,7 @@ public interface IRegistrationWorkingSetService {
     public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws TypeDesignationSetException;
 
     /**
-     * Loads the working set specified by the <code>referenceUuid</code> from the database. The list of {@link RegistrationDTO}s can be empty in case
+     * Loads the working set specified by the <code>referenceUuid</code> from the database. The list of {@link RegistrationWrapperDTO}s can be empty in case
      * there is no registration which is related to the reference.
      *
      * @param referenceUuid
@@ -63,19 +63,19 @@ public interface IRegistrationWorkingSetService {
      */
     public RegistrationWorkingSet loadWorkingSetByReferenceUuid(UUID referenceUuid, boolean resolveSections) throws TypeDesignationSetException, PermissionDeniedException;
 
-    public Set<RegistrationDTO> loadBlockingRegistrations(UUID blockedRegistrationUuid);
+    public Set<RegistrationWrapperDTO> loadBlockingRegistrations(UUID blockedRegistrationUuid);
 
-    public Pager<RegistrationDTO> convertToDTOPager(Pager<Registration> regPager);
+    public Pager<RegistrationWrapperDTO> convertToDTOPager(Pager<Registration> regPager);
 
-    public List<RegistrationDTO> makeDTOs(Collection<Registration> regs);
+    public List<RegistrationWrapperDTO> makeDTOs(Collection<Registration> regs);
 
-    Pager<RegistrationDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
+    Pager<RegistrationWrapperDTO> pageDTOs(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize,
             Integer pageIndex, List<OrderHint> orderHints);
 
-    public Pager<RegistrationDTO> findInTaxonGraph(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
+    public Pager<RegistrationWrapperDTO> findInTaxonGraph(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             String taxonNameFilterPattern, MatchMode matchMode, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints);
 
-    public Pager<RegistrationDTO> pageWorkingSetsByNameUUID(Collection<UUID> taxonNameUuids, Integer pageIndex, Integer pageSize, List<OrderHint> orderHints) throws TypeDesignationSetException, PermissionDeniedException;
+    public Pager<RegistrationWrapperDTO> pageWorkingSetsByNameUUID(Collection<UUID> taxonNameUuids, Integer pageIndex, Integer pageSize, List<OrderHint> orderHints) throws TypeDesignationSetException, PermissionDeniedException;
 }

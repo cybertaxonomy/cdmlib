@@ -208,8 +208,8 @@ public class TaxonNodeServiceImpl
         List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("parent");
         parent = dao.load(parent.getId(), propertyPaths);
-        TaxonNodeDto uuidAndTitleCache = new TaxonNodeDto(parent);
-        return listChildNodesAsTaxonNodeDto(uuidAndTitleCache);
+        TaxonNodeDto taxonNodeDto = new TaxonNodeDto(parent);
+        return listChildNodesAsTaxonNodeDto(taxonNodeDto);
     }
 
     @Override

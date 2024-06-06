@@ -87,7 +87,4 @@ public class HTMLTagRules {
 		result = result.substring(0, rules.isEmpty()? result.length(): result.length()-1) + "]";
 		return result;
 	}
-
-
-
 }

@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.SingleNameMatchingResult;
@@ -17,22 +18,24 @@ import eu.etaxonomy.cdm.common.NameMatchingUtils;
  * @author andreabee90
  * @since 21.11.2023
  */
-
 public class AuthorMatch {
 
-
-    public static List<SingleNameMatchingResult> compareAuthor (List<SingleNameMatchingResult> resultList, String authorshipQuery) {
-
-
+    public static List<SingleNameMatchingResult> compareAuthor (List<SingleNameMatchingResult> resultList, String authorshipQuery, Integer distance) {
+        List<SingleNameMatchingResult> result = new ArrayList<>();
         authorNormalization(resultList);
         AuthorMatch.etal(authorshipQuery);
         NameMatchingUtils.replaceSpecialCharacters(authorshipQuery);
-
         for (int i = 0 ; i < resultList.size(); i++) {
             int distanceAuthorComparison = NameMatchingUtils.modifiedDamerauLevenshteinDistance(authorshipQuery, resultList.get(i).getAuthorshipCache());
             resultList.get(i).setDistance(distanceAuthorComparison+resultList.get(i).getDistance());
         }
-        return resultList;
+        for (int i = 0 ; i < resultList.size(); i++) {
+            if (resultList.get(i).getDistance() <= distance) {
+                result.add(resultList.get(i));
+            }
+        }
+
+        return result;
     }
 
     private static void authorNormalization(List<SingleNameMatchingResult> results) {

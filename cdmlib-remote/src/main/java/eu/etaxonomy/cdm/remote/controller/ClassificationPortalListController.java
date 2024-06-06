@@ -125,6 +125,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             @PathVariable("taxonUuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "sortMode", required = false, defaultValue = ClassificationController.DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeDtoSortMode sortMode,
+            @RequestParam(value = "loadingMode", required = false, defaultValue = "dto") String loadingMode,  //TODO preliminary, if "instance" the data is loaded via model objects, also readonly has been tested this way but removed as it had no effect #7045
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("getChildNodesOfTaxon() " + request.getRequestURI());
@@ -133,8 +134,12 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
 
         List<TaxonNodeDto> children;
         try {
+//            Instant start = Instant.now();
             children = service.listChildNodeDtosOfTaxon(taxonUuid, classificationUuid, subtreeUuid,
-                    includeUnpublished, null, null, sortMode, NODE_INIT_STRATEGY);
+                    includeUnpublished, null, null, sortMode, loadingMode);
+//            Instant end = Instant.now();
+//            Duration d = Duration.between(start, end);
+//            System.out.println(d.toMillis());
         } catch (FilterException e) {
             HttpStatusMessage.SUBTREE_FILTER_INVALID.send(response);
             return null;

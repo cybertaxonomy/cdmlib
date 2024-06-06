@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
@@ -38,9 +39,11 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.common.AuthorityType;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.IExternallyManaged;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -208,6 +211,106 @@ public abstract class TermBase
         return repr;
     }
 
+    /**
+     * Returns the non-empty label of the representation in the preferred language.
+     * Preferred languages are specified by the parameter languages, which receives a list of
+     * Language instances in the order of preference. Only a representation with a non-empty
+     * label is considered.
+     * If no reference with a non-empty label is found in the representations defined by the list
+     * the method falls back to return the label in the default language and if necessary
+     * further falls back to return any non-empty label if any exists.
+     *
+     * If no such label exists the titleCache is returned.
+     *
+     * @param languages
+     * @return
+     */
+    public String getPreferredLabel(List<Language> languages) {
+        Representation repr = null;
+        if(languages != null){
+            for(Language language : languages) {
+                repr = getRepresentation(language);
+                if(hasLabel(repr)){
+                    return repr.getLabel();
+                }
+            }
+        }
+        repr = getRepresentation(Language.DEFAULT());
+        if (hasLabel(repr)) {
+            return repr.getLabel();
+        }
+        if(repr == null){
+            Iterator<Representation> it = getRepresentations().iterator();
+            if(it.hasNext()){
+                repr = getRepresentations().iterator().next();
+                if (hasLabel(repr)) {
+                    return repr.getLabel();
+                }
+            }
+        }
+        return CdmUtils.Nz(getTitleCache());
+    }
+
+    private boolean hasLabel(Representation repr) {
+        return repr != null && StringUtils.isNotEmpty(repr.getLabel());
+    }
+
+    /**
+     * Returns the abbreviation of the representation in the preferred language.
+     * Preferred languages are specified by the parameter languages, which receives a list of
+     * Language instances in the order of preference. If the parameter allowEmpty is set
+     * only a representation with a non-empty abbreviation is considered.
+     * If no such reference is found in the representations defined by the language list
+     * the method falls back to return the abbreviation in the default language and if necessary
+     * further falls back to return any abbreviation for any existing representation.
+     *
+     * If no such abbreviation exists symbol1 and then symbol2 is returned if not empty.
+     *
+     * @param languages
+     * @return
+     */
+    public String getPreferredAbbreviation(List<Language> languages, boolean allowEmpty,
+            boolean allowSymbols) {
+
+        Representation repr = null;
+        if(languages != null){
+            for(Language language : languages) {
+                repr = getRepresentation(language);
+                if(allowEmpty || hasAbbrevLabel(repr)){
+                    return repr.getAbbreviatedLabel();
+                }
+            }
+        }
+        repr = getRepresentation(Language.DEFAULT());
+        if (allowEmpty || hasAbbrevLabel(repr)) {
+            return repr.getAbbreviatedLabel();
+        }
+        if(repr == null){
+            Iterator<Representation> it = getRepresentations().iterator();
+            if(it.hasNext()){
+                repr = getRepresentations().iterator().next();
+                if (allowEmpty || hasAbbrevLabel(repr)) {
+                    return repr.getAbbreviatedLabel();
+                }
+            }
+        }
+        if (allowSymbols && this.isInstanceOf(DefinedTermBase.class)) {
+            DefinedTermBase<?> defTerm = CdmBase.deproxy(this, DefinedTermBase.class);
+            if (StringUtils.isNotEmpty(defTerm.getSymbol())) {
+                return defTerm.getSymbol();
+            }else if (StringUtils.isNotEmpty(defTerm.getSymbol2())) {
+                return defTerm.getSymbol2();
+            }
+            //else idInVoc?
+
+        }
+        return null;
+    }
+
+    private boolean hasAbbrevLabel(Representation repr) {
+        return repr != null && StringUtils.isNotEmpty(repr.getAbbreviatedLabel());
+    }
+
     public URI getUri() {
         return this.uri;
     }
@@ -236,9 +339,42 @@ public abstract class TermBase
         }
     }
 
+    @Transient
+    public String getPluralLabel() {
+        if(isNotBlank(getPluralLabel(Language.DEFAULT()))){
+            return getPluralLabel(Language.DEFAULT());
+        }else if(isNotBlank(getLabel(Language.DEFAULT()))){
+            return getLabel(Language.DEFAULT());
+        }else{
+            for (Representation r : representations){
+                if (isNotBlank(r.getPlural())){
+                    return r.getPlural();
+                }
+            }
+            for (Representation r : representations){
+                if (isNotBlank(r.getLabel())){
+                    return r.getLabel();
+                }
+            }
+            if (representations.size()>0){
+                return null;
+            }else{
+                if (this.getTitleCache() != null) {
+                    return this.getTitleCache();
+                }
+                return super.getUuid().toString();
+            }
+        }
+    }
+
     public String getLabel(Language lang) {
         Representation repr = this.getRepresentation(lang);
         return (repr == null) ? null : repr.getLabel();
+    }
+
+    public String getPluralLabel(Language lang) {
+        Representation repr = this.getRepresentation(lang);
+        return (repr == null) ? null : repr.getPlural();
     }
 
     public void setLabel(String label){

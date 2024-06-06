@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,14 +28,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eu.etaxonomy.cdm.api.dto.MediaDTO;
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.api.service.dto.MediaDTO;
+import eu.etaxonomy.cdm.api.service.dto.MediaDtoLoader;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -64,28 +64,18 @@ public class TypeDesignationController extends AbstractController<TaxonName, INa
     public Collection<MediaDTO> doGetMedia(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            @SuppressWarnings("unused") HttpServletResponse response) {
 
 
         logger.info("doGetMediaUris() - " + requestPathAndQuery(request));
-        ArrayList<MediaDTO> dtos = new ArrayList<>();
+        List<MediaDTO> dtos = new ArrayList<>();
         TypeDesignationBase<?> td = service.loadTypeDesignation(uuid, Arrays.asList("typeSpecimen.mediaSpecimen.representations.mediaRepresentationParts"));
         if(td instanceof SpecimenTypeDesignation){
             SpecimenTypeDesignation std = (SpecimenTypeDesignation)td;
-            DerivedUnit du = HibernateProxyHelper.deproxy(std.getTypeSpecimen(), DerivedUnit.class);
+            DerivedUnit du = HibernateProxyHelper.deproxy(std.getTypeSpecimen());
             if(du != null && du instanceof MediaSpecimen) {
                 Media media = ((MediaSpecimen)du).getMediaSpecimen();
-                if(media != null){
-                    for(MediaRepresentation mrp : media.getRepresentations()){
-                        for(MediaRepresentationPart p : mrp.getParts()){
-                            if(p.getUri() != null){
-                                MediaDTO dto = new MediaDTO(media.getUuid());
-                                dto.setUri(p.getUri().toString());
-                                dtos.add(dto);
-                            }
-                        }
-                    }
-                }
+                dtos = MediaDtoLoader.INSTANCE().fromEntity(media);
             }
         }
         return dtos;
@@ -123,6 +113,7 @@ public class TypeDesignationController extends AbstractController<TaxonName, INa
         TypeDesignationBase<?> dtb = service.loadTypeDesignation(uuid, Arrays.asList("$", "annotations"));
         if(dtb == null){
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
+            return null;
         }
         return dtb.getAnnotations();
     }

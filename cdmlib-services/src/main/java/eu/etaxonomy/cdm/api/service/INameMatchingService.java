@@ -8,8 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.List;
+import java.util.Map;
+
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.NameMatchingResult;
-import eu.etaxonomy.cdm.api.service.config.NameMatchingConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.NameMatchingParserException;
 
 /**
  * @author andreabee90
@@ -17,5 +20,8 @@ import eu.etaxonomy.cdm.api.service.config.NameMatchingConfigurator;
  */
 public interface INameMatchingService  {
 
-	public NameMatchingResult findMatchingNames(String taxonName, NameMatchingConfigurator config, boolean compareAuthor);
+	public NameMatchingResult findMatchingNames(String nameCache, boolean compareAuthor, Integer distance) throws NameMatchingParserException;
+
+	public Map<String, NameMatchingResult> compareTaxonListName(List<String> input, boolean compareAuthor, Integer maxDistance) throws NameMatchingParserException;
+//
 }

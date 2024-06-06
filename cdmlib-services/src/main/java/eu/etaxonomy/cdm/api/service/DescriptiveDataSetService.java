@@ -136,7 +136,7 @@ public class DescriptiveDataSetService
 
 	@Override
     public List<UuidAndTitleCache<DescriptiveDataSet>> getDescriptiveDataSetUuidAndTitleCache(Integer limitOfInitialElements, String pattern) {
-        return dao.getDescriptiveDataSetUuidAndTitleCache( limitOfInitialElements, pattern);
+        return dao.getDescriptiveDataSetUuidAndTitleCache(limitOfInitialElements, pattern);
     }
 
 	@Override
@@ -404,7 +404,7 @@ public class DescriptiveDataSetService
         TaxonNodeDto taxonNode = taxonNodeService.dto(taxonNodeUuid);
         DescriptiveDataSetBaseDto descriptiveDataSet = getDescriptiveDataSetDtoByUuid(datasetUuid);
 //        UuidAndTitleCache<SpecimenOrObservationBase> specimen = description.getSpecimenDto();
-        SpecimenOrObservationBase specimen = occurrenceService.find(description.getSpecimenDto().getUuid());
+        SpecimenOrObservationBase<?> specimen = occurrenceService.find(description.getSpecimenDto().getUuid());
 
         //supplemental information
         if(taxonNode==null){
@@ -446,11 +446,11 @@ public class DescriptiveDataSetService
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
                 ? createTaxonRowWrapper(defaultTaxonDescription.getDescriptionUuid(), descriptiveDataSet.getUuid(), lang) : null;
 //                use description not specimen for specimenRow
-        DescriptionBase specDesc = null;
+        DescriptionBase<?> specDesc = null;
 
         for (Object desc: specimen.getDescriptions()) {
-            if (description.getDescriptionUuid().equals(((DescriptionBase)desc).getUuid())) {
-                specDesc = (DescriptionBase)desc;
+            if (description.getDescriptionUuid().equals(((DescriptionBase<?>)desc).getUuid())) {
+                specDesc = (DescriptionBase<?>)desc;
                 break;
             }
         }

@@ -107,7 +107,7 @@ public class CdmModelCacher {
         String mappedClassName = mappedClass.getName();
         PersistentClass persistentClass = metadata.getEntityBinding(mappedClassName);
         CdmModelFieldPropertyFromClass fieldProperties = new CdmModelFieldPropertyFromClass(mappedClassName);
-        logger.warn("Adding class : " + mappedClassName + " to cache");
+        logger.debug("Adding class : " + mappedClassName + " to cache");
         addGetters(persistentClass, fieldProperties);
         modelClassMap.put(mappedClassName, fieldProperties);
     }

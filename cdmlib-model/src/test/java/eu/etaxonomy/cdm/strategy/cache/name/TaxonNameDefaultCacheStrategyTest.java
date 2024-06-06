@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -723,7 +723,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         //test ordinary infrageneric
         List<TaggedText> subGenusNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName, false);
-        String subGenusNameCache = TaggedCacheHelper.createString(subGenusNameCacheTagged);
+        String subGenusNameCache = TaggedTextFormatter.createString(subGenusNameCacheTagged);
         assertEquals("Subgenus name should be 'Genus subg. subgenus'.", "Genus subg. subgenus", subGenusNameCache);
         String subGenusTitle = strategy.getTitleCache(nonViralName);
         assertEquals("Subgenus name should be 'Genus subg. subgenus Anyauthor'.", "Genus subg. subgenus Anyauthor", subGenusTitle);
@@ -736,7 +736,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         List<TaggedText> aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName, false);
 
-        String aggrNameCache = TaggedCacheHelper.createString(aggrNameCacheTagged);
+        String aggrNameCache = TaggedTextFormatter.createString(aggrNameCacheTagged);
         assertEquals("Species aggregate name should be 'Genus myspecies aggr.'.", "Genus myspecies aggr.", aggrNameCache);
         String aggrNameTitle = strategy.getTitleCache(nonViralName);
         Assert.assertTrue("Species aggregate should not include author information.", aggrNameTitle.indexOf(author) == -1);
@@ -752,7 +752,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         nonViralName.setInfraGenericEpithet("Infragenus");
 
         aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName, false);
-        aggrNameCache = TaggedCacheHelper.createString(aggrNameCacheTagged);
+        aggrNameCache = TaggedTextFormatter.createString(aggrNameCacheTagged);
         assertEquals("Species aggregate name should be 'Genus (Infragenus) myspecies aggr.'.", "Genus (Infragenus) myspecies aggr.", aggrNameCache);
 
         aggrNameTitle = strategy.getTitleCache(nonViralName);
@@ -770,7 +770,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         nonViralName.setAuthorshipCache("L.");
 
         aggrNameCacheTagged = strategy.getTaggedTitle(nonViralName);
-        aggrNameCache = TaggedCacheHelper.createString(aggrNameCacheTagged);
+        aggrNameCache = TaggedTextFormatter.createString(aggrNameCacheTagged);
         assertEquals("Species aggregate name should be 'Genus myspecies L.'.", "Genus myspecies L.", aggrNameCache);
 
     }
