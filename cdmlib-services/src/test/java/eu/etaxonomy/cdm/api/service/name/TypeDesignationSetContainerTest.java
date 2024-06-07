@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -158,6 +159,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         mtd_HT_published.setId(5);
         MediaSpecimen mediaSpecimen_published = (MediaSpecimen)DerivedUnit.NewInstance(SpecimenOrObservationType.Media);
         Media media = Media.NewInstance();
+        media.putTitle(Language.DEFAULT(), "A nice picture");
         Reference ref = ReferenceFactory.newBook();
         ref.setTitle("Algae of the BGBM");
         ref.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(2008));
@@ -346,7 +348,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
             typeDesignationManager.addTypeDesigations(mtd_IT_unpublished);
 
             assertEquals("failed after repeating " + i + " times",
-                    "Prionus coriatius L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] in Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)"
+                    "Prionus coriatius L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)"
                     , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
                     );
 
@@ -359,9 +361,31 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
             String with2Sources = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE);
             Assert.assertTrue("failed after repeating " + i + " times",
                     //the order of the sources is currently not yet defined (rare case), therefore 2 possibilities
-                    with2Sources.equals("Prionus coriatius L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] in Mueller 2009: tab. 4, Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)")
-                    || with2Sources.equals("Prionus coriatius L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] in Kohlbecker & Kusber 2008: 33, Mueller 2009: tab. 4; isotype: [icon] B Slide A565656)"))
+                    with2Sources.equals("Prionus coriatius L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Mueller 2009: tab. 4, Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)")
+                    || with2Sources.equals("Prionus coriatius L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33, Mueller 2009: tab. 4; isotype: [icon] B Slide A565656)"))
                     ;
+            media.removeSource(newSource);
+
+            //without field unit
+            DerivedUnit mediaSpecimen = mtd_HT_published.getTypeSpecimen();
+            mediaSpecimen.setDerivedFrom(null);
+            TypeDesignationSetContainer typeDesignationManager2 = new TypeDesignationSetContainer(typifiedName);
+            typeDesignationManager2.addTypeDesigations(mtd_HT_published);
+
+            assertEquals("failed after repeating " + i + " times",
+                    "Holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33"
+                    , typeDesignationManager2.print(WITH_CITATION, WITH_TYPE_LABEL, !WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
+                    );
+
+            //with empty field unit
+            FieldUnit emptyFieldUnit = FieldUnit.NewInstance();
+            createDerivationEvent(emptyFieldUnit, mediaSpecimen);
+            TypeDesignationSetContainer typeDesignationManager3 = new TypeDesignationSetContainer(typifiedName);
+            typeDesignationManager3.addTypeDesigations(mtd_HT_published);
+            assertEquals("failed after repeating " + i + " times",
+                    "Holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33"
+                    , typeDesignationManager3.print(WITH_CITATION, WITH_TYPE_LABEL, !WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
+                    );
         }
     }
 
