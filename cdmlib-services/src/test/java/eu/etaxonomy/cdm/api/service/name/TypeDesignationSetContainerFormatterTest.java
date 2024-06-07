@@ -302,7 +302,7 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         //test text
         List<TaggedText> taggedText = formatter.toTaggedText(container);
         String text = TaggedTextFormatter.createString(taggedText);
-        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA accession no. 1234, destroyed)", text);
+        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA accession no. OHA 1234, destroyed)", text);
 
         //test tags
 //        //TODO the name should be split so it can be put in italics
@@ -331,7 +331,7 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         //TODO split collection and field number and specimen status (here 'destroyed') into their own tags
         i = 9; //unit number
         Assert.assertEquals("entry "+(i+1)+" should be the unit number with link",
-                "1234", taggedText.get(i).getText());
+                "OHA 1234", taggedText.get(i).getText());
         Assert.assertEquals("entry "+(i+1)+" should have a link for the stable identifier",
                 TaggedTextWithLink.class, taggedText.get(i).getClass());
         TaggedTextWithLink ttwl = (TaggedTextWithLink)taggedText.get(i);

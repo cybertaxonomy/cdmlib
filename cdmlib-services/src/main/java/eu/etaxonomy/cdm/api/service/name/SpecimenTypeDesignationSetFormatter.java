@@ -224,7 +224,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
                         = config.isWithAccessionNoType()?
                                 DerivedUnitDefaultCacheStrategy.CollectionAccessionSeperator.ACCESION_NO_TYPE
                                 : DerivedUnitDefaultCacheStrategy.CollectionAccessionSeperator.SPACE;
-                    DerivedUnitDefaultCacheStrategy cacheStrategy = DerivedUnitDefaultCacheStrategy.NewInstance(true, false, true, sep);
+                    DerivedUnitDefaultCacheStrategy cacheStrategy = DerivedUnitDefaultCacheStrategy.NewInstance(true, false, false, sep);
                     String titleCache = icon + cacheStrategy.getTitleCache(du, true);
                     // removing parentheses from code + accession number, see https://dev.e-taxonomy.eu/redmine/issues/8365
                     titleCache = titleCache.replaceAll("[\\(\\)]", "");
