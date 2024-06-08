@@ -89,7 +89,7 @@ public class TaxonNameDaoHibernateImpl
     }
 
     @Override
-    public int countHybridNames(INonViralName name, HybridRelationshipType type) {
+    public long countHybridNames(INonViralName name, HybridRelationshipType type) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Query<Long> query = null;
@@ -100,7 +100,7 @@ public class TaxonNameDaoHibernateImpl
                 query.setParameter("type", type);
             }
             query.setParameter("name",name);
-            return query.uniqueResult().intValue();
+            return query.uniqueResult();
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(HybridRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId("relatedFrom").eq(name.getId()));
@@ -110,7 +110,7 @@ public class TaxonNameDaoHibernateImpl
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));
             }
 
-            return ((Long)query.getSingleResult()).intValue();
+            return ((long)query.getSingleResult());
         }
     }
 
@@ -223,7 +223,7 @@ public class TaxonNameDaoHibernateImpl
     }
 
     @Override
-    public int countNameRelationships(TaxonName name, NameRelationship.Direction direction, NameRelationshipType type) {
+    public long countNameRelationships(TaxonName name, NameRelationship.Direction direction, NameRelationshipType type) {
 
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -235,7 +235,7 @@ public class TaxonNameDaoHibernateImpl
                 query.setParameter("type", type);
             }
             query.setParameter("name",name);
-            return ((Long)query.uniqueResult()).intValue();
+            return (Long)query.uniqueResult();
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NameRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId(direction.toString()).eq(name.getId()));
@@ -245,7 +245,7 @@ public class TaxonNameDaoHibernateImpl
                 query.add(AuditEntity.relatedId("type").eq(type.getId()));
             }
 
-            return ((Long)query.getSingleResult()).intValue();
+            return (long)query.getSingleResult();
         }
     }
 

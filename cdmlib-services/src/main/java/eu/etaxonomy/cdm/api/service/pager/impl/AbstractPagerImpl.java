@@ -117,12 +117,12 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 
                 Integer labelsStart = 0;
                 if(this.currentIndex > AbstractPagerImpl.MAX_PAGE_LABELS) {
-                    labelsStart = this.currentIndex - DefaultPagerImpl.MAX_PAGE_LABELS ;
+                    labelsStart = this.currentIndex - AbstractPagerImpl.MAX_PAGE_LABELS ;
                 }
 
                 Integer labelsEnd = pagesAvailable.intValue();
-				if((pagesAvailable - this.currentIndex) > DefaultPagerImpl.MAX_PAGE_LABELS) {
-					labelsEnd = this.currentIndex + DefaultPagerImpl.MAX_PAGE_LABELS;
+				if((pagesAvailable - this.currentIndex) > AbstractPagerImpl.MAX_PAGE_LABELS) {
+					labelsEnd = this.currentIndex + AbstractPagerImpl.MAX_PAGE_LABELS;
 				}
 
 				for(int index = labelsStart; index < labelsEnd; index++) {
@@ -135,13 +135,13 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 				pagesAvailable = (int)(count / pageSize) + 1; //12
 
 				Integer labelsStart = 0;
-                if(this.currentIndex > DefaultPagerImpl.MAX_PAGE_LABELS) {
-                    labelsStart = this.currentIndex - DefaultPagerImpl.MAX_PAGE_LABELS;
+                if(this.currentIndex > AbstractPagerImpl.MAX_PAGE_LABELS) {
+                    labelsStart = this.currentIndex - AbstractPagerImpl.MAX_PAGE_LABELS;
                 }
 
                 Integer labelsEnd = pagesAvailable.intValue();
-				if((pagesAvailable - this.currentIndex) > DefaultPagerImpl.MAX_PAGE_LABELS ) {
-					labelsEnd = this.currentIndex + DefaultPagerImpl.MAX_PAGE_LABELS;
+				if((pagesAvailable - this.currentIndex) > AbstractPagerImpl.MAX_PAGE_LABELS ) {
+					labelsEnd = this.currentIndex + AbstractPagerImpl.MAX_PAGE_LABELS;
 					for(int index = labelsStart; index < labelsEnd; index++) {
 						indices.add(index);
 

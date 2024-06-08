@@ -207,10 +207,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		 if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 				results = dao.findTitleCache(clazz, queryString, pageSize, pageNumber, orderHints, matchMode);
 		 }
-		 long r = 0;
-		 r += numberOfResults;
 
-		 return new DefaultPagerImpl<>(pageNumber, r , pageSize, results);
+		 return new DefaultPagerImpl<>(pageNumber, numberOfResults , pageSize, results);
 	}
 
     @Transactional(readOnly = true)

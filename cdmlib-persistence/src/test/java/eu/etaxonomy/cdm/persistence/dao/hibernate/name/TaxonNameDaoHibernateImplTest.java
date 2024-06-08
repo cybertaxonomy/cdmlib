@@ -91,9 +91,9 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         IBotanicalName cryptocoryneGriffithii = taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
         assert cryptocoryneGriffithii != null : "name must exist";
 
-        int count = taxonNameDao.countHybridNames(cryptocoryneGriffithii, null);
+        long count = taxonNameDao.countHybridNames(cryptocoryneGriffithii, null);
 
-        assertEquals("countHybridNames should return 1",1,count);
+        assertEquals("countHybridNames should return 1",Long.valueOf(1), Long.valueOf(count));
     }
 
     @Test
@@ -129,7 +129,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         TaxonName acherontia = taxonNameDao.findByUuid(acherontiaUuid);
         assert acherontia != null : "name must exist";
 
-        int count = taxonNameDao.countNameRelationships(acherontia, NameRelationship.Direction.relatedFrom, null);
+        long count = taxonNameDao.countNameRelationships(acherontia, NameRelationship.Direction.relatedFrom, null);
 
         assertEquals("countRelatedNames should return 1",1,count);
 
