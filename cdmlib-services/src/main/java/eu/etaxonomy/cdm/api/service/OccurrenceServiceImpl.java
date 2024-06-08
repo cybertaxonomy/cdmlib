@@ -220,7 +220,8 @@ public class OccurrenceServiceImpl
     @Override
     public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, boolean collectOriginalMedia, boolean collectDerivateMedia, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
-    	 List<Media> media = new ArrayList<>();
+
+        List<Media> media = new ArrayList<>();
          //media specimens
          if(rootOccurence.isInstanceOf(MediaSpecimen.class)){
              MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(rootOccurence, MediaSpecimen.class);
@@ -253,7 +254,7 @@ public class OccurrenceServiceImpl
 	             }
              }
              if (collectOriginalMedia) {
-            	 for (SpecimenOrObservationBase original : derivedUnit.getOriginals()) {
+            	 for (SpecimenOrObservationBase<?> original : derivedUnit.getOriginals()) {
 	                	 //collect media to the top of the tree
 	                     media.addAll(getMediaInHierarchy(original, true, false, pageSize, pageNumber, propertyPaths).getRecords());
 	             }
