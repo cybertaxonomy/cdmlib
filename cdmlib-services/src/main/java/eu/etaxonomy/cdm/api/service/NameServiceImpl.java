@@ -839,35 +839,6 @@ public class NameServiceImpl
     }
 
     @Override
-    public Pager<NameRelationship> pageNameRelationships(TaxonName name, Direction direction, NameRelationshipType type, Integer pageSize,
-            Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
-        List<NameRelationship> results = listNameRelationships(name, direction, type, pageSize, pageNumber, orderHints, propertyPaths);
-        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
-    }
-
-    @Override
-    public List<NameRelationship> listFromNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return listNameRelationships(name, Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths);
-    }
-
-    @Override
-    public Pager<NameRelationship> pageFromNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        List<NameRelationship> results = listNameRelationships(name, Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths);
-        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
-    }
-
-    @Override
-    public List<NameRelationship> listToNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
-    }
-
-    @Override
-    public Pager<NameRelationship> pageToNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        List<NameRelationship> results = listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
-        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
-    }
-
-    @Override
     public Pager<TypeDesignationBase> getTypeDesignations(TaxonName name, SpecimenTypeDesignationStatus status,
             Integer pageSize, Integer pageNumber) {
         return getTypeDesignations(name, status, pageSize, pageNumber, null);

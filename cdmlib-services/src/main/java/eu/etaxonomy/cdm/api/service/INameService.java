@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.util.TaxonNamePartsFilter;
-import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -380,86 +379,6 @@ public interface INameService
 	 * @return a Pager of NameRelationship instances
 	 */
 	public List<NameRelationship> listNameRelationships(TaxonName name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-	/**
-	 * Return a List of name relationships in which this name is related to another name, optionally filtered
-	 * by relationship type
-	 *
-	 * @param name the name on the <i>"from side"</i> of the relationship
-	 * @param direction the direction of the NameRelationship
-	 * @param type the relationship type (or null to return all relationships)
-	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
-	 * @return a Pager of NameRelationship instances
-	 */
-	public Pager<NameRelationship> pageNameRelationships(TaxonName name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-	/**
-	 * Return a List of relationships in which this name is related to another name, optionally filtered
-	 * by relationship type
-	 *
-	 * @param name the name on the <i>"from side"</i> of the relationship
-	 * @param type the relationship type (or null to return all relationships)
-	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
-	 * @return a Pager of NameRelationship instances
-	 * @deprecated use {@link #listNameRelationships(TaxonName, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
-	 */
-	@Deprecated
-	public List<NameRelationship> listFromNameRelationships(TaxonName name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-	/**
-	 * Return a List of relationships in which this name is related to another name, optionally filtered
-	 * by relationship type
-	 *
-	 * @param name the name on the <i>"from side"</i> of the relationship
-	 * @param type the relationship type (or null to return all relationships)
-	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
-	 * @return a Pager of NameRelationship instances
-	 * @deprecated use {@link #pageNameRelationships(TaxonName, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
-	 */
-	@Deprecated
-	public Pager<NameRelationship> pageFromNameRelationships(TaxonName name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-	/**
-	 * Return a List of relationships in which another name is related to this name, optionally filtered
-	 * by relationship type
-	 *
-	 * @param name the name on the <i>"to side"</i> of the relationship
-	 * @param type the relationship type (or null to return all relationships)
-	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
-	 * @return a Pager of NameRelationship instances
-	 * @deprecated use {@link #listNameRelationships(TaxonName, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
-	 */
-	@Deprecated
-	public List<NameRelationship> listToNameRelationships(TaxonName name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-	/**
-	 * Return a List of relationships in which another name is related to this name, optionally filtered
-	 * by relationship type
-	 *
-	 * @param name the name on the <i>"to side"</i> of the relationship
-	 * @param type the relationship type (or null to return all relationships)
-	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
-	 * @return a Pager of NameRelationship instances
-	 * @deprecated use {@link #pageNameRelationships(TaxonName, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, NameRelationshipType, Integer, Integer, List, List)} instead
-	 */
-	@Deprecated
-	public Pager<NameRelationship> pageToNameRelationships(TaxonName name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
 
 	/**
 	 * Return a List of hybrids related to this name, optionally filtered
