@@ -30,7 +30,6 @@ public class ReferencePropertyDefinitions {
     private static Map<String, String> iWithAuthorAndDate = new HashMap<>();
     private static Map<String, String> iWithDoi = new HashMap<>();
     private static Map<String, String> iAuthoredPublicationBase = new HashMap<>();
-    private static Map<String, String> iNomenclaturalReference = new HashMap<>();
     private static Map<String, String> iVolumeReference = new HashMap<>();
     private static Map<String, String> iSection = new HashMap<>();
     private static Map<String, String> iPrintedUnitBase = new HashMap<>();

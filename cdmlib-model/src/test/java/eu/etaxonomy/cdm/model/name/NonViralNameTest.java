@@ -71,7 +71,7 @@ public class NonViralNameTest extends EntityTestBase {
 	}
 
 	@Test
-	public final void testNonViralNameRankStringStringStringAgentINomenclaturalReferenceString() {
+	public final void testNonViralNameRankStringStringStringAgentReferenceString() {
 		Team agent = Team.NewInstance();
 		Reference article = ReferenceFactory.newArticle();
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();

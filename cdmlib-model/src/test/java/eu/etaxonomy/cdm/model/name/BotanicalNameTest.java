@@ -71,7 +71,7 @@ public class BotanicalNameTest extends EntityTestBase{
 	}
 
 	@Test
-	public final void testBotanicalNameRankStringStringStringAgentINomenclaturalReferenceString() {
+	public final void testBotanicalNameRankStringStringStringAgentReferenceString() {
 		Rank rank = Rank.SPECIALFORM();
 		String genusOrUninomial = "Genus";
 		String infraGenericEpithet = "infraGenericEpi";

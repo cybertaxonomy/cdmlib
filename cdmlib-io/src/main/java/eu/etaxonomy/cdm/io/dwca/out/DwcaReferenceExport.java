@@ -19,7 +19,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -71,7 +70,7 @@ public class DwcaReferenceExport extends DwcaDataExportBase {
 
             //nomRef
             record = new DwcaReferenceRecord(metaRecord, state.getConfig());
-            INomenclaturalReference nomRefI = taxon.getName().getNomenclaturalReference();
+            Reference nomRefI = taxon.getName().getNomenclaturalReference();
             Reference nomRef = CdmBase.deproxy(nomRefI, Reference.class);
             if (nomRef != null && ! state.recordExists(file, nomRef)){
             	handleReference(state, record, nomRef, taxon);

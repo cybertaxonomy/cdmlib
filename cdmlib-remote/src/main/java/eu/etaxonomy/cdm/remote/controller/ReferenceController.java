@@ -27,7 +27,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import io.swagger.annotations.Api;
 
@@ -83,14 +82,9 @@ public class ReferenceController extends AbstractIdentifiableController<Referenc
             HttpServletResponse response,
             @RequestParam(value = "microReference", required = false) String microReference)throws IOException {
         ModelAndView mv = new ModelAndView();
-        Reference rb = service.load(uuid, NOMENCLATURAL_CITATION_INIT_STRATEGY);
-        if(INomenclaturalReference.class.isAssignableFrom(rb.getClass())){
-            String nomRefCit = NomenclaturalSourceFormatter.INSTANCE().format(rb, microReference);
-            mv.addObject(nomRefCit);
-            return mv;
-        } else {
-            response.sendError(400, "The supplied reference-uuid must specify a INomenclaturalReference.");
-        }
+        Reference ref = service.load(uuid, NOMENCLATURAL_CITATION_INIT_STRATEGY);
+        String nomRefCit = NomenclaturalSourceFormatter.INSTANCE().format(ref, microReference);
+        mv.addObject(nomRefCit);
         return mv;
     }
 

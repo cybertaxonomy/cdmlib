@@ -63,7 +63,6 @@ import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.IBook;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -118,7 +117,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
         name = TaxonNameFactory.NewBotanicalInstance(null);
         name.setNameCache("nameCache");
-        INomenclaturalReference nomenclaturalReference = ReferenceFactory.newArticle();
+        Reference nomenclaturalReference = ReferenceFactory.newArticle();
         nomenclaturalReference.setTitleCache("nomenclaturalReference", true);
         name.setNomenclaturalReference(nomenclaturalReference);
         name.setNomenclaturalMicroReference("1");

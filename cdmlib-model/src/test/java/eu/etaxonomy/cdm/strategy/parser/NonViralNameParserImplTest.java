@@ -48,7 +48,6 @@ import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IJournal;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -1262,9 +1261,9 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertFullRefNameStandard(name2);
         assertEquals(fullReference, name2.getFullTitleCache());
         assertFalse(name2.hasProblem());
-        INomenclaturalReference ref = name2.getNomenclaturalReference();
-        assertEquals(ReferenceType.BookSection, ((Reference)ref).getType());
-        IBookSection bookSection = (IBookSection) ref;
+        Reference ref = name2.getNomenclaturalReference();
+        assertEquals(ReferenceType.BookSection, ref.getType());
+        IBookSection bookSection = ref;
         IBook inBook = bookSection.getInBook();
         assertNotNull(inBook);
         assertNotNull(inBook.getAuthorship());
@@ -1737,7 +1736,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals("Mill.", name.getAuthorshipCache());
         assertEquals("455", name.getNomenclaturalMicroReference());
         assertNotNull(name.getNomenclaturalReference());
-        INomenclaturalReference ref = name.getNomenclaturalReference();
+        Reference ref = name.getNomenclaturalReference();
         assertEquals("1987", ref.getYear());
         assertEquals("Sp. Pl.", ref.getAbbrevTitle());
     }

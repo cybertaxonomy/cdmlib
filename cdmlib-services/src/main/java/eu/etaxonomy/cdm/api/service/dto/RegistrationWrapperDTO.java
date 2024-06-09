@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -295,12 +294,7 @@ public class RegistrationWrapperDTO {
         if(citation == null){
             nomenclaturalCitationString = null;
         } else {
-            if(INomenclaturalReference.class.isAssignableFrom(citation.getClass())){
-                nomenclaturalCitationString = NomenclaturalSourceFormatter.INSTANCE().format(citation, citationDetail);
-            } else {
-                logger.error("The citation is not a NomenclaturalReference");
-                nomenclaturalCitationString = citation.generateTitle();
-            }
+            nomenclaturalCitationString = NomenclaturalSourceFormatter.INSTANCE().format(citation, citationDetail);
         }
     }
 

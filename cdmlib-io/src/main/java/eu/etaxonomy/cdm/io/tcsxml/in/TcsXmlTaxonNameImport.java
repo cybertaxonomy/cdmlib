@@ -550,12 +550,10 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		if (elPublishedIn != null && name != null){
 			Class<Reference> clazz = Reference.class;
 			Reference ref = makeReferenceType(elPublishedIn, clazz, referenceMap, success);
-			if (ref instanceof Reference){
-				name.setNomenclaturalReference(ref);
-			}else if (ref == null){
-				logger.warn("Nomecl. reference could not be created for '" + name.getTitleCache() + "'");
-			}else{
-				logger.warn("Reference is not of type INomenclaturalReference and could not be added to the name " + name.getTitleCache());
+			if (ref == null){
+			    logger.warn("Nomecl. reference could not be created for '" + name.getTitleCache() + "'");
+			}else {
+			    name.setNomenclaturalReference(ref);
 			}
 		}else if (name == null){
 			logger.warn("TaxonName must not be 'null'");
