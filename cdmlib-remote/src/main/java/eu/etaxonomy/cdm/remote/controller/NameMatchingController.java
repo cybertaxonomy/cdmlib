@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +31,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCandidateResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCombinedResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingExactResult;
@@ -56,12 +60,14 @@ public class NameMatchingController {
 
     @Autowired
     private INameMatchingService nameMatchingService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     @RequestMapping(
             value = {"match"},
             method = RequestMethod.GET)
-    public NameMatchingOutputObject doGetNameMatching(
+    public void doGetNameMatching(
             @RequestParam(value="scientificName", required = true) String scientificName,
             @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
             @RequestParam(value="maxDistance", required = false) Integer maxDistance,
@@ -72,60 +78,146 @@ public class NameMatchingController {
 
         NameMatchingResult result = nameMatchingService.findMatchingNames(scientificName, compareAuthor, maxDistance);
         RequestedParam requestedParam = new RequestedParam(scientificName, compareAuthor, maxDistance);
-        return NameMatchingAdapter.invoke(result, requestedParam);
-    }
+        NameMatchingOutputObject outputObject = NameMatchingAdapter.invoke(result, requestedParam);
 
-    @RequestMapping(
-            value = "matchingList",
-            method = RequestMethod.POST)
-    public NameMatchingOutputList doPostNameMatching (
-            @RequestParam(value="scientificNames", required = true) String scientificName,
-            @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
-            @RequestParam(value="maxDistance", required = false) Integer maxDistance,
-            HttpServletRequest request,
-            @SuppressWarnings("unused") HttpServletResponse response) throws NameMatchingParserException {
-
-        logger.info("doPostNameMatching()" + request.getRequestURI());
-
-        List<String> scientificNamesList = new ArrayList <>(Arrays.asList(scientificName.split(";")));
-
-        Map<String, NameMatchingResult> results = nameMatchingService.compareTaxonListName(scientificNamesList, compareAuthor, maxDistance);
-
-        RequestedParam requestedParam = new RequestedParam(scientificNamesList, compareAuthor, maxDistance);
-
-        return NameMatchingAdapter.invokeList (results, requestedParam);
-    }
-
-    /**POST Request with MultipartFile allows the usage of more than one parameters. It works calling the following command
-    *curl -v -X POST -F "compareAuthor=false" -F "maxDistance=2" -F "file=@realTest.txt" http://localhost:8082/namematch/matchingList
-    the option -v in curl gives more information about the http response (u.a.)
-    */
-
-    @PostMapping(
-            value = "matchingListTest")
-    public String doPostNameMatchingTest (
-            @RequestPart("file") MultipartFile file,
-            @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
-            @RequestParam(value="maxDistance", required = false) Integer maxDistance,
-            HttpServletRequest request,
-            @SuppressWarnings("unused") HttpServletResponse response) {
-
-        System.out.println("checkpoint1");
-
-        logger.info("doPostNameMatching()" + request.getRequestURI());
-
-        List <String> scientificNamesList = new ArrayList <>();
-        try {
-            if (!file.isEmpty()) {
-                byte[] content = file.getBytes();
-                String fileContent = new String(content, StandardCharsets.UTF_8.name());
-                scientificNamesList = Arrays.asList(fileContent.split(";"));
-            }
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try (PrintWriter writer = response.getWriter()){
+            String jsonResponse = objectMapper.writeValueAsString(outputObject);
+            writer.write(jsonResponse);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return "Checkpoint2 : scientific name: " + scientificNamesList.get(0) + " compare author: " + compareAuthor + " max distance: " + maxDistance;
+    }
+//
+
+    /**POST Request with MultipartFile allows the usage of more than one parameters. It works calling the following command:
+     *
+     * request with json as output:
+     * curl -v -H "Accept: application/json" -X POST -F "compareAuthor=false" -F "maxDistance=2" -F "file=@test.txt" http://localhost:8082/namematch/matchingList
+     *
+     * request with csv as output:
+     * curl -v -H "Accept: text/csv" -X POST -F "compareAuthor=false" -F "maxDistance=2" -F "file=@test.txt" http://localhost:8082/namematch/matchingList
+     *
+     * the option -v in curl gives more information about the http response (u.a.)
+     *
+     * @throws IOException
+     * @throws NameMatchingParserException
+    */
+
+    @PostMapping(
+            value = "matchingList")
+    public void doPostNameMatchingTest (
+            @RequestPart("file") MultipartFile file,
+            @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
+            @RequestParam(value="maxDistance", required = false) Integer maxDistance,
+            HttpServletRequest request,
+            @SuppressWarnings("unused") HttpServletResponse response) throws IOException, NameMatchingParserException {
+
+        byte [] bytes = file.getBytes();
+        String namesString = new String (bytes, StandardCharsets.UTF_8);
+        List <String> namesList = Arrays.asList(namesString.split("\\r?\\n"));
+        Map<String, NameMatchingResult> result = nameMatchingService.compareTaxonListName(namesList, compareAuthor, maxDistance);
+        RequestedParam requestedParam = new RequestedParam(namesList, compareAuthor, maxDistance);
+        NameMatchingOutputList outputObjectList = NameMatchingAdapter.invokeList(result, requestedParam);
+
+        String acceptHeader = request.getHeader("Accept");
+
+        if (acceptHeader == null || acceptHeader.equals("application/json")) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            try (PrintWriter writer = response.getWriter()){
+                String jsonResponse = objectMapper.writeValueAsString(outputObjectList);
+                writer.write(jsonResponse);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else if (acceptHeader.equals("text/csv")) {
+            response.setContentType("text/csv");
+            response.setHeader("Content-Disposition", "attachment; filename= \"name_matching.csv\"");
+            String line;
+            String line2;
+            try (PrintWriter writer = response.getWriter();
+                    CSVWriter csvWriter = new CSVWriter (writer, ';');){
+
+                List <String> csvStringBuilder = new ArrayList<String>();
+                csvWriter.writeNext(new String[]{"inputName", "compareAuthor", "maxDistance", "MatchType", "retrievedDistance",
+                        "PureName", "TaxonID" });
+
+                for (NameMatchingOutputObject outputObject : outputObjectList.getOutputObject()) {
+                    List<NameMatchingExactResult> exactResults = outputObject.getResult().getExactMatches();
+                    List<NameMatchingCandidateResult> candidateResults = outputObject.getResult().getCandidates();
+                    if (!exactResults.isEmpty()) {
+                        for ( int x = 0 ; x < exactResults.size(); x++) {
+                            fillExactMatchesCSVRow(csvStringBuilder, outputObject, exactResults, x);
+                        }
+                    }
+                    if (!candidateResults.isEmpty()) {
+                        for ( int x = 0 ; x < candidateResults.size(); x++) {
+                            fillCandidatesCSVRow(csvStringBuilder, outputObject, candidateResults, x);
+                        }
+                    }
+                }
+
+                List <String> csvStringBuilder2 = new ArrayList<String>();
+                csvStringBuilder2.addAll(csvStringBuilder);
+
+                String [] csvRows = new String [] {};
+                for (String x : csvStringBuilder2) {
+                    csvRows = x.split(";");
+                    csvWriter.writeNext(csvRows);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param csvStringBuilder
+     * @param outputObject
+     * @param candidateResults
+     * @param x
+     */
+    private void fillCandidatesCSVRow(List<String> csvStringBuilder, NameMatchingOutputObject outputObject,
+            List<NameMatchingCandidateResult> candidateResults, int x) {
+        String line2;
+        line2 = outputObject.getRequest().getScientificName() + ";" +
+                String.valueOf(outputObject.getRequest().isCompareAuthor() + ";" +
+                        outputObject.getRequest().getMaxDistance().toString());
+        line2 = line2 + ";candidates;" +
+                candidateResults.get(x).getDistance() + ";"
+                        + candidateResults.get(x).getPureName() + ";"
+                            + candidateResults.get(x).getTaxonNameId()
+                //                    + candidateResults.get(x).getTaxonNameId() + " "
+                //                    + candidateResults.get(x).getNameWithAuthor() + " "
+                //                    + candidateResults.get(x).getAuthorship() + " "
+                //                    + candidateResults.get(x).getTaxonNameUuid() + " "
+                //                    + candidateResults.get(x).getTaxonNameId() + " "
+                            ;
+        csvStringBuilder.add(line2);
+    }
+
+    /**
+     * @param csvStringBuilder
+     * @param outputObject
+     * @param exactResults
+     * @param x
+     */
+    private void fillExactMatchesCSVRow(List<String> csvStringBuilder, NameMatchingOutputObject outputObject,
+            List<NameMatchingExactResult> exactResults, int x) {
+        String line;
+        line = outputObject.getRequest().getScientificName() + ";" +
+                String.valueOf(outputObject.getRequest().isCompareAuthor() + ";" +
+                        outputObject.getRequest().getMaxDistance().toString());
+        line = line + ";exactMatch" + ";0;" + exactResults.get(x).getPureName() + ";"
+                + exactResults.get(x).getTaxonNameId() + " "
+                //                    + exactResults.get(x).getTaxonNameId() + " "
+                //                    + exactResults.get(x).getNameWithAuthor() + " "
+                //                    + exactResults.get(x).getAuthorship() + " "
+                //                    + exactResults.get(x).getTaxonNameUuid() + " "
+                ;
+        csvStringBuilder.add(line);
     }
 
     private static class NameMatchingAdapter {
