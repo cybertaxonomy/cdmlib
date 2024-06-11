@@ -108,7 +108,7 @@ public class NameMatchingController {
 
     @PostMapping(
             value = "matchingList")
-    public void doPostNameMatchingTest (
+    public void doPostNameMatching (
             @RequestPart("file") MultipartFile file,
             @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
             @RequestParam(value="maxDistance", required = false) Integer maxDistance,
