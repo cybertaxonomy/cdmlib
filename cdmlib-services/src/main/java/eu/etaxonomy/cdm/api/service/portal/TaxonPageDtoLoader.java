@@ -600,9 +600,11 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             NomenclaturalStatusDTO dto = new NomenclaturalStatusDTO();
             loadBaseData(config, status, dto);
             //type
-            dto.setStatusTypeUuid(status.getType().getUuid());
-            Representation rep = status.getType().getPreferredRepresentation(locale);
-            dto.setStatusType(rep == null ? status.getType().toString() : rep.getLabel());
+            if (status.getType() != null) {
+                dto.setStatusTypeUuid(status.getType().getUuid());
+                Representation rep = status.getType().getPreferredRepresentation(locale);
+                dto.setStatusType(rep == null ? status.getType().toString() : rep.getLabel());
+            }
             //ruleConsidered
             dto.setRuleConsidered(status.getRuleConsidered());
             //TODO i18n
