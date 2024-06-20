@@ -1030,14 +1030,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                                                                                                    // the
                                                                                                                    // field
                                                                                                                    // unit
-                                            && currentDerivedFrom.getDerivatives().size() == 1
-                                            && currentDerivedFrom.getDerivatives().contains(currentUnit) // is
-                                                                                                         // not
-                                                                                                         // attached
-                                                                                                         // to
-                                                                                                         // other
-                                                                                                         // derived
-                                                                                                         // units
+                                            && currentDerivedFrom.getDerivatives().size() == 0
                                             && currentDerivedFrom != currentUnit.getDerivedFrom() // <-
                                                                                                   // derivation
                                                                                                   // has

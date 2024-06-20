@@ -268,7 +268,13 @@ public class DerivedUnit
 	}
 
 	public void setDerivedFrom(DerivationEvent derivedFrom){
-		this.derivedFrom = derivedFrom;
+        if (getDerivedFrom() == derivedFrom) {
+            return;
+        }
+        if (getDerivedFrom() != null ){
+            getDerivedFrom().getDerivatives().remove(this);
+        }
+        this.derivedFrom = derivedFrom;
 		if (derivedFrom != null){
 			derivedFrom.addDerivative(this);
 		}
