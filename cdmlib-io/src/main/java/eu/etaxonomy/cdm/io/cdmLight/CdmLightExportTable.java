@@ -254,7 +254,7 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
     static final String SPECIMEN_DESCRIPTION = "SpecimenDescription";
 
     // TaxonInteraction Facts
-    static final String TAXON2_FK = "Taxon2_FK";
+    static final String TAXON2_FK = "Taxon2_Fk";
     static final String DESCRIPTION = "Description";
 
     //Geographic Area Facts
