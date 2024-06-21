@@ -62,12 +62,13 @@ public class SourceDtoLoader {
         String hql = "SELECT new map(osb.class as cdmClass, "
                 +     " osb.id as id, osb.uuid as uuid, osb.accessed as accessed, "
                 +     " osb.originalInfo as originalInfo, "
-                +     " osb.citation as ref, osb.citationMicroReference as detail, "
+                +     " ref, osb.citationMicroReference as detail, "
                 +     " osb.type as type, osb.accessed as accessed,"
                 +     " nameInSource as nameInSource) "
                 //cdmSource, links
                 //TODO can we avoid outer join?
                 + " FROM OriginalSourceBase osb LEFT JOIN osb.nameUsedInSource nameInSource "
+                + "      LEFT JOIN osb.citation ref"
                 + " WHERE osb.id IN :baseIds"
                 ;
 
