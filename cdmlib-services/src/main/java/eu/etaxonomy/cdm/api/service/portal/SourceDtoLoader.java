@@ -59,7 +59,7 @@ public class SourceDtoLoader {
         String hql = "SELECT new map(osb.class as cdmClass, "
                 +     " osb.id as id, osb.uuid as uuid, osb.accessed as accessed, "
                 +     " osb.originalInfo as originalInfo, "
-                +     " ref, osb.citationMicroReference as detail, "
+                +     " ref as ref, osb.citationMicroReference as detail, "
                 +     " osb.type as type, osb.accessed as accessed,"
                 +     " nameInSource as nameInSource) "
                 //cdmSource, links
