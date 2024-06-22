@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service.portal;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,10 +47,8 @@ public class SourceDtoLoader {
     /**
      * DTOs must have id initialized
      */
-    //TODO do we really need the sourceTypeFilter here? In SourcedDtoLoader they are filtered already.
-    //     are there other places were filtering is still needed?
     public void loadAll(Set<SourceDto> dtos, ICdmGenericDao commonDao,
-            EnumSet<OriginalSourceType> sourceTypeFilter, ProxyDtoLoader lazyLoader) {
+            ProxyDtoLoader lazyLoader) {
 
         Set<Integer> baseIds = dtos.stream().map(d->d.getId()).collect(Collectors.toSet());
 
@@ -73,7 +70,7 @@ public class SourceDtoLoader {
                 ;
 
         Map<String,Object> params = new HashMap<>();
-//        params.put("osbTypes", sourceTypes);
+
         params.put("baseIds", baseIds);
 
         try {
