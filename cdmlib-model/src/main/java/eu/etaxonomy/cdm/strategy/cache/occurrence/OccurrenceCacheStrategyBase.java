@@ -116,7 +116,7 @@ public abstract class OccurrenceCacheStrategyBase<T extends SpecimenOrObservatio
 
     protected String addPlantDescription(String result, SpecimenOrObservationBase<?> occurrence) {
         //plant description
-        result = CdmUtils.concat("; ", result, getPlantDescription(occurrence, null));
+        result = CdmUtils.concat(", ", result, getPlantDescription(occurrence, null));
         return result;
     }
 

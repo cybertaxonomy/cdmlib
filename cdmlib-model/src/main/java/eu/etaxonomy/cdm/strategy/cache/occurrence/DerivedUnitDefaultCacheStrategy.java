@@ -80,7 +80,7 @@ public class DerivedUnitDefaultCacheStrategy
     }
 
     private static final FieldUnitDefaultCacheStrategy fieldUnitCacheStrategy
-        = FieldUnitDefaultCacheStrategy.NewInstance(false, false);
+        = FieldUnitDefaultCacheStrategy.NewInstance(true, false);
 
     public static DerivedUnitDefaultCacheStrategy NewInstance(){
         return new DerivedUnitDefaultCacheStrategy();
@@ -142,11 +142,11 @@ public class DerivedUnitDefaultCacheStrategy
         }
 
         //result
-        if(!skipFieldUnit){
-            for (FieldUnit fieldUnit : fieldUnits){
-                result = addPlantDescription(result, fieldUnit);
-            }
-        }
+//        if(!skipFieldUnit){
+//            for (FieldUnit fieldUnit : fieldUnits){
+//                result = addPlantDescription(result, fieldUnit);
+//            }
+//        }
 
         if (addTrailingDot){
             result = CdmUtils.addTrailingDotIfNotExists(result);

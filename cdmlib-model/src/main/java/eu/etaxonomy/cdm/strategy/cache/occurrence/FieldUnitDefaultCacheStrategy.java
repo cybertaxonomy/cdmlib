@@ -87,9 +87,10 @@ public class FieldUnitDefaultCacheStrategy
             return null;
         }
         String result = getFieldData(fieldUnit);
-        if (includePlantDescription){
-            result = addPlantDescription(result, fieldUnit);
-        }
+        //now handled in getFieldData()
+//        if (includePlantDescription){
+//            result = addPlantDescription(result, fieldUnit);
+//        }
         if (addTrailingDot){
             result = CdmUtils.addTrailingDotIfNotExists(result);
         }
@@ -150,6 +151,10 @@ public class FieldUnitDefaultCacheStrategy
 
         //ecology
         result = CdmUtils.concat(", ", result, getEcology(fieldUnit));
+        //plant description
+        if (includePlantDescription){
+            result = addPlantDescription(result, fieldUnit);
+        }
 
         //gathering period
         //TODO period.toString ??
