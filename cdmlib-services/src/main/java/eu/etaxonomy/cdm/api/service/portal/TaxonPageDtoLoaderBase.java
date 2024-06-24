@@ -125,7 +125,7 @@ public abstract class TaxonPageDtoLoaderBase {
         if (dto instanceof IdentifiableDto && cdmBase.isInstanceOf(IdentifiableEntity.class)) {
             IdentifiableEntity<?> identifiable = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
             IdentifiableDto identifiableDto = (IdentifiableDto)dto;
-            //annotation
+            //identifier
             for (Identifier identifier : identifiable.getIdentifiers()) {
                 UUID typeUuid = identifier.getType() == null ? null : identifier.getType().getUuid();
                 if (config.getIdentifierTypes() == null || config.getIdentifierTypes().contains(typeUuid)) {
