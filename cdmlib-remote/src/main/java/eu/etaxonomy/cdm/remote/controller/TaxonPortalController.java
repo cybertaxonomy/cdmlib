@@ -76,6 +76,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
@@ -351,6 +352,7 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "markerTypes", required = false) Set<UUID> markerTypes,
             @RequestParam(value = "dtoLoading", required = false, defaultValue = "true") boolean dtoLoading,
             @RequestParam(value = "withAccessionType", required = false, defaultValue = "true" ) boolean withAccessionType,
+            @RequestParam(value = "identifierTypes", required = false) Set<UUID> identifierTypes,
 
 
             //TODO annotation type filter
@@ -409,6 +411,10 @@ public class TaxonPortalController extends TaxonController{
         if (markerTypes == null) {
             markerTypes = new HashSet<>();
         }
+        if (identifierTypes == null) {
+            //TODO or should we allow null to define "all identifiers" (= no filter)
+            identifierTypes = new HashSet<>(Arrays.asList(new UUID[] {IdentifierType.uuidWfoNameIdentifier}));
+        }
 
 //      //TODO is this performant?
 //      IVocabularyService vocabularyService = null;
@@ -429,6 +435,7 @@ public class TaxonPortalController extends TaxonController{
         config.setWithTaxonRelationships(doTaxonRelations);
         config.setAnnotationTypes(annotationTypes);
         config.setMarkerTypes(markerTypes);
+        config.setIdentifierTypes(identifierTypes);
         config.setDirectNameRelTyes(directNameRelations);
         config.setInverseNameRelTyes(inverseNameRelations);
         config.setWithAccessionType(withAccessionType);

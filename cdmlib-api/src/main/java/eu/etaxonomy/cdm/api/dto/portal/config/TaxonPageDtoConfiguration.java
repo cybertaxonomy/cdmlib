@@ -248,6 +248,9 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
     public Set<UUID> getIdentifierTypes() {
         return identifierTypes;
     }
+    public void setIdentifierTypes(Set<UUID> identifierTypes) {
+        this.identifierTypes = identifierTypes;
+    }
 
     //name relationship types
     public Set<UUID> getDirectNameRelTyes() {

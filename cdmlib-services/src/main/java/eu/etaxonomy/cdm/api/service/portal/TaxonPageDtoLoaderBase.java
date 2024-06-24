@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.api.service.portal;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -119,8 +118,6 @@ public abstract class TaxonPageDtoLoaderBase {
     }
 
     protected static void loadIdentifiable(ISourceableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
-        Set<UUID> identifierTypes = new HashSet<>();
-        identifierTypes.add(IdentifierType.uuidWfoNameIdentifier);
 
         if (dto instanceof IdentifiableDto && cdmBase.isInstanceOf(IdentifiableEntity.class)) {
             IdentifiableEntity<?> identifiable = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
