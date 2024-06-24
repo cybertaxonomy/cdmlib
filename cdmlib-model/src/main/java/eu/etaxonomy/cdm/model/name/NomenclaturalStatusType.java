@@ -959,6 +959,10 @@ public class NomenclaturalStatusType
         if (statusAbbreviation.equalsIgnoreCase("nom. valid")){
             statusAbbreviation = "nom. val.";
         }
+        //#10533
+        if (statusAbbreviation.equalsIgnoreCase("desig. inval.")){
+            statusAbbreviation = "nom. inval.";
+        }
         return statusAbbreviation;
     }
 

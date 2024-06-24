@@ -2714,6 +2714,12 @@ public class NonViralNameParserImplTest extends TermTestBase {
         parser.parseReferencedName(name2, name.getFullTitleCache(), name2.getRank(), true);
         parser.parseReferencedName(name2, name.getFullTitleCache(), name2.getRank(), true);
         Assert.assertEquals("Title cache should be same. No duplication of nom. status should take place", name.getFullTitleCache(), name2.getFullTitleCache());
+
+        //desig. inval. #10533
+        String str = "Abies alba Mill., desig. inval.";
+        TaxonName name3 = parser.parseReferencedName(str);
+        Assert.assertEquals(1, name3.getStatus().size());
+        Assert.assertEquals(NomenclaturalStatusType.INVALID(), name3.getStatus().iterator().next().getType());
     }
 
     @Test
