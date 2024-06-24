@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -134,6 +135,7 @@ public class NameMatchingController {
     private static class NameMatchingAdapter {
 
         private static NameMatchingOutputList invokeList (Map<String, NameMatchingResult> input, RequestedParam paramteres) {
+            Collections.sort(paramteres.getScientificNameList());
             NameMatchingOutputList resultObject = new NameMatchingOutputList();
             List <NameMatchingOutputObject> outputList = new ArrayList<>();
             int i = 0 ;
