@@ -68,7 +68,10 @@ public class NameMatchingServiceImpl
         public SingleNameMatchingResult(NameMatchingParts parts, Integer distance) {
             super(parts.getTaxonNameId(), parts.getTaxonNameUuid(), parts.getTitleCache(),
                     parts.getAuthorshipCache(), parts.getGenusOrUninomial(),
-                    parts.getInfraGenericEpithet(), parts.getSpecificEpithet(), parts.getInfraSpecificEpithet(), parts.getNameCache(), parts.getRank());
+                    parts.getInfraGenericEpithet(), parts.getSpecificEpithet(),
+                    parts.getInfraSpecificEpithet(), parts.getNameCache(), parts.getRank(),
+                    parts.getCombinationAuthorship(), parts.getExCombinationAuthorship(),
+                    parts.getBasionymAuthorship(), parts.getExBasionymAuthorship());
             this.distance = distance;
         }
 
