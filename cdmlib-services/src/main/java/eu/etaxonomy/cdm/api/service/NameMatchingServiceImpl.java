@@ -589,7 +589,7 @@ public class NameMatchingServiceImpl
         if (postFilteredGenusOrUninominalWithDis.isEmpty()) {
             return genusOrUninomialWithDistance;
         } else {
-            List<NameMatchingParts> fullNameMatchingPartsListTemp = nameMatchingDao.findNameMatchingParts(postFilteredGenusOrUninominalWithDis, null);
+            List<NameMatchingParts> fullNameMatchingPartsListTemp = nameMatchingDao.findNameMatchingParts(postFilteredGenusOrUninominalWithDis);
             postFilteredGenusOrUninominalWithDis.forEach((key, value) -> {
                 for (NameMatchingParts fullNameMatchingParts : fullNameMatchingPartsListTemp) {
                     if (fullNameMatchingParts.getGenusOrUninomial().equals(key)) {

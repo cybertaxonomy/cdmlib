@@ -40,5 +40,5 @@ public interface INameMatchingDao extends IIdentifiableDao<TaxonName> {
      *     Names to be excluded from the result set
 	 * @return
 	 */
-    public List<NameMatchingParts> findNameMatchingParts(Map<String, Integer> map, List<String> list);
+    public List<NameMatchingParts> findNameMatchingParts(Map<String, Integer> map);
 }

@@ -47,8 +47,7 @@ public class NameMatchingDaoHibernateImpl
     }
 
     @Override
-    public List<NameMatchingParts> findNameMatchingParts(Map<String, Integer> postFilteredGenusOrUninominalWithDis,
-            List<String> nameCacheList) {
+    public List<NameMatchingParts> findNameMatchingParts(Map<String, Integer> postFilteredGenusOrUninominalWithDis) {
         StringBuilder hql = new StringBuilder();
         List<NameMatchingParts> result = new ArrayList<>();
 
@@ -56,18 +55,11 @@ public class NameMatchingDaoHibernateImpl
             Set<String> generaSet = postFilteredGenusOrUninominalWithDis.keySet();
             List <String> generaList = new ArrayList <>(generaSet);
             hql = prepareFindTaxonNamePartsString("genusOrUninomial","generaList");
-            System.out.println(hql);
             Query<NameMatchingParts> query = getSession().createQuery(hql.toString(), NameMatchingParts.class);
             query.setParameterList("generaList", generaList);
             result = query.list();
-            return result;
-        } else {
-            hql = prepareFindTaxonNamePartsString("nameCache","nameCacheList");
-            Query<NameMatchingParts> query = getSession().createQuery(hql.toString(), NameMatchingParts.class);
-            query.setParameterList("nameCacheList", nameCacheList);
-            result = query.list();
-            return result;
         }
+        return result;
     }
 
     private StringBuilder prepareFindTaxonNamePartsString(String column, String values) {

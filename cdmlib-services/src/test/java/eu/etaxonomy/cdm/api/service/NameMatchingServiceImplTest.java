@@ -540,7 +540,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(0,(int) matchRes.getDistance());
 
      // exact match when author is missing in the input name and boolean author is true
-////////this is wrong. This should return a warning: please give an author in the input name
+     // this is wrong. This should return a warning: please give an author in the input name
         nameCache = "Yucca filamentosa";
         matchResults = nameMatchingService.findMatchingNames(nameCache, true, null);
         matchResult = matchResults.getExactResults();
