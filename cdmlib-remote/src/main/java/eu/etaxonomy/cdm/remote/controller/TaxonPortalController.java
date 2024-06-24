@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -353,6 +354,8 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "dtoLoading", required = false, defaultValue = "true") boolean dtoLoading,
             @RequestParam(value = "withAccessionType", required = false, defaultValue = "true" ) boolean withAccessionType,
             @RequestParam(value = "identifierTypes", required = false) Set<UUID> identifierTypes,
+            //TODO use java.util.Locale and adapter for jaxon
+            @RequestParam(value = "locale", required = false, defaultValue = "en") String locale,
 
 
             //TODO annotation type filter
@@ -424,6 +427,13 @@ public class TaxonPortalController extends TaxonController{
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
 
         config.setTaxonUuid(taxonUuid);
+        if (StringUtils.isEmpty(locale)) {
+            //TODO or use http header param
+            locale = "en";
+        }
+        //TODO handle error if locale can not be matched to a "typical" Locale
+        Locale loc = Locale.forLanguageTag(locale);
+        config.getLocales().add(loc);  //TODO handle better in configurator (adder, list parameter, ...). Do we need a list here at all or only a single Locale?
         config.setFeatureTree(featureTreeUuid);
         config.setEtAlPosition(etAlPosition);
         config.setWithFacts(doFacts);
