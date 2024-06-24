@@ -130,6 +130,13 @@ public abstract class TaxonPageDtoLoaderBase {
                 UUID typeUuid = identifier.getType() == null ? null : identifier.getType().getUuid();
                 if (config.getIdentifierTypes() == null || config.getIdentifierTypes().contains(typeUuid)) {
 
+                    //filter for dummy wfo-IDs #10537
+                    if (IdentifierType.uuidWfoNameIdentifier.equals(typeUuid)) {
+                        if (identifier.getIdentifier() != null && identifier.getIdentifier().toLowerCase().contains("dummy")){
+                            continue;
+                        }
+                    }
+
                     IdentifierDto identifierDto = new IdentifierDto();
                     identifiableDto.addIdentifier(identifierDto);
                     //TODO id needed? but need to adapt dto and container then
