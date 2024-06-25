@@ -69,7 +69,7 @@ public class TaggedText implements Serializable{
             URI uri = null;
             if (ref.getDoi() != null) {
                 //for now we only handle DOIs, may be extended later
-               uri = URI.create(ref.getDoiString());
+               uri = URI.create(ref.getDoi().asURI());
             }
             TaggedTextWithLink result = TaggedTextWithLink.NewInstance(type, shortRef, ter, uri);
             return result;
