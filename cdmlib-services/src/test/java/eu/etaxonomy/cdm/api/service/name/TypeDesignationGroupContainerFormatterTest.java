@@ -249,7 +249,7 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
 
         typifiedName.addTypeDesignation(std_LT, false);
 
-        //create formatter
+        //create formatter ... without preceding main type
         TypeDesignationGroupContainer container = TypeDesignationGroupContainer.NewDefaultInstance(tdList);
         TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter()
                 .withCitation(true)

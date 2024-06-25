@@ -35,7 +35,7 @@ public class NameTypeDesignationGroupFormatter extends TypeDesignationGroupForma
         return new NameTypeDesignationGroupFormatter();
     }
 
-    public void format(TaggedTextBuilder finalBuilder, TypeDesignationGroupContainer manager,
+    public void format(TaggedTextBuilder finalBuilder, TypeDesignationGroupContainer container,
             Map<VersionableEntity,TypeDesignationGroup> orderedBaseEntity2TypesMap,
             int typeSetCount,
             TypeDesignationGroupFormatterConfiguration config,
@@ -74,7 +74,7 @@ public class NameTypeDesignationGroupFormatter extends TypeDesignationGroupForma
             localBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
         }
         for(TypeDesignationStatusBase<?> typeStatus : statusList) {
-            typeStatusCount = buildTaggedTextForSingleTypeStatus(manager, localBuilder,
+            typeStatusCount = buildTaggedTextForSingleTypeStatus(container, localBuilder,
                     typeDesignationGroup, typeStatusCount, typeStatus,
                     lastWsType, typeSetCount, hasPrecedingStatusLabel, config);
         }

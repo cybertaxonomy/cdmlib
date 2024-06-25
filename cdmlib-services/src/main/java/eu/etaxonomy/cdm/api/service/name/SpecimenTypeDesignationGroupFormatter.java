@@ -46,7 +46,7 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
         return new SpecimenTypeDesignationGroupFormatter();
     }
 
-    public void format(TaggedTextBuilder finalBuilder, TypeDesignationGroupContainer manager,
+    public void format(TaggedTextBuilder finalBuilder, TypeDesignationGroupContainer container,
             Map<VersionableEntity,TypeDesignationGroup> orderedBaseEntity2TypesMap,
             int typeSetCount,
             TypeDesignationGroupFormatterConfiguration config,
@@ -83,7 +83,7 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
         if (sob == TypeDesignationGroupContainer.NOT_DESIGNATED) {
             localBuilder.add(TagEnum.typeDesignation, "not designated");
             typeDesignationGroup.getTypeDesignations().stream().forEach(tdDTO->{
-                TypeDesignationBase<?> typeDesig =  manager.findTypeDesignation(tdDTO.getUuid());
+                TypeDesignationBase<?> typeDesig =  container.findTypeDesignation(tdDTO.getUuid());
                 if (config.isWithCitation()) {
                     handleGeneralSource(typeDesig, localBuilder, config);
                 }
@@ -100,7 +100,7 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
                 localBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
             }
             for(TypeDesignationStatusBase<?> typeStatus : statusList) {
-                typeStatusCount = buildTaggedTextForSingleTypeStatus(manager, localBuilder,
+                typeStatusCount = buildTaggedTextForSingleTypeStatus(container, localBuilder,
                         typeDesignationGroup, typeStatusCount, typeStatus,
                         lastWsType, typeSetCount, hasPrecedingStatusLabel, config);
             }
