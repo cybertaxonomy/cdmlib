@@ -39,5 +39,4 @@ public class TaggedTextWithLink extends TaggedText {
     public void setLink(URI link) {
         this.link = link;
     }
-
 }
