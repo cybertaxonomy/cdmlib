@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup.TypeDesignationSetType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -63,7 +64,8 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
         if(typeSetCount > 0){
             localBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
         }else if (config.isWithStartingTypeLabel()
-                && !config.isWithPrecedingMainType() || sob == TypeDesignationGroupContainer.NOT_DESIGNATED){
+                && (!config.isWithPrecedingMainType() || !hasNotNullStatus(statusList))
+                || sob == TypeDesignationGroupContainer.NOT_DESIGNATED){
             //TODO this is not really exact as we may want to handle specimen types and
             //name types separately, but this is such a rare case (if at all) and
             //increases complexity so it is not yet implemented
@@ -73,7 +75,7 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
         }
 
 
-        boolean hasPrecedingStatusLabel = config.isWithPrecedingMainType() && !statusList.isEmpty();
+        boolean hasPrecedingStatusLabel = config.isWithPrecedingMainType() && hasNotNullStatus(statusList);
         if (hasPrecedingStatusLabel){
             addStatusLabel(localBuilder, typeDesignationGroup, statusList.get(0), lastWsType, typeSetCount, true);
         }
@@ -110,6 +112,20 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
         typeDesignationGroup.setRepresentation(localBuilder.toString());
         finalBuilder.addAll(localBuilder);
         return;
+    }
+
+    /**
+     * Returns <code>true</code> if the list is not empty and if there is not an
+     * only status being the Null-Status placeholder.
+     */
+    private boolean hasNotNullStatus(List<TypeDesignationStatusBase<?>> statusList) {
+        if (CdmUtils.isNullSafeEmpty(statusList)) {
+            return false;
+        }else if (statusList.size() == 1 && statusList.get(0) == NullTypeDesignationStatus.SINGLETON()) {
+            return false;
+        }else {
+            return true;
+        }
     }
 
     /**

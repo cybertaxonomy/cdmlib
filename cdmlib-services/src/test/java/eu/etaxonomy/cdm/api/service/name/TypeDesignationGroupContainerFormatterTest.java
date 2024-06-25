@@ -541,4 +541,27 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
         Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
         Assert.assertEquals("]", tags.get(i++).getText());;
     }
+
+    @Test
+    public void testNullTypeDesignation() {
+        //protected cache specimen
+        String sobTitleCache = "[Poland] 'in hortis gramineis in Gnichwitz'";
+        DerivedUnit du = DerivedUnit.NewPreservedSpecimenInstance();
+        du.setTitleCache(sobTitleCache, true);
+
+        //name
+        TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        typifiedName.setTitleCache("Prionus coriatius L.", true);
+
+        //td
+        SpecimenTypeDesignation std = SpecimenTypeDesignation.NewInstance();
+        std.setTypeSpecimen(du);
+        typifiedName.addTypeDesignation(std, false);
+
+        //test
+        TypeDesignationGroupContainer container = new TypeDesignationGroupContainer(typifiedName.getHomotypicalGroup());
+        TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter();
+        String text = formatter.format(container);
+        Assert.assertEquals("Type: [Poland] 'in hortis gramineis in Gnichwitz'", text);
+    }
 }
