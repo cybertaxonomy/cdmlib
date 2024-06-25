@@ -24,8 +24,8 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 
 /**
@@ -182,7 +182,7 @@ public abstract class TypeDesignationSetFormatterBase<T extends VersionableEntit
         Reference ref = source.getCitation();
         if (ref != null){
             String citation = OriginalSourceFormatter.INSTANCE.format(source);
-            workingsetBuilder.add(TagEnum.reference, citation, TypedEntityReferenceFactory.fromEntity(ref, true));
+            workingsetBuilder.add(TaggedText.NewReferenceInstance(TagEnum.reference, citation, ref));
         }
     }
 
