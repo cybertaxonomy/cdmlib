@@ -544,6 +544,9 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
 
     @Test
     public void testNullTypeDesignation() {
+
+        TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter();
+
         //protected cache specimen
         String sobTitleCache = "[Poland] 'in hortis gramineis in Gnichwitz'";
         DerivedUnit du = DerivedUnit.NewPreservedSpecimenInstance();
@@ -560,8 +563,18 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
 
         //test
         TypeDesignationGroupContainer container = new TypeDesignationGroupContainer(typifiedName.getHomotypicalGroup());
-        TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter();
         String text = formatter.format(container);
         Assert.assertEquals("Type: [Poland] 'in hortis gramineis in Gnichwitz'", text);
+
+        //with "not designated"
+        std.setTypeSpecimen(null);
+        std.setNotDesignated(true);
+
+        //test
+        container = new TypeDesignationGroupContainer(typifiedName.getHomotypicalGroup());
+        text = formatter.format(container);
+        Assert.assertEquals("Type: not designated", text);
+
+
     }
 }
