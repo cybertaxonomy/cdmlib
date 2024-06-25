@@ -198,9 +198,10 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         typifiedName.addTypeDesignation(ntd, false);
 
         TypeDesignationSetContainer manager = TypeDesignationSetContainer.NewDefaultInstance(tds);
-        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter(true, true, true, false, false);
+        TypeDesignationSetContainerFormatter formatter =
+                new TypeDesignationSetContainerFormatter(true, true, true, false, false);
         String text = formatter.format(manager);
-        Assert.assertEquals("Prionus L."+DASH_W+"Nametype: Prionus coriatius L.", text);
+        Assert.assertEquals("Prionus L."+DASH_W+"Type: Prionus coriatius L.", text);
 
         List<TaggedText> taggedText = formatter.toTaggedText(manager);
         Assert.assertEquals("first entry should be the typified name",
@@ -224,7 +225,7 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         ntd.getTypeName().addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
         formatter.withNameIfAvailable(false); //to simplify the evaluation
         text = formatter.format(manager);
-        Assert.assertEquals("Nametype: Prionus coriatius L., nom. illeg.", text);
+        Assert.assertEquals("Type: Prionus coriatius L., nom. illeg.", text);
 
         taggedText = formatter.toTaggedText(manager);
         Assert.assertEquals("sixth entry should be the status separator",
@@ -479,7 +480,7 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
                 .withCitation(false);
         String text = formatter.format(container);
         //Type*s* might become Type in future (not defined yet as this is a very rare or even unrealistic combination of specimen and name types, see according comment in formatter
-        Assert.assertEquals("Types: not designated; Nametype: not designated", text);
+        Assert.assertEquals("Types: not designated; Type: not designated", text);
 
         List<TaggedText> tags = formatter.toTaggedText(container);
         Assert.assertEquals(7, tags.size());
@@ -493,8 +494,8 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
         Assert.assertEquals("; ", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.label, tags.get(i).getType());
-        //TODO maybe not correct and should be nametype, not Nametype
-        Assert.assertEquals("Nametype", tags.get(i++).getText());
+        //TODO maybe not correct and should be type, not Type
+        Assert.assertEquals("Type", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
         Assert.assertEquals(": ", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
@@ -504,7 +505,9 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         formatter = new TypeDesignationSetContainerFormatter().withCitation(true);
         text = formatter.format(container);
 
-        Assert.assertEquals("Types: not designated [fide Decandolle & al. 1962: 66]; Nametype: not designated [fide Decandolle & al. 1962: 55]", text);
+        //Note: having 2x 'not designated' does not make sense in reality
+        //... or should be deduplicated as there are 2 sources
+        Assert.assertEquals("Types: not designated [fide Decandolle & al. 1962: 66]; Type: not designated [fide Decandolle & al. 1962: 55]", text);
         tags = formatter.toTaggedText(container);
         Assert.assertEquals(13, tags.size());
         i = 0;
@@ -524,8 +527,8 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         Assert.assertEquals(TagEnum.separator, tags.get(i).getType());
         Assert.assertEquals("; ", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.label, tags.get(i).getType());
-        //TODO maybe not correct and should be nametype, not Nametype
-        Assert.assertEquals("Nametype", tags.get(i++).getText());
+        //TODO maybe not correct and should be type, not Type
+        Assert.assertEquals("Type", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
         Assert.assertEquals(": ", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());

@@ -217,7 +217,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         assertEquals(
                 "Prionus L."+DASH_W+"Types: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (syntype: M);"
                 + " Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA; isotypes: BER, KEW);"
-                + " nametype: Prionus coriatius L."
+                + " Type: Prionus coriatius L."
                 , result
                 );
 
@@ -237,7 +237,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         assertEquals(
                 "Prionus L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA; isotypes: BER, KEW);"
                 + " Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (syntype: M);"
-                + " nametype: Prionus coriatius L."
+                + " Type: Prionus coriatius L."
                 , result
                 );
         //same with preceding type
@@ -245,7 +245,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         assertEquals(
                 "Prionus L."+DASH_W+"Holotype: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (OHA; isotypes: BER, KEW);"
                 + " Syntype: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (M);"
-                + " Nametype: Prionus coriatius L."
+                + " Type: Prionus coriatius L."
                 , result
                 );
 
@@ -275,7 +275,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         typeDesignationManager.addTypeDesigations(ntd);
 
         assertEquals(
-                "Prionus L."+DASH_W+"Nametype: Prionus coriatius L."
+                "Prionus L."+DASH_W+"Type: Prionus coriatius L."
                 , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
                 );
 
@@ -283,7 +283,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         typeDesignationManager.addTypeDesigations(std_HT);
 
         assertEquals(
-                "Prionus L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA); nametype: Prionus coriatius L."
+                "Prionus L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA); Type: Prionus coriatius L."
                 , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
                 );
 
@@ -294,7 +294,7 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         specimen.setCollection(collection);
 
         assertEquals(
-                "Prionus L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: My collection); nametype: Prionus coriatius L."
+                "Prionus L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: My collection); Type: Prionus coriatius L."
                 , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
                 );
     }
@@ -457,9 +457,9 @@ public class TypeDesignationSetContainerTest extends TermTestBase{
         typifiedName.setTitleCache("Prionus L.", true);
         TypeDesignationSetContainer typeDesignationContainer = new TypeDesignationSetContainer(typifiedName);
         typeDesignationContainer.addTypeDesigations(ntd);
-        assertEquals("Prionus L."+DASH_W+"Nametype: Prionus coriatius L.",
+        assertEquals("Prionus L."+DASH_W+"Type: Prionus coriatius L.",
                 typeDesignationContainer.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
-        assertEquals("Prionus L."+DASH_W+"Nametype: Prionus coriatius L.",
+        assertEquals("Prionus L."+DASH_W+"Type: Prionus coriatius L.",
                 typeDesignationContainer.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
         assertEquals("Prionus L."+DASH_W+"Prionus coriatius L.",
                 typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));

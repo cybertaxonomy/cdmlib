@@ -52,7 +52,7 @@ public class NameTypeDesignationSetFormatter extends TypeDesignationSetFormatter
             //name types separately, but this is such a rare case (if at all) and
             //increases complexity so it is not yet implemented
             boolean isPlural = hasMultipleTypes(orderedBaseEntity2TypesMap);
-            localBuilder.add(TagEnum.label, (isPlural? "Nametypes": "Nametype"));
+            localBuilder.add(TagEnum.label, isPlural? "Types": "Type");
             localBuilder.add(TagEnum.postSeparator, ": ");
         }
 

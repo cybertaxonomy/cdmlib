@@ -67,11 +67,7 @@ public abstract class TypeDesignationSetFormatterBase<T extends VersionableEntit
         }else if (typeDesignationSet.getWorkingsetType() != lastWsType
                 && (builder.size() > 0 && typeSetCount > 0 )){
             //only for the first name type (coming after a specimen type add the label (extremely rare case, if at all existing)
-            if (typeDesignationSet.getWorkingsetType().isNameType()) {
-                statusLabel = "nametype";
-            }else if (typeDesignationSet.getWorkingsetType().isSpecimenType()) {
-                statusLabel = "type";
-            }
+            statusLabel = "Type";
         }
         if (statusLabel != null){
             statusLabel = (isPlural ? statusLabel + "s" : statusLabel);
