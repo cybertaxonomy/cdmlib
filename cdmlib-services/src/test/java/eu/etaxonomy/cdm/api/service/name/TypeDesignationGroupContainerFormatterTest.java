@@ -53,16 +53,16 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
- * See also {@link TypeDesignationSetContainerTest} for further tests.
+ * See also {@link TypeDesignationGroupContainerTest} for further tests.
  *
  * @author a.mueller
  * @since 30.03.2021
  */
-public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
+public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
 
     private static final String DASH_W = UTF8.EN_DASH_SPATIUM.toString();
 
-    //variables and setup were copied from TypeDesignationSetContainerTest
+    //variables and setup were copied from TypeDesignationGroupContainerTest
     //not all of them are in use yet
     private NameTypeDesignation ntd;
     private NameTypeDesignation ntd_LT;
@@ -197,9 +197,9 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
 
         typifiedName.addTypeDesignation(ntd, false);
 
-        TypeDesignationSetContainer manager = TypeDesignationSetContainer.NewDefaultInstance(tds);
-        TypeDesignationSetContainerFormatter formatter =
-                new TypeDesignationSetContainerFormatter(true, true, true, false, false);
+        TypeDesignationGroupContainer manager = TypeDesignationGroupContainer.NewDefaultInstance(tds);
+        TypeDesignationGroupContainerFormatter formatter =
+                new TypeDesignationGroupContainerFormatter(true, true, true, false, false);
         String text = formatter.format(manager);
         Assert.assertEquals("Prionus L."+DASH_W+"Type: Prionus coriatius L.", text);
 
@@ -250,8 +250,8 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         typifiedName.addTypeDesignation(std_LT, false);
 
         //create formatter
-        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tdList);
-        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter()
+        TypeDesignationGroupContainer container = TypeDesignationGroupContainer.NewDefaultInstance(tdList);
+        TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter()
                 .withCitation(true)
                 .withStartingTypeLabel(true)
                 .withNameIfAvailable(true)
@@ -292,8 +292,8 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         derivedUnit.setPreferredStableUri(stableIdentifier);
 
         //create formatter
-        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tdList);
-        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter()
+        TypeDesignationGroupContainer container = TypeDesignationGroupContainer.NewDefaultInstance(tdList);
+        TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter()
                 .withCitation(true)
                 .withStartingTypeLabel(true)
                 .withNameIfAvailable(true)
@@ -398,8 +398,8 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         typifiedName.addTypeDesignation(std_HT, false);
         typifiedName.addTypeDesignation(std_IT_3, false);
 
-        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tds);
-        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter(false, false, false, false, true);
+        TypeDesignationGroupContainer container = TypeDesignationGroupContainer.NewDefaultInstance(tds);
+        TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter(false, false, false, false, true);
         String text = formatter.format(container);
         int holotypeIndex = text.indexOf("holotype");
         Assert.assertTrue("Holotype must be first, isotype second", holotypeIndex>0 && (holotypeIndex < text.indexOf("isotype")) );
@@ -424,8 +424,8 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         typifiedName.addTypeDesignation(ttd, false);
         typifiedName.addTypeDesignation(ttd2, false);
 
-        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tdList);
-        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter();
+        TypeDesignationGroupContainer container = TypeDesignationGroupContainer.NewDefaultInstance(tdList);
+        TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter();
         String text = formatter.format(container);
         Assert.assertEquals("Types: \"My second type designation\" [fide Decandolle & al. 1962: 55]; My text type designation", text);
 
@@ -475,8 +475,8 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         typifiedName.addTypeDesignation(ntd, false);
 
         //test
-        TypeDesignationSetContainer container = TypeDesignationSetContainer.NewDefaultInstance(tdList);
-        TypeDesignationSetContainerFormatter formatter = new TypeDesignationSetContainerFormatter()
+        TypeDesignationGroupContainer container = TypeDesignationGroupContainer.NewDefaultInstance(tdList);
+        TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter()
                 .withCitation(false);
         String text = formatter.format(container);
         //Type*s* might become Type in future (not defined yet as this is a very rare or even unrealistic combination of specimen and name types, see according comment in formatter
@@ -502,7 +502,7 @@ public class TypeDesignationSetContainerFormatterTest extends TermTestBase{
         Assert.assertEquals("not designated", tags.get(i++).getText());
 
         //with citation
-        formatter = new TypeDesignationSetContainerFormatter().withCitation(true);
+        formatter = new TypeDesignationGroupContainerFormatter().withCitation(true);
         text = formatter.format(container);
 
         //Note: having 2x 'not designated' does not make sense in reality

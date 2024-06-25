@@ -14,8 +14,8 @@ import eu.etaxonomy.cdm.api.dto.RegistrationDTO;
 import eu.etaxonomy.cdm.api.dto.RegistrationDTO.RankedNameReference;
 import eu.etaxonomy.cdm.api.dto.RegistrationType;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainerFormatter;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainerFormatter;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -77,8 +77,8 @@ public class RegistrationDtoLoader {
         case TYPIFICATION:
         default:
             try {
-                TypeDesignationSetContainer typeDesignationSetContainer = TypeDesignationSetContainer.NewDefaultInstance(reg.getTypeDesignations());
-                dto.addSummaryTaggedText(new TypeDesignationSetContainerFormatter(false, true, true, true, false)
+                TypeDesignationGroupContainer typeDesignationSetContainer = TypeDesignationGroupContainer.NewDefaultInstance(reg.getTypeDesignations());
+                dto.addSummaryTaggedText(new TypeDesignationGroupContainerFormatter(false, true, true, true, false)
                         .toTaggedText(typeDesignationSetContainer));
                 summary = TaggedTextFormatter.createString(dto.getSummaryTaggedText());
                 dto.setSummary(summary);

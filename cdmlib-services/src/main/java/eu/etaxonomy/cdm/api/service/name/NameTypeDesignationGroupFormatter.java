@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet.TypeDesignationSetType;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup.TypeDesignationSetType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -29,19 +29,19 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
  * @author muellera
  * @since 22.04.2024
  */
-public class NameTypeDesignationSetFormatter extends TypeDesignationSetFormatterBase<NameTypeDesignation> {
+public class NameTypeDesignationGroupFormatter extends TypeDesignationGroupFormatterBase<NameTypeDesignation> {
 
-    public static final NameTypeDesignationSetFormatter INSTANCE() {
-        return new NameTypeDesignationSetFormatter();
+    public static final NameTypeDesignationGroupFormatter INSTANCE() {
+        return new NameTypeDesignationGroupFormatter();
     }
 
-    public void format(TaggedTextBuilder finalBuilder, TypeDesignationSetContainer manager,
-            Map<VersionableEntity,TypeDesignationSet> orderedBaseEntity2TypesMap,
+    public void format(TaggedTextBuilder finalBuilder, TypeDesignationGroupContainer manager,
+            Map<VersionableEntity,TypeDesignationGroup> orderedBaseEntity2TypesMap,
             int typeSetCount,
-            TypeDesignationSetFormatterConfiguration config,
+            TypeDesignationGroupFormatterConfiguration config,
             NameTypeDesignation baseEntity, TypeDesignationSetType lastWsType) {
 
-        TypeDesignationSet typeDesignationSet = orderedBaseEntity2TypesMap.get(baseEntity);
+        TypeDesignationGroup typeDesignationGroup = orderedBaseEntity2TypesMap.get(baseEntity);
 
         TaggedTextBuilder localBuilder = new TaggedTextBuilder();
         if(typeSetCount > 0){
@@ -57,15 +57,15 @@ public class NameTypeDesignationSetFormatter extends TypeDesignationSetFormatter
         }
 
         //TODO why is typeDesingationSet not a list
-        List<TypeDesignationStatusBase<?>> statusList = new ArrayList<>(typeDesignationSet.keySet());
+        List<TypeDesignationStatusBase<?>> statusList = new ArrayList<>(typeDesignationGroup.keySet());
         statusList.sort(statusComparator);
 
         boolean hasPrecedingStatusLabel = config.isWithPrecedingMainType() && !statusList.isEmpty();
         if (hasPrecedingStatusLabel){
-            addStatusLabel(localBuilder, typeDesignationSet, statusList.get(0), lastWsType, typeSetCount, true);
+            addStatusLabel(localBuilder, typeDesignationGroup, statusList.get(0), lastWsType, typeSetCount, true);
         }
 
-        boolean hasExplicitBaseEntity = hasExplicitBaseEntity(baseEntity, typeDesignationSet);
+        boolean hasExplicitBaseEntity = hasExplicitBaseEntity(baseEntity, typeDesignationGroup);
         if(hasExplicitBaseEntity && !entityLabel(baseEntity, config).isEmpty()){
             localBuilder.add(TagEnum.specimenOrObservation, entityLabel(baseEntity, config), baseEntity);
         }
@@ -75,13 +75,13 @@ public class NameTypeDesignationSetFormatter extends TypeDesignationSetFormatter
         }
         for(TypeDesignationStatusBase<?> typeStatus : statusList) {
             typeStatusCount = buildTaggedTextForSingleTypeStatus(manager, localBuilder,
-                    typeDesignationSet, typeStatusCount, typeStatus,
+                    typeDesignationGroup, typeStatusCount, typeStatus,
                     lastWsType, typeSetCount, hasPrecedingStatusLabel, config);
         }
         if (config.isWithBrackets() && hasExplicitBaseEntity){
             localBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
         }
-        typeDesignationSet.setRepresentation(localBuilder.toString());
+        typeDesignationGroup.setRepresentation(localBuilder.toString());
         finalBuilder.addAll(localBuilder);
         return;
 
@@ -89,7 +89,7 @@ public class NameTypeDesignationSetFormatter extends TypeDesignationSetFormatter
 
     @Override
     protected void buildTaggedTextForTypeDesignationBase(TypeDesignationBase<?> td,
-            TaggedTextBuilder workingsetBuilder, TypeDesignationSetFormatterConfiguration config) {
+            TaggedTextBuilder workingsetBuilder, TypeDesignationGroupFormatterConfiguration config) {
 
         TypedEntityReference<?> typeDesignationEntity = TypedEntityReferenceFactory.fromEntity(td, false);
         if(td instanceof NameTypeDesignation){
@@ -133,13 +133,13 @@ public class NameTypeDesignationSetFormatter extends TypeDesignationSetFormatter
      * Checks if the baseType is the same as the (only?) type in the type designation workingset.
      */
     private boolean hasExplicitBaseEntity(NameTypeDesignation ntd,
-            TypeDesignationSet typeDesignationSet) {
+            TypeDesignationGroup typeDesignationGroup) {
 
         return false;
     }
 
     @Override
-    protected String entityLabel(NameTypeDesignation ntd, TypeDesignationSetFormatterConfiguration config) {
+    protected String entityLabel(NameTypeDesignation ntd, TypeDesignationGroupFormatterConfiguration config) {
         return "";  //TODO correct, or ntd.toString() ?
     }
 }

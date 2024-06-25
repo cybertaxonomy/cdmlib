@@ -29,10 +29,10 @@ import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 
 /**
  * Type designations which refer to the same base entity (e.g. FieldUnit for SpecimenTypeDesignations
- * or TaxonName/NameTypeDesignation for NameTypeDesignation form a {@link TypeDesignationSet}.
- * The <code>TypeDesignationSet</code> internally stores the base entity
+ * or TaxonName/NameTypeDesignation for NameTypeDesignation form a {@link TypeDesignationGroup}.
+ * The <code>TypeDesignationGroup</code> internally stores the base entity
  * and an ordered map that maps type status (TypeDesignationStatusBase) to the type designations
- * in the <code>TypeDesignationSet</code>.
+ * in the <code>TypeDesignationGroup</code>.
  *
  * The TypeDesignationStatusBase keys can be ordered by the term order defined in the vocabulary.
  *
@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
  * @author a.mueller
  * @since Mar 10, 2017
  */
-public class TypeDesignationSet {
+public class TypeDesignationGroup {
 
     public static final NullTypeDesignationStatus NULL_STATUS = NullTypeDesignationStatus.SINGLETON();
 
@@ -64,10 +64,10 @@ public class TypeDesignationSet {
 
 // ********************************* CONSTRUCTOR **************************/
 
-    public TypeDesignationSet(VersionableEntity baseEntity) {
+    public TypeDesignationGroup(VersionableEntity baseEntity) {
         this.baseEntity = baseEntity;
         //init base entity label to avoid LazyInitializationExceptions
-        TypeDesignationSetFormatterBase.getFormatter(this).entityLabel(baseEntity, null);
+        TypeDesignationGroupFormatterBase.getFormatter(this).entityLabel(baseEntity, null);
     }
 
 // ***********************************************************************/
@@ -128,7 +128,7 @@ public class TypeDesignationSet {
      * @return the baseEntityReference
      */
 //    public TypedEntityReference<? extends VersionableEntity> getBaseEntityAsReference(
-//            TypeDesignationSetFormatterConfiguration config) {
+//            TypeDesignationGroupFormatterConfiguration config) {
 //        return makeEntityReference(baseEntity, config);
 //    }
 
@@ -175,7 +175,7 @@ public class TypeDesignationSet {
             VersionableEntity baseEntity) {
 
         baseEntity = CdmBase.deproxy(baseEntity);
-        String label = TypeDesignationSetFormatterBase.getFormatter(this).entityLabel(baseEntity, null);
+        String label = TypeDesignationGroupFormatterBase.getFormatter(this).entityLabel(baseEntity, null);
 
         TypedEntityReference<? extends VersionableEntity> baseEntityReference =
                 TypedEntityReferenceFactory.fromEntityWithLabel(baseEntity, label);

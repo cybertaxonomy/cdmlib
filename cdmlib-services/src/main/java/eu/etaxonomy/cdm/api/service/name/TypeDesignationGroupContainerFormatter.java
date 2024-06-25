@@ -14,7 +14,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet.TypeDesignationSetType;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup.TypeDesignationSetType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
@@ -44,12 +44,12 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
 
 /**
- * Formatter to format a {@link TypeDesignationSet}
+ * Formatter to format a {@link TypeDesignationGroup}
  *
  * @author a.mueller
  * @since 24.11.2020
  */
-public class TypeDesignationSetContainerFormatter {
+public class TypeDesignationGroupContainerFormatter {
 
     static final String TYPE_STATUS_SEPARATOR = "; ";
     static final String TYPE_DESIGNATION_SEPARATOR = ", ";
@@ -61,18 +61,18 @@ public class TypeDesignationSetContainerFormatter {
     static final String POST_STATUS_SEPARATOR = ": ";
     private static final String POST_NAME_SEPARTOR = UTF8.EN_DASH_SPATIUM.toString();
 
-    private TypeDesignationSetFormatterConfiguration configuration = new TypeDesignationSetFormatterConfiguration();
+    private TypeDesignationGroupFormatterConfiguration configuration = new TypeDesignationGroupFormatterConfiguration();
 
     private TypeDesignationStatusComparator statusComparator = new TypeDesignationStatusComparator<>();
 
     public static String entityLabel(VersionableEntity baseEntity,
-            TypeDesignationSetFormatterConfiguration config) {
+            TypeDesignationGroupFormatterConfiguration config) {
 
         String label = "";
         if(baseEntity instanceof IdentifiableEntity<?>){
             label = ((IdentifiableEntity<?>)baseEntity).getTitleCache();
         }else if (baseEntity instanceof TextualTypeDesignation) {
-            label = TextualTypeDesignationSetFormatter.INSTANCE()
+            label = TextualTypeDesignationGroupFormatter.INSTANCE()
                     .entityLabel((TextualTypeDesignation)baseEntity, config);
         }
         //TODO first check if it will not break code
@@ -84,10 +84,10 @@ public class TypeDesignationSetContainerFormatter {
 
 // ********************** CONSTRUCTOR **********************************/
 
-    public TypeDesignationSetContainerFormatter() {
+    public TypeDesignationGroupContainerFormatter() {
     }
 
-    public TypeDesignationSetContainerFormatter(boolean withCitation, boolean withStartingTypeLabel,
+    public TypeDesignationGroupContainerFormatter(boolean withCitation, boolean withStartingTypeLabel,
             boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType) {
 
         configuration.setWithCitation(withCitation)
@@ -100,50 +100,50 @@ public class TypeDesignationSetContainerFormatter {
 
 // *********************** CONFIGURATION **************************************/
 
-    public TypeDesignationSetContainerFormatter(TypeDesignationSetFormatterConfiguration configuration) {
+    public TypeDesignationGroupContainerFormatter(TypeDesignationGroupFormatterConfiguration configuration) {
         this.configuration = configuration;
     }
 
-    public TypeDesignationSetContainerFormatter withCitation(boolean withCitation) {
+    public TypeDesignationGroupContainerFormatter withCitation(boolean withCitation) {
         configuration.setWithCitation(withCitation);
         return this;
     }
 
-    public TypeDesignationSetContainerFormatter withStartingTypeLabel(boolean withStartingTypeLabel) {
+    public TypeDesignationGroupContainerFormatter withStartingTypeLabel(boolean withStartingTypeLabel) {
         configuration.setWithStartingTypeLabel(withStartingTypeLabel);
         return this;
     }
 
-    public TypeDesignationSetContainerFormatter withNameIfAvailable(boolean withNameIfAvailable) {
+    public TypeDesignationGroupContainerFormatter withNameIfAvailable(boolean withNameIfAvailable) {
         configuration.setWithNameIfAvailable(withNameIfAvailable);
         return this;
     }
 
-    public TypeDesignationSetContainerFormatter withPrecedingMainType(boolean withPrecedingMainType) {
+    public TypeDesignationGroupContainerFormatter withPrecedingMainType(boolean withPrecedingMainType) {
         configuration.setWithPrecedingMainType(withPrecedingMainType);
         return this;
     }
 
-    public TypeDesignationSetContainerFormatter withAccessionNoType(boolean withAccessionNoType) {
+    public TypeDesignationGroupContainerFormatter withAccessionNoType(boolean withAccessionNoType) {
         configuration.setWithAccessionNoType(withAccessionNoType);
         return this;
     }
 
 // ***************** formatting methods ********************************/
 
-    public String format(TypeDesignationSetContainer manager){
+    public String format(TypeDesignationGroupContainer manager){
         return TaggedTextFormatter.createString(toTaggedText(manager));
     }
 
-    public String format(TypeDesignationSetContainer manager, HTMLTagRules htmlTagRules){
+    public String format(TypeDesignationGroupContainer manager, HTMLTagRules htmlTagRules){
         return TaggedTextFormatter.createString(toTaggedText(manager), htmlTagRules);
     }
 
-    public List<TaggedText> toTaggedText(TypeDesignationSetContainer manager){
+    public List<TaggedText> toTaggedText(TypeDesignationGroupContainer manager){
         return buildTaggedText(manager);
     }
 
-    private List<TaggedText> buildTaggedText(TypeDesignationSetContainer manager){
+    private List<TaggedText> buildTaggedText(TypeDesignationGroupContainer manager){
 
         TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
 
@@ -155,25 +155,25 @@ public class TypeDesignationSetContainerFormatter {
         }
 
         int typeSetCount = 0;
-        Map<VersionableEntity,TypeDesignationSet> orderedBaseEntity2TypesMap
+        Map<VersionableEntity,TypeDesignationGroup> orderedBaseEntity2TypesMap
                     = manager.getOrderedTypeDesignationSets();
         TypeDesignationSetType lastWsType = null;
         if (orderedBaseEntity2TypesMap != null){
             for(VersionableEntity baseEntity : orderedBaseEntity2TypesMap.keySet()) {
                 baseEntity = CdmBase.deproxy(baseEntity);
                 if (baseEntity.isInstanceOf(SpecimenOrObservationBase.class)) {
-                    SpecimenTypeDesignationSetFormatter.INSTANCE().format(finalBuilder, manager,
+                    SpecimenTypeDesignationGroupFormatter.INSTANCE().format(finalBuilder, manager,
                             orderedBaseEntity2TypesMap,
                             typeSetCount, configuration,
                             (SpecimenOrObservationBase<?>)baseEntity,
                             lastWsType);
                 }else if (baseEntity.isInstanceOf(NameTypeDesignation.class)) {
-                    NameTypeDesignationSetFormatter.INSTANCE().format(finalBuilder, manager,
+                    NameTypeDesignationGroupFormatter.INSTANCE().format(finalBuilder, manager,
                             orderedBaseEntity2TypesMap,
                             typeSetCount, configuration,
                             (NameTypeDesignation)baseEntity, lastWsType);
                 }else if (baseEntity.isInstanceOf(TextualTypeDesignation.class)) {
-                    TextualTypeDesignationSetFormatter.INSTANCE().format(finalBuilder, manager,
+                    TextualTypeDesignationGroupFormatter.INSTANCE().format(finalBuilder, manager,
                             orderedBaseEntity2TypesMap,
                             typeSetCount, configuration,
                             (TextualTypeDesignation)baseEntity, lastWsType);
@@ -326,7 +326,7 @@ public class TypeDesignationSetContainerFormatter {
                     }
                 //other specimen
                 } else {
-                    //TODO make configurable/or can this code be deleted somehow, it is mostly duplication for Name-/SpecimenTypeDesignationSetFormatter?
+                    //TODO make configurable/or can this code be deleted somehow, it is mostly duplication for Name-/SpecimenTypeDesignationGroupFormatter?
                     DerivedUnitDefaultCacheStrategy.CollectionAccessionSeperator sep
                         = DerivedUnitDefaultCacheStrategy.CollectionAccessionSeperator.SPACE;
                     DerivedUnitDefaultCacheStrategy cacheStrategy = DerivedUnitDefaultCacheStrategy.NewInstance(true, false, false, sep);

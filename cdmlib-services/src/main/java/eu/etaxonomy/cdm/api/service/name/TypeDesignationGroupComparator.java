@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.service.name;
 
 import java.util.Comparator;
 
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet.TypeDesignationSetType;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup.TypeDesignationSetType;
 import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
  * @author a.mueller
  * @date 12.07.2022
  */
-public class TypeDesignationSetComparator implements Comparator<TypeDesignationSet> {
+public class TypeDesignationGroupComparator implements Comparator<TypeDesignationGroup> {
 
     //not yet used
     public enum ORDER_BY{
@@ -43,29 +43,29 @@ public class TypeDesignationSetComparator implements Comparator<TypeDesignationS
 
 // ************** FACTORY METHOD **************************/
 
-    private static TypeDesignationSetComparator defaultInstance;
+    private static TypeDesignationGroupComparator defaultInstance;
 
-    public static TypeDesignationSetComparator INSTANCE() {
+    public static TypeDesignationGroupComparator INSTANCE() {
         if (defaultInstance == null) {
-            defaultInstance = new TypeDesignationSetComparator();
+            defaultInstance = new TypeDesignationGroupComparator();
         }
         return defaultInstance;
     }
 
 //**************** CONSTRUCTOR ******************************/
 
-    private TypeDesignationSetComparator() {}
+    private TypeDesignationGroupComparator() {}
 
-    public TypeDesignationSetComparator(ORDER_BY orderBy) {
+    public TypeDesignationGroupComparator(ORDER_BY orderBy) {
         this.orderBy = orderBy;
     }
 
  // ******************** METHOD *************************/
 
     @Override
-    public int compare(TypeDesignationSet o1, TypeDesignationSet o2) {
-        TypeDesignationSet ws1 = o1;
-        TypeDesignationSet ws2 = o2;
+    public int compare(TypeDesignationGroup o1, TypeDesignationGroup o2) {
+        TypeDesignationGroup ws1 = o1;
+        TypeDesignationGroup ws2 = o2;
 
         //compare type
         if (ws1.getWorkingsetType() != ws2.getWorkingsetType()){
@@ -109,9 +109,9 @@ public class TypeDesignationSetComparator implements Comparator<TypeDesignationS
             }
         } else {
             //TODO i18n, how to get the configurator in here without creating the comparator anew each time
-            TypeDesignationSetFormatterConfiguration config = null;
-            String label1 = TypeDesignationSetFormatterBase.getFormatter(o1).entityLabel(o1.getBaseEntity(), config);
-            String label2 = TypeDesignationSetFormatterBase.getFormatter(o2).entityLabel(o2.getBaseEntity(), config);
+            TypeDesignationGroupFormatterConfiguration config = null;
+            String label1 = TypeDesignationGroupFormatterBase.getFormatter(o1).entityLabel(o1.getBaseEntity(), config);
+            String label2 = TypeDesignationGroupFormatterBase.getFormatter(o2).entityLabel(o2.getBaseEntity(), config);
             return label1.compareTo(label2);
         }
     }

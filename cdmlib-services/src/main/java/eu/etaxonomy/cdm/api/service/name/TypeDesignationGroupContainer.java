@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.dto.RegistrationDTO.RankedNameReference;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator.ORDER_BY;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupComparator.ORDER_BY;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -54,14 +54,14 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
  * The type designations per base type are furthermore ordered by the
  * {@link TypeDesignationStatusBase type designation status}.
  * <BR>
- * All type designations belonging to one base type are handled in a {@link TypeDesignationSet}.
+ * All type designations belonging to one base type are handled in a {@link TypeDesignationGroup}.
  * <BR>
- * The {@link TypeDesignationSetContainer} can be formatted by using the {@link TypeDesignationSetContainerFormatter}
+ * The {@link TypeDesignationGroupContainer} can be formatted by using the {@link TypeDesignationGroupContainerFormatter}
  *
  * @author a.kohlbecker
  * @since Mar 10, 2017
  */
-public class TypeDesignationSetContainer {
+public class TypeDesignationGroupContainer {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -72,7 +72,7 @@ public class TypeDesignationSetContainer {
 
     private TaxonName typifiedName;
 
-    private Comparator<TypeDesignationSet> typeDesignationSetComparator = TypeDesignationSetComparator.INSTANCE();
+    private Comparator<TypeDesignationGroup> typeDesignationSetComparator = TypeDesignationGroupComparator.INSTANCE();
 
     /**
      * TODO is this documentation still valid?
@@ -82,35 +82,35 @@ public class TypeDesignationSetContainer {
      * The TypeDesignationStatusBase keys are already ordered by the term
      * order defined in the vocabulary.
      */
-    private LinkedHashMap<VersionableEntity,TypeDesignationSet> orderedBaseEntity2typeDesignationsMap = new LinkedHashMap<>();
+    private LinkedHashMap<VersionableEntity,TypeDesignationGroup> orderedBaseEntity2typeDesignationsMap = new LinkedHashMap<>();
 
     private List<String> problems = new ArrayList<>();
 
 // **************************** FACTORY ***************************************/
 
-    public static TypeDesignationSetContainer NewDefaultInstance(
+    public static TypeDesignationGroupContainer NewDefaultInstance(
             @SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations)
             throws TypeDesignationSetException{
-        return new TypeDesignationSetContainer(typeDesignations, null, null);
+        return new TypeDesignationGroupContainer(typeDesignations, null, null);
     }
 
-    public static TypeDesignationSetContainer NewInstance(
+    public static TypeDesignationGroupContainer NewInstance(
             @SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
-            TypeDesignationSetComparator.ORDER_BY orderBy)
+            TypeDesignationGroupComparator.ORDER_BY orderBy)
             throws TypeDesignationSetException{
-        TypeDesignationSetContainer result = new TypeDesignationSetContainer(typeDesignations, null, orderBy);
+        TypeDesignationGroupContainer result = new TypeDesignationGroupContainer(typeDesignations, null, orderBy);
         return result;
     }
 
 // **************************** CONSTRUCTOR ***********************************/
 
-    public TypeDesignationSetContainer(
+    public TypeDesignationGroupContainer(
             @SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
             TaxonName typifiedName,
             ORDER_BY orderBy) throws TypeDesignationSetException  {
 
         if (orderBy != null) {
-            typeDesignationSetComparator = new TypeDesignationSetComparator(orderBy);
+            typeDesignationSetComparator = new TypeDesignationGroupComparator(orderBy);
         }
         for (TypeDesignationBase<?> typeDes: typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
@@ -129,7 +129,7 @@ public class TypeDesignationSetContainer {
         groupAndSort();
     }
 
-    public TypeDesignationSetContainer(HomotypicalGroup group) {
+    public TypeDesignationGroupContainer(HomotypicalGroup group) {
         for (TypeDesignationBase<?> typeDes: group.getTypeDesignations()){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
@@ -137,7 +137,7 @@ public class TypeDesignationSetContainer {
         groupAndSort();
     }
 
-    public TypeDesignationSetContainer(TaxonName typifiedName) {
+    public TypeDesignationGroupContainer(TaxonName typifiedName) {
         this.typifiedName = typifiedName;
     }
 
@@ -167,13 +167,13 @@ public class TypeDesignationSetContainer {
      */
     protected void groupAndSort() {
 
-        Map<VersionableEntity,TypeDesignationSet> baseEntity2TypeDesignationsMap = new HashMap<>();
+        Map<VersionableEntity,TypeDesignationGroup> baseEntity2TypeDesignationsMap = new HashMap<>();
         this.typeDesignations.values().forEach(td -> addTypeDesignationToGroup(baseEntity2TypeDesignationsMap, td));
 
         orderedBaseEntity2typeDesignationsMap = orderBaseEntity2TypeDesignationsMap(baseEntity2TypeDesignationsMap);
     }
 
-    private void addTypeDesignationToGroup(Map<VersionableEntity,TypeDesignationSet> baseEntity2typeDesignationsMap,
+    private void addTypeDesignationToGroup(Map<VersionableEntity,TypeDesignationGroup> baseEntity2typeDesignationsMap,
             TypeDesignationBase<?> td){
 
         td = HibernateProxyHelper.deproxy(td);
@@ -184,8 +184,9 @@ public class TypeDesignationSetContainer {
 
             TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
             boolean withCitation = true;
-            TypeDesignationSetContainerFormatter.buildTaggedTextForSingleType(td, withCitation, workingsetBuilder, 0);
+            TypeDesignationGroupContainerFormatter.buildTaggedTextForSingleType(td, withCitation, workingsetBuilder, 0);
 
+            //use DTO to compute tagged text only once and make it comparable for sorting (via computed label)
             @SuppressWarnings({ "unchecked", "rawtypes" })
             TypeDesignationDTO<?> typeDesignationDTO
                 = new TypeDesignationDTO(
@@ -195,7 +196,7 @@ public class TypeDesignationSetContainer {
                     getTypeUuid(td));
 
             if(!baseEntity2typeDesignationsMap.containsKey(baseEntity)){
-                baseEntity2typeDesignationsMap.put(baseEntity, new TypeDesignationSet(baseEntity));
+                baseEntity2typeDesignationsMap.put(baseEntity, new TypeDesignationGroup(baseEntity));
             }
             baseEntity2typeDesignationsMap.get(baseEntity).add(status, typeDesignationDTO);
 
@@ -246,30 +247,30 @@ public class TypeDesignationSetContainer {
         return baseEntity;
     }
 
-    private LinkedHashMap<VersionableEntity,TypeDesignationSet> orderBaseEntity2TypeDesignationsMap(
-            Map<VersionableEntity,TypeDesignationSet> baseEntity2TypeDesignationsMap){
+    private LinkedHashMap<VersionableEntity,TypeDesignationGroup> orderBaseEntity2TypeDesignationsMap(
+            Map<VersionableEntity,TypeDesignationGroup> baseEntity2TypeDesignationsMap){
 
        // order the FieldUnit TypeName keys
-       Collection<TypeDesignationSet> typeDesignations
+       Collection<TypeDesignationGroup> typeDesignations
                = baseEntity2TypeDesignationsMap.values();
-       LinkedList<TypeDesignationSet> baseEntityKeyList
+       LinkedList<TypeDesignationGroup> baseEntityKeyList
                = new LinkedList<>(typeDesignations);
        Collections.sort(baseEntityKeyList, typeDesignationSetComparator);
 
        // new LinkedHashMap for the ordered FieldUnitOrTypeName keys
-       LinkedHashMap<VersionableEntity,TypeDesignationSet> orderedBaseEntity2TypeDesignationsMap
+       LinkedHashMap<VersionableEntity,TypeDesignationGroup> orderedBaseEntity2TypeDesignationsMap
            = new LinkedHashMap<>(baseEntity2TypeDesignationsMap.size());
 
-       for(TypeDesignationSet entry : baseEntityKeyList){
+       for(TypeDesignationGroup entry : baseEntityKeyList){
            VersionableEntity baseEntity = entry.getBaseEntity();
-           TypeDesignationSet typeDesignationSet = baseEntity2TypeDesignationsMap.get(baseEntity);
+           TypeDesignationGroup typeDesignationGroup = baseEntity2TypeDesignationsMap.get(baseEntity);
            // order the TypeDesignationStatusBase keys
-            List<TypeDesignationStatusBase<?>> keyList = new LinkedList<>(typeDesignationSet.keySet());
+            List<TypeDesignationStatusBase<?>> keyList = new LinkedList<>(typeDesignationGroup.keySet());
             Collections.sort(keyList, new TypeDesignationStatusComparator());
             // new LinkedHashMap for the ordered TypeDesignationStatusBase keys
-            TypeDesignationSet orderedStringsByOrderedTypes = new TypeDesignationSet(
-                    typeDesignationSet.getBaseEntity());
-            keyList.forEach(key -> orderedStringsByOrderedTypes.put(key, typeDesignationSet.get(key)));
+            TypeDesignationGroup orderedStringsByOrderedTypes = new TypeDesignationGroup(
+                    typeDesignationGroup.getBaseEntity());
+            keyList.forEach(key -> orderedStringsByOrderedTypes.put(key, typeDesignationGroup.get(key)));
             orderedBaseEntity2TypeDesignationsMap.put(baseEntity, orderedStringsByOrderedTypes);
         }
 
@@ -357,7 +358,7 @@ public class TypeDesignationSetContainer {
         return this.typeDesignations.get(uuid);
     }
 
-    public Map<VersionableEntity,TypeDesignationSet> getOrderedTypeDesignationSets() {
+    public Map<VersionableEntity,TypeDesignationGroup> getOrderedTypeDesignationSets() {
         return orderedBaseEntity2typeDesignationsMap;
     }
 
@@ -388,11 +389,11 @@ public class TypeDesignationSetContainer {
     }
 
     public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType) {
-        return new TypeDesignationSetContainerFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType).format(this);
+        return new TypeDesignationGroupContainerFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType).format(this);
     }
 
     public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType, HTMLTagRules htmlRules) {
-        return new TypeDesignationSetContainerFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType).format(this, htmlRules);
+        return new TypeDesignationGroupContainerFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType).format(this, htmlRules);
     }
 
 

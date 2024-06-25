@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
  * @author muellera
  * @since 23.04.2024
  */
-public class TypeDesignationSetFormatterConfiguration {
+public class TypeDesignationGroupFormatterConfiguration {
 
     private boolean withCitation = true;
     private boolean withStartingTypeLabel = true;
@@ -38,7 +38,7 @@ public class TypeDesignationSetFormatterConfiguration {
     public boolean isWithCitation() {
         return withCitation;
     }
-    public TypeDesignationSetFormatterConfiguration setWithCitation(boolean withCitation) {
+    public TypeDesignationGroupFormatterConfiguration setWithCitation(boolean withCitation) {
         this.withCitation = withCitation;
         return this;
     }
@@ -47,7 +47,7 @@ public class TypeDesignationSetFormatterConfiguration {
     public boolean isWithStartingTypeLabel() {
         return withStartingTypeLabel;
     }
-    public TypeDesignationSetFormatterConfiguration setWithStartingTypeLabel(boolean withStartingTypeLabel) {
+    public TypeDesignationGroupFormatterConfiguration setWithStartingTypeLabel(boolean withStartingTypeLabel) {
         this.withStartingTypeLabel = withStartingTypeLabel;
         return this;
     }
@@ -56,7 +56,7 @@ public class TypeDesignationSetFormatterConfiguration {
     public boolean isWithNameIfAvailable() {
         return withNameIfAvailable;
     }
-    public TypeDesignationSetFormatterConfiguration setWithNameIfAvailable(boolean withNameIfAvailable) {
+    public TypeDesignationGroupFormatterConfiguration setWithNameIfAvailable(boolean withNameIfAvailable) {
         this.withNameIfAvailable = withNameIfAvailable;
         return this;
     }
@@ -65,7 +65,7 @@ public class TypeDesignationSetFormatterConfiguration {
     public boolean isWithPrecedingMainType() {
         return withPrecedingMainType;
     }
-    public TypeDesignationSetFormatterConfiguration setWithPrecedingMainType(boolean withPrecedingMainType) {
+    public TypeDesignationGroupFormatterConfiguration setWithPrecedingMainType(boolean withPrecedingMainType) {
         this.withPrecedingMainType = withPrecedingMainType;
         return this;
     }
@@ -74,7 +74,7 @@ public class TypeDesignationSetFormatterConfiguration {
     public boolean isWithAccessionNoType() {
         return withAccessionNoType;
     }
-    public TypeDesignationSetFormatterConfiguration setWithAccessionNoType(boolean withAccessionNoType) {
+    public TypeDesignationGroupFormatterConfiguration setWithAccessionNoType(boolean withAccessionNoType) {
         this.withAccessionNoType = withAccessionNoType;
         return this;
     }
@@ -83,7 +83,7 @@ public class TypeDesignationSetFormatterConfiguration {
     public boolean isIgnoreSyntypesWithLectotype() {
         return ignoreSyntypesWithLectotype;
     }
-    public TypeDesignationSetFormatterConfiguration setIgnoreSyntypesWithLectotype(boolean ignoreSyntypesWithLectotype) {
+    public TypeDesignationGroupFormatterConfiguration setIgnoreSyntypesWithLectotype(boolean ignoreSyntypesWithLectotype) {
         this.ignoreSyntypesWithLectotype = ignoreSyntypesWithLectotype;
         return this;
     }
@@ -98,7 +98,7 @@ public class TypeDesignationSetFormatterConfiguration {
     public List<Language> getLanguages() {
         return languages;
     }
-    public TypeDesignationSetFormatterConfiguration setLanguages(List<Language> languages) {
+    public TypeDesignationGroupFormatterConfiguration setLanguages(List<Language> languages) {
         if (languages == null) {
             languages = new ArrayList<>();
         }
@@ -110,7 +110,7 @@ public class TypeDesignationSetFormatterConfiguration {
     public EnumSet<OriginalSourceType> getSourceTypeFilter() {
         return sourceTypeFilter;
     }
-    public TypeDesignationSetFormatterConfiguration setSourceTypeFilter(EnumSet<OriginalSourceType> sourceTypeFilter) {
+    public TypeDesignationGroupFormatterConfiguration setSourceTypeFilter(EnumSet<OriginalSourceType> sourceTypeFilter) {
         this.sourceTypeFilter = sourceTypeFilter;
         return this;
     }

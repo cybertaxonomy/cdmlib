@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.remote.json.processor.value;
 import java.util.Objects;
 
 import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
@@ -29,7 +29,7 @@ public class TypeDesignationSetValueProcessor implements JsonValueProcessor {
         if (value == null) {
             return JSONNull.getInstance();
         }
-        TypeDesignationSet tds = (TypeDesignationSet)value;
+        TypeDesignationGroup tds = (TypeDesignationGroup)value;
         JSONObject json = new JSONObject();
         for(TypeDesignationStatusBase<?> key : tds.keySet()){
             TermRepresentation_L10n term_L10n = new TermRepresentation_L10n(key, false);

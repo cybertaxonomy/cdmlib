@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet.TypeDesignationSetType;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup.TypeDesignationSetType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -39,31 +39,31 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrateg
  * @author muellera
  * @since 22.04.2024
  */
-public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetFormatterBase<SpecimenOrObservationBase> {
+public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupFormatterBase<SpecimenOrObservationBase> {
 
-    public static final SpecimenTypeDesignationSetFormatter INSTANCE() {
-        return new SpecimenTypeDesignationSetFormatter();
+    public static final SpecimenTypeDesignationGroupFormatter INSTANCE() {
+        return new SpecimenTypeDesignationGroupFormatter();
     }
 
-    public void format(TaggedTextBuilder finalBuilder, TypeDesignationSetContainer manager,
-            Map<VersionableEntity,TypeDesignationSet> orderedBaseEntity2TypesMap,
+    public void format(TaggedTextBuilder finalBuilder, TypeDesignationGroupContainer manager,
+            Map<VersionableEntity,TypeDesignationGroup> orderedBaseEntity2TypesMap,
             int typeSetCount,
-            TypeDesignationSetFormatterConfiguration config,
+            TypeDesignationGroupFormatterConfiguration config,
             SpecimenOrObservationBase<?> sob, TypeDesignationSetType lastWsType) {
 
-        TypeDesignationSet typeDesignationSet = orderedBaseEntity2TypesMap.get(sob);
+        TypeDesignationGroup typeDesignationGroup = orderedBaseEntity2TypesMap.get(sob);
 
         TaggedTextBuilder localBuilder = new TaggedTextBuilder();
 
         //TODO why is typeDesingationSet not a list
-        List<TypeDesignationStatusBase<?>> statusList = new ArrayList<>(typeDesignationSet.keySet());
+        List<TypeDesignationStatusBase<?>> statusList = new ArrayList<>(typeDesignationGroup.keySet());
         statusList.sort(statusComparator);
 
 
         if(typeSetCount > 0){
             localBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
         }else if (config.isWithStartingTypeLabel()
-                && !config.isWithPrecedingMainType() || sob == TypeDesignationSetContainer.NOT_DESIGNATED){
+                && !config.isWithPrecedingMainType() || sob == TypeDesignationGroupContainer.NOT_DESIGNATED){
             //TODO this is not really exact as we may want to handle specimen types and
             //name types separately, but this is such a rare case (if at all) and
             //increases complexity so it is not yet implemented
@@ -75,12 +75,12 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
 
         boolean hasPrecedingStatusLabel = config.isWithPrecedingMainType() && !statusList.isEmpty();
         if (hasPrecedingStatusLabel){
-            addStatusLabel(localBuilder, typeDesignationSet, statusList.get(0), lastWsType, typeSetCount, true);
+            addStatusLabel(localBuilder, typeDesignationGroup, statusList.get(0), lastWsType, typeSetCount, true);
         }
 
-        if (sob == TypeDesignationSetContainer.NOT_DESIGNATED) {
+        if (sob == TypeDesignationGroupContainer.NOT_DESIGNATED) {
             localBuilder.add(TagEnum.typeDesignation, "not designated");
-            typeDesignationSet.getTypeDesignations().stream().forEach(tdDTO->{
+            typeDesignationGroup.getTypeDesignations().stream().forEach(tdDTO->{
                 TypeDesignationBase<?> typeDesig =  manager.findTypeDesignation(tdDTO.getUuid());
                 if (config.isWithCitation()) {
                     handleGeneralSource(typeDesig, localBuilder, config);
@@ -88,7 +88,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
             });
         }else {
 
-            boolean hasExplicitBaseEntity = hasExplicitBaseEntity(sob, typeDesignationSet)
+            boolean hasExplicitBaseEntity = hasExplicitBaseEntity(sob, typeDesignationGroup)
                     && !entityLabel(sob, config).isEmpty();  //current literature media specimen do often have an empty field unit attached as this is the only way to create them #10426, #10425
             if(hasExplicitBaseEntity && !entityLabel(sob, config).isEmpty()){
                 localBuilder.add(TagEnum.specimenOrObservation, entityLabel(sob, config), sob);
@@ -99,7 +99,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
             }
             for(TypeDesignationStatusBase<?> typeStatus : statusList) {
                 typeStatusCount = buildTaggedTextForSingleTypeStatus(manager, localBuilder,
-                        typeDesignationSet, typeStatusCount, typeStatus,
+                        typeDesignationGroup, typeStatusCount, typeStatus,
                         lastWsType, typeSetCount, hasPrecedingStatusLabel, config);
             }
             if (config.isWithBrackets() && hasExplicitBaseEntity){
@@ -107,7 +107,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
             }
         }
 
-        typeDesignationSet.setRepresentation(localBuilder.toString());
+        typeDesignationGroup.setRepresentation(localBuilder.toString());
         finalBuilder.addAll(localBuilder);
         return;
     }
@@ -116,10 +116,10 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
      * Checks if the baseType is the same as the (only?) type in the type designation set.
      */
     private boolean hasExplicitBaseEntity(SpecimenOrObservationBase<?> sob,
-            TypeDesignationSet typeDesignationSet) {
+            TypeDesignationGroup typeDesignationGroup) {
 
         UUID baseUuid = sob.getUuid();
-        for (TypeDesignationDTO<?> dto: typeDesignationSet.getTypeDesignations()){
+        for (TypeDesignationDTO<?> dto: typeDesignationGroup.getTypeDesignations()){
             if (!baseUuid.equals(dto.getTypeUuid())){
                 return true;
             }
@@ -129,7 +129,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
     }
 
     @Override
-    protected String entityLabel(SpecimenOrObservationBase sob, TypeDesignationSetFormatterConfiguration config) {
+    protected String entityLabel(SpecimenOrObservationBase sob, TypeDesignationGroupFormatterConfiguration config) {
         String label = sob.getTitleCache();
         if (label.startsWith("FieldUnit#")) {
             return "";
@@ -139,7 +139,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
     }
 
 //    int buildTaggedTextForSingleTypeStatus(TypeDesignationSetContainer manager,
-//            TaggedTextBuilder workingsetBuilder, TypeDesignationSet typeDesignationSet,
+//            TaggedTextBuilder workingsetBuilder, TypeDesignationGroup typeDesignationSet,
 //            int typeStatusCount, TypeDesignationStatusBase<?> typeStatus,
 //            TypeDesignationSetType lastWsType, int typeSetCount, boolean hasPrecedingStatusLabel,
 //            boolean withCitation
@@ -147,7 +147,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
 //
 //        //starting separator
 //        if(typeStatusCount++ > 0){
-//            workingsetBuilder.add(TagEnum.separator, TypeDesignationSetContainerFormatter.TYPE_STATUS_SEPARATOR);
+//            workingsetBuilder.add(TagEnum.separator, TypeDesignationGroupContainerFormatter.TYPE_STATUS_SEPARATOR);
 //        }
 //        boolean statusLabelPreceding = hasPrecedingStatusLabel && typeStatusCount == 1;
 //
@@ -169,7 +169,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
 
     @Override
     protected void buildTaggedTextForTypeDesignationBase(TypeDesignationBase<?> td,
-            TaggedTextBuilder workingsetBuilder, TypeDesignationSetFormatterConfiguration config) {
+            TaggedTextBuilder workingsetBuilder, TypeDesignationGroupFormatterConfiguration config) {
 
         TypedEntityReference<?> typeDesignationEntity = TypedEntityReferenceFactory.fromEntity(td, false);
         if (td instanceof SpecimenTypeDesignation){
@@ -180,7 +180,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
     }
 
     private void buildTaggedTextForSpecimenTypeDesignation(SpecimenTypeDesignation td,
-            TaggedTextBuilder builder, TypedEntityReference<?> typeDesignationEntity, TypeDesignationSetFormatterConfiguration config) {
+            TaggedTextBuilder builder, TypedEntityReference<?> typeDesignationEntity, TypeDesignationGroupFormatterConfiguration config) {
 
         if (td.getTypeSpecimen() == null){
             builder.add(TagEnum.typeDesignation, "", typeDesignationEntity);
@@ -211,7 +211,7 @@ public class SpecimenTypeDesignationSetFormatter extends TypeDesignationSetForma
                         //TODO add sourceTypes to configuration
                         if (source.getType().isPublicSource()){
                             if (count++ > 0){
-                                builder.add(TagEnum.separator, TypeDesignationSetContainerFormatter.SOURCE_SEPARATOR);
+                                builder.add(TagEnum.separator, TypeDesignationGroupContainerFormatter.SOURCE_SEPARATOR);
                             }
                             addSource(builder, source);
                         }

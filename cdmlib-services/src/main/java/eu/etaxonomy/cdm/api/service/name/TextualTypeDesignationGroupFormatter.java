@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet.TypeDesignationSetType;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup.TypeDesignationSetType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
@@ -26,19 +26,19 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
  * @author muellera
  * @since 23.04.2024
  */
-public class TextualTypeDesignationSetFormatter extends TypeDesignationSetFormatterBase<TextualTypeDesignation> {
+public class TextualTypeDesignationGroupFormatter extends TypeDesignationGroupFormatterBase<TextualTypeDesignation> {
 
-    public static final TextualTypeDesignationSetFormatter INSTANCE() {
-        return new TextualTypeDesignationSetFormatter();
+    public static final TextualTypeDesignationGroupFormatter INSTANCE() {
+        return new TextualTypeDesignationGroupFormatter();
     }
 
-    public void format(TaggedTextBuilder finalBuilder, TypeDesignationSetContainer manager,
-            Map<VersionableEntity,TypeDesignationSet> orderedBaseEntity2TypesMap,
+    public void format(TaggedTextBuilder finalBuilder, TypeDesignationGroupContainer manager,
+            Map<VersionableEntity,TypeDesignationGroup> orderedBaseEntity2TypesMap,
             int typeSetCount,
-            TypeDesignationSetFormatterConfiguration config,
+            TypeDesignationGroupFormatterConfiguration config,
             TextualTypeDesignation baseEntity, TypeDesignationSetType lastWsType) {
 
-        TypeDesignationSet typeDesignationSet = orderedBaseEntity2TypesMap.get(baseEntity);
+        TypeDesignationGroup typeDesignationGroup = orderedBaseEntity2TypesMap.get(baseEntity);
 
         TaggedTextBuilder localBuilder = new TaggedTextBuilder();
 
@@ -69,14 +69,14 @@ public class TextualTypeDesignationSetFormatter extends TypeDesignationSetFormat
             handleGeneralSource(baseEntity, localBuilder, config);
         }
 
-        typeDesignationSet.setRepresentation(localBuilder.toString());
+        typeDesignationGroup.setRepresentation(localBuilder.toString());
         finalBuilder.addAll(localBuilder);
         return;
     }
 
     @Override
     protected String entityLabel(TextualTypeDesignation textualTypeDesignation,
-            TypeDesignationSetFormatterConfiguration config) {
+            TypeDesignationGroupFormatterConfiguration config) {
 
         List<Language> languages = config != null? config.getLanguages() : new ArrayList<>(); //Note: can be null when used in constructor call to avoid lazy loading or for RegistrationWrapperDTO
         LanguageString lsString = MultilanguageTextHelper.getPreferredLanguageString(textualTypeDesignation.getText(),
@@ -86,7 +86,7 @@ public class TextualTypeDesignationSetFormatter extends TypeDesignationSetFormat
 
     @Override
     protected void buildTaggedTextForTypeDesignationBase(TypeDesignationBase<?> typeDes,
-            TaggedTextBuilder workingsetBuilder, TypeDesignationSetFormatterConfiguration config) {
+            TaggedTextBuilder workingsetBuilder, TypeDesignationGroupFormatterConfiguration config) {
         //not needed here
     }
 }

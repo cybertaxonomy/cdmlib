@@ -28,9 +28,9 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainerFormatter;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupComparator;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainerFormatter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.name.TypeComparator;
@@ -1229,7 +1229,7 @@ public class WordClassificationExport
                     specimenTypeDesignations.add(HibernateProxyHelper.deproxy(typeDesignation, NameTypeDesignation.class));
                 }
             }
-            TypeDesignationSetContainer manager = new TypeDesignationSetContainer(specimenTypeDesignations, name, TypeDesignationSetComparator.ORDER_BY.TYPE_STATUS);
+            TypeDesignationGroupContainer manager = new TypeDesignationGroupContainer(specimenTypeDesignations, name, TypeDesignationGroupComparator.ORDER_BY.TYPE_STATUS);
             HTMLTagRules rules = new HTMLTagRules();
             rules.addRule(TagEnum.name, "i");
 
@@ -2067,8 +2067,8 @@ public class WordClassificationExport
 
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
-                TypeDesignationSetContainer manager = new TypeDesignationSetContainer(group);
-                list.addAll(new TypeDesignationSetContainerFormatter().withStartingTypeLabel(false)
+                TypeDesignationGroupContainer manager = new TypeDesignationGroupContainer(group);
+                list.addAll(new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(false)
                         .toTaggedText(manager));
             }
             String typeTextDesignations = "";
