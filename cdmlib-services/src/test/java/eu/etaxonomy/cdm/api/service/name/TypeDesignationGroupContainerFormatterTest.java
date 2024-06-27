@@ -270,6 +270,13 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
         Assert.assertEquals("entry "+(i+1)+" should be the starting of specimen type designation",
                 "Decandolle, A., Haber, M. & Moler, A.P. 1962: My interesting book",
                 taggedText.get(i++).getEntityReference().getLabel());
+
+        //... with preceding main type
+        formatter.withPrecedingMainType(true);
+        taggedText = formatter.toTaggedText(container);
+        text = TaggedTextFormatter.createString(taggedText);
+        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Lectotype (designated by Decandolle & al. 1962: 22): Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC designated by Decandolle & al. 1962: 22)", text);
+
     }
 
     @Test
@@ -427,7 +434,7 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
         TypeDesignationGroupContainer container = TypeDesignationGroupContainer.NewDefaultInstance(tdList);
         TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter();
         String text = formatter.format(container);
-        Assert.assertEquals("Types: \"My second type designation\" [fide Decandolle & al. 1962: 55]; My text type designation", text);
+        Assert.assertEquals("Type: \"My second type designation\" [fide Decandolle & al. 1962: 55]; My text type designation", text);
 
         List<TaggedText> tags = formatter.toTaggedText(container);
         Assert.assertEquals(8, tags.size());
