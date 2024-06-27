@@ -40,6 +40,7 @@ public abstract class TypeDesignationGroupFormatterBase<T extends VersionableEnt
     static final String TYPE_STATUS_PARENTHESIS_LEFT = " (";
     static final String TYPE_STATUS_PARENTHESIS_RIGHT = ")";
 
+    @SuppressWarnings("rawtypes")
     protected static TypeDesignationStatusComparator statusComparator = new TypeDesignationStatusComparator<>();
 
     /**
@@ -79,6 +80,7 @@ public abstract class TypeDesignationGroupFormatterBase<T extends VersionableEnt
                 statusLabel = StringUtils.capitalize(statusLabel);
             }
             builder.add(TagEnum.label, statusLabel);
+            @SuppressWarnings("rawtypes")
             Collection<TypeDesignationDTO> tds = typeDesignationGroup.get(typeStatus);
             withLectoTypeSource = tds.size() == 1;
             if (withLectoTypeSource) {
@@ -113,6 +115,7 @@ public abstract class TypeDesignationGroupFormatterBase<T extends VersionableEnt
 
         //designation + sources
         int typeDesignationCounter = 0;
+        @SuppressWarnings("rawtypes")
         List<TypeDesignationDTO> sortedTypeDesignations = createSortedList(typeDesignationGroup, typeStatus);
         for(TypeDesignationDTO<?> typeDesignationDTO : sortedTypeDesignations) {
             //"revert" DTO to entity
@@ -125,6 +128,7 @@ public abstract class TypeDesignationGroupFormatterBase<T extends VersionableEnt
         return typeStatusCounter;
     }
 
+    @SuppressWarnings("rawtypes")
     private List<TypeDesignationDTO> createSortedList(
             TypeDesignationGroup typeDesignationGroup, TypeDesignationStatusBase<?> typeStatus) {
 
@@ -220,6 +224,7 @@ public abstract class TypeDesignationGroupFormatterBase<T extends VersionableEnt
 
     protected abstract String entityLabel(T baseEntity, TypeDesignationGroupFormatterConfiguration config);
 
+    @SuppressWarnings("rawtypes")
     protected static TypeDesignationGroupFormatterBase getFormatter(TypeDesignationGroup tds) {
         if (tds.isSpecimenWorkingSet()) {
             return SpecimenTypeDesignationGroupFormatter.INSTANCE();

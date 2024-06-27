@@ -133,10 +133,11 @@ public class NameTypeDesignationGroupFormatter extends TypeDesignationGroupForma
 
     /**
      * Checks if the baseType is the same as the (only?) type in the type designation workingset.
+     * For name types this is not yet used.
      */
+    @SuppressWarnings("unused")
     private boolean hasExplicitBaseEntity(NameTypeDesignation ntd,
             TypeDesignationGroup typeDesignationGroup) {
-
         return false;
     }
 

@@ -276,7 +276,6 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
         taggedText = formatter.toTaggedText(container);
         text = TaggedTextFormatter.createString(taggedText);
         Assert.assertEquals("Prionus coriatius L."+DASH_W+"Lectotype (designated by Decandolle & al. 1962: 22): Testland, near Bughausen, A.Kohlbecker 81989, 2017 (LEC)", text);
-
     }
 
     @Test

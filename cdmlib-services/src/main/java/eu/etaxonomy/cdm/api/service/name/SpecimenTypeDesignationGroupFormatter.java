@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrateg
  * @author muellera
  * @since 22.04.2024
  */
-public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupFormatterBase<SpecimenOrObservationBase> {
+public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupFormatterBase<SpecimenOrObservationBase<?>> {
 
     public static final SpecimenTypeDesignationGroupFormatter INSTANCE() {
         return new SpecimenTypeDesignationGroupFormatter();
@@ -147,7 +147,9 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
     }
 
     @Override
-    protected String entityLabel(SpecimenOrObservationBase sob, TypeDesignationGroupFormatterConfiguration config) {
+    protected String entityLabel(SpecimenOrObservationBase<?> sob,
+            TypeDesignationGroupFormatterConfiguration config) {
+
         String label = sob.getTitleCache();
         if (label.startsWith("FieldUnit#")) {
             return "";
@@ -155,35 +157,6 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
             return label;
         }
     }
-
-//    int buildTaggedTextForSingleTypeStatus(TypeDesignationSetContainer manager,
-//            TaggedTextBuilder workingsetBuilder, TypeDesignationGroup typeDesignationSet,
-//            int typeStatusCount, TypeDesignationStatusBase<?> typeStatus,
-//            TypeDesignationSetType lastWsType, int typeSetCount, boolean hasPrecedingStatusLabel,
-//            boolean withCitation
-//            ) {
-//
-//        //starting separator
-//        if(typeStatusCount++ > 0){
-//            workingsetBuilder.add(TagEnum.separator, TypeDesignationGroupContainerFormatter.TYPE_STATUS_SEPARATOR);
-//        }
-//        boolean statusLabelPreceding = hasPrecedingStatusLabel && typeStatusCount == 1;
-//
-//        //status label
-//        if (!statusLabelPreceding) {
-//            addStatusLabel(workingsetBuilder, typeDesignationSet, typeStatus, lastWsType, typeSetCount, false);
-//        }
-//
-//        //designation + sources
-//        int typeDesignationCount = 0;
-//        for(TypeDesignationDTO<?> typeDesignationDTO : createSortedList(typeDesignationSet, typeStatus)) {
-//            TypeDesignationBase<?> typeDes = manager.findTypeDesignation(typeDesignationDTO.getUuid());
-//
-//            typeDesignationCount = buildTaggedTextForSingleType(typeDes, withCitation,
-//                    workingsetBuilder, typeDesignationCount);
-//        }
-//        return typeStatusCount;
-//    }
 
     @Override
     protected void buildTaggedTextForTypeDesignationBase(TypeDesignationBase<?> td,
