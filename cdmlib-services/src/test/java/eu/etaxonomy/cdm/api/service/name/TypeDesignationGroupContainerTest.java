@@ -313,7 +313,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
         citation.setDatePublished(TimePeriodParser.parseStringVerbatim("1989"));
         inRef.setAuthorship(Team.NewTitledInstance("Miller", "Mill."));
         std_LT.addPrimaryTaxonomicSource(inRef, "55");
-        assertEquals("Prionus coriatius L."+DASH_W+"Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC designated by Decandolle & al. 1962 [fide Miller 1989: 55])",
+        assertEquals("Prionus coriatius L."+DASH_W+"Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype (designated by Decandolle & al. 1962): LEC [fide Miller 1989: 55])",
                 typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
         assertEquals("Prionus coriatius L."+DASH_W+"Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC)",
                 typeDesignationManager.print(!WITH_CITATION,!WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
@@ -326,7 +326,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
         typeDesignationManager = new TypeDesignationGroupContainer(typifiedName);
         typeDesignationManager.addTypeDesigations(ntd_LT);
         ntd_LT.addPrimaryTaxonomicSource(inRef, "66");
-        assertEquals("Prionus L."+DASH_W+"Lectotype: Prionus arealus L. designated by Decandolle & al. 1962 [fide Miller 1989: 66]",
+        assertEquals("Prionus L."+DASH_W+"Lectotype (designated by Decandolle & al. 1962): Prionus arealus L. [fide Miller 1989: 66]",
                 typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
         assertEquals("Prionus L."+DASH_W+"Lectotype: Prionus arealus L.",
                 typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
@@ -402,7 +402,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
         TypeDesignationGroupContainer typeDesignationManager = new TypeDesignationGroupContainer(typifiedName);
         typeDesignationManager.addTypeDesigations(protectedDesignation);
 
-        assertEquals("Prionus coriatius L."+DASH_W+"Neotype: Mexico. Oaxaca: Coixtlahuaca, Tepelmeme Villa de Morelos, aproximadamente 1 km S del Río Santa Lucía, 1285 m, 27 March 1994, U. Guzmán Cruz 1065 (MEXU 280206) designated by The book of types: 55"
+        assertEquals("Prionus coriatius L."+DASH_W+"Neotype (designated by The book of types: 55): Mexico. Oaxaca: Coixtlahuaca, Tepelmeme Villa de Morelos, aproximadamente 1 km S del Río Santa Lucía, 1285 m, 27 March 1994, U. Guzmán Cruz 1065 (MEXU 280206)"
                 , typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
                 );
         protectedDesignation.setTypeStatus(null);
@@ -424,13 +424,13 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
     @Test
     public void test_withoutStatus(){
         //for another important test without status see also test_withoutFieldUnit()
-        //TODO how far is this "without status", both types do have a (lectotype) status
 
         TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         typifiedName.setTitleCache("Prionus coriatius L.", true);
         TypeDesignationGroupContainer typeDesignationManager = new TypeDesignationGroupContainer(typifiedName);
         std_LT.setTypeStatus(null);
         typeDesignationManager.addTypeDesigations(std_LT);
+        //Note: this is a rare and dirty data only case, a designated by should always go together with a defined type status
         assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (LEC designated by Decandolle & al. 1962)",
                 typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
         assertEquals("Prionus coriatius L."+DASH_W+"Testland, near Bughausen, A.Kohlbecker 81989, 2017 (LEC)",
@@ -439,12 +439,13 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
                 typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
 
         //name types
+        //TODO how far is this "without status", type has a (lectotype) status
         typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
         typifiedName.setTitleCache("Prionus L.", true);
         typeDesignationManager = new TypeDesignationGroupContainer(typifiedName);
         typeDesignationManager.addTypeDesigations(ntd_LT);
 //            ntd_LT.addPrimaryTaxonomicSource(inRef, "66");
-        assertEquals("Prionus L."+DASH_W+"Lectotype: Prionus arealus L. designated by Decandolle & al. 1962",
+        assertEquals("Prionus L."+DASH_W+"Lectotype (designated by Decandolle & al. 1962): Prionus arealus L.",
                 typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
         assertEquals("Prionus L."+DASH_W+"Lectotype: Prionus arealus L.",
                 typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));

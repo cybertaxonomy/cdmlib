@@ -63,20 +63,21 @@ public class NameTypeDesignationGroupFormatter extends TypeDesignationGroupForma
 
         boolean hasPrecedingStatusLabel = config.isWithPrecedingMainType() && !statusList.isEmpty();
         if (hasPrecedingStatusLabel){
-            addStatusLabel(localBuilder, typeDesignationGroup, statusList.get(0), lastWsType, typeSetCount, true);
+            addStatusLabel(config, localBuilder, typeDesignationGroup, statusList.get(0), container,
+                    lastWsType, typeSetCount, true, true);
         }
 
         boolean hasExplicitBaseEntity = hasExplicitBaseEntity(baseEntity, typeDesignationGroup);
         if(hasExplicitBaseEntity && !entityLabel(baseEntity, config).isEmpty()){
             localBuilder.add(TagEnum.specimenOrObservation, entityLabel(baseEntity, config), baseEntity);
         }
-        int typeStatusCount = 0;
+        int typeStatusCounter = 0;
         if (config.isWithBrackets() && hasExplicitBaseEntity){
             localBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
         }
         for(TypeDesignationStatusBase<?> typeStatus : statusList) {
-            typeStatusCount = buildTaggedTextForSingleTypeStatus(container, localBuilder,
-                    typeDesignationGroup, typeStatusCount, typeStatus,
+            typeStatusCounter = buildTaggedTextForSingleTypeStatus(container, localBuilder,
+                    typeDesignationGroup, typeStatusCounter, statusList.size(), typeStatus,
                     lastWsType, typeSetCount, hasPrecedingStatusLabel, config);
         }
         if (config.isWithBrackets() && hasExplicitBaseEntity){

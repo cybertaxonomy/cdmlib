@@ -261,12 +261,12 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
         //test text
         List<TaggedText> taggedText = formatter.toTaggedText(container);
         String text = TaggedTextFormatter.createString(taggedText);
-        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC designated by Decandolle & al. 1962: 22)", text);
+        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype (designated by Decandolle & al. 1962: 22): LEC)", text);
 
 
-        int i = 9;  //start specimen
+        int i = 7;  //start specimen
         Assert.assertEquals("entry "+(i+1)+" should be the designated by separator",
-                " designated by ", taggedText.get(i++).getText());
+                " (designated by ", taggedText.get(i++).getText());
         Assert.assertEquals("entry "+(i+1)+" should be the starting of specimen type designation",
                 "Decandolle, A., Haber, M. & Moler, A.P. 1962: My interesting book",
                 taggedText.get(i++).getEntityReference().getLabel());
@@ -275,7 +275,7 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
         formatter.withPrecedingMainType(true);
         taggedText = formatter.toTaggedText(container);
         text = TaggedTextFormatter.createString(taggedText);
-        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Lectotype (designated by Decandolle & al. 1962: 22): Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC designated by Decandolle & al. 1962: 22)", text);
+        Assert.assertEquals("Prionus coriatius L."+DASH_W+"Lectotype (designated by Decandolle & al. 1962: 22): Testland, near Bughausen, A.Kohlbecker 81989, 2017 (LEC)", text);
 
     }
 

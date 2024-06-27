@@ -78,7 +78,8 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
 
         boolean hasPrecedingStatusLabel = config.isWithPrecedingMainType() && hasNotNullStatus(statusList);
         if (hasPrecedingStatusLabel){
-            addStatusLabel(localBuilder, typeDesignationGroup, statusList.get(0), lastWsType, typeSetCount, true);
+            addStatusLabel(config, localBuilder, typeDesignationGroup, statusList.get(0), container,
+                    lastWsType, typeSetCount, true, true);
         }
 
         if (sob == TypeDesignationGroupContainer.NOT_DESIGNATED) {
@@ -96,13 +97,13 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
             if(hasExplicitBaseEntity && !entityLabel(sob, config).isEmpty()){
                 localBuilder.add(TagEnum.specimenOrObservation, entityLabel(sob, config), sob);
             }
-            int typeStatusCount = 0;
+            int typeStatusCounter = 0;
             if (config.isWithBrackets() && hasExplicitBaseEntity){
                 localBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
             }
             for(TypeDesignationStatusBase<?> typeStatus : statusList) {
-                typeStatusCount = buildTaggedTextForSingleTypeStatus(container, localBuilder,
-                        typeDesignationGroup, typeStatusCount, typeStatus,
+                typeStatusCounter = buildTaggedTextForSingleTypeStatus(container, localBuilder,
+                        typeDesignationGroup, typeStatusCounter, statusList.size(), typeStatus,
                         lastWsType, typeSetCount, hasPrecedingStatusLabel, config);
             }
             if (config.isWithBrackets() && hasExplicitBaseEntity){

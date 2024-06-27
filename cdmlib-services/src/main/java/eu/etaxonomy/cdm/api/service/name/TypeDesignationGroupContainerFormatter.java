@@ -55,7 +55,7 @@ public class TypeDesignationGroupContainerFormatter {
     static final String TYPE_DESIGNATION_SEPARATOR = ", ";
     static final String REFERENCE_PARENTHESIS_RIGHT = "]";
     static final String REFERENCE_PARENTHESIS_LEFT = " [";
-    static final String REFERENCE_DESIGNATED_BY = " designated by ";
+    static final String REFERENCE_DESIGNATED_BY = "designated by ";
     static final String REFERENCE_FIDE = "fide ";
     static final String SOURCE_SEPARATOR = ", ";
     static final String POST_STATUS_SEPARATOR = ": ";
@@ -203,7 +203,7 @@ public class TypeDesignationGroupContainerFormatter {
             //lectotype source
             OriginalSourceBase lectoSource = typeDes.getDesignationSource();
             if (hasLectoSource(typeDes)){
-                workingsetBuilder.add(TagEnum.separator, REFERENCE_DESIGNATED_BY);
+                workingsetBuilder.add(TagEnum.separator, " " + REFERENCE_DESIGNATED_BY);
                 addSource(workingsetBuilder, lectoSource);
             }
             //general sources

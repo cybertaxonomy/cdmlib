@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.name;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup.TypeDesignationSetType;
+import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -56,9 +58,11 @@ public abstract class TypeDesignationGroupFormatterBase<T extends VersionableEnt
         return singleSet.getTypeDesignations().size() > 1;
     }
 
-    protected void addStatusLabel(TaggedTextBuilder builder, TypeDesignationGroup typeDesignationGroup,
-            TypeDesignationStatusBase<?> typeStatus, TypeDesignationSetType lastWsType,
-            int typeSetCount, boolean capitalize) {
+    protected void addStatusLabel(TypeDesignationGroupFormatterConfiguration config,
+            TaggedTextBuilder builder, TypeDesignationGroup typeDesignationGroup,
+            TypeDesignationStatusBase<?> typeStatus, TypeDesignationGroupContainer container,
+            TypeDesignationSetType lastWsType,
+            int typeSetCount, boolean capitalize, boolean withLectoTypeSource) {
 
         boolean isPlural = typeDesignationGroup.get(typeStatus).size() > 1;
         String statusLabel = null;
@@ -75,38 +79,50 @@ public abstract class TypeDesignationGroupFormatterBase<T extends VersionableEnt
                 statusLabel = StringUtils.capitalize(statusLabel);
             }
             builder.add(TagEnum.label, statusLabel);
+            Collection<TypeDesignationDTO> tds = typeDesignationGroup.get(typeStatus);
+            withLectoTypeSource = tds.size() == 1;
+            if (withLectoTypeSource) {
+                TypeDesignationDTO<?> typeDesignationDTO = tds.iterator().next();
+                //"revert" DTO to entity
+                TypeDesignationBase<?> typeDes = container.findTypeDesignation(typeDesignationDTO.getUuid());
+                handleLectotypeSource(typeDes, builder, true, config);
+            }
             builder.add(TagEnum.postSeparator, TypeDesignationGroupContainerFormatter.POST_STATUS_SEPARATOR);
         }
     }
 
     protected int buildTaggedTextForSingleTypeStatus(TypeDesignationGroupContainer container,
             TaggedTextBuilder builder, TypeDesignationGroup typeDesignationGroup,
-            int typeStatusCount, TypeDesignationStatusBase<?> typeStatus,
+            int typeStatusCounter, int statusListSize, TypeDesignationStatusBase<?> typeStatus,
             TypeDesignationSetType lastWsType, int typeSetCount, boolean hasPrecedingStatusLabel,
             TypeDesignationGroupFormatterConfiguration config
             ) {
 
         //starting separator
-        if(typeStatusCount++ > 0){
+        if(typeStatusCounter++ > 0){
             builder.add(TagEnum.separator, TypeDesignationGroupContainerFormatter.TYPE_STATUS_SEPARATOR);
         }
-        boolean statusLabelPreceding = hasPrecedingStatusLabel && typeStatusCount == 1 /*check if is first */;
+        boolean statusLabelPreceding = hasPrecedingStatusLabel && typeStatusCounter == 1 /*check if is first */;
 
         //status label - only if it has not been added before already
+        boolean withLectoTypeSource = statusListSize <= 1;
         if (!statusLabelPreceding) {
-            addStatusLabel(builder, typeDesignationGroup, typeStatus, lastWsType, typeSetCount, false);
+            addStatusLabel(config, builder, typeDesignationGroup, typeStatus, container, lastWsType,
+                    typeSetCount, false, withLectoTypeSource);
         }
 
         //designation + sources
-        int typeDesignationCount = 0;
-        for(TypeDesignationDTO<?> typeDesignationDTO : createSortedList(typeDesignationGroup, typeStatus)) {
+        int typeDesignationCounter = 0;
+        List<TypeDesignationDTO> sortedTypeDesignations = createSortedList(typeDesignationGroup, typeStatus);
+        for(TypeDesignationDTO<?> typeDesignationDTO : sortedTypeDesignations) {
             //"revert" DTO to entity
             TypeDesignationBase<?> typeDes = container.findTypeDesignation(typeDesignationDTO.getUuid());
 
-            typeDesignationCount = buildTaggedTextForSingleType(typeDes, config,
-                    builder, typeDesignationCount);
+            boolean withLectotypeSource = sortedTypeDesignations.size() > 1 || typeStatus == NullTypeDesignationStatus.SINGLETON(); //we add the designated by after the specimen only if there are >1 designations per status or if no status is defined (the later is dirty data because without status no designation should exist)
+            typeDesignationCounter = buildTaggedTextForSingleType(typeDes, config,
+                    builder, typeDesignationCounter, withLectotypeSource);
         }
-        return typeStatusCount;
+        return typeStatusCounter;
     }
 
     private List<TypeDesignationDTO> createSortedList(
@@ -119,7 +135,7 @@ public abstract class TypeDesignationGroupFormatterBase<T extends VersionableEnt
 
     protected int buildTaggedTextForSingleType(TypeDesignationBase<?> typeDes,
             TypeDesignationGroupFormatterConfiguration config,
-            TaggedTextBuilder builder, int typeDesignationCount) {
+            TaggedTextBuilder builder, int typeDesignationCount, boolean withLectotypeSource) {
 
         if(typeDesignationCount++ > 0){
             builder.add(TagEnum.separator, TypeDesignationGroupContainerFormatter.TYPE_DESIGNATION_SEPARATOR);
@@ -128,21 +144,30 @@ public abstract class TypeDesignationGroupFormatterBase<T extends VersionableEnt
         if (config.isWithCitation()){
 
             //lectotype source
-            handleLectotypeSource(typeDes, builder, config);
+            if (withLectotypeSource) {
+                handleLectotypeSource(typeDes, builder, false, config);
+            }
             handleGeneralSource(typeDes, builder, config);
         }
 
         return typeDesignationCount;
     }
 
-    private void handleLectotypeSource(TypeDesignationBase<?> typeDes, TaggedTextBuilder workingsetBuilder,
+    private void handleLectotypeSource(TypeDesignationBase<?> typeDes, TaggedTextBuilder workingsetBuilder, boolean withBrackets,
             TypeDesignationGroupFormatterConfiguration config) {
 
+        if (!config.isWithCitation()) {
+            return;
+        }
         OriginalSourceBase lectoSource = typeDes.getDesignationSource();
         if (hasLectoSource(typeDes)){
             if (config.getSourceTypeFilter() == null || config.getSourceTypeFilter().contains(typeDes.getDesignationSource().getType())) {
-                workingsetBuilder.add(TagEnum.separator, TypeDesignationGroupContainerFormatter.REFERENCE_DESIGNATED_BY);
+                String startingSeparator = (withBrackets ? " (" : " ") + TypeDesignationGroupContainerFormatter.REFERENCE_DESIGNATED_BY;
+                workingsetBuilder.add(TagEnum.separator, startingSeparator);
                 addSource(workingsetBuilder, lectoSource);
+                if (withBrackets) {
+                    workingsetBuilder.add(TagEnum.postSeparator, ")");
+                }
             }
         }
     }
