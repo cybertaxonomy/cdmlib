@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -27,6 +28,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
@@ -35,6 +37,7 @@ import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextWithLink;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.FieldUnitDefaultCacheStrategy;
 
 /**
  * @author muellera
@@ -150,11 +153,16 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
     protected String entityLabel(SpecimenOrObservationBase<?> sob,
             TypeDesignationGroupFormatterConfiguration config) {
 
-        String label = sob.getTitleCache();
-        if (label.startsWith("FieldUnit#")) {
-            return "";
-        }else {
-            return label;
+        if (sob.isInstanceOf(FieldUnit.class)) {
+            FieldUnitDefaultCacheStrategy formatter = FieldUnitDefaultCacheStrategy.NewInstance(false, true, false);
+            String label = formatter.getTitleCache(CdmBase.deproxy(sob, FieldUnit.class), true);
+            if (label.startsWith("FieldUnit#")) {
+                return "";
+            }else {
+                return label;
+            }
+        } else {
+            return sob.getTitleCache();
         }
     }
 

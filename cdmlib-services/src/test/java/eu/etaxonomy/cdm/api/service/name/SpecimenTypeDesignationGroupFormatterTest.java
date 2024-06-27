@@ -23,6 +23,11 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -35,6 +40,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.OccurrenceStatus;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -72,11 +78,13 @@ public class SpecimenTypeDesignationGroupFormatterTest extends TermTestBase {
     private SpecimenTypeDesignation std_IT_3;
     private SpecimenTypeDesignation mstd_HT_published;
     private SpecimenTypeDesignation mtd_IT_unpublished;
+    private FieldUnit fu_1;
     private Reference book;
     private Team team;
 
     @Before
     public void setUp() throws Exception {
+
         Person person1 = Person.NewInstance("DC", "Decandolle", "A.", null);
         Person person2 = Person.NewInstance("Hab.", "Haber", "M.", null);
         Person person3 = Person.NewInstance("Moler", "Moler", "A.P.", null);
@@ -87,12 +95,11 @@ public class SpecimenTypeDesignationGroupFormatterTest extends TermTestBase {
         book.setTitle("My interesting book");
         book.setDatePublished(TimePeriodParser.parseStringVerbatim("11 Apr 1962"));
 
-        TaxonName typeName = TaxonNameFactory.PARSED_BOTANICAL("Prionus coriatius L.");
-        TaxonName typeName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        TaxonName typeName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 
-        typeName2.setTitleCache("Prionus arealus L.", true);
+        typeName1.setTitleCache("Prionus arealus L.", true);
 
-        FieldUnit fu_1 = FieldUnit.NewInstance();
+        fu_1 = FieldUnit.NewInstance();
         fu_1.setId(1);
         fu_1.setTitleCache("Testland, near Bughausen, A.Kohlbecker 81989, 2017", true);
 
@@ -371,19 +378,53 @@ public class SpecimenTypeDesignationGroupFormatterTest extends TermTestBase {
         //specimen types
         TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
         typifiedName.setTitleCache("Prionus coriatius L.", true);
-        TypeDesignationGroupContainer typeDesignationContainer = new TypeDesignationGroupContainer(typifiedName);
-        typeDesignationContainer.addTypeDesigations(std_LT);
+
         Reference citation = ReferenceFactory.newBook();
         Reference inRef = ReferenceFactory.newBookSection();
         inRef.setInBook(citation);
         citation.setDatePublished(TimePeriodParser.parseStringVerbatim("1989"));
         inRef.setAuthorship(Team.NewTitledInstance("Miller", "Mill."));
         std_LT.addPrimaryTaxonomicSource(inRef, "55");
+
+        //container
+        TypeDesignationGroupContainer typeDesignationContainer = new TypeDesignationGroupContainer(typifiedName);
+        typeDesignationContainer.addTypeDesigations(std_LT);
+
+        //test
         assertEquals("Prionus coriatius L."+DASH_W+"Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype (designated by Decandolle & al. 1962): LEC [fide Miller 1989: 55])",
                 typeDesignationContainer.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
         assertEquals("Prionus coriatius L."+DASH_W+"Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC)",
                 typeDesignationContainer.print(!WITH_CITATION,!WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
         assertEquals("Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC)",
                 typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
-   }
+    }
+
+    @Test
+    public void test_plant_description(){
+        TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
+        typifiedName.setTitleCache("Prionus coriatius L.", true);
+
+        fu_1.setProtectedTitleCache(false);
+        GatheringEvent ge = GatheringEvent.NewInstance();
+        ge.setCountry(Country.GERMANY());
+        ge.putLocality(Language.DEFAULT(), "near Bughausen");
+        ge.setTimeperiod(TimePeriodParser.parseString("1972"));
+        fu_1.setGatheringEvent(ge);
+        fu_1.setFieldNumber("FN123");
+        ge.setActor(Person.NewTitledInstance("A. Collector"));
+
+        SpecimenDescription description = SpecimenDescription.NewInstance(fu_1);
+        description.addElement(TextData.NewInstance(Feature.DESCRIPTION(), "My plant description", Language.DEFAULT(), null));
+        description.addElement(TextData.NewInstance(Feature.ECOLOGY(), "My ecology", Language.DEFAULT(), null));
+
+        //container
+//        SpecimenTypeDesignationGroupFormatter formatter = SpecimenTypeDesignationGroupFormatter.INSTANCE();
+        TypeDesignationGroupContainer typeDesignationContainer = new TypeDesignationGroupContainer(typifiedName);
+        typeDesignationContainer.addTypeDesigations(std_LT);
+
+
+        //test
+        assertEquals("Lectotype: Germany, near Bughausen, My ecology, My plant description, 1972, A. Collector FN123 (LEC)",
+                typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+    }
 }

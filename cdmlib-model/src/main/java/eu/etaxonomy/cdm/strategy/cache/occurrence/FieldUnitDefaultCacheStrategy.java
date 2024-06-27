@@ -56,29 +56,35 @@ public class FieldUnitDefaultCacheStrategy
     private boolean includeEmptySeconds = false;
     private boolean includeReferenceSystem = true;
 
-    private boolean includePlantDescription = true;
+    private boolean plantDescriptionAtEnd = true;
+    private boolean plantDescriptionAfterEcology = false;
     private boolean addTrailingDot = false;
 
     public static FieldUnitDefaultCacheStrategy NewInstance(){
-        return new FieldUnitDefaultCacheStrategy(null, null, null, null);
+        return new FieldUnitDefaultCacheStrategy(null, null, null, null, null);
     }
 
-    public static FieldUnitDefaultCacheStrategy NewInstance(boolean includePlantDescription, boolean addTrailingDot){
-        return new FieldUnitDefaultCacheStrategy(null, null, includePlantDescription, addTrailingDot);
+    public static FieldUnitDefaultCacheStrategy NewInstance(boolean plantDescriptionAtEnd, boolean addTrailingDot){
+        return new FieldUnitDefaultCacheStrategy(null, null, plantDescriptionAtEnd, null, addTrailingDot);
+    }
+
+    public static FieldUnitDefaultCacheStrategy NewInstance(boolean plantDescriptionAtEnd, boolean plantDescriptionAfterEcology, boolean addTrailingDot){
+        return new FieldUnitDefaultCacheStrategy(null, null, plantDescriptionAtEnd, plantDescriptionAfterEcology, addTrailingDot);
     }
 
     public static FieldUnitDefaultCacheStrategy NewInstance(boolean includeEmptySeconds,
             boolean includeReferenceSystem, boolean includePlantDescription, boolean addTrailingDot){
-        return new FieldUnitDefaultCacheStrategy(includeEmptySeconds, includeReferenceSystem, includePlantDescription, addTrailingDot);
+        return new FieldUnitDefaultCacheStrategy(includeEmptySeconds, includeReferenceSystem, includePlantDescription, null, addTrailingDot);
     }
 
 
     private FieldUnitDefaultCacheStrategy(Boolean includeEmptySeconds, Boolean includeReferenceSystem,
-            Boolean includePlantDescription, Boolean addTrailingDot) {
+            Boolean plantDescriptionAtEnd, Boolean plantDescriptionAfterEcology, Boolean addTrailingDot) {
         this.includeEmptySeconds = includeEmptySeconds == null ? this.includeEmptySeconds : includeEmptySeconds;
         this.includeReferenceSystem = includeReferenceSystem == null ? this.includeReferenceSystem : includeReferenceSystem;
-        this.includePlantDescription = includePlantDescription == null ? this.includePlantDescription : includePlantDescription;
+        this.plantDescriptionAtEnd = plantDescriptionAtEnd == null ? this.plantDescriptionAtEnd : plantDescriptionAtEnd;
         this.addTrailingDot = addTrailingDot == null ? this.addTrailingDot : addTrailingDot;
+        this.plantDescriptionAfterEcology = plantDescriptionAfterEcology == null ? this.plantDescriptionAfterEcology : plantDescriptionAfterEcology;
     }
 
     @Override
@@ -87,10 +93,9 @@ public class FieldUnitDefaultCacheStrategy
             return null;
         }
         String result = getFieldData(fieldUnit);
-        //now handled in getFieldData()
-//        if (includePlantDescription){
-//            result = addPlantDescription(result, fieldUnit);
-//        }
+        if (plantDescriptionAtEnd){
+            result = addPlantDescription(result, ";", fieldUnit);
+        }
         if (addTrailingDot){
             result = CdmUtils.addTrailingDotIfNotExists(result);
         }
@@ -152,8 +157,8 @@ public class FieldUnitDefaultCacheStrategy
         //ecology
         result = CdmUtils.concat(", ", result, getEcology(fieldUnit));
         //plant description
-        if (includePlantDescription){
-            result = addPlantDescription(result, fieldUnit);
+        if (plantDescriptionAfterEcology){
+            result = addPlantDescription(result, ",", fieldUnit);
         }
 
         //gathering period
@@ -271,4 +276,5 @@ public class FieldUnitDefaultCacheStrategy
             return DistanceStringFormatter.distanceString(min, max, text, METER);
         }
     }
+
 }
