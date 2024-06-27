@@ -440,7 +440,7 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
         Assert.assertEquals(8, tags.size());
         int i = 0;
         Assert.assertEquals(TagEnum.label, tags.get(i).getType());
-        Assert.assertEquals("Types", tags.get(i++).getText());
+        Assert.assertEquals("Type", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
         Assert.assertEquals(": ", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
@@ -487,13 +487,13 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
                 .withCitation(false);
         String text = formatter.format(container);
         //Type*s* might become Type in future (not defined yet as this is a very rare or even unrealistic combination of specimen and name types, see according comment in formatter
-        Assert.assertEquals("Types: not designated; Type: not designated", text);
+        Assert.assertEquals("Type: not designated; Type: not designated", text);
 
         List<TaggedText> tags = formatter.toTaggedText(container);
         Assert.assertEquals(7, tags.size());
         int i = 0;
         Assert.assertEquals(TagEnum.label, tags.get(i).getType());
-        Assert.assertEquals("Types", tags.get(i++).getText());
+        Assert.assertEquals("Type", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
         Assert.assertEquals(": ", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
@@ -514,12 +514,12 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
 
         //Note: having 2x 'not designated' does not make sense in reality
         //... or should be deduplicated as there are 2 sources
-        Assert.assertEquals("Types: not designated [fide Decandolle & al. 1962: 66]; Type: not designated [fide Decandolle & al. 1962: 55]", text);
+        Assert.assertEquals("Type: not designated [fide Decandolle & al. 1962: 66]; Type: not designated [fide Decandolle & al. 1962: 55]", text);
         tags = formatter.toTaggedText(container);
         Assert.assertEquals(13, tags.size());
         i = 0;
         Assert.assertEquals(TagEnum.label, tags.get(i).getType());
-        Assert.assertEquals("Types", tags.get(i++).getText());
+        Assert.assertEquals("Type", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.postSeparator, tags.get(i).getType());
         Assert.assertEquals(": ", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
