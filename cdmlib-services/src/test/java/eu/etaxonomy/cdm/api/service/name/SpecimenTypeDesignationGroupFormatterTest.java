@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.name;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -361,4 +363,27 @@ public class SpecimenTypeDesignationGroupFormatterTest extends TermTestBase {
 //                new TaggedText(TagEnum.name, "Prionus coriatius L."), taggedText.get(3)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
 //        Assert.assertEquals("there should be 4 tags only", 4, taggedText.size());
     }
+
+    //see #9262, see also similar test in NameTypeDesignationGroupFormatterTest
+    @Test
+    public void test_desigby_fide(){
+
+        //specimen types
+        TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
+        typifiedName.setTitleCache("Prionus coriatius L.", true);
+        TypeDesignationGroupContainer typeDesignationContainer = new TypeDesignationGroupContainer(typifiedName);
+        typeDesignationContainer.addTypeDesigations(std_LT);
+        Reference citation = ReferenceFactory.newBook();
+        Reference inRef = ReferenceFactory.newBookSection();
+        inRef.setInBook(citation);
+        citation.setDatePublished(TimePeriodParser.parseStringVerbatim("1989"));
+        inRef.setAuthorship(Team.NewTitledInstance("Miller", "Mill."));
+        std_LT.addPrimaryTaxonomicSource(inRef, "55");
+        assertEquals("Prionus coriatius L."+DASH_W+"Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype (designated by Decandolle & al. 1962): LEC [fide Miller 1989: 55])",
+                typeDesignationContainer.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+        assertEquals("Prionus coriatius L."+DASH_W+"Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC)",
+                typeDesignationContainer.print(!WITH_CITATION,!WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+        assertEquals("Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC)",
+                typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+   }
 }

@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.name;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,4 +137,41 @@ public class NameTypeDesignationGroupFormatterTest extends TermTestBase {
                 "nom. illeg.", taggedText.get(6).getText());
     }
 
+    //see #9262, see also similar test in SpecimenTypeDesignationGroupFormatterTest
+    @Test
+    public void test_desigby_fide(){
+
+        Reference citation = ReferenceFactory.newBook();
+        Reference inRef = ReferenceFactory.newBookSection();
+        inRef.setInBook(citation);
+        citation.setDatePublished(TimePeriodParser.parseStringVerbatim("1989"));
+        inRef.setAuthorship(Team.NewTitledInstance("Miller", "Mill."));
+
+        //name types
+        TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
+        typifiedName.setTitleCache("Prionus L.", true);
+        TypeDesignationGroupContainer typeDesignationContainer = new TypeDesignationGroupContainer(typifiedName);
+        typeDesignationContainer.addTypeDesigations(ntd_LT);
+        ntd_LT.addPrimaryTaxonomicSource(inRef, "66");
+        assertEquals("Prionus L."+DASH_W+"Lectotype (designated by Decandolle & al. 1962): Prionus arealus L. [fide Miller 1989: 66]",
+                typeDesignationContainer.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+        assertEquals("Prionus L."+DASH_W+"Lectotype: Prionus arealus L.",
+                typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+    }
+
+    @Test
+    public void test_withMissingStatus(){
+        //name types
+        TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+        typifiedName.setTitleCache("Prionus L.", true);
+        TypeDesignationGroupContainer typeDesignationContainer = new TypeDesignationGroupContainer(typifiedName);
+        typeDesignationContainer.addTypeDesigations(ntd);
+        assertEquals("Prionus L."+DASH_W+"Type: Prionus coriatius L.",
+                typeDesignationContainer.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+        assertEquals("Prionus L."+DASH_W+"Type: Prionus coriatius L.",
+                typeDesignationContainer.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+        assertEquals("Prionus L."+DASH_W+"Prionus coriatius L.",
+                typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+
+    }
 }
