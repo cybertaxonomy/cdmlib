@@ -1110,7 +1110,6 @@ public class ColDpClassificationExport
             }
 
             //authorship
-            String authorshipCache = name.getAuthorshipCache();
             csvLine[table.getIndex(ColDpExportTable.NAME_AUTHORSHIP)] = normalizeAuthor(state, name.getAuthorshipCache());
             //combinationAuthorship
             csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_AUTHORSHIP)] = teamToString(state, name.getCombinationAuthorship());

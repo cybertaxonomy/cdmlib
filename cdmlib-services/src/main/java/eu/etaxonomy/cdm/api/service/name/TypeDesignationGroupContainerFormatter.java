@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
 
 /**
- * Formatter to format a {@link TypeDesignationGroup}
+ * Formatter to format a {@link TypeDesignationGroupContainer}
  *
  * @author a.mueller
  * @since 24.11.2020
@@ -147,7 +147,7 @@ public class TypeDesignationGroupContainerFormatter {
 
         TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
 
-        //name, if available
+        //add typified name if available and if configured such
         if(configuration.isWithNameIfAvailable() && manager.getTypifiedNameCache() != null){
             finalBuilder.add(TagEnum.name, manager.getTypifiedNameCache(),
                     TypedEntityReferenceFactory.fromEntity(manager.getTypifiedName(), false));
