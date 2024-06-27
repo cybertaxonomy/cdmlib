@@ -49,7 +49,7 @@ public class TextualTypeDesignationGroupFormatter extends TypeDesignationGroupFo
             //name types separately, but this is such a rare case (if at all) and
             //increases complexity so it is not yet implemented
             boolean isPlural = hasMultipleTypes(orderedBaseEntity2TypesMap);
-            String label = (isPlural? "Types": "Type");  // for now we do not distinguish if multiple groups exist, this may change in future:  #9596#note-45
+            String label = (isPlural? "Type": "Type");  // for now we do not distinguish if multiple groups exist, this may change in future:  #9596#note-45
             localBuilder.add(TagEnum.label, label);
             localBuilder.add(TagEnum.postSeparator, ": ");
         }
