@@ -215,7 +215,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
 
         assertNotNull(result);
         assertEquals(
-                "Prionus L."+DASH_W+"Types: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (syntype: M);"
+                "Prionus L."+DASH_W+"Type: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (syntype: M);"
                 + " Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA; isotypes: BER, KEW);"
                 + " Type: Prionus coriatius L."
                 , result
@@ -235,7 +235,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
         typeDesignationManager = TypeDesignationGroupContainer.NewInstance(tds, orderByTypeStatus);
         result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE);
         assertEquals(
-                "Prionus L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA; isotypes: BER, KEW);"
+                "Prionus L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA; isotypes: BER, KEW);"
                 + " Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (syntype: M);"
                 + " Type: Prionus coriatius L."
                 , result
@@ -283,7 +283,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
         typeDesignationManager.addTypeDesigations(std_HT);
 
         assertEquals(
-                "Prionus L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA); Type: Prionus coriatius L."
+                "Prionus L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA); Type: Prionus coriatius L."
                 , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
                 );
 
@@ -294,7 +294,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
         specimen.setCollection(collection);
 
         assertEquals(
-                "Prionus L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: My collection); Type: Prionus coriatius L."
+                "Prionus L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: My collection); Type: Prionus coriatius L."
                 , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
                 );
     }
@@ -348,7 +348,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
             typeDesignationManager.addTypeDesigations(mtd_IT_unpublished);
 
             assertEquals("failed after repeating " + i + " times",
-                    "Prionus coriatius L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)"
+                    "Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)"
                     , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
                     );
 
@@ -361,8 +361,8 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
             String with2Sources = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE);
             Assert.assertTrue("failed after repeating " + i + " times",
                     //the order of the sources is currently not yet defined (rare case), therefore 2 possibilities
-                    with2Sources.equals("Prionus coriatius L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Mueller 2009: tab. 4, Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)")
-                    || with2Sources.equals("Prionus coriatius L."+DASH_W+"Types: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33, Mueller 2009: tab. 4; isotype: [icon] B Slide A565656)"))
+                    with2Sources.equals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Mueller 2009: tab. 4, Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)")
+                    || with2Sources.equals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33, Mueller 2009: tab. 4; isotype: [icon] B Slide A565656)"))
                     ;
             media.removeSource(newSource);
 
