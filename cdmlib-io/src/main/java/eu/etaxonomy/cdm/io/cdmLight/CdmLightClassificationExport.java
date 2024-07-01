@@ -1530,6 +1530,7 @@ public class CdmLightClassificationExport
         if (specimenType.getDesignationSource() != null && specimenType.getDesignationSource().getCitation() != null && !state.getReferenceStore().contains(specimenType.getDesignationSource().getCitation().getUuid())){
             handleReference(state, specimenType.getDesignationSource().getCitation());
             csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_REF_FK)] = specimenType.getDesignationSource() != null ? getId(state, specimenType.getDesignationSource().getCitation()): "";
+            csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_STRING)] = OriginalSourceFormatter.INSTANCE.format(specimenType.getDesignationSource().getCitation(), null);
         }
 
 
@@ -2459,7 +2460,9 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_LONG_CITATION)] = reference.getTitleCache();
             String uniqueString = state.incrementShortCitation(shortCitation);
             String uniqueShortCitation = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(reference, null, null, uniqueString);
-            csvLine[table.getIndex(CdmLightExportTable.UNIQUE_SHORT_CITATION)] = shortCitation;
+            String uniqueLongCitation = reference.getTitleCache() + uniqueString;
+            csvLine[table.getIndex(CdmLightExportTable.BIBLIO_SHORT_CITATION)] = uniqueShortCitation;
+            csvLine[table.getIndex(CdmLightExportTable.BIBLIO_LONG_CITATION)] = uniqueLongCitation;
 
 
             // TODO get preferred title

@@ -212,6 +212,7 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
     static final String TYPE_INFORMATION_REF_STRING = "TypeInformationSource";
     static final String TYPE_INFORMATION_REF_FK = "TypeInfoSourcePreferred_Fk";
     static final String TYPE_DESIGNATED_BY_REF_FK = "TypeDesignatedBy_Fk";
+    static final String TYPE_DESIGNATED_BY_STRING = "TypeDesignatedBy";
 
     //Type_Name_Rel
     static final String TYPE_FK="Type_Fk";
@@ -374,7 +375,7 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
 
     private final static String[] typeDesignationColumns(){
         return new String[]{TYPE_ID, TYPIFIED_NAME_FK, SPECIMEN_FK, //TYPE_VERBATIM_CITATION,
-                TYPE_STATUS, TYPE_DESIGNATED_BY_REF_FK, TYPE_INFORMATION_REF_STRING, TYPE_INFORMATION_REF_FK};
+                TYPE_STATUS, TYPE_DESIGNATED_BY_STRING, TYPE_DESIGNATED_BY_REF_FK, TYPE_INFORMATION_REF_STRING, TYPE_INFORMATION_REF_FK};
     }
 
     private final static String[] typeDesignationNameColumns(){
