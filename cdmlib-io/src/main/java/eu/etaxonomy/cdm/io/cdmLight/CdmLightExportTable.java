@@ -37,8 +37,8 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
     IDENTIFIER("Identifier", identifierColumns()),
     MEDIA("MediaFact", mediaColumns()),
 //    CONDENSED_DISTRIBUTION_FACT("CondensedDistributionFact", compressedDistributionFactColumns()),
-    NAME_FACT("NameFact", nameFactColumns()),
-    TYPE_SPECIMEN_NAME("NameSpecimenTypeRelation", typeDesignationNameColumns())
+    NAME_FACT("NameFact", nameFactColumns())//,
+    //TYPE_SPECIMEN_NAME("NameSpecimenTypeRelation", typeDesignationNameColumns())
     ;
 
     //Taxon/Synonym
@@ -369,18 +369,18 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
     }
 
     private final static String[] referenceColumns(){
-        return new String[]{REFERENCE_ID, BIBLIO_SHORT_CITATION, REF_TITLE,ABBREV_REF_TITLE, DATE_PUBLISHED, EDITION, EDITOR, ISBN,ISSN, ORGANISATION, PAGES, PLACE_PUBLISHED, PUBLISHER,
-                REF_ABSTRACT, SERIES_PART, VOLUME, YEAR, AUTHORSHIP_TITLE, AUTHOR_FK, IN_REFERENCE, INSTITUTION, LSID, SCHOOL, REF_TYPE, URI, BIBLIO_LONG_CITATION, UNIQUE_SHORT_CITATION};
+        return new String[]{REFERENCE_ID, BIBLIO_SHORT_CITATION, REF_TITLE,ABBREV_REF_TITLE, DATE_PUBLISHED, EDITION, EDITOR, ISBN, ISSN, ORGANISATION, PAGES, PLACE_PUBLISHED, PUBLISHER,
+                REF_ABSTRACT, SERIES_PART, VOLUME, YEAR, AUTHORSHIP_TITLE, AUTHOR_FK, IN_REFERENCE, INSTITUTION, LSID, SCHOOL, REF_TYPE, URI, BIBLIO_LONG_CITATION};//, UNIQUE_SHORT_CITATION};
     }
 
     private final static String[] typeDesignationColumns(){
         return new String[]{TYPE_ID, TYPIFIED_NAME_FK, SPECIMEN_FK, //TYPE_VERBATIM_CITATION,
-                TYPE_STATUS, TYPE_DESIGNATED_BY_STRING, TYPE_DESIGNATED_BY_REF_FK, TYPE_INFORMATION_REF_STRING, TYPE_INFORMATION_REF_FK};
+                TYPE_STATUS, TYPE_DESIGNATED_BY_REF_FK, TYPE_DESIGNATED_BY_STRING, TYPE_INFORMATION_REF_STRING, TYPE_INFORMATION_REF_FK};
     }
 
-    private final static String[] typeDesignationNameColumns(){
-        return new String[]{TYPE_FK, NAME_FK};
-    }
+//    private final static String[] typeDesignationNameColumns(){
+//        return new String[]{TYPE_FK, NAME_FK};
+//    }
 
     private final static String[] specimenColumns() {
         return new String[]{SPECIMEN_ID, SPECIMEN_CITATION, FIELDUNIT_CITATION, LOCALITY, COUNTRY, AREA_CATEGORY1, AREA_NAME1, AREA_CATEGORY2, AREA_NAME2, AREA_CATEGORY3, AREA_NAME3,
