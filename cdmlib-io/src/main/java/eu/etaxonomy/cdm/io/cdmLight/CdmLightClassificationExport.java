@@ -2460,9 +2460,9 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_LONG_CITATION)] = reference.getTitleCache();
             String uniqueString = state.incrementShortCitation(shortCitation);
             String uniqueShortCitation = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(reference, null, null, uniqueString);
-            String uniqueLongCitation = reference.getTitleCache() + uniqueString;
+            //String uniqueLongCitation = reference.getTitleCache() + uniqueString;
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_SHORT_CITATION)] = uniqueShortCitation;
-            csvLine[table.getIndex(CdmLightExportTable.BIBLIO_LONG_CITATION)] = uniqueLongCitation;
+            //csvLine[table.getIndex(CdmLightExportTable.BIBLIO_LONG_CITATION)] = uniqueLongCitation;
 
 
             // TODO get preferred title
