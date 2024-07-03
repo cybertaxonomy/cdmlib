@@ -21,27 +21,25 @@ public class TaggedTextWithLink extends TaggedText {
 
     private static final long serialVersionUID = 490748289094932840L;
 
-    private URI link;
+    private String link;
     private String doi;
 
     public static <T extends CdmBase>  TaggedTextWithLink NewInstance(TagEnum type, String text,
             TypedEntityReference entity, DOI doi, URI link){
-        return new TaggedTextWithLink(type, text, entity, link);
+        return new TaggedTextWithLink(type, text, entity, doi, link);
     }
 
-    private TaggedTextWithLink(TagEnum type, String text, TypedEntityReference<?> entity, URI link) {
+    private TaggedTextWithLink(TagEnum type, String text, TypedEntityReference<?> entity, DOI doi, URI link) {
         super(type, text, entity);
-        this.link = link;
+        this.doi = doi == null ? null : doi.asURI();
+        this.link = link == null ? null : link.toString();
     }
 
-
-    public URI getLink() {
+    public String getLink() {
         return link;
     }
-    public void setLink(URI link) {
-        this.link = link;
-    }
-    public void setDoi(DOI doi) {
-        this.doi = doi == null ? null : doi.asURI();
+
+    public String getDoi() {
+        return doi;
     }
 }
