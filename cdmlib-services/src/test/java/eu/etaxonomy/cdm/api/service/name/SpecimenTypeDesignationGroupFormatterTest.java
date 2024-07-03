@@ -325,7 +325,7 @@ public class SpecimenTypeDesignationGroupFormatterTest extends TermTestBase {
                 TaggedTextWithLink.class, taggedText.get(i).getClass());
         TaggedTextWithLink ttwl = (TaggedTextWithLink)taggedText.get(i);
         Assert.assertEquals("entry "+(i+1)+" link should be the stable identifier",
-                stableIdentifier, ttwl.getLink());
+                stableIdentifier.toString(), ttwl.getLink());
 
         //without unit number
         derivedUnit.setAccessionNumber(null);
@@ -338,7 +338,7 @@ public class SpecimenTypeDesignationGroupFormatterTest extends TermTestBase {
                 TaggedTextWithLink.class, taggedText.get(i).getClass());
         ttwl = (TaggedTextWithLink)taggedText.get(i);
         Assert.assertEquals("entry "+(i+1)+" link should be the stable identifier",
-                stableIdentifier, ttwl.getLink());
+                stableIdentifier.toString(), ttwl.getLink());
 
         //without collection
         derivedUnit.setCollection(null);
@@ -351,7 +351,7 @@ public class SpecimenTypeDesignationGroupFormatterTest extends TermTestBase {
                 TaggedTextWithLink.class, taggedText.get(i).getClass());
         ttwl = (TaggedTextWithLink)taggedText.get(i);
         Assert.assertEquals("entry "+(i+1)+" link should be the stable identifier",
-                stableIdentifier, ttwl.getLink());
+                stableIdentifier.toString(), ttwl.getLink());
 
         //no link
         derivedUnit.setPreferredStableUri(null);
