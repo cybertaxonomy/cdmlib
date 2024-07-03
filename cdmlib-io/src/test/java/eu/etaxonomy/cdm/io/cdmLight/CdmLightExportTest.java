@@ -172,8 +172,12 @@ public class CdmLightExportTest
 
         //references
         String nomRefLine = getLine(referenceResult, UUID.fromString("b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f"));
-        expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. (1804b)\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
+        expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. (1804)\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
         Assert.assertEquals(expected, nomRefLine.substring(0, expected.length()));
+        Assert.assertTrue(nomRefLine.contains(",\"BK\","));
+        String expectedAfterRefType = nomRefLine.substring(nomRefLine.indexOf(",\"BK\","));
+        //#10488
+        Assert.assertEquals("Test unique year 1804b ", ",\"BK\",\"\",\"Mill. 1804: The book of botany 3\",\"Mill. (1804b)\",\"Mill. 1804b: The book of botany 3\"", expectedAfterRefType);
 
         byte[] geographicAreaFact = data.get(CdmLightExportTable.GEOGRAPHIC_AREA_FACT.getTableName());
         String geographicAreaFactString = new String(geographicAreaFact);

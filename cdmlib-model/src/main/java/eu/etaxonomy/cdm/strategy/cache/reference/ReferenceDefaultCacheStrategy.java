@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.reference;
 
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
@@ -91,17 +92,24 @@ public class ReferenceDefaultCacheStrategy
 
     @Override
     public String getTitleCache(Reference reference) {
+        return getTitleCache(reference, "");
+    }
+
+    @Override
+    public String getTitleCache(Reference reference, String uniqueString) {
         if (reference == null){
             return null;
         }
         if (reference.isProtectedTitleCache()){
             return reference.getTitleCache();
         }
+        uniqueString = uniqueString == null ? "" : uniqueString;
+
         boolean isNotAbbrev = false;
 
         String result;
         ReferenceType type = reference.getType();
-        String authorAndYear = getAuthorAndYear(reference, isNotAbbrev, false);
+        String authorAndYear = getAuthorAndYear(reference, isNotAbbrev, false, uniqueString);
 
         if (isRealInRef(reference)){
             //Section, Book-Section or Generic with inRef
@@ -159,11 +167,11 @@ public class ReferenceDefaultCacheStrategy
         return result;
     }
 
-    private String getAuthorAndYear(Reference reference, boolean isAbbrev, boolean useFullDatePublished) {
+    private String getAuthorAndYear(Reference reference, boolean isAbbrev, boolean useFullDatePublished, String uniqueString) {
         TeamOrPersonBase<?> author = reference.getAuthorship();
         String authorStr = (author == null)? "" : CdmUtils.getPreferredNonEmptyString(author.getTitleCache(),
                 author.getNomenclaturalTitleCache(), isAbbrev, trim);
-        String result = addAuthorYear(authorStr, reference, useFullDatePublished);
+        String result = addAuthorYear(authorStr, reference, useFullDatePublished, uniqueString);
         return result;
     }
 
@@ -210,6 +218,8 @@ public class ReferenceDefaultCacheStrategy
         if (reference == null){
             return null;
         }
+        String uniqueString = ""; //probably not needed here
+
         String result;
         ReferenceType type = reference.getType();
         boolean isAbbrev = true;
@@ -221,7 +231,7 @@ public class ReferenceDefaultCacheStrategy
         if (type == ReferenceType.Article){
             result = getTitleWithoutYearAndAuthor(reference, isAbbrev, false);
             boolean useFullDatePublished = false;
-            String authorAndYear = getAuthorAndYear(reference, isAbbrev, useFullDatePublished);
+            String authorAndYear = getAuthorAndYear(reference, isAbbrev, useFullDatePublished, uniqueString);
             if (isNotBlank(authorAndYear)){
 //                String authorSeparator = isNotBlank(reference.getTitle())? afterAuthor : " ";
                 String authorSeparator = afterAuthor;
@@ -231,7 +241,7 @@ public class ReferenceDefaultCacheStrategy
         }else if (isRealInRef(reference)){
             result = titleCacheRealInRef(reference, isAbbrev);
         }else if (isNomRef(type)){
-            String authorAndYear = getAuthorAndYear(reference, isAbbrev, false);
+            String authorAndYear = getAuthorAndYear(reference, isAbbrev, false, uniqueString);
             String title = getTitleWithoutYearAndAuthor(reference, isAbbrev, false);
             result = addPages(title, reference);
             //if Book, CdDvd, flat Generic, Thesis, WebPage
@@ -454,12 +464,12 @@ public class ReferenceDefaultCacheStrategy
         return result;
     }
 
-    private String addAuthorYear(String authorStr, Reference reference, boolean useFullDatePublished){
+    private String addAuthorYear(String authorStr, Reference reference, boolean useFullDatePublished, String uniqueString){
         String year = useFullDatePublished ? reference.getDatePublishedString() : reference.getYear();
         if (isBlank(year)){
-            return authorStr;
+            return authorStr + (StringUtils.isNotBlank(uniqueString)? "/"+uniqueString : "");
         }else{
-            return CdmUtils.concat(" ", authorStr, year);
+            return CdmUtils.concat(" ", authorStr, year + uniqueString);
         }
     }
 
