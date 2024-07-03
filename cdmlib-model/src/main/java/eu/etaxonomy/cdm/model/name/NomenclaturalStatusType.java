@@ -943,6 +943,11 @@ public class NomenclaturalStatusType
 		if (! isZooname && statusAbbreviation.equalsIgnoreCase("nom. alternativ.")){
 			return NomenclaturalStatusType.ALTERNATIVE();
 		}
+	    //desig. inval. #10533  //to be on the safe side that both are recognized
+        if (! isZooname && statusAbbreviation.equalsIgnoreCase("desig. inval.") ||
+                statusAbbreviation.equalsIgnoreCase("nom. inval.")){
+            return NomenclaturalStatusType.INVALID();
+        }
 		UUID uuid = map.get(statusAbbreviation);
 		if (uuid != null ){
 			result = getTermByUuid(uuid);

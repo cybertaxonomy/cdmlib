@@ -1013,6 +1013,13 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertTrue(nameTestStatus.getStatus().size()== 1);
         assertEquals( NomenclaturalStatusType.INVALID(), nameTestStatus.getStatus().iterator().next().getType());
 
+        //desig. inval. (same as above but with other status label
+        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, desig. inval.";
+        nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
+        assertFullRefStandard(nameTestStatus);
+        assertTrue(nameTestStatus.getStatus().size()== 1);
+        assertEquals( NomenclaturalStatusType.INVALID(), nameTestStatus.getStatus().iterator().next().getType());
+
         //nom. dub.
         strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, nom. dub.";
         nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
