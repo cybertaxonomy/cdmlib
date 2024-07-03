@@ -15,7 +15,6 @@ import java.util.TreeSet;
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
@@ -66,14 +65,8 @@ public class TaggedText implements Serializable{
         if (ref != null) {
             ref = CdmBase.deproxy(ref); //just in case
             TypedEntityReference<Reference> ter = TypedEntityReferenceFactory.fromEntity(ref, true);
-            URI uri = null;
-            if (ref.getDoi() != null) {
-                //for now we only handle DOIs, may be extended later
-               uri = URI.create(ref.getDoi().asURI());
-            }
-            TaggedTextWithLink result = TaggedTextWithLink.NewInstance(type, shortRef, ter, uri);
+            TaggedTextWithLink result = TaggedTextWithLink.NewInstance(type, shortRef, ter, ref.getDoi(), ref.getUri());
             return result;
-
         }else {
             return new TaggedText(type, shortRef);
         }

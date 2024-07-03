@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.strategy.cache;
 
+import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
@@ -21,9 +22,10 @@ public class TaggedTextWithLink extends TaggedText {
     private static final long serialVersionUID = 490748289094932840L;
 
     private URI link;
+    private String doi;
 
     public static <T extends CdmBase>  TaggedTextWithLink NewInstance(TagEnum type, String text,
-            TypedEntityReference entity, URI link){
+            TypedEntityReference entity, DOI doi, URI link){
         return new TaggedTextWithLink(type, text, entity, link);
     }
 
@@ -38,5 +40,8 @@ public class TaggedTextWithLink extends TaggedText {
     }
     public void setLink(URI link) {
         this.link = link;
+    }
+    public void setDoi(DOI doi) {
+        this.doi = doi == null ? null : doi.asURI();
     }
 }

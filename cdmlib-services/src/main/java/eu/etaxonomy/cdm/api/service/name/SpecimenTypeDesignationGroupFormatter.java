@@ -245,7 +245,7 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
                                 builder.add(TagEnum.typeDesignation, before.trim());
                             }
                             TaggedTextWithLink taggedTextWithLink = TaggedTextWithLink.NewInstance(
-                                    TagEnum.typeDesignation, linkedText, typeDesignationEntity, link);
+                                    TagEnum.typeDesignation, linkedText, typeDesignationEntity, null, link);
                             builder.add(taggedTextWithLink);
                             if (StringUtils.isNotBlank(after)) {
                                 if (after.startsWith(", ")) {
@@ -256,7 +256,7 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
                             }
                         }else {
                             TaggedTextWithLink taggedTextWithLink = TaggedTextWithLink.NewInstance(
-                                    TagEnum.typeDesignation, titleCache, typeDesignationEntity, link);
+                                    TagEnum.typeDesignation, titleCache, typeDesignationEntity, null, link);
                             builder.add(taggedTextWithLink);
                         }
                     }else {
