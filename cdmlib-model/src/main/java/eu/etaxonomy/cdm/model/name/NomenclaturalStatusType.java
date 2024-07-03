@@ -510,7 +510,7 @@ public class NomenclaturalStatusType
 	 * {@link BotanicalName botanical name} is "alternative" if it is a classical name
 	 * long in use, in some cases even before 1753, and is considered as
 	 * {@link NomenclaturalStatusType#VALID() "valid"} although it does not follow the rules for
-	 * family names (see Article 18 of the ICBN).<BR>
+	 * family names (see Article 18 of the ICNAFP).<BR>
 	 * An "alternative" taxon name is treated as if "conserved" and is therefore
 	 * also "legitimate".
 	 *
