@@ -124,7 +124,7 @@ public class SourceDtoLoader {
 
                     //nameUsedInSource
                     //TODO use DTO
-                    TaxonName name =  (TaxonName)e.get("nameInSource");
+                    TaxonName name = (TaxonName)e.get("nameInSource");
                     if (name != null) {
                         List<TaggedText> taggedName = name.cacheStrategy().getTaggedTitle(name);
                         //TODO nom status?
