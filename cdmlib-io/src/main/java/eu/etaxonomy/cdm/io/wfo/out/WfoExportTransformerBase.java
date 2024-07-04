@@ -36,9 +36,12 @@ public class WfoExportTransformerBase extends ExportTransformerBase {
         else if(rank.equals(Rank.TRIBE())) {return "tribe";}
         else if(rank.equals(Rank.SUBTRIBE())) {return "subtribe";}
         else if(rank.equals(Rank.GENUS())) {return "genus";}
+        else if(rank.equals(Rank.INFRAGENERICTAXON())) {return "infragenericName";}
         else if(rank.equals(Rank.SUBGENUS())) {return "subgenus";}
         else if(rank.equals(Rank.SECTION_BOTANY())) {return "sect.";}
         else if(rank.equals(Rank.SUBSECTION_BOTANY())) {return "subsect.";}
+        else if(rank.equals(Rank.SERIES())) {return "ser.";}
+        else if(rank.equals(Rank.SUBSERIES())) {return "subser.";}
         else if(rank.equals(Rank.SPECIES())) {return "species";}
         else if(rank.equals(Rank.SUBSPECIES())) {return "subspecies";}
         else if(rank.equals(Rank.VARIETY())) {return "variety";}
@@ -48,6 +51,7 @@ public class WfoExportTransformerBase extends ExportTransformerBase {
         else if(rank.equals(Rank.INFRASPECIFICTAXON())) {return "infraspecificName";}
         else if(rank.equals(Rank.PROLES())) {return "proles";}
         else if(rank.equals(Rank.SUBPROLES())) {return "subproles";}
+        else if(rank.equals(Rank.GREX_INFRASPEC())) {return "grex";}
         else if(rank.equals(Rank.RACE())) {return "race";}
 
         return null;

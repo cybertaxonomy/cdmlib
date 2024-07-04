@@ -50,7 +50,7 @@ public class DerivedUnitDefaultCacheStrategy
 
     private boolean skipFieldUnit = false;
     private boolean addTrailingDot = false;
-    //according to #6865 deduplication is usually not wanted
+    //according to #6865 and #10519 deduplication is usually not wanted
     private boolean deduplicateCollectionCodeInNumber = false;
     private CollectionAccessionSeperator collectionAccessionSeperator = CollectionAccessionSeperator.COLON;
 
@@ -144,7 +144,7 @@ public class DerivedUnitDefaultCacheStrategy
         //result
         if(!skipFieldUnit){
             for (FieldUnit fieldUnit : fieldUnits){
-                result = addPlantDescription(result, fieldUnit);
+                result = addPlantDescription(result, ";", fieldUnit);
             }
         }
 

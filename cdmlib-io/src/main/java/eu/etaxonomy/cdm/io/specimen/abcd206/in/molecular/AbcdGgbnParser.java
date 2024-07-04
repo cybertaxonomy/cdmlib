@@ -86,8 +86,8 @@ public class AbcdGgbnParser {
                 NodeList volumeList = element.getElementsByTagName(prefix+"volume");
                 NodeList weightList = element.getElementsByTagName(prefix+"weight");
                 NodeList methodDeterminationWeightList = element.getElementsByTagName(prefix+"methodDeterminationWeight");
-                NodeList DNADNAHybridizationList = element.getElementsByTagName(prefix+"DNADNAHybridization");
-                NodeList DNAMeltingPointList = element.getElementsByTagName(prefix+"DNAMeltingPoint");
+                NodeList DnaDnaHybridizationList = element.getElementsByTagName(prefix+"DNADNAHybridization");
+                NodeList DnaMeltingPointList = element.getElementsByTagName(prefix+"DNAMeltingPoint");
                 NodeList estimatedSizeList = element.getElementsByTagName(prefix+"estimated_size");
                 NodeList poolDnaExtractsList = element.getElementsByTagName(prefix+"pool_dna_extracts");
                 NodeList gelImageList = element.getElementsByTagName(prefix+"gelImage");

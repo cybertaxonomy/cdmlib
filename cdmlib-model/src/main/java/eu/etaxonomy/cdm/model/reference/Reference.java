@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.reference;
 
 import java.beans.PropertyChangeEvent;
@@ -457,8 +456,15 @@ public class Reference
         return abbrevTitleCache;
     }
 
-
-    @Override
+    /**
+     * Sets the {@link #getAbbrevTitleCache() abbreviated title cache}
+     *
+     * @param abbrevTitleCache
+     * @deprecated this method exists only for compliance with the java bean standard.
+     * It usually has little effect as it will not protect the cache.
+     * Use {@link #setAbbrevTitleCache(String, boolean)} instead use
+     * {@link #setAbbrevTitleCache(String, boolean)} to protect the cache.
+     */
 	@Deprecated
 	public void setAbbrevTitleCache(String abbrevTitleCache) {
 		this.abbrevTitleCache = abbrevTitleCache;

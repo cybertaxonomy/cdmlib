@@ -20,36 +20,50 @@ public class RequestedParam {
     private List <String> scientificNameList;
     private boolean compareAuthor;
     private Integer maxDistance;
+    private boolean excludeBasyonymAuthors;
+    private boolean excludeExAuthors;
 
-    public RequestedParam (String scientificName, boolean compareAuthor, Integer maxDistance) {
+    public RequestedParam (String scientificName, boolean compareAuthor, Integer maxDistance,
+            boolean excludeBasyonymAuthors, boolean excludeExAuthors) {
         this.scientificName = scientificName;
         this.compareAuthor = compareAuthor;
         this.maxDistance = maxDistance;
+        this.excludeBasyonymAuthors = excludeBasyonymAuthors;
+        this.excludeExAuthors = excludeExAuthors;
     }
-    public RequestedParam (List<String> scientificNameList, boolean compareAuthor, Integer maxDistance) {
+    public RequestedParam (List<String> scientificNameList, boolean compareAuthor, Integer maxDistance,
+            boolean excludeBasyonymAuthors, boolean excludeExAuthors) {
         this.scientificNameList = scientificNameList;
         this.compareAuthor = compareAuthor;
         this.maxDistance = maxDistance;
+        this.excludeBasyonymAuthors = excludeBasyonymAuthors;
+        this.excludeExAuthors = excludeExAuthors;
     }
-
     public String getScientificName() {
         return scientificName;
     }
-
     public boolean isCompareAuthor() {
         return compareAuthor;
     }
-
     public Integer getMaxDistance() {
         return maxDistance;
     }
-
     public List<String> getScientificNameList() {
         return scientificNameList;
     }
-
     public void setScientificNameList(List<String> scientificNameList) {
         this.scientificNameList = scientificNameList;
     }
-
+    public boolean isExcludeBasyonymAuthors() {
+        return excludeBasyonymAuthors;
+    }
+    public void setExcludeBasyonymAuthors(boolean excludeBasyonymAuthors) {
+        this.excludeBasyonymAuthors = excludeBasyonymAuthors;
+    }
+    public boolean isExcludeExAuthors() {
+        return excludeExAuthors;
+    }
+    public void setExcludeExAuthors(boolean excludeExAuthors) {
+        this.excludeExAuthors = excludeExAuthors;
+    }
 }

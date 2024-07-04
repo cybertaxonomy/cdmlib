@@ -130,7 +130,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         if(includedNames.size() > 0){
             return page(submitterUuid, includedStatus, includedNamesUuids, pageSize, pageIndex, orderHints, propertyPaths);
         } else {
-            return new DefaultPagerImpl<>(pageIndex, 0l, pageSize, new ArrayList<Registration>());
+            return new DefaultPagerImpl<>(pageIndex, 0l, pageSize, new ArrayList<>());
         }
     }
 

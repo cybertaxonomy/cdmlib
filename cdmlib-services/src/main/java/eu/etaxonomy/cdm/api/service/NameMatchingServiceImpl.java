@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.api.service.exception.NameMatchingParserException;
 import eu.etaxonomy.cdm.common.NameMatchingUtils;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.INameMatchingDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dto.NameMatchingParts;
@@ -46,9 +45,9 @@ public class NameMatchingServiceImpl
         // extends IdentifiableServiceBase<TaxonName,ITaxonNameDao>
         implements INameMatchingService {
 
-    @Autowired
+//    @Autowired
     // @Qualifier("defaultBeanInitializer")
-    protected IBeanInitializer defaultBeanInitializer;
+//    protected IBeanInitializer defaultBeanInitializer;
 
     @Autowired
     private ITaxonNameDao nameDao;
@@ -68,10 +67,12 @@ public class NameMatchingServiceImpl
         public SingleNameMatchingResult(NameMatchingParts parts, Integer distance) {
             super(parts.getTaxonNameId(), parts.getTaxonNameUuid(), parts.getTitleCache(),
                     parts.getAuthorshipCache(), parts.getGenusOrUninomial(),
-                    parts.getInfraGenericEpithet(), parts.getSpecificEpithet(), parts.getInfraSpecificEpithet(), parts.getNameCache(), parts.getRank());
+                    parts.getInfraGenericEpithet(), parts.getSpecificEpithet(),
+                    parts.getInfraSpecificEpithet(), parts.getNameCache(), parts.getRank(),
+                    parts.getCombinationAuthorship(), parts.getExCombinationAuthorship(),
+                    parts.getBasionymAuthorship(), parts.getExBasionymAuthorship());
             this.distance = distance;
         }
-
         public Integer getDistance() {
             return distance;
         }
@@ -85,7 +86,6 @@ public class NameMatchingServiceImpl
         List<SingleNameMatchingResult> exactResults = new ArrayList<>();
         List<SingleNameMatchingResult> bestResults = new ArrayList<>();
         String warning;
-        //List<SingleNameMatchingResult> otherCandidatesResults = new ArrayList<>();
 
         public List<SingleNameMatchingResult> getExactResults() {
             return exactResults;
@@ -105,12 +105,9 @@ public class NameMatchingServiceImpl
         public String getWarning () {
             return warning;
         }
-
-
     }
 
     //**********METHODS**********
-    // TODO work in progress
 
     /**
      * Compares a list of input names with names in the Database.
@@ -121,42 +118,39 @@ public class NameMatchingServiceImpl
      */
 
     @Override
-    public Map<String, NameMatchingResult> compareTaxonListName(List<String> input, boolean compareAuthor, Integer maxDistance) throws NameMatchingParserException{
+    public Map<String, NameMatchingResult> compareTaxonListName(List<String> input, boolean compareAuthor, boolean excludeBasyonymAuthors, boolean excludeExAuthors,
+            Integer maxDistance) throws NameMatchingParserException{
 
-        //TODO make a method that normalizes input names
-        //delete empty spaces (beginning-end), tab delim., and others
         for (int i = 0 ; i < input.size(); i++) {
             String name = input.get(i);
             name = name.replaceAll("^\\s+", "");
             name = name.replaceAll("\\s+$", "");
             input.set(i,name);
         }
-
         Map<String, NameMatchingResult> inputAndResults = new HashMap<>();
         for (String inputName : input) {
             NameMatchingResult individualResults = new NameMatchingResult();
-            individualResults = findMatchingNames(inputName, compareAuthor, maxDistance);
+            individualResults = findMatchingNames(inputName, compareAuthor, excludeBasyonymAuthors, excludeExAuthors, maxDistance);
             inputAndResults.put(inputName, individualResults);
         }
-
         return inputAndResults;
     }
 
 
     @Override
-    public NameMatchingResult findMatchingNames(String nameCache, boolean compareAuthor, Integer distance) throws NameMatchingParserException{
+    public NameMatchingResult findMatchingNames(String nameCache, boolean compareAuthor, boolean excludeBasyonymAuthors, boolean excludeExAuthors, Integer distance)
+            throws NameMatchingParserException{
 
         NameMatchingResult result = new NameMatchingResult();
         List<SingleNameMatchingResult> resultInput;
 
         try {
-            resultInput = findMatchingNamesUnshaped(nameCache, null, compareAuthor, distance);
+            resultInput = findMatchingNamesUnshaped(nameCache, null, compareAuthor, excludeBasyonymAuthors, excludeExAuthors, distance);
         } catch (NameMatchingParserException e) {
             result.setWarning(e.getWarning());
             result.exactResults = new ArrayList<>();
             result.bestResults = new ArrayList<>();
             return result;
-
         }
 
         for (SingleNameMatchingResult part : resultInput) {
@@ -183,7 +177,9 @@ public class NameMatchingServiceImpl
      * @return list of exact matching names (distance = 0), or list of best matches if exact matches are not found.
      */
 
-    private List<SingleNameMatchingResult> findMatchingNamesUnshaped(String taxonName, NameMatchingConfigurator config, boolean compareAuthor, Integer inputDistance) throws NameMatchingParserException{
+    private List<SingleNameMatchingResult> findMatchingNamesUnshaped(String taxonName, NameMatchingConfigurator config,
+            boolean compareAuthor, boolean excludeBasyonymAuthors, boolean excludeExAuthors, Integer inputDistance)
+                    throws NameMatchingParserException{
 
         List<SingleNameMatchingResult> result = new ArrayList<>();
 
@@ -196,29 +192,54 @@ public class NameMatchingServiceImpl
     	}
 
         TaxonName name = (TaxonName) NonViralNameParserImpl.NewInstance().parseFullName(taxonName);
-
         String genusQuery = name.getGenusOrUninomial();
         String specificEpithetQuery = name.getSpecificEpithet();
         String infraGenericQuery = name.getInfraGenericEpithet();
         String infraSpecificQuery = name.getInfraSpecificEpithet();
         String authorshipCacheQuery = name.getAuthorshipCache();
+        String combinationAuthor = null;
+        String exCombinationAuthor = null;
+        String basyonymAuthor = null;
+        String exBasyonymAuthor = null;
+
+        try {
+            combinationAuthor = name.getCombinationAuthorship().getNomenclaturalTitleCache();
+        } catch (NullPointerException e){
+
+        }
+        try {
+            exCombinationAuthor = name.getExCombinationAuthorship().getNomenclaturalTitleCache();
+        }catch (NullPointerException e){
+
+        }
+        try {
+            basyonymAuthor = name.getBasionymAuthorship().getNomenclaturalTitleCache();
+        }catch (NullPointerException e){
+
+        }
+        try {
+            exBasyonymAuthor = name.getExBasionymAuthorship().getNomenclaturalTitleCache();
+        }catch (NullPointerException e){
+
+        }
+
         Rank rank = name.getRank();
 
         if (genusQuery == null) {
             throw new NameMatchingParserException ("input name could not be parsed");
         }
-
-        if (name.getCombinationAuthorship() != null)  {
-            authorshipCacheQuery = name.getCombinationAuthorship().getNomenclaturalTitleCache();
-        }
+//        if (name.getCombinationAuthorship() != null)  {
+//            authorshipCacheQuery = name.getCombinationAuthorship().getNomenclaturalTitleCache();
+//        }
 
         Integer maxDistance = defineDistances(config, inputDistance, specificEpithetQuery, infraGenericQuery,
                 infraSpecificQuery);
 
         /**
          * phonetic normalization of query (genus) this method corresponds to
-         * the near match function of Rees 2007 it includes phonetic matches
+         * the near match function of Rees 2007. It includes phonetic matches
          * (replace initial characters, soundalike changes, gender endings)
+         * ref. #10178
          */
 
         String normalizedGenusQuery = NameMatchingUtils.normalize(genusQuery);
@@ -246,7 +267,9 @@ public class NameMatchingServiceImpl
                     (o1, o2) -> o1.getDistance().compareTo(o2.getDistance()));
             result = candidatesResults(resultSetOnlyGenusOrUninominal, maxDistance);
             if (compareAuthor) {
-                result = authorMatch(result, authorshipCacheQuery, maxDistance);
+                result = authorMatch(result, excludeBasyonymAuthors, excludeExAuthors,
+                        authorshipCacheQuery, combinationAuthor, exCombinationAuthor, basyonymAuthor, exBasyonymAuthor,
+                        maxDistance);
             }
             return result;
         } else if (infraGenericQuery != null) {
@@ -257,7 +280,9 @@ public class NameMatchingServiceImpl
 
             result = candidatesResults(resultSetInfraGenericListWithDist, maxDistance);
             if (compareAuthor) {
-                result = authorMatch(result, authorshipCacheQuery, maxDistance);
+                result = authorMatch(result, excludeBasyonymAuthors, excludeExAuthors,
+                        authorshipCacheQuery, combinationAuthor, exCombinationAuthor, basyonymAuthor, exBasyonymAuthor,
+                        maxDistance);
             }
             return result;
         } else if (specificEpithetQuery != null && infraSpecificQuery == null){
@@ -269,7 +294,9 @@ public class NameMatchingServiceImpl
             Collections.sort(resultSetEpithetListWithDist, (o1, o2) -> o1.getDistance().compareTo(o2.getDistance()));
             result = candidatesResults(resultSetEpithetListWithDist, maxDistance);
             if (compareAuthor) {
-                result = authorMatch(result, authorshipCacheQuery, maxDistance);
+                result = authorMatch(result, excludeBasyonymAuthors, excludeExAuthors,
+                        authorshipCacheQuery, combinationAuthor, exCombinationAuthor, basyonymAuthor, exBasyonymAuthor,
+                        maxDistance);
             }
             return result;
         } else if (infraSpecificQuery != null) {
@@ -281,7 +308,9 @@ public class NameMatchingServiceImpl
             Collections.sort(resultSetInfraSpecificListWithDist, (o1, o2) -> o1.getDistance().compareTo(o2.getDistance()));
             result = candidatesResults(resultSetInfraSpecificListWithDist, maxDistance);
             if (compareAuthor) {
-                result = authorMatch(result, authorshipCacheQuery, maxDistance);
+                result = authorMatch(result, excludeBasyonymAuthors, excludeExAuthors,
+                        authorshipCacheQuery, combinationAuthor, exCombinationAuthor, basyonymAuthor, exBasyonymAuthor,
+                        maxDistance);
             }
             return result;
         } else {
@@ -513,13 +542,75 @@ public class NameMatchingServiceImpl
         }
     }
 
-    private static List<SingleNameMatchingResult> authorMatch(List<SingleNameMatchingResult> results, String authorshipQuery, Integer maxDistance) {
-        try {
-            results = AuthorMatch.compareAuthor(results, authorshipQuery, maxDistance);
-        } catch (NullPointerException ex) {
+    private static List<SingleNameMatchingResult> authorMatch(List<SingleNameMatchingResult> results, boolean excludeBasyonymAuthors,
+            boolean excludeExAuthors, String authorshipCacheQuery, String combinationAuthor, String exCombinationAuthor, String basyonymAuthor, String exBasyonymAuthor, Integer maxDistance) {
+        List<SingleNameMatchingResult> result = new ArrayList<>();
+
+        for (int i = 0 ; i < results.size(); i++) {
+            String authorCacheDB = results.get(i).getAuthorshipCache();
+            int distanceAuthorComparison = NameMatchingUtils.modifiedDamerauLevenshteinDistance(authorshipCacheQuery, authorCacheDB);
+            distanceAuthorComparison = distanceAuthorComparison+results.get(i).getDistance();
+            if (distanceAuthorComparison <= maxDistance) {
+                results.get(i).setDistance(distanceAuthorComparison);
+                result.add(results.get(i));
+            }
+        }
+        results.removeAll(result);
+
+        if (excludeBasyonymAuthors == false && excludeExAuthors == false) {
+            for (int i = 0 ; i < results.size(); i++) {
+                int distanceAuthorComparison = NameMatchingUtils.modifiedDamerauLevenshteinDistance(authorshipCacheQuery, results.get(i).getAuthorshipCache());
+                results.get(i).setDistance(distanceAuthorComparison+results.get(i).getDistance());
+            }
+            for (int i = 0 ; i < results.size(); i++) {
+                if (results.get(i).getDistance() <= maxDistance) {
+                    result.add(results.get(i));
+                }
+            }
+            return result;
+        }
+        if (excludeBasyonymAuthors) {
+            if (excludeExAuthors) {
+                for (int i = 0 ; i < results.size(); i++) {
+                    int distanceCombinationAuthor = NameMatchingUtils.modifiedDamerauLevenshteinDistance(combinationAuthor, results.get(i).getCombinationAuthorship());
+                    results.get(i).setDistance(distanceCombinationAuthor+results.get(i).getDistance());
+                }
+                for (int i = 0 ; i < results.size(); i++) {
+                    if (results.get(i).getDistance() <= maxDistance) {
+                        result.add(results.get(i));
+                    }
+                }
+                return result;
+            }
+            for (int i = 0 ; i < results.size(); i++) {
+                String exCombinationAuthorDB = results.get(i).getExCombinationAuthorship();
+                String combinationAuthorDB = results.get(i).getCombinationAuthorship();
+                String combinedAuthorCacheDB = exCombinationAuthorDB  + " ex " +  combinationAuthorDB;
+                String combinedAuthorCacheQuery = exCombinationAuthor + " ex " + combinationAuthor;
+                int distanceAuthorComparison = NameMatchingUtils.modifiedDamerauLevenshteinDistance(combinedAuthorCacheDB, combinedAuthorCacheQuery);
+                results.get(i).setDistance(distanceAuthorComparison+results.get(i).getDistance());
+            }
+            for (int i = 0 ; i < results.size(); i++) {
+                if (results.get(i).getDistance() <= maxDistance) {
+                    result.add(results.get(i));
+                }
+            }
+            return result;
+        }
+        if (excludeBasyonymAuthors == false && excludeExAuthors == false) {
+            for (int i = 0 ; i < results.size(); i++) {
+                int distanceAuthorComparison = NameMatchingUtils.modifiedDamerauLevenshteinDistance(authorshipCacheQuery, results.get(i).getAuthorshipCache());
+                results.get(i).setDistance(distanceAuthorComparison+results.get(i).getDistance());
+            }
+            for (int i = 0 ; i < results.size(); i++) {
+                if (results.get(i).getDistance() <= maxDistance) {
+                    result.add(results.get(i));
+                }
+            }
+            return result;
+        } else {
             return null;
         }
-        return results;
     }
 
     private void filterNamesWithEpithets(List<SingleNameMatchingResult> taxonNamePartsWithDistance,
@@ -586,7 +677,7 @@ public class NameMatchingServiceImpl
         if (postFilteredGenusOrUninominalWithDis.isEmpty()) {
             return genusOrUninomialWithDistance;
         } else {
-            List<NameMatchingParts> fullNameMatchingPartsListTemp = nameMatchingDao.findNameMatchingParts(postFilteredGenusOrUninominalWithDis, null);
+            List<NameMatchingParts> fullNameMatchingPartsListTemp = nameMatchingDao.findNameMatchingParts(postFilteredGenusOrUninominalWithDis);
             postFilteredGenusOrUninominalWithDis.forEach((key, value) -> {
                 for (NameMatchingParts fullNameMatchingParts : fullNameMatchingPartsListTemp) {
                     if (fullNameMatchingParts.getGenusOrUninomial().equals(key)) {

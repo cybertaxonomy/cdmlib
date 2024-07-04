@@ -1117,7 +1117,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			// </Representation>
 			TaxonDescription taxonDescription = TaxonDescription.NewInstance();
 			if (!generatorName.isEmpty()){
-				Annotation annotation = Annotation.NewInstance(generatorName, AnnotationType.TECHNICAL(),Language.DEFAULT());
+				Annotation annotation = Annotation.NewInstance(generatorName, AnnotationType.INTERNAL(),Language.DEFAULT());
 				taxonDescription.addAnnotation(annotation);
 			}
 			importRepresentation(elCodedDescription, sddNamespace, taxonDescription, idCD, cdmState);

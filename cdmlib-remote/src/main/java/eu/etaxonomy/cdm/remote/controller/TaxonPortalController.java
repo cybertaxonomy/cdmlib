@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -64,6 +65,7 @@ import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -76,6 +78,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
@@ -351,11 +354,14 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "markerTypes", required = false) Set<UUID> markerTypes,
             @RequestParam(value = "dtoLoading", required = false, defaultValue = "true") boolean dtoLoading,
             @RequestParam(value = "withAccessionType", required = false, defaultValue = "true" ) boolean withAccessionType,
+            @RequestParam(value = "identifierTypes", required = false) Set<UUID> identifierTypes,
+            //TODO use java.util.Locale and adapter for jaxon
+            @RequestParam(value = "locale", required = false, defaultValue = "en") String locale,
 
 
-            //TODO annotation type filter
 
             //distributionInfoConfig
+            //TODO annotation type filter for distribution info
             @RequestParam(value = "part", required = false)  Set<InfoPart> partSet,
             @RequestParam(value = "subAreaPreference", required = false) boolean preferSubAreas,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
@@ -409,6 +415,10 @@ public class TaxonPortalController extends TaxonController{
         if (markerTypes == null) {
             markerTypes = new HashSet<>();
         }
+        if (identifierTypes == null) {
+            //TODO or should we allow null to define "all identifiers" (= no filter)
+            identifierTypes = new HashSet<>(Arrays.asList(new UUID[] {IdentifierType.uuidWfoNameIdentifier}));
+        }
 
 //      //TODO is this performant?
 //      IVocabularyService vocabularyService = null;
@@ -418,6 +428,29 @@ public class TaxonPortalController extends TaxonController{
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
 
         config.setTaxonUuid(taxonUuid);
+        if (StringUtils.isEmpty(locale)) {
+            //TODO or use http header param
+            locale = "en";
+        }
+        //TODO handle error if locale can not be matched to a "typical" Locale
+        Locale loc = Locale.forLanguageTag(locale);
+        config.getLocales().add(loc);  //TODO handle better in configurator (adder, list parameter, ...). Do we need a list here at all or only a single Locale?
+        //temporary locale handling
+        Language language = Language.DEFAULT();
+        if ("en".equals(locale)) {
+            language = Language.ENGLISH();
+        }else if ("es".equals(locale)) {
+            language = Language.SPANISH_CASTILIAN();
+        }else if ("ru".equals(locale)) {
+            language = Language.RUSSIAN();
+        }else if ("de".equals(locale)) {
+            language = Language.GERMAN();
+        }else {
+            //TODO
+        }
+        config.setLanguage(language);
+        //end temporary
+
         config.setFeatureTree(featureTreeUuid);
         config.setEtAlPosition(etAlPosition);
         config.setWithFacts(doFacts);
@@ -429,6 +462,7 @@ public class TaxonPortalController extends TaxonController{
         config.setWithTaxonRelationships(doTaxonRelations);
         config.setAnnotationTypes(annotationTypes);
         config.setMarkerTypes(markerTypes);
+        config.setIdentifierTypes(identifierTypes);
         config.setDirectNameRelTyes(directNameRelations);
         config.setInverseNameRelTyes(inverseNameRelations);
         config.setWithAccessionType(withAccessionType);

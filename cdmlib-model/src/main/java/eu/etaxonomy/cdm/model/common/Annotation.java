@@ -16,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -77,6 +78,7 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
     private AnnotationType annotationType;
 
     // for external annotations/comments the URI of these can be set.
@@ -121,7 +123,7 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 
 	protected Annotation(String text, Language language) {
 		super(text, language);
-		this.setAnnotationType(AnnotationType.UNTYPED());
+		this.setAnnotationType(AnnotationType.UNDEFINED());
 	}
 
 //******************** GETTER /SETTER *************************/
@@ -130,7 +132,10 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 		return annotationType;
 	}
 	public void setAnnotationType(AnnotationType annotationType) {
-		this.annotationType = annotationType;
+		if (annotationType == null) {
+		    annotationType = AnnotationType.UNDEFINED();
+		}
+	    this.annotationType = annotationType;
 	}
 
 	public Person getCommentator(){

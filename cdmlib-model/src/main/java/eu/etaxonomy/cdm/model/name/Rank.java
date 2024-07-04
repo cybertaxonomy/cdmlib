@@ -806,16 +806,14 @@ public class Rank extends DefinedTermBase<Rank> {
     public static Rank getRankByIdInVoc(String abbrev, NomenclaturalCode nc, boolean useUnknown)
             throws UnknownCdmTypeException{
 
-        if (nc != null && nc.equals(NomenclaturalCode.ICZN)) {
-            if (abbrev != null){
+        if (nc != null && abbrev != null ) {
+            if (nc.equals(NomenclaturalCode.ICZN)) {
                 if (abbrev.equalsIgnoreCase("sect.")) {
                     return Rank.SECTION_ZOOLOGY();
                 } else if (abbrev.equalsIgnoreCase("subsect.")) {
                     return Rank.SUBSECTION_ZOOLOGY();
                 }
-            }
-        }else if (nc != null && nc.equals(NomenclaturalCode.ICNAFP)) {
-            if (abbrev != null){
+            } else if (nc.equals(NomenclaturalCode.ICNAFP)) {
                 if (abbrev.equalsIgnoreCase("sect.")) {
                     return Rank.SECTION_BOTANY();
                 } else if (abbrev.equalsIgnoreCase("subsect.")) {
@@ -1037,14 +1035,14 @@ public class Rank extends DefinedTermBase<Rank> {
 
     @Override
     protected void setDefaultTerms(TermVocabulary<Rank> termVocabulary) {
-        termMap = new HashMap<UUID, Rank>();
+        termMap = new HashMap<>();
         for (Rank term : termVocabulary.getTerms()){
             termMap.put(term.getUuid(), term);
             addRank(term);
         }
     }
 
-    // FIXME:Remoting This is a ugly hack and need to be removed
+    // FIXME:Remoting This is an ugly hack and need to be removed
     // once the static initialisation is refactored
     public static void initDefaultTerms() {
         TermVocabulary<Rank> vocabulary = getTermByUuid(uuidKingdom).getVocabulary();

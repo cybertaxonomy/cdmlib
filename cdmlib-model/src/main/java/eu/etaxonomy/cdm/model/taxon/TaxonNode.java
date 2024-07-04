@@ -568,6 +568,9 @@ public class TaxonNode
     	if(! newClassification.equals(this.getClassification())){
             this.setClassification(newClassification);
             for(TaxonNode childNode : this.getChildNodes()){
+                if (childNode == null) {
+                    continue;  //just in case children are not loaded correctly, e.g. due to corrupt sortIndex, #10545
+                }
                 childNode.setClassificationRecursively(newClassification);
             }
         }

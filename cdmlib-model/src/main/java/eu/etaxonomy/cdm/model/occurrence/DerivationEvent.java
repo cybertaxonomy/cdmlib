@@ -173,7 +173,7 @@ public class DerivationEvent extends EventBase {
 		}
 	}
 	/**
-	 * Removes an output specimen or observation for this derviation event.
+	 * Removes an output specimen or observation for this derivation event.
 	 * @see #getDerivatives()
 	 * @return
 	 */

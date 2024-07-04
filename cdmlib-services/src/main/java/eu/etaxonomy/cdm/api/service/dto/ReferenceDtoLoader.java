@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.api.dto.ReferenceDTO;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -26,6 +27,7 @@ public class ReferenceDtoLoader {
         if(entity == null) {
             return null;
         }
+        entity = HibernateProxyHelper.deproxy(entity);
         @SuppressWarnings("unchecked")
         ReferenceDTO dto = new ReferenceDTO((Class<Reference>)entity.getClass(), entity.getUuid(), entity.getTitleCache());
         //TODO see ReferenceDTO.titleCache

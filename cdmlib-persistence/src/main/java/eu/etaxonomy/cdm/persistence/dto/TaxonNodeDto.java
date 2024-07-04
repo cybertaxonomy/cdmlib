@@ -24,8 +24,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
-import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 
 /**
  * @author a.kohlbecker

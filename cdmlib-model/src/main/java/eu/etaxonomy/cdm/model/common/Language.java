@@ -651,8 +651,8 @@ public class Language extends DefinedTermBase<Language> {
         String textFrench = frenchLabel;
         String label = iso639_x2;
         String labelAbbrev = null;
-        this.addRepresentation(new Representation(textEnglish, label, labelAbbrev, Language.ENGLISH()));
-        this.addRepresentation(new Representation(textFrench, label, labelAbbrev, Language.FRENCH()));
+        this.addRepresentation(Representation.NewInstance(textEnglish, label, labelAbbrev, Language.ENGLISH()));
+        this.addRepresentation(Representation.NewInstance(textFrench, label, labelAbbrev, Language.FRENCH()));
     }
 
     public Language(String label, String text, String labelAbbrev) {
@@ -662,7 +662,7 @@ public class Language extends DefinedTermBase<Language> {
     public Language(String text, String label, String labelAbbrev, Language lang) {
         super(TermType.Language);
         if (isNotBlank(label) || isNotBlank(labelAbbrev) || lang != null){
-            this.addRepresentation(new Representation(text,label,labelAbbrev, lang));
+            this.addRepresentation(Representation.NewInstance(text,label,labelAbbrev, lang));
         }
     }
 

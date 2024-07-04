@@ -126,7 +126,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 
 		if(annotations != null){
 			for(Annotation annotation : annotations){
-				if(annotation.getAnnotationType().equals(AnnotationType.TECHNICAL())){
+				if(annotation.getAnnotationType().equals(AnnotationType.INTERNAL())){
 					if (elementProcessors!=null){
 						for(String regex : elementProcessors.keySet()){
 							if(annotation.getText().matches(regex)){

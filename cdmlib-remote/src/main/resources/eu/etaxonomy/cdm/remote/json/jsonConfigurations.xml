@@ -245,7 +245,7 @@
         <entry key="java.util.LinkedHashMap">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
         </entry>
-        <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationSet">
+        <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.TypeDesignationSetValueProcessor" />
         </entry>
         <entry key="eu.etaxonomy.cdm.common.URI">
@@ -542,7 +542,7 @@
         <entry key="java.util.LinkedHashMap">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
         </entry>
-        <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationSet">
+        <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.TypeDesignationSetValueProcessor" />
         </entry>
         <entry key="eu.etaxonomy.cdm.common.URI">

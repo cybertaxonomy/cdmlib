@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service.portal;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,10 +47,8 @@ public class SourceDtoLoader {
     /**
      * DTOs must have id initialized
      */
-    //TODO do we really need the sourceTypeFilter here? In SourcedDtoLoader they are filtered already.
-    //     are there other places were filtering is still needed?
     public void loadAll(Set<SourceDto> dtos, ICdmGenericDao commonDao,
-            EnumSet<OriginalSourceType> sourceTypeFilter, ProxyDtoLoader lazyLoader) {
+            ProxyDtoLoader lazyLoader) {
 
         Set<Integer> baseIds = dtos.stream().map(d->d.getId()).collect(Collectors.toSet());
 
@@ -62,17 +59,18 @@ public class SourceDtoLoader {
         String hql = "SELECT new map(osb.class as cdmClass, "
                 +     " osb.id as id, osb.uuid as uuid, osb.accessed as accessed, "
                 +     " osb.originalInfo as originalInfo, "
-                +     " osb.citation as ref, osb.citationMicroReference as detail, "
+                +     " ref as ref, osb.citationMicroReference as detail, "
                 +     " osb.type as type, osb.accessed as accessed,"
                 +     " nameInSource as nameInSource) "
                 //cdmSource, links
                 //TODO can we avoid outer join?
                 + " FROM OriginalSourceBase osb LEFT JOIN osb.nameUsedInSource nameInSource "
+                + "      LEFT JOIN osb.citation ref"
                 + " WHERE osb.id IN :baseIds"
                 ;
 
         Map<String,Object> params = new HashMap<>();
-//        params.put("osbTypes", sourceTypes);
+
         params.put("baseIds", baseIds);
 
         try {
@@ -126,7 +124,7 @@ public class SourceDtoLoader {
 
                     //nameUsedInSource
                     //TODO use DTO
-                    TaxonName name =  (TaxonName)e.get("nameInSource");
+                    TaxonName name = (TaxonName)e.get("nameInSource");
                     if (name != null) {
                         List<TaggedText> taggedName = name.cacheStrategy().getTaggedTitle(name);
                         //TODO nom status?

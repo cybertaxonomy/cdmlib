@@ -38,4 +38,16 @@ public interface IReferenceCacheStrategy extends IIdentifiableEntityCacheStrateg
      */
     public String getNomenclaturalTitleCache(Reference reference);
 
+    /**
+     * Returns the bibliographic title cache (aka titleCache) but with String
+     * attached that makes the author/year combination uniquie in the given context.
+     * Used e.g. for publications with unique short citations.
+     *
+     * @param reference the reference
+     * @param uniqueString the String attached to the year to make the author/year combination unique (usually a, b, c, ...)
+     * @return
+     *      the bibliographic title cache with unique year
+     */
+    public String getTitleCache(Reference reference, String uniqueString);
+
 }

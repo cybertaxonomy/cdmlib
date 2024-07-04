@@ -54,7 +54,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 *            the relationship type (or null to return all relationships)
 	 * @return a count of NameRelationship instances
 	 */
-	public int countNameRelationships(TaxonName name, NameRelationship.Direction direction, NameRelationshipType type);
+	public long countNameRelationships(TaxonName name, NameRelationship.Direction direction, NameRelationshipType type);
 
 	/**
 	 * Return a List of relationships related to or from this name, optionally filtered
@@ -92,7 +92,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 *            the hybrid relationship type (or null to return all hybrid)
 	 * @return a count of HybridRelationship instances
 	 */
-	public int countHybridNames(INonViralName name, HybridRelationshipType type);
+	public long countHybridNames(INonViralName name, HybridRelationshipType type);
 
 	/**
 	 * Return a List of hybrids related to this name, optionally filtered by

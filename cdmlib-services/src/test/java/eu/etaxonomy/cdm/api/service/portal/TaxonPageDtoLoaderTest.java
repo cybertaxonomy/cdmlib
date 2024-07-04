@@ -323,8 +323,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         cc.showAreaOfScopeLabel = true;
         config.setWithSpecimens(false);
         config.setTaxonUuid(taxonUuid);
-        config.addAnnotationType(AnnotationType.uuidUntyped);
+        config.addAnnotationType(AnnotationType.uuidUndefined);
 
+        config.setLanguage(Language.GERMAN());
         config.setUseDtoLoading(false);
         testAllFactsDo(config); //with model instance loading
         config.setUseDtoLoading(true);
@@ -353,8 +354,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //... textData ("description")
         FeatureDto descriptionDto = features.getItems().get(i++);
-        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically. Also as >1 'Description' exists it should use plural.",
-                "Descriptions", descriptionDto.getLabel());
+        Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically. Also as >1 'Description' exists it should use plural and German as locale was set to German and German representation exists.",
+                "Beschreibungen", descriptionDto.getLabel());
         testTextDataAndMedia(descriptionDto);
 
         //... discussion
@@ -625,7 +626,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         PresenceAbsenceTerm.PRESENT().setSymbol("");
         Distribution germany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT());
         germany.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Editorial Annotation"));
-        germany.addAnnotation(Annotation.NewInstance("Technical Annotation", AnnotationType.TECHNICAL(), Language.DEFAULT()));
+        germany.addAnnotation(Annotation.NewInstance("Technical Annotation", AnnotationType.INTERNAL(), Language.DEFAULT()));
         germany.addAnnotation(Annotation.NewInstance("Missing Type Annotation", null, Language.DEFAULT()));
         //.... germany source
         Reference germanRef = ReferenceFactory.newArticle();
@@ -662,6 +663,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         franceDist.addImportSource("7777", "Distribution", importRef, "99");
 
         //text facts
+        //data
         TextData td1 = TextData.NewInstance(Feature.DESCRIPTION(), "My first description", Language.DEFAULT(), null);
         TextData td2 = TextData.NewInstance(Feature.DESCRIPTION(), "My second description", Language.DEFAULT(), null);
         TextData td3 = TextData.NewInstance(Feature.DESCRIPTION(), "My third description", Language.DEFAULT(), null);

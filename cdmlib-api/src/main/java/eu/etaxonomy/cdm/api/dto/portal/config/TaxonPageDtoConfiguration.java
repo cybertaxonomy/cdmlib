@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 
@@ -80,6 +81,9 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
 
     //formatting
     private List<Locale> locales = new ArrayList<>();  //is this data or formatting??
+
+    //temporary until we change to locale
+    private Language language = Language.DEFAULT();
 
     private Integer etAlPosition;
 
@@ -179,6 +183,22 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
         this.locales = locales;
     }
 
+    //temporary
+    public Language getLanguage() {
+        return language;
+    }
+    public List<Language> getLanguages() {
+        List<Language> result = new ArrayList<>();
+        if (language != null) {
+            result.add(language);
+        }
+        return result;
+    }
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+    //end temporary
+
     public Integer getEtAlPosition() {
         return etAlPosition;
     }
@@ -247,6 +267,9 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
     @Override
     public Set<UUID> getIdentifierTypes() {
         return identifierTypes;
+    }
+    public void setIdentifierTypes(Set<UUID> identifierTypes) {
+        this.identifierTypes = identifierTypes;
     }
 
     //name relationship types

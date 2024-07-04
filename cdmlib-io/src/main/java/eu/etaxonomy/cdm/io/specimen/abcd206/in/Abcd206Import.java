@@ -457,8 +457,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             DerivedUnitFacade derivedUnitFacade = null;
             if (state.getConfig().isIgnoreImportOfExistingSpecimen() && state.getDataHolder().getUnitID() != null) {
 
-                SpecimenOrObservationBase<?> existingSpecimen = findExistingSpecimen(state.getDataHolder().getUnitID(),
-                        state);
+                SpecimenOrObservationBase<?> existingSpecimen = findExistingSpecimen(
+                        state.getDataHolder().getUnitID(), state);
                 if (existingSpecimen != null && existingSpecimen.isInstanceOf(DerivedUnit.class)) {
                     DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(existingSpecimen, DerivedUnit.class);
                     state.setDerivedUnitBase(derivedUnit);
@@ -924,16 +924,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                     state.setPrefix(associationWrapper.getPrefix());
                                     Abcd206ImportParser.setUnitPropertiesXML((Element) associatedUnits.item(m),
                                             new Abcd206XMLFieldGetter(state.getDataHolder(), state.getPrefix()), state);
-                                    // logger.debug("derived unit: " +
-                                    // state.getDerivedUnitBase().toString()
-                                    // + " associated unit: " +
-                                    // state.getDataHolder().getKindOfUnit() +
-                                    // ", "
-                                    // + state.getDataHolder().accessionNumber +
-                                    // ", "
-                                    // + state.getDataHolder().getRecordBasis()
-                                    // + ", "
-                                    // + state.getDataHolder().getUnitID());
+
                                     handleSingleUnit(state, associatedUnits.item(m), true);
 
                                     DerivedUnit associatedUnit = state.getDerivedUnitBase();
@@ -949,20 +940,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                         associatedFieldUnit = associatedFieldUnits.iterator().next();
                                     }
 
-                                    // attach current unit and associated unit
-                                    // depending on association type
 
-                                    // parent-child relation:
-                                    // copy derivation event and connect parent
-                                    // and sub derivative
-                                    // if(associationWrapper.getAssociationType().contains("individual")
-                                    // ||
-                                    // associationWrapper.getAssociationType().contains("culture")
-                                    // ||
-                                    // associationWrapper.getAssociationType().contains("sample")
-                                    // ||
-                                    // associationWrapper.getAssociationType().contains("same
-                                    // in situ")){
                                     if (currentDerivedFrom == null) {
                                         state.getReport()
                                                 .addInfoMessage(String.format(
@@ -980,46 +958,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                                     }
                                     state.getReport().addDerivate(associatedUnit, currentUnit, config);
-                                    // }
-                                    // siblings relation
-                                    // connect current unit to field unit of
-                                    // associated unit
-                                    // else
-                                    // if(associationWrapper.getAssociationType().contains("population")||
-                                    // associationWrapper.getAssociationType().contains("sample")){
-                                    // //no associated field unit -> using
-                                    // current one
-                                    // if(associatedFieldUnit==null){
-                                    // if(currentFieldUnit!=null){
-                                    // DerivationEvent.NewSimpleInstance(currentFieldUnit,
-                                    // associatedUnit,
-                                    // DerivationEventType.ACCESSIONING());
-                                    // }
-                                    // }
-                                    // else{
-                                    // if(currentDerivedFrom==null){
-                                    // state.getReport().addInfoMessage("No
-                                    // derivation event found for unit
-                                    // "+SpecimenImportUtility.getUnitID(currentUnit,
-                                    // config)+". Defaulting to ACCESIONING
-                                    // event.");
-                                    // DerivationEvent.NewSimpleInstance(associatedFieldUnit,
-                                    // currentUnit,
-                                    // DerivationEventType.ACCESSIONING());
-                                    // }
-                                    // if(currentDerivedFrom!=null &&
-                                    // associatedFieldUnit==currentFieldUnit){
-                                    // DerivationEvent updatedDerivationEvent =
-                                    // DerivationEvent.NewSimpleInstance(associatedFieldUnit,
-                                    // currentUnit,
-                                    // currentDerivedFrom.getType());
-                                    // updatedDerivationEvent.setActor(currentDerivedFrom.getActor());
-                                    // updatedDerivationEvent.setDescription(currentDerivedFrom.getDescription());
-                                    // updatedDerivationEvent.setInstitution(currentDerivedFrom.getInstitution());
-                                    // updatedDerivationEvent.setTimeperiod(currentDerivedFrom.getTimeperiod());
-                                    // }
-                                    // }
-                                    // }
+
 
                                     // delete current field unit if replaced
                                     if (currentFieldUnit != null && currentDerivedFrom != null
@@ -1030,14 +969,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                                                                                                    // the
                                                                                                                    // field
                                                                                                                    // unit
-                                            && currentDerivedFrom.getDerivatives().size() == 1
-                                            && currentDerivedFrom.getDerivatives().contains(currentUnit) // is
-                                                                                                         // not
-                                                                                                         // attached
-                                                                                                         // to
-                                                                                                         // other
-                                                                                                         // derived
-                                                                                                         // units
+                                            && currentDerivedFrom.getDerivatives().size() == 0
                                             && currentDerivedFrom != currentUnit.getDerivedFrom() // <-
                                                                                                   // derivation
                                                                                                   // has

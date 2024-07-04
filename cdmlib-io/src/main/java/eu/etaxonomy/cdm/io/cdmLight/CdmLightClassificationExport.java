@@ -28,9 +28,9 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainerFormatter;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupComparator;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainerFormatter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.name.TypeComparator;
@@ -794,7 +794,7 @@ public class CdmLightClassificationExport
         StringBuffer strBuff = new StringBuffer();
 
         for (Annotation ann : annotations) {
-            if (ann.getAnnotationType() == null || !ann.getAnnotationType().equals(AnnotationType.TECHNICAL())) {
+            if (ann.getAnnotationType() == null || !ann.getAnnotationType().equals(AnnotationType.INTERNAL())) {
                 strBuff.append(ann.getText());
                 strBuff.append("; ");
             }
@@ -1339,8 +1339,8 @@ public class CdmLightClassificationExport
                     nonTextualTypeDesignations.add(nameTypeDesignation);
                 }
             }
-            TypeDesignationSetContainer manager = new TypeDesignationSetContainer(nonTextualTypeDesignations,
-                    name, TypeDesignationSetComparator.ORDER_BY.TYPE_STATUS);
+            TypeDesignationGroupContainer manager = new TypeDesignationGroupContainer(nonTextualTypeDesignations,
+                    name, TypeDesignationGroupComparator.ORDER_BY.TYPE_STATUS);
             HTMLTagRules rules = new HTMLTagRules();
             rules.addRule(TagEnum.name, "i");
             //TODO params
@@ -1530,6 +1530,7 @@ public class CdmLightClassificationExport
         if (specimenType.getDesignationSource() != null && specimenType.getDesignationSource().getCitation() != null && !state.getReferenceStore().contains(specimenType.getDesignationSource().getCitation().getUuid())){
             handleReference(state, specimenType.getDesignationSource().getCitation());
             csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_REF_FK)] = specimenType.getDesignationSource() != null ? getId(state, specimenType.getDesignationSource().getCitation()): "";
+            csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_STRING)] = OriginalSourceFormatter.INSTANCE.format(specimenType.getDesignationSource().getCitation(), null);
         }
 
 
@@ -2190,8 +2191,8 @@ public class CdmLightClassificationExport
 
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
-                TypeDesignationSetContainer manager = new TypeDesignationSetContainer(group);
-                list.addAll(new TypeDesignationSetContainerFormatter().withStartingTypeLabel(false)
+                TypeDesignationGroupContainer manager = new TypeDesignationGroupContainer(group);
+                list.addAll(new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(false)
                         .toTaggedText(manager));
             }
             String typeTextDesignations = "";
@@ -2459,8 +2460,9 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_LONG_CITATION)] = reference.getTitleCache();
             String uniqueString = state.incrementShortCitation(shortCitation);
             String uniqueShortCitation = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(reference, null, null, uniqueString);
-            csvLine[table.getIndex(CdmLightExportTable.UNIQUE_SHORT_CITATION)] = shortCitation;
-
+            csvLine[table.getIndex(CdmLightExportTable.UNIQUE_SHORT_CITATION)] = uniqueShortCitation;
+            String uniqueLongCitation = reference.cacheStrategy().getTitleCache(reference, uniqueString);
+            csvLine[table.getIndex(CdmLightExportTable.UNIQUE_LONG_CITATION)] = uniqueLongCitation;
 
             // TODO get preferred title
             csvLine[table.getIndex(CdmLightExportTable.REF_TITLE)] = reference.isProtectedTitleCache()

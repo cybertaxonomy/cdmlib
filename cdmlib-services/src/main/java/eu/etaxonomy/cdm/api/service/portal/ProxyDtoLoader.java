@@ -116,7 +116,7 @@ public class ProxyDtoLoader {
             Set<SourceDto> sourceDtos = new HashSet<>(sourceProxies);
             sourceProxies.clear();
             SourceDtoLoader.INSTANCE().loadAll(sourceDtos,
-                    dao, sourceTypes, this);
+                    dao, this);
 
             Set<AnnotationDto> annotationDtos = new HashSet<>(annotationProxies);
             annotationProxies.clear();

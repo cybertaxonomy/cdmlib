@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -265,7 +264,7 @@ public class TaxonNameTest extends EntityTestBase {
 
 	@Test
 	public void testGetSetNomenclaturalReference() {
-		INomenclaturalReference nr = nameBase1.getNomenclaturalReference();
+		Reference nr = nameBase1.getNomenclaturalReference();
 		assertNull("Nomenclatural Reference shall be null", nr);
 		nameBase1.setNomenclaturalReference(ReferenceFactory.newGeneric());
 		nr = nameBase1.getNomenclaturalReference();

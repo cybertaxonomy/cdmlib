@@ -208,7 +208,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
                     (CdmApplicationAwareDefaultExport<CsvDemoExportConfigurator>) appContext.getBean("defaultExport");
             defaultExport.invoke(config);
 
-            DefaultPagerImpl<CsvDemoRecord> dpi = new DefaultPagerImpl<>(pagerParams.getPageIndex(), config.getTaxonNodeListSize(), pagerParams.getPageSize(), recordList);
+            DefaultPagerImpl<CsvDemoRecord> dpi = new DefaultPagerImpl<>( pagerParams.getPageIndex(), Long.valueOf(config.getTaxonNodeListSize()), pagerParams.getPageSize(), recordList);
             ModelAndView mv = new ModelAndView();
 //            mv.addObject(recordList);f
             mv.addObject(dpi);

@@ -263,7 +263,8 @@ public class WfoBackboneExport
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBGENUS)] = name.isInfraGeneric()? name.getInfraGenericEpithet() : null ;
 
             //... tax status, TODO 2 are there other status for accepted or other reasons for being ambiguous
-            String taxonStatus = taxon.isDoubtful()? "ambiguous" : "Accepted";
+            boolean isUnplaced = taxonNode.getStatus() != null && taxonNode.getStatus() == TaxonNodeStatus.UNPLACED;
+            String taxonStatus = (taxon.isDoubtful() || isUnplaced) ? "ambiguous" : "Accepted";
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = taxonStatus;
 
             //remarks
@@ -507,7 +508,7 @@ public class WfoBackboneExport
         StringBuffer strBuff = new StringBuffer();
 
         for (Annotation ann : annotations) {
-            if (ann.getAnnotationType() == null || !ann.getAnnotationType().equals(AnnotationType.TECHNICAL())) {
+            if (ann.getAnnotationType() == null || !ann.getAnnotationType().equals(AnnotationType.INTERNAL())) {
                 strBuff.append(ann.getText());
                 strBuff.append("; ");
             }

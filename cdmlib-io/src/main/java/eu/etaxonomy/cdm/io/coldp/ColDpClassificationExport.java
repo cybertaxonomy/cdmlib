@@ -28,8 +28,8 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetComparator;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupComparator;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -745,7 +745,7 @@ public class ColDpClassificationExport
         StringBuffer strBuff = new StringBuffer();
 
         for (Annotation ann : annotations) {
-            if (ann.getAnnotationType() == null || !ann.getAnnotationType().equals(AnnotationType.TECHNICAL())) {
+            if (ann.getAnnotationType() == null || !ann.getAnnotationType().equals(AnnotationType.INTERNAL())) {
                 strBuff.append(ann.getText());
                 strBuff.append("; ");
             }
@@ -1110,7 +1110,6 @@ public class ColDpClassificationExport
             }
 
             //authorship
-            String authorshipCache = name.getAuthorshipCache();
             csvLine[table.getIndex(ColDpExportTable.NAME_AUTHORSHIP)] = normalizeAuthor(state, name.getAuthorshipCache());
             //combinationAuthorship
             csvLine[table.getIndex(ColDpExportTable.NAME_COMBINATION_AUTHORSHIP)] = teamToString(state, name.getCombinationAuthorship());
@@ -1287,7 +1286,7 @@ public class ColDpClassificationExport
                 }
             }
 
-            TypeDesignationSetContainer typeContainer = new TypeDesignationSetContainer(specimenTypeDesignations, name, TypeDesignationSetComparator.ORDER_BY.TYPE_STATUS);
+            TypeDesignationGroupContainer typeContainer = new TypeDesignationGroupContainer(specimenTypeDesignations, name, TypeDesignationGroupComparator.ORDER_BY.TYPE_STATUS);
             HTMLTagRules rules = new HTMLTagRules();
             //rules.addRule(TagEnum.name, "i");
             csvLine[table.getIndex(ColDpExportTable.TYPE_CITATION)] = typeContainer.print(false, false, false, true, false, rules);

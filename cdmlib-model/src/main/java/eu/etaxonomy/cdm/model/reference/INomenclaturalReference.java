@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  * @author m.doering
  * @since 08-Nov-2007 13:06:29
  */
-public interface INomenclaturalReference  extends IReference, IWithAuthorAndDate{
+public interface INomenclaturalReference extends IReference, IWithAuthorAndDate{
 
 	/**
      * Returns the citation string including the details (micro reference) information
@@ -37,8 +37,6 @@ public interface INomenclaturalReference  extends IReference, IWithAuthorAndDate
 	 * of a reference.
 	 */
 	public String getYear();
-
-
 
 	/**
 	 * Returns the cached value for the abbreviated representation of this reference.
@@ -62,8 +60,8 @@ public interface INomenclaturalReference  extends IReference, IWithAuthorAndDate
 	 * Use {@link #setAbbrevTitleCache(String, boolean)} instead use
 	 * {@link #setAbbrevTitleCache(String, boolean)} to protect the cache.
 	 */
-	@Deprecated
-    public void setAbbrevTitleCache(String abbrevTitleCache);
+//	@Deprecated
+//    public void setAbbrevTitleCache(String abbrevTitleCache);
 
 	/**
 	 * Sets the {@link #getAbbrevTitleCache() abbreviated title cache}.

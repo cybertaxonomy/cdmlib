@@ -28,9 +28,9 @@ import eu.etaxonomy.cdm.api.dto.RegistrationDTO.RankedNameReference;
 import eu.etaxonomy.cdm.api.dto.RegistrationType;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationDTO;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSet;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainer;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetContainerFormatter;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainerFormatter;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -74,7 +73,7 @@ public class RegistrationWrapperDTO {
 
     private RankedNameReference name = null;
 
-    private TypeDesignationSetContainer typeDesignationSetContainer;
+    private TypeDesignationGroupContainer typeDesignationSetContainer;
 
     private Registration reg;
 
@@ -126,8 +125,8 @@ public class RegistrationWrapperDTO {
         case TYPIFICATION:
         default:
             try {
-                typeDesignationSetContainer = TypeDesignationSetContainer.NewDefaultInstance(reg.getTypeDesignations());
-                summaryTaggedText.addAll(new TypeDesignationSetContainerFormatter(false, true, true, true, false)
+                typeDesignationSetContainer = TypeDesignationGroupContainer.NewDefaultInstance(reg.getTypeDesignations());
+                summaryTaggedText.addAll(new TypeDesignationGroupContainerFormatter(false, true, true, true, false)
                         .toTaggedText(typeDesignationSetContainer));
                 summary = TaggedTextFormatter.createString(summaryTaggedText);
             } catch (TypeDesignationSetException e) {
@@ -149,7 +148,7 @@ public class RegistrationWrapperDTO {
         this.reg = reg;
         citation = publication;
         // create a TypeDesignationSetContainer with only a reference to the typifiedName for validation
-        typeDesignationSetContainer = new TypeDesignationSetContainer(typifiedName);
+        typeDesignationSetContainer = new TypeDesignationGroupContainer(typifiedName);
         makeBibliographicCitationStrings();
         makeNomenclaturalCitationString();
     }
@@ -241,27 +240,27 @@ public class RegistrationWrapperDTO {
         return name;
     }
 
-    public Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationSet> getOrderedTypeDesignationSets() {
+    public Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationGroup> getOrderedTypeDesignationSets() {
         return typeDesignationSetContainer != null ?
                 typeDesignationSetKeyToTypedEntity(typeDesignationSetContainer.getOrderedTypeDesignationSets()) : null;
     }
 
-    private Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationSet> typeDesignationSetKeyToTypedEntity(
-            Map<VersionableEntity,TypeDesignationSet> orderedTypeDesignationSets) {
-        Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationSet> result = new LinkedHashMap<>(orderedTypeDesignationSets.size());
+    private Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationGroup> typeDesignationSetKeyToTypedEntity(
+            Map<VersionableEntity,TypeDesignationGroup> orderedTypeDesignationSets) {
+        Map<TypedEntityReference<? extends VersionableEntity>,TypeDesignationGroup> result = new LinkedHashMap<>(orderedTypeDesignationSets.size());
 
         orderedTypeDesignationSets.entrySet().forEach(e->
             result.put(e.getValue().makeEntityReference(e.getKey()), e.getValue()));
         return result;
     }
 
-    public TypeDesignationSet getTypeDesignationSet(VersionableEntity baseEntity) {
+    public TypeDesignationGroup getTypeDesignationSet(VersionableEntity baseEntity) {
         return typeDesignationSetContainer != null ? typeDesignationSetContainer.getOrderedTypeDesignationSets().get(baseEntity) : null;
     }
 
     public Set<TypeDesignationBase> getTypeDesignationsInWorkingSet(VersionableEntity baseEntity) {
         Set<TypeDesignationBase> typeDesignations = new HashSet<>();
-        TypeDesignationSet workingSet = getTypeDesignationSet(baseEntity);
+        TypeDesignationGroup workingSet = getTypeDesignationSet(baseEntity);
         for(TypeDesignationDTO<?> ref :  workingSet.getTypeDesignations()){
             typeDesignations.add(findTypeDesignation(ref));
         }
@@ -295,12 +294,7 @@ public class RegistrationWrapperDTO {
         if(citation == null){
             nomenclaturalCitationString = null;
         } else {
-            if(INomenclaturalReference.class.isAssignableFrom(citation.getClass())){
-                nomenclaturalCitationString = NomenclaturalSourceFormatter.INSTANCE().format(citation, citationDetail);
-            } else {
-                logger.error("The citation is not a NomenclaturalReference");
-                nomenclaturalCitationString = citation.generateTitle();
-            }
+            nomenclaturalCitationString = NomenclaturalSourceFormatter.INSTANCE().format(citation, citationDetail);
         }
     }
 

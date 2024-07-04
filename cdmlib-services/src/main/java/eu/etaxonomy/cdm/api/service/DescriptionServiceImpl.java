@@ -947,7 +947,7 @@ public class DescriptionServiceImpl
         }
         targetDescription.setTitleCache(moveMessage, true);
         Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
-        annotation.setAnnotationType(AnnotationType.TECHNICAL());
+        annotation.setAnnotationType(AnnotationType.INTERNAL());
         targetDescription.addAnnotation(annotation);
 
         targetDescription = dao.save(targetDescription);
@@ -1005,7 +1005,7 @@ public class DescriptionServiceImpl
             description.setTitleCache(moveMessage, true);
         }
         Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
-        annotation.setAnnotationType(AnnotationType.TECHNICAL());
+        annotation.setAnnotationType(AnnotationType.INTERNAL());
         description.addAnnotation(annotation);
         if(setNameInSource){
             for (DescriptionElementBase element: description.getElements()){

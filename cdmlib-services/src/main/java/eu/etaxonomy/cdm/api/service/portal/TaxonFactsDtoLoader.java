@@ -571,6 +571,8 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
             SetMap<UUID,FactDtoBase> featureMap, ContainerDto<FeatureDto> features,
             TreeNode<Feature, UUID> node, TaxonPageDto pageDto) {
 
+        List<Language> languages = config.getLanguages();
+
         Feature feature = node.getData();
         UUID featureUuid = node.getNodeId();
         Set<FactDtoBase> facts = featureMap.get(featureUuid);
@@ -579,12 +581,13 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
             if (node.getChildren().isEmpty()) {
                 return;
             }else {
-                //TODO locale und früher
-                featureDto = new FeatureDto(feature.getUuid(), feature.getId(), feature.getLabel());
+                //TODO earlier
+                String label = feature.getPreferredLabel(languages);
+                featureDto = new FeatureDto(feature.getUuid(), feature.getId(), label);
             }
         }else {
-            //TODO locale und früher
-            String featureLabel = facts.size() > 1 ?  feature.getPluralLabel() : feature.getLabel();
+            //TODO earlier
+            String featureLabel = facts.size() > 1 ?  feature.getPreferredPluralLabel(languages) : feature.getPreferredLabel(languages);
             featureDto = new FeatureDto(feature.getUuid(), feature.getId(), featureLabel);
 
             List<DistributionDto> distributions = new ArrayList<>();

@@ -50,7 +50,7 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
     @Override
     public GeoServiceArea valueOf(NamedArea area) {
         for (Annotation annotation : area.getAnnotations()){
-            if (AnnotationType.TECHNICAL().equals(annotation.getAnnotationType())){
+            if (AnnotationType.INTERNAL().equals(annotation.getAnnotationType())){
                 GeoServiceArea gsArea = GeoServiceArea.valueOf(annotation.getText());
                 if (gsArea != null) {
                     return gsArea;
@@ -71,7 +71,7 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
         }
         Annotation annotation =null;
         for (Annotation existingAnnotation : area.getAnnotations()){
-            if (AnnotationType.TECHNICAL().equals(existingAnnotation.getAnnotationType())){
+            if (AnnotationType.INTERNAL().equals(existingAnnotation.getAnnotationType())){
                 if (GeoServiceArea.isAreaMapping(existingAnnotation.getText())){
                     //FIXME test mapping type. There may be a mapping for each map service
                     annotation = existingAnnotation;
@@ -79,7 +79,7 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
             }
         }
         if (annotation == null){
-            AnnotationType type = AnnotationType.TECHNICAL();
+            AnnotationType type = AnnotationType.INTERNAL();
             annotation = Annotation.NewInstance(xml, type, Language.DEFAULT());
         }
         area.addAnnotation(annotation);
@@ -92,7 +92,7 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
 
         Set<Annotation> removeCandidates = new HashSet<>();
         for (Annotation annotation : area.getAnnotations()){
-            if (AnnotationType.TECHNICAL().equals(annotation.getAnnotationType())){
+            if (AnnotationType.INTERNAL().equals(annotation.getAnnotationType())){
                 if (GeoServiceArea.isAreaMapping(annotation.getText())){
                     removeCandidates.add(annotation);
                 }

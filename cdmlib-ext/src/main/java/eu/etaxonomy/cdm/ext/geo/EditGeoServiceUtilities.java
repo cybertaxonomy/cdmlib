@@ -36,6 +36,7 @@ public class EditGeoServiceUtilities {
 
     private static final Logger logger = LogManager.getLogger();
 
+    //TODO see #6835
     private static HashMap<SpecimenOrObservationType, Color> defaultSpecimenOrObservationTypeColors = new HashMap<>();
     static {
         defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.FieldUnit, Color.ORANGE);

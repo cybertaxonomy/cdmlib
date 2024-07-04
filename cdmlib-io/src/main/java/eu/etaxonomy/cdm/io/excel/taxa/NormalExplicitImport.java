@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -869,10 +868,10 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 			    String[] split = pub.split(":");
 			    pub = split[0];
 
-			    INomenclaturalReference ref = state.getReference(pub);
+			    Reference ref = state.getReference(pub);
 			    if (ref == null){
-			        ref = parser.parseReferenceTitle(pub, date, true);
-			        state.putReference(pub, (Reference) ref);
+			        ref = (Reference)parser.parseReferenceTitle(pub, date, true);
+			        state.putReference(pub, ref);
 			    }
 			    if (split.length > 1){
                     String detail = split[split.length-1];

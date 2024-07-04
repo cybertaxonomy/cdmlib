@@ -68,6 +68,6 @@ public class AnnotationService extends AnnotatableServiceBase<Annotation, Annota
 			results = dao.list(creator, status, pageSize, pageNumber, orderHints, propertyPaths);
 		}
 
-		return new DefaultPagerImpl<Annotation>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 }

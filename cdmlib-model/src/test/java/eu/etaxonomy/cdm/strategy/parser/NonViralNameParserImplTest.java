@@ -48,7 +48,6 @@ import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IJournal;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -1014,6 +1013,13 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertTrue(nameTestStatus.getStatus().size()== 1);
         assertEquals( NomenclaturalStatusType.INVALID(), nameTestStatus.getStatus().iterator().next().getType());
 
+        //desig. inval. (same as above but with other status label
+        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, desig. inval.";
+        nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
+        assertFullRefStandard(nameTestStatus);
+        assertTrue(nameTestStatus.getStatus().size()== 1);
+        assertEquals( NomenclaturalStatusType.INVALID(), nameTestStatus.getStatus().iterator().next().getType());
+
         //nom. dub.
         strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, nom. dub.";
         nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
@@ -1262,9 +1268,9 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertFullRefNameStandard(name2);
         assertEquals(fullReference, name2.getFullTitleCache());
         assertFalse(name2.hasProblem());
-        INomenclaturalReference ref = name2.getNomenclaturalReference();
-        assertEquals(ReferenceType.BookSection, ((Reference)ref).getType());
-        IBookSection bookSection = (IBookSection) ref;
+        Reference ref = name2.getNomenclaturalReference();
+        assertEquals(ReferenceType.BookSection, ref.getType());
+        IBookSection bookSection = ref;
         IBook inBook = bookSection.getInBook();
         assertNotNull(inBook);
         assertNotNull(inBook.getAuthorship());
@@ -1737,7 +1743,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals("Mill.", name.getAuthorshipCache());
         assertEquals("455", name.getNomenclaturalMicroReference());
         assertNotNull(name.getNomenclaturalReference());
-        INomenclaturalReference ref = name.getNomenclaturalReference();
+        Reference ref = name.getNomenclaturalReference();
         assertEquals("1987", ref.getYear());
         assertEquals("Sp. Pl.", ref.getAbbrevTitle());
     }
@@ -2715,6 +2721,12 @@ public class NonViralNameParserImplTest extends TermTestBase {
         parser.parseReferencedName(name2, name.getFullTitleCache(), name2.getRank(), true);
         parser.parseReferencedName(name2, name.getFullTitleCache(), name2.getRank(), true);
         Assert.assertEquals("Title cache should be same. No duplication of nom. status should take place", name.getFullTitleCache(), name2.getFullTitleCache());
+
+        //desig. inval. #10533
+        String str = "Abies alba Mill., desig. inval.";
+        TaxonName name3 = parser.parseReferencedName(str);
+        Assert.assertEquals(1, name3.getStatus().size());
+        Assert.assertEquals(NomenclaturalStatusType.INVALID(), name3.getStatus().iterator().next().getType());
     }
 
     @Test

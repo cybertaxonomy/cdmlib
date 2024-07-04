@@ -87,7 +87,7 @@ public abstract class DbImportSupplementCreationMapperBase<SUPPLEMENT extends Ve
 		if (addOriginalSourceId && supplement.isInstanceOf(AnnotatableEntity.class)){
 			AnnotatableEntity annotatableEntity = (AnnotatableEntity)supplement;
 			Language orginalSourceLanguage = null;
-			AnnotationType annotationType = AnnotationType.TECHNICAL();
+			AnnotationType annotationType = AnnotationType.INTERNAL();
 			String originalId = getStringDbValue(rs, dbIdAttribute);
 			Annotation idAnnotation = Annotation.NewInstance(originalId, annotationType, orginalSourceLanguage);
 			annotatableEntity.addAnnotation(idAnnotation);

@@ -438,7 +438,7 @@ public class NameServiceImpl
             results = new ArrayList<>();
         }
 
-        return new DefaultPagerImpl<TaxonNameParts>(pageIndex, count, pageSize, results);
+        return new DefaultPagerImpl<>(pageIndex, count, pageSize, results);
     }
 
     @Override
@@ -569,10 +569,10 @@ public class NameServiceImpl
 
     @Override
     public Pager<HybridRelationship> getHybridNames(INonViralName name,	HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countHybridNames(name, type);
+        long numberOfResults = dao.countHybridNames(name, type);
 
         List<HybridRelationship> results = new ArrayList<HybridRelationship>();
-        if(AbstractPagerImpl.hasResultsInRange(numberOfResults.longValue(), pageNumber, pageSize)) { // no point checking again
+        if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) { // no point checking again
             results = dao.getHybridNames(name, type, pageSize, pageNumber,orderHints,propertyPaths);
         }
 
@@ -583,10 +583,10 @@ public class NameServiceImpl
     public List<NameRelationship> listNameRelationships(TaxonName name,	Direction direction, NameRelationshipType type, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
 
-        Integer numberOfResults = dao.countNameRelationships(name, direction, type);
+        long numberOfResults = dao.countNameRelationships(name, direction, type);
 
         List<NameRelationship> results = new ArrayList<NameRelationship>();
-        if (AbstractPagerImpl.hasResultsInRange(numberOfResults.longValue(), pageNumber, pageSize)) { // no point checking again
+        if (AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) { // no point checking again
             results = dao.getNameRelationships(name, direction, type, pageSize,	pageNumber, orderHints, propertyPaths);
         }
         return results;
@@ -836,35 +836,6 @@ public class NameServiceImpl
         List<DocumentSearchResult> searchResults = searchResultBuilder.createResultSet(topDocs, luceneSearch.getHighlightFields());
 
         return searchResults;
-    }
-
-    @Override
-    public Pager<NameRelationship> pageNameRelationships(TaxonName name, Direction direction, NameRelationshipType type, Integer pageSize,
-            Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
-        List<NameRelationship> results = listNameRelationships(name, direction, type, pageSize, pageNumber, orderHints, propertyPaths);
-        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
-    }
-
-    @Override
-    public List<NameRelationship> listFromNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return listNameRelationships(name, Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths);
-    }
-
-    @Override
-    public Pager<NameRelationship> pageFromNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        List<NameRelationship> results = listNameRelationships(name, Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths);
-        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
-    }
-
-    @Override
-    public List<NameRelationship> listToNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
-    }
-
-    @Override
-    public Pager<NameRelationship> pageToNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        List<NameRelationship> results = listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
-        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
     }
 
     @Override

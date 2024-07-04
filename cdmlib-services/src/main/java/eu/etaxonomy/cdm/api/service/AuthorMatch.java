@@ -20,17 +20,18 @@ import eu.etaxonomy.cdm.common.NameMatchingUtils;
  */
 public class AuthorMatch {
 
-    public static List<SingleNameMatchingResult> compareAuthor (List<SingleNameMatchingResult> resultList, String authorshipQuery, Integer distance) {
+    public static List<SingleNameMatchingResult> compareAuthor (List<SingleNameMatchingResult> resultList, boolean excludeBasyonymAuthors,
+            boolean excludeExAuthors, String authorshipCacheQuery, String combinationAuthor, String exCombinationAuthor, String basyonymAuthor, String exBasyonymAuthor, Integer maxDistance) {
         List<SingleNameMatchingResult> result = new ArrayList<>();
         authorNormalization(resultList);
-        AuthorMatch.etal(authorshipQuery);
-        NameMatchingUtils.replaceSpecialCharacters(authorshipQuery);
+        AuthorMatch.etal(authorshipCacheQuery);
+        NameMatchingUtils.replaceSpecialCharacters(authorshipCacheQuery);
         for (int i = 0 ; i < resultList.size(); i++) {
-            int distanceAuthorComparison = NameMatchingUtils.modifiedDamerauLevenshteinDistance(authorshipQuery, resultList.get(i).getAuthorshipCache());
+            int distanceAuthorComparison = NameMatchingUtils.modifiedDamerauLevenshteinDistance(authorshipCacheQuery, resultList.get(i).getAuthorshipCache());
             resultList.get(i).setDistance(distanceAuthorComparison+resultList.get(i).getDistance());
         }
         for (int i = 0 ; i < resultList.size(); i++) {
-            if (resultList.get(i).getDistance() <= distance) {
+            if (resultList.get(i).getDistance() <= maxDistance) {
                 result.add(resultList.get(i));
             }
         }

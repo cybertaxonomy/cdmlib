@@ -362,7 +362,7 @@ public class NonViralNameParserImpl
 		}
 
 	    parseReference(nameToBeFilled, referenceString, isInReference);
-	    INomenclaturalReference ref = nameToBeFilled.getNomenclaturalReference();
+	    Reference ref = nameToBeFilled.getNomenclaturalReference();
 
 	    //problem start
 	    int start = nameToBeFilled.getProblemStarts();

@@ -117,7 +117,7 @@ public class PolytomousKeyServiceImpl
 				dao.loadNodes(polytomousKey.getRoot(), nodePaths);
 			}
 		}
-		Pager<PolytomousKey> pager = new DefaultPagerImpl<PolytomousKey>(pageNumber, numberOfResults, pageSize, list);
+		Pager<PolytomousKey> pager = new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, list);
 
 		return pager;
 	}

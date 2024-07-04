@@ -202,7 +202,7 @@ public class NomenclaturalStatusType
 
 	private NomenclaturalStatusType(String term, String label, String labelAbbrev, Language language) {
 		super(TermType.NomenclaturalStatusType);
-		this.addRepresentation(new Representation(term, label, labelAbbrev, language));
+		this.addRepresentation(Representation.NewInstance(term, label, labelAbbrev, language));
 	}
 
 // ************************ GETTER / SETTER ******************/
@@ -510,7 +510,7 @@ public class NomenclaturalStatusType
 	 * {@link BotanicalName botanical name} is "alternative" if it is a classical name
 	 * long in use, in some cases even before 1753, and is considered as
 	 * {@link NomenclaturalStatusType#VALID() "valid"} although it does not follow the rules for
-	 * family names (see Article 18 of the ICBN).<BR>
+	 * family names (see Article 18 of the ICNAFP).<BR>
 	 * An "alternative" taxon name is treated as if "conserved" and is therefore
 	 * also "legitimate".
 	 *
@@ -943,6 +943,11 @@ public class NomenclaturalStatusType
 		if (! isZooname && statusAbbreviation.equalsIgnoreCase("nom. alternativ.")){
 			return NomenclaturalStatusType.ALTERNATIVE();
 		}
+	    //desig. inval. #10533  //to be on the safe side that both are recognized
+        if (! isZooname && statusAbbreviation.equalsIgnoreCase("desig. inval.") ||
+                statusAbbreviation.equalsIgnoreCase("nom. inval.")){
+            return NomenclaturalStatusType.INVALID();
+        }
 		UUID uuid = map.get(statusAbbreviation);
 		if (uuid != null ){
 			result = getTermByUuid(uuid);

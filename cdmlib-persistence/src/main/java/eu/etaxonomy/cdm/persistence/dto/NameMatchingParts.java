@@ -38,13 +38,23 @@ public class NameMatchingParts {
 
     private Rank rank;
 
+    private String combinationAuthorship;
+
+    private String exCombinationAuthorship;
+
+    private String basionymAuthorship;
+
+    private String exBasionymAuthorship;
+
 //************ CONSTRUCTOR ***********************/
 
     public NameMatchingParts() {
     }
 
     public NameMatchingParts(Integer taxonNameId, UUID taxonNameUuid, String titleCache, String authorshipCache,
-            String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String nameCache, Rank rank) {
+            String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet,
+            String nameCache, Rank rank, String combinationAuthorship, String exCombinationAuthorship, String basionymAuthorship,
+            String exBasionymAuthorship) {
 
         this.taxonNameId = taxonNameId;
         this.taxonNameUuid = taxonNameUuid;
@@ -56,6 +66,10 @@ public class NameMatchingParts {
         this.infraSpecificEpithet = infraSpecificEpithet;
         this.nameCache = nameCache;
         this.rank = rank;
+        this.combinationAuthorship = combinationAuthorship;
+        this.exCombinationAuthorship = exCombinationAuthorship;
+        this.basionymAuthorship = basionymAuthorship;
+        this.exBasionymAuthorship = exBasionymAuthorship;
     }
 
 //***************** GETTER / SETTER ********************************/
@@ -140,6 +154,37 @@ public class NameMatchingParts {
         this.rank = rank;
     }
 
+    public String getCombinationAuthorship() {
+        return combinationAuthorship;
+    }
+
+    public void setCombinationAuthorship(String combinationAuthorship) {
+        this.combinationAuthorship = combinationAuthorship;
+    }
+
+    public String getExCombinationAuthorship() {
+        return exCombinationAuthorship;
+    }
+
+    public void setExCombinationAuthorship(String exCombinationAuthorship) {
+        this.exCombinationAuthorship = exCombinationAuthorship;
+    }
+
+    public String getBasionymAuthorship() {
+        return basionymAuthorship;
+    }
+
+    public void setBasionymAuthorship(String basionymAuthorship) {
+        this.basionymAuthorship = basionymAuthorship;
+    }
+
+    public String getExBasionymAuthorship() {
+        return exBasionymAuthorship;
+    }
+
+    public void setExBasionymAuthorship(String exBasionymAuthorship) {
+        this.exBasionymAuthorship = exBasionymAuthorship;
+    }
 
  // ************************** TO STRING *************************************/
 

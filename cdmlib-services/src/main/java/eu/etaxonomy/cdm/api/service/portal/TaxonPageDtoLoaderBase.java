@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.api.service.portal;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -119,16 +118,21 @@ public abstract class TaxonPageDtoLoaderBase {
     }
 
     protected static void loadIdentifiable(ISourceableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
-        Set<UUID> identifierTypes = new HashSet<>();
-        identifierTypes.add(IdentifierType.uuidWfoNameIdentifier);
 
         if (dto instanceof IdentifiableDto && cdmBase.isInstanceOf(IdentifiableEntity.class)) {
             IdentifiableEntity<?> identifiable = CdmBase.deproxy(cdmBase, IdentifiableEntity.class);
             IdentifiableDto identifiableDto = (IdentifiableDto)dto;
-            //annotation
+            //identifier
             for (Identifier identifier : identifiable.getIdentifiers()) {
                 UUID typeUuid = identifier.getType() == null ? null : identifier.getType().getUuid();
                 if (config.getIdentifierTypes() == null || config.getIdentifierTypes().contains(typeUuid)) {
+
+                    //filter for dummy wfo-IDs #10537
+                    if (IdentifierType.uuidWfoNameIdentifier.equals(typeUuid)) {
+                        if (identifier.getIdentifier() != null && identifier.getIdentifier().toLowerCase().contains("dummy")){
+                            continue;
+                        }
+                    }
 
                     IdentifierDto identifierDto = new IdentifierDto();
                     identifiableDto.addIdentifier(identifierDto);
@@ -198,7 +202,7 @@ public abstract class TaxonPageDtoLoaderBase {
                 //null and empty yet, this may change in future
                 && (config == null || config.getAnnotationTypes().isEmpty()
                     || config.getAnnotationTypes().contains(typeUuid)))
-             || (typeUuid == null && config != null && config.getAnnotationTypes().contains(AnnotationType.uuidUntyped))
+             || (typeUuid == null && config != null && config.getAnnotationTypes().contains(AnnotationType.uuidUndefined))
                         //TODO do we really want to exclude empty annotations?
                         && StringUtils.isNotBlank(annotationText)
                         ;
