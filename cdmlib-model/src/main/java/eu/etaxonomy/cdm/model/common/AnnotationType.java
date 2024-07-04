@@ -50,7 +50,7 @@ public class AnnotationType extends AvailableForIdentifiableBase<AnnotationType>
 
 	private static final UUID uuidTechnical = UUID.fromString("6a5f9ea4-1bdd-4906-89ad-6e669f982d69");
 	public static final UUID uuidEditorial = UUID.fromString("e780d5fd-abfc-4025-938a-46deb751d808");
-	public static final UUID uuidDefined = UUID.fromString("3ccf04c8-2739-43ad-ab53-de4b83b56e8b");
+	public static final UUID uuidUndefined = UUID.fromString("3ccf04c8-2739-43ad-ab53-de4b83b56e8b");
 
 	public static AnnotationType NewInstance(String term, String label, String labelAbbrev){
 		return new AnnotationType(term, label, labelAbbrev);
@@ -96,7 +96,7 @@ public class AnnotationType extends AvailableForIdentifiableBase<AnnotationType>
 	}
 
     public static final AnnotationType UNDEFINED(){
-        return getTermByUuid(uuidDefined);
+        return getTermByUuid(uuidUndefined);
     }
 
 	@Override

@@ -202,7 +202,7 @@ public abstract class TaxonPageDtoLoaderBase {
                 //null and empty yet, this may change in future
                 && (config == null || config.getAnnotationTypes().isEmpty()
                     || config.getAnnotationTypes().contains(typeUuid)))
-             || (typeUuid == null && config != null && config.getAnnotationTypes().contains(AnnotationType.uuidDefined))
+             || (typeUuid == null && config != null && config.getAnnotationTypes().contains(AnnotationType.uuidUndefined))
                         //TODO do we really want to exclude empty annotations?
                         && StringUtils.isNotBlank(annotationText)
                         ;

@@ -323,7 +323,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         cc.showAreaOfScopeLabel = true;
         config.setWithSpecimens(false);
         config.setTaxonUuid(taxonUuid);
-        config.addAnnotationType(AnnotationType.uuidDefined);
+        config.addAnnotationType(AnnotationType.uuidUndefined);
 
         config.setUseDtoLoading(false);
         testAllFactsDo(config); //with model instance loading
