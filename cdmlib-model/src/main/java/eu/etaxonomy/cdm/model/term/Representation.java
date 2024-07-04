@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -62,8 +63,14 @@ public class Representation extends LanguageStringBase {
 //********************************************* FACTORY ************************/
 
     public static Representation NewInstance(String description, String label, String abbreviatedLabel, Language lang){
-        return new Representation(description, label, abbreviatedLabel, lang);
+        return new Representation(description, label, null, abbreviatedLabel, lang);
     }
+
+    public static Representation NewInstance(String description, String label, String plural, String abbreviatedLabel, Language lang){
+        return new Representation(description, label, plural, abbreviatedLabel, lang);
+    }
+
+//****************************** CONSTRUCTOR *******************************************************/
 
     //for hibernate use only, *packet* private required by bytebuddy
     @Deprecated
@@ -73,12 +80,14 @@ public class Representation extends LanguageStringBase {
      * text represents an explanation/declaration ('The name is illegitimate according to ICBN'); label a string identifier ('illegitimate name');
      * abbreviatedLabel a shortened string for the label ('nom. illeg.')
      */
-    public Representation(String description, String label, String abbreviatedLabel, Language language) {
+    private Representation(String description, String label, String plural, String abbreviatedLabel, Language language) {
         super(description, language);
         this.label = label;
+        this.plural = plural;
         this.abbreviatedLabel = abbreviatedLabel;
     }
 
+//***************************** GETTER/SETTER ****************************************************/
 
     public String getLabel(){
         return this.label;
@@ -99,6 +108,10 @@ public class Representation extends LanguageStringBase {
     }
     public void setPlural(String plural) {
         this.plural = plural;
+    }
+    @Transient
+    public String getPluralOrLabel() {
+        return StringUtils.isNoneBlank(plural)? plural : label;
     }
 
     /**

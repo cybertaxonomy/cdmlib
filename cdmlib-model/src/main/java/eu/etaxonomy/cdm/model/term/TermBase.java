@@ -119,7 +119,7 @@ public abstract class TermBase
         if (lang == null) {
         	lang = Language.DEFAULT();
         }
-        this.addRepresentation(new Representation(term, label, labelAbbrev, lang) );
+        this.addRepresentation(Representation.NewInstance(term, label, labelAbbrev, lang) );
     }
 
     @Override
@@ -253,6 +253,36 @@ public abstract class TermBase
 
     private boolean hasLabel(Representation repr) {
         return repr != null && StringUtils.isNotEmpty(repr.getLabel());
+    }
+
+    public String getPreferredPluralLabel(List<Language> languages) {
+        Representation repr = null;
+        if(languages != null){
+            for(Language language : languages) {
+                repr = getRepresentation(language);
+                if(hasLabelOrPluralLabel(repr)){
+                    return repr.getPluralOrLabel();
+                }
+            }
+        }
+        repr = getRepresentation(Language.DEFAULT());
+        if (hasLabelOrPluralLabel(repr)) {
+            return repr.getPluralOrLabel();
+        }
+        if(repr == null){
+            Iterator<Representation> it = getRepresentations().iterator();
+            if(it.hasNext()){
+                repr = getRepresentations().iterator().next();
+                if (hasLabelOrPluralLabel(repr)) {
+                    return repr.getPluralOrLabel();
+                }
+            }
+        }
+        return CdmUtils.Nz(getTitleCache());
+    }
+
+    private boolean hasLabelOrPluralLabel(Representation repr) {
+        return repr != null && StringUtils.isNotEmpty(repr.getPluralOrLabel());
     }
 
     /**

@@ -256,7 +256,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 		String inverseLabel = csvLine.get(5).trim();
 		String inverseText = CdmUtils.Ne(csvLine.get(6).trim());
 		String inverseLabelAbbrev = CdmUtils.Ne(csvLine.get(7).trim());
-		newInstance.addInverseRepresentation(new Representation(inverseText, inverseLabel, inverseLabelAbbrev, Language.CSV_LANGUAGE()) );
+		newInstance.addInverseRepresentation(Representation.NewInstance(inverseText, inverseLabel, inverseLabelAbbrev, Language.CSV_LANGUAGE()) );
 		newInstance.setSymmetric(Boolean.parseBoolean(csvLine.get(8)));
 		newInstance.setTransitive(Boolean.parseBoolean(csvLine.get(9)));
 		return newInstance;

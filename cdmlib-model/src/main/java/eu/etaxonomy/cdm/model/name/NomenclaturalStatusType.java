@@ -202,7 +202,7 @@ public class NomenclaturalStatusType
 
 	private NomenclaturalStatusType(String term, String label, String labelAbbrev, Language language) {
 		super(TermType.NomenclaturalStatusType);
-		this.addRepresentation(new Representation(term, label, labelAbbrev, language));
+		this.addRepresentation(Representation.NewInstance(term, label, labelAbbrev, language));
 	}
 
 // ************************ GETTER / SETTER ******************/
