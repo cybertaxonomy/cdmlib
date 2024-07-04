@@ -24,8 +24,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
-import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 
 /**
  * @author a.kohlbecker
@@ -109,7 +109,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     public TaxonNodeDto(UUID uuid, Integer id, String treeIndex, String nameTitleCache, String taxonTitleCache,
             Integer rankOrderIndex, UUID parentUuid, Integer sortIndex, UUID classificationUuid) {
 
-        super(TaxonNode.class, uuid, id, nameTitleCache, taxonTitleCache);  //TODO the correct handling of different titleCaches needs to be discussed
+        super(TaxonNode.class, uuid, id, taxonTitleCache, nameTitleCache);  //TODO the correct handling of different titleCaches needs to be discussed
         this.rankOrderIndex = rankOrderIndex;
         this.parentUUID = parentUuid;
         this.treeIndex = treeIndex;
