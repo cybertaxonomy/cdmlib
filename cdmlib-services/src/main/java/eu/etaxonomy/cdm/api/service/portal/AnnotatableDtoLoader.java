@@ -68,7 +68,7 @@ public class AnnotatableDtoLoader {
         params.put("baseIds", baseIds);
         if (!CdmUtils.isNullSafeEmpty(config.getAnnotationTypes())) {
             hql += " AND (at.uuid IN :annotationTypes ";
-            if (config.getAnnotationTypes().contains(AnnotationType.uuidUntyped)) {
+            if (config.getAnnotationTypes().contains(AnnotationType.uuidDefined)) {
                 hql += " OR a.id IS NOT NULL AND at IS NULL ";
             }
             hql += ")";

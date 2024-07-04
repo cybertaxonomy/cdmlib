@@ -123,7 +123,7 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 
 	protected Annotation(String text, Language language) {
 		super(text, language);
-		this.setAnnotationType(AnnotationType.UNTYPED());
+		this.setAnnotationType(AnnotationType.UNDEFINED());
 	}
 
 //******************** GETTER /SETTER *************************/
@@ -132,7 +132,10 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 		return annotationType;
 	}
 	public void setAnnotationType(AnnotationType annotationType) {
-		this.annotationType = annotationType;
+		if (annotationType == null) {
+		    annotationType = AnnotationType.UNDEFINED();
+		}
+	    this.annotationType = annotationType;
 	}
 
 	public Person getCommentator(){
