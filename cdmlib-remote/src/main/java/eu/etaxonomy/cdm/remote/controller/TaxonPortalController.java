@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -358,9 +359,9 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "locale", required = false, defaultValue = "en") String locale,
 
 
-            //TODO annotation type filter
 
             //distributionInfoConfig
+            //TODO annotation type filter for distribution info
             @RequestParam(value = "part", required = false)  Set<InfoPart> partSet,
             @RequestParam(value = "subAreaPreference", required = false) boolean preferSubAreas,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
@@ -434,6 +435,22 @@ public class TaxonPortalController extends TaxonController{
         //TODO handle error if locale can not be matched to a "typical" Locale
         Locale loc = Locale.forLanguageTag(locale);
         config.getLocales().add(loc);  //TODO handle better in configurator (adder, list parameter, ...). Do we need a list here at all or only a single Locale?
+        //temporary locale handling
+        Language language = Language.DEFAULT();
+        if ("en".equals(locale)) {
+            language = Language.ENGLISH();
+        }else if ("es".equals(locale)) {
+            language = Language.SPANISH_CASTILIAN();
+        }else if ("ru".equals(locale)) {
+            language = Language.RUSSIAN();
+        }else if ("de".equals(locale)) {
+            language = Language.GERMAN();
+        }else {
+            //TODO
+        }
+        config.setLanguage(language);
+        //end temporary
+
         config.setFeatureTree(featureTreeUuid);
         config.setEtAlPosition(etAlPosition);
         config.setWithFacts(doFacts);
