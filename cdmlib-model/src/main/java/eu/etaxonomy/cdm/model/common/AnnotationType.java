@@ -48,7 +48,7 @@ public class AnnotationType extends AvailableForIdentifiableBase<AnnotationType>
 
 	protected static Map<UUID, AnnotationType> termMap = null;
 
-	private static final UUID uuidTechnical = UUID.fromString("6a5f9ea4-1bdd-4906-89ad-6e669f982d69");
+	private static final UUID uuidInternal = UUID.fromString("6a5f9ea4-1bdd-4906-89ad-6e669f982d69");
 	public static final UUID uuidEditorial = UUID.fromString("e780d5fd-abfc-4025-938a-46deb751d808");
 	public static final UUID uuidUndefined = UUID.fromString("3ccf04c8-2739-43ad-ab53-de4b83b56e8b");
 
@@ -87,8 +87,8 @@ public class AnnotationType extends AvailableForIdentifiableBase<AnnotationType>
 	}
 
 
-	public static final AnnotationType TECHNICAL(){
-		return getTermByUuid(uuidTechnical);
+	public static final AnnotationType INTERNAL(){
+		return getTermByUuid(uuidInternal);
 	}
 
 	public static final AnnotationType EDITORIAL(){

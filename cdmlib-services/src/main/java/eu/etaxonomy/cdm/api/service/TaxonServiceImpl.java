@@ -3472,7 +3472,7 @@ public class TaxonServiceImpl
                   description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
               }
               Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
-              annotation.setAnnotationType(AnnotationType.TECHNICAL());
+              annotation.setAnnotationType(AnnotationType.INTERNAL());
               description.addAnnotation(annotation);
               toTaxon.addDescription(description);
               dao.saveOrUpdate(toTaxon);

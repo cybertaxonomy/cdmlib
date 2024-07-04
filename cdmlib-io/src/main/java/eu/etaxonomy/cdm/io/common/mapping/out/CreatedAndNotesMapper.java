@@ -85,7 +85,7 @@ public class CreatedAndNotesMapper extends MultipleAttributeMapperBase<DbSingleA
 		String result = "";
 		String separator = ";";
 		for (Annotation annotation :obj.getAnnotations()){
-			if (! AnnotationType.TECHNICAL().equals(annotation.getAnnotationType())){
+			if (! AnnotationType.INTERNAL().equals(annotation.getAnnotationType())){
 				if (! ( annotation.getText() != null && annotation.getText().startsWith("ORDER:"))){  //TODO casus Salvador, should be stored in Extension ones extensions are also for annotatable entities
 					result = CdmUtils.concat(separator, result, annotation.getText());
 				}

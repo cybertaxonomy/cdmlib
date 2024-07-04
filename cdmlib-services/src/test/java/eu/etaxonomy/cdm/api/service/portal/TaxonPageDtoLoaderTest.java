@@ -626,7 +626,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         PresenceAbsenceTerm.PRESENT().setSymbol("");
         Distribution germany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT());
         germany.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Editorial Annotation"));
-        germany.addAnnotation(Annotation.NewInstance("Technical Annotation", AnnotationType.TECHNICAL(), Language.DEFAULT()));
+        germany.addAnnotation(Annotation.NewInstance("Technical Annotation", AnnotationType.INTERNAL(), Language.DEFAULT()));
         germany.addAnnotation(Annotation.NewInstance("Missing Type Annotation", null, Language.DEFAULT()));
         //.... germany source
         Reference germanRef = ReferenceFactory.newArticle();

@@ -208,7 +208,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 
 			if (StringUtils.isNotBlank(figureHolder.num)) {
 				String annotationText = "<num>" + figureHolder.num.trim() + "</num>";
-				Annotation annotation = Annotation.NewInstance(annotationText, AnnotationType.TECHNICAL(), getDefaultLanguage(state));
+				Annotation annotation = Annotation.NewInstance(annotationText, AnnotationType.INTERNAL(), getDefaultLanguage(state));
 				figureHolderTextData.addAnnotation(annotation);
 			}
 			if (StringUtils.isNotBlank(figureHolder.figurePart)) {
@@ -433,7 +433,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		textData.addPrimaryTaxonomicSource(state.getConfig().getSourceReference());
 		result.add(textData);
 
-		AnnotationType annType = getAnnotationType(state, MarkupTransformer.uuidOriginalOrder, "Original order", "Order in original treatment", null, AnnotationType.TECHNICAL().getVocabulary());
+		AnnotationType annType = getAnnotationType(state, MarkupTransformer.uuidOriginalOrder, "Original order", "Order in original treatment", null, AnnotationType.INTERNAL().getVocabulary());
 		textData.addAnnotation(Annotation.NewInstance(myCharOrder.orderString(), annType, Language.ENGLISH()));
 
 		boolean isTextMode = true;

@@ -745,7 +745,7 @@ public class ColDpClassificationExport
         StringBuffer strBuff = new StringBuffer();
 
         for (Annotation ann : annotations) {
-            if (ann.getAnnotationType() == null || !ann.getAnnotationType().equals(AnnotationType.TECHNICAL())) {
+            if (ann.getAnnotationType() == null || !ann.getAnnotationType().equals(AnnotationType.INTERNAL())) {
                 strBuff.append(ann.getText());
                 strBuff.append("; ");
             }
