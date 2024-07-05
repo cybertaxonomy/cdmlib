@@ -44,6 +44,10 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 	private static final UUID UUID_NAME_NEXXXINA = UUID.fromString("c955a8ab-8501-421a-bfa3-5748237e8942");
 	private static final UUID UUID_NAME_LAUREL = UUID.fromString("25296c78-f62b-4dfa-9cd1-813bc9d1d777");
 	private static final UUID UUID_NAME_LAURELI = UUID.fromString("a598ab3f-b33b-4b4b-b237-d616fcb6b5b1");
+    private static final UUID UUID_NAME_GENTIANA = UUID.fromString("049f6d47-f056-4915-814b-aa7289d3320d");
+    private static final UUID UUID_NAME_PASSIFLORAFO = UUID.fromString("9d12d1ad-24f9-46a8-b6a4-33c241424a07");
+    private static final UUID UUID_NAME_ASTERELLA = UUID.fromString("6b0f5e36-c00a-4297-967b-6f0d7a98c8f3");
+    private static final UUID UUID_NAME_PASSIFLORABR = UUID.fromString("3a103ea2-c2ec-4449-ba7d-cf4495fdfb32");
 
     @SpringBeanByType
 	private INameMatchingService nameMatchingService;
@@ -587,6 +591,69 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals(6, matchResult.size());
 }
 
-	@Override
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    public void testIncludeAllAuthors() throws NameMatchingParserException {
+
+        String nameCache;
+        NameMatchingResult matchResults;
+        List<SingleNameMatchingResult> matchResult;
+
+        // exact match is always a list of matches with distance = 0
+        nameCache = "Gentiana affinis subsp. rusbyi (Greene ex Kusn.) Halda";
+        matchResults = nameMatchingService.findMatchingNames(nameCache, true, false, false, 0);
+        matchResult = matchResults.getExactResults();
+        Assert.assertEquals(1, matchResult.size());
+        Assert.assertEquals(UUID_NAME_GENTIANA, matchResults.getExactResults().get(0).getTaxonNameUuid());
+}
+
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    public void testExcludeBasionymAuthors() throws NameMatchingParserException {
+
+        String nameCache;
+        NameMatchingResult matchResults;
+        List<SingleNameMatchingResult> matchResult;
+
+        nameCache = "Passiflora foetida var. hispida (Corda. ex Triana & Planch.) Killip ex Gleason";
+        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, false, 0);
+        matchResult = matchResults.getExactResults();
+        Assert.assertEquals(1, matchResult.size());
+        Assert.assertEquals(UUID_NAME_PASSIFLORAFO, matchResults.getExactResults().get(0).getTaxonNameUuid());
+        Assert.assertEquals("basionym authors are excluded", "Passiflora foetida var. hispida (DC. ex Triana & Planch.) Killip ex Gleason", matchResult.get(0).getTitleCache());
+        Assert.assertEquals(0, (int)matchResult.get(0).getDistance());
+
+        nameCache = "Asterella lindenbergiana (Nees ex Corda) Lindb. ex Arnell";
+        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, false, 0);
+        matchResult = matchResults.getExactResults();
+        Assert.assertEquals(1, matchResult.size());
+        Assert.assertEquals(UUID_NAME_ASTERELLA, matchResults.getExactResults().get(0).getTaxonNameUuid());
+        Assert.assertEquals("basionym authors are excluded", "Asterella lindenbergiana (Corda ex Nees) Lindb. ex Arnell", matchResult.get(0).getTitleCache());
+}
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
+    public void testExcludeExAuthors() throws NameMatchingParserException {
+
+        String nameCache;
+        NameMatchingResult matchResults;
+        List<SingleNameMatchingResult> matchResult;
+
+        nameCache = "Passiflora bracteosa Linden & Planch. ex Triana & Planch.";
+        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, true, 0);
+        matchResult = matchResults.getExactResults();
+        Assert.assertEquals(1, matchResult.size());
+        Assert.assertEquals(UUID_NAME_PASSIFLORABR, matchResults.getExactResults().get(0).getTaxonNameUuid());
+        Assert.assertEquals("ex authors are ignored", "Passiflora bracteosa Planch. & Linden ex Triana & Planch.", matchResult.get(0).getTitleCache());
+
+        nameCache = "Passiflora foetida var. hispida (Corda. ex Triana & Planch.) Cuatrec. ex Gleason";
+        matchResults = nameMatchingService.findMatchingNames(nameCache, true, false, true, 0);
+        matchResult = matchResults.getExactResults();
+        Assert.assertEquals(1, matchResult.size());
+        Assert.assertEquals(UUID_NAME_PASSIFLORAFO, matchResults.getExactResults().get(0).getTaxonNameUuid());
+        Assert.assertEquals("ex authors are ignored", "Passiflora foetida var. hispida (DC. ex Triana & Planch.) Killip ex Gleason", matchResult.get(0).getTitleCache());
+        Assert.assertEquals( 0, (int)matchResult.get(0).getDistance());
+}
+
+    @Override
 	public void createTestDataSet() throws FileNotFoundException {}
 }

@@ -20,8 +20,7 @@ import eu.etaxonomy.cdm.common.NameMatchingUtils;
  */
 public class AuthorMatch {
 
-    public static List<SingleNameMatchingResult> compareAuthor (List<SingleNameMatchingResult> resultList, boolean excludeBasyonymAuthors,
-            boolean excludeExAuthors, String authorshipCacheQuery, String combinationAuthor, String exCombinationAuthor, String basyonymAuthor, String exBasyonymAuthor, Integer maxDistance) {
+    public static List<SingleNameMatchingResult> compareAuthor (List<SingleNameMatchingResult> resultList, String authorshipCacheQuery, Integer maxDistance) {
         List<SingleNameMatchingResult> result = new ArrayList<>();
         authorNormalization(resultList);
         AuthorMatch.etal(authorshipCacheQuery);
