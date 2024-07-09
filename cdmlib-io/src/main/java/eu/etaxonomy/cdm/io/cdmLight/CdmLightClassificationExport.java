@@ -1344,7 +1344,13 @@ public class CdmLightClassificationExport
             HTMLTagRules rules = new HTMLTagRules();
             rules.addRule(TagEnum.name, "i");
             //TODO params
-            csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = manager.print(false, false, false, true, false, rules);
+            boolean withCitation = false;  //TODO AM: why?
+            boolean withStartingLabel = false;
+            boolean withNameIfAvailable = false;
+            boolean withPrecedingMainType = true;
+            boolean withAccessionNoType = false;
+            csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = manager.print(
+                    withCitation, withStartingLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType, rules);
 
             StringBuilder stringbuilder = new StringBuilder();
             int i = 1;
