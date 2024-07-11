@@ -199,7 +199,11 @@ public class CdmLightExportState
         if (counter == 0) {
             return "";
         }else {
-            return Character.toString((char)('a'+counter - 1));
+            int finalCounter = 'a'+counter - 1;
+            if (finalCounter >= 'j') {
+                finalCounter++;
+            }
+            return Character.toString((char)(finalCounter));
         }
     }
 
