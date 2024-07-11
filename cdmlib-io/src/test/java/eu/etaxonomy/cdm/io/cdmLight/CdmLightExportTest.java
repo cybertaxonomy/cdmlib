@@ -195,11 +195,9 @@ public class CdmLightExportTest
         expected ="\"Mill.\",\"Mill.\",\"\",\"\",\"\",\"\"";
         Assert.assertTrue(nomenclaturalAuthorString.contains(expected));
 
-//        byte[] scientificName = data.get(CdmLightExportTable.SCIENTIFIC_NAME.getTableName());
+        //names
         List<String> nameList = getStringList(data, CdmLightExportTable.SCIENTIFIC_NAME);
-//        String scientificNameString = new String(scientificName);
         Assert.assertNotNull("Scientific Name table must not be null", nameList);
-
         String line = getLine(nameList, subspeciesNameUuid);
         expected ="\""+subspeciesNameUuid+"\",\"\",\"Subspecies\",\"43\",\"Genus species subsp. subspec Mill.\",\"Genus species subsp. subspec\",\"Genus\",\"\",\"\",\"species\",\"subsp.\",\"subspec\",\"\",\"\",\"\",";
         Assert.assertTrue(line.contains(expected));
@@ -209,6 +207,7 @@ public class CdmLightExportTest
         //#10562
         Assert.assertNull("The basionym of the earlier homonym should not be included", getLine(nameList, earlierHomonymBasionymUuid));
 
+        //homotypic group
         List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
         Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
         Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);

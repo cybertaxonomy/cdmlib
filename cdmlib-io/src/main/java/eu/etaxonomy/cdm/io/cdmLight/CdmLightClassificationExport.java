@@ -1543,6 +1543,7 @@ public class CdmLightClassificationExport
     }
 
     private void handleNameRelationships(CdmLightExportState state, TaxonName name) {
+
         Set<NameRelationship> rels = name.getRelationsFromThisName();
         CdmLightExportTable table = CdmLightExportTable.NAME_RELATIONSHIP;
         String[] csvLine = new String[table.getSize()];
