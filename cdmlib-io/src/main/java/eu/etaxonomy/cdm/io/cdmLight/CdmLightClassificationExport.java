@@ -2104,7 +2104,6 @@ public class CdmLightClassificationExport
 
                          sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxonBase.getSec(), taxonBase.getSecSource().getCitationMicroReference(), null,
                                  state.getReferenceStore().get(taxonBase.getSec().getUuid()));
-                         //sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxonBase.getSecSource());
                      }
                      if (taxonBase.isDoubtful()){
                          doubtful = "?";
@@ -2118,16 +2117,15 @@ public class CdmLightClassificationExport
                              sec = "";
                          }
 
-                         typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + nonRelNames + relNames;
-                         typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec + nonRelNames + relNames;
+//                         typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + nonRelNames + relNames;
+//                         typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec + nonRelNames + relNames;
                      }else{
-//                         sec = "";
                          if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
                              isAccepted = true;
+                             synonymSign = "";
                          }else {
                              synonymSign = "\u003D ";
                          }
-
                      }
                      if (taxonBase.getAppendedPhrase() != null){
                          if (state.getConfig().isAddHTML()){
@@ -2136,6 +2134,13 @@ public class CdmLightClassificationExport
                              String nameCacheWithItalics = createNameWithItalics(name.getTaggedName());
                              nameString = nameString.replace(nameCacheWithItalics, taxonString);
                          }
+                     }
+                     if (!isAccepted){
+                         typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + nonRelNames + relNames +"; ";
+                         typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec + nonRelNames + relNames;
+                         typifiedNamesWithoutAcceptedWithSec = typifiedNamesWithoutAcceptedWithSec.trim() + "; ";
+                     }else {
+                         sec = " sec. " + sec;
                      }
                 }else{
                     //there are names used more than once?
@@ -2146,7 +2151,6 @@ public class CdmLightClassificationExport
                             }
                             sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(tb.getSec(), tb.getSecSource().getCitationMicroReference(), null,
                                     state.getReferenceStore().get(tb.getSec().getUuid()));
-                           // sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(tb.getSecSource());
                         }
                         if (tb.isDoubtful()){
                             doubtful = "?";
@@ -2167,10 +2171,11 @@ public class CdmLightClassificationExport
 
                             break;
                         }else{
-                            sec = "";
+                            sec = " sec. " + sec;
                             Taxon taxon = CdmBase.deproxy(tb, Taxon.class);
                             if (!(taxon.isProparteSynonym() || taxon.isMisapplication())){
                                 isAccepted = true;
+                                synonymSign = "";
                                 break;
                             }else {
                                 synonymSign = "\u003D ";
@@ -2178,13 +2183,18 @@ public class CdmLightClassificationExport
                         }
                     }
                     if (!isAccepted){
-                        typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + "; ";
-                        typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec;
+                        typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString +  nonRelNames + relNames +"; ";
+                        typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec+ nonRelNames + relNames;
                         typifiedNamesWithoutAcceptedWithSec = typifiedNamesWithoutAcceptedWithSec.trim() + "; ";
+                    }else {
+                        sec = " sec. " + sec;
+
                     }
                 }
                 typifiedNamesString += synonymSign + doubtful + nameString + nonRelNames + relNames;
-                typifiedNamesWithSecString += synonymSign + doubtful + nameString + sec + nonRelNames + relNames;
+                typifiedNamesWithSecString += synonymSign + doubtful + nameString.trim() + sec + nonRelNames + relNames;
+                typifiedNamesWithSecString = typifiedNamesWithSecString.trim() + " ";
+
 
 
                 csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
@@ -2475,6 +2485,9 @@ public class CdmLightClassificationExport
     private void handleReference(CdmLightExportState state, Reference reference) {
         try {
 
+            if (reference == null || state.getReferenceStore().containsKey(reference.getUuid())) {
+                return;
+            }
             CdmLightExportTable table = CdmLightExportTable.REFERENCE;
             reference = HibernateProxyHelper.deproxy(reference);
 
