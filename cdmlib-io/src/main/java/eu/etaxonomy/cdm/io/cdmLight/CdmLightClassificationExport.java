@@ -1426,47 +1426,6 @@ public class CdmLightClassificationExport
         }
     }
 
-    private void handleSpecimenType_(CdmLightExportState state, SpecimenTypeDesignation specimenType) {
-        if (specimenType.getTypeSpecimen() != null){
-            DerivedUnit specimen =  specimenType.getTypeSpecimen();
-            if(specimen != null && !state.getSpecimenStore().contains( specimen.getUuid())){
-               handleSpecimen(state, specimen);
-            }
-        }
-        CdmLightExportTable table = CdmLightExportTable.TYPE_DESIGNATION;
-        String[] csvLine = new String[table.getSize()];
-        //TYPE_ID, SPECIMEN_FK, TYPE_VERBATIM_CITATION, TYPE_STATUS, TYPE_DESIGNATED_BY_STRING, TYPE_DESIGNATED_BY_REF_FK};
-        //Specimen_Fk und den Typusangaben (Art des Typus [holo, lecto, etc.], Quelle, Designation-Quelle, +
-        Set<TaxonName> typifiedNames = specimenType.getTypifiedNames();
-        for (TaxonName name: typifiedNames){
-            csvLine[table.getIndex(CdmLightExportTable.TYPE_STATUS)] = specimenType.getTypeStatus() != null? specimenType.getTypeStatus().getDescription(): "";
-            csvLine[table.getIndex(CdmLightExportTable.TYPE_ID)] = getId(state, specimenType);
-            csvLine[table.getIndex(CdmLightExportTable.TYPIFIED_NAME_FK)] = getId(state, name);
-            csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_FK)] = getId(state, specimenType.getTypeSpecimen());
-            if (specimenType.getSources() != null && !specimenType.getSources().isEmpty()){
-                String sourceString = "";
-                int index = 0;
-                for (IdentifiableSource source: specimenType.getSources()){
-                    if (source.getCitation()!= null){
-                        sourceString = sourceString.concat(source.getCitation().getCitation());
-                    }
-                    index++;
-                    if (index != specimenType.getSources().size()){
-                        sourceString.concat(", ");
-                    }
-                }
-                csvLine[table.getIndex(CdmLightExportTable.TYPE_INFORMATION_REF_STRING)] = sourceString;
-            }
-            if (specimenType.getDesignationSource() != null && specimenType.getDesignationSource().getCitation() != null && !state.getReferenceStore().containsKey(specimenType.getDesignationSource().getCitation().getUuid())){
-                handleReference(state, specimenType.getDesignationSource().getCitation());
-                csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_REF_FK)] = specimenType.getDesignationSource() != null ? getId(state, specimenType.getDesignationSource().getCitation()): "";
-            }
-
-            state.getProcessor().put(table, specimenType, csvLine);
-        }
-    }
-
-
     /**
      * @param specimenType
      */
@@ -2117,8 +2076,7 @@ public class CdmLightClassificationExport
                              sec = "";
                          }
 
-//                         typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + nonRelNames + relNames;
-//                         typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec + nonRelNames + relNames;
+
                      }else{
                          if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
                              isAccepted = true;

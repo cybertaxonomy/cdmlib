@@ -121,7 +121,7 @@ public class CdmLightExportTest
         //homotypic group
         byte[] homotypicGroup = data.get(CdmLightExportTable.HOMOTYPIC_GROUP.getTableName());
         String homotypicGroupString = new String(homotypicGroup);
-        Assert.assertNotNull("Reference table must not be null", homotypicGroup);
+        Assert.assertNotNull("Homotypic Group table must not be null", homotypicGroup);
         if (config.isAddHTML()){
             expected ="\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\"";
         }else{
@@ -201,11 +201,11 @@ public class CdmLightExportTest
 
         byte[] homotypicGroup = data.get(CdmLightExportTable.HOMOTYPIC_GROUP.getTableName());
         String homotypicGroupString = new String(homotypicGroup);
-        Assert.assertNotNull("Reference table must not be null", homotypicGroup);
+        Assert.assertNotNull("HomotypicGroup table must not be null", homotypicGroup);
         if (config.isAddHTML()){
-            expected ="\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 My sec ref\",\"\",\"\"";
+            expected ="\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 My sec ref\",\"\",\"\"";
         }else{
-            expected ="\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804)\",\"\",\"\",\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804) My sec ref\",\"\",\"\"";
+            expected ="\"Genus species subsp. subspec Mill., The book of botany 3: 22. (1804)\",\"\",\"\",\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804) My sec ref\",\"\",\"\"";
         }
         Assert.assertTrue(homotypicGroupString.contains(expected));
     }
@@ -225,17 +225,37 @@ public class CdmLightExportTest
 
         //test ...
         //taxon
-        List<String> taxonResult = getStringList(data, ColDpExportTable.TAXON);
+        List<String> taxonResult = getStringList(data, CdmLightExportTable.TAXON);
         Assert.assertEquals("There should be 4 taxa", 4, taxonResult.size() - COUNT_HEADER);
 
         //reference
-        List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
+        List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
         Assert.assertEquals("There should be 7 references (6 nomenclatural references and 1 sec reference)", 7, referenceResult.size() - COUNT_HEADER);
 
         //synonyms
-        List<String> synonymResult = getStringList(data, ColDpExportTable.SYNONYM);
+        List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
         Assert.assertEquals("There should be 1 synonym", 1, synonymResult.size() - COUNT_HEADER);
     }
+//    @Test
+//    @DataSets({
+//        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+//        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+//    })
+//    public void testUniqueCitationsDataPublished(){
+//        // add additional reference
+//        Reference ref1 = ReferenceFactory.newArticle();
+//        ref1.setAuthorship(null);
+//        ref1.setDatePublished(null);
+//
+//      //config + invoke
+//        CdmLightExportConfigurator config = newConfigurator();
+//        ExportResult result = defaultExport.invoke(config);
+//        Map<String, byte[]> data = checkAndGetData(result);
+//        Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
+//
+//
+//
+//    }
 
     @Override
     protected CdmLightExportConfigurator newConfigurator() {
