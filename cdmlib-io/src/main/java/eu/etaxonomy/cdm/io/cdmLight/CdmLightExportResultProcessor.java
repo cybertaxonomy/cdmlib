@@ -90,7 +90,7 @@ public class CdmLightExportResultProcessor {
         if (!result.isEmpty() ){
             state.setAuthorStore(new HashMap<>());
             state.setHomotypicalGroupStore(new ArrayList<>());
-            state.setReferenceStore(new ArrayList<>());
+            state.setReferenceStore(new HashMap<>());
             state.setSpecimenStore(new ArrayList<>());
             state.setNodeChildrenMap(new HashMap<>());
             //Replace quotes by double quotes
