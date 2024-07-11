@@ -825,7 +825,6 @@ public class CdmLightClassificationExport
                     if (ref != null) {
                         if (!state.getReferenceStore().containsKey(ref.getUuid())) {
                             handleReference(state, ref);
-
                         }
                         csvLine[table.getIndex(CdmLightExportTable.REFERENCE_FK)] = getId(state, ref);
                     }
@@ -1340,7 +1339,7 @@ public class CdmLightClassificationExport
                     nonTextualTypeDesignations.add(nameTypeDesignation);
                 }
             }
-            TypeDesignationGroupContainer manager = new TypeDesignationGroupContainer(nonTextualTypeDesignations,
+            TypeDesignationGroupContainer tdContainer = new TypeDesignationGroupContainer(nonTextualTypeDesignations,
                     name, TypeDesignationGroupComparator.ORDER_BY.TYPE_STATUS);
             HTMLTagRules rules = new HTMLTagRules();
             rules.addRule(TagEnum.name, "i");
@@ -1350,7 +1349,7 @@ public class CdmLightClassificationExport
             boolean withNameIfAvailable = false;
             boolean withPrecedingMainType = true;
             boolean withAccessionNoType = false;
-            csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = manager.print(
+            csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = tdContainer.print(
                     withCitation, withStartingLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType, rules);
 
             StringBuilder stringbuilder = new StringBuilder();
@@ -1500,7 +1499,6 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_REF_FK)] = specimenType.getDesignationSource() != null ? getId(state, specimenType.getDesignationSource().getCitation()): "";
             csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_STRING)] = OriginalSourceFormatter.INSTANCE.format(specimenType.getDesignationSource().getCitation(), null);
         }
-
 
         Set<TaxonName> typifiedNames = specimenType.getTypifiedNames();
 
