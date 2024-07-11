@@ -357,6 +357,7 @@ public abstract class TaxonTreeExportTestBase
         laterHomonymName.addRelationshipToName(earlierHomonymName, NameRelationshipType.LATER_HOMONYM());
 
         TaxonName earlierHomonymBasionymName = parser.parseReferencedName("Basio illegitimus Mus, The earliest book: 2. 1854", NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        earlierHomonymName.addBasionym(earlierHomonymBasionymName);
         earlierHomonymBasionymName.setUuid(earlierHomonymBasionymUuid);
         commonService.save(earlierHomonymName);
         commonService.save(earlierHomonymBasionymName);

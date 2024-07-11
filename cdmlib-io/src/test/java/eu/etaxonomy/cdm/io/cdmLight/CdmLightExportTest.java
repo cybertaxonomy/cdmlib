@@ -206,6 +206,7 @@ public class CdmLightExportTest
         expected ="\"Book\",\"The book of botany\",\"The book of botany\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
         Assert.assertTrue(line.contains(expected));
         Assert.assertNotNull("The earlier homonym should be included", getLine(nameList, earlierHomonymUuid));
+        //#10562
         Assert.assertNull("The basionym of the earlier homonym should not be included", getLine(nameList, earlierHomonymBasionymUuid));
 
         List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
