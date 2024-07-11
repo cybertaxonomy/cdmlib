@@ -119,15 +119,17 @@ public class CdmLightExportTest
         Assert.assertTrue(scientificNameString.contains(expected));
 
         //homotypic group
-        byte[] homotypicGroup = data.get(CdmLightExportTable.HOMOTYPIC_GROUP.getTableName());
-        String homotypicGroupString = new String(homotypicGroup);
-        Assert.assertNotNull("Homotypic Group table must not be null", homotypicGroup);
+        List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
+        Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
+        Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
+        String line = getLine(hgList, subspeciesNameHgUuid);
         if (config.isAddHTML()){
             expected ="\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\"";
         }else{
             expected ="\"= Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\"";
         }
-        Assert.assertTrue("String was: " + homotypicGroupString, homotypicGroupString.contains(expected));
+//      Assert.assertEquals(expected, line);
+        Assert.assertTrue("Line was: " + line, line.contains(expected));
     }
 
     @Test
