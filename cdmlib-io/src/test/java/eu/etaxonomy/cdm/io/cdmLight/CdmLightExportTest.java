@@ -181,12 +181,14 @@ public class CdmLightExportTest
         //#10488
         Assert.assertEquals("Test unique year 1804b ", ",\"BK\",\"\",\"Mill. 1804: The book of botany 3\",\"Mill. (1804b)\",\"Mill. 1804b: The book of botany 3\"", expectedAfterRefType);
 
+        //geo area
         byte[] geographicAreaFact = data.get(CdmLightExportTable.GEOGRAPHIC_AREA_FACT.getTableName());
         String geographicAreaFactString = new String(geographicAreaFact);
         Assert.assertNotNull("Geographical fact table must not be null", geographicAreaFact);
         expected ="\"674e9e27-9102-4166-8626-8cb871a9a89b\"," + uuid(subspeciesTaxonUuid) + "\"Armenia\",\"present\"";
         Assert.assertTrue(geographicAreaFactString.contains(expected));
 
+        //nom author
         byte[] nomenclaturalAuthor = data.get(CdmLightExportTable.NOMENCLATURAL_AUTHOR.getTableName());
         String nomenclaturalAuthorString = new String(nomenclaturalAuthor);
         Assert.assertNotNull("Nomenclatural Author table must not be null", nomenclaturalAuthor);
@@ -246,6 +248,7 @@ public class CdmLightExportTest
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
         Assert.assertEquals("There should be 2 synonyms", 2, synonymResult.size() - COUNT_HEADER);
     }
+
 //    @Test
 //    @DataSets({
 //        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
