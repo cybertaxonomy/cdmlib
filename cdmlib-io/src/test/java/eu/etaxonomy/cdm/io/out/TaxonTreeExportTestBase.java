@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -126,6 +127,8 @@ public abstract class TaxonTreeExportTestBase
     protected static final UUID subspeciesUnpublishedNameUUID = UUID.fromString("b6da7ab2-6c67-44b7-9719-2557542f5a23");
     protected static final UUID basionymNameUuid = UUID.fromString("c7962b1f-950e-4e28-a3d1-aa0583dfdc92");
     protected static final UUID origSpellingNameUuid = UUID.fromString("bde06b48-bbda-428c-af4e-50c39db55821");
+    protected static final UUID earlierHomonymUuid = UUID.fromString("ad8aebe1-3980-4d0b-83c1-2f4e9c00284a");
+    protected static final UUID earlierHomonymBasionymUuid = UUID.fromString("c098e6d3-fbd2-4412-94e0-30bccaf74059");
 
     //HG uuid
     protected static final UUID subspeciesNameHgUuid = UUID.fromString("c60c0ce1-0fa0-468a-9908-8e9afed05714");
@@ -341,6 +344,22 @@ public abstract class TaxonTreeExportTestBase
         addWfoIdentifier(basionymName, speciesBasionymWfoId);
         Synonym basionymSynonym = species.addBasionymSynonym(basionymName, species.getSec(), "67");
         basionymSynonym.setUuid(basionymSynonymUuid);
+
+        //heterotypic, illegal synonym
+        TaxonName laterHomonymName = parser.parseReferencedName("Pus illegitimus Late, The later book: 15. 1908", NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        addWfoIdentifier(laterHomonymName, "wfo-333888");
+        @SuppressWarnings("unused")
+        Synonym laterHomonymSynonym = species.addHeterotypicSynonymName(laterHomonymName);
+
+        TaxonName earlierHomonymName = parser.parseReferencedName("Pus illegitimus (Mus) Earl., The earlier book: 1. 1858", NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        earlierHomonymName.setUuid(earlierHomonymUuid);
+        addWfoIdentifier(earlierHomonymName, "wfo-111222");
+        laterHomonymName.addRelationshipToName(earlierHomonymName, NameRelationshipType.LATER_HOMONYM());
+
+        TaxonName earlierHomonymBasionymName = parser.parseReferencedName("Basio illegitimus Mus, The earliest book: 2. 1854", NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        earlierHomonymBasionymName.setUuid(earlierHomonymBasionymUuid);
+        commonService.save(earlierHomonymName);
+        commonService.save(earlierHomonymBasionymName);
 
         //original spelling
         TaxonName speciesOrigSpelling = parser.parseReferencedName("Sus basyonus", NomenclaturalCode.ICNAFP, Rank.SPECIES());

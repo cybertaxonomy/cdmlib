@@ -127,6 +127,8 @@ public class CdmLightClassificationExport
 
     private static final long serialVersionUID = 2518643632756927053L;
 
+    private static boolean WITH_NAME_REL = true;
+
     @Autowired
     private IDistributionService distributionService;
 
@@ -378,9 +380,7 @@ public class CdmLightClassificationExport
                     TaxonName subName = taxon.getSecSource() == null? null : taxon.getSecSource().getNameUsedInSource();
                     if (subName != null) {
                         csvLine[table.getIndex(CdmLightExportTable.SEC_SUBNAME_FK)] = getId(state, subName);
-                        if (!state.getNameStore().containsKey((subName.getId()))) {
-                            handleName(state, subName, null);
-                        }
+                        handleName(state, subName, null, !WITH_NAME_REL);
                         csvLine[table.getIndex(CdmLightExportTable.SEC_SUBNAME)] = subName.getNameCache();
                         csvLine[table.getIndex(CdmLightExportTable.SEC_SUBNAME_AUTHORS)] = subName.getAuthorshipCache();
                     }
@@ -987,7 +987,7 @@ public class CdmLightClassificationExport
                 return;
             }
             TaxonName name = synonym.getName();
-            handleName(state, name, synonym.getAcceptedTaxon());
+            handleName(state, name, synonym.getAcceptedTaxon(), WITH_NAME_REL);
 
             CdmLightExportTable table = CdmLightExportTable.SYNONYM;
             String[] csvLine = new String[table.getSize()];
@@ -1024,7 +1024,7 @@ public class CdmLightClassificationExport
                 return;
             }
             TaxonName name = ppSynonym.getName();
-            handleName(state, name, accepted);
+            handleName(state, name, accepted, WITH_NAME_REL);  //TODO unclear if really with name rel
 
             CdmLightExportTable table = CdmLightExportTable.SYNONYM;
             String[] csvLine = new String[table.getSize()];
@@ -1090,12 +1090,26 @@ public class CdmLightClassificationExport
 
     }
 
-    private void handleName(CdmLightExportState state, TaxonName name, Taxon acceptedTaxon){
-        handleName(state, name, acceptedTaxon, false);
+    private void handleName(CdmLightExportState state, TaxonName name, Taxon acceptedTaxon,
+            boolean withNameRelationships){
+        handleName(state, name, acceptedTaxon, false, withNameRelationships);
     }
 
-    private void handleName(CdmLightExportState state, TaxonName name, Taxon acceptedTaxon, boolean acceptedName) {
+    /**
+     * @param withNameRelationships name relationships usually only need to be handled if
+     *        the name exists in the synonymy, therefore this parameter only needs to be set
+     *        to true if the given name parameter is found in the synonymy.
+     */
+    private void handleName(CdmLightExportState state, TaxonName name, Taxon acceptedTaxon,
+            boolean acceptedName, boolean withNameRelationships) {
+
         if (name == null || state.getNameStore().containsKey(name.getId())) {
+            if (withNameRelationships) {
+                //it is possible that the first time this name was handled
+                //the name relationships were not handled therefore we allow
+                //to handle them again
+                handleNameRelationships(state, name);
+            }
             return;
         }
         try {
@@ -1198,7 +1212,7 @@ public class CdmLightClassificationExport
 
             NomenclaturalSource nomenclaturalSource = name.getNomenclaturalSource();
             if (nomenclaturalSource != null &&nomenclaturalSource.getNameUsedInSource() != null){
-                handleName(state, nomenclaturalSource.getNameUsedInSource(), null);
+                handleName(state, nomenclaturalSource.getNameUsedInSource(), null, !WITH_NAME_REL);
                 csvLine[table.getIndex(CdmLightExportTable.ORIGINAL_SPELLING_FK)] = getId(state, nomenclaturalSource.getNameUsedInSource());
                 csvLine[table.getIndex(CdmLightExportTable.ORIGINAL_SPELLING)] = createNameWithItalics(nomenclaturalSource.getNameUsedInSource().getTaggedFullTitle());
             }
@@ -1392,7 +1406,7 @@ public class CdmLightClassificationExport
                 csvLine[table.getIndex(CdmLightExportTable.NOM_STATUS_ABBREV)] = statusStringAbbrev.trim();
             }
 
-            HomotypicalGroup group = HibernateProxyHelper.deproxy(name.getHomotypicalGroup(), HomotypicalGroup.class);
+            HomotypicalGroup group = HibernateProxyHelper.deproxy(name.getHomotypicalGroup());
 
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_FK)] = getId(state, group);
             List<TaxonName> typifiedNames = new ArrayList<>();
@@ -1415,12 +1429,12 @@ public class CdmLightClassificationExport
             Integer seqNumber = typifiedNames.indexOf(name);
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_SEQ)] = String.valueOf(seqNumber);
             state.getProcessor().put(table, name, csvLine);
-            handleNameRelationships(state, name);
-
+            if (withNameRelationships) {
+                handleNameRelationships(state, name);
+            }
         } catch (Exception e) {
             state.getResult().addException(e,
                     "An unexpected error occurred when handling the name " + cdmBaseStr(name) + ": " + name.getTitleCache() + ": " + e.getMessage());
-
             e.printStackTrace();
         }
     }
@@ -1537,9 +1551,7 @@ public class CdmLightClassificationExport
             NameRelationshipType type = rel.getType();
             TaxonName name2 = rel.getToName();
             name2 = HibernateProxyHelper.deproxy(name2, TaxonName.class);
-            if (!state.getNameStore().containsKey(name2.getId())) {
-                handleName(state, name2, null);
-            }
+            handleName(state, name2, null, !WITH_NAME_REL);
             csvLine = new String[table.getSize()];
             csvLine[table.getIndex(CdmLightExportTable.NAME_REL_TYPE)] = type.getLabel();
             csvLine[table.getIndex(CdmLightExportTable.NAME1_FK)] = getId(state, name);
@@ -1554,9 +1566,7 @@ public class CdmLightClassificationExport
         for (NameRelationship rel : rels) {
             TaxonName name2 = rel.getFromName();
             name2 = HibernateProxyHelper.deproxy(name2);
-            if (!state.getNameStore().containsKey(name2.getId())) {
-                handleName(state, name2, null);
-            }
+            handleName(state, name2, null, !WITH_NAME_REL);
         }
     }
 

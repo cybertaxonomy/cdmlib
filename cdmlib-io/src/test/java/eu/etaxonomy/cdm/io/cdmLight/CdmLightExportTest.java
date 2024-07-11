@@ -150,11 +150,11 @@ public class CdmLightExportTest
         Assert.assertEquals("There should be 5 taxa", 5, taxonResult.size() - COUNT_HEADER);
 
         List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
-        Assert.assertEquals("There should be 9 references (8 nomenclatural references including an in-reference"
-                + " and 1 sec reference)", 9, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 11 references (10 nomenclatural references including an in-reference"
+                + " and 1 sec reference)", 11, referenceResult.size() - COUNT_HEADER);
 
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
-        Assert.assertEquals("There should be 2 synonym", 2, synonymResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 3 synonym", 3, synonymResult.size() - COUNT_HEADER);
 
         //test single data
         Assert.assertEquals("Result must not contain root taxon",
@@ -193,18 +193,23 @@ public class CdmLightExportTest
         expected ="\"Mill.\",\"Mill.\",\"\",\"\",\"\",\"\"";
         Assert.assertTrue(nomenclaturalAuthorString.contains(expected));
 
-        byte[] scientificName = data.get(CdmLightExportTable.SCIENTIFIC_NAME.getTableName());
-        String scientificNameString = new String(scientificName);
-        Assert.assertNotNull("Scientific Name table must not be null", scientificName);
-        expected ="\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"\",\"Subspecies\",\"43\",\"Genus species subsp. subspec Mill.\",\"Genus species subsp. subspec\",\"Genus\",\"\",\"\",\"species\",\"subsp.\",\"subspec\",\"\",\"\",\"\",";
-        Assert.assertTrue(scientificNameString.contains(expected));
+//        byte[] scientificName = data.get(CdmLightExportTable.SCIENTIFIC_NAME.getTableName());
+        List<String> nameList = getStringList(data, CdmLightExportTable.SCIENTIFIC_NAME);
+//        String scientificNameString = new String(scientificName);
+        Assert.assertNotNull("Scientific Name table must not be null", nameList);
+
+        String line = getLine(nameList, subspeciesNameUuid);
+        expected ="\""+subspeciesNameUuid+"\",\"\",\"Subspecies\",\"43\",\"Genus species subsp. subspec Mill.\",\"Genus species subsp. subspec\",\"Genus\",\"\",\"\",\"species\",\"subsp.\",\"subspec\",\"\",\"\",\"\",";
+        Assert.assertTrue(line.contains(expected));
         expected ="\"Book\",\"The book of botany\",\"The book of botany\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
-        Assert.assertTrue(scientificNameString.contains(expected));
+        Assert.assertTrue(line.contains(expected));
+        Assert.assertNotNull("The earlier homonym should be included", getLine(nameList, earlierHomonymUuid));
+        Assert.assertNull("The basionym of the earlier homonym should not be included", getLine(nameList, earlierHomonymBasionymUuid));
 
         List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
         Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
         Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
-        String line = getLine(hgList, subspeciesNameHgUuid);
+        line = getLine(hgList, subspeciesNameHgUuid);
         Assert.assertNotNull("Subspecies homotypic group record does not exist for predefined uuid", line);
         if (config.isAddHTML()){
             expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 My sec ref\",\"\",\"\"";
@@ -235,11 +240,11 @@ public class CdmLightExportTest
 
         //reference
         List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
-        Assert.assertEquals("There should be 7 references (6 nomenclatural references and 1 sec reference)", 7, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 9 references (8 nomenclatural references and 1 sec reference)", 9, referenceResult.size() - COUNT_HEADER);
 
         //synonyms
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
-        Assert.assertEquals("There should be 1 synonym", 1, synonymResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 2 synonyms", 2, synonymResult.size() - COUNT_HEADER);
     }
 //    @Test
 //    @DataSets({

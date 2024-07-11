@@ -165,13 +165,13 @@ public class ColDpExportTest
         Assert.assertEquals("There should be 5 taxa", 5, taxonResult.size() - COUNT_HEADER);
 
         List<String> synonymResult = getStringList(data, ColDpExportTable.SYNONYM);
-        Assert.assertEquals("There should be 2 synonym", 2, synonymResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 3 synonym", 3, synonymResult.size() - COUNT_HEADER);
 
         List<String> nameResult = getStringList(data, ColDpExportTable.NAME);
-        Assert.assertEquals("There should be 7 names", 7, nameResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 8 names", 8, nameResult.size() - COUNT_HEADER);
 
         List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
-        Assert.assertEquals("There should be 8 references (7 nomenclatural references and 1 sec reference)", 8, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 9 references (8 nomenclatural references and 1 sec reference)", 9, referenceResult.size() - COUNT_HEADER);
 
         List<String> distributionResult = getStringList(data, ColDpExportTable.DISTRIBUTION);
         Assert.assertEquals("There should be 1 distribution", 1, distributionResult.size() - COUNT_HEADER);
@@ -281,13 +281,13 @@ public class ColDpExportTest
         Assert.assertEquals("There should be 4 taxa", 4, taxonResult.size() - COUNT_HEADER);
 
         List<String> nameResult = getStringList(data, ColDpExportTable.NAME);
-        Assert.assertEquals("There should be 5 names", 5, nameResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 6 names", 6, nameResult.size() - COUNT_HEADER);
 
         List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
-        Assert.assertEquals("There should be 6 references", 6, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 7 references", 7, referenceResult.size() - COUNT_HEADER);
 
         List<String> synonymResult = getStringList(data, ColDpExportTable.SYNONYM);
-        Assert.assertEquals("There should be no synonym", 1, synonymResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be two synonyms", 2, synonymResult.size() - COUNT_HEADER);
 
         //tbc
     }

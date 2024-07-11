@@ -135,9 +135,9 @@ public class WfoBackboneExportTest
         //test counts
         List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
 //      taxonResult.stream().forEach(tr->System.out.println(tr));
-        Assert.assertEquals("There should be 8 taxa (5 accepted + 3 synonyms)", 8, taxonResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 8 taxa (5 accepted + 4 synonyms)", 9, taxonResult.size() - COUNT_HEADER);
         Assert.assertEquals("There should be 5 accepted taxa", 5, filterAccepted(taxonResult).size());
-        Assert.assertEquals("There should be 3 synonyms", 3, filterSynonyms(taxonResult).size());
+        Assert.assertEquals("There should be 3 synonyms", 4, filterSynonyms(taxonResult).size());
 
         //reference counts
         List<String> referenceResult = getStringList(data, WfoBackboneExportTable.REFERENCE);
@@ -224,9 +224,9 @@ public class WfoBackboneExportTest
         //test counts
         List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
 //      taxonResult.stream().forEach(tr->System.out.println(tr));
-        Assert.assertEquals("There should be 6 taxa (4 acceptd + 2 synonym)", 6, taxonResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 7 taxa (4 acceptd + 3 synonym)", 7, taxonResult.size() - COUNT_HEADER);
         Assert.assertEquals("There should be 4 accepted taxa", 4, filterAccepted(taxonResult).size());
-        Assert.assertEquals("There should be 2 synonyms", 2, filterSynonyms(taxonResult).size());
+        Assert.assertEquals("There should be 3 synonyms", 3, filterSynonyms(taxonResult).size());
         List<String> referenceResult = getStringList(data, WfoBackboneExportTable.REFERENCE);
         Assert.assertEquals("There should be 1 reference", 1, referenceResult.size() - COUNT_HEADER);
 
