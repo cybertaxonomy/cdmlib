@@ -127,7 +127,7 @@ public class CdmLightExportTest
         }else{
             expected ="\"= Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\"";
         }
-        Assert.assertTrue(homotypicGroupString.contains(expected));
+        Assert.assertTrue("String was: " + homotypicGroupString, homotypicGroupString.contains(expected));
     }
 
     @Test
@@ -199,15 +199,18 @@ public class CdmLightExportTest
         expected ="\"Book\",\"The book of botany\",\"The book of botany\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
         Assert.assertTrue(scientificNameString.contains(expected));
 
-        byte[] homotypicGroup = data.get(CdmLightExportTable.HOMOTYPIC_GROUP.getTableName());
-        String homotypicGroupString = new String(homotypicGroup);
-        Assert.assertNotNull("HomotypicGroup table must not be null", homotypicGroup);
+        List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
+        Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
+        Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
+        String line = getLine(hgList, subspeciesNameHgUuid);
+        Assert.assertNotNull("Subspecies homotypic group record does not exist for predefined uuid", line);
         if (config.isAddHTML()){
-            expected ="\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 My sec ref\",\"\",\"\"";
+            expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 My sec ref\",\"\",\"\"";
         }else{
-            expected ="\"Genus species subsp. subspec Mill., The book of botany 3: 22. (1804)\",\"\",\"\",\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804) My sec ref\",\"\",\"\"";
+            expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"Genus species subsp. subspec Mill., The book of botany 3: 22. (1804)\",\"\",\"\",\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804) My sec ref\",\"\",\"\"";
         }
-        Assert.assertTrue(homotypicGroupString.contains(expected));
+//        Assert.assertEquals(expected, line);
+        Assert.assertTrue("Line was: " + line, line.contains(expected));
     }
 
     @Test

@@ -127,6 +127,9 @@ public abstract class TaxonTreeExportTestBase
     protected static final UUID basionymNameUuid = UUID.fromString("c7962b1f-950e-4e28-a3d1-aa0583dfdc92");
     protected static final UUID origSpellingNameUuid = UUID.fromString("bde06b48-bbda-428c-af4e-50c39db55821");
 
+    //HG uuid
+    protected static final UUID subspeciesNameHgUuid = UUID.fromString("c60c0ce1-0fa0-468a-9908-8e9afed05714");
+
     //WFO IDs
     protected static final String familyWfoId = "WFO-12347f";
     protected static final String speciesWfoId = "WFO-123477";
@@ -360,6 +363,7 @@ public abstract class TaxonTreeExportTestBase
                 NomenclaturalCode.ICNAFP, Rank.SUBSPECIES());
         setUuid(subspeciesName, subspeciesNameUuid);
         setUuid(subspeciesName.getNomenclaturalReference(), subspeciesNomRefUuid);
+        setUuid(subspeciesName.getHomotypicalGroup(), subspeciesNameHgUuid);
         addWfoIdentifier(subspeciesName, subspeciesWfoId);
 
         Taxon subspecies = Taxon.NewInstance(subspeciesName, sec1);
