@@ -114,7 +114,7 @@ public class ReferenceDefaultCacheStrategy
         if (isRealInRef(reference)){
             //Section, Book-Section or Generic with inRef
 
-            result = titleCacheRealInRef(reference, isNotAbbrev);
+            result = titleCacheRealInRef(reference, isNotAbbrev, uniqueString);
         }else if(isNomRef(type)){
             //all Non-InRef NomRefs
             //Article, CdDvd, Generic, Section, Thesis, WebPage (+Book, BookSection but not here)
@@ -239,7 +239,7 @@ public class ReferenceDefaultCacheStrategy
             }
             result = authorAndYear + result;
         }else if (isRealInRef(reference)){
-            result = titleCacheRealInRef(reference, isAbbrev);
+            result = titleCacheRealInRef(reference, isAbbrev, uniqueString);
         }else if (isNomRef(type)){
             String authorAndYear = getAuthorAndYear(reference, isAbbrev, false, uniqueString);
             String title = getTitleWithoutYearAndAuthor(reference, isAbbrev, false);
@@ -262,7 +262,7 @@ public class ReferenceDefaultCacheStrategy
 // ************************ TITLE CACHE SUBS ********************************************/
 
     //section, book section or generic with inRef
-    private String titleCacheRealInRef(Reference reference, boolean isAbbrev) {
+    private String titleCacheRealInRef(Reference reference, boolean isAbbrev, String uniqueString) {
 
         Reference inRef = reference.getInReference();
 
@@ -303,6 +303,7 @@ public class ReferenceDefaultCacheStrategy
                 author.getNomenclaturalTitleCache(), isAbbrev, trim);
 
         //date
+        //TODO compare with addAuthorYear()
         String dateStr = null;
         VerbatimTimePeriod date = reference.hasDatePublished() ? reference.getDatePublished() : null;
         if (date == null && inRef != null && inRef.hasDatePublished()){
@@ -313,6 +314,7 @@ public class ReferenceDefaultCacheStrategy
         }
         if (date != null){
             dateStr = date.getYear();
+            dateStr = StringUtils.isBlank(dateStr) ? dateStr : dateStr + uniqueString;
         }
 
         String authorAndYear = CdmUtils.concat(" ", authorStr, dateStr);

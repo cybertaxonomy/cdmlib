@@ -439,6 +439,7 @@ public class ReferenceDefaultCacheStrategyTest {
         bookSection1.setTitleCache(null, false);
         book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1977));
         Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book", bookSection1.getTitleCache());
+        Assert.assertEquals("Unique index not handled correctly", "Section Author 1976c: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book", bookSection1.cacheStrategy().getTitleCache((Reference)bookSection1, "c"));
         bookSection1.setTitleCache(null, false);
 
         bookSection1.setInBook(null);
