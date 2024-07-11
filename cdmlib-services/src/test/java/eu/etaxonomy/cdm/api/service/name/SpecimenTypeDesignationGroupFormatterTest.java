@@ -296,7 +296,7 @@ public class SpecimenTypeDesignationGroupFormatterTest extends TermTestBase {
         //test tags
 //        //TODO the name should be split so it can be put in italics
         Assert.assertEquals("first entry should be the typified name",
-                new TaggedText(TagEnum.name, "Prionus coriatius L.",TypedEntityReferenceFactory.fromEntity(typifiedName, false))
+                new TaggedText(TagEnum.name, "Prionus coriatius L.", TypedEntityReferenceFactory.fromEntity(typifiedName, false))
                 , taggedText.get(0));
 //        Assert.assertEquals("fourth entry should be the name type nameCache",
 //                new TaggedText(TagEnum.name, "Prionus"), taggedText.get(3));  //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
