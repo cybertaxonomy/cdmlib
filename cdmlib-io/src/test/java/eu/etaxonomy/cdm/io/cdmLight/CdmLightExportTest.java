@@ -257,7 +257,7 @@ public class CdmLightExportTest
         List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
         Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
         Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
-        String line = getLine(hgList, speciesNameHgUuid);
+        //String line = getLine(hgList, speciesNameHgUuid);
         //the reference is another than the sec1 therefore it should be Mustermann 2012a
         //String expected = "Holotype (designated by Mustermann 2012a): Armenia, Somewhere in the forest, 55°33'22""N, 15°13'12""W (WGS84), Collector team CT222 (B A555).";
 
