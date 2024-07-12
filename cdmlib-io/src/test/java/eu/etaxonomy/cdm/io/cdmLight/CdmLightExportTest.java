@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -110,10 +111,8 @@ public class CdmLightExportTest
         Assert.assertNotNull("Scientific Name table must not be null", scientificName);
         expected ="\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"\",\"Subspecies\",\"43\",\"Genus species subsp. subspec Mill.\",\"Genus species subsp. subspec\",\"Genus\",\"\",\"\",\"species\",\"subsp.\",\"subspec\",\"\",\"\",\"\",";
         Assert.assertTrue(scientificNameString.contains(expected));
-        if (config.isAddHTML()){
-            expected = "\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\"";
-            Assert.assertTrue(scientificNameString.contains(expected));
-        }
+        expected = "\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\"";
+        Assert.assertTrue(scientificNameString.contains(expected));
 
         expected ="\"Book\",\"The book of botany\",\"The book of botany\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
         Assert.assertTrue(scientificNameString.contains(expected));
@@ -123,11 +122,8 @@ public class CdmLightExportTest
         Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
         Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
         String line = getLine(hgList, subspeciesNameHgUuid);
-        if (config.isAddHTML()){
-            expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 sec. My sec ref\",\"\",\"\",\"0\",\"\"";
-        }else{
-            expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 sec. My sec ref\",\"\",\"\",\"0\",\"\"";
-        }
+        expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 sec. My sec ref\",\"\",\"\",\"0\",\"\"";
+
         Assert.assertEquals(expected, line);
     }
 
@@ -212,11 +208,8 @@ public class CdmLightExportTest
         Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
         line = getLine(hgList, subspeciesNameHgUuid);
         Assert.assertNotNull("Subspecies homotypic group record does not exist for predefined uuid", line);
-        if (config.isAddHTML()){
-            expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 sec. My sec ref\",\"\",\"\",\"0\",\"\"";
-        }else{
-            expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"Genus species subsp. subspec Mill., The book of botany 3: 22. (1804)\",\"\",\"\",\"Genus species subsp. subspec Mill., The book of botany 3: 22. (1804) My sec ref\",\"\",\"\",\"0\",\"\"";
-        }
+        expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 sec. My sec ref\",\"\",\"\",\"0\",\"\"";
+
         Assert.assertEquals(expected, line);
     }
 
@@ -247,26 +240,29 @@ public class CdmLightExportTest
         Assert.assertEquals("There should be 2 synonyms", 2, synonymResult.size() - COUNT_HEADER);
     }
 
-//    @Test
-//    @DataSets({
-//        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-//        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
-//    })
-//    public void testUniqueCitationsDataPublished(){
-//        // add additional reference
-//        Reference ref1 = ReferenceFactory.newArticle();
-//        ref1.setAuthorship(null);
-//        ref1.setDatePublished(null);
-//
-//      //config + invoke
-//        CdmLightExportConfigurator config = newConfigurator();
-//        ExportResult result = defaultExport.invoke(config);
-//        Map<String, byte[]> data = checkAndGetData(result);
-//        Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
-//
-//
-//
-//    }
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    })
+    @Ignore
+    public void testTypeDesignationOutput(){
+
+
+      //config + invoke
+        CdmLightExportConfigurator config = newConfigurator();
+        ExportResult result = defaultExport.invoke(config);
+        Map<String, byte[]> data = checkAndGetData(result);
+        Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
+        List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
+        Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
+        Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
+        String line = getLine(hgList, speciesNameHgUuid);
+        //the reference is another than the sec1 therefore it should be Mustermann 2012a
+        //String expected = "Holotype (designated by Mustermann 2012a): Armenia, Somewhere in the forest, 55°33'22""N, 15°13'12""W (WGS84), Collector team CT222 (B A555).";
+
+
+    }
 
     @Override
     protected CdmLightExportConfigurator newConfigurator() {
