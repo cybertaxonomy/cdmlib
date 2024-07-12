@@ -124,9 +124,9 @@ public class CdmLightExportTest
         Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
         String line = getLine(hgList, subspeciesNameHgUuid);
         if (config.isAddHTML()){
-            expected ="\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\"";
+            expected ="\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\"";
         }else{
-            expected ="\"= Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\"";
+            expected ="\"Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\"";
         }
 //      Assert.assertEquals(expected, line);
         Assert.assertTrue("Line was: " + line, line.contains(expected));
@@ -214,9 +214,9 @@ public class CdmLightExportTest
         line = getLine(hgList, subspeciesNameHgUuid);
         Assert.assertNotNull("Subspecies homotypic group record does not exist for predefined uuid", line);
         if (config.isAddHTML()){
-            expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 My sec ref\",\"\",\"\"";
+            expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 My sec ref\",\"\",\"\"";
         }else{
-            expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"Genus species subsp. subspec Mill., The book of botany 3: 22. (1804)\",\"\",\"\",\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804) My sec ref\",\"\",\"\"";
+            expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"Genus species subsp. subspec Mill., The book of botany 3: 22. (1804)\",\"\",\"\",\"Genus species subsp. subspec Mill., The book of botany 3: 22. (1804) My sec ref\",\"\",\"\"";
         }
 //        Assert.assertEquals(expected, line);
         Assert.assertTrue("Line was: " + line, line.contains(expected));
