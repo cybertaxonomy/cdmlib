@@ -313,7 +313,7 @@ public class CdmLightClassificationExport
                 try {
                     //accepted name
                     TaxonName name = taxon.getName();
-                    handleName(state, name, taxon, true);
+                    handleName(state, name, taxon, WITH_NAME_REL);
                     if (taxon.getSec() != null) {
                         if (!state.getReferenceStore().containsKey((taxon.getSec().getUuid()))) {
                             handleReference(state, taxon.getSec());
@@ -376,7 +376,7 @@ public class CdmLightClassificationExport
                         csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
                     }
 
-                    //secundum subname
+                    //secundum subname (nameInSource)
                     TaxonName subName = taxon.getSecSource() == null? null : taxon.getSecSource().getNameUsedInSource();
                     if (subName != null) {
                         csvLine[table.getIndex(CdmLightExportTable.SEC_SUBNAME_FK)] = getId(state, subName);
@@ -1090,18 +1090,13 @@ public class CdmLightClassificationExport
 
     }
 
-    private void handleName(CdmLightExportState state, TaxonName name, Taxon acceptedTaxon,
-            boolean withNameRelationships){
-        handleName(state, name, acceptedTaxon, false, withNameRelationships);
-    }
-
     /**
      * @param withNameRelationships name relationships usually only need to be handled if
      *        the name exists in the synonymy, therefore this parameter only needs to be set
      *        to true if the given name parameter is found in the synonymy.
      */
     private void handleName(CdmLightExportState state, TaxonName name, Taxon acceptedTaxon,
-            boolean acceptedName, boolean withNameRelationships) {
+            boolean withNameRelationships) {
 
         if (name == null || state.getNameStore().containsKey(name.getId())) {
             if (withNameRelationships) {

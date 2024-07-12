@@ -302,7 +302,7 @@ public class ColDpClassificationExport
             try {
                 //accepted name
                 TaxonName name = taxon.getName();
-                handleName(state, name, taxon, true, WITH_NAME_REL);
+                handleName(state, name, taxon, WITH_NAME_REL);
 
                 if (state.getConfig().isDoSynonyms()) {
                     //homotypic group / synonyms
@@ -1043,13 +1043,13 @@ public class ColDpClassificationExport
 //        }
 //    }
 
+    /**
+     * @param withNameRelationships name relationships usually only need to be handled if
+     *        the name exists in the synonymy, therefore this parameter only needs to be set
+     *        to true if the given name parameter is found in the synonymy.
+     */
     private void handleName(ColDpExportState state, TaxonName name, Taxon acceptedTaxon,
-            boolean withNameRelationships){
-        handleName(state, name, acceptedTaxon, false, withNameRelationships);
-    }
-
-    private void handleName(ColDpExportState state, TaxonName name, Taxon acceptedTaxon,
-            boolean acceptedName, boolean withNameRelationships) {
+            boolean withNameRelationships) {
 
         if (name == null || state.getNameStore().containsKey(name.getId())) {
             if (withNameRelationships) {
