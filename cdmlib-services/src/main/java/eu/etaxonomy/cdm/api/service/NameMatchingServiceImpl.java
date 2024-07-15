@@ -62,9 +62,9 @@ public class NameMatchingServiceImpl
 
     public class SingleNameMatchingResult extends NameMatchingParts {
 
-    	private Integer distance;
+    	private Double distance;
 
-        public SingleNameMatchingResult(NameMatchingParts parts, Integer distance) {
+        public SingleNameMatchingResult(NameMatchingParts parts, Double distance) {
             super(parts.getTaxonNameId(), parts.getTaxonNameUuid(), parts.getTitleCache(),
                     parts.getAuthorshipCache(), parts.getGenusOrUninomial(),
                     parts.getInfraGenericEpithet(), parts.getSpecificEpithet(),
@@ -73,10 +73,10 @@ public class NameMatchingServiceImpl
                     parts.getBasionymAuthorship(), parts.getExBasionymAuthorship());
             this.distance = distance;
         }
-        public Integer getDistance() {
+        public Double getDistance() {
             return distance;
         }
-        public void setDistance(Integer distance) {
+        public void setDistance(Double distance) {
             this.distance = distance;
         }
     }
@@ -119,7 +119,7 @@ public class NameMatchingServiceImpl
 
     @Override
     public Map<String, NameMatchingResult> compareTaxonListName(List<String> input, boolean compareAuthor, boolean excludeBasionymAuthors, boolean excludeExAuthors,
-            Integer maxDistance) throws NameMatchingParserException{
+            Double maxDistance) throws NameMatchingParserException{
 
         for (int i = 0 ; i < input.size(); i++) {
             String name = input.get(i);
@@ -138,7 +138,8 @@ public class NameMatchingServiceImpl
 
 
     @Override
-    public NameMatchingResult findMatchingNames(String nameCache, boolean compareAuthor, boolean excludeBasionymAuthors, boolean excludeExAuthors, Integer distance)
+    public NameMatchingResult findMatchingNames(String nameCache, boolean compareAuthor, boolean excludeBasionymAuthors,
+            boolean excludeExAuthors, Double distance)
             throws NameMatchingParserException{
 
         NameMatchingResult result = new NameMatchingResult();
@@ -178,7 +179,7 @@ public class NameMatchingServiceImpl
      */
 
     private List<SingleNameMatchingResult> findMatchingNamesUnshaped(String taxonName, NameMatchingConfigurator config,
-            boolean compareAuthor, boolean excludeBasionymAuthors, boolean excludeExAuthors, Integer inputDistance)
+            boolean compareAuthor, boolean excludeBasionymAuthors, boolean excludeExAuthors, Double inputDistance)
                     throws NameMatchingParserException{
 
         List<SingleNameMatchingResult> result = new ArrayList<>();
@@ -197,10 +198,10 @@ public class NameMatchingServiceImpl
         String infraGenericQuery = name.getInfraGenericEpithet();
         String infraSpecificQuery = name.getInfraSpecificEpithet();
         String authorshipCacheQuery = name.getAuthorshipCache();
-        String combinationAuthor = null;
-        String exCombinationAuthor = null;
-        String basionymAuthor = null;
-        String exBasionymAuthor = null;
+        String combinationAuthor = "";
+        String exCombinationAuthor = "";
+        String basionymAuthor = "";
+        String exBasionymAuthor = "";
 
         try {
             combinationAuthor = name.getCombinationAuthorship().getNomenclaturalTitleCache();
@@ -228,11 +229,8 @@ public class NameMatchingServiceImpl
         if (genusQuery == null) {
             throw new NameMatchingParserException ("input name could not be parsed");
         }
-//        if (name.getCombinationAuthorship() != null)  {
-//            authorshipCacheQuery = name.getCombinationAuthorship().getNomenclaturalTitleCache();
-//        }
 
-        Integer maxDistance = defineDistances(config, inputDistance, specificEpithetQuery, infraGenericQuery,
+        Double maxDistance = defineDistances(config, inputDistance, specificEpithetQuery, infraGenericQuery,
                 infraSpecificQuery);
 
         /**
@@ -252,7 +250,7 @@ public class NameMatchingServiceImpl
         List<String> preFilteredGenusOrUninominalList = prefilterGenus(genusQuery, phoneticNormalizedGenusQuery,
                 allGeneraOrUninominalFromDB);
 
-        Map<String, Integer> postFilteredGenusOrUninominalWithDis = new HashMap<>();
+        Map<String, Double> postFilteredGenusOrUninominalWithDis = new HashMap<>();
         compareGenus(genusQuery, maxDistance, phoneticNormalizedGenusQuery, preFilteredGenusOrUninominalList,
                 postFilteredGenusOrUninominalWithDis);
 
@@ -326,7 +324,7 @@ public class NameMatchingServiceImpl
      * @return
      */
     private List<SingleNameMatchingResult> compareInfraSpecific(String specificEpithetQuery, String infraSpecificQuery,
-            Integer maxDistance, List<SingleNameMatchingResult> taxonNamePartsWithDistance, Rank rank) {
+            Double maxDistance, List<SingleNameMatchingResult> taxonNamePartsWithDistance, Rank rank) {
         String normalizedInfraSpecificQuery = NameMatchingUtils.normalize(infraSpecificQuery);
         String phoneticNormalizedInfraSpecificQuery = NameMatchingUtils.nearMatch(normalizedInfraSpecificQuery);
 
@@ -343,7 +341,7 @@ public class NameMatchingServiceImpl
 
         List<SingleNameMatchingResult> preFilteredInfraSpecificListWithDist = prefilterInfraSpecific(preFilteredInfraSpecificListWithDistTemp, normalizedInfraSpecificQuery, maxDistance);
         List<SingleNameMatchingResult> resultSetInfraSpecificListWithDist = new ArrayList<>();
-        int infraSpecificComputedDistance = 0;
+        Double infraSpecificComputedDistance = 0.0;
         for (SingleNameMatchingResult infraSpecific: preFilteredInfraSpecificListWithDist) {
         	String infraSpecificInDB = infraSpecific.getInfraSpecificEpithet();
         	if (infraSpecificInDB.isEmpty()) {
@@ -360,11 +358,11 @@ public class NameMatchingServiceImpl
             if (!rankEquals) {
                 infraSpecificComputedDistance++;
             }
-            int totalDist = infraSpecific.getDistance() + infraSpecificComputedDistance;
+            Double totalDist = infraSpecific.getDistance() + infraSpecificComputedDistance;
             infraSpecific.setDistance(totalDist);
 
             // 6. infra specific post-filter
-            resultSetInfraSpecificListWithDist.addAll(postfilterEpithet(6, infraSpecificQuery, infraSpecificComputedDistance,
+            resultSetInfraSpecificListWithDist.addAll(postfilterEpithet(6.0, infraSpecificQuery, infraSpecificComputedDistance,
             		normalizedInfraSpecificQuery, infraSpecific, infraSpecificInDB, totalDist));
         }
         return resultSetInfraSpecificListWithDist;
@@ -376,7 +374,7 @@ public class NameMatchingServiceImpl
      * @param taxonNamePartsWithDistance
      * @return
      */
-    private List<SingleNameMatchingResult> compareSpecificEptihtet(String specificEpithetQuery, Integer maxDistance,
+    private List<SingleNameMatchingResult> compareSpecificEptihtet(String specificEpithetQuery, Double maxDistance,
             List<SingleNameMatchingResult> taxonNamePartsWithDistance, boolean isInfraSpecific) {
 
         List<SingleNameMatchingResult> resultSetEpithetListWithDist = new ArrayList<>();
@@ -385,7 +383,7 @@ public class NameMatchingServiceImpl
         String phoneticNormalizedEpithetQuery = NameMatchingUtils.nearMatch(normalizedEphitetQuery);
 
         // 4. epithet pre-filter
-        int infraSpecificComputedDistance = 0;
+        Double infraSpecificComputedDistance = 0.0;
         List<SingleNameMatchingResult> preFilteredEpithetListWithDist= new ArrayList<>();
         if (isInfraSpecific == false) {
             filterNamesWithEpithets(taxonNamePartsWithDistance, preFilteredEpithetListWithDist);
@@ -401,7 +399,7 @@ public class NameMatchingServiceImpl
             	// 5. comparison of epithet
                 infraSpecificComputedDistance = nameMatchingComputeDistance(phoneticNormalizedEpithetQuery,
                         phoneticNormalizedEpithetNameInDB);
-                int totalDist = preFilteredEpithet.getDistance() + infraSpecificComputedDistance;
+                Double totalDist = preFilteredEpithet.getDistance() + infraSpecificComputedDistance;
                 preFilteredEpithet.setDistance(totalDist);
 
                 // 6. species post-filter
@@ -417,7 +415,7 @@ public class NameMatchingServiceImpl
                 // 5. comparison of epithet
                 infraSpecificComputedDistance = nameMatchingComputeDistance(phoneticNormalizedEpithetQuery,
                         phoneticNormalizedEpithetNameInDB);
-                int totalDist = preFilteredEpithet.getDistance() + infraSpecificComputedDistance;
+                Double totalDist = preFilteredEpithet.getDistance() + infraSpecificComputedDistance;
                 preFilteredEpithet.setDistance(totalDist);
 
                 // 6. species post-filter
@@ -436,13 +434,13 @@ public class NameMatchingServiceImpl
      * @param infraSpecificQuery
      * @return
      */
-    private Integer defineDistances(NameMatchingConfigurator config, Integer inputDistance, String specificEpithetQuery,
+    private Double defineDistances(NameMatchingConfigurator config, Double inputDistance, String specificEpithetQuery,
             String infraGenericQuery, String infraSpecificQuery) {
         // define the default values of input distance is not given
-        Integer maxDistance;
-        Integer maxDisMonomial;
-        Integer maxDisBinomial;
-        Integer maxDisTrinomial;
+        Double maxDistance;
+        Double maxDisMonomial;
+        Double maxDisBinomial;
+        Double maxDisTrinomial;
 
         if (inputDistance != null) {
             config.setMaxDistance(inputDistance);
@@ -452,9 +450,9 @@ public class NameMatchingServiceImpl
             maxDisTrinomial = maxDistance;
         } else {
             maxDistance = config.getMaxDistance();
-            maxDisMonomial = 2;
-            maxDisBinomial = 4;
-            maxDisTrinomial = 6;
+            maxDisMonomial = 2.0;
+            maxDisBinomial = 4.0;
+            maxDisTrinomial = 6.0;
         }
 
         if (maxDistance == null) {
@@ -475,7 +473,7 @@ public class NameMatchingServiceImpl
      * @param taxonNamePartsWithDistance
      * @return
      */
-    private List<SingleNameMatchingResult> compareInfrageneric(String infraGenericQuery, Integer maxDistance,
+    private List<SingleNameMatchingResult> compareInfrageneric(String infraGenericQuery, Double maxDistance,
             List<SingleNameMatchingResult> taxonNamePartsWithDistance) {
         String normalizedInfragenericQuery = NameMatchingUtils.normalize(infraGenericQuery);
         String phoneticNormalizedInfragenericQuery = NameMatchingUtils.nearMatch(normalizedInfragenericQuery);
@@ -491,9 +489,9 @@ public class NameMatchingServiceImpl
            	String infragenericNameInDBNormalized = NameMatchingUtils.normalize(infragenericInDB);
         	String phoneticNormalizedInfragenericNameInDB = NameMatchingUtils.nearMatch(infragenericNameInDBNormalized);
         		// 5. comparison of infrageneric
-        	int infragenericComputedDistance = nameMatchingComputeDistance(phoneticNormalizedInfragenericQuery,
+        	Double infragenericComputedDistance = nameMatchingComputeDistance(phoneticNormalizedInfragenericQuery,
         			phoneticNormalizedInfragenericNameInDB);
-        	int totalDist = preFilteredInfrageneric.getDistance() + infragenericComputedDistance;
+        	Double totalDist = preFilteredInfrageneric.getDistance() + infragenericComputedDistance;
         	preFilteredInfrageneric.setDistance(totalDist) ;
 
         		// 6. infrageneric post-filter
@@ -512,9 +510,9 @@ public class NameMatchingServiceImpl
      * @param preFilteredGenusOrUninominalList
      * @param postFilteredGenusOrUninominalWithDis
      */
-    private void compareGenus(String genusQuery, Integer maxDistance, String phoneticNormalizedGenusQuery,
-            List<String> preFilteredGenusOrUninominalList, Map<String, Integer> postFilteredGenusOrUninominalWithDis) {
-        int genusComputedDistance;
+    private void compareGenus(String genusQuery, Double maxDistance, String phoneticNormalizedGenusQuery,
+            List<String> preFilteredGenusOrUninominalList, Map<String, Double> postFilteredGenusOrUninominalWithDis) {
+        Double genusComputedDistance;
         for (String preFilteredGenusOrUninominal : preFilteredGenusOrUninominalList) {
             String genusNameInDBNormalized = NameMatchingUtils.normalize(preFilteredGenusOrUninominal);
             String phoneticNormalizedGenusInDB = NameMatchingUtils.nearMatch(genusNameInDBNormalized);
@@ -543,14 +541,17 @@ public class NameMatchingServiceImpl
     }
 
     private static List<SingleNameMatchingResult> authorMatch(List<SingleNameMatchingResult> results, boolean excludeBasionymAuthors,
-            boolean excludeExAuthors, String authorshipCacheQuery, String combinationAuthor, String exCombinationAuthor, String basionymAuthor, String exBasionymAuthor, Integer maxDistance) {
+            boolean excludeExAuthors, String authorshipCacheQuery, String combinationAuthor, String exCombinationAuthor, String basionymAuthor,
+            String exBasionymAuthor, Double maxDistance) {
+
         List<SingleNameMatchingResult> result = new ArrayList<>();
 
         for (int i = 0 ; i < results.size(); i++) {
             String authorCacheDB = results.get(i).getAuthorshipCache();
-            int distanceAuthorComparison = NameMatchingUtils.modifiedDamerauLevenshteinDistance(authorshipCacheQuery, authorCacheDB);
-            distanceAuthorComparison = distanceAuthorComparison+results.get(i).getDistance();
-            if (distanceAuthorComparison <= maxDistance) {
+            Double distanceAuthorComparison = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(
+                    authorshipCacheQuery, authorCacheDB));
+            distanceAuthorComparison = (distanceAuthorComparison/3)+results.get(i).getDistance();
+            if (distanceAuthorComparison <= 0) {
                 results.get(i).setDistance(distanceAuthorComparison);
                 result.add(results.get(i));
             }
@@ -559,8 +560,9 @@ public class NameMatchingServiceImpl
 
         if (excludeBasionymAuthors == false && excludeExAuthors == false) {
             for (int i = 0 ; i < results.size(); i++) {
-                int distanceAuthorComparison = NameMatchingUtils.modifiedDamerauLevenshteinDistance(authorshipCacheQuery, results.get(i).getAuthorshipCache());
-                results.get(i).setDistance(distanceAuthorComparison+results.get(i).getDistance());
+                Double distanceAuthorComparison = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(
+                        authorshipCacheQuery, results.get(i).getAuthorshipCache()));
+                results.get(i).setDistance((distanceAuthorComparison/3)+results.get(i).getDistance());
             }
             for (int i = 0 ; i < results.size(); i++) {
                 if (results.get(i).getDistance() <= maxDistance) {
@@ -572,8 +574,9 @@ public class NameMatchingServiceImpl
         if (excludeBasionymAuthors) {
             if (excludeExAuthors) {
                 for (int i = 0 ; i < results.size(); i++) {
-                    int distanceCombinationAuthor = NameMatchingUtils.modifiedDamerauLevenshteinDistance(combinationAuthor, results.get(i).getCombinationAuthorship());
-                    results.get(i).setDistance(distanceCombinationAuthor+results.get(i).getDistance());
+                    Double distanceCombinationAuthor = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(
+                            combinationAuthor, results.get(i).getCombinationAuthorship()));
+                    results.get(i).setDistance((distanceCombinationAuthor/3)+results.get(i).getDistance());
                 }
                 for (int i = 0 ; i < results.size(); i++) {
                     if (results.get(i).getDistance() <= maxDistance) {
@@ -587,8 +590,8 @@ public class NameMatchingServiceImpl
                 String combinationAuthorDB = results.get(i).getCombinationAuthorship();
                 String combinedAuthorCacheDB = exCombinationAuthorDB  + " ex " +  combinationAuthorDB;
                 String combinedAuthorCacheQuery = exCombinationAuthor + " ex " + combinationAuthor;
-                int distanceAuthorComparison = NameMatchingUtils.modifiedDamerauLevenshteinDistance(combinedAuthorCacheDB, combinedAuthorCacheQuery);
-                results.get(i).setDistance(distanceAuthorComparison+results.get(i).getDistance());
+                Double distanceAuthorComparison = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(combinedAuthorCacheDB, combinedAuthorCacheQuery));
+                results.get(i).setDistance((distanceAuthorComparison/3)+results.get(i).getDistance());
             }
             for (int i = 0 ; i < results.size(); i++) {
                 if (results.get(i).getDistance() <= maxDistance) {
@@ -600,8 +603,8 @@ public class NameMatchingServiceImpl
         if (excludeBasionymAuthors == false) {
             if (excludeExAuthors == false) {
                 for (int i = 0 ; i < results.size(); i++) {
-                    int distanceAuthorComparison = NameMatchingUtils.modifiedDamerauLevenshteinDistance(authorshipCacheQuery, results.get(i).getAuthorshipCache());
-                    results.get(i).setDistance(distanceAuthorComparison+results.get(i).getDistance());
+                    Double distanceAuthorComparison = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(authorshipCacheQuery, results.get(i).getAuthorshipCache()));
+                    results.get(i).setDistance((distanceAuthorComparison/3)+results.get(i).getDistance());
                 }
                 for (int i = 0 ; i < results.size(); i++) {
                     if (results.get(i).getDistance() <= maxDistance) {
@@ -613,10 +616,10 @@ public class NameMatchingServiceImpl
                 for (int i = 0 ; i < results.size(); i++) {
                     String combinationAuthorDB = results.get(i).getCombinationAuthorship();
                     String basionymAuthorDB = results.get(i).getBasionymAuthorship();
-                    int distanceAuthorComparison = NameMatchingUtils.modifiedDamerauLevenshteinDistance(combinationAuthorDB, combinationAuthor);
-                    int distanceAuthorComparison2 = NameMatchingUtils.modifiedDamerauLevenshteinDistance(basionymAuthorDB, basionymAuthor);
+                    Double distanceAuthorComparison = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(combinationAuthorDB, combinationAuthor));
+                    Double distanceAuthorComparison2 = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(basionymAuthorDB, basionymAuthor));
 
-                    results.get(i).setDistance(distanceAuthorComparison+distanceAuthorComparison2+results.get(i).getDistance());
+                    results.get(i).setDistance((distanceAuthorComparison/3)+(distanceAuthorComparison2/3)+results.get(i).getDistance());
                 }
                 for (int i = 0 ; i < results.size(); i++) {
                     if (results.get(i).getDistance() <= maxDistance) {
@@ -687,7 +690,7 @@ public class NameMatchingServiceImpl
 	 * @return List of all species belonging to the genera that passed the post filter + calculated distance
 	 */
     private List<SingleNameMatchingResult> getTaxonNamePartsFromDB(
-    		Map<String, Integer> postFilteredGenusOrUninominalWithDis) {
+    		Map<String, Double> postFilteredGenusOrUninominalWithDis) {
 
         List<SingleNameMatchingResult> genusOrUninomialWithDistance = new ArrayList<>();
 
@@ -759,22 +762,22 @@ public class NameMatchingServiceImpl
         }
     }
 
-    private int nameMatchingComputeDistance(String strQuery, String strDB) {
-        int computedDistanceTemp;
+    private Double nameMatchingComputeDistance(String strQuery, String strDB) {
+        Double computedDistanceTemp;
         String trimmedStrings = trimCommonChar(strQuery, strDB);
         String restantTrimmedQuery = "";
         String restantTrimmedDB="";
 
         if ("".equals(trimmedStrings)) {
-            computedDistanceTemp = 0;
+            computedDistanceTemp = 0.0;
         } else {
         	try {
                 restantTrimmedQuery = trimmedStrings.split(" ")[0];
                 restantTrimmedDB = trimmedStrings.split(" ")[1];}
         	catch (Exception e) {
         	}
-            computedDistanceTemp = NameMatchingUtils.modifiedDamerauLevenshteinDistance(restantTrimmedQuery,
-                    restantTrimmedDB);
+            computedDistanceTemp = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(restantTrimmedQuery,
+                    restantTrimmedDB));
         }
         return computedDistanceTemp;
     }
@@ -858,7 +861,7 @@ public class NameMatchingServiceImpl
         return prefilteredGenusOrUninominalList;
     }
 
-    private boolean postfilterGenus(Integer maxDistance, String genusQuery, int genusComputedDistance,
+    private boolean postfilterGenus(Double maxDistance, String genusQuery, Double genusComputedDistance,
             String phoneticNormalizedGenusQuery, String preFilteredGenusOrUninominal,
             String phoneticNormalizedGenusInDB) {
 
@@ -884,7 +887,7 @@ public class NameMatchingServiceImpl
 
     private void prefilterEpithet(
             List<SingleNameMatchingResult> preFilteredEpithetListWithDist,
-            String normalizedEphitetQuery, int maxDistance) {
+            String normalizedEphitetQuery, Double maxDistance) {
         List<SingleNameMatchingResult> fullNameMatchingPartsListTemp = new ArrayList<>();
         for (SingleNameMatchingResult fullNameMatchingParts : preFilteredEpithetListWithDist) {
             String specificEpithet = fullNameMatchingParts.getSpecificEpithet();
@@ -896,13 +899,13 @@ public class NameMatchingServiceImpl
         }
     }
 
-    private List<SingleNameMatchingResult> postfilterEpithet(Integer maxDistance, String epithetQuery,
-            int epithetComputedDistance, String normalizedEphitetQuery, SingleNameMatchingResult part,
-            String epithetInDB, int totalDist) {
+    private List<SingleNameMatchingResult> postfilterEpithet(Double maxDistance, String epithetQuery,
+            Double epithetComputedDistance, String normalizedEphitetQuery, SingleNameMatchingResult part,
+            String epithetInDB, Double totalDist) {
         List<SingleNameMatchingResult> epithetListTemp = new ArrayList<>();
-        int epithetQueryLength = epithetQuery.length();
-        int epithetDBLength = epithetInDB.length();
-        int halfLength = Math.max(epithetDBLength, epithetQueryLength) / 2;
+        Double epithetQueryLength = new Double (epithetQuery.length());
+        Double epithetDBLength = new Double (epithetInDB.length());
+        Double halfLength = Math.max(epithetDBLength, epithetQueryLength) / 2;
 
         if (totalDist <= maxDistance) {
             epithetListTemp.add(part);
@@ -919,10 +922,10 @@ public class NameMatchingServiceImpl
         return epithetListTemp;
     }
 
-    private void postfilterInfrageneric(Integer maxDistance, String infragenericQuery,
-            int infragenericComputedDistance, String normalizedInfragenericQuery,
+    private void postfilterInfrageneric(Double maxDistance, String infragenericQuery,
+            Double infragenericComputedDistance, String normalizedInfragenericQuery,
             List<SingleNameMatchingResult> infragenericList,
-            SingleNameMatchingResult fullTaxonNamePart, String infragenericInDB, int totalDist) {
+            SingleNameMatchingResult fullTaxonNamePart, String infragenericInDB, Double totalDist) {
         int epithetQueryLength = infragenericQuery.length();
         int epithetDBLength = infragenericInDB.length();
         int halfLength = Math.max(epithetDBLength, epithetQueryLength) / 2;
@@ -942,10 +945,10 @@ public class NameMatchingServiceImpl
     }
 
     public static List<SingleNameMatchingResult> candidatesResults(
-            List<SingleNameMatchingResult> list, int maxDistance) {
+            List<SingleNameMatchingResult> list, Double maxDistance) {
         List<SingleNameMatchingResult> bestResults = new ArrayList<>();
         for (SingleNameMatchingResult best : list) {
-            int calculatedDistance = best.getDistance();
+            Double calculatedDistance = best.getDistance();
             if (calculatedDistance <= maxDistance) {
                 bestResults.add(best);
             }
@@ -955,7 +958,7 @@ public class NameMatchingServiceImpl
 
     private void prefilterInfrageneric(
             List<SingleNameMatchingResult> preFilteredInfragenericListWithDist,
-            String normalizedInfragenericQuery, Integer maxDistance) {
+            String normalizedInfragenericQuery, Double maxDistance) {
         List<SingleNameMatchingResult> fullNameMatchingPartsListTemp = new ArrayList<>();
         for (SingleNameMatchingResult fullNameMatchingParts : preFilteredInfragenericListWithDist) {
             if (fullNameMatchingParts.getInfraGenericEpithet().length()
@@ -968,7 +971,7 @@ public class NameMatchingServiceImpl
 
     private List<SingleNameMatchingResult> prefilterInfraSpecific(
 			List<SingleNameMatchingResult> preFilteredInfraSpecificListWithDistTemp,
-			String normalizedInfraSpecificQuery, Integer maxDistance) {
+			String normalizedInfraSpecificQuery, Double maxDistance) {
 		List<SingleNameMatchingResult> fullNameMatchingPartsListTemp = new ArrayList<>();
 		for (SingleNameMatchingResult fullNameMatchingParts : preFilteredInfraSpecificListWithDistTemp) {
 		    int infraSpecificEpithetLength = fullNameMatchingParts.getInfraSpecificEpithet().length();

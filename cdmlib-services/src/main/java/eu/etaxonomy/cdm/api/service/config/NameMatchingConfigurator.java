@@ -17,12 +17,12 @@ import eu.etaxonomy.cdm.api.service.INameMatchingService;
  */
 public class NameMatchingConfigurator {
 
-	private Integer maxDistance;
+	private Double maxDistance;
 
-	public Integer getMaxDistance() {
+	public Double getMaxDistance() {
 		return maxDistance;
 	}
-	public void setMaxDistance(Integer maxDistance) {
+	public void setMaxDistance(Double maxDistance) {
 		this.maxDistance = maxDistance;
 	}
 }

@@ -20,9 +20,9 @@ import eu.etaxonomy.cdm.api.service.exception.NameMatchingParserException;
  */
 public interface INameMatchingService  {
 
-	public NameMatchingResult findMatchingNames(String nameCache, boolean compareAuthor, boolean excludeBasionymAuthors, boolean excludeExAuthors, Integer distance) throws NameMatchingParserException;
+	public NameMatchingResult findMatchingNames(String nameCache, boolean compareAuthor, boolean excludeBasionymAuthors, boolean excludeExAuthors, Double distance) throws NameMatchingParserException;
 
 	public Map<String, NameMatchingResult> compareTaxonListName(List<String> input, boolean compareAuthor, boolean excludeBasionymAuthors, boolean excludeExAuthors,
-            Integer maxDistance) throws NameMatchingParserException;
+	        Double maxDistance) throws NameMatchingParserException;
 //
 }

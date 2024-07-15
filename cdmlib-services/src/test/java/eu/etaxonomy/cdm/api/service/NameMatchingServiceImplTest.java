@@ -8,7 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -85,7 +88,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("", matchRes.getSpecificEpithet());
         Assert.assertEquals(UUID_NAME_NECTANDRA, matchRes.getTaxonNameUuid());
-        Assert.assertEquals("Distance should be 0", 0,(int) matchRes.getDistance());
+        Assert.assertEquals("Distance should be 0", 0,matchRes.getDistance().intValue());
 
         // not exact match
         inputName = "Nextondra";
@@ -97,19 +100,19 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectondra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("", matchRes.getSpecificEpithet());
         Assert.assertEquals(UUID_NAME_NECTONDRA, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(1,(int) matchRes.getDistance());
+        Assert.assertEquals(1,matchRes.getDistance().intValue());
 
         matchRes = matchResult.get(1);
         Assert.assertEquals("Nextandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("", matchRes.getSpecificEpithet());
         Assert.assertEquals(UUID_NAME_NEXTANDRA, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(1,(int) matchRes.getDistance());
+        Assert.assertEquals(1,matchRes.getDistance().intValue());
 
         matchRes = matchResult.get(2);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("", matchRes.getSpecificEpithet());
         Assert.assertEquals(UUID_NAME_NECTANDRA, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(2,(int) matchRes.getDistance());
+        Assert.assertEquals(2,matchRes.getDistance().intValue());
     }
 
     @Test
@@ -130,7 +133,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("magnoliifolia", matchRes.getSpecificEpithet());
         Assert.assertEquals(UUID_NAME_MAGNIFOLIA, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(0,(int) matchRes.getDistance());
+        Assert.assertEquals(0,matchRes.getDistance().intValue());
 
         /* as Author is not evaluated in this version of the algorithm,
         * if the DB contains the species name twice but with different authorities, both names should be returned
@@ -145,13 +148,13 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("surinamensis", matchRes.getSpecificEpithet());
         Assert.assertEquals(UUID_NAME_SURINAMENSIS1, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(0,(int) matchRes.getDistance());
+        Assert.assertEquals(0,matchRes.getDistance().intValue());
 
         matchRes = matchResult.get(1);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("surinamensis", matchRes.getSpecificEpithet());
         Assert.assertEquals(UUID_NAME_SURINAMENSIS2, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(0,(int) matchRes.getDistance());
+        Assert.assertEquals(0,matchRes.getDistance().intValue());
 
         // not exact match
         inputName = "Nectendra nigre";
@@ -162,13 +165,13 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("nigra", matchRes.getSpecificEpithet());
         Assert.assertEquals(UUID_NAME_NIGRA, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(2,(int) matchRes.getDistance());
+        Assert.assertEquals(2,matchRes.getDistance().intValue());
 
         matchRes = matchResult.get(1);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("nigrita", matchRes.getSpecificEpithet());
         Assert.assertEquals(UUID_NAME_NIGRITA, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(4,(int) matchRes.getDistance());
+        Assert.assertEquals(4,matchRes.getDistance().intValue());
 
         inputName = "Bectendra nigri";
         matchResults = nameMatchingService.findMatchingNames(inputName, false,true, true,  null);
@@ -178,13 +181,13 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("nigra", matchRes.getSpecificEpithet());
         Assert.assertEquals(UUID_NAME_NIGRA, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(3,(int) matchRes.getDistance());
+        Assert.assertEquals(3,matchRes.getDistance().intValue());
 
         matchRes = matchResult.get(1);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("nigrita", matchRes.getSpecificEpithet());
         Assert.assertEquals(UUID_NAME_NIGRITA, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(4,(int) matchRes.getDistance());
+        Assert.assertEquals(4,matchRes.getDistance().intValue());
     }
 
     @Test
@@ -211,13 +214,13 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("Nectrina", matchRes.getInfraGenericEpithet());
         Assert.assertEquals(UUID_NAME_NECTRINA, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(1,(int) matchRes.getDistance());
+        Assert.assertEquals(1,matchRes.getDistance().intValue());
 
         matchRes = matchResult.get(1);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("Nexxxina", matchRes.getInfraGenericEpithet());
         Assert.assertEquals(UUID_NAME_NEXXXINA, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(2,(int) matchRes.getDistance());
+        Assert.assertEquals(2,matchRes.getDistance().intValue());
     }
 
     @Test
@@ -239,7 +242,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("mollis", matchRes.getSpecificEpithet());
         Assert.assertEquals("laurel", matchRes.getInfraSpecificEpithet());
         Assert.assertEquals(UUID_NAME_LAUREL, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(0,(int) matchRes.getDistance());
+        Assert.assertEquals(0,matchRes.getDistance().intValue());
 
         // not exact match
         inputName = "Nectandra mollis var. laurol";
@@ -251,14 +254,14 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("mollis", matchRes.getSpecificEpithet());
         Assert.assertEquals("laurel", matchRes.getInfraSpecificEpithet());
         Assert.assertEquals(UUID_NAME_LAUREL, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(2,(int) matchRes.getDistance());
+        Assert.assertEquals(2,matchRes.getDistance().intValue());
 
         matchRes = matchResult.get(1);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("mollis", matchRes.getSpecificEpithet());
         Assert.assertEquals("laureli", matchRes.getInfraSpecificEpithet());
         Assert.assertEquals(UUID_NAME_LAURELI, matchRes.getTaxonNameUuid());
-        Assert.assertEquals(3,(int) matchRes.getDistance());
+        Assert.assertEquals(3,matchRes.getDistance().intValue());
     }
 
     @Test
@@ -276,7 +279,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(1,(int) matchRes.getDistance());
+        Double distance =  matchRes.getDistance();
+        String pattern = "#.###";
+        DecimalFormat decimalFormat = new DecimalFormat (pattern);
+        String formmattedDouble = decimalFormat.format(distance);
+        assertEquals("0,333", formmattedDouble);
 
         inputName = "Nectindra Turm.";
         matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
@@ -284,12 +291,20 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectondra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(2,(int) matchRes.getDistance());
+        distance =  matchRes.getDistance();
+        pattern = "#.###";
+        decimalFormat = new DecimalFormat (pattern);
+        formmattedDouble = decimalFormat.format(distance);
+        assertEquals("1,333", formmattedDouble);
 
         matchRes = matchResult.get(1);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(2,(int) matchRes.getDistance());
+        distance =  matchRes.getDistance();
+        pattern = "#.###";
+        decimalFormat = new DecimalFormat (pattern);
+        formmattedDouble = decimalFormat.format(distance);
+        assertEquals("1,333", formmattedDouble);
     }
 
     @Test
@@ -310,16 +325,24 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(1,(int) matchRes.getDistance());
+        Double distance =  matchRes.getDistance();
+        String pattern = "#.###";
+        DecimalFormat decimalFormat = new DecimalFormat (pattern);
+        String formmattedDouble = decimalFormat.format(distance);
+        assertEquals("0,333", formmattedDouble);
 
-        inputName = "Nectindra levis Turm.";
+        inputName = "Nectindra lxevis Turm.";
         matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true,null);
         matchResult = matchResults.getBestResults();
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(2,(int) matchRes.getDistance());
+        distance =  matchRes.getDistance();
+        pattern = "#.###";
+        decimalFormat = new DecimalFormat (pattern);
+        formmattedDouble = decimalFormat.format(distance);
+        assertEquals("2,333", formmattedDouble);
 
         inputName = "Nectindra cinnamomoides Turm. & Kilian";
         matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true,null);
@@ -328,7 +351,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("cinnamomoides", matchRes.getSpecificEpithet());
         Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
-        Assert.assertEquals(2,(int) matchRes.getDistance());
+        distance =  matchRes.getDistance();
+        pattern = "#.###";
+        decimalFormat = new DecimalFormat (pattern);
+        formmattedDouble = decimalFormat.format(distance);
+        assertEquals("1,333", formmattedDouble);
 
         //TODO matching non-parsable names is still an open issue (#10178)
 
@@ -339,7 +366,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("cinnamomoides", matchRes.getSpecificEpithet());
         Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
-        Assert.assertEquals(2,(int) matchRes.getDistance());
+        distance =  matchRes.getDistance();
+        pattern = "#.###";
+        decimalFormat = new DecimalFormat (pattern);
+        formmattedDouble = decimalFormat.format(distance);
+        assertEquals("1,333", formmattedDouble);
     }
 
     @Test
@@ -358,7 +389,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(1,(int) matchRes.getDistance());
+        Double distance =  matchRes.getDistance();
+        String pattern = "#.###";
+        DecimalFormat decimalFormat = new DecimalFormat (pattern);
+        String formmattedDouble = decimalFormat.format(distance);
+        assertEquals("0,333", formmattedDouble);
 
         inputName = "Nectandra (Kilian ex Turm.) Kilian ex Turm.";
         matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
@@ -366,7 +401,12 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         matchRes = matchResult.get(0);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(1,(int) matchRes.getDistance());
+        distance =  matchRes.getDistance();
+        pattern = "#.###";
+        decimalFormat = new DecimalFormat (pattern);
+        formmattedDouble = decimalFormat.format(distance);
+        assertEquals("0,333", formmattedDouble);
+
     }
 
     @Test
@@ -386,7 +426,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(1,(int) matchRes.getDistance());
+        Double distance =  matchRes.getDistance();
+        String pattern = "#.###";
+        DecimalFormat decimalFormat = new DecimalFormat (pattern);
+        String formmattedDouble = decimalFormat.format(distance);
+        assertEquals("0,333", formmattedDouble);
 
         inputName = "Nectandra laevis (Kilian ex Turm.) Kilian ex Turm.";
         matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
@@ -395,7 +439,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(1,(int) matchRes.getDistance());
+        distance =  matchRes.getDistance();
+        pattern = "#.###";
+        decimalFormat = new DecimalFormat (pattern);
+        formmattedDouble = decimalFormat.format(distance);
+        assertEquals("0,333", formmattedDouble);
 
         // not exact match
         inputName = "Mectandra laevis (Kilian) Turm.";
@@ -405,7 +453,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(2,(int) matchRes.getDistance());
+        distance =  matchRes.getDistance();
+        pattern = "#.###";
+        decimalFormat = new DecimalFormat (pattern);
+        formmattedDouble = decimalFormat.format(distance);
+        assertEquals("1,333", formmattedDouble);
 
         inputName = "Mectandra laevis (Kilian ex Turm.) Kilian ex Turm.";
         matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
@@ -414,7 +466,12 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(2,(int) matchRes.getDistance());
+        distance =  matchRes.getDistance();
+        pattern = "#.###";
+        decimalFormat = new DecimalFormat (pattern);
+        formmattedDouble = decimalFormat.format(distance);
+        assertEquals("1,333", formmattedDouble);
+
     }
 
     @Test
@@ -437,7 +494,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("laurel", matchRes.getInfraSpecificEpithet());
         Assert.assertEquals(UUID_NAME_LAUREL, matchRes.getTaxonNameUuid());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(1,(int) matchRes.getDistance());
+        Double distance =  matchRes.getDistance();
+        String pattern = "#.###";
+        DecimalFormat decimalFormat = new DecimalFormat (pattern);
+        String formmattedDouble = decimalFormat.format(distance);
+        assertEquals("0,333", formmattedDouble);
 
         // not exact match
         inputName = "Nectandra mollis var. laurol (Kilian) Turm.";
@@ -450,7 +511,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("laurel", matchRes.getInfraSpecificEpithet());
         Assert.assertEquals(UUID_NAME_LAUREL, matchRes.getTaxonNameUuid());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(3,(int) matchRes.getDistance());
+        distance =  matchRes.getDistance();
+        pattern = "#.###";
+        decimalFormat = new DecimalFormat (pattern);
+        formmattedDouble = decimalFormat.format(distance);
+        assertEquals("2,333", formmattedDouble);
 
         matchRes = matchResult.get(1);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
@@ -458,7 +523,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("laureli", matchRes.getInfraSpecificEpithet());
         Assert.assertEquals(UUID_NAME_LAURELI, matchRes.getTaxonNameUuid());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(4,(int) matchRes.getDistance());
+        distance =  matchRes.getDistance();
+        pattern = "#.###";
+        decimalFormat = new DecimalFormat (pattern);
+        formmattedDouble = decimalFormat.format(distance);
+        assertEquals("3,333", formmattedDouble);
     }
 
     @Test
@@ -479,7 +548,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
         Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
         Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(0,(int) matchRes.getDistance());
+        Assert.assertEquals(0, matchRes.getDistance().intValue());
 
      // exact match when author is given in the input name but boolean is still false
         nameCache = "Yucca filamentosa L.";
@@ -490,7 +559,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
         Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
         Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(0,(int) matchRes.getDistance());
+        Assert.assertEquals(0, matchRes.getDistance().intValue());
 
         // other candidates results without author input
         nameCache = "Yucca filamentoza";
@@ -505,7 +574,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
         Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
         Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(1,(int) matchRes.getDistance());
+        Assert.assertEquals(1,matchRes.getDistance().intValue());
 
      // other candidates results with author
         nameCache = "Yucca filamentoz L.";
@@ -520,7 +589,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
         Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
         Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(2,(int) matchRes.getDistance());
+        Assert.assertEquals(2, matchRes.getDistance().intValue());
 }
 
     @Test
@@ -541,7 +610,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
         Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
         Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(0,(int) matchRes.getDistance());
+        Assert.assertEquals(0, matchRes.getDistance().intValue());
 
      // exact match when author is missing in the input name and boolean author is true
      // this is wrong. This should return a warning: please give an author in the input name
@@ -555,7 +624,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
         Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
         Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(2,(int) matchRes.getDistance()); // distance is 2 because the abbreviation dot counts as a character too
+        Double distance =  matchRes.getDistance();
+        String pattern = "#.###";
+        DecimalFormat decimalFormat = new DecimalFormat (pattern);
+        String formmattedDouble = decimalFormat.format(distance);
+        assertEquals("0,667", formmattedDouble);
 
         nameCache = "Yucca filamentosa M.";
         matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, true, null);
@@ -567,7 +640,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
         Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
         Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        Assert.assertEquals(1,(int) matchRes.getDistance());
+        distance =  matchRes.getDistance();
+        pattern = "#.###";
+        decimalFormat = new DecimalFormat (pattern);
+        formmattedDouble = decimalFormat.format(distance);
+        assertEquals("0,333", formmattedDouble);
 }
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
@@ -579,16 +656,16 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // exact match is always a list of matches with distance = 0
         nameCache = "Yucca filamentosa L.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, false, true, true, 10);
+        matchResults = nameMatchingService.findMatchingNames(nameCache, false, true, true, 10.0);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(2, matchResult.size());
         matchResult = matchResults.getBestResults();
         Assert.assertEquals(11, matchResult.size());
 
         nameCache = "Yucca filamentosa Len.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, true, 10);
+        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, true, 10.0);
         matchResult = matchResults.getBestResults();
-        Assert.assertEquals(6, matchResult.size());
+        Assert.assertEquals(9, matchResult.size());
 }
 
     @Test
@@ -601,7 +678,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         // exact match is always a list of matches with distance = 0
         nameCache = "Gentiana affinis subsp. rusbyi (Greene ex Kusn.) Halda";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, false, false, 0);
+        matchResults = nameMatchingService.findMatchingNames(nameCache, true, false, false, 0.0);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(1, matchResult.size());
         Assert.assertEquals(UUID_NAME_GENTIANA, matchResults.getExactResults().get(0).getTaxonNameUuid());
@@ -616,15 +693,15 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         List<SingleNameMatchingResult> matchResult;
 
         nameCache = "Passiflora foetida var. hispida (Corda. ex Triana & Planch.) Killip ex Gleason";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, false, 0);
+        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, false, 0.0);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(1, matchResult.size());
         Assert.assertEquals(UUID_NAME_PASSIFLORAFO, matchResults.getExactResults().get(0).getTaxonNameUuid());
         Assert.assertEquals("basionym authors are excluded", "Passiflora foetida var. hispida (DC. ex Triana & Planch.) Killip ex Gleason", matchResult.get(0).getTitleCache());
-        Assert.assertEquals(0, (int)matchResult.get(0).getDistance());
+        Assert.assertEquals(0, matchResult.get(0).getDistance().intValue());
 
         nameCache = "Asterella lindenbergiana (Nees ex Corda) Lindb. ex Arnell";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, false, 0);
+        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, false, 0.0);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(1, matchResult.size());
         Assert.assertEquals(UUID_NAME_ASTERELLA, matchResults.getExactResults().get(0).getTaxonNameUuid());
@@ -639,19 +716,19 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         List<SingleNameMatchingResult> matchResult;
 
         nameCache = "Passiflora bracteosa Linden & Planch. ex Triana & Planch.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, true, 0);
+        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, true, 0.0);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(1, matchResult.size());
         Assert.assertEquals(UUID_NAME_PASSIFLORABR, matchResults.getExactResults().get(0).getTaxonNameUuid());
         Assert.assertEquals("ex authors are ignored", "Passiflora bracteosa Planch. & Linden ex Triana & Planch.", matchResult.get(0).getTitleCache());
 
         nameCache = "Passiflora foetida var. hispida (Corda. ex Triana & Planch.) Cuatrec. ex Gleason";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, false, true, 0);
+        matchResults = nameMatchingService.findMatchingNames(nameCache, true, false, true, 0.0);
         matchResult = matchResults.getExactResults();
         Assert.assertEquals(1, matchResult.size());
         Assert.assertEquals(UUID_NAME_PASSIFLORAFO, matchResults.getExactResults().get(0).getTaxonNameUuid());
         Assert.assertEquals("ex authors are ignored", "Passiflora foetida var. hispida (DC. ex Triana & Planch.) Killip ex Gleason", matchResult.get(0).getTitleCache());
-        Assert.assertEquals( 0, (int)matchResult.get(0).getDistance());
+        Assert.assertEquals( 0, matchResult.get(0).getDistance().intValue());
 }
 
     @Override
