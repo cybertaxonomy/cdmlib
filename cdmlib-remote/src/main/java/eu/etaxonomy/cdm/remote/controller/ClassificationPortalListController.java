@@ -101,8 +101,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     }
 
     /**
-     * Lists all child-{@link TaxonNode}s of the specified {@link Taxon} in the {@link Classification}. The
-     * a given {@link Rank} is ignored in this method but for consistency reasons it has been allowed to included it into the URI.
+     * Lists all child-{@link TaxonNode}s of the specified {@link Taxon} in the {@link Classification}.
      * <p>
      * URI: <b>&#x002F;portal&#x002F;classification&#x002F;{treeUuid}&#x002F;childNodesOf&#x002F;{taxonUuid}</b>
      * <p>
@@ -125,9 +124,10 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             @PathVariable("taxonUuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "sortMode", required = false, defaultValue = ClassificationController.DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeDtoSortMode sortMode,
-            @RequestParam(value = "loadingMode", required = false, defaultValue = "dto") String loadingMode,  //TODO preliminary, if "instance" the data is loaded via model objects, also readonly has been tested this way but removed as it had no effect #7045
+            @RequestParam(value = "loadingMode", required = false, defaultValue = "dto") String loadingMode,  //TODO preliminary, if "instance" the data is loaded via model objects, also read-only has been tested this way but removed as it had no effect #7045
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
+
         logger.info("getChildNodesOfTaxon() " + request.getRequestURI());
 
         boolean includeUnpublished = NO_UNPUBLISHED;  //for now we do not allow any remote service to publish unpublished data
