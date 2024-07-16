@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.UUID;
 
@@ -281,9 +282,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         Double distance =  matchRes.getDistance();
         String pattern = "#.###";
-        DecimalFormat decimalFormat = new DecimalFormat (pattern);
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
+        otherSymbols.setDecimalSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat (pattern,otherSymbols);
         String formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0,333", formmattedDouble);
+        assertEquals("0.333", formmattedDouble);
 
         inputName = "Nectindra Turm.";
         matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
@@ -293,18 +296,18 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         distance =  matchRes.getDistance();
         pattern = "#.###";
-        decimalFormat = new DecimalFormat (pattern);
+        decimalFormat = new DecimalFormat (pattern, otherSymbols);
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("1,333", formmattedDouble);
+        assertEquals("1.333", formmattedDouble);
 
         matchRes = matchResult.get(1);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         distance =  matchRes.getDistance();
         pattern = "#.###";
-        decimalFormat = new DecimalFormat (pattern);
+        decimalFormat = new DecimalFormat (pattern, otherSymbols);
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("1,333", formmattedDouble);
+        assertEquals("1.333", formmattedDouble);
     }
 
     @Test
@@ -325,11 +328,13 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
         Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
+        otherSymbols.setDecimalSeparator('.');
         Double distance =  matchRes.getDistance();
         String pattern = "#.###";
-        DecimalFormat decimalFormat = new DecimalFormat (pattern);
+        DecimalFormat decimalFormat = new DecimalFormat (pattern, otherSymbols);
         String formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0,333", formmattedDouble);
+        assertEquals("0.333", formmattedDouble);
 
         inputName = "Nectindra lxevis Turm.";
         matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true,null);
@@ -340,9 +345,9 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         distance =  matchRes.getDistance();
         pattern = "#.###";
-        decimalFormat = new DecimalFormat (pattern);
+        decimalFormat = new DecimalFormat (pattern, otherSymbols);
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("2,333", formmattedDouble);
+        assertEquals("2.333", formmattedDouble);
 
         inputName = "Nectindra cinnamomoides Turm. & Kilian";
         matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true,null);
@@ -353,9 +358,9 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
         distance =  matchRes.getDistance();
         pattern = "#.###";
-        decimalFormat = new DecimalFormat (pattern);
+        decimalFormat = new DecimalFormat (pattern, otherSymbols);
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("1,333", formmattedDouble);
+        assertEquals("1.333", formmattedDouble);
 
         //TODO matching non-parsable names is still an open issue (#10178)
 
@@ -368,9 +373,9 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
         distance =  matchRes.getDistance();
         pattern = "#.###";
-        decimalFormat = new DecimalFormat (pattern);
+        decimalFormat = new DecimalFormat (pattern, otherSymbols);
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("1,333", formmattedDouble);
+        assertEquals("1.333", formmattedDouble);
     }
 
     @Test
@@ -391,9 +396,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         Double distance =  matchRes.getDistance();
         String pattern = "#.###";
-        DecimalFormat decimalFormat = new DecimalFormat (pattern);
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
+        otherSymbols.setDecimalSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat (pattern, otherSymbols);
         String formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0,333", formmattedDouble);
+        assertEquals("0.333", formmattedDouble);
 
         inputName = "Nectandra (Kilian ex Turm.) Kilian ex Turm.";
         matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
@@ -403,9 +410,9 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         distance =  matchRes.getDistance();
         pattern = "#.###";
-        decimalFormat = new DecimalFormat (pattern);
+        decimalFormat = new DecimalFormat (pattern, otherSymbols);
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0,333", formmattedDouble);
+        assertEquals("0.333", formmattedDouble);
 
     }
 
@@ -428,9 +435,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         Double distance =  matchRes.getDistance();
         String pattern = "#.###";
-        DecimalFormat decimalFormat = new DecimalFormat (pattern);
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
+        otherSymbols.setDecimalSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat (pattern, otherSymbols);
         String formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0,333", formmattedDouble);
+        assertEquals("0.333", formmattedDouble);
 
         inputName = "Nectandra laevis (Kilian ex Turm.) Kilian ex Turm.";
         matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
@@ -441,9 +450,9 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         distance =  matchRes.getDistance();
         pattern = "#.###";
-        decimalFormat = new DecimalFormat (pattern);
+        decimalFormat = new DecimalFormat (pattern, otherSymbols);
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0,333", formmattedDouble);
+        assertEquals("0.333", formmattedDouble);
 
         // not exact match
         inputName = "Mectandra laevis (Kilian) Turm.";
@@ -455,9 +464,9 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         distance =  matchRes.getDistance();
         pattern = "#.###";
-        decimalFormat = new DecimalFormat (pattern);
+        decimalFormat = new DecimalFormat (pattern, otherSymbols);
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("1,333", formmattedDouble);
+        assertEquals("1.333", formmattedDouble);
 
         inputName = "Mectandra laevis (Kilian ex Turm.) Kilian ex Turm.";
         matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
@@ -468,9 +477,9 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         distance =  matchRes.getDistance();
         pattern = "#.###";
-        decimalFormat = new DecimalFormat (pattern);
+        decimalFormat = new DecimalFormat (pattern, otherSymbols);
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("1,333", formmattedDouble);
+        assertEquals("1.333", formmattedDouble);
 
     }
 
@@ -496,9 +505,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         Double distance =  matchRes.getDistance();
         String pattern = "#.###";
-        DecimalFormat decimalFormat = new DecimalFormat (pattern);
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
+        otherSymbols.setDecimalSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat (pattern, otherSymbols);
         String formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0,333", formmattedDouble);
+        assertEquals("0.333", formmattedDouble);
 
         // not exact match
         inputName = "Nectandra mollis var. laurol (Kilian) Turm.";
@@ -513,9 +524,9 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         distance =  matchRes.getDistance();
         pattern = "#.###";
-        decimalFormat = new DecimalFormat (pattern);
+        decimalFormat = new DecimalFormat (pattern, otherSymbols);
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("2,333", formmattedDouble);
+        assertEquals("2.333", formmattedDouble);
 
         matchRes = matchResult.get(1);
         Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
@@ -525,9 +536,9 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
         distance =  matchRes.getDistance();
         pattern = "#.###";
-        decimalFormat = new DecimalFormat (pattern);
+        decimalFormat = new DecimalFormat (pattern, otherSymbols);
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("3,333", formmattedDouble);
+        assertEquals("3.333", formmattedDouble);
     }
 
     @Test
@@ -626,9 +637,11 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("L.", matchRes.getAuthorshipCache());
         Double distance =  matchRes.getDistance();
         String pattern = "#.###";
-        DecimalFormat decimalFormat = new DecimalFormat (pattern);
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
+        otherSymbols.setDecimalSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat (pattern, otherSymbols);
         String formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0,667", formmattedDouble);
+        assertEquals("0.667", formmattedDouble);
 
         nameCache = "Yucca filamentosa M.";
         matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, true, null);
@@ -642,9 +655,9 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         Assert.assertEquals("L.", matchRes.getAuthorshipCache());
         distance =  matchRes.getDistance();
         pattern = "#.###";
-        decimalFormat = new DecimalFormat (pattern);
+        decimalFormat = new DecimalFormat (pattern, otherSymbols);
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0,333", formmattedDouble);
+        assertEquals("0.333", formmattedDouble);
 }
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
