@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -136,7 +139,6 @@ public class NameMatchingServiceImpl
         return inputAndResults;
     }
 
-
     @Override
     public NameMatchingResult findMatchingNames(String nameCache, boolean compareAuthor, boolean excludeBasionymAuthors,
             boolean excludeExAuthors, Double distance)
@@ -156,13 +158,13 @@ public class NameMatchingServiceImpl
 
         for (SingleNameMatchingResult part : resultInput) {
             if (compareAuthor) {
-                if (part.getDistance() == 0 || part.getTitleCache().equals(nameCache)) {
+                if (part.getDistance() == 1 || part.getTitleCache().equals(nameCache)) {
                     result.exactResults.add(part);
                 } else {
                     result.bestResults.add(part);
                 }
             } else if (compareAuthor == false) {
-                if (part.getDistance() == 0 && nameCache.contains(part.getNameCache())){
+                if (part.getDistance() == 1){
                     result.exactResults.add(part);
                 } else {
                     result.bestResults.add(part);
@@ -202,29 +204,28 @@ public class NameMatchingServiceImpl
         String exCombinationAuthor = "";
         String basionymAuthor = "";
         String exBasionymAuthor = "";
+        Rank rank = name.getRank();
 
         try {
             combinationAuthor = name.getCombinationAuthorship().getNomenclaturalTitleCache();
-        } catch (NullPointerException e){
-
+        } catch (NullPointerException e) {
+            e.getStackTrace();
         }
         try {
             exCombinationAuthor = name.getExCombinationAuthorship().getNomenclaturalTitleCache();
-        }catch (NullPointerException e){
-
+        } catch (NullPointerException e) {
+            e.getStackTrace();
         }
         try {
             basionymAuthor = name.getBasionymAuthorship().getNomenclaturalTitleCache();
-        }catch (NullPointerException e){
-
+        } catch (NullPointerException e) {
+            e.getStackTrace();
         }
         try {
             exBasionymAuthor = name.getExBasionymAuthorship().getNomenclaturalTitleCache();
-        }catch (NullPointerException e){
-
+        } catch (NullPointerException e) {
+            e.getStackTrace();
         }
-
-        Rank rank = name.getRank();
 
         if (genusQuery == null) {
             throw new NameMatchingParserException ("input name could not be parsed");
@@ -269,6 +270,10 @@ public class NameMatchingServiceImpl
                         authorshipCacheQuery, combinationAuthor, exCombinationAuthor, basionymAuthor, exBasionymAuthor,
                         maxDistance);
             }
+            normalizedOutputList(result, genusQuery, specificEpithetQuery, infraGenericQuery, infraSpecificQuery,
+                    combinationAuthor, exCombinationAuthor, basionymAuthor, exBasionymAuthor,
+                    compareAuthor, excludeBasionymAuthors, excludeExAuthors, rank);
+
             return result;
         } else if (infraGenericQuery != null) {
         	List<SingleNameMatchingResult> resultSetInfraGenericListWithDist = compareInfrageneric(infraGenericQuery,
@@ -282,6 +287,9 @@ public class NameMatchingServiceImpl
                         authorshipCacheQuery, combinationAuthor, exCombinationAuthor, basionymAuthor, exBasionymAuthor,
                         maxDistance);
             }
+            normalizedOutputList(result, genusQuery, specificEpithetQuery, infraGenericQuery, infraSpecificQuery,
+                    combinationAuthor, exCombinationAuthor, basionymAuthor, exBasionymAuthor,
+                    compareAuthor, excludeBasionymAuthors, excludeExAuthors, rank);
             return result;
         } else if (specificEpithetQuery != null && infraSpecificQuery == null){
 
@@ -296,6 +304,9 @@ public class NameMatchingServiceImpl
                         authorshipCacheQuery, combinationAuthor, exCombinationAuthor, basionymAuthor, exBasionymAuthor,
                         maxDistance);
             }
+            normalizedOutputList(result, genusQuery, specificEpithetQuery, infraGenericQuery, infraSpecificQuery,
+                    combinationAuthor, exCombinationAuthor, basionymAuthor, exBasionymAuthor,
+                    compareAuthor, excludeBasionymAuthors, excludeExAuthors, rank);
             return result;
         } else if (infraSpecificQuery != null) {
             List<SingleNameMatchingResult> resultSetInfraSpecificListWithDist = compareInfraSpecific(
@@ -310,10 +321,164 @@ public class NameMatchingServiceImpl
                         authorshipCacheQuery, combinationAuthor, exCombinationAuthor, basionymAuthor, exBasionymAuthor,
                         maxDistance);
             }
+            normalizedOutputList(result, genusQuery, specificEpithetQuery, infraGenericQuery, infraSpecificQuery,
+                    combinationAuthor, exCombinationAuthor, basionymAuthor, exBasionymAuthor,
+                    compareAuthor, excludeBasionymAuthors, excludeExAuthors, rank);
             return result;
         } else {
             return null;
         }
+    }
+    private List<SingleNameMatchingResult> normalizedOutputList (List<SingleNameMatchingResult> result,  String genusQuery,
+            String specificEpithetQuery,
+            String infraGenericQuery,
+            String infraSpecificQuery,
+            String combinationAuthor,
+            String exCombinationAuthor,
+            String basionymAuthor,
+            String exBasionymAuthor,
+            boolean compareAuthor,
+            boolean excludeBasionymAuthors,
+            boolean excludeExAuthors,
+            Rank rank){
+
+            Double lengthFullInputString = calculateLengthFullString(genusQuery, specificEpithetQuery, infraGenericQuery,
+                    infraSpecificQuery, combinationAuthor, exCombinationAuthor, basionymAuthor, exBasionymAuthor, compareAuthor,
+                    excludeBasionymAuthors, excludeExAuthors, rank);
+            Double lenghtFullStringDB = 0.0;
+            for (int x = 0 ; x < result.size(); x++) {
+                String genusDB = result.get(x).getGenusOrUninomial();
+                String specificEpithetDB = result.get(x).getSpecificEpithet();
+                String infraGenericDB = result.get(x).getInfraGenericEpithet();
+                String infraSpecificDB = result.get(x).getInfraSpecificEpithet();
+                String combinationAuthorDB = result.get(x).getCombinationAuthorship();
+                String exCombinationAuthorDB = result.get(x).getExCombinationAuthorship();
+                String basionymAuthorDB = result.get(x).getBasionymAuthorship();
+                String exBasionymAuthorDB = result.get(x).getExBasionymAuthorship();
+
+                lenghtFullStringDB = calculateLengthFullString(genusDB, specificEpithetDB, infraGenericDB,
+                        infraSpecificDB, combinationAuthorDB, exCombinationAuthorDB, basionymAuthorDB, exBasionymAuthorDB,
+                        compareAuthor, excludeBasionymAuthors, excludeExAuthors, rank);
+
+                Double largestStringLenght = Math.max(lenghtFullStringDB, lengthFullInputString);
+                Double score = 1 - (result.get(x).getDistance()/largestStringLenght);
+                String pattern = "#.###";
+                DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
+                otherSymbols.setDecimalSeparator('.');
+                DecimalFormat decimalFormat = new DecimalFormat (pattern,otherSymbols);
+                String formattedString = decimalFormat.format(score);
+                Double scoreDouble = null;
+                try {
+                    scoreDouble = decimalFormat.parse(formattedString).doubleValue();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                result.get(x).setDistance(scoreDouble);
+            }
+            return result;
+    }
+
+    private Double calculateLengthFullString (
+            String genus,
+            String specificEpithet,
+            String infraGeneric,
+            String infraSpecific,
+            String combinationAuthor,
+            String exCombinationAuthor,
+            String basionymAuthor,
+            String exBasionymAuthor,
+            boolean compareAuthor,
+            boolean excludeBasionymAuthors,
+            boolean excludeExAuthors,
+            Rank rank){
+
+        Double lengthFullInputString = 0.0;
+        Double lengthInputName = calculateLengthName(genus, specificEpithet, infraGeneric,
+                infraSpecific, rank);
+
+        if (compareAuthor) {
+            Double lengthFullAuthorship = calculateLenghtAuthorship(combinationAuthor, exCombinationAuthor,
+                    basionymAuthor, exBasionymAuthor,
+                    excludeBasionymAuthors, excludeExAuthors);
+            lengthFullInputString = lengthInputName + lengthFullAuthorship;
+            return lengthFullInputString;
+        }
+        return lengthInputName;
+    }
+
+    private Double calculateLenghtAuthorship (
+          String combinationAuthor,
+          String exCombinationAuthor,
+          String basionymAuthor,
+          String exBasionymAuthor,
+          boolean excludeBasionymAuthors,
+          boolean excludeExAuthors) {
+
+        Double lengthCombinationAuthor = 0.0;
+        Double lengthExCombinationAuthor = 0.0;
+        Double lengthBasionymAuthor  = 0.0;
+        Double lengthExBasionymAuthor = 0.0;
+        Double lengthFullAuthorship = 0.0;
+
+        if (combinationAuthor != null) {
+            combinationAuthor = combinationAuthor.replace("&", "");
+            combinationAuthor = combinationAuthor.replace(" ", "");
+            lengthCombinationAuthor = new Double (combinationAuthor.length());
+        }
+        if (exCombinationAuthor != null) {
+            lengthExCombinationAuthor = new Double (exCombinationAuthor.length());
+        }
+        if (basionymAuthor != null) {
+            basionymAuthor = basionymAuthor.replace("&", "");
+            basionymAuthor = basionymAuthor.replace(" ", "");
+            lengthBasionymAuthor =  new Double (basionymAuthor.length());
+        }
+        if (exBasionymAuthor != null) {
+            lengthExBasionymAuthor = new Double (exBasionymAuthor.length());
+        }
+        if (excludeBasionymAuthors) {
+            if (excludeExAuthors) {
+                lengthFullAuthorship = lengthCombinationAuthor;
+            } else {
+                lengthFullAuthorship = lengthCombinationAuthor + lengthExCombinationAuthor;
+            }
+        } else {
+            if (excludeExAuthors) {
+                lengthFullAuthorship = lengthCombinationAuthor + lengthBasionymAuthor;
+            } else {
+                lengthFullAuthorship = lengthCombinationAuthor + lengthExCombinationAuthor + lengthBasionymAuthor + lengthExBasionymAuthor;
+            }
+        }
+        return lengthFullAuthorship/3;
+    }
+
+    private Double calculateLengthName(String genus, String specificEpithet, String infraGeneric,
+            String infraSpecific, Rank rank) {
+
+        Double lengthGenus = 0.0;
+        Double lengthInfraGeneric = 0.0;
+        Double lengthSpecificEpithet = 0.0;
+        Double lengthInfraSpecific = 0.0;
+        Double lenghtFullInputName;
+
+        if (genus != null) {
+            lengthGenus = new Double (genus.length());
+        }
+        if (infraGeneric != null) {
+            lengthInfraGeneric = new Double (infraGeneric.length());
+        }
+        if (specificEpithet != null) {
+            lengthSpecificEpithet= new Double (specificEpithet.length());
+        }
+        if (infraSpecific != null) {
+            lengthInfraSpecific = new Double (infraSpecific.length());
+        }
+        lenghtFullInputName = lengthGenus + lengthInfraGeneric + lengthSpecificEpithet + lengthInfraSpecific;
+
+        if (rank.getId() != 765 && rank.getId() != 774) {
+            lenghtFullInputName = lenghtFullInputName + 1;
+        }
+        return lenghtFullInputName;
     }
 
     /**
@@ -574,8 +739,12 @@ public class NameMatchingServiceImpl
         if (excludeBasionymAuthors) {
             if (excludeExAuthors) {
                 for (int i = 0 ; i < results.size(); i++) {
+                    String combinationAuthorshipResult = results.get(i).getCombinationAuthorship();
+                    if (combinationAuthorshipResult == null){
+                        combinationAuthorshipResult = "";
+                    }
                     Double distanceCombinationAuthor = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(
-                            combinationAuthor, results.get(i).getCombinationAuthorship()));
+                            combinationAuthor, combinationAuthorshipResult));
                     results.get(i).setDistance((distanceCombinationAuthor/3)+results.get(i).getDistance());
                 }
                 for (int i = 0 ; i < results.size(); i++) {
