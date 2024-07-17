@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -14,7 +14,7 @@ package eu.etaxonomy.cdm.api.service.statistics;
  *
  */
 public enum StatisticsTypeEnum {
-	
+
 	//TODO keep only one of the parameters label or description
 //	ALL ("All", "All data in the datastore");
 	CLASSIFICATION("Classifications", "All classifications"),
@@ -27,13 +27,12 @@ public enum StatisticsTypeEnum {
 	DESCRIPTIONS("Descriptions", "Descriptions"),
 	DESCRIPTIVE_SOURCE_REFERENCES("Descriptive_source_references", "Descriptive source references")
 	;
-	
-	
-	
+
+
 	private String label;
-	
+
 	private String description;
-	
+
 	private StatisticsTypeEnum(String label, String description){
 		this.label = label;
 		this.description = description;
@@ -42,9 +41,8 @@ public enum StatisticsTypeEnum {
 	public String getLabel(){
 		return label;
 	}
-	
+
 	public String getDesription(){
 		return description;
 	}
-	
 }

@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
  *
  * @author a.mueller
  * @since 09.01.2015
- *
  */
 @Component
 @Lazy(false)

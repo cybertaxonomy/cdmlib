@@ -450,9 +450,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     /**
      * Returns a list of declared indexable fields within a class through reflection.
-     *
-     * @param clazz
-     * @return
      */
     private List<String> getIndexedDeclaredFields(Class clazz) {
         List<String> idFields = new ArrayList<String>();
@@ -469,9 +466,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
         return idFields;
     }
-    /**
-     * @return
-     */
+
     @Override
     public Set<Class<? extends CdmBase>> indexedClasses() {
         // if no indexed classes have been 'manually' set then
@@ -491,7 +486,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     public Class<?>[] dictionaryClasses() {
         return new Class[] {
                 TaxonName.class
-                };
+        };
     }
-
 }

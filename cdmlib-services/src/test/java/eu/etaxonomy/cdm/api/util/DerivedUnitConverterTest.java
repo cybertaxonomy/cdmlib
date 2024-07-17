@@ -11,21 +11,16 @@ package eu.etaxonomy.cdm.api.util;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.api.util.DerivedUnitConversionException;
-import eu.etaxonomy.cdm.api.util.DerivedUnitConverter;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
- *
  * @author a.kohlbecker
  * @since Jun 23, 2017
- *
  */
 public class DerivedUnitConverterTest extends Assert {
-
 
     @Test
     public void toMediaSpecimen() throws DerivedUnitConversionException {
@@ -57,5 +52,4 @@ public class DerivedUnitConverterTest extends Assert {
         assertEquals(SpecimenOrObservationType.PreservedSpecimen, target.getRecordBasis());
         assertEquals("test media specimen", target.getTitleCache());
     }
-
 }
