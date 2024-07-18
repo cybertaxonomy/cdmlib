@@ -680,7 +680,7 @@ public class OccurrenceServiceImpl
         luceneSearch.setQuery(finalQueryBuilder.build());
 
         // --- sorting
-        SortField[] sortFields = new SortField[] { SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING, false) };
+        SortField[] sortFields = new SortField[] {SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING, false) };
         luceneSearch.setSortFields(sortFields);
 
         if (highlightFragments) {
@@ -688,7 +688,6 @@ public class OccurrenceServiceImpl
         }
         return luceneSearch;
     }
-
 
     @Override
     @Transactional(readOnly=true)

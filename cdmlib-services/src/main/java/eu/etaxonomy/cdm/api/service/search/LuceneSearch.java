@@ -154,7 +154,6 @@ public class LuceneSearch {
     }
 
     protected LuceneSearch() {
-
     }
 
     public IndexSearcher getSearcher() {
@@ -212,8 +211,8 @@ public class LuceneSearch {
         BooleanQuery fullQuery = expandQuery();
         logger.info("lucene query string to be parsed: " + fullQuery.toString());
         return getSearcher().search(fullQuery, maxNoOfHits, Sort.RELEVANCE, true, true);
-
     }
+
     /**
      * @param pageSize if the page size is null or in an invalid range it will be set to MAX_HITS_ALLOWED
      * @param pageNumber a 0-based index of the page to return, will default to 0 if null or negative.
@@ -352,7 +351,6 @@ public class LuceneSearch {
             this.query = builder.add(query, Occur.MUST).build();
         }
     }
-
     public BooleanQuery getQuery() {
         return query;
     }
@@ -365,7 +363,6 @@ public class LuceneSearch {
     public SortField[] getSortFields() {
         return sortFields;
     }
-
     public void setSortFields(SortField[] sortFields) {
         this.sortFields = sortFields;
     }
@@ -373,9 +370,7 @@ public class LuceneSearch {
     public void setHighlightFields(String[] textFieldNamesAsArray) {
         this.highlightFields = textFieldNamesAsArray;
     }
-
     public String[] getHighlightFields() {
         return this.highlightFields;
     }
-
 }
