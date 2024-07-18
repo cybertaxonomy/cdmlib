@@ -139,7 +139,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         typesToIndex.add(TaxonBase.class);
         typesToIndex.add(TaxonRelationship.class);
 
-        germany =  Country.GERMANY();
+        germany = Country.GERMANY();
         russia = Country.RUSSIANFEDERATION();
         canada = Country.CANADA();
 
@@ -1671,7 +1671,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     /**
      * @param numberOfNew
-     *
      */
     private void createRandomTaxonWithCommonName(int numberOfNew) {
 

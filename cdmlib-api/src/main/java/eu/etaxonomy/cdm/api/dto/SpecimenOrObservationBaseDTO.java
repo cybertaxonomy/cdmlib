@@ -263,5 +263,4 @@ public abstract class SpecimenOrObservationBaseDTO<T extends SpecimenOrObservati
             setHasCharacterData(isHasCharacterData()||derivative.isHasCharacterData());
         }
     }
-
 }
