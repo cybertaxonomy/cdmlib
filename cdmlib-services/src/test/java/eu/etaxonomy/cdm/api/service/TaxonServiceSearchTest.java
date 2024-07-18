@@ -463,9 +463,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(TextData.class, "Abies", null, subtree, null, null, false, null, null, null, null);
         logFreeTextSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("Expecting one entity when searching for any TextData", 1, pager.getCount().intValue());
-        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
+        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standard views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
         Assert.assertTrue("Expecting two docs, one for RUSSIAN and one for GERMAN", pager.getRecords().get(0).getDocs().size() == 2);
-        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getDocs().iterator().next().get("inDescription.taxon.titleCache"));
+        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standard views, 2013", pager.getRecords().get(0).getDocs().iterator().next().get("inDescription.taxon.titleCache"));
 
 
         pager = taxonService.findByDescriptionElementFullText(null, "Abies", null, subtree, null, null, false, null, null, null, null);
@@ -485,18 +485,18 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Бальзам", null, subtree, null, Arrays.asList(new Language[]{}), false, null, null, null, null);
         Assert.assertEquals("Expecting one entity", 1, pager.getCount().intValue());
-        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
+        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standard views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
 
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Бальзам", null, subtree, null, Arrays.asList(new Language[]{Language.RUSSIAN()}), false, null, null, null, null);
         Assert.assertEquals("Expecting one entity", 1, pager.getCount().intValue());
-        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
+        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standard views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
 
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Бальзам", null, subtree, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("Expecting no entity", 0, pager.getCount().intValue());
 
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, subtree, null, Arrays.asList(new Language[]{Language.GERMAN(), Language.RUSSIAN()}), false, null, null, null, null);
         Assert.assertEquals("Expecting one entity", 1, pager.getCount().intValue());
-        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
+        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standard views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
     }
 
     @SuppressWarnings("rawtypes")
@@ -722,9 +722,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager = taxonService.findByDescriptionElementFullText(CategoricalData.class, "green", null, subtree, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting one entity", 1, pager.getCount().intValue());
-        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
+        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standard views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
         Assert.assertTrue("Expecting only one doc", pager.getRecords().get(0).getDocs().size() == 1);
-        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getDocs().iterator().next().get("inDescription.taxon.titleCache"));
+        Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standard views, 2013", pager.getRecords().get(0).getDocs().iterator().next().get("inDescription.taxon.titleCache"));
 
 
         //TODO modify the StateData
@@ -1766,7 +1766,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         classificationService.save(alternativeClassification);
 
         Reference sec = ReferenceFactory.newBook();
-        sec.setTitleCache("Kohlbecker, A., Testcase standart views, 2013", true);
+        sec.setTitleCache("Kohlbecker, A., Testcase standard views, 2013", true);
         Reference sec_sensu = ReferenceFactory.newBook();
         sec_sensu.setTitleCache("Komarov, V. L., Flora SSSR 29", true);
         referenceService.save(sec);
