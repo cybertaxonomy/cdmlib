@@ -51,7 +51,7 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
     /**
      * TODO the abstract base class DescriptionElementBase can not be used, so
      * we are using an arbitrary subclass to find the DirectoryProvider, future
-     * versions of hibernate search my allow using abstract base classes see
+     * versions of hibernate search may allow using abstract base classes see
      * {@link http://stackoverflow.com/questions/492184/how-do-you-find-all-subclasses-of-a-given-class-in-java}
      *
      * @param type must not be null
@@ -67,9 +67,6 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
         if (type.equals(TaxonBase.class)) {
             return Taxon.class;
         }
-//        if (type.equals(TaxonName.class)) {
-//            return NonViralName.class;
-//        }
         return type;
     }
 

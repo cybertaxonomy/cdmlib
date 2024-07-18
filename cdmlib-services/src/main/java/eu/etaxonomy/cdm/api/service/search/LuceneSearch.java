@@ -79,6 +79,16 @@ public class LuceneSearch {
 
     private int maxDocsPerGroup = 10;
 
+
+    public LuceneSearch(ILuceneIndexToolProvider toolProvider, Class<? extends CdmBase> directorySelectClass) {
+         this(toolProvider, null, directorySelectClass);
+    }
+    public LuceneSearch(ILuceneIndexToolProvider toolProvider, String groupByField, Class<? extends CdmBase> directorySelectClass) {
+        this.toolProvider = toolProvider;
+        this.directorySelectClass = directorySelectClass;
+        this.groupByField = groupByField;
+    }
+
     protected Class<? extends CdmBase> getDirectorySelectClass() {
         return pushAbstractBaseTypeDown(directorySelectClass);
     }
@@ -120,15 +130,6 @@ public class LuceneSearch {
         this.maxDocsPerGroup = maxDocsPerGroup;
     }
 
-    public LuceneSearch(ILuceneIndexToolProvider toolProvider, Class<? extends CdmBase> directorySelectClass) {
-         this.toolProvider = toolProvider;
-         this.directorySelectClass = directorySelectClass;
-    }
-    public LuceneSearch(ILuceneIndexToolProvider toolProvider, String groupByField, Class<? extends CdmBase> directorySelectClass) {
-        this.toolProvider = toolProvider;
-        this.directorySelectClass = directorySelectClass;
-        this.groupByField = groupByField;
-    }
 
     /**
      * TODO the abstract base class DescriptionElementBase can not be used, so
