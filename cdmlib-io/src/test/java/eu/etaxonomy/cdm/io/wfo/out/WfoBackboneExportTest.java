@@ -70,8 +70,7 @@ public class WfoBackboneExportTest
             str("Familyname") + NONE3 + str("Sus") + NONE + str("basionus") + NONE +
             str("species") + str("Valid") + str("The book of botany 3: 22. 1804") + str("homotypicSynonym") +
             str(speciesWfoId) + NONE + uuid(ref1UUID) + NONE3 +
-            //TODO 2 highlite => highlight once changed in portal code
-            str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + speciesTaxonUuid + "/synonymy?highlite=" + basionymSynonymUuid)
+            str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + speciesTaxonUuid + "/synonymy?highlight=" + basionymSynonymUuid)
             + NONE_END;
 
     @Before
@@ -174,7 +173,7 @@ public class WfoBackboneExportTest
                 str("Synonym") +
                 str(speciesWfoId) + NONE + NONE + NONE3 +
                 //TODO 2 link for orig spelling
-                NONE //str("" + speciesTaxonUuid + "/synonymy?highlite=" + basionymSynonymUuid)
+                NONE //str("" + speciesTaxonUuid + "/synonymy?highlight=" + basionymSynonymUuid)
                 + NONE_END;
         Assert.assertEquals(expectedOrigSpellingLine, originalSpellingLine);
 

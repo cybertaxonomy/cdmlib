@@ -347,7 +347,7 @@ public class WfoBackboneExport
         }
         String result = baseUrl + "cdm_dataportal/taxon/" +
                 synonym.getAcceptedTaxon().getUuid()
-                + "/synonymy?highlite=" + synonym.getUuid();
+                + "/synonymy?highlight=" + synonym.getUuid();
         return result;
     }
 
