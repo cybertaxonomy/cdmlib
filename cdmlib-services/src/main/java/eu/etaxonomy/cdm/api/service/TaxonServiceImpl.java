@@ -103,6 +103,8 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingSwapEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -1028,6 +1030,16 @@ public class TaxonServiceImpl
                 if (!limitToGalleries || taxonDescription.isImageGallery()) {
                     for (DescriptionElementBase element : taxonDescription.getElements()) {
                         for (Media media : element.getMedia()) {
+                            if (media.getRepresentations() != null && media.getRepresentations().size() >0) {
+                                MediaRepresentation representation = media.getRepresentations().iterator().next();
+                                if (representation.getParts() != null && representation.getParts().size() > 0) {
+                                    MediaRepresentationPart part = representation.getParts().iterator().next();
+                                    if (part.getUri().toString().endsWith("json")) {
+                                        continue;
+                                    }
+
+                                }
+                            }
                             if(taxonDescription.isImageGallery()){
                                 taxonMedia.add(media);
                             }
@@ -1065,7 +1077,18 @@ public class TaxonServiceImpl
                     if (!limitToGalleries || specimenDescription.isImageGallery()) {
                         Set<DescriptionElementBase> elements = specimenDescription.getElements();
                         for (DescriptionElementBase element : elements) {
+
                             for (Media media : element.getMedia()) {
+                                if (media.getRepresentations() != null && media.getRepresentations().size() >0) {
+                                    MediaRepresentation representation = media.getRepresentations().iterator().next();
+                                    if (representation.getParts() != null && representation.getParts().size() > 0) {
+                                        MediaRepresentationPart part = representation.getParts().iterator().next();
+                                        if (part.getUri().toString().contains("json")) {
+                                            continue;
+                                        }
+
+                                    }
+                                }
                                 taxonMedia.add(media);
                             }
                         }
