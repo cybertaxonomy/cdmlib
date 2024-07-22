@@ -1032,6 +1032,9 @@ public class TaxonServiceImpl
                         for (Media media : element.getMedia()) {
                             if (media.getRepresentations() != null && media.getRepresentations().size() >0) {
                                 MediaRepresentation representation = media.getRepresentations().iterator().next();
+                                if (representation.getMimeType().equals("application/json")) {
+                                    continue;
+                                }
                                 if (representation.getParts() != null && representation.getParts().size() > 0) {
                                     MediaRepresentationPart part = representation.getParts().iterator().next();
                                     if (part.getUri().toString().endsWith("json")) {
@@ -1081,6 +1084,9 @@ public class TaxonServiceImpl
                             for (Media media : element.getMedia()) {
                                 if (media.getRepresentations() != null && media.getRepresentations().size() >0) {
                                     MediaRepresentation representation = media.getRepresentations().iterator().next();
+                                    if (representation.getMimeType().equals("application/json")) {
+                                        continue;
+                                    }
                                     if (representation.getParts() != null && representation.getParts().size() > 0) {
                                         MediaRepresentationPart part = representation.getParts().iterator().next();
                                         if (part.getUri().toString().contains("json")) {
@@ -1122,6 +1128,19 @@ public class TaxonServiceImpl
                     Set<DescriptionElementBase> elements = nameDescription.getElements();
                     for (DescriptionElementBase element : elements) {
                         for (Media media : element.getMedia()) {
+                            if (media.getRepresentations() != null && media.getRepresentations().size() >0) {
+                                MediaRepresentation representation = media.getRepresentations().iterator().next();
+                                if (representation.getMimeType().equals("application/json")) {
+                                    continue;
+                                }
+                                if (representation.getParts() != null && representation.getParts().size() > 0) {
+                                    MediaRepresentationPart part = representation.getParts().iterator().next();
+                                    if (part.getUri().toString().contains("json")) {
+                                        continue;
+                                    }
+
+                                }
+                            }
                             taxonMedia.add(media);
                         }
                     }
