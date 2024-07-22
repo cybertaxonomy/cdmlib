@@ -230,7 +230,7 @@ public class OccurrenceServiceImpl
              Set<MediaRepresentation> repr = mediaSpecimen.getMediaSpecimen().getRepresentations();
              boolean addMedia = true;
              for (MediaRepresentation mediaRepr: repr) {
-                 if (mediaRepr.getMimeType().equals("application/json")) {
+                 if (mediaRepr.getMimeType() != null && mediaRepr.getMimeType().equals("application/json")) {
                      addMedia = false;
                      break;
                  }

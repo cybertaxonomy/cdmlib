@@ -1032,7 +1032,7 @@ public class TaxonServiceImpl
                         for (Media media : element.getMedia()) {
                             if (media.getRepresentations() != null && media.getRepresentations().size() >0) {
                                 MediaRepresentation representation = media.getRepresentations().iterator().next();
-                                if (representation.getMimeType().equals("application/json")) {
+                                if (representation.getMimeType() != null && representation.getMimeType().equals("application/json")) {
                                     continue;
                                 }
                                 if (representation.getParts() != null && representation.getParts().size() > 0) {
@@ -1076,6 +1076,8 @@ public class TaxonServiceImpl
 
                 // SpecimenDescriptions
                 Set<SpecimenDescription> specimenDescriptions = occurrence.getSpecimenDescriptions();
+                Pager<Media> allMedia = occurrenceService.getMedia(occurrence, null, null, null);//
+
                 for (DescriptionBase<?> specimenDescription : specimenDescriptions) {
                     if (!limitToGalleries || specimenDescription.isImageGallery()) {
                         Set<DescriptionElementBase> elements = specimenDescription.getElements();
@@ -1084,7 +1086,7 @@ public class TaxonServiceImpl
                             for (Media media : element.getMedia()) {
                                 if (media.getRepresentations() != null && media.getRepresentations().size() >0) {
                                     MediaRepresentation representation = media.getRepresentations().iterator().next();
-                                    if (representation.getMimeType().equals("application/json")) {
+                                    if (representation.getMimeType() != null && representation.getMimeType().equals("application/json")) {
                                         continue;
                                     }
                                     if (representation.getParts() != null && representation.getParts().size() > 0) {
