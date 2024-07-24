@@ -1076,8 +1076,7 @@ public class TaxonServiceImpl
 
                 // SpecimenDescriptions
                 Set<SpecimenDescription> specimenDescriptions = occurrence.getSpecimenDescriptions();
-                Pager<Media> allMedia = occurrenceService.getMedia(occurrence, null, null, null);//
-
+                
                 for (DescriptionBase<?> specimenDescription : specimenDescriptions) {
                     if (!limitToGalleries || specimenDescription.isImageGallery()) {
                         Set<DescriptionElementBase> elements = specimenDescription.getElements();

@@ -1046,7 +1046,18 @@ public class TaxonPortalController extends TaxonController{
         EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = bindAssociationFilter(taxOccRelFilter);
 
         List<String> initStrategy = null;
-
+        if (widthOrDuration == null) {
+            widthOrDuration = 200;
+        }
+        if (height == null) {
+            height = 147;
+        }
+        if (includeOriginals == null) {
+            includeOriginals = false;
+        }
+        if (includeTaxonNameDescriptions == null) {
+            includeTaxonNameDescriptions = false;
+        }
         EntityMediaContext<Taxon> taxonMediaContext = loadMediaForTaxonAndRelated(uuid, relationshipUuids,
             relationshipInversUuids, includeTaxonDescriptions, includeOccurrences,
             taxonOccurrenceRelTypes, includeOriginals, includeTaxonNameDescriptions,

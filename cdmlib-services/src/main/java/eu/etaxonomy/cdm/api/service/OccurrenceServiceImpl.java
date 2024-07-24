@@ -220,7 +220,7 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, boolean collectOriginalMedia, boolean collectDerivateMedia, Integer pageSize,
+    public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, Boolean collectOriginalMedia, Boolean collectDerivateMedia, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
         List<Media> media = new ArrayList<>();
