@@ -180,7 +180,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             acceptedTaxon = Taxon.NewInstance(taxonName, state.getRef());
 
             logger.info("Created new taxon name "+taxonName);
-        }        
+        }
 
         if(acceptedTaxon != null && !acceptedTaxon.isPersisted()) {
             save(acceptedTaxon, state);
@@ -204,20 +204,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                     }
 
                     if (!(acceptedTaxon).getTaxonNodes().isEmpty()){
-                        //use only taxa included in a classification
-                        for (TaxonNode node: acceptedTaxon.getTaxonNodes()){
-                            if (state.getClassification() != null && node.getClassification().equals(state.getClassification())){
-                                return acceptedTaxon;                                
-                            }else if (state.getClassification() == null){
-                                return acceptedTaxon;
-                            }
-                        }
+                        return acceptedTaxon;
                     }
                 }
             }
         }
 
-        String message = String.format("No taxon was found for %s, in classifications!", scientificName);
+        String message = String.format("No taxon was found for %s, in classification!", scientificName);
         state.getReport().addInfoMessage(message);
         return null;
 
