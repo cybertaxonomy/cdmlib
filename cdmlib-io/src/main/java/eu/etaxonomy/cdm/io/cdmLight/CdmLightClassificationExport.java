@@ -379,7 +379,7 @@ public class CdmLightClassificationExport
                     if (subName != null) {
                         csvLine[table.getIndex(CdmLightExportTable.SEC_SUBNAME_FK)] = getId(state, subName);
                         handleName(state, subName, null, !WITH_NAME_REL);
-                        csvLine[table.getIndex(CdmLightExportTable.SEC_SUBNAME)] = subName.getNameCache();
+                        csvLine[table.getIndex(CdmLightExportTable.SEC_SUBNAME)] = createNameWithItalics(subName.getTaggedName());
                         csvLine[table.getIndex(CdmLightExportTable.SEC_SUBNAME_AUTHORS)] = subName.getAuthorshipCache();
                     }
 
