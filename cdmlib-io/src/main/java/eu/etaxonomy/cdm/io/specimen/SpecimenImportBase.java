@@ -191,6 +191,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	protected Taxon getBestMatchingTaxon(String scientificName, java.util.Collection<TaxonName> names, STATE state){
 
         //fill name with accepted taxa collections
+	    List<Taxon> acceptedInClassification = new ArrayList<>();
+	    List<Taxon> acceptedNotInClassification = new ArrayList<>();
         for (TaxonName name : names) {
             if(!name.getTaxonBases().isEmpty()){
                 Set<TaxonBase> taxa = name.getTaxonBases();
@@ -204,15 +206,56 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                     }
 
                     if (!(acceptedTaxon).getTaxonNodes().isEmpty()){
-                        return acceptedTaxon;
+                        //use only taxa included in a classification
+                        for (TaxonNode node: acceptedTaxon.getTaxonNodes()){
+                            if (state.getClassification() != null && node.getClassification().equals(state.getClassification())){
+                                acceptedInClassification.add(acceptedTaxon);
+                            }else {
+                                acceptedNotInClassification.add(acceptedTaxon);
+                            }
+                        }
                     }
                 }
             }
         }
+        if (acceptedInClassification.isEmpty() && state.getClassification() != null) {
+            String message = String.format("No taxon was found for %s, in classification "+  state.getClassification().getTitleCache(), scientificName);
+            state.getReport().addInfoMessage(message);
+            if (state.getConfig().isMoveNewTaxaToDefaultClassification() && !acceptedNotInClassification.isEmpty()) {
+                for(Taxon notInClassification: acceptedNotInClassification) {
+                    TaxonNode nodeInDefaultClassification = notInClassification.getTaxonNode(state.getDefaultClassification(false));
+                    if (nodeInDefaultClassification != null) {
+                        return notInClassification;
+                    }
+                }
+            }
 
-        String message = String.format("No taxon was found for %s, in classification!", scientificName);
-        state.getReport().addInfoMessage(message);
-        return null;
+            TaxonName name = null;
+            if (!names.isEmpty()) {
+                name = names.iterator().next();
+            }else {
+                if (state.getConfig().getNomenclaturalCode() == null) {
+                    name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
+                }else if (state.getConfig().getNomenclaturalCode().equals(NomenclaturalCode.ICNAFP)) {
+                    name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
+                }else if (state.getConfig().getNomenclaturalCode().equals(NomenclaturalCode.ICZN)) {
+                    name = TaxonNameFactory.PARSED_ZOOLOGICAL(scientificName);
+                }else {
+                    name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
+                }
+
+            }
+            if (name!= null) {
+                acceptedInClassification.add(Taxon.NewInstance(name, null));
+            }
+
+        }
+        if (state.getClassification() == null && !acceptedNotInClassification.isEmpty()) {
+            return acceptedNotInClassification.get(0);
+        }
+
+
+        return acceptedInClassification.get(0);
 
     }
 
@@ -743,6 +786,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         Taxon species = null;
         Taxon subspecies = null;
         Taxon parent = null;
+        boolean ignoreAuthor = state.getConfig().isIgnoreAuthorship();
+        state.getConfig().setIgnoreAuthorship(true);
         if(rank!=null){
             if (rank.isLowerThan(RankClass.Genus)){
                 String genusOrUninomial = nvname.getGenusOrUninomial();
@@ -819,6 +864,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 }
             }
         }
+        state.getConfig().setIgnoreAuthorship(ignoreAuthor);
         if (preferredFlag && parent!=taxon ) {
             linkParentChildNode(parent, taxon, classification, state);
         }
