@@ -626,7 +626,7 @@ public class OccurrenceDaoHibernateImpl
                 + "FROM DescriptionElementBase AS de "
                 + "LEFT JOIN de.inDescription AS d "
                 + "JOIN de.associatedSpecimenOrObservation as specimen "
-                + "JOIN specimen.collection AS collection "
+                + "LEFT JOIN specimen.collection AS collection "
                 + "LEFT JOIN d.taxon AS t "
                 + "JOIN t.taxonNodes AS tn "
                 + "WHERE d.class = 'TaxonDescription' "
@@ -716,11 +716,8 @@ public class OccurrenceDaoHibernateImpl
         testSet.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start));
         testSet.addAll(queryTaxonDeterminations(taxonNodeUuids, limit, start));
         testSet.addAll(queryTaxonNameDeterminations(taxonNodeUuids, limit, start));
-        try {
-            testSet.addAll(queryTypeSpecimen(taxonNodeUuids, limit, start));
-        }catch(Exception e) {
-            e.printStackTrace();
-        }
+        testSet.addAll(queryTypeSpecimen(taxonNodeUuids, limit, start));
+
         Collection<SpecimenNodeWrapper> wrappers = new HashSet<>();
         wrappers.addAll(testSet);
         return wrappers;
