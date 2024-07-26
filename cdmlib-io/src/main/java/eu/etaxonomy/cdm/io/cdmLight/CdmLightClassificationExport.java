@@ -1529,7 +1529,7 @@ public class CdmLightClassificationExport
                 fullTitleWithHtml += taggedText.getText() + " ";
             }
         }
-        return fullTitleWithHtml;
+        return fullTitleWithHtml.trim();
     }
 
     private void handleNameRelationships(CdmLightExportState state, TaxonName name) {
