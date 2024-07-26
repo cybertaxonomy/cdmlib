@@ -160,7 +160,6 @@ public class CdmLightExportTest
         String expected = uuid(subspeciesTaxonUuid) + uuid(classificationUuid) + "\"CdmLightExportTest Classification\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\","+uuid(speciesTaxonUuid)+"\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref\"";
         Assert.assertEquals(expected, subspeciesLine.substring(0, expected.length()));
         String expectedSecNameUsedInSource = "\"My sec ref\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"<i>Genus</i> <i>species</i> <i>subsp.</i> <i>subspec</i>\",\"Mill.\",";
-        System.err.println(subspeciesLine);
         Assert.assertTrue(subspeciesLine.contains(expectedSecNameUsedInSource));
 
         //unpublished/excluded/note
