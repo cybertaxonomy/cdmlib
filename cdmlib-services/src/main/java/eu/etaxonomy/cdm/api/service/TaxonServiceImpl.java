@@ -103,8 +103,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingSwapEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -1030,24 +1028,13 @@ public class TaxonServiceImpl
                 if (!limitToGalleries || taxonDescription.isImageGallery()) {
                     for (DescriptionElementBase element : taxonDescription.getElements()) {
                         for (Media media : element.getMedia()) {
-                            if (media.getRepresentations() != null && media.getRepresentations().size() >0) {
-                                MediaRepresentation representation = media.getRepresentations().iterator().next();
-                                if (representation.getMimeType() != null && representation.getMimeType().equals("application/json")) {
-                                    continue;
+                            if (!media.checkManifest()) {
+                                if(taxonDescription.isImageGallery()){
+                                    taxonMedia.add(media);
                                 }
-                                if (representation.getParts() != null && representation.getParts().size() > 0) {
-                                    MediaRepresentationPart part = representation.getParts().iterator().next();
-                                    if (part.getUri().toString().endsWith("json")) {
-                                        continue;
-                                    }
-
+                                else{
+                                    nonImageGalleryImages.add(media);
                                 }
-                            }
-                            if(taxonDescription.isImageGallery()){
-                                taxonMedia.add(media);
-                            }
-                            else{
-                                nonImageGalleryImages.add(media);
                             }
                         }
                     }
@@ -1076,27 +1063,16 @@ public class TaxonServiceImpl
 
                 // SpecimenDescriptions
                 Set<SpecimenDescription> specimenDescriptions = occurrence.getSpecimenDescriptions();
-                
+
                 for (DescriptionBase<?> specimenDescription : specimenDescriptions) {
                     if (!limitToGalleries || specimenDescription.isImageGallery()) {
                         Set<DescriptionElementBase> elements = specimenDescription.getElements();
                         for (DescriptionElementBase element : elements) {
 
-                            for (Media media : element.getMedia()) {
-                                if (media.getRepresentations() != null && media.getRepresentations().size() >0) {
-                                    MediaRepresentation representation = media.getRepresentations().iterator().next();
-                                    if (representation.getMimeType() != null && representation.getMimeType().equals("application/json")) {
-                                        continue;
-                                    }
-                                    if (representation.getParts() != null && representation.getParts().size() > 0) {
-                                        MediaRepresentationPart part = representation.getParts().iterator().next();
-                                        if (part.getUri().toString().contains("json")) {
-                                            continue;
-                                        }
-
-                                    }
+                            for (Media media : element.getMedia()) {//
+                                if (!media.checkManifest()) {
+                                    taxonMedia.add(media);
                                 }
-                                taxonMedia.add(media);
                             }
                         }
                     }
@@ -1129,20 +1105,9 @@ public class TaxonServiceImpl
                     Set<DescriptionElementBase> elements = nameDescription.getElements();
                     for (DescriptionElementBase element : elements) {
                         for (Media media : element.getMedia()) {
-                            if (media.getRepresentations() != null && media.getRepresentations().size() >0) {
-                                MediaRepresentation representation = media.getRepresentations().iterator().next();
-                                if (representation.getMimeType().equals("application/json")) {
-                                    continue;
-                                }
-                                if (representation.getParts() != null && representation.getParts().size() > 0) {
-                                    MediaRepresentationPart part = representation.getParts().iterator().next();
-                                    if (part.getUri().toString().contains("json")) {
-                                        continue;
-                                    }
-
-                                }
+                            if (!media.checkManifest()) {
+                                taxonMedia.add(media);
                             }
-                            taxonMedia.add(media);
                         }
                     }
                 }
@@ -1158,6 +1123,8 @@ public class TaxonServiceImpl
 
         return taxonMedia;
     }
+
+
 
     private List<Media> deduplicateMedia(List<Media> taxonMedia) {
         return taxonMedia.stream().distinct().collect(Collectors.toList());

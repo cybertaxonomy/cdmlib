@@ -336,6 +336,24 @@ public class Media
         this.mediaCreated = mediaCreated;
     }
 
+    public boolean checkManifest() {
+        boolean isManifest = false;
+        if (this.getRepresentations() != null && this.getRepresentations().size() >0) {
+            MediaRepresentation representation = this.getRepresentations().iterator().next();
+            if (representation.getMimeType() != null && representation.getMimeType().equals("application/json")) {
+                isManifest = true;
+            }
+            if (!isManifest && representation.getParts() != null && representation.getParts().size() > 0) {
+                MediaRepresentationPart part = representation.getParts().iterator().next();
+                if (part.getUri().toString().contains("json")) {
+                    isManifest = true;
+                }
+
+            }
+        }
+        return isManifest;
+    }
+
     //************* Descriptions  *********************/
 
     public Map<Language,LanguageString> getAllDescriptions(){
