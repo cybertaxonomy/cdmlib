@@ -83,7 +83,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
@@ -228,21 +227,7 @@ public class OccurrenceServiceImpl
          if(rootOccurence.isInstanceOf(MediaSpecimen.class)){
              MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(rootOccurence, MediaSpecimen.class);
              Set<MediaRepresentation> repr = mediaSpecimen.getMediaSpecimen().getRepresentations();
-             boolean addMedia = true;
-             for (MediaRepresentation mediaRepr: repr) {
-                 if (mediaRepr.getMimeType() != null && mediaRepr.getMimeType().equals("application/json")) {
-                     addMedia = false;
-                     break;
-                 }
-                 List<MediaRepresentationPart> parts = mediaRepr.getParts();
-                 for (MediaRepresentationPart part: parts) {
-                     if(part.getUri().getPath().endsWith(".json")) {
-                         addMedia = false;
-                         break;
-                     }
-                 }
-             }
-             if (addMedia) {
+             if (!mediaSpecimen.getMediaSpecimen().checkManifest()) {
                  media.add(mediaSpecimen.getMediaSpecimen());
              }
          }
