@@ -28,22 +28,20 @@ public class DocumentSearchResult {
 
     private float maxScore = 0;
 
-
-    public DocumentSearchResult() {
-    }
-
     /**
      * key will be a combination of DocumentBuilder.CLASS_FIELDNAME and id field: ID_FIELD
      */
     private final Map<String, Document> docs = new HashMap<>();
+
     private Map<String,String[]> fieldHighlightMap;
 
+
+    public DocumentSearchResult() {
+    }
 
     public double getScore() {
         return score;
     }
-
-
     public void setScore(float score) {
         this.score = score;
     }
@@ -52,33 +50,22 @@ public class DocumentSearchResult {
     public Map<String,String[]> getFieldHighlightMap() {
         return fieldHighlightMap;
     }
-
     public void setFieldHighlightMap(Map<String,String[]> fieldHighlightMap) {
         this.fieldHighlightMap = fieldHighlightMap;
     }
 
-
-
     public float getMaxScore() {
         return maxScore;
     }
-
-
     public void setMaxScore(float maxScore) {
         this.maxScore = maxScore;
     }
 
-
     public Collection<Document> getDocs() {
         return docs.values();
     }
-
-
     public void addDoc(Document doc) {
         String key = doc.getValues(ProjectionConstants.OBJECT_CLASS)[0] + "." + doc.getValues(LuceneSearch.ID_FIELD)[0];
         this.docs.put(key, doc);
     }
-
-
-
 }

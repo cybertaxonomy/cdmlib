@@ -19,12 +19,12 @@ package eu.etaxonomy.cdm.api.nameMatching;
  */
 public class NameMatchingCandidateResult extends NameMatchingExactResult {
 
-    private Integer distance;
+    private Double distance;
 
-    public Integer getDistance() {
+    public Double getDistance() {
         return distance;
     }
-    public void setDistance(Integer distance) {
+    public void setDistance(Double distance) {
         this.distance = distance;
     }
 }

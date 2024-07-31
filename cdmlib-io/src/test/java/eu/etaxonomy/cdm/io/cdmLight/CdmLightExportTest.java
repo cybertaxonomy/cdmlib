@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -110,24 +111,20 @@ public class CdmLightExportTest
         Assert.assertNotNull("Scientific Name table must not be null", scientificName);
         expected ="\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"\",\"Subspecies\",\"43\",\"Genus species subsp. subspec Mill.\",\"Genus species subsp. subspec\",\"Genus\",\"\",\"\",\"species\",\"subsp.\",\"subspec\",\"\",\"\",\"\",";
         Assert.assertTrue(scientificNameString.contains(expected));
-        if (config.isAddHTML()){
-            expected = "\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\"";
-            Assert.assertTrue(scientificNameString.contains(expected));
-        }
+        expected = "\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\"";
+        Assert.assertTrue(scientificNameString.contains(expected));
 
         expected ="\"Book\",\"The book of botany\",\"The book of botany\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
         Assert.assertTrue(scientificNameString.contains(expected));
 
         //homotypic group
-        byte[] homotypicGroup = data.get(CdmLightExportTable.HOMOTYPIC_GROUP.getTableName());
-        String homotypicGroupString = new String(homotypicGroup);
-        Assert.assertNotNull("Reference table must not be null", homotypicGroup);
-        if (config.isAddHTML()){
-            expected ="\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\"";
-        }else{
-            expected ="\"= Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\"";
-        }
-        Assert.assertTrue(homotypicGroupString.contains(expected));
+        List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
+        Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
+        Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
+        String line = getLine(hgList, subspeciesNameHgUuid);
+        expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 sec. My sec ref\",\"\",\"\",\"0\",\"\"";
+
+        Assert.assertEquals(expected, line);
     }
 
     @Test
@@ -148,11 +145,11 @@ public class CdmLightExportTest
         Assert.assertEquals("There should be 5 taxa", 5, taxonResult.size() - COUNT_HEADER);
 
         List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
-        Assert.assertEquals("There should be 9 references (8 nomenclatural references including an in-reference"
-                + " and 1 sec reference)", 9, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 11 references (10 nomenclatural references including an in-reference"
+                + " and 1 sec reference)", 11, referenceResult.size() - COUNT_HEADER);
 
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
-        Assert.assertEquals("There should be 2 synonym", 2, synonymResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 3 synonym", 3, synonymResult.size() - COUNT_HEADER);
 
         //test single data
         Assert.assertEquals("Result must not contain root taxon",
@@ -162,7 +159,8 @@ public class CdmLightExportTest
         String subspeciesLine = getLine(taxonResult, subspeciesTaxonUuid);
         String expected = uuid(subspeciesTaxonUuid) + uuid(classificationUuid) + "\"CdmLightExportTest Classification\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\","+uuid(speciesTaxonUuid)+"\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref\"";
         Assert.assertEquals(expected, subspeciesLine.substring(0, expected.length()));
-        String expectedSecNameUsedInSource = "\"My sec ref\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"Genus species subsp. subspec\",\"Mill.\",";
+
+        String expectedSecNameUsedInSource = "\"My sec ref\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i>\",\"Mill.\",";
         Assert.assertTrue(subspeciesLine.contains(expectedSecNameUsedInSource));
 
         //unpublished/excluded/note
@@ -179,35 +177,41 @@ public class CdmLightExportTest
         //#10488
         Assert.assertEquals("Test unique year 1804b ", ",\"BK\",\"\",\"Mill. 1804: The book of botany 3\",\"Mill. (1804b)\",\"Mill. 1804b: The book of botany 3\"", expectedAfterRefType);
 
+        //geo area
         byte[] geographicAreaFact = data.get(CdmLightExportTable.GEOGRAPHIC_AREA_FACT.getTableName());
         String geographicAreaFactString = new String(geographicAreaFact);
         Assert.assertNotNull("Geographical fact table must not be null", geographicAreaFact);
         expected ="\"674e9e27-9102-4166-8626-8cb871a9a89b\"," + uuid(subspeciesTaxonUuid) + "\"Armenia\",\"present\"";
         Assert.assertTrue(geographicAreaFactString.contains(expected));
 
+        //nom author
         byte[] nomenclaturalAuthor = data.get(CdmLightExportTable.NOMENCLATURAL_AUTHOR.getTableName());
         String nomenclaturalAuthorString = new String(nomenclaturalAuthor);
         Assert.assertNotNull("Nomenclatural Author table must not be null", nomenclaturalAuthor);
         expected ="\"Mill.\",\"Mill.\",\"\",\"\",\"\",\"\"";
         Assert.assertTrue(nomenclaturalAuthorString.contains(expected));
 
-        byte[] scientificName = data.get(CdmLightExportTable.SCIENTIFIC_NAME.getTableName());
-        String scientificNameString = new String(scientificName);
-        Assert.assertNotNull("Scientific Name table must not be null", scientificName);
-        expected ="\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"\",\"Subspecies\",\"43\",\"Genus species subsp. subspec Mill.\",\"Genus species subsp. subspec\",\"Genus\",\"\",\"\",\"species\",\"subsp.\",\"subspec\",\"\",\"\",\"\",";
-        Assert.assertTrue(scientificNameString.contains(expected));
+        //names
+        List<String> nameList = getStringList(data, CdmLightExportTable.SCIENTIFIC_NAME);
+        Assert.assertNotNull("Scientific Name table must not be null", nameList);
+        String line = getLine(nameList, subspeciesNameUuid);
+        expected ="\""+subspeciesNameUuid+"\",\"\",\"Subspecies\",\"43\",\"Genus species subsp. subspec Mill.\",\"Genus species subsp. subspec\",\"Genus\",\"\",\"\",\"species\",\"subsp.\",\"subspec\",\"\",\"\",\"\",";
+        Assert.assertTrue(line.contains(expected));
         expected ="\"Book\",\"The book of botany\",\"The book of botany\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
-        Assert.assertTrue(scientificNameString.contains(expected));
+        Assert.assertTrue(line.contains(expected));
+        Assert.assertNotNull("The earlier homonym should be included", getLine(nameList, earlierHomonymUuid));
+        //#10562
+        Assert.assertNull("The basionym of the earlier homonym should not be included", getLine(nameList, earlierHomonymBasionymUuid));
 
-        byte[] homotypicGroup = data.get(CdmLightExportTable.HOMOTYPIC_GROUP.getTableName());
-        String homotypicGroupString = new String(homotypicGroup);
-        Assert.assertNotNull("Reference table must not be null", homotypicGroup);
-        if (config.isAddHTML()){
-            expected ="\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 My sec ref\",\"\",\"\"";
-        }else{
-            expected ="\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804)\",\"\",\"\",\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804) My sec ref\",\"\",\"\"";
-        }
-        Assert.assertTrue(homotypicGroupString.contains(expected));
+        //homotypic group
+        List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
+        Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
+        Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
+        line = getLine(hgList, subspeciesNameHgUuid);
+        Assert.assertNotNull("Subspecies homotypic group record does not exist for predefined uuid", line);
+        expected ="\"c60c0ce1-0fa0-468a-9908-8e9afed05714\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 sec. My sec ref\",\"\",\"\",\"0\",\"\"";
+
+        Assert.assertEquals(expected, line);
     }
 
     @Test
@@ -225,16 +229,40 @@ public class CdmLightExportTest
 
         //test ...
         //taxon
-        List<String> taxonResult = getStringList(data, ColDpExportTable.TAXON);
+        List<String> taxonResult = getStringList(data, CdmLightExportTable.TAXON);
         Assert.assertEquals("There should be 4 taxa", 4, taxonResult.size() - COUNT_HEADER);
 
         //reference
-        List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
-        Assert.assertEquals("There should be 7 references (6 nomenclatural references and 1 sec reference)", 7, referenceResult.size() - COUNT_HEADER);
+        List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
+        Assert.assertEquals("There should be 9 references (8 nomenclatural references and 1 sec reference)", 9, referenceResult.size() - COUNT_HEADER);
 
         //synonyms
-        List<String> synonymResult = getStringList(data, ColDpExportTable.SYNONYM);
-        Assert.assertEquals("There should be 1 synonym", 1, synonymResult.size() - COUNT_HEADER);
+        List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
+        Assert.assertEquals("There should be 2 synonyms", 2, synonymResult.size() - COUNT_HEADER);
+    }
+
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    })
+    @Ignore
+    public void testTypeDesignationOutput(){
+
+
+      //config + invoke
+        CdmLightExportConfigurator config = newConfigurator();
+        ExportResult result = defaultExport.invoke(config);
+        Map<String, byte[]> data = checkAndGetData(result);
+        Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
+        List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
+        Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
+        Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
+        //String line = getLine(hgList, speciesNameHgUuid);
+        //the reference is another than the sec1 therefore it should be Mustermann 2012a
+        //String expected = "Holotype (designated by Mustermann 2012a): Armenia, Somewhere in the forest, 55°33'22""N, 15°13'12""W (WGS84), Collector team CT222 (B A555).";
+
+
     }
 
     @Override

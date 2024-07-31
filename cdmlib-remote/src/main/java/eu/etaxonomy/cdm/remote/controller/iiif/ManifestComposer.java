@@ -593,6 +593,21 @@ public class ManifestComposer {
         List<String> creditTexts = new ArrayList<>();
         List<URI> license = new ArrayList<>();
         MetadataEntry remove = null;
+        String copyRightText = "";
+
+
+            for (MetadataEntry entry: metadata) {
+                if (entry.getLabelString().equalsIgnoreCase("copyright")) {
+                    if (metadataSource.contains("mediaServer") || metadataSource.contains("onlyMediaServer")) {
+                        copyRightText = "© " + entry.getValueString();
+                        rightsTexts.add(copyRightText);
+                    }
+                    remove = entry;
+
+
+            }
+        }
+
         if(entity.getRights() != null && entity.getRights().size() > 0){
             for(Rights right : entity.getRights()){
                 String rightText = "";
@@ -622,17 +637,9 @@ public class ManifestComposer {
                 // --- COPYRIGHT
                 else if(right.getType().equals(RightsType.COPYRIGHT())){
                     //handle copyright similar to the other meta data and decide from metadataSource
-                    String copyRightText = null;
-                    if (metadataSource.contains("mediaServer")) {
-                        for (MetadataEntry entry: metadata) {
-                            if (entry.getLabelString().equalsIgnoreCase("copyright")) {
-                                copyRightText = "© " + entry.getValueString();
-                                remove = entry;
-                            }
-                        }
-                    }
+
                     //if there is no copyright on mediaServer and the meta data shouldn't be only from media server
-                    if (copyRightText == null && !metadataSource.equalsIgnoreCase("onlyMediaServer")){
+                    if (copyRightText == "" && !metadataSource.equalsIgnoreCase("onlyMediaServer")){
                         // titleCache + agent
                         if(right.getText() != null){
                             copyRightText = right.getText();
@@ -646,9 +653,11 @@ public class ManifestComposer {
                         if(!copyRightText.isEmpty()){
                             copyRightText = "© " + copyRightText;
                         }
-
+                        if (copyRightText != "") {
+                            rightsTexts.add(copyRightText);
+                        }
                     }
-                    rightText = copyRightText;
+
                 } else
                 if(right.getType().equals(RightsType.ACCESS_RIGHTS())){
                     // titleCache + agent
@@ -685,7 +694,7 @@ public class ManifestComposer {
             String joinedRights = rightsTexts.stream().collect(Collectors.joining(", "));
             resource.addAttribution(joinedRights);
 
-            if(metadata != null && remove != null){
+            if(metadata != null ){
                 if (remove!= null) {
                     metadata.remove(remove);
                 }

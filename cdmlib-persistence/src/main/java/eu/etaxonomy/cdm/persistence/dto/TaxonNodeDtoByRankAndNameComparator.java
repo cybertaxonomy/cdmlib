@@ -85,8 +85,8 @@ public class TaxonNodeDtoByRankAndNameComparator
 					return result;
 				}
 			}else {
-				//this is maybe not 100% correct, we need to compare name cases, but it is a very rare case
-				return node1.getTaxonTitleCache().compareTo(node2.getTaxonTitleCache());
+				//this is maybe not 100% correct, we need to compare name cases, but it is a very rare case, in this case the AbbrevTitleCache cont
+				return node1.getNameTitleCache().compareTo(node2.getNameTitleCache());
 			}
 		}else{
 			//rankTax2.isHigher(rankTax1)

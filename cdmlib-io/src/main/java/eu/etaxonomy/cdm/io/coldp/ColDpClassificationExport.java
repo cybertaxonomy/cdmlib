@@ -114,6 +114,8 @@ public class ColDpClassificationExport
 
     private static final long serialVersionUID = 4288364478648729869L;
 
+    private static boolean WITH_NAME_REL = true;
+
     public ColDpClassificationExport() {
         this.ioName = this.getClass().getSimpleName();
     }
@@ -300,7 +302,7 @@ public class ColDpClassificationExport
             try {
                 //accepted name
                 TaxonName name = taxon.getName();
-                handleName(state, name, taxon, true);
+                handleName(state, name, taxon, WITH_NAME_REL);
 
                 if (state.getConfig().isDoSynonyms()) {
                     //homotypic group / synonyms
@@ -941,7 +943,7 @@ public class ColDpClassificationExport
                 return;
             }
             TaxonName name = synonym.getName();
-            handleName(state, name, synonym.getAcceptedTaxon());
+            handleName(state, name, synonym.getAcceptedTaxon(), WITH_NAME_REL);
 
             ColDpExportTable table = ColDpExportTable.SYNONYM;
             String[] csvLine = new String[table.getSize()];
@@ -1041,12 +1043,21 @@ public class ColDpClassificationExport
 //        }
 //    }
 
-    private void handleName(ColDpExportState state, TaxonName name, Taxon acceptedTaxon){
-        handleName(state, name, acceptedTaxon, false);
-    }
+    /**
+     * @param withNameRelationships name relationships usually only need to be handled if
+     *        the name exists in the synonymy, therefore this parameter only needs to be set
+     *        to true if the given name parameter is found in the synonymy.
+     */
+    private void handleName(ColDpExportState state, TaxonName name, Taxon acceptedTaxon,
+            boolean withNameRelationships) {
 
-    private void handleName(ColDpExportState state, TaxonName name, Taxon acceptedTaxon, boolean acceptedName) {
         if (name == null || state.getNameStore().containsKey(name.getId())) {
+            if (withNameRelationships) {
+                //it is possible that the first time this name was handled
+                //the name relationships were not handled therefore we allow
+                //to handle them again
+                handleNameRelationships(state, name);
+            }
             return;
         }
         try {
@@ -1076,9 +1087,7 @@ public class ColDpClassificationExport
             //basionymID
             TaxonName basionym = name.getBasionym();  //TODO 5 basionym, order in case there are >1 basionyms
             if (basionym != null) {
-                if (!state.getNameStore().containsKey(basionym.getId())) {
-                    handleName(state, basionym, null);
-                }
+                handleName(state, basionym, null, !WITH_NAME_REL);
                 csvLine[table.getIndex(ColDpExportTable.NAME_BASIONYM_ID)] = getId(state, basionym);
             }
 
@@ -1204,8 +1213,10 @@ public class ColDpClassificationExport
 
 
             state.getProcessor().put(table, name, csvLine);
-            //TODO 1 nameRelationships - is this still an open issue? Do tests exist?
-            handleNameRelationships(state, name);
+            if(withNameRelationships) {
+                //TODO 1 nameRelationships - is this still an open issue? Do tests exist?
+                handleNameRelationships(state, name);
+            }
 
         } catch (Exception e) {
             state.getResult().addException(e,
@@ -1544,6 +1555,7 @@ public class ColDpClassificationExport
     }
 
     private void handleNameRelationships(ColDpExportState state, TaxonName name) {
+
         ColDpExportTable table = ColDpExportTable.NAME_RELATION;
         ColDpExportTransformer transformer = (ColDpExportTransformer)state.getTransformer();
         try {
@@ -1600,9 +1612,7 @@ public class ColDpClassificationExport
 
         String[] csvLine = new String[table.getSize()];
 
-        if (!state.getNameStore().containsKey(relatedName.getId())) {
-            handleName(state, relatedName, null);
-        }
+        handleName(state, relatedName, null, !WITH_NAME_REL);
         csvLine[table.getIndex(ColDpExportTable.REL_NAME_NAMEID)] = getId(state, name);
         csvLine[table.getIndex(ColDpExportTable.REL_NAME_REL_NAMEID)] = getId(state, relatedName);
 

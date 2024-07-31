@@ -738,6 +738,6 @@ public interface IOccurrenceService
 
     public Pager<MediaDTO> getMediaDTOs(SpecimenOrObservationBase<?> occurence, Integer pageSize, Integer pageNumber);
 
-    public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, boolean collectOriginalMedia, boolean collectDerivativeMedia,
+    public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, Boolean collectOriginalMedia, Boolean collectDerivativeMedia,
 			Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 }

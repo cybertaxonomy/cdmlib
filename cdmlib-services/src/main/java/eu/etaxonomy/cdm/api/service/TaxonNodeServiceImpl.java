@@ -175,12 +175,6 @@ public class TaxonNodeServiceImpl
     }
 
     @Override
-    public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
-            boolean recursive, boolean includeUnpublished, List<String> propertyPaths){
-        return dao.listChildrenOf(node, pageSize, pageIndex, recursive, includeUnpublished, propertyPaths, null);
-    }
-
-    @Override
     public TaxonNodeDto getParentUuidAndTitleCache(ITaxonTreeNode child) {
         UUID uuid = child.getUuid();
         int id = child.getId();

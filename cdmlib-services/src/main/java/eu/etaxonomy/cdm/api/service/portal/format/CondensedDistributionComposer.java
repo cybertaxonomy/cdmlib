@@ -78,8 +78,9 @@ public class CondensedDistributionComposer {
             return term.getIdInVocabulary();
         }else if (su == SymbolUsage.AbbrevLabel){
             return term.getAbbrevLabel();
+        }else {
+            throw new RuntimeException("Unhandled enum value: " +  this);
         }
-        throw new RuntimeException("Unhandled enum value: " +  this);
     }
 
 
@@ -436,7 +437,7 @@ public class CondensedDistributionComposer {
             CondensedDistributionConfiguration config, String parentAreaLabel) {
 
         //TODO config with symbols, not only idInVocabulary
-        String label = getSymbol(config.areaSymbolField, area, langs);
+        String label = CdmUtils.Nz(getSymbol(config.areaSymbolField, area, langs));
         if (config.shortenSubAreaLabelsIfPossible && parentAreaLabel != null && !parentAreaLabel.isEmpty()){
             //TODO make brackets not hardcoded, but also allow [],- etc., but how?
             if (label.startsWith(parentAreaLabel+"(") && label.endsWith(")") ){

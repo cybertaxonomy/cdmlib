@@ -56,8 +56,6 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DnaSampleDefaultCacheStrategy;
 })
 @XmlRootElement(name = "DnaSample")
 @Entity
-//@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
 public class DnaSample extends DerivedUnit {
 

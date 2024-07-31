@@ -54,7 +54,7 @@ public class RequestedParam {
     public void setScientificNameList(List<String> scientificNameList) {
         this.scientificNameList = scientificNameList;
     }
-    public boolean isExcludeBasyonymAuthors() {
+    public boolean isExcludeBasionymAuthors() {
         return excludeBasyonymAuthors;
     }
     public void setExcludeBasyonymAuthors(boolean excludeBasyonymAuthors) {

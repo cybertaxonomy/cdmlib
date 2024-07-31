@@ -60,7 +60,6 @@ import eu.etaxonomy.cdm.model.term.OrderedTerm;
 })
 @XmlRootElement(name = "DnaQuality")
 @Entity
-//@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
 public class DnaQuality extends VersionableEntity {
 

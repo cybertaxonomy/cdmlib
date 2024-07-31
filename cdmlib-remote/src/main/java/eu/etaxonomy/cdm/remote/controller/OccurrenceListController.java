@@ -179,13 +179,13 @@ public class OccurrenceListController extends AbstractIdentifiableListController
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "byGeneticAccessionNumber" )
-    public SpecimenOrObservationBaseDTO doGetByGeneticAccessionNumber(
+    public SpecimenOrObservationBaseDTO<?> doGetByGeneticAccessionNumber(
             @RequestParam(value="accessionNumber", required = true) String accessionNumber,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doGetByGeneticAccessionNumber() - " + requestPathAndQuery(request));
 
-       SpecimenOrObservationBaseDTO sobDto = service.findByGeneticAccessionNumber(accessionNumber, null);
+       SpecimenOrObservationBaseDTO<?> sobDto = service.findByGeneticAccessionNumber(accessionNumber, null);
        if(sobDto == null ) {
            response.setHeader("Failure", "No DNA available for accession number ");
            HttpStatusMessage.create("No DNA available for accession number " + accessionNumber, 400).send(response);

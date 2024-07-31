@@ -66,18 +66,6 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive,  boolean includeUnpublished, TaxonNodeSortMode sortMode);
 
 	/**
-	 * Lists all direct child nodes of the given {@link UuidAndTitleCache} which
-	 * represents the parent {@link TaxonNode}
-	 * @param parent a UuidAndTitleCache object which represents a parent {@link TaxonNode}
-	 * @return a list of UuidAndTitleCache objects that represent children of the
-	 * parent
-	 */
-//	public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
-
-    public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
-            boolean recursive, boolean includeUnpublished, List<String> propertyPaths);
-
-	/**
      * Retrieves a list of {@link UuidAndTitleCache} objects that have a matchin titleCache
      *
      * @param limit the maximum results

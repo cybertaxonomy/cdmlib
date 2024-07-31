@@ -1028,11 +1028,13 @@ public class TaxonServiceImpl
                 if (!limitToGalleries || taxonDescription.isImageGallery()) {
                     for (DescriptionElementBase element : taxonDescription.getElements()) {
                         for (Media media : element.getMedia()) {
-                            if(taxonDescription.isImageGallery()){
-                                taxonMedia.add(media);
-                            }
-                            else{
-                                nonImageGalleryImages.add(media);
+                            if (!media.checkManifest()) {
+                                if(taxonDescription.isImageGallery()){
+                                    taxonMedia.add(media);
+                                }
+                                else{
+                                    nonImageGalleryImages.add(media);
+                                }
                             }
                         }
                     }
@@ -1061,12 +1063,16 @@ public class TaxonServiceImpl
 
                 // SpecimenDescriptions
                 Set<SpecimenDescription> specimenDescriptions = occurrence.getSpecimenDescriptions();
+
                 for (DescriptionBase<?> specimenDescription : specimenDescriptions) {
                     if (!limitToGalleries || specimenDescription.isImageGallery()) {
                         Set<DescriptionElementBase> elements = specimenDescription.getElements();
                         for (DescriptionElementBase element : elements) {
-                            for (Media media : element.getMedia()) {
-                                taxonMedia.add(media);
+
+                            for (Media media : element.getMedia()) {//
+                                if (!media.checkManifest()) {
+                                    taxonMedia.add(media);
+                                }
                             }
                         }
                     }
@@ -1099,7 +1105,9 @@ public class TaxonServiceImpl
                     Set<DescriptionElementBase> elements = nameDescription.getElements();
                     for (DescriptionElementBase element : elements) {
                         for (Media media : element.getMedia()) {
-                            taxonMedia.add(media);
+                            if (!media.checkManifest()) {
+                                taxonMedia.add(media);
+                            }
                         }
                     }
                 }
@@ -1115,6 +1123,8 @@ public class TaxonServiceImpl
 
         return taxonMedia;
     }
+
+
 
     private List<Media> deduplicateMedia(List<Media> taxonMedia) {
         return taxonMedia.stream().distinct().collect(Collectors.toList());

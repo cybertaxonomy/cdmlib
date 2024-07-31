@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupComparator.ORDER_BY;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -180,7 +181,7 @@ public class TypeDesignationGroupContainer {
         TypeDesignationStatusBase<?> status = td.getTypeStatus();
 
         try {
-            VersionableEntity baseEntity = baseEntity(td);
+            AnnotatableEntity baseEntity = baseEntity(td);
 
             TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
             boolean withCitation = true;
@@ -221,9 +222,9 @@ public class TypeDesignationGroupContainer {
         return type == null? null : type.getUuid();
     }
 
-    protected VersionableEntity baseEntity(TypeDesignationBase<?> td) throws DataIntegrityException {
+    protected AnnotatableEntity baseEntity(TypeDesignationBase<?> td) throws DataIntegrityException {
 
-        VersionableEntity baseEntity = null;
+        AnnotatableEntity baseEntity = null;
         if(td instanceof SpecimenTypeDesignation){
             SpecimenTypeDesignation std = (SpecimenTypeDesignation) td;
             FieldUnit fu = findFieldUnit(std.getTypeSpecimen());

@@ -47,7 +47,7 @@ public class NameMatchingDaoHibernateImpl
     }
 
     @Override
-    public List<NameMatchingParts> findNameMatchingParts(Map<String, Integer> postFilteredGenusOrUninominalWithDis) {
+    public List<NameMatchingParts> findNameMatchingParts(Map<String, Double> postFilteredGenusOrUninominalWithDis) {
         StringBuilder hql = new StringBuilder();
         List<NameMatchingParts> result = new ArrayList<>();
 

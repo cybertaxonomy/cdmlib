@@ -1426,6 +1426,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         	representation.setMimeType(cdmImageInfo.getMimeType());
         	representation.setSuffix(cdmImageInfo.getSuffix());
         }
+        if (uriString.endsWith(".json")) {
+            representation.setMimeType("application/json");
+        }
         representation.addRepresentationPart(imageFile);
         return representation;
     }

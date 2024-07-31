@@ -356,7 +356,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 	    classificationDao.save(flatHierarchieClassification);
 
 	    Reference sec = ReferenceFactory.newBook();
-	    sec.setTitleCache("Kohlbecker, A., Testcase standart views, 2013", true);
+	    sec.setTitleCache("Kohlbecker, A., Testcase standard views, 2013", true);
 	    Reference sec_sensu = ReferenceFactory.newBook();
 	    sec_sensu.setTitleCache("Komarov, V. L., Flora SSSR 29", true);
 	    referenceDao.save(sec);

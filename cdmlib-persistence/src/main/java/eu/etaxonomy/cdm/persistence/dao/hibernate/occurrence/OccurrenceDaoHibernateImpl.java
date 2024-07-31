@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import javax.persistence.Tuple;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
@@ -577,15 +578,50 @@ public class OccurrenceDaoHibernateImpl
         List<SpecimenNodeWrapper> list = new ArrayList<>();
         List<Object[]> result = query.list();
         for(Object[] object : result){
-            SpecimenNodeWrapper wrapper = new SpecimenNodeWrapper(
-                    new UuidAndTitleCache<>(
-                            (UUID) object[0],
-                            (Integer) object[1],
-                            (String) object[2]),
-                    (SpecimenOrObservationType)object[3],
-                    new TaxonNodeDto((TaxonNode)object[4]));
-            if(object.length>5) {
-                wrapper.setTaxonDescriptionUuid((UUID)object[5]);
+            //no specimen!
+            if (object[0] == null) {
+                continue;
+            }
+            UuidAndTitleCache temp = new UuidAndTitleCache<>(
+                    (UUID) object[0],
+                    (Integer) object[1],
+                    (String) object[7]);
+
+            String collectorsNumber = object[2] == null ? "": (String)object[2];
+            String sep = "";
+            if (StringUtils.isNotBlank(collectorsNumber) ) {
+                sep = " - ";
+            }
+
+
+            String collectorString = object[9] == null ? "": sep + (String)object[9];
+            if (StringUtils.isBlank(collectorString)) {
+                sep = "";
+            }else {
+                sep = " - ";
+            }
+            String collectionCode = object[6] == null ? "": sep + (String)object[6];
+            String identifier = "";
+
+            if (object[3] != null) {
+                identifier = (String)object[3];
+            }else if (object[4] != null) {
+                identifier = (String)object[4];
+            }else if (object[5] != null) {
+                identifier = (String)object[5];
+            }
+            if (identifier != "") {
+                sep = " - ";
+            }else {
+                sep = "";
+            }
+            temp.setAbbrevTitleCache(collectorsNumber +  collectorString + collectionCode + sep + identifier );
+            SpecimenNodeWrapper wrapper = new SpecimenNodeWrapper(temp,
+                    (SpecimenOrObservationType)object[8],
+                    new TaxonNodeDto((TaxonNode)object[10]));
+
+            if(object.length>11) {
+                wrapper.setTaxonDescriptionUuid((UUID)object[11]);
             }
             list.add(wrapper);
         }
@@ -595,15 +631,27 @@ public class OccurrenceDaoHibernateImpl
     private List<SpecimenNodeWrapper> queryIndividualAssociatedSpecimen(List<UUID> taxonNodeUuids,
             Integer limit, Integer start){
         String queryString =  "SELECT "
-                + "de.associatedSpecimenOrObservation.uuid, "
-                + "de.associatedSpecimenOrObservation.id, "
-                + "de.associatedSpecimenOrObservation.titleCache, "
-                + "de.associatedSpecimenOrObservation.recordBasis, "
+                + "specimen.uuid, "
+                + "specimen.id, "
+                + "specimen.collectorsNumber, "
+                + "specimen.barcode, "
+                + "specimen.accessionNumber, "
+                + "specimen.catalogNumber, "
+                + "collection.code, "
+                + "specimen.titleCache, "
+                + "specimen.recordBasis, "
+                + "collector.collectorTitleCache, "
                 + "tn, "
                 + "d.uuid "
                 + "FROM DescriptionElementBase AS de "
                 + "LEFT JOIN de.inDescription AS d "
+                + "JOIN de.associatedSpecimenOrObservation as specimen "
+                + "LEFT JOIN specimen.collection AS collection "
                 + "LEFT JOIN d.taxon AS t "
+                + "LEFT JOIN specimen.derivedFrom AS derivedFrom "
+                + "LEFT JOIN derivedFrom.originals AS original "
+                + "LEFT JOIN original.gatheringEvent AS gathering "
+                + "LEFT JOIN gathering.actor AS collector "
                 + "JOIN t.taxonNodes AS tn "
                 + "WHERE d.class = 'TaxonDescription' "
                 + "AND tn.uuid in (:taxonNodeUuids) "
@@ -617,12 +665,23 @@ public class OccurrenceDaoHibernateImpl
         String queryString =  "SELECT "
                 + "td.typeSpecimen.uuid, "
                 + "td.typeSpecimen.id, "
+                + "td.typeSpecimen.collectorsNumber, "
+                + "td.typeSpecimen.barcode, "
+                + "td.typeSpecimen.accessionNumber, "
+                + "td.typeSpecimen.catalogNumber, "
+                + "collection.code, "
                 + "td.typeSpecimen.titleCache, "
                 + "td.typeSpecimen.recordBasis, "
+                + "collector.collectorTitleCache, "
                 + "tn "
                 + "FROM SpecimenTypeDesignation AS td "
                 + "LEFT JOIN td.typifiedNames AS tn "
+                + "LEFT JOIN td.typeSpecimen.collection as collection "
                 + "LEFT JOIN tn.taxonBases AS t "
+                + "LEFT JOIN td.typeSpecimen.derivedFrom AS derivedFrom "
+                + "LEFT JOIN derivedFrom.originals AS original "
+                + "LEFT JOIN original.gatheringEvent AS gathering "
+                + "LEFT JOIN gathering.actor AS collector "
                 + "JOIN t.taxonNodes AS tn "
                 + "WHERE tn.uuid in (:taxonNodeUuids) "
                 ;
@@ -635,11 +694,22 @@ public class OccurrenceDaoHibernateImpl
         String queryString =  "SELECT "
                 + "det.identifiedUnit.uuid, "
                 + "det.identifiedUnit.id, "
+                + "det.identifiedUnit.collectorsNumber, "
+                + "det.identifiedUnit.barcode, "
+                + "det.identifiedUnit.accessionNumber, "
+                + "det.identifiedUnit.catalogNumber, "
+                + "collection.code, "
                 + "det.identifiedUnit.titleCache, "
                 + "det.identifiedUnit.recordBasis, "
+                + "collector.collectorTitleCache, "
                 + "tn "
                 + "FROM DeterminationEvent AS det "
                 + "LEFT JOIN det.taxon AS t "
+                + "LEFT JOIN det.identifiedUnit.collection as collection "
+                + "LEFT JOIN det.identifiedUnit.derivedFrom AS derivedFrom "
+                + "LEFT JOIN derivedFrom.originals AS original "
+                + "LEFT JOIN original.gatheringEvent AS gathering "
+                + "LEFT JOIN gathering.actor AS collector "
                 + "JOIN t.taxonNodes AS tn "
                 + "WHERE tn.uuid in (:taxonNodeUuids) "
                 ;
@@ -652,12 +722,23 @@ public class OccurrenceDaoHibernateImpl
         String queryString =  "SELECT "
                 + "det.identifiedUnit.uuid, "
                 + "det.identifiedUnit.id, "
+                + "det.identifiedUnit.collectorsNumber, "
+                + "det.identifiedUnit.barcode, "
+                + "det.identifiedUnit.accessionNumber, "
+                + "det.identifiedUnit.catalogNumber, "
+                + "collection.code, "
                 + "det.identifiedUnit.titleCache, "
                 + "det.identifiedUnit.recordBasis, "
+                + "collector.collectorTitleCache, "
                 + "tn "
                 + "FROM DeterminationEvent AS det "
+                + "LEFT JOIN det.identifiedUnit.collection as collection "
                 + "LEFT JOIN det.taxonName AS n "
                 + "LEFT JOIN n.taxonBases AS t "
+                + "LEFT JOIN det.identifiedUnit.derivedFrom AS derivedFrom "
+                + "LEFT JOIN derivedFrom.originals AS original "
+                + "LEFT JOIN original.gatheringEvent AS gathering "
+                + "LEFT JOIN gathering.actor AS collector "
                 + "JOIN t.taxonNodes AS tn "
                 + "WHERE tn.uuid in (:taxonNodeUuids) "
                 ;
@@ -670,8 +751,11 @@ public class OccurrenceDaoHibernateImpl
             Integer limit, Integer start){
 
         Set<SpecimenNodeWrapper> testSet = new HashSet<>();
-
-        testSet.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start));
+try {
+    testSet.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start));
+}catch (Exception e) {
+    e.printStackTrace();
+}
         testSet.addAll(queryTaxonDeterminations(taxonNodeUuids, limit, start));
         testSet.addAll(queryTaxonNameDeterminations(taxonNodeUuids, limit, start));
         testSet.addAll(queryTypeSpecimen(taxonNodeUuids, limit, start));

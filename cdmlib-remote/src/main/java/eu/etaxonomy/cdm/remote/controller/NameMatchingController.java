@@ -71,7 +71,7 @@ public class NameMatchingController {
     public void doGetNameMatching(
             @RequestParam(value="scientificName", required = true) String scientificName,
             @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
-            @RequestParam(value="excludeBasyonymAuthors", required = false) boolean excludeBasyonymAuthors,
+            @RequestParam(value="excludeBasionymAuthors", required = false) boolean excludeBasionymAuthors,
             @RequestParam(value="excludeExAuthors", required = false) boolean excludeExAuthors,
             @RequestParam(value="maxDistance", required = false) Integer maxDistance,
 
@@ -80,8 +80,8 @@ public class NameMatchingController {
 
         logger.info("doGetNameMatching()" + request.getRequestURI());
 
-        NameMatchingResult result = nameMatchingService.findMatchingNames(scientificName, compareAuthor, excludeBasyonymAuthors, excludeExAuthors, maxDistance);
-        RequestedParam requestedParam = new RequestedParam(scientificName, compareAuthor, maxDistance, excludeBasyonymAuthors, excludeExAuthors);
+        NameMatchingResult result = nameMatchingService.findMatchingNames(scientificName, compareAuthor, excludeBasionymAuthors, excludeExAuthors, new Double (maxDistance));
+        RequestedParam requestedParam = new RequestedParam(scientificName, compareAuthor, maxDistance, excludeBasionymAuthors, excludeExAuthors);
         NameMatchingOutputObject outputObject = NameMatchingAdapter.invoke(result, requestedParam);
 
         response.setContentType("application/json");
@@ -114,7 +114,7 @@ public class NameMatchingController {
             @RequestPart("file") MultipartFile file,
             @RequestParam(value="compareAuthor", required = false) boolean compareAuthor,
             @RequestParam(value="maxDistance", required = false) Integer maxDistance,
-            @RequestParam(value="excludeBasyonymAuthors", required = false) boolean excludeBasyonymAuthors,
+            @RequestParam(value="excludeBasionymAuthors", required = false) boolean excludeBasionymAuthors,
             @RequestParam(value="excludeExAuthors", required = false) boolean excludeExAuthors,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException, NameMatchingParserException {
@@ -124,8 +124,9 @@ public class NameMatchingController {
         byte [] bytes = file.getBytes();
         String namesString = new String (bytes, StandardCharsets.UTF_8);
         List <String> namesList = Arrays.asList(namesString.split("\\r?\\n"));
-        Map<String, NameMatchingResult> result = nameMatchingService.compareTaxonListName(namesList, compareAuthor, excludeBasyonymAuthors, excludeExAuthors, maxDistance);
-        RequestedParam requestedParam = new RequestedParam(namesList, compareAuthor, maxDistance, excludeBasyonymAuthors, excludeExAuthors);
+        Map<String, NameMatchingResult> result = nameMatchingService.compareTaxonListName(namesList, compareAuthor, excludeBasionymAuthors,
+                excludeExAuthors, new Double (maxDistance));
+        RequestedParam requestedParam = new RequestedParam(namesList, compareAuthor, maxDistance, excludeBasionymAuthors, excludeExAuthors);
         NameMatchingOutputList outputObjectList = NameMatchingAdapter.invokeList(result, requestedParam);
 
         String acceptHeader = request.getHeader("Accept");
@@ -148,7 +149,7 @@ public class NameMatchingController {
                     String inputName = paramteres.getScientificNameList().get(i);
                     i++;
                     RequestedParam individualInputName = new RequestedParam (inputName, paramteres.isCompareAuthor(),
-                            paramteres.getMaxDistance(), paramteres.isExcludeBasyonymAuthors(), paramteres.isExcludeExAuthors());
+                            paramteres.getMaxDistance(), paramteres.isExcludeBasionymAuthors(), paramteres.isExcludeExAuthors());
                     outputList.add(NameMatchingAdapter.invoke(x, individualInputName));
             }
             resultObject.setOutputObject(outputList);
@@ -200,7 +201,7 @@ public class NameMatchingController {
 
             String inputParam = outputObject.getRequest().getScientificName() + ";" +
                     String.valueOf(outputObject.getRequest().isCompareAuthor() + ";" +
-                            outputObject.getRequest().isExcludeBasyonymAuthors() + ";" +
+                            outputObject.getRequest().isExcludeBasionymAuthors() + ";" +
                                 outputObject.getRequest().isExcludeExAuthors() + ";" +
                                     outputObject.getRequest().getMaxDistance().toString());
 
@@ -219,7 +220,7 @@ public class NameMatchingController {
 
             String inputParam = outputObject.getRequest().getScientificName() + ";" +
                     String.valueOf(outputObject.getRequest().isCompareAuthor() + ";" +
-                            outputObject.getRequest().isExcludeBasyonymAuthors() + ";" +
+                            outputObject.getRequest().isExcludeBasionymAuthors() + ";" +
                                 outputObject.getRequest().isExcludeExAuthors() + ";" +
                                     outputObject.getRequest().getMaxDistance().toString());
             String rowContent = inputParam + ";candidates;"
@@ -254,7 +255,7 @@ public class NameMatchingController {
                 csvWriter.writeNext(new String[]{
                         "inputName",
                         "compareAuthor",
-                        "excludeBasyonymAuthor",
+                        "excludeBasionymAuthor",
                         "excludeExAuthors",
                         "maxDistance",
                         "matchingType",

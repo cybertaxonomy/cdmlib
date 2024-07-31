@@ -82,6 +82,7 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
@@ -218,14 +219,17 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, boolean collectOriginalMedia, boolean collectDerivateMedia, Integer pageSize,
+    public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, Boolean collectOriginalMedia, Boolean collectDerivateMedia, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
         List<Media> media = new ArrayList<>();
          //media specimens
          if(rootOccurence.isInstanceOf(MediaSpecimen.class)){
              MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(rootOccurence, MediaSpecimen.class);
-             media.add(mediaSpecimen.getMediaSpecimen());
+             Set<MediaRepresentation> repr = mediaSpecimen.getMediaSpecimen().getRepresentations();
+             if (!mediaSpecimen.getMediaSpecimen().checkManifest()) {
+                 media.add(mediaSpecimen.getMediaSpecimen());
+             }
          }
          // pherograms & gelPhotos
          if (rootOccurence.isInstanceOf(DnaSample.class)) {
@@ -680,7 +684,7 @@ public class OccurrenceServiceImpl
         luceneSearch.setQuery(finalQueryBuilder.build());
 
         // --- sorting
-        SortField[] sortFields = new SortField[] { SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING, false) };
+        SortField[] sortFields = new SortField[] {SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING, false) };
         luceneSearch.setSortFields(sortFields);
 
         if (highlightFragments) {
@@ -688,7 +692,6 @@ public class OccurrenceServiceImpl
         }
         return luceneSearch;
     }
-
 
     @Override
     @Transactional(readOnly=true)

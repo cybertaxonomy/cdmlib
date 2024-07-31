@@ -45,7 +45,7 @@ public class CdmLightExportState
 
     private List<UUID> specimenStore = new ArrayList<>();
     //private Map<Integer, SpecimenOrObservationBase> specimenStore = new HashMap<>();
-    private List<UUID> referenceStore = new ArrayList<>();
+    private Map<UUID, String> referenceStore = new HashMap<>();
     private Map<Integer, UUID> nameStore = new HashMap<>();
     private Map<UUID,List<TaxonNodeDto>> nodeChildrenMap = new HashMap<>();
     private Map<UUID, OrderHelper> orderHelperMap = new HashMap<>();
@@ -120,13 +120,13 @@ public class CdmLightExportState
         return authorStore.get(id);
     }
 
-    protected void addReferenceToStore(Reference ref) {
-        this.referenceStore.add(ref.getUuid());
+    protected void addReferenceToStore(Reference ref, String unique) {
+        this.referenceStore.put(ref.getUuid(), unique);
     }
-    protected void setReferenceStore(List<UUID> referenceStore) {
+    protected void setReferenceStore(Map<UUID, String> referenceStore) {
         this.referenceStore = referenceStore;
     }
-    protected List<UUID> getReferenceStore() {
+    protected Map<UUID, String> getReferenceStore() {
         return referenceStore;
     }
 
@@ -199,7 +199,11 @@ public class CdmLightExportState
         if (counter == 0) {
             return "";
         }else {
-            return Character.toString((char)('a'+counter - 1));
+            int finalCounter = 'a'+counter - 1;
+            if (finalCounter >= 'j') {
+                finalCounter++;
+            }
+            return Character.toString((char)(finalCounter));
         }
     }
 
