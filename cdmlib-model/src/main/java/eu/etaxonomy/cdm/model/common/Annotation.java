@@ -184,6 +184,32 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 		}
 	}
 
+// *********************** CHECK EMPTY *************************************/
+
+    @Override
+    protected boolean checkEmpty(){
+        return checkEmpty(false);
+    }
+
+    /**
+     * Checks if the annotation is completely empty.
+     *
+     * @param excludeType if <code>true</code> the annotation type
+     * is ignored for the check.
+     *
+     * @see #checkEmpty()
+     * @return <code>true</code> if empty
+     */
+    public boolean checkEmpty(boolean excludeType){
+       return super.checkEmpty()
+            && (excludeType || this.annotationType == null)
+            && isBlank(this.getText())
+            && this.getCommentator() == null
+            && this.getLinkbackUri() == null
+            && this.getIntextReferences().isEmpty() //TODO maybe not necessary as there should not be any intext references if text is empty
+           ;
+    }
+
 // ***************************** TO STRING ***********************************
 
 	@Override
