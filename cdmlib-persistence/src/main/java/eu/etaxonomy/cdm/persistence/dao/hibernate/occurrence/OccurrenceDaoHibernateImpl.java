@@ -596,7 +596,7 @@ public class OccurrenceDaoHibernateImpl
 
             String collectorsNumber = object[2] == null ? "": (String)object[2];
             String collectionCode = object[6] == null ? "": (String)object[6];
-            temp.setAbbrevTitleCache(collectorsNumber + " - " + identifier + " - " + collectionCode);
+            temp.setAbbrevTitleCache(collectorsNumber +  " - " + collectionCode + " - " + identifier );
             SpecimenNodeWrapper wrapper = new SpecimenNodeWrapper(temp,
                     (SpecimenOrObservationType)object[8],
                     new TaxonNodeDto((TaxonNode)object[9]));
