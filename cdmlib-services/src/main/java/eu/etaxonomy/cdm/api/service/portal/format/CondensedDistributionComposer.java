@@ -78,8 +78,9 @@ public class CondensedDistributionComposer {
             return term.getIdInVocabulary();
         }else if (su == SymbolUsage.AbbrevLabel){
             return term.getAbbrevLabel();
+        }else {
+            throw new RuntimeException("Unhandled enum value: " +  this);
         }
-        throw new RuntimeException("Unhandled enum value: " +  this);
     }
 
 
