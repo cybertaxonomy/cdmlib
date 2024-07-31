@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -49,7 +50,7 @@ public class TypeDesignationGroup {
     //TODO needed? => currently used as cache for toString()
     private String label = null;
 
-    private VersionableEntity baseEntity;
+    private AnnotatableEntity baseEntity;
 
     private LinkedHashMap<TypeDesignationStatusBase<?>,Collection<TypeDesignationDTO>> designationByStatusMap = new LinkedHashMap<>();
 
@@ -64,7 +65,7 @@ public class TypeDesignationGroup {
 
 // ********************************* CONSTRUCTOR **************************/
 
-    public TypeDesignationGroup(VersionableEntity baseEntity) {
+    public TypeDesignationGroup(AnnotatableEntity baseEntity) {
         this.baseEntity = baseEntity;
         //init base entity label to avoid LazyInitializationExceptions
         TypeDesignationGroupFormatterBase.getFormatter(this).entityLabel(baseEntity, null);
@@ -72,7 +73,7 @@ public class TypeDesignationGroup {
 
 // ***********************************************************************/
 
-    public VersionableEntity getBaseEntity() {
+    public AnnotatableEntity getBaseEntity() {
         return baseEntity;
     }
 

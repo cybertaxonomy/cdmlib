@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainerFormatter;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -254,11 +255,11 @@ public class RegistrationWrapperDTO {
         return result;
     }
 
-    public TypeDesignationGroup getTypeDesignationSet(VersionableEntity baseEntity) {
+    public TypeDesignationGroup getTypeDesignationSet(AnnotatableEntity baseEntity) {
         return typeDesignationSetContainer != null ? typeDesignationSetContainer.getOrderedTypeDesignationSets().get(baseEntity) : null;
     }
 
-    public Set<TypeDesignationBase> getTypeDesignationsInWorkingSet(VersionableEntity baseEntity) {
+    public Set<TypeDesignationBase> getTypeDesignationsInWorkingSet(AnnotatableEntity baseEntity) {
         Set<TypeDesignationBase> typeDesignations = new HashSet<>();
         TypeDesignationGroup workingSet = getTypeDesignationSet(baseEntity);
         for(TypeDesignationDTO<?> ref :  workingSet.getTypeDesignations()){
@@ -267,7 +268,7 @@ public class RegistrationWrapperDTO {
         return typeDesignations;
     }
 
-    public NameTypeDesignation getNameTypeDesignation(VersionableEntity baseEntity) {
+    public NameTypeDesignation getNameTypeDesignation(AnnotatableEntity baseEntity) {
         Set<TypeDesignationBase> typeDesignations = getTypeDesignationsInWorkingSet(baseEntity);
         if(typeDesignations.size() == 1){
             TypeDesignationBase<?> item = typeDesignations.iterator().next();
