@@ -64,7 +64,6 @@ public class SimpleSpecimen {
 		return gatheringEvent.getLocality();
 	}
 
-
 	/**
 	 * Sets the locality string in the default language
 	 * @param locality
@@ -79,88 +78,48 @@ public class SimpleSpecimen {
 		gatheringEvent.setLocality(locality);
 	}
 
-	/**
-	 * @return the collection
-	 */
 	public Collection getCollection() {
 		return collection;
 	}
-
-	/**
-	 * @param collection the collection to set
-	 */
 	public void setCollection(Collection collection) {
 		this.collection = collection;
 	}
 
-		/**
-	 * @return the storedUnderName
-	 */
 	public TaxonName getStoredUnderName() {
 		return storedUnderName;
 	}
-
-	/**
-	 * @param storedUnderName the storedUnderName to set
-	 */
 	public void setStoredUnderName(TaxonName storedUnderName) {
 		this.storedUnderName = storedUnderName;
 	}
 
-	/**
-	 * @return the collection
-	 */
 	public AgentBase getCollector() {
 		return gatheringEvent.getCollector();
 	}
-
 	public void setCollector(AgentBase collector){
 		gatheringEvent.setCollector(collector);
 	}
 
-	/**
-	 * @return the collectorsNumber
-	 */
+	//TODO not fully clear if collectors number is meant to be the
+	//   field number or the barcode/accessionNumber/catalogueNumber
+	//see #2362
 	public String getCollectorsNumber() {
 		return specimen.getCollectorsNumber();
 	}
-
-	/**
-	 * @param collectorsNumber the collectorsNumber to set
-	 */
 	public void setCollectorsNumber(String collectorsNumber) {
 		this.specimen.setCollectorsNumber(collectorsNumber);
 	}
 
-
-	/**
-	 * @return the specimen
-	 */
 	public DerivedUnit getSpecimen() {
 		return specimen;
 	}
-
-	/**
-	 * @param specimen the specimen to set
-	 */
 	public void setSpecimen(DerivedUnit specimen) {
 		this.specimen = specimen;
 	}
 
-	/**
-	 * @return the titleCache
-	 */
 	public String getTitleCache() {
 		return this.specimen.getTitleCache();
 	}
-
-	/**
-	 * @param titleCache the titleCache to set
-	 */
 	public void setTitleCache(String titleCache) {
 		this.specimen.setTitleCache(titleCache, true);
 	}
-
-
-
 }
