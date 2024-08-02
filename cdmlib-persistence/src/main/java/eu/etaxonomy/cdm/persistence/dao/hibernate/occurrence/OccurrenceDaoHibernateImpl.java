@@ -587,10 +587,10 @@ public class OccurrenceDaoHibernateImpl
                     (String) object[7]);
 
             String shortCache = "";
-            String countryString = object[10] == null ? "": (String)object[10];
-            String fieldNumber = object[2] == null ? "": (String)object[2];
-            String collectorString = object[9] == null ? "": (String)object[9];
-            String collectionCode = object[6] == null ? "": (String)object[6];
+            String countryString = (String)object[10];
+            String fieldNumber = (String)object[2];
+            String collectorString = (String)object[9];
+            String collectionCode = (String)object[6];
             String identifier = "";
 
             if (object[3] != null) {
