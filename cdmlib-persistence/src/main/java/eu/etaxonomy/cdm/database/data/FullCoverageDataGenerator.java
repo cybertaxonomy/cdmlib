@@ -819,7 +819,6 @@ public class FullCoverageDataGenerator {
 		mediaSpecimen.setCollection(collection);
 		mediaSpecimen.setCatalogNumber("catalogNumber");
 		mediaSpecimen.setAccessionNumber("accessionNumber");
-//		mediaSpecimen.setCollectorsNumber("collectorsNumber");
 		mediaSpecimen.setBarcode("barcode");
 		TaxonName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		storedUnder.setTitleCache("Stored under", true);
