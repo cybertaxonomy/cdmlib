@@ -588,7 +588,7 @@ public class OccurrenceDaoHibernateImpl
 
             String shortCache = "";
             String countryString = object[10] == null ? "": (String)object[10];
-            String collectorsNumber = object[2] == null ? "": (String)object[2];
+            String fieldNumber = object[2] == null ? "": (String)object[2];
             String collectorString = object[9] == null ? "": (String)object[9];
             String collectionCode = object[6] == null ? "": (String)object[6];
             String identifier = "";
@@ -602,7 +602,7 @@ public class OccurrenceDaoHibernateImpl
             }
 
 
-            shortCache = CdmUtils.concat(" - ", countryString, collectorsNumber, collectorString, collectionCode, identifier);
+            shortCache = CdmUtils.concat(" - ", countryString, collectorString, fieldNumber, collectionCode, identifier);
             temp.setAbbrevTitleCache(shortCache);
             SpecimenNodeWrapper wrapper = new SpecimenNodeWrapper(temp,
                     (SpecimenOrObservationType)object[8],
@@ -621,7 +621,7 @@ public class OccurrenceDaoHibernateImpl
         String queryString =  "SELECT "
                 + "specimen.uuid, "
                 + "specimen.id, "
-                + "specimen.collectorsNumber, "
+                + "original.fieldNumber, "
                 + "specimen.barcode, "
                 + "specimen.accessionNumber, "
                 + "specimen.catalogNumber, "
@@ -655,7 +655,7 @@ public class OccurrenceDaoHibernateImpl
         String queryString =  "SELECT "
                 + "td.typeSpecimen.uuid, "
                 + "td.typeSpecimen.id, "
-                + "td.typeSpecimen.collectorsNumber, "
+                + "original.fieldNumber, "
                 + "td.typeSpecimen.barcode, "
                 + "td.typeSpecimen.accessionNumber, "
                 + "td.typeSpecimen.catalogNumber, "
@@ -686,7 +686,7 @@ public class OccurrenceDaoHibernateImpl
         String queryString =  "SELECT "
                 + "det.identifiedUnit.uuid, "
                 + "det.identifiedUnit.id, "
-                + "det.identifiedUnit.collectorsNumber, "
+                + "original.fieldNumber, "
                 + "det.identifiedUnit.barcode, "
                 + "det.identifiedUnit.accessionNumber, "
                 + "det.identifiedUnit.catalogNumber, "
@@ -716,7 +716,7 @@ public class OccurrenceDaoHibernateImpl
         String queryString =  "SELECT "
                 + "det.identifiedUnit.uuid, "
                 + "det.identifiedUnit.id, "
-                + "det.identifiedUnit.collectorsNumber, "
+                + "original.fieldNumber, "
                 + "det.identifiedUnit.barcode, "
                 + "det.identifiedUnit.accessionNumber, "
                 + "det.identifiedUnit.catalogNumber, "
