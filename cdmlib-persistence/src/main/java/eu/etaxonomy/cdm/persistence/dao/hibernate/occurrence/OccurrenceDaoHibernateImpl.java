@@ -563,7 +563,6 @@ public class OccurrenceDaoHibernateImpl
 
         addLimitAndStart(query, limit, start);
 
-        @SuppressWarnings("unchecked")
         List<T> results = query.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -748,11 +747,11 @@ public class OccurrenceDaoHibernateImpl
             Integer limit, Integer start){
 
         Set<SpecimenNodeWrapper> testSet = new HashSet<>();
-try {
-    testSet.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start));
-}catch (Exception e) {
-    e.printStackTrace();
-}
+        try {
+            testSet.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
         testSet.addAll(queryTaxonDeterminations(taxonNodeUuids, limit, start));
         testSet.addAll(queryTaxonNameDeterminations(taxonNodeUuids, limit, start));
         testSet.addAll(queryTypeSpecimen(taxonNodeUuids, limit, start));
