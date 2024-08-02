@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import javax.persistence.Tuple;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
@@ -35,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
@@ -587,20 +587,11 @@ public class OccurrenceDaoHibernateImpl
                     (Integer) object[1],
                     (String) object[7]);
 
+            String shortCache = "";
+            String countryString = object[10] == null ? "": (String)object[10];
             String collectorsNumber = object[2] == null ? "": (String)object[2];
-            String sep = "";
-            if (StringUtils.isNotBlank(collectorsNumber) ) {
-                sep = " - ";
-            }
-
-
-            String collectorString = object[9] == null ? "": sep + (String)object[9];
-            if (StringUtils.isBlank(collectorString)) {
-                sep = "";
-            }else {
-                sep = " - ";
-            }
-            String collectionCode = object[6] == null ? "": sep + (String)object[6];
+            String collectorString = object[9] == null ? "": (String)object[9];
+            String collectionCode = object[6] == null ? "": (String)object[6];
             String identifier = "";
 
             if (object[3] != null) {
@@ -610,18 +601,16 @@ public class OccurrenceDaoHibernateImpl
             }else if (object[5] != null) {
                 identifier = (String)object[5];
             }
-            if (identifier != "") {
-                sep = " - ";
-            }else {
-                sep = "";
-            }
-            temp.setAbbrevTitleCache(collectorsNumber +  collectorString + collectionCode + sep + identifier );
+
+
+            shortCache = CdmUtils.concat(" - ", countryString, collectorsNumber, collectorString, collectionCode, identifier);
+            temp.setAbbrevTitleCache(shortCache);
             SpecimenNodeWrapper wrapper = new SpecimenNodeWrapper(temp,
                     (SpecimenOrObservationType)object[8],
-                    new TaxonNodeDto((TaxonNode)object[10]));
+                    new TaxonNodeDto((TaxonNode)object[11]));
 
-            if(object.length>11) {
-                wrapper.setTaxonDescriptionUuid((UUID)object[11]);
+            if(object.length>12) {
+                wrapper.setTaxonDescriptionUuid((UUID)object[12]);
             }
             list.add(wrapper);
         }
@@ -641,6 +630,7 @@ public class OccurrenceDaoHibernateImpl
                 + "specimen.titleCache, "
                 + "specimen.recordBasis, "
                 + "collector.collectorTitleCache, "
+                + "country.titleCache, "
                 + "tn, "
                 + "d.uuid "
                 + "FROM DescriptionElementBase AS de "
@@ -652,6 +642,7 @@ public class OccurrenceDaoHibernateImpl
                 + "LEFT JOIN derivedFrom.originals AS original "
                 + "LEFT JOIN original.gatheringEvent AS gathering "
                 + "LEFT JOIN gathering.actor AS collector "
+                + "LEFT JOIN gathering.country AS country "
                 + "JOIN t.taxonNodes AS tn "
                 + "WHERE d.class = 'TaxonDescription' "
                 + "AND tn.uuid in (:taxonNodeUuids) "
@@ -673,6 +664,7 @@ public class OccurrenceDaoHibernateImpl
                 + "td.typeSpecimen.titleCache, "
                 + "td.typeSpecimen.recordBasis, "
                 + "collector.collectorTitleCache, "
+                + "country.titleCache, "
                 + "tn "
                 + "FROM SpecimenTypeDesignation AS td "
                 + "LEFT JOIN td.typifiedNames AS tn "
@@ -682,6 +674,7 @@ public class OccurrenceDaoHibernateImpl
                 + "LEFT JOIN derivedFrom.originals AS original "
                 + "LEFT JOIN original.gatheringEvent AS gathering "
                 + "LEFT JOIN gathering.actor AS collector "
+                + "LEFT JOIN gathering.country AS country "
                 + "JOIN t.taxonNodes AS tn "
                 + "WHERE tn.uuid in (:taxonNodeUuids) "
                 ;
@@ -702,6 +695,7 @@ public class OccurrenceDaoHibernateImpl
                 + "det.identifiedUnit.titleCache, "
                 + "det.identifiedUnit.recordBasis, "
                 + "collector.collectorTitleCache, "
+                + "country.titleCache, "
                 + "tn "
                 + "FROM DeterminationEvent AS det "
                 + "LEFT JOIN det.taxon AS t "
@@ -710,6 +704,7 @@ public class OccurrenceDaoHibernateImpl
                 + "LEFT JOIN derivedFrom.originals AS original "
                 + "LEFT JOIN original.gatheringEvent AS gathering "
                 + "LEFT JOIN gathering.actor AS collector "
+                + "LEFT JOIN gathering.country AS country "
                 + "JOIN t.taxonNodes AS tn "
                 + "WHERE tn.uuid in (:taxonNodeUuids) "
                 ;
@@ -730,6 +725,7 @@ public class OccurrenceDaoHibernateImpl
                 + "det.identifiedUnit.titleCache, "
                 + "det.identifiedUnit.recordBasis, "
                 + "collector.collectorTitleCache, "
+                + "country.titleCache, "
                 + "tn "
                 + "FROM DeterminationEvent AS det "
                 + "LEFT JOIN det.identifiedUnit.collection as collection "
@@ -739,6 +735,7 @@ public class OccurrenceDaoHibernateImpl
                 + "LEFT JOIN derivedFrom.originals AS original "
                 + "LEFT JOIN original.gatheringEvent AS gathering "
                 + "LEFT JOIN gathering.actor AS collector "
+                + "LEFT JOIN gathering.country AS country "
                 + "JOIN t.taxonNodes AS tn "
                 + "WHERE tn.uuid in (:taxonNodeUuids) "
                 ;
