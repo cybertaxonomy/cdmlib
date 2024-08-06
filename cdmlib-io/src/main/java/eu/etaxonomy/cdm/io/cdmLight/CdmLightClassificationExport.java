@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainerFormatter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.name.TypeComparator;
+import eu.etaxonomy.cdm.compare.reference.SourceComparator;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
@@ -1451,37 +1452,7 @@ public class CdmLightClassificationExport
             String sourceString = "";
             int index = 0;
             List<IdentifiableSource> sources = new ArrayList<>(specimenType.getSources());
-            Comparator<IdentifiableSource> compareByYear = new Comparator<IdentifiableSource>() {
-                @Override
-                public int compare(IdentifiableSource o1, IdentifiableSource o2) {
-                    if (o1 == o2){
-                        return 0;
-                    }
-                    if (o1.getCitation() == null && o2.getCitation() != null){
-                        return -1;
-                    }
-                    if (o2.getCitation() == null && o1.getCitation() != null){
-                        return 1;
-                    }
-                    if (o1.getCitation().equals(o2.getCitation())){
-                        return 0;
-                    }
-                    if (o1.getCitation().getDatePublished() == null && o2.getCitation().getDatePublished() != null){
-                        return -1;
-                    }
-                    if (o1.getCitation().getDatePublished() != null && o2.getCitation().getDatePublished() == null){
-                        return 1;
-                    }
-                    if (o1.getCitation().getDatePublished().getYear() == null && o2.getCitation().getDatePublished().getYear() != null){
-                        return -1;
-                    }
-                    if (o1.getCitation().getDatePublished().getYear() != null && o2.getCitation().getDatePublished().getYear() == null){
-                        return 1;
-                    }
-                    return o1.getCitation().getDatePublished().getYear().compareTo(o2.getCitation().getDatePublished().getYear());
-                }
-            };
-            Collections.sort(sources, compareByYear);
+            Collections.sort(sources, SourceComparator.Instance());
             for (IdentifiableSource source: sources){
                 if (source.getCitation()!= null){
                     sourceString = sourceString.concat(source.getCitation().getCitation());
