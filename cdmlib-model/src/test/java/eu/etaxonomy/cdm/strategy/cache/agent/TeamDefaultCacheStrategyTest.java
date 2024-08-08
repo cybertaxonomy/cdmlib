@@ -83,7 +83,8 @@ public class TeamDefaultCacheStrategyTest {
 
 	@Test
 	public final void testGetNomenclaturalTitleCache(){
-		Assert.assertNotNull("team1 nomenclatural title must not to be null",
+
+	    Assert.assertNotNull("team1 nomenclatural title must not to be null",
 		        team1.getNomenclaturalTitleCache());
 		Assert.assertEquals("team1 nomenclatural title should be created by elements",
 		        "P1FN, P.", team1.getNomenclaturalTitleCache());
@@ -118,7 +119,12 @@ public class TeamDefaultCacheStrategyTest {
 		        StringUtils.isNotBlank(team3.getNomenclaturalTitleCache()));
 
 		//don't take next test to serious, may be also something different, but not empty
-		Assert.assertEquals("team3 nomenclatural title should be empty team replacement string", TeamDefaultCacheStrategy.EMPTY_TEAM, team3.getNomenclaturalTitleCache());
+		Assert.assertEquals("team3 nomenclatural title should be empty team replacement string",
+		        TeamDefaultCacheStrategy.EMPTY_TEAM, team3.getNomenclaturalTitleCache());
+
+		team3.setNomenclaturalTitleCache("ProtectedNomCache", true);
+		Assert.assertEquals("ProtectedNomCache", team3.getNomenclaturalTitleCache());
+	    Assert.assertEquals("ProtectedNomCache", team3.cacheStrategy().getNomenclaturalTitleCache(team3));
 	}
 
 	@Test
