@@ -154,6 +154,11 @@ public class IdentifierImport
         if (strs.length>2){
             String entityCache = entity.getTitleCache();
             String titleCache = strs[2];
+            boolean ignoreWhitespace = true;
+            if (ignoreWhitespace) {
+                entityCache = CdmUtils.Nz(entityCache).replace(" ", "");
+                titleCache = CdmUtils.Nz(titleCache).replace(" ", "");
+            }
             if (!CdmUtils.nullSafeEqual(entityCache, titleCache)){
                 String message = String.format(
                         "Record in line %d has different titleCache: " + entityCache +" <-> "+ titleCache, i);

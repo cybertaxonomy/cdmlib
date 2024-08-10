@@ -99,7 +99,6 @@ public class CdmLightExportConfigurator
         setUserFriendlyIOName("Cdm Light Export");
     }
 
-
     @Override
     @SuppressWarnings("unchecked")
     protected void makeIoClassList() {

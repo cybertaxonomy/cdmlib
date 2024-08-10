@@ -1505,30 +1505,36 @@ public class CdmLightClassificationExport
 
     private void handleNameRelationships(CdmLightExportState state, TaxonName name) {
 
-        Set<NameRelationship> rels = name.getRelationsFromThisName();
-        CdmLightExportTable table = CdmLightExportTable.NAME_RELATIONSHIP;
-        String[] csvLine = new String[table.getSize()];
+        try {
+            Set<NameRelationship> rels = name.getRelationsFromThisName();
+            CdmLightExportTable table = CdmLightExportTable.NAME_RELATIONSHIP;
+            String[] csvLine = new String[table.getSize()];
 
-        for (NameRelationship rel : rels) {
-            NameRelationshipType type = rel.getType();
-            TaxonName name2 = rel.getToName();
-            name2 = HibernateProxyHelper.deproxy(name2, TaxonName.class);
-            handleName(state, name2, null, !WITH_NAME_REL);
+            for (NameRelationship rel : rels) {
+                NameRelationshipType type = rel.getType();
+                TaxonName name2 = rel.getToName();
+                name2 = HibernateProxyHelper.deproxy(name2, TaxonName.class);
+                handleName(state, name2, null, !WITH_NAME_REL);
+                csvLine = new String[table.getSize()];
+                csvLine[table.getIndex(CdmLightExportTable.NAME_REL_TYPE)] = type.getLabel();
+                csvLine[table.getIndex(CdmLightExportTable.NAME1_FK)] = getId(state, name);
+                csvLine[table.getIndex(CdmLightExportTable.NAME2_FK)] = getId(state, name2);
+                state.getProcessor().put(table, rel.getUuid().toString(), csvLine);
+            }
+
+            rels = name.getRelationsToThisName();
+
             csvLine = new String[table.getSize()];
-            csvLine[table.getIndex(CdmLightExportTable.NAME_REL_TYPE)] = type.getLabel();
-            csvLine[table.getIndex(CdmLightExportTable.NAME1_FK)] = getId(state, name);
-            csvLine[table.getIndex(CdmLightExportTable.NAME2_FK)] = getId(state, name2);
-            state.getProcessor().put(table, rel.getUuid().toString(), csvLine);
-        }
 
-        rels = name.getRelationsToThisName();
-
-        csvLine = new String[table.getSize()];
-
-        for (NameRelationship rel : rels) {
-            TaxonName name2 = rel.getFromName();
-            name2 = HibernateProxyHelper.deproxy(name2);
-            handleName(state, name2, null, !WITH_NAME_REL);
+            for (NameRelationship rel : rels) {
+                TaxonName name2 = rel.getFromName();
+                name2 = HibernateProxyHelper.deproxy(name2);
+                handleName(state, name2, null, !WITH_NAME_REL);
+            }
+        } catch (ClassCastException e) {
+            state.getResult().addException(e,
+                    "An unexpected error occurred when handling the name relationships for " + cdmBaseStr(name) + ": " + name.getTitleCache() + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
