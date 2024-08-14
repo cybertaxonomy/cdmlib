@@ -421,6 +421,7 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         NameMatchingResult matchResults;
         List<SingleNameMatchingResult> matchResult;
         SingleNameMatchingResult matchRes;
+
         String pattern = "#.###";
         DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
         otherSymbols.setDecimalSeparator('.');

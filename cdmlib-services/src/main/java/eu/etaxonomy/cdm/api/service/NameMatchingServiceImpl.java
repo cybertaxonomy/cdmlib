@@ -237,10 +237,9 @@ public class NameMatchingServiceImpl
         /**
          * phonetic normalization of query (genus) this method corresponds to
          * the near match function of Rees 2007. It includes phonetic matches
-         * (replace initial characters, soundalike changes, gender endings)
-         * ref. #10178
+         * (replace initial characters, soundalike changes, gender endings).
+         * See #10178
          */
-
         String normalizedGenusQuery = NameMatchingUtils.normalize(genusQuery);
         String phoneticNormalizedGenusQuery = NameMatchingUtils.nearMatch(normalizedGenusQuery);
 
@@ -292,7 +291,6 @@ public class NameMatchingServiceImpl
                     compareAuthor, excludeBasionymAuthors, excludeExAuthors, rank);
             return result;
         } else if (specificEpithetQuery != null && infraSpecificQuery == null){
-
             List<SingleNameMatchingResult> resultSetEpithetListWithDist = compareSpecificEptihtet(specificEpithetQuery,
                     maxDistance, taxonNamePartsWithDistance, false);
 

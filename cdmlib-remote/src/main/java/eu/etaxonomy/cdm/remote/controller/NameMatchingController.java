@@ -103,7 +103,8 @@ public class NameMatchingController {
      * curl -v -H "Accept: text/csv" -X POST -F "compareAuthor=false" -F "maxDistance=2" -F "file=@test.txt" http://localhost:8082/namematch/matchingList
      *
      * the option -v in curl gives more information about the http response (u.a.)
-     * ref. #10178
+     *
+     * @see https://dev.e-taxonomy.eu/redmine/issues/10178
      * @throws IOException
      * @throws NameMatchingParserException
     */
