@@ -184,7 +184,7 @@ public class NameMatchingController {
         private static NameMatchingCandidateResult loadCandidateResultFromParts(SingleNameMatchingResult parts) {
             NameMatchingCandidateResult result = new NameMatchingCandidateResult();
             loadResultFromParts(parts, result);
-            result.setDistance(parts.getDistance());
+            result.setMatchingScore(parts.getDistance());
             return result;
         }
 
@@ -225,7 +225,7 @@ public class NameMatchingController {
                                 outputObject.getRequest().isExcludeExAuthors() + ";" +
                                     outputObject.getRequest().getMaxDistance().toString());
             String rowContent = inputParam + ";candidates;"
-                    + candidateResults.get(x).getDistance() + ";"
+                    + candidateResults.get(x).getMatchingScore() + ";"
                     + candidateResults.get(x).getTaxonNameUuid() + ";"
                     + candidateResults.get(x).getNameWithAuthor() + ";"
                     + candidateResults.get(x).getAuthorship() + ";"
@@ -260,7 +260,7 @@ public class NameMatchingController {
                         "excludeExAuthors",
                         "maxDistance",
                         "matchingType",
-                        "retrievedDistance",
+                        "matchingScore",
                         "taxonNameUuid",
                         "nameWithAuthorship",
                         "authorship",
