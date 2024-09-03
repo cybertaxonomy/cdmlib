@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -53,6 +54,20 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
     private static final UUID UUID_NAME_ASTERELLA = UUID.fromString("6b0f5e36-c00a-4297-967b-6f0d7a98c8f3");
     private static final UUID UUID_NAME_PASSIFLORABR = UUID.fromString("3a103ea2-c2ec-4449-ba7d-cf4495fdfb32");
 
+    private static final boolean COMPARE_AUTHORS = true;
+    private static final boolean EXCLUDE_BASIONYMAUTHORS = true;
+    private static final boolean EXCLUDE_EXAUTHORS = true;
+
+    private static DecimalFormat decimalFormat;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        String pattern = "#.###";
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
+        otherSymbols.setDecimalSeparator('.');
+        decimalFormat = new DecimalFormat (pattern, otherSymbols);
+    }
+
     @SpringBeanByType
 	private INameMatchingService nameMatchingService;
 
@@ -61,7 +76,6 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         String query = "Nectandra";
         String document = "Nectalisma";
-
         Assert.assertEquals("Should return trimmed remaming string ",
                 "ndr", NameMatchingServiceImpl.trimCommonChar(query, document).split(" ")[0]);
         Assert.assertEquals("lism", NameMatchingServiceImpl.trimCommonChar(query, document).split(" ")[1]);
@@ -75,57 +89,53 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
 		String inputName;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
-        SingleNameMatchingResult matchRes;
-        String pattern = "#.###";
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        otherSymbols.setDecimalSeparator('.');
+        List<SingleNameMatchingResult> exactResults;
+        List<SingleNameMatchingResult> bestFuzzyResults;
 
         //MONOMIAL: GENUS
 
         // exact match
         inputName = "Nectandra";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, true, true, null);
-        matchResult = matchResults.getExactResults();
-
-        Assert.assertEquals(1, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("", matchRes.getSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_NECTANDRA, matchRes.getTaxonNameUuid());
-        Assert.assertEquals("Distance should be 1", 1,matchRes.getDistance().intValue());
+        matchResults = nameMatchingService.findMatchingNames(inputName, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        exactResults = matchResults.getExactResults();
+        Assert.assertEquals(1, exactResults.size());
+        SingleNameMatchingResult firstExactResult = exactResults.get(0);
+        Assert.assertEquals("Nectandra", firstExactResult.getGenusOrUninomial());
+        Assert.assertEquals("", firstExactResult.getSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_NECTANDRA, firstExactResult.getTaxonNameUuid());
+        Assert.assertEquals("Distance should be 1", 1,firstExactResult.getDistance().intValue());
 
         // not exact match
         inputName = "Nextondra";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, true, true, null);
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(3, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectondra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("", matchRes.getSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_NECTONDRA, matchRes.getTaxonNameUuid());
-        Double distance =  matchRes.getDistance();
-        DecimalFormat decimalFormat = new DecimalFormat (pattern,otherSymbols);
+        matchResults = nameMatchingService.findMatchingNames(inputName, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(3, bestFuzzyResults.size());
+        SingleNameMatchingResult firstFuzzyResult = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectondra", firstFuzzyResult.getGenusOrUninomial());
+        Assert.assertEquals("", firstFuzzyResult.getSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_NECTONDRA, firstFuzzyResult.getTaxonNameUuid());
+        Double distance =  firstFuzzyResult.getDistance();
         String formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.889", formmattedDouble);
+        assertEquals("Nectondra and Nextondra have 1 distinct character. "
+                + "The length of the string is 9 => 1 - (distChar/totalChar) = 0,888888...","0.889", formmattedDouble);
 
-        matchRes = matchResult.get(1);
-        Assert.assertEquals("Nextandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("", matchRes.getSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_NEXTANDRA, matchRes.getTaxonNameUuid());
-        distance =  matchRes.getDistance();
-        decimalFormat = new DecimalFormat (pattern,otherSymbols);
+        SingleNameMatchingResult secondFuzzyResult = bestFuzzyResults.get(1);
+        Assert.assertEquals("Nextandra", secondFuzzyResult.getGenusOrUninomial());
+        Assert.assertEquals("", secondFuzzyResult.getSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_NEXTANDRA, secondFuzzyResult.getTaxonNameUuid());
+        distance =  secondFuzzyResult.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.889", formmattedDouble);
+        assertEquals("Nextandra and Nextondra have 1 distinct character. "
+                + "The length of the string is 9 => 1 - (distChar/totalChar) = 0,888888...", "0.889", formmattedDouble);
 
-        matchRes = matchResult.get(2);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("", matchRes.getSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_NECTANDRA, matchRes.getTaxonNameUuid());
-        distance =  matchRes.getDistance();
-        decimalFormat = new DecimalFormat (pattern,otherSymbols);
+        SingleNameMatchingResult thirdFuzzyResult = bestFuzzyResults.get(2);
+        Assert.assertEquals("Nectandra", thirdFuzzyResult.getGenusOrUninomial());
+        Assert.assertEquals("", thirdFuzzyResult.getSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_NECTANDRA, thirdFuzzyResult.getTaxonNameUuid());
+        distance =  thirdFuzzyResult.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.778", formmattedDouble);
+        assertEquals("Nectandra and Nextondra have 2 distinct characters. "
+                + "The length of the string is 9 => 1 - (distChar/totalChar) = 0,77777...","0.778", formmattedDouble);
     }
 
     @Test
@@ -134,23 +144,17 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         String inputName;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
-        SingleNameMatchingResult matchRes;
-        String pattern = "#.###";
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        otherSymbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat (pattern,otherSymbols);
 
         // exact match
         inputName = "Nectandra magnoliifolia";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false,true, true,  null);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(1, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("magnoliifolia", matchRes.getSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_MAGNIFOLIA, matchRes.getTaxonNameUuid());
-        String formmattedDouble = decimalFormat.format(matchRes.getDistance());
+        matchResults = nameMatchingService.findMatchingNames(inputName, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        List<SingleNameMatchingResult> exactResults = matchResults.getExactResults();
+        Assert.assertEquals(1, exactResults.size());
+        SingleNameMatchingResult firstExactMatch = exactResults.get(0);
+        Assert.assertEquals("Nectandra", firstExactMatch.getGenusOrUninomial());
+        Assert.assertEquals("magnoliifolia", firstExactMatch.getSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_MAGNIFOLIA, firstExactMatch.getTaxonNameUuid());
+        String formmattedDouble = decimalFormat.format(firstExactMatch.getDistance());
         assertEquals("1", formmattedDouble);
 
         /* as Author is not evaluated in this version of the algorithm,
@@ -158,60 +162,64 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
         */
 
         inputName = "Nectandra surinamensis";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, true, true, null);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(2, matchResult.size());
+        matchResults = nameMatchingService.findMatchingNames(inputName, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        exactResults = matchResults.getExactResults();
+        Assert.assertEquals(2, exactResults.size());
 
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("surinamensis", matchRes.getSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_SURINAMENSIS1, matchRes.getTaxonNameUuid());
-        formmattedDouble = decimalFormat.format(matchRes.getDistance());
+        firstExactMatch = exactResults.get(0);
+        Assert.assertEquals("Nectandra", firstExactMatch.getGenusOrUninomial());
+        Assert.assertEquals("surinamensis", firstExactMatch.getSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_SURINAMENSIS1, firstExactMatch.getTaxonNameUuid());
+        formmattedDouble = decimalFormat.format(firstExactMatch.getDistance());
         Assert.assertEquals("1",formmattedDouble);
 
-        matchRes = matchResult.get(1);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("surinamensis", matchRes.getSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_SURINAMENSIS2, matchRes.getTaxonNameUuid());
-        formmattedDouble = decimalFormat.format(matchRes.getDistance());
+        SingleNameMatchingResult secondExactMatch = exactResults.get(1);
+        Assert.assertEquals("Nectandra", secondExactMatch.getGenusOrUninomial());
+        Assert.assertEquals("surinamensis", secondExactMatch.getSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_SURINAMENSIS2, secondExactMatch.getTaxonNameUuid());
+        formmattedDouble = decimalFormat.format(secondExactMatch.getDistance());
         Assert.assertEquals("1",formmattedDouble);
 
         // not exact match
         inputName = "Nectendra nigre";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, true, true, null);
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("nigra", matchRes.getSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_NIGRA, matchRes.getTaxonNameUuid());
-        formmattedDouble = decimalFormat.format(matchRes.getDistance());
-        Assert.assertEquals("0.857",formmattedDouble);
+        matchResults = nameMatchingService.findMatchingNames(inputName, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        List<SingleNameMatchingResult> bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(2, bestFuzzyResults.size());
+        SingleNameMatchingResult firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("nigra", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_NIGRA, firstFuzzyMatch.getTaxonNameUuid());
+        formmattedDouble = decimalFormat.format(firstFuzzyMatch.getDistance());
+        Assert.assertEquals("Nectandra nigra and Nectendra nigre have 2 distinct characters. "
+                + "The length of the string is 14 => 1 - (distChar/totalChar) = 0.85714...", "0.857",formmattedDouble);
 
-        matchRes = matchResult.get(1);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("nigrita", matchRes.getSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_NIGRITA, matchRes.getTaxonNameUuid());
-        formmattedDouble = decimalFormat.format(matchRes.getDistance());
-        Assert.assertEquals("0.75",formmattedDouble);
+        SingleNameMatchingResult secondFuzzyMatch = bestFuzzyResults.get(1);
+        Assert.assertEquals("Nectandra", secondFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("nigrita", secondFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_NIGRITA, secondFuzzyMatch.getTaxonNameUuid());
+        formmattedDouble = decimalFormat.format(secondFuzzyMatch.getDistance());
+        Assert.assertEquals("Nectandra nigrita and Nectendra nigre have 4 distinct characters. "
+                + "The length of the string is 16 => 1 - (distChar/totalChar) = 0.75", "0.75",formmattedDouble);
 
         inputName = "Bectendra nigri";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false,true, true,  null);
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("nigra", matchRes.getSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_NIGRA, matchRes.getTaxonNameUuid());
-        formmattedDouble = decimalFormat.format(matchRes.getDistance());
-        Assert.assertEquals("0.786",formmattedDouble);
+        matchResults = nameMatchingService.findMatchingNames(inputName, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS,  null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(2, bestFuzzyResults.size());
+        firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("nigra", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_NIGRA, firstFuzzyMatch.getTaxonNameUuid());
+        formmattedDouble = decimalFormat.format(firstFuzzyMatch.getDistance());
+        Assert.assertEquals("Nectandra nigra and Bectendra nigri have 3 distinct characters. "
+                + "The length of the string is 14 => 1 - (distChar/totalChar) = 0.785714...", "0.786",formmattedDouble);
 
-        matchRes = matchResult.get(1);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("nigrita", matchRes.getSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_NIGRITA, matchRes.getTaxonNameUuid());
-        formmattedDouble = decimalFormat.format(matchRes.getDistance());
-        Assert.assertEquals("0.75",formmattedDouble);
+        secondFuzzyMatch = bestFuzzyResults.get(1);
+        Assert.assertEquals("Nectandra", secondFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("nigrita", secondFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_NIGRITA, secondFuzzyMatch.getTaxonNameUuid());
+        formmattedDouble = decimalFormat.format(secondFuzzyMatch.getDistance());
+        Assert.assertEquals("Nectandra nigrita and Bectendra nigri have 4 distinct characters. "
+                + "The length of the string is 16 => 1 - (distChar/totalChar) = 0.75", "0.75",formmattedDouble);
     }
 
     @Test
@@ -220,44 +228,42 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
     	String inputName;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
-        SingleNameMatchingResult matchRes;
-        String pattern = "#.###";
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        otherSymbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat (pattern,otherSymbols);
+        List<SingleNameMatchingResult> exactResults;
 
         // exact match
         inputName = "Nectandra subgen. Nectrina";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, true, true, null);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(1, matchResult.size());
-        String formmattedDouble = decimalFormat.format(matchResult.get(0).getDistance());
+        matchResults = nameMatchingService.findMatchingNames(inputName, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        exactResults = matchResults.getExactResults();
+        Assert.assertEquals(1, exactResults.size());
+        String formmattedDouble = decimalFormat.format(exactResults.get(0).getDistance());
         Assert.assertEquals("1", formmattedDouble);
 
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(1, matchResult.size());
-        formmattedDouble = decimalFormat.format(matchResult.get(0).getDistance());
-        Assert.assertEquals("0.833", formmattedDouble);
+        List<SingleNameMatchingResult> bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(1, bestFuzzyResults.size());
+        formmattedDouble = decimalFormat.format(bestFuzzyResults.get(0).getDistance());
+        Assert.assertEquals("Nectandra subgen. Nectrina and Nectandra nothosubg. Nexxxina. Same rank, differences in restant string = 3."
+                + " Total string length 9 + 1 (rank) + 8 = 18 => 1 - (distChar/totalChar) = 0.83333... ", "0.833", formmattedDouble);
 
         // not exact match
         inputName = "Nectandra subgen. Nextrina";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, true, true, null);
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("Nectrina", matchRes.getInfraGenericEpithet());
-        Assert.assertEquals(UUID_NAME_NECTRINA, matchRes.getTaxonNameUuid());
-        formmattedDouble = decimalFormat.format(matchRes.getDistance());
-        Assert.assertEquals("0.944", formmattedDouble);
+        matchResults = nameMatchingService.findMatchingNames(inputName, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(2, bestFuzzyResults.size());
+        SingleNameMatchingResult firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("Nectrina", firstFuzzyMatch.getInfraGenericEpithet());
+        Assert.assertEquals(UUID_NAME_NECTRINA, firstFuzzyMatch.getTaxonNameUuid());
+        formmattedDouble = decimalFormat.format(firstFuzzyMatch.getDistance());
+        Assert.assertEquals("Nectandra subgen. Nectrina and Nectandra nothosubg. Nexxxina. Same rank, differences in restant string = 3. "
+                + "Total string length 9 + 1 (rank) + 8 = 18 => 1 - (distChar/totalChar) = 0.83333... ", "0.944", formmattedDouble);
 
-        matchRes = matchResult.get(1);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("Nexxxina", matchRes.getInfraGenericEpithet());
-        Assert.assertEquals(UUID_NAME_NEXXXINA, matchRes.getTaxonNameUuid());
-        formmattedDouble = decimalFormat.format(matchRes.getDistance());
-        Assert.assertEquals("0.889", formmattedDouble);
+        SingleNameMatchingResult secondFuzzyMatch = bestFuzzyResults.get(1);
+        Assert.assertEquals("Nectandra", secondFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("Nexxxina", secondFuzzyMatch.getInfraGenericEpithet());
+        Assert.assertEquals(UUID_NAME_NEXXXINA, secondFuzzyMatch.getTaxonNameUuid());
+        formmattedDouble = decimalFormat.format(secondFuzzyMatch.getDistance());
+        Assert.assertEquals("Nectandra subgen. Nectrina and Nectandra nothosubg. Nexxxina. Same rank, differences in restant string = 3. "
+                + "Total string length 9 + 1 (rank) + 8 = 18 => 1 - (distChar/totalChar) = 0.83333... ", "0.889", formmattedDouble);
     }
 
     @Test
@@ -266,46 +272,44 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         String inputName;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
-        SingleNameMatchingResult matchRes;
-        String pattern = "#.###";
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        otherSymbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat (pattern,otherSymbols);
+        List<SingleNameMatchingResult> exactResults;
 
         // exact match
         inputName = "Nectandra mollis subsp. laurel";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, true, true, null);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(1, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("mollis", matchRes.getSpecificEpithet());
-        Assert.assertEquals("laurel", matchRes.getInfraSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_LAUREL, matchRes.getTaxonNameUuid());
-        String formmattedDouble = decimalFormat.format(matchRes.getDistance());
+        matchResults = nameMatchingService.findMatchingNames(inputName, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        exactResults = matchResults.getExactResults();
+        Assert.assertEquals(1, exactResults.size());
+        SingleNameMatchingResult firstExactMatch = exactResults.get(0);
+        Assert.assertEquals("Nectandra", firstExactMatch.getGenusOrUninomial());
+        Assert.assertEquals("mollis", firstExactMatch.getSpecificEpithet());
+        Assert.assertEquals("laurel", firstExactMatch.getInfraSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_LAUREL, firstExactMatch.getTaxonNameUuid());
+        String formmattedDouble = decimalFormat.format(firstExactMatch.getDistance());
         Assert.assertEquals("1", formmattedDouble);
 
         // not exact match
         inputName = "Nectandra mollis var. laurol";
-        matchResults = nameMatchingService.findMatchingNames(inputName, false, true, true, null);
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("mollis", matchRes.getSpecificEpithet());
-        Assert.assertEquals("laurel", matchRes.getInfraSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_LAUREL, matchRes.getTaxonNameUuid());
-        formmattedDouble = decimalFormat.format(matchRes.getDistance());
-        Assert.assertEquals("0.909", formmattedDouble);
+        matchResults = nameMatchingService.findMatchingNames(inputName, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        List<SingleNameMatchingResult> bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(2, bestFuzzyResults.size());
+        SingleNameMatchingResult firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("mollis", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("laurel", firstFuzzyMatch.getInfraSpecificEpithet());
+        Assert.assertEquals("subsp.", 763, firstFuzzyMatch.getRank().getId());
+        Assert.assertEquals(UUID_NAME_LAUREL, firstFuzzyMatch.getTaxonNameUuid());
+        formmattedDouble = decimalFormat.format(firstFuzzyMatch.getDistance());
+        Assert.assertEquals("Nectandra mollis var. laurol and Nectandra mollis subsp. laurel. Different rank (penalty = 1). Diff restant string = 1 "
+                + "Total string length 9 + 6 + 1 (rank) + 6 = 22 => 1 - (distChar/totalChar) = 0.909090...", "0.909", formmattedDouble);
 
-        matchRes = matchResult.get(1);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("mollis", matchRes.getSpecificEpithet());
-        Assert.assertEquals("laureli", matchRes.getInfraSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_LAURELI, matchRes.getTaxonNameUuid());
-        formmattedDouble = decimalFormat.format(matchRes.getDistance());
-        Assert.assertEquals("0.87", formmattedDouble);
+        SingleNameMatchingResult secondFuzzyMatch = bestFuzzyResults.get(1);
+        Assert.assertEquals("Nectandra", secondFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("mollis", secondFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("laureli", secondFuzzyMatch.getInfraSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_LAURELI, secondFuzzyMatch.getTaxonNameUuid());
+        formmattedDouble = decimalFormat.format(secondFuzzyMatch.getDistance());
+        Assert.assertEquals("Nectandra mollis var. laurol and Nectandra mollis subsp. laureli. Different rank (penalty = 1). Diff restant string = 2 "
+                + "Total string length 9 + 6 + 1 (rank) + 7 = 23 => 1 - (distChar/totalChar) = 0.86956...", "0.87", formmattedDouble);
     }
 
     @Test
@@ -314,39 +318,35 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         String inputName;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
-        SingleNameMatchingResult matchRes;
-        String pattern = "#.###";
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        otherSymbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat (pattern,otherSymbols);
+        List<SingleNameMatchingResult> bestFuzzyResults;
 
         inputName = "Nectandra Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true,  null);
-        matchResult = matchResults.getBestResults();
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Double distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS,  null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        SingleNameMatchingResult firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("Turl.", firstFuzzyMatch.getAuthorshipCache());
+        Double distance =  firstFuzzyMatch.getDistance();
         String formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.969", formmattedDouble);
+        assertEquals("input: Nectandra Turm., match: Nectandra Turl. 1 diff in authors. Author´s score is 1/3 of total score => diffCharAuth/3 = 0.3333333. "
+                + "Total string length 9 + (5/3)(author length) = 10.66666... => 1 - (distChar/totalChar) = 0.969...", "0.969", formmattedDouble);
 
         inputName = "Nectindra Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
-        matchResult = matchResults.getBestResults();
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectondra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectondra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("Turl.", firstFuzzyMatch.getAuthorshipCache());
+        distance =  firstFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.875", formmattedDouble);
+        assertEquals("input: Nectindra Turm., match: Nectondra Turl. 1 diff char in author + 1 diff char in name. Diff Author´s score is 1/3 of total"
+                + " score => diffCharAuth/3 = 0.3333333. Total string length 9 + (5/3)(author length) = 10.66666... => 1 - (distChar/totalChar) = 0.875023...",
+                "0.875", formmattedDouble);
 
-        matchRes = matchResult.get(1);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
-        pattern = "#.###";
-        decimalFormat = new DecimalFormat (pattern, otherSymbols);
+        SingleNameMatchingResult secondFuzzyMatch = bestFuzzyResults.get(1);
+        Assert.assertEquals("Nectandra", secondFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("Turl.", secondFuzzyMatch.getAuthorshipCache());
+        distance =  secondFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
         assertEquals("0.875", formmattedDouble);
     }
@@ -357,58 +357,58 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         String inputName;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
-        SingleNameMatchingResult matchRes;
-        String pattern = "#.###";
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        otherSymbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat (pattern,otherSymbols);
+        List<SingleNameMatchingResult> bestFuzzyResults;
 
         // the exact match results show all species names that retrieve a distance of 0
         // EXCLUDING the authorship
         inputName = "Nectandra laevis Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
-        matchResult = matchResults.getBestResults();
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Double distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        SingleNameMatchingResult firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("laevis", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("Turl.", firstFuzzyMatch.getAuthorshipCache());
+        Double distance =  firstFuzzyMatch.getDistance();
         String formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.98", formmattedDouble);
+        assertEquals("input: Nectandra laevis Turm., match: Nectandra laevis Turl. 1 diff char in author. Diff Author´s score is 1/3 of total"
+                + " score => diffCharAuth/3 = 0.3333333. Total string length 9 + 6 + (5/3)(author length) = 16.66666... => 1 - (distChar/totalChar) = 0.98001...", "0.98", formmattedDouble);
 
         inputName = "Nectindra lxevis Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true,null);
-        matchResult = matchResults.getBestResults();
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("laevis", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("Turl.", firstFuzzyMatch.getAuthorshipCache());
+        distance =  firstFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.86", formmattedDouble);
+        assertEquals("input: Nectandra laevis Turm., match: Nectandra laevis Turl. 1 diff char in author. 2 diff in name. Diff Author´s score is 1/3 of total"
+                + " score => diffCharAuth/3 = 0.3333333. Total string length 9 + 6 + (5/3)(author length) = 16.66666... => 1 - (distChar/totalChar) = 0.86019...",
+                "0.86", formmattedDouble);
 
         inputName = "Nectindra cinnamomoides Turm. & Kilian";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true,null);
-        matchResult = matchResults.getBestResults();
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("cinnamomoides", matchRes.getSpecificEpithet());
-        Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("cinnamomoides", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("Turl. & Kilian", firstFuzzyMatch.getAuthorshipCache());
+        distance =  firstFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.948", formmattedDouble);
+        assertEquals("input: Nectindra cinnamomoides Turm. & Kilian, match: Nectandra cinnamomoides Turl. & Kilian. 1 diff char in author. 1 diff in name. Diff Author´s score is 1/3 of total"
+                + " score => diffCharAuth/3 = 0.3333333. Total string length 9 + 13 + (11/3)(author length) = 25.66666... => 1 - (distChar/totalChar) = 0.94805...",
+                "0.948", formmattedDouble);
 
         //TODO matching non-parsable names is still an open issue (#10178)
 
         inputName = "Nectindra cinnamomoides Turm. and Kilian";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
-        matchResult = matchResults.getBestResults();
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("cinnamomoides", matchRes.getSpecificEpithet());
-        Assert.assertEquals("Turl. & Kilian", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("cinnamomoides", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("Turl. & Kilian", firstFuzzyMatch.getAuthorshipCache());
+        distance =  firstFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
         assertEquals("0.948", formmattedDouble);
     }
@@ -419,35 +419,30 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         String inputName;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
-        SingleNameMatchingResult matchRes;
+        List<SingleNameMatchingResult> bestFuzzyResults;
 
-        String pattern = "#.###";
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        otherSymbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat (pattern, otherSymbols);
-
-        // exact match
+        // not exact match
         inputName = "Nectandra (Kilian) Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
-        matchResult = matchResults.getBestResults();
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Double distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        SingleNameMatchingResult firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("Turl.", firstFuzzyMatch.getAuthorshipCache());
+        Double distance =  firstFuzzyMatch.getDistance();
         String formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.969", formmattedDouble);
+        assertEquals("input: Nectandra (Kilian) Turm., match: Nectandra Turl. 1 diff char in author. Diff Author´s score is 1/3 of total"
+                + " score => diffCharAuth/3 = 0.3333333. Total string length 9 + (5/3)(author length) = 10.66666... => 1 - (distChar/totalChar) = 0.968779...",
+                "0.969", formmattedDouble);
 
         inputName = "Nectandra (Kilian ex Turm.) Kilian ex Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
-        matchResult = matchResults.getBestResults();
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("Turl.", firstFuzzyMatch.getAuthorshipCache());
+        distance =  firstFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
         assertEquals("0.969", formmattedDouble);
-
     }
 
     @Test
@@ -456,59 +451,61 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         String inputName;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
-        SingleNameMatchingResult matchRes;
-        String pattern = "#.###";
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        otherSymbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat (pattern, otherSymbols);
+        List<SingleNameMatchingResult> bestFuzzyResults;
 
         // exact match
         inputName = "Nectandra laevis (Kilian) Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
-        matchResult = matchResults.getBestResults();
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Double distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        SingleNameMatchingResult firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("laevis", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("Turl.", firstFuzzyMatch.getAuthorshipCache());
+        Double distance =  firstFuzzyMatch.getDistance();
         String formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.98", formmattedDouble);
+        assertEquals("input: Nectandra laevis (Kilian) Turm., match: Nectandra laevis Turl. 1 diff char in author. Diff Author´s score is 1/3 of total"
+                + " score => diffCharAuth/3 = 0.3333333. Total string length 9 + 6 + (5/3)(author length) = 16.66666... => 1 - (distChar/totalChar) = 0.98000...",
+                "0.98", formmattedDouble);
 
         inputName = "Nectandra laevis (Kilian ex Turm.) Kilian ex Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
-        matchResult = matchResults.getBestResults();
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("laevis", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("Turl.", firstFuzzyMatch.getAuthorshipCache());
+        distance =  firstFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.98", formmattedDouble);
+        assertEquals("input: Nectandra laevis (Kilian) Turm., match: Nectandra laevis Turl. 1 diff char in author. Diff Author´s score is 1/3 of total"
+                + " score => diffCharAuth/3 = 0.3333333. Total string length 9 + 6 + (5/3)(author length) = 16.66666... => 1 - (distChar/totalChar) = 0.98000...",
+                "0.98", formmattedDouble);
 
         // not exact match
         inputName = "Mectandra laevis (Kilian) Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
-        matchResult = matchResults.getBestResults();
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("laevis", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("Turl.", firstFuzzyMatch.getAuthorshipCache());
+        distance =  firstFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.92", formmattedDouble);
+        assertEquals("input: Mectandra laevis (Kilian) Turm., match: Nectandra laevis Turl. 1 diff char in author. Diff Author´s score is 1/3 of total"
+                + " score => diffCharAuth/3 = 0.3333333. Total string length 9 + 6 + (5/3)(author length) = 16.66666... => 1 - (distChar/totalChar) = 0.91999...",
+                "0.92", formmattedDouble);
 
         inputName = "Mectandra laevis (Kilian ex Turm.) Kilian ex Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
-        matchResult = matchResults.getBestResults();
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("laevis", matchRes.getSpecificEpithet());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("laevis", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("Turl.", firstFuzzyMatch.getAuthorshipCache());
+        distance =  firstFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.92", formmattedDouble);
-
+        assertEquals("input: Mectandra laevis (Kilian) Turm., match: Nectandra laevis Turl. 1 diff char in author. Diff Author´s score is 1/3 of total"
+                + " score => diffCharAuth/3 = 0.3333333. Total string length 9 + 6 + (5/3)(author length) = 16.66666... => 1 - (distChar/totalChar) = 0.91999...",
+                "0.92", formmattedDouble);
     }
 
     @Test
@@ -517,52 +514,53 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         String inputName;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
-        SingleNameMatchingResult matchRes;
-        String pattern = "#.###";
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        otherSymbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat (pattern, otherSymbols);
+        List<SingleNameMatchingResult> bestFuzzyResults;
 
-        // exact match
+        // not exact match
         inputName = "Nectandra mollis subsp. laurel Kilian ex Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("mollis", matchRes.getSpecificEpithet());
-        Assert.assertEquals("laurel", matchRes.getInfraSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_LAUREL, matchRes.getTaxonNameUuid());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        Double distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(2, bestFuzzyResults.size());
+        SingleNameMatchingResult firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("mollis", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("laurel", firstFuzzyMatch.getInfraSpecificEpithet());
+        Assert.assertEquals("subsp.", 763, firstFuzzyMatch.getRank().getId());
+        Assert.assertEquals(UUID_NAME_LAUREL, firstFuzzyMatch.getTaxonNameUuid());
+        Assert.assertEquals("Turl.", firstFuzzyMatch.getAuthorshipCache());
+        Double distance =  firstFuzzyMatch.getDistance();
         String formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.986", formmattedDouble);
+        assertEquals("input: Nectandra mollis subsp. laurel Kilian ex Turm., match: Nectandra mollis subsp. laurel Turl. 1 diff char in author. "
+                + "Diff Author´s score is 1/3 of total score => diffCharAuth/3 = 0.3333333. Total string length 9 + 6 + 1(rank) + 6 + (5/3)(author length) = 22.66666... "
+                + "=> 1 - (distChar/totalChar) = 0.985915...", "0.986", formmattedDouble);
 
         // not exact match
         inputName = "Nectandra mollis var. laurol (Kilian) Turm.";
-        matchResults = nameMatchingService.findMatchingNames(inputName, true, true, true, null);
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("mollis", matchRes.getSpecificEpithet());
-        Assert.assertEquals("laurel", matchRes.getInfraSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_LAUREL, matchRes.getTaxonNameUuid());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(inputName, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(2, bestFuzzyResults.size());
+        firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Nectandra", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("mollis", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("laurel", firstFuzzyMatch.getInfraSpecificEpithet());
+        Assert.assertEquals("subsp.", 763, firstFuzzyMatch.getRank().getId());
+        Assert.assertEquals(UUID_NAME_LAUREL, firstFuzzyMatch.getTaxonNameUuid());
+        Assert.assertEquals("Turl.", firstFuzzyMatch.getAuthorshipCache());
+        distance =  firstFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.901", formmattedDouble);
+        assertEquals("input: Nectandra mollis var. laurol (Kilian) Turm., match: Nectandra mollis subsp. laurel Turl. 1 diff char in author. "
+                + "Diff Author´s score is 1/3 of total score => diffCharAuth/3 = 0.3333333. Diff in rank is 1. Total string length 9 + 6 + 1(rank) + 6 "
+                + "+ (5/3)(author length) = 22.66666... => 1 - (distChar/totalChar) = 0.901408...", "0.901", formmattedDouble);
 
-        matchRes = matchResult.get(1);
-        Assert.assertEquals("Nectandra", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("mollis", matchRes.getSpecificEpithet());
-        Assert.assertEquals("laureli", matchRes.getInfraSpecificEpithet());
-        Assert.assertEquals(UUID_NAME_LAURELI, matchRes.getTaxonNameUuid());
-        Assert.assertEquals("Turl.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        SingleNameMatchingResult secondFuzzyMatch = bestFuzzyResults.get(1);
+        Assert.assertEquals("Nectandra", secondFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("mollis", secondFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("laureli", secondFuzzyMatch.getInfraSpecificEpithet());
+        Assert.assertEquals(UUID_NAME_LAURELI, secondFuzzyMatch.getTaxonNameUuid());
+        Assert.assertEquals("Turl.", secondFuzzyMatch.getAuthorshipCache());
+        distance =  secondFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.865", formmattedDouble);
+        assertEquals("1-((3 + (1/3))/(9+6+1+7+(5/3))) = 0,8648648...", "0.865", formmattedDouble);
     }
 
     @Test
@@ -571,70 +569,64 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         String nameCache;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
-        SingleNameMatchingResult matchRes;
-        String pattern = "#.###";
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        otherSymbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat (pattern, otherSymbols);
 
         // exact match when author is not in the input name and boolean author is false
         nameCache = "Yucca filamentosa";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, false, true, true, null);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
-        Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        Double distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(nameCache, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        List<SingleNameMatchingResult> exactResults = matchResults.getExactResults();
+        Assert.assertEquals(2, exactResults.size());
+        SingleNameMatchingResult firstExactMatch = exactResults.get(0);
+        Assert.assertEquals("Yucca", firstExactMatch.getGenusOrUninomial());
+        Assert.assertEquals("filamentosa", firstExactMatch.getSpecificEpithet());
+        Assert.assertEquals("L.", firstExactMatch.getAuthorshipCache());
+        Double distance =  firstExactMatch.getDistance();
         String formmattedDouble = decimalFormat.format(distance);
         assertEquals("1", formmattedDouble);
 
      // exact match when author is given in the input name but boolean is still false
         nameCache = "Yucca filamentosa M.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, false, true, true, null);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
-        Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(nameCache, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        exactResults = matchResults.getExactResults();
+        Assert.assertEquals(2, exactResults.size());
+        firstExactMatch = exactResults.get(0);
+        Assert.assertEquals("Yucca", firstExactMatch.getGenusOrUninomial());
+        Assert.assertEquals("filamentosa", firstExactMatch.getSpecificEpithet());
+        Assert.assertEquals("L.", firstExactMatch.getAuthorshipCache());
+        distance =  firstExactMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
         assertEquals("1", formmattedDouble);
 
      // other candidates results without author input
         nameCache = "Yucca filamentoza";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, false, true, true,null);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(0, matchResult.size());
+        matchResults = nameMatchingService.findMatchingNames(nameCache, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        exactResults = matchResults.getExactResults();
+        Assert.assertEquals(0, exactResults.size());
 
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
-        Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        List<SingleNameMatchingResult> bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(2, bestFuzzyResults.size());
+        SingleNameMatchingResult firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Yucca", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("filamentosa", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("L.", firstFuzzyMatch.getAuthorshipCache());
+        distance =  firstFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.938", formmattedDouble);
+        assertEquals("1-(1 /(5+11)) = 0,9375", "0.938", formmattedDouble);
 
      // other candidates results with author
         nameCache = "Yucca filamentoz L.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, false, true, true,null);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(0, matchResult.size());
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
-        Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(nameCache, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        exactResults = matchResults.getExactResults();
+        Assert.assertEquals(0, exactResults.size());
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(2, bestFuzzyResults.size());
+        firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Yucca", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("filamentosa", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("L.", firstFuzzyMatch.getAuthorshipCache());
+        distance =  firstFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.875", formmattedDouble);
-}
+        assertEquals("1-(2 /(5+11)) = 0,875", "0.875", formmattedDouble);
+    }
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
@@ -642,56 +634,50 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         String nameCache;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
-        SingleNameMatchingResult matchRes;
-        String pattern = "#.###";
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        otherSymbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat (pattern, otherSymbols);
 
         // exact match when author is given in the input name and boolean author is true
         nameCache = "Yucca filamentosa L.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, true, null);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
-        Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        Double distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(nameCache, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        List<SingleNameMatchingResult> exactResults = matchResults.getExactResults();
+        Assert.assertEquals(2, exactResults.size());
+        SingleNameMatchingResult firstExactMatch = exactResults.get(0);
+        Assert.assertEquals("Yucca", firstExactMatch.getGenusOrUninomial());
+        Assert.assertEquals("filamentosa", firstExactMatch.getSpecificEpithet());
+        Assert.assertEquals("L.", firstExactMatch.getAuthorshipCache());
+        Double distance =  firstExactMatch.getDistance();
         String formmattedDouble = decimalFormat.format(distance);
         assertEquals("1", formmattedDouble);
 
      // exact match when author is missing in the input name and boolean author is true
      // this is wrong. This should return a warning: please give an author in the input name
         nameCache = "Yucca filamentosa";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, true, null);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(0, matchResult.size());
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
-        Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(nameCache, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        exactResults = matchResults.getExactResults();
+        Assert.assertEquals(0, exactResults.size());
+        List<SingleNameMatchingResult> bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(2, bestFuzzyResults.size());
+        SingleNameMatchingResult firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Yucca", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("filamentosa", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("L.", firstFuzzyMatch.getAuthorshipCache());
+        distance =  firstFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.96", formmattedDouble);
+        assertEquals("1-(0+(2/3)/(5+11+(2/3))) = 0,96", "0.96", formmattedDouble);
 
         nameCache = "Yucca filamentosa M.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, true, null);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(0, matchResult.size());
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchRes = matchResult.get(0);
-        Assert.assertEquals("Yucca", matchRes.getGenusOrUninomial());
-        Assert.assertEquals("filamentosa", matchRes.getSpecificEpithet());
-        Assert.assertEquals("L.", matchRes.getAuthorshipCache());
-        distance =  matchRes.getDistance();
+        matchResults = nameMatchingService.findMatchingNames(nameCache, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, null);
+        exactResults = matchResults.getExactResults();
+        Assert.assertEquals(0, exactResults.size());
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(2, bestFuzzyResults.size());
+        firstFuzzyMatch = bestFuzzyResults.get(0);
+        Assert.assertEquals("Yucca", firstFuzzyMatch.getGenusOrUninomial());
+        Assert.assertEquals("filamentosa", firstFuzzyMatch.getSpecificEpithet());
+        Assert.assertEquals("L.", firstFuzzyMatch.getAuthorshipCache());
+        distance =  firstFuzzyMatch.getDistance();
         formmattedDouble = decimalFormat.format(distance);
-        assertEquals("0.98", formmattedDouble);
-}
+        assertEquals("1-(0+(1/3)/(5+11+(2/3))) = 0,98", "0.98", formmattedDouble);
+    }
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
@@ -699,21 +685,20 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         String nameCache;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
 
         // exact match is always a list of matches with distance = 0
         nameCache = "Yucca filamentosa L.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, false, true, true, 10.0);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(2, matchResult.size());
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(11, matchResult.size());
+        matchResults = nameMatchingService.findMatchingNames(nameCache, !COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, 10.0);
+        List<SingleNameMatchingResult> exactResults = matchResults.getExactResults();
+        Assert.assertEquals(2, exactResults.size());
+        List<SingleNameMatchingResult> bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(11, bestFuzzyResults.size());
 
         nameCache = "Yucca filamentosa Len.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, true, 10.0);
-        matchResult = matchResults.getBestResults();
-        Assert.assertEquals(9, matchResult.size());
-}
+        matchResults = nameMatchingService.findMatchingNames(nameCache, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, 10.0);
+        bestFuzzyResults = matchResults.getBestFuzzyResults();
+        Assert.assertEquals(9, bestFuzzyResults.size());
+    }
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
@@ -721,15 +706,14 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         String nameCache;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
 
         // exact match is always a list of matches with distance = 0
         nameCache = "Gentiana affinis subsp. rusbyi (Greene ex Kusn.) Halda";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, false, false, 0.0);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(1, matchResult.size());
+        matchResults = nameMatchingService.findMatchingNames(nameCache, COMPARE_AUTHORS, !EXCLUDE_BASIONYMAUTHORS, !EXCLUDE_EXAUTHORS, 0.0);
+        List<SingleNameMatchingResult> exactResults = matchResults.getExactResults();
+        Assert.assertEquals(1, exactResults.size());
         Assert.assertEquals(UUID_NAME_GENTIANA, matchResults.getExactResults().get(0).getTaxonNameUuid());
-}
+    }
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
@@ -737,58 +721,48 @@ public class NameMatchingServiceImplTest extends CdmTransactionalIntegrationTest
 
         String nameCache;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
-        String pattern = "#.###";
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        otherSymbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat (pattern, otherSymbols);
 
         nameCache = "Passiflora foetida var. hispida (Corda. ex Triana & Planch.) Killip ex Gleason";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, false, 0.0);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(1, matchResult.size());
+        matchResults = nameMatchingService.findMatchingNames(nameCache, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, !EXCLUDE_EXAUTHORS, 0.0);
+        List<SingleNameMatchingResult> exactResults = matchResults.getExactResults();
+        Assert.assertEquals(1, exactResults.size());
         Assert.assertEquals(UUID_NAME_PASSIFLORAFO, matchResults.getExactResults().get(0).getTaxonNameUuid());
-        Assert.assertEquals("basionym authors are excluded", "Passiflora foetida var. hispida (DC. ex Triana & Planch.) Killip ex Gleason", matchResult.get(0).getTitleCache());
-        Double distance =matchResult.get(0).getDistance();
+        Assert.assertEquals("basionym authors are excluded", "Passiflora foetida var. hispida (DC. ex Triana & Planch.) Killip ex Gleason", exactResults.get(0).getTitleCache());
+        Double distance = exactResults.get(0).getDistance();
         String formmattedDouble = decimalFormat.format(distance);
         assertEquals("1", formmattedDouble);
 
         nameCache = "Asterella lindenbergiana (Nees ex Corda) Lindb. ex Arnell";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, false, 0.0);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(1, matchResult.size());
+        matchResults = nameMatchingService.findMatchingNames(nameCache, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, !EXCLUDE_EXAUTHORS, 0.0);
+        exactResults = matchResults.getExactResults();
+        Assert.assertEquals(1, exactResults.size());
         Assert.assertEquals(UUID_NAME_ASTERELLA, matchResults.getExactResults().get(0).getTaxonNameUuid());
-        Assert.assertEquals("basionym authors are excluded", "Asterella lindenbergiana (Corda ex Nees) Lindb. ex Arnell", matchResult.get(0).getTitleCache());
-}
+        Assert.assertEquals("basionym authors are excluded", "Asterella lindenbergiana (Corda ex Nees) Lindb. ex Arnell", exactResults.get(0).getTitleCache());
+    }
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "NameMatchingServiceImplTest.testFindMatchingNames.xml")
     public void testExcludeExAuthors() throws NameMatchingParserException {
 
         String nameCache;
         NameMatchingResult matchResults;
-        List<SingleNameMatchingResult> matchResult;
-        String pattern = "#.###";
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        otherSymbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat (pattern, otherSymbols);
 
         nameCache = "Passiflora bracteosa Linden & Planch. ex Triana & Planch.";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, true, true, 0.0);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(1, matchResult.size());
+        matchResults = nameMatchingService.findMatchingNames(nameCache, COMPARE_AUTHORS, EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, 0.0);
+        List<SingleNameMatchingResult> exactResults = matchResults.getExactResults();
+        Assert.assertEquals(1, exactResults.size());
         Assert.assertEquals(UUID_NAME_PASSIFLORABR, matchResults.getExactResults().get(0).getTaxonNameUuid());
-        Assert.assertEquals("ex authors are ignored", "Passiflora bracteosa Planch. & Linden ex Triana & Planch.", matchResult.get(0).getTitleCache());
+        Assert.assertEquals("ex authors are ignored", "Passiflora bracteosa Planch. & Linden ex Triana & Planch.", exactResults.get(0).getTitleCache());
 
         nameCache = "Passiflora foetida var. hispida (Corda. ex Triana & Planch.) Cuatrec. ex Gleason";
-        matchResults = nameMatchingService.findMatchingNames(nameCache, true, false, true, 0.0);
-        matchResult = matchResults.getExactResults();
-        Assert.assertEquals(1, matchResult.size());
+        matchResults = nameMatchingService.findMatchingNames(nameCache, COMPARE_AUTHORS, !EXCLUDE_BASIONYMAUTHORS, EXCLUDE_EXAUTHORS, 0.0);
+        exactResults = matchResults.getExactResults();
+        Assert.assertEquals(1, exactResults.size());
         Assert.assertEquals(UUID_NAME_PASSIFLORAFO, matchResults.getExactResults().get(0).getTaxonNameUuid());
-        Assert.assertEquals("ex authors are ignored", "Passiflora foetida var. hispida (DC. ex Triana & Planch.) Killip ex Gleason", matchResult.get(0).getTitleCache());
-        Double distance =matchResult.get(0).getDistance();
+        Assert.assertEquals("ex authors are ignored", "Passiflora foetida var. hispida (DC. ex Triana & Planch.) Killip ex Gleason", exactResults.get(0).getTitleCache());
+        Double distance = exactResults.get(0).getDistance();
         String formmattedDouble = decimalFormat.format(distance);
         assertEquals("1", formmattedDouble);
-}
+    }
 
     @Override
 	public void createTestDataSet() throws FileNotFoundException {}

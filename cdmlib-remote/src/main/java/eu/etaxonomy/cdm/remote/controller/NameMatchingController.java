@@ -161,7 +161,7 @@ public class NameMatchingController {
             NameMatchingOutputObject outputObject = new NameMatchingOutputObject();
             NameMatchingCombinedResult resultNameMatching = new NameMatchingCombinedResult();
             resultNameMatching.setExactMatches(loadResultListFromPartsList(innerResult.getExactResults()));
-            resultNameMatching.setCandidates(loadCandiateResultListFromPartsList(innerResult.getBestResults()));
+            resultNameMatching.setCandidates(loadCandiateResultListFromPartsList(innerResult.getBestFuzzyResults()));
 
             outputObject.setRequest(requestedParam);
             outputObject.setResult(resultNameMatching);

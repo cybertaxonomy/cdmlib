@@ -87,7 +87,7 @@ public class NameMatchingServiceImpl
     public class NameMatchingResult{
 
         List<SingleNameMatchingResult> exactResults = new ArrayList<>();
-        List<SingleNameMatchingResult> bestResults = new ArrayList<>();
+        List<SingleNameMatchingResult> bestFuzzyResults = new ArrayList<>();
         String warning;
 
         public List<SingleNameMatchingResult> getExactResults() {
@@ -96,11 +96,11 @@ public class NameMatchingServiceImpl
         public void setExactResults(List<SingleNameMatchingResult> exactResults) {
             this.exactResults = exactResults;
         }
-        public List<SingleNameMatchingResult> getBestResults() {
-            return bestResults;
+        public List<SingleNameMatchingResult> getBestFuzzyResults() {
+            return bestFuzzyResults;
         }
-        public void setBestResults(List<SingleNameMatchingResult> bestResults) {
-            this.bestResults = bestResults;
+        public void setBestFuzzyResults(List<SingleNameMatchingResult> bestFuzzyResults) {
+            this.bestFuzzyResults = bestFuzzyResults;
         }
         public void setWarning (String warning) {
             this.warning = warning;
@@ -152,7 +152,7 @@ public class NameMatchingServiceImpl
         } catch (NameMatchingParserException e) {
             result.setWarning(e.getWarning());
             result.exactResults = new ArrayList<>();
-            result.bestResults = new ArrayList<>();
+            result.bestFuzzyResults = new ArrayList<>();
             return result;
         }
 
@@ -161,13 +161,13 @@ public class NameMatchingServiceImpl
                 if (part.getDistance() == 1 || part.getTitleCache().equals(nameCache)) {
                     result.exactResults.add(part);
                 } else {
-                    result.bestResults.add(part);
+                    result.bestFuzzyResults.add(part);
                 }
             } else if (compareAuthor == false) {
                 if (part.getDistance() == 1){
                     result.exactResults.add(part);
                 } else {
-                    result.bestResults.add(part);
+                    result.bestFuzzyResults.add(part);
                 }
             }
         }
@@ -635,20 +635,22 @@ public class NameMatchingServiceImpl
         }
         resultInput.removeAll(resultOutput);
 
-        if (excludeBasionymAuthors == false && excludeExAuthors == false) {
-            for (SingleNameMatchingResult singleResult : resultInput){
-                String combinationAuthorshipResult = singleResult.getCombinationAuthorship();
-                if (combinationAuthorshipResult == null) {
-                    combinationAuthorshipResult = "";
+        if (excludeBasionymAuthors == false) {
+            if (excludeExAuthors == false) {
+                for (SingleNameMatchingResult singleResult : resultInput){
+                    String combinationAuthorshipResult = singleResult.getCombinationAuthorship();
+                    if (combinationAuthorshipResult == null) {
+                        combinationAuthorshipResult = "";
+                    }
+                    Double distanceCombinationAuthor = new Double(NameMatchingUtils.modifiedDamerauLevenshteinDistance(
+                            combinationAuthor, combinationAuthorshipResult));
+                    singleResult.setDistance((distanceCombinationAuthor / 3) + singleResult.getDistance());
+                    if (singleResult.getDistance() <= maxDistance) {
+                        resultOutput.add(singleResult);
+                    }
                 }
-                Double distanceCombinationAuthor = new Double(NameMatchingUtils.modifiedDamerauLevenshteinDistance(
-                        combinationAuthor, combinationAuthorshipResult));
-                singleResult.setDistance((distanceCombinationAuthor / 3) + singleResult.getDistance());
-                if (singleResult.getDistance() <= maxDistance) {
-                    resultOutput.add(singleResult);
-                }
+                return resultOutput;
             }
-            return resultOutput;
         }
         if (excludeBasionymAuthors) {
             if (excludeExAuthors) {
