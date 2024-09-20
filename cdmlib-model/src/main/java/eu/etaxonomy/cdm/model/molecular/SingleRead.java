@@ -223,13 +223,14 @@ public class SingleRead extends EventBase {
 
 
 //*************************** Transient GETTER /SETTER *****************************/
+
 	/**
 	 * Delegate method to get the text representation of the {@link #getSequence() sequence}.
 	 * @see #setSequenceString(String)
 	 */
 	@Transient
 	public String getSequenceString() {
-		return sequence.getString();
+		return sequence == null? null : sequence.getString();
 	}
 
 	/**
@@ -237,7 +238,11 @@ public class SingleRead extends EventBase {
 	 */
 	@Transient
 	public void setSequenceString(String sequence) {
-		this.sequence.setString(sequence);
+		if (this.sequence == null) {
+		    this.sequence = SequenceString.NewInstance(sequence);
+		}else {
+		    this.sequence.setString(sequence);
+		}
 	}
 
 	/**
