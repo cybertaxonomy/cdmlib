@@ -190,13 +190,21 @@ public class RegistrationWrapperDTOController
     public RegistrationWorkingSet doGetRegistrationWorkingSet(
             @PathVariable("reference_uuid") UUID referenceUuid,
             HttpServletRequest request,
-            @SuppressWarnings("unused") HttpServletResponse response) throws TypeDesignationSetException {
+            @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("doGetRegistrationWorkingSet() " + requestPathAndQuery(request));
 
-        RegistrationWorkingSet workingset = registrationWorkingSetService.loadWorkingSetByReferenceUuid(referenceUuid, true);
+        RegistrationWorkingSet workingset;
+        try {
+            workingset = registrationWorkingSetService.loadWorkingSetByReferenceUuid(referenceUuid, true);
+            return workingset;
+        } catch (PermissionDeniedException e) {
+            logger.warn("PermissionDeniedException occurred in doGetRegistrationWorkingSet: " + e.getMessage());
+        } catch (TypeDesignationSetException e) {
+            logger.warn("TypeDesignationSetException occurred in doGetRegistrationWorkingSet: " + e.getMessage());
+        }
 
-        return workingset;
+        return null;
     }
 
 

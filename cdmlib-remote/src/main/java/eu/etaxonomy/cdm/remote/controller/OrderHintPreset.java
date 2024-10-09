@@ -56,13 +56,13 @@ enum OrderHintPreset {
         switch(this) {
         case BY_ORDER_INDEX_ASC:
             if(!OrderedTermVocabulary.class.isAssignableFrom(type)) {
-            logger.warn("BY_ORDER_INDEX_ASC not possible with " + type.getSimpleName() +" , falling back to BY_TITLE_CACHE_ASC");
+            logger.info("BY_ORDER_INDEX_ASC not possible with " + type.getSimpleName() +" , falling back to BY_TITLE_CACHE_ASC");
                 return OrderHintPreset.BY_TITLE_CACHE_ASC;
             }
             break;
         case BY_ORDER_INDEX_DESC:
             if(!OrderedTermVocabulary.class.isAssignableFrom(type)) {
-                logger.warn( "BY_ORDER_INDEX_DESC not possible with " + type.getSimpleName() +" , falling back to BY_TITLE_CACHE_DESC");
+                logger.info( "BY_ORDER_INDEX_DESC not possible with " + type.getSimpleName() +" , falling back to BY_TITLE_CACHE_DESC");
                 return OrderHintPreset.BY_TITLE_CACHE_DESC;
             }
             break;

@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
+import eu.etaxonomy.cdm.api.service.dto.RegistrationWrapperDTO;
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -41,16 +41,6 @@ public interface IRegistrationWorkingSetService {
     public Pager<RegistrationWrapperDTO> pageDTOs(Integer pageSize, Integer pageIndex);
 
     public Pager<RegistrationWrapperDTO> pageDTOs(String identifier, Integer pageIndex,  Integer pageSize) throws IOException;
-
-    /**
-     * @param referenceID
-     * @param resolveSections resolve the higher publication unit and build the RegistrationWorkingSet for that reference. E.e. For journal sections the
-     *  use the inReference which is the journal article.
-     *
-     * @return
-     */
-    @Deprecated
-    public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws TypeDesignationSetException;
 
     /**
      * Loads the working set specified by the <code>referenceUuid</code> from the database. The list of {@link RegistrationWrapperDTO}s can be empty in case
