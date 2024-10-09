@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.ext.geo;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,10 +52,14 @@ public class EditGeoService implements IEditGeoService {
 
         List<Point> fieldUnitPoints = new ArrayList<>();
         List<Point> derivedUnitPoints = new ArrayList<>();
+        List<String> propertyPath = Arrays.asList(new String []{
+                "derivedFrom.originals.gatheringEvent.exactLocation.referenceSystem.includes.$",
+                "gatheringEvent.exactLocation.referenceSystem.includes.$"
+        });
 
         for (SpecimenOrObservationBase<?> specimenOrObservationBase : specimensOrObservations) {
             SpecimenOrObservationBase<?> specimensOrObservation = occurrenceDao
-                    .load(specimenOrObservationBase.getUuid());
+                    .load(specimenOrObservationBase.getUuid(), propertyPath);
 
             if (specimensOrObservation instanceof FieldUnit) {
                 GatheringEvent gatherEvent = ((FieldUnit) specimensOrObservation).getGatheringEvent();
