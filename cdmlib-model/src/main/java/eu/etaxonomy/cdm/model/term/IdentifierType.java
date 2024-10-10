@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.Language;
 
 /**
@@ -37,7 +38,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 @Entity
 @Audited
 public class IdentifierType
-        extends DefinedTermBase<IdentifierType> {
+        extends AvailableForIdentifiableBase<IdentifierType> {
 
     private static final long serialVersionUID = -6965540410672076893L;
 
@@ -159,6 +160,19 @@ public class IdentifierType
             IdentifierType newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
             String urlPattern = CdmUtils.Ne(csvLine.get(5));
             newInstance.setUrlPattern(urlPattern);
+
+            //availableFor
+            String text = csvLine.get(6);
+            if (text != null && text.contains("#")){
+                if (text.contains(CdmClass.TAXON.getKey())){newInstance.setAvailableForTaxon(true);}
+                if (text.contains(CdmClass.OCCURRENCE.getKey())){newInstance.setAvailableForOccurrence(true);}
+                if (text.contains(CdmClass.TAXON_NAME.getKey())){newInstance.setAvailableForTaxonName(true);}
+                if (text.contains(CdmClass.RERSON.getKey())){newInstance.setAvailableForPerson(true);}
+                if (text.contains(CdmClass.REFERENCE.getKey())){newInstance.setAvailableForReference(true);}
+            }else{
+                throw new IllegalStateException("AvailableFor XXX must exist for all 3 classes");
+            }
+
             return newInstance;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -167,6 +181,6 @@ public class IdentifierType
 
 	@Override
 	protected int partOfCsvLineIndex(){
-		return 6;
+		return -1;
 	}
 }

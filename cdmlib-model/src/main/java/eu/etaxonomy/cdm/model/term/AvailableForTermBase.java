@@ -21,6 +21,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.CdmClass;
+import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * This
@@ -56,6 +57,12 @@ public abstract class AvailableForTermBase<T extends DefinedTermBase>
     protected AvailableForTermBase(TermType type, String term, String label, String labelAbbrev) {
         super(type, term, label, labelAbbrev);
     }
+
+    protected AvailableForTermBase(TermType type, String term, String label, String labelAbbrev, Language lang) {
+        super(type, term, label, labelAbbrev, lang);
+    }
+
+
 
 // ****************************** GETTER_SETTER *******************************/
 
