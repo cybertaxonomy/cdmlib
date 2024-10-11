@@ -103,13 +103,13 @@ public abstract class AvailableForIdentifiableBase<T extends DefinedTermBase>
      */
     @XmlElement(name = "AvailableForPerson")
     public boolean isAvailableForPerson() {
-        return getAvailableFor().contains(CdmClass.RERSON);
+        return getAvailableFor().contains(CdmClass.PERSON);
     }
     /**
      * @see #isAvailableForPerson()
      */
     public void setAvailableForPerson(boolean availableForPerson) {
-        setAvailableFor(CdmClass.RERSON, availableForPerson);
+        setAvailableFor(CdmClass.PERSON, availableForPerson);
     }
 
     /**
