@@ -50,8 +50,10 @@ public class IdentifierType
     public static final UUID uuidIpniNameIdentifier = UUID.fromString("009a602f-0ff6-4231-93db-f458e8229aca");
     public static final UUID uuidWfoNameIdentifier = UUID.fromString("048e0cf9-f59c-42dd-bfeb-3a5cba0191c7");
     public static final UUID uuidIndexFungorumIdentifier = UUID.fromString("f405be9f-359a-49ba-b09b-4a7920386190");
+    private static final UUID uuidWikidataItemId = UUID.fromString("6a23e2a8-15dd-4830-84ec-2598e07d160a");
     //currently only used in Caryophyllales_spp
     public static final UUID uuidPlantListIdentifier = UUID.fromString("06e4c3bd-7bf6-447a-b96e-2844b279f276");
+
 
     //#10260
     //a pattern representing an URL and which includes the placeholde "{@ID}"
