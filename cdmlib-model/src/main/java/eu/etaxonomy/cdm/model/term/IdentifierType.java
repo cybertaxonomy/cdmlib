@@ -167,10 +167,10 @@ public class IdentifierType
                 if (text.contains(CdmClass.TAXON.getKey())){newInstance.setAvailableForTaxon(true);}
                 if (text.contains(CdmClass.OCCURRENCE.getKey())){newInstance.setAvailableForOccurrence(true);}
                 if (text.contains(CdmClass.TAXON_NAME.getKey())){newInstance.setAvailableForTaxonName(true);}
-                if (text.contains(CdmClass.RERSON.getKey())){newInstance.setAvailableForPerson(true);}
+                if (text.contains(CdmClass.PERSON.getKey())){newInstance.setAvailableForPerson(true);}
                 if (text.contains(CdmClass.REFERENCE.getKey())){newInstance.setAvailableForReference(true);}
             }else{
-                throw new IllegalStateException("AvailableFor XXX must exist for all 3 classes");
+                throw new IllegalStateException("AvailableFor XXX must exist for all 5 classes");
             }
 
             return newInstance;
