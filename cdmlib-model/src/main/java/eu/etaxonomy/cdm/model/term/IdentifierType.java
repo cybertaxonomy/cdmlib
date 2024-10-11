@@ -170,7 +170,7 @@ public class IdentifierType
                 if (text.contains(CdmClass.PERSON.getKey())){newInstance.setAvailableForPerson(true);}
                 if (text.contains(CdmClass.REFERENCE.getKey())){newInstance.setAvailableForReference(true);}
             }else{
-                throw new IllegalStateException("AvailableFor XXX must exist for all 5 classes");
+                throw new IllegalStateException("AvailableFor XXX must exist");
             }
 
             return newInstance;
