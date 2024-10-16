@@ -58,7 +58,7 @@ public class IdentifierImport
         try {
             //read stream
             InputStreamReader inputReader = config.getSource();
-            CSVReader csvReader = new CSVReader(inputReader, ';');
+            CSVReader csvReader = new CSVReader(inputReader, config.getSeparator());
             List<String[]> lines = csvReader.readAll();
             if (lines.isEmpty()){
                 logger.info("Import file is empty");
