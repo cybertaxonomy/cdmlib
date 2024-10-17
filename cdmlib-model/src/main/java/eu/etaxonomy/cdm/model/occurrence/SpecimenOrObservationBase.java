@@ -624,8 +624,11 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     }
 
     /**
-     * Returns a list of all description items which
-     * @return
+     * Returns a list of all description items which are considered to be
+     * character data. This currently means that they are of type
+     * {@link QuantitativeData} or {@link CategoricalData}.
+     *
+     * @return the list of character data, an empty list if no character data exist
      */
     @Transient
     public Collection<DescriptionElementBase> characterData() {

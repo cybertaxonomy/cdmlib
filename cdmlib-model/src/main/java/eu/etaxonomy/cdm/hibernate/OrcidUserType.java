@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.agent.ORCID;
 
 /**
  * Hibernate user type for the {@link ORCID} class.
+ *
  * @author a.mueller
  * @since 08.11.2018
  */

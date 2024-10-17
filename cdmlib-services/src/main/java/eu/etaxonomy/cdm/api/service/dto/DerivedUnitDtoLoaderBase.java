@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 public abstract class DerivedUnitDtoLoaderBase<T extends DerivedUnit>
         extends SpecimenOrObservationBaseDtoLoader<DerivedUnitDTO>{
 
-
     public abstract DerivedUnitDTO fromEntity(T entity);
 
     protected void load(DerivedUnitDTO dto, DerivedUnit derivedUnit) {
@@ -123,12 +122,11 @@ public abstract class DerivedUnitDtoLoaderBase<T extends DerivedUnit>
             }
             dto.addTypes(typeStatus!=null?typeStatus.getLabel():"", typedTaxaNames);
         }
+
+        //occurrence status
         Collection<OccurrenceStatus> occurrenceStatus = derivedUnit.getStatus();
-
         if (occurrenceStatus != null && !occurrenceStatus.isEmpty()) {
-
             List<DerivedUnitStatusDto> status = new ArrayList<>();
-
             for (OccurrenceStatus specimenStatus : occurrenceStatus) {
                 DerivedUnitStatusDto statusDto = new DerivedUnitStatusDto(specimenStatus.getType().getLabel());
                 statusDto.setStatusSource(SourceDtoLoader.fromEntity(specimenStatus.getSource()) ) ;
@@ -136,12 +134,17 @@ public abstract class DerivedUnitDtoLoaderBase<T extends DerivedUnit>
             }
             dto.setStatus(status);
         }
+
+        //summary
         dto.setDerivationTreeSummary(DerivationTreeSummaryDtoLoader.fromEntity(derivedUnit, dto.getSpecimenShortTitle()));
 
+        //stored under
         if(derivedUnit.getStoredUnder() != null) {
             dto.setStoredUnder(TypedEntityReferenceFactory.fromEntity(derivedUnit.getStoredUnder()));
         }
+        //original label
         dto.setOriginalLabelInfo(derivedUnit.getOriginalLabelInfo());
+        //exsiccatum
         dto.setExsiccatum(derivedUnit.getExsiccatum());
     }
 

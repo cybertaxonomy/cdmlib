@@ -247,7 +247,6 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
         }
     }
 
-
     /**
      * Computes the (unsorted) set of features for  which facts exist
      * for the given taxon.

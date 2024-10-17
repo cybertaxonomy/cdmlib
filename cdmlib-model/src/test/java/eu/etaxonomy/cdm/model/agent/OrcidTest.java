@@ -79,7 +79,6 @@ public class OrcidTest {
         Assert.assertEquals(ORCID.HTTP_ORCID_ORG + validOrcid, orcid1.asURI());
     }
 
-
     private void testInvalid(String invalidOrcid) {
         try {
             ORCID.fromString(invalidOrcid);
@@ -88,5 +87,4 @@ public class OrcidTest {
             //OK
         }
     }
-
 }

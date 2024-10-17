@@ -1641,15 +1641,15 @@ public class CdmLightClassificationExport
                     IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity<?>) cdmBase;
                     List<Identifier> identifiers = identifiableEntity.getIdentifiers();
                     String tableName = null;
-                    if (cdmBase instanceof Reference){
+                    if (identifiableEntity instanceof Reference){
                         tableName = "Reference";
-                    }else if (cdmBase instanceof SpecimenOrObservationBase){
+                    }else if (identifiableEntity instanceof SpecimenOrObservationBase){
                         tableName = "Specimen";
-                    }else if (cdmBase instanceof Taxon){
+                    }else if (identifiableEntity instanceof Taxon){
                         tableName = "Taxon";
-                    }else if (cdmBase instanceof Synonym){
+                    }else if (identifiableEntity instanceof Synonym){
                         tableName = "Synonym";
-                    }else if (cdmBase instanceof TeamOrPersonBase){
+                    }else if (identifiableEntity instanceof TeamOrPersonBase){
                         tableName = "PersonOrTeam";
                     }
 
@@ -1670,7 +1670,7 @@ public class CdmLightClassificationExport
                             state.getProcessor().put(table, cdmBase.getUuid() + (identifier.getType() != null? identifier.getType().getLabel():null), csvLine);
                         }
                     }
-                    if (cdmBase instanceof Reference ){
+                    if (identifiableEntity instanceof Reference ){
                         Reference ref = (Reference)cdmBase;
                         if (ref.getDoi() != null){
                             csvLine = new String[table.getSize()];
@@ -1682,7 +1682,7 @@ public class CdmLightClassificationExport
                         }
                     }
 
-                    if (cdmBase instanceof TeamOrPersonBase){
+                    if (identifiableEntity instanceof TeamOrPersonBase){
                         TeamOrPersonBase<?> person= HibernateProxyHelper.deproxy(cdmBase, TeamOrPersonBase.class);
                         if (person instanceof Person &&  ((Person)person).getOrcid() != null){
                             csvLine = new String[table.getSize()];
