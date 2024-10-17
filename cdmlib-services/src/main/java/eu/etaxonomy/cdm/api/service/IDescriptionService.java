@@ -357,5 +357,8 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
             UUID targetTaxonUuid) ;
 
 
+    UpdateResult moveTaxonDescriptions(Set<UUID> descriptionUuids, UUID targetTaxonUuid, boolean setNameInSource);
+
+
 
 }

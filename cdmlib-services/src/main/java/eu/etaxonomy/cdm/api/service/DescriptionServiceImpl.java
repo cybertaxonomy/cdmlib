@@ -823,7 +823,7 @@ public class DescriptionServiceImpl
         for (DescriptionElementBase element : descriptionElements){
             DescriptionBase<?> description = element.getInDescription();
             description = HibernateProxyHelper.deproxy(dao.load(description.getUuid()));
-            Taxon taxon;
+            Taxon taxon = null;
             TaxonName name = null;
             if (description instanceof TaxonDescription){
                 TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
@@ -848,6 +848,7 @@ public class DescriptionServiceImpl
                 description.removeElement(element);
                 dao.saveOrUpdate(description);
                 result.addUpdatedObject(description);
+                result.addUpdatedObject(taxon);
 //                if (description.getElements().isEmpty()){
 //                   if (description instanceof TaxonDescription){
 //                       TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
@@ -869,6 +870,7 @@ public class DescriptionServiceImpl
         result.addUpdatedObject(targetDescription);
         if (targetDescription instanceof TaxonDescription){
             result.addUpdatedObject(((TaxonDescription)targetDescription).getTaxon());
+            result.addUpdatedObject(targetDescription);
         }
         return result;
     }
@@ -1000,7 +1002,13 @@ public class DescriptionServiceImpl
     }
 
     private TaxonDescription prepareDescriptionForMove(TaxonDescription description, Taxon sourceTaxon, boolean setNameInSource){
-        String moveMessage = String.format("Description moved from %s", sourceTaxon);
+        String moveMessage = "";
+        if (description.isImageGallery()) {
+            moveMessage = String.format("Image Gallery moved from %s", sourceTaxon);
+        }else {
+            moveMessage = String.format("Description moved from %s", sourceTaxon);
+        }
+
         if(description.isProtectedTitleCache()){
             String separator = "";
             if(!StringUtils.isBlank(description.getTitleCache())){
@@ -1047,6 +1055,26 @@ public class DescriptionServiceImpl
         result.addUpdatedObject(targetTaxon);
 
         targetTaxon.addDescription(prepareDescriptionForMove(description, sourceTaxon, setNameInSource));
+        return result;
+
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult moveTaxonDescriptions(Set<UUID> descriptionUuids, UUID targetTaxonUuid, boolean setNameInSource){
+
+        Taxon targetTaxon = HibernateProxyHelper.deproxy(taxonDao.load(targetTaxonUuid), Taxon.class);
+        UpdateResult result = new UpdateResult();
+        for (UUID descriptionUuid: descriptionUuids) {
+            TaxonDescription description = HibernateProxyHelper.deproxy(dao.load(descriptionUuid), TaxonDescription.class);
+            Taxon sourceTaxon = description.getTaxon();
+            result.addUpdatedObject(sourceTaxon);
+            targetTaxon.addDescription(prepareDescriptionForMove(description, sourceTaxon, setNameInSource));
+        }
+
+        result.addUpdatedObject(targetTaxon);
+
+
         return result;
 
     }
@@ -1123,9 +1151,7 @@ public class DescriptionServiceImpl
         TaxonDescription targetDescription = targetTaxon.getImageGallery(true);
 
         //targetDescription.setTitleCache(moveMessage, true);
-        Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
-        annotation.setAnnotationType(AnnotationType.INTERNAL());
-        targetDescription.addAnnotation(annotation);
+
 
         targetDescription = dao.save(targetDescription);
 
@@ -1139,6 +1165,9 @@ public class DescriptionServiceImpl
         }
         for(UUID deUuid : mediaUUIDs) {
             Media media = mediaDao.load(deUuid);
+            Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
+            annotation.setAnnotationType(AnnotationType.INTERNAL());
+            media.addAnnotation(annotation);
             newTextData.addMedia(media);
         }
         targetDescription = dao.save(targetDescription);
