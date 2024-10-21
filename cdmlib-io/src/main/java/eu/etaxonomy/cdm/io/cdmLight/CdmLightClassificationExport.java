@@ -365,14 +365,19 @@ public class CdmLightClassificationExport
 
                     //secundum reference
                     csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
+                    String sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxon.getSec(), taxon.getSecSource().getCitationMicroReference(), null,
+                            state.getReferenceStore().get(taxon.getSec().getUuid()));
+
                     if (taxon.getSec() != null && taxon.getSec().getDatePublished() != null
                             && taxon.getSec().getDatePublished().getFreeText() != null) {
-                        String sec_string = taxon.getSec().getTitleCache() + ". "
-                                + taxon.getSec().getDatePublished().getFreeText();
+//                        String sec_string = taxon.getSec().getTitleCache() + ". "
+//                                + taxon.getSec().getDatePublished().getFreeText();
+                        String sec_string = sec + ". "
+                              + taxon.getSec().getDatePublished().getFreeText();
                         sec_string = sec_string.replace("..", ".");
                         csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = sec_string;
                     } else {
-                        csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(taxon.getSec());
+                        csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = sec;//getTitleCache(taxon.getSec());
                     }
 
                     //secundum subname (nameInSource)
@@ -1000,7 +1005,9 @@ public class CdmLightClassificationExport
             }
             csvLine[table.getIndex(CdmLightExportTable.APPENDED_PHRASE)] = synonym.getAppendedPhrase();
             csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, synonym.getSec());
-            csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = getTitleCache(synonym.getSec());
+            String sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(synonym.getSec(), synonym.getSecSource().getCitationMicroReference(), null,
+                    state.getReferenceStore().get(synonym.getSec().getUuid()));
+            csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = sec;//getTitleCache(synonym.getSec());
             csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = synonym.isPublish() ? "1" : "0";
             csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = "0";
             csvLine[table.getIndex(CdmLightExportTable.IS_PARTIAL)] = "0";
@@ -1039,7 +1046,7 @@ public class CdmLightClassificationExport
                 handleReference(state, secRef);
             }
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
-            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(secRef);
+            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = state.getReferenceStore().get(secRef.getUuid());//getTitleCache(secRef);
             csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = ppSynonym.isPublish() ? "1" : "0" ;
 
             Set<TaxonRelationship> rels = accepted.getTaxonRelations(ppSynonym);
@@ -1067,7 +1074,7 @@ public class CdmLightClassificationExport
                     handleReference(state, synSecRef);
                 }
                 csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, synSecRef);
-                csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = getTitleCache(synSecRef);
+                csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = state.getReferenceStore().get(synSecRef.getUuid());//getTitleCache(synSecRef);
                 isProParte = rel.getType().isProParte();
                 isPartial = rel.getType().isPartial();
 
@@ -1355,7 +1362,7 @@ public class CdmLightClassificationExport
             boolean withStartingLabel = false;
             boolean withNameIfAvailable = false;
             boolean withPrecedingMainType = true;
-            boolean withAccessionNoType = false;
+            boolean withAccessionNoType = state.getConfig().isShowTypeOfDesignationIdentifier();//false;
             csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = tdContainer.print(
                     withCitation, withStartingLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType, rules);
 
