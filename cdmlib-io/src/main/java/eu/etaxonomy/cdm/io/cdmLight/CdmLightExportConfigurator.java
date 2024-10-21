@@ -54,6 +54,8 @@ public class CdmLightExportConfigurator
 
     private boolean isAddHTML = true;
 
+    private boolean isShowTypeOfDesignationIdentifier = true;
+
     private Comparator<TaxonNodeDto> taxonNodeComparator;
 
     //filter
@@ -329,6 +331,20 @@ public class CdmLightExportConfigurator
     }
     public void setStatusTree(UUID statusTree) {
         this.statusTree = statusTree;
+    }
+
+    /**
+     * @return the isShowTypeOfDesignationIdentifier
+     */
+    public boolean isShowTypeOfDesignationIdentifier() {
+        return isShowTypeOfDesignationIdentifier;
+    }
+
+    /**
+     * @param isShowTypeOfDesignationIdentifier the isShowTypeOfDesignationIdentifier to set
+     */
+    public void setShowTypeOfDesignationIdentifier(boolean isShowTypeOfDesignationIdentifier) {
+        this.isShowTypeOfDesignationIdentifier = isShowTypeOfDesignationIdentifier;
     }
 
 }
