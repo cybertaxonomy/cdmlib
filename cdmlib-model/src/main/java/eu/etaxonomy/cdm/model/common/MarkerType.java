@@ -67,6 +67,11 @@ public class MarkerType extends AvailableForIdentifiableBase<MarkerType> {
     public static final UUID uuidFallbackArea = UUID.fromString("e2b42891-aa85-4a09-981b-b7d8f5749c54");
     public static final UUID uuidAlternativeRootArea = UUID.fromString("1bf75861-47a0-42a1-8632-97c0fd15df29");
 
+    //temporary for Caryophyllales/Mexico, see #10601-#10603
+    //TODO remove once the handling is not hardcoded anymore
+    public static final UUID uuidEfloraMex = UUID.fromString("ba2c1a71-7886-4968-851f-0f898e4db172");
+
+
 
 	protected static Map<UUID, MarkerType> termMap = null;
 
