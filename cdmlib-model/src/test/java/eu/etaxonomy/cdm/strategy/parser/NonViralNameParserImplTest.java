@@ -17,8 +17,10 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -2727,6 +2729,18 @@ public class NonViralNameParserImplTest extends TermTestBase {
         TaxonName name3 = parser.parseReferencedName(str);
         Assert.assertEquals(1, name3.getStatus().size());
         Assert.assertEquals(NomenclaturalStatusType.INVALID(), name3.getStatus().iterator().next().getType());
+
+        //pro hybr.+pro sp. #10478
+        str = "Abies alba Mill., pro hybr.";
+        name3 = parser.parseReferencedName(str);
+        Assert.assertEquals(1, name3.getStatus().size());
+        Assert.assertEquals(NomenclaturalStatusType.PRO_HYBRID(), name3.getStatus().iterator().next().getType());
+        str = "Abies alba Mill., pro sp., nom. illeg.";
+        name3 = parser.parseReferencedName(str);
+        Assert.assertEquals(2, name3.getStatus().size());
+        Set<NomenclaturalStatusType> statusTypes = name3.getStatus().stream().map(s->s.getType()).collect(Collectors.toSet());
+        Assert.assertTrue(statusTypes.contains(NomenclaturalStatusType.PRO_SPECIES()));
+        Assert.assertTrue(statusTypes.contains(NomenclaturalStatusType.ILLEGITIMATE()));
     }
 
     @Test
