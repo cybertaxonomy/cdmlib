@@ -58,6 +58,12 @@ public class NomenclaturalStatusTypeComparator implements
 //            e.printStackTrace();
             logger.warn("LazyInitializationException during compare of nomenclatural status types");
         }
+
+        //see #10478#note-9
+        if (o1.isProXxx() ^ o2.isProXxx()) {
+            return o1.isProXxx()? -1 : 1;
+        }
+
         //no natural order exist, use uuid to have a defined order at least
         return o1.getUuid().compareTo(o2.getUuid());
 

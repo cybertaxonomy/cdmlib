@@ -130,6 +130,22 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     }
 
     @Test
+    public void testNomStatus() {
+        //no status
+        subSpeciesName.setNomenclaturalReference(citationRef);
+        subSpeciesName.setNomenclaturalMicroReference("25");
+        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25", subSpeciesName.getFullTitleCache());
+        //1 status
+        subSpeciesName.addStatus(NomenclaturalStatusType.ILLEGITIMATE(), null, null);
+        subSpeciesName.setFullTitleCache(null, false);
+        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25, nom. illeg.", subSpeciesName.getFullTitleCache());
+        //2 status (ordered) - ordering see #10478#note-9
+        subSpeciesName.addStatus(NomenclaturalStatusType.PRO_HYBRID(), null, null);
+        subSpeciesName.setFullTitleCache(null, false);
+        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25, pro hybr., nom. illeg.", subSpeciesName.getFullTitleCache());
+    }
+
+    @Test
     public void testGattungsAutonyme() {
     	IBotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.SECTION_BOTANY());
 		String strTaraxacum = "Traxacum";

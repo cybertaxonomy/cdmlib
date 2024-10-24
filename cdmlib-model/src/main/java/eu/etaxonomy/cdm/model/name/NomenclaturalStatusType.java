@@ -312,6 +312,12 @@ public class NomenclaturalStatusType
 	    return this.nomenclaturalStanding.isIllegitimate();
 	}
 
+    @Transient
+    public boolean isProXxx(){
+        //pro hybr., pro sp., pro syn., ...
+        return this == PRO_HYBRID() || this == PRO_SPECIES() || this == PRO_SYNONYMO();
+    }
+
 	/**
 	 * Returns the nomenclatural status type "ambiguous". A "valid"
 	 * ("available") {@link TaxonName taxon name} is "ambiguous" if it has been used so long
