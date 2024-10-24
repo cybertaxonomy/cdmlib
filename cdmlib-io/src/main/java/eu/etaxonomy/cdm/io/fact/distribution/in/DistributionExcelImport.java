@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 import eu.etaxonomy.cdm.io.fact.in.FactExcelImportBase;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -53,18 +54,16 @@ public class DistributionExcelImport
 //            taxon = Taxon.NewInstance(null, null);
         }
 
-        UUID featureUuid = Feature.uuidDistribution;
-        String featureLabel = "Distribution";
-        Feature feature = getFeature(state, featureUuid);
-        if (feature == null){
-            feature = getFeature(state, featureUuid, featureLabel, featureLabel, null, null);
-        }
-
         PresenceAbsenceTerm status = makeStatus(state);
 
         NamedArea area = makeArea(state);
 
         Distribution distribution = Distribution.NewInstance(area, status);
+        if (state.getConfig().getDistributionFeatureUuid() != null){
+            Feature feature = this.getFeature(state, state.getConfig().getDistributionFeatureUuid(),
+                    "Newly created distribution feature", "Newly created distribution feature", null, null);
+            distribution.setFeature(feature);
+        }
 
         //source
         String id = null;
@@ -72,7 +71,15 @@ public class DistributionExcelImport
         Reference reference = getSourceReference(state);
 
         //description
-        TaxonDescription taxonDescription = this.getTaxonDescription(taxon, reference, !IMAGE_GALLERY, true);
+        TaxonDescription taxonDescription;
+        if (state.getConfig().getDescriptionMarkerTypeUuid() != null) {
+            MarkerType markerType = this.getMarkerType(state, state.getConfig().getDescriptionMarkerTypeUuid(),
+                    "Newly created marker type for distribution import", "Newly created marker type for distribution import", null);
+            String title = "Factual data set for " + markerType.getLabel();
+            taxonDescription = this.getMarkedTaxonDescription(taxon, markerType, !IMAGE_GALLERY, CREATE, null, title);
+        }else {
+            taxonDescription = this.getTaxonDescription(taxon, reference, !IMAGE_GALLERY, CREATE);
+        }
         taxonDescription.addElement(distribution);
         if (state.getConfig().getSourceType() == OriginalSourceType.PrimaryTaxonomicSource) {
             DoubleResult<TaxonName, String> originalName = getOriginalName(state, taxon,

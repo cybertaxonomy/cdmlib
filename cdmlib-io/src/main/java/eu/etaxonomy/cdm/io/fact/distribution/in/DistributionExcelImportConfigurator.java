@@ -27,6 +27,9 @@ public class DistributionExcelImportConfigurator
 
     private UUID defaultStatusUuid;
     private UUID defaultAreaUuid;
+    private UUID descriptionMarkerTypeUuid;
+    private UUID distributionFeatureUuid;
+    private boolean useAcceptedNameAsNameUsedInSource = false;
 
     public static DistributionExcelImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
         return new DistributionExcelImportConfigurator(uri, destination, null);
@@ -78,10 +81,6 @@ public class DistributionExcelImportConfigurator
         putLabelReplacement(DistributionExcelImport.COL_AREA_UUID, label);
     }
 
-    public void setRowToNeglect(int row){
-
-    }
-
     public UUID getDefaultStatusUuid() {
         return defaultStatusUuid;
     }
@@ -94,5 +93,36 @@ public class DistributionExcelImportConfigurator
     }
     public void setDefaultAreaUuid(UUID defaultAreaUuid) {
         this.defaultAreaUuid = defaultAreaUuid;
+    }
+
+    /**
+     * If set, the descriptions will get a marker of the
+     * given marker type. Reuse of markers will only take
+     * place if a description with the given marker exists
+     * already.
+     */
+    public UUID getDescriptionMarkerTypeUuid() {
+        return descriptionMarkerTypeUuid;
+    }
+    public void setDescriptionMarkerTypeUuid(UUID descriptionMarkerTypeUuid) {
+        this.descriptionMarkerTypeUuid = descriptionMarkerTypeUuid;
+    }
+
+    /**
+     * If set, the given feature is used for distributions
+     * instead of the default distribution feature
+     */
+    public UUID getDistributionFeatureUuid() {
+        return distributionFeatureUuid;
+    }
+    public void setDistributionFeatureUuid(UUID distributionFeatureUuid) {
+        this.distributionFeatureUuid = distributionFeatureUuid;
+    }
+
+    public boolean isUseAcceptedNameAsNameUsedInSource() {
+        return useAcceptedNameAsNameUsedInSource;
+    }
+    public void setUseAcceptedNameAsNameUsedInSource(boolean useAcceptedNameAsNameUsedInSource) {
+        this.useAcceptedNameAsNameUsedInSource = useAcceptedNameAsNameUsedInSource;
     }
 }
