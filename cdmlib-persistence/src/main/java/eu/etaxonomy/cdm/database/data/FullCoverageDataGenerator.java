@@ -739,6 +739,7 @@ public class FullCoverageDataGenerator {
 		Reference reference = ReferenceFactory.newArticle();
 		Person author = Person.NewTitledInstance("Author team");
 		reference.setAuthorship(author);
+		reference.setAuthorIsEditor(true);
 		reference.setTitle("ref title");
 		reference.setAbbrevTitle("abbrev title");
 		reference.setDatePublished(TimePeriodParser.parseStringVerbatim("1999"));

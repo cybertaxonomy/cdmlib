@@ -64,6 +64,12 @@ public class SchemaUpdater_5460_5461 extends SchemaUpdaterBase {
         int length = 50;
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
 
+        //#7987 Add authorIsEditor flag to Reference
+        stepName = "Add authorIsEditor flag to Reference";
+        tableName = "Reference";
+        newColumnName ="authorIsEditor";
+        ColumnAdder.NewBooleanInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, false);
+
         return stepList;
     }
 }
