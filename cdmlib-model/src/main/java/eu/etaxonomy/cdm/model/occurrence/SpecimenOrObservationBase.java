@@ -632,20 +632,20 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      */
     @Transient
     public Collection<DescriptionElementBase> characterData() {
-        Collection<DescriptionElementBase> states = new ArrayList<>();
+        Collection<DescriptionElementBase> characterData = new ArrayList<>();
         Set<DescriptionBase<S>> descriptions = this.getDescriptions();
-        for (DescriptionBase<?> descriptionBase : descriptions) {
-            if (descriptionBase.isInstanceOf(SpecimenDescription.class)) {
-                SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(descriptionBase, SpecimenDescription.class);
+        for (DescriptionBase<?> description : descriptions) {
+            if (description.isInstanceOf(SpecimenDescription.class)) {
+                SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(description, SpecimenDescription.class);
                 Set<DescriptionElementBase> elements = specimenDescription.getElements();
-                for (DescriptionElementBase descriptionElementBase : elements) {
-                    if(descriptionElementBase.isCharacterData()){
-                        states.add(descriptionElementBase);
+                for (DescriptionElementBase deb : elements) {
+                    if(deb.isCharacterData()){
+                        characterData.add(deb);
                     }
                 }
             }
         }
-        return states;
+        return characterData;
     }
 
     public Collection<DerivedUnit> collectDerivedUnits(Integer maxDepth) {
