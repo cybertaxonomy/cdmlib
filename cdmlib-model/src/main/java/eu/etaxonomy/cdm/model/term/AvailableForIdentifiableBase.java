@@ -15,8 +15,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmClass;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -37,6 +40,7 @@ public abstract class AvailableForIdentifiableBase<T extends DefinedTermBase>
     //for hibernate use only, *packet* private required by bytebuddy
     @Deprecated
     AvailableForIdentifiableBase() {}
+
     @Deprecated
     protected AvailableForIdentifiableBase(TermType type) {
         super(type);
@@ -44,6 +48,10 @@ public abstract class AvailableForIdentifiableBase<T extends DefinedTermBase>
 
     protected AvailableForIdentifiableBase(TermType type, String term, String label, String labelAbbrev) {
         super(type, term, label, labelAbbrev);
+    }
+
+    protected AvailableForIdentifiableBase(TermType type, String term, String label, String labelAbbrev, Language lang) {
+        super(type, term, label, labelAbbrev, lang);
     }
 
 // ****************************** GETTER_SETTER *******************************/
@@ -88,5 +96,33 @@ public abstract class AvailableForIdentifiableBase<T extends DefinedTermBase>
      */
     public void setAvailableForReference(boolean availableForReference) {
         setAvailableFor(CdmClass.REFERENCE, availableForReference);
+    }
+
+    /**
+     * Whether this supplement is available for {@link Person persons}.
+     */
+    @XmlElement(name = "AvailableForPerson")
+    public boolean isAvailableForPerson() {
+        return getAvailableFor().contains(CdmClass.PERSON);
+    }
+    /**
+     * @see #isAvailableForPerson()
+     */
+    public void setAvailableForPerson(boolean availableForPerson) {
+        setAvailableFor(CdmClass.PERSON, availableForPerson);
+    }
+
+    /**
+     * Whether this supplement is available for {@link SpecimenOrObservationBase occurrences}.
+     */
+    @XmlElement(name = "AvailableForOccurrence")
+    public boolean isAvailableForOccurrence() {
+        return getAvailableFor().contains(CdmClass.OCCURRENCE);
+    }
+    /**
+     * @see #isAvailableForOccurrence()
+     */
+    public void setAvailableForOccurrence(boolean availableForOccurrence) {
+        setAvailableFor(CdmClass.OCCURRENCE, availableForOccurrence);
     }
 }

@@ -50,7 +50,7 @@ public enum CdmClass implements IEnumTerm<CdmClass>{
     @XmlEnumValue("REF")
     REFERENCE(Reference.class, "REF", false, false, UUID.fromString("d2c75a59-6490-4428-b079-6dc4409c9088"), "Reference"),
     @XmlEnumValue("PER")
-    RERSON(Person.class, "PER", false, false, UUID.fromString("8d327639-8e38-4c20-9534-5107e5bdfc7f"), "Person"),
+    PERSON(Person.class, "PER", false, false, UUID.fromString("8d327639-8e38-4c20-9534-5107e5bdfc7f"), "Person"),
 
     @XmlEnumValue("TDA")
     TEXT_DATA(TextData.class, "TDA", false, true, UUID.fromString("3b15b116-bfbb-493d-8747-bd9741ebcac8"), "Text Data"),

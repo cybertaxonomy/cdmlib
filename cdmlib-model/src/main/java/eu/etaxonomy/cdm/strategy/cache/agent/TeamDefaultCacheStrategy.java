@@ -172,6 +172,17 @@ public class TeamDefaultCacheStrategy
 
     private String getCache(Team team, CacheType cacheType, int etAlPosition) {
 
+        if ((cacheType == CacheType.TITLECACHE || cacheType == CacheType.FULL)
+                && team.isProtectedTitleCache()) {
+            return team.getTitleCache();
+        }else if (cacheType == CacheType.ABBREV && team.isProtectedNomenclaturalTitleCache()) {
+            return team.getNomenclaturalTitleCache();
+        }else if (cacheType == CacheType.COLLECTOR && team.isProtectedCollectorTitleCache()) {
+            return team.getCollectorTitleCache();
+        }else {
+            //TODO what about CacheType.FAMILY;
+        }
+
         String result = "";
         List<Person> teamMembers = team.getTeamMembers();
         int size = teamMembers.size();

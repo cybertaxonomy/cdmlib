@@ -208,13 +208,13 @@ public class NameMatchingUtils {
 	}
 
     public static int modifiedDamerauLevenshteinDistance(String str1, String str2) {
-    	if (str1 == str2) {
+        if (CdmUtils.nullSafeEqual(str1, str2)) {
     		return 0;
     	} else if (str1.isEmpty()) {
     		return str2.length();
     	} else if (str2.isEmpty()) {
     		return str1.length();
-    	} else if (str2.length() == 1 && str1.length() == 1 && str1 != str2) {
+    	} else if (str2.length() == 1 && str1.length() == 1 && !str1.equals(str2)) {
     		return 1;
     	} else {
 

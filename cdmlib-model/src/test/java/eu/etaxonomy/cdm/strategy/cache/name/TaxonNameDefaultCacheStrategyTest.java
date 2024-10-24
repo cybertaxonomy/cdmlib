@@ -39,8 +39,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
@@ -127,6 +127,22 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         subSpeciesName.setNomenclaturalMicroReference("25");
         Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25", subSpeciesName.getFullTitleCache());
         //TODO not yet completed
+    }
+
+    @Test
+    public void testNomStatus() {
+        //no status
+        subSpeciesName.setNomenclaturalReference(citationRef);
+        subSpeciesName.setNomenclaturalMicroReference("25");
+        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25", subSpeciesName.getFullTitleCache());
+        //1 status
+        subSpeciesName.addStatus(NomenclaturalStatusType.ILLEGITIMATE(), null, null);
+        subSpeciesName.setFullTitleCache(null, false);
+        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25, nom. illeg.", subSpeciesName.getFullTitleCache());
+        //2 status (ordered) - ordering see #10478#note-9
+        subSpeciesName.addStatus(NomenclaturalStatusType.PRO_HYBRID(), null, null);
+        subSpeciesName.setFullTitleCache(null, false);
+        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25, pro hybr., nom. illeg.", subSpeciesName.getFullTitleCache());
     }
 
     @Test

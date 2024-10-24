@@ -259,17 +259,23 @@ public abstract class NonViralNameParserImplRegExBase  {
             "nom\\." + fWs + "(ambig\\.|dub\\.|confus\\.|superfl\\.|nud\\.|illeg\\.|inval\\.|cons\\.(\\s*(prop|des)\\.)?|altern(ativ)?\\.|subnud\\.|nov\\.|legit\\.|sanct\\.|val\\.|"+
     			"rej\\.("+ fWs + "prop\\.)?|provis\\.|utique"+fWs+"rej\\.("+fWs+"prop\\.)?)";
     protected static String pNomStatusOrth = "orth\\." + fWs + "(var\\.|rej\\.|cons\\.("+fWs+"prop\\.)?)";
-    protected static String pNomStatusComb = "comb\\." + fWs + "(inval\\.|illeg\\.|nov\\.)";
+    protected static String pNomStatusComb = "comb\\." + fWs + "(inval\\.|illeg\\.|nov\\.|ined\\.)";
+    protected static String pNomStatusInSched = "in" + oWs + "sched\\.";
     protected static String pNomStatusOpus = "op\\." + fWs + "utique" + fWs + "oppr\\.";
+    protected static String pNomStatusPro = "pro" + oWs + "(hybr\\.|sp\\.|syn\\.)";
+    protected static String pNomStatusProtected = "protected name";
+
+
     protected static String pNomStatusIned = "ined\\.";
     protected static String pNomStatusDesigInval = "desig\\." + fWs + "inval\\.";  //same as nom. inval., only a different formatting
 
 
-    protected static String pNomStatus = "(" + pNomStatusNom + "|" + pNomStatusOrth + "|" +pNomStatusComb + "|" + pNomStatusOpus + "|" + pNomStatusIned + "|" + pNomStatusDesigInval + ")";
+    protected static String pNomStatus = "(" + pNomStatusNom + "|" + pNomStatusOrth + "|" +pNomStatusComb + "|" + pNomStatusOpus + "|" + pNomStatusIned + "|"
+    + pNomStatusDesigInval + "|" + pNomStatusPro + "|" + pNomStatusInSched + "|" + pNomStatusProtected + ")";
     protected static String pNomStatusPhrase1 = "," + fWs + pNomStatus;
     protected static String pNomStatusPhrase2 = "\\[" + fWs + pNomStatus + "\\]";
 
-    protected static String pNomStatusPhrase = "(?:" + pNomStatusPhrase1 + "|" + pNomStatusPhrase2 + ")";
+    protected static String pNomStatusPhrase = "(?:" + pNomStatusPhrase1 + "|" + pNomStatusPhrase2 + ")+";
 
 // Soraya
 //pro syn.

@@ -525,15 +525,35 @@ public enum TermType implements IEnumTerm<TermType>{
         DefinedTermBase<?> emptyTerm = null;
         switch(this) {
             case DeterminationModifier:
+                emptyTerm = DefinedTerm.NewInstance(this, null, labelString, null);
+                break;
             case StructureModifier:
+                emptyTerm = DefinedTerm.NewInstance(this, null, labelString, null);
+                break;
             case Property:
+                emptyTerm = DefinedTerm.NewInstance(this, null, labelString, null);
+                break;
             case Structure:
+                emptyTerm = DefinedTerm.NewInstance(this, null, labelString, null);
+                break;
             case Modifier:
+                emptyTerm = DefinedTerm.NewInstance(this, null, labelString, null);
+                break;
             case Scope:
+                emptyTerm = DefinedTerm.NewInstance(this, null, labelString, null);
+                break;
             case Sex:
+                emptyTerm = DefinedTerm.NewInstance(this, null, labelString, null);
+                break;
             case Stage:
+                emptyTerm = DefinedTerm.NewInstance(this, null, labelString, null);
+                break;
             case KindOfUnit:
+                emptyTerm = DefinedTerm.NewInstance(this, null, labelString, null);
+                break;
             case IdentifierType:
+                emptyTerm = eu.etaxonomy.cdm.model.term.IdentifierType.NewInstance( null, labelString, null);
+                break;
             case DnaMarker:
             	emptyTerm = DefinedTerm.NewInstance(this, null, labelString, null);
             	break;

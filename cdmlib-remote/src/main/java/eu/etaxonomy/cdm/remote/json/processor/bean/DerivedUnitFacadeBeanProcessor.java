@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -10,15 +10,14 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.facade.MethodNotSupportedByDerivedUnitTypeException;
 import eu.etaxonomy.cdm.model.common.Language;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 /**
  * @author a.kohlbecker
@@ -41,9 +40,9 @@ public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<Derive
 	@Override
 	public JSONObject processBeanSecondStep(DerivedUnitFacade bean,
 			JSONObject json, JsonConfig jsonConfig) {
-		
+
 		List<Language> languages = LocaleContext.getLanguages();
-		
+
 		if(Hibernate.isInitialized(bean.innerGatheringEvent())){
 
 			addJsonElement(json, jsonConfig, "country",bean.getCountry());
@@ -54,7 +53,7 @@ public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<Derive
 			addJsonElement(json, jsonConfig, "absoluteElevationMaximum", bean.getAbsoluteElevationMaximum());
 			//new
 			addJsonElement(json, jsonConfig, "absoluteElevationText", bean.absoluteElevationToString());
-			
+
 			addJsonElement(json, jsonConfig, "collector", bean.getCollector());
 			addJsonElement(json, jsonConfig, "collectingMethod", bean.getCollectingMethod());
 			addJsonElement(json, jsonConfig, "distanceToGround", bean.getDistanceToGround());
@@ -64,35 +63,34 @@ public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<Derive
 			addJsonElement(json, jsonConfig, "getGatheringPeriod", bean.getGatheringPeriod());
 			addJsonElement(json, jsonConfig, "locality", bean.getLocality());
 		}
-				
+
 // FIXME: addJsonElement(json, jsonConfig, "ecology", bean.getEcology(languages));
 		addJsonElement(json, jsonConfig, "ecology", bean.getEcology());
 // FIXME: addJsonElement(json, jsonConfig, "plantDescription", bean.getPlantDescription(languages));
 		addJsonElement(json, jsonConfig, "plantDescription", bean.getPlantDescription());
-		
+
 		if(Hibernate.isInitialized(bean.innerFieldUnit())){
 			addJsonElement(json, jsonConfig, "fieldObjectMedia", bean.getFieldObjectMedia());
-			addJsonElement(json, jsonConfig, "fieldNumber", bean.getFieldNumber());			
-			addJsonElement(json, jsonConfig, "fieldNotes", bean.getFieldNotes());			
-			addJsonElement(json, jsonConfig, "individualCount", bean.getIndividualCount());			
-			addJsonElement(json, jsonConfig, "lifeStage", bean.getLifeStage());			
-			addJsonElement(json, jsonConfig, "sex", bean.getSex());			
+			addJsonElement(json, jsonConfig, "fieldNumber", bean.getFieldNumber());
+			addJsonElement(json, jsonConfig, "fieldNotes", bean.getFieldNotes());
+			addJsonElement(json, jsonConfig, "individualCount", bean.getIndividualCount());
+			addJsonElement(json, jsonConfig, "lifeStage", bean.getLifeStage());
+			addJsonElement(json, jsonConfig, "sex", bean.getSex());
 		}
-		
-		if(Hibernate.isInitialized(bean.innerDerivedUnit())){	
-			addJsonElement(json, jsonConfig, "derivedUnitDefinitions", bean.getDerivedUnitDefinitions());			
+
+		if(Hibernate.isInitialized(bean.innerDerivedUnit())){
+			addJsonElement(json, jsonConfig, "derivedUnitDefinitions", bean.getDerivedUnitDefinitions());
 			addJsonElement(json, jsonConfig, "determinations", bean.getDeterminations());
-			addJsonElement(json, jsonConfig, "derivedUnitMedia", bean.getDerivedUnitMedia());			
-			addJsonElement(json, jsonConfig, "accessionNumber", bean.getAccessionNumber());		
-			addJsonElement(json, jsonConfig, "catalogNumber", bean.getCatalogNumber());			
-			addJsonElement(json, jsonConfig, "barcode", bean.getBarcode());	
+			addJsonElement(json, jsonConfig, "derivedUnitMedia", bean.getDerivedUnitMedia());
+			addJsonElement(json, jsonConfig, "accessionNumber", bean.getAccessionNumber());
+			addJsonElement(json, jsonConfig, "catalogNumber", bean.getCatalogNumber());
+			addJsonElement(json, jsonConfig, "barcode", bean.getBarcode());
 			try {
 				addJsonElement(json, jsonConfig, "preservationMethod", bean.getPreservationMethod());
 			} catch (MethodNotSupportedByDerivedUnitTypeException e) {
 				/* Skip - Only supported by specimen and fossils */
-			}			
+			}
 			addJsonElement(json, jsonConfig, "storedUnder", bean.getStoredUnder());
-//			addJsonElement(json, jsonConfig, "collectorsNumber", bean.getCollectorsNumber());
 			try {
 				addJsonElement(json, jsonConfig, "exsiccatum", bean.getExsiccatum());
 			} catch (MethodNotSupportedByDerivedUnitTypeException e) {
@@ -104,11 +102,11 @@ public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<Derive
 				addJsonElement(json, jsonConfig, "duplicates", bean.getDuplicates());
 			}
 		}
-		
 
-		
+
+
 		return json;
 	}
-	
+
 
 }

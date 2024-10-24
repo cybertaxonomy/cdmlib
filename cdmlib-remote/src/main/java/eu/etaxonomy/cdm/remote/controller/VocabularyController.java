@@ -65,7 +65,7 @@ public class VocabularyController extends AbstractIdentifiableController<TermVoc
 
         logger.info("terms() " + requestPathAndQuery(request));
 
-        TermVocabulary<?> vocabulary = getCdmBaseInstance(uuid, response, (List<String>)null);
+        TermVocabulary<?> vocabulary = getCdmBaseInstance(uuid, response, TERM_INIT_STRATEGY);
 
         Pager<DefinedTermBase> pager = service.getTerms(vocabulary, null, 0, orderBy.checkSuitableFor(vocabulary.getClass()).orderHints(), TERM_INIT_STRATEGY);
 

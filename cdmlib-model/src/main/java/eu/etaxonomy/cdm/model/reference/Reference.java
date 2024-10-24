@@ -109,6 +109,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "protectedAbbrevTitleCache",
 	"nomenclaturallyRelevant",
     "authorship",
+    "authorIsEditor",
     "referenceAbstract",
     "title",
     "abbrevTitle",
@@ -361,6 +362,10 @@ public class Reference
 	@IndexedEmbedded
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TeamOrPersonBase<?> authorship;
+
+    @XmlElement(name ="authorIsEditor")
+   // @CacheUpdate("nameCache")  TODO do we need a cache update here?
+    private boolean authorIsEditor = false;
 
     private ExternallyManaged externallyManaged;
 
@@ -773,6 +778,17 @@ public class Reference
     public void setAuthorship(TeamOrPersonBase authorship){
 		this.authorship = authorship;
 	}
+
+    /**
+     * If true, the {@link #getAuthorship() author} is the editor
+     * and should be formatted accordingly. See #7987
+     */
+    public boolean isAuthorIsEditor() {
+        return authorIsEditor;
+    }
+    public void setAuthorIsEditor(boolean authorIsEditor) {
+        this.authorIsEditor = authorIsEditor;
+    }
 
 	/**
 	 * Returns the Uniform Resource Identifier (URI) corresponding to <i>this</i>

@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
+import eu.etaxonomy.cdm.model.common.WikiDataItemId;
 
 public abstract class StrategyBase
         implements IStrategy, Serializable {
@@ -79,6 +80,7 @@ public abstract class StrategyBase
 				fieldType == URI.class ||
 				fieldType == DOI.class ||
 				fieldType == ORCID.class ||
+				fieldType == WikiDataItemId.class ||
 		        fieldType == ExternallyManaged.class
 			){
 				return true;

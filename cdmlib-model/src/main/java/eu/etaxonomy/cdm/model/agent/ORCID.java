@@ -82,8 +82,8 @@ public final class ORCID implements java.io.Serializable{
 ////		this.suffix = suffix;
 //	}
 
-    private ORCID(String doiString) {
-		parseOrcidString(doiString);
+    private ORCID(String orcidString) {
+		parseOrcidString(orcidString);
 	}
 
 //************************************ GETTER ***********************************/

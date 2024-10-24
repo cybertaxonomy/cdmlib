@@ -110,7 +110,8 @@ public class DistributionImport
 	 *  Reads the data of one Excel sheet row
 	 */
     private void analyzeRecord(Map<String,String> record) {
-    	/*
+
+        /*
     	 * Relevant columns:
     	 * Name (EDIT)
     	 * Distribution TDWG
@@ -118,9 +119,8 @@ public class DistributionImport
     	 * Literature number
     	 * Literature
     	*/
-
         String editName = "";
-        List<String> distributionList = new ArrayList<String>();
+        List<String> distributionList = new ArrayList<>();
         String status = "";
         String literatureNumber = "";
         String literature = "";

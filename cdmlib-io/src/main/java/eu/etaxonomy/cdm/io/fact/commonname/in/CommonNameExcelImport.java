@@ -110,7 +110,7 @@ public class CommonNameExcelImport
     private NamedArea makeArea(CommonNameExcelImportState state) {
         UUID areaUuid = state.getConfig().getDefaultAreaUuid();
         if (areaUuid == null) {
-            String areaUuidStr = getValue(state, COL_LANGUAGE_UUID);
+            String areaUuidStr = getValue(state, COL_AREA_UUID);
             if (areaUuidStr != null) {
                 try {
                     areaUuid = UUID.fromString(areaUuidStr);

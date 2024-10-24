@@ -105,6 +105,7 @@
 	@org.hibernate.annotations.TypeDef(name="enumUserType", typeClass=eu.etaxonomy.cdm.hibernate.EnumUserType.class),
 	@org.hibernate.annotations.TypeDef(name="doiUserType", typeClass=eu.etaxonomy.cdm.hibernate.DOIUserType.class),
 	@org.hibernate.annotations.TypeDef(name="orcidUserType", typeClass=eu.etaxonomy.cdm.hibernate.OrcidUserType.class),
+	@org.hibernate.annotations.TypeDef(name="wikiDataItemIdUserType", typeClass=eu.etaxonomy.cdm.hibernate.WikiDataItemIdUserType.class),
     @org.hibernate.annotations.TypeDef(name="shiftUserType", typeClass=eu.etaxonomy.cdm.hibernate.ShiftUserType.class),
     @org.hibernate.annotations.TypeDef(name="bigDecimalUserType", typeClass=eu.etaxonomy.cdm.hibernate.BigDecimalUserType.class),
 })

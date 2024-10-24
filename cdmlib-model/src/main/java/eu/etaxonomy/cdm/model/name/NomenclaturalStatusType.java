@@ -111,6 +111,9 @@ public class NomenclaturalStatusType
     private static final UUID uuidOrthVar = UUID.fromString("6703745b-9834-42b5-8ddd-fcc6ce572372");
     private static final UUID uuidCombIned = UUID.fromString("71c13910-19a4-46b2-9ec8-2a8dbd45cd83");
 
+    private static final UUID uuidProHybrid = UUID.fromString("e27cb447-06bb-4fa2-8541-76f61de8a64f");
+    private static final UUID uuidProSpecies = UUID.fromString("e1c58b65-b04b-471a-95da-eaa1ae8fecf6");
+
 
 	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
 
@@ -308,6 +311,12 @@ public class NomenclaturalStatusType
 	    //zoo nom. inval., zoo suppressed,
 	    return this.nomenclaturalStanding.isIllegitimate();
 	}
+
+    @Transient
+    public boolean isProXxx(){
+        //pro hybr., pro sp., pro syn., ...
+        return this == PRO_HYBRID() || this == PRO_SPECIES() || this == PRO_SYNONYMO();
+    }
 
 	/**
 	 * Returns the nomenclatural status type "ambiguous". A "valid"
@@ -878,6 +887,29 @@ public class NomenclaturalStatusType
     public static final NomenclaturalStatusType COMB_INED(){
         return getTermByUuid(uuidCombIned);
     }
+
+    /**
+     * "Status" indicating, that the name was originally published as
+     * a hybrid (see https://www.iapt-taxon.org/nomen/pages/main/art_50.html
+     * and https://dev.e-taxonomy.eu/redmine/issues/10478).
+     *
+     * @see #PRO_SPECIES()
+     */
+    public static final NomenclaturalStatusType PRO_HYBRID(){
+        return getTermByUuid(uuidProHybrid);
+    }
+
+    /**
+     * "Status" indicating, that the name was originally not published as
+     * a hybrid (see https://www.iapt-taxon.org/nomen/pages/main/art_50.html
+     * and https://dev.e-taxonomy.eu/redmine/issues/10478).
+     *
+     * @see #PRO_HYBRID()
+     */
+    public static final NomenclaturalStatusType PRO_SPECIES(){
+        return getTermByUuid(uuidProSpecies);
+    }
+
 
 	/**
 	 * TODO

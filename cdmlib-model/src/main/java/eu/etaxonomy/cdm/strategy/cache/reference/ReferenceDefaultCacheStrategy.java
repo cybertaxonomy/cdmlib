@@ -131,6 +131,14 @@ public class ReferenceDefaultCacheStrategy
         }else{
             result = titleCacheDefaultReference(reference, isNotAbbrev);
         }
+        result = handleWebPageAndAccessed(reference, result);
+        return result == null ? null : result.trim();
+    }
+
+    private String handleWebPageAndAccessed(Reference reference, String result) {
+        if (reference == null) {
+            return result;
+        }
         if (reference.getType() == ReferenceType.WebPage && reference.getUri() != null && !result.contains(reference.getUri().toString())){
             result = CdmUtils.concat(webpageUriSeparator, result, reference.getUri().toString());
         }
@@ -138,14 +146,9 @@ public class ReferenceDefaultCacheStrategy
             //TODO still a bit preliminary, also brackets may change in future
             result = result + getAccessedPart(reference);
         }
-        return result == null ? null : result.trim();
+        return result;
     }
 
-    /**
-     * @param reference
-     * @param result
-     * @return
-     */
     private String addPublishInformation(Reference reference, String result) {
         if (reference == null) {
             return result;
@@ -280,6 +283,7 @@ public class ReferenceDefaultCacheStrategy
             inInRefPart = biblioInSeparator + inInRefPart;
             inRefPart += inInRefPart;
         }
+        inRefPart = handleWebPageAndAccessed(inRef, inRefPart);
 
         //section title
         String title = CdmUtils.getPreferredNonEmptyString(

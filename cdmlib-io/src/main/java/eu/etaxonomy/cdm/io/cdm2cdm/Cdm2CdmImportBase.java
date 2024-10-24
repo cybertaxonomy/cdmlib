@@ -363,6 +363,8 @@ public abstract class Cdm2CdmImportBase
             return handlePersistedFeature((Feature)cdmBase, state);
         }else if(cdmBase instanceof State){
             return handlePersistedState((State)cdmBase, state);
+        }else if(cdmBase instanceof PresenceAbsenceTerm){
+            return handlePersistedPresenceAbsenceTerm((PresenceAbsenceTerm)cdmBase, state);
         }else if(cdmBase instanceof DefinedTermBase){
             return handlePersistedTerm((DefinedTermBase<?>)cdmBase, state);
         }else if(cdmBase instanceof ExternalLink){
@@ -946,6 +948,12 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
+    protected PresenceAbsenceTerm handlePersistedPresenceAbsenceTerm(PresenceAbsenceTerm term, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        PresenceAbsenceTerm result = handlePersisted((DefinedTermBase<?>)term, state);
+        //complete
+        return result;
+    }
+
     protected DefinedTerm handlePersistedDefinedTerm(DefinedTerm term, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         DefinedTerm result = handlePersisted((DefinedTermBase)term, state);
         //complete
@@ -1146,7 +1154,8 @@ public abstract class Cdm2CdmImportBase
             String subdomain = result.isInstanceOf(DefinedTermBase.class )? "term/":
                     result.isInstanceOf(TermVocabulary.class) ? "voc/" :
                         "list/";
-            externallyManaged.setExternalLink(URI.create("https://terms.cybertaxonomy.org/"+ subdomain + result.getUuid() ));  //TODO
+            externallyManaged.setExternalLink(URI.create(state.getConfig().getExternallyManagedBaseURI()
+                    + subdomain + result.getUuid()));  //TODO
             externallyManaged.setImportMethod(ExternallyManagedImport.CDM_TERMS);
             externallyManaged.setLastRetrieved(DateTime.now());
             result.setExternallyManaged(externallyManaged);

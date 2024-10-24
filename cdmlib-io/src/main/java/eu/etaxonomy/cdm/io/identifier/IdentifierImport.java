@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.common.SimpleImport;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Identifier;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -58,7 +59,7 @@ public class IdentifierImport
         try {
             //read stream
             InputStreamReader inputReader = config.getSource();
-            CSVReader csvReader = new CSVReader(inputReader, ';');
+            CSVReader csvReader = new CSVReader(inputReader, config.getSeparator());
             List<String[]> lines = csvReader.readAll();
             if (lines.isEmpty()){
                 logger.info("Import file is empty");
@@ -153,10 +154,23 @@ public class IdentifierImport
         //titleCache
         if (strs.length>2){
             String entityCache = entity.getTitleCache();
-            String titleCache = strs[2];
-            if (!CdmUtils.nullSafeEqual(entityCache, titleCache)){
+            String nameField = strs[2];
+            boolean ignoreWhitespace = true;
+            if (ignoreWhitespace) {
+                entityCache = CdmUtils.Nz(entityCache).replace(" ", "");
+                nameField = CdmUtils.Nz(nameField).replace(" ", "");
+            }
+            if (!CdmUtils.nullSafeEqual(entityCache, nameField)){
                 String message = String.format(
-                        "Record in line %d has different titleCache: " + entityCache +" <-> "+ titleCache, i);
+                        "Record in line %d has different titleCache: " + entityCache +" <-> "+ nameField, i);
+                if (entity.isInstanceOf(TaxonName.class)) {
+                    String entityNameCache = CdmBase.deproxy(entity, TaxonName.class).getNameCache();
+                    entityNameCache = ignoreWhitespace? CdmUtils.Nz(entityNameCache).replace(" ", ""): entityNameCache;
+                    if (CdmUtils.nullSafeEqual(entityNameCache, nameField)){
+                        message = String.format(
+                                "Record in line %d has different titleCache but nameField only has no author: " + entityCache +" <-> "+ nameField, i);
+                    }
+                }
                 logger.warn(message);
             }
         }

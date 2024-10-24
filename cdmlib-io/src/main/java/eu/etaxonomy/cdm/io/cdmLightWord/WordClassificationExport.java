@@ -1598,15 +1598,15 @@ public class WordClassificationExport
                     IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity<?>) cdmBase;
                     List<Identifier> identifiers = identifiableEntity.getIdentifiers();
                     String tableName = null;
-                    if (cdmBase instanceof Reference){
+                    if (identifiableEntity instanceof Reference){
                         tableName = "Reference";
-                    }else if (cdmBase instanceof SpecimenOrObservationBase){
+                    }else if (identifiableEntity instanceof SpecimenOrObservationBase){
                         tableName = "Specimen";
-                    }else if (cdmBase instanceof Taxon){
+                    }else if (identifiableEntity instanceof Taxon){
                         tableName = "Taxon";
-                    }else if (cdmBase instanceof Synonym){
+                    }else if (identifiableEntity instanceof Synonym){
                         tableName = "Synonym";
-                    }else if (cdmBase instanceof TeamOrPersonBase){
+                    }else if (identifiableEntity instanceof TeamOrPersonBase){
                         tableName = "PersonOrTeam";
                     }
 
@@ -1627,7 +1627,7 @@ public class WordClassificationExport
                             state.getProcessor().put(table, cdmBase.getUuid() + (identifier.getType() != null? identifier.getType().getLabel():null), csvLine);
                         }
                     }
-                    if (cdmBase instanceof Reference ){
+                    if (identifiableEntity instanceof Reference ){
                         Reference ref = (Reference)cdmBase;
                         if (ref.getDoi() != null){
                             csvLine = new String[table.getSize()];
@@ -1639,15 +1639,26 @@ public class WordClassificationExport
                         }
                     }
 
-                    if (cdmBase instanceof TeamOrPersonBase){
-                        TeamOrPersonBase<?> person= HibernateProxyHelper.deproxy(cdmBase, TeamOrPersonBase.class);
-                        if (person instanceof Person &&  ((Person)person).getOrcid() != null){
-                            csvLine = new String[table.getSize()];
-                            csvLine[table.getIndex(WordClassificationExportTable.FK)] = getId(state, cdmBase);
-                            csvLine[table.getIndex(WordClassificationExportTable.REF_TABLE)] = tableName;
-                            csvLine[table.getIndex(WordClassificationExportTable.IDENTIFIER_TYPE)] = "ORCID";
-                            csvLine[table.getIndex(WordClassificationExportTable.EXTERNAL_NAME_IDENTIFIER)]=  ((Person)person).getOrcid().asURI();
-                            state.getProcessor().put(table, cdmBase.getUuid() + "ORCID", csvLine);
+                    if (identifiableEntity instanceof TeamOrPersonBase){
+                        TeamOrPersonBase<?> teamOrPerson= CdmBase.deproxy(cdmBase, TeamOrPersonBase.class);
+                        if (teamOrPerson instanceof Person) {
+                            Person person = (Person)teamOrPerson;
+                            if (person.getOrcid() != null){
+                                csvLine = new String[table.getSize()];
+                                csvLine[table.getIndex(WordClassificationExportTable.FK)] = getId(state, cdmBase);
+                                csvLine[table.getIndex(WordClassificationExportTable.REF_TABLE)] = tableName;
+                                csvLine[table.getIndex(WordClassificationExportTable.IDENTIFIER_TYPE)] = "ORCID";
+                                csvLine[table.getIndex(WordClassificationExportTable.EXTERNAL_NAME_IDENTIFIER)]=  person.getOrcid().asURI();
+                                state.getProcessor().put(table, cdmBase.getUuid() + "ORCID", csvLine);
+                            }
+                            if (person.getWikiDataItemId() != null){
+                                csvLine = new String[table.getSize()];
+                                csvLine[table.getIndex(WordClassificationExportTable.FK)] = getId(state, cdmBase);
+                                csvLine[table.getIndex(WordClassificationExportTable.REF_TABLE)] = tableName;
+                                csvLine[table.getIndex(WordClassificationExportTable.IDENTIFIER_TYPE)] = "Wikidata Item ID";
+                                csvLine[table.getIndex(WordClassificationExportTable.EXTERNAL_NAME_IDENTIFIER)]=  person.getOrcid().asURI();
+                                state.getProcessor().put(table, cdmBase.getUuid() + "WikidataItemId", csvLine);
+                            }
                         }
                     }
                 }

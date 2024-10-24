@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.WikiDataItemId;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -256,6 +257,7 @@ public class FullCoverageDataGenerator {
 		person.setPrefix("prefix");
 		person.setSuffix("suffix");
 		person.setOrcid(ORCID.fromString("0000-0001-5000-0007"));
+		person.setWikiDataItemId(WikiDataItemId.fromString("Q12345"));
 
 		handleIdentifiableEntity(person);
 
@@ -737,6 +739,7 @@ public class FullCoverageDataGenerator {
 		Reference reference = ReferenceFactory.newArticle();
 		Person author = Person.NewTitledInstance("Author team");
 		reference.setAuthorship(author);
+		reference.setAuthorIsEditor(true);
 		reference.setTitle("ref title");
 		reference.setAbbrevTitle("abbrev title");
 		reference.setDatePublished(TimePeriodParser.parseStringVerbatim("1999"));
@@ -819,7 +822,6 @@ public class FullCoverageDataGenerator {
 		mediaSpecimen.setCollection(collection);
 		mediaSpecimen.setCatalogNumber("catalogNumber");
 		mediaSpecimen.setAccessionNumber("accessionNumber");
-//		mediaSpecimen.setCollectorsNumber("collectorsNumber");
 		mediaSpecimen.setBarcode("barcode");
 		TaxonName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		storedUnder.setTitleCache("Stored under", true);

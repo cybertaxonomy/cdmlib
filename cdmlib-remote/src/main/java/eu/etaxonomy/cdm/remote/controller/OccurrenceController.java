@@ -69,6 +69,12 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
             "extensions.type",
     });
 
+    private static final List<String> TYPE_INIT_STRATEGY =  Arrays.asList(new String []{
+            "typeStatus.includes",
+    });
+
+
+
     @Autowired
     @Override
     public void setService(IOccurrenceService service) {
@@ -82,6 +88,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         if(pathProperties.stream().anyMatch(s -> s.startsWith("specimenTypeDesignations"))) {
             List<String> complemented = new ArrayList<>(pathProperties);
             complemented.add("specimenTypeDesignations.designationSource.citation.*");
+            complemented.add("specimenTypeDesignations.typeStatus.includes");
             return complemented;
         }
         if(pathProperties.stream().anyMatch(s -> s.startsWith("sources"))) {

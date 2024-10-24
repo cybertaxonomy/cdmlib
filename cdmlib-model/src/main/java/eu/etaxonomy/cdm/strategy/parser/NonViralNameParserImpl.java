@@ -491,20 +491,21 @@ public class NonViralNameParserImpl
 
 			Pattern statusPattern = Pattern.compile(pNomStatus);
 			Matcher statusMatcher = statusPattern.matcher(statusPhrase);
-			statusMatcher.find();
-			statusString = statusMatcher.group(0);
-			try {
-			    TaxonName nameToBeFilledCasted =  TaxonName.castAndDeproxy(nameToBeFilled);
-				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusString, nameToBeFilledCasted);
-				if (! existingStatusTypeSet.contains(nomStatusType)){
-					NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(nomStatusType);
-					nameToBeFilled.addStatus(nomStatus);
-				}
-				newStatusTypeSet.add(nomStatusType);
-				fullString = fullString.replace(statusPhrase, "");
-			} catch (UnknownCdmTypeException e) {
-				//Do nothing
-			}
+    		while(statusMatcher.find()) {
+    			statusString = statusMatcher.group(0);
+    			try {
+    			    TaxonName nameToBeFilledCasted =  TaxonName.castAndDeproxy(nameToBeFilled);
+    				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusString, nameToBeFilledCasted);
+    				if (! existingStatusTypeSet.contains(nomStatusType)){
+    					NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(nomStatusType);
+    					nameToBeFilled.addStatus(nomStatus);
+    				}
+    				newStatusTypeSet.add(nomStatusType);
+    				fullString = fullString.replace(statusPhrase, "");
+    			} catch (UnknownCdmTypeException e) {
+    				//Do nothing
+    			}
+    		}
 		}
 		//remove not existing nom status
 		if (makeEmpty){

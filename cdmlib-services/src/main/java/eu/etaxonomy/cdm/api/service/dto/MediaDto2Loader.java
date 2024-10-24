@@ -46,7 +46,8 @@ public class MediaDto2Loader {
                 +     " m.artist as artist, "
                 +     " r.id as repId, r.uuid as repUuid, r.mimeType as mimeType, "
                 +     " r.suffix as suffix, p.uri as uri,  p.size as size, "
-                +     " type(p) as clazz, p.height as heigth, p.width as width) "
+                +     " type(p) as clazz, "  //TODO #10582 throws exception if mediaRepresentationPart is missing
+                +     " p.height as heigth, p.width as width) "
                 + " FROM Media m "
                 + "      LEFT JOIN m.representations r "
                 + "      LEFT JOIN r.mediaRepresentationParts p "

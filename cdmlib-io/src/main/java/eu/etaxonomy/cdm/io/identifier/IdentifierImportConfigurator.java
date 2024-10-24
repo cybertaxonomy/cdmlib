@@ -33,6 +33,7 @@ public class IdentifierImportConfigurator
     private boolean ignoreEmptyIdentifier = true;
     private boolean updateExisting = true;
     private boolean warnAndDoNotOverrideIfExists = false;
+    private char separator = ';';
 
 
     public static IdentifierImportConfigurator NewInstance(InputStreamReader file,
@@ -96,5 +97,12 @@ public class IdentifierImportConfigurator
     }
     public void setWarnAndDoNotOverrideIfExists(boolean warnAndDoNotOverrideIfExists) {
         this.warnAndDoNotOverrideIfExists = warnAndDoNotOverrideIfExists;
+    }
+
+    public char getSeparator() {
+        return separator;
+    }
+    public void setSeparator(char separator) {
+        this.separator = separator;
     }
 }

@@ -11,13 +11,10 @@ package eu.etaxonomy.cdm.io.common;
 /**
  * @author k.luther
  * @since 17.03.2017
- *
  */
 public enum ExportResultType {
     BYTE_ARRAY,
     LIST_BYTE_ARRAY,
     MAP_BYTE_ARRAY
     ;
-
-
 }

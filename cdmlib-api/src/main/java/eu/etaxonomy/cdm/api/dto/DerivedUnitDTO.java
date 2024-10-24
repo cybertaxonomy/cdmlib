@@ -50,10 +50,14 @@ public class DerivedUnitDTO
 
     private String mostSignificantIdentifier;
 
+//****************** CONSTRUCTOR **************************************/
+
     //TODO remove model dependency
     public DerivedUnitDTO(Class<DerivedUnit> type, UUID uuid, String label) {
         super(type, uuid, label);
     }
+
+//******************** GETTER / SETTER ***************************
 
     public String getAccessionNumber() {
         return accessionNumber;

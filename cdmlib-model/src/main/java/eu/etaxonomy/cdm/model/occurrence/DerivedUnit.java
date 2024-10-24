@@ -116,6 +116,7 @@ public class DerivedUnit
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
+	@Deprecated //see #2362  but still used in TaxonX import and synthesysCache import therefore not yet fully removed
 	private String collectorsNumber;
 
 	@XmlElement(name = "Barcode")
@@ -344,7 +345,7 @@ public class DerivedUnit
 	 * {@link FieldUnit#getFieldNumber()} instead.
 	 * @return
 	 */
-	@Deprecated
+	@Deprecated //see #2362
 	public String getCollectorsNumber() {
 		return collectorsNumber;
 	}
@@ -355,7 +356,7 @@ public class DerivedUnit
 	 * {@link FieldUnit#getFieldNumber()} instead.
 	 * @return
 	 */
-	@Deprecated
+	@Deprecated //see #2362
 	public void setCollectorsNumber(String collectorsNumber) {
 		this.collectorsNumber = isBlank(collectorsNumber)? null : collectorsNumber;
 	}

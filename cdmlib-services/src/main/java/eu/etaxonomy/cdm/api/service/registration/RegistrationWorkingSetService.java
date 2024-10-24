@@ -329,26 +329,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
     }
 
     @Override
-    public RegistrationWorkingSet loadWorkingSetByReferenceID(Integer referenceID, boolean resolveSections) throws TypeDesignationSetException, PermissionDeniedException {
-
-        Reference reference = repo.getReferenceService().find(referenceID);
-        if(resolveSections){
-            reference = resolveSection(reference);
-        }
-
-        checkPermissions(reference);
-
-        repo.getReferenceService().load(reference.getUuid()); // needed to avoid the problem described in #7331
-
-        Pager<Registration> pager = repo.getRegistrationService().page(Optional.of(reference), null, null, null, REGISTRATION_DTO_INIT_STRATEGY.getPropertyPaths());
-
-        /* for debugging https://dev.e-taxonomy.eu/redmine/issues/7331 */
-        // debugIssue7331(pager);
-
-        return new RegistrationWorkingSet(makeDTOs(pager.getRecords()));
-    }
-
-    @Override
     public Pager<RegistrationWrapperDTO> pageWorkingSetsByNameUUID(Collection<UUID> taxonNameUuids, Integer pageIndex, Integer pageSize, List<OrderHint> orderHints) throws TypeDesignationSetException, PermissionDeniedException {
 
         if(orderHints == null){

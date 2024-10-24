@@ -44,7 +44,7 @@ public class MatchStrategyFactory {
 
             //TODO lifespan may implement MATCH_OR_ONE_NULL
             String[] equalOrNullParams = new String[]{"collectorTitle","givenName","initials",
-                    "lifespan","orcid","prefix","suffix"};
+                    "lifespan","orcid","prefix","suffix","wikiDataItemId"};
             for(String param : equalOrNullParams){
                 parsedPersonMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
             }

@@ -795,10 +795,10 @@ public class Feature extends AvailableForTermBase<Feature> {
 
 		//availableFor
         text = csvLine.get(6);
-        if (text != null && text.length() == 3){
-            if ("1".equals(text.substring(0, 1))){newInstance.setAvailableForTaxon(true);}
-            if ("1".equals(text.substring(1, 2))){newInstance.setAvailableForOccurrence(true);}
-            if ("1".equals(text.substring(2, 3))){newInstance.setAvailableForTaxonName(true);}
+        if (text != null && text.contains("#")){
+            if (text.contains(CdmClass.TAXON.getKey())){newInstance.setAvailableForTaxon(true);}
+            if (text.contains(CdmClass.OCCURRENCE.getKey())){newInstance.setAvailableForOccurrence(true);}
+            if (text.contains(CdmClass.TAXON_NAME.getKey())){newInstance.setAvailableForTaxonName(true);}
         }else{
             throw new IllegalStateException("AvailableFor XXX must exist for all 3 classes");
         }

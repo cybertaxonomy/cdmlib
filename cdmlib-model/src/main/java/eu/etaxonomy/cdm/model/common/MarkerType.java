@@ -20,8 +20,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
@@ -45,7 +43,6 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class MarkerType extends AvailableForIdentifiableBase<MarkerType> {
 
 	private static final long serialVersionUID = -9117424749919907396L;
-    private static final Logger logger = LogManager.getLogger();
 
 	private static final UUID uuidImported = UUID.fromString("96878790-4ceb-42a2-9738-a2242079b679");
 	private static final UUID uuidToBeChecked = UUID.fromString("34204192-b41d-4857-a1d4-28992bef2a2a");
@@ -66,6 +63,11 @@ public class MarkerType extends AvailableForIdentifiableBase<MarkerType> {
 
     public static final UUID uuidFallbackArea = UUID.fromString("e2b42891-aa85-4a09-981b-b7d8f5749c54");
     public static final UUID uuidAlternativeRootArea = UUID.fromString("1bf75861-47a0-42a1-8632-97c0fd15df29");
+
+    //temporary for Caryophyllales/Mexico, see #10601-#10603
+    //TODO remove once the handling is not hardcoded anymore
+    public static final UUID uuidEfloraMex = UUID.fromString("ba2c1a71-7886-4968-851f-0f898e4db172");
+
 
 
 	protected static Map<UUID, MarkerType> termMap = null;

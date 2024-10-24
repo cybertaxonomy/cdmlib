@@ -541,6 +541,26 @@ public class ReferenceDefaultCacheStrategyTest {
     }
 
     @Test
+    public void testSectionInWebPage(){
+        //#3764
+        Reference webPage = ReferenceFactory.newWebPage();
+        webPage.setTitle("My WebPage");
+        webPage.setUri(URI.create("https://redlist.necca.gov.gr/"));
+        Reference section = ReferenceFactory.newSection();
+        Team sectionTeam = Team.NewTitledInstance("Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P.", null);
+        section.setAuthorship(sectionTeam);
+
+        section.setInReference(webPage);
+        DateTime webpageAccessed = DateTime.parse("2010-06-30T01:20+02:00");
+        section.setAccessed(webpageAccessed);
+
+        Assert.assertEquals("Unexpected title cache.",
+                "Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P. "+UTF8.EN_DASH+" In: "
+                + "My WebPage "+UTF8.EN_DASH+" https://redlist.necca.gov.gr/ [accessed 2010-06-30 01:20]",
+                section.getTitleCache());
+    }
+
+    @Test
     public void testCdDvdGetTitleWithoutYearAndAuthor() {
         String result = TitleWithoutYearAndAuthorHelper.getTitleWithoutYearAndAuthor(cdDvd, false, false);
         assertEquals(cdDvdTitle, result);

@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
-import eu.etaxonomy.cdm.io.fact.commonname.in.CommonNameExcelImportState;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -67,8 +66,9 @@ public abstract class FactExcelImportBase<STATE extends FactExcelImportStateBase
     }
 
 
-    protected DoubleResult<TaxonName, String> getOriginalName(CommonNameExcelImportState state, Taxon taxon,
+    protected DoubleResult<TaxonName, String> getOriginalName(STATE state, Taxon taxon,
             String nameTitleCacheColumnName, String nameCacheColumnName) {
+
         //TODO treeindex filter
 
         TaxonName originalName = null;

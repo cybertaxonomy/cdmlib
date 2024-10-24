@@ -103,7 +103,8 @@ public class NameMatchingController {
      * curl -v -H "Accept: text/csv" -X POST -F "compareAuthor=false" -F "maxDistance=2" -F "file=@test.txt" http://localhost:8082/namematch/matchingList
      *
      * the option -v in curl gives more information about the http response (u.a.)
-     * ref. #10178
+     *
+     * @see https://dev.e-taxonomy.eu/redmine/issues/10178
      * @throws IOException
      * @throws NameMatchingParserException
     */
@@ -160,7 +161,7 @@ public class NameMatchingController {
             NameMatchingOutputObject outputObject = new NameMatchingOutputObject();
             NameMatchingCombinedResult resultNameMatching = new NameMatchingCombinedResult();
             resultNameMatching.setExactMatches(loadResultListFromPartsList(innerResult.getExactResults()));
-            resultNameMatching.setCandidates(loadCandiateResultListFromPartsList(innerResult.getBestResults()));
+            resultNameMatching.setCandidates(loadCandiateResultListFromPartsList(innerResult.getBestFuzzyResults()));
 
             outputObject.setRequest(requestedParam);
             outputObject.setResult(resultNameMatching);
@@ -183,7 +184,7 @@ public class NameMatchingController {
         private static NameMatchingCandidateResult loadCandidateResultFromParts(SingleNameMatchingResult parts) {
             NameMatchingCandidateResult result = new NameMatchingCandidateResult();
             loadResultFromParts(parts, result);
-            result.setDistance(parts.getDistance());
+            result.setMatchingScore(parts.getDistance());
             return result;
         }
 
@@ -224,7 +225,7 @@ public class NameMatchingController {
                                 outputObject.getRequest().isExcludeExAuthors() + ";" +
                                     outputObject.getRequest().getMaxDistance().toString());
             String rowContent = inputParam + ";candidates;"
-                    + candidateResults.get(x).getDistance() + ";"
+                    + candidateResults.get(x).getMatchingScore() + ";"
                     + candidateResults.get(x).getTaxonNameUuid() + ";"
                     + candidateResults.get(x).getNameWithAuthor() + ";"
                     + candidateResults.get(x).getAuthorship() + ";"
@@ -259,7 +260,7 @@ public class NameMatchingController {
                         "excludeExAuthors",
                         "maxDistance",
                         "matchingType",
-                        "retrievedDistance",
+                        "matchingScore",
                         "taxonNameUuid",
                         "nameWithAuthorship",
                         "authorship",

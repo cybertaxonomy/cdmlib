@@ -148,7 +148,7 @@ public class Cdm2CdmVocabularyImport
             }
         } catch (Exception e) {
             logger.warn("Exception during save vocabulary " + otherGraph.getUuid());
-             e.printStackTrace();
+            e.printStackTrace();
         }
     }
 

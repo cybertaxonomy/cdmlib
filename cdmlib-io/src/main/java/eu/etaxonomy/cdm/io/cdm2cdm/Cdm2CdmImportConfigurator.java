@@ -50,6 +50,7 @@ public  class Cdm2CdmImportConfigurator
     private boolean partialVocabulariesForGraphs = true;
 
     private boolean isExternallyManaged = false;
+    private String externallyManagedBaseURI = "https://terms.cybertaxonomy.org/";
 
     private ITaxonNodeOutStreamPartitioner partitioner;
     private boolean concurrent = false;  //
@@ -236,11 +237,19 @@ public  class Cdm2CdmImportConfigurator
         this.partialVocabulariesForGraphs = partialVocabulariesForGraphs;
     }
 
+    //Externally managed
     public boolean isExternallyManaged() {
         return isExternallyManaged;
     }
     public void setExternallyManaged(boolean isExternallyManaged) {
         this.isExternallyManaged = isExternallyManaged;
+    }
+
+    public String getExternallyManagedBaseURI() {
+        return externallyManagedBaseURI;
+    }
+    public void setExternallyManagedBaseURI(String externallyManagedBaseURI) {
+        this.externallyManagedBaseURI = externallyManagedBaseURI;
     }
 
     //area filter
