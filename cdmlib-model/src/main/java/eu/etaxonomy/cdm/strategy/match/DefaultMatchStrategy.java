@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.agent.ORCID;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.WikiDataItemId;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.molecular.SequenceString;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
@@ -270,6 +271,8 @@ public class DefaultMatchStrategy
         }else if(fieldType == DOI.class){
             fieldResult = matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList, failAll);
         }else if(fieldType == ORCID.class){
+            fieldResult = matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList, failAll);
+        }else if(fieldType == WikiDataItemId.class){
             fieldResult = matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList, failAll);
         }else if(isSingleCdmBaseObject(fieldType)){
             matchResult.addPath(fieldMatcher.getPropertyName());

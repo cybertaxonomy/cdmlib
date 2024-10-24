@@ -39,7 +39,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.OrcidBridge;
+import eu.etaxonomy.cdm.hibernate.search.WikiDataItemIdBridge;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.WikiDataItemId;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -75,6 +77,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 	    "collectorTitle",
 	    "lifespan",
 	    "orcid",
+	    "wikiDataItemId",
 	    "institutionalMemberships"
 })
 @XmlRootElement(name = "Person")
@@ -147,6 +150,13 @@ public class Person extends TeamOrPersonBase<Person>{
     @Type(type="orcidUserType")
     @Column(length=16)
     private ORCID orcid;
+
+    @XmlElement(name = "WikiDataId")
+    @Field
+    @FieldBridge(impl = WikiDataItemIdBridge.class)
+    @Type(type="wikiDataItemIdUserType")
+    @Column(length=16)
+    private WikiDataItemId wikiDataItemId;
 
     @XmlElementWrapper(name = "InstitutionalMemberships", nillable = true)
     @XmlElement(name = "InstitutionalMembership")
@@ -463,6 +473,23 @@ public class Person extends TeamOrPersonBase<Person>{
      */
     public void setOrcid(ORCID orcid) {
         this.orcid = orcid;
+    }
+
+    /**
+     * The {@link WikiDataItemId Wikidata Item Identifier} of this person.<BR>
+     * See https://www.wikidata.org/wiki/Wikidata:Identifiers for information on
+     * Wikidata Item Identifiers.
+     *
+     * @return the wikidata item identifier
+     */
+    public WikiDataItemId getWikiDataItemId() {
+        return wikiDataItemId;
+    }
+    /**
+     * @see #getWikiDataItemId()
+     */
+    public void setWikiDataItemId(WikiDataItemId wikiDataItemId) {
+        this.wikiDataItemId = wikiDataItemId;
     }
 
     @Override

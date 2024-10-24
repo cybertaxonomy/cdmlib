@@ -84,6 +84,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         LIFESPAN_START varchar(255),
         NOMENCLATURALTITLE varchar(255),
         ORCID varchar(16),
+        WIKIDATAITEMID varchar(50),
         PREFIX varchar(255),
         SUFFIX varchar(255),
         HASMOREMEMBERS boolean,
@@ -173,6 +174,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         LIFESPAN_START varchar(255),
         NOMENCLATURALTITLE varchar(255),
         ORCID varchar(16),
+        WIKIDATAITEMID varchar(50),
         PREFIX varchar(255),
         SUFFIX varchar(255),
         primary key (ID, REV)

@@ -1766,6 +1766,8 @@ public class ColDpClassificationExport
 //                            state.getProcessor().put(table, cdmBase.getUuid() + "ORCID", csvLine);
 //                        }
 //                    }
+                      //TODO if we enable this we should also add WikiDataItemID
+
 //                }
 //            }
 //        } catch (Exception e) {

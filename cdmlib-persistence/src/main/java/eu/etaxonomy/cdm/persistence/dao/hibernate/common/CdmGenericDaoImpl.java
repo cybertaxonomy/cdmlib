@@ -71,6 +71,7 @@ import eu.etaxonomy.cdm.hibernate.ShiftUserType;
 import eu.etaxonomy.cdm.hibernate.URIUserType;
 import eu.etaxonomy.cdm.hibernate.UUIDUserType;
 import eu.etaxonomy.cdm.hibernate.WSDLDefinitionUserType;
+import eu.etaxonomy.cdm.hibernate.WikiDataItemIdUserType;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -517,7 +518,8 @@ public class CdmGenericDaoImpl
 				EnumUserType.class,
 				DOIUserType.class,
 				OrcidUserType.class,
-				ShiftUserType.class,
+				WikiDataItemIdUserType.class,
+                ShiftUserType.class,
 				EnumSetUserType.class,
 				SeverityUserType.class,
 				BigDecimalUserType.class,
