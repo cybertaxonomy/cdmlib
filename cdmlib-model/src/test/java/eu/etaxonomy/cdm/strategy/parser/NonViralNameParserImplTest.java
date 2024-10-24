@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -2737,13 +2736,27 @@ public class NonViralNameParserImplTest extends TermTestBase {
         str = "Abies alba Mill., pro sp., nom. illeg., pro syn.";
         name3 = parser.parseReferencedName(str);
         Assert.assertEquals(3, name3.getStatus().size());
-        Set<NomenclaturalStatusType> statusTypes = name3.getStatus().stream()
+        List<NomenclaturalStatusType> statusTypes = name3.getStatus().stream()
                 .map(s->s.getType())
                 .sorted(NomenclaturalStatusTypeComparator.SINGLETON())
-                .collect(Collectors.toSet());
-        Assert.assertTrue(statusTypes.contains(NomenclaturalStatusType.PRO_SPECIES()));
-        Assert.assertTrue(statusTypes.contains(NomenclaturalStatusType.PRO_SYNONYMO()));
-        Assert.assertTrue(statusTypes.contains(NomenclaturalStatusType.ILLEGITIMATE()));
+                .collect(Collectors.toList());
+        int i = 0;
+        Assert.assertEquals(NomenclaturalStatusType.PRO_SPECIES(), statusTypes.get(i++));
+        Assert.assertEquals(NomenclaturalStatusType.PRO_SYNONYMO(), statusTypes.get(i++));
+        Assert.assertEquals(NomenclaturalStatusType.ILLEGITIMATE(), statusTypes.get(i++));
+
+        str = "Abies alba Mill., comb. ined., in sched., orth. var., protected name";
+        name3 = parser.parseReferencedName(str);
+        Assert.assertEquals(4, name3.getStatus().size());
+        statusTypes = name3.getStatus().stream()
+                .map(s->s.getType())
+                .sorted(NomenclaturalStatusTypeComparator.SINGLETON())
+                .collect(Collectors.toList());
+        i=0;
+        Assert.assertEquals(NomenclaturalStatusType.PROTECTED_NAME(), statusTypes.get(i++));
+        Assert.assertEquals(NomenclaturalStatusType.IN_SCHEDA(), statusTypes.get(i++));
+        Assert.assertEquals(NomenclaturalStatusType.ORTH_VAR(), statusTypes.get(i++));
+        Assert.assertEquals(NomenclaturalStatusType.COMB_INED(), statusTypes.get(i++));
     }
 
     @Test
