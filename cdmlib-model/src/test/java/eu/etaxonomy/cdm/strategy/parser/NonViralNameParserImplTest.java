@@ -32,6 +32,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.compare.name.NomenclaturalStatusTypeComparator;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -2733,11 +2734,15 @@ public class NonViralNameParserImplTest extends TermTestBase {
         name3 = parser.parseReferencedName(str);
         Assert.assertEquals(1, name3.getStatus().size());
         Assert.assertEquals(NomenclaturalStatusType.PRO_HYBRID(), name3.getStatus().iterator().next().getType());
-        str = "Abies alba Mill., pro sp., nom. illeg.";
+        str = "Abies alba Mill., pro sp., nom. illeg., pro syn.";
         name3 = parser.parseReferencedName(str);
-        Assert.assertEquals(2, name3.getStatus().size());
-        Set<NomenclaturalStatusType> statusTypes = name3.getStatus().stream().map(s->s.getType()).collect(Collectors.toSet());
+        Assert.assertEquals(3, name3.getStatus().size());
+        Set<NomenclaturalStatusType> statusTypes = name3.getStatus().stream()
+                .map(s->s.getType())
+                .sorted(NomenclaturalStatusTypeComparator.SINGLETON())
+                .collect(Collectors.toSet());
         Assert.assertTrue(statusTypes.contains(NomenclaturalStatusType.PRO_SPECIES()));
+        Assert.assertTrue(statusTypes.contains(NomenclaturalStatusType.PRO_SYNONYMO()));
         Assert.assertTrue(statusTypes.contains(NomenclaturalStatusType.ILLEGITIMATE()));
     }
 

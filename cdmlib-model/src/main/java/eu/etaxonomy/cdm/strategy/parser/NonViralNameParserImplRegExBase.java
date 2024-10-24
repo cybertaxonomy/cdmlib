@@ -261,7 +261,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pNomStatusOrth = "orth\\." + fWs + "(var\\.|rej\\.|cons\\.("+fWs+"prop\\.)?)";
     protected static String pNomStatusComb = "comb\\." + fWs + "(inval\\.|illeg\\.|nov\\.)";
     protected static String pNomStatusOpus = "op\\." + fWs + "utique" + fWs + "oppr\\.";
-    protected static String pNomStatusPro = "pro" + oWs + "(hybr\\.|sp\\.)";
+    protected static String pNomStatusPro = "pro" + oWs + "(hybr\\.|sp\\.|syn\\.)";
 
     protected static String pNomStatusIned = "ined\\.";
     protected static String pNomStatusDesigInval = "desig\\." + fWs + "inval\\.";  //same as nom. inval., only a different formatting
