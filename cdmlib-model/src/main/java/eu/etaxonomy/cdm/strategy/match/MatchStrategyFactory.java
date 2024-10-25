@@ -60,6 +60,37 @@ public class MatchStrategyFactory {
         }
     }
 
+    public static IParsedMatchStrategy NewParsedCollectorPersonInstance(){
+        try {
+            IParsedMatchStrategy parsedPersonMatchStrategy = NewParsedInstance(Person.class);
+
+            addParsedAgentBaseMatchModes(parsedPersonMatchStrategy);
+
+            //FIXME adapt for inRef authors
+            parsedPersonMatchStrategy.setMatchMode("collectorTitle", MatchMode.EQUAL);
+
+            //FIXME adapt for inRef authors
+            parsedPersonMatchStrategy.setMatchMode("familyName", MatchMode.EQUAL_OR_ONE_NULL);
+            parsedPersonMatchStrategy.setMatchMode("nomenclaturalTitle", MatchMode.EQUAL_OR_ONE_NULL);
+
+            //TODO lifespan may implement MATCH_OR_ONE_NULL
+            String[] equalOrFirstNullParams = new String[]{"givenName","initials",
+                    "lifespan","orcid","prefix","suffix"};
+            for(String param : equalOrFirstNullParams){
+                parsedPersonMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
+            }
+
+            String[] ignoreParams = new String[]{"institutionalMemberships"};
+            for(String param : ignoreParams){
+                parsedPersonMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
+            }
+
+            return parsedPersonMatchStrategy;
+        } catch (MatchException e) {
+            throw new RuntimeException("Exception when creating parsed person match strategy.", e);
+        }
+    }
+
     public static IParsedMatchStrategy NewParsedTeamInstance(){
         IParsedMatchStrategy parsedTeamMatchStrategy = NewParsedInstance(Team.class);
         try {
@@ -71,6 +102,34 @@ public class MatchStrategyFactory {
 
             parsedTeamMatchStrategy.setMatchMode("protectedCollectorTitleCache", MatchMode.EQUAL_OR_FIRST_NULL);
             parsedTeamMatchStrategy.setMatchMode("protectedNomenclaturalTitleCache", MatchMode.EQUAL);
+
+            String[] equalOrNullParams = new String[]{};
+            for(String param : equalOrNullParams){
+                parsedTeamMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
+            }
+
+            String[] ignoreParams = new String[]{};
+            for(String param : ignoreParams){
+                parsedTeamMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
+            }
+
+            return parsedTeamMatchStrategy;
+        } catch (MatchException e) {
+            throw new RuntimeException("Exception when creating parsed team match strategy.", e);
+        }
+    }
+
+    public static IParsedMatchStrategy NewParsedCollectorTeamInstance(){
+        IParsedMatchStrategy parsedTeamMatchStrategy = NewParsedInstance(Team.class);
+        try {
+            addParsedAgentBaseMatchModes(parsedTeamMatchStrategy);
+
+            parsedTeamMatchStrategy.setMatchMode("teamMembers", MatchMode.MATCH, NewParsedCollectorPersonInstance());
+
+            parsedTeamMatchStrategy.setMatchMode("hasMoreMembers", MatchMode.EQUAL);
+
+            parsedTeamMatchStrategy.setMatchMode("protectedCollectorTitleCache", MatchMode.EQUAL);
+            parsedTeamMatchStrategy.setMatchMode("protectedNomenclaturalTitleCache", MatchMode.EQUAL_OR_FIRST_NULL);
 
             String[] equalOrNullParams = new String[]{};
             for(String param : equalOrNullParams){
