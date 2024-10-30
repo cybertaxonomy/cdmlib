@@ -70,14 +70,15 @@ public class MatchStrategyFactory {
             parsedPersonMatchStrategy.setMatchMode("collectorTitle", MatchMode.EQUAL);
 
             //FIXME adapt for inRef authors
-            parsedPersonMatchStrategy.setMatchMode("familyName", MatchMode.EQUAL_OR_ONE_NULL);
-            parsedPersonMatchStrategy.setMatchMode("nomenclaturalTitle", MatchMode.EQUAL_OR_ONE_NULL);
+
+            parsedPersonMatchStrategy.setMatchMode("nomenclaturalTitle", MatchMode.IGNORE);
+            parsedPersonMatchStrategy.setMatchMode("titleCache", MatchMode.IGNORE);
 
             //TODO lifespan may implement MATCH_OR_ONE_NULL
             String[] equalOrFirstNullParams = new String[]{"givenName","initials",
-                    "lifespan","orcid","prefix","suffix"};
+                    "lifespan","orcid","prefix","suffix", "familyName"};
             for(String param : equalOrFirstNullParams){
-                parsedPersonMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
+                parsedPersonMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
             }
 
             String[] ignoreParams = new String[]{"institutionalMemberships"};

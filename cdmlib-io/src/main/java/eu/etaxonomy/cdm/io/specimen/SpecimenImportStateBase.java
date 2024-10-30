@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -71,17 +70,17 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     protected Map<String, Collection> collections= new HashMap<>();
     private Map<String,FieldUnit> fieldUnits = new HashMap<>();
 
-    private MapWrapper<TeamOrPersonBase<?>> personStore;
+    private Map<String, TeamOrPersonBase<?>> personStore;
     private Map<String, Reference> importReferences = new HashMap<>();
     private URI actualAccessPoint;
     private Set<URI> allAccesPoints = new HashSet<>();
 
 // ************************* Getter/Setter **************/
 
-    public MapWrapper<TeamOrPersonBase<?>> getPersonStore() {
+    public Map<String, TeamOrPersonBase<?>> getPersonStore() {
         return personStore;
     }
-    public void setPersonStore(MapWrapper<TeamOrPersonBase<?>> personStore) {
+    public void setPersonStore(Map<String, TeamOrPersonBase<?>>personStore) {
         this.personStore = personStore;
     }
 

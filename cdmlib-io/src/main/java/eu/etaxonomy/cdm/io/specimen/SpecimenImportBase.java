@@ -21,18 +21,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Identification;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -67,6 +70,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.strategy.match.MatchException;
+import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -123,6 +128,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 // do not ignore authorship for non-preferred names because they need
                 // to be created for the determination history
                 String nameCache = TaxonName.castAndDeproxy(parsedName).getNameCache();
+
                 List<TaxonName> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
                 if (!names.isEmpty()){
                     acceptedTaxon = getBestMatchingTaxon(scientificName, new ArrayList<>(names), state);
@@ -183,9 +189,169 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
 
         if(acceptedTaxon != null && !acceptedTaxon.isPersisted()) {
+
+            //check for already existing authors
+            checkAllAuthors(state, acceptedTaxon);
             save(acceptedTaxon, state);
         }
         return acceptedTaxon;
+    }
+
+    /**
+     * @param state
+     * @param acceptedTaxon
+     */
+    private void checkAllAuthors(STATE state, Taxon acceptedTaxon) {
+        //combination author
+        TeamOrPersonBase author = acceptedTaxon.getName().getCombinationAuthorship();
+        acceptedTaxon.getName().setCombinationAuthorship(checkAuthor(state, author));
+        //basionym author
+        author = acceptedTaxon.getName().getBasionymAuthorship();
+        acceptedTaxon.getName().setBasionymAuthorship(checkAuthor(state, author));
+        //excombination author
+        author = acceptedTaxon.getName().getExCombinationAuthorship();
+        acceptedTaxon.getName().setExCombinationAuthorship(checkAuthor(state, author));
+        //exbasionym author
+        author = acceptedTaxon.getName().getExBasionymAuthorship();
+        acceptedTaxon.getName().setExBasionymAuthorship(checkAuthor(state, author));
+    }
+
+    /**
+     * @param state
+     * @param acceptedTaxon
+     * @param author
+     */
+    private TeamOrPersonBase checkAuthor(STATE state, TeamOrPersonBase author) {
+        try {
+            if (author != null) {
+                if (state.getPersonStore().containsKey(author.getTitleCache())) {
+                    return (TeamOrPersonBase) state.getPersonStore().get(author.getTitleCache());
+                }
+                List<TeamOrPersonBase> agents = getCommonService().findMatching(author, MatchStrategyFactory.NewParsedTeamOrPersonInstance());
+                if (agents.size()>0) {
+                    author = agents.get(0);
+                    state.getPersonStore().put(agents.get(0).getTitleCache(), agents.get(0));
+                }else if (author instanceof Team) {
+                    //check for every team member
+                    Set<Person> alreadyExistingMembers = new HashSet<>();
+                    Set<Person> removeTeamMember = new HashSet<>();
+                    for (Person member: ((Team)author).getTeamMembers()) {
+                        if (state.getPersonStore().containsKey(author.getTitleCache())) {
+                            if (state.getPersonStore().get(author.getTitleCache()) instanceof Person){
+                                alreadyExistingMembers.add((Person) state.getPersonStore().get(author.getTitleCache()));
+                                continue;
+                            }
+                        }
+                        agents = getCommonService().findMatching(member, MatchStrategyFactory.NewParsedPersonInstance());
+                        if (agents.size()>0) {
+                            alreadyExistingMembers.add((Person)agents.get(0));
+                            state.getPersonStore().put(agents.get(0).getTitleCache(), agents.get(0));
+                            removeTeamMember.add(member);
+                        }
+                    }
+                    ((Team) author).getTeamMembers().removeAll(removeTeamMember);
+                    ((Team) author).getTeamMembers().addAll(alreadyExistingMembers);
+
+                }
+                return author;
+            }
+        } catch (MatchException e) {
+            logger.debug("find matching author for " + author + " throws an exception.");
+        }
+        return null;
+    }
+
+    /**
+     * @param state
+     * @param teamOrPerson
+     */
+    protected void findMatchingCollectorAndFillPersonStore(Abcd206ImportState state, TeamOrPersonBase<?> teamOrPerson) {
+        if (!state.getPersonStore().containsKey(teamOrPerson.getCollectorTitleCache())) {
+            List<TeamOrPersonBase> agents = new ArrayList<>();
+            if(teamOrPerson instanceof Person) {
+                try {
+                    Person person = (Person)teamOrPerson;
+                    person.getCollectorTitleCache();
+                    agents = getCommonService().findMatching(teamOrPerson, MatchStrategyFactory.NewParsedCollectorPersonInstance());
+                } catch (MatchException e) {
+                    state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
+                }
+                if (agents.size()>0) {
+                    TeamOrPersonBase agent = agents.get(0);
+                    if (agent instanceof Person && teamOrPerson instanceof Person) {
+                        Person person = (Person)agent;
+                        teamOrPerson = person;
+                        state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
+                        state.getPersonStore().put(person.getCollectorTitleCache(), HibernateProxyHelper.deproxy(person, Person.class));
+                        state.getPersonStore().put(person.getTitleCache(), HibernateProxyHelper.deproxy(person, Person.class));
+                     }
+                }
+            }else if (teamOrPerson instanceof Team){
+                try {
+                    Team team1 = (Team)teamOrPerson;
+                    for (Person person: team1.getTeamMembers()) {
+                        person.getCollectorTitleCache();
+                    }
+                    team1.getCollectorTitleCache();
+                    agents = getCommonService().findMatching(team1, MatchStrategyFactory.NewParsedCollectorTeamInstance());
+                } catch (MatchException e) {
+                    state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
+
+                }
+                if (agents.size()== 0) {
+                    Team teamNew = (Team)teamOrPerson;
+                    Set<Person> alreadyExistingMembers = new HashSet<>();
+                    Set<Person> membersToDelete = new HashSet<>();
+                    for (Person member: teamNew.getTeamMembers()) {
+                        try {
+                            agents = getCommonService().findMatching(member, MatchStrategyFactory.NewParsedCollectorPersonInstance());
+                        } catch (MatchException e) {
+                            state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
+                        }
+                        if (agents.size()>0) {
+                            TeamOrPersonBase agent = agents.get(0);
+                            if (agent instanceof Person && member instanceof Person) {
+                                Person person = (Person)agent;
+                                alreadyExistingMembers.add(person);
+                                membersToDelete.add(member);
+                                state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
+                                state.getPersonStore().put(person.getCollectorTitleCache(), HibernateProxyHelper.deproxy(person, Person.class));
+                                state.getPersonStore().put(person.getTitleCache(), HibernateProxyHelper.deproxy(person, Person.class));
+                            }
+                        }else {
+                            state.getPersonStore().put(member.getCollectorTitleCache(), member);
+                        }
+//
+                    }
+                    teamNew.getTeamMembers().removeAll(membersToDelete);
+                    teamNew.getTeamMembers().addAll(alreadyExistingMembers);
+                    state.getPersonStore().put(teamNew.getCollectorTitleCache(), teamNew);
+                    state.getPersonStore().put(teamNew.getTitleCache(), teamNew);
+
+                }else {
+                    if (agents.get(0) instanceof Team) {
+                        Team agent = (Team)agents.get(0);
+                        teamOrPerson = agent;
+                        state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + agent.getCollectorTitleCache() + " UUID: " + agent.getUuid());
+                        state.getPersonStore().put(agent.getCollectorTitleCache(), HibernateProxyHelper.deproxy(agent, Team.class));
+                        state.getPersonStore().put(agent.getTitleCache(), HibernateProxyHelper.deproxy(agent, Team.class));
+
+                        for (Person member: agent.getTeamMembers()) {
+                            if (!state.getPersonStore().containsKey(member.getTitleCache())) {
+                                state.getPersonStore().put(member.getCollectorTitleCache(), HibernateProxyHelper.deproxy(member, Person.class));
+                                state.getPersonStore().put(member.getTitleCache(), HibernateProxyHelper.deproxy(member, Person.class));
+                            }
+                        }
+                    }
+
+                }
+            }
+            if (logger.isDebugEnabled()) {
+                logger.debug("Stored author " + state.getDataHolder().gatheringAgentsList.toString());
+            }
+            logger.warn("Not imported author with duplicated aut_id "
+                    + state.getDataHolder().gatheringAgentsList.toString());
+        }
     }
 
 	protected Taxon getBestMatchingTaxon(String scientificName, java.util.Collection<TaxonName> names, STATE state){
@@ -234,15 +400,20 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             if (!names.isEmpty()) {
                 name = names.iterator().next();
             }else {
-                if (state.getConfig().getNomenclaturalCode() == null) {
-                    name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
-                }else if (state.getConfig().getNomenclaturalCode().equals(NomenclaturalCode.ICNAFP)) {
-                    name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
-                }else if (state.getConfig().getNomenclaturalCode().equals(NomenclaturalCode.ICZN)) {
-                    name = TaxonNameFactory.PARSED_ZOOLOGICAL(scientificName);
-                }else {
-                    name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
-                }
+                UpdateResult nameResult = getNameService().parseName(scientificName, state.getConfig().getNomenclaturalCode(), null, true);
+                name = (TaxonName) nameResult.getCdmEntity();
+//                if (state.getConfig().getNomenclaturalCode() == null) {
+//                    UpdateResult nameResult = getNameService().parseName(scientificName, null, null, true);
+//                    name = (TaxonName) nameResult.getCdmEntity();
+//                    //name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
+//                }else if (state.getConfig().getNomenclaturalCode().equals(NomenclaturalCode.ICNAFP)) {
+//
+//                    name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
+//                }else if (state.getConfig().getNomenclaturalCode().equals(NomenclaturalCode.ICZN)) {
+//                    name = TaxonNameFactory.PARSED_ZOOLOGICAL(scientificName);
+//                }else {
+//                    name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
+//                }
 
             }
             if (name!= null) {

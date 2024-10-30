@@ -96,7 +96,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     public void doInvoke(Abcd206ImportState state) {
         Abcd206ImportConfigurator config = state.getConfig();
         Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-        MapWrapper<TeamOrPersonBase<?>> authorStore = (MapWrapper<TeamOrPersonBase<?>>) stores.get(ICdmIO.TEAM_STORE);
+        Map<String, TeamOrPersonBase<?>>authorStore = new HashMap<>();
         state.setPersonStore(authorStore);
         MapWrapper<Reference> referenceStore = (MapWrapper<Reference>) stores.get(ICdmIO.REFERENCE_STORE);
         createKindOfUnitsMap(state);
@@ -232,7 +232,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 prepareCollectors(state, unitsList, abcdFieldGetter);
 
                 // save authors
-                getAgentService().saveOrUpdate((java.util.Collection) state.getPersonStore().objects());
+                getAgentService().saveOrUpdate((java.util.Collection) state.getPersonStore().values());
 
                 commitTransaction(state.getTx());
                 state.setTx(startTransaction());
@@ -540,7 +540,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (state.getDataHolder().gatheringAgentsList.isEmpty()) {
                 TeamOrPersonBase team = state.getPersonStore().get(state.getDataHolder().gatheringAgentsText);
                 if (team == null){
-                    team = parseAuthorString(state.getDataHolder().gatheringAgentsText);
+                    team = parseCollectorString(state.getDataHolder().gatheringAgentsText);
                     if (team != null){
                         state.getPersonStore().put(team.getTitleCache(), team);
                     }
@@ -554,7 +554,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             } else {
                 TeamOrPersonBase team = state.getPersonStore().get(state.getDataHolder().gatheringAgentsList.toString());
                 if (team == null){
-                    team = parseAuthorString(state.getDataHolder().gatheringAgentsList.toString());
+                    team = parseCollectorString(state.getDataHolder().gatheringAgentsList.toString());
                     if (team != null){
                         state.getPersonStore().put(team.getTitleCache(), team);
                     }
@@ -1283,11 +1283,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             this.getCollectorsFromXML((Element) unitsList.item(i), abcdFieldGetter, state);
             if (!(state.getDataHolder().gatheringAgentsList.isEmpty())) {
                 if (state.getDataHolder().gatheringAgentsList.size() == 1) {
-                    teamOrPerson = parseAuthorString(state.getDataHolder().gatheringAgentsList.get(0));
+                    teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsList.get(0));
                 } else {
                     team = new Team();
                     for (String collector : state.getDataHolder().gatheringAgentsList) {
-                        teamOrPerson = parseAuthorString(collector);
+                        teamOrPerson = parseCollectorString(collector);
                         if (teamOrPerson instanceof Person) {
                             team.addTeamMember((Person) teamOrPerson);
                         } else {
@@ -1296,33 +1296,18 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             }
                         }
                     }
-                    if (team.getTeamMembers() != null && team.getTeamMembers().isEmpty()){
+                    if (team.getTeamMembers() != null && !team.getTeamMembers().isEmpty()){
                         teamOrPerson = team;
                     }
                 }
-                if (!state.getPersonStore().containsId(teamOrPerson.getTitleCache())) {
-                    state.getPersonStore().put(teamOrPerson.getTitleCache(), teamOrPerson);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Stored author " + state.getDataHolder().gatheringAgentsList.toString());
-                    }
-                    logger.warn("Not imported author with duplicated aut_id "
-                            + state.getDataHolder().gatheringAgentsList.toString());
-                }
+                findMatchingCollectorAndFillPersonStore(state, teamOrPerson);
             }
             if (!StringUtils.isBlank(state.getDataHolder().gatheringAgentsText)
                     && state.getDataHolder().gatheringAgentsList.isEmpty()) {
-                teamOrPerson = parseAuthorString(state.getDataHolder().gatheringAgentsText);
-                // if (teamOrPerson instanceof Person) {
-                // //team.addTeamMember((Person) teamOrPerson);
-                // } else {
-                // team = new Team();
-                // for (Person person : ((Team) teamOrPerson).getTeamMembers())
-                // {
-                // team.addTeamMember(person);
-                // }
-                // }
-                if (!state.getPersonStore().containsId(teamOrPerson.getTitleCache())) {
-                    state.getPersonStore().put(teamOrPerson.getTitleCache(), teamOrPerson);
+                teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsText);
+
+                if (!state.getPersonStore().containsKey(teamOrPerson.getTitleCache())) {
+                    findMatchingCollectorAndFillPersonStore(state, teamOrPerson);
                     if (logger.isDebugEnabled()) {
                         logger.debug("Stored author " + state.getDataHolder().gatheringAgentsText);
                     }
@@ -1333,113 +1318,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         }
 
-        // List<String> collectorsU = new ArrayList<String>(new
-        // HashSet<String>(collectors));
-        // List<String> teamsU = new ArrayList<String>(new
-        // HashSet<String>(teams));
-        //
-        //
-        // //existing teams in DB
-        // Map<String,Team> titleCacheTeam = new HashMap<String, Team>();
-        // List<UuidAndTitleCache<Team>> hiberTeam = new
-        // ArrayList<UuidAndTitleCache<Team>>();//getAgentService().getTeamUuidAndTitleCache();
 
-        // Set<UUID> uuids = new HashSet<UUID>();
-        // for (UuidAndTitleCache<Team> hibernateT:hiberTeam){
-        // uuids.add(hibernateT.getUuid());
-        // }
-        // if (!uuids.isEmpty()){
-        // List<AgentBase> existingTeams = getAgentService().find(uuids);
-        // for (AgentBase<?> existingP:existingTeams){
-        // titleCacheTeam.put(existingP.getTitleCache(),CdmBase.deproxy(existingP,Team.class));
-        // }
-        // }
-
-        // Map<String,UUID> teamMap = new HashMap<String, UUID>();
-        // for (UuidAndTitleCache<Team> uuidt:hiberTeam){
-        // teamMap.put(uuidt.getTitleCache(), uuidt.getUuid());
-        // }
-
-        // existing persons in DB
-        // List<UuidAndTitleCache<Person>> hiberPersons = new
-        // ArrayList<UuidAndTitleCache<Person>>();//getAgentService().getPersonUuidAndTitleCache();
-        // Map<String,Person> titleCachePerson = new HashMap<String, Person>();
-        // uuids = new HashSet<UUID>();
-        // for (UuidAndTitleCache<Person> hibernateP:hiberPersons){
-        // uuids.add(hibernateP.getUuid());
-        // }
-        //
-        // if (!uuids.isEmpty()){
-        // List<AgentBase> existingPersons = getAgentService().find(uuids);
-        // for (AgentBase<?> existingP:existingPersons){
-        // titleCachePerson.put(existingP.getTitleCache(),CdmBase.deproxy(existingP,Person.class));
-        // }
-        // }
-        //
-        // Map<String,UUID> personMap = new HashMap<String, UUID>();
-        // for (UuidAndTitleCache<Person> person:hiberPersons){
-        // personMap.put(person.getTitleCache(), person.getUuid());
-        // }
-        //
-        // java.util.Collection<Person> personToadd = new ArrayList<Person>();
-        // java.util.Collection<Team> teamToAdd = new ArrayList<Team>();
-        //
-        // for (String collector:collectorsU){
-        // Person p = Person.NewInstance();
-        // p.setTitleCache(collector,true);
-        // if (!personMap.containsKey(p.getTitleCache())){
-        // personToadd.add(p);
-        // }
-        // }
-        // for (String team:teamsU){
-        // Team p = Team.NewInstance();
-        // p.setTitleCache(team,true);
-        // if (!teamMap.containsKey(p.getTitleCache())){
-        // teamToAdd.add(p);
-        // }
-        // }
-        //
-        // if(!personToadd.isEmpty()){
-        // for (Person agent: personToadd){
-        // save(agent, state);
-        // titleCachePerson.put(agent.getTitleCache(),CdmBase.deproxy(agent,
-        // Person.class) );
-        // }
-        // }
-        //
-        // Person ptmp ;
-        // Map <String,Integer>teamdone = new HashMap<String, Integer>();
-        // for (List<String> collteam: collectorinteams){
-        // if (!teamdone.containsKey(StringUtils.join(collteam.toArray(),"-"))){
-        // Team team = new Team();
-        // boolean em =true;
-        // for (String collector:collteam){
-        // ptmp = Person.NewInstance();
-        // ptmp.setTitleCache(collector,true);
-        // Person p2 = titleCachePerson.get(ptmp.getTitleCache());
-        // team.addTeamMember(p2);
-        // em=false;
-        // }
-        // if (!em) {
-        // teamToAdd.add(team);
-        // }
-        // teamdone.put(StringUtils.join(collteam.toArray(),"-"),0);
-        // }
-        // }
-        //
-        // if(!teamToAdd.isEmpty()){
-        // for (Team agent: teamToAdd){
-        // save(agent, state);
-        // titleCacheTeam.put(agent.getTitleCache(), CdmBase.deproxy(
-        // agent,Team.class) );
-        // }
-        // }
-
-        // ((Abcd206ImportConfigurator)
-        // state.getConfig()).setTeams(titleCacheTeam);
-        // ((Abcd206ImportConfigurator)
-        // state.getConfig()).setPersons(titleCachePerson);
     }
+
+
 
     @Override
     protected boolean doCheck(Abcd206ImportState state) {
