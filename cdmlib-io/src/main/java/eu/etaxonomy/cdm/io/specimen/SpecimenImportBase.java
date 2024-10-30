@@ -21,7 +21,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
-import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
@@ -400,20 +399,16 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             if (!names.isEmpty()) {
                 name = names.iterator().next();
             }else {
-                UpdateResult nameResult = getNameService().parseName(scientificName, state.getConfig().getNomenclaturalCode(), null, true);
-                name = (TaxonName) nameResult.getCdmEntity();
-//                if (state.getConfig().getNomenclaturalCode() == null) {
-//                    UpdateResult nameResult = getNameService().parseName(scientificName, null, null, true);
-//                    name = (TaxonName) nameResult.getCdmEntity();
-//                    //name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
-//                }else if (state.getConfig().getNomenclaturalCode().equals(NomenclaturalCode.ICNAFP)) {
-//
-//                    name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
-//                }else if (state.getConfig().getNomenclaturalCode().equals(NomenclaturalCode.ICZN)) {
-//                    name = TaxonNameFactory.PARSED_ZOOLOGICAL(scientificName);
-//                }else {
-//                    name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
-//                }
+                if (state.getConfig().getNomenclaturalCode() == null) {
+                    name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
+                }else if (state.getConfig().getNomenclaturalCode().equals(NomenclaturalCode.ICNAFP)) {
+
+                    name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
+                }else if (state.getConfig().getNomenclaturalCode().equals(NomenclaturalCode.ICZN)) {
+                    name = TaxonNameFactory.PARSED_ZOOLOGICAL(scientificName);
+                }else {
+                    name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
+                }
 
             }
             if (name!= null) {
