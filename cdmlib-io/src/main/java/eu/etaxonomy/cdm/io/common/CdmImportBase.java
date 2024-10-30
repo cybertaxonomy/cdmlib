@@ -1557,7 +1557,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         return null;
     }
 
-	public static TeamOrPersonBase<?> parseAuthorString(String authorName){
+	public static TeamOrPersonBase<?> parseCollectorString(String authorName){
         TeamOrPersonBase<?> author = null;
         String[] teamMembers = authorName.split(authorSeparator);
         String lastMember;
@@ -1571,14 +1571,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             for(String member:teamMembers){
                 if (!member.equals("")){
                     teamMember = Person.NewInstance();
-                    teamMember.setTitleCache(member, true);
+                    teamMember.setCollectorTitle(member);
                    ((Team)author).addTeamMember(teamMember);
                 }
             }
             if (lastMembers != null){
                 for(String member:lastMembers){
                    teamMember = Person.NewInstance();
-                   teamMember.setTitleCache(member, true);
+                   teamMember.setCollectorTitle(member);
                    ((Team)author).addTeamMember(teamMember);
                 }
             }
@@ -1589,14 +1589,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
                 author = Team.NewInstance();
                 for(String member:teamMembers){
                   teamMember = Person.NewInstance();
-                  teamMember.setTitleCache(member, true);
+                  teamMember.setCollectorTitle(member);
                   ((Team)author).addTeamMember(teamMember);
 
                 }
             }else{
                 if (isNotBlank(authorName)){
                     author = Person.NewInstance();
-                    author.setTitleCache(authorName, true);
+                    ((Person)author).setCollectorTitle(authorName);
                 }else{
                     return null;
                 }
