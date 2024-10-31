@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import io.swagger.annotations.Api;
 
@@ -55,7 +57,12 @@ public class ReferenceController extends AbstractIdentifiableController<Referenc
     public ReferenceController(){
         setInitializationStrategy(Arrays.asList(new String[]{
                 "$",
-                "authorship.$"
+                "authorship.$",
+                "annotationType.$",
+                "annotationType.includes.$",
+                "annotations.$",
+                "annotations.annotationType.$",
+                "annotations.annotationType.includes.$",
              }));
     }
 
@@ -101,5 +108,19 @@ public class ReferenceController extends AbstractIdentifiableController<Referenc
             mv.addObject(rb.getAuthorship());
         }
         return mv;
+    }
+
+    @Override
+    protected  <CDM_BASE extends CdmBase> List<String> complementInitStrategy(@SuppressWarnings("unused") Class<CDM_BASE> clazz, List<String> pathProperties) {
+
+        if(pathProperties.stream().anyMatch(s -> s.startsWith("annotations"))) {
+            List<String> complemented = new ArrayList<>(pathProperties);
+            complemented.add("annotations.annotationType.*");
+            complemented.add("annotations.annotationType.includes");
+            return complemented;
+        }
+
+        return pathProperties;
+
     }
 }

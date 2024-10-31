@@ -42,6 +42,9 @@ public class TermTreePortalController extends TermTreeController {
     private static final List<String> TERMTREE_INIT_STRATEGY = Arrays.asList(
             new String[]{
                     "representations",
+                    "terms.$",
+                    "terms.includes.$",
+                    "includes"
             });
 
     private List<String> termTreeNodeInitStrategy = null;

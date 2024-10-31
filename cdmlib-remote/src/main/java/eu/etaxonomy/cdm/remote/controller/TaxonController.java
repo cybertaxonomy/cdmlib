@@ -117,7 +117,13 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         super();
         setInitializationStrategy(Arrays.asList(new String[]{
                 "$",
-                "name.nomenclaturalSource.citation"
+                "name.nomenclaturalSource.citation",
+                "annotations.$",
+                "annotations.annotationType.$",
+                "annotations.annotationType.includes.$",
+                "name.nomenclaturalSource.citation",
+                "synonyms.annotations.$",
+                "synonyms.annotations.annotationType.includes.$"
                 }
         ));
     }
