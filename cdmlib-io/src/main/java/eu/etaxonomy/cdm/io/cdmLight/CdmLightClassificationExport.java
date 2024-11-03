@@ -1005,9 +1005,12 @@ public class CdmLightClassificationExport
             }
             csvLine[table.getIndex(CdmLightExportTable.APPENDED_PHRASE)] = synonym.getAppendedPhrase();
             csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, synonym.getSec());
-            String sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(synonym.getSec(), synonym.getSecSource().getCitationMicroReference(), null,
-                    state.getReferenceStore().get(synonym.getSec().getUuid()));
-            csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = sec;//getTitleCache(synonym.getSec());
+            if (synonym.getSec() != null) {
+                String secStr = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(
+                        synonym.getSec(), synonym.getSecSource().getCitationMicroReference(), null,
+                        state.getReferenceStore().get(synonym.getSec().getUuid()));
+                csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = secStr;
+            }
             csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = synonym.isPublish() ? "1" : "0";
             csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = "0";
             csvLine[table.getIndex(CdmLightExportTable.IS_PARTIAL)] = "0";
