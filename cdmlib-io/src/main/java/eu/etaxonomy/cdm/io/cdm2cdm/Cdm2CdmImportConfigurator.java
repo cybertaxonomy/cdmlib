@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
  * @author a.mueller
  * @since 17.08.2019
  */
-public  class Cdm2CdmImportConfigurator
+public class Cdm2CdmImportConfigurator
         extends ImportConfiguratorBase<Cdm2CdmImportState, ICdmImportSource>{
 
     private static final long serialVersionUID = 5454400624983256935L;
