@@ -365,18 +365,15 @@ public class CdmLightClassificationExport
 
                     //secundum reference
                     csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
-                    String sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxon.getSec(), taxon.getSecSource().getCitationMicroReference(), null,
-                            state.getReferenceStore().get(taxon.getSec().getUuid()));
-
-                    if (taxon.getSec() != null && taxon.getSec().getDatePublished() != null
-                            && taxon.getSec().getDatePublished().getFreeText() != null) {
-//                        String sec_string = taxon.getSec().getTitleCache() + ". "
-//                                + taxon.getSec().getDatePublished().getFreeText();
-                        String sec_string = sec + ". "
-                              + taxon.getSec().getDatePublished().getFreeText();
-                        sec_string = sec_string.replace("..", ".");
-                        csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = sec_string;
-                    } else {
+                    if (taxon.getSec() != null) {
+                        String sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxon.getSec(), taxon.getSecSource().getCitationMicroReference(), null,
+                                state.getReferenceStore().get(taxon.getSec().getUuid()));
+                        if (taxon.getSec().getDatePublished() != null
+                                && taxon.getSec().getDatePublished().getFreeText() != null) {
+                            sec = sec + ". "
+                                + taxon.getSec().getDatePublished().getFreeText();
+                            sec = sec.replace("..", ".");
+                        }
                         csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = sec;//getTitleCache(taxon.getSec());
                     }
 
