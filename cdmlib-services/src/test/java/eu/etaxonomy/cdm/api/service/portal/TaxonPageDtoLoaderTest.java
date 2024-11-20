@@ -738,7 +738,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         specimen2.setTitleCache("My specimen2", true);
         specimen2.setUuid(specimenUuid2);
         IndividualsAssociation indAss2 = IndividualsAssociation.NewInstance(specimen2);
-        indAss2.putDescription(Language.DEFAULT(), "Associated specimen description1");
+        indAss2.putDescription(Language.DEFAULT(), "Associated specimen description2");
         indAss2.setFeature(Feature.MATERIALS_EXAMINED());
         taxDesc.addElements(indAss1, indAss2);
 
