@@ -278,7 +278,7 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
             TaxonPageDto pageDto, TaxonPageDtoConfiguration config) {
 
         //TODO locale
-        Language localeLang = null;
+        Language localeLang = config.getLanguage();
 
         FactDtoBase result;
         if (fact.isInstanceOf(TextData.class)) {

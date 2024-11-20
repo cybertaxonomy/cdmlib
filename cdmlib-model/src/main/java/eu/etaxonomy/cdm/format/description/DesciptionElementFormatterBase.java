@@ -61,7 +61,8 @@ public abstract class DesciptionElementFormatterBase<T extends DescriptionElemen
     }
 
     public String format(Object object, Language preferredLanguage) {
-        List<Language> languages = Arrays.asList(new Language[] {preferredLanguage});
+        List<Language> languages = preferredLanguage == null ? new ArrayList<>()
+                : Arrays.asList( new Language[] {preferredLanguage});
         return format(object, languages);
     }
 
@@ -111,6 +112,12 @@ public abstract class DesciptionElementFormatterBase<T extends DescriptionElemen
         for (Language lang : preferredLanguages) {
             if (modifyingText.get(lang) != null) {
                 return modifyingText.get(lang).getText();
+            }
+        }
+        for (Map.Entry<Language, LanguageString> entry : modifyingText.entrySet()){
+            String text = entry.getValue().getText();
+            if (text != null){  //Note: or do we also want to exclude empty/blank texts?
+                return text;
             }
         }
         return null;
