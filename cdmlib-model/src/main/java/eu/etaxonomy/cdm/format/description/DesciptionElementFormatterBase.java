@@ -106,7 +106,7 @@ public abstract class DesciptionElementFormatterBase<T extends DescriptionElemen
         return result;
     }
 
-    String getPreferredModifyingText(Map<Language, LanguageString> modifyingText,
+    private String getPreferredModifyingText(Map<Language, LanguageString> modifyingText,
             List<Language> preferredLanguages) {
         for (Language lang : preferredLanguages) {
             if (modifyingText.get(lang) != null) {

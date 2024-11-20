@@ -313,6 +313,7 @@ public abstract class DescriptionElementBase
      * stored in the modifying text. This is only metainformation
      * (like "Some experts express doubt about this assertion").
      */
+    @Override
     public Map<Language,LanguageString> getModifyingText(){
         return this.modifyingText;
     }
@@ -344,6 +345,7 @@ public abstract class DescriptionElementBase
      * @see    	   			#getModifyingText()
      * @see    	   			#putModifyingText(Language, String)
      */
+    @Override
     public LanguageString putModifyingText(LanguageString description){
         return this.modifyingText.put(description.getLanguage(),description);
     }
@@ -378,6 +380,7 @@ public abstract class DescriptionElementBase
      * @see    	   		#putModifyingText(LanguageString)
      *
      */
+    @Override
     public LanguageString putModifyingText(Language language, String text){
         return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
     }
@@ -390,6 +393,7 @@ public abstract class DescriptionElementBase
      * 					has been formulated
      * @see     		#getModifyingText()
      */
+    @Override
     public LanguageString removeModifyingText(Language language){
         return this.modifyingText.remove(language);
     }
