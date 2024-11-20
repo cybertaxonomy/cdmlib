@@ -427,7 +427,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("My specimen", materialExaminedToCheck.getOccurrence());
         Assert.assertEquals(specimenUuid1, materialExaminedToCheck.getOccurrenceUuid());
         //FIXME description can not yet be loaded by DTO only loader, see comment in TaxonFactsDtoLoader.loadFactsPerFeature()
-//        Assert.assertEquals("Associated specimen description1", materialExamined1.getDescritpion());
+//        Assert.assertEquals("Associated specimen description1", materialExamined1.getDescription());
     }
 
     private void testTaxonInteraction(FeatureDto hostPlantDto) {
@@ -442,7 +442,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Genus species Mill. sec. My secbook", TaggedTextFormatter.createString(hostPlantToCheck.getTaxon()));
         Assert.assertEquals(taxonUuid1, hostPlantToCheck.getTaxonUuid());
         //FIXME description can not yet be loaded by DTO only loader, see comment in TaxonFactsDtoLoader.loadFactsPerFeature()
-//        Assert.assertEquals("Taxon interaction description1", hostPlantToCheck.getDescritpion());
+//        Assert.assertEquals("Taxon interaction description1", hostPlantToCheck.getDescription());
     }
 
     private void testTemporalData(FeatureDto floweringDto) {

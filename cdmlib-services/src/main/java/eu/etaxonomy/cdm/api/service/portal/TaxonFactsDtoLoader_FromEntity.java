@@ -326,7 +326,7 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
 
             LanguageString description = MultilanguageTextHelper.getPreferredLanguageString(ia.getDescription(), Arrays.asList(localeLang));
             if (description != null) {
-                dto.setDescritpion(description.getText());
+                dto.setDescription(description.getText());
             }
             SpecimenOrObservationBase<?> specimen = ia.getAssociatedSpecimenOrObservation();
             if (specimen != null) {
@@ -345,7 +345,7 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
             LanguageString description = MultilanguageTextHelper.getPreferredLanguageString(
                     ti.getDescription(), Arrays.asList(localeLang));
             if (description != null) {
-                dto.setDescritpion(description.getText());
+                dto.setDescription(description.getText());
             }
             Taxon taxon = ti.getTaxon2();
             if (taxon != null) {

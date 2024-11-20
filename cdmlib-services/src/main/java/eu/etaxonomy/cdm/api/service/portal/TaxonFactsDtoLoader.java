@@ -428,7 +428,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
                 ia.setOccurrence(aftd.associatedOccurrence.getTitleCache());
                 ia.setOccurrenceUuid(aftd.associatedOccurrence.getUuid());
             }
-            ia.setDescritpion(aftd.description);
+            ia.setDescription(aftd.description);
             dto = ia;
         } else if (aftd.type == TaxonInteraction.class) {
             TaxonInteractionDto ti = new TaxonInteractionDto();
@@ -436,7 +436,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
                 ti.setTaxon(aftd.interactingTaxon.getTaggedTitle());
                 ti.setTaxonUuid(aftd.interactingTaxon.getUuid());
             }
-            ti.setDescritpion(aftd.description);
+            ti.setDescription(aftd.description);
             dto = ti;
         }else if (aftd.type == CategoricalData.class) {
             FactDto fd = new FactDto();
