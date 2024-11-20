@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service.name;
 import java.util.Comparator;
 
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup.TypeDesignationSetType;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -112,21 +113,7 @@ public class TypeDesignationGroupComparator implements Comparator<TypeDesignatio
             TypeDesignationGroupFormatterConfiguration config = null;
             String label1 = TypeDesignationGroupFormatterBase.getFormatter(o1).entityLabel(o1.getBaseEntity(), config);
             String label2 = TypeDesignationGroupFormatterBase.getFormatter(o2).entityLabel(o2.getBaseEntity(), config);
-            try {
-                if (label1 == label2) {
-                    return 0;
-                }
-                if (label1 == null) {
-                    return  -1;
-                }
-                if (label2 == null) {
-                    return 1;
-                }
-                return label1.compareTo(label2);
-            }catch (Exception e) {
-                e.printStackTrace();
-            }
+            return CdmUtils.nullSafeCompareTo(label1, label2, false);
         }
-        return 0;
     }
 }
