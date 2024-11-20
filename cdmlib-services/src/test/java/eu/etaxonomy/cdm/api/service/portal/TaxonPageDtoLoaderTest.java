@@ -428,6 +428,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(specimenUuid1, materialExaminedToCheck.getOccurrenceUuid());
         //FIXME description can not yet be loaded by DTO only loader, see comment in TaxonFactsDtoLoader.loadFactsPerFeature()
 //        Assert.assertEquals("Associated specimen description1", materialExamined1.getDescription());
+//        Assert.assertEquals("Modified association", materialExaminedToCheck.getModifyingText());
     }
 
     private void testTaxonInteraction(FeatureDto hostPlantDto) {
@@ -443,6 +444,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(taxonUuid1, hostPlantToCheck.getTaxonUuid());
         //FIXME description can not yet be loaded by DTO only loader, see comment in TaxonFactsDtoLoader.loadFactsPerFeature()
 //        Assert.assertEquals("Taxon interaction description1", hostPlantToCheck.getDescription());
+//        Assert.assertEquals("Modified interaction", hostPlantToCheck.getModifyingText());
     }
 
     private void testTemporalData(FeatureDto floweringDto) {
@@ -730,6 +732,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         IndividualsAssociation indAss1 = IndividualsAssociation.NewInstance(specimen1);
         indAss1.putDescription(Language.DEFAULT(), "Associated specimen description1");
         indAss1.setFeature(Feature.MATERIALS_EXAMINED());
+        indAss1.putModifyingText(Language.DEFAULT(), "Modified association");
+
         DerivedUnit specimen2 = DerivedUnit.NewPreservedSpecimenInstance();
         specimen2.setTitleCache("My specimen2", true);
         specimen2.setUuid(specimenUuid2);
@@ -744,6 +748,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TaxonInteraction taxInteract1 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
         taxInteract1.setTaxon2(taxon1);
         taxInteract1.putDescription(Language.DEFAULT(), "Taxon interaction description1");
+        taxInteract1.putModifyingText(Language.DEFAULT(), "Modified interaction");
+
         TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         name2.setTitleCache("Name three Mill.", true);
         Taxon taxon2 = Taxon.NewInstance(name2, taxon.getSec());

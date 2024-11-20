@@ -17,6 +17,7 @@ import java.util.UUID;
 public class IndividualsAssociationDto extends FactDtoBase {
 
     private String description;
+    private String modifyingText; //Note: unclear, if modifying text makes sense IndividualsAssociations. Use description instead?
 
     private String occurrence;
     private UUID occurrenceUuid;
@@ -29,12 +30,21 @@ public class IndividualsAssociationDto extends FactDtoBase {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getModifyingText() {
+        return modifyingText;
+    }
+    public void setModifyingText(String modifyingText) {
+        this.modifyingText = modifyingText;
+    }
+
     public String getOccurrence() {
         return occurrence;
     }
     public void setOccurrence(String occurrence) {
         this.occurrence = occurrence;
     }
+
     public UUID getOccurrenceUuid() {
         return occurrenceUuid;
     }

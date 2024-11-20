@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 public class TaxonInteractionDto extends FactDtoBase {
 
     private String description;
+    private String modifyingText; //Note: unclear, if modifying text makes sense IndividualsAssociations. Use description instead?
 
     private List<TaggedText> taxon = new ArrayList<>();
     private UUID taxonUuid;
@@ -32,6 +33,13 @@ public class TaxonInteractionDto extends FactDtoBase {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getModifyingText() {
+        return modifyingText;
+    }
+    public void setModifyingText(String modifyingText) {
+        this.modifyingText = modifyingText;
     }
 
     public List<TaggedText> getTaxon() {
@@ -47,4 +55,5 @@ public class TaxonInteractionDto extends FactDtoBase {
     public void setTaxonUuid(UUID taxonUuid) {
         this.taxonUuid = taxonUuid;
     }
+
 }

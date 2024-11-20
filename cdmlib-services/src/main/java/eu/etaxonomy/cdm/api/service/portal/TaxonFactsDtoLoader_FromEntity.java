@@ -328,6 +328,10 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
             if (description != null) {
                 dto.setDescription(description.getText());
             }
+            LanguageString modifyingText = MultilanguageTextHelper.getPreferredLanguageString(ia.getModifyingText(), Arrays.asList(localeLang));
+            if (modifyingText != null) {
+                dto.setModifyingText(modifyingText.getText());
+            }
             SpecimenOrObservationBase<?> specimen = ia.getAssociatedSpecimenOrObservation();
             if (specimen != null) {
                 //TODO what to use here??
@@ -346,6 +350,10 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
                     ti.getDescription(), Arrays.asList(localeLang));
             if (description != null) {
                 dto.setDescription(description.getText());
+            }
+            LanguageString modifyingText = MultilanguageTextHelper.getPreferredLanguageString(ti.getModifyingText(), Arrays.asList(localeLang));
+            if (modifyingText != null) {
+                dto.setModifyingText(modifyingText.getText());
             }
             Taxon taxon = ti.getTaxon2();
             if (taxon != null) {
