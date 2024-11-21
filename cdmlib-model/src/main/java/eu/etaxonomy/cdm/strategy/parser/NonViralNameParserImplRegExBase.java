@@ -245,7 +245,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pReference = pReferenceSineDetail + detailSeparator + detail +
 					yearSeperator + yearPhrase + "(" + referenceEnd + ")?";
 
-    //static String strictBook = referenc
+    //static String strictBook = reference
 
     protected static Pattern referencePattern = Pattern.compile(pReference);
     protected static Pattern referenceSineDetailPattern = Pattern.compile(pReferenceSineDetail);

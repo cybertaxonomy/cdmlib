@@ -173,7 +173,6 @@ public class SingleReadAlignment extends VersionableEntity {
 		this.editedSequence = editedSequence;
 	}
 
-
 	public boolean isReverseComplement() {
 		return reverseComplement;
 	}
