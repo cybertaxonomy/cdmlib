@@ -13,7 +13,9 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.api.dto.MediaDTO;
 import eu.etaxonomy.cdm.api.dto.SequenceDTO;
+import eu.etaxonomy.cdm.api.dto.SingleReadAlignmentDTO;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
 
 /**
  * Loader for {@link SequenceDTO}s. Extracted from DTO class.
@@ -46,7 +48,10 @@ public class SequenceDtoLoader {
         dto.setGeneticAccessionNumber(seq.getGeneticAccessionNumber());
         dto.setBoldProcessId(seq.getBoldProcessId());
 
-        dto.setSingleReadAlignments(seq.getSingleReadAlignments());
+        for (SingleReadAlignment alignment : seq.getSingleReadAlignments()) {
+            SingleReadAlignmentDTO alignmentDto = SingleReadAlignmentDtoLoader.INSTANCE().fromEntity(alignment);
+            dto.addSingleReadAlignment(alignmentDto);
+        }
 
         if (seq.getDnaMarker() != null){
             dto.setDnaMarker(seq.getDnaMarker().getLabel());

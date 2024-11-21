@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
 
 /**
  * @author k.luther
@@ -36,7 +35,7 @@ public class SequenceDTO implements Serializable{
     private String boldProcessId;
 
     //TODO DTO remove model
-    private Set<SingleReadAlignment> singleReadAlignments = new HashSet<>();
+    private Set<SingleReadAlignmentDTO> singleReadAlignments = new HashSet<>();
 
     private String dnaMarker;
 
@@ -121,13 +120,15 @@ public class SequenceDTO implements Serializable{
         this.boldProcessId = boldProcessId;
     }
 
-    public Set<SingleReadAlignment> getSingleReadAlignments() {
+    public Set<SingleReadAlignmentDTO> getSingleReadAlignments() {
         return singleReadAlignments;
     }
-    public void setSingleReadAlignments(Set<SingleReadAlignment> singleReadAlignments) {
+    public void addSingleReadAlignment(SingleReadAlignmentDTO singleReadAlignment) {
+        singleReadAlignments.add(singleReadAlignment);
+    }
+    public void setSingleReadAlignments(Set<SingleReadAlignmentDTO> singleReadAlignments) {
         this.singleReadAlignments = singleReadAlignments;
     }
-
 
     public String getDnaMarker() {
         return dnaMarker;
