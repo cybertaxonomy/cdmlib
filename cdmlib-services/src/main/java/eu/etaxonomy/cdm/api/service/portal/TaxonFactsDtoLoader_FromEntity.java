@@ -143,8 +143,8 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    public TaxonFactsDtoLoader_FromEntity(ICdmRepository repository, ICdmGenericDao dao
-            , IGeoServiceAreaMapping areaMapping) {
+    public TaxonFactsDtoLoader_FromEntity(ICdmRepository repository, ICdmGenericDao dao,
+            IGeoServiceAreaMapping areaMapping) {
         super(repository, dao, areaMapping);
     }
 
