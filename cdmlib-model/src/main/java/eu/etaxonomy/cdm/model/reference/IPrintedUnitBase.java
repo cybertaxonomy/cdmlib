@@ -42,4 +42,11 @@ public interface IPrintedUnitBase extends IAuthoredPublicationBase, ISection, IV
 	 */
 	public void setEditor(String editor);
 
+    /**
+     * If true, the {@link #getAuthorship() author} is the editor
+     * and should be formatted accordingly. See #7987
+     */
+    public boolean isAuthorIsEditor();
+    public void setAuthorIsEditor(boolean authorIsEditor);
+
 }
