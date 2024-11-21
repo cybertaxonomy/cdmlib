@@ -505,12 +505,14 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
         //
         String nameStr = "Dactylorhiza \u00D7incarnata nothosubsp. versicolor";
+        String expected = "Dactylorhiza \u00D7\u202Fincarnata nothosubsp. versicolor";
+
         name1 = parser.parseFullName(nameStr);
         assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
         assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
         assertFalse("Name must not be protected", name1.isProtectedTitleCache());
-        assertEquals(nameStr, name1.getTitleCache());  //we expect the cache strategy to create the same result
+        assertEquals(expected, name1.getTitleCache());  //we expect the cache strategy to create the same result
 
         nameStr = "Dactylorhiza \u00D7incarnata nothosubsp. versicolor";
         name1 = parser.parseFullName(nameStr);
@@ -518,7 +520,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
         assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
         assertFalse("Name must not be protected", name1.isProtectedTitleCache());
-        assertEquals(nameStr, name1.getTitleCache());  //we expect the cache strategy to create the same result
+        assertEquals(expected, name1.getTitleCache());  //we expect the cache strategy to create the same result
 
         //nothovar.
         nameStr = "Dactylorhiza incarnata nothovar. versicolor";
@@ -531,24 +533,25 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
         //hybrid autonym #6656
         nameStr = "Ophrys \u00D7kastelli E. Klein nothosubsp. kastelli";
+        expected = "Ophrys \u00D7\u202Fkastelli E. Klein nothosubsp. kastelli";
         name1 = parser.parseFullName(nameStr);
         assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
         assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
         assertFalse("Name must not be protected", name1.isProtectedTitleCache());
-        assertEquals(nameStr, name1.getTitleCache()); //we expect the cache strategy to create the same result
+        assertEquals(expected, name1.getTitleCache()); //we expect the cache strategy to create the same result
 
         name1 = parser.parseReferencedName(nameStr);
         assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
         assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
         assertFalse("Name must not be protected", name1.isProtectedTitleCache());
-        assertEquals(nameStr, name1.getTitleCache()); //we expect the cache strategy to create the same result
+        assertEquals(expected, name1.getTitleCache()); //we expect the cache strategy to create the same result
 
         //remove space since #7094
         parser.setRemoveSpaceAfterDot(true);
         name1 = parser.parseReferencedName(nameStr);
-        assertEquals(nameStr.replace("E. Kl", "E.Kl"), name1.getTitleCache()); //we expect the cache strategy to create the same result
+        assertEquals(expected.replace("E. Kl", "E.Kl"), name1.getTitleCache()); //we expect the cache strategy to create the same result
         parser.setRemoveSpaceAfterDot(false);
     }
 
@@ -3260,7 +3263,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         name = parser.parseFullName(nameStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         //TODO may become ... Alonso & al. again in future
-        assertEquals("Thymus \u00D7herberoi De la Torre, Vicedo, Alonso & Paya", name.getTitleCache());
+        assertEquals("Thymus \u00D7\u202Fherberoi De la Torre, Vicedo, Alonso & Paya", name.getTitleCache());
         assertEquals("De la Torre, Vicedo, Alonso & Paya",
                 name.getCombinationAuthorship().getTitleCache());
         assertEquals("De la Torre, Vicedo, Alonso & Paya",

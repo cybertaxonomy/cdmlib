@@ -262,15 +262,15 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         speciesName.setBinomHybrid(true);
         speciesName.setTitleCache(null, false);
-        Assert.assertEquals("Should be Abies \u00D7alba L.", "Abies \u00D7alba L.", speciesName.getTitleCache());
+        Assert.assertEquals("Should be Abies \u00D7\u202Falba L.", "Abies \u00D7\u202Falba L.", speciesName.getTitleCache());
         speciesName.setMonomHybrid(true);
         speciesName.setTitleCache(null, false);
-        Assert.assertEquals("Should be '\u00D7Abies \u00D7alba L.'", "\u00D7Abies \u00D7alba L.", speciesName.getTitleCache());
+        Assert.assertEquals("Should be '\u00D7\u202FAbies \u00D7\u202Falba L.'", "\u00D7\u202FAbies \u00D7\u202Falba L.", speciesName.getTitleCache());
 
         Assert.assertEquals("Should be 'Genus'", "Genus", genusName.getTitleCache());
         genusName.setMonomHybrid(true);
         genusName.setTitleCache(null, false);
-        Assert.assertEquals("Should be '\u00D7Genus'", "\u00D7Genus", genusName.getTitleCache());
+        Assert.assertEquals("Should be '\u00D7\u202FGenus'", "\u00D7\u202FGenus", genusName.getTitleCache());
 
         Assert.assertEquals("Should be 'Abies alba subsp. beta'", subSpeciesNameString, subSpeciesName.getTitleCache());
         subSpeciesName.setTrinomHybrid(true);
@@ -278,7 +278,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Should be 'Abies alba nothosubsp. beta or nbeta'", "Abies alba nothosubsp. beta", subSpeciesName.getTitleCache());
         subSpeciesName.setMonomHybrid(true);
         subSpeciesName.setTitleCache(null, false);
-        Assert.assertEquals("Should be '\u00D7Abies alba nothosubsp. beta'", "\u00D7Abies alba nothosubsp. beta", subSpeciesName.getTitleCache());
+        Assert.assertEquals("Should be '\u00D7\u202FAbies alba nothosubsp. beta'", "\u00D7\u202FAbies alba nothosubsp. beta", subSpeciesName.getTitleCache());
 
         Assert.assertEquals("Should be 'Genus subg. InfraGenericPart'", "Genus subg. InfraGenericPart", subGenusName.getTitleCache());
         subGenusName.setBinomHybrid(true);
@@ -354,7 +354,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Abies alba 'Cultus'", strategy.getTitleCache(speciesName));
 
         speciesName.setBinomHybrid(true);
-        Assert.assertEquals("Abies \u00D7alba 'Cultus'", strategy.getTitleCache(speciesName));
+        Assert.assertEquals("Abies \u00D7\u202Falba 'Cultus'", strategy.getTitleCache(speciesName));
 
         speciesName.setBinomHybrid(false);
         speciesName.setSpecificEpithet(null);
@@ -851,7 +851,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         name.setBinomHybrid(true);
         name.setTrinomHybrid(true);
 
-        String expected = String.format("Ophrys %skastelli E. Klein nothosubsp. kastelli", UTF8.HYBRID.toString());
+        String expected = String.format("Ophrys %skastelli E. Klein nothosubsp. kastelli", UTF8.HYBRID_SPACE.toString());
         Assert.assertEquals("", expected, name.getTitleCache());
     }
 

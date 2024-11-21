@@ -21,6 +21,7 @@ public enum UTF8 {
 	SPATIUM("\u202F"),   //very short non-breaking space
 	EN_DASH_SPATIUM("\u202F\u2013\u202F"),
 	HYBRID ("\u00D7"),   // hybrid sign
+	HYBRID_SPACE ("\u00D7\u202F"),   // hybrid sign
 	SHARP_S("\u00DF"),
     a_UMLAUT("\u00E4"),   //small a umlaut, latin small letter a with diaeresis
 	O_UMLAUT("\u00F6"),   //small o umlaut, latin small letter o with diaeresis
@@ -49,7 +50,7 @@ public enum UTF8 {
 	ACUTE_ACCENT("\u00B4"),     //´ Acute Accent, looks a bit similar to the single quotation mark
 	BLACK_CIRCLE("\u25CF"),       //Black circle, symbol for endemic
 	DEGREE_SIGN("\u00B0"),      //°
-	NARROW_NO_BREAK("\u202F")
+	NARROW_NO_BREAK("\u202F")   //narrow space that does not break, as used after the hybrid sign
 	;
 
 	private String value;

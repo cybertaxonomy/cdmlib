@@ -795,7 +795,7 @@ public class TaxonNameDefaultCacheStrategy
      */
     private void addHybridPrefix(List<TaggedText> tags) {
         tags.add(new TaggedText(TagEnum.hybridSign, NonViralNameParserImplRegExBase.hybridSign));
-        tags.add(new TaggedText(TagEnum.separator, "")); //no whitespace separator
+        tags.add(new TaggedText(TagEnum.separator, UTF8.NARROW_NO_BREAK.toString())); //narrow whitespace separator, see #10479
     }
 
     /**

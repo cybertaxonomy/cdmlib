@@ -1213,14 +1213,14 @@ public class NonViralNameParserImpl
 		boolean isUninomialHybrid = uninomial.startsWith(hybridSign);
 		if (isUninomialHybrid){
 			nameToBeFilled.setMonomHybrid(true);
-			nameToBeFilled.setGenusOrUninomial(uninomial.replace(hybridSign, ""));
+			nameToBeFilled.setGenusOrUninomial(uninomial.replace(hybridSign, "").trim());
 		}
 		//infrageneric
 		String infrageneric = CdmUtils.Nz(nameToBeFilled.getInfraGenericEpithet());
 		boolean isInfraGenericHybrid = infrageneric.startsWith(hybridSign);
 		if (isInfraGenericHybrid){
 			nameToBeFilled.setBinomHybrid(true);
-			nameToBeFilled.setInfraGenericEpithet(infrageneric.replace(hybridSign, ""));
+			nameToBeFilled.setInfraGenericEpithet(infrageneric.replace(hybridSign, "").trim());
 		}
 		//species Epi
 		String speciesEpi = CdmUtils.Nz(nameToBeFilled.getSpecificEpithet());
@@ -1231,16 +1231,15 @@ public class NonViralNameParserImpl
 			}else{
 				nameToBeFilled.setTrinomHybrid(true);
 			}
-			nameToBeFilled.setSpecificEpithet(speciesEpi.replace(hybridSign, ""));
+			nameToBeFilled.setSpecificEpithet(speciesEpi.replace(hybridSign, "").trim());
 		}
 		//infra species
 		String infraSpeciesEpi = CdmUtils.Nz(nameToBeFilled.getInfraSpecificEpithet());
 		boolean isInfraSpeciesHybrid = infraSpeciesEpi.startsWith(hybridSign);
 		if (isInfraSpeciesHybrid){
 			nameToBeFilled.setTrinomHybrid(true);
-			nameToBeFilled.setInfraSpecificEpithet(infraSpeciesEpi.replace(hybridSign, ""));
+			nameToBeFilled.setInfraSpecificEpithet(infraSpeciesEpi.replace(hybridSign, "").trim());
 		}
-
 	}
 
 	private String removeHybridBlanks(String fullNameString) {
