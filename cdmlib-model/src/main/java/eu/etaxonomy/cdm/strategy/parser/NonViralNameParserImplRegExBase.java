@@ -234,7 +234,9 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String softVolNoAuthorRefTitle = referenceTitleWithoutAuthor + "(" + volumeSeparator +  volume + ")?";
 
     protected static String pBookReference = softEditionVolRefTitle;
-    protected static String pBookSectionReference = authorTeam + referenceAuthorSeparator + softEditionVolRefTitle;
+    protected static String eds = "(\\(" + fWs + "[eE][dD][sS]?\\.?\\))";
+    protected static String edsOp = eds + "?";
+    protected static String pBookSectionReference = authorTeam + edsOp + referenceAuthorSeparator + softEditionVolRefTitle;
     protected static String pArticleReference = pVolRefTitle;
     protected static String pSoftArticleReference = softVolNoAuthorRefTitle;
 
@@ -388,4 +390,6 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern anyZooFullNamePattern = Pattern.compile(anyZooFullName);
 
     protected static Pattern spNovPattern = Pattern.compile(spNov);
+    protected static Pattern authorSepPattern = Pattern.compile("^" + authorTeam + edsOp + referenceAuthorSeparator);
+
 }

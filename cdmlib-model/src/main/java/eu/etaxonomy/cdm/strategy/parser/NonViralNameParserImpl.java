@@ -812,17 +812,23 @@ public class NonViralNameParserImpl
 	private Reference parseBookSection(String reference){
 		Reference result = ReferenceFactory.newBookSection();
 
-		Pattern authorPattern = Pattern.compile("^" + authorTeam + referenceAuthorSeparator);
-		Matcher authorMatcher = authorPattern.matcher(reference);
+		Matcher authorMatcher = authorSepPattern.matcher(reference);
 		boolean find = authorMatcher.find();
 		if (find){
 			String authorString = authorMatcher.group(0).trim();
 			String bookString = reference.substring(authorString.length()).trim();
 			authorString = authorString.substring(0, authorString.length() -1);
 
+			boolean authorIsEditor = false;
+			if (authorString.matches(".*" + eds + "$")) {
+			    authorString = authorString.replaceFirst(eds+"$", "");
+			    authorIsEditor = true;
+			}
+
 			TeamOrPersonBase<?> authorTeam = author(authorString);
 			IBook inBook = parseBook(bookString);
 			inBook.setAuthorship(authorTeam);
+			inBook.setAuthorIsEditor(authorIsEditor);
 			result.setInBook(inBook);
 		}else{
 			logger.warn("Unexpected non matching book section author part");
