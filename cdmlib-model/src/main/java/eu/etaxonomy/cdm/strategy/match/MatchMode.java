@@ -71,7 +71,7 @@ public enum MatchMode {
 
     private MatchResult matchCache(Object obj1, Object obj2, String fieldName) {
         if (StringUtils.isBlank((String)obj1)){
-            return MatchResult.NewInstance(fieldName, this,obj1, obj2);
+            return MatchResult.NewInstance(fieldName, this, obj1, obj2);
         }else{
             return matchesEqualRequired(obj1, obj2, fieldName);
         }

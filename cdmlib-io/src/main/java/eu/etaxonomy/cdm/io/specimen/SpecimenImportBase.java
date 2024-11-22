@@ -196,13 +196,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         return acceptedTaxon;
     }
 
-    /**
-     * @param state
-     * @param acceptedTaxon
-     */
     private void checkAllAuthors(STATE state, Taxon acceptedTaxon) {
         //combination author
-        TeamOrPersonBase author = acceptedTaxon.getName().getCombinationAuthorship();
+        TeamOrPersonBase<?> author = acceptedTaxon.getName().getCombinationAuthorship();
         acceptedTaxon.getName().setCombinationAuthorship(checkAuthor(state, author));
         //basionym author
         author = acceptedTaxon.getName().getBasionymAuthorship();
@@ -215,18 +211,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         acceptedTaxon.getName().setExBasionymAuthorship(checkAuthor(state, author));
     }
 
-    /**
-     * @param state
-     * @param acceptedTaxon
-     * @param author
-     */
-    private TeamOrPersonBase checkAuthor(STATE state, TeamOrPersonBase author) {
+    private TeamOrPersonBase<?> checkAuthor(STATE state, TeamOrPersonBase<?> author) {
         try {
             if (author != null) {
                 if (state.getPersonStore().containsKey(author.getTitleCache())) {
-                    return (TeamOrPersonBase) state.getPersonStore().get(author.getTitleCache());
+                    return (TeamOrPersonBase<?>) state.getPersonStore().get(author.getTitleCache());
                 }
-                List<TeamOrPersonBase> agents = getCommonService().findMatching(author, MatchStrategyFactory.NewParsedTeamOrPersonInstance());
+                List<TeamOrPersonBase<?>> agents = getCommonService().findMatching(author, MatchStrategyFactory.NewParsedTeamOrPersonInstance());
                 if (agents.size()>0) {
                     author = agents.get(0);
                     state.getPersonStore().put(agents.get(0).getTitleCache(), agents.get(0));
@@ -262,7 +253,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
     protected void findMatchingCollectorAndFillPersonStore(Abcd206ImportState state, TeamOrPersonBase<?> teamOrPerson) {
         if (!state.getPersonStore().containsKey(teamOrPerson.getCollectorTitleCache())) {
-            List<TeamOrPersonBase> agents = new ArrayList<>();
+            List<TeamOrPersonBase<?>> agents = new ArrayList<>();
             if(teamOrPerson instanceof Person) {
                 try {
                     Person person = (Person)teamOrPerson;
@@ -272,7 +263,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                     state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
                 }
                 if (agents.size()>0) {
-                    TeamOrPersonBase agent = agents.get(0);
+                    TeamOrPersonBase<?> agent = agents.get(0);
                     if (agent instanceof Person && teamOrPerson instanceof Person) {
                         Person person = (Person)agent;
                         teamOrPerson = person;
@@ -291,7 +282,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                     agents = getCommonService().findMatching(team1, MatchStrategyFactory.NewParsedCollectorTeamInstance());
                 } catch (MatchException e) {
                     state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
-
                 }
                 if (agents.size()== 0) {
                     Team teamNew = (Team)teamOrPerson;
@@ -304,7 +294,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                             state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
                         }
                         if (agents.size()>0) {
-                            TeamOrPersonBase agent = agents.get(0);
+                            TeamOrPersonBase<?> agent = agents.get(0);
                             if (agent instanceof Person && member instanceof Person) {
                                 Person person = (Person)agent;
                                 alreadyExistingMembers.add(person);
@@ -316,7 +306,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                         }else {
                             state.getPersonStore().put(member.getCollectorTitleCache(), member);
                         }
-//
                     }
                     teamNew.getTeamMembers().removeAll(membersToDelete);
                     teamNew.getTeamMembers().addAll(alreadyExistingMembers);
@@ -338,7 +327,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                             }
                         }
                     }
-
                 }
             }
             if (logger.isDebugEnabled()) {

@@ -339,7 +339,7 @@ public class MatchStrategyFactory {
 
         addParsedIdentifiableEntityModes(matchStrategy);
 
-        //TODO contact does not yet works, also not with EQUAL_OR_ONE_NULL, leads to agent.id=? or agent.id is null query
+        //TODO contact does not yet work, also not with EQUAL_OR_ONE_NULL, leads to agent.id=? or agent.id is null query
         //better should be even handled with MATCH.Equal_OR_ONE_NULL
         String[] equalOrNullParams = new String[]{};
         for(String param : equalOrNullParams){
