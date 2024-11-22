@@ -251,51 +251,57 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         return null;
     }
 
+    //TODO is this method tested in any test?
     protected void findMatchingCollectorAndFillPersonStore(Abcd206ImportState state, TeamOrPersonBase<?> teamOrPerson) {
         if (!state.getPersonStore().containsKey(teamOrPerson.getCollectorTitleCache())) {
-            List<TeamOrPersonBase<?>> agents = new ArrayList<>();
             if(teamOrPerson instanceof Person) {
+                List<Person> existingPersons = new ArrayList<>();
                 try {
                     Person person = (Person)teamOrPerson;
+                    //TODO what is this call for?
                     person.getCollectorTitleCache();
-                    agents = getCommonService().findMatching(teamOrPerson, MatchStrategyFactory.NewParsedCollectorPersonInstance());
+                    existingPersons = getCommonService().findMatching(person, MatchStrategyFactory.NewParsedCollectorPersonInstance());
                 } catch (MatchException e) {
                     state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
                 }
-                if (agents.size()>0) {
-                    TeamOrPersonBase<?> agent = agents.get(0);
-                    if (agent instanceof Person && teamOrPerson instanceof Person) {
-                        Person person = (Person)agent;
-                        teamOrPerson = person;
-                        state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
-                        state.getPersonStore().put(person.getCollectorTitleCache(), HibernateProxyHelper.deproxy(person, Person.class));
-                        state.getPersonStore().put(person.getTitleCache(), HibernateProxyHelper.deproxy(person, Person.class));
-                     }
+                //TODO here we should try to find the best matching person. A best matching person is defined
+                //     as a person that has the least deviations. E.g. if both have family name null
+                //     this is a better match than if the existing person has a family name.
+                if (existingPersons.size()>0) {
+                    Person person = CdmBase.deproxy(existingPersons.get(0));
+                    //TODO why do you set person = teamOrPerson here?
+                    teamOrPerson = person;
+                    state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
+                    state.getPersonStore().put(person.getCollectorTitleCache(), person);
+                    state.getPersonStore().put(person.getTitleCache(), person);
                 }
             }else if (teamOrPerson instanceof Team){
+                List<Team> existingTeams = new ArrayList<>();
                 try {
                     Team team1 = (Team)teamOrPerson;
+                    //TODO what are these calls for? Even if you want to initialize the team.cache you don't need to call each individual person as this is done by the team formatter already.
                     for (Person person: team1.getTeamMembers()) {
                         person.getCollectorTitleCache();
                     }
                     team1.getCollectorTitleCache();
-                    agents = getCommonService().findMatching(team1, MatchStrategyFactory.NewParsedCollectorTeamInstance());
+                    existingTeams = getCommonService().findMatching(team1, MatchStrategyFactory.NewParsedCollectorTeamInstance());
                 } catch (MatchException e) {
                     state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
                 }
-                if (agents.size()== 0) {
+                if (existingTeams.size()== 0) {
                     Team teamNew = (Team)teamOrPerson;
                     Set<Person> alreadyExistingMembers = new HashSet<>();
                     Set<Person> membersToDelete = new HashSet<>();
                     for (Person member: teamNew.getTeamMembers()) {
+                        List<Person> existingPersons = new ArrayList<>();
                         try {
-                            agents = getCommonService().findMatching(member, MatchStrategyFactory.NewParsedCollectorPersonInstance());
+                            existingPersons = getCommonService().findMatching(member, MatchStrategyFactory.NewParsedCollectorPersonInstance());
                         } catch (MatchException e) {
                             state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
                         }
-                        if (agents.size()>0) {
-                            TeamOrPersonBase<?> agent = agents.get(0);
-                            if (agent instanceof Person && member instanceof Person) {
+                        if (existingPersons.size()>0) {
+                            TeamOrPersonBase<?> agent = existingPersons.get(0);
+                            if (agent instanceof Person) {
                                 Person person = (Person)agent;
                                 alreadyExistingMembers.add(person);
                                 membersToDelete.add(member);
@@ -313,18 +319,16 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                     state.getPersonStore().put(teamNew.getTitleCache(), teamNew);
 
                 }else {
-                    if (agents.get(0) instanceof Team) {
-                        Team agent = (Team)agents.get(0);
-                        teamOrPerson = agent;
-                        state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + agent.getCollectorTitleCache() + " UUID: " + agent.getUuid());
-                        state.getPersonStore().put(agent.getCollectorTitleCache(), HibernateProxyHelper.deproxy(agent, Team.class));
-                        state.getPersonStore().put(agent.getTitleCache(), HibernateProxyHelper.deproxy(agent, Team.class));
+                    Team team = CdmBase.deproxy(existingTeams.get(0));
+                    state.getReport().addInfoMessage("Matching " + team.getCollectorTitleCache() + " to existing " + team.getCollectorTitleCache() + " UUID: " + team.getUuid());
+                    state.getPersonStore().put(team.getCollectorTitleCache(), team);
+                    state.getPersonStore().put(team.getTitleCache(), team);
 
-                        for (Person member: agent.getTeamMembers()) {
-                            if (!state.getPersonStore().containsKey(member.getTitleCache())) {
-                                state.getPersonStore().put(member.getCollectorTitleCache(), HibernateProxyHelper.deproxy(member, Person.class));
-                                state.getPersonStore().put(member.getTitleCache(), HibernateProxyHelper.deproxy(member, Person.class));
-                            }
+                    for (Person member: team.getTeamMembers()) {
+                        member = CdmBase.deproxy(member);
+                        if (!state.getPersonStore().containsKey(member.getTitleCache())) {
+                            state.getPersonStore().put(member.getCollectorTitleCache(), member);
+                            state.getPersonStore().put(member.getTitleCache(), member);
                         }
                     }
                 }
