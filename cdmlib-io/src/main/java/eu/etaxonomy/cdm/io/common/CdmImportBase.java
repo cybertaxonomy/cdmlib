@@ -1557,9 +1557,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         return null;
     }
 
-	public static TeamOrPersonBase<?> parseCollectorString(String authorName){
+	public static TeamOrPersonBase<?> parseCollectorString(String collectorStr){
         TeamOrPersonBase<?> author = null;
-        String[] teamMembers = authorName.split(authorSeparator);
+        String[] teamMembers = collectorStr.split(authorSeparator);
         String lastMember;
         String[] lastMembers;
         Person teamMember;
@@ -1584,7 +1584,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             }
 
         } else {
-            teamMembers = authorName.split(lastAuthorSeparator);
+            teamMembers = collectorStr.split(lastAuthorSeparator);
             if (teamMembers.length>1){
                 author = Team.NewInstance();
                 for(String member:teamMembers){
@@ -1594,9 +1594,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
                 }
             }else{
-                if (isNotBlank(authorName)){
+                if (isNotBlank(collectorStr)){
                     author = Person.NewInstance();
-                    ((Person)author).setCollectorTitle(authorName);
+                    ((Person)author).setCollectorTitle(collectorStr);
                 }else{
                     return null;
                 }

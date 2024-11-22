@@ -42,10 +42,10 @@ public class MatchStrategyFactory {
             //FIXME adapt for inRef authors
             parsedPersonMatchStrategy.setMatchMode("familyName", MatchMode.EQUAL_OR_FIRST_NULL);
 
-            //TODO lifespan may implement MATCH_OR_ONE_NULL
-            String[] equalOrNullParams = new String[]{"collectorTitle","givenName","initials",
+            //TODO lifespan may implement MATCH_OR_FIRST_NULL
+            String[] equalOrFirstNullParams = new String[]{"collectorTitle","givenName","initials",
                     "lifespan","orcid","prefix","suffix","wikiDataItemId"};
-            for(String param : equalOrNullParams){
+            for(String param : equalOrFirstNullParams){
                 parsedPersonMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
             }
 
