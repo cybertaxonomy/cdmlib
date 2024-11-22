@@ -150,10 +150,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         }
                         state.addImportReference(state.getRef());
                     }
-
                 }
             }
-            // }
 
             save(state.getRef(), state);
             state.getConfig().setSourceReference(state.getRef());
@@ -162,9 +160,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 // load classification from config if it exists
                 state.setClassification(getClassificationService().load(state.getConfig().getClassificationUuid()));
             }
-            if (state.getClassification() == null) {// no existing
-                                                    // classification was set in
-                                                    // config
+            if (state.getClassification() == null) {// no existing classification was
+                                                    // set in config
                 List<Classification> classificationList = getClassificationService().list(Classification.class, null,
                         null, null, null);
                 // get classification via user interaction
@@ -546,10 +543,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     }
                 }
                 if (team != null){
-                    unitsGatheringEvent.setCollector(team,
-                            config);
+                    unitsGatheringEvent.setCollector(team, config);
                 }
-
 
             } else {
                 TeamOrPersonBase team = state.getPersonStore().get(state.getDataHolder().gatheringAgentsList.toString());
@@ -561,8 +556,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                 }
                 if (team != null){
-                    unitsGatheringEvent.setCollector(team,
-                            config);
+                    unitsGatheringEvent.setCollector(team, config);
                 }
             }
             // count
@@ -659,8 +653,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
 
 
-
-
             // derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
             // TODO exsiccatum
 
@@ -674,8 +666,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
 
             save(unitsGatheringEvent.getLocality(), state);
-
-
 
 
             // //add Multimedia URLs
@@ -708,7 +698,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-
                 }
             }
             // multimedia for fieldUnit
@@ -726,10 +715,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-
                 }
             }
-
 
             if (derivedUnitFacade.getFieldUnit(false) != null) {
                 state.setFieldUnit(derivedUnitFacade.getFieldUnit(false));
@@ -1315,13 +1302,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             + state.getDataHolder().gatheringAgentsList.toString());
                 }
             }
-
         }
-
-
     }
-
-
 
     @Override
     protected boolean doCheck(Abcd206ImportState state) {
