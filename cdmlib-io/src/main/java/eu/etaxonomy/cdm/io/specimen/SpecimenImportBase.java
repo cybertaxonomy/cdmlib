@@ -385,6 +385,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 }
             }
         }
+
         if (acceptedInClassification.isEmpty() && state.getClassification() != null) {
             String message = String.format("No taxon was found for %s, in classification "+  state.getClassification().getTitleCache(), scientificName);
             state.getReport().addInfoMessage(message);
@@ -404,27 +405,24 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 if (state.getConfig().getNomenclaturalCode() == null) {
                     name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
                 }else if (state.getConfig().getNomenclaturalCode().equals(NomenclaturalCode.ICNAFP)) {
-
                     name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
                 }else if (state.getConfig().getNomenclaturalCode().equals(NomenclaturalCode.ICZN)) {
                     name = TaxonNameFactory.PARSED_ZOOLOGICAL(scientificName);
                 }else {
                     name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
                 }
-
             }
+
             if (name!= null) {
                 acceptedInClassification.add(Taxon.NewInstance(name, null));
             }
-
         }
+
         if (state.getClassification() == null && !acceptedNotInClassification.isEmpty()) {
             return acceptedNotInClassification.get(0);
         }
 
-
         return acceptedInClassification.get(0);
-
     }
 
 	/**

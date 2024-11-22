@@ -41,10 +41,6 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBase, STATE extends SpecimenImportStateBase>
         extends ImportStateBase<CONFIG , CdmImportBase<CONFIG , STATE >>{
 
-    public SpecimenImportStateBase(CONFIG config) {
-        super(config);
-    }
-
     private TransactionStatus tx;
 
     private ICdmRepository cdmRepository;
@@ -74,6 +70,12 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     private Map<String, Reference> importReferences = new HashMap<>();
     private URI actualAccessPoint;
     private Set<URI> allAccesPoints = new HashSet<>();
+
+// ******************* CONSTRUCTOR ******************/
+
+    public SpecimenImportStateBase(CONFIG config) {
+        super(config);
+    }
 
 // ************************* Getter/Setter **************/
 

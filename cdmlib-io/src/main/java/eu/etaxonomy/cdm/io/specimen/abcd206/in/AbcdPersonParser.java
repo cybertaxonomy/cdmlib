@@ -21,23 +21,18 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 /**
  * @author pplitzner
  * @since 16.06.2015
- *
  */
 public class AbcdPersonParser {
 
     private final String prefix;
-
     private final SpecimenImportReport report;
-
     private final ICdmRepository cdmAppController;
-
 
     public AbcdPersonParser(String prefix, SpecimenImportReport report, ICdmRepository cdmAppController) {
         this.prefix = prefix;
         this.report = report;
         this.cdmAppController = cdmAppController;
     }
-
 
     public AgentBase<?> parse(Element item) {
         AgentBase<?> agentBase = null;
@@ -54,6 +49,4 @@ public class AbcdPersonParser {
         }
         return agentBase;
     }
-
-
 }

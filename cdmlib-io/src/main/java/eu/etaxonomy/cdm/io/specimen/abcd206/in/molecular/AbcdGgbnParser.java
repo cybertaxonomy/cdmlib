@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 /**
  * @author pplitzner
  * @since Mar 4, 2015
- *
  */
 public class AbcdGgbnParser {
 
@@ -145,7 +144,6 @@ public class AbcdGgbnParser {
 
         NodeList qualityRemarksList = element.getElementsByTagName(prefix+"qualityRemarks");
 
-
         return dnaQuality;
     }
 
@@ -159,9 +157,7 @@ public class AbcdGgbnParser {
             NodeList gelLadderList = gelImage.getElementsByTagName("gelLadder");
             NodeList gelStainList = gelImage.getElementsByTagName("gelStain");
             NodeList gelRemarksList = gelImage.getElementsByTagName("gelRemarks");
-
         }
-
     }
 
     private void parseAmplifications(NodeList amplificationsList, DnaSample dnaSample, Abcd206ImportState state) {
@@ -222,7 +218,6 @@ public class AbcdGgbnParser {
                         }
                     }
 
-
                     parseAmplificationPrimers(amplificationElement.getElementsByTagName(prefix+"AmplificationPrimers"));
                 }
             }
@@ -239,7 +234,6 @@ public class AbcdGgbnParser {
 
     private void parseAmplificationPrimers(NodeList elementsByTagName) {
         // TODO Auto-generated method stub
-
     }
 
     private void parseAmplificationSequencings(Element sequencings, Amplification amplification, AmplificationResult amplificationResult, DnaSample dnaSample, Abcd206ImportState state) {
@@ -399,9 +393,7 @@ public class AbcdGgbnParser {
                 //genetic accession number uri
                 NodeList geneticAccessionNumberUriList = ((Element)geneticAccessionList.item(i)).getElementsByTagName(prefix+"geneticAccessionNumberURI");
                 //TODO: this is different from the geneticAccessionNumber
-
             }
         }
     }
-
 }

@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.model.term.IdentifierType;
 /**
  * @author pplitzner
  * @since 15.06.2015
- *
  */
 public class AbcdDnaParser {
 
@@ -135,7 +134,6 @@ public class AbcdDnaParser {
         for(int i=0;i<sampleDesignationList.getLength();i++){
             dnaSample.addIdentifier(sampleDesignationList.item(i).getTextContent(), (IdentifierType)cdmAppController.getTermService().find(IdentifierType.uuidSampleDesignation));
         }
-
     }
 
     private AgentBase<?> parsePreparationAgent(Element item) {
@@ -162,9 +160,4 @@ public class AbcdDnaParser {
             }
         }
     }
-
-
-
-
-
 }

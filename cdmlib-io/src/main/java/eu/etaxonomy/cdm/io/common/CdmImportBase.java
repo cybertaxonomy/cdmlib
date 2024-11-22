@@ -1537,11 +1537,8 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         return null;
     }
 
-
 	/**
 	 * Returns <code>null</code> for all blank strings. Identity function otherwise.
-	 * @param str
-	 * @return
 	 */
 	protected String NB(String str) {
 		if (isBlank(str)){
@@ -1550,12 +1547,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			return str;
 		}
 	}
-
-	@Override
-    public byte[] getByteArray() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 	public static TeamOrPersonBase<?> parseCollectorString(String collectorStr){
         TeamOrPersonBase<?> author = null;

@@ -3,7 +3,6 @@
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
@@ -16,9 +15,6 @@ import eu.etaxonomy.cdm.api.application.ICdmRepository;
  */
 public interface ICdmImport<CONFIG extends IImportConfigurator, STATE extends ImportStateBase>
             extends ICdmIO<STATE>{
-
-
-    public byte[] getByteArray();
 
     public abstract void invoke(STATE state);
 
