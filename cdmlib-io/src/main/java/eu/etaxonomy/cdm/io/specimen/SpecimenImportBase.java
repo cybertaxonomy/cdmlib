@@ -89,6 +89,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	private static final String COLON = ":";
 
+    private final static String authorSeparator = ", ";
+    private final static String lastAuthorSeparator = " & ";
+
 	protected Map<String, DefinedTerm> kindOfUnitsMap;
 
 
@@ -1561,5 +1564,53 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 }catch(NullPointerException e){logger.warn("null pointer problem (no ref?) with "+osb);}
             }
         }
+    }
+
+
+    public static TeamOrPersonBase<?> parseCollectorString(String collectorStr){
+        TeamOrPersonBase<?> author = null;
+        String[] teamMembers = collectorStr.split(authorSeparator);
+        if (teamMembers.length>1){
+            String lastMember = teamMembers[teamMembers.length -1];
+            String[] lastMembers = lastMember.split(lastAuthorSeparator);
+            teamMembers[teamMembers.length -1] = "";
+            author = Team.NewInstance();
+            for(String member:teamMembers){
+                if (!member.equals("")){
+                    Person teamMember = Person.NewInstance();
+                    teamMember.setCollectorTitle(member);
+                   ((Team)author).addTeamMember(teamMember);
+                }
+            }
+            if (lastMembers != null){
+                for(String member:lastMembers){
+                   Person teamMember = Person.NewInstance();
+                   teamMember.setCollectorTitle(member);
+                   ((Team)author).addTeamMember(teamMember);
+                }
+            }
+
+        } else {
+            teamMembers = collectorStr.split(lastAuthorSeparator);
+            if (teamMembers.length>1){
+                author = Team.NewInstance();
+                for(String member:teamMembers){
+                  Person teamMember = Person.NewInstance();
+                  teamMember.setCollectorTitle(member);
+                  ((Team)author).addTeamMember(teamMember);
+
+                }
+            }else{
+                if (isNotBlank(collectorStr)){
+                    author = Person.NewInstance();
+                    ((Person)author).setCollectorTitle(collectorStr);
+                }else{
+                    return null;
+                }
+
+            }
+        }
+        author.getTitleCache();
+        return author;
     }
 }
