@@ -268,8 +268,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         if (!(state.getPersonStore().containsKey(teamOrPerson.getCollectorTitleCache()) || state.getTeamStore().containsKey(teamOrPerson.getCollectorTitleCache()))) {
             if(teamOrPerson instanceof Person) {
                 List<Person> existingPersons = new ArrayList<>();
+                Person person = (Person)teamOrPerson;
                 try {
-                    Person person = (Person)teamOrPerson;
                     existingPersons = getCommonService().findMatching(person, MatchStrategyFactory.NewParsedCollectorPersonInstance());
                 } catch (MatchException e) {
                     state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
@@ -278,12 +278,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 //     as a person that has the least deviations. E.g. if both have family name null
                 //     this is a better match than if the existing person has a family name.
                 if (existingPersons.size()>0) {
-                    Person person = CdmBase.deproxy(existingPersons.get(0));
+                    person = CdmBase.deproxy(existingPersons.get(0));
                     state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
-                    state.getPersonStore().put(person.getCollectorTitleCache(), person);
-                    //TODO why is it necessary to also store by titleCache? Aren't we only interested in matching collector titles here?
-                    state.getPersonStore().put(person.getTitleCache(), person);
                 }
+                state.getPersonStore().put(person.getCollectorTitleCache(), person);
+                //TODO why is it necessary to also store by titleCache? Aren't we only interested in matching collector titles here?
+                state.getPersonStore().put(person.getTitleCache(), person);
+
             }else if (teamOrPerson instanceof Team){
                 List<Team> existingTeams = new ArrayList<>();
                 try {
@@ -316,6 +317,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                             }
                         }else {
                             state.getPersonStore().put(member.getCollectorTitleCache(), member);
+                            state.getPersonStore().put(member.getTitleCache(), member);
                         }
                     }
                     teamNew.getTeamMembers().removeAll(membersToDelete);
