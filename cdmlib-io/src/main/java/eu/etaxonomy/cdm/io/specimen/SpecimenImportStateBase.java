@@ -24,7 +24,8 @@ import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -66,7 +67,8 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     protected Map<String, Collection> collections= new HashMap<>();
     private Map<String,FieldUnit> fieldUnits = new HashMap<>();
 
-    private Map<String, TeamOrPersonBase<?>> personStore;
+    private Map<String, Team> teamStore;
+    private Map<String, Person> personStore;
     private Map<String, Reference> importReferences = new HashMap<>();
     private URI actualAccessPoint;
     private Set<URI> allAccesPoints = new HashSet<>();
@@ -79,11 +81,18 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
 
 // ************************* Getter/Setter **************/
 
-    public Map<String, TeamOrPersonBase<?>> getPersonStore() {
+    public Map<String, Person> getPersonStore() {
         return personStore;
     }
-    public void setPersonStore(Map<String, TeamOrPersonBase<?>>personStore) {
+    public void setPersonStore(Map<String, Person>personStore) {
         this.personStore = personStore;
+    }
+
+    public Map<String, Team> getTeamStore() {
+        return teamStore;
+    }
+    public void setTeamStore(Map<String, Team>teamStore) {
+        this.teamStore = teamStore;
     }
 
     public FieldUnit getFieldUnit(String fieldNumber) {

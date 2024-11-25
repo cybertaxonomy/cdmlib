@@ -96,8 +96,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     public void doInvoke(Abcd206ImportState state) {
         Abcd206ImportConfigurator config = state.getConfig();
         Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-        Map<String, TeamOrPersonBase<?>>authorStore = new HashMap<>();
-        state.setPersonStore(authorStore);
+        Map<String, Person> personStore = new HashMap<>();
+        state.setPersonStore(personStore);
+        Map<String, Team> teamStore = new HashMap<>();
+        state.setTeamStore(teamStore);
         MapWrapper<Reference> referenceStore = (MapWrapper<Reference>) stores.get(ICdmIO.REFERENCE_STORE);
         createKindOfUnitsMap(state);
         URI sourceUri = config.getSourceUri();
@@ -230,6 +232,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                 // save authors
                 getAgentService().saveOrUpdate((java.util.Collection) state.getPersonStore().values());
+                getAgentService().saveOrUpdate((java.util.Collection) state.getTeamStore().values());
 
                 commitTransaction(state.getTx());
                 state.setTx(startTransaction());
@@ -535,23 +538,41 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             // unitsGatheringEvent.setHeight(heightText, heightMin, heightMax,
             // heightUnit);
             if (state.getDataHolder().gatheringAgentsList.isEmpty()) {
-                TeamOrPersonBase team = state.getPersonStore().get(state.getDataHolder().gatheringAgentsText);
-                if (team == null){
-                    team = parseCollectorString(state.getDataHolder().gatheringAgentsText);
-                    if (team != null){
-                        state.getPersonStore().put(team.getTitleCache(), team);
+                Person person = state.getPersonStore().get(state.getDataHolder().gatheringAgentsText);
+                Team team = null;
+                if (person == null) {
+                    team = state.getTeamStore().get(state.getDataHolder().gatheringAgentsText);
+                }
+                if (team == null && person == null){
+                    TeamOrPersonBase teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsText);
+                    if (teamOrPerson != null){
+                        if (teamOrPerson instanceof Person) {
+                            state.getPersonStore().put(teamOrPerson.getTitleCache(), (Person)teamOrPerson);
+                        }else {
+                            state.getTeamStore().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
+                        }
                     }
                 }
                 if (team != null){
                     unitsGatheringEvent.setCollector(team, config);
+                }else if (person != null) {
+                    unitsGatheringEvent.setCollector(person, config);
                 }
 
             } else {
-                TeamOrPersonBase team = state.getPersonStore().get(state.getDataHolder().gatheringAgentsList.toString());
+                Team team = state.getTeamStore().get(state.getDataHolder().gatheringAgentsList.toString());
+
                 if (team == null){
-                    team = parseCollectorString(state.getDataHolder().gatheringAgentsList.toString());
-                    if (team != null){
-                        state.getPersonStore().put(team.getTitleCache(), team);
+                    Person person = state.getPersonStore().get(state.getDataHolder().gatheringAgentsList.toString());
+                    if (person == null) {
+                        TeamOrPersonBase teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsList.toString());
+                        if (teamOrPerson != null){
+                            if (teamOrPerson instanceof Person) {
+                                state.getPersonStore().put(teamOrPerson.getTitleCache(), (Person)teamOrPerson);
+                            }else {
+                                state.getTeamStore().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
+                            }
+                        }
                     }
 
                 }

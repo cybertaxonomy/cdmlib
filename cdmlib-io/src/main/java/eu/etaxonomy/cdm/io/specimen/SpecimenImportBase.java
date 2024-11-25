@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Identification;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -217,13 +216,19 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     private TeamOrPersonBase<?> checkAuthor(STATE state, TeamOrPersonBase<?> author) {
         try {
             if (author != null) {
-                if (state.getPersonStore().containsKey(author.getTitleCache())) {
+                if (author instanceof Person && state.getPersonStore().containsKey(author.getTitleCache())) {
                     return (TeamOrPersonBase<?>) state.getPersonStore().get(author.getTitleCache());
+                }else if (author instanceof Team && state.getTeamStore().containsKey(author.getTitleCache())) {
+                    return (TeamOrPersonBase<?>) state.getTeamStore().get(author.getTitleCache());
                 }
                 List<TeamOrPersonBase<?>> agents = getCommonService().findMatching(author, MatchStrategyFactory.NewParsedTeamOrPersonInstance());
                 if (agents.size()>0) {
                     author = agents.get(0);
-                    state.getPersonStore().put(agents.get(0).getTitleCache(), agents.get(0));
+                    if (author instanceof Person) {
+                        state.getPersonStore().put(author.getTitleCache(), author);
+                    }else {
+                        state.getTeamStore().put(author.getTitleCache(), author);
+                    }
                 }else if (author instanceof Team) {
                     //check for every team member
                     Set<Person> alreadyExistingMembers = new HashSet<>();
@@ -255,18 +260,16 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     }
 
     //TODO is this method tested in any test?
-    protected void findMatchingCollectorAndFillPersonStore(Abcd206ImportState state, TeamOrPersonBase<?> teamOrPerson) {
+    protected void findMatchingCollectorAndFillPersonStore(SpecimenImportStateBase state, TeamOrPersonBase<?> teamOrPerson) {
 
         //TODO in general I need to search if such an agent replacement algorithm does not yet exist
         //     as similar things are done elsewhere (but for nomenclatural authors)
 
-        if (!state.getPersonStore().containsKey(teamOrPerson.getCollectorTitleCache())) {
+        if (!(state.getPersonStore().containsKey(teamOrPerson.getCollectorTitleCache()) || state.getTeamStore().containsKey(teamOrPerson.getCollectorTitleCache()))) {
             if(teamOrPerson instanceof Person) {
                 List<Person> existingPersons = new ArrayList<>();
                 try {
                     Person person = (Person)teamOrPerson;
-                    //TODO what is this call for? Initializing collector titleCache? I don't think this is necessary here. It will be initialized during matching anyway.
-                    person.getCollectorTitleCache();
                     existingPersons = getCommonService().findMatching(person, MatchStrategyFactory.NewParsedCollectorPersonInstance());
                 } catch (MatchException e) {
                     state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
@@ -276,8 +279,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 //     this is a better match than if the existing person has a family name.
                 if (existingPersons.size()>0) {
                     Person person = CdmBase.deproxy(existingPersons.get(0));
-                    //TODO why do you set person = teamOrPerson here?
-                    teamOrPerson = person;
                     state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
                     state.getPersonStore().put(person.getCollectorTitleCache(), person);
                     //TODO why is it necessary to also store by titleCache? Aren't we only interested in matching collector titles here?
@@ -287,11 +288,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 List<Team> existingTeams = new ArrayList<>();
                 try {
                     Team team1 = (Team)teamOrPerson;
-                    //TODO what are these calls for? Even if you want to initialize the team.cache you don't need to call each individual person as this is done by the team formatter already.
-                    for (Person person: team1.getTeamMembers()) {
-                        person.getCollectorTitleCache();
-                    }
-                    team1.getCollectorTitleCache();
                     existingTeams = getCommonService().findMatching(team1, MatchStrategyFactory.NewParsedCollectorTeamInstance());
                 } catch (MatchException e) {
                     state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
@@ -315,7 +311,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                                 membersToDelete.add(member);
                                 state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
                                 state.getPersonStore().put(person.getCollectorTitleCache(), HibernateProxyHelper.deproxy(person, Person.class));
-                                //TODO why is it necessary to also store by titleCache?
+                                //TODO why is it necessary to also store by titleCache? -> if we want to reuse it as an author?
                                 state.getPersonStore().put(person.getTitleCache(), HibernateProxyHelper.deproxy(person, Person.class));
                             }
                         }else {
@@ -324,24 +320,24 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                     }
                     teamNew.getTeamMembers().removeAll(membersToDelete);
                     teamNew.getTeamMembers().addAll(alreadyExistingMembers);
-                    //TODO using person store for both persons and teams could maybe be dangerous?
-                    //     Is it also possible to have distinct stores?
-                    state.getPersonStore().put(teamNew.getCollectorTitleCache(), teamNew);
+
+                    state.getTeamStore().put(teamNew.getCollectorTitleCache(), teamNew);
                     //TODO why is it necessary to also store by titleCache?
-                    state.getPersonStore().put(teamNew.getTitleCache(), teamNew);
+                    state.getTeamStore().put(teamNew.getTitleCache(), teamNew);
 
                 }else {
                     //TODO here we should try to find the best matching team, see also comment above for best matching person
                     Team team = CdmBase.deproxy(existingTeams.get(0));
                     state.getReport().addInfoMessage("Matching " + team.getCollectorTitleCache() + " to existing " + team.getCollectorTitleCache() + " UUID: " + team.getUuid());
-                    //TODO why do you use the person
-                    state.getPersonStore().put(team.getCollectorTitleCache(), team);
+
+                    state.getTeamStore().put(team.getCollectorTitleCache(), team);
                     //TODO why is it necessary to also store by titleCache?
-                    state.getPersonStore().put(team.getTitleCache(), team);
+                    state.getTeamStore().put(team.getTitleCache(), team);
 
                     for (Person member: team.getTeamMembers()) {
                         member = CdmBase.deproxy(member);
                         //TODO not sure if storing these member is necessary. They are not yet initialized and therefore storing them also takes some time while it is unclear if they are used later at all.
+                        //in my test cases (flora greece centaurea) there were teams of collectors and the team member appeared in different constellations
                         if (!state.getPersonStore().containsKey(member.getTitleCache())) {
                             state.getPersonStore().put(member.getCollectorTitleCache(), member);
                             //TODO why is it necessary to also store by titleCache?
@@ -351,10 +347,10 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 }
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("Stored author " + state.getDataHolder().gatheringAgentsList.toString());
+                logger.debug("Stored author " + teamOrPerson.getCollectorTitleCache());
             }
             logger.warn("Not imported author with duplicated aut_id "
-                    + state.getDataHolder().gatheringAgentsList.toString());
+                    + teamOrPerson.getCollectorTitleCache());
         }
     }
 
