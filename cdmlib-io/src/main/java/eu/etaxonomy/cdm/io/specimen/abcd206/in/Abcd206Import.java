@@ -96,10 +96,15 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     public void doInvoke(Abcd206ImportState state) {
         Abcd206ImportConfigurator config = state.getConfig();
         Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-        Map<String, Person> personStore = new HashMap<>();
-        state.setPersonStore(personStore);
-        Map<String, Team> teamStore = new HashMap<>();
-        state.setTeamStore(teamStore);
+        Map<String, Person> personStoreCollector = new HashMap<>();
+        state.setPersonStoreCollector(personStoreCollector);
+        Map<String, Team> teamStoreCollector = new HashMap<>();
+        state.setTeamStoreCollector(teamStoreCollector);
+
+        Map<String, Person> personStoreAuthor = new HashMap<>();
+        state.setPersonStoreAuthor(personStoreAuthor);
+        Map<String, Team> teamStoreAuthor = new HashMap<>();
+        state.setTeamStoreAuthor(teamStoreAuthor);
         MapWrapper<Reference> referenceStore = (MapWrapper<Reference>) stores.get(ICdmIO.REFERENCE_STORE);
         createKindOfUnitsMap(state);
         URI sourceUri = config.getSourceUri();
@@ -231,8 +236,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 prepareCollectors(state, unitsList, abcdFieldGetter);
 
                 // save authors
-                getAgentService().saveOrUpdate((java.util.Collection) state.getPersonStore().values());
-                getAgentService().saveOrUpdate((java.util.Collection) state.getTeamStore().values());
+                getAgentService().saveOrUpdate((java.util.Collection) state.getPersonStoreCollector().values());
+                getAgentService().saveOrUpdate((java.util.Collection) state.getTeamStoreCollector().values());
+
+                getAgentService().saveOrUpdate((java.util.Collection) state.getPersonStoreAuthor().values());
+                getAgentService().saveOrUpdate((java.util.Collection) state.getTeamStoreAuthor().values());
+
 
                 commitTransaction(state.getTx());
                 state.setTx(startTransaction());
@@ -538,18 +547,18 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             // unitsGatheringEvent.setHeight(heightText, heightMin, heightMax,
             // heightUnit);
             if (state.getDataHolder().gatheringAgentsList.isEmpty()) {
-                Person person = state.getPersonStore().get(state.getDataHolder().gatheringAgentsText);
+                Person person = state.getPersonStoreCollector().get(state.getDataHolder().gatheringAgentsText);
                 Team team = null;
                 if (person == null) {
-                    team = state.getTeamStore().get(state.getDataHolder().gatheringAgentsText);
+                    team = state.getTeamStoreCollector().get(state.getDataHolder().gatheringAgentsText);
                 }
                 if (team == null && person == null){
                     TeamOrPersonBase teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsText);
                     if (teamOrPerson != null){
                         if (teamOrPerson instanceof Person) {
-                            state.getPersonStore().put(teamOrPerson.getTitleCache(), (Person)teamOrPerson);
+                            state.getPersonStoreCollector().put(teamOrPerson.getTitleCache(), (Person)teamOrPerson);
                         }else {
-                            state.getTeamStore().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
+                            state.getTeamStoreCollector().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
                         }
                     }
                 }
@@ -560,17 +569,17 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 }
 
             } else {
-                Team team = state.getTeamStore().get(state.getDataHolder().gatheringAgentsList.toString());
+                Team team = state.getTeamStoreCollector().get(state.getDataHolder().gatheringAgentsList.toString());
 
                 if (team == null){
-                    Person person = state.getPersonStore().get(state.getDataHolder().gatheringAgentsList.toString());
+                    Person person = state.getPersonStoreCollector().get(state.getDataHolder().gatheringAgentsList.toString());
                     if (person == null) {
                         TeamOrPersonBase teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsList.toString());
                         if (teamOrPerson != null){
                             if (teamOrPerson instanceof Person) {
-                                state.getPersonStore().put(teamOrPerson.getTitleCache(), (Person)teamOrPerson);
+                                state.getPersonStoreCollector().put(teamOrPerson.getTitleCache(), (Person)teamOrPerson);
                             }else {
-                                state.getTeamStore().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
+                                state.getTeamStoreCollector().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
                             }
                         }
                     }
@@ -1314,7 +1323,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     && state.getDataHolder().gatheringAgentsList.isEmpty()) {
                 teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsText);
 
-                if (!state.getPersonStore().containsKey(teamOrPerson.getTitleCache())) {
+                if (!state.getPersonStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()) && !state.getTeamStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache())) {
                     findMatchingCollectorAndFillPersonStore(state, teamOrPerson);
                     if (logger.isDebugEnabled()) {
                         logger.debug("Stored author " + state.getDataHolder().gatheringAgentsText);
