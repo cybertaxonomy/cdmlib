@@ -66,16 +66,15 @@ public class MatchStrategyFactory {
 
             addParsedAgentBaseMatchModes(parsedPersonMatchStrategy);
 
-            //FIXME adapt for inRef authors
+
             parsedPersonMatchStrategy.setMatchMode("collectorTitle", MatchMode.EQUAL);
 
             parsedPersonMatchStrategy.setMatchMode("titleCache", MatchMode.IGNORE);
 
-            //TODO lifespan may implement MATCH_OR_ONE_NULL
             String[] equalOrFirstNullParams = new String[]{"nomenclaturalTitle", "givenName","initials",
                     "lifespan","orcid","prefix","suffix", "familyName","wikiDataItemId"};
             for(String param : equalOrFirstNullParams){
-                parsedPersonMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
+                parsedPersonMatchStrategy.setMatchMode(param, MatchMode.MATCH_OR_ONE_NULL);
             }
 
             String[] ignoreParams = new String[]{"institutionalMemberships"};
@@ -127,7 +126,7 @@ public class MatchStrategyFactory {
             parsedTeamMatchStrategy.setMatchMode("hasMoreMembers", MatchMode.EQUAL);
 
             parsedTeamMatchStrategy.setMatchMode("protectedCollectorTitleCache", MatchMode.EQUAL);
-            parsedTeamMatchStrategy.setMatchMode("protectedNomenclaturalTitleCache", MatchMode.EQUAL_OR_FIRST_NULL);
+            parsedTeamMatchStrategy.setMatchMode("protectedNomenclaturalTitleCache", MatchMode.IGNORE);
 
             String[] equalOrNullParams = new String[]{};
             for(String param : equalOrNullParams){
