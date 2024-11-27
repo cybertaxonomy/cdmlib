@@ -715,7 +715,8 @@ public class CdmGenericDaoImpl
 		//session.flush();
 		if (noMatch == false){
 			@SuppressWarnings("unchecked")
-            List<T> matchCandidates = criteria.list();
+			//deduplicate (for some reason the match candidate list return matching teams >1x if they have >1 member, so we deduplicate to be on the safe site
+            List<T> matchCandidates = deduplicateResult(criteria.list());
 			matchCandidates.remove(objectToMatch);
 			for (T matchCandidate : matchCandidates ){
 				if (includeCandidates || matchStrategy.invoke(objectToMatch, matchCandidate).isSuccessful()){
