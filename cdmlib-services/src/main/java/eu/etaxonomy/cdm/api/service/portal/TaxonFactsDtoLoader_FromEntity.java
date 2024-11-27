@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
 import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
+import eu.etaxonomy.cdm.format.description.TemporalDataFormatter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -393,7 +394,7 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
             FactDto factDto = new FactDto();
             featureDto.addFact(factDto);
             //TODO do we really need type information for textdata here?
-            String label = td.toString();
+            String label = TemporalDataFormatter.NewInstance().format(td, localeLang);
             TypedLabel typedLabel = new TypedLabel(label);
             typedLabel.setClassAndId(td);
             factDto.getTypedLabel().add(typedLabel);
