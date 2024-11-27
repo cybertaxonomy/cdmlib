@@ -95,7 +95,7 @@ public class WfoContentExportTest
 //        Assert.assertEquals("There should be no synonym", 0, synonymResult.size() - COUNT_HEADER);
 
         List<String> referenceResult = getStringList(data, WfoContentExportTable.REFERENCE);
-        Assert.assertEquals("There should be 1 references (1 sec reference)", 1, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 3 references (3 sec reference)", 3, referenceResult.size() - COUNT_HEADER);
 
         //taxon
         //... species
