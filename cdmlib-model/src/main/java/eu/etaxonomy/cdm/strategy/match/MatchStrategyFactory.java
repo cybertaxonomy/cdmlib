@@ -74,7 +74,7 @@ public class MatchStrategyFactory {
             String[] equalOrFirstNullParams = new String[]{"nomenclaturalTitle", "givenName","initials",
                     "lifespan","orcid","prefix","suffix", "familyName","wikiDataItemId"};
             for(String param : equalOrFirstNullParams){
-                parsedPersonMatchStrategy.setMatchMode(param, MatchMode.MATCH_OR_ONE_NULL);
+                parsedPersonMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
             }
 
             String[] ignoreParams = new String[]{"institutionalMemberships"};
