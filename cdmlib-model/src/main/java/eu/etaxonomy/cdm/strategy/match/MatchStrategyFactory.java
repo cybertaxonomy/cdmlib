@@ -69,8 +69,6 @@ public class MatchStrategyFactory {
 
             parsedPersonMatchStrategy.setMatchMode("collectorTitle", MatchMode.EQUAL);
 
-            parsedPersonMatchStrategy.setMatchMode("titleCache", MatchMode.IGNORE);
-
             String[] equalOrFirstNullParams = new String[]{"nomenclaturalTitle", "givenName","initials",
                     "lifespan","orcid","prefix","suffix", "familyName","wikiDataItemId"};
             for(String param : equalOrFirstNullParams){
