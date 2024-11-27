@@ -1223,6 +1223,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
     @Test  //#9905 test find matching candidates
     public void testFindMatchingWithSubMatching() {
+
+        //create test data
         Person person1 = Person.NewInstance();
         Person person2 = Person.NewInstance();
         Person person3 = Person.NewInstance();
@@ -1249,6 +1251,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         cdmGenericDao.saveOrUpdate(team2);
         commitAndStartNewTransaction();
 
+        //test
         IMatchStrategyEqual matchStrategy = DefaultMatchStrategy.NewInstance(Team.class);
         try {
             Team teamAs1 = Team.NewInstance();
@@ -1326,8 +1329,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
             List<Person> matchResult = cdmGenericDao.findMatching(person1, matchStrategy, false);
             //Assert.assertEquals(1, matchResult.size());
             Team teamAs1 = Team.NewInstance();
+
             teamAs1.addTeamMember(person1);
             teamAs1.addTeamMember(person2);
+
             matchStrategy = MatchStrategyFactory.NewParsedCollectorTeamInstance();
             //match with single instance comparison after hql query
             List<Team> matchResult_team = cdmGenericDao.findMatching(teamAs1, matchStrategy, false);
