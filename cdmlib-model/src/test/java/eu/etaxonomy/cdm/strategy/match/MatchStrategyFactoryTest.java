@@ -293,6 +293,23 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         Assert.assertTrue("Differing collectorTitle should match",
               collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
 
+        //test protected titleCache
+        Assert.assertFalse("Show that even if both match the titleCaches must not be equal",
+                fullPerson.getTitleCache().equals(parsedPerson.getTitleCache()));
+
+        parsedPerson.setTitleCache(fullPerson.getTitleCache(), true);
+        Assert.assertFalse("One protected and one unprotected titleCache should not match even "
+                + "if the titleCache is equal",
+                collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+
+        fullPerson.setTitleCache("xxx", true);
+        parsedPerson.setTitleCache("xxx", true);
+        Assert.assertTrue("Protected but equal titleCaches should match",
+                collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+
+        parsedPerson.setTitleCache("yyy", true);
+        Assert.assertFalse("Differing protected titleCaches should not match",
+                collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
 
     }
 
