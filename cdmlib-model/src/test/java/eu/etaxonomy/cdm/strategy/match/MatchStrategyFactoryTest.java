@@ -84,7 +84,6 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         //differing nom. title.
         parsedPerson.setNomenclaturalTitle("Wrong");
         result = matchStrategy.invoke(fullPerson, parsedPerson, FAIL_ALL);
-//        System.out.println(result);
         Assert.assertFalse("Differing nom.title should not match",
                 matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
 
@@ -130,8 +129,6 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         fullPerson = getDefaultFullPerson();
         parsedPerson = getDefaultParsedPerson();
         parsedPerson.setTitleCache(parsedPerson.getTitleCache(), true);
-//        System.out.println(fullPerson.getTitleCache());
-//        System.out.println(parsedPerson.getTitleCache());
         Assert.assertFalse("Differing nom. title should not match",
                 matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful());
     }
