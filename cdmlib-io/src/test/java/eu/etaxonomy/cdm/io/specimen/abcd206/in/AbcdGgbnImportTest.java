@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
@@ -520,6 +521,9 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         Pager<Person> persons = agentService.findByTitle(Person.class, "Leon", MatchMode.BEGINNING, null, null, null, null, null);
         assertEquals("Collector Leonhard,A. already in database, therefore only one should be found.",
                 Long.valueOf(1), persons.getCount());
+
+
+
 	}
 
 	/**
@@ -579,6 +583,39 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals(specimenFieldUnit, dnaSampleFieldUnit);
         assertEquals("fieldUnit1", dnaSampleFieldUnit.getTitleCache());
 	}
+
+
+	@Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    })
+	@Ignore
+	//TODO: the team matching does not work with the current MatchingStrategy, this needs to be fixed!
+    public void testAlreadyExistingTeam(){
+
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sibling_association.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
+        assertTrue("Return value for import.invoke should be true", result);
+
+        int count = agentService.count(Team.class);
+        //agentService.find(Team.class, "Sch", MatchMode.B);
+        assertEquals("There should be only one team because it is already in the database", 1, count);
+
+
+    }
 
 	@Test
 	public void testAvoidDuplicateMolecularData(){

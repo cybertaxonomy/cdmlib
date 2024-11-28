@@ -80,7 +80,7 @@
               <abcd21:Person>
                 <abcd21:FullName>Leonard,A.</abcd21:FullName>
               </abcd21:Person>
-            </abcd21:GatheringAgent>
+            </abcd21:GatheringAgent>            
           </abcd21:Agents>
           <abcd21:LocalityText>Bailén Prov. Jaen.</abcd21:LocalityText>
         </abcd21:Gathering>
