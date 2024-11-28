@@ -300,18 +300,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                             state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
                         }
                         if (existingPersons.size()>0) {
-                            TeamOrPersonBase<?> agent = existingPersons.get(0);
-                            if (agent instanceof Person) {
-                                Person person = (Person)agent;
-                                alreadyExistingMembers.add(person);
-                                membersToDelete.add(member);
-                                state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
-                                state.getPersonStoreCollector().put(person.getCollectorTitleCache(), HibernateProxyHelper.deproxy(person, Person.class));
-
-                            }
+                            Person person = existingPersons.get(0);
+                            alreadyExistingMembers.add(person);
+                            membersToDelete.add(member);
+                            state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
+                            state.getPersonStoreCollector().put(person.getCollectorTitleCache(), HibernateProxyHelper.deproxy(person, Person.class));
                         }else {
                             state.getPersonStoreCollector().put(member.getCollectorTitleCache(), member);
-
                         }
                     }
                     teamNew.getTeamMembers().removeAll(membersToDelete);
