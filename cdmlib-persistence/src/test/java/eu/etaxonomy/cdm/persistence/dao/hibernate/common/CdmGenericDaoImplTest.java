@@ -1292,7 +1292,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @Ignore
+    @Ignore //test for find matching collectors, this is used in specimen imports, but currently it does not work correctly
+    //TODO: fix it
     public void testFindMatchingCollectors() {
         Person person1 = Person.NewInstance();
         Person person2 = Person.NewInstance();
