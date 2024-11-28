@@ -485,7 +485,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     return;
                 }
             } else {
-                System.err.println("dataholder does not contain unit id");
+                logger.error("dataholder does not contain unit id");
             }
 
 

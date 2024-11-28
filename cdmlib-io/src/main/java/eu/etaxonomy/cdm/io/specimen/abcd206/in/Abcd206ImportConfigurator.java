@@ -45,7 +45,6 @@ public class Abcd206ImportConfigurator
     @Override
     @SuppressWarnings("unchecked")
     protected void makeIoClassList(){
-        System.out.println("makeIOClassList");
         ioClassList = new Class[]{
                 Abcd206Import.class,
         };
