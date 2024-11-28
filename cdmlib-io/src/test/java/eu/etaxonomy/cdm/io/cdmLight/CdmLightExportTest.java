@@ -146,7 +146,7 @@ public class CdmLightExportTest
 
         List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
         Assert.assertEquals("There should be 11 references (10 nomenclatural references including an in-reference"
-                + " and 1 sec reference)", 11, referenceResult.size() - COUNT_HEADER);
+                + " and 3 sec reference)", 13, referenceResult.size() - COUNT_HEADER);
 
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
         Assert.assertEquals("There should be 3 synonym", 3, synonymResult.size() - COUNT_HEADER);
