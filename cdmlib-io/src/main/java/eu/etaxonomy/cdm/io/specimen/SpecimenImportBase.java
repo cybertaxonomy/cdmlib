@@ -321,11 +321,11 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
                     state.getTeamStoreCollector().put(team.getCollectorTitleCache(), team);
 
-
+                    //As the members are already initialized (during matching) and matched against the
+                    //collector string we can store them here. But this does not allow a "best" matching
+                    //later on.
                     for (Person member: team.getTeamMembers()) {
                         member = CdmBase.deproxy(member);
-                        //TODO not sure if storing these member is necessary. They are not yet initialized and therefore storing them also takes some time while it is unclear if they are used later at all.
-                        //KL: in my test cases (flora greece centaurea) there were teams of collectors and the team member appeared in different constellations
                         if (!state.getPersonStoreCollector().containsKey(member.getTitleCache())) {
                             state.getPersonStoreCollector().put(member.getCollectorTitleCache(), member);
                         }
