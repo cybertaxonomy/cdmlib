@@ -66,7 +66,6 @@ public class MatchStrategyFactory {
 
             addParsedAgentBaseMatchModes(parsedPersonMatchStrategy);
 
-
             parsedPersonMatchStrategy.setMatchMode("collectorTitle", MatchMode.EQUAL);
 
             String[] equalOrFirstNullParams = new String[]{"nomenclaturalTitle", "givenName","initials",
@@ -91,18 +90,23 @@ public class MatchStrategyFactory {
         try {
             addParsedAgentBaseMatchModes(parsedTeamMatchStrategy);
 
+            //match
             parsedTeamMatchStrategy.setMatchMode("teamMembers", MatchMode.MATCH, NewParsedPersonInstance());
 
+            //equal
             parsedTeamMatchStrategy.setMatchMode("hasMoreMembers", MatchMode.EQUAL);
 
+            //needed?
             parsedTeamMatchStrategy.setMatchMode("protectedCollectorTitleCache", MatchMode.EQUAL_OR_FIRST_NULL);
             parsedTeamMatchStrategy.setMatchMode("protectedNomenclaturalTitleCache", MatchMode.EQUAL);
 
+            //equalOrFirstNull
             String[] equalOrNullParams = new String[]{};
             for(String param : equalOrNullParams){
                 parsedTeamMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
             }
 
+            //ignore
             String[] ignoreParams = new String[]{};
             for(String param : ignoreParams){
                 parsedTeamMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
@@ -119,18 +123,23 @@ public class MatchStrategyFactory {
         try {
             addParsedAgentBaseMatchModes(parsedTeamMatchStrategy);
 
+            //match
             parsedTeamMatchStrategy.setMatchMode("teamMembers", MatchMode.MATCH, NewParsedCollectorPersonInstance());
 
+            //equal
             parsedTeamMatchStrategy.setMatchMode("hasMoreMembers", MatchMode.EQUAL);
 
+            //TODO needed?
             parsedTeamMatchStrategy.setMatchMode("protectedCollectorTitleCache", MatchMode.EQUAL);
             parsedTeamMatchStrategy.setMatchMode("protectedNomenclaturalTitleCache", MatchMode.IGNORE);
 
+            //equalOrFirstNull
             String[] equalOrNullParams = new String[]{};
             for(String param : equalOrNullParams){
                 parsedTeamMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
             }
 
+            //ignore
             String[] ignoreParams = new String[]{};
             for(String param : ignoreParams){
                 parsedTeamMatchStrategy.setMatchMode(param, MatchMode.IGNORE);

@@ -262,9 +262,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     //TODO is this method tested in any test?
     protected void findMatchingCollectorAndFillPersonStore(SpecimenImportStateBase state, TeamOrPersonBase<?> teamOrPerson) {
 
-        //TODO in general I need to search if such an agent replacement algorithm does not yet exist
-        //     as similar things are done elsewhere (but for nomenclatural authors)
-
         if (!(state.getPersonStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()) || state.getTeamStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()))) {
             if(teamOrPerson instanceof Person) {
                 List<Person> existingPersons = new ArrayList<>();
@@ -333,7 +330,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                     for (Person member: team.getTeamMembers()) {
                         member = CdmBase.deproxy(member);
                         //TODO not sure if storing these member is necessary. They are not yet initialized and therefore storing them also takes some time while it is unclear if they are used later at all.
-                        //in my test cases (flora greece centaurea) there were teams of collectors and the team member appeared in different constellations
+                        //KL: in my test cases (flora greece centaurea) there were teams of collectors and the team member appeared in different constellations
                         if (!state.getPersonStoreCollector().containsKey(member.getTitleCache())) {
                             state.getPersonStoreCollector().put(member.getCollectorTitleCache(), member);
                         }
