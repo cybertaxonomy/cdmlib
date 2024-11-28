@@ -297,8 +297,8 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String cultivarOld =  oWs + "'..+'"; //Careful with apostroph in author names
     protected static String cultivarOldMarker = oWs + "(cv\\.|')";
     protected static String notho = "notho";
-    protected static String hybridPart = "([xX]" + oWs + "|"+hybridSignSpace+"?|"+notho+")";
-    protected static String noNothoHybridPart = "([xX]" + oWs + "|"+hybridSignSpace+"?)";
+    protected static String hybridPart = "([xX]" + oWs + "|"+hybridSign+"|"+notho+")";
+    protected static String noNothoHybridPart = "([xX]" + oWs + "|"+hybridSign+")";
     protected static String hybridFull = "(" +oWs +"|"+ pStart +")" + noNothoHybridPart;  //for some reason infraspecific notho ranks do not parse if notho is allowed as uninomial prefix.
     protected static String hybridFormularSeparator = oWs + "[" + hybridSign + "xX]" + oWs;
 
@@ -319,7 +319,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String genusAutonym = "("+capitalEpiWord+")" + oWs + fullBotanicAuthorString + oWs + InfraGenusMarker + oWs + "\\1";  //1st word and last word are the same
     //autonym patterns used within anyBotanicalFullName pattern as we need another group number there
     protected static String autonym2 =     "("+capitalEpiWord+")" + oWs
-            + "(" + hybridSign + "?\\u202F?(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString + oWs + infraSpeciesMarker + oWs + "\\4|"  //infraspecific autonym
+            + "(" + hybridSign + "?(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString + oWs + infraSpeciesMarker + oWs + "\\4|"  //infraspecific autonym
             +       fullBotanicAuthorString + oWs + InfraGenusMarker + oWs + "\\2"  //infrageneric autonym
             + ")";  //2-nd word and last word are the same
 

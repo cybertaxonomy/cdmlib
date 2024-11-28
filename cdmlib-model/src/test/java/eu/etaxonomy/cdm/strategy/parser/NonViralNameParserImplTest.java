@@ -542,7 +542,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
         //
         String nameStr = "Dactylorhiza \u00D7incarnata nothosubsp. versicolor";
-        String expected = "Dactylorhiza \u00D7\u202Fincarnata nothosubsp. versicolor";
+        String expected = "Dactylorhiza \u00D7incarnata nothosubsp. versicolor";
 
         name1 = parser.parseFullName(nameStr);
         assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
@@ -570,7 +570,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
         //hybrid autonym #6656
         nameStr = "Ophrys \u00D7kastelli E. Klein nothosubsp. kastelli";
-        expected = "Ophrys \u00D7\u202Fkastelli E. Klein nothosubsp. kastelli";
+        expected = "Ophrys \u00D7kastelli E. Klein nothosubsp. kastelli";
         name1 = parser.parseFullName(nameStr);
         assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
@@ -3300,7 +3300,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         name = parser.parseFullName(nameStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         //TODO may become ... Alonso & al. again in future
-        assertEquals("Thymus \u00D7\u202Fherberoi De la Torre, Vicedo, Alonso & Paya", name.getTitleCache());
+        assertEquals("Thymus \u00D7herberoi De la Torre, Vicedo, Alonso & Paya", name.getTitleCache());
         assertEquals("De la Torre, Vicedo, Alonso & Paya",
                 name.getCombinationAuthorship().getTitleCache());
         assertEquals("De la Torre, Vicedo, Alonso & Paya",
