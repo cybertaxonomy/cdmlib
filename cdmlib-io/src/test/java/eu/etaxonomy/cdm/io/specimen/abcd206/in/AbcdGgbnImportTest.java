@@ -515,9 +515,11 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    FieldUnit dnaSampleFieldUnit = fieldUnits.iterator().next();
         assertEquals(specimenFieldUnit, dnaSampleFieldUnit);
         assertEquals("fieldUnit1", dnaSampleFieldUnit.getTitleCache());
-        //collector Leonhard,A. already in database, therefore only one should be found.
+
+        //test deduplication of collector
         Pager<Person> persons = agentService.findByTitle(Person.class, "Leon", MatchMode.BEGINNING, null, null, null, null, null);
-        assertTrue(persons.getCount()==1);
+        assertEquals("Collector Leonhard,A. already in database, therefore only one should be found.",
+                Long.valueOf(1), persons.getCount());
 	}
 
 	/**
