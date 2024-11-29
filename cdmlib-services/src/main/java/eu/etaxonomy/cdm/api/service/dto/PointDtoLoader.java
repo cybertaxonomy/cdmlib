@@ -52,7 +52,6 @@ public class PointDtoLoader {
                 includeEmptySeconds, removeTertiers));
 
         dto.setErrorRadius(point.getErrorRadius());
-        dto.setLatitudeSexagesimal(point.getLatitudeSexagesimal().toString());
 
         if (point.getReferenceSystem() != null) {
             ReferenceSystem refSys = point.getReferenceSystem();

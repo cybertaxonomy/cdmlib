@@ -30,6 +30,7 @@ import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -39,6 +40,8 @@ import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
@@ -89,6 +92,9 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
 	private ITaxonNodeService taxonNodeService;
+
+	@SpringBeanByType
+    private IAgentService agentService;
 
 	/**
 	 * Tests import import of two DNA unit belonging to two different taxa
@@ -511,6 +517,13 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals(specimenFieldUnit, dnaSampleFieldUnit);
         assertEquals("fieldUnit1", dnaSampleFieldUnit.getTitleCache());
 
+        //test deduplication of collector
+        Pager<Person> persons = agentService.findByTitle(Person.class, "Leon", MatchMode.BEGINNING, null, null, null, null, null);
+        assertEquals("Collector Leonhard,A. already in database, therefore only one should be found.",
+                Long.valueOf(1), persons.getCount());
+
+
+
 	}
 
 	/**
@@ -570,6 +583,79 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals(specimenFieldUnit, dnaSampleFieldUnit);
         assertEquals("fieldUnit1", dnaSampleFieldUnit.getTitleCache());
 	}
+
+
+	@Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet(value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    })
+    public void testAlreadyExistingTeam(){
+
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_team_test2.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
+        assertTrue("Return value for import.invoke should be true", result);
+
+        int count = agentService.count(Team.class);
+        //agentService.find(Team.class, "Sch", MatchMode.B);
+        assertEquals("There should be only one because the used one is already in the database", 1, count);
+
+
+    }
+
+	@Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    })
+    public void testAlreadyExistingTeamMembers(){
+
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_team_test.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
+        assertTrue("Return value for import.invoke should be true", result);
+
+        int count = agentService.count(Team.class);
+        //agentService.find(Team.class, "Sch", MatchMode.B);
+        assertEquals("There should be two teams because the used one is not in the database", 2, count);
+
+        count = agentService.count(Person.class);
+        //agentService.find(Team.class, "Sch", MatchMode.B);
+        assertEquals("There should be 5 persons because all used are already in the database (3 existing + Jana + L.)", 5, count);
+        Pager<Person> persons = agentService.findByTitle(Person.class, "Leon", MatchMode.BEGINNING, null, null, null, null, null);
+        assertEquals("Collector Leonhard,A. already in database, therefore only one should be found.",
+                Long.valueOf(1), persons.getCount());
+        persons = agentService.findByTitle(Person.class, "Schw", MatchMode.BEGINNING, null, null, null, null, null);
+        assertEquals("Collector Schweinfurt already in database, therefore only one should be found.",
+                Long.valueOf(1), persons.getCount());
+        persons = agentService.findByTitle(Person.class, "Mey", MatchMode.BEGINNING, null, null, null, null, null);
+        assertEquals("Collector Meyer already in database, therefore only one should be found.",
+                Long.valueOf(1), persons.getCount());
+
+    }
 
 	@Test
 	public void testAvoidDuplicateMolecularData(){

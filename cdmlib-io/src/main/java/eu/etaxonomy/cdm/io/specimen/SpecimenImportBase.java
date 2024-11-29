@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -67,6 +68,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.strategy.match.MatchException;
+import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -84,6 +87,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	protected static final UUID SPECIMEN_SCAN_TERM = UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03");
 
 	private static final String COLON = ":";
+
+    private final static String authorSeparator = ", ";
+    private final static String lastAuthorSeparator = " & ";
 
 	protected Map<String, DefinedTerm> kindOfUnitsMap;
 
@@ -123,6 +129,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 // do not ignore authorship for non-preferred names because they need
                 // to be created for the determination history
                 String nameCache = TaxonName.castAndDeproxy(parsedName).getNameCache();
+
                 List<TaxonName> names = getNameService().findNamesByNameCache(nameCache, MatchMode.EXACT, null);
                 if (!names.isEmpty()){
                     acceptedTaxon = getBestMatchingTaxon(scientificName, new ArrayList<>(names), state);
@@ -183,9 +190,174 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
 
         if(acceptedTaxon != null && !acceptedTaxon.isPersisted()) {
+
+            //check for already existing authors
+            checkAllAuthors(state, acceptedTaxon);
             save(acceptedTaxon, state);
         }
         return acceptedTaxon;
+    }
+
+    private void checkAllAuthors(STATE state, Taxon acceptedTaxon) {
+        //combination author
+        TeamOrPersonBase<?> author = acceptedTaxon.getName().getCombinationAuthorship();
+        acceptedTaxon.getName().setCombinationAuthorship(checkAuthor(state, author));
+        //basionym author
+        author = acceptedTaxon.getName().getBasionymAuthorship();
+        acceptedTaxon.getName().setBasionymAuthorship(checkAuthor(state, author));
+        //excombination author
+        author = acceptedTaxon.getName().getExCombinationAuthorship();
+        acceptedTaxon.getName().setExCombinationAuthorship(checkAuthor(state, author));
+        //exbasionym author
+        author = acceptedTaxon.getName().getExBasionymAuthorship();
+        acceptedTaxon.getName().setExBasionymAuthorship(checkAuthor(state, author));
+    }
+
+    private TeamOrPersonBase<?> checkAuthor(STATE state, TeamOrPersonBase<?> author) {
+        try {
+            if (author != null) {
+                if (author instanceof Person && state.getPersonStoreAuthor().containsKey(author.getTitleCache())) {
+                    return (TeamOrPersonBase<?>) state.getPersonStoreAuthor().get(author.getTitleCache());
+                }else if (author instanceof Team && state.getTeamStoreAuthor().containsKey(author.getTitleCache())) {
+                    return (TeamOrPersonBase<?>) state.getTeamStoreAuthor().get(author.getTitleCache());
+                }
+                List<TeamOrPersonBase<?>> agents = getCommonService().findMatching(author, MatchStrategyFactory.NewParsedTeamOrPersonInstance());
+                if (agents.size()>0) {
+                    author = agents.get(0);
+                    if (author instanceof Person) {
+                        state.getPersonStoreAuthor().put(author.getTitleCache(), author);
+                    }else {
+                        state.getTeamStoreAuthor().put(author.getTitleCache(), author);
+                    }
+                }else if (author instanceof Team) {
+                    //check for every team member
+                    Set<Person> alreadyExistingMembers = new HashSet<>();
+                    Set<Person> removeTeamMember = new HashSet<>();
+                    for (Person member: ((Team)author).getTeamMembers()) {
+                        if (state.getPersonStoreAuthor().containsKey(author.getTitleCache())) {
+                            if (state.getPersonStoreAuthor().get(author.getTitleCache()) instanceof Person){
+                                alreadyExistingMembers.add((Person) state.getPersonStoreAuthor().get(author.getTitleCache()));
+                                continue;
+                            }
+                        }
+                        agents = getCommonService().findMatching(member, MatchStrategyFactory.NewParsedPersonInstance());
+                        if (agents.size()>0) {
+                            alreadyExistingMembers.add((Person)agents.get(0));
+                            state.getPersonStoreAuthor().put(agents.get(0).getTitleCache(), agents.get(0));
+                            removeTeamMember.add(member);
+                        }
+                    }
+                    ((Team) author).getTeamMembers().removeAll(removeTeamMember);
+                    ((Team) author).getTeamMembers().addAll(alreadyExistingMembers);
+
+                }
+                return author;
+            }
+        } catch (MatchException e) {
+            logger.debug("find matching author for " + author + " throws an exception.");
+        }
+        return null;
+    }
+
+
+    /**
+     * Searches for already existing teams or persons, if a team does not exist, it searches for the team members and replaces already existing members
+     * the result is added to the person/team store for faster reusing
+     *
+     * follow up implementations should find a best matching team/person with for example same family name
+     *
+     * @param  state
+     * @param  teamOrPerson
+     *
+     */
+    protected void findMatchingCollectorAndFillPersonStore(SpecimenImportStateBase state, TeamOrPersonBase<?> teamOrPerson) {
+
+        if (!(state.getPersonStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()) || state.getTeamStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()))) {
+            if(teamOrPerson instanceof Person) {
+                Person person = (Person)teamOrPerson;
+                findCollectorPerson(state, person);
+
+            }else if (teamOrPerson instanceof Team){
+                List<Team> existingTeams = new ArrayList<>();
+                try {
+                    Team team1 = (Team)teamOrPerson;
+                    existingTeams = getCommonService().findMatching(team1, MatchStrategyFactory.NewParsedCollectorTeamInstance());
+                } catch (MatchException e) {
+                    state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
+                }
+                if (existingTeams.size()== 0) {
+                    Team teamNew = (Team)teamOrPerson;
+                    findCollectorTeamMembersAndReplace(state, teamNew);
+                    state.getTeamStoreCollector().put(teamNew.getCollectorTitleCache(), teamNew);
+
+                }else {
+                    //TODO here we should try to find the best matching team, see also comment above for best matching person
+                    Team team = CdmBase.deproxy(existingTeams.get(0));
+                    state.getReport().addInfoMessage("Existing team, not imported: " + team.getCollectorTitleCache() + " UUID: " + team.getUuid());
+                    state.getTeamStoreCollector().put(team.getCollectorTitleCache(), team);
+
+                    //As the members are already initialized (during matching) and matched against the collector string we can store them here. But this does not allow a "best" matching later on.
+                    putTeamMembersToPersonStore(state, team);
+                }
+            }
+
+        }
+    }
+
+    /**
+     *
+     * @param state
+     * @param team
+     */
+    private void putTeamMembersToPersonStore(SpecimenImportStateBase state, Team team) {
+        for (Person member: team.getTeamMembers()) {
+            member = CdmBase.deproxy(member);
+            if (!state.getPersonStoreCollector().containsKey(member.getTitleCache())) {
+                state.getPersonStoreCollector().put(member.getCollectorTitleCache(), member);
+            }
+        }
+    }
+
+    /**
+     * for a not existing team, find already existing team members and replace them in the new team
+     *
+     * @param state
+     * @param teamNew
+     */
+    private void findCollectorTeamMembersAndReplace(SpecimenImportStateBase state, Team teamNew) {
+        for (Person member: teamNew.getTeamMembers()) {
+            Person person = findCollectorPerson(state, member);
+            if (!person.equals(member)) {
+                teamNew.replaceTeamMember(person, member);
+            }
+        }
+    }
+
+    /**
+     * find a matching person in db and put it to collector person store
+     *
+     * @param state
+     * @param person
+     *
+     * @return the existing person or the parameter person
+     */
+    private Person findCollectorPerson(SpecimenImportStateBase state, Person person) {
+        List<Person> existingPersons = new ArrayList<>();
+
+        try {
+            existingPersons = getCommonService().findMatching(person, MatchStrategyFactory.NewParsedCollectorPersonInstance());
+        } catch (MatchException e) {
+            state.getReport().addInfoMessage("Matching " + person.getCollectorTitleCache() + " threw an exception" + e.getMessage());
+        }
+        //TODO here we should try to find the best matching person. A best matching person is defined
+        //     as a person that has the least deviations. E.g. if both have family name null
+        //     this is a better match than if the existing person has a family name.
+        if (existingPersons.size()>0) {
+            person = CdmBase.deproxy(existingPersons.get(0));
+            state.getReport().addInfoMessage("Existing person, not imported: " + person.getCollectorTitle() + " UUID: " + person.getUuid());
+        }
+        state.getPersonStoreCollector().put(person.getCollectorTitleCache(), person);
+        return person;
     }
 
 	protected Taxon getBestMatchingTaxon(String scientificName, java.util.Collection<TaxonName> names, STATE state){
@@ -218,6 +390,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 }
             }
         }
+
         if (acceptedInClassification.isEmpty() && state.getClassification() != null) {
             String message = String.format("No taxon was found for %s, in classification "+  state.getClassification().getTitleCache(), scientificName);
             state.getReport().addInfoMessage(message);
@@ -243,20 +416,18 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 }else {
                     name = TaxonNameFactory.PARSED_BOTANICAL(scientificName);
                 }
-
             }
+
             if (name!= null) {
                 acceptedInClassification.add(Taxon.NewInstance(name, null));
             }
-
         }
+
         if (state.getClassification() == null && !acceptedNotInClassification.isEmpty()) {
             return acceptedNotInClassification.get(0);
         }
 
-
         return acceptedInClassification.get(0);
-
     }
 
 	/**
@@ -1104,8 +1275,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 
         determinationEvent.setIdentifiedUnit(state.getDerivedUnitBase());
-        if (state.getPersonStore().get(identifierStr) != null){
-            determinationEvent.setActor((AgentBase)state.getPersonStore().get(identifierStr));
+        if (state.getPersonStoreAuthor().get(identifierStr) != null){
+            determinationEvent.setActor((AgentBase)state.getPersonStoreAuthor().get(identifierStr));
         } else if (identifierStr != null){
             Person identifier = Person.NewTitledInstance(identifierStr);
             determinationEvent.setActor(identifier);
@@ -1395,5 +1566,53 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 }catch(NullPointerException e){logger.warn("null pointer problem (no ref?) with "+osb);}
             }
         }
+    }
+
+
+    public static TeamOrPersonBase<?> parseCollectorString(String collectorStr){
+        TeamOrPersonBase<?> author = null;
+        String[] teamMembers = collectorStr.split(authorSeparator);
+        if (teamMembers.length>1){
+            String lastMember = teamMembers[teamMembers.length -1];
+            String[] lastMembers = lastMember.split(lastAuthorSeparator);
+            teamMembers[teamMembers.length -1] = "";
+            author = Team.NewInstance();
+            for(String member:teamMembers){
+                if (!member.equals("")){
+                    Person teamMember = Person.NewInstance();
+                    teamMember.setCollectorTitle(member);
+                   ((Team)author).addTeamMember(teamMember);
+                }
+            }
+            if (lastMembers != null){
+                for(String member:lastMembers){
+                   Person teamMember = Person.NewInstance();
+                   teamMember.setCollectorTitle(member);
+                   ((Team)author).addTeamMember(teamMember);
+                }
+            }
+
+        } else {
+            teamMembers = collectorStr.split(lastAuthorSeparator);
+            if (teamMembers.length>1){
+                author = Team.NewInstance();
+                for(String member:teamMembers){
+                  Person teamMember = Person.NewInstance();
+                  teamMember.setCollectorTitle(member);
+                  ((Team)author).addTeamMember(teamMember);
+
+                }
+            }else{
+                if (isNotBlank(collectorStr)){
+                    author = Person.NewInstance();
+                    ((Person)author).setCollectorTitle(collectorStr);
+                }else{
+                    return null;
+                }
+
+            }
+        }
+        //author.getTitleCache(); we are only interested in collector string
+        return author;
     }
 }

@@ -31,12 +31,18 @@ public interface IGeneric extends IAuthoredPublicationBase, INomenclaturalRefere
 	 * Returns the editor of this generic reference
 	 */
 	public String getEditor();
-
 	/**
 	 * Sets the editor for this generic reference
 	 * @param editor
 	 */
 	public void setEditor(String editor);
+
+    /**
+     * If true, the {@link #getAuthorship() author} is the editor
+     * and should be formatted accordingly. See #7987
+     */
+    public boolean isAuthorIsEditor();
+    public void setAuthorIsEditor(boolean authorIsEditor);
 
 	/**
 	 * Returns the series of this generic reference

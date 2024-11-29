@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
+
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -196,6 +198,12 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
     }
     public void setLanguage(Language language) {
         this.language = language;
+        //TODO temporary until CDM uses locales only
+        this.locales.clear();
+        String locale = language.getIso639_1();
+        if (StringUtils.isNotBlank(locale)) {
+            this.locales.add(Locale.forLanguageTag(locale));
+        }
     }
     //end temporary
 

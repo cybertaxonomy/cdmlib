@@ -817,7 +817,8 @@ public class Abcd206XMLFieldGetter {
         }
 
         if(state.getConfig().isRemoveCountryFromLocalityText()){
-            if(dataHolder.locality.startsWith(dataHolder.country)){
+
+            if(dataHolder.country != null && dataHolder.locality.startsWith(dataHolder.country)){
                 dataHolder.locality = dataHolder.locality.replaceFirst(dataHolder.country+"[\\W]", "");
             }
             for (String namedArea : ((HashMap<String, String>) dataHolder.getNamedAreaList()).keySet()) {

@@ -419,7 +419,6 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Person person = (Person)inRef.getAuthorship();
         assertEquals("Book author should be L.", "L.", person.getNomenclaturalTitleCache());
 
-
         fullTitleString = "Abies alba Mill., Aber & Schwedt, Sp. Pl. 173: 384. 1982.";
         multipleAuthorName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
         assertFalse(multipleAuthorName.hasProblem());
@@ -445,7 +444,45 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals("Must be team with 2 members", 2, team.getTeamMembers().size());
         Assert.assertEquals("Second member must be 'Hand'", "Hand", team.getTeamMembers().get(1).getTitleCache());
         Assert.assertTrue("Team must have more members'", team.isHasMoreMembers());
+    }
 
+    @Test
+    public final void testEditors() {
+        String fullTitleString = "Abies alba Mill., Aber & Schwedt in L.(ed.), Sp. Pl. 173: 384. 1982.";
+        testEditorResult(fullTitleString);
+
+        fullTitleString = "Abies alba Mill., Aber & Schwedt in L.(eds.), Sp. Pl. 173: 384. 1982.";
+        testEditorResult(fullTitleString);
+
+        fullTitleString = "Abies alba Mill., Aber & Schwedt in L.(ed), Sp. Pl. 173: 384. 1982.";
+        testEditorResult(fullTitleString);
+
+        fullTitleString = "Abies alba Mill., Aber & Schwedt in L.(eds), Sp. Pl. 173: 384. 1982.";
+        testEditorResult(fullTitleString);
+
+        fullTitleString = "Abies alba Mill., Aber & Schwedt in L.(Ed.), Sp. Pl. 173: 384. 1982.";
+        testEditorResult(fullTitleString);
+
+        fullTitleString = "Abies alba Mill., Aber & Schwedt in L.(ED.), Sp. Pl. 173: 384. 1982.";
+        testEditorResult(fullTitleString);
+
+        fullTitleString = "Abies alba Mill., Aber & Schwedt in L.(EDS.), Sp. Pl. 173: 384. 1982.";
+        testEditorResult(fullTitleString);
+    }
+
+    private void testEditorResult(String fullTitleString) {
+        TaxonName name = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        assertFalse(name.hasProblem());
+        assertTrue("Combination author should be a team", name.getCombinationAuthorship() instanceof Team);
+        Reference nomRef = name.getNomenclaturalReference();
+        Assert.assertNotNull("nomRef must have inRef", nomRef.getInReference());
+        Reference inRef = nomRef.getInReference();
+        Assert.assertTrue("inRef author should be editor", inRef.isAuthorIsEditor());
+        String abbrevTitle = inRef.getAbbrevTitle();
+        assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", abbrevTitle);
+        assertTrue(inRef.getAuthorship() instanceof Person);
+        Person person = (Person)inRef.getAuthorship();
+        assertEquals("Book author should be L.", "L.", person.getNomenclaturalTitleCache());
     }
 
     @Test
@@ -505,12 +542,14 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
         //
         String nameStr = "Dactylorhiza \u00D7incarnata nothosubsp. versicolor";
+        String expected = "Dactylorhiza \u00D7incarnata nothosubsp. versicolor";
+
         name1 = parser.parseFullName(nameStr);
         assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
         assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
         assertFalse("Name must not be protected", name1.isProtectedTitleCache());
-        assertEquals(nameStr, name1.getTitleCache());  //we expect the cache strategy to create the same result
+        assertEquals(expected, name1.getTitleCache());  //we expect the cache strategy to create the same result
 
         nameStr = "Dactylorhiza \u00D7incarnata nothosubsp. versicolor";
         name1 = parser.parseFullName(nameStr);
@@ -518,7 +557,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
         assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
         assertFalse("Name must not be protected", name1.isProtectedTitleCache());
-        assertEquals(nameStr, name1.getTitleCache());  //we expect the cache strategy to create the same result
+        assertEquals(expected, name1.getTitleCache());  //we expect the cache strategy to create the same result
 
         //nothovar.
         nameStr = "Dactylorhiza incarnata nothovar. versicolor";
@@ -531,24 +570,25 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
         //hybrid autonym #6656
         nameStr = "Ophrys \u00D7kastelli E. Klein nothosubsp. kastelli";
+        expected = "Ophrys \u00D7kastelli E. Klein nothosubsp. kastelli";
         name1 = parser.parseFullName(nameStr);
         assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
         assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
         assertFalse("Name must not be protected", name1.isProtectedTitleCache());
-        assertEquals(nameStr, name1.getTitleCache()); //we expect the cache strategy to create the same result
+        assertEquals(expected, name1.getTitleCache()); //we expect the cache strategy to create the same result
 
         name1 = parser.parseReferencedName(nameStr);
         assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
         assertTrue("Name must have binom hybrid bit set", name1.isBinomHybrid());
         assertTrue("Name must have trinom hybrid bit set", name1.isTrinomHybrid());
         assertFalse("Name must not be protected", name1.isProtectedTitleCache());
-        assertEquals(nameStr, name1.getTitleCache()); //we expect the cache strategy to create the same result
+        assertEquals(expected, name1.getTitleCache()); //we expect the cache strategy to create the same result
 
         //remove space since #7094
         parser.setRemoveSpaceAfterDot(true);
         name1 = parser.parseReferencedName(nameStr);
-        assertEquals(nameStr.replace("E. Kl", "E.Kl"), name1.getTitleCache()); //we expect the cache strategy to create the same result
+        assertEquals(expected.replace("E. Kl", "E.Kl"), name1.getTitleCache()); //we expect the cache strategy to create the same result
         parser.setRemoveSpaceAfterDot(false);
     }
 

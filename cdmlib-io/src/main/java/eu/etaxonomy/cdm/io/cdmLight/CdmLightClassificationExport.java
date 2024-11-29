@@ -365,18 +365,15 @@ public class CdmLightClassificationExport
 
                     //secundum reference
                     csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, taxon.getSec());
-                    String sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxon.getSec(), taxon.getSecSource().getCitationMicroReference(), null,
-                            state.getReferenceStore().get(taxon.getSec().getUuid()));
-
-                    if (taxon.getSec() != null && taxon.getSec().getDatePublished() != null
-                            && taxon.getSec().getDatePublished().getFreeText() != null) {
-//                        String sec_string = taxon.getSec().getTitleCache() + ". "
-//                                + taxon.getSec().getDatePublished().getFreeText();
-                        String sec_string = sec + ". "
-                              + taxon.getSec().getDatePublished().getFreeText();
-                        sec_string = sec_string.replace("..", ".");
-                        csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = sec_string;
-                    } else {
+                    if (taxon.getSec() != null) {
+                        String sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxon.getSec(), taxon.getSecSource().getCitationMicroReference(), null,
+                                state.getReferenceStore().get(taxon.getSec().getUuid()));
+                        if (taxon.getSec().getDatePublished() != null
+                                && taxon.getSec().getDatePublished().getFreeText() != null) {
+                            sec = sec + ". "
+                                + taxon.getSec().getDatePublished().getFreeText();
+                            sec = sec.replace("..", ".");
+                        }
                         csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = sec;//getTitleCache(taxon.getSec());
                     }
 
@@ -694,7 +691,7 @@ public class CdmLightClassificationExport
             }else if (element instanceof CategoricalData) {
                 //use formater
                 CategoricalData categoricalData = (CategoricalData)element;
-                String cache = CategoricalDataFormatter.NewInstance(null).format(categoricalData);
+                String cache = CategoricalDataFormatter.NewInstance(null).format(categoricalData, state.getConfig().getLanguage());
                 csvLine = new String[table.getSize()];
                 csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = getId(state, element);
                 if (cdmBase instanceof Taxon) {
@@ -1005,9 +1002,12 @@ public class CdmLightClassificationExport
             }
             csvLine[table.getIndex(CdmLightExportTable.APPENDED_PHRASE)] = synonym.getAppendedPhrase();
             csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, synonym.getSec());
-            String sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(synonym.getSec(), synonym.getSecSource().getCitationMicroReference(), null,
-                    state.getReferenceStore().get(synonym.getSec().getUuid()));
-            csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = sec;//getTitleCache(synonym.getSec());
+            if (synonym.getSec() != null) {
+                String secStr = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(
+                        synonym.getSec(), synonym.getSecSource().getCitationMicroReference(), null,
+                        state.getReferenceStore().get(synonym.getSec().getUuid()));
+                csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = secStr;
+            }
             csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = synonym.isPublish() ? "1" : "0";
             csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = "0";
             csvLine[table.getIndex(CdmLightExportTable.IS_PARTIAL)] = "0";
@@ -1041,12 +1041,16 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
 
             Reference secRef = ppSynonym.getSec();
-
+            String titleCache = "";
             if (secRef != null) {
                 handleReference(state, secRef);
+                titleCache = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(ppSynonym.getSec(), ppSynonym.getSecSource().getCitationMicroReference(), null,
+                        state.getReferenceStore().get(ppSynonym.getSec().getUuid()));
+
             }
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
-            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = state.getReferenceStore().get(secRef.getUuid());//getTitleCache(secRef);
+
+            csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = titleCache;//getTitleCache(secRef);
             csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = ppSynonym.isPublish() ? "1" : "0" ;
 
             Set<TaxonRelationship> rels = accepted.getTaxonRelations(ppSynonym);
@@ -1073,8 +1077,14 @@ public class CdmLightClassificationExport
                 if (synSecRef != null) {
                     handleReference(state, synSecRef);
                 }
+
                 csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, synSecRef);
-                csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = state.getReferenceStore().get(synSecRef.getUuid());//getTitleCache(synSecRef);
+                String titleCachesynSec = "";
+                if (synSecRef != null) {
+                    titleCachesynSec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(rel.getCitation(), rel.getCitationMicroReference(), null,
+                            state.getReferenceStore().get(rel.getCitation().getUuid()));
+                }
+                csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = titleCachesynSec;
                 isProParte = rel.getType().isProParte();
                 isPartial = rel.getType().isPartial();
 
@@ -2127,6 +2137,10 @@ public class CdmLightClassificationExport
                                 synonymSign = "";
                                 break;
                             }else {
+//                                TaxonRelationshipFormatter taxRelFormatter = TaxonRelationshipFormatter.INSTANCE();
+//                              List<TaggedText> tags = taxRelFormatter.getTaggedText(rel, inverse, languages, withoutName);
+//                              String relLabel = TaggedTextFormatter.createString(tags);
+
                                 synonymSign = "\u003D ";
                             }
                         }

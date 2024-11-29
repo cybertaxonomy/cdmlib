@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +27,12 @@ import io.swagger.annotations.Api;
 @Api("termNode")
 @RequestMapping(value = {"/termNode/{uuid}"})
 public class TermNodeController extends BaseController<TermNode, ITermNodeService> {
+    private static final List<String> TERM_INIT_STRATEGY = Arrays.asList(new String []{
+            "vocabulary",
+            "includes",
+            "terms.$",
+            "terms.includes.$",
+    });
 
 
     @Override

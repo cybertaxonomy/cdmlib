@@ -171,7 +171,7 @@ public class ColDpExportTest
         Assert.assertEquals("There should be 8 names", 8, nameResult.size() - COUNT_HEADER);
 
         List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
-        Assert.assertEquals("There should be 9 references (8 nomenclatural references and 1 sec reference)", 9, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 11 references (8 nomenclatural references and 3 sec reference)", 11, referenceResult.size() - COUNT_HEADER);
 
         List<String> distributionResult = getStringList(data, ColDpExportTable.DISTRIBUTION);
         Assert.assertEquals("There should be 1 distribution", 1, distributionResult.size() - COUNT_HEADER);
@@ -284,7 +284,7 @@ public class ColDpExportTest
         Assert.assertEquals("There should be 6 names", 6, nameResult.size() - COUNT_HEADER);
 
         List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
-        Assert.assertEquals("There should be 7 references", 7, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 9 references", 9, referenceResult.size() - COUNT_HEADER);
 
         List<String> synonymResult = getStringList(data, ColDpExportTable.SYNONYM);
         Assert.assertEquals("There should be two synonyms", 2, synonymResult.size() - COUNT_HEADER);

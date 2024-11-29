@@ -71,6 +71,7 @@ import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TemporalData;
@@ -327,12 +328,12 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         config.setLanguage(Language.GERMAN());
         config.setUseDtoLoading(false);
-        testAllFactsDo(config); //with model instance loading
+        testAllFactsDo(config, false); //with model instance loading
         config.setUseDtoLoading(true);
-        testAllFactsDo(config); //with dto loading
+        testAllFactsDo(config, true); //with dto loading
     }
 
-    private void testAllFactsDo(TaxonPageDtoConfiguration config) {
+    private void testAllFactsDo(TaxonPageDtoConfiguration config, boolean isDto) {
         TaxonPageDto dto = portalService.taxonPageDto(config);
         Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
 
@@ -386,11 +387,13 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         FeatureDto introductionDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically.",
                 "Introduction", introductionDto.getLabel());
+//        testQuantitativeData();
 
         //...categorical data ("Life-form")
-        FeatureDto statusDto = features.getItems().get(i++);
+        FeatureDto lifeFormDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically.",
-                "Life-form", statusDto.getLabel());
+                "Life-form", lifeFormDto.getLabel());
+        testCategoricalData(lifeFormDto, isDto);
 
         //individuals association
         FeatureDto materialExaminedDto = features.getItems().get(i++);
@@ -400,6 +403,16 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //use data
         //TODO
+    }
+
+    private void testCategoricalData(FeatureDto lifeFormDto, boolean isDto) {
+        Assert.assertEquals(1, lifeFormDto.getFacts().getCount());
+        FactDto lifeForm = (FactDto)lifeFormDto.getFacts().getItems().get(0);
+        //FIXME implement for dto
+        if (!isDto) {
+            Assert.assertEquals("Fact modifying State modifying State1", lifeForm.getTypedLabel().get(0).getLabel());
+        }
+        //...
     }
 
     private void testIndividualsAssociation(FeatureDto materialExaminedDto) {
@@ -414,7 +427,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("My specimen", materialExaminedToCheck.getOccurrence());
         Assert.assertEquals(specimenUuid1, materialExaminedToCheck.getOccurrenceUuid());
         //FIXME description can not yet be loaded by DTO only loader, see comment in TaxonFactsDtoLoader.loadFactsPerFeature()
-//        Assert.assertEquals("Associated specimen description1", materialExamined1.getDescritpion());
+//        Assert.assertEquals("Associated specimen description1", materialExamined1.getDescription());
     }
 
     private void testTaxonInteraction(FeatureDto hostPlantDto) {
@@ -429,7 +442,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Genus species Mill. sec. My secbook", TaggedTextFormatter.createString(hostPlantToCheck.getTaxon()));
         Assert.assertEquals(taxonUuid1, hostPlantToCheck.getTaxonUuid());
         //FIXME description can not yet be loaded by DTO only loader, see comment in TaxonFactsDtoLoader.loadFactsPerFeature()
-//        Assert.assertEquals("Taxon interaction description1", hostPlantToCheck.getDescritpion());
+//        Assert.assertEquals("Taxon interaction description1", hostPlantToCheck.getDescription());
     }
 
     private void testTemporalData(FeatureDto floweringDto) {
@@ -721,7 +734,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         specimen2.setTitleCache("My specimen2", true);
         specimen2.setUuid(specimenUuid2);
         IndividualsAssociation indAss2 = IndividualsAssociation.NewInstance(specimen2);
-        indAss2.putDescription(Language.DEFAULT(), "Associated specimen description1");
+        indAss2.putDescription(Language.DEFAULT(), "Associated specimen description2");
         indAss2.setFeature(Feature.MATERIALS_EXAMINED());
         taxDesc.addElements(indAss1, indAss2);
 
@@ -744,6 +757,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         State state1 = State.NewInstance("State1", "State1", null);
         termService.save(state1);
         CategoricalData cd = CategoricalData.NewInstance(state1, Feature.LIFEFORM());
+        StateData stateData = cd.getStateData().get(0);
+        stateData.putModifyingText(Language.DEFAULT(), "State modifying");
+        cd.putModifyingText(Language.DEFAULT(), "Fact modifying");
         taxDesc.addElements(cd);
 
         //quantitative data

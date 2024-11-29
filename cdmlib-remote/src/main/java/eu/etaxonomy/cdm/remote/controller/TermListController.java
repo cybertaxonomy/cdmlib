@@ -33,7 +33,9 @@ public class TermListController extends AbstractIdentifiableListController<Defin
 
     private static final List<String> TERM_INIT_STRATEGY = Arrays.asList(new String []{
             "vocabulary",
-            "includes"
+            "includes",
+            "terms.$",
+            "terms.includes.$",
     });
 
 

@@ -762,7 +762,34 @@ public class ReferenceDefaultCacheStrategyTest {
         generic1.setVolume(null);
         Assert.assertEquals("Authorteam 1883"+SEP+"1884: My generic. "+UTF8.EN_DASH+" In: InRefAuthor, My InRef 9", generic1.getTitleCache());
         Assert.assertEquals("AT. in InRefAuthor, My InRef 9. 1883"+UTF8.EN_DASH+"1884", generic1.getAbbrevTitleCache());
-   }
+    }
+
+    //#10606,7988
+    @Test
+    public void testEditors(){
+        generic1.setTitle("My generic");
+        generic1.setAuthorship(genericTeam1);
+        generic1.setAuthorIsEditor(true);
+        generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1883-1884"));
+        Assert.assertEquals("Authorteam (eds.) 1883\u20131884: My generic", generic1.getTitleCache());
+
+        String bookSetionTitle = "My chapter";
+        book1.setTitle("My book");
+        Person person = Person.NewInstance("Mill.", "Miller", "B.", "Beth");
+        book1.setAuthorship(person);
+        book1.setAuthorIsEditor(true);
+        bookSection1.setTitle(bookSetionTitle);
+        bookSection1.setInBook(book1);
+        bookSection1.setAuthorship(sectionTeam1);
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
+        Assert.assertEquals("Unexpected title cache.", "Section Author 1975: My chapter. "+UTF8.EN_DASH+
+                " In: Miller, B. (ed.), My book", bookSection1.getTitleCache());
+
+        //does not make sense but just in case
+        ((Reference)bookSection1).setAuthorIsEditor(true);
+        Assert.assertEquals("Unexpected title cache.", "Section Author (eds.) 1975: My chapter. "+UTF8.EN_DASH+
+                " In: Miller, B. (ed.), My book", bookSection1.getTitleCache());
+    }
 
 // ********************************** WEB PAGE ********************************************/
 

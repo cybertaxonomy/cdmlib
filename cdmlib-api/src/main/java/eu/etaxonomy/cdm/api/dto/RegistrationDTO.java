@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.Registration;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -132,8 +133,8 @@ public class RegistrationDTO extends TypedEntityReference<Registration> {
 
     /**
      * The bibliographic in-reference citation is either taken from the reference which is directly
-     * associated with the registration. In case this reference is a {@link eu.etaxonomy.cdm.model.reference.ReferenceType#Section} or
-     * {@link eu.etaxonomy.cdm.model.reference.ReferenceType#BookSection} the inReference will be taken instead.
+     * associated with the registration. In case this reference is a {@link ReferenceType#Section} or
+     * {@link ReferenceType#BookSection} the inReference will be taken instead.
      * <p>
      * <b>Note:</b>Compare with {@link #getBibliographicCitationString()}
      *

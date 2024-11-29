@@ -16,18 +16,18 @@ import java.util.UUID;
  */
 public class IndividualsAssociationDto extends FactDtoBase {
 
-    private String descritpion;
+    private String description;
 
     private String occurrence;
     private UUID occurrenceUuid;
 
     // ****************** GETTER / SETTER *****************************/
 
-    public String getDescritpion() {
-        return descritpion;
+    public String getDescription() {
+        return description;
     }
-    public void setDescritpion(String descritpion) {
-        this.descritpion = descritpion;
+    public void setDescription(String description) {
+        this.description = description;
     }
     public String getOccurrence() {
         return occurrence;
@@ -35,6 +35,7 @@ public class IndividualsAssociationDto extends FactDtoBase {
     public void setOccurrence(String occurrence) {
         this.occurrence = occurrence;
     }
+
     public UUID getOccurrenceUuid() {
         return occurrenceUuid;
     }

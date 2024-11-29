@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 
 /**
+ *
  * @author a.mueller
  * @since 07.08.2009
  */
@@ -70,12 +71,6 @@ public class CacheMatcher extends FieldMatcherBase {
 		return result;
 	}
 
-
-	/**
-	 * @param fieldMatcher
-	 * @return
-	 * @throws MatchException
-	 */
 	private boolean isReplaceProperty(String propertyName) throws MatchException {
 		if (this.cacheReplaceMode == ReplaceMode.NONE){
 			return false;
@@ -90,48 +85,24 @@ public class CacheMatcher extends FieldMatcherBase {
 		}
 	}
 
-	/**
-	 * @return the cacheReplaceMode
-	 */
 	public ReplaceMode getCacheReplaceMode() {
 		return cacheReplaceMode;
 	}
-
-	/**
-	 * @param cacheReplaceMode the cacheReplaceMode to set
-	 */
 	public void setCacheReplaceMode(ReplaceMode cacheReplaceMode) {
 		this.cacheReplaceMode = cacheReplaceMode;
 	}
 
-
-
-	/**
-	 * @return the replacedProperties
-	 */
 	public List<String> getReplacedProperties() {
 		return replacedProperties;
 	}
-
-	/**
-	 * @param replacedProperties the replacedProperties to set
-	 */
 	public void setReplacedProperties(List<String> replacedProperties) {
 		this.replacedProperties = replacedProperties;
 	}
 
-	/**
-	 * @return the replaceMatchMode
-	 */
 	public MatchMode getReplaceMatchMode() {
 		return replaceMatchMode;
 	}
-
-	/**
-	 * @param replaceMatchMode the replaceMatchMode to set
-	 */
 	public void setReplaceMatchMode(MatchMode replaceMatchMode) {
 		this.replaceMatchMode = replaceMatchMode;
 	}
-
 }

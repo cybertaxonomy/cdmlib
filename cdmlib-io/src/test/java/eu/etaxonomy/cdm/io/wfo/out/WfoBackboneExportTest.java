@@ -62,14 +62,14 @@ public class WfoBackboneExportTest
             str("Genus species") + str("species") + str("WFO-12347g") + str("(Mill.) Hook") +
             str("Familyname") + NONE3 + str("Genus") + NONE + str("species") + NONE +
             str("species") + str("Valid") + str("in J. Appl. Synon. 5: 33. 1824") + str("Accepted")
-            + NONE + str(speciesBasionymWfoId) + uuid(ref1UUID) + NONE3 + str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + speciesTaxonUuid)
+            + NONE + str(speciesBasionymWfoId) + uuid(ref3UUID) + NONE3 + str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + speciesTaxonUuid)
             + NONE_END;
 
     private String expectedSpeciesBasionymNameLine = str(speciesBasionymWfoId) + NONE + uuid(basionymNameUuid) +
             str("Sus basionus") + str("species") + NONE + str("Mill.") +
             str("Familyname") + NONE3 + str("Sus") + NONE + str("basionus") + NONE +
             str("species") + str("Valid") + str("The book of botany 3: 22. 1804") + str("homotypicSynonym") +
-            str(speciesWfoId) + NONE + uuid(ref1UUID) + NONE3 +
+            str(speciesWfoId) + NONE + uuid(ref3UUID) + NONE3 +
             str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + speciesTaxonUuid + "/synonymy?highlight=" + basionymSynonymUuid)
             + NONE_END;
 
@@ -140,7 +140,7 @@ public class WfoBackboneExportTest
 
         //reference counts
         List<String> referenceResult = getStringList(data, WfoBackboneExportTable.REFERENCE);
-        Assert.assertEquals("There should be 1 reference (1 sec reference)", 1, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 3 reference (3 sec reference)", 3, referenceResult.size() - COUNT_HEADER);
 
         //test single data
 
@@ -227,7 +227,7 @@ public class WfoBackboneExportTest
         Assert.assertEquals("There should be 4 accepted taxa", 4, filterAccepted(taxonResult).size());
         Assert.assertEquals("There should be 3 synonyms", 3, filterSynonyms(taxonResult).size());
         List<String> referenceResult = getStringList(data, WfoBackboneExportTable.REFERENCE);
-        Assert.assertEquals("There should be 1 reference", 1, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 3 reference", 3, referenceResult.size() - COUNT_HEADER);
 
         //tbc
     }

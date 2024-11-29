@@ -22,10 +22,10 @@ import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -41,10 +41,6 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
  */
 public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBase, STATE extends SpecimenImportStateBase>
         extends ImportStateBase<CONFIG , CdmImportBase<CONFIG , STATE >>{
-
-    public SpecimenImportStateBase(CONFIG config) {
-        super(config);
-    }
 
     private TransactionStatus tx;
 
@@ -71,18 +67,48 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     protected Map<String, Collection> collections= new HashMap<>();
     private Map<String,FieldUnit> fieldUnits = new HashMap<>();
 
-    private MapWrapper<TeamOrPersonBase<?>> personStore;
+    private Map<String, Team> teamStoreCollector;
+    private Map<String, Person> personStoreCollector;
+    private Map<String, Team> teamStoreAuthor;
+    private Map<String, Person> personStoreAuthor;
     private Map<String, Reference> importReferences = new HashMap<>();
     private URI actualAccessPoint;
     private Set<URI> allAccesPoints = new HashSet<>();
 
+// ******************* CONSTRUCTOR ******************/
+
+    public SpecimenImportStateBase(CONFIG config) {
+        super(config);
+    }
+
 // ************************* Getter/Setter **************/
 
-    public MapWrapper<TeamOrPersonBase<?>> getPersonStore() {
-        return personStore;
+    public Map<String, Person> getPersonStoreCollector() {
+        return personStoreCollector;
     }
-    public void setPersonStore(MapWrapper<TeamOrPersonBase<?>> personStore) {
-        this.personStore = personStore;
+    public void setPersonStoreCollector(Map<String, Person>personStore) {
+        this.personStoreCollector = personStore;
+    }
+
+    public Map<String, Team> getTeamStoreCollector() {
+        return teamStoreCollector;
+    }
+    public void setTeamStoreCollector(Map<String, Team>teamStore) {
+        this.teamStoreCollector = teamStore;
+    }
+
+    public Map<String, Person> getPersonStoreAuthor() {
+        return personStoreAuthor;
+    }
+    public void setPersonStoreAuthor(Map<String, Person>personStore) {
+        this.personStoreAuthor = personStore;
+    }
+
+    public Map<String, Team> getTeamStoreAuthor() {
+        return teamStoreCollector;
+    }
+    public void setTeamStoreAuthor(Map<String, Team>teamStore) {
+        this.teamStoreCollector = teamStore;
     }
 
     public FieldUnit getFieldUnit(String fieldNumber) {

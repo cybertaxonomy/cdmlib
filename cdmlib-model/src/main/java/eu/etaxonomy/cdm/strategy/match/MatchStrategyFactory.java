@@ -42,10 +42,35 @@ public class MatchStrategyFactory {
             //FIXME adapt for inRef authors
             parsedPersonMatchStrategy.setMatchMode("familyName", MatchMode.EQUAL_OR_FIRST_NULL);
 
-            //TODO lifespan may implement MATCH_OR_ONE_NULL
-            String[] equalOrNullParams = new String[]{"collectorTitle","givenName","initials",
+            //TODO lifespan may implement MATCH_OR_FIRST_NULL
+            String[] equalOrFirstNullParams = new String[]{"collectorTitle","givenName","initials",
                     "lifespan","orcid","prefix","suffix","wikiDataItemId"};
-            for(String param : equalOrNullParams){
+            for(String param : equalOrFirstNullParams){
+                parsedPersonMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
+            }
+
+            String[] ignoreParams = new String[]{"institutionalMemberships"};
+            for(String param : ignoreParams){
+                parsedPersonMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
+            }
+
+            return parsedPersonMatchStrategy;
+        } catch (MatchException e) {
+            throw new RuntimeException("Exception when creating parsed person match strategy.", e);
+        }
+    }
+
+    public static IParsedMatchStrategy NewParsedCollectorPersonInstance(){
+        try {
+            IParsedMatchStrategy parsedPersonMatchStrategy = NewParsedInstance(Person.class);
+
+            addParsedAgentBaseMatchModes(parsedPersonMatchStrategy);
+
+            parsedPersonMatchStrategy.setMatchMode("collectorTitle", MatchMode.EQUAL);
+
+            String[] equalOrFirstNullParams = new String[]{"nomenclaturalTitle", "givenName","initials",
+                    "lifespan","orcid","prefix","suffix", "familyName","wikiDataItemId"};
+            for(String param : equalOrFirstNullParams){
                 parsedPersonMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
             }
 
@@ -65,18 +90,56 @@ public class MatchStrategyFactory {
         try {
             addParsedAgentBaseMatchModes(parsedTeamMatchStrategy);
 
+            //match
             parsedTeamMatchStrategy.setMatchMode("teamMembers", MatchMode.MATCH, NewParsedPersonInstance());
 
+            //equal
             parsedTeamMatchStrategy.setMatchMode("hasMoreMembers", MatchMode.EQUAL);
 
+            //needed?
             parsedTeamMatchStrategy.setMatchMode("protectedCollectorTitleCache", MatchMode.EQUAL_OR_FIRST_NULL);
             parsedTeamMatchStrategy.setMatchMode("protectedNomenclaturalTitleCache", MatchMode.EQUAL);
 
+            //equalOrFirstNull
             String[] equalOrNullParams = new String[]{};
             for(String param : equalOrNullParams){
                 parsedTeamMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
             }
 
+            //ignore
+            String[] ignoreParams = new String[]{};
+            for(String param : ignoreParams){
+                parsedTeamMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
+            }
+
+            return parsedTeamMatchStrategy;
+        } catch (MatchException e) {
+            throw new RuntimeException("Exception when creating parsed team match strategy.", e);
+        }
+    }
+
+    public static IParsedMatchStrategy NewParsedCollectorTeamInstance(){
+        IParsedMatchStrategy parsedTeamMatchStrategy = NewParsedInstance(Team.class);
+        try {
+            addParsedAgentBaseMatchModes(parsedTeamMatchStrategy);
+
+            //match
+            parsedTeamMatchStrategy.setMatchMode("teamMembers", MatchMode.MATCH, NewParsedCollectorPersonInstance());
+
+            //equal
+            parsedTeamMatchStrategy.setMatchMode("hasMoreMembers", MatchMode.EQUAL);
+
+            //TODO needed?
+            parsedTeamMatchStrategy.setMatchMode("protectedCollectorTitleCache", MatchMode.EQUAL);
+            parsedTeamMatchStrategy.setMatchMode("protectedNomenclaturalTitleCache", MatchMode.IGNORE);
+
+            //equalOrFirstNull
+            String[] equalOrNullParams = new String[]{};
+            for(String param : equalOrNullParams){
+                parsedTeamMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
+            }
+
+            //ignore
             String[] ignoreParams = new String[]{};
             for(String param : ignoreParams){
                 parsedTeamMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
@@ -282,7 +345,7 @@ public class MatchStrategyFactory {
 
         addParsedIdentifiableEntityModes(matchStrategy);
 
-        //TODO contact does not yet works, also not with EQUAL_OR_ONE_NULL, leads to agent.id=? or agent.id is null query
+        //TODO contact does not yet work, also not with EQUAL_OR_ONE_NULL, leads to agent.id=? or agent.id is null query
         //better should be even handled with MATCH.Equal_OR_ONE_NULL
         String[] equalOrNullParams = new String[]{};
         for(String param : equalOrNullParams){

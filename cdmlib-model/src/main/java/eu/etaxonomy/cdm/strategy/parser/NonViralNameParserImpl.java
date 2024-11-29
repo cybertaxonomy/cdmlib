@@ -812,17 +812,23 @@ public class NonViralNameParserImpl
 	private Reference parseBookSection(String reference){
 		Reference result = ReferenceFactory.newBookSection();
 
-		Pattern authorPattern = Pattern.compile("^" + authorTeam + referenceAuthorSeparator);
-		Matcher authorMatcher = authorPattern.matcher(reference);
+		Matcher authorMatcher = authorSepPattern.matcher(reference);
 		boolean find = authorMatcher.find();
 		if (find){
 			String authorString = authorMatcher.group(0).trim();
 			String bookString = reference.substring(authorString.length()).trim();
 			authorString = authorString.substring(0, authorString.length() -1);
 
+			boolean authorIsEditor = false;
+			if (authorString.matches(".*" + eds + "$")) {
+			    authorString = authorString.replaceFirst(eds+"$", "");
+			    authorIsEditor = true;
+			}
+
 			TeamOrPersonBase<?> authorTeam = author(authorString);
 			IBook inBook = parseBook(bookString);
 			inBook.setAuthorship(authorTeam);
+			inBook.setAuthorIsEditor(authorIsEditor);
 			result.setInBook(inBook);
 		}else{
 			logger.warn("Unexpected non matching book section author part");
@@ -1213,14 +1219,14 @@ public class NonViralNameParserImpl
 		boolean isUninomialHybrid = uninomial.startsWith(hybridSign);
 		if (isUninomialHybrid){
 			nameToBeFilled.setMonomHybrid(true);
-			nameToBeFilled.setGenusOrUninomial(uninomial.replace(hybridSign, ""));
+			nameToBeFilled.setGenusOrUninomial(uninomial.replace(hybridSign, "").trim());
 		}
 		//infrageneric
 		String infrageneric = CdmUtils.Nz(nameToBeFilled.getInfraGenericEpithet());
 		boolean isInfraGenericHybrid = infrageneric.startsWith(hybridSign);
 		if (isInfraGenericHybrid){
 			nameToBeFilled.setBinomHybrid(true);
-			nameToBeFilled.setInfraGenericEpithet(infrageneric.replace(hybridSign, ""));
+			nameToBeFilled.setInfraGenericEpithet(infrageneric.replace(hybridSign, "").trim());
 		}
 		//species Epi
 		String speciesEpi = CdmUtils.Nz(nameToBeFilled.getSpecificEpithet());
@@ -1231,16 +1237,15 @@ public class NonViralNameParserImpl
 			}else{
 				nameToBeFilled.setTrinomHybrid(true);
 			}
-			nameToBeFilled.setSpecificEpithet(speciesEpi.replace(hybridSign, ""));
+			nameToBeFilled.setSpecificEpithet(speciesEpi.replace(hybridSign, "").trim());
 		}
 		//infra species
 		String infraSpeciesEpi = CdmUtils.Nz(nameToBeFilled.getInfraSpecificEpithet());
 		boolean isInfraSpeciesHybrid = infraSpeciesEpi.startsWith(hybridSign);
 		if (isInfraSpeciesHybrid){
 			nameToBeFilled.setTrinomHybrid(true);
-			nameToBeFilled.setInfraSpecificEpithet(infraSpeciesEpi.replace(hybridSign, ""));
+			nameToBeFilled.setInfraSpecificEpithet(infraSpeciesEpi.replace(hybridSign, "").trim());
 		}
-
 	}
 
 	private String removeHybridBlanks(String fullNameString) {

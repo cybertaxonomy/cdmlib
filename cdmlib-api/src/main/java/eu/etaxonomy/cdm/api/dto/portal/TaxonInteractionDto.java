@@ -20,18 +20,18 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  */
 public class TaxonInteractionDto extends FactDtoBase {
 
-    private String descritpion;
+    private String description;
 
     private List<TaggedText> taxon = new ArrayList<>();
     private UUID taxonUuid;
 
     // ****************** GETTER / SETTER *****************************/
 
-    public String getDescritpion() {
-        return descritpion;
+    public String getDescription() {
+        return description;
     }
-    public void setDescritpion(String descritpion) {
-        this.descritpion = descritpion;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<TaggedText> getTaxon() {
@@ -47,4 +47,5 @@ public class TaxonInteractionDto extends FactDtoBase {
     public void setTaxonUuid(UUID taxonUuid) {
         this.taxonUuid = taxonUuid;
     }
+
 }

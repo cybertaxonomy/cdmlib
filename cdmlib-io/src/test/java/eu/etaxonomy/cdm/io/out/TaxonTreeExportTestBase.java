@@ -39,9 +39,11 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -147,6 +149,8 @@ public abstract class TaxonTreeExportTestBase
     protected static final UUID speciesNomRefUuid = UUID.fromString("a0dd7f4a-0c7f-4372-bc5d-3b676363bc0e");
     protected static final UUID subspeciesNomRefUuid = UUID.fromString("b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f");
     protected static final UUID ref1UUID = UUID.fromString("4b6acca1-959b-4790-b76e-e474a0882990");
+    protected static final UUID ref2UUID = UUID.fromString("b70e6ff1-c559-4b4c-860d-f035fce936b1");
+    protected static final UUID ref3UUID = UUID.fromString("fa2a13e2-140b-44ef-8eec-3cffdda36e44");
 
     //facts uuid
     protected static final UUID distributionArmeniaUuid = UUID.fromString("674e9e27-9102-4166-8626-8cb871a9a89b");
@@ -295,6 +299,19 @@ public abstract class TaxonTreeExportTestBase
         setUuid(sec1, ref1UUID);
         sec1.setTitle("My sec ref");
 
+
+        Reference ref1 = ReferenceFactory.newGeneric();
+        setUuid(ref1, ref2UUID);
+        ref1.setTitle("My first ref");
+        ref1.setAuthorship(Person.NewTitledInstance("Author"));
+        ref1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1980));
+
+        Reference ref2 = ReferenceFactory.newGeneric();
+        setUuid(ref2, ref3UUID);
+        ref2.setTitle("My second ref");
+        ref2.setAuthorship(Person.NewTitledInstance("Author"));
+        ref2.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1980));
+
         //classification
         Classification classification = Classification.NewInstance("CdmLightExportTest Classification");
         setUuid(classification, classificationUuid);
@@ -319,7 +336,7 @@ public abstract class TaxonTreeExportTestBase
         addWfoIdentifier(genusName, "WFO-12347g");
         setUuid(genusName, genusNameUuid);
         setUuid(genusName.getNomenclaturalReference(), genusNomRefUuid);
-        Taxon genus = Taxon.NewInstance(genusName, sec1);
+        Taxon genus = Taxon.NewInstance(genusName, ref1);
         setUuid(genus, genusTaxonUuid);
 
         TaxonNode node2 = node1.addChildTaxon(genus, sec1, "33");
@@ -332,7 +349,7 @@ public abstract class TaxonTreeExportTestBase
         addWfoIdentifier(speciesName, speciesWfoId);
         setUuid(speciesName, speciesNameUuid);
         setUuid(speciesName.getNomenclaturalReference(), speciesNomRefUuid);
-        Taxon species = Taxon.NewInstance(speciesName, sec1);
+        Taxon species = Taxon.NewInstance(speciesName, ref2);
         setUuid(species, speciesTaxonUuid);
         TaxonNode node3 = node2.addChildTaxon(species, sec1, "33");
         setUuid(node3, node3Uuid.toString());

@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1003,10 +1005,13 @@ public class DescriptionServiceImpl
 
     private TaxonDescription prepareDescriptionForMove(TaxonDescription description, Taxon sourceTaxon, boolean setNameInSource){
         String moveMessage = "";
+        ZoneId zonedId = ZoneId.systemDefault();
+        LocalDate today = LocalDate.now(zonedId);
         if (description.isImageGallery()) {
-            moveMessage = String.format("Image Gallery moved from %s", sourceTaxon);
+
+            moveMessage = String.format("Image Gallery moved from %1$s, %2$s", sourceTaxon.getTitleCache(), today.toString());
         }else {
-            moveMessage = String.format("Description moved from %s", sourceTaxon);
+            moveMessage = String.format("Description moved from %1$s, %2$s", sourceTaxon.getTitleCache(), today.toString());
         }
 
         if(description.isProtectedTitleCache()){
@@ -1014,7 +1019,7 @@ public class DescriptionServiceImpl
             if(!StringUtils.isBlank(description.getTitleCache())){
                 separator = " - ";
             }
-            description.setTitleCache(description.getTitleCache() + separator + moveMessage, true);
+            description.setTitleCache(moveMessage, true);
         }
         else{
             description.setTitleCache(moveMessage, true);
@@ -1173,6 +1178,7 @@ public class DescriptionServiceImpl
         targetDescription = dao.save(targetDescription);
         UpdateResult result =  new UpdateResult();
         result.setCdmEntity(targetDescription);
+        result.addUpdatedObject(targetDescription.getTaxon());;
         return result;
 
 

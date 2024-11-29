@@ -32,6 +32,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern pattern = Pattern.compile(epiSplitter);
 
 	public static final String hybridSign = UTF8.HYBRID.toString();  //  "\u00D7";
+	public static final String hybridSignSpace = UTF8.HYBRID_SPACE.toString();
 
     //some useful non-terminals
 	protected static String or = "|";
@@ -233,7 +234,9 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String softVolNoAuthorRefTitle = referenceTitleWithoutAuthor + "(" + volumeSeparator +  volume + ")?";
 
     protected static String pBookReference = softEditionVolRefTitle;
-    protected static String pBookSectionReference = authorTeam + referenceAuthorSeparator + softEditionVolRefTitle;
+    protected static String eds = "(\\(" + fWs + "[eE][dD][sS]?\\.?\\))";
+    protected static String edsOp = eds + "?";
+    protected static String pBookSectionReference = authorTeam + edsOp + referenceAuthorSeparator + softEditionVolRefTitle;
     protected static String pArticleReference = pVolRefTitle;
     protected static String pSoftArticleReference = softVolNoAuthorRefTitle;
 
@@ -242,7 +245,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pReference = pReferenceSineDetail + detailSeparator + detail +
 					yearSeperator + yearPhrase + "(" + referenceEnd + ")?";
 
-    //static String strictBook = referenc
+    //static String strictBook = reference
 
     protected static Pattern referencePattern = Pattern.compile(pReference);
     protected static Pattern referenceSineDetailPattern = Pattern.compile(pReferenceSineDetail);
@@ -387,4 +390,6 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern anyZooFullNamePattern = Pattern.compile(anyZooFullName);
 
     protected static Pattern spNovPattern = Pattern.compile(spNov);
+    protected static Pattern authorSepPattern = Pattern.compile("^" + authorTeam + edsOp + referenceAuthorSeparator);
+
 }

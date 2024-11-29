@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
 import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
+import eu.etaxonomy.cdm.format.description.TemporalDataFormatter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -143,8 +144,8 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    public TaxonFactsDtoLoader_FromEntity(ICdmRepository repository, ICdmGenericDao dao
-            , IGeoServiceAreaMapping areaMapping) {
+    public TaxonFactsDtoLoader_FromEntity(ICdmRepository repository, ICdmGenericDao dao,
+            IGeoServiceAreaMapping areaMapping) {
         super(repository, dao, areaMapping);
     }
 
@@ -278,7 +279,7 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
             TaxonPageDto pageDto, TaxonPageDtoConfiguration config) {
 
         //TODO locale
-        Language localeLang = null;
+        Language localeLang = config.getLanguage();
 
         FactDtoBase result;
         if (fact.isInstanceOf(TextData.class)) {
@@ -326,7 +327,7 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
 
             LanguageString description = MultilanguageTextHelper.getPreferredLanguageString(ia.getDescription(), Arrays.asList(localeLang));
             if (description != null) {
-                dto.setDescritpion(description.getText());
+                dto.setDescription(description.getText());
             }
             SpecimenOrObservationBase<?> specimen = ia.getAssociatedSpecimenOrObservation();
             if (specimen != null) {
@@ -345,7 +346,7 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
             LanguageString description = MultilanguageTextHelper.getPreferredLanguageString(
                     ti.getDescription(), Arrays.asList(localeLang));
             if (description != null) {
-                dto.setDescritpion(description.getText());
+                dto.setDescription(description.getText());
             }
             Taxon taxon = ti.getTaxon2();
             if (taxon != null) {
@@ -385,7 +386,7 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
             FactDto factDto = new FactDto();
             featureDto.addFact(factDto);
             //TODO do we really need type information for textdata here?
-            String label = td.toString();
+            String label = TemporalDataFormatter.NewInstance().format(td, localeLang);
             TypedLabel typedLabel = new TypedLabel(label);
             typedLabel.setClassAndId(td);
             factDto.getTypedLabel().add(typedLabel);

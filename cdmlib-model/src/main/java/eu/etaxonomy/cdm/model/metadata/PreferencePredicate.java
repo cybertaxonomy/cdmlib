@@ -150,6 +150,7 @@ public enum PreferencePredicate
     NamedAreaWithIdInVoc(UUID.fromString("edb0d2df-474b-4fac-b32b-8a0416ed39f8"),"Show Id In Vocabulary in Textfield", "facts.namedArea.showIdInVocabulary", Boolean.FALSE),
     EnableComputedDescription(UUID.fromString("eee33ea4-eb85-41fd-8b9d-787420a16463"),"Disable Computed Descriptions", "facts.computedDescriptions", EnabledComputedDescription.Disabled),
     ShowSpecimenInFactSource(UUID.fromString("870d726f-6f22-4a1d-9c86-3dc4fc5c5f12"), "Show Specimen in Fact Sources", "showSpecimenInFactSources", Boolean.TRUE),
+    //ShowMarkedDescriptions(UUID.fromString("8494a566-35d2-4492-8b6e-0ca154d763d4"), "Show Descriptions with Marker", "showDescriptionsWithMarker", Boolean.FALSE),
 
     //Names
     AvailableRanks(UUID.fromString("d6559e49-9d05-43bb-b13a-4a70514100af"), "Available Ranks", "AvailableRanks", null),
@@ -159,6 +160,8 @@ public enum PreferencePredicate
     SpecimenTypeDesignationStatus(UUID.fromString("8a155724-2667-42a7-b789-7d826d0cafc9"), "Specimen Type Designation Status", "name.specimenTypeDesignationStatus", null),
     NameTypeDesignationStatus(UUID.fromString("6091668a-9bcf-4c79-8c53-7e4b98de1ccb"), "Name Type Designation Status", "name.nameTypeDesignationStatus", null),
     SortRanksHierarchichally(UUID.fromString("073c34f3-5e20-4dcd-a12b-ca7336f37fb5"), "Sort Ranks Hierarchically", "name.sortRankHierarchically", true),
+    DisplayNomenclaturalStatus(UUID.fromString("6385d13a-6648-4027-9aec-dcb32a1a8cc5"), "Display nomenclatural status terms in drop down", "name.displayNomenclaturalStatus", TermDisplayEnum.IdInVocabulary),
+
     //Language
     DefaultLanguage(UUID.fromString("0817d7f3-e88c-4064-be09-bc7adf5c2bd7"), "Default Language", "languages.defaultLanguage", Language.ENGLISH()),
     AvailableLanguages(UUID.fromString("b6851dcb-4138-4a9c-ad56-a3b16f6ee69d"), "Available Languages", "languages.availableLanguages", null),

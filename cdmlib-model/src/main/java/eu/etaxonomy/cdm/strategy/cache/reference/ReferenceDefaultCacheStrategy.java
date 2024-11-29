@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -113,7 +114,6 @@ public class ReferenceDefaultCacheStrategy
 
         if (isRealInRef(reference)){
             //Section, Book-Section or Generic with inRef
-
             result = titleCacheRealInRef(reference, isNotAbbrev, uniqueString);
         }else if(isNomRef(type)){
             //all Non-InRef NomRefs
@@ -174,6 +174,9 @@ public class ReferenceDefaultCacheStrategy
         TeamOrPersonBase<?> author = reference.getAuthorship();
         String authorStr = (author == null)? "" : CdmUtils.getPreferredNonEmptyString(author.getTitleCache(),
                 author.getNomenclaturalTitleCache(), isAbbrev, trim);
+        if (StringUtils.isNotBlank(authorStr) && reference.isAuthorIsEditor() && author != null) {
+            authorStr += author.isInstanceOf(Team.class) ? " (eds.)" : " (ed.)";
+        }
         String result = addAuthorYear(authorStr, reference, useFullDatePublished, uniqueString);
         return result;
     }
@@ -305,6 +308,9 @@ public class ReferenceDefaultCacheStrategy
         TeamOrPersonBase<?> author = reference.getAuthorship();
         String authorStr = (author == null)? "" : CdmUtils.getPreferredNonEmptyString(author.getTitleCache(),
                 author.getNomenclaturalTitleCache(), isAbbrev, trim);
+        if (StringUtils.isNotBlank(authorStr) && reference.isAuthorIsEditor() && author != null) {
+            authorStr += author.isInstanceOf(Team.class) ? " (eds.)" : " (ed.)";
+        }
 
         //date
         //TODO compare with addAuthorYear()
@@ -372,6 +378,9 @@ public class ReferenceDefaultCacheStrategy
             TeamOrPersonBase<?> inRefAuthor = inRef.getAuthorship();
             String authorStr = (inRefAuthor == null)? "" : CdmUtils.getPreferredNonEmptyString(inRefAuthor.getTitleCache(),
                     inRefAuthor.getNomenclaturalTitleCache(), isAbbrev, trim);
+            if (StringUtils.isNotBlank(authorStr) && inRef.isAuthorIsEditor() && inRefAuthor != null) {
+                authorStr += inRefAuthor.isInstanceOf(Team.class) ? " (eds.)" : " (ed.)";
+            }
             inRefAuthorAndTitle = CdmUtils.concat(afterInRefAuthor, authorStr, inRefTitle);
         }else{
             inRefAuthorAndTitle = String.format("- undefined %s -", getUndefinedLabel(type));

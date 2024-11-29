@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.model.term.IdentifierType;
 /**
  * @author pplitzner
  * @since 15.06.2015
- *
  */
 public class AbcdDnaParser {
 
@@ -74,7 +73,6 @@ public class AbcdDnaParser {
             parseSpecimenUnit((Element)specimenUnitList.item(0), dnaSample);
         }
         NodeList unitExtensions = item.getElementsByTagName(prefix+"UnitExtensions");
-        System.err.println(item.toString());
         for(int i=0;i<unitExtensions.getLength();i++){
             if(unitExtensions.item(i) instanceof Element){
                 Element unitExtension = (Element) unitExtensions.item(i);
@@ -135,7 +133,6 @@ public class AbcdDnaParser {
         for(int i=0;i<sampleDesignationList.getLength();i++){
             dnaSample.addIdentifier(sampleDesignationList.item(i).getTextContent(), (IdentifierType)cdmAppController.getTermService().find(IdentifierType.uuidSampleDesignation));
         }
-
     }
 
     private AgentBase<?> parsePreparationAgent(Element item) {
@@ -162,9 +159,4 @@ public class AbcdDnaParser {
             }
         }
     }
-
-
-
-
-
 }

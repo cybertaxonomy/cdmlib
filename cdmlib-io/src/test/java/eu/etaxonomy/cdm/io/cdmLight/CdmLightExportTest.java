@@ -146,7 +146,7 @@ public class CdmLightExportTest
 
         List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
         Assert.assertEquals("There should be 11 references (10 nomenclatural references including an in-reference"
-                + " and 1 sec reference)", 11, referenceResult.size() - COUNT_HEADER);
+                + " and 3 sec reference)", 13, referenceResult.size() - COUNT_HEADER);
 
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
         Assert.assertEquals("There should be 3 synonym", 3, synonymResult.size() - COUNT_HEADER);
@@ -234,7 +234,16 @@ public class CdmLightExportTest
 
         //reference
         List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
-        Assert.assertEquals("There should be 9 references (8 nomenclatural references and 1 sec reference)", 9, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 11 references (8 nomenclatural references and 3 sec reference)", 11, referenceResult.size() - COUNT_HEADER);
+
+        //Test for unique citation
+        String line = getLine(referenceResult, ref2UUID);
+        String expected = "Author (1980)";
+        Assert.assertTrue(line.contains(expected));
+        line = getLine(referenceResult, ref3UUID);
+        expected = "Author (1980a)";
+        Assert.assertTrue(line.contains(expected));
+
 
         //synonyms
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
