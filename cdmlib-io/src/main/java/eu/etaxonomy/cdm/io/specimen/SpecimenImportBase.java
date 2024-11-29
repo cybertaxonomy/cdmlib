@@ -287,33 +287,49 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 }
                 if (existingTeams.size()== 0) {
                     Team teamNew = (Team)teamOrPerson;
-
-                    for (Person member: teamNew.getTeamMembers()) {
-                        Person person = findCollectorPerson(state, member);
-                        if (!person.equals(member)) {
-                            teamNew.replaceTeamMember(person, member);
-                        }
-                    }
+                    findCollectorTeamMembersAndReplace(state, teamNew);
                     state.getTeamStoreCollector().put(teamNew.getCollectorTitleCache(), teamNew);
 
                 }else {
                     //TODO here we should try to find the best matching team, see also comment above for best matching person
                     Team team = CdmBase.deproxy(existingTeams.get(0));
-                    state.getReport().addInfoMessage("Matching " + team.getCollectorTitleCache() + " to existing " + team.getCollectorTitleCache() + " UUID: " + team.getUuid());
+                    state.getReport().addInfoMessage("Existing team, not imported: " + team.getCollectorTitleCache() + " UUID: " + team.getUuid());
                     state.getTeamStoreCollector().put(team.getCollectorTitleCache(), team);
 
-                    //As the members are already initialized (during matching) and matched against the
-                    //collector string we can store them here. But this does not allow a "best" matching
-                    //later on.
-                    for (Person member: team.getTeamMembers()) {
-                        member = CdmBase.deproxy(member);
-                        if (!state.getPersonStoreCollector().containsKey(member.getTitleCache())) {
-                            state.getPersonStoreCollector().put(member.getCollectorTitleCache(), member);
-                        }
-                    }
+                    //As the members are already initialized (during matching) and matched against the collector string we can store them here. But this does not allow a "best" matching later on.
+                    putTeamMembersToPersonStore(state, team);
                 }
             }
 
+        }
+    }
+
+    /**
+     *
+     * @param state
+     * @param team
+     */
+    private void putTeamMembersToPersonStore(SpecimenImportStateBase state, Team team) {
+        for (Person member: team.getTeamMembers()) {
+            member = CdmBase.deproxy(member);
+            if (!state.getPersonStoreCollector().containsKey(member.getTitleCache())) {
+                state.getPersonStoreCollector().put(member.getCollectorTitleCache(), member);
+            }
+        }
+    }
+
+    /**
+     * for a not existing team, find already existing team members and replace them in the new team
+     *
+     * @param state
+     * @param teamNew
+     */
+    private void findCollectorTeamMembersAndReplace(SpecimenImportStateBase state, Team teamNew) {
+        for (Person member: teamNew.getTeamMembers()) {
+            Person person = findCollectorPerson(state, member);
+            if (!person.equals(member)) {
+                teamNew.replaceTeamMember(person, member);
+            }
         }
     }
 
@@ -338,7 +354,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         //     this is a better match than if the existing person has a family name.
         if (existingPersons.size()>0) {
             person = CdmBase.deproxy(existingPersons.get(0));
-            state.getReport().addInfoMessage("Matching " + person.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
+            state.getReport().addInfoMessage("Existing person, not imported: " + person.getCollectorTitle() + " UUID: " + person.getUuid());
         }
         state.getPersonStoreCollector().put(person.getCollectorTitleCache(), person);
         return person;
