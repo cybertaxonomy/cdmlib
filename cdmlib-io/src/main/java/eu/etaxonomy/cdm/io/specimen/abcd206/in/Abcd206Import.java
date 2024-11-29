@@ -725,8 +725,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             derivedUnitFacade.innerDerivedUnit().addDerivationEvent(derivationEvent);
                         }
                     } catch (MalformedURLException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        logger.warn(e.getMessage());
+                        state.getReport().addException("Malformed URL for media object", e);
                     }
                 }
             }
@@ -742,8 +742,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         derivedUnitFacade.addFieldObjectMedia(media);
 
                     } catch (MalformedURLException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        logger.error(e.getMessage());
+                        state.getReport().addException("Malformed URL for media object", e);
                     }
                 }
             }
