@@ -290,8 +290,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 }
                 if (existingTeams.size()== 0) {
                     Team teamNew = (Team)teamOrPerson;
-                    Set<Person> alreadyExistingMembers = new HashSet<>();
-                    Set<Person> membersToDelete = new HashSet<>();
+
                     for (Person member: teamNew.getTeamMembers()) {
                         List<Person> existingPersons = new ArrayList<>();
                         try {
@@ -301,16 +300,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                         }
                         if (existingPersons.size()>0) {
                             Person person = existingPersons.get(0);
-                            alreadyExistingMembers.add(person);
-                            membersToDelete.add(member);
+                            teamNew.replaceTeamMember(person, member);
                             state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
                             state.getPersonStoreCollector().put(person.getCollectorTitleCache(), HibernateProxyHelper.deproxy(person, Person.class));
                         }else {
                             state.getPersonStoreCollector().put(member.getCollectorTitleCache(), member);
                         }
                     }
-                    teamNew.getTeamMembers().removeAll(membersToDelete);
-                    teamNew.getTeamMembers().addAll(alreadyExistingMembers);
 
                     state.getTeamStoreCollector().put(teamNew.getCollectorTitleCache(), teamNew);
 
