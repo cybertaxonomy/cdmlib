@@ -274,21 +274,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
         if (!(state.getPersonStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()) || state.getTeamStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()))) {
             if(teamOrPerson instanceof Person) {
-                List<Person> existingPersons = new ArrayList<>();
                 Person person = (Person)teamOrPerson;
-                try {
-                    existingPersons = getCommonService().findMatching(person, MatchStrategyFactory.NewParsedCollectorPersonInstance());
-                } catch (MatchException e) {
-                    state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
-                }
-                //TODO here we should try to find the best matching person. A best matching person is defined
-                //     as a person that has the least deviations. E.g. if both have family name null
-                //     this is a better match than if the existing person has a family name.
-                if (existingPersons.size()>0) {
-                    person = CdmBase.deproxy(existingPersons.get(0));
-                    state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
-                }
-                state.getPersonStoreCollector().put(person.getCollectorTitleCache(), person);
+                findCollectorPerson(state, person);
 
             }else if (teamOrPerson instanceof Team){
                 List<Team> existingTeams = new ArrayList<>();
@@ -302,29 +289,17 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                     Team teamNew = (Team)teamOrPerson;
 
                     for (Person member: teamNew.getTeamMembers()) {
-                        List<Person> existingPersons = new ArrayList<>();
-                        try {
-                            existingPersons = getCommonService().findMatching(member, MatchStrategyFactory.NewParsedCollectorPersonInstance());
-                        } catch (MatchException e) {
-                            state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
-                        }
-                        if (existingPersons.size()>0) {
-                            Person person = existingPersons.get(0);
+                        Person person = findCollectorPerson(state, member);
+                        if (!person.equals(member)) {
                             teamNew.replaceTeamMember(person, member);
-                            state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
-                            state.getPersonStoreCollector().put(person.getCollectorTitleCache(), HibernateProxyHelper.deproxy(person, Person.class));
-                        }else {
-                            state.getPersonStoreCollector().put(member.getCollectorTitleCache(), member);
                         }
                     }
-
                     state.getTeamStoreCollector().put(teamNew.getCollectorTitleCache(), teamNew);
 
                 }else {
                     //TODO here we should try to find the best matching team, see also comment above for best matching person
                     Team team = CdmBase.deproxy(existingTeams.get(0));
                     state.getReport().addInfoMessage("Matching " + team.getCollectorTitleCache() + " to existing " + team.getCollectorTitleCache() + " UUID: " + team.getUuid());
-
                     state.getTeamStoreCollector().put(team.getCollectorTitleCache(), team);
 
                     //As the members are already initialized (during matching) and matched against the
@@ -338,12 +313,35 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                     }
                 }
             }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Stored author " + teamOrPerson.getCollectorTitleCache());
-            }
-            logger.warn("Not imported author with duplicated aut_id "
-                    + teamOrPerson.getCollectorTitleCache());
+
         }
+    }
+
+    /**
+     * find a matching person in db and put it to collector person store
+     *
+     * @param state
+     * @param person
+     *
+     * @return the existing person or the parameter person
+     */
+    private Person findCollectorPerson(SpecimenImportStateBase state, Person person) {
+        List<Person> existingPersons = new ArrayList<>();
+
+        try {
+            existingPersons = getCommonService().findMatching(person, MatchStrategyFactory.NewParsedCollectorPersonInstance());
+        } catch (MatchException e) {
+            state.getReport().addInfoMessage("Matching " + person.getCollectorTitleCache() + " threw an exception" + e.getMessage());
+        }
+        //TODO here we should try to find the best matching person. A best matching person is defined
+        //     as a person that has the least deviations. E.g. if both have family name null
+        //     this is a better match than if the existing person has a family name.
+        if (existingPersons.size()>0) {
+            person = CdmBase.deproxy(existingPersons.get(0));
+            state.getReport().addInfoMessage("Matching " + person.getCollectorTitleCache() + " to existing " + person.getCollectorTitle() + " UUID: " + person.getUuid());
+        }
+        state.getPersonStoreCollector().put(person.getCollectorTitleCache(), person);
+        return person;
     }
 
 	protected Taxon getBestMatchingTaxon(String scientificName, java.util.Collection<TaxonName> names, STATE state){
