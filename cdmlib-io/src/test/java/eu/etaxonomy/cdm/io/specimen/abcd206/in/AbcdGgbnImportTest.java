@@ -644,7 +644,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
         count = agentService.count(Person.class);
         //agentService.find(Team.class, "Sch", MatchMode.B);
-        assertEquals("There should be 6 persons because all used are already in the database (4 existing + Jana + L.)", 6, count);
+        assertEquals("There should be 5 persons because all used are already in the database (3 existing + Jana + L.)", 5, count);
         Pager<Person> persons = agentService.findByTitle(Person.class, "Leon", MatchMode.BEGINNING, null, null, null, null, null);
         assertEquals("Collector Leonhard,A. already in database, therefore only one should be found.",
                 Long.valueOf(1), persons.getCount());
