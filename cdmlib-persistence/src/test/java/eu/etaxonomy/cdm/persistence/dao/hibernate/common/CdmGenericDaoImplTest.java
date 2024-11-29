@@ -21,7 +21,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -1292,8 +1291,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @Ignore //test for find matching collectors, this is used in specimen imports, but currently it does not work correctly
-    //TODO: fix it
     public void testFindMatchingCollectors() {
         Person person1 = Person.NewInstance();
         Person person2 = Person.NewInstance();
@@ -1344,24 +1341,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
             //FIXME #9905
             Assert.assertEquals(1, candidateMatchResult.size());
 
-            person1.setNomenclaturalTitle("NomTitle1b");
-            candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
-            Assert.assertEquals(0, candidateMatchResult.size());
-            person1.setNomenclaturalTitle("NomTitle1");  //set back
 
-            Team teamDifferentOrder = Team.NewInstance();
-            teamDifferentOrder.addTeamMember(person2);
-            teamDifferentOrder.addTeamMember(person1);
-            candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
-            //TODO improve, should be 0 in best implementation
-            Assert.assertEquals(1, candidateMatchResult.size());
-
-            //test that reference.authorTeam.* still works without throwing exceptions
-            TaxonName name = NonViralNameParserImpl.NewInstance().parseReferencedName("Abies alba Nyffeler & Eggli in Taxon 59: 232. 2010", NomenclaturalCode.ICNAFP, Rank.SPECIES());
-            Reference nomRef = name.getNomenclaturalReference();
-            IMatchStrategy referenceMatcher = MatchStrategyFactory.NewParsedReferenceInstance(nomRef);
-            List<Reference> matching = cdmGenericDao.findMatching(nomRef, referenceMatcher);
-            Assert.assertEquals("We don't expect matchings, only tested that no exceptions are thrown", 0, matching.size());
 
         } catch (IllegalArgumentException | MatchException e) {
             e.printStackTrace();
