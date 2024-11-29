@@ -590,8 +590,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
         @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     })
-	@Ignore
-	//TODO: the team matching does not work with the current MatchingStrategy, this needs to be fixed!
     public void testAlreadyExistingTeam(){
 
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sibling_association.xml";
@@ -612,8 +610,50 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
         int count = agentService.count(Team.class);
         //agentService.find(Team.class, "Sch", MatchMode.B);
-        assertEquals("There should be only one team because it is already in the database", 1, count);
+        assertEquals("There should be only one because the used one is already in the database", 1, count);
 
+
+    }
+
+	@Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    })
+    public void testAlreadyExistingTeamMembers(){
+
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_team_test.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
+        assertTrue("Return value for import.invoke should be true", result);
+
+        int count = agentService.count(Team.class);
+        //agentService.find(Team.class, "Sch", MatchMode.B);
+        assertEquals("There should be two teams because the used one is not in the database", 2, count);
+
+        count = agentService.count(Person.class);
+        //agentService.find(Team.class, "Sch", MatchMode.B);
+        assertEquals("There should be 6 persons because all used are already in the database (4 existing + Jana + L.)", 6, count);
+        Pager<Person> persons = agentService.findByTitle(Person.class, "Leon", MatchMode.BEGINNING, null, null, null, null, null);
+        assertEquals("Collector Leonhard,A. already in database, therefore only one should be found.",
+                Long.valueOf(1), persons.getCount());
+        persons = agentService.findByTitle(Person.class, "Schw", MatchMode.BEGINNING, null, null, null, null, null);
+        assertEquals("Collector Schweinfurt already in database, therefore only one should be found.",
+                Long.valueOf(1), persons.getCount());
+        persons = agentService.findByTitle(Person.class, "Mey", MatchMode.BEGINNING, null, null, null, null, null);
+        assertEquals("Collector Meyer already in database, therefore only one should be found.",
+                Long.valueOf(1), persons.getCount());
 
     }
 

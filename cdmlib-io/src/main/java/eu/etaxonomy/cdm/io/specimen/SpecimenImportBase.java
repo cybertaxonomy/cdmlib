@@ -259,7 +259,17 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         return null;
     }
 
-    //TODO is this method tested in any test?
+
+    /**
+     * Searches for already existing teams or persons, if a team does not exist, it searches for the team members and replaces already existing members
+     * the result is added to the person/team store for faster reusing
+     *
+     * follow up implementations should find a best matching team/person with for example same family name
+     *
+     * @param  state
+     * @param  teamOrPerson
+     *
+     */
     protected void findMatchingCollectorAndFillPersonStore(SpecimenImportStateBase state, TeamOrPersonBase<?> teamOrPerson) {
 
         if (!(state.getPersonStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()) || state.getTeamStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()))) {
