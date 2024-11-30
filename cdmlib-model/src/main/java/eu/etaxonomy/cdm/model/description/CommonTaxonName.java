@@ -55,7 +55,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class CommonTaxonName extends DescriptionElementBase {
+public class CommonTaxonName
+        extends DescriptionElementBase
+        implements IHasModifyingText {
 
     private static final long serialVersionUID = 2643808051976643339L;
 

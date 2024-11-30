@@ -69,7 +69,9 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class CategoricalData extends DescriptionElementBase {
+public class CategoricalData
+        extends DescriptionElementBase
+        implements IHasModifyingText {
 
     private static final long serialVersionUID = -6298361966947668998L;
     @SuppressWarnings("unused")

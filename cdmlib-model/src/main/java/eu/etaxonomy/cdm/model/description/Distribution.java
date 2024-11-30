@@ -56,7 +56,9 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class Distribution extends DescriptionElementBase {
+public class Distribution
+        extends DescriptionElementBase
+        implements IHasModifyingText {
 
     private static final long serialVersionUID = 8366462435651559730L;
     @SuppressWarnings("unused")

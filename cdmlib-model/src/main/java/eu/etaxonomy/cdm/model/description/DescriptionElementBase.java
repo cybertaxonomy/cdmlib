@@ -48,7 +48,6 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -98,7 +97,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 public abstract class DescriptionElementBase
         extends AnnotatableEntity
         implements ISourceable<DescriptionElementSource>,
-                   IModifiable, IHasModifyingText, IMultiLanguageTextHolder{
+                   IModifiable, IMultiLanguageTextHolder{
 
     private static final long serialVersionUID = 5000910777835755905L;
     @SuppressWarnings("unused")
@@ -301,99 +300,37 @@ public abstract class DescriptionElementBase
         this.modifiers.remove(modifier);
     }
 
-
     /**
-     * Returns the {@link MultilanguageText multilanguage text} used to qualify the validity
-     * of <i>this</i> description element.  The different {@link LanguageString language strings}
-     * contained in the multilanguage text should all have the same meaning.<BR>
-     * A multilanguage text does not belong to a controlled {@link TermVocabulary term vocabulary}
-     * as a {@link Modifier modifier} does.
-     * <P>
-     * NOTE: the actual content of <i>this</i> description element is NOT
-     * stored in the modifying text. This is only metainformation
-     * (like "Some experts express doubt about this assertion").
+     * See {@link IHasModifyingText#getModifyingText()}
+     *
+     * Note: should be used only by subclasses that implement {@link IHasModifyingText}
      */
-    @Override
     public Map<Language,LanguageString> getModifyingText(){
         return this.modifyingText;
     }
 
     /**
-     * Adds a translated {@link LanguageString text in a particular language}
-     * to the {@link MultilanguageText multilanguage text} used to qualify the validity
-     * of <i>this</i> description element.
+     * See {@link IHasModifyingText#putModifyingText(LanguageString)}
      *
-     * @param description	the language string describing the validity
-     * 						in a particular language
-     * @see    	   			#getModifyingText()
-     * @see    	   			#putModifyingText(Language, String)
-     * @deprecated 			should follow the put semantic of maps, this method will be removed in v4.0
-     * 						Use the {@link #putModifyingText(LanguageString) putModifyingText} method
+     * Note: should be used only by subclasses that implement {@link IHasModifyingText}
      */
-    @Deprecated
-    public LanguageString addModifyingText(LanguageString description){
-        return this.putModifyingText(description);
-    }
-
-    /**
-     * Adds a translated {@link LanguageString text in a particular language}
-     * to the {@link MultilanguageText multilanguage text} used to qualify the validity
-     * of <i>this</i> description element.
-     *
-     * @param description	the language string describing the validity
-     * 						in a particular language
-     * @see    	   			#getModifyingText()
-     * @see    	   			#putModifyingText(Language, String)
-     */
-    @Override
     public LanguageString putModifyingText(LanguageString description){
         return this.modifyingText.put(description.getLanguage(),description);
     }
-    /**
-     * Creates a {@link LanguageString language string} based on the given text string
-     * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
-     * used to qualify the validity of <i>this</i> description element.
-     *
-     * @param text		the string describing the validity
-     * 					in a particular language
-     * @param language	the language in which the text string is formulated
-     * @see    	   		#getModifyingText()
-     * @see    	   		#putModifyingText(LanguageString)
-     * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
-     * 					Use the {@link #putModifyingText(Language, String) putModifyingText} method
-     */
-    @Deprecated
-    public LanguageString addModifyingText(String text, Language language){
-        return this.putModifyingText(language, text);
-    }
 
     /**
-     * Creates a {@link LanguageString language string} based on the given text string
-     * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
-     * used to qualify the validity of <i>this</i> description element.
+     * See {@link IHasModifyingText#putModifyingText(Language, String)}
      *
-     * @param language	the language in which the text string is formulated
-     * @param text		the string describing the validity
-     * 					in a particular language
-     *
-     * @see    	   		#getModifyingText()
-     * @see    	   		#putModifyingText(LanguageString)
-     *
+     * Note: should be used only by subclasses that implement {@link IHasModifyingText}
      */
-    @Override
     public LanguageString putModifyingText(Language language, String text){
         return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
     }
     /**
-     * Removes from the {@link MultilanguageText multilanguage text} used to qualify the validity
-     * of <i>this</i> description element the one {@link LanguageString language string}
-     * with the given {@link Language language}.
+     * See {@link IHasModifyingText#removeModifyingText(Language)}
      *
-     * @param  language	the language in which the language string to be removed
-     * 					has been formulated
-     * @see     		#getModifyingText()
+     * Note: should be used only by subclasses that implement {@link IHasModifyingText}
      */
-    @Override
     public LanguageString removeModifyingText(Language language){
         return this.modifyingText.remove(language);
     }
