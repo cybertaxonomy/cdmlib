@@ -88,7 +88,7 @@ public interface IService<T extends ICdmBase>{
     public DeleteResult delete(UUID persistentObjectUUID) ;
 
     /**
-     * Returns true if an entity of type <T> with a unique identifier matching the
+     * Returns true if an entity of type <T> with an unique identifier matching the
      * identifier supplied exists in the database, or false if no such entity can be
      * found.
      * @param uuid the unique identifier of the entity required
