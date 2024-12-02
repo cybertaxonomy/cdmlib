@@ -349,7 +349,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         if (subtreeUuid != null){
             subtree = taxonNodeService.find(subtreeUuid);
             if(subtree == null) {
-                response.sendError(404 , "TaxonNode not found using " + subtreeUuid );
+                response.sendError(404 , "Taxon node not found using " + subtreeUuid );
                 //will not happen
                 return null;
             }

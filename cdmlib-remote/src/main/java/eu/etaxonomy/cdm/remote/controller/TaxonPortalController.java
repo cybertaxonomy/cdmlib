@@ -359,7 +359,6 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "locale", required = false, defaultValue = "en") String locale,
 
 
-
             //distributionInfoConfig
             //TODO annotation type filter for distribution info
             @RequestParam(value = "part", required = false)  Set<InfoPart> partSet,
@@ -402,8 +401,14 @@ public class TaxonPortalController extends TaxonController{
 
         //check taxon exists and not filtered
         Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, getTaxonNodeInitStrategy().getPropertyPaths());
+        if (taxon == null) {
+            return null;
+        }
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
         taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
+        if (taxon == null) {
+            return null;
+        }
 
         if (partSet == null) {
             partSet = EnumSet.of(InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);
