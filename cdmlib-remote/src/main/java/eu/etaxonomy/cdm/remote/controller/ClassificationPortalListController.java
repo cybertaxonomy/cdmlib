@@ -199,7 +199,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
         Classification classification = service.find(classificationUuid);
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
         Rank rank = findRank(rankUuid);
-        Taxon taxon = (Taxon) taxonService.load(taxonUuid);
+        Taxon taxon = getAcceptedTaxonOrError(taxonUuid, taxonService, response);
         if(classification == null){
             HttpStatusMessage.UUID_INVALID.send(response, "Classification uuid does not exist.");
             return null;
