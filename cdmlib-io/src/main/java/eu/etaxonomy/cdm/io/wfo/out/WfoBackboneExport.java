@@ -256,11 +256,11 @@ public class WfoBackboneExport
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_PARENT_ID)] = parentWfoId;
 
             //... higher taxa
+            //TODO 3 do we want/should fill the higher classification fields?
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBFAMILY)] = null;
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_TRIBE)] = null;
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBTRIBE)] = null;
-            //TODO 2 is subgenus handling correct?
-            csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBGENUS)] = name.isInfraGeneric()? name.getInfraGenericEpithet() : null ;
+            csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBGENUS)] = null;
 
             //... tax status, TODO 2 are there other status for accepted or other reasons for being ambiguous
             boolean isUnplaced = taxonNode.getStatus() != null && taxonNode.getStatus() == TaxonNodeStatus.UNPLACED;
