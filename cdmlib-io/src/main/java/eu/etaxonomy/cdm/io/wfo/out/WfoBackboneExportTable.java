@@ -39,8 +39,8 @@ public enum WfoBackboneExportTable implements ITaxonTreeExportTable {
     static final String TAX_GENUS = "genus";  //TODO should it be NAME_GENUS
     static final String TAX_SUBGENUS = "subgenus";  //TODO should it be NAME_SUBGENUS
     static final String NAME_SPECIFIC_EPITHET = "specificEpithet";
-    static final String NAME_INFRASPECIFIC_EPITHET = "infraspecificEpithet ";
-    static final String NAME_VERBATIM_RANK = "verbatimTaxonRank ";
+    static final String NAME_INFRASPECIFIC_EPITHET = "infraspecificEpithet";
+    static final String NAME_VERBATIM_RANK = "verbatimTaxonRank";
     static final String NAME_STATUS = "nomenclaturalStatus";
     static final String NAME_PUBLISHED_IN = "namePublishedIn";
     static final String TAX_STATUS = "taxonomicStatus";
