@@ -783,9 +783,11 @@ public class Reference
      * If true, the {@link #getAuthorship() author} is the editor
      * and should be formatted accordingly. See #7987
      */
+    @Override
     public boolean isAuthorIsEditor() {
         return authorIsEditor;
     }
+    @Override
     public void setAuthorIsEditor(boolean authorIsEditor) {
         this.authorIsEditor = authorIsEditor;
     }
