@@ -336,8 +336,11 @@ public class WfoBackboneExport
         if (!baseUrl.endsWith("/")) {
             baseUrl += "/";
         }
-        String result = baseUrl + "cdm_dataportal/taxon/" + taxon.getUuid() ;
-        return result;
+        if (state.getConfig().isUseNameLink()) {
+            return baseUrl + "cdm_dataportal/name/" + taxon.getName().getUuid();
+        } else {
+            return baseUrl + "cdm_dataportal/taxon/" + taxon.getUuid() ;
+        }
     }
 
     private String makeSynonymSourceLink(WfoBackboneExportState state, Synonym synonym) {
@@ -346,11 +349,10 @@ public class WfoBackboneExport
             baseUrl += "/";
         }
         if (state.getConfig().isUseNameLink()) {
-            return baseUrl + "cdm_dataportal/name/" +
-                    synonym.getName().getUuid();s
+            return baseUrl + "cdm_dataportal/name/" + synonym.getName().getUuid();
         } else {
             return baseUrl + "cdm_dataportal/taxon/" +
-                    synonym.getAcceptedTaxon().getUuid()
+                synonym.getAcceptedTaxon().getUuid()
                     + "/synonymy?highlight=" + synonym.getUuid();
         }
     }
