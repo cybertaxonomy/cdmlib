@@ -262,15 +262,11 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
     /**
      * Searches for already existing teams or persons, if a team does not exist, it searches for the team members and replaces already existing members
-     * the result is added to the person/team store for faster reusing
+     * the result is added to the person/team store for faster reusing.
      *
-     * follow up implementations should find a best matching team/person with for example same family name
-     *
-     * @param  state
-     * @param  teamOrPerson
-     *
+     * TODO: Follow up implementations should find a best matching team/person with for example same family name
      */
-    protected void findMatchingCollectorAndFillPersonStore(SpecimenImportStateBase state, TeamOrPersonBase<?> teamOrPerson) {
+    protected void findMatchingCollectorAndFillPersonStore(SpecimenImportStateBase<?,?> state, TeamOrPersonBase<?> teamOrPerson) {
 
         if (!(state.getPersonStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()) || state.getTeamStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()))) {
             if(teamOrPerson instanceof Person) {
@@ -296,19 +292,14 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                     state.getReport().addInfoMessage("Existing team, not imported: " + team.getCollectorTitleCache() + " UUID: " + team.getUuid());
                     state.getTeamStoreCollector().put(team.getCollectorTitleCache(), team);
 
-                    //As the members are already initialized (during matching) and matched against the collector string we can store them here. But this does not allow a "best" matching later on.
+                    //As the members are already initialized (during matching) and matched against the collector string we can store them here.
+                    //But this does not allow a "best" matching later on.
                     putTeamMembersToPersonStore(state, team);
                 }
             }
-
         }
     }
 
-    /**
-     *
-     * @param state
-     * @param team
-     */
     private void putTeamMembersToPersonStore(SpecimenImportStateBase state, Team team) {
         for (Person member: team.getTeamMembers()) {
             member = CdmBase.deproxy(member);

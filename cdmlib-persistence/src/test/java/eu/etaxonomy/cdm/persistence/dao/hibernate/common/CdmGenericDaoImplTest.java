@@ -1292,6 +1292,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testFindMatchingCollectors() {
+
         Person person1 = Person.NewInstance();
         Person person2 = Person.NewInstance();
         Person person3 = Person.NewInstance();
@@ -1340,16 +1341,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
             List<Team> candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
             //FIXME #9905
             Assert.assertEquals(1, candidateMatchResult.size());
-
-
-
         } catch (IllegalArgumentException | MatchException e) {
-            e.printStackTrace();
             Assert.fail("No exception should be thrown");
-
         }
     }
-
 
 	@Test
 	public void testGetHqlResult() {

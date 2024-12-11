@@ -585,12 +585,12 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	}
 
 
-	@Test
+	@Test //#10570
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
         @DataSet(value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     })
-    public void testAlreadyExistingTeam(){
+    public void testAlreadyExistingCollectorTeam(){
 
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_team_test2.xml";
         URL url = this.getClass().getResource(inputFile);
@@ -615,12 +615,12 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
     }
 
-	@Test
+	@Test //#10570
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
         @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     })
-    public void testAlreadyExistingTeamMembers(){
+    public void testAlreadyExistingCollectorTeamMembers(){
 
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_team_test.xml";
         URL url = this.getClass().getResource(inputFile);
