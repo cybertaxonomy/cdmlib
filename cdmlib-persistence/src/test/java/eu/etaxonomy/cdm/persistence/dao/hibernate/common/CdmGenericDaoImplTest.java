@@ -1290,7 +1290,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         }
     }
 
-    @Test
+    @Test  //#10570
     public void testFindMatchingCollectors() {
 
         Person person1 = Person.NewInstance();
