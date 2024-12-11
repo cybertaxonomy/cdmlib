@@ -345,10 +345,14 @@ public class WfoBackboneExport
         if (!baseUrl.endsWith("/")) {
             baseUrl += "/";
         }
-        String result = baseUrl + "cdm_dataportal/taxon/" +
-                synonym.getAcceptedTaxon().getUuid()
-                + "/synonymy?highlight=" + synonym.getUuid();
-        return result;
+        if (state.getConfig().isUseNameLink()) {
+            return baseUrl + "cdm_dataportal/name/" +
+                    synonym.getName().getUuid();s
+        } else {
+            return baseUrl + "cdm_dataportal/taxon/" +
+                    synonym.getAcceptedTaxon().getUuid()
+                    + "/synonymy?highlight=" + synonym.getUuid();
+        }
     }
 
     private void handleSynonyms(WfoBackboneExportState state, Taxon taxon) {
