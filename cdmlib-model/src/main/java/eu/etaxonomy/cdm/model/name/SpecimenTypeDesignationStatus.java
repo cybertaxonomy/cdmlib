@@ -133,14 +133,14 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	@Override
 	public boolean hasDesignationSource(){
 		if (this.equals(LECTOTYPE()) ||
-				this.equals(ISOLECTOTYPE()) ||
+//				this.equals(ISOLECTOTYPE()) ||  removed due to #10547
 				this.equals(SECOND_STEP_LECTOTYPE()) ||
 //				this.equals(PARALECTOTYPE()) ||  //removed due to #8140#note-5
 				//with source but not "lecto"
 				this.equals(EPITYPE()) ||
-				this.equals(ISOEPITYPE()) ||
+//				this.equals(ISOEPITYPE()) ||   removed due to #10547
 				this.equals(NEOTYPE()) ||
-				this.equals(ISONEOTYPE()) ||
+//				this.equals(ISONEOTYPE()) ||   removed due to #10547
 				this.equals(SECOND_STEP_NEOTYPE())
 		        ){
 			return true;
