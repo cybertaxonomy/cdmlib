@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
@@ -56,6 +57,16 @@ public class SchemaUpdater_5461_5480 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
+		//#10612
+		//Set nomenclatural standing to NO for nom. rej.
+        stepName = "Set nomenclatural standing to NO for nom. rej.";
+        String nonAuditedTableName = "DefinedTermBase";
+        String defaultQuery = "UPDATE @@DefinedTermBase@@ "
+                + " SET nomenclaturalStanding = 'NO' "
+                + " WHERE uuid IN ( "
+                + "     '48107cc8-7a5b-482e-b438-efbba050b851'"   //status nom. rej.
+                + "    ) ";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
         return stepList;
     }
