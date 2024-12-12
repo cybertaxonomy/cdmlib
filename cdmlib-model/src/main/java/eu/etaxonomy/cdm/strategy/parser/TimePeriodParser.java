@@ -63,7 +63,7 @@ public class TimePeriodParser {
 
 	private static final Pattern lifeSpanPattern =  Pattern.compile(String.format("%s--%s", firstYearPattern, firstYearPattern));
 
-	private static final String strMonthes = "((Jan|Feb|Aug|Sept?|Oct(ober)?|Nov|Dec)\\.?|(Mar(ch)?|Apr(il)?|Ma(yi)|June?|July?))";
+	private static final String strMonthes = "((Jan|Feb|Aug|Sept?|Oct(ober)?|Nov|Dec)\\.?|(Mar(ch)?|Apr(il)?|Ma[yi]|June?|July?))";
 	public static final String strDateWithMonthesPeriod = "(("+ strDay + "|(" + strDay + dotOrWs +")?" + strMonthes + "|((" + strDay + dotOrWs +")?" + strMonthes  + dotOrWs + ")?" + "\\d{4,4})" + SEP + ")?" +
 	        "(("+ strDay + dotOrWs + ")?" + strMonthes + dotOrWs + ")?\\d{4,4}\\+?";
     private static final Pattern dateWithMonthNamePattern = Pattern.compile(strDateWithMonthesPeriod);
