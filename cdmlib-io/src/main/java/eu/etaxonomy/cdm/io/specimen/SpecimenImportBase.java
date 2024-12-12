@@ -345,7 +345,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         //     this is a better match than if the existing person has a family name.
         if (existingPersons.size()>0) {
             person = CdmBase.deproxy(existingPersons.get(0));
-            state.getReport().addInfoMessage("Existing person, not imported: " + person.getCollectorTitle() + " UUID: " + person.getUuid());
+            state.getReport().addInfoMessage("Person already exists, not imported: " + person.getCollectorTitle() + " UUID: " + person.getUuid());
         }
         state.getPersonStoreCollector().put(person.getCollectorTitleCache(), person);
         return person;

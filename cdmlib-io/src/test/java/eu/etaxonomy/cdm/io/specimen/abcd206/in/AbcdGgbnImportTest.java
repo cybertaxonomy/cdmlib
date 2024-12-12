@@ -592,7 +592,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
     })
     public void testAlreadyExistingCollectorTeam(){
 
-        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_team_test2.xml";
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/match_team_test2.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 
@@ -622,7 +622,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
     })
     public void testAlreadyExistingCollectorTeamMembers(){
 
-        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_team_test.xml";
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/match_team_test.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 
