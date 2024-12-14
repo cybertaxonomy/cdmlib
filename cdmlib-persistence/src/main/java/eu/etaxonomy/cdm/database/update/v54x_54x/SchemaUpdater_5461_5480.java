@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update.v54x_54x;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
@@ -30,7 +32,6 @@ public class SchemaUpdater_5461_5480 extends SchemaUpdaterBase {
 	private static final Logger logger = LogManager.getLogger();
 
 	private static final CdmVersion startSchemaVersion = CdmVersion.V_05_46_01;
-	//TODO
 	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_48_00;
 
 // ********************** FACTORY METHOD *************************************
@@ -67,6 +68,12 @@ public class SchemaUpdater_5461_5480 extends SchemaUpdaterBase {
                 + "     '48107cc8-7a5b-482e-b438-efbba050b851'"   //status nom. rej.
                 + "    ) ";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
+
+        //#10614 Update label for language Spanish
+        stepName = "Update label for language Spanish";
+        UUID uuidSpanish = UUID.fromString("511d8125-f5e6-445d-aee2-6327375238be");
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidSpanish,
+                "Spanish", "Spanish", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
 
         return stepList;
     }
