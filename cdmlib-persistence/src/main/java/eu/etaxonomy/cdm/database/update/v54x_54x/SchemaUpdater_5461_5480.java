@@ -105,6 +105,30 @@ public class SchemaUpdater_5461_5480 extends SchemaUpdaterBase {
         TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTurkeyEuropeTDWG4,
                 "Türkiye-in-Europe", "Türkiye-in-Europe", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
 
+        //#10401 Update label for Sample Size
+        stepName = "Update label for Sample Size";
+        UUID uuidTerm = UUID.fromString("571f86ca-a44c-4484-9981-11fd82138a7a");
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTerm,
+                "Sample Size", "Sample Size", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
+
+        //#10401 Update label for Typical Lower Boundary
+        stepName = "Update label for Typical Lower Boundary";
+        uuidTerm = UUID.fromString("8372a89a-35ad-4755-a881-7edae6c37c8f");
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTerm,
+                "Typical Lower Boundary", "TypicalLowerBoundary", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
+
+        //#10401 Update label for Typical Upper Boundary
+        stepName = "Update label for Typical Upper Boundary";
+        uuidTerm = UUID.fromString("9eff88ba-b8e7-4631-9e55-a50bd16ba79d");
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTerm,
+                "Typical Upper Boundary", "Typical Upper Boundary", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
+
+        //#10401 Update label for Standard Deviation
+        stepName = "Update label for Standard Deviation";
+        uuidTerm = UUID.fromString("9ee4397e-3496-4fe1-9114-afc7d7bdc652");
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTerm,
+                "Standard Deviation", "Standard Deviation", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
+
         return stepList;
     }
 }
