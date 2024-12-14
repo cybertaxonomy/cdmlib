@@ -129,6 +129,13 @@ public class SchemaUpdater_5461_5480 extends SchemaUpdaterBase {
         TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTerm,
                 "Standard Deviation", "Standard Deviation", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
 
+        //#10593
+        //Set URL pattern for ORCID
+        stepName = "Set URL pattern for ORCID";
+        String sql = "UPDATE @@DefinedTermBase@@ "
+                + " SET urlPattern = 'https://orcid.org/{@ID}'"
+                + " WHERE uuid = 'fb1764f5-843b-414c-b9e7-d3802e408823'";
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, sql);
         return stepList;
     }
 }
