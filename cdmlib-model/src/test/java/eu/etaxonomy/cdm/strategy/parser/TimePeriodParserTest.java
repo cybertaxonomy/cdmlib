@@ -319,7 +319,6 @@ public class TimePeriodParserTest {
         Assert.assertEquals(Integer.valueOf(4), tp.getStartDay());
         Assert.assertTrue(tp.isContinued());
 
-
         //#10642
         strDate = "4 May 1957";
         tp = TimePeriodParser.parseString(strDate);
@@ -333,6 +332,50 @@ public class TimePeriodParserTest {
         Assert.assertNull(tp.getEndMonth());
         Assert.assertNull(tp.getEndDay());
 
+        //#10643
+        strDate = "4.V.1957";
+        tp = TimePeriodParser.parseString(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("4 May 1957", tp.toString());
+        Assert.assertEquals("1957", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(5), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(4), tp.getStartDay());
+        Assert.assertNull(tp.getEndYear());
+        Assert.assertNull(tp.getEndMonth());
+        Assert.assertNull(tp.getEndDay());
+
+        strDate = "30.xii.1947";
+        tp = TimePeriodParser.parseString(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("30 Dec 1947", tp.toString());
+        Assert.assertEquals("1947", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1947), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(30), tp.getStartDay());
+
+        strDate = "30 xii 1947";
+        tp = TimePeriodParser.parseString(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("30 Dec 1947", tp.toString());
+        Assert.assertEquals("1947", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1947), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(30), tp.getStartDay());
+
+        strDate = "xii 30"; //TODO do we really want the Roman format this way?
+        tp = TimePeriodParser.parseString(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("30 Dec", tp.toString());
+        Assert.assertEquals("", tp.getYear());
+        Assert.assertNull(tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(30), tp.getStartDay());
+
+        strDate = "1947 x 15";
+        tp = TimePeriodParser.parseString(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("15 Oct 1947", tp.toString());
 	}
 
     @Test

@@ -63,7 +63,9 @@ public class TimePeriodParser {
 
 	private static final Pattern lifeSpanPattern =  Pattern.compile(String.format("%s--%s", firstYearPattern, firstYearPattern));
 
-	private static final String strMonthes = "((Jan|Feb|Aug|Sept?|Oct(ober)?|Nov|Dec)\\.?|(Mar(ch)?|Apr(il)?|Ma[yi]|June?|July?))";
+	private static final String strRomanMonthes = "([iI]([iI]{0,2}|[vV][xX])?|[vV]([iI]{0,3})|[xX]([iI]{0,3}))";
+	private static final String strMonthes = "((Jan|Feb|Aug|Sept?|Oct(ober)?|Nov|Dec)\\.?|(Mar(ch)?|Apr(il)?|Ma[yi]|June?|July?)|"
+	        + strRomanMonthes + ")";
 	public static final String strDateWithMonthesPeriod = "(("+ strDay + "|(" + strDay + dotOrWs +")?" + strMonthes + "|((" + strDay + dotOrWs +")?" + strMonthes  + dotOrWs + ")?" + "\\d{4,4})" + SEP + ")?" +
 	        "(("+ strDay + dotOrWs + ")?" + strMonthes + dotOrWs + ")?\\d{4,4}\\+?";
     private static final Pattern dateWithMonthNamePattern = Pattern.compile(strDateWithMonthesPeriod);
@@ -385,9 +387,48 @@ public class TimePeriodParser {
         return partial;
     }
 
+    private static Integer monthNrFromRoman(String strMonth) {
+
+        switch (strMonth.toLowerCase()) {
+            case "i":
+                return 1;
+            case "ii":
+                return 2;
+            case "iii":
+                return 3;
+            case "iv":
+                return 4;
+            case "v":
+                return 5;
+            case "vi":
+                return 6;
+            case "vii":
+                return 7;
+            case "viii":
+                return 8;
+            case "ix":
+                return 9;
+            case "x":
+                return 10;
+            case "xi":
+                return 11;
+            case "xii":
+                return 12;
+            default:
+                return null;
+        }
+
+    }
+
+
     private static Integer monthNrFromName(String strMonth) {
 
-        switch (strMonth.substring(0, 3)) {
+        Integer result = monthNrFromRoman(strMonth);
+        if (result != null) {
+            return result;
+        }else {
+
+            switch (strMonth.substring(0, 3)) {
             case "Jan":
                 return 1;
             case "Feb":
@@ -420,7 +461,9 @@ public class TimePeriodParser {
                 return 12;
             default:
                 throw new IllegalArgumentException("Month not recognized: " + strMonth);
+            }
         }
+
     }
 
     //TODO "continued" not yet handled, probably looks different here (e.g. 2017--x)
