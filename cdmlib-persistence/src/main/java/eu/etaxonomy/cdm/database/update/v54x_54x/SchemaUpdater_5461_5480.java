@@ -75,6 +75,12 @@ public class SchemaUpdater_5461_5480 extends SchemaUpdaterBase {
         TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidSpanish,
                 "Spanish", "Spanish", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
 
+        //#10558 Update label for country Turkey -> Türkiye
+        stepName = "Update label for country Turkey -> Türkiye";
+        UUID uuidTurkey = UUID.fromString("f7c15c55-d0b3-4eda-8961-582d5071df78");
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTurkey,
+                "Republic of Türkiye", "Türkiye", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
+
         return stepList;
     }
 }
