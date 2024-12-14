@@ -81,6 +81,30 @@ public class SchemaUpdater_5461_5480 extends SchemaUpdaterBase {
         TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTurkey,
                 "Republic of Türkiye", "Türkiye", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
 
+        //#10558 Update label for TDWG 3 area Turkey -> Türkiye
+        stepName = "Update label for TDWG 3 area Turkey -> Türkiye";
+        UUID uuidTurkeyTDWG = UUID.fromString("48219cbc-82ab-447f-8a67-e97408736c23");
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTurkeyTDWG,
+                "Türkiye", "Türkiye", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
+
+        //#10558 Update label for TDWG 4 area Turkey -> Türkiye
+        stepName = "Update label for TDWG 3 area Turkey -> Türkiye";
+        UUID uuidTurkeyTDWG4 = UUID.fromString("60a9219e-136e-4ac1-92a3-1b889e473c53");
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTurkeyTDWG4,
+                "Türkiye", "Türkiye", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
+
+        //#10558 Update label for TDWG 3 area Turkey -> Türkiye
+        stepName = "Update label for TDWG 3 area Turkey -> Türkiye";
+        UUID uuidTurkeyEuropeTDWG = UUID.fromString("0cc0f22f-df09-48d2-a2e0-27911df17c8b");
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTurkeyEuropeTDWG,
+                "Türkiye-in-Europe", "Türkiye-in-Europe", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
+
+        //#10558 Update label for TDWG 4 area Turkey -> Türkiye
+        stepName = "Update label for TDWG 4 area Turkey -> Türkiye";
+        UUID uuidTurkeyEuropeTDWG4 = UUID.fromString("b7ea03d2-a7f0-44bf-995f-c5a0e352480a");
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTurkeyEuropeTDWG4,
+                "Türkiye-in-Europe", "Türkiye-in-Europe", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
+
         return stepList;
     }
 }
