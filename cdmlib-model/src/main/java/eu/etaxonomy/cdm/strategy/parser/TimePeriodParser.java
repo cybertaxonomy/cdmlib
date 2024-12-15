@@ -37,6 +37,7 @@ public class TimePeriodParser {
 
     private static final Logger logger = LogManager.getLogger();
 
+    private static final String fWs = "\\s*";
 	private static final String dotOrWs = "(\\.\\s*|\\s+)";
 	private static final String dashOrWs = "(-"+TimePeriod.SEP+"\\s*|\\s+)";
 
@@ -63,12 +64,15 @@ public class TimePeriodParser {
 
 	private static final Pattern lifeSpanPattern =  Pattern.compile(String.format("%s--%s", firstYearPattern, firstYearPattern));
 
-	private static final String strRomanMonthes = "([iI]([iI]{0,2}|[vV][xX])?|[vV]([iI]{0,3})|[xX]([iI]{0,3}))";
-	private static final String strMonthes = "((Jan|Feb|Aug|Sept?|Oct(ober)?|Nov|Dec)\\.?|(Mar(ch)?|Apr(il)?|Ma[yi]|June?|July?)|"
-	        + strRomanMonthes + ")";
+	private static final String strMonthes = "((Jan|Feb|Aug|Sept?|Oct(ober)?|Nov|Dec)\\.?|(Mar(ch)?|Apr(il)?|Ma[yi]|June?|July?))";
 	public static final String strDateWithMonthesPeriod = "(("+ strDay + "|(" + strDay + dotOrWs +")?" + strMonthes + "|((" + strDay + dotOrWs +")?" + strMonthes  + dotOrWs + ")?" + "\\d{4,4})" + SEP + ")?" +
 	        "(("+ strDay + dotOrWs + ")?" + strMonthes + dotOrWs + ")?\\d{4,4}\\+?";
     private static final Pattern dateWithMonthNamePattern = Pattern.compile(strDateWithMonthesPeriod);
+
+    private static final String strRomanMonthes = "([iI]([iI]{0,2}|[vV][xX])?|[vV]([iI]{0,3})|[xX]([iI]{0,3}))";
+    private static final String strRomanMonthDate = strDay + dotOrWs + strRomanMonthes + dotOrWs + "\\d{4,4}";
+    private static final String strRomanMonthPeriod = "(" + strRomanMonthDate + fWs + SEP + fWs + ")?" + strRomanMonthDate +"\\+?";
+    private static final Pattern romanMonthDatePattern = Pattern.compile(strRomanMonthPeriod);
 
     private static final String strDateYearMonthDay = "(\\d{4,4}" + dashOrWs + ")?" + strMonthes + "(" + dashOrWs + "[0-3]?\\d)?\\+?";
 	private static final Pattern dateYearMonthDayPattern = Pattern.compile(strDateYearMonthDay);
@@ -112,6 +116,8 @@ public class TimePeriodParser {
             parseSlashDatePattern(periodString, result);
         }else if (dateWithMonthNamePattern.matcher(periodString).matches()){
             parseDateWithMonthName(periodString, result);
+        }else if (romanMonthDatePattern.matcher(periodString).matches()){
+            parseDateWithRomanMonth(periodString, result);
         }else if (dateYearMonthDayPattern.matcher(periodString).matches()){
             parseDateYearMonthDay(periodString, result);
 		}else if (lifeSpanPattern.matcher(periodString).matches()){
@@ -298,8 +304,52 @@ public class TimePeriodParser {
         }
     }
 
-    private static Partial dateWithMonthPartial(String dateString) {
+    private static void parseDateWithRomanMonth(String dateString, TimePeriod result) {
+        String[] periods = dateString.split(SEP);
+        boolean isContinued = false;
+        if (periods[0].endsWith("+")){
+            periods[0] = periods[0].substring(0, periods[0].length()-1).trim();
+            result.setContinued(true);
+            isContinued = true;
+        }
+        Partial start = dateWithRomanMonthPartial(periods[0]);
+        Partial end = periods.length < 2? null : dateWithMonthPartial(periods[1]);
+        if(start == null || (periods.length == 2 && (end == null || isContinued))){
+            result.setFreeText(dateString);
+        }
+        result.setStart(start);
+        if(end != null){  //to avoid incorrect isConinued handling
+            result.setEnd(end);
+        }
+    }
+
+    private static Partial dateWithRomanMonthPartial(String dateString) {
         String[] dates = dateString.split("(\\.|\\s+)+");
+
+        if (dates.length != 3){
+            logger.info("Roman month partial should always have day, month and year: " + dateString);
+            return null;
+        }else {
+            int index = 0;
+            String strDay = dates[index++];
+            String strMonth = dates[index++];
+            String strYear = dates[index];
+            try {
+                Integer year = Integer.valueOf(strYear.trim());
+                Integer month = monthNrFromName(strMonth.trim());
+                Integer day = Integer.valueOf(strDay.trim());
+
+                Partial partial = makePartialFromDateParts(year, month, day);
+                return partial;
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
+    }
+
+    private static Partial dateWithMonthPartial(String dateString) {
+
+        String[] dates = dateString.trim().split("(\\.|\\s+)+");
 
         if (dates.length > 3){
             logger.info("More than 3 date parts in date string: " + dateString);
