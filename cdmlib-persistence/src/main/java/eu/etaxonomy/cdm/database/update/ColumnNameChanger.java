@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * @author a.mueller
  * @since 16.09.2010
- *
  */
 public class ColumnNameChanger
         extends AuditedSchemaUpdaterStepBase{
