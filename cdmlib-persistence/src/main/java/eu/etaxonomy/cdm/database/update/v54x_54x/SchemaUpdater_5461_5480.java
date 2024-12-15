@@ -15,10 +15,12 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
@@ -136,6 +138,30 @@ public class SchemaUpdater_5461_5480 extends SchemaUpdaterBase {
                 + " SET urlPattern = 'https://orcid.org/{@ID}'"
                 + " WHERE uuid = 'fb1764f5-843b-414c-b9e7-d3802e408823'";
         SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, sql);
+
+        //#10100
+        //Rename statusNote into placementNote in TaxonNode
+        stepName = "Rename statusNote into placementNote in TaxonNode";
+        String oldName = "TaxonNode_StatusNote";
+        String newName = "TaxonNode_PlacementNote";
+        TableNameChanger.NewInstance(stepList, stepName, oldName, newName, INCLUDE_AUDIT);
+
+        //#10100
+        //Rename statusNote_id column in renamed table TaxonNode_StatusNote
+        stepName = "Rename statusNote_id column in renamed table TaxonNode_StatusNote";
+        tableName = "TaxonNode_PlacementNote";
+        String oldColumnName = "statusNote_id";
+        String newColumnName = "placementNote_id";
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+
+        //#10100
+        //Rename statusNote_KEY column in renamed table TaxonNode_StatusNote
+        stepName = "Rename statusNote_KEY column in renamed table TaxonNode_StatusNote";
+        tableName = "TaxonNode_PlacementNote";
+        oldColumnName = "statusNote_KEY";
+        newColumnName = "placementNote_KEY";
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+
         return stepList;
     }
 }
