@@ -155,6 +155,10 @@ public enum ReferenceType implements IEnumTerm<ReferenceType> {
 		return this == Section || isKindOf(Section);
 	}
 
+	public boolean hasUri() {
+	    return this == WebPage || this == Database;
+	}
+
 	/**
 	 * Provides the set of type which are applicable as in-references for
 	 * the <code>subReferenceType</code> passed to this method:

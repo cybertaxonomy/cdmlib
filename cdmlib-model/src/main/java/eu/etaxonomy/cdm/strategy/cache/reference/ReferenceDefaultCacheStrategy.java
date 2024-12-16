@@ -139,8 +139,12 @@ public class ReferenceDefaultCacheStrategy
         if (reference == null) {
             return result;
         }
-        if (reference.getType() == ReferenceType.WebPage && reference.getUri() != null && !result.contains(reference.getUri().toString())){
-            result = CdmUtils.concat(webpageUriSeparator, result, reference.getUri().toString());
+        if (reference.getType().hasUri() && reference.getUri() != null && !result.contains(reference.getUri().toString())){
+            if (reference.getType() == ReferenceType.Database) {
+                result = CdmUtils.concat(". Published at ", result, reference.getUri().toString());
+            } else {
+                result = CdmUtils.concat(webpageUriSeparator, result, reference.getUri().toString());
+            }
         }
         if(reference.getAccessed() != null){
             //TODO still a bit preliminary, also brackets may change in future

@@ -561,6 +561,29 @@ public class ReferenceDefaultCacheStrategyTest {
     }
 
     @Test
+    public void testSectionInDatabase(){
+
+        //#10647
+        Reference database = ReferenceFactory.newDatabase();
+        database.setTitle("My database");
+        database.setUri(URI.create("https://available.at"));
+        Reference section = ReferenceFactory.newSection();
+        Team sectionTeam = Team.NewTitledInstance("Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P.", null);
+        section.setAuthorship(sectionTeam);
+
+        section.setInReference(database);
+        DateTime webpageAccessed = DateTime.parse("2010-06-30T01:20+02:00");
+        section.setAccessed(webpageAccessed);
+        section.setDatePublished(TimePeriodParser.parseStringVerbatim("2024"));
+
+        System.out.println(section.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.",
+                "Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P. 2024 "+UTF8.EN_DASH+" In: "
+                + "My database. Published at https://available.at [accessed 2010-06-30 01:20]",
+                section.getTitleCache());
+    }
+
+    @Test
     public void testCdDvdGetTitleWithoutYearAndAuthor() {
         String result = TitleWithoutYearAndAuthorHelper.getTitleWithoutYearAndAuthor(cdDvd, false, false);
         assertEquals(cdDvdTitle, result);
@@ -598,6 +621,13 @@ public class ReferenceDefaultCacheStrategyTest {
         String result = defaultStrategy.getTitleCache(database);
         //TODO position of data still needs to be discussed
         assertEquals("Miller: My nice database. 1984. "+UTF8.EN_DASH+" Berlin: Springer", result);
+
+        URI uri = URI.create("https://available.at");
+        database.setUri(uri);
+        database.setAccessed(DateTime.parse("2010-06-30T01:20+02:00"));
+
+        result = defaultStrategy.getTitleCache(database);
+        assertEquals("Miller: My nice database. 1984. "+UTF8.EN_DASH+" Berlin: Springer. Published at https://available.at [accessed 2010-06-30 01:20]", result);
     }
 
     @Test
