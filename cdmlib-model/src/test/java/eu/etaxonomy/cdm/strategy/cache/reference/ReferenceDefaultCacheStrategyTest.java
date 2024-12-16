@@ -588,14 +588,14 @@ public class ReferenceDefaultCacheStrategyTest {
 
     @Test
     public void testDatabaseGetTitleCache() {
-        Reference map = ReferenceFactory.newDatabase();
+        Reference database = ReferenceFactory.newDatabase();
         Person author = Person.NewTitledInstance("Miller");
-        map.setAuthorship(author);
-        map.setTitle("My nice database");
-        map.setPublisher("Springer");
-        map.setPlacePublished("Berlin");
-        map.setDatePublished(TimePeriodParser.parseStringVerbatim("1984"));
-        String result = defaultStrategy.getTitleCache(map);
+        database.setAuthorship(author);
+        database.setTitle("My nice database");
+        database.setPublisher("Springer");
+        database.setPlacePublished("Berlin");
+        database.setDatePublished(TimePeriodParser.parseStringVerbatim("1984"));
+        String result = defaultStrategy.getTitleCache(database);
         //TODO position of data still needs to be discussed
         assertEquals("Miller: My nice database. 1984. "+UTF8.EN_DASH+" Berlin: Springer", result);
     }
