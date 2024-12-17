@@ -1270,8 +1270,11 @@ public class Reference
      *         supports the {@link IDynamicReference} interface. Currently these are
      *         webpages, databases and maps.
      */
+    @Transient  //to avoid LazyLoading exceptions
     public boolean isDynamic() {
-        return this.getType().isDynamic();
+        return this.getType().isDynamic()
+                //#10649
+                || this.getType().isSectionOnly() && this.getInReference() != null && this.getInReference().isDynamic();
     }
 
 //*************************** CACHE STRATEGIES ******************************/
