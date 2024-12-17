@@ -581,6 +581,15 @@ public class ReferenceDefaultCacheStrategyTest {
                 "Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P. 2024: My record title. "+UTF8.EN_DASH+" In: "
                 + "My database. Published at https://available.at [accessed 2010-06-30 01:20]",
                 section.getTitleCache());
+
+        //protected titleCache
+        database.setTitle(null);
+        database.setTitleCache("Other database", true);
+        section.resetTitleCache();
+        Assert.assertEquals("Unexpected title cache.",
+                "Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P. 2024: My record title. "+UTF8.EN_DASH+" In: "
+                + "Other database. Published at https://available.at [accessed 2010-06-30 01:20]",
+                section.getTitleCache());
     }
 
     @Test
