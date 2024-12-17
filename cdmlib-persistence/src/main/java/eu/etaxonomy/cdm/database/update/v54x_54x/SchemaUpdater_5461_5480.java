@@ -56,7 +56,6 @@ public class SchemaUpdater_5461_5480 extends SchemaUpdaterBase {
 
 		String stepName;
 		String tableName;
-		String columnName;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
@@ -117,7 +116,7 @@ public class SchemaUpdater_5461_5480 extends SchemaUpdaterBase {
         stepName = "Update label for Typical Lower Boundary";
         uuidTerm = UUID.fromString("8372a89a-35ad-4755-a881-7edae6c37c8f");
         TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTerm,
-                "Typical Lower Boundary", "TypicalLowerBoundary", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
+                "Typical Lower Boundary", "Typical Lower Boundary", null, UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523"));
 
         //#10401 Update label for Typical Upper Boundary
         stepName = "Update label for Typical Upper Boundary";
