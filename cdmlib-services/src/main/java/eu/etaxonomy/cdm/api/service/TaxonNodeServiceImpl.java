@@ -949,7 +949,7 @@ public class TaxonNodeServiceImpl
             child.setStatus(status);
 
             if (statusNote != null){
-                child.getStatusNote().putAll(statusNote);
+                child.getPlacementNote().putAll(statusNote);
             }
 
         }catch(Exception e){

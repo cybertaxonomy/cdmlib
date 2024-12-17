@@ -158,8 +158,8 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         taxonomicChildrenCount = taxonNode.getCountChildren();
         status = taxonNode.getStatus();
 
-        for(Language lang : taxonNode.getStatusNote().keySet()) {
-            statusNote.put(lang, taxonNode.getStatusNote(lang));
+        for(Language lang : taxonNode.getPlacementNote().keySet()) {
+            statusNote.put(lang, taxonNode.getPlacementNote(lang));
         }
 
         treeIndex = taxonNode.treeIndex();

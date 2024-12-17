@@ -425,7 +425,7 @@ public abstract class TaxonTreeExportTestBase
         node5.setStatus(TaxonNodeStatus.EXCLUDED);
         node5.setCitation(sec1);
         node5.setCitationMicroReference("27");
-        node5.putStatusNote(Language.ENGLISH(), "My status note");
+        node5.putPlacementNote(Language.ENGLISH(), "My status note");
         nodesToSave.add(node5);
 
         //save

@@ -718,7 +718,7 @@ public class FullCoverageDataGenerator {
 		TaxonNode node = classification.addChildTaxon(taxon, sec,"22");
 		handleIdentifiableEntity(classification);
 		handleAnnotatableEntity(node);
-		node.putStatusNote(Language.DEFAULT(), "Status note");
+		node.putPlacementNote(Language.DEFAULT(), "Status note");
 		DefinedTerm agentRelationType = DefinedTerm.NewTaxonNodeAgentRelationTypeInstance(null, "agentRelation", "ar");
 		Person agent = Person.NewTitledInstance("Related agent");
 		TaxonNodeAgentRelation agentRelation = node.addAgentRelation(agentRelationType, agent);

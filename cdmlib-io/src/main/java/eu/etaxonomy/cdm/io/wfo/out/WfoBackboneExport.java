@@ -306,7 +306,7 @@ public class WfoBackboneExport
 
             String result = status == TaxonNodeStatus.EXCLUDED ? "Excluded" :
                  status == TaxonNodeStatus.EXCLUDED_TAX? "Taxonomically out of scope" : status.getLabel();
-            String note = taxonNode.preferredStatusNote(lang);
+            String note = taxonNode.preferredPlacementNote(lang);
             result = CdmUtils.concat(": ", result, note);
             return result;
         }

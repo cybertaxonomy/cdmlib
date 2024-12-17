@@ -355,7 +355,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         Assert.assertFalse("Node should be neither excluded nor unplaced", notSpecialNode.isUnplaced() || notSpecialNode.isExcluded());
 
         //read excluded node
-        Map<Language, LanguageString> map = excludedNode.getStatusNote();
+        Map<Language, LanguageString> map = excludedNode.getPlacementNote();
         Assert.assertEquals(2, map.size());
         Set<Integer> langIds = new HashSet<>();
         for (Language lang : map.keySet()){
