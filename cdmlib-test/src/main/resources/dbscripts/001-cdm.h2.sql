@@ -5607,20 +5607,20 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         primary key (REV, TAXONNODE_ID, MARKERS_ID)
     );
 
-    create table PUBLIC.TAXONNODE_STATUSNOTE (
+    create table PUBLIC.TAXONNODE_PLACEMENTNOTE (
        TAXONNODE_ID integer not null,
-        STATUSNOTE_ID integer not null,
-        STATUSNOTE_KEY integer not null,
-        primary key (TAXONNODE_ID, STATUSNOTE_KEY)
+        PLACEMENTNOTE_ID integer not null,
+        PLACEMENTNOTE_KEY integer not null,
+        primary key (TAXONNODE_ID, PLACEMENTNOTE_KEY)
     );
 
-    create table PUBLIC.TAXONNODE_STATUSNOTE_AUD (
+    create table PUBLIC.TAXONNODE_PLACEMENTNOTE_AUD (
        REV integer not null,
         TAXONNODE_ID integer not null,
-        STATUSNOTE_ID integer not null,
-        STATUSNOTE_KEY integer not null,
+        PLACEMENTNOTE_ID integer not null,
+        PLACEMENTNOTE_KEY integer not null,
         REVTYPE tinyint,
-        primary key (REV, TAXONNODE_ID, STATUSNOTE_ID, STATUSNOTE_KEY)
+        primary key (REV, TAXONNODE_ID, PLACEMENTNOTE_ID, PLACEMENTNOTE_KEY)
     );
 
     create table PUBLIC.TAXONNODEAGENTRELATION (
