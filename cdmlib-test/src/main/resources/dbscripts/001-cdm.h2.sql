@@ -6850,8 +6850,8 @@ create index PUBLIC.taxonNodeTreeIndex on PUBLIC.TAXONNODE (TREEINDEX);
     alter table PUBLIC.TAXONNODE_MARKER 
        add constraint UK_j4bhc8mkfqhn2n0nsnm4f6efy unique (MARKERS_ID);
 
-    alter table PUBLIC.TAXONNODE_STATUSNOTE 
-       add constraint UK_jfouc5s3975d5dyc1uwkdwdgw unique (STATUSNOTE_ID);
+    alter table PUBLIC.TAXONNODE_PLACEMENTNOTE 
+       add constraint UK_jfouc5s3975d5dyc1uwkdwdgw unique (PLACEMENTNOTE_ID);
 
     alter table PUBLIC.TAXONNODEAGENTRELATION 
        add constraint UK_sf7xk84whxbdu1sycpmcbm0x unique (UUID);
@@ -11832,22 +11832,22 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
        foreign key (REV) 
        references PUBLIC.AUDITEVENT;
 
-    alter table PUBLIC.TAXONNODE_STATUSNOTE 
+    alter table PUBLIC.TAXONNODE_PLACEMENTNOTE 
        add constraint FKovavy9oh5rq410x24rcd6ih2x 
-       foreign key (STATUSNOTE_ID) 
+       foreign key (PLACEMENTNOTE_ID) 
        references PUBLIC.LANGUAGESTRING;
 
-    alter table PUBLIC.TAXONNODE_STATUSNOTE 
+    alter table PUBLIC.TAXONNODE_PLACEMENTNOTE 
        add constraint FKe0js781n46sqa0oaa5d80v8du 
-       foreign key (STATUSNOTE_KEY) 
+       foreign key (PLACEMENTNOTE_KEY) 
        references PUBLIC.DEFINEDTERMBASE;
 
-    alter table PUBLIC.TAXONNODE_STATUSNOTE 
+    alter table PUBLIC.TAXONNODE_PLACEMENTNOTE 
        add constraint FK7m4j4u786p6m66nun0qebgpj0 
        foreign key (TAXONNODE_ID) 
        references PUBLIC.TAXONNODE;
 
-    alter table PUBLIC.TAXONNODE_STATUSNOTE_AUD 
+    alter table PUBLIC.TAXONNODE_PLACEMENTNOTE_AUD 
        add constraint FKdex0umj7cyjl5i72lf3r5fad3 
        foreign key (REV) 
        references PUBLIC.AUDITEVENT;
