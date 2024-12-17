@@ -97,7 +97,7 @@ public class BerlinModelTransformer {
 	public static UUID uuidEastAegeanIslands = UUID.fromString("1c429593-c493-46e6-971a-0d70be690da8");
 	public static UUID uuidTurkishEastAegeanIslands = UUID.fromString("ba35dba3-ac70-41ae-81c2-2070943f44f2");
 	public static UUID uuidBalticStates = UUID.fromString("bf9d64f6-3183-4fa5-8e90-73090e7a2282");
-	public static UUID uuidTürkiye = UUID.fromString("d344ee2c-14c8-438d-b03d-11538edb1268");
+	public static UUID uuidTuerkiye = UUID.fromString("d344ee2c-14c8-438d-b03d-11538edb1268");
 	public static UUID uuidCaucasia = UUID.fromString("ebfd3fd1-3859-4e5e-95c7-f66010599d7e");
 
     //E+M common name areas
@@ -164,7 +164,7 @@ public class BerlinModelTransformer {
     public static UUID uuidEMAreaCommonNameSwitzerland = UUID.fromString("20cebdad-5ac2-47fb-94d3-6eaac7242001");
     public static UUID uuidEMAreaCommonNameSyria = UUID.fromString("a09866fc-07d0-49c7-b7ca-70c03e6126c8");
     public static UUID uuidEMAreaCommonNameTenerife = UUID.fromString("18569798-b177-4210-8bcc-3c762d82ed3d");
-    public static UUID uuidEMAreaCommonNameTürkiye = UUID.fromString("7259bdc6-f07f-4501-afe3-3e863bc14188");
+    public static UUID uuidEMAreaCommonNameTuerkiye = UUID.fromString("7259bdc6-f07f-4501-afe3-3e863bc14188");
     public static UUID uuidEMAreaCommonNameUkraine = UUID.fromString("8d1622b9-02e5-4001-b8da-8ad9e6d2d0b6");
     public static UUID uuidEMAreaCommonNameWales = UUID.fromString("f66ce4c2-2a1a-43cb-aff7-1776768f725f");
 

@@ -396,7 +396,7 @@ public class FullCoverageDataGenerator {
 
 		//Distribution
 		NamedArea inCountryArea = NamedArea.NewInstance("My area in a country", "my area", "ma");
-		inCountryArea.addCountry(Country.TÜRKIYEREPUBLICOF());
+		inCountryArea.addCountry(Country.TUERKIYEREPUBLICOF());
 		cdmBases.add(inCountryArea);
 		Distribution distribution = Distribution.NewInstance(inCountryArea, PresenceAbsenceTerm.CULTIVATED());
 		handleAnnotatableEntity(distribution);
