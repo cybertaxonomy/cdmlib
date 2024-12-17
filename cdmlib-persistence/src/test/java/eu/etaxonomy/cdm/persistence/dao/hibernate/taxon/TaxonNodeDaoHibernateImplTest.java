@@ -470,8 +470,6 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertTrue(0 == result.get(1).getSortIndex()); // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
         assertTrue(1 == result.get(2).getSortIndex()); // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
         assertTrue(0 == result.get(3).getSortIndex()); // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
-
-
     }
 
     @Test
@@ -496,8 +494,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null);
         assertEquals(5, result.size());
 
-        assertNotNull(result.get(3).getStatusNote()); // Acherontia(Fabricius, 1798) rank: Genus
-        assertNotNull(result.get(4).getStatusNote());  // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
+        assertNotNull(result.get(3).getPlacementNote()); // Acherontia(Fabricius, 1798) rank: Genus
+        assertNotNull(result.get(4).getPlacementNote());  // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
 //        assertEquals(null, result.get(2).getStatus());  // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
 //        assertEquals(TaxonNodeStatus.EXCLUDED, result.get(3).getStatus());  // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
 //

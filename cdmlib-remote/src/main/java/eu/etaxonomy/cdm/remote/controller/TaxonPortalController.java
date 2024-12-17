@@ -142,7 +142,7 @@ public class TaxonPortalController extends TaxonController{
     public static final EntityInitStrategy TAXON_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             "sources",
-            "statusNote",
+            "placementNote",
             "relationsFromThisTaxon.toTaxon.secSource.citation.authorship",
             "relationsFromThisTaxon.toTaxon.secSource.citation.inReference.authorship",
             "relationsToThisTaxon.fromTaxon.secSource.citation.authorship",
@@ -275,7 +275,7 @@ public class TaxonPortalController extends TaxonController{
     protected static final EntityInitStrategy TAXONNODE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "taxonNodes.classification",
             "taxonNodes.parent",
-            "taxonNodes.statusNote.*",
+            "taxonNodes.placementNote.*",
             "taxonNodes.taxon.name",
             "taxonNodes.taxon.secSource.citation",
             "taxonNodes.taxon.secSource.nameUsedInSource.$",

@@ -99,7 +99,7 @@ public class TaxonPageDto extends TaxonBaseDto {
         private UUID classificationUuid;
         private String classificationLabel;
         private String status;
-        private String statusNote;
+        private String placementNote;
         private ContainerDto<TaxonNodeAgentsRelDTO> agents;
 
         public UUID getClassificationUuid() {
@@ -120,11 +120,11 @@ public class TaxonPageDto extends TaxonBaseDto {
         public void setStatus(String status) {
             this.status = status;
         }
-        public String getStatusNote() {
-            return statusNote;
+        public String getPlacementNote() {
+            return placementNote;
         }
-        public void setStatusNote(String statusNote) {
-            this.statusNote = statusNote;
+        public void setPlacementNote(String placementNote) {
+            this.placementNote = placementNote;
         }
         public ContainerDto<TaxonNodeAgentsRelDTO> getAgents() {
             return agents;

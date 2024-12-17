@@ -372,8 +372,8 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 if (status != null) {
                     dto.setStatus(status.getLabel(language));
                 }
-                //statusNote
-                dto.setStatusNote(node.preferredPlacementNote(language));
+                //placementNote
+                dto.setPlacementNote(node.preferredPlacementNote(language));
 
                 //agent relations
                 Set<TaxonNodeAgentRelation> agents = node.getAgentRelations();
