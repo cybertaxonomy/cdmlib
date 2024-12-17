@@ -306,7 +306,7 @@ public class Country extends NamedArea {
 	private static final UUID uuidTongaKingdomof = UUID.fromString("0abdcd01-09ff-42a8-b8ba-10458dca5ba9");
 	private static final UUID uuidTrinidadandTobagoRepublicof = UUID.fromString("20ed7f03-1263-47fd-a4df-26fab6daae75");
 	private static final UUID uuidTunisiaRepublicof = UUID.fromString("e121e4d7-e1aa-4f2e-9b9e-33f5109460d7");
-	private static final UUID uuidTurkeyRepublicof = UUID.fromString("f7c15c55-d0b3-4eda-8961-582d5071df78");
+	private static final UUID uuidTürkiyeRepublicof = UUID.fromString("f7c15c55-d0b3-4eda-8961-582d5071df78");
 	private static final UUID uuidTurkmenistan = UUID.fromString("442c0439-cf39-4c5a-96de-a99fe1a476cf");
 	private static final UUID uuidTurksandCaicosIslands = UUID.fromString("d6c83f2f-5130-477a-994e-daa08b70352f");
 	private static final UUID uuidTuvalu = UUID.fromString("30745e37-22c6-4b92-b955-85cb23f0526f");
@@ -546,7 +546,7 @@ public class Country extends NamedArea {
 	public static final Country TONGAKINGDOMOF () { return (Country)termMap.get(Country.uuidTongaKingdomof );}
 	public static final Country TRINIDADANDTOBAGOREPUBLICOF () { return (Country)termMap.get(Country.uuidTrinidadandTobagoRepublicof );}
 	public static final Country TUNISIAREPUBLICOF () { return (Country)termMap.get(Country.uuidTunisiaRepublicof );}
-	public static final Country TURKEYREPUBLICOF () { return (Country)termMap.get(Country.uuidTurkeyRepublicof );}
+	public static final Country TÜRKIYEREPUBLICOF () { return (Country)termMap.get(Country.uuidTürkiyeRepublicof );}
 	public static final Country TURKMENISTAN () { return (Country)termMap.get(Country.uuidTurkmenistan );}
 	public static final Country TURKSANDCAICOSISLANDS () { return (Country)termMap.get(Country.uuidTurksandCaicosIslands );}
 	public static final Country TUVALU () { return (Country)termMap.get(Country.uuidTuvalu );}
