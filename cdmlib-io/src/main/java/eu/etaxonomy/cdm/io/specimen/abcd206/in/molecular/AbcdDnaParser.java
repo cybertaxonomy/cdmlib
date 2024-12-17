@@ -49,7 +49,7 @@ public class AbcdDnaParser {
 
     public DnaSample parse(Element item, Abcd206ImportState state) {
         FieldUnit fieldUnit = null;
-        if (StringUtils.isNotBlank(state.getDataHolder().getFieldNumber())){
+        if (StringUtils.isNotBlank(state.getDataHolder().getFieldNumber()) && !state.getDataHolder().getFieldNumber().equals("0") && !state.getDataHolder().getFieldNumber().equals("s.n.")){
             fieldUnit = state.getFieldUnit(state.getDataHolder().getFieldNumber());
         }
         if (fieldUnit == null){

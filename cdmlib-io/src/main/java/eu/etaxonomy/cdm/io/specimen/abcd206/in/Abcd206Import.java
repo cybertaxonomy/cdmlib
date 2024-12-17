@@ -515,19 +515,28 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             // look for existing fieldUnit
             FieldUnit fieldUnit = null;
-            if (StringUtils.isNotBlank(state.getDataHolder().getFieldNumber())){
+            if (StringUtils.isNotBlank(state.getDataHolder().getFieldNumber()) && !state.getDataHolder().getFieldNumber().equals("0") && !state.getDataHolder().getFieldNumber().equals("s.n.")){
                 fieldUnit = state.getFieldUnit(state.getDataHolder().getFieldNumber());
                 if (fieldUnit != null){
                     state.setLastFieldUnit(fieldUnit);
                 }
             }else{
-                fieldUnit = state.getLastFieldUnit();
+                if (StringUtils.isBlank(state.getDataHolder().getFieldNumber())|| state.getDataHolder().getFieldNumber().equals("0") || state.getDataHolder().getFieldNumber().equals("s.n.")){
+                    state.getReport().addInfoMessage("Field Unit without field number: " + state.getDataHolder().locality + ", " + state.getDataHolder().gatheringAgentsText);
+                }
+//                else {
+//                    fieldUnit = state.getLastFieldUnit();
+//                }
 
             }
             if (fieldUnit == null){
-                fieldUnit = FieldUnit.NewInstance();
-                fieldUnit.setFieldNumber(state.getDataHolder().getFieldNumber());
-                state.setLastFieldUnit(fieldUnit);
+                if (state.getDerivedUnitBase() != null && state.getLastFieldUnit() != null) {//this should be a DNA sample and the field unit should be the same
+                    fieldUnit = state.getLastFieldUnit();
+                }else {
+                    fieldUnit = FieldUnit.NewInstance();
+                    fieldUnit.setFieldNumber(state.getDataHolder().getFieldNumber());
+                    state.setLastFieldUnit(fieldUnit);
+                }
             }
 
             // gathering event
@@ -1255,7 +1264,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         }
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(type);
-        derivedUnitFacade.setFieldUnit(state.getFieldUnit(state.getDataHolder().getFieldNumber()));
+        //this only works for field units without 's.n.' as field number, so we have to check the field number,
+        //do we need this at all?
+        if (state.getDataHolder().getFieldNumber().equals("0") || state.getDataHolder().getFieldNumber().equals("s.n.")) {
+            derivedUnitFacade.setFieldUnit(null);
+        }else {
+            derivedUnitFacade.setFieldUnit(state.getFieldUnit(state.getDataHolder().getFieldNumber()));
+        }
         derivedUnitFacade.setDerivedUnitKindOfUnit(kindOfUnit);
         derivedUnitFacade.setPreferredStableUri(state.getDataHolder().getPreferredStableUri());
         // derivedUnitFacade.setDerivedUnitKindOfUnit(kindOfUnit);
