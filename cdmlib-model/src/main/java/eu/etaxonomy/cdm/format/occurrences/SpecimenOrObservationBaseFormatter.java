@@ -33,5 +33,4 @@ public class SpecimenOrObservationBaseFormatter extends IdentifiableEntityFormat
             formatKeyMap.put(FormatKey.KIND_OF_UNIT, specimenOrObservationBase.getKindOfUnit().toString());
         }
     }
-
 }
