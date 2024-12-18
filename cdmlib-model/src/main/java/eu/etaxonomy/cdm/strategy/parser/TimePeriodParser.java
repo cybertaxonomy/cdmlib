@@ -69,7 +69,7 @@ public class TimePeriodParser {
 	        "(("+ strDay + dotOrWs + ")?" + strMonthes + dotOrWs + ")?\\d{4,4}\\+?";
     private static final Pattern dateWithMonthNamePattern = Pattern.compile(strDateWithMonthesPeriod);
 
-    private static final String strRomanMonthes = "([iI]([iI]{0,2}|[vV][xX])?|[vV]([iI]{0,3})|[xX]([iI]{0,3}))";
+    private static final String strRomanMonthes = "([iI]([iI]{0,2}|[vV]|[xX])?|[vV]([iI]{0,3})|[xX]([iI]{0,3}))";
     private static final String strRomanMonthDate = strDay + dotOrWs + strRomanMonthes + dotOrWs + "\\d{4,4}";
     private static final String strRomanMonthPeriod = "(" + strRomanMonthDate + fWs + SEP + fWs + ")?" + strRomanMonthDate +"\\+?";
     private static final Pattern romanMonthDatePattern = Pattern.compile(strRomanMonthPeriod);

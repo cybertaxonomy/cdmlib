@@ -228,6 +228,7 @@ public class TimePeriodParserTest {
 
 	@Test
 	public void testParseDateWithMonths() {
+
 	    String strDate = "24 Aug. 1957";
 	    TimePeriod tp = TimePeriodParser.parseString(strDate);
         assertNotNull(tp);
@@ -372,6 +373,15 @@ public class TimePeriodParserTest {
         tp = TimePeriodParser.parseString(strDate);
         Assert.assertEquals("Only partial dates are not yet parsed for dates with roman months as it creates issues during nom. ref. parsing",
                 "xii 1947", tp.toString());
+
+        //#10643#note-3
+        strDate = "4.IV.1957";
+        tp = TimePeriodParser.parseString(strDate);
+        Assert.assertEquals("4 Apr 1957", tp.toString());
+
+        strDate = "4.IX.1957";
+        tp = TimePeriodParser.parseString(strDate);
+        Assert.assertEquals("4 Sep 1957", tp.toString());
 
 	}
 
