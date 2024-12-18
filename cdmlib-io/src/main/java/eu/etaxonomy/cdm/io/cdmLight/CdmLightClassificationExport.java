@@ -409,7 +409,7 @@ public class CdmLightClassificationExport
                     csvLine[table.getIndex(CdmLightExportTable.UNRESOLVED)] = taxonNode.isUnresolved() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_STATUS)] = taxonNode.getStatus() == null ? null : taxonNode.getStatus().getLabel();
 
-                    csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_NOTES)] = taxonNode.preferredStatusNote(Language.getDefaultLanguage());
+                    csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_NOTES)] = taxonNode.preferredPlacementNote(Language.getDefaultLanguage());
 
                     if (taxonNode.getSource() != null) {
                         csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_REF_FK)] = getId(state, taxonNode.getSource().getCitation());

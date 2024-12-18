@@ -109,7 +109,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             "taxonNodes.parent.childNodes",   //currently needed to compute sortindex //TODO improve
             "taxonNodes.taxon.name",
             "taxonNodes.taxon.secSource.citation",
-            "taxonNodes.statusNote",
+            "taxonNodes.placementNote",
             "acceptedTaxon.taxonNodes.classification"
     }));
 

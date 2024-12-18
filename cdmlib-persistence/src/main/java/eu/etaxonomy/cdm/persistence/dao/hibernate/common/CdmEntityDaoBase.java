@@ -414,7 +414,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return this.findByUuid(uuid, INCLUDE_UNPUBLISHED);
     }
 
-    protected T findByUuid(UUID uuid, boolean includeUnpublished) throws DataAccessException {
+    private T findByUuid(UUID uuid, boolean includeUnpublished) throws DataAccessException {
         Session session = getSession();
         Criteria crit = session.createCriteria(type);
         crit.add(Restrictions.eq("uuid", uuid));

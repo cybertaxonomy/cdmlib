@@ -335,7 +335,7 @@ public class ClassificationDaoHibernateImpl
                          + ", ct.name.binomHybrid"
                          + ", ct.name.trinomHybrid"
 
-//     	                 + ", entry(cn.statusNote) "  //cn.statusNote
+//     	                 + ", entry(cn.placementNote) "  //cn.placementNote
 //    	                 + ", cn.taxon.name.rank.orderIndex "
 //    	                 + "cn.taxon.name.rank.titleCache "  //TODO maybe ...rank.representations (?)
                          + ")"

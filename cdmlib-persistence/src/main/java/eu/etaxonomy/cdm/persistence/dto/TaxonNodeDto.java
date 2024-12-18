@@ -61,7 +61,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     private TaxonNodeStatus status;
 
     //TODO map only needed if we use this for writing, too
-    private Map<Language, String> statusNote = new HashMap<>();
+    private Map<Language, String> placementNote = new HashMap<>();
 
 
     /**
@@ -91,14 +91,14 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     public TaxonNodeDto(UUID uuid, Integer id, UUID taxonUuid, String treeIndex, String nameTitleCache,
             String taxonTitleCache, Integer rankOrderIndex, UUID parentUuid, Integer sortIndex,
             UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status,
-            List<LanguageString> statusNote, Integer childrenCount, UUID secUuid,
+            List<LanguageString> placementNote, Integer childrenCount, UUID secUuid,
             List<TaggedText> taggedName){
 
     	this(uuid, id, treeIndex, nameTitleCache, taxonTitleCache, rankOrderIndex, parentUuid, sortIndex, classificationUuid);
     	this.status = status;
     	this.taxonIsPublish = taxonIsPublished;
-    	for (LanguageString str: statusNote) {
-    		this.statusNote.put(str.getLanguage(), str.getText());
+    	for (LanguageString str: placementNote) {
+    		this.placementNote.put(str.getLanguage(), str.getText());
     	}
     	this.taxonUuid = taxonUuid;
         this.taxonomicChildrenCount = childrenCount;
@@ -158,8 +158,8 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         taxonomicChildrenCount = taxonNode.getCountChildren();
         status = taxonNode.getStatus();
 
-        for(Language lang : taxonNode.getStatusNote().keySet()) {
-            statusNote.put(lang, taxonNode.getStatusNote(lang));
+        for(Language lang : taxonNode.getPlacementNote().keySet()) {
+            placementNote.put(lang, taxonNode.getPlacementNote(lang));
         }
 
         treeIndex = taxonNode.treeIndex();
@@ -279,8 +279,8 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         return taxonIsPublish;
     }
 
-    public Map<Language, String> getStatusNote() {
-        return statusNote;
+    public Map<Language, String> getPlacementNote() {
+        return placementNote;
     }
 
     @Override

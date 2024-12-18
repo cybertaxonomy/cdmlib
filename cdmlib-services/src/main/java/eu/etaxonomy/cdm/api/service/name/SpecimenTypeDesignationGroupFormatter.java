@@ -200,13 +200,12 @@ public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupF
                             && !((MediaSpecimen)du).getMediaSpecimen().getSources().isEmpty()
                         ){
                     // special case of a published image which is not covered by the DerivedUnitFacadeCacheStrategy
-                    MediaSpecimen msp = (MediaSpecimen)du;
-                    Media media = msp.getMediaSpecimen();
+                    Media media = ((MediaSpecimen)du).getMediaSpecimen();
                     String mediaTitle = media.getTitle() == null ? "" : media.getTitle().getText();
                     String specimenLabel = CdmUtils.concat(" ", "[icon]", mediaTitle, "in");
                     builder.add(TagEnum.typeDesignation, specimenLabel, typeDesignationEntity); //TODO how to better use tagged text here, the type designation itself has no real text; we could include the sources but that makes them unusable as sources :-(
                     int count = 0;
-                    for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
+                    for(IdentifiableSource source : media.getSources()){
                         //TODO add sourceTypes to configuration
                         if (source.getType().isPublicSource()){
                             if (count++ > 0){

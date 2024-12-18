@@ -741,7 +741,7 @@ public class NonViralNameParserImpl
 			nomRef.setVolume(volPart);
 		}
 		strReference = parseSeries(strReference, (ISeriesPart)nomRef);
-		return strReference;
+		return strReference == null? null: strReference.trim();
 	}
 
     private String parseSeries(String strReference, ISeriesPart nomRef) {

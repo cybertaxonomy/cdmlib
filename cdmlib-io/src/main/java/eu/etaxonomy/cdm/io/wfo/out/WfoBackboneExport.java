@@ -256,11 +256,11 @@ public class WfoBackboneExport
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_PARENT_ID)] = parentWfoId;
 
             //... higher taxa
+            //TODO 3 do we want/should fill the higher classification fields?
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBFAMILY)] = null;
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_TRIBE)] = null;
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBTRIBE)] = null;
-            //TODO 2 is subgenus handling correct?
-            csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBGENUS)] = name.isInfraGeneric()? name.getInfraGenericEpithet() : null ;
+            csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBGENUS)] = null;
 
             //... tax status, TODO 2 are there other status for accepted or other reasons for being ambiguous
             boolean isUnplaced = taxonNode.getStatus() != null && taxonNode.getStatus() == TaxonNodeStatus.UNPLACED;
@@ -306,7 +306,7 @@ public class WfoBackboneExport
 
             String result = status == TaxonNodeStatus.EXCLUDED ? "Excluded" :
                  status == TaxonNodeStatus.EXCLUDED_TAX? "Taxonomically out of scope" : status.getLabel();
-            String note = taxonNode.preferredStatusNote(lang);
+            String note = taxonNode.preferredPlacementNote(lang);
             result = CdmUtils.concat(": ", result, note);
             return result;
         }
@@ -336,8 +336,11 @@ public class WfoBackboneExport
         if (!baseUrl.endsWith("/")) {
             baseUrl += "/";
         }
-        String result = baseUrl + "cdm_dataportal/taxon/" + taxon.getUuid() ;
-        return result;
+        if (state.getConfig().isUseNameLink()) {
+            return baseUrl + "cdm_dataportal/name/" + taxon.getName().getUuid();
+        } else {
+            return baseUrl + "cdm_dataportal/taxon/" + taxon.getUuid() ;
+        }
     }
 
     private String makeSynonymSourceLink(WfoBackboneExportState state, Synonym synonym) {
@@ -345,10 +348,13 @@ public class WfoBackboneExport
         if (!baseUrl.endsWith("/")) {
             baseUrl += "/";
         }
-        String result = baseUrl + "cdm_dataportal/taxon/" +
+        if (state.getConfig().isUseNameLink()) {
+            return baseUrl + "cdm_dataportal/name/" + synonym.getName().getUuid();
+        } else {
+            return baseUrl + "cdm_dataportal/taxon/" +
                 synonym.getAcceptedTaxon().getUuid()
-                + "/synonymy?highlight=" + synonym.getUuid();
-        return result;
+                    + "/synonymy?highlight=" + synonym.getUuid();
+        }
     }
 
     private void handleSynonyms(WfoBackboneExportState state, Taxon taxon) {

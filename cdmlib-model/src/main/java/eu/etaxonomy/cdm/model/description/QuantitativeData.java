@@ -78,7 +78,8 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 @Audited
 public class QuantitativeData
-        extends DescriptionElementBase {
+        extends DescriptionElementBase
+        implements IHasModifyingText {
 
 	private static final long serialVersionUID = -2755806455420051488L;
     @SuppressWarnings("unused")

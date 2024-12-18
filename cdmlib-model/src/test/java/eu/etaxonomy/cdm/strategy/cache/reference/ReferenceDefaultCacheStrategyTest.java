@@ -142,9 +142,11 @@ public class ReferenceDefaultCacheStrategyTest {
 		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
 	    Assert.assertEquals("Team1 1975: "+UTF8.EN_DASH+" My journal", article1.getTitleCache());
 	    article1.setTitle("My article");
+	    article1.resetTitleCache();
 		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal", article1.getTitleCache());
 
 		article1.setInJournal(null);
+	    article1.resetTitleCache();
 		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL, article1.getTitleCache());
 	}
 
@@ -160,28 +162,36 @@ public class ReferenceDefaultCacheStrategyTest {
 		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal", article1.getTitleCache());
 
 		article1.setInJournal(null);
+		article1.resetTitleCache();
 		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL, article1.getTitleCache());
         article1.setDatePublished(null);
+        article1.resetTitleCache();
         Assert.assertEquals("Team1: My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL, article1.getTitleCache());
 	}
 
 	//#6496
     @Test
     public void testArticleGetTitleCacheWithPages(){
+
         journal1.setTitle("My journal");
         ((Reference)journal1).setAuthorship(articleTeam2);
         article1.setTitle("My article");
         article1.setInJournal(journal1);
         article1.setAuthorship(articleTeam1);
         article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
+        article1.resetTitleCache();
         Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal", article1.getTitleCache());
+
         article1.setPages("12-22");
+        article1.resetTitleCache();
         Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal: 12-22", article1.getTitleCache());
 
         article1.setVolume("7");
+        article1.resetTitleCache();
         Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal 7: 12-22", article1.getTitleCache());
 
         article1.setSeriesPart("II");
+        article1.resetTitleCache();
         //TODO unclear if punctuation is correct
         Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal, II, 7: 12-22", article1.getTitleCache());
     }
@@ -271,6 +281,7 @@ public class ReferenceDefaultCacheStrategyTest {
         Assert.assertEquals("Unexpected title cache.", "Book Author: My book, ed. 3", book1.getTitleCache());
 
         book1.setPages("1-405");
+        book1.resetTitleCache();
         Assert.assertEquals("Unexpected title cache.", "Book Author: My book, ed. 3: 1-405", book1.getTitleCache());
     }
 
@@ -284,6 +295,7 @@ public class ReferenceDefaultCacheStrategyTest {
         //TODO needs to be discussed
         Assert.assertEquals("Unexpected abbrev title cache", "1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11", book1.getTitleCache());
         book1.setSeriesPart("1");
+        book1.resetTitleCache();
         //TODO needs to be discussed
         Assert.assertEquals("Unexpected abbrev title cache", "1955: Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11", book1.getTitleCache());
     }
@@ -561,6 +573,38 @@ public class ReferenceDefaultCacheStrategyTest {
     }
 
     @Test
+    public void testSectionInDatabase(){
+
+        //#10647, #3764
+        Reference database = ReferenceFactory.newDatabase();
+        database.setTitle("My database");
+        database.setUri(URI.create("https://available.at"));
+
+        Reference section = ReferenceFactory.newSection();
+        Team sectionTeam = Team.NewTitledInstance("Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P.", null);
+        section.setAuthorship(sectionTeam);
+        section.setInReference(database);
+        DateTime webpageAccessed = DateTime.parse("2010-06-30T01:20+02:00");
+        section.setAccessed(webpageAccessed);
+        section.setDatePublished(TimePeriodParser.parseStringVerbatim("2024"));
+        section.setTitle("My record title");
+
+        Assert.assertEquals("Unexpected title cache.",
+                "Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P. 2024: My record title. "+UTF8.EN_DASH+" In: "
+                + "My database. Published at https://available.at [accessed 2010-06-30 01:20]",
+                section.getTitleCache());
+
+        //protected titleCache
+        database.setTitle(null);
+        database.setTitleCache("Other database", true);
+        section.resetTitleCache();
+        Assert.assertEquals("Unexpected title cache.",
+                "Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P. 2024: My record title. "+UTF8.EN_DASH+" In: "
+                + "Other database. Published at https://available.at [accessed 2010-06-30 01:20]",
+                section.getTitleCache());
+    }
+
+    @Test
     public void testCdDvdGetTitleWithoutYearAndAuthor() {
         String result = TitleWithoutYearAndAuthorHelper.getTitleWithoutYearAndAuthor(cdDvd, false, false);
         assertEquals(cdDvdTitle, result);
@@ -588,16 +632,23 @@ public class ReferenceDefaultCacheStrategyTest {
 
     @Test
     public void testDatabaseGetTitleCache() {
-        Reference map = ReferenceFactory.newDatabase();
+        Reference database = ReferenceFactory.newDatabase();
         Person author = Person.NewTitledInstance("Miller");
-        map.setAuthorship(author);
-        map.setTitle("My nice database");
-        map.setPublisher("Springer");
-        map.setPlacePublished("Berlin");
-        map.setDatePublished(TimePeriodParser.parseStringVerbatim("1984"));
-        String result = defaultStrategy.getTitleCache(map);
+        database.setAuthorship(author);
+        database.setTitle("My nice database");
+        database.setPublisher("Springer");
+        database.setPlacePublished("Berlin");
+        database.setDatePublished(TimePeriodParser.parseStringVerbatim("1984"));
+        String result = defaultStrategy.getTitleCache(database);
         //TODO position of data still needs to be discussed
         assertEquals("Miller: My nice database. 1984. "+UTF8.EN_DASH+" Berlin: Springer", result);
+
+        //#10647
+        URI uri = URI.create("https://available.at");
+        database.setUri(uri);
+        database.setAccessed(DateTime.parse("2010-06-30T01:20+02:00"));
+        result = defaultStrategy.getTitleCache(database);
+        assertEquals("Miller: My nice database. 1984. "+UTF8.EN_DASH+" Berlin: Springer. Published at https://available.at [accessed 2010-06-30 01:20]", result);
     }
 
     @Test
@@ -735,8 +786,8 @@ public class ReferenceDefaultCacheStrategyTest {
         generic1.setTitle("My generic");
         generic1.setAuthorship(genericTeam1);
         generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1883-1884"));
-        generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         generic1.setVolume("7");
+        generic1.resetTitleCache();
         Assert.assertEquals("Authorteam 1883"+SEP+"1884: My generic 7", generic1.getTitleCache());
         Assert.assertEquals("AT., My generic 7. 1883"+UTF8.EN_DASH+"1884", generic1.getAbbrevTitleCache());
 
@@ -760,7 +811,9 @@ public class ReferenceDefaultCacheStrategyTest {
 
         //only inref has volume
         generic1.setVolume(null);
+        generic1.resetTitleCache();
         Assert.assertEquals("Authorteam 1883"+SEP+"1884: My generic. "+UTF8.EN_DASH+" In: InRefAuthor, My InRef 9", generic1.getTitleCache());
+        generic1.setAbbrevTitleCache(null, false);
         Assert.assertEquals("AT. in InRefAuthor, My InRef 9. 1883"+UTF8.EN_DASH+"1884", generic1.getAbbrevTitleCache());
     }
 
@@ -787,6 +840,7 @@ public class ReferenceDefaultCacheStrategyTest {
 
         //does not make sense but just in case
         ((Reference)bookSection1).setAuthorIsEditor(true);
+        bookSection1.resetTitleCache();
         Assert.assertEquals("Unexpected title cache.", "Section Author (eds.) 1975: My chapter. "+UTF8.EN_DASH+
                 " In: Miller, B. (ed.), My book", bookSection1.getTitleCache());
     }
@@ -797,6 +851,7 @@ public class ReferenceDefaultCacheStrategyTest {
     //still preliminary, may be modified in future
     public void testWebPageGetTitleCache(){
         webPage1.setUri(URI.create("http://flora.huji.ac.il"));
+        webPage1.resetTitleCache();
         Assert.assertEquals("Unexpected title cache.",
                 "http://flora.huji.ac.il",
                 webPage1.getTitleCache());
@@ -804,6 +859,7 @@ public class ReferenceDefaultCacheStrategyTest {
         webPage1.setTitle("Flora of Israel Online");
         webPage1.setAuthorship(webPageTeam1);
         webPage1.setAccessed(DateTime.parse("2001-01-05"));
+        webPage1.resetTitleCache();
         Assert.assertEquals("Unexpected title cache.",
                 "Authorteam, D.: Flora of Israel Online "+UTF8.EN_DASH+" http://flora.huji.ac.il [accessed 2001-01-05]",
                 webPage1.getTitleCache());

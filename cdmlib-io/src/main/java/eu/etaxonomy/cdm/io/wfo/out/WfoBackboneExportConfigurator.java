@@ -41,6 +41,8 @@ public class WfoBackboneExportConfigurator
 
     private boolean normalizeAuthorsToIpniStandard = true;
 
+    private boolean useNameLink = false;
+
     private static final WfoBackboneExportTransformer transformer = new WfoBackboneExportTransformer();
 
 //************************* FACTORY ******************************/
@@ -149,10 +151,21 @@ public class WfoBackboneExportConfigurator
         this.sourceLinkBaseUrl = sourceLinkBaseUrl;
     }
 
+    /**
+     * If the source link should link to the name page or to the taxon page (with highlight for synonyms)
+     */
+    public boolean isUseNameLink() {
+        return useNameLink;
+    }
+    public void setUseNameLink(boolean useNameLink) {
+        this.useNameLink = useNameLink;
+    }
+
     public boolean isNormalizeAuthorsToIpniStandard() {
         return normalizeAuthorsToIpniStandard;
     }
     public void setNormalizeAuthorsToIpniStandard(boolean normalizeAuthorsToIpniStandard) {
         this.normalizeAuthorsToIpniStandard = normalizeAuthorsToIpniStandard;
     }
+
 }

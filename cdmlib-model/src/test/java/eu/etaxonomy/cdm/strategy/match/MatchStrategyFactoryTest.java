@@ -131,6 +131,31 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         parsedPerson.setTitleCache(parsedPerson.getTitleCache(), true);
         Assert.assertFalse("Differing nom. title should not match",
                 matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful());
+
+        //test (protected) titleCaches
+        fullPerson = getDefaultFullPerson();
+        parsedPerson = getDefaultParsedPerson();
+        Assert.assertTrue("show again that default persons match, for next test",
+                matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+        Assert.assertFalse("Show that even if both match the titleCaches must not necessarily be equal",
+                fullPerson.getTitleCache().equals(parsedPerson.getTitleCache()));
+
+        parsedPerson.setTitleCache(fullPerson.getTitleCache(), true);
+        Assert.assertFalse("One protected and one unprotected titleCache should not match even "
+                + "if the titleCache is equal",
+                matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+
+        parsedPerson.setTitleCache("xxx", true);
+        Assert.assertFalse("",
+                matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful());
+
+        fullPerson.setTitleCache("xxx", true);
+        Assert.assertTrue("Protected but equal titleCaches should match",
+                matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+
+        parsedPerson.setTitleCache("yyy", true);
+        Assert.assertFalse("Differing protected titleCaches should not match",
+                matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
     }
 
     protected Person getDefaultFullPerson() {
@@ -279,6 +304,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
 
     @Test
     public void testParsedCollectorPerson() throws MatchException{
+
         Person fullPerson = getDefaultFullPerson();
         Person parsedPerson = getDefaultParsedPerson();
         parsedPerson.setCollectorTitle("Collector");
@@ -290,11 +316,11 @@ public class MatchStrategyFactoryTest extends TermTestBase {
 
         parsedPerson = getDefaultParsedCollector();
 
-        Assert.assertTrue("Differing collectorTitle should match",
+        Assert.assertTrue("Equal collectorTitle should match even if full person has further values",
               collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
 
-        //test protected titleCache
-        Assert.assertFalse("Show that even if both match the titleCaches must not be equal",
+        //test (protected) titleCaches
+        Assert.assertFalse("Show that even if both match the titleCaches must not necessarily be equal",
                 fullPerson.getTitleCache().equals(parsedPerson.getTitleCache()));
 
         parsedPerson.setTitleCache(fullPerson.getTitleCache(), true);
@@ -327,8 +353,13 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         parsedTeam.updateCaches();
         Assert.assertFalse("Differing collectorTitle should not match",
                 collector_matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
+        //reset
+        parsedTeam = getDefaultParsedCollectorTeam();
 
-
+        //test protected titleCache true
+        parsedTeam.setProtectedNomenclaturalTitleCache(true);
+        Assert.assertFalse("Differing protected titleCaches should not match",
+                collector_matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
     }
 
     @Test

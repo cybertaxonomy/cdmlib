@@ -390,7 +390,7 @@ public abstract class Cdm2CdmImportBase
         result.setTaxon(detach(result.getTaxon(), state));
         result.setSource(detach(node.getSource(), state));
         result.setSynonymToBeUsed(detach(result.getSynonymToBeUsed(), state));
-        handleMap(result, TaxonNode.class, "statusNote", Language.class, LanguageString.class, state);
+        handleMap(result, TaxonNode.class, "placementNote", Language.class, LanguageString.class, state);
         //classification, parent, children
         this.setInvisible(node, "classification", detach(node.getClassification(), state));
         handleParentTaxonNode(result, state);

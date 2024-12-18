@@ -45,10 +45,10 @@ public class TestModelUpdate {
 	private static final Logger logger = LogManager.getLogger();
 
 	private void testSelectedDb(){
-		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm543" : "cdm546");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm543" : "cdm548");
 //		database = "cdm_test1";
 
 		CdmDataSource dataSource = getDatasource(dbType, database);

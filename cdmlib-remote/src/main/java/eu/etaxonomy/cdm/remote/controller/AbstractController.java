@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,10 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.util.UserHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
@@ -161,7 +165,27 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
             sub_c.addAll(c);
         }
         return sub_c;
-
     }
 
+    //as we do not have a common base controller for both single and list controllers
+    //I put this method here though it might be more specific then other methods here.
+    //Maybe better use a method like BaseController.getCdmBaseInstance(class, ...)
+    protected Taxon getAcceptedTaxonOrError(UUID taxonUuid, ITaxonService taxonService,
+            HttpServletResponse response) throws IOException {
+        TaxonBase<?> taxon = null;
+        if (taxonUuid != null){
+            taxon = taxonService.find(taxonUuid);
+            if(taxon == null) {
+                response.sendError(404 , "Accepted taxon not found using " + taxonUuid );
+                //will not happen
+                return null;
+            }
+            if (!taxon.isInstanceOf(Taxon.class)) {
+                HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+                //will not happen
+                return null;
+            }
+        }
+        return CdmBase.deproxy(taxon, Taxon.class);
+    }
 }

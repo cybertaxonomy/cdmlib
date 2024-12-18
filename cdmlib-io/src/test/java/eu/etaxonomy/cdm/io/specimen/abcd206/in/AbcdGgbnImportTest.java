@@ -177,6 +177,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	@Ignore  //TODO this test takes very long therefore I keep it on ignore, also it fails as the
 	//derived unit count returns 117 not 118 as assumed; this needs to be fixed and we have to check
+	// -> this is because the associated unit B GT 0001042 is not available anymore. -> we should add a warning for these cases.
 	//why importing 59 units takes so long
  	public void testImport59Units() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_59taxa.xml";
@@ -194,10 +195,39 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
         importConfigurator.setIgnoreAuthorship(true);
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
-    //    assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of derived units is incorrect", 118, occurrenceService.count(DerivedUnit.class));
-        assertEquals("Number of dna samples is incorrect", 59, occurrenceService.count(DnaSample.class));
+       assertTrue("Return value for import.invoke should be true", result);
+       assertEquals("Number of derived units is incorrect", 118, occurrenceService.count(DerivedUnit.class));
+       assertEquals("Number of dna samples is incorrect", 59, occurrenceService.count(DnaSample.class));
+
 	}
+
+	@Test
+    @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    public void testImportUnitsWithoutFieldNumbers() {
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_test_missing_fieldnumber.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        importConfigurator.setIgnoreAuthorship(true);
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
+       assertTrue("Return value for import.invoke should be true", result);
+
+       assertEquals("Number of dna samples is incorrect", 6, occurrenceService.count(DnaSample.class));
+       assertEquals("Number of derived units is incorrect", 12, occurrenceService.count(DerivedUnit.class));
+       // there should be 5 field units because there are two specimen with the same (and existing) collectorsFieldnumber
+       assertEquals("Number of fieldUnits is incorrect", 5, occurrenceService.count(FieldUnit.class));
+
+    }
+
 
 	/**
 	 * Tests import import of DNA unit and all its parameters
@@ -585,14 +615,14 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	}
 
 
-	@Test
+	@Test //#10570
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
         @DataSet(value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     })
-    public void testAlreadyExistingTeam(){
+    public void testAlreadyExistingCollectorTeam(){
 
-        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_team_test2.xml";
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/match_team_test2.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 
@@ -615,14 +645,14 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
     }
 
-	@Test
+	@Test //#10570
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
         @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     })
-    public void testAlreadyExistingTeamMembers(){
+    public void testAlreadyExistingCollectorTeamMembers(){
 
-        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_team_test.xml";
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/match_team_test.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 
@@ -686,6 +716,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    assertNotNull("Configurator could not be created", importConfigurator);
 
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
+	    List<DerivedUnit> derivedUnits = occurrenceService.list(DerivedUnit.class, null, null, null, null);
 	    assertTrue("Return value for import.invoke should be true", result);
 	}
 

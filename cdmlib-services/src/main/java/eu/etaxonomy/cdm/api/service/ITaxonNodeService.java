@@ -195,7 +195,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
             UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
     public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto, NamedSource source, String microref,
-            TaxonNodeStatus status, Map<Language,LanguageString> statusNote);
+            TaxonNodeStatus status, Map<Language,LanguageString> placementNote);
 
     public UpdateResult addTaxonNodeAgentRelation(UUID taxonNodeUUID, UUID agentUUID, DefinedTerm relationshipType);
 

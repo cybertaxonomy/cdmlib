@@ -21,7 +21,7 @@ import net.sf.json.JsonConfig;
 
 public class TaxonNodeDtoBeanProcessor extends AbstractBeanProcessor<TaxonNodeDto> implements IMultilanguageTextBeanProcessor {
 
-    private static final List<String> IGNORE_LIST = Arrays.asList(new String[]{"statusNote"});
+    private static final List<String> IGNORE_LIST = Arrays.asList(new String[]{"placementNote"});
 
     private boolean replaceMultilanguageText = false;
 
@@ -29,9 +29,9 @@ public class TaxonNodeDtoBeanProcessor extends AbstractBeanProcessor<TaxonNodeDt
     public JSONObject processBeanSecondStep(TaxonNodeDto bean, JSONObject json, JsonConfig jsonConfig) {
 
         List<Language> languages = LocaleContext.getLanguages();
-        if(!bean.getStatusNote().isEmpty()) {
-            String statusNoteText = MultilanguageTextHelper.getPreferredLanguageObject(bean.getStatusNote(), languages);
-            json.element("statusNote_L10n", statusNoteText);
+        if(!bean.getPlacementNote().isEmpty()) {
+            String placementNoteText = MultilanguageTextHelper.getPreferredLanguageObject(bean.getPlacementNote(), languages);
+            json.element("placementNote_L10n", placementNoteText);
 
         }
         return json;

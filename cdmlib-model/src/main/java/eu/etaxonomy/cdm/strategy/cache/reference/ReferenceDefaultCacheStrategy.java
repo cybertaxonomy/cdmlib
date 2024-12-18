@@ -139,8 +139,12 @@ public class ReferenceDefaultCacheStrategy
         if (reference == null) {
             return result;
         }
-        if (reference.getType() == ReferenceType.WebPage && reference.getUri() != null && !result.contains(reference.getUri().toString())){
-            result = CdmUtils.concat(webpageUriSeparator, result, reference.getUri().toString());
+        if (reference.getType().hasUri() && reference.getUri() != null && !result.contains(reference.getUri().toString())){
+            if (reference.getType() == ReferenceType.Database) {
+                result = CdmUtils.concat(". Published at ", result, reference.getUri().toString());
+            } else {
+                result = CdmUtils.concat(webpageUriSeparator, result, reference.getUri().toString());
+            }
         }
         if(reference.getAccessed() != null){
             //TODO still a bit preliminary, also brackets may change in future
@@ -272,19 +276,28 @@ public class ReferenceDefaultCacheStrategy
 
         Reference inRef = reference.getInReference();
 
-        String inRefPart = getInRefAuthorAndTitle(inRef, reference.getType(), isAbbrev);
-        if (inRef != null && !inRef.isArticle()){
-            inRefPart = addInRefPages(inRef, inRefPart);
-            if (inRef.isJournal()){
-                inRefPart = addSeriesAndVolume(reference, inRefPart, isAbbrev);  //usually only needed for journals
+        String inRefPart;
+
+        if (inRef != null && inRef.isProtectedTitleCache() && !isAbbrev) {
+            inRefPart = biblioInSeparator + inRef.getTitleCache();
+        }else if (inRef != null && inRef.isProtectedAbbrevTitleCache() && isAbbrev) {
+            //TODO is biblioInSeparator correct here? Not tested, maybe not relevant
+            inRefPart = biblioInSeparator + inRef.getAbbrevTitleCache();
+        }else {
+            inRefPart = getInRefAuthorAndTitle(inRef, reference.getType(), isAbbrev);
+            if (inRef != null && !inRef.isArticle()){
+                inRefPart = addInRefPages(inRef, inRefPart);
+                if (inRef.isJournal()){
+                    inRefPart = addSeriesAndVolume(reference, inRefPart, isAbbrev);  //usually only needed for journals
+                }
             }
-        }
-        inRefPart = biblioInSeparator + inRefPart;
-        if (inRef != null && inRef.isBookSection()){
-            inRefPart = CdmUtils.addTrailingDotIfNotExists(inRefPart);
-            String inInRefPart = getInRefAuthorAndTitle(inRef.getInReference(), inRef.getType(), isAbbrev);
-            inInRefPart = biblioInSeparator + inInRefPart;
-            inRefPart += inInRefPart;
+            inRefPart = biblioInSeparator + inRefPart;
+            if (inRef != null && inRef.isBookSection()){
+                inRefPart = CdmUtils.addTrailingDotIfNotExists(inRefPart);
+                String inInRefPart = getInRefAuthorAndTitle(inRef.getInReference(), inRef.getType(), isAbbrev);
+                inInRefPart = biblioInSeparator + inInRefPart;
+                inRefPart += inInRefPart;
+            }
         }
         inRefPart = handleWebPageAndAccessed(inRef, inRefPart);
 

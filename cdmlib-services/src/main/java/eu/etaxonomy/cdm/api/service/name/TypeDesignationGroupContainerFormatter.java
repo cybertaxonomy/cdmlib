@@ -305,6 +305,11 @@ public class TypeDesignationGroupContainerFormatter {
                 boolean isMediaSpecimen = du instanceof MediaSpecimen;
                 String typeSpecimenTitle = (isMediaSpecimen ? "[icon] " : "");
 
+                //TODO the following is semantically mostly redundant with the implementation
+                //     in MediaSpecimenDefaultCacheStrategy. But there TaggedText is not
+                //     yet available. Once it is we should merge the 2 methods.
+                //     #10573 and related
+
                 //media specimen
                 if(isMediaSpecimen
                             && HibernateProxyHelper.deproxyOrNull(du.getCollection()) == null  //TODO not sure if only checking the collection is enough, but as we also check existence of sources now the case that only an accession number exists is also covered here

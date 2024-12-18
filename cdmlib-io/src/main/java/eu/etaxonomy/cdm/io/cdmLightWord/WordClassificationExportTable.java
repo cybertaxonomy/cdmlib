@@ -54,7 +54,7 @@ public enum WordClassificationExportTable {
     protected static final String EXCLUDED = "Excluded";
     protected static final String DOUBTFUL = "PlacementDoubtful";
     protected static final String PUBLISHED = "Published";
-    protected static final String STATUS_NOTES = "StatusNotes";
+    protected static final String PLACEMENT_NOTES = "PlacementNotes";
 
     //pro parte / misapplied
     protected static final String SYN_SEC_REFERENCE_FK = "SynSecReference_Fk";
@@ -342,7 +342,7 @@ public enum WordClassificationExportTable {
     }
 
     final static String[] taxonColumns(){
-        return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE, SORT_INDEX, EXCLUDED, STATUS_NOTES, PUBLISHED, UNPLACED, DOUBTFUL, APPENDED_PHRASE};
+        return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE, SORT_INDEX, EXCLUDED, PLACEMENT_NOTES, PUBLISHED, UNPLACED, DOUBTFUL, APPENDED_PHRASE};
     }
 
     final static String[] synonymColumns(){

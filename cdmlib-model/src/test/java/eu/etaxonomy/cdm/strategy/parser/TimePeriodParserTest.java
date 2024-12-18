@@ -228,6 +228,7 @@ public class TimePeriodParserTest {
 
 	@Test
 	public void testParseDateWithMonths() {
+
 	    String strDate = "24 Aug. 1957";
 	    TimePeriod tp = TimePeriodParser.parseString(strDate);
         assertNotNull(tp);
@@ -318,10 +319,75 @@ public class TimePeriodParserTest {
         Assert.assertEquals(Integer.valueOf(2), tp.getStartMonth());
         Assert.assertEquals(Integer.valueOf(4), tp.getStartDay());
         Assert.assertTrue(tp.isContinued());
+
+        //#10642
+        strDate = "4 May 1957";
+        tp = TimePeriodParser.parseString(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("4 May 1957", tp.toString());
+        Assert.assertEquals("1957", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(5), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(4), tp.getStartDay());
+        Assert.assertNull(tp.getEndYear());
+        Assert.assertNull(tp.getEndMonth());
+        Assert.assertNull(tp.getEndDay());
+
+        //Roman months (#10643)
+        strDate = "4.V.1957";
+        tp = TimePeriodParser.parseString(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("4 May 1957", tp.toString());
+        Assert.assertEquals("1957", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(5), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(4), tp.getStartDay());
+        Assert.assertNull(tp.getEndYear());
+        Assert.assertNull(tp.getEndMonth());
+        Assert.assertNull(tp.getEndDay());
+
+        strDate = "30.xii.1947";
+        tp = TimePeriodParser.parseString(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("30 Dec 1947", tp.toString());
+        Assert.assertEquals("1947", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1947), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(30), tp.getStartDay());
+
+        strDate = "30 xii 1947";
+        tp = TimePeriodParser.parseString(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("30 Dec 1947", tp.toString());
+        Assert.assertEquals("1947", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1947), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(30), tp.getStartDay());
+
+        strDate = "1947 xii 30"; //we do not allow inverse order for now?
+        tp = TimePeriodParser.parseString(strDate);
+        Assert.assertEquals("Inverse order is not (yet) parsed for dates with roman months",
+                "1947 xii 30", tp.toString());
+
+        strDate = "xii 1947"; //we do not allow inverse order for now?
+        tp = TimePeriodParser.parseString(strDate);
+        Assert.assertEquals("Only partial dates are not yet parsed for dates with roman months as it creates issues during nom. ref. parsing",
+                "xii 1947", tp.toString());
+
+        //#10643#note-3
+        strDate = "4.IV.1957";
+        tp = TimePeriodParser.parseString(strDate);
+        Assert.assertEquals("4 Apr 1957", tp.toString());
+
+        strDate = "4.IX.1957";
+        tp = TimePeriodParser.parseString(strDate);
+        Assert.assertEquals("4 Sep 1957", tp.toString());
+
 	}
 
     @Test
     public void testParseDateWithMonthPeriods() {
+
         String strDate = "24 Aug 1957-14 Oct 1988";
         TimePeriod tp = TimePeriodParser.parseString(strDate);
         assertNotNull(tp);
@@ -348,7 +414,6 @@ public class TimePeriodParserTest {
 
         strDate = "1957"+SEP+"14 Oct 1988";
         tp = TimePeriodParser.parseString(strDate);
-        assertNotNull(tp);
         Assert.assertEquals("1957"+SEP+"14 Oct 1988", tp.toString());
         Assert.assertEquals("1957"+SEP+"1988", tp.getYear());
         Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
@@ -357,6 +422,19 @@ public class TimePeriodParserTest {
         Assert.assertEquals(Integer.valueOf(1988), tp.getEndYear());
         Assert.assertEquals(Integer.valueOf(10), tp.getEndMonth());
         Assert.assertEquals(Integer.valueOf(14), tp.getEndDay());
+
+        //roman months (#10643)
+        strDate = "24 VIII 1957 - 14 X 1988";
+        tp = TimePeriodParser.parseString(strDate);
+        Assert.assertEquals("24 Aug 1957"+SEP+"14 Oct 1988", tp.toString());
+        Assert.assertEquals("1957"+SEP+"1988", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(8), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(24), tp.getStartDay());
+        Assert.assertEquals(Integer.valueOf(1988), tp.getEndYear());
+        Assert.assertEquals(Integer.valueOf(10), tp.getEndMonth());
+        Assert.assertEquals(Integer.valueOf(14), tp.getEndDay());
+
     }
 
     @Test

@@ -205,7 +205,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         List<TaxonNodeDto> list = new ArrayList<>();
         for(SortableTaxonNodeQueryResult stnqr : result){
             TaxonNodeDto newNode = new TaxonNodeDto(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonUuid(), stnqr.getTreeIndex(), stnqr.getNameTitleCache(),stnqr.getTaxonTitleCache(),
-                    stnqr.getNameRank().getOrderIndex(), parent.getUuid(),stnqr.getSortIndex(),parent.getClassificationUUID(), stnqr.isTaxonIsPublish(), stnqr.getStatus(), stnqr.getStatusNote(), stnqr.getChildrenCount(), stnqr.getSecUuid(), null);
+                    stnqr.getNameRank().getOrderIndex(), parent.getUuid(),stnqr.getSortIndex(),parent.getClassificationUUID(), stnqr.isTaxonIsPublish(), stnqr.getStatus(), stnqr.getPlacementNote(), stnqr.getChildrenCount(), stnqr.getSecUuid(), null);
 
             list.add(newNode);
         }
@@ -1204,7 +1204,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
                 + "   INNER JOIN tn.classification AS cl "
                 + "   LEFT OUTER JOIN t.secSource as secSource "
                 + "   LEFT OUTER JOIN secSource.citation as sec "
-                + "	  LEFT OUTER JOIN tn.statusNote as note "
+                + "	  LEFT OUTER JOIN tn.placementNote as note "
                 + "   LEFT OUTER JOIN name.rank AS rank ";
         return queryString;
     }
@@ -1219,7 +1219,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             + "   INNER JOIN tn.taxon AS t "
             + "   INNER JOIN t.name AS name "
             + "   INNER JOIN tn.classification AS cl "
-            + "   LEFT OUTER JOIN tn.statusNote as note "
+            + "   LEFT OUTER JOIN tn.placementNote as note "
             + "   LEFT OUTER JOIN name.rank AS rank ";
     return queryString;
 }

@@ -84,7 +84,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "agentRelations",
     "synonymToBeUsed",
     "status",
-    "statusNote"
+    "placementNote"
 })
 @XmlRootElement(name = "TaxonNode")
 @Entity
@@ -164,13 +164,13 @@ public class TaxonNode
     @Audited
     private TaxonNodeStatus status;
 
-    @XmlElement(name = "statusNote")
+    @XmlElement(name = "placementNote")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-//    @MapKeyJoinColumn(name="statusNote_mapkey_id")
-    @JoinTable(name = "TaxonNode_StatusNote")  //to make possible to add also unplacedNote
+//    @MapKeyJoinColumn(name="placementNote_mapkey_id")
+    @JoinTable(name = "TaxonNode_PlacementNote")  //to make possible to add also unplacedNote
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    private Map<Language,LanguageString> statusNote = new HashMap<>();
+    private Map<Language,LanguageString> placementNote = new HashMap<>();
 
 //	private Taxon originalConcept;
 //	//or
@@ -331,28 +331,28 @@ public class TaxonNode
      * Returns the {@link MultilanguageText multi-language text} to add a note to the
      * status. The different {@link LanguageString language strings}
      * contained in the multi-language text should all have the same meaning.
-     * @see #getStatusNote(Language)
-     * @see #putStatusNote(Language, String)
+     * @see #getPlacementNote(Language)
+     * @see #putPlacementNote(Language, String)
      */
-    public Map<Language,LanguageString> getStatusNote(){
-        return this.statusNote;
+    public Map<Language,LanguageString> getPlacementNote(){
+        return this.placementNote;
     }
 
-    public String preferredStatusNote(Language language){
+    public String preferredPlacementNote(Language language){
         List<Language> languages = new ArrayList<>();
         languages.add(language);
-        return preferredStatusNote(languages);
+        return preferredPlacementNote(languages);
     }
 
-    public String preferredStatusNote(List<Language> languages){
-        if (statusNote == null || statusNote.isEmpty()) {
+    public String preferredPlacementNote(List<Language> languages){
+        if (placementNote == null || placementNote.isEmpty()) {
             return null;
-        } else if (statusNote.size() == 1) {
-            LanguageString ls = statusNote.values().iterator().next();
+        } else if (placementNote.size() == 1) {
+            LanguageString ls = placementNote.values().iterator().next();
             return ls == null ? null : ls.getText();
         } else {
             for (Language lang : languages) {
-                LanguageString ls = statusNote.get(lang);
+                LanguageString ls = placementNote.get(lang);
                 if (ls != null && isNotBlank(ls.getText())){
                     return ls.getText();
                 }
@@ -361,8 +361,8 @@ public class TaxonNode
         }
     }
 
-    public String getStatusNote(Language language){
-        LanguageString languageString = statusNote.get(language);
+    public String getPlacementNote(Language language){
+        LanguageString languageString = placementNote.get(language);
         if (languageString == null){
             return null;
         }else{
@@ -373,15 +373,15 @@ public class TaxonNode
     /**
      * Adds a translated {@link LanguageString text in a particular language}
      * to the {@link MultilanguageText multilanguage text} used to add a note to
-     * the {@link #getStatus() status}.
+     * the {@link #getStatus() placement/status}.
      *
-     * @param statusNote   the language string adding a note to the status
-     *                      in a particular language
-     * @see                 #getStatusNote()
-     * @see                 #putStatusNote(String, Language)
+     * @param placementNote   the language string adding a note to the status
+     *                        in a particular language
+     * @see                   #getPlacementNote()
+     * @see                   #putPlacementNote(String, Language)
      */
-    public void putStatusNote(LanguageString statusNote){
-        this.statusNote.put(statusNote.getLanguage(), statusNote);
+    public void putPlacementNote(LanguageString placementNote){
+        this.placementNote.put(placementNote.getLanguage(), placementNote);
     }
     /**
      * Creates a {@link LanguageString language string} based on the given text string
@@ -391,25 +391,25 @@ public class TaxonNode
      * @param text      the string annotating the status
      *                  in a particular language
      * @param language  the language in which the text string is formulated
-     * @see             #getStatusNote()
-     * @see             #putStatusNote(LanguageString)
-     * @see             #removeStatusNote(Language)
+     * @see             #getPlacementNote()
+     * @see             #putPlacementNote(LanguageString)
+     * @see             #removePlacementNote(Language)
      */
-    public void putStatusNote(Language language, String text){
-        this.statusNote.put(language, LanguageString.NewInstance(text, language));
+    public void putPlacementNote(Language language, String text){
+        this.placementNote.put(language, LanguageString.NewInstance(text, language));
     }
 
     /**
      * Removes from the {@link MultilanguageText multilanguage text} used to annotate
-     * the status the one {@link LanguageString language string}
+     * the placement/status the one {@link LanguageString language string}
      * with the given {@link Language language}.
      *
      * @param  lang the language in which the language string to be removed
      *       has been formulated
-     * @see         #getStatusNote()
+     * @see         #getPlacementNote()
      */
-    public void removeStatusNote(Language lang){
-        this.statusNote.remove(lang);
+    public void removePlacementNote(Language lang){
+        this.placementNote.remove(lang);
     }
 
 // ****************** Agent Relations ****************************/
@@ -1040,10 +1040,10 @@ public class TaxonNode
                 result.addAgentRelation(rel.clone());
             }
 
-            //statusNote
-            result.statusNote = new HashMap<>();
-            for(Language lang : this.statusNote.keySet()){
-                result.statusNote.put(lang, this.statusNote.get(lang));
+            //placementNote
+            result.placementNote = new HashMap<>();
+            for(Language lang : this.placementNote.keySet()){
+                result.placementNote.put(lang, this.placementNote.get(lang));
             }
 
             return result;

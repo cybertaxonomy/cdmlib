@@ -889,7 +889,7 @@ public class TaxonNodeServiceImpl
     @Transactional
     public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto,
             NamedSource source, String microref,
-            TaxonNodeStatus status, Map<Language,LanguageString> statusNote){
+            TaxonNodeStatus status, Map<Language,LanguageString> placementNote){
 
         UpdateResult result = new UpdateResult();
         TaxonNode child = null;
@@ -948,8 +948,8 @@ public class TaxonNodeServiceImpl
             child = parent.addChildTaxon(taxon, source);
             child.setStatus(status);
 
-            if (statusNote != null){
-                child.getStatusNote().putAll(statusNote);
+            if (placementNote != null){
+                child.getPlacementNote().putAll(placementNote);
             }
 
         }catch(Exception e){

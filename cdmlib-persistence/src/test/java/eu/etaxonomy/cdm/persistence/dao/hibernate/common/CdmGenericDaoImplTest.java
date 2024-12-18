@@ -1290,11 +1290,14 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         }
     }
 
-    @Test
+
+    @Test //test matching strategy and matching algorithm for collectors and collector teams, #10570
     public void testFindMatchingCollectors() {
+
         Person person1 = Person.NewInstance();
         Person person2 = Person.NewInstance();
         Person person3 = Person.NewInstance();
+        Person person4 = Person.NewInstance();
         person1.setFamilyName("FamName1");
         person1.setCollectorTitle("CollectorTitle1");
         person1.getCollectorTitleCache();
@@ -1303,6 +1306,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         person2.getCollectorTitleCache();
         person3.setFamilyName("FamName3");
         person3.setCollectorTitle("CollectorTitle3");
+        person4.setFamilyName("FamName1");
+        person4.setCollectorTitle("CollectorTitle1");
 
         Team team1 = Team.NewInstance();
         Team team2 = Team.NewInstance();
@@ -1323,33 +1328,24 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         team2 = (Team) cdmGenericDao.findByUuid(uuidTeam2);
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedCollectorPersonInstance();
         try {
-
-            List<Person> matchResult = cdmGenericDao.findMatching(person1, matchStrategy, false);
-            //Assert.assertEquals(1, matchResult.size());
+            //matching a person saved as a team member with same family name and collector title
+            List<Person> matchResult = cdmGenericDao.findMatching(person4, matchStrategy, false);
+            Assert.assertEquals(1, matchResult.size());
             Team teamAs1 = Team.NewInstance();
 
             teamAs1.addTeamMember(person1);
             teamAs1.addTeamMember(person2);
 
             matchStrategy = MatchStrategyFactory.NewParsedCollectorTeamInstance();
-            //match with single instance comparison after hql query
+            //match a team which already exists (team1).
             List<Team> matchResult_team = cdmGenericDao.findMatching(teamAs1, matchStrategy, false);
             Assert.assertEquals(1, matchResult_team.size());
 
-            //test without single instance comparison after hql query
-            List<Team> candidateMatchResult = cdmGenericDao.findMatching(teamAs1, matchStrategy, true);
-            //FIXME #9905
-            Assert.assertEquals(1, candidateMatchResult.size());
-
-
 
         } catch (IllegalArgumentException | MatchException e) {
-            e.printStackTrace();
             Assert.fail("No exception should be thrown");
-
         }
     }
-
 
 	@Test
 	public void testGetHqlResult() {

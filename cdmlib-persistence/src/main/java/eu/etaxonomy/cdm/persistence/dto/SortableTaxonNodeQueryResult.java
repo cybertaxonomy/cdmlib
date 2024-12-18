@@ -43,7 +43,7 @@ public class SortableTaxonNodeQueryResult {
     private UUID secUuid;
     private List<TaggedText> taggedName;
 
-    private List<LanguageString> statusNote = new ArrayList<>();
+    private List<LanguageString> placementNote = new ArrayList<>();
 
     //  (rank.label, rank.orderIndex) => orderIndex may become a problem once rank does not include the orderindex anymore
     //taxonStatus (Accepted, Synonym, SynonymObjective)
@@ -113,7 +113,7 @@ public class SortableTaxonNodeQueryResult {
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid,
             String taxonTitleCache, String nameTitleCache, Rank nameRank, UUID parentNodeUuid,
             Integer sortIndex, UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status,
-            LanguageString statusNote,
+            LanguageString placementNote,
             Integer childrenCount, UUID secUuid
 
             ) {
@@ -134,14 +134,14 @@ public class SortableTaxonNodeQueryResult {
         this.setChildrenCount(childrenCount);
         this.setSecUuid(secUuid);
         this.status = status;
-        if (statusNote != null) {
-            this.statusNote.add(statusNote);
+        if (placementNote != null) {
+            this.placementNote.add(placementNote);
         }
 
-//        if (statusNote != null) {
-//        	this.statusNote = new HashMap<Language, String>();
-//        	for (Entry<Language, LanguageString> entry :statusNote.entrySet()) {
-//        		this.statusNote.put(entry.getKey(), entry.getValue().getText());
+//        if (placementNote != null) {
+//        	this.placementNote = new HashMap<Language, String>();
+//        	for (Entry<Language, LanguageString> entry :placementNote.entrySet()) {
+//        		this.placementNote.put(entry.getKey(), entry.getValue().getText());
 //        	}
 //        }
     }
@@ -259,12 +259,12 @@ public class SortableTaxonNodeQueryResult {
 		this.taxonIsPublish = taxonIsPublish;
 	}
 
-	public List<LanguageString> getStatusNote() {
-		return statusNote;
+	public List<LanguageString> getPlacementNote() {
+		return placementNote;
 	}
 
-	public void setStatusNote(List<LanguageString> statusNote) {
-		this.statusNote = statusNote;
+	public void setPlacementNote(List<LanguageString> placementNote) {
+		this.placementNote = placementNote;
 	}
 
 	public Integer getTaxonNodeId() {
@@ -334,7 +334,7 @@ public class SortableTaxonNodeQueryResult {
                     queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(),
                     queryDTO.getNameRank()!= null? queryDTO.getNameRank().getOrderIndex(): null,
                     queryDTO.getParentNodeUuid(), queryDTO.getSortIndex(), queryDTO.getClassificationUuid(),
-                    queryDTO.isTaxonIsPublish(), queryDTO.getStatus(), queryDTO.getStatusNote(),
+                    queryDTO.isTaxonIsPublish(), queryDTO.getStatus(), queryDTO.getPlacementNote(),
                     queryDTO.getChildrenCount(), queryDTO.getSecUuid(),
                     queryDTO.getTaggedName());
             nodeDtos.add(nodeDto);

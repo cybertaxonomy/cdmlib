@@ -66,6 +66,8 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -83,6 +85,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.OccurrenceCacheStrategyBase;
 
 /**
  * @author a.mueller
@@ -150,6 +153,8 @@ public class ReferencingObjectFormatter {
             resultString = getCache((NomenclaturalStatus) element);
         }else if (element instanceof GatheringEvent){
             resultString = getCache((GatheringEvent) element);
+        }else if (element instanceof DerivationEvent){
+            resultString = getCache((DerivationEvent) element);
         }else if (element instanceof TermNode){
             resultString = getCache((TermNode<?>) element);
         }else if (element instanceof Marker) {
@@ -381,6 +386,34 @@ public class ReferencingObjectFormatter {
         String result = CdmUtils.concat(" determined as ", unitStr, taxonStr);
 
         return result;
+    }
+
+    private static String getCache(DerivationEvent derivationEvent) {
+        String result = null;
+        if (derivationEvent.getType() != null) {
+            result = derivationEvent.getType().getTitleCache();
+        }
+        if (derivationEvent.getOriginals() != null && !derivationEvent.getOriginals().isEmpty()) {
+            SpecimenOrObservationBase<?> firstOriginal = derivationEvent.getOriginals().iterator().next();
+            result = CdmUtils.concat("; ", result, getIdentityCache(firstOriginal));
+            if (derivationEvent.getOriginals().size() > 1) {
+                result += " and others";
+            }
+        }
+        if (derivationEvent.getDerivatives() != null && !derivationEvent.getDerivatives().isEmpty()) {
+            DerivedUnit firstDerivative = derivationEvent.getDerivatives().iterator().next();
+            result = CdmUtils.concat(" -> ", result, getIdentityCache(firstDerivative));
+            if (derivationEvent.getDerivatives().size() > 1) {
+                result += " and others";
+            }
+        }
+        return result;
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static String getIdentityCache(SpecimenOrObservationBase<?> occurrence) {
+        return ((OccurrenceCacheStrategyBase)occurrence.cacheStrategy())
+                .getIdentityCache(occurrence);
     }
 
     private static String getCache(TaxonNode taxonNode) {

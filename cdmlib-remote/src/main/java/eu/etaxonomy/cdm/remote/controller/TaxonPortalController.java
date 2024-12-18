@@ -142,7 +142,7 @@ public class TaxonPortalController extends TaxonController{
     public static final EntityInitStrategy TAXON_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             "sources",
-            "statusNote",
+            "placementNote",
             "relationsFromThisTaxon.toTaxon.secSource.citation.authorship",
             "relationsFromThisTaxon.toTaxon.secSource.citation.inReference.authorship",
             "relationsToThisTaxon.fromTaxon.secSource.citation.authorship",
@@ -275,7 +275,7 @@ public class TaxonPortalController extends TaxonController{
     protected static final EntityInitStrategy TAXONNODE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "taxonNodes.classification",
             "taxonNodes.parent",
-            "taxonNodes.statusNote.*",
+            "taxonNodes.placementNote.*",
             "taxonNodes.taxon.name",
             "taxonNodes.taxon.secSource.citation",
             "taxonNodes.taxon.secSource.nameUsedInSource.$",
@@ -359,7 +359,6 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "locale", required = false, defaultValue = "en") String locale,
 
 
-
             //distributionInfoConfig
             //TODO annotation type filter for distribution info
             @RequestParam(value = "part", required = false)  Set<InfoPart> partSet,
@@ -402,8 +401,14 @@ public class TaxonPortalController extends TaxonController{
 
         //check taxon exists and not filtered
         Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, getTaxonNodeInitStrategy().getPropertyPaths());
+        if (taxon == null) {
+            return null;
+        }
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
         taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
+        if (taxon == null) {
+            return null;
+        }
 
         if (partSet == null) {
             partSet = EnumSet.of(InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);

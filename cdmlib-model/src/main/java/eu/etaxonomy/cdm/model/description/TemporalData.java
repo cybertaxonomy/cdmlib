@@ -40,7 +40,9 @@ import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class TemporalData extends DescriptionElementBase {
+public class TemporalData
+        extends DescriptionElementBase
+        implements IHasModifyingText {
 
     private static final long serialVersionUID = -1064249780729501786L;
     @SuppressWarnings("unused")

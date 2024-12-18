@@ -54,13 +54,13 @@ public class TaxonNodeBeanProcessor
 
 	    TaxonNode taxonNode = bean;
         LanguageString languageString;
-        if(Hibernate.isInitialized(taxonNode.getStatusNote())){
-            languageString = MultilanguageTextHelper.getPreferredLanguageString(taxonNode.getStatusNote(), languages);
+        if(Hibernate.isInitialized(taxonNode.getPlacementNote())){
+            languageString = MultilanguageTextHelper.getPreferredLanguageString(taxonNode.getPlacementNote(), languages);
             if(languageString != null){
-                json.element("statusNote_L10n", languageString, jsonConfig);
+                json.element("placementNote_L10n", languageString, jsonConfig);
             }
             if(isReplaceMultilanguageText()){
-                json.remove("statusNote");
+                json.remove("placementNote");
             }
         }
 		return json;

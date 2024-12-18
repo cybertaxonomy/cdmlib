@@ -53,8 +53,8 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
@@ -355,7 +355,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         Assert.assertFalse("Node should be neither excluded nor unplaced", notSpecialNode.isUnplaced() || notSpecialNode.isExcluded());
 
         //read excluded node
-        Map<Language, LanguageString> map = excludedNode.getStatusNote();
+        Map<Language, LanguageString> map = excludedNode.getPlacementNote();
         Assert.assertEquals(2, map.size());
         Set<Integer> langIds = new HashSet<>();
         for (Language lang : map.keySet()){
@@ -470,8 +470,6 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertTrue(0 == result.get(1).getSortIndex()); // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
         assertTrue(1 == result.get(2).getSortIndex()); // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
         assertTrue(0 == result.get(3).getSortIndex()); // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
-
-
     }
 
     @Test
@@ -496,8 +494,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null);
         assertEquals(5, result.size());
 
-        assertNotNull(result.get(3).getStatusNote()); // Acherontia(Fabricius, 1798) rank: Genus
-        assertNotNull(result.get(4).getStatusNote());  // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
+        assertNotNull(result.get(3).getPlacementNote()); // Acherontia(Fabricius, 1798) rank: Genus
+        assertNotNull(result.get(4).getPlacementNote());  // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
 //        assertEquals(null, result.get(2).getStatus());  // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
 //        assertEquals(TaxonNodeStatus.EXCLUDED, result.get(3).getStatus());  // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
 //

@@ -41,6 +41,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
@@ -168,11 +170,18 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
         TemporalData temporalData = TemporalData.NewInstance(Feature.FLOWERING_PERIOD(), period);
         taxonDescription1.addElement(temporalData);
         Assert.assertEquals("May"+UTF8.EN_DASH+"Jun (Abies alba Mill. sec. Linne 1753)", defaultFormat(temporalData));
+    }
+
+    @Test
+    public void testFormat_Occurrence() {
 
         //GatheringEvent
         GatheringEvent gatheringEvent = getGatheringEvent();
         Assert.assertEquals("Linne, Germany", defaultFormat(gatheringEvent));  //may change in future
 
+        //DerivationEvent #10640
+        DerivationEvent derivationEvent = getDerivationEvent();
+        Assert.assertEquals("accessioning; Linne 125 -> B: B555", defaultFormat(derivationEvent));
     }
 
     private DerivedUnit getDerivedUnit() {
@@ -195,6 +204,14 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
         gatheringEvent.setCountry(Country.GERMANY());
         gatheringEvent.setCollector(person1);
         return gatheringEvent;
+    }
+
+    private DerivationEvent getDerivationEvent() {
+
+        DerivationEvent derivationEvent = DerivationEvent.NewSimpleInstance(
+                getFieldUnit(), getDerivedUnit(), DerivationEventType.ACCESSIONING());
+        derivationEvent.setTimeperiod(TimePeriodParser.parseString("1972"));
+        return derivationEvent;
     }
 
     private String defaultFormat(CdmBase cdmBase) {
