@@ -181,7 +181,7 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
 
         //DerivationEvent #10640
         DerivationEvent derivationEvent = getDerivationEvent();
-        Assert.assertEquals("accessioning; Germany, Linne 125->Germany, Linne 125 (B: B555)", defaultFormat(derivationEvent));
+        Assert.assertEquals("accessioning; Linne 125 -> B: B555", defaultFormat(derivationEvent));
     }
 
     private DerivedUnit getDerivedUnit() {

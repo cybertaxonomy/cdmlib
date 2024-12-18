@@ -85,6 +85,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.OccurrenceCacheStrategyBase;
 
 /**
  * @author a.mueller
@@ -394,19 +395,25 @@ public class ReferencingObjectFormatter {
         }
         if (derivationEvent.getOriginals() != null && !derivationEvent.getOriginals().isEmpty()) {
             SpecimenOrObservationBase<?> firstOriginal = derivationEvent.getOriginals().iterator().next();
-            result = CdmUtils.concat("; ", result, firstOriginal.getTitleCache());
+            result = CdmUtils.concat("; ", result, getIdentityCache(firstOriginal));
             if (derivationEvent.getOriginals().size() > 1) {
                 result += " and others";
             }
         }
         if (derivationEvent.getDerivatives() != null && !derivationEvent.getDerivatives().isEmpty()) {
             DerivedUnit firstDerivative = derivationEvent.getDerivatives().iterator().next();
-            result = CdmUtils.concat("->", result, firstDerivative.getTitleCache());
+            result = CdmUtils.concat(" -> ", result, getIdentityCache(firstDerivative));
             if (derivationEvent.getDerivatives().size() > 1) {
                 result += " and others";
             }
         }
         return result;
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static String getIdentityCache(SpecimenOrObservationBase<?> occurrence) {
+        return ((OccurrenceCacheStrategyBase)occurrence.cacheStrategy())
+                .getIdentityCache(occurrence);
     }
 
     private static String getCache(TaxonNode taxonNode) {
