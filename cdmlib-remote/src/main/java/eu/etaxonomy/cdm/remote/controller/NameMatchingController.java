@@ -290,7 +290,7 @@ public class NameMatchingController {
                     csvWriter.writeNext(csvRows);
                 }
             } catch (IOException e) {
-                logger.info("doPostNameMatching()" + request.getRequestURI());
+                logger.info("doPostNameMatching() " + request.getRequestURI());
             }
         }
     }
