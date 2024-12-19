@@ -56,7 +56,8 @@ public class MediaSpecimenDefaultCacheStrategy
         return result;
     }
 
-    private boolean withReference = false;
+    //TODO preliminary set to true (#10573, #10596)
+    private boolean withReference = true;
 
     private MediaSpecimenDefaultCacheStrategy(){}
 
