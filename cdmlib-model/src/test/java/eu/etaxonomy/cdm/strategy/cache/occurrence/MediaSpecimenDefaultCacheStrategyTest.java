@@ -103,6 +103,7 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
         Assert.assertNull(strategy.getTitleCache(null));
     }
 
+    //#10537, #10596
     @Test
     public void testReferenceMediaSpecimen() {
 
@@ -112,14 +113,12 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
         //a publication. They often do not have a media attached but therefore should have a source
 
         //empty
-//        Assert.assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
+        //old: Assert.assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
         Assert.assertEquals("[icon]", strategy.getTitleCache(specimen));
 
         Media media = Media.NewInstance();
-//        media.putTitle(Language.DEFAULT(), "Media title");
-//        media.setArtist(Person.NewTitledInstance("Artist"));
         specimen.setMediaSpecimen(media);
-       // Assert.assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
+        //old: Assert.assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
         Assert.assertEquals("[icon]", strategy.getTitleCache(specimen));
 
         Reference book = ReferenceFactory.newBook();
