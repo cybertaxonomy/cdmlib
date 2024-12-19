@@ -49,7 +49,7 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
     }
 
     @Test
-    public void test() {
+    public void testWithoutReference() {
 
         //empty
 //        Assert.assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
