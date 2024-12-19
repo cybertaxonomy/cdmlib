@@ -493,7 +493,8 @@ public class ReferenceDefaultCacheStrategy
     }
 
     private String addAuthorYear(String authorStr, Reference reference, boolean useFullDatePublished, String uniqueString){
-        String year = useFullDatePublished ? reference.getDatePublishedString() : reference.getYear();
+        String year = useFullDatePublished || isBlank(reference.getYear())
+                ? reference.getDatePublishedString() : reference.getYear();
         if (isBlank(year)){
             return authorStr + (StringUtils.isNotBlank(uniqueString)? "/"+uniqueString : "");
         }else{

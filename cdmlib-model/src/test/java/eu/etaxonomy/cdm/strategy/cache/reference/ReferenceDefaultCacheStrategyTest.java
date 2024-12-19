@@ -277,12 +277,13 @@ public class ReferenceDefaultCacheStrategyTest {
         VerbatimTimePeriod newDatePublished = TimePeriodParser.parseStringVerbatim("1975 (after Aug.)");
         book1.setDatePublished(newDatePublished);
         book1.setTitleCache(null, false);
-        //TODO this behaviour needs to be discussed. Maybe better the complete date published string should be returned.
-        Assert.assertEquals("Unexpected title cache.", "Book Author: My book, ed. 3", book1.getTitleCache());
+        //still unclear if in case of a not-atomized year the whole date published should be shown or not
+        //#1866
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975 (after Aug.): My book, ed. 3", book1.getTitleCache());
 
         book1.setPages("1-405");
         book1.resetTitleCache();
-        Assert.assertEquals("Unexpected title cache.", "Book Author: My book, ed. 3: 1-405", book1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975 (after Aug.): My book, ed. 3: 1-405", book1.getTitleCache());
     }
 
     @Test
