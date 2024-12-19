@@ -641,14 +641,14 @@ public class ReferenceDefaultCacheStrategyTest {
         database.setDatePublished(TimePeriodParser.parseStringVerbatim("1984"));
         String result = defaultStrategy.getTitleCache(database);
         //TODO position of data still needs to be discussed
-        assertEquals("Miller: My nice database. 1984. "+UTF8.EN_DASH+" Berlin: Springer", result);
+        assertEquals("Miller 1984: My nice database. "+UTF8.EN_DASH+" Berlin: Springer", result);
 
         //#10647
         URI uri = URI.create("https://available.at");
         database.setUri(uri);
         database.setAccessed(DateTime.parse("2010-06-30T01:20+02:00"));
         result = defaultStrategy.getTitleCache(database);
-        assertEquals("Miller: My nice database. 1984. "+UTF8.EN_DASH+" Berlin: Springer. Published at https://available.at [accessed 2010-06-30 01:20]", result);
+        assertEquals("Miller 1984: My nice database. "+UTF8.EN_DASH+" Berlin: Springer. Published at https://available.at [accessed 2010-06-30 01:20]", result);
     }
 
     @Test
