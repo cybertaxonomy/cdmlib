@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
@@ -53,7 +54,46 @@ public class SchemaUpdater_5480_5490 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
+        //#10657
+        //Update symbol for MAN
+        stepName = "Update symbol for MAN";
+        String nonAuditedTableName = "DefinedTermBase";
+        String defaultQuery = "UPDATE @@DefinedTermBase@@ "
+                + " SET symbol = 'misapplied for' "
+                + " WHERE uuid = '1ed87175-59dd-437e-959e-0d71583d8417' ";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
+        //Update symbol p.p. MAN
+        stepName = "Update symbol for p.p. MAN";
+        nonAuditedTableName = "DefinedTermBase";
+        defaultQuery = "UPDATE @@DefinedTermBase@@ "
+                + " SET symbol = 'p.p. misapplied for' "
+                + " WHERE uuid = 'b59b4bd2-11ff-45d1-bae2-146efdeee206' ";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
+
+        //Update symbol part. MAN
+        stepName = "Update symbol for part. MAN";
+        nonAuditedTableName = "DefinedTermBase";
+        defaultQuery = "UPDATE @@DefinedTermBase@@ "
+                + " SET symbol = 'part. misapplied for' "
+                + " WHERE uuid = '9d7a5e56-973c-474c-b6c3-a1cb00833a3c' ";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
+
+        //Update symbol part. synonym for
+        stepName = "Update symbol for part. synoynm for";
+        nonAuditedTableName = "DefinedTermBase";
+        defaultQuery = "UPDATE @@DefinedTermBase@@ "
+                + " SET symbol = 'part. for' "
+                + " WHERE uuid = '859fb615-b0e8-440b-866e-8a19f493cd36' ";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
+
+        //Update symbol p.p. synonym for
+        stepName = "Update symbol for p.p. synoynm for";
+        nonAuditedTableName = "DefinedTermBase";
+        defaultQuery = "UPDATE @@DefinedTermBase@@ "
+                + " SET symbol = 'p.p. for' "
+                + " WHERE uuid = '8a896603-0fa3-44c6-9cd7-df2d8792e577' ";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
         return stepList;
     }
