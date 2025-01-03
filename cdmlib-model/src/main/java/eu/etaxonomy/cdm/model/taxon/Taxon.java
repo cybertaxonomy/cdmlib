@@ -1963,6 +1963,11 @@ public class Taxon
         return result;
     }
 
+    @Override
+    public Taxon acceptedTaxon() {
+        return this;
+    }
+
     //*********************** CLONE ********************************************************/
 
     /**

@@ -170,10 +170,9 @@ public class WfoBackboneExportTest
                 str("Sus basyonus") + str("species") + NONE + str("Mill.") +
                 str("Familyname") + NONE3 + str("Sus") + NONE + str("basyonus") + NONE +
                 NONE + str("orthografia") + str("The book of botany 3: 22. 1804") +
-                str("Synonym") +
+                str("homotypicSynonym") +
                 str(speciesWfoId) + NONE + NONE + NONE3 +
-                //TODO 2 link for orig spelling
-                NONE //str("" + speciesTaxonUuid + "/synonymy?highlight=" + basionymSynonymUuid)
+                str("http://www.abc.de/mytaxon/cdm_dataportal/name/bde06b48-bbda-428c-af4e-50c39db55821")
                 + NONE_END;
         Assert.assertEquals(expectedOrigSpellingLine, originalSpellingLine);
 

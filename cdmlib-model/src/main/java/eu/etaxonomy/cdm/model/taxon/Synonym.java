@@ -194,7 +194,10 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
         }
     }
 
-
+    @Override
+    public Taxon acceptedTaxon() {
+        return getAcceptedTaxon();
+    }
 
 //*********************** CLONE ********************************************************/
 
