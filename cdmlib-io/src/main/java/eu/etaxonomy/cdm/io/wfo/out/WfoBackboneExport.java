@@ -18,11 +18,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -43,7 +38,6 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -189,6 +183,9 @@ public class WfoBackboneExport
         }
     }
 
+    /**
+     * @return <code>true</code> if the taxon should not be used in the export
+     */
     private boolean filterTaxon(WfoBackboneExportState state, TaxonNode taxonNode) {
         Taxon taxon = taxonNode.getTaxon();
         if (taxon == null) {
@@ -256,7 +253,7 @@ public class WfoBackboneExport
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_PARENT_ID)] = parentWfoId;
 
             //... higher taxa
-            //TODO 3 do we want/should fill the higher classification fields?
+            //not necessary to fill according to #10652#note-2
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBFAMILY)] = null;
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_TRIBE)] = null;
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBTRIBE)] = null;
@@ -323,10 +320,10 @@ public class WfoBackboneExport
             handleReference(state, taxonBase.getSecSource());
         }
 
-        //TODO 2 created
+        //created (not needed according to #10652#note-2)
         csvLine[table.getIndex(WfoBackboneExportTable.CREATED)] = null;
 
-        //TODO 2 modified
+        //modified (not needed according to #10652#note-2)
         csvLine[table.getIndex(WfoBackboneExportTable.MODIFIED)] = null;
 
     }
@@ -389,38 +386,6 @@ public class WfoBackboneExport
             //exception should return false
         }
         return false;
-    }
-
-    private String toIsoDate(TimePeriod mediaCreated) {
-        //TODO 2 date, what if end or freetext exist?
-        Partial partial = mediaCreated.getStart();
-        if (partial == null || !partial.isSupported(DateTimeFieldType.year())
-                || !partial.isSupported(DateTimeFieldType.monthOfYear()) && partial.isSupported(DateTimeFieldType.dayOfMonth())) {
-            //TODO 2 date, log warning, also if mediaCreated.getEnd() != null or so
-            return null;
-        } else {
-            DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                    .appendYear(4, 4).appendLiteral('-')
-                    .appendMonthOfYear(2).appendLiteral('-')
-                    .appendDayOfMonth(2)
-                    .toFormatter();
-            return partial.toString(formatter);
-        }
-    }
-
-    /**
-     * transforms the given date to an iso date
-     */
-    protected String toIsoDate(DateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                .appendYear(4, 4).appendLiteral('-')
-                .appendMonthOfYear(2).appendLiteral('-')
-                .appendDayOfMonth(2)
-                .toFormatter();
-        return formatter.print(dateTime);
     }
 
     //TODO 4 is remark handling correct?
@@ -600,7 +565,7 @@ public class WfoBackboneExport
 
             state.getNameStore().put(name.getId(), name.getUuid());
 
-            //taxon ID
+            //taxon ID/WFO ID
             wfoId = getWfoId(state, name, false);
             if (isBlank(wfoId)) {
                 String message = "No WFO-ID given for taxon name " + name.getTitleCache() + ". Taxon/Synonym/Name ignored.";
@@ -651,7 +616,7 @@ public class WfoBackboneExport
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)]
                     = normalizedAuthor(state, name);
 
-            //family (use familystr if provided, otherwise try to compute from the family taxon
+            //family (use familyStr if provided, otherwise try to compute from the family taxon)
             String familyStr = state.getFamilyStr();
             if (StringUtils.isBlank(familyStr)){
                 if (Rank.FAMILY().equals(name.getRank())){
@@ -717,6 +682,10 @@ public class WfoBackboneExport
         return wfoId;
     }
 
+    /**
+     * Normalizes the author string by, for example, normalizing to IPNI standard
+     * (no whitespaces) and removing double whitespaces
+     */
     private String normalizedAuthor(WfoBackboneExportState state, TaxonName name) {
         if (name == null) {
             return null;
@@ -746,7 +715,6 @@ public class WfoBackboneExport
 
     /**
      * Handle names not being handled via taxonbase.
-     * @param acceptedNameWfoId
      */
     private void handleOrthographicVariants(WfoBackboneExportState state, WfoBackboneExportTable table,
             TaxonName name, TaxonName mainName, String acceptedNameWfoId) {
@@ -769,7 +737,7 @@ public class WfoBackboneExport
 
         csvLine[table.getIndex(WfoBackboneExportTable.TAX_ACCEPTED_NAME_ID)] = acceptedNameWfoId;
 
-        //authorship, take from mainname if it does not exist
+        //authorship, take from main name if it does not exist
         //TODO 3 take from csvLine of both names
         if (isBlank(normalizedAuthor(state, name))) {
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)]
@@ -789,11 +757,12 @@ public class WfoBackboneExport
 
         csvLine[table.getIndex(WfoBackboneExportTable.NAME_STATUS)] = "orthografia";
 
-        //TODO 2 remarks, REFERENCES, family, taxonBase, created, modified
+        //TODO 2 remarks, REFERENCES, family, taxonBase
+
+        //created, modified not needed (#10652#note-2)
 
         //process original spelling
-        state.getProcessor().put(table, name, csvLine); // TODO Auto-generated method stub
-
+        state.getProcessor().put(table, name, csvLine);
     }
 
     private String getWfoId(WfoBackboneExportState state, TaxonName name, boolean warnIfNotExists) {
