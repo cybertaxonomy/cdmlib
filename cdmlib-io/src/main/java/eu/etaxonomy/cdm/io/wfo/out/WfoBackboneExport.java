@@ -605,11 +605,12 @@ public class WfoBackboneExport
             if (rankStr == null) {
                 String message = rank == null ? "No rank" : ("Rank not supported by WFO: " + rank.getLabel())
                         + "Taxon not handled in export: " + name.getTitleCache();
-                state.getResult().addWarning(message);  //TODO 2 warning sufficient for missing rank? + location
-                //TODO 2 handling of not-recognized rank, move up as this creates an have ready record otherwise
-                return wfoId;
+                state.getResult().addWarning(message, wfoId);
             }
             csvLine[table.getIndex(WfoBackboneExportTable.RANK)] = rankStr;
+            //verbatimTaxonRank (only needed for exceptional ranks, see #10652#note-2)
+            String verbatimRankStr = rank == null ? "no rank given" : rankStr == null ? rank.getLabel() : rankStr.startsWith("infra") ? rankStr : null;
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_VERBATIM_RANK)] = verbatimRankStr;
 
             //authorship
             //TODO 3 handle empty authorship cache warning
@@ -635,9 +636,6 @@ public class WfoBackboneExport
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_GENUS)] = name.isSupraGeneric()? null : name.getGenusOrUninomial();
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_SPECIFIC_EPITHET)] = name.getSpecificEpithet();
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_INFRASPECIFIC_EPITHET)] = name.getInfraSpecificEpithet();
-
-            //TODO 3 verbatimTaxonRank, is this needed at all?
-            csvLine[table.getIndex(WfoBackboneExportTable.NAME_VERBATIM_RANK)] = rankStr;
 
             //name status
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_STATUS)] = makeNameStatus(state, name);
