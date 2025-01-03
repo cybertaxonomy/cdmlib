@@ -483,7 +483,7 @@ public abstract class TaxonTreeExportTestBase
         commitAndStartNewTransaction(null);
     }
 
-    private void addWfoIdentifier(TaxonName synonymName, String identifier) {
-        synonymName.addIdentifier(identifier, IdentifierType.IDENTIFIER_NAME_WFO());
+    private void addWfoIdentifier(TaxonName taxonName, String identifier) {
+        taxonName.addIdentifier(identifier, IdentifierType.IDENTIFIER_NAME_WFO());
     }
 }

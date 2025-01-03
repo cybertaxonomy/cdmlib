@@ -122,6 +122,9 @@ public class IdentifierType
     public static IdentifierType IDENTIFIER_NAME_IF(){
         return getTermByUuid(uuidIndexFungorumIdentifier);
     }
+    public static IdentifierType WIKIDATA_ITEM_ID(){
+        return getTermByUuid(uuidWikidataItemId);
+    }
 
 // ******************** GETTER /SETTER *********
 

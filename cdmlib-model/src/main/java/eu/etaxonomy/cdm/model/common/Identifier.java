@@ -118,9 +118,17 @@ public class Identifier
         }
 	}
 
+	//********************** TO STRING ***************************************
+
+    @Override
+    public String toString() {
+        return "ID [" + identifier + ", type=" + type + "]";
+    }
+
 	//****************** CLONE ************************************************/
 
-	@Override
+
+    @Override
 	public Identifier clone() throws CloneNotSupportedException{
 		Identifier result = (Identifier)super.clone();
 		//no changes to: type, value
