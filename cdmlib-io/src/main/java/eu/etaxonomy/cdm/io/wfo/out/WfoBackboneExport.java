@@ -667,7 +667,12 @@ public class WfoBackboneExport
 
             if (originalName != null) {
                 if (!state.getNameStore().containsKey(originalName.getId())) {
-                    //TODO 2 handle basionym is in file assertion
+                    boolean originalNameIsAlsoTaxonBase = isNameAlsoPartOfExportedTaxonBase(originalName, classificationId);
+                    if (!originalNameIsAlsoTaxonBase) {
+                        String message = "Original name/basionym exists but is not a taxon/synonym in the "
+                                + "classification. New name: " + name.getTitleCache() + ", originalName: " + originalName.getTitleCache() ;
+                        state.getResult().addWarning(message, wfoId);
+                    }
                 }
                 String basionymId = getWfoId(state, originalName, false);
                 csvLine[table.getIndex(WfoBackboneExportTable.NAME_ORIGINAL_NAME_ID)] = basionymId;
