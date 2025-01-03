@@ -58,7 +58,7 @@ public class WfoBackboneExportTest
             + NONE2 + uuid(ref1UUID) + NONE3 + str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + familyTaxonUuid)
             + NONE_END;
 
-    private String expectedSpeciesNameLine = str(speciesWfoId) + NONE + uuid(speciesNameUuid) +
+    private String expectedSpeciesNameLine = str(speciesWfoId) + str("urn:lsid:ipni.org:names:100000-3") + uuid(speciesNameUuid) +
             str("Genus species") + str("species") + str("WFO-12347g") + str("(Mill.) Hook") +
             str("Familyname") + NONE3 + str("Genus") + NONE + str("species") + NONE +
             str("species") + str("Valid") + str("in J. Appl. Synon. 5: 33. 1824") + str("Accepted")

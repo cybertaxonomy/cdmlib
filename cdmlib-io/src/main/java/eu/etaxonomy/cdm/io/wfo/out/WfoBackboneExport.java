@@ -811,7 +811,11 @@ public class WfoBackboneExport
             String message = "No ipni-id given for name: " + name.getTitleCache()+"/"+ name.getUuid();
             state.getResult().addWarning(message);  //TODO 5 data location
         }
-        return ipniId == null ? null : ipniId.getIdentifier();
+        String ipniIdStr = ipniId == null ? null : ipniId.getIdentifier();
+        if (ipniIdStr != null && ipniIdStr.matches(IdentifierType.IPNI_NAME_ID_PATTERN)){
+            ipniIdStr = "urn:lsid:ipni.org:names:" + ipniIdStr;
+        }
+        return ipniIdStr;
     }
 
     private String makeNameStatus(WfoBackboneExportState state, TaxonName name) {

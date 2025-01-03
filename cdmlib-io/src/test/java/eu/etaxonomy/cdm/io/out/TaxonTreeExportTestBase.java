@@ -347,6 +347,7 @@ public abstract class TaxonTreeExportTestBase
         TaxonName speciesName = parser.parseReferencedName("Genus species (Mill.) Hook in J. Appl. Synon. 5: 33. 1824",
                 NomenclaturalCode.ICNAFP, Rank.SPECIES());
         addWfoIdentifier(speciesName, speciesWfoId);
+        addIpniIdentifier(speciesName, "100000-3");
         setUuid(speciesName, speciesNameUuid);
         setUuid(speciesName.getNomenclaturalReference(), speciesNomRefUuid);
         Taxon species = Taxon.NewInstance(speciesName, ref2);
@@ -485,5 +486,9 @@ public abstract class TaxonTreeExportTestBase
 
     private void addWfoIdentifier(TaxonName taxonName, String identifier) {
         taxonName.addIdentifier(identifier, IdentifierType.IDENTIFIER_NAME_WFO());
+    }
+
+    private void addIpniIdentifier(TaxonName taxonName, String identifier) {
+        taxonName.addIdentifier(identifier, IdentifierType.IDENTIFIER_NAME_IPNI());
     }
 }
