@@ -1610,10 +1610,11 @@ public class CdmLightClassificationExport
                         csvLine = new String[table.getSize()];
                         csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
                         csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
-                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = type.getLabel();
+                        String typeLabel = type == null ? "no type" : type.getLabel();
+                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = typeLabel;
                         csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
                                 identifiersByType);
-                        state.getProcessor().put(table, name.getUuid() + ", " + type.getLabel(), csvLine);
+                        state.getProcessor().put(table, name.getUuid() + ", " + typeLabel, csvLine);
                     }
 
 
@@ -1650,8 +1651,6 @@ public class CdmLightClassificationExport
                 }catch(Exception e){
                     state.getResult().addWarning("Please check the identifiers for "
                             + cdmBaseStr(cdmBase) + " maybe there is an empty identifier");
-
-
                 }
             }else{
                 if (cdmBase instanceof IdentifiableEntity){
