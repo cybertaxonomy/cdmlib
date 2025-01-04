@@ -150,7 +150,7 @@ public class DerivedUnit
 	@XmlElement(name = "SpecimenTypeDesignation")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "typeSpecimen")
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
-	private final Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
+	private final Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<>();
 
     //#2506
 	@XmlElementWrapper(name = "OccurrenceStatuses")
