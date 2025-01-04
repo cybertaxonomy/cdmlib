@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.api.service.portal;
 
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -325,15 +327,25 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         config.setWithSpecimens(false);
         config.setTaxonUuid(taxonUuid);
         config.addAnnotationType(AnnotationType.uuidUndefined);
-
         config.setLanguage(Language.GERMAN());
-        config.setUseDtoLoading(false);
-        testAllFactsDo(config, false); //with model instance loading
-        config.setUseDtoLoading(true);
-        testAllFactsDo(config, true); //with dto loading
+
+        //with entity loading
+        testAllFactsDo(config, false, false); //with model instance loading
+        testAllFactsDo(config, false, true); //with model instance loading and excluded marker
+        //with dto loading;
+        testAllFactsDo(config, true, false); //with dto loading
+        //FIXME #10622 does not yet use dto loading
+        testAllFactsDo(config, true, true); //with dto loading and excluded marker
     }
 
-    private void testAllFactsDo(TaxonPageDtoConfiguration config, boolean isDto) {
+    private void testAllFactsDo(TaxonPageDtoConfiguration config, boolean isDto, boolean isExcludedMarker) {
+        config.setUseDtoLoading(isDto);
+        if (isExcludedMarker) {
+            config.setExcludedFactDatasetMarkerTypes(new HashSet<>(Arrays.asList(new UUID[]{MarkerType.uuidComplete})));
+        }else {
+            config.setExcludedFactDatasetMarkerTypes(null);
+        }
+
         TaxonPageDto dto = portalService.taxonPageDto(config);
         Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
 
@@ -357,7 +369,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         FeatureDto descriptionDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically. Also as >1 'Description' exists it should use plural and German as locale was set to German and German representation exists.",
                 "Beschreibungen", descriptionDto.getLabel());
-        testTextDataAndMedia(descriptionDto);
+        testTextDataAndMedia(descriptionDto, isExcludedMarker);
 
         //... discussion
         FeatureDto discussionDto = features.getItems().get(i++);
@@ -369,7 +381,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         FeatureDto distributionDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
                 "Distribution", distributionDto.getLabel());
-        testDistributions(distributionDto);
+        testDistributions(distributionDto, isExcludedMarker);
 
         //termporal data
         FeatureDto floweringDto = features.getItems().get(i++);
@@ -485,14 +497,15 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull(typedLabel.getUuid());
     }
 
-    private void testTextDataAndMedia(FeatureDto descriptionDto) {
+    private void testTextDataAndMedia(FeatureDto descriptionDto, boolean isExcludedMarker) {
 
         ContainerDto<IFactDto> descriptions = descriptionDto.getFacts();
-        Assert.assertEquals(4, descriptions.getCount());
+        Assert.assertEquals(isExcludedMarker? 3: 4, descriptions.getCount());
         FactDto description1 = (FactDto)descriptions.getItems().get(0);
         FactDto description2 = (FactDto)descriptions.getItems().get(1);
-        FactDto description3 = (FactDto)descriptions.getItems().get(2);
-        FactDto description4 = (FactDto)descriptions.getItems().get(3);
+        FactDto NULL_FACT = new FactDto();  //to avoid null-warnings
+        FactDto description3 = isExcludedMarker? NULL_FACT: (FactDto)descriptions.getItems().get(2);
+        FactDto description4 = (FactDto)descriptions.getItems().get(isExcludedMarker? 2: 3);
 
         //test sorting
         Assert.assertNull("Current sorting should sort null to the top. This may change in future.",
@@ -502,16 +515,20 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertTrue("Current sorting should work on id if no sortIndex is given. This may change in future.",
                 description1.getId() < description2.getId());
         //TODO use typed label formatter (once implemented)
-        Assert.assertEquals("If sortindex is given it should be used for sorting.",
-                "My fourth description", description3.getTypedLabel().get(0).getLabel());
+        if (!isExcludedMarker) {
+            Assert.assertEquals("If sortindex is given it should be used for sorting.",
+                    "My fourth description", description3.getTypedLabel().get(0).getLabel());
+        }
         Assert.assertEquals("If sortindex is given it should be used for sorting.",
                 "My third description", description4.getTypedLabel().get(0).getLabel());
 
-        FactDto td4Fact = description3; //renaming to original name td4 for better understanding
-        Assert.assertEquals(td4Uuid, td4Fact.getUuid());
-        TypedLabel td4TypedLabel = td4Fact.getTypedLabel().get(0);
-        Assert.assertEquals(td4Uuid, td4TypedLabel.getUuid());
-        Assert.assertEquals("TextData", td4TypedLabel.getCdmClass());
+        if (!isExcludedMarker) {
+            FactDto td4Fact = description3; //renaming to original name td4 for better understanding
+            Assert.assertEquals(td4Uuid, td4Fact.getUuid());
+            TypedLabel td4TypedLabel = td4Fact.getTypedLabel().get(0);
+            Assert.assertEquals(td4Uuid, td4TypedLabel.getUuid());
+            Assert.assertEquals("TextData", td4TypedLabel.getCdmClass());
+        }
 
         FactDto td3Fact = description4; //renaming to original name td3 for better understanding
         Assert.assertEquals(1, td3Fact.getSources().getCount());
@@ -519,7 +536,6 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(1, source.getLabel().size());
         TypedLabel sourceTypedLabel = source.getLabel().get(0);
         Assert.assertEquals("DescriptionElementSource", sourceTypedLabel.getCdmClass());
-
 
         //media
         ContainerDto<MediaDto2> factMedia = description4.getMedia();
@@ -539,7 +555,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("ImageFile", rep.getClazz());
     }
 
-    private void testDistributions(FeatureDto distributionDto) {
+    private void testDistributions(FeatureDto distributionDto, boolean isExcludedMarker) {
         ContainerDto<IFactDto> distributions = distributionDto.getFacts();
         Assert.assertEquals(1, distributions.getCount());
         IFactDto distribution = distributions.getItems().get(0);
@@ -547,13 +563,20 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         DistributionInfoDto distributionInfo = (DistributionInfoDto)distribution;
         //... condensed distribution
         //TODO maybe the order is not deterministic
-        Assert.assertEquals("FRA – DEU", distributionInfo.getCondensedDistribution().getHtmlString());
+        String expectedCondensedHtml = isExcludedMarker ? "DEU": "FRA – DEU";
+        Assert.assertEquals(expectedCondensedHtml, distributionInfo.getCondensedDistribution().getHtmlString());
         //TODO probably the order is not deterministic, so we may need to check single parts only, same as in according builder test
         String mapUriParamsStart = distributionInfo.getMapUriParams().substring(0, 62);
         String mapUriParamsEnd = distributionInfo.getMapUriParams().replace(mapUriParamsStart, "");
-        Assert.assertTrue("was:" + mapUriParamsStart, "as=a:4daf4a,,0.1,|b:377eb8,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart)
-                || "as=a:377eb8,,0.1,|b:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart));
-        Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:native%3A\\+doubtfully\\+native"));
+        if(isExcludedMarker) {
+            Assert.assertEquals("as=a:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
+            //as the filtering generally seems to work we do not further test details here
+            return;
+        }else {
+            Assert.assertTrue("was:" + mapUriParamsStart, "as=a:4daf4a,,0.1,|b:377eb8,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart)
+                    || "as=a:377eb8,,0.1,|b:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart));
+            Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:native%3A\\+doubtfully\\+native"));
+        }
         //...tree
         DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
         Assert.assertEquals("Tree:2<FRA:native: doubtfully native{Miller, M.M. 1978: My French distribution. p 44}:0><Germany:present{Second ref article. – The journal. p 22}:0>", new DistributionInfoBuilderTest().tree2String(tree));
@@ -635,6 +658,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //factDatasets
         TaxonDescription factSet1 = TaxonDescription.NewInstance(taxon);
+        TaxonDescription markedFactSet = TaxonDescription.NewInstance(taxon);
+        markedFactSet.addMarker(MarkerType.COMPLETE(), true);
 
         //distributions
         Country.GERMANY().setSymbol("De");
@@ -655,7 +680,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Country.FRANCE().setSymbol("Fr");
 //        PresenceAbsenceTerm.INTRODUCED().setSymbol("i");
         Distribution franceDist = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
-        factSet1.addElement(franceDist);
+        markedFactSet.addElement(franceDist);
 
         //... sources
         //... ... primary
@@ -687,7 +712,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TextData td4 = TextData.NewInstance(Feature.DESCRIPTION(), "My fourth description", Language.DEFAULT(), null);
         td4.setSortIndex(1);
         td4.setUuid(td4Uuid);
-        factSet1.addElements(td1, td2, td3, td4);
+        factSet1.addElements(td1, td2, td3);
+        markedFactSet.addElements(td4);
         //... with media
         Media media1 = Media.NewInstance(URI.create("http://media.de/file.jpg"), 2, "JPG", "jpg");
         media1.setTitleCache("Media title", true);

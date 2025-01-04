@@ -105,9 +105,10 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
     private TaxonFactsDtoLoaderBase nameFactLoader;
 
     public TaxonPageDtoLoader(ICdmRepository repository, ICdmGenericDao dao, IGeoServiceAreaMapping areaMapping,
-            boolean useDtoLoading) {
+            TaxonPageDtoConfiguration config) {
+
         super(repository, dao);
-        if (!useDtoLoading) {
+        if (!config.isUseDtoLoading() || /* FIXME #10622 */ !config.getExcludedFactDatasetMarkerTypes().isEmpty()) {
             this.factLoader = new TaxonFactsDtoLoader_FromEntity(repository, dao, areaMapping);
             this.nameFactLoader = this.factLoader;
         }else {

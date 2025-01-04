@@ -162,7 +162,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
         try {
             //compute the features that do exist for this taxon
             //TODO should be uuidAndTitleCache e.g. for sorting in createDefaultFeatureNode
-            Set<UUID> existingFeatureUuids = getExistingFeatureUuids(taxon, config.isIncludeUnpublished());
+            Set<UUID> existingFeatureUuids = getExistingFeatureUuids(taxon, config.isIncludeUnpublished(), config);
             //featureTree (filter, sort and structure according to feature tree)
             TreeNode<Feature, UUID> filteredRootNode = null;
             if (config.getFeatureTree() != null) {
@@ -214,7 +214,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
 
         try {
             //compute the features that do exist for this taxon
-            Collection<UUID> existingFeatureUuids = getExistingFeatureUuids(name, config.isIncludeUnpublished());
+            Collection<UUID> existingFeatureUuids = getExistingFeatureUuids(name, config.isIncludeUnpublished(), config);
 
             //filter, sort and structure according to feature tree
             TreeNode<Feature, UUID> filteredRootNode;
@@ -252,7 +252,8 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
      * for the given taxon.
      * @param includeUnpublished
      */
-    private Set<UUID> getExistingFeatureUuids(@SuppressWarnings("rawtypes") IDescribable describable, boolean includeUnpublished) {
+    private Set<UUID> getExistingFeatureUuids(@SuppressWarnings("rawtypes") IDescribable describable,
+            boolean includeUnpublished, TaxonPageDtoConfiguration config) {
 
         @SuppressWarnings("rawtypes")
         Class<? extends IDescribable> clazz = describable.getClass();
@@ -267,6 +268,8 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
         if (!includeUnpublished) {
             hql += " AND deb.inDescription.publish = true ";
         }
+        //FIXME #10622
+        //hql += " AND deb.inDescription.markers.type not contains ()";config.getExcludedFactDatasetMarkerTypes();
         List<UUID> result = dao.getHqlResult(hql, UUID.class);
 
         return new HashSet<>(result);
@@ -538,7 +541,9 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
                    //FIXME for some reason this throws an exception as DescriptionElementBase.description is not recognized
 //                   + "     LEFT OUTER JOIN deb.description descr "
                    + " WHERE deb.inDescription." + describedAttr +".uuid = '" + entityUuid +"'"
-                   + " AND deb.inDescription.imageGallery = false ";
+                   //FIXME #10622 + " deb.inDescription.markers.type not contains (config.excludedFactDatasetMarkerTypes())
+                   + "     AND deb.inDescription.imageGallery = false ";
+
         if (!config.isIncludeUnpublished()) {
             hql += " AND deb.inDescription.publish = true ";
         }

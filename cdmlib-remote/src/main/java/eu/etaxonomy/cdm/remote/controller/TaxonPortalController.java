@@ -355,6 +355,8 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "dtoLoading", required = false, defaultValue = "true") boolean dtoLoading,
             @RequestParam(value = "withAccessionType", required = false, defaultValue = "true" ) boolean withAccessionType,
             @RequestParam(value = "identifierTypes", required = false) Set<UUID> identifierTypes,
+            @RequestParam(value = "excludedFactDatasetMarkerTypes", required = false) Set<UUID> excludedFactDatasetMarkerTypes,
+
             //TODO use java.util.Locale and adapter for jaxon
             @RequestParam(value = "locale", required = false, defaultValue = "en") String locale,
 
@@ -476,6 +478,7 @@ public class TaxonPortalController extends TaxonController{
         //filter
         config.setIncludeUnpublished(includeUnpublished);
         config.setSpecimenAssociationFilter(taxonOccurrenceRelTypes);
+        config.setExcludedFactDatasetMarkerTypes(excludedFactDatasetMarkerTypes);
 
         Set<MarkerType> fallbackAreaMarkerTypes = new HashSet<>();
         if(!CdmUtils.isNullSafeEmpty(fallbackAreaMarkerTypeList)){

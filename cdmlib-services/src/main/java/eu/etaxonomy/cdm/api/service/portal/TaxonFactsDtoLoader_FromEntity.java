@@ -153,7 +153,7 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
     void loadTaxonFacts(Taxon taxon, TaxonPageDto taxonPageDto, TaxonPageDtoConfiguration config) {
         try {
             //compute the features that do exist for this taxon
-            Map<UUID, Feature> existingFeatureUuids = getExistingFeatureUuids(taxon);
+            Map<UUID, Feature> existingFeatureUuids = getExistingFeatureUuids(taxon, config);
 
             //filter, sort and structure according to feature tree
             TreeNode<Feature, UUID> filteredRootNode = null;
@@ -170,7 +170,7 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
             }
 
             //load facts per feature
-            Map<UUID,Set<DescriptionElementBase>> featureMap = loadFeatureMap(taxon);
+            Map<UUID,Set<DescriptionElementBase>> featureMap = loadFeatureMap(taxon, config);
 
             //load final result
             if (filteredRootNode != null && !filteredRootNode.getChildren().isEmpty()) {
@@ -190,9 +190,11 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
      * Computes the (unsorted) set of features for  which facts exist
      * for the given taxon.
      */
-    private Map<UUID, Feature> getExistingFeatureUuids(IDescribable<?> describable) {
+    private <D extends DescriptionBase<?>> Map<UUID, Feature> getExistingFeatureUuids(IDescribable<D> describable, TaxonPageDtoConfiguration config) {
+
         Map<UUID, Feature> result = new HashMap<>();
-        for (DescriptionBase<?> description : filterPublished(describable.getDescriptions())) {
+        Set<D> descriptions = describable.getDescriptions();
+        for (DescriptionBase<?> description : filterFactDataset(descriptions, config)) {
             if (description.isImageGallery()) {
                 continue;
             }
@@ -206,11 +208,18 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
         return result;
     }
 
-    private Map<UUID, Set<DescriptionElementBase>> loadFeatureMap(IDescribable<?> describable) {
+    private <D extends DescriptionBase<?>> Set<D> filterFactDataset(Set<D> descriptions, TaxonPageDtoConfiguration config) {
+        Set<D> publicFactSets = filterPublished(descriptions);
+        return excludeMarked(publicFactSets, config.getExcludedFactDatasetMarkerTypes());
+    }
+
+    private <D extends DescriptionBase<?>>  Map<UUID, Set<DescriptionElementBase>> loadFeatureMap(
+            IDescribable<D> describable, TaxonPageDtoConfiguration config) {
+
         Map<UUID, Set<DescriptionElementBase>> featureMap = new HashMap<>();
 
         //... load facts
-        for (DescriptionBase<?> description : filterPublished(describable.getDescriptions())) {
+        for (D description : filterFactDataset(describable.getDescriptions(), config)) {
             if (description.isImageGallery()) {
                 continue;
             }
@@ -518,7 +527,7 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
 
         try {
             //compute the features that do exist for this taxon
-            Map<UUID, Feature> existingFeatureUuids = getExistingFeatureUuids(name);
+            Map<UUID, Feature> existingFeatureUuids = getExistingFeatureUuids(name, config);
 
             //filter, sort and structure according to feature tree
             TreeNode<Feature, UUID> filteredRootNode;
@@ -533,7 +542,7 @@ public class TaxonFactsDtoLoader_FromEntity extends TaxonFactsDtoLoaderBase {
 //            }  //DIFFERENT END
 
             //load facts per feature
-            Map<UUID,Set<DescriptionElementBase>> featureMap = loadFeatureMap(name);
+            Map<UUID,Set<DescriptionElementBase>> featureMap = loadFeatureMap(name, config);
 
             //load final result
             if (!filteredRootNode.getChildren().isEmpty()) {

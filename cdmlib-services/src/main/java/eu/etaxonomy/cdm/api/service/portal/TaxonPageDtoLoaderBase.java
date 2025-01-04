@@ -108,6 +108,16 @@ public abstract class TaxonPageDtoLoaderBase {
         }
     }
 
+    protected <E extends AnnotatableEntity> Set<E> excludeMarked(Set<E> setToFilter, Set<UUID> excludeMarkerTypes) {
+        if (setToFilter == null) {
+            return null;
+        }else {
+            return setToFilter.stream()
+                .filter(e->!e.hasAnyMarkerOf(excludeMarkerTypes, true))
+                .collect(Collectors.toSet());
+        }
+    }
+
     public static void loadBaseData(ISourceableLoaderConfiguration config, CdmBase cdmBase, CdmBaseDto dto) {
         dto.setId(cdmBase.getId());
         dto.setUuid(cdmBase.getUuid());

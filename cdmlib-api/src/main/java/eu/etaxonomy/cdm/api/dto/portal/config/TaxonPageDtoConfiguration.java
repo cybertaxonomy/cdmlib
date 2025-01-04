@@ -57,7 +57,8 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
             Arrays.asList(new UUID[] {AnnotationType.uuidEditorial}));
     private Set<UUID> markerTypes = new HashSet<>();
     private Set<UUID> identifierTypes = new HashSet<>(Arrays.asList(new UUID[] {IdentifierType.uuidWfoNameIdentifier}));
-
+    //#10622
+    private Set<UUID> excludedFactDatasetMarkerTypes = new HashSet<>();
     private Set<UUID> directNameRelTyes = null;
     private Set<UUID> inverseNameRelTyes = null;
 
@@ -307,5 +308,12 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
     }
     public void setWithAccessionType(boolean withAccessionType) {
         this.withAccessionType = withAccessionType;
+    }
+
+    public Set<UUID> getExcludedFactDatasetMarkerTypes() {
+        return excludedFactDatasetMarkerTypes;
+    }
+    public void setExcludedFactDatasetMarkerTypes(Set<UUID> excludedFactDatasetMarkerTypes) {
+        this.excludedFactDatasetMarkerTypes = excludedFactDatasetMarkerTypes == null ? new HashSet<>() : excludedFactDatasetMarkerTypes;
     }
 }

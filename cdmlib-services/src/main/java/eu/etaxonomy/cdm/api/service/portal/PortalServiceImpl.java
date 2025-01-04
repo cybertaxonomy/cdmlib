@@ -46,7 +46,7 @@ public class PortalServiceImpl implements IPortalService {
     public TaxonPageDto taxonPageDto(TaxonPageDtoConfiguration config) {
 
         TaxonPageDtoLoader loader = new TaxonPageDtoLoader(repository,
-                genericDao, areaMapping, config.isUseDtoLoading());
+                genericDao, areaMapping, config);
         Taxon taxon = (Taxon)taxonDao.load(config.getTaxonUuid());
         TaxonPageDto dto = null;
         try {
