@@ -628,9 +628,12 @@ public class WfoBackboneExport
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_VERBATIM_RANK)] = verbatimRankStr;
 
             //authorship
-            //TODO 3 handle empty authorship cache warning
-            csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)]
-                    = normalizedAuthor(state, name);
+            String authorshipCache = normalizedAuthor(state, name);
+            if (CdmUtils.isBlank(authorshipCache)) {
+                String message = "Taxon name has no authorship: " + name.getTitleCache();
+                state.getResult().addWarning(message, wfoId);
+            }
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)] = authorshipCache;
 
             //family (use familyStr if provided, otherwise try to compute from the family taxon)
             String familyStr = state.getFamilyStr();
