@@ -108,7 +108,6 @@ public abstract class DescriptionElementBase
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @Cascade(CascadeType.MERGE)   remove cascade #5755
     @IndexedEmbedded // no depth for terms
     private Feature feature;
 

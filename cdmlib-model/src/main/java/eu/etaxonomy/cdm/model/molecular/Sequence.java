@@ -147,7 +147,6 @@ public class Sequence
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	//no cascade as it is a defined term
 	private DefinedTerm dnaMarker;
 
 	/** @see #getHaplotype() */

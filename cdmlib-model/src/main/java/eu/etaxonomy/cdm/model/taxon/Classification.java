@@ -104,7 +104,6 @@ public class Classification
     @XmlSchemaType(name="IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="Classification_GeoScope")
-//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
     private Set<NamedArea> geoScopes = new HashSet<>();
 
 	@XmlElement(name = "Description")

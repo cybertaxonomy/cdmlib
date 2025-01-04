@@ -189,7 +189,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascading #5754
     protected TermVocabulary<T> vocabulary;
 
     //the unique identifier/name this term uses in its given vocabulary #3479

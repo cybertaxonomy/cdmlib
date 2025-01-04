@@ -125,7 +125,6 @@ public class TaxonNode
     //see https://dev.e-taxonomy.eu/redmine/issues/5536
     @OrderColumn(name="sortIndex", nullable=true)
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY) //no orphanRemoval (#10101)
-    //do not cascade
     private List<TaxonNode> childNodes = new ArrayList<>();
 
     @XmlElement(name = "countChildren")

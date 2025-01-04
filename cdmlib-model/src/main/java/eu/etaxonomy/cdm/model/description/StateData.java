@@ -104,7 +104,6 @@ public class StateData
     @XmlElementWrapper(name = "Modifiers")
     @XmlElement(name = "Modifier")
     @ManyToMany(fetch = FetchType.LAZY)
-    //no  cascade #5755
     @IndexedEmbedded(depth=1)
 //	@NotNull // avoids creating a UNIQUE key for this field -> not needed for ManyToMany
     private Set<DefinedTerm> modifiers = new HashSet<>();

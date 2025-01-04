@@ -66,7 +66,6 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.EAGER)
-//    @Cascade({CascadeType.MERGE})  remove cascade #5755
     @IndexedEmbedded(depth=1)
     protected Language language;
 
