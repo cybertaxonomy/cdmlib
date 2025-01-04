@@ -282,7 +282,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         createTestDataSet();
         synonym.setSec(ReferenceFactory.newArticle());
         service.saveOrUpdate(synonym);
-        UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn, true, true, SecReferenceHandlingSwapEnum.AlwaysDelete, null, null);
+        UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym,
+                taxWithSyn, true, true, SecReferenceHandlingSwapEnum.AlwaysDelete, null, null);
 
         // find forces flush
         Taxon tax = (Taxon)service.find(result.getCdmEntity().getUuid());
@@ -438,7 +439,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //test flush (resave deleted object)
         TaxonBase<?> syn = service.find(uuidSyn);
         taxWithSyn = (Taxon)service.find(uuidTaxWithSyn);
-        Taxon taxNew = (Taxon)service.find(((Taxon)result.getCdmEntity()).getUuid());
+        Taxon taxNew = (Taxon)service.find(result.getCdmEntity().getUuid());
         assertNull(syn);
         assertNotNull(taxWithSyn);
         assertNotNull(taxNew);
@@ -1527,21 +1528,22 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         secondClassification.addChildTaxon(testTaxon, null, null);
         //delete the taxon in all classifications
         config.setDeleteInAllClassifications(true);
-       DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, null);
-       if (!result.isOk()){
-        	Assert.fail();
+        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, null);
+        if (!result.isOk()){
+            Assert.fail();
         }
         commitAndStartNewTransaction(null);
         Taxon tax = (Taxon)service.find(uuid);
         assertNull(tax);
         Taxon childTaxon = (Taxon)service.find(childUUID);
-        assertNull(tax);
+        assertNull(childTaxon);
         commitAndStartNewTransaction(null);
     }
 
     @Test
     @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testDeleteTaxonNameUsedInTwoClassificationsDoNotDeleteAllNodes(){
+
         // delete the taxon only in second classification, this should delete only the nodes, not the taxa
         Taxon testTaxon = getTestTaxon();
         UUID uuid = service.save(testTaxon).getUuid();
@@ -1944,7 +1946,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Override
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDBDataSet.xml")
     public void createTestDataSet() throws FileNotFoundException {
-    	Rank rank = Rank.SPECIES();
+
+        Rank rank = Rank.SPECIES();
         taxWithoutSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test1", null, null, null, null, null, null, null), null);
         taxWithSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test3", null, null, null, null, null, null, null), null);
         tax2WithSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test5", null, null, null, null, null, null, null), null);
@@ -1959,11 +1962,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         uuidSyn = service.save(synonym).getUuid();
         uuidSyn2 = service.save(synonym2).getUuid();
         uuidTaxWithSyn =service.save(taxWithSyn).getUuid();
-
     }
 
-        //public static UUID DESCRIPTION1_UUID = UUID.fromString("f3e061f6-c5df-465c-a253-1e18ab4c7e50");
-        //public static UUID DESCRIPTION2_UUID = UUID.fromString("1b009a40-ebff-4f7e-9f7f-75a850ba995d");
+//    public static UUID DESCRIPTION1_UUID = UUID.fromString("f3e061f6-c5df-465c-a253-1e18ab4c7e50");
+//    public static UUID DESCRIPTION2_UUID = UUID.fromString("1b009a40-ebff-4f7e-9f7f-75a850ba995d");
 
     public Taxon getTestTaxon(){
         int descrIndex = 6000;

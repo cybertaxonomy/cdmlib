@@ -282,7 +282,9 @@ public class TaxonServiceImpl
 		return result;
     }
 
-    private UpdateResult swapSynonymAndAcceptedTaxonNewUuid(Synonym oldSynonym, Taxon oldAcceptedTaxon, boolean setNameInSource, SecReferenceHandlingSwapEnum secHandling, Reference newSecAcc, Reference newSecSyn){
+    private UpdateResult swapSynonymAndAcceptedTaxonNewUuid(Synonym oldSynonym, Taxon oldAcceptedTaxon, boolean setNameInSource,
+            SecReferenceHandlingSwapEnum secHandling, Reference newSecAcc, Reference newSecSyn){
+
         UpdateResult result = new UpdateResult();
         oldAcceptedTaxon.removeSynonym(oldSynonym);
         TaxonName synonymName = oldSynonym.getName();
@@ -300,6 +302,7 @@ public class TaxonServiceImpl
         for (Synonym syn: synonyms){
             oldAcceptedTaxon.removeSynonym(syn);
         }
+
         Taxon newTaxon = oldAcceptedTaxon.clone(true, true, false, true);
         newTaxon.setSec(newSecAcc);
 

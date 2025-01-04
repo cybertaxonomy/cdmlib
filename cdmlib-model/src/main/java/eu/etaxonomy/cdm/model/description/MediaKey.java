@@ -77,7 +77,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="MediaKey_CoveredTaxon")
     @NotNull
-	private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
+	private Set<Taxon> coveredTaxa = new HashSet<>();
 
 	@XmlElementWrapper( name = "GeographicalScope")
 	@XmlElement( name = "Area")
@@ -86,7 +86,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="MediaKey_NamedArea")
 	@NotNull
-	private Set<NamedArea> geographicalScope = new HashSet<NamedArea>();
+	private Set<NamedArea> geographicalScope = new HashSet<>();
 
 	@XmlElementWrapper(name = "TaxonomicScope")
 	@XmlElement(name = "Taxon")
@@ -95,7 +95,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="MediaKey_TaxonScope")
 	@NotNull
-	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();
+	private Set<Taxon> taxonomicScope = new HashSet<>();
 
 	@XmlElementWrapper( name = "ScopeRestrictions")
 	@XmlElement( name = "Restriction")
@@ -104,7 +104,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="MediaKey_Scope")
 	@NotNull
-	private Set<DefinedTerm> scopeRestrictions = new HashSet<DefinedTerm>();
+	private Set<DefinedTerm> scopeRestrictions = new HashSet<>();
 
 	@XmlElementWrapper( name = "KeyRepresentations")
 	@XmlElement( name = "KeyRepresentation")
@@ -113,7 +113,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
 	@NotNull
-	private Set<Representation> keyRepresentations = new HashSet<Representation>();
+	private Set<Representation> keyRepresentations = new HashSet<>();
 
 	/**
 	 * Class constructor: creates a new empty identification key instance.
@@ -137,7 +137,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@Override
     public Set<Taxon> getCoveredTaxa() {
 		if(coveredTaxa == null) {
-			this.coveredTaxa = new HashSet<Taxon>();
+			this.coveredTaxa = new HashSet<>();
 		}
 		return coveredTaxa;
 	}
@@ -180,7 +180,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@Override
     public Set<NamedArea> getGeographicalScope() {
 		if(geographicalScope == null) {
-			this.geographicalScope = new HashSet<NamedArea>();
+			this.geographicalScope = new HashSet<>();
 		}
 		return geographicalScope;
 	}
@@ -216,7 +216,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@Override
     public Set<Taxon> getTaxonomicScope() {
 		if(taxonomicScope == null) {
-			this.taxonomicScope = new HashSet<Taxon>();
+			this.taxonomicScope = new HashSet<>();
 		}
 		return taxonomicScope;
 	}
@@ -252,7 +252,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	 */
 	public Set<Representation> getKeyRepresentations() {
 		if(keyRepresentations == null) {
-			this.keyRepresentations = new HashSet<Representation>();
+			this.keyRepresentations = new HashSet<>();
 		}
 		return keyRepresentations;
 	}
@@ -287,7 +287,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@Override
     public Set<DefinedTerm> getScopeRestrictions() {
 		if(scopeRestrictions == null) {
-			this.scopeRestrictions = new HashSet<DefinedTerm>();
+			this.scopeRestrictions = new HashSet<>();
 		}
 		return scopeRestrictions;
 	}
@@ -334,27 +334,27 @@ public class MediaKey extends Media implements IIdentificationKey{
 		try{
 			result = (MediaKey)super.clone();
 
-			result.coveredTaxa = new HashSet<Taxon>();
+			result.coveredTaxa = new HashSet<>();
 			for (Taxon taxon: this.coveredTaxa){
 				result.addCoveredTaxon(taxon);
 			}
 
-			result.geographicalScope = new HashSet<NamedArea>();
+			result.geographicalScope = new HashSet<>();
 			for (NamedArea area: this.geographicalScope){
 				result.addGeographicalScope(area);
 			}
 
-			result.keyRepresentations = new HashSet<Representation>();
+			result.keyRepresentations = new HashSet<>();
 			for (Representation rep: this.keyRepresentations) {
 				result.addKeyRepresentation(rep);
 			}
 
-			result.scopeRestrictions = new HashSet<DefinedTerm>();
+			result.scopeRestrictions = new HashSet<>();
 			for (DefinedTerm scope: this.scopeRestrictions){
 				result.addScopeRestriction(scope);
 			}
 
-			result.taxonomicScope = new HashSet<Taxon>();
+			result.taxonomicScope = new HashSet<>();
 			for (Taxon taxon: this.taxonomicScope){
 				result.addTaxonomicScope(taxon);
 			}
@@ -366,7 +366,5 @@ public class MediaKey extends Media implements IIdentificationKey{
 			e.printStackTrace();
 			return null;
 		}
-
-
 	}
 }

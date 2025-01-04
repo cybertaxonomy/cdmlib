@@ -140,7 +140,7 @@ public class Sequence
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="consensusAlignment", fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private Set<SingleReadAlignment> singleReadAlignments = new HashSet<SingleReadAlignment>();
+	private Set<SingleReadAlignment> singleReadAlignments = new HashSet<>();
 
 	/** @see #getDnaMarker() */
 	@XmlElement(name = "DnaMarker")

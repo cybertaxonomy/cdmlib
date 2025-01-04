@@ -70,6 +70,7 @@ public class SpecimenTypeDesignation
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private DerivedUnit typeSpecimen;
 
+	//************* FACTORY *************************/
 
     public static SpecimenTypeDesignation NewInstance() {
         return new SpecimenTypeDesignation();

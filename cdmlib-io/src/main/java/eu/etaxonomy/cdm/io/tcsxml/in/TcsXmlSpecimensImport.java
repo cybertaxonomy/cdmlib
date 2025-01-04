@@ -84,7 +84,8 @@ public class TcsXmlSpecimensImport
 		Element elSpecimens = doubleResult.getFirstResult();
 
 		String tcsElementName = "Specimen";
-		List<Element> elSpecimenList = elSpecimens == null ? new ArrayList<>() : (List<Element>)elSpecimens.getChildren(tcsElementName, tcsNamespace);
+		@SuppressWarnings("unchecked")
+        List<Element> elSpecimenList = elSpecimens == null ? new ArrayList<>() : (List<Element>)elSpecimens.getChildren(tcsElementName, tcsNamespace);
 
 		int i = 0;
 		//for each taxonName
@@ -104,7 +105,6 @@ public class TcsXmlSpecimensImport
 			String simple = elSimple.getTextNormalize();
 			DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 			specimen.setTitleCache(simple, true);
-
 
 			childName = "Collection";
 			obligatory = false;
@@ -229,11 +229,11 @@ public class TcsXmlSpecimensImport
 
 	private boolean makeSpecimenItem(DerivedUnit specimen, Element elSpecimenItem){
 		boolean success = true;
-		Namespace ns = elSpecimenItem.getNamespace();
 		if (specimen == null){
 			logger.warn("No specimen");
 			return false;
 		}else if (elSpecimenItem != null){
+		    Namespace ns = elSpecimenItem.getNamespace();
 			logger.warn("not yet implemented");
 			//TODO specimenItem placeholder
 		}

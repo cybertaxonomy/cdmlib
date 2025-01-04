@@ -349,10 +349,8 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
             addSourceReference(state, taxon);
             this.getTaxonService().saveOrUpdate(taxon);
             state.getResult().addNewRecords(Taxon.class.getSimpleName(), 1);
-
         }
     }
-
 
     /**
      * Transactional save method to retrieve the parent node
@@ -364,12 +362,12 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
                 parentNode = getTaxonNodeService().find(state.getConfig().getParentNodeUuid());
                 if (parentNode == null){
                     //node does not exist => create new classification
-                    Classification classification = makeClassification(state);
+                    Classification classification = createClassification(state);
                     parentNode = classification.getRootNode();
                     parentNode.setUuid(state.getConfig().getParentNodeUuid());
                 }
             }else {
-                Classification classification = makeClassification(state);
+                Classification classification = createClassification(state);
                 state.getConfig().setParentNodeUuid(classification.getRootNode().getUuid());
                 parentNode = classification.getRootNode();
             }
@@ -378,13 +376,14 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         return parentNode;
     }
 
-    protected Classification makeClassification(STATE state) {
+    protected Classification createClassification(STATE state) {
         Reference ref = getTransactionalSourceReference(state);
         String classificationStr = state.getConfig().getClassificationName();
         if (isBlank(classificationStr)){
             classificationStr = "Tropicos import " + UUID.randomUUID();
         }
         Classification classification = Classification.NewInstance(classificationStr, ref, Language.UNDETERMINED());
+        this.getClassificationService().save(classification);
         return classification;
     }
 }

@@ -75,11 +75,11 @@ public class NameTypeDesignation
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TaxonName typeName;
 
+// ********************* FACTORY *************************/
 
 	public static NameTypeDesignation NewInstance() {
 		return new NameTypeDesignation();
 	}
-
 
 	// ************* CONSTRUCTORS *************/
 	/**
@@ -89,7 +89,6 @@ public class NameTypeDesignation
 	 */
 	protected NameTypeDesignation() {
 	}
-
 
 	/**
 	 * Class constructor: creates a new name type designation instance

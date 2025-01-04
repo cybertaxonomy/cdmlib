@@ -714,6 +714,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
     private DescriptiveDataSet createTestData() {
+
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
         dataSet.setLabel("Test dataset");
         datasetService.save(dataSet);
@@ -858,7 +859,9 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         desc.addElement(cd);
     }
 
-    private SpecimenDescription createSpecimenDescription(DescriptiveDataSet dataSet, UUID taxonUuid, String specLabel, UUID specimenUuid ) {
+    private SpecimenDescription createSpecimenDescription(DescriptiveDataSet dataSet,
+            UUID taxonUuid, String specLabel, UUID specimenUuid ) {
+
         Taxon taxon = (Taxon)taxonService.find(taxonUuid);
         DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         specimen.setTitleCache(specLabel, true);
@@ -871,14 +874,15 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
                 td.setTitleCache("Specimens used by " + dataSet.getTitleCache() + " for " + getTaxonLabel(taxon), true);
                 return td;}
              );
+
         IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance(specimen);
         // TODO this has to be discussed; currently the description with the InidividualsAssociation is
         // needed in the dataset for performance reasons
         taxonDescription.addElement(individualsAssociation);
         dataSet.addDescription(taxonDescription);
         SpecimenDescription specDesc = SpecimenDescription.NewInstance(specimen);
-
         dataSet.addDescription(specDesc);
+
         return specDesc;
     }
 

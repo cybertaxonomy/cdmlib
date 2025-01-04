@@ -811,12 +811,14 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         IndividualsAssociation indAss1 = IndividualsAssociation.NewInstance(specimen1);
         indAss1.putDescription(Language.DEFAULT(), "Associated specimen description1");
         indAss1.setFeature(Feature.MATERIALS_EXAMINED());
+
         DerivedUnit specimen2 = DerivedUnit.NewPreservedSpecimenInstance();
         specimen2.setTitleCache("My specimen2", true);
         specimen2.setUuid(specimenUuid2);
         IndividualsAssociation indAss2 = IndividualsAssociation.NewInstance(specimen2);
         indAss2.putDescription(Language.DEFAULT(), "Associated specimen description2");
         indAss2.setFeature(Feature.MATERIALS_EXAMINED());
+
         factSet1.addElements(indAss1, indAss2);
 
         //taxon interaction
@@ -825,6 +827,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TaxonInteraction taxInteract1 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
         taxInteract1.setTaxon2(taxon1);
         taxInteract1.putDescription(Language.DEFAULT(), "Taxon interaction description1");
+
         TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         name2.setTitleCache("Name three Mill.", true);
         Taxon taxon2 = Taxon.NewInstance(name2, taxon.getSec());
@@ -832,6 +835,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TaxonInteraction taxInteract2 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
         taxInteract2.setTaxon2(taxon2);
         taxInteract2.putDescription(Language.DEFAULT(), "Taxon interaction description2");
+
         factSet1.addElements(taxInteract1, taxInteract2);
 
         //categorical data

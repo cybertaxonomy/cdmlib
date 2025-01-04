@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.sdd.in;
 
 import static org.junit.Assert.assertNotNull;
@@ -41,6 +40,7 @@ public class IkeyPlusImportTest extends CdmTransactionalIntegrationTest {
 
     @Before
     public void setUp() throws URISyntaxException {
+
         String xxx = "/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input.xml";
         String yyy = "/eu/etaxonomy/cdm/io/sdd/Cichorieae-fullSDD.xml";
 
@@ -70,7 +70,9 @@ public class IkeyPlusImportTest extends CdmTransactionalIntegrationTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
         commitAndStartNewTransaction(null);
+
         PolytomousKey pk = polytomousKeyService.find(newKeyUuid);
         Assert.assertNotNull(pk);
 

@@ -92,7 +92,8 @@ public class AccountRegistrationService
     @Override
     @Async
     @Transactional(readOnly = false)
-    public ListenableFuture<Boolean> createUserAccount(String token, String userName, String password, String givenName, String familyName, String prefix)
+    public ListenableFuture<Boolean> createUserAccount(String token, String userName, String password,
+            String givenName, String familyName, String prefix)
             throws MailException, AccountSelfManagementException, AddressException {
 
         if (resetPassword_rateLimiter.tryAcquire(getRateLimiterTimeout())) {
@@ -136,7 +137,9 @@ public class AccountRegistrationService
                     sendEmail(creationRequest.get().getUserEmail(), userName,
                             UserAccountEmailTemplates.REGISTRATION_SUCCESS_EMAIL_SUBJECT_TEMPLATE,
                             UserAccountEmailTemplates.REGISTRATION_SUCCESS_EMAIL_BODY_TEMPLATE, null);
+
                     return new AsyncResult<Boolean>(true);
+
                 } catch (DataAccessException e) {
                     String message = "Failed to create a new user [userName: " + userName + ", email: " + creationRequest.get().getUserEmail() + "]";
                     logger.error(message, e);

@@ -66,14 +66,6 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	@Override
     protected abstract void doInvoke(TcsXmlImportState state);
 
-//	@Override
-//	protected boolean doInvoke(IImportConfigurator config,
-//			Map<String, MapWrapper<? extends CdmBase>> stores){
-//		TcsXmlImportState state = ((TcsXmlImportConfigurator)config).getState();
-//		state.setConfig((TcsXmlImportConfigurator)config);
-//		return doInvoke(state);
-//	}
-
 	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, CdmSingleAttributeXmlMapperBase[] classMappers){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<>();

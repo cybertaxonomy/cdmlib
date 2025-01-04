@@ -96,7 +96,9 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @since 24.10.2008
  */
 @Component("sddImport")
-public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportState> implements ICdmImport<SDDImportConfigurator, SDDImportState> {
+public class SDDImport
+        extends XmlImportBase<SDDImportConfigurator, SDDImportState>
+        implements ICdmImport<SDDImportConfigurator, SDDImportState> {
 
     private static final long serialVersionUID = 5492939941309574059L;
     private static final Logger logger = LogManager.getLogger();
@@ -158,6 +160,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	}
 
 	private void init() {
+
 	    authors = new HashMap<>();
 	    citations = new HashMap<>();
 	    defaultUnitPrefixes = new HashMap<>();
@@ -212,7 +215,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		logger.info("start TechnicalMetadata ...");
 		// <TechnicalMetadata created="2006-04-20T10:00:00">
 		importTechnicalMetadata(root, sddNamespace, sddConfig);
-		List<Element> elDatasets = root.getChildren("Dataset",sddNamespace);
+		@SuppressWarnings("unchecked")
+        List<Element> elDatasets = root.getChildren("Dataset",sddNamespace);
 //		int i = 0;
 
 		//for each Dataset
@@ -241,7 +245,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		if ((refMO != null) && (cb!=null)) {
 			if (! refMO.equals("")) {
 				if (! mediaObject_ListCdmBase.containsKey(refMO)) {
-					List<CdmBase> lcb = new ArrayList<CdmBase>();
+					List<CdmBase> lcb = new ArrayList<>();
 					lcb.add(cb);
 					mediaObject_ListCdmBase.put(refMO,lcb);
 				} else {
@@ -262,8 +266,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	       </Representation>
 		 */
 
-
-
 		Element elRepresentation = parent.getChild("Representation",sddNamespace);
 		String label = (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace);
 		String detail = (String)ImportHelper.getXmlInputValue(elRepresentation, "Detail",sddNamespace);
@@ -271,7 +273,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		//new
 		Representation representation = Representation.NewInstance(detail, label, null, datasetLanguage);
 		descriptiveDataSet.addRepresentation(representation);
-
 
 		//old
 //		sec.setTitleCache(label, true);
@@ -282,8 +283,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 //			sec.addAnnotation(annotation);
 //		}
 
-
-		List<Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
+		@SuppressWarnings("unchecked")
+        List<Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
 
 		for (Element elMediaObject : listMediaObjects) {
 			String ref = null;
@@ -306,7 +307,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	protected void importRepresentation(Element parent, Namespace sddNamespace, VersionableEntity ve, String id, SDDImportState state){
 		Element elRepresentation = parent.getChild("Representation",sddNamespace);
 
-		Map<Language,List<String>> langLabDet = new HashMap<Language,List<String>>();
+		Map<Language,List<String>> langLabDet = new HashMap<>();
 
 		handleRepresentationLabels(sddNamespace, elRepresentation, langLabDet);
 		handleRepresentationDetails(sddNamespace, elRepresentation, langLabDet);
@@ -324,19 +325,16 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		}
 
 		makeRepresentationMediaObjects(sddNamespace, ve, elRepresentation);//FIXME
-
 	}
-
 
 	/**
 	 * Handles the "Detail" children of representations. Adds the result to the langLabDet.
-	 * @param sddNamespace
-	 * @param elRepresentation
-	 * @param langLabDet
 	 */
 	private void handleRepresentationDetails(Namespace sddNamespace,
 			Element elRepresentation, Map<Language, List<String>> langLabDet) {
-		List<Element> listDetails = elRepresentation.getChildren("Detail",sddNamespace);
+
+		@SuppressWarnings("unchecked")
+        List<Element> listDetails = elRepresentation.getChildren("Detail",sddNamespace);
 		for (Element elDetail : listDetails){
 			Language language = getLanguage(elDetail);
 			String role = elDetail.getAttributeValue("role");
@@ -353,19 +351,22 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	 */
 	private void handleRepresentationLabels(Namespace sddNamespace,
 				Element elRepresentation, Map<Language, List<String>> langLabDet) {
-		// <Label xml:lang="la">Viola hederacea Labill.</Label>
-		List<Element> listLabels = elRepresentation.getChildren("Label",sddNamespace);
+
+	    // <Label xml:lang="la">Viola hederacea Labill.</Label>
+		@SuppressWarnings("unchecked")
+        List<Element> listLabels = elRepresentation.getChildren("Label",sddNamespace);
 		for (Element elLabel : listLabels){
 			Language language = getLanguage(elLabel);
 			String label = elLabel.getText();
-			List<String> labDet = new ArrayList<String>(3);
+			List<String> labDet = new ArrayList<>(3);
 			labDet.add(label);
 			langLabDet.put(language, labDet);
 		}
 	}
 
 	private void makeRepresentationForMedia(Media media, Map<Language, List<String>> langLabDet) {
-		for (Language lang : langLabDet.keySet()){
+
+	    for (Language lang : langLabDet.keySet()){
 			List<String> labDet = langLabDet.get(lang);
 			if (labDet.get(0) != null){
 				media.putTitle(LanguageString.NewInstance(labDet.get(0), lang));
@@ -380,23 +381,25 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	 * Handles representations for terms. Adds one representation per language in langLabDet.
 	 */
 	private void makeRepresentationForTerms(TermBase tb, Map<Language, List<String>> langLabDet) {
-			for (Language lang : langLabDet.keySet()){
-				List<String> labDet = langLabDet.get(lang);
-				if (labDet.size()>0){
-					if (labDet.size()>1) {
-						tb.addRepresentation(Representation.NewInstance(labDet.get(1), labDet.get(0), labDet.get(0), lang));
-					} else {
-						tb.addRepresentation(Representation.NewInstance(labDet.get(0), labDet.get(0), labDet.get(0), lang));
-					}
+		for (Language lang : langLabDet.keySet()){
+			List<String> labDet = langLabDet.get(lang);
+			if (labDet.size()>0){
+				if (labDet.size()>1) {
+					tb.addRepresentation(Representation.NewInstance(labDet.get(1), labDet.get(0), labDet.get(0), lang));
+				} else {
+					tb.addRepresentation(Representation.NewInstance(labDet.get(0), labDet.get(0), labDet.get(0), lang));
 				}
 			}
+		}
 	}
 
 	/**
 	 * Handles the "MediaObject" children of representations.
 	 */
 	private void makeRepresentationMediaObjects(Namespace sddNamespace,	VersionableEntity ve, Element elRepresentation) {
-		List <Element> listMediaObjects = elRepresentation.getChildren("MediaObject", sddNamespace);
+
+	    @SuppressWarnings("unchecked")
+        List <Element> listMediaObjects = elRepresentation.getChildren("MediaObject", sddNamespace);
 		for (Element elMediaObject : listMediaObjects) {
 			String ref = null;
 			//TODO
@@ -429,12 +432,14 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	 */
 	private void makeRepresentationForIdentifiableMediaEntity(Element parent,
 			Namespace sddNamespace, IdentifiableMediaEntity ime) {
-		Element elLinks = parent.getChild("Links",sddNamespace);
+
+	    Element elLinks = parent.getChild("Links",sddNamespace);
 
 		if (elLinks != null) {
 
 			//  <Link rel="Alternate" href="http://www.diversitycampus.net/people/hagedorn"/>
-			List<Element> listLinks = elLinks.getChildren("Link", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> listLinks = elLinks.getChildren("Link", sddNamespace);
 			Media link = Media.NewInstance();
 			MediaRepresentation mr = MediaRepresentation.NewInstance();
 			int k = 0;
@@ -456,7 +461,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				}
 
 				if ((++k % modCount) == 0){ logger.info("Links handled: " + k);}
-
 			}
 		}
 	}
@@ -655,6 +659,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		for (DerivedUnit specimen : specimens.values()) {
 			getOccurrenceService().save(specimen);
 		}
+
 		logger.info("end of persistence ...");
 
 		return;
@@ -722,8 +727,10 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	}
 
 	// imports the default language of the dataset
-	protected void importDatasetLanguage(Element elDataset, SDDImportState state){
-		String nameLang = elDataset.getAttributeValue("lang",xmlNamespace);
+	protected void importDatasetLanguage(Element elDataset,
+	        @SuppressWarnings("unused") SDDImportState state){
+
+	    String nameLang = elDataset.getAttributeValue("lang",xmlNamespace);
 
 		if (StringUtils.isNotBlank(nameLang)) {
 			String iso = nameLang.substring(0, 2);
@@ -749,7 +756,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		 */
 		Element elSpecimens = elDataset.getChild("Specimens",sddNamespace);
 		if (elSpecimens != null){
-			List<Element> listSpecimens = elSpecimens.getChildren("Specimen", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> listSpecimens = elSpecimens.getChildren("Specimen", sddNamespace);
 			for (Element elSpecimen : listSpecimens) {
 				String id = elSpecimen.getAttributeValue("id");
 				DerivedUnit specimen = null;
@@ -759,7 +767,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					importRepresentation(elSpecimen, sddNamespace, specimen, id, cdmState);
 				}
 			}
-
 		}
 	}
 
@@ -773,7 +780,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			Element elCreators = elRevisionData.getChild("Creators",sddNamespace);
 
 			// <Agent role="aut" ref="a1"/>
-			List<Element> listAgents = elCreators.getChildren("Agent", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> listAgents = elCreators.getChildren("Agent", sddNamespace);
 
 			int j = 0;
 			//for each Agent
@@ -820,12 +828,14 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	// imports ipr statements associated with a dataset
 	protected void importIPRStatements(Element elDataset, Namespace sddNamespace, SDDImportState state){
-		// <IPRStatements>
+
+	    // <IPRStatements>
 		logger.info("start IPRStatements ...");
 		Element elIPRStatements = elDataset.getChild("IPRStatements",sddNamespace);
 		// <IPRStatement role="Copyright">
 		if (elIPRStatements != null) {
-			List<Element> listIPRStatements = elIPRStatements.getChildren("IPRStatement", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> listIPRStatements = elIPRStatements.getChildren("IPRStatement", sddNamespace);
 			int j = 0;
 			//for each IPRStatement
 
@@ -868,12 +878,14 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	// imports the taxon names
 	protected void importTaxonNames(Element elDataset, Namespace sddNamespace, SDDImportState state){
-		// <TaxonNames>
+
+	    // <TaxonNames>
 		logger.info("start TaxonNames ...");
 		Element elTaxonNames = elDataset.getChild("TaxonNames",sddNamespace);
 		// <TaxonName id="t1" uri="urn:lsid:authority:namespace:my-own-id">
 		if (elTaxonNames != null) {
-			List<Element> listTaxonNames = elTaxonNames.getChildren("TaxonName", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> listTaxonNames = elTaxonNames.getChildren("TaxonName", sddNamespace);
 			int j = 0;
 			//for each TaxonName
 			for (Element elTaxonName : listTaxonNames){
@@ -900,7 +912,6 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				importRepresentation(elTaxonName, sddNamespace, tnb, id, state);
 
 				if ((++j % modCount) == 0){ logger.info("TaxonNames handled: " + j);}
-
 			}
 		}
 	}
@@ -926,7 +937,9 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	}
 
 	private void handleCategoricalData(Namespace sddNamespace, SDDImportState cdmState, Element elCharacters) {
-		List<Element> elCategoricalCharacters = elCharacters.getChildren("CategoricalCharacter", sddNamespace);
+
+	    @SuppressWarnings("unchecked")
+        List<Element> elCategoricalCharacters = elCharacters.getChildren("CategoricalCharacter", sddNamespace);
 		int j = 0;
 		for (Element elCategoricalCharacter : elCategoricalCharacters){
 			try {
@@ -941,7 +954,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				Element elStates = elCategoricalCharacter.getChild("States",sddNamespace);
 
 				// <StateDefinition id="s1">
-				List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
+				@SuppressWarnings("unchecked")
+                List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
 				TermVocabulary<State> termVocabularyState = TermVocabulary.NewInstance(TermType.State,
 				        State.class, null, null, null, null);
 
@@ -982,7 +996,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private void handleQuantitativeData(Namespace sddNamespace,	SDDImportState cdmState, Element elCharacters) {
 		int j;
 		// <QuantitativeCharacter id="c2">
-		List<Element> elQuantitativeCharacters = elCharacters.getChildren("QuantitativeCharacter", sddNamespace);
+		@SuppressWarnings("unchecked")
+        List<Element> elQuantitativeCharacters = elCharacters.getChildren("QuantitativeCharacter", sddNamespace);
 		j = 0;
 		//for each QuantitativeCharacter
 		for (Element elQuantitativeCharacter : elQuantitativeCharacters){
@@ -1055,7 +1070,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private void handleTextCharacters(Namespace sddNamespace, SDDImportState cdmState, Element elCharacters) {
 		int j;
 		// <TextCharacter id="c3">
-		List<Element> elTextCharacters = elCharacters.getChildren("TextCharacter", sddNamespace);
+		@SuppressWarnings("unchecked")
+        List<Element> elTextCharacters = elCharacters.getChildren("TextCharacter", sddNamespace);
 		j = 0;
 		//for each TextCharacter
 		for (Element elTextCharacter : elTextCharacters){
@@ -1096,7 +1112,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 		// <CodedDescription id="D101">
 		if (elCodedDescriptions != null) {
-			List<Element> listCodedDescriptions = elCodedDescriptions.getChildren("CodedDescription", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> listCodedDescriptions = elCodedDescriptions.getChildren("CodedDescription", sddNamespace);
 			int j = 0;
 			//for each CodedDescription
 			for (Element elCodedDescription : listCodedDescriptions){
@@ -1162,7 +1179,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	private Taxon handleCDNoScope(Namespace sddNamespace,
 	        SDDImportState cdmState, Element elCodedDescription	) {
-		Taxon taxon = null;
+
+	    Taxon taxon = null;
 		TaxonName nonViralName = TaxonNameFactory.NewNonViralInstance(defaultRank);
 		String id = new String("" + taxonNamesCount);
 		IdentifiableSource source = IdentifiableSource.NewDataImportInstance(id, "TaxonName");
@@ -1189,7 +1207,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	private Taxon handleCDScope(Namespace sddNamespace, SDDImportState cdmState,
 			String idCD, Element elScope) {
-		Taxon taxon = null;
+
+	    Taxon taxon = null;
 		Element elTaxonName = elScope.getChild("TaxonName", sddNamespace);
 		String ref = elTaxonName.getAttributeValue("ref");
 		INonViralName nonViralName = taxonNames.get(ref);
@@ -1229,7 +1248,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		String ref;
 		int k;
 		// <TextChar ref="c3">
-		List<Element> elTextChars = elSummaryData.getChildren("TextChar", sddNamespace);
+		@SuppressWarnings("unchecked")
+        List<Element> elTextChars = elSummaryData.getChildren("TextChar", sddNamespace);
 		k = 0;
 		//for each TextChar
 		for (Element elTextChar : elTextChars){
@@ -1251,7 +1271,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		String ref;
 		int k;
 		// <Quantitative ref="c2">
-		List<Element> elQuantitatives = elSummaryData.getChildren("Quantitative", sddNamespace);
+		@SuppressWarnings("unchecked")
+        List<Element> elQuantitatives = elSummaryData.getChildren("Quantitative", sddNamespace);
 		k = 0;
 		//for each Quantitative
 		for (Element elQuantitative : elQuantitatives){
@@ -1273,7 +1294,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			}
 
 			// <Measure type="Min" value="2.3"/>
-			List<Element> elMeasures = elQuantitative.getChildren("Measure", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> elMeasures = elQuantitative.getChildren("Measure", sddNamespace);
 			int l = 0;
 
 			//for each State
@@ -1320,20 +1342,22 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 	private void handleSummaryCategoricalData(Namespace sddNamespace,
 			TaxonDescription taxonDescription, Element elSummaryData) {
-		String ref;
+
 		// <Categorical ref="c4">
-		List<Element> elCategoricals = elSummaryData.getChildren("Categorical", sddNamespace);
+		@SuppressWarnings("unchecked")
+        List<Element> elCategoricals = elSummaryData.getChildren("Categorical", sddNamespace);
 		int k = 0;
 		//for each Categorical
 		for (Element elCategorical : elCategoricals){
 			if ((++k % modCount) == 0){ logger.warn("Categorical handled: " + (k-1));}
-			ref = elCategorical.getAttributeValue("ref");
+			String ref = elCategorical.getAttributeValue("ref");
 			Feature feature = features.get(ref);
 			CategoricalData categoricalData = CategoricalData.NewInstance();
 			categoricalData.setFeature(feature);
 
 			// <State ref="s3"/>
-			List<Element> elStates = elCategorical.getChildren("State", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> elStates = elCategorical.getChildren("State", sddNamespace);
 			int l = 0;
 
 			//for each State
@@ -1344,7 +1368,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				if (state != null) {
 					StateData stateData = StateData.NewInstance();
 					stateData.setState(state);
-					List<Element> elModifiers = elState.getChildren("Modifier", sddNamespace);
+					@SuppressWarnings("unchecked")
+                    List<Element> elModifiers = elState.getChildren("Modifier", sddNamespace);
 					for (Element elModifier : elModifiers){
 						ref = elModifier.getAttributeValue("ref");
 						DefinedTerm modifier = modifiers.get(ref);
@@ -1366,7 +1391,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		Element elAgents = elDataset.getChild("Agents",sddNamespace);
 		if (elAgents != null) {
 			// <Agent id="a1">
-			List <Element> listAgents = elAgents.getChildren("Agent", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List <Element> listAgents = elAgents.getChildren("Agent", sddNamespace);
 			int j = 0;
 			//for each Agent
 			for (Element elAgent : listAgents){
@@ -1453,7 +1479,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		Element elPublications = elDataset.getChild("Publications",sddNamespace);
 
 		if (elPublications != null) {
-			List<Element> listPublications = elPublications.getChildren("Publication", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> listPublications = elPublications.getChildren("Publication", sddNamespace);
 			int j = 0;
 			for (Element elPublication : listPublications){
 
@@ -1613,7 +1640,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		logger.info("start DescriptiveConcepts ...");
 		Element elDescriptiveConcepts = elDataset.getChild("DescriptiveConcepts",sddNamespace);
 		if (elDescriptiveConcepts != null) {
-			List<Element> listDescriptiveConcepts = elDescriptiveConcepts.getChildren("DescriptiveConcept", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> listDescriptiveConcepts = elDescriptiveConcepts.getChildren("DescriptiveConcept", sddNamespace);
 			int j = 0;
 
 			for (Element elDescriptiveConcept : listDescriptiveConcepts){
@@ -1631,7 +1659,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
     						// imports the modifiers
     						Element elModifiers = elDescriptiveConcept.getChild("Modifiers", sddNamespace);
     					if (elModifiers !=null){
-    						List<Element> listModifiers = elModifiers.getChildren("Modifier", sddNamespace);
+    						@SuppressWarnings("unchecked")
+                            List<Element> listModifiers = elModifiers.getChildren("Modifier", sddNamespace);
     							TermVocabulary<DefinedTerm> termVocabularyState = TermVocabulary.NewInstance(
     							        TermType.Modifier, DefinedTerm.class, null, null, null, null);
     						for (Element elModifier : listModifiers) {
@@ -1663,7 +1692,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		Element elCharacterTrees = elDataset.getChild("CharacterTrees",sddNamespace);
 
 		if (elCharacterTrees != null) {
-			List<Element> listCharacterTrees = elCharacterTrees.getChildren("CharacterTree", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> listCharacterTrees = elCharacterTrees.getChildren("CharacterTree", sddNamespace);
 			int j = 0;
 			for (Element elCharacterTree : listCharacterTrees){
 				try {
@@ -1671,10 +1701,11 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
 					//Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);//TODO ?
 
-					TermTree featureTree =  TermTree.NewFeatureInstance();
+					TermTree<Feature> featureTree =  TermTree.NewFeatureInstance();
 					importRepresentation(elCharacterTree, sddNamespace, featureTree, "", cdmState);
 					TermNode<Feature> root = featureTree.getRoot();
-					List<Element> listeOfNodes = elCharacterTree.getChildren("Nodes", sddNamespace);
+					@SuppressWarnings("unchecked")
+                    List<Element> listeOfNodes = elCharacterTree.getChildren("Nodes", sddNamespace);
 
 					//Nodes of CharacterTrees in SDD always refer to DescriptiveConcepts
 					for (Element elNodes : listeOfNodes) {
@@ -1694,13 +1725,15 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					cdmState.setUnsuccessfull();
 				}
 				if ((++j % modCount) == 0){ logger.info("CharacterTrees handled: " + j);}
-
 			}
 		}
 	}
 
-	private void handleCharacterNodes(Namespace sddNamespace, TermNode<Feature> root, Element elNodes) {
-		List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
+	private void handleCharacterNodes(Namespace sddNamespace, TermNode<Feature> root,
+	        Element elNodes) {
+
+	    @SuppressWarnings("unchecked")
+        List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
 		if (listNodes != null) {
 			for (Element elNode : listNodes){
 				String idN = elNode.getAttributeValue("id");
@@ -1764,7 +1797,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				if (elDependencyRules!=null){
 					Element elInapplicableIf = elCharNode.getChild("InapplicableIf", sddNamespace);
 					if (elInapplicableIf!=null){
-						List<Element> listStates = elInapplicableIf.getChildren("State", sddNamespace);
+						@SuppressWarnings("unchecked")
+                        List<Element> listStates = elInapplicableIf.getChildren("State", sddNamespace);
 						for (Element stateElement : listStates) {
 							String refState = stateElement.getAttributeValue("ref");
 							if (StringUtils.isNotBlank(refState)) {
@@ -1776,7 +1810,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					}
 					Element elOnlyapplicableIf = elCharNode.getChild("OnlyApplicableIf", sddNamespace);
 					if (elOnlyapplicableIf!=null){
-						List<Element> listStates = elInapplicableIf.getChildren("State", sddNamespace);
+						@SuppressWarnings({ "unchecked", "null" })
+                        List<Element> listStates = elInapplicableIf.getChildren("State", sddNamespace);
 						for (Element stateElement : listStates) {
 							String refState = stateElement.getAttributeValue("ref");
 							if (StringUtils.isNotBlank(refState)) {
@@ -1805,7 +1840,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		Element elTaxonHierarchies = elDataset.getChild("TaxonHierarchies",sddNamespace);
 
 		if (elTaxonHierarchies != null) {
-			List<Element> listTaxonHierarchies = elTaxonHierarchies.getChildren("TaxonHierarchy", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> listTaxonHierarchies = elTaxonHierarchies.getChildren("TaxonHierarchy", sddNamespace);
 			int j = 0;
 			for (Element elTaxonHierarchy : listTaxonHierarchies){
 				try {
@@ -1815,7 +1851,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 						importRepresentation(elTaxonHierarchy, sddNamespace, classification, "", cdmState);
 
 						Element elNodes = elTaxonHierarchy.getChild("Nodes", sddNamespace); // There can be only one <Nodes> block for TaxonHierarchies
-						List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
+						@SuppressWarnings("unchecked")
+                        List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
 
 						for (Element elNode : listNodes){
 							String idN = elNode.getAttributeValue("id");
@@ -1853,9 +1890,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				}
 
 				if ((++j % modCount) == 0){ logger.info("TaxonHierarchies handled: " + j);}
-
 			}
-
 		}
 	}
 
@@ -1863,7 +1898,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	protected void importGeographicAreas(Element elDataset, Namespace sddNamespace, SDDImportState cdmState) {
 		Element elGeographicAreas = elDataset.getChild("GeographicAreas",sddNamespace);
 		if (elGeographicAreas != null) {
-			List<Element> listGeographicAreas = elGeographicAreas.getChildren("GeographicArea", sddNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> listGeographicAreas = elGeographicAreas.getChildren("GeographicArea", sddNamespace);
 			int j = 0;
 
 			for (Element elGeographicArea : listGeographicAreas){
