@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.dto.portal.ContainerDto;
 import eu.etaxonomy.cdm.api.dto.portal.MediaDto2;
 import eu.etaxonomy.cdm.api.dto.portal.MessagesDto;
 import eu.etaxonomy.cdm.api.dto.portal.OccurrenceInfoDto;
+import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonBaseDto.TaxonNameDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
@@ -416,6 +417,8 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
         try {
             HomotypicGroupTaxonComparator comparator = new HomotypicGroupTaxonComparator(taxon);
+            //for comparison with synonym sec sources
+            SourceDto acceptedSecSourceDto = makeSource(config, taxon.getSecSource());
 
             TaxonName name = taxon.getName();
 
@@ -429,7 +432,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 loadBaseData(config, name.getHomotypicalGroup(), homotypicGroupDto);
 
                 for (Synonym syn : homotypicSynonmys) {
-                    loadSynonymInGroup(homotypicGroupDto, syn, config, result);
+                    loadSynonymInGroup(homotypicGroupDto, syn, config, result, acceptedSecSourceDto);
                 }
             }
             if (name != null) {
@@ -452,7 +455,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
                 List<Synonym> heteroSyns = filterPublished(taxon.getSynonymsInGroup(hg, comparator));
                 for (Synonym syn : heteroSyns) {
-                    loadSynonymInGroup(hgDto, syn, config, result);
+                    loadSynonymInGroup(hgDto, syn, config, result, acceptedSecSourceDto);
                 }
                 handleTypification(hg, hgDto, result, config);
             }
@@ -564,7 +567,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
     }
 
     private void loadSynonymInGroup(TaxonPageDto.HomotypicGroupDTO hgDto, Synonym syn,
-            TaxonPageDtoConfiguration config, TaxonPageDto pageDto) {
+            TaxonPageDtoConfiguration config, TaxonPageDto pageDto, SourceDto acceptedSecSourceDto) {
 
         TaxonBaseDto synDto = new TaxonBaseDto();
         loadBaseData(config, syn, synDto);
@@ -577,6 +580,12 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
         //TODO
         hgDto.addSynonym(synDto);
+
+        //syn. sec. merge
+        if (syn.getSecSource() != null) {
+            SourceDto sourceDto = makeSource(config, syn.getSecSource());
+            mergeSources(sourceDto, hgDto, acceptedSecSourceDto);
+        }
     }
 
     private void loadProtologues(TaxonName name, TaxonBaseDto taxonBaseDto) {

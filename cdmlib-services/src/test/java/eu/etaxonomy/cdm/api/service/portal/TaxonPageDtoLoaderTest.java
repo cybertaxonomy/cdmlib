@@ -181,6 +181,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //... annotation on name and synonym
         Assert.assertEquals("The synonym must have 2 annotations, a synonym annotation and a name annotation",
                 2, homoSyn.getAnnotations().getCount());
+        Assert.assertNull("No homotypic syn sec should exist as the syn sec is same as acc sec", homoSyns.getSynSecSources());
 
         //... related homonym
         Assert.assertEquals(1, homoSyn.getRelatedNames().getCount());
@@ -191,9 +192,25 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Shenzhen 2017", homonymRel.getCodeEdition());
         Assert.assertEquals("Turland, N.J., Wiersema, J.H., Barrie, F.R., Greuter, W., Hawksworth, D.L., Herendeen, P.S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T.W., McNeill, J., Monro, A.M., Prado, J., Price, M.J. & Smith, G.F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017. Regnum Vegetabile 159. – Glash"+UTF8.U_UMLAUT+"tten: Koeltz Botanical Books",
                 homonymRel.getCodeEditionSource().getLabel().get(0).getLabel());
-        //
 
         //heterotypic synonyms
+        ContainerDto<HomotypicGroupDTO> heteroSynGroups = dto.getHeterotypicSynonymGroups();
+        Assert.assertEquals(3, heteroSynGroups.getCount());
+        //... first group
+        HomotypicGroupDTO firstHeteroSynGroup = heteroSynGroups.getItems().get(0);
+        Assert.assertEquals(2, firstHeteroSynGroup.getSynonyms().getCount());
+        Assert.assertEquals(2, firstHeteroSynGroup.getSynSecSources().getCount());
+
+        //... second group
+        HomotypicGroupDTO secondHeteroSynGroup = heteroSynGroups.getItems().get(1);
+        Assert.assertEquals(2, secondHeteroSynGroup.getSynonyms().getCount());
+        Assert.assertNull("No syn sec should exist as all syn sec do not exist or are equal with taxon sec",
+                secondHeteroSynGroup.getSynSecSources());
+
+        //... third group
+        HomotypicGroupDTO thirdHeteroSynGroup = heteroSynGroups.getItems().get(2);
+        Assert.assertEquals(2, thirdHeteroSynGroup.getSynonyms().getCount());
+        Assert.assertEquals(2, thirdHeteroSynGroup.getSynSecSources().getCount());
 
         //types
 
@@ -617,7 +634,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Reference nomRef = ReferenceFactory.newBook();
         nomRef.setTitle("My book");
         Reference nomRef2 = ReferenceFactory.newBook();
-        nomRef.setTitle("My book2");
+        nomRef2.setTitle("My book2");
+        nomRef2.setDatePublished(TimePeriodParser.parseStringVerbatim("1973"));
         TaxonName accName = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Genus", null, "species", null, author, nomRef, "55", null);
         Reference secRef = ReferenceFactory.newBook();
@@ -647,6 +665,41 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         rel.setCodeEdition(NomenclaturalCodeEdition.ICN_2017_SHENZHEN);
         earlierHomonym.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Homonym annotation"));
         nameService.save(earlierHomonym);
+
+        //heterotyp. synonym
+        TaxonName heteroSynName1 = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Genushetero", null, "hetero", null, author2, nomRef2, "99", null);
+        Reference heteroSecRef = ReferenceFactory.newBook();
+        secRef.setTitle("My hetero sec book");
+        taxon.addHeterotypicSynonymName(heteroSynName1, heteroSecRef, "48", null);
+
+        TaxonName heteroSynName1Recomb = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Newgenushetero", null, "hetero", null, author3, nomRef, "26", null);
+        taxon.addHeterotypicSynonymName(heteroSynName1Recomb, heteroSecRef, "49",heteroSynName1.getHomotypicalGroup());
+
+        //heterotyp. synonym group 2
+        Reference nomRef3 = ReferenceFactory.newBook();
+        nomRef3.setTitle("My book3");
+        nomRef3.setDatePublished(TimePeriodParser.parseStringVerbatim("2008"));
+
+        TaxonName heteroSynName2 = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Second", null, "hetero", null, author2, nomRef3, "105", null);
+        taxon.addHeterotypicSynonymName(heteroSynName2, taxon.getSec(), taxon.getSecMicroReference(), null);
+        TaxonName heteroSynName2Recomb = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Newsecond", null, "hetero", null, author2, nomRef3, "105", null);
+        taxon.addHeterotypicSynonymName(heteroSynName2Recomb, null, null, heteroSynName2.getHomotypicalGroup());
+
+        //heterotyp. synonym group 3
+        Reference nomRef4 = ReferenceFactory.newBook();
+        nomRef4.setTitle("My book4");
+        nomRef4.setDatePublished(TimePeriodParser.parseStringVerbatim("2012"));
+
+        TaxonName heteroSynName3 = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Third", null, "hetero", null, author2, nomRef4, "305", null);
+        taxon.addHeterotypicSynonymName(heteroSynName3, nomRef4, null, null);
+        TaxonName heteroSynName3Recomb = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Newthird", null, "hetero", null, author2, nomRef4, "308", null);
+        taxon.addHeterotypicSynonymName(heteroSynName3Recomb, nomRef4, "33", heteroSynName3.getHomotypicalGroup());
 
         return taxon;
     }
