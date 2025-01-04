@@ -633,8 +633,10 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //feature tree
         createTermTrees();
 
+        //factDatasets
+        TaxonDescription factSet1 = TaxonDescription.NewInstance(taxon);
+
         //distributions
-        TaxonDescription taxDesc = TaxonDescription.NewInstance(taxon);
         Country.GERMANY().setSymbol("De");
         PresenceAbsenceTerm.PRESENT().setSymbol("");
         Distribution germany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT());
@@ -648,12 +650,12 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         germanRef.getInJournal().setTitle("The journal");
         germany.addPrimaryTaxonomicSource(germanRef, "22");
 
-        taxDesc.addElement(germany);
+        factSet1.addElement(germany);
 
         Country.FRANCE().setSymbol("Fr");
 //        PresenceAbsenceTerm.INTRODUCED().setSymbol("i");
         Distribution franceDist = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
-        taxDesc.addElement(franceDist);
+        factSet1.addElement(franceDist);
 
         //... sources
         //... ... primary
@@ -685,7 +687,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TextData td4 = TextData.NewInstance(Feature.DESCRIPTION(), "My fourth description", Language.DEFAULT(), null);
         td4.setSortIndex(1);
         td4.setUuid(td4Uuid);
-        taxDesc.addElements(td1, td2, td3, td4);
+        factSet1.addElements(td1, td2, td3, td4);
         //... with media
         Media media1 = Media.NewInstance(URI.create("http://media.de/file.jpg"), 2, "JPG", "jpg");
         media1.setTitleCache("Media title", true);
@@ -700,15 +702,15 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //empty text
         TextData emptyTd = TextData.NewInstance(Feature.DISCUSSION(), "", Language.DEFAULT(), null);
-        taxDesc.addElements(emptyTd);
+        factSet1.addElements(emptyTd);
         //annotation
-        taxDesc.addAnnotation(Annotation.NewInstance("Missing Type Annotation for empty", null, Language.DEFAULT()));
-        taxDesc.addMarker(MarkerType.IS_DOUBTFUL(), true);
+        factSet1.addAnnotation(Annotation.NewInstance("Missing Type Annotation for empty", null, Language.DEFAULT()));
+        factSet1.addMarker(MarkerType.IS_DOUBTFUL(), true);
 
         //common names
         CommonTaxonName cn1 = CommonTaxonName.NewInstance("My flower", Language.ENGLISH(), Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND());
         CommonTaxonName cn2 = CommonTaxonName.NewInstance("Meine Blume", Language.GERMAN(), Country.GERMANY());
-        taxDesc.addElements(cn1);
+        factSet1.addElements(cn1);
         TaxonDescription taxDesc2 = TaxonDescription.NewInstance(taxon);
         taxDesc2.addElement(cn2);
         Reference descRef = ReferenceFactory.newBook();
@@ -721,7 +723,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 ExtendedTimePeriod.NewExtendedMonthAndDayInstance(4, 15, 6, 30, 3, 10, 7, 20));
         TemporalData temporalData2 = TemporalData.NewInstance(Feature.FLOWERING_PERIOD(),
                 ExtendedTimePeriod.NewExtendedMonthAndDayInstance(5, 1, 6, 15, 4, 1, 7, 1));
-        taxDesc.addElements(temporalData1, temporalData2);
+        factSet1.addElements(temporalData1, temporalData2);
 
         //individual association
         DerivedUnit specimen1 = DerivedUnit.NewPreservedSpecimenInstance();
@@ -736,7 +738,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         IndividualsAssociation indAss2 = IndividualsAssociation.NewInstance(specimen2);
         indAss2.putDescription(Language.DEFAULT(), "Associated specimen description2");
         indAss2.setFeature(Feature.MATERIALS_EXAMINED());
-        taxDesc.addElements(indAss1, indAss2);
+        factSet1.addElements(indAss1, indAss2);
 
         //taxon interaction
         Taxon taxon1 = Taxon.NewInstance(taxon.getName(), taxon.getSec());
@@ -751,7 +753,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TaxonInteraction taxInteract2 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
         taxInteract2.setTaxon2(taxon2);
         taxInteract2.putDescription(Language.DEFAULT(), "Taxon interaction description2");
-        taxDesc.addElements(taxInteract1, taxInteract2);
+        factSet1.addElements(taxInteract1, taxInteract2);
 
         //categorical data
         State state1 = State.NewInstance("State1", "State1", null);
@@ -760,13 +762,13 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         StateData stateData = cd.getStateData().get(0);
         stateData.putModifyingText(Language.DEFAULT(), "State modifying");
         cd.putModifyingText(Language.DEFAULT(), "Fact modifying");
-        taxDesc.addElements(cd);
+        factSet1.addElements(cd);
 
         //quantitative data
         Feature feature = Feature.INTRODUCTION();
         QuantitativeData qd = QuantitativeData.NewMinMaxInstance(feature,
                 MeasurementUnit.METER(), new BigDecimal(5), new BigDecimal(10));
-        taxDesc.addElements(qd);
+        factSet1.addElements(qd);
 
         //use data
         //TODO
