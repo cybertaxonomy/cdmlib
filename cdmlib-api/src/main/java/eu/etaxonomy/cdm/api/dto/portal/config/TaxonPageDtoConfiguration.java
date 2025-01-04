@@ -53,10 +53,9 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
 
     private EnumSet<TaxonOccurrenceRelationType> specimenAssociationFilter;
 
-    private Set<UUID> annotationTypes = new HashSet<>(
-            Arrays.asList(new UUID[] {AnnotationType.uuidEditorial}));
+    private Set<UUID> annotationTypes = defaultAnnotationTypes();
     private Set<UUID> markerTypes = new HashSet<>();
-    private Set<UUID> identifierTypes = new HashSet<>(Arrays.asList(new UUID[] {IdentifierType.uuidWfoNameIdentifier}));
+    private Set<UUID> identifierTypes = defaultIdentifierTypes();
     //#10622
     private Set<UUID> excludedFactDatasetMarkerTypes = new HashSet<>();
     private Set<UUID> directNameRelTyes = null;
@@ -80,7 +79,7 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
     private Map<UUID,DistributionInfoConfiguration> perFeatureDistributionInfoConfiguration = new HashMap<>();
 
     //supplemental data
-    private EnumSet<OriginalSourceType> sourceTypes = OriginalSourceType.allPublicTypes();
+    private EnumSet<OriginalSourceType> sourceTypes = defaultSourceTypes();
 
     //formatting
     private List<Locale> locales = new ArrayList<>();  //is this data or formatting??
@@ -234,8 +233,8 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
         return sourceTypes;
     }
     public void setSourceTypes(EnumSet<OriginalSourceType> sourceTypes) {
-        this.sourceTypes = sourceTypes;
-        this.distributionInfoConfiguration.setSourceTypes(sourceTypes);
+        this.sourceTypes = sourceTypes == null ? defaultSourceTypes() : sourceTypes;
+        this.distributionInfoConfiguration.setSourceTypes(this.sourceTypes);
     }
 
     @Override
@@ -248,8 +247,8 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
      * needs a separate filter this has to be set afterwards.
      */
     public void setMarkerTypes(Set<UUID> markerTypes) {
-        this.markerTypes = markerTypes;
-        this.distributionInfoConfiguration.setMarkerTypes(markerTypes);
+        this.markerTypes = markerTypes == null ? new HashSet<>() : markerTypes;
+        this.distributionInfoConfiguration.setMarkerTypes(this.markerTypes);
     }
 
     @Override
@@ -262,8 +261,8 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
      * needs a separate filter this has to be set afterwards.
      */
     public void setAnnotationTypes(Set<UUID> annotationTypes) {
-        this.annotationTypes = annotationTypes;
-        this.distributionInfoConfiguration.setAnnotationTypes(annotationTypes);
+        this.annotationTypes = annotationTypes == null ? defaultAnnotationTypes() : annotationTypes;
+        this.distributionInfoConfiguration.setAnnotationTypes(this.annotationTypes);
     }
     public void addAnnotationType(UUID annotationType) {
         if (this.annotationTypes == null) {
@@ -278,7 +277,7 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
         return identifierTypes;
     }
     public void setIdentifierTypes(Set<UUID> identifierTypes) {
-        this.identifierTypes = identifierTypes;
+        this.identifierTypes = identifierTypes == null ? defaultIdentifierTypes() : identifierTypes;
     }
 
     //name relationship types
@@ -286,14 +285,14 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
         return directNameRelTyes;
     }
     public void setDirectNameRelTyes(Set<UUID> directNameRelTyes) {
-        this.directNameRelTyes = directNameRelTyes;
+        this.directNameRelTyes = directNameRelTyes == null ? new HashSet<>() : directNameRelTyes;
     }
 
     public Set<UUID> getInverseNameRelTyes() {
         return inverseNameRelTyes;
     }
     public void setInverseNameRelTyes(Set<UUID> inverseNameRelTyes) {
-        this.inverseNameRelTyes = inverseNameRelTyes;
+        this.inverseNameRelTyes = inverseNameRelTyes == null ? new HashSet<>() : inverseNameRelTyes;
     }
 
     public boolean isUseDtoLoading() {
@@ -315,5 +314,18 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
     }
     public void setExcludedFactDatasetMarkerTypes(Set<UUID> excludedFactDatasetMarkerTypes) {
         this.excludedFactDatasetMarkerTypes = excludedFactDatasetMarkerTypes == null ? new HashSet<>() : excludedFactDatasetMarkerTypes;
+    }
+
+    //defaults
+    private final Set<UUID> defaultAnnotationTypes() {
+        return new HashSet<>(Arrays.asList(new UUID[] {AnnotationType.uuidEditorial}));
+    }
+
+    private final Set<UUID> defaultIdentifierTypes() {
+        return new HashSet<>(Arrays.asList(new UUID[] {IdentifierType.uuidWfoNameIdentifier}));
+    }
+
+    private final EnumSet<OriginalSourceType> defaultSourceTypes() {
+        return OriginalSourceType.allPublicTypes();
     }
 }

@@ -415,13 +415,6 @@ public class TaxonPortalController extends TaxonController{
         if (partSet == null) {
             partSet = EnumSet.of(InfoPart.condensedDistribution, InfoPart.mapUriParams, InfoPart.tree);
         }
-        //TODO null check needed?
-        if (annotationTypes == null) {
-            annotationTypes = new HashSet<>();
-        }
-        if (markerTypes == null) {
-            markerTypes = new HashSet<>();
-        }
         if (identifierTypes == null) {
             //TODO or should we allow null to define "all identifiers" (= no filter)
             identifierTypes = new HashSet<>(Arrays.asList(new UUID[] {IdentifierType.uuidWfoNameIdentifier}));
