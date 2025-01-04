@@ -670,7 +670,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TaxonName heteroSynName1 = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Genushetero", null, "hetero", null, author2, nomRef2, "99", null);
         Reference heteroSecRef = ReferenceFactory.newBook();
-        secRef.setTitle("My hetero sec book");
+        heteroSecRef.setTitle("My hetero sec book");
         taxon.addHeterotypicSynonymName(heteroSynName1, heteroSecRef, "48", null);
 
         TaxonName heteroSynName1Recomb = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
