@@ -29,7 +29,6 @@ public class ReferencePropertyDefinitions {
     private static Map<String, String> iPublicationBase = new HashMap<>();
     private static Map<String, String> iWithAuthorAndDate = new HashMap<>();
     private static Map<String, String> iWithDoi = new HashMap<>();
-    private static Map<String, String> iAuthoredPublicationBase = new HashMap<>();
     private static Map<String, String> iVolumeReference = new HashMap<>();
     private static Map<String, String> iSection = new HashMap<>();
     private static Map<String, String> iPrintedUnitBase = new HashMap<>();
@@ -62,7 +61,7 @@ public class ReferencePropertyDefinitions {
         // put(iNomenclaturalReference, "year");
         // put(iNomenclaturalReference, "nomenclaturalCitation");
 
-        iAuthoredPublicationBase = merge(iPublicationBase , iWithAuthorAndDate, iWithDoi);
+        //iAuthoredPublicationBase = merge(iPublicationBase , iWithAuthorAndDate, iWithDoi);
 
         // ----------------------------------------------------------------------------
         // Field visibility different from ISection definition see discussion at
@@ -79,7 +78,7 @@ public class ReferencePropertyDefinitions {
         put(iPrintedUnitBase, "title");
         put(iPrintedUnitBase, "abbrevTitle");
         put(iPrintedUnitBase, "inReference", "inSeries");
-        put(iPrintedUnitBase, "editor");
+        put(iPrintedUnitBase, "authorIsEditor");
 
         iArticle = merge(iSection, iVolumeReference);
         put(iArticle, "inReference", "inJournal");
