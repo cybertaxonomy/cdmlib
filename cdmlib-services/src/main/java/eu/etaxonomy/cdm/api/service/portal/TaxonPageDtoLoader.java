@@ -429,7 +429,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 loadBaseData(config, name.getHomotypicalGroup(), homotypicGroupDto);
 
                 for (Synonym syn : homotypicSynonmys) {
-                    loadSynonymsInGroup(homotypicGroupDto, syn, config, result);
+                    loadSynonymInGroup(homotypicGroupDto, syn, config, result);
                 }
             }
             if (name != null) {
@@ -452,7 +452,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
                 List<Synonym> heteroSyns = filterPublished(taxon.getSynonymsInGroup(hg, comparator));
                 for (Synonym syn : heteroSyns) {
-                    loadSynonymsInGroup(hgDto, syn, config, result);
+                    loadSynonymInGroup(hgDto, syn, config, result);
                 }
                 handleTypification(hg, hgDto, result, config);
             }
@@ -563,7 +563,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
         conceptRelContainer.addItem(dto);
     }
 
-    private void loadSynonymsInGroup(TaxonPageDto.HomotypicGroupDTO hgDto, Synonym syn,
+    private void loadSynonymInGroup(TaxonPageDto.HomotypicGroupDTO hgDto, Synonym syn,
             TaxonPageDtoConfiguration config, TaxonPageDto pageDto) {
 
         TaxonBaseDto synDto = new TaxonBaseDto();

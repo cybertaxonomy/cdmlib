@@ -1473,8 +1473,8 @@ public class Taxon
      *
      * @param synonymName		the taxon name to be used as an heterotypic synonym
      * 							to be added to <i>this</i> taxon's set of synonyms
-     * @param secReference		the secundum reference for the new synonym
-     * @param secDetail		    the secundum detil for the new synonym
+     * @param synSecReference		the secundum reference for the new synonym
+     * @param synSecDetail		    the secundum detail for the new synonym
      * @param homotypicalGroup	the homotypical group to which the taxon name
      * 							of the synonym will be added. If <code>null</code>
      *                          the homotypical group of synonymName is not changed
@@ -1489,14 +1489,14 @@ public class Taxon
      * @see    	   				#getSynonyms()
      * @see    					#removeSynonym(Synonym)
      */
-    public Synonym addHeterotypicSynonymName(TaxonName synonymName, Reference secReference, String secDetail, HomotypicalGroup homotypicalGroup){
+    public Synonym addHeterotypicSynonymName(TaxonName synonymName, Reference synSecReference, String synSecDetail, HomotypicalGroup homotypicalGroup){
         Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
         if (homotypicalGroup != null){
             homotypicalGroup.addTypifiedName(synonymName);
         }
         synonym.setPublish(this.isPublish());
 
-        addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF, secReference, secDetail);
+        addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF, synSecReference, synSecDetail);
         return synonym;
     }
 
