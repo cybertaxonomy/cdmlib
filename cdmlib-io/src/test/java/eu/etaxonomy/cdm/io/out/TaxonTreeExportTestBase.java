@@ -179,6 +179,10 @@ public abstract class TaxonTreeExportTestBase
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testFullSampleData(){
+        testFullSampleData(0, 0, 0);
+    }
+
+    protected void testFullSampleData(int countException, int countError, int countWarning){
 
         //create data
         commonService.createFullSampleData();
@@ -190,8 +194,9 @@ public abstract class TaxonTreeExportTestBase
         ExportResult result = defaultExport.invoke(config);
 
         //test exceptions
-        testExceptionsErrorsWarnings(result);
+        testExceptionsErrorsWarnings(result, countException, countError, countWarning);
     }
+
 
     protected abstract CONFIG newConfigurator();
 
@@ -271,9 +276,13 @@ public abstract class TaxonTreeExportTestBase
     }
 
     protected Map<String, byte[]> checkAndGetData(ExportResult result) {
+        return checkAndGetData(result, 0, 0, 0);
+    }
+
+    protected Map<String, byte[]> checkAndGetData(ExportResult result, int countException, int countError, int countWarning) {
 
         //test exceptions
-        testExceptionsErrorsWarnings(result);
+        testExceptionsErrorsWarnings(result, countException, countError, countWarning);
 
         //transform to data map
         ExportDataWrapper<?> exportData = result.getExportData();
