@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
@@ -130,6 +131,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private INameService nameService;
+
+    @SpringBeanByType
+    private IOccurrenceService occurrenceService;
 
     @SpringBeanByType
     private ITermService termService;
@@ -808,6 +812,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         DerivedUnit specimen1 = DerivedUnit.NewPreservedSpecimenInstance();
         specimen1.setTitleCache("My specimen", true);
         specimen1.setUuid(specimenUuid1);
+        occurrenceService.save(specimen1);
         IndividualsAssociation indAss1 = IndividualsAssociation.NewInstance(specimen1);
         indAss1.putDescription(Language.DEFAULT(), "Associated specimen description1");
         indAss1.setFeature(Feature.MATERIALS_EXAMINED());
@@ -815,6 +820,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         DerivedUnit specimen2 = DerivedUnit.NewPreservedSpecimenInstance();
         specimen2.setTitleCache("My specimen2", true);
         specimen2.setUuid(specimenUuid2);
+        occurrenceService.save(specimen2);
         IndividualsAssociation indAss2 = IndividualsAssociation.NewInstance(specimen2);
         indAss2.putDescription(Language.DEFAULT(), "Associated specimen description2");
         indAss2.setFeature(Feature.MATERIALS_EXAMINED());
@@ -824,6 +830,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //taxon interaction
         Taxon taxon1 = Taxon.NewInstance(taxon.getName(), taxon.getSec());
         taxon1.setUuid(taxonUuid1);
+        taxonService.save(taxon1);
         TaxonInteraction taxInteract1 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
         taxInteract1.setTaxon2(taxon1);
         taxInteract1.putDescription(Language.DEFAULT(), "Taxon interaction description1");
@@ -832,6 +839,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         name2.setTitleCache("Name three Mill.", true);
         Taxon taxon2 = Taxon.NewInstance(name2, taxon.getSec());
         taxon2.setUuid(taxonUuid2);
+        taxonService.save(taxon2);
         TaxonInteraction taxInteract2 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
         taxInteract2.setTaxon2(taxon2);
         taxInteract2.putDescription(Language.DEFAULT(), "Taxon interaction description2");

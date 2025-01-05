@@ -89,7 +89,6 @@ public class PolytomousKey
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @NotNull
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private Set<Taxon> coveredTaxa = new HashSet<>();
 
     @XmlElementWrapper(name = "TaxonomicScope")
@@ -102,7 +101,6 @@ public class PolytomousKey
         inverseJoinColumns = @JoinColumn(name = "taxon_id")
     )
     @NotNull
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private Set<Taxon> taxonomicScope = new HashSet<>();
 
     @XmlElementWrapper(name = "GeographicalScope")

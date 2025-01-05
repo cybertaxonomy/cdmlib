@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,6 +55,7 @@ public class TcsXmlSpecimensImport
 		logger.info("start make Specimens ...");
 
 		MapWrapper<DerivedUnit> specimenMap = (MapWrapper<DerivedUnit>)state.getStore(ICdmIO.SPECIMEN_STORE);
+		Set<Institution> institutions = new HashSet<>();
 
 		boolean success = true;
 		String childName;
@@ -105,7 +108,7 @@ public class TcsXmlSpecimensImport
 			doubleResult = XmlHelp.getSingleChildElement(elSpecimen, childName, tcsNamespace, obligatory);
 			success &= doubleResult.getSecondResult();
 			Element elInstitution = doubleResult.getFirstResult();
-			success &= makeInstitution(specimen, elInstitution);
+			success &= makeInstitution(specimen, elInstitution, institutions);
 
 			childName = "SpecimenItem";
 			obligatory = true;
@@ -118,6 +121,7 @@ public class TcsXmlSpecimensImport
 		}
 
 		logger.info("Save specimen (" + i +")");
+		getAgentService().save(institutions);
 	    getOccurrenceService().save(specimenMap.objects());
 
 		logger.info("end make Specimens ...");
@@ -127,7 +131,7 @@ public class TcsXmlSpecimensImport
 		return;
 	}
 
-	private boolean makeInstitution(DerivedUnit specimen, Element elInstitution){
+	private boolean makeInstitution(DerivedUnit specimen, Element elInstitution, Set<Institution> institutions){
 		boolean success = true;
 		Institution institution = null;
 		if (specimen == null){
@@ -137,6 +141,7 @@ public class TcsXmlSpecimensImport
 		if (elInstitution != null){
 			Namespace ns = elInstitution.getNamespace();
 			institution = Institution.NewInstance();
+			institutions.add(institution);
 
 			String childName = "InstitutionName";
 			boolean obligatory = false;

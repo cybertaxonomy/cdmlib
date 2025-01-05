@@ -204,7 +204,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Taxon taxon;
 
 	// Refers to an entire key
@@ -213,7 +212,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private PolytomousKey subkey;
 
 	// Refers to an other node within this key or an other key
@@ -221,7 +219,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private PolytomousKeyNode otherNode;
 
 	private Integer nodeNumber = null;

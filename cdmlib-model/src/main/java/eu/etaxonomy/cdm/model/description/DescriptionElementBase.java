@@ -142,7 +142,6 @@ public abstract class DescriptionElementBase
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @IndexedEmbedded(includeEmbeddedObjectId=true)
     private DescriptionBase<?> inDescription;
 

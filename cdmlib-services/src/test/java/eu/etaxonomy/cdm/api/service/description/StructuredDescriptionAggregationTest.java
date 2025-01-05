@@ -866,6 +866,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         specimen.setTitleCache(specLabel, true);
         specimen.setUuid(specimenUuid);
+        occurrenceService.save(specimen);
+
         TaxonDescription taxonDescription = taxon.getDescriptions(DescriptionType.INDIVIDUALS_ASSOCIATION).stream()
             .findFirst()
             .orElseGet(()->{

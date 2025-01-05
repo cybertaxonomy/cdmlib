@@ -30,8 +30,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.FieldBridge;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -97,7 +95,6 @@ public class TaxonDescription
     @ManyToOne(fetch = FetchType.LAZY)
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @FieldBridge(impl=NotNullAwareIdBridge.class)
     private Taxon taxon;
 

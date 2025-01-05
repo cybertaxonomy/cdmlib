@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import fr.lis.ikeyplus.IO.SDDSaxParser;
@@ -58,18 +59,17 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
 
     private PolytomousKey cdmKey;
 
-    public PolytomousKey getCdmKey() {
-        return cdmKey;
-    }
-
-    public void setCdmKey(PolytomousKey cdmKey) {
-        this.cdmKey = cdmKey;
-    }
-
     private Map<String, Feature>featureMap = new HashMap<>();
 
-    public IkeyPlusImport() {
+    private Set<TaxonBase> taxa = new HashSet<>();
 
+//************************ CONSTRUCTOR **************************/
+
+    public IkeyPlusImport() {}
+
+
+    public PolytomousKey getCdmKey() {
+        return cdmKey;
     }
 
     public PolytomousKey getKey(URI sddUri, Utils utils) throws Exception {
@@ -124,6 +124,9 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
         getTermService().saveOrUpdate((Collection)features);
         getVocabularyService().saveOrUpdate(featureVoc);
 
+        //persist new taxa
+        getTaxonService().save(taxa);
+
         // persist the rest
         getPolytomousKeyService().saveOrUpdate(cdmKey);
     }
@@ -159,6 +162,7 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
                 nonViralName.setTitleCache(taxon.getName(), true);
                 eu.etaxonomy.cdm.model.taxon.Taxon cdmTaxon = eu.etaxonomy.cdm.model.taxon.Taxon.NewInstance(
                         nonViralName, null); //FIXME !!!!!!
+                this.taxa.add(cdmTaxon);
                 // TODO add taxon to covered taxa
                 // TODO media: get media from the parent node
 

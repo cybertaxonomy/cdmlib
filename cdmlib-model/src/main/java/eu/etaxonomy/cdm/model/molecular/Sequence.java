@@ -160,7 +160,6 @@ public class Sequence
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Set<Reference> citations = new HashSet<>();
 
 //	//should be calculated in case sequence is set

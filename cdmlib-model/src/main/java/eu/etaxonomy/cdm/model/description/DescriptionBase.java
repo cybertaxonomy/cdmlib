@@ -105,7 +105,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @ManyToOne(fetch = FetchType.LAZY)
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @JoinColumn(name="specimen_id")
     @FieldBridge(impl=NotNullAwareIdBridge.class)
     //TODO maybe move down to specific classes SpecimenDescription (with Cascade.Delete) and TaxonDescription (without Cascade)
@@ -125,7 +124,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "descriptions")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<DescriptiveDataSet> descriptiveDataSets = new HashSet<>();
 
     @XmlElementWrapper(name = "DescriptionElements")

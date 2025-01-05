@@ -305,6 +305,7 @@ public class TaxonServiceImpl
 
         Taxon newTaxon = oldAcceptedTaxon.clone(true, true, false, true);
         newTaxon.setSec(newSecAcc);
+        save(newTaxon);
 
         //move descriptions
         Set<TaxonDescription> descriptionsToCopy = new HashSet<>(oldAcceptedTaxon.getDescriptions());

@@ -147,6 +147,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
@@ -178,6 +179,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
 	private ITaxonDao taxonDao;
+
+    @SpringBeanByType
+    private IDescriptionDao descriptionDao;
 
 	@SpringBeanByType
 	private IOccurrenceDao occurrenceDao;
@@ -543,9 +547,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		article1.addRights(rights1);
 		article2.addRights(rights2);
 
-		Credit credit1 = Credit.NewInstance(Team.NewInstance(), TimePeriod.NewInstance(2002), "credit1");
-		Credit credit2 = Credit.NewInstance(Team.NewInstance(), TimePeriod.NewInstance(2015), "credit2");
-
+		Team creditTeam1 = Team.NewInstance();
+		Team creditTeam2 = Team.NewInstance();
+		agentDao.save(creditTeam1);
+		agentDao.save(creditTeam2);
+        Credit credit1 = Credit.NewInstance(creditTeam1, TimePeriod.NewInstance(2002), "credit1");
+		Credit credit2 = Credit.NewInstance(creditTeam2, TimePeriod.NewInstance(2015), "credit2");
 		article1.addCredit(credit1);
 		article2.addCredit(credit2);
 
@@ -581,6 +588,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		taxDesc.addSource(OriginalSourceType.Unknown, null, null, article2, null);
 
 		taxonDao.save(taxon1);
+		descriptionDao.save(taxDesc);
+//		referenceDao.save(article2);
 
 		//unidircetional reference to the merged object should be redirected
 		cdmGenericDao.merge(article1, article2, null);

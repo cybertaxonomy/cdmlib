@@ -295,7 +295,6 @@ public class Reference
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Institution institution;
 
 	@XmlElement(name = "School")
@@ -303,7 +302,6 @@ public class Reference
     @XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Institution school;
 
     @XmlElement(name = "InReference")

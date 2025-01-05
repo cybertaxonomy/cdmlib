@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
+import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
@@ -69,6 +70,9 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
     @SpringBeanByType
     private ITaxonDao taxonDao;
+
+    @SpringBeanByType
+    private IAgentDao agentDao;
 
     @SpringBeanByType
     private IDefinedTermDao termDao;
@@ -324,15 +328,20 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
     @Test
     public void testSaveAndLoadTaxonNodeAgentRelation(){
+
+        //create test data
         Classification classification = Classification.NewInstance("Me");
+        classificationDao.save(classification);
         Taxon taxon = Taxon.NewInstance(null, null);
         Person person = Person.NewInstance();
+        agentDao.save(person);
         TaxonNode node = classification.addChildTaxon(taxon, null, null);
         DefinedTerm lastScrutiny = (DefinedTerm)termDao.findByUuid(DefinedTerm.uuidLastScrutiny);
         TaxonNodeAgentRelation rel = node.addAgentRelation(lastScrutiny, person);
         taxonNodeDao.save(node);
         commitAndStartNewTransaction(null);
 
+        //test
         TaxonNode newNode = taxonNodeDao.load(node.getUuid());
         Assert.assertNotSame(node, newNode);
         Assert.assertEquals("Node should have agent relation", 1, newNode.getAgentRelations().size());

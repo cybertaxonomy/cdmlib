@@ -118,6 +118,7 @@ public class SDDImport
     private Map<String,State> states = new HashMap<>();
     private Map<String,TaxonDescription> taxonDescriptions = new HashMap<>();
     private Map<String,TaxonName> taxonNames = new HashMap<>();
+    private Set<Taxon> taxa = new HashSet<>();
     private Map<String,MeasurementUnit> units = new HashMap<>();
     private Map<String,TaxonNode> taxonNodes = new HashMap<>();
     private Map<String,NamedArea> namedAreas = new HashMap<>();
@@ -174,6 +175,7 @@ public class SDDImport
 	    states = new HashMap<>();
 	    taxonDescriptions = new HashMap<>();
 	    taxonNames = new HashMap<>();
+	    taxa = new HashSet<>();
 	    units = new HashMap<>();
 	    taxonNodes = new HashMap<>();
 	    namedAreas = new HashMap<>();
@@ -613,6 +615,9 @@ public class SDDImport
 			// Persists a Description
 			descriptionService.save(taxonDescription);
 		}
+        for (Taxon taxon : taxa) {
+            getTaxonService().save(taxon);
+        }
 
 		for (String ref : taxonDescriptions.keySet()){
 			TaxonDescription td = taxonDescriptions.get(ref);
@@ -1186,6 +1191,7 @@ public class SDDImport
 		IdentifiableSource source = IdentifiableSource.NewDataImportInstance(id, "TaxonName");
 		importRepresentation(elCodedDescription, sddNamespace, nonViralName, id, cdmState);
 
+	    //TODO also check from internally created taxa
 		if(cdmState.getConfig().isReuseExistingTaxaWhenPossible()){
 			taxon = getTaxonService().findBestMatchingTaxon(nonViralName.getTitleCache());
 		}
@@ -1201,6 +1207,7 @@ public class SDDImport
 			taxonNamesCount++;
 			logger.info("creating new Taxon from TaxonName " + nonViralName.getTitleCache());
 			taxon = Taxon.NewInstance(nonViralName, sec);
+			this.taxa.add(taxon);
 		}
 		return taxon;
 	}
@@ -1213,6 +1220,7 @@ public class SDDImport
 		String ref = elTaxonName.getAttributeValue("ref");
 		INonViralName nonViralName = taxonNames.get(ref);
 
+		//TODO also check from internally created taxa
 		if(cdmState.getConfig().isReuseExistingTaxaWhenPossible()){
 			taxon = getTaxonService().findBestMatchingTaxon(nonViralName.getTitleCache());
 		}
@@ -1226,6 +1234,7 @@ public class SDDImport
 		} else {
 			logger.info("creating new Taxon from TaxonName '" + nonViralName.getTitleCache()+"'");
 			taxon = Taxon.NewInstance(nonViralName, sec);
+			this.taxa.add(taxon);
 		}
 
 		//citation

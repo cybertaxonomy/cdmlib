@@ -81,6 +81,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     private static final Logger logger = LogManager.getLogger();
 
     @SpringBeanByType
+    private IAgentService agentService;
+
+    @SpringBeanByType
     private IOccurrenceService occurrenceService;
 
     @SpringBeanByType
@@ -122,6 +125,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         Person derivationActor = Person.NewTitledInstance("Derivation Actor");
         String derivationDescription = "Derivation Description";
         Institution derivationInstitution = Institution.NewInstance();
+        agentService.save(derivationInstitution);
         TimePeriod derivationTimePeriod = TimePeriod.NewInstance(2015);
 
         DerivationEvent originalDerivedFromEvent = DerivationEvent.NewSimpleInstance(specimenA, dnaSample,

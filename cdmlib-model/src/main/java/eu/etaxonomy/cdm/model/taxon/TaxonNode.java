@@ -139,7 +139,6 @@ public class TaxonNode
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 //	TODO @NotNull // avoids creating a UNIQUE key for this field
     @IndexedEmbedded(includeEmbeddedObjectId=true)
     private Classification classification;
@@ -177,7 +176,6 @@ public class TaxonNode
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Synonym synonymToBeUsed;
 
 // ******************** CONSTRUCTOR **********************************************/

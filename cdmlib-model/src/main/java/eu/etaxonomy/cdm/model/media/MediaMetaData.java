@@ -22,8 +22,6 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -61,7 +59,6 @@ public class MediaMetaData extends CdmBase {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mediaRepresentation_id")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private MediaRepresentationPart mediaRepresentation;
 
     @Column(name="pairkey") //to avoid conflicts with SQL keywords

@@ -35,8 +35,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.Parameter;
@@ -163,7 +161,6 @@ public class NamedArea extends DefinedTermBase<NamedArea> {
 
     //Binary shape definition for user's defined area as polygon
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Media shape;
 
     private Point pointApproximation;

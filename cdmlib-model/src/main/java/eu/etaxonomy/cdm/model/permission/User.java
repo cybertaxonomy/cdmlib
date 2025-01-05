@@ -142,7 +142,6 @@ public class User extends CdmBase implements UserDetails {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @IndexedEmbedded(depth = 1)
     protected Person person;
 

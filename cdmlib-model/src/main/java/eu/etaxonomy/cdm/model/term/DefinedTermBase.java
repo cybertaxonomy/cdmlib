@@ -138,7 +138,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 //    @XmlSchemaType(name = "IDREF")
     @XmlTransient
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private T kindOf;
 
     /**
@@ -152,7 +151,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 //    @XmlSchemaType(name = "IDREF")
     @XmlTransient
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "kindOf", targetEntity = DefinedTermBase.class)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<T> generalizationOf = new HashSet<>();
 
 //	@XmlElement(name = "PartOf")
@@ -160,7 +158,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 //  @XmlSchemaType(name = "IDREF")
     @XmlTransient
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     protected T partOf;
 
     /**
@@ -174,7 +171,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 //    @XmlSchemaType(name = "IDREF")
     @XmlTransient
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "partOf", targetEntity = DefinedTermBase.class)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<T> includes = new HashSet<>();
 
     @XmlElementWrapper(name = "Media")

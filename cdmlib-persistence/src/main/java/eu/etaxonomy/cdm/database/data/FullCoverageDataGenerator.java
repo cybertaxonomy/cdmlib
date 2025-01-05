@@ -174,38 +174,39 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class FullCoverageDataGenerator {
 
 	public void fillWithData(Session session){
-		List<CdmBase> cdmBases = new ArrayList<>();
 
-		createAgents(cdmBases);
+	    List<CdmBase> entitiesToSave = new ArrayList<>();
 
-        createReference(cdmBases);
+		buildAgents(entitiesToSave);
 
-		createDescriptions(cdmBases);
+        buildReference(entitiesToSave);
 
-		createMedia(cdmBases);
+		buildDescriptions(entitiesToSave);
 
-		createMolecular(cdmBases);
+		buildMedia(entitiesToSave);
 
-		createTaxonName(cdmBases);
+		buildMolecular(entitiesToSave);
 
-		createOccurrence(cdmBases);
+		buildTaxonName(entitiesToSave);
 
-		createTaxon(cdmBases);
+		buildOccurrence(entitiesToSave);
 
-		createSupplemental(cdmBases);
+		buildTaxon(entitiesToSave);
 
-		createUserAuthority(cdmBases);
+		buildSupplemental(entitiesToSave);
 
-		for (CdmBase cdmBase: cdmBases){
-			session.save(cdmBase);
+		buildUserAuthority(entitiesToSave);
+
+		for (CdmBase entityToSave: entitiesToSave){
+			session.save(entityToSave);
 		}
 	}
 
-    private void createUserAuthority(List<CdmBase> cdmBases) {
+    private void buildUserAuthority(List<CdmBase> entitiesToSave) {
         // TODO Auto-generated method stub
     }
 
-    private void createSupplemental(List<CdmBase> cdmBases)  {
+    private void buildSupplemental(List<CdmBase> entitiesToSave)  {
 
 		Reference ref = ReferenceFactory.newBook();
 
@@ -213,7 +214,8 @@ public class FullCoverageDataGenerator {
 		ref.addAnnotation(annotation);
 		handleAnnotatableEntity(annotation);
 
-		Credit credit = Credit.NewInstance(Person.NewInstance(), TimePeriodParser.parseString("22.4.2022-12.5.2023"),
+		Person creditedPerson = createNewPerson("Credited person", entitiesToSave);
+		Credit credit = Credit.NewInstance(creditedPerson, TimePeriodParser.parseString("22.4.2022-12.5.2023"),
 		        "refCredit", "rc", Language.DEFAULT());
 		ref.addCredit(credit);
 		handleAnnotatableEntity(credit);
@@ -226,7 +228,7 @@ public class FullCoverageDataGenerator {
 		try {
 			LSIDAuthority lsidAuthority = new LSIDAuthority("My authority");
 			lsidAuthority.addNamespace("lsidNamespace", TaxonName.class);
-			cdmBases.add(lsidAuthority);
+			entitiesToSave.add(lsidAuthority);
 		} catch (MalformedLSIDException e) {
 			e.printStackTrace();
 		}
@@ -240,16 +242,16 @@ public class FullCoverageDataGenerator {
 		Role role = Role.NewInstance("my role");
 		user.addAuthority(role);
 
-		cdmBases.add(user);
-		cdmBases.add(group);
-		cdmBases.add(authority);
-
-		cdmBases.add(ref);
+		entitiesToSave.add(user);
+		entitiesToSave.add(group);
+		entitiesToSave.add(authority);
+		entitiesToSave.add(ref);
 	}
 
-	private void createAgents(List<CdmBase> cdmBases) {
-		//Person
-		Person person = Person.NewTitledInstance("Person Title");
+	private void buildAgents(List<CdmBase> entitiesToSave) {
+
+	    //Person
+		Person person = createNewPerson("Person Title", entitiesToSave);
 		person.setGivenName("first name");
 		person.setFamilyName("last name");
 		person.setCollectorTitle("C. collector");
@@ -259,7 +261,7 @@ public class FullCoverageDataGenerator {
 		person.setOrcid(ORCID.fromString("0000-0001-5000-0007"));
 		person.setWikiDataItemId(WikiDataItemId.fromString("Q12345"));
 
-		handleIdentifiableEntity(person);
+		handleIdentifiableEntity(person, entitiesToSave);
 
 		//Contact
 		Contact contact = Contact.NewInstance();
@@ -277,38 +279,37 @@ public class FullCoverageDataGenerator {
 		//Team
 		Team team = Team.NewTitledInstance("Team title", "Team abbrev title");
 		team.addTeamMember(person);
-		handleIdentifiableEntity(team);
+		handleIdentifiableEntity(team, entitiesToSave);
 
 		//Institution
-		Institution institution = Institution.NewInstance();
+		Institution institution = createNewInstitution(entitiesToSave);
 		institution.setCode("institution code");
 		institution.setName("institution name");
-		handleIdentifiableEntity(institution);
+		handleIdentifiableEntity(institution, entitiesToSave);
 
 
 		//TODO vocabulary
 //		voc = "29ad808b-3126-4274-be81-4561e7afc76f"
 		DefinedTerm instType = DefinedTerm.NewInstitutionTypeInstance("Description forthis instition type", "institution type", "inst. t.");
-		cdmBases.add(instType);
+		entitiesToSave.add(instType);
 		institution.addType(instType);
 		person.addInstitutionalMembership(institution, TimePeriodParser.parseString("1955-1956"), "department", "role");
 
-		Institution subInstitution = Institution.NewInstance();
+		Institution subInstitution = createNewInstitution(entitiesToSave);
 		subInstitution.setCode("sub institution code");
 		subInstitution.setName("sub institution name");
 		subInstitution.setIsPartOf(institution);
 
-		cdmBases.add(person);
-		cdmBases.add(team);
-		cdmBases.add(institution);
+		entitiesToSave.add(team);
+		entitiesToSave.add(institution);
 	}
 
-	private void createDescriptions(List<CdmBase> cdmBases) {
+	private void buildDescriptions(List<CdmBase> entitiesToSave) {
 
 		TermVocabulary<AnnotationType> voc = TermVocabulary.NewInstance(TermType.AnnotationType, AnnotationType.class,
 		        "my termVoc desc", "myTerm voc", "mtv", URI.create("http://www.abc.de"));
-		handleIdentifiableEntity(voc);
-		cdmBases.add(voc);
+		handleIdentifiableEntity(voc, entitiesToSave);
+		entitiesToSave.add(voc);
 
 		Representation rep = voc.getRepresentations().iterator().next();
 		handleAnnotatableEntity(rep);
@@ -319,14 +320,14 @@ public class FullCoverageDataGenerator {
 		//Categorical data
 		State state = State.NewInstance("Test state", "state", "st.");
 		state.addMedia(Media.NewInstance());
-		cdmBases.add(state);
+		entitiesToSave.add(state);
 		CategoricalData categoricalData = CategoricalData.NewInstance(state, Feature.CONSERVATION());
 		StateData stateData = categoricalData.getStateData().get(0);
 		stateData.addModifier(DefinedTerm.SEX_FEMALE());
 		handleAnnotatableEntity(categoricalData);
 
 		State nextState = State.NewInstance();
-		cdmBases.add(nextState);
+		entitiesToSave.add(nextState);
 		StateData stateData2 = StateData.NewInstance(nextState);
 		stateData2.setCount(3);
 		stateData2.putModifyingText(Language.ENGLISH(), "State2 modifying text");
@@ -335,28 +336,28 @@ public class FullCoverageDataGenerator {
 
 		//Quantitative data
 		Feature leaveLength = Feature.NewInstance("Leave length description", "leave length", "l.l.");
-		cdmBases.add(leaveLength);
+		entitiesToSave.add(leaveLength);
 		leaveLength.setSupportsQuantitativeData(true);
 		QuantitativeData quantitativeData = QuantitativeData.NewInstance(leaveLength);
 		MeasurementUnit measurementUnit = MeasurementUnit.NewInstance("Measurement Unit", "munit", null);
-		cdmBases.add(measurementUnit);
+		entitiesToSave.add(measurementUnit);
 		quantitativeData.setUnit(measurementUnit);
 		quantitativeData.setUuid(UUID.fromString("920fce5e-4913-4a3f-89bf-1611f5081869"));
 		StatisticalMeasurementValue statisticalMeasurementValue = quantitativeData.setAverage(
 		        new BigDecimal("22.9215"), null);
 		handleAnnotatableEntity(quantitativeData);
-		handleIdentifiableEntity(measurementUnit);
+		handleIdentifiableEntity(measurementUnit, entitiesToSave);
 		DefinedTerm valueModifier = DefinedTerm.NewModifierInstance("about", "about", null);
 		statisticalMeasurementValue.addModifier(valueModifier);
-		cdmBases.add(valueModifier);
+		entitiesToSave.add(valueModifier);
 
 		//Feature
 		TermVocabulary<DefinedTerm> recommendedModifierEnumeration = TermVocabulary.NewInstance(TermType.Modifier, DefinedTerm.class);
 		leaveLength.addRecommendedModifierEnumeration(recommendedModifierEnumeration);
-		cdmBases.add(recommendedModifierEnumeration);
+		entitiesToSave.add(recommendedModifierEnumeration);
 		TermVocabulary<State> supportedCategoricalEnumeration = TermVocabulary.NewInstance(TermType.State, State.class);
 		leaveLength.addSupportedCategoricalEnumeration(supportedCategoricalEnumeration);
-		cdmBases.add(supportedCategoricalEnumeration);
+		entitiesToSave.add(supportedCategoricalEnumeration);
 		leaveLength.addRecommendedMeasurementUnit(measurementUnit);
 		leaveLength.addRecommendedStatisticalMeasure(StatisticalMeasure.AVERAGE());
 
@@ -371,8 +372,8 @@ public class FullCoverageDataGenerator {
 		textData.putText(eng, "My text data");
 		LanguageString languageString = textData.getLanguageText(eng);
 
-		Taxon referencedTaxon = getTaxon();
-		cdmBases.add(referencedTaxon);
+		Taxon referencedTaxon = createNewTaxon(entitiesToSave);
+		entitiesToSave.add(referencedTaxon);
 		languageString.addIntextReference(IntextReference.NewInstance(referencedTaxon, languageString, 2, 5));
 		textData.putModifyingText(eng, "nice diagnosis");
 		handleAnnotatableEntity(textData);
@@ -380,24 +381,26 @@ public class FullCoverageDataGenerator {
 
 		TextFormat format = TextFormat.NewInstance("format", "format", null);
 		textData.setFormat(format);
-		cdmBases.add(format);
+		entitiesToSave.add(format);
 		handleAnnotatableEntity(format);
 
 		//IndividualsAssociation
-		DerivedUnit specimen = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+		DerivedUnit specimen = createNewSpecimen(entitiesToSave);
 		IndividualsAssociation indAssoc = IndividualsAssociation.NewInstance(specimen);
 		indAssoc.putDescription(Language.ENGLISH(), "description for individuals association");
 		handleAnnotatableEntity(indAssoc);
+		entitiesToSave.add(specimen);
 
 		//TaxonInteraction
 		TaxonInteraction taxonInteraction = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
+		taxonInteraction.setTaxon2(referencedTaxon);
 		taxonInteraction.putDescription(Language.ENGLISH(), "interaction description");
 		handleAnnotatableEntity(taxonInteraction);
 
 		//Distribution
 		NamedArea inCountryArea = NamedArea.NewInstance("My area in a country", "my area", "ma");
 		inCountryArea.addCountry(Country.TUERKIYEREPUBLICOF());
-		cdmBases.add(inCountryArea);
+		entitiesToSave.add(inCountryArea);
 		Distribution distribution = Distribution.NewInstance(inCountryArea, PresenceAbsenceTerm.CULTIVATED());
 		handleAnnotatableEntity(distribution);
 
@@ -409,21 +412,20 @@ public class FullCoverageDataGenerator {
         handleAnnotatableEntity(temporalData);
         temporalData.setUuid(UUID.fromString("9a1c91c0-fc58-4310-94cb-8c26115985d3"));
 
-		Taxon taxon = getTaxon();
+		Taxon taxon = createNewTaxon(entitiesToSave);
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
 		taxonDescription.addElements(categoricalData, quantitativeData,
 				textData, commonTaxonName, taxonInteraction, indAssoc, distribution, temporalData);
 
-		DerivedUnit describedSpecimenOrObservation = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
+		DerivedUnit describedSpecimenOrObservation = createNewSpecimen(entitiesToSave);
 		taxonDescription.setDescribedSpecimenOrObservation(describedSpecimenOrObservation);
 
 		taxonDescription.addScope(DefinedTerm.SEX_FEMALE());
 		taxonDescription.addGeoScope(Country.GERMANY());
-		handleIdentifiableEntity(taxonDescription);
+		handleIdentifiableEntity(taxonDescription, entitiesToSave);
 
 		taxon.addAggregationSource(taxonDescription);
-
-		cdmBases.add(taxon);
+		entitiesToSave.add(taxon);
 
 		//DescriptionElmenetBase  + source
 		textData.addMedia(Media.NewInstance());
@@ -444,15 +446,15 @@ public class FullCoverageDataGenerator {
 
 
 		//Specimen description
-		SpecimenOrObservationBase<?> describedSpecimen = getSpecimen();
+		SpecimenOrObservationBase<?> describedSpecimen = createNewSpecimen(entitiesToSave);
 		SpecimenDescription specDesc = SpecimenDescription.NewInstance(specimen);
-		cdmBases.add(describedSpecimen);
+		entitiesToSave.add(describedSpecimen);
 		handleAnnotatableEntity(specDesc);
 
 		//Name description
 		TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		TaxonNameDescription nameDesc = TaxonNameDescription.NewInstance(name);
-		cdmBases.add(name);
+		entitiesToSave.add(name);
 		handleAnnotatableEntity(nameDesc);
 
 
@@ -461,16 +463,16 @@ public class FullCoverageDataGenerator {
 //		featureTree
         TermNode<Feature> descriptionTermNode = featureTree.getRoot().addChild(Feature.DESCRIPTION());
         TermNode<Feature> leaveLengthNode = descriptionTermNode.addChild(leaveLength);
-		handleIdentifiableEntity(featureTree);
+		handleIdentifiableEntity(featureTree, entitiesToSave);
 
 		State inapplicableState = State.NewInstance("inapplicableState", "inapplicableState", null);
 		State applicableState = State.NewInstance("only applicable state", "only applicable state", null);
-		cdmBases.add(applicableState);
-		cdmBases.add(inapplicableState);
+		entitiesToSave.add(applicableState);
+		entitiesToSave.add(inapplicableState);
 		leaveLengthNode.addInapplicableState(leaveLength, inapplicableState);  //this is semantically not correct, should be a parent feature
 		leaveLengthNode.addApplicableState(leaveLength, applicableState);
-		cdmBases.add(featureTree);
-		cdmBases.add(leaveLengthNode);
+		entitiesToSave.add(featureTree);
+		entitiesToSave.add(leaveLengthNode);
 
 
 		//DescriptiveDataSet
@@ -481,18 +483,18 @@ public class FullCoverageDataGenerator {
 		handleAnnotatableEntity(descriptiveDataSet);
 		descriptiveDataSet.addGeoFilterArea(Country.GERMANY());
 		Classification classification = Classification.NewInstance("DescriptiveDataSet subtree classification");
-		Taxon subTreeTaxon = getTaxon();
+		Taxon subTreeTaxon = createNewTaxon(entitiesToSave);
         TaxonNode subtree = classification.addChildTaxon(subTreeTaxon, null, null);
 		descriptiveDataSet.addTaxonSubtree(subtree);
 
-		cdmBases.add(classification);
-		cdmBases.add(subtree);
+		entitiesToSave.add(classification);
+		entitiesToSave.add(subtree);
 
 
 		//polytomous keys
-		Taxon coveredTaxon = Taxon.NewInstance(name, null);
+		Taxon coveredTaxon = createNewTaxon(entitiesToSave);
 		PolytomousKey key = PolytomousKey.NewTitledInstance("My Polykey");
-		handleIdentificationKey(key, taxon, coveredTaxon);
+		handleIdentificationKey(key, taxon, coveredTaxon, entitiesToSave);
 		key.setStartNumber(10);
 
 
@@ -510,40 +512,36 @@ public class FullCoverageDataGenerator {
 
 		secondChildNode.putModifyingText(Language.GERMAN(), "manchmal");
 
-		cdmBases.add(key);
-		cdmBases.add(subkey);
+		entitiesToSave.add(key);
+		entitiesToSave.add(subkey);
 
 		MediaKey mediaKey = MediaKey.NewInstance();
 		mediaKey.addKeyRepresentation(Representation.NewInstance("Media Key Representation", "media key", null, Language.ENGLISH()));
-		handleIdentificationKey(mediaKey, taxon, coveredTaxon);
+		handleIdentificationKey(mediaKey, taxon, coveredTaxon, entitiesToSave);
 
 		MultiAccessKey multiAccessKey = MultiAccessKey.NewInstance();
-		handleIdentificationKey(multiAccessKey, taxon, coveredTaxon);
+		handleIdentificationKey(multiAccessKey, taxon, coveredTaxon, entitiesToSave);
 
-		cdmBases.add(mediaKey);
-		cdmBases.add(multiAccessKey);
-
+		entitiesToSave.add(mediaKey);
+		entitiesToSave.add(multiAccessKey);
 	}
 
+	private void handleIdentificationKey(IIdentificationKey key, Taxon taxon, Taxon coveredTaxon, List<CdmBase> entitiesToSave){
 
-
-	private void handleIdentificationKey(IIdentificationKey key, Taxon taxon, Taxon coveredTaxon){
-		key.addCoveredTaxon(coveredTaxon);
+	    key.addCoveredTaxon(coveredTaxon);
 		key.addGeographicalScope(Country.GERMANY());
 		key.addScopeRestriction(DefinedTerm.SEX_FEMALE());
 		key.addTaxonomicScope(taxon);
 		if (key instanceof IdentifiableEntity<?>){
-			handleIdentifiableEntity((IdentifiableEntity<?>)key);
+			handleIdentifiableEntity((IdentifiableEntity<?>)key, entitiesToSave);
 		}else{
 			handleAnnotatableEntity((AnnotatableEntity)key);
 		}
-
-
 	}
 
+	private void buildMedia(List<CdmBase> entitiesToSave){
 
-	private void createMedia(List<CdmBase> cdmBases){
-		AudioFile audioFile = AudioFile.NewInstance(URI.create("http://a.b.de"), 22);
+	    AudioFile audioFile = AudioFile.NewInstance(URI.create("http://a.b.de"), 22);
 		ImageFile imageFile = ImageFile.NewInstance(URI.create("http://b.c.de"), 44, 467, 55);
 		MovieFile movieFile = MovieFile.NewInstance(URI.create("http://b.c.de"), 67);
 		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance("mime", "media");
@@ -557,34 +555,34 @@ public class FullCoverageDataGenerator {
 		media.putTitle(Language.ENGLISH(), "Media title");
 		media.setMediaCreated(TimePeriod.NewInstance(DateTime.now()));
 		media.putDescription(Language.ENGLISH(), "Media description");
-		handleIdentifiableEntity(media);
+		handleIdentifiableEntity(media, entitiesToSave);
 
 
-		Person artist = Person.NewTitledInstance("artist");
+		Person artist = createNewPerson("artist", entitiesToSave);
 		media.setArtist(artist);
-		cdmBases.add(media);
-		cdmBases.add(artist);
+		entitiesToSave.add(media);
 
 		MediaMetaData.NewInstance(imageFile, "Key", "Value");
 	}
 
+	private void buildMolecular(List<CdmBase> entitiesToSave) {
 
-	private void createMolecular(List<CdmBase> cdmBases) {
-		DnaSample dnaSample = DnaSample.NewInstance();
+	    DnaSample dnaSample = DnaSample.NewInstance();
 
 		//Amplification
 		Amplification amplification = Amplification.NewInstance();
 
 		DefinedTerm dnaMarker = DefinedTerm.NewDnaMarkerInstance("My dna marker", "dna marker", null);
-		cdmBases.add(dnaMarker);
+		entitiesToSave.add(dnaMarker);
 		amplification.setDnaMarker(dnaMarker);
-		Institution inst = Institution.NewInstance();
+		Institution inst = createNewInstitution(entitiesToSave);
+		entitiesToSave.add(inst);
 		amplification.setInstitution(inst);
-		handleEventBase(amplification);
+		handleEventBase(amplification, entitiesToSave);
 		handleAnnotatableEntity(amplification);
 
 		Primer forwardPrimer = Primer.NewInstance("forward primer");
-		forwardPrimer.setPublishedIn(getReference());
+		forwardPrimer.setPublishedIn(createNewReference(entitiesToSave));
 		forwardPrimer.setSequence(SequenceString.NewInstance("my sequence"));
 		handleAnnotatableEntity(forwardPrimer);
 
@@ -595,7 +593,7 @@ public class FullCoverageDataGenerator {
 		amplification.setReversePrimer(reversePrimer);
 
 		DefinedTerm purificationMethod = DefinedTerm.NewInstance(TermType.MaterialOrMethod, "purification method", "purification method", null);
-		cdmBases.add(purificationMethod);
+		entitiesToSave.add(purificationMethod);
 		MaterialOrMethodEvent purification = MaterialOrMethodEvent.NewInstance(purificationMethod, "purification method");
 		amplification.setPurification(purification);
 		handleAnnotatableEntity(purification);
@@ -613,7 +611,7 @@ public class FullCoverageDataGenerator {
 		handleAnnotatableEntity(amplificationResult);
 
 		DefinedTerm cloningMethod = DefinedTerm.NewInstance(TermType.MaterialOrMethod, "cloning method", "cloning method", null);
-		cdmBases.add(cloningMethod);
+		entitiesToSave.add(cloningMethod);
 		Cloning cloning = Cloning.NewInstance(cloningMethod, "My cloning method", "my strain", forwardPrimer, reversePrimer);
 		amplificationResult.setCloning(cloning);
 		handleAnnotatableEntity(cloningMethod);
@@ -653,7 +651,7 @@ public class FullCoverageDataGenerator {
 		sequence.setGeneticAccessionNumber("GenNO12345");
 		sequence.setBoldProcessId("boldId");
 		sequence.setHaplotype("haplotype");
-		Reference sequenceCitation = getReference();
+		Reference sequenceCitation = createNewReference(entitiesToSave);
 		sequence.addCitation(sequenceCitation);
 		handleAnnotatableEntity(sequence);
 
@@ -661,7 +659,7 @@ public class FullCoverageDataGenerator {
 		DnaQuality dnaQuality = DnaQuality.NewInstance();
 		dnaQuality.setConcentration(2.0);
 		MeasurementUnit mu = MeasurementUnit.NewInstance("mg/ml", "mg/ml","mg/ml");
-		cdmBases.add(mu);
+		entitiesToSave.add(mu);
 		dnaQuality.setConcentrationUnit(mu);
 		dnaQuality.setPurificationMethod("purification method");
 		dnaQuality.setQualityCheckDate(DateTime.now());
@@ -673,28 +671,31 @@ public class FullCoverageDataGenerator {
 		//Phylogenetic Tree
 		PhylogeneticTree phyloTree = PhylogeneticTree.NewInstance();
 		phyloTree.addUsedSequences(sequence);
-		handleIdentifiableEntity(phyloTree);
+		handleIdentifiableEntity(phyloTree, entitiesToSave);
 
-		cdmBases.add(dnaSample);
-		cdmBases.add(phyloTree);
+		entitiesToSave.add(dnaSample);
+		entitiesToSave.add(phyloTree);
 	}
 
-	private void createTaxon(List<CdmBase> cdmBases) {
+	private void buildTaxon(List<CdmBase> entitiesToSave) {
 
-		Reference sec = getReference();
+	    //currently we need this here as saving order creates problems otherwise (related to #10524)
+	    Person agent = createNewPerson("Related agent", entitiesToSave);
+
+		Reference sec = createNewReference(entitiesToSave);
 		TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
-		Taxon taxon = Taxon.NewInstance(name, sec);
+		Taxon taxon = createNewTaxon(name, sec, entitiesToSave);
 		taxon.getSecSource().addLink(ExternalLink.NewInstance(ExternalLinkType.WebSite, URI.create("https://www.abc.de"),
 		        "link description", Language.GERMAN(), 44));
-		handleIdentifiableEntity(taxon);
+		handleIdentifiableEntity(taxon, entitiesToSave);
 
 		TaxonName synName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Synonym syn = Synonym.NewInstance(synName, sec, "123");
 		taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF);
 		taxon.setDoubtful(true);
-		handleIdentifiableEntity(syn);
+		handleIdentifiableEntity(syn, entitiesToSave);
 
-		Taxon concept = Taxon.NewInstance(name, getReference());
+		Taxon concept = createNewTaxon(name, createNewReference(entitiesToSave), entitiesToSave);
 		TaxonRelationship taxRel = taxon.addTaxonRelation(concept, TaxonRelationshipType.CONGRUENT_TO(),
 				sec, "444");
 		taxRel.setOperation(TaxonomicOperation.NewInstance(TaxonomicOperationType.SPLIT));
@@ -716,28 +717,25 @@ public class FullCoverageDataGenerator {
 		classification.putDescription(Language.ENGLISH(), "An interesting classification");
 
 		TaxonNode node = classification.addChildTaxon(taxon, sec,"22");
-		handleIdentifiableEntity(classification);
+		handleIdentifiableEntity(classification, entitiesToSave);
 		handleAnnotatableEntity(node);
 		node.putPlacementNote(Language.DEFAULT(), "Status note");
 		DefinedTerm agentRelationType = DefinedTerm.NewTaxonNodeAgentRelationTypeInstance(null, "agentRelation", "ar");
-		Person agent = Person.NewTitledInstance("Related agent");
 		TaxonNodeAgentRelation agentRelation = node.addAgentRelation(agentRelationType, agent);
 		handleAnnotatableEntity(agentRelation);
 
-		Taxon childTaxon = Taxon.NewInstance(synName, sec);
+		Taxon childTaxon = createNewTaxon(synName, sec, entitiesToSave);
 		node.addChildTaxon(childTaxon, sec, "44");
 	    node.setStatus(TaxonNodeStatus.EXCLUDED);
 
-		cdmBases.add(taxon);
-		cdmBases.add(concept);
-		cdmBases.add(childTaxon);
-		cdmBases.add(classification);
-		cdmBases.add(agentRelationType);
+	    entitiesToSave.add(classification);
+		entitiesToSave.add(agentRelationType);
 	}
 
-	private void createReference(List<CdmBase> cdmBases) {
-		Reference reference = ReferenceFactory.newArticle();
-		Person author = Person.NewTitledInstance("Author team");
+    private void buildReference(List<CdmBase> entitiesToSave) {
+
+	    Reference reference = ReferenceFactory.newArticle();
+		Person author = createNewPerson("Reference author", entitiesToSave);
 		reference.setAuthorship(author);
 		reference.setAuthorIsEditor(true);
 		reference.setTitle("ref title");
@@ -745,7 +743,7 @@ public class FullCoverageDataGenerator {
 		reference.setDatePublished(TimePeriodParser.parseStringVerbatim("1999"));
 		reference.setEdition("edition");
 		reference.setEditor("editor");
-		Institution institution = Institution.NewInstance();
+		Institution institution = createNewInstitution(entitiesToSave);
 		reference.setInstitution(institution);
 		reference.setIsbn("1234556");
 		reference.setIssn("issn");
@@ -755,7 +753,7 @@ public class FullCoverageDataGenerator {
 		reference.setPages("123-134");
 		reference.setPlacePublished("place Published");
 		reference.setPublisher("publisher");
-		Institution school = Institution.NewInstance();
+		Institution school = createNewInstitution(entitiesToSave);
 		reference.setSchool(school);
 //		reference.setSeriesPart("series");
 		reference.setSeriesPart("seriesPart");
@@ -765,35 +763,36 @@ public class FullCoverageDataGenerator {
 		Reference journal = ReferenceFactory.newJournal();
 		reference.setInJournal(journal);
 
-		handleIdentifiableEntity(reference);
+		handleIdentifiableEntity(reference, entitiesToSave);
 
-		cdmBases.add(reference);
+		entitiesToSave.add(school);
+        entitiesToSave.add(reference);
 	}
 
-	private void createOccurrence(List<CdmBase> cdmBases) {
+	private void buildOccurrence(List<CdmBase> entitiesToSave) {
 
 	    //Collection
 		Collection collection = Collection.NewInstance();
 		Collection subCollection = Collection.NewInstance();
 		subCollection.setSuperCollection(collection);
-		handleIdentifiableEntity(collection);
-		handleIdentifiableEntity(subCollection);
-		cdmBases.add(subCollection);
+		handleIdentifiableEntity(collection, entitiesToSave);
+		handleIdentifiableEntity(subCollection, entitiesToSave);
+		entitiesToSave.add(subCollection);
 
 		collection.setCode("coll code");
 		collection.setCodeStandard("codeStandard");
 		collection.setName("coll name");
 		collection.setTownOrLocation("townOrLocation");
-		Institution institution = Institution.NewInstance();
+		Institution institution = createNewInstitution(entitiesToSave);
 		collection.setInstitute(institution);
 
 		//FieldUnit
 		FieldUnit fieldUnit = FieldUnit.NewInstance();
 		fieldUnit.setFieldNumber("fieldNumber");
 		fieldUnit.setFieldNotes("fieldNotes");
-		Person primaryCollector = Person.NewInstance();
+		Person primaryCollector = createNewPerson("primaryCollector", entitiesToSave);
 		fieldUnit.setPrimaryCollector(primaryCollector);
-		handleIdentifiableEntity(fieldUnit);
+		handleIdentifiableEntity(fieldUnit, entitiesToSave);
 
 		GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
 		fieldUnit.setGatheringEvent(gatheringEvent);
@@ -815,7 +814,7 @@ public class FullCoverageDataGenerator {
 		gatheringEvent.setDistanceToWaterSurfaceMax(100.3);
 		gatheringEvent.setDistanceToWaterSurfaceText("distance to water text");
 		handleAnnotatableEntity(gatheringEvent);
-		handleEventBase(gatheringEvent);
+		handleEventBase(gatheringEvent, entitiesToSave);
 
 		//Derived Unit
 		MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.StillImage);
@@ -831,50 +830,51 @@ public class FullCoverageDataGenerator {
 		preservation.setTemperature(22.4);
 		mediaSpecimen.setPreservation(preservation);
 		mediaSpecimen.setOriginalLabelInfo("Original Label Info");
-		mediaSpecimen.addStatus(DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed), getReference(), "123");
-		handleIdentifiableEntity(mediaSpecimen);
+		mediaSpecimen.addStatus(DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed), createNewReference(entitiesToSave), "123");
+		handleIdentifiableEntity(mediaSpecimen, entitiesToSave);
 
 		//DerivationEvent
 		DerivationEvent event = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
 		event.addOriginal(fieldUnit);
 		event.addDerivative(mediaSpecimen);
-		Institution inst = Institution.NewInstance();
+		Institution inst = createNewInstitution(entitiesToSave);
 		event.setInstitution(inst);
 		handleAnnotatableEntity(event);
-		handleEventBase(event);
+		handleEventBase(event, entitiesToSave);
 
 		//SpecOrObservationBase
 		fieldUnit.setSex(DefinedTerm.SEX_FEMALE());
 		DefinedTerm lifeStage = DefinedTerm.NewStageInstance("Live stage", "stage", null);
-		cdmBases.add(lifeStage);
+		entitiesToSave.add(lifeStage);
 		fieldUnit.setLifeStage(lifeStage);
 		DefinedTerm kindOfUnit = DefinedTerm.NewKindOfUnitInstance("Kind of unit", "Kind of unit", null);
-		cdmBases.add(kindOfUnit);
+		entitiesToSave.add(kindOfUnit);
 		fieldUnit.setKindOfUnit(kindOfUnit);
 		fieldUnit.setIndividualCount("3");
 		fieldUnit.putDefinition(Language.ENGLISH(), "definition");
 		fieldUnit.setPublish(true);
-		handleIdentifiableEntity(fieldUnit);
+		handleIdentifiableEntity(fieldUnit, entitiesToSave);
 
 		//Determination
-		DeterminationEvent determinationEvent = DeterminationEvent.NewInstance(getTaxon(), mediaSpecimen);
+		DeterminationEvent determinationEvent = DeterminationEvent.NewInstance(
+		        createNewTaxon(entitiesToSave), mediaSpecimen);
 		determinationEvent.setModifier(DefinedTerm.DETERMINATION_MODIFIER_AFFINIS());
 		determinationEvent.setPreferredFlag(true);
-		determinationEvent.addReference(getReference());
+		determinationEvent.addReference(createNewReference(entitiesToSave));
 		handleAnnotatableEntity(determinationEvent);
-		handleEventBase(determinationEvent);
+		handleEventBase(determinationEvent, entitiesToSave);
 
-		cdmBases.add(fieldUnit);
-		cdmBases.add(mediaSpecimen);
-		cdmBases.add(collection);
+		entitiesToSave.add(fieldUnit);
+		entitiesToSave.add(mediaSpecimen);
+		entitiesToSave.add(collection);
 	}
 
+    private void buildTaxonName(List<CdmBase> entitiesToSave) {
 
-	private void createTaxonName(List<CdmBase> cdmBases) {
 		TaxonName bacName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
 		bacName.setSubGenusAuthorship("sub Genus author");
 		bacName.setNameApprobation("nameApprobation");
-		handleIdentifiableEntity(bacName);
+		handleIdentifiableEntity(bacName, entitiesToSave);
 
 		TaxonName botName = TaxonNameFactory.NewCultivarInstance(Rank.SUBSPECIES());
 		botName.setAnamorphic(true);
@@ -883,15 +883,15 @@ public class FullCoverageDataGenerator {
 		botName.setInfraGenericEpithet("InfraGeneric");
 		botName.setSpecificEpithet("specificEpithet");
 		botName.setInfraSpecificEpithet("infraSpecificEpithet");
-		Person combinationAuthorship = Person.NewInstance();
+		Person combinationAuthorship = createNewPerson("comb author", entitiesToSave);
 		botName.setCombinationAuthorship(combinationAuthorship);
-		Person exCombinationAuthorship = Person.NewInstance();
+		Person exCombinationAuthorship = createNewPerson("excomb author", entitiesToSave);
 		botName.setExCombinationAuthorship(exCombinationAuthorship);
-		Person basionymAuthorship = Person.NewInstance();
+		Person basionymAuthorship = createNewPerson("basionym author", entitiesToSave);
 		botName.setBasionymAuthorship(basionymAuthorship);
-		Person exBasionymAuthorship = Person.NewInstance();
+		Person exBasionymAuthorship = createNewPerson("ex basionym author", entitiesToSave);
 		botName.setExBasionymAuthorship(exBasionymAuthorship);
-		handleIdentifiableEntity(botName);
+		handleIdentifiableEntity(botName, entitiesToSave);
 		handleAnnotatableEntity(botName.getHomotypicalGroup());
 		TaxonName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		HybridRelationship hybridRel = botName2.addHybridChild(botName, HybridRelationshipType.FIRST_PARENT(), "Rule 1.2.3");
@@ -906,29 +906,30 @@ public class FullCoverageDataGenerator {
 		genusZooName.setAppendedPhrase("appended phrase");
 		genusZooName.addDescription(TaxonNameDescription.NewInstance());
 		genusZooName.setNomenclaturalMicroReference("p. 123");
-		genusZooName.setNomenclaturalReference(getReference());
+		genusZooName.setNomenclaturalReference(createNewReference(entitiesToSave));
 		NameRelationship rel = genusZooName.addRelationshipFromName(botName, NameRelationshipType.LATER_HOMONYM() , "ruleConsidered", NomenclaturalCodeEdition.ICN_2017_SHENZHEN);
-		NomenclaturalStatus status = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED(), getReference(), "p. 222");
+		NomenclaturalStatus status = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED(), createNewReference(entitiesToSave), "p. 222");
 		genusZooName.addStatus(status);
 		handleAnnotatableEntity(rel);
 		handleAnnotatableEntity(status);
-		handleIdentifiableEntity(genusZooName);
+		handleIdentifiableEntity(genusZooName, entitiesToSave);
 
 		//TypeDesignation
 		TaxonName speciesZooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
-		NameTypeDesignation nameDesig = genusZooName.addNameTypeDesignation(speciesZooName, getReference(), "111", "original name",
+		NameTypeDesignation nameDesig = genusZooName.addNameTypeDesignation(speciesZooName, createNewReference(entitiesToSave), "111", "original name",
 				NameTypeDesignationStatus.AUTOMATIC(), true, true, true, true);
 		handleAnnotatableEntity(nameDesig);
-		SpecimenTypeDesignation specimenDesig = speciesZooName.addSpecimenTypeDesignation(getSpecimen(), SpecimenTypeDesignationStatus.HOLOTYPE(),
-				getReference(), "p,22", "original name", false, true);
+		SpecimenTypeDesignation specimenDesig = speciesZooName.addSpecimenTypeDesignation(
+		        createNewSpecimen(entitiesToSave), SpecimenTypeDesignationStatus.HOLOTYPE(),
+				createNewReference(entitiesToSave), "p,22", "original name", false, true);
 		handleAnnotatableEntity(specimenDesig);
 		speciesZooName.addTextualTypeDesignation("A textual type designation", Language.ENGLISH(), true,
-		        getReference(), "123", "Species orginalus", false);
+		        createNewReference(entitiesToSave), "123", "Species orginalus", false);
 
 
 		TaxonName viralName = TaxonNameFactory.NewViralInstance(Rank.GENUS());
 		viralName.setAcronym("acronym");
-		handleIdentifiableEntity(viralName);
+		handleIdentifiableEntity(viralName, entitiesToSave);
 
 		//Registration
 		Registration registration = Registration.NewInstance("registration identifier",
@@ -937,22 +938,22 @@ public class FullCoverageDataGenerator {
 		registration.setRegistrationDate(DateTime.now());
 		Registration blockingRegistration = Registration.NewInstance();
 		registration.addBlockedBy(blockingRegistration);
-		registration.setInstitution(Institution.NewInstance());
+		registration.setInstitution(createNewInstitution(entitiesToSave));
 		User submitter = User.NewInstance("submitter", "12345");
 		registration.setSubmitter(submitter);
 		handleAnnotatableEntity(registration);
 
-		cdmBases.add(submitter);
-		cdmBases.add(bacName);
-		cdmBases.add(botName);
-		cdmBases.add(viralName);
-		cdmBases.add(genusZooName);
-		cdmBases.add(botName2);
+		entitiesToSave.add(submitter);
+		entitiesToSave.add(bacName);
+		entitiesToSave.add(botName);
+		entitiesToSave.add(viralName);
+		entitiesToSave.add(genusZooName);
+		entitiesToSave.add(botName2);
 	}
 
-	private void handleEventBase(EventBase event){
+	private void handleEventBase(EventBase event, List<CdmBase> entitiesToSave){
 		event.setTimeperiod(TimePeriodParser.parseString("1.4.1975-2.5.1980"));
-		event.setActor(Person.NewTitledInstance("EventActor"));
+		event.setActor(createNewPerson("EventActor", entitiesToSave));
 		event.setDescription("Some interesing event");
 	}
 
@@ -963,11 +964,12 @@ public class FullCoverageDataGenerator {
 		entity.addMarker(marker);
 	}
 
-	private void handleIdentifiableEntity(IdentifiableEntity<?> identifiableEntity){
-		handleAnnotatableEntity(identifiableEntity);
+	private void handleIdentifiableEntity(IdentifiableEntity<?> identifiableEntity, List<CdmBase> entitiesToSave){
+
+	    handleAnnotatableEntity(identifiableEntity);
 
 		//Credits
-		Person creditor = Person.NewTitledInstance("Creditor");
+		Person creditor = createNewPerson("Creditor", entitiesToSave);
 		Credit credit = Credit.NewInstance(creditor, TimePeriod.NewInstance(DateTime.now(), DateTime.now()), "credit");
 		identifiableEntity.addCredit(credit);
 
@@ -986,8 +988,8 @@ public class FullCoverageDataGenerator {
 		rights.setUri(URI.create("http://rights.abc.de"));
 		rights.setAbbreviatedText("abbrev");
 		rights.setType(RightsType.COPYRIGHT());
-		Person owner = Person.NewTitledInstance("Owner");
-		rights.setAgent(owner);
+		Person owner = createNewPerson("Owner", entitiesToSave);
+        rights.setAgent(owner);
 		identifiableEntity.addRights(rights);
 
 		if (identifiableEntity.isInstanceOf(IdentifiableMediaEntity.class)){
@@ -997,7 +999,7 @@ public class FullCoverageDataGenerator {
 
 		//source
 		IdentifiableSource source = identifiableEntity.addSource(OriginalSourceType.Import, "id", "idNamespace",
-				getReference(), "123");
+				createNewReference(entitiesToSave), "123");
 		source.setAccessed(TimePeriod.NewInstance(2020, 2021));
 		source.setOriginalInfo("original name");
 
@@ -1010,21 +1012,42 @@ public class FullCoverageDataGenerator {
 		}
 	}
 
-	private Reference getReference() {
+	private Reference createNewReference(List<CdmBase> entitiesToSave) {
 		 Reference result = ReferenceFactory.newGeneric();
 		 result.setTitle("some generic reference");
+		 entitiesToSave.add(result);
 		 return result;
 	}
 
-	private DerivedUnit getSpecimen() {
+	private DerivedUnit createNewSpecimen(List<CdmBase> entitiesToSave) {
 		DerivedUnit derivedUnit = DerivedUnit.NewPreservedSpecimenInstance();
+		entitiesToSave.add(derivedUnit);
 		return derivedUnit;
 	}
 
-	private Taxon getTaxon() {
-		Reference sec = getReference();
+	private Taxon createNewTaxon(List<CdmBase> entitiesToSave) {
+		Reference sec = createNewReference(entitiesToSave);
 		TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Taxon taxon = Taxon.NewInstance(name, sec);
+		entitiesToSave.add(taxon);
 		return taxon;
 	}
+
+    private Taxon createNewTaxon(TaxonName name, Reference sec, List<CdmBase> entitiesToSave) {
+        Taxon taxon = Taxon.NewInstance(name, sec);
+        entitiesToSave.add(taxon);
+        return taxon;
+    }
+
+    private Institution createNewInstitution(List<CdmBase> entitiesToSave) {
+        Institution institution = Institution.NewInstance();
+        entitiesToSave.add(institution);
+        return institution;
+    }
+
+    private Person createNewPerson(String string, List<CdmBase> entitiesToSave) {
+        Person person = Person.NewTitledInstance(string);
+        entitiesToSave.add(person);
+        return person;
+    }
 }

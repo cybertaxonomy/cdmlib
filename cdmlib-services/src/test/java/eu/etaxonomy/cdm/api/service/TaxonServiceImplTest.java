@@ -2088,6 +2088,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     public Classification getTestClassification(String name){
-        return Classification.NewInstance(name);
+        Classification classification = Classification.NewInstance(name);
+        classificationService.save(classification);
+        return classification;
     }
 }

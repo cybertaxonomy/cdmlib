@@ -53,6 +53,9 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
     @SpringBeanByType
     private ITermService termService;
 
+    @SpringBeanByType
+    private ITaxonService taxonService;
+
     @Test
     @DataSet("CommonServiceImplTest.xml")
     public void testChangeDescriptionElement(){
@@ -95,6 +98,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
 
         //Create data
         Taxon taxon = Taxon.NewInstance(null, null);
+        taxonService.save(taxon);
         TaxonDescription desc1 = TaxonDescription.NewInstance(taxon);
         TextData textData1 = TextData.NewInstance(Feature.HABITAT(), "My habitat", Language.GERMAN(), null);
         desc1.addElement(textData1);
