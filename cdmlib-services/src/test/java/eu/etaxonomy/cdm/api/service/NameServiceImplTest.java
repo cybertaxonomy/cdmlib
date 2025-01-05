@@ -79,7 +79,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     private static final int NAME1_ID = 10;
     private static final int NAME2_ID = 11;
-    private static final UUID NAME3_UUID = UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28");
     private static final int NAME3_ID = 12;
 
     @SpringBeanByType
@@ -1068,7 +1067,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test  //#3666 and others
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="NameServiceImplTest.xml")
     public void testParseName() {
+
         Assert.assertEquals(3, nameService.count(TaxonName.class));
+
         String nameToParseStr = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"alpa\"]";
         TaxonName parsedName = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true).getCdmEntity();
         UUID parsedNameUuid = parsedName.getUuid();

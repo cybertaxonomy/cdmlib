@@ -155,7 +155,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * Class constructor (including the cache strategy defined in
 	 * {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}).
 	 */
-	public Team() {
+	protected Team() {
 		addListenersToMembers();
 	}
 

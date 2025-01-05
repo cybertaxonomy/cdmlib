@@ -144,7 +144,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 List<TaxonName> names = getNameService().listByTitleWithRestrictions(TaxonName.class, scientificName, MatchMode.EXACT, null, null, null, null, null);
                 acceptedTaxon = getBestMatchingTaxon(scientificName, names, state);
                 //still nothing found -> try with the atomised name full title cache
-                if(taxonName==null && atomisedTaxonName!=null){
+                if(atomisedTaxonName!=null){
                     names = getNameService().listByTitleWithRestrictions(TaxonName.class, atomisedTaxonName.getFullTitleCache(), MatchMode.EXACT, null, null, null, null, null);
                     acceptedTaxon = getBestMatchingTaxon(atomisedTaxonName.getTitleCache(), names, state);
                     taxonName = acceptedTaxon != null? acceptedTaxon.getName():null;
@@ -325,10 +325,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     }
 
     /**
-     * find a matching person in db and put it to collector person store
-     *
-     * @param state
-     * @param person
+     * Find a matching person in db and put it to collector person store
      *
      * @return the existing person or the parameter person
      */
@@ -486,6 +483,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
      */
     protected TaxonName setTaxonNameByType(
             HashMap<String, String> atomisedMap, String fullName, STATE state) {
+
         boolean problem = false;
         if (logger.isDebugEnabled()){
             logger.debug("settaxonnamebytype " + state.getDataHolder().getNomenclatureCode().toString());
@@ -930,8 +928,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     //    for our new source.
     protected IdentifiableSource getIdentifiableSource(Reference reference, String citationDetail) {
 
-        IdentifiableSource sour = IdentifiableSource.NewInstance(OriginalSourceType.Import,null,null, reference,citationDetail);
-        return sour;
+        IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Import,null,null, reference,citationDetail);
+        return source;
     }
 
     /**

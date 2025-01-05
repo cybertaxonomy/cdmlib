@@ -107,13 +107,14 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurenceServiceTest.move.xml")
     public void testMoveDerivate() {
+
+        //create data
         DerivedUnit specimenA = (DerivedUnit) occurrenceService.load(UUID
                 .fromString("35cfb0b3-588d-4eee-9db6-ac9caa44e39a"));
         DerivedUnit specimenB = (DerivedUnit) occurrenceService.load(UUID
                 .fromString("09496534-efd0-44c8-b1ce-01a34a8a0229"));
         DerivedUnit dnaSample = (DnaSample) occurrenceService.load(UUID
                 .fromString("5995f852-0e78-405c-b849-d923bd6781d9"));
-
         occurrenceService.saveOrUpdate(specimenA);
         occurrenceService.saveOrUpdate(specimenB);
         occurrenceService.saveOrUpdate(dnaSample);
@@ -131,7 +132,10 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         originalDerivedFromEvent.setInstitution(derivationInstitution);
         originalDerivedFromEvent.setTimeperiod(derivationTimePeriod);
 
+        //move
         occurrenceService.moveDerivate(specimenA, specimenB, dnaSample);
+
+        //test
         assertTrue("DerivationEvent not removed from source!", specimenA.getDerivationEvents().isEmpty());
         assertEquals("DerivationEvent not moved to source!", 1, specimenB.getDerivationEvents().size());
 

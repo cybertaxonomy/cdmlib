@@ -8,8 +8,6 @@
  */
 package eu.etaxonomy.cdm.io.specimen;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -67,7 +65,7 @@ public class UnitsGatheringEvent {
             this.setTeam(team, config);
         }
     }
-    //
+
     public UnitsGatheringEvent(ITermService termService, String locality, String collectorName, Double longitude,
             Double latitude, TaxonXImportConfigurator config,IAgentService agentService){
         if (!StringUtils.isEmpty(locality)) {
@@ -107,28 +105,14 @@ public class UnitsGatheringEvent {
         this.setNotes(gatheringNotes);
         this.setElevation(elevationText, elevationMin, elevationMax, elevationUnit);
         this.setGatheringMethod(gatheringMethod);
-
-
-
-
-
     }
 
-    /**
-     * @param gatheringImages
-     */
-    public void setGatheringImages(HashMap<String, Map<String, String>> gatheringImages) {
-
-
-    }
     public GatheringEvent getGatheringEvent(){
         return this.gatheringEvent;
     }
 
     /**
      * Set the locality for the current GatheringEvent
-     * @param locality
-     * @param langageIso
      */
     public void setLocality(ITermService termService, String locality, String languageIso){
 
@@ -138,7 +122,6 @@ public class UnitsGatheringEvent {
         }else{
             loc = LanguageString.NewInstance(locality, termService.getLanguageByIso(languageIso));
         }
-
 
         if (loc == null){logger.warn("PROBLEM LOCALITY");}
         this.gatheringEvent.setLocality(loc);
@@ -161,6 +144,7 @@ public class UnitsGatheringEvent {
     }
 
     public void setCoordinates(Double longitude, Double latitude, ReferenceSystem referenceSystem, Integer errorRadius){
+
         //create coordinates point
         if((longitude == null) || (latitude == null)){
             return;
@@ -178,7 +162,6 @@ public class UnitsGatheringEvent {
         }
         coordinates.setReferenceSystem(referenceSystem);
         this.gatheringEvent.setExactLocation(coordinates);
-
     }
 
     public void setNotes(String gatheringNotes){
@@ -187,10 +170,10 @@ public class UnitsGatheringEvent {
 
     public void setDate(String date){
             this.gatheringEvent.setTimeperiod(TimePeriodParser.parseString(date));
-
     }
 
     public void setElevation(String elevationText, String elevationMin, String elevationMax, String elevationUnit){
+
         if(elevationText!=null){
             this.gatheringEvent.setAbsoluteElevationText(elevationText);
         }
@@ -214,6 +197,7 @@ public class UnitsGatheringEvent {
     }
 
     public void setHeight(String heightText, String heightMin, String heightMax, String heightUnit){
+
         if(heightText!=null){
             this.gatheringEvent.setAbsoluteElevationText(heightText);
         }
@@ -237,6 +221,7 @@ public class UnitsGatheringEvent {
     }
 
     public void setGatheringDepth(String depthText, Double depthMin, Double depthMax, String depthUnit){
+
         if(depthText!=null){
             this.gatheringEvent.setDistanceToWaterSurfaceText(depthText);
         }
@@ -255,8 +240,8 @@ public class UnitsGatheringEvent {
             if(depthMax!=null){
                 this.gatheringEvent.setDistanceToWaterSurfaceMax(depthMax);
             }
-            if(StringUtils.isNotBlank(depthUnit)){
 
+            if(StringUtils.isNotBlank(depthUnit)){
                 if (!depthUnit.equals("m")){
                     logger.debug("The unit " + depthUnit + " of the distance to ground is not meter.");
                 }
@@ -268,7 +253,6 @@ public class UnitsGatheringEvent {
      * Add a NamedArea to the GatheringEvent
      * @param area: the NamedArea to add
      */
-
     public void addArea(DefinedTermBase area){
         if (area.isInstanceOf(NamedArea.class)) {
             this.gatheringEvent.addCollectingArea((NamedArea) area);
@@ -277,15 +261,13 @@ public class UnitsGatheringEvent {
         }
     }
 
-
-
     /*
      * Create a new collector or collector's team
      * @param: collectorNames: the list of names to add as collector/collectorTeam
      * USED - create each time a new Collector
      */
     public void setCollector(String collectorName, SpecimenSynthesysExcelImportConfigurator config){
-        //        System.out.println("collectors : "+collectorNames.toString());
+
         Person collector;
         collector = Person.NewInstance();
         collector.setTitleCache(collectorName, true);
@@ -293,7 +275,6 @@ public class UnitsGatheringEvent {
             System.out.println("getcoll:"+config.getPersons().get(collector.getTitleCache()));
         }
         this.gatheringEvent.setCollector(config.getPersons().get(collector.getTitleCache()));
-
     }
 
     /*
@@ -302,7 +283,7 @@ public class UnitsGatheringEvent {
      * USED - create each time a new Collector
      */
     public void setCollector(String collectorName, TaxonXImportConfigurator config, IAgentService agentService){
-        //        System.out.println("collectors : "+collectorNames.toString());
+
         Person collector;
         collector = Person.NewInstance();
         collector.setTitleCache(collectorName, true);
@@ -312,9 +293,7 @@ public class UnitsGatheringEvent {
             collector_db=(Person) agentService.find(uuid);
         }
         this.gatheringEvent.setCollector(collector_db);
-
     }
-
 
     /*
      * Create a new collector or collector's team
@@ -322,24 +301,16 @@ public class UnitsGatheringEvent {
      * USED - create each time a new Collector
      */
     public void setCollector(TeamOrPersonBase collector, Abcd206ImportConfigurator config){
-        //        System.out.println("collectors : "+collectorNames.toString());
-
         if (DEBUG) {
             System.out.println("getcoll:"+config.getPersons().get(collector.getTitleCache()));
         }
         this.gatheringEvent.setCollector(collector);
     }
 
-    /**
-     * @param tp
-     */
     public void setGatheringDate(TimePeriod tp) {
         this.gatheringEvent.setTimeperiod(tp);
     }
 
-    /**
-     * @param tp
-     */
     public void setGatheringMethod(String gatheringMethod) {
         this.gatheringEvent.setCollectingMethod(gatheringMethod);
     }
@@ -349,10 +320,11 @@ public class UnitsGatheringEvent {
     }
 
     public void setTeam(String gatheringTeam, SpecimenSynthesysExcelImportConfigurator config) {
-        Team t = new Team();
+
+        Team t = Team.NewInstance();
         if ((gatheringTeam != null) && !gatheringTeam.isEmpty()) {
             if ((gatheringTeam.indexOf("et al.") != -1) || (gatheringTeam.indexOf("& al.") != -1) || (gatheringTeam.indexOf(" al.") != -1)){
-                t.setTitleCache(gatheringTeam);
+                t.setTitleCache(gatheringTeam, true);
             } else{
                 String[] tmp1 = gatheringTeam.split(" et ");
                 for (String elt:tmp1){
@@ -360,7 +332,7 @@ public class UnitsGatheringEvent {
                     for (String elt2:tmp2) {
                         if (!elt2.trim().isEmpty()) {
                             Person p = Person.NewInstance();
-                            p.setTitleCache(elt2);
+                            p.setTitleCache(elt2, true);
                             t.addTeamMember(p);
                         }
                     }
@@ -373,14 +345,11 @@ public class UnitsGatheringEvent {
         this.gatheringEvent.setCollector(config.getTeams().get(t.getTitleCache()));
     }
 
-    /**
-     * @param gatheringTeam
-     */
     public void setTeam(String gatheringTeam, Abcd206ImportConfigurator config) {
-        Team t = new Team();
+        Team t = Team.NewInstance();
         if ((gatheringTeam != null) && !gatheringTeam.isEmpty()) {
             if ((gatheringTeam.indexOf("et al.") != -1) || (gatheringTeam.indexOf("& al.") != -1) || (gatheringTeam.indexOf(" al.") != -1)){
-                t.setTitleCache(gatheringTeam);
+                t.setTitleCache(gatheringTeam, true);
             } else{
                 String[] tmp1 = gatheringTeam.split(" et ");
                 for (String elt:tmp1){
@@ -388,7 +357,7 @@ public class UnitsGatheringEvent {
                     for (String elt2:tmp2) {
                         if (!elt2.trim().isEmpty()) {
                             Person p = Person.NewInstance();
-                            p.setTitleCache(elt2);
+                            p.setTitleCache(elt2, true);
                             t.addTeamMember(p);
                         }
                     }
@@ -400,6 +369,4 @@ public class UnitsGatheringEvent {
         }
         //this.gatheringEvent.setCollector(config.getTeams().get(t.getTitleCache()));
     }
-
-
 }

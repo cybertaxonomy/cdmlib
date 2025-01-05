@@ -607,7 +607,7 @@ public class SpecimenCdmExcelImport
 		name.setInfraSpecificEpithet(determinationLight.infraSpeciesEpi);
 
 		//FIXME bracketAuthors and teams not yet implemented!!!
-		List<String> authors = new ArrayList<String>();
+		List<String> authors = new ArrayList<>();
 		if (StringUtils.isNotBlank(determinationLight.author)){
 			authors.add(determinationLight.author);
 		}
@@ -663,7 +663,7 @@ public class SpecimenCdmExcelImport
 		event.setTimeperiod(date);
 		//by
 		//FIXME bracketAuthors and teams not yet implemented!!!
-		List<String> authors = new ArrayList<String>();
+		List<String> authors = new ArrayList<>();
 		if (StringUtils.isNotBlank(determination.determinedBy)){
 			authors.add(determination.determinedBy);
 		}

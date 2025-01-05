@@ -261,7 +261,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				Statement stateAuthorship = nameAbout.getProperty(prop);
 				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"authorteam");
 				Statement stateAuthorTeam = nameAbout.getProperty(prop);
-				Team authorTeam = new Team();
+				Team authorTeam = Team.NewInstance();
 				authorTeam.setTitleCache(stateAuthorship.getObject().toString(), true);
 				Statement stateAutorTeamTeam = null;
 				Statement stateAutorTeamName = null;

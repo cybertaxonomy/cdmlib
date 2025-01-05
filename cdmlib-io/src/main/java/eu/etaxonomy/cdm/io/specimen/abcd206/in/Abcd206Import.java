@@ -878,7 +878,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (creators != null) {
                 if (creators.contains("&")) {
                     artists = creators.split("&");
-                    artistTeam = new Team();
+                    artistTeam = Team.NewInstance();
                     for (String creator : artists) {
                         artist = Person.NewTitledInstance(creator);
                         artistTeam.addTeamMember(artist);
@@ -1307,17 +1307,16 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private void prepareCollectors(Abcd206ImportState state, NodeList unitsList,
             Abcd206XMLFieldGetter abcdFieldGetter) {
 
-        TeamOrPersonBase<?> teamOrPerson = null;
-        Team team = null;
         // ImportHelper.setOriginalSource(teamOrPerson,
         // state.getConfig().getSourceReference(), collector, "Collector");
         for (int i = 0; i < unitsList.getLength(); i++) {
             this.getCollectorsFromXML((Element) unitsList.item(i), abcdFieldGetter, state);
             if (!(state.getDataHolder().gatheringAgentsList.isEmpty())) {
+                TeamOrPersonBase<?> teamOrPerson = null;
                 if (state.getDataHolder().gatheringAgentsList.size() == 1) {
                     teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsList.get(0));
                 } else {
-                    team = new Team();
+                    Team team = Team.NewInstance();
                     for (String collector : state.getDataHolder().gatheringAgentsList) {
                         teamOrPerson = parseCollectorString(collector);
                         if (teamOrPerson instanceof Person) {
@@ -1336,7 +1335,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
             if (!StringUtils.isBlank(state.getDataHolder().gatheringAgentsText)
                     && state.getDataHolder().gatheringAgentsList.isEmpty()) {
-                teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsText);
+                TeamOrPersonBase<?> teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsText);
 
                 if (!state.getPersonStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()) && !state.getTeamStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache())) {
                     findMatchingCollectorAndFillPersonStore(state, teamOrPerson);

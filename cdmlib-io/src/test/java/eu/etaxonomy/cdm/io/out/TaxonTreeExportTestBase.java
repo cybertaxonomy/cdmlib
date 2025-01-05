@@ -30,8 +30,12 @@ import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
+import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
@@ -167,6 +171,9 @@ public abstract class TaxonTreeExportTestBase
 
     @SpringBeanByType
     protected ITaxonNodeService taxonNodeService;
+
+    @SpringBeanByType
+    protected INameService nameService;
 
     @SpringBeanByType
     protected ICommonService commonService;
@@ -386,8 +393,8 @@ public abstract class TaxonTreeExportTestBase
         TaxonName earlierHomonymBasionymName = parser.parseReferencedName("Basio illegitimus Mus, The earliest book: 2. 1854", NomenclaturalCode.ICNAFP, Rank.SPECIES());
         earlierHomonymName.addBasionym(earlierHomonymBasionymName);
         earlierHomonymBasionymName.setUuid(earlierHomonymBasionymUuid);
-        commonService.save(earlierHomonymName);
-        commonService.save(earlierHomonymBasionymName);
+        nameService.save(earlierHomonymName);
+        nameService.save(earlierHomonymBasionymName);
 
         //original spelling
         TaxonName speciesOrigSpelling = parser.parseReferencedName("Sus basyonus", NomenclaturalCode.ICNAFP, Rank.SPECIES());
