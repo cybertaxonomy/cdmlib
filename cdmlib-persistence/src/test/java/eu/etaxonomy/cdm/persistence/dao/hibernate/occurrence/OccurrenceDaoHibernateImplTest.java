@@ -314,7 +314,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
             //heterotypic group
             TaxonName name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Abies", null, "pinus", null, null, null, null, null);
-            Synonym heteroSyn1 = taxon.addHeterotypicSynonymName(name2, sec, null, null);
+            Synonym heteroSyn1 = taxon.addHeterotypicSynonymName(name3, sec, null, null);
             heteroSyn1.setUuid(uuid_hetero_syn_1);
 
             TaxonName name4 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Pinus", null, "pinus", null, null, null, null, null);
@@ -357,21 +357,22 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             dao.save(du_heteroType1);
             dao.save(du_heteroType2);
 
+            FieldUnit fieldUnit1 = DerivedUnitFacade.NewInstance(du_indAss).getFieldUnit(true);
+            fieldUnit1.setTitleCache("FieldUnit 1", true);
             //TODO unused
-            FieldUnit fu1 = DerivedUnitFacade.NewInstance(du_indAss).getFieldUnit(true);
-            fu1.setTitleCache("FieldUnit 1", true);
             FieldUnit fu2 = DerivedUnitFacade.NewInstance(du_determination).getFieldUnit(true);
-            FieldUnit fu3 = DerivedUnitFacade.NewInstance(du_accType).getFieldUnit(true);
-            fu3.setTitleCache("FieldUnit 3", true);
+            FieldUnit fieldUnit3 = DerivedUnitFacade.NewInstance(du_accType).getFieldUnit(true);
+            fieldUnit3.setTitleCache("FieldUnit 3", true);
+            //TODO unused
             FieldUnit fu4 = DerivedUnitFacade.NewInstance(du_homonymType).getFieldUnit(true);
-            dao.save(fu1);
+            dao.save(fieldUnit1);
             dao.save(fu2);
-            dao.save(fu3);
+            dao.save(fieldUnit3);
             dao.save(fu4);
 
             //*** Add assoziations ****
 
-            //du1 is added as indiv. association
+            //du_indAss is added as indiv. association
             TaxonDescription td = TaxonDescription.NewInstance(taxon);
             IndividualsAssociation ia = IndividualsAssociation.NewInstance(du_indAss);
             td.addElement(ia);
@@ -379,8 +380,8 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             //du_determination is assoziated as determination
             DeterminationEvent.NewInstance(taxon, du_determination);
 
-            //fu3 is assoziated with name3 (first heterotypic synonym) as current determination
-            DeterminationEvent de = DeterminationEvent.NewInstance(heteroSyn1.getName(), fu3);
+            //fieldUnit3 is assoziated with name3 (first heterotypic synonym) as current determination
+            DeterminationEvent de = DeterminationEvent.NewInstance(heteroSyn1.getName(), fieldUnit3);
             de.setPreferredFlag(true);
 
             //du_accType is added as type designation for the accepted taxon
@@ -397,7 +398,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
 
             TaxonDescription fieldUnitDescription = TaxonDescription.NewInstance(fieldUnitTaxon);
-            IndividualsAssociation fieldUnitIndAss = IndividualsAssociation.NewInstance(fu1);
+            IndividualsAssociation fieldUnitIndAss = IndividualsAssociation.NewInstance(fieldUnit1);
             fieldUnitDescription.addElement(fieldUnitIndAss);
 
             return taxon;

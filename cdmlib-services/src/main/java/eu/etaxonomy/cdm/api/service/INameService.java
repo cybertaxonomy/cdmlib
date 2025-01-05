@@ -116,7 +116,7 @@ public interface INameService
 	 * @param typeDesignationCollection
 	 * @return
 	 */
-	public Map<UUID, TypeDesignationBase<?>> saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection);
+	public void saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection);
 
 	/**
 	 * Saves the given homotypical groups.

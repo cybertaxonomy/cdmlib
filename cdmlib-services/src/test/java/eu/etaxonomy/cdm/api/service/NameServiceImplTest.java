@@ -517,6 +517,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         boolean addToAllHomotypicNames = true;
         higherName.addNameTypeDesignation(name1, null, null, null, typeStatus, addToAllHomotypicNames);
         nameService.save(higherName);
+        nameService.save(name1);
 
         commitAndStartNewTransaction(tableNames);
         name1 = nameService.find(name1.getUuid());

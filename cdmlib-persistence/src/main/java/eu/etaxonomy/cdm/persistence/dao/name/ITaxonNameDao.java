@@ -405,4 +405,8 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
      * @return
      */
     public List<String> distinctGenusOrUninomial(String pattern, Rank maxRank, Rank minRank);
+
+    public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer limit, Integer start);
+
+    public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse();
 }

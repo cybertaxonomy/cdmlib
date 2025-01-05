@@ -10,7 +10,9 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -247,7 +249,9 @@ public class SpecimenCdmExcelImport
 
 	@Override
 	protected void firstPass(SpecimenCdmExcelImportState state) {
-		SpecimenRow row = state.getCurrentRow();
+
+	    SpecimenRow row = state.getCurrentRow();
+	    Set<Collection> collectionsToSave = new HashSet<>();
 
 		//basis of record
 		SpecimenOrObservationType type = SpecimenOrObservationType.valueOf2(row.getBasisOfRecord());
@@ -289,7 +293,7 @@ public class SpecimenCdmExcelImport
 		//derivedUnit
 		facade.setBarcode(row.getBarcode());
 		facade.setAccessionNumber(row.getAccessionNumber());
-		facade.setCollection(getOrMakeCollection(state, row.getCollectionCode(), row.getCollection()));
+		facade.setCollection(getOrMakeCollection(state, row.getCollectionCode(), row.getCollection(), collectionsToSave));
 		for (IdentifiableSource source : row.getSources()){
 			facade.addSource(source);
 		}
@@ -305,6 +309,7 @@ public class SpecimenCdmExcelImport
 		}
 
 		//save
+		getCollectionService().save(collectionsToSave);
 		getOccurrenceService().save(facade.innerDerivedUnit());
 		return;
 	}
@@ -770,13 +775,14 @@ public class SpecimenCdmExcelImport
 		return result;
 	}
 
-	private Collection getOrMakeCollection(SpecimenCdmExcelImportState state, String collectionCode, String collectionString) {
+	private Collection getOrMakeCollection(SpecimenCdmExcelImportState state, String collectionCode, String collectionString, Set<Collection> collectionsToSave) {
 		Collection result = state.getCollection(collectionCode);
 		if (result == null){
 			result = Collection.NewInstance();
 			result.setCode(collectionCode);
 			result.setName(collectionString);
 			state.putCollection(collectionCode, result);
+			collectionsToSave.add(result);
 		}
 		return result;
 	}

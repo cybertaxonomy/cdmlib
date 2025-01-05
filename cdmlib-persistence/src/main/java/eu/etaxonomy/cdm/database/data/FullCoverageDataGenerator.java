@@ -824,6 +824,7 @@ public class FullCoverageDataGenerator {
 		mediaSpecimen.setBarcode("barcode");
 		TaxonName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		storedUnder.setTitleCache("Stored under", true);
+		entitiesToSave.add(storedUnder);
 		mediaSpecimen.setStoredUnder(storedUnder);
 		mediaSpecimen.setExsiccatum("exsiccatum");
 		PreservationMethod preservation = PreservationMethod.NewInstance(null, "My preservation");
@@ -916,6 +917,7 @@ public class FullCoverageDataGenerator {
 
 		//TypeDesignation
 		TaxonName speciesZooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
+		entitiesToSave.add(speciesZooName);
 		NameTypeDesignation nameDesig = genusZooName.addNameTypeDesignation(speciesZooName, createNewReference(entitiesToSave), "111", "original name",
 				NameTypeDesignationStatus.AUTOMATIC(), true, true, true, true);
 		handleAnnotatableEntity(nameDesig);

@@ -56,6 +56,7 @@ public class TcsXmlSpecimensImport
 
 		MapWrapper<DerivedUnit> specimenMap = (MapWrapper<DerivedUnit>)state.getStore(ICdmIO.SPECIMEN_STORE);
 		Set<Institution> institutions = new HashSet<>();
+		Set<Collection> collections = new HashSet<>();
 
 		boolean success = true;
 		String childName;
@@ -100,8 +101,7 @@ public class TcsXmlSpecimensImport
 			doubleResult = XmlHelp.getSingleChildElement(elSpecimen, childName, tcsNamespace, obligatory);
 			success &= doubleResult.getSecondResult();
 			Element elCollection = doubleResult.getFirstResult();
-			success &= makeCollection(specimen, elCollection);
-			Collection collection = specimen.getCollection();
+			success &= makeCollection(specimen, elCollection, collections);
 
 			childName = "Institution";
 			obligatory = false;
@@ -121,6 +121,7 @@ public class TcsXmlSpecimensImport
 		}
 
 		logger.info("Save specimen (" + i +")");
+		getCollectionService().save(collections);
 		getAgentService().save(institutions);
 	    getOccurrenceService().save(specimenMap.objects());
 
@@ -205,13 +206,13 @@ public class TcsXmlSpecimensImport
 		return success;
 	}
 
-	private boolean makeCollection(DerivedUnit specimen, Element elCollection){
+	private boolean makeCollection(DerivedUnit specimen, Element elCollection, Set<Collection> collections){
 		boolean success = true;
 		Collection  collection = null;
 		if (elCollection != null){
 			Namespace ns = elCollection.getNamespace();
 			collection = Collection.NewInstance();
-
+			collections.add(collection);
 			//TODO collection placeholder
 			specimen.setCollection(collection);
 		}

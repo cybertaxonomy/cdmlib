@@ -176,6 +176,9 @@ public abstract class TaxonTreeExportTestBase
     protected INameService nameService;
 
     @SpringBeanByType
+    protected ICollectionService collectionService;
+
+    @SpringBeanByType
     protected ICommonService commonService;
 
     //this test only test the COL-DB export runs without throwing exception
@@ -485,8 +488,10 @@ public abstract class TaxonTreeExportTestBase
         facade.setAccessionNumber("A555");
         Collection berlinCollection = Collection.NewInstance("B", "Berlin Collection");
         facade.setCollection(berlinCollection);
+        collectionService.save(berlinCollection);
         DerivedUnit specimen = facade.innerDerivedUnit();
         specimen.setUuid(specimenUuid);
+        occurrenceService.save(specimen);
         speciesName.addSpecimenTypeDesignation(specimen, SpecimenTypeDesignationStatus.HOLOTYPE(),
                 null, null, null, false, false);
 

@@ -93,7 +93,6 @@ public class DerivedUnit
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@IndexedEmbedded
 	private Collection collection;
 
@@ -130,7 +129,6 @@ public class DerivedUnit
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@IndexedEmbedded(includeEmbeddedObjectId=true)
 	private TaxonName storedUnder;
 
@@ -149,7 +147,6 @@ public class DerivedUnit
 	@XmlElementWrapper(name = "SpecimenTypeDesignations")
 	@XmlElement(name = "SpecimenTypeDesignation")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "typeSpecimen")
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private final Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<>();
 
     //#2506

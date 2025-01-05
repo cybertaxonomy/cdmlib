@@ -94,7 +94,6 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
-import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -127,8 +126,6 @@ public class NameServiceImpl
     private ICommonService commonService;
     @Autowired
     private INomenclaturalStatusDao nomStatusDao;
-    @Autowired
-    private ITypeDesignationDao typeDesignationDao;
     @Autowired
     private IHomotypicalGroupDao homotypicalGroupDao;
     @Autowired
@@ -277,8 +274,9 @@ public class NameServiceImpl
     @Override
     @Transactional
     public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation){
-    	if(typeDesignation != null && typeDesignation .isPersisted()){
-    		typeDesignation = HibernateProxyHelper.deproxy(typeDesignationDao.load(typeDesignation.getUuid()));
+
+        if(typeDesignation != null && typeDesignation .isPersisted()){
+    		typeDesignation = CdmBase.deproxy(genericDao.find(TypeDesignationBase.class, typeDesignation.getUuid()));
     	}
 
         DeleteResult result = new DeleteResult();
@@ -310,8 +308,9 @@ public class NameServiceImpl
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTypeDesignation(UUID nameUuid, UUID typeDesignationUuid){
+
         TaxonName nameBase = load(nameUuid);
-        TypeDesignationBase<?> typeDesignation = HibernateProxyHelper.deproxy(typeDesignationDao.load(typeDesignationUuid));
+        TypeDesignationBase<?> typeDesignation = CdmBase.deproxy(genericDao.find(TypeDesignationBase.class, typeDesignationUuid));
         return deleteTypeDesignation(nameBase, typeDesignation);
     }
 
@@ -329,8 +328,7 @@ public class NameServiceImpl
                 }
             }
 
-            typeDesignationDao.delete(typeDesignation);
-
+            genericDao.delete(typeDesignation);
         }
     }
 
@@ -462,11 +460,14 @@ public class NameServiceImpl
     /**
      * TODO candidate for harmonization
      * new name saveTypeDesignations
+     *
+     * @deprecated should be saved via names they belong to, not separately
      */
     @Override
     @Transactional(readOnly = false)
-    public Map<UUID, TypeDesignationBase<?>> saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection){
-        return typeDesignationDao.saveAll(typeDesignationCollection);
+    @Deprecated
+    public void saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection){
+        typeDesignationCollection.stream().forEach(td->genericDao.save(td));
     }
 
     /**
@@ -489,17 +490,17 @@ public class NameServiceImpl
      */
     @Override
     public List<TypeDesignationBase<?>> getAllTypeDesignations(int limit, int start){
-        return typeDesignationDao.getAllTypeDesignations(limit, start);
+        return dao.getAllTypeDesignations(limit, start);
     }
 
     @Override
     public TypeDesignationBase<?> loadTypeDesignation(int id, List<String> propertyPaths){
-        return typeDesignationDao.load(id, propertyPaths);
+        return genericDao.find(TypeDesignationBase.class, id, propertyPaths);
     }
 
     @Override
     public TypeDesignationBase<?> loadTypeDesignation(UUID uuid, List<String> propertyPaths){
-        return typeDesignationDao.load(uuid, propertyPaths);
+        return genericDao.find(TypeDesignationBase.class, uuid, propertyPaths);
     }
 
     @Override
@@ -510,7 +511,7 @@ public class NameServiceImpl
 
         List<TypeDesignationBase<?>> entities = new ArrayList<>();
         for(UUID uuid : uuids) {
-            entities.add(uuid == null ? null : typeDesignationDao.load(uuid, propertyPaths));
+            entities.add(uuid == null ? null : genericDao.find(TypeDesignationBase.class, uuid, propertyPaths));
         }
         return entities;
     }
@@ -1087,12 +1088,13 @@ public class NameServiceImpl
 
     @Override
     public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse(){
-        return typeDesignationDao.getTypeDesignationStatusInUse();
+        return dao.getTypeDesignationStatusInUse();
     }
 
     @Override
     public Collection<TypeDesignationStatusFilter> getTypeDesignationStatusFilterTerms(List<Language> preferredLanguages){
-        List<TypeDesignationStatusBase> termList = typeDesignationDao.getTypeDesignationStatusInUse();
+
+        List<TypeDesignationStatusBase> termList = dao.getTypeDesignationStatusInUse();
         Map<String, TypeDesignationStatusFilter>  filterMap = new HashMap<>();
         for(TypeDesignationStatusBase<?> term : termList){
             TypeDesignationStatusFilter filter = new TypeDesignationStatusFilter(term, preferredLanguages, true);
