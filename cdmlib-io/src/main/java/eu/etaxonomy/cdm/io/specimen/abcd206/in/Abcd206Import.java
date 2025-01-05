@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -494,9 +495,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     && state.getDataHolder().getKindOfUnit().equalsIgnoreCase("dna")) {
                 AbcdDnaParser dnaParser = new AbcdDnaParser(state.getPrefix(), state.getReport(),
                         state.getCdmRepository());
-                DnaSample dnaSample = dnaParser.parse(item, state);
+                Set<CdmBase> entitiesToSave = new HashSet<>();
+                DnaSample dnaSample = dnaParser.parse(item, state, entitiesToSave);
                 //dnaSample.addSource(OriginalSourceType.Import, dnaSample.getAccessionNumber(), "", state.getImportReference(state.getActualAccessPoint()), "");
                 save(dnaSample, state);
+                entitiesToSave.stream().forEach(e->save(e, state));
                 // set dna as derived unit to avoid creating an extra specimen
                 // for this dna sample (instead just the field unit will be
                 // created)
@@ -569,6 +572,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         }else {
                             state.getTeamStoreCollector().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
                         }
+                        save(teamOrPerson, state);
                     }
                 }
                 if (team != null){

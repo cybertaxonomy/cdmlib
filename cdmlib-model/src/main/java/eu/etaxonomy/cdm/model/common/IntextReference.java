@@ -83,7 +83,6 @@ public class IntextReference extends CdmLinkBase {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Reference reference;
 
     @XmlElement(name = "Source")

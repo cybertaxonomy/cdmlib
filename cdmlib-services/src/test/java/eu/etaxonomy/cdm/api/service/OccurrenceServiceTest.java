@@ -123,9 +123,11 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         occurrenceService.saveOrUpdate(dnaSample);
 
         Person derivationActor = Person.NewTitledInstance("Derivation Actor");
-        String derivationDescription = "Derivation Description";
+        agentService.save(derivationActor);
+
         Institution derivationInstitution = Institution.NewInstance();
         agentService.save(derivationInstitution);
+        String derivationDescription = "Derivation Description";
         TimePeriod derivationTimePeriod = TimePeriod.NewInstance(2015);
 
         DerivationEvent originalDerivedFromEvent = DerivationEvent.NewSimpleInstance(specimenA, dnaSample,

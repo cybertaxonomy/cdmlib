@@ -753,6 +753,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         nameInSource.setGenusOrUninomial("Genus");
         nameInSource.setSpecificEpithet("insourcus");
         source.setNameUsedInSource(nameInSource);
+        nameService.save(nameInSource);
 
         //... ... import
         Reference importRef = ReferenceFactory.newDatabase();

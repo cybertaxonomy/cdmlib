@@ -179,6 +179,9 @@ public abstract class TaxonTreeExportTestBase
     protected ICollectionService collectionService;
 
     @SpringBeanByType
+    protected IAgentService agentService;
+
+    @SpringBeanByType
     protected ICommonService commonService;
 
     //this test only test the COL-DB export runs without throwing exception
@@ -404,6 +407,7 @@ public abstract class TaxonTreeExportTestBase
         speciesOrigSpelling.setUuid(origSpellingNameUuid);
         addWfoIdentifier(speciesOrigSpelling, speciesOrigSpellingWfoId);
         basionymName.getNomenclaturalSource().setNameUsedInSource(speciesOrigSpelling);
+        nameService.save(speciesOrigSpelling);
 
         //unpublished species synonym
         TaxonName synonymName = parser.parseReferencedName("Genus synonym Mill., The book of botany 4: 23. 1805", NomenclaturalCode.ICNAFP, Rank.SPECIES());
@@ -483,6 +487,7 @@ public abstract class TaxonTreeExportTestBase
             Assert.fail();
         }
         Team collector = Team.NewTitledInstance("Collector team", "Coll. team");
+        agentService.save(collector);
         facade.setCollector(collector);
         facade.setFieldNumber("CT222");
         facade.setAccessionNumber("A555");

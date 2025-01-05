@@ -1075,6 +1075,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonName parsedName = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true).getCdmEntity();
         UUID parsedNameUuid = parsedName.getUuid();
         UUID originalSpellingUuid = parsedName.getOriginalSpelling().getUuid();
+        TaxonName originalSpellingName = parsedName.getOriginalSpelling();
+        nameService.save(originalSpellingName);
         nameService.save(parsedName);
 
         TaxonName parsedName2 = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true).getCdmEntity();

@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in.molecular;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
@@ -21,6 +22,7 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdPersonParser;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -47,7 +49,8 @@ public class AbcdDnaParser {
         this.cdmAppController = cdmAppController;
     }
 
-    public DnaSample parse(Element item, Abcd206ImportState state) {
+    public DnaSample parse(Element item, Abcd206ImportState state, Set<CdmBase> entitiesToSave) {
+
         FieldUnit fieldUnit = null;
         String fieldNumber = state.getDataHolder().getFieldNumber();
         if (StringUtils.isNotBlank(fieldNumber) && !fieldNumber.equals("0") && !fieldNumber.equalsIgnoreCase("s.n.")){
@@ -71,7 +74,7 @@ public class AbcdDnaParser {
         //specimen unit
         NodeList specimenUnitList = item.getElementsByTagName(prefix+"SpecimenUnit");
         if(specimenUnitList.item(0)!=null && specimenUnitList.item(0) instanceof Element){
-            parseSpecimenUnit((Element)specimenUnitList.item(0), dnaSample);
+            parseSpecimenUnit((Element)specimenUnitList.item(0), dnaSample, entitiesToSave);
         }
         NodeList unitExtensions = item.getElementsByTagName(prefix+"UnitExtensions");
         for(int i=0;i<unitExtensions.getLength();i++){
@@ -88,10 +91,10 @@ public class AbcdDnaParser {
         return dnaSample;
     }
 
-    private void parseSpecimenUnit(Element item, DnaSample dnaSample) {
+    private void parseSpecimenUnit(Element item, DnaSample dnaSample, Set<CdmBase> entitiesToSave) {
         NodeList preparationsList = item.getElementsByTagName(prefix+"Preparations");
         if(preparationsList.item(0)!=null && preparationsList.item(0) instanceof Element){
-            parsePreparations((Element) preparationsList.item(0), dnaSample);
+            parsePreparations((Element) preparationsList.item(0), dnaSample, entitiesToSave);
         }
         NodeList preservationsList = item.getElementsByTagName(prefix+"Preservations");
         if(preservationsList.item(0)!=null && preservationsList.item(0) instanceof Element){
@@ -99,7 +102,7 @@ public class AbcdDnaParser {
         }
     }
 
-    private void parsePreparations(Element item, DnaSample dnaSample) {
+    private void parsePreparations(Element item, DnaSample dnaSample, Set<CdmBase> entitiesToSave) {
         NodeList preparationList = item.getElementsByTagName(prefix+"preparation");
         for(int i=0;i<preparationList.getLength();i++){
             Node node = preparationList.item(i);
@@ -114,7 +117,7 @@ public class AbcdDnaParser {
                 //preparation actor
                 NodeList preparationAgentList = ((Element) node).getElementsByTagName(prefix+"preparationAgent");
                 if(preparationAgentList.item(0)!=null && preparationAgentList.item(0) instanceof Element){
-                    AgentBase<?> preparationAgent = parsePreparationAgent((Element)preparationAgentList.item(0));
+                    AgentBase<?> preparationAgent = parsePreparationAgent((Element)preparationAgentList.item(0), entitiesToSave);
                     derivedFrom.setActor(preparationAgent);
                 }
                 //preparation date
@@ -136,11 +139,12 @@ public class AbcdDnaParser {
         }
     }
 
-    private AgentBase<?> parsePreparationAgent(Element item) {
+    private AgentBase<?> parsePreparationAgent(Element item, Set<CdmBase> entitiesToSave) {
         AgentBase<?> agentBase = null;
         NodeList personList = item.getElementsByTagName(prefix+"Person");
         if(personList.item(0)!=null && personList.item(0) instanceof Element){
-            agentBase = new AbcdPersonParser(prefix,report, cdmAppController).parse((Element)personList.item(0));
+            agentBase = new AbcdPersonParser(prefix, report, cdmAppController).parse((Element)personList.item(0));
+            entitiesToSave.add(agentBase);
         }
         return agentBase;
     }

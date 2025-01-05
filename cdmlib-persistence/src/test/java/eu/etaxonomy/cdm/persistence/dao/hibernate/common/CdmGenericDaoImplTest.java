@@ -834,6 +834,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         Reference ref1 = ReferenceFactory.newGeneric();
         ref1.setTitle("Reference1");
         ref1.setUuid(uuidRef1);
+        referenceDao.save(ref1);
         Reference ref2 = ReferenceFactory.newGeneric();
         ref2.setTitle("Reference2");
         ref2.setUuid(uuidRef2);
