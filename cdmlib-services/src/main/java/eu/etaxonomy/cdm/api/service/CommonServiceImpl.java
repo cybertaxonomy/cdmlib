@@ -81,7 +81,7 @@ public class CommonServiceImpl
 
     @Override
     public <T extends CdmBase> T find(Class<T> clazz, int id, List<String> propertyPaths){
-        return  genericDao.find(clazz, id, propertyPaths);
+        return genericDao.find(clazz, id, propertyPaths);
     }
 
     @Override

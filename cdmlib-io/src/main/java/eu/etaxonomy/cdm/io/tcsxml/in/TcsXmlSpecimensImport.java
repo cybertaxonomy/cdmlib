@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -47,19 +46,6 @@ public class TcsXmlSpecimensImport
 	public boolean doCheck(TcsXmlImportState config){
 		boolean result = true;
 		return result;
-	}
-
-	private static boolean checkXXX(IImportConfigurator tcsConfig){
-		try {
-			boolean result = true;
-			//TODO
-			//				result = firstRow = false;
-//			}
-			return result;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
 	}
 
 	@Override

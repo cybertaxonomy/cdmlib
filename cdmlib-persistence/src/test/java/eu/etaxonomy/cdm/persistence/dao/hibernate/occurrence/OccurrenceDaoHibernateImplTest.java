@@ -184,6 +184,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
         //load data
 	    //TODO make DB empty
 	    Taxon taxon = createListByAssociationTestData();
+
         this.commitAndStartNewTransaction();
 
         //test
@@ -337,11 +338,14 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
             DerivedUnit du_homonymType = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
             du_homonymType.setTitleCache("Specimen Homotypic Name Type", true);
+
             DerivedUnit du_heteroType1 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
             du_heteroType1.setTitleCache("Specimen Heterotypic Name Type 1", true);
+
             DerivedUnit du_heteroType2 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
             du_heteroType2.setTitleCache("Specimen Heterotypic Name Type 2", true);
             du_heteroType2.setPublish(false);
+
             //not associated derived unit
             DerivedUnit du_notAssociated = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
             du_notAssociated.setTitleCache("Specimen Not Associated", true);
@@ -372,23 +376,23 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             IndividualsAssociation ia = IndividualsAssociation.NewInstance(du_indAss);
             td.addElement(ia);
 
-            //du2 is assoziated as determination
+            //du_determination is assoziated as determination
             DeterminationEvent.NewInstance(taxon, du_determination);
 
             //fu3 is assoziated with name3 (first heterotypic synonym) as current determination
             DeterminationEvent de = DeterminationEvent.NewInstance(heteroSyn1.getName(), fu3);
             de.setPreferredFlag(true);
 
-            //du3 is added as type designation for the accepted taxon
+            //du_accType is added as type designation for the accepted taxon
             name1.addSpecimenTypeDesignation(du_accType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
-            //du4 is added as type designation for the homotypic synonym
+            //du_homonymType is added as type designation for the homotypic synonym
             name2.addSpecimenTypeDesignation(du_homonymType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
-            //du5 is added as type designation for the heterotypic synonym
+            //du_heteroType1 is added as type designation for the heterotypic synonym
             name3.addSpecimenTypeDesignation(du_heteroType1, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
-            //du6 is added as type designation for the other heterotypic synonym
+            //du_heteroType2 is added as type designation for the other heterotypic synonym
             name4.addSpecimenTypeDesignation(du_heteroType2, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
 
@@ -397,6 +401,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             fieldUnitDescription.addElement(fieldUnitIndAss);
 
             return taxon;
+
         } catch (Exception e) {
             Assert.fail("No exception should be thrown during data creation: " + e.getMessage());
             return null;
@@ -408,9 +413,6 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
 
         // 1. create the entities   and save them
-
-
-
 
         //add determination
 

@@ -705,8 +705,10 @@ public class SpecimenCdmExcelImport
 		}
 	}
 
-	private Person getOrMakePrimaryCollector(DerivedUnitFacade facade, String primaryCollector, SpecimenCdmExcelImportState state) {
-		if (StringUtils.isBlank(primaryCollector)){
+	private Person getOrMakePrimaryCollector(DerivedUnitFacade facade, String primaryCollector,
+	        SpecimenCdmExcelImportState state) {
+
+	    if (StringUtils.isBlank(primaryCollector)){
 			return null;
 		}
 		AgentBase<?> collector = facade.getCollector();

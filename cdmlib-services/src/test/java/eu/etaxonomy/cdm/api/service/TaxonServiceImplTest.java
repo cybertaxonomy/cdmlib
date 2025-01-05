@@ -217,13 +217,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         UUID misappliedNameNameUuid = nameService.save(misappliedNameName).getUuid();
         misappliedNameName = nameService.find(misappliedNameNameUuid);
-        SpecimenTypeDesignation typedes = SpecimenTypeDesignation.NewInstance();
+        SpecimenTypeDesignation typeDes = SpecimenTypeDesignation.NewInstance();
         DerivedUnit derivedUnit = DerivedUnit.NewPreservedSpecimenInstance();
         FieldUnit fieldUnit = FieldUnit.NewInstance();
-        DerivationEvent derivationEvent = DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
-//        derivedUnit.addDerivationEvent(derivationEvent);
-        typedes.setTypeSpecimen(derivedUnit);
-        misappliedNameName.addTypeDesignation(typedes, false);
+        DerivationEvent.NewSimpleInstance(fieldUnit, derivedUnit, DerivationEventType.ACCESSIONING());
+        typeDes.setTypeSpecimen(derivedUnit);
+        misappliedNameName.addTypeDesignation(typeDes, false);
         Taxon misappliedName = Taxon.NewInstance(misappliedNameName, null);
         UUID misappliedNameUuid = service.save(misappliedName).getUuid();
         misappliedName = (Taxon) service.find(misappliedNameUuid);

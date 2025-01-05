@@ -334,12 +334,6 @@ public class NameServiceImpl
         }
     }
 
-
-
-    /**
-     * @param name
-     * @param config
-     */
     private void removeNameRelationshipsByDeleteConfig(TaxonName name, NameDeletionConfigurator config) {
         try {
             if (config.isRemoveAllNameRelationships()){

@@ -77,9 +77,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private static final UUID NAME1_UUID = UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384");
     private static final int NAME1_ID = 10;
-    private static final UUID NAME2_UUID = UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e");
     private static final int NAME2_ID = 11;
     private static final UUID NAME3_UUID = UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28");
     private static final int NAME3_ID = 12;
@@ -521,11 +519,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         higherName.addNameTypeDesignation(name1, null, null, null, typeStatus, addToAllHomotypicNames);
         nameService.save(higherName);
 
-       commitAndStartNewTransaction(tableNames);
-       name1 = nameService.find(name1.getUuid());
-       DeleteResult result = nameService.delete(name1);
-       if (result.isOk()){
-    	   Assert.fail("This should throw an error because name is used in a type designation.");
+        commitAndStartNewTransaction(tableNames);
+        name1 = nameService.find(name1.getUuid());
+        DeleteResult result = nameService.delete(name1);
+        if (result.isOk()){
+            Assert.fail("This should throw an error because name is used in a type designation.");
         }
 
         commitAndStartNewTransaction(tableNames);

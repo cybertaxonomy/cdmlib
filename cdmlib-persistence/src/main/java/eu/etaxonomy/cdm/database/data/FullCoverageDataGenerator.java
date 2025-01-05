@@ -899,24 +899,24 @@ public class FullCoverageDataGenerator {
 		hybridRel.setCitationMicroReference("p. 123");
 		handleAnnotatableEntity(hybridRel);
 
-		TaxonName zooName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
-		zooName.setBreed("breed");
-		zooName.setPublicationYear(1922);
-		zooName.setOriginalPublicationYear(1987);
-		zooName.setAppendedPhrase("appended phrase");
-		zooName.addDescription(TaxonNameDescription.NewInstance());
-		zooName.setNomenclaturalMicroReference("p. 123");
-		zooName.setNomenclaturalReference(getReference());
-		NameRelationship rel = zooName.addRelationshipFromName(botName, NameRelationshipType.LATER_HOMONYM() , "ruleConsidered", NomenclaturalCodeEdition.ICN_2017_SHENZHEN);
+		TaxonName genusZooName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
+		genusZooName.setBreed("breed");
+		genusZooName.setPublicationYear(1922);
+		genusZooName.setOriginalPublicationYear(1987);
+		genusZooName.setAppendedPhrase("appended phrase");
+		genusZooName.addDescription(TaxonNameDescription.NewInstance());
+		genusZooName.setNomenclaturalMicroReference("p. 123");
+		genusZooName.setNomenclaturalReference(getReference());
+		NameRelationship rel = genusZooName.addRelationshipFromName(botName, NameRelationshipType.LATER_HOMONYM() , "ruleConsidered", NomenclaturalCodeEdition.ICN_2017_SHENZHEN);
 		NomenclaturalStatus status = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED(), getReference(), "p. 222");
-		zooName.addStatus(status);
+		genusZooName.addStatus(status);
 		handleAnnotatableEntity(rel);
 		handleAnnotatableEntity(status);
-		handleIdentifiableEntity(zooName);
+		handleIdentifiableEntity(genusZooName);
 
 		//TypeDesignation
 		TaxonName speciesZooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
-		NameTypeDesignation nameDesig = zooName.addNameTypeDesignation(speciesZooName, getReference(), "111", "original name",
+		NameTypeDesignation nameDesig = genusZooName.addNameTypeDesignation(speciesZooName, getReference(), "111", "original name",
 				NameTypeDesignationStatus.AUTOMATIC(), true, true, true, true);
 		handleAnnotatableEntity(nameDesig);
 		SpecimenTypeDesignation specimenDesig = speciesZooName.addSpecimenTypeDesignation(getSpecimen(), SpecimenTypeDesignationStatus.HOLOTYPE(),
@@ -946,7 +946,7 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(bacName);
 		cdmBases.add(botName);
 		cdmBases.add(viralName);
-		cdmBases.add(zooName);
+		cdmBases.add(genusZooName);
 		cdmBases.add(botName2);
 	}
 

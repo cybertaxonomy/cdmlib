@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.database;
 
 import java.io.FileNotFoundException;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -21,19 +20,11 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 /**
  * @author a.mueller
  * @since 05.05.2015
- *
  */
 public class WrappedCdmDataSourceTest extends CdmIntegrationTest {
 
     @SpringBeanByType
     private IAgentDao agentDao;
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
 
     @Test
     @Ignore
@@ -42,6 +33,6 @@ public class WrappedCdmDataSourceTest extends CdmIntegrationTest {
     }
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {};
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }
