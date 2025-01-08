@@ -184,6 +184,9 @@ public abstract class TaxonTreeExportTestBase
     @SpringBeanByType
     protected ICommonService commonService;
 
+    @SpringBeanByType
+    protected IOccurrenceService occurrenceService;
+
     //this test only test the COL-DB export runs without throwing exception
     //on the full sample data
     @Test
