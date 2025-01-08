@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author a.kohlbecker
  * @since May 2, 2017
- *
  */
 public interface IRegistrationService extends IAnnotatableService<Registration> {
 
@@ -75,7 +74,7 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
     public Pager<Registration> page(Optional<Reference> reference, Collection<RegistrationStatus> includedStatus,
             Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
-    Pager<Registration> pageByIdentifier(String identifier, Integer pageIndex, Integer pageSize, List<String> propertyPaths) throws IOException;
+    public Pager<Registration> pageByIdentifier(String identifier, Integer pageIndex, Integer pageSize, List<String> propertyPaths) throws IOException;
 
     public Map<UUID, RegistrationStatus> statusByIdentifier(String identifier) throws IOException;
 
@@ -121,24 +120,20 @@ public interface IRegistrationService extends IAnnotatableService<Registration> 
 
     public Registration newRegistration();
 
-    Registration assureIsPersisted(Registration reg);
+    /**
+     * Persists the registration in case it is not persisted yet.
+     */
+    public Registration assureIsPersisted(Registration reg);
 
     /**
      * Create and persist a new Registration for the name having the supplied UUID.
-     *
-     * @param taxonNameUuid
-     * @return
      */
-    Registration createRegistrationForName(UUID taxonNameUuid);
+    public Registration createRegistrationForName(UUID taxonNameUuid);
 
     boolean checkRegistrationExistsFor(TaxonName name);
 
     public void addTypeDesignation(UUID registrationUUID, UUID typeDesignationUuid);
 
-    /**
-     * @param registration
-     * @param typeDesignationUuid
-     */
     public void addTypeDesignation(Registration registration, UUID typeDesignationUuid);
 
     // ============================================================================================
