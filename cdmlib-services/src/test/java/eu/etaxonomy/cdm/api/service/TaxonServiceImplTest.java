@@ -1299,6 +1299,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon testTaxon = getTestTaxon();
         service.save(testTaxon).getUuid();
 
+        //test
         Taxon speciesTaxon = (Taxon)service.find(SPECIES1_UUID);
         Iterator<TaxonDescription> descriptionIterator = speciesTaxon.getDescriptions().iterator();
         UUID descrUUID = null;
@@ -1969,7 +1970,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 //    public static UUID DESCRIPTION2_UUID = UUID.fromString("1b009a40-ebff-4f7e-9f7f-75a850ba995d");
 
     public Taxon getTestTaxon(){
+
         int descrIndex = 6000;
+
         Person deCandolle = Person.NewInstance();
         deCandolle.setTitleCache("DC.", true);
 

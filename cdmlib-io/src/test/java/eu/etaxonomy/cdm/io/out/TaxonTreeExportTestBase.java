@@ -324,7 +324,6 @@ public abstract class TaxonTreeExportTestBase
         setUuid(sec1, ref1UUID);
         sec1.setTitle("My sec ref");
 
-
         Reference ref1 = ReferenceFactory.newGeneric();
         setUuid(ref1, ref2UUID);
         ref1.setTitle("My first ref");

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.util.ArrayList;
@@ -84,14 +83,14 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		Element elTaxonNames = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
 
 		String tcsElementName = "TaxonName";
-		List<Element> elTaxonNameList =  elTaxonNames == null ? new ArrayList<Element>() : (List<Element>)elTaxonNames.getChildren(tcsElementName, tcsNamespace);
+		List<Element> elTaxonNameList =  elTaxonNames == null ? new ArrayList<>() : (List<Element>)elTaxonNames.getChildren(tcsElementName, tcsNamespace);
 
 		int i = 0;
 		//for each taxonName
 		for (Element elTaxonName : elTaxonNameList){
 			if ((++i % modCount) == 0){ logger.info("Names handled: " + (i-1));}
 			String strId = elTaxonName.getAttributeValue("id");
-			/*List<String> elementList = new ArrayList<String>();
+			/*List<String> elementList = new ArrayList<>();
 
 			//create TaxonName element
 			String strId = elTaxonName.getAttributeValue("id");
@@ -205,7 +204,6 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		}
 
 		return;
-
 	}
 
 	/**
@@ -284,7 +282,6 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			}
 		}
 		elementList.add(childName.toString());
-
 
 		try {
 			TaxonName nameBase;
@@ -384,7 +381,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				childName = "Authorship";
 				obligatory = false;
 				Element elAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				TeamOrPersonBase author = makeNameCitation(elAuthorship, authorMap, success);
+				TeamOrPersonBase<?> author = makeNameCitation(elAuthorship, authorMap, success);
 				nonViralName.setCombinationAuthorship(author);
 				//setCombinationAuthorship(author);
 				testNoMoreElements();
@@ -580,5 +577,4 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			}
 		}
 	}
-
 }

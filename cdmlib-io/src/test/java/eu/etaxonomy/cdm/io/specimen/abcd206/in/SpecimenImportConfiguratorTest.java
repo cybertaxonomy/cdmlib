@@ -648,6 +648,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         @DataSet( value="SpecimenImportConfiguratorTest.testImportTwoUnitsOfSameTaxonIntoExistingClassification.xml")
     })
 	public void testImportTwoUnitsOfSameTaxonIntoExistingClassification(){
+
         UUID classificationUUID = UUID.fromString("18d22d00-5f70-4c8e-a1ed-dc45fae5b816");
 
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_barbata.xml";

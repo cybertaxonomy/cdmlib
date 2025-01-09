@@ -719,6 +719,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
      * Not yet complete.
      */
     protected UUID save(CdmBase cdmBase, SpecimenImportStateBase<?,?> state) {
+
         ICdmRepository cdmRepository = state.getConfig().getCdmAppController();
         if (cdmRepository == null){
             cdmRepository = this;
@@ -1589,7 +1590,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                   Person teamMember = Person.NewInstance();
                   teamMember.setCollectorTitle(member);
                   ((Team)author).addTeamMember(teamMember);
-
                 }
             }else{
                 if (isNotBlank(collectorStr)){

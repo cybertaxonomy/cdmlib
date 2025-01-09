@@ -118,7 +118,8 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	 * This is usually needed when a new transaction is opened and user defined terms are reused.
 	 */
 	public void resetUuidTermMaps(){
-		extensionTypeMap = new HashMap<>();
+
+	    extensionTypeMap = new HashMap<>();
 		markerTypeMap = new HashMap<>();
 		annotationTypeMap = new HashMap<>();
 

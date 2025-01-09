@@ -95,6 +95,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     @Override
     // @SuppressWarnings("rawtypes")
     public void doInvoke(Abcd206ImportState state) {
+
         Abcd206ImportConfigurator config = state.getConfig();
         Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
         Map<String, Person> personStoreCollector = new HashMap<>();
@@ -305,7 +306,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-
             }
         }
 
@@ -330,14 +330,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 String kindOfUnitLabel = kindOfUnit.getLabel().toLowerCase();
                 kindOfUnitsMap.put(kindOfUnitLabel, kindOfUnit);
             }
-
         }
     }
 
-    /**
-     * @param state
-     * @param item
-     */
     private void getSiblings(Abcd206ImportState state, Object item, DerivedUnitFacade facade) {
         String unitId = facade.getCatalogNumber();
         if (unitId == null) {
@@ -452,6 +447,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
     @SuppressWarnings("rawtypes")
     public void handleSingleUnit(Abcd206ImportState state, Object itemObject, boolean handleAssociatedUnits) {
+
         Element item = (Element) itemObject;
 
         Abcd206ImportConfigurator config = state.getConfig();
@@ -826,7 +822,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         state.setUnsuccessfull();
                     }
                 }
-
             }
             // siblings/ other children
             if (derivedUnitFacade.getType() != null

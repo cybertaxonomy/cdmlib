@@ -367,6 +367,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		    taxonBase.addSource(OriginalSourceType.PrimaryTaxonomicSource, source_id,"Taxon" ,sourceRef, null);
 		}
 
+		//save
 		//state.putTaxon(id, taxonBase);
 		taxonBase = getTaxonService().save(taxonBase);
 		taxonDataHolder.setCdmUuid(taxonBase.getUuid());
@@ -375,10 +376,9 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		}else{
 		    state.putTaxon(id, taxonBase);
 		}
+
 		return;
     }
-
-
 
 	/**
 	 *  Stores parent-child, synonym and common name relationships.
@@ -431,11 +431,11 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
     			        acceptedTaxon = getAcceptedTaxon(taxonBase);
     			    }
     				if (synonymNameStr != null){
-    				    Synonym syn = createSynonym(state,taxonBase,synonymNameStr);
+    				    Synonym syn = createSynonym(state, taxonBase, synonymNameStr);
     				    acceptedTaxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF);
     				}
     				if (basionymNameStr != null){
-    				    Synonym syn = createSynonym(state,taxonBase,basionymNameStr);
+    				    Synonym syn = createSynonym(state, taxonBase, basionymNameStr);
                         acceptedTaxon.addSynonym(syn, SynonymType.HOMOTYPIC_SYNONYM_OF);
                         syn.getName().addRelationshipToName(acceptedTaxon.getName(), NameRelationshipType.BASIONYM(), null, null);
     				}
@@ -572,13 +572,9 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		return;
 	}
 
+    private Synonym createSynonym(TaxonExcelImportState state, TaxonBase<?> taxonBase,
+            String synonymNameStr) {
 
-	/**
-     * @param state
-     * @param taxonBase
-     * @param synonymNameStr
-     */
-    private Synonym createSynonym(TaxonExcelImportState state, TaxonBase<?> taxonBase, String synonymNameStr) {
         NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
         TaxonName name = null;
         if (nc.isKindOf(NomenclaturalCode.ICZN)){
@@ -589,19 +585,9 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
             name = TaxonNameFactory.NewNonViralInstance(taxonBase.getName().getRank());
         }
         name.setTitleCache(synonymNameStr, true);
-        if (name != null){
-            return Synonym.NewInstance(name, null);
-        }
-        logger.debug("The nomenclatural code is not supported.");
-        return null;
+        return Synonym.NewInstance(name, null);
     }
 
-
-    /**
-	 * @param state
-	 * @param taxonDataHolder
-	 * @param acceptedTaxon
-	 */
 	private void handleFeatures(TaxonExcelImportState state, NormalExplicitRow taxonDataHolder, Taxon acceptedTaxon, TaxonName nameUsedInSource) {
 		//feature
 		for (UUID featureUuid : taxonDataHolder.getFeatures()){
@@ -674,11 +660,12 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 	}
 
 
-	private final Map<String, UUID> authorMapping = new HashMap<String, UUID>();
-	private final Map<UUID, TeamOrPersonBase> authorStore = new HashMap<UUID, TeamOrPersonBase>();
+	private final Map<String, UUID> authorMapping = new HashMap<>();
+	private final Map<UUID, TeamOrPersonBase> authorStore = new HashMap<>();
 
 	private TeamOrPersonBase<?> getAuthorAccordingToConfig(String value, TaxonExcelImportState state) {
-		TeamOrPersonBase<?> result = null;
+
+	    TeamOrPersonBase<?> result = null;
 		UUID authorUuid = authorMapping.get(value);
 		if (authorUuid != null){
 			result = authorStore.get(authorUuid);
@@ -697,7 +684,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 	}
 
 
-	private final Map<String, UUID> languageMapping = new HashMap<String, UUID>();
+	private final Map<String, UUID> languageMapping = new HashMap<>();
 
 	private Language getFeatureLanguage(String featureLanguage, TaxonExcelImportState state) {
 		if (StringUtils.isBlank(featureLanguage)){
@@ -713,16 +700,10 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		return result;
 	}
 
-
-	/**
-	 * @param state
-	 * @param taxonNameStr
-	 * @param commonNameStr
-	 * @param parentId
-	 */
 	private void handleCommonName(TaxonExcelImportState state,
 			String taxonNameStr, String commonNameStr, Taxon acceptedTaxon) {
-		Language language = getTermService().getLanguageByIso(((NormalExplicitRow)state.getCurrentRow()).getLanguage());
+
+	    Language language = getTermService().getLanguageByIso(((NormalExplicitRow)state.getCurrentRow()).getLanguage());
 		if (language == null && StringUtils.isNotBlank(((NormalExplicitRow)state.getCurrentRow()).getLanguage())  ){
 			String error ="Language is null but shouldn't";
 			logger.error(error);
@@ -755,11 +736,8 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 
 		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
 
-		TaxonBase taxonBase;
+		TaxonBase<?> taxonBase;
 		String nameCache = null;
-		if (rank == null){
-		    System.err.println("bla");
-		}
 		if (rank.isGenus()){
 		    nameCache =genusNameStr;
 		} else if (rank.isInfraGeneric()){
@@ -805,7 +783,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
         }
         NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
 
-        TaxonBase taxonBase = null;
+        TaxonBase<?> taxonBase = null;
 
         String titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
         if (! synonymMarkers.contains(nameStatus)  && state.getConfig().isReuseExistingTaxaWhenPossible()){
@@ -826,18 +804,6 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
         return taxonBase;
     }
 
-
-
-	/**
-	 * @param state
-	 * @param rank
-	 * @param taxonNameStr
-	 * @param authorStr
-	 * @param nameStatus
-	 * @param nameStatus2
-	 * @param nc
-	 * @return
-	 */
 	private TaxonBase<?> createTaxon(TaxonExcelImportState state, Rank rank, String taxonNameStr,
 			String authorStr, String publishingAutorStr, String basionymAuthor, String reference, String date, String nameStatus, String taxonomicStatus, NomenclaturalCode nc) {
 		TaxonBase<?> taxonBase;
@@ -876,11 +842,9 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 			    if (split.length > 1){
                     String detail = split[split.length-1];
                     taxonName.setNomenclaturalMicroReference(detail.trim());
-
                 }
 
              //   ref.setAbbrevTitle(pub);
-
 
 			    if (ref.getAuthorship() == null){
 			        ref.setAuthorship(taxonName.getCombinationAuthorship());
@@ -893,7 +857,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 
                 ref.setProtectedTitleCache(false);
                 taxonName.setNomenclaturalReference(ref);
-			  //  taxonName.setNomenclaturalMicroReference(state.getCurrentRow().getCollation());
+			    //taxonName.setNomenclaturalMicroReference(state.getCurrentRow().getCollation());
 			}
 		}
 

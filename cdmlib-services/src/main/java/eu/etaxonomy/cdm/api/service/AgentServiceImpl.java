@@ -134,7 +134,7 @@ public class AgentServiceImpl
 	        result.addException(new Exception("Can't delete object without UUID."));
 	        return result;
 	    }
-		AgentBase base = dao.load(agentUUID);
+		AgentBase<?> base = dao.load(agentUUID);
 		result = isDeletable(agentUUID, null);
 
     	if (result.isOk()){

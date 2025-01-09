@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTimeFieldType;
@@ -433,7 +434,7 @@ public class NonViralNameParserImpl
                     off2++;
                 }
                 if (originalPart != null){
-                    int newDiff = StringUtils.getLevenshteinDistance(namePart, originalPart);
+                    int newDiff = LevenshteinDistance.getDefaultInstance().apply(namePart, originalPart);
                     diff += newDiff;
                 }
             }
@@ -552,7 +553,7 @@ public class NonViralNameParserImpl
 		INomenclaturalReference ref;
 		String originalStrReference = strReference;
 
-		//End (just delete end (e.g. '.', may be ambigous for yearPhrase, but no real information gets lost
+		//End (just delete end (e.g. '.', may be ambiguous for yearPhrase, but no real information gets lost
 		Matcher endMatcher = getMatcher(referenceEnd + end, strReference);
 		if (endMatcher.find()){
 			String endPart = endMatcher.group(0);
@@ -659,11 +660,13 @@ public class NonViralNameParserImpl
 				makeUnparsableRefTitle(result, "in " + strReference);
 			}
 		}
+
 		//make year
 		if (makeYear(result, year) == false){
 			//TODO
 			logger.warn("Year could not be parsed");
 		}
+
 		result.setProblemStarts(0);
 		result.setProblemEnds(strReference.length());
 		return result;
@@ -871,7 +874,8 @@ public class NonViralNameParserImpl
 		return parseFullName(fullNameString, null, null);
 	}
 
-	@Override
+
+    @Override
     public INonViralName parseFullName(String fullNameString, NomenclaturalCode nomCode, Rank rank) {
 
 		if (fullNameString == null){
@@ -1326,8 +1330,6 @@ public class NonViralNameParserImpl
 
 	/**
 	 * Guesses the rank of uninomial depending on the typical endings for ranks
-	 * @param nameToBeFilled
-	 * @param string
 	 */
 	private Rank guessUninomialRank(INonViralName nameToBeFilled, String uninomial) {
 		Rank result = Rank.GENUS();
@@ -1457,7 +1459,6 @@ public class NonViralNameParserImpl
 		}
 	}
 
-
 	/**
 	 * Parses the author and ex-author String
 	 * @param authorShipStringOrig String representing the author and the ex-author team
@@ -1534,7 +1535,8 @@ public class NonViralNameParserImpl
 	 * @return a person or team
 	 */
 	public TeamOrPersonBase<?> author (String authorString){
-		if (authorString == null){
+
+	    if (authorString == null){
 			return null;
 		}else if ((authorString = authorString.trim()).length() == 0){
 			return null;

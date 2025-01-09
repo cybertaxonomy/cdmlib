@@ -113,10 +113,10 @@ public class MapWrapper<T extends CdmBase> {
 
 	public boolean makeNewMap(IService<CdmBase> service){
 			if (service == null){
-				internalMap = new HashMap<Integer, CdmBase>();
+				internalMap = new HashMap<>();
 			}else{
 				this.service = service;
-				internalMap =  new HashMap<Integer, UUID>();
+				internalMap =  new HashMap<>();
 			}
 			return true;
 	}
@@ -127,7 +127,7 @@ public class MapWrapper<T extends CdmBase> {
 
 	public Collection<T> objects(int start, int limit) {
 
-		Map internalPartMap = new HashMap<Integer, CdmBase>();
+		Map internalPartMap = new HashMap<>();
 		int index = 0;
 
 		for (int i = 0; i < limit; i++) {

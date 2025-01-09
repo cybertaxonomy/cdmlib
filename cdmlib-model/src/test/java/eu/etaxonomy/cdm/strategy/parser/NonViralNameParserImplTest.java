@@ -104,11 +104,6 @@ public class NonViralNameParserImplTest extends TermTestBase {
     }
 
     @Test
-    public final void testTaxonNameParserBotanicalNameImpl() {
-        logger.warn("Not yet implemented"); // TODO
-    }
-
-    @Test
     public final void testTeamSeperation(){
         Rank speciesRank = Rank.SPECIES();
         INonViralName name;

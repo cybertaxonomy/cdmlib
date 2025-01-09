@@ -101,7 +101,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		Element elTaxonConcepts = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
 
 		childName = "TaxonConcept";
-		List<Element> elTaxonConceptList =  elTaxonConcepts == null ? new ArrayList<Element>() : elTaxonConcepts.getChildren(childName, tcsNamespace);
+		List<Element> elTaxonConceptList =  elTaxonConcepts == null ? new ArrayList<>() : elTaxonConcepts.getChildren(childName, tcsNamespace);
 
 		int i = 0;
 		int taxonRelCount = 0;
@@ -125,7 +125,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		Element elTaxonNames = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
 
 		childName = "TaxonName";
-		List<Element> elTaxonNameList =  elTaxonNames == null ? new ArrayList<Element>() : elTaxonNames.getChildren(childName, tcsNamespace);
+		List<Element> elTaxonNameList =  elTaxonNames == null ? new ArrayList<>() : elTaxonNames.getChildren(childName, tcsNamespace);
 
 		logger.info("NUmber of taxon concepts: " + elTaxonNameList.size());
 		for (Element elTaxonName : elTaxonNameList){
@@ -166,14 +166,14 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			String id = elTaxonName.getAttributeValue("id");
 			TaxonName name = taxonNameMap.get(removeVersionOfRef(id));
 
-			TaxonBase taxonBase = name.getTaxonBases().iterator().next();
+			TaxonBase<?> taxonBase = name.getTaxonBases().iterator().next();
 
 			String ref = elBasionym.getAttributeValue("ref");
 			TaxonName basionymName = taxonNameMap.get(removeVersionOfRef(ref));
 
 			if (basionymName != null){
 				basionymName = HibernateProxyHelper.deproxy(basionymName, TaxonName.class);
-				TaxonBase basionym;
+				TaxonBase<?> basionym;
 				if (basionymName.getTaxonBases().isEmpty()){
 					 basionym = Synonym.NewInstance(basionymName, null);
 				}else{

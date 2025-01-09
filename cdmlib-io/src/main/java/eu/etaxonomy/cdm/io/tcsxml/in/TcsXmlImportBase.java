@@ -179,8 +179,10 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		return result;
 	}
 
-	protected <T extends IdentifiableEntity> T makeReferenceType(Element element, Class<? extends T> clazz, MapWrapper<? extends T> objectMap, ResultWrapper<Boolean> success){
-		T result = null;
+	protected <T extends IdentifiableEntity> T makeReferenceType(Element element,
+	        Class<? extends T> clazz, MapWrapper<? extends T> objectMap, ResultWrapper<Boolean> success){
+
+	    T result = null;
 		String linkType = element.getAttributeValue("linkType");
 		String ref = element.getAttributeValue("ref");
 		if (ref != null){
@@ -240,7 +242,8 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	}
 
 	private Reference makeAccordingToDetailed(Element elAccordingToDetailed, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
-		Reference result = null;
+
+	    Reference result = null;
 		Namespace tcsNamespace = elAccordingToDetailed.getNamespace();
 		if (elAccordingToDetailed != null){
 			//AuthorTeam
@@ -300,9 +303,9 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			if (elAuthors != null){
 				childName = "AgentName";
 				List<Element> elAgentList = elAuthors.getChildren(childName, ns);
-				Team team = Team.NewInstance();
-				result = team;
 				if (elAgentList.size() > 1){
+				    Team team = Team.NewInstance();
+				    result = team;
 					for(Element elAgent : elAgentList){
 						Person teamMember = makeAgent(elAgent, ns, authorMap, success);
 						team.addTeamMember(teamMember);

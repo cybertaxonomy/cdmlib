@@ -35,7 +35,7 @@ xmlns:tc="http://rs.tdwg.org/ontology/voc/TaxonConcept#">
   <tpalm:dateOfEntry>2008-10-03</tpalm:dateOfEntry>
 </tc:TaxonConcept>
 
-  <tn:TaxonName rdf:about="urn:lsid:ipni.org:names:1464">
+<tn:TaxonName rdf:about="urn:lsid:ipni.org:names:1464">
   <tn:authorship>Toledo</tn:authorship>
   <tn:combinationAuthorship>Toledo</tn:combinationAuthorship>
   <tn:genusPart>Acanthococos</tn:genusPart>
@@ -49,7 +49,7 @@ xmlns:tc="http://rs.tdwg.org/ontology/voc/TaxonConcept#">
   <tpalm:dateOfEntry>2003-11-11</tpalm:dateOfEntry>
 </tn:TaxonName>
 
-  <tc:TaxonConcept rdf:about="urn:lsid:ipni.org:concepts:1464">
+<tc:TaxonConcept rdf:about="urn:lsid:ipni.org:concepts:1464">
   <tc:hasName rdf:resource="urn:lsid:ipni.org:names:1464"/>
   <tc:accordingTo rdf:resource="urn:lsid:ipni.org:pub:ed:999999"/>
   <tc:primary>true</tc:primary>

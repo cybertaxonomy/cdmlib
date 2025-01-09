@@ -806,7 +806,8 @@ public class SpecimenCdmExcelImport
 
 
 	private TaxonName getTaxonName(SpecimenCdmExcelImportState state, String name) {
-		TaxonName result = null;
+
+	    TaxonName result = null;
 		result = state.getName(name);
 		if (result != null){
 			return result;
