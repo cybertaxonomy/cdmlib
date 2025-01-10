@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.strategy.parser;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.IStrategy;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 
@@ -85,7 +86,7 @@ public interface INonViralNameParser<T extends INonViralName> extends IStrategy 
 	 * @param rank
 	 * @param nameToBeFilled The TaxonName to be filled
 	 */
-	public void parseFullName(T nameToBeFilled, String fullName, Rank rank, boolean makeEmpty);
+	public NameParserResult parseFullName(T nameToBeFilled, String fullName, Rank rank, boolean makeEmpty);
 
 	/**
 	 * @param fullReference the string containing the scientific name with authorship, year, reference etc.
@@ -141,8 +142,21 @@ public interface INonViralNameParser<T extends INonViralName> extends IStrategy 
 	 * 				if this parameter is set to true, the name objects will nulled. All information
 	 * 				formerly attached to this name will be lost.
 	 */
-	public void parseReferencedName(T nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty);
+	public NameParserResult parseReferencedName(T nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty);
 
 	public void parseAuthors(INonViralName nonViralName, String authorString) throws StringNotParsableException;
+
+    /**
+     * Parsers the given name string and returns a name parser result (including newly created entities
+     * like authors and references.
+     * */
+    public NameParserResult parseFullName2(String fullNameString, NomenclaturalCode nomCode, Rank rank);
+
+    /**
+     * Author parser for external use. The resulting new entities are stored in the result.
+     *
+     * TODO handle exception also in result
+     */
+    public NameParserResult parseAuthors2(TaxonName nonViralNameOrig, String authorString) throws StringNotParsableException;
 
 }

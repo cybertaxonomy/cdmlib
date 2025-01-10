@@ -131,6 +131,13 @@ public class NonViralNameParserImplTest extends TermTestBase {
     }
 
     @Test
+    public final void testParserResult(){
+        NameParserResult result = parser.parseFullName2("Genus multiautorus (Mill. ex Mull. & Moll) Ball & Bill ex Bull & Bell ", NomenclaturalCode.ICNAFP, null);
+        Assert.assertEquals("1 name + 7 persons + 3 teams" , 11, result.getAllEntities().size());
+    }
+
+
+    @Test
     public final void testParseSimpleName() {
 
         //Uninomials
@@ -581,10 +588,9 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals(expected, name1.getTitleCache()); //we expect the cache strategy to create the same result
 
         //remove space since #7094
-        parser.setRemoveSpaceAfterDot(true);
-        name1 = parser.parseReferencedName(nameStr);
+        NonViralNameParserImpl.NewInstance(true);
+        name1 = NonViralNameParserImpl.NewInstance(true).parseReferencedName(nameStr);
         assertEquals(expected.replace("E. Kl", "E.Kl"), name1.getTitleCache()); //we expect the cache strategy to create the same result
-        parser.setRemoveSpaceAfterDot(false);
     }
 
     @Test
@@ -2411,7 +2417,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         TeamOrPersonBase<?>[] authorArray = new TeamOrPersonBase[4];
         try {
             DateTime start = DateTime.now();
-            parser.fullAuthors(authorStr, authorArray, new Integer[]{1800, null, null, null}, NomenclaturalCode.ICNAFP);
+            parser.fullAuthors(new NameParserResult(null), authorStr, authorArray, new Integer[]{1800, null, null, null}, NomenclaturalCode.ICNAFP);
             DateTime end = DateTime.now();
             Duration duration = new Duration(start, end);
             long seconds = duration.getStandardSeconds();
