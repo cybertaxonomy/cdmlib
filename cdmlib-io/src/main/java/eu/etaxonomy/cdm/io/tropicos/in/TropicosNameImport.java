@@ -74,6 +74,7 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
 
     @Override
     protected void handleSingleLine(STATE state) {
+
         TaxonName name = makeName(state);
         if (name == null){
             return;
@@ -288,6 +289,7 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
     private NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 
     private TaxonName makeName(STATE state) {
+
         Map<String, String> record = state.getCurrentRecord();
         String fullNameStr = record.get(OUTPUT_FULL_NAME_WITH_AUTHORS);
         String nameStr = record.get(INPUT_FULL_NAME_NO_AUTHORS);
@@ -314,6 +316,7 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
                 message = String.format(message, fullNameStr, nameStr);
                 state.getResult().addWarning(message, state.getRow());
             }
+
         }else{
             name = parser.parseSimpleName(nameStr, state.getConfig().getNomenclaturalCode(), null);
         }

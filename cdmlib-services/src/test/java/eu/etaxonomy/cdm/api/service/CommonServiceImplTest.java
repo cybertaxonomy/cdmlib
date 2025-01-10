@@ -76,7 +76,6 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
         ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
         ref1.setAuthorship(author);
         name.setBasionymAuthorship(author);
-
         name.setNomenclaturalReference(ref1);
 
         taxonService.save(taxon);
@@ -115,7 +114,6 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
 		ref1.setAuthorship(author);
 		name.setBasionymAuthorship(author);
-
 		name.setNomenclaturalReference(ref1);
 
 		taxonService.save(taxon);

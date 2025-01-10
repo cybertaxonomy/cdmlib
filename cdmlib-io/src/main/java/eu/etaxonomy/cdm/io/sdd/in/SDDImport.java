@@ -670,7 +670,7 @@ public class SDDImport
 		return;
 	}
 
-	private void saveVocabularies() {
+    private void saveVocabularies() {
 		for (TermVocabulary<?> vocabulary : vocabularies ){
 			getVocabularyService().save(vocabulary);
 		}
@@ -1507,7 +1507,6 @@ public class SDDImport
 				}
 
 				if ((++j % modCount) == 0){ logger.info("Publications handled: " + j);}
-
 			}
 		}
 	}

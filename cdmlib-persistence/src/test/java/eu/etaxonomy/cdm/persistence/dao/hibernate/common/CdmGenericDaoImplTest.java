@@ -382,7 +382,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
 	     @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")})
 	public void testGetReferencingObjectsCdmBase() {
-		IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+
+	    //create data
+	    IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setTitleCache("A name", true);
 		Reference ref1 = ReferenceFactory.newArticle();
 		Taxon taxon = Taxon.NewInstance(name, ref1);
@@ -391,10 +393,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
 		ref1.setAuthorship(author);
 		name.setBasionymAuthorship(author);
-
 		name.setNomenclaturalReference(ref1);
 
 		taxonDao.save(taxon);
+
 //		UUID uuid = UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f");
 //		Reference ref1 = referenceService.findByUuid(uuid);
 		commitAndStartNewTransaction(null);
@@ -1030,6 +1032,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	@Test
 	public void findMatching(){
+
 		IBook book1 = ReferenceFactory.newBook();
 		IBook book2 = ReferenceFactory.newBook();
 		IBook book3 = ReferenceFactory.newBook();

@@ -25,7 +25,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
-import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
@@ -33,8 +32,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @since 18.04.2011
  */
 public abstract class DwcaExportBase
-            extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState, IExportTransformer, File>
-            implements ICdmExport<DwcaTaxExportConfigurator, DwcaTaxExportState>{
+            extends CdmExportBase<DwcaTaxExportConfigurator, DwcaTaxExportState, IExportTransformer, File>{
 
     private static final long serialVersionUID = -3214410418410044139L;
     @SuppressWarnings("unused")

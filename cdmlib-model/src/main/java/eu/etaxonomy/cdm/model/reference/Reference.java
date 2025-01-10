@@ -308,7 +308,6 @@ public class Reference
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 //  @InReference(groups=Level2.class)
     private Reference inReference;
 

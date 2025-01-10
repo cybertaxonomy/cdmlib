@@ -89,13 +89,15 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 	@DataSet("CacheStrategyGeneratorTest.xml")
 	@ExpectedDataSet
 	public void testOnSaveOrUpdateNames() {
-		//names
+
+	    //names
 	    TaxonName name =  cdmEntityDaoBase.findByUuid(UUID.fromString("a49a3963-c4ea-4047-8588-2f8f15352730"));
 		name.setTitleCache(null, false);
 		name.setNameCache(null, false);
 		name.setGenusOrUninomial("Abies");
 		name.setAuthorshipCache("Mill.", true);
 		cdmEntityDaoBase.saveOrUpdate(name);
+
 		TaxonName name2 =  cdmEntityDaoBase.findByUuid(UUID.fromString("05a438d6-065f-49ef-84db-c7dc2c259975"));
 		name2.setProtectedFullTitleCache(false);
 		name2.setProtectedTitleCache(false);

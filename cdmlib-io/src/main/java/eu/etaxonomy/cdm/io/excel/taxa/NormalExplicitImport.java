@@ -595,7 +595,8 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
     }
 
 	private void handleFeatures(TaxonExcelImportState state, NormalExplicitRow taxonDataHolder, Taxon acceptedTaxon, TaxonName nameUsedInSource) {
-		//feature
+
+	    //feature
 		for (UUID featureUuid : taxonDataHolder.getFeatures()){
 			Feature feature = getFeature(state, featureUuid);
 			List<String> textList = taxonDataHolder.getFeatureTexts(featureUuid);
@@ -629,7 +630,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 							ref.setDatePublished(TimePeriodParser.parseStringVerbatim(value));
 						}else if (type.equals(SourceType.RefExtension)) {
 							ExtensionType extensionType = getExtensionType(state, uuidRefExtension, "RefExtension", "Reference Extension", "RefExt.");
-							Extension extension = Extension.NewInstance(ref, value, extensionType);
+							Extension.NewInstance(ref, value, extensionType);
 						}
 						refExists = true;
 					}
@@ -645,8 +646,8 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		}
 	}
 
-	private final Map<String, UUID> referenceMapping = new HashMap<String, UUID>();
-	private final Map<UUID, Reference> referenceStore = new HashMap<UUID, Reference>();
+    private final Map<String, UUID> referenceMapping = new HashMap<>();
+	private final Map<UUID, Reference> referenceStore = new HashMap<>();
 
 	private Reference getReferenceAccordingToConfig(Reference value, TaxonExcelImportState state) {
 		Reference result = null;
