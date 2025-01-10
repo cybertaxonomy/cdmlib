@@ -333,13 +333,13 @@ public abstract class TaxonTreeExportTestBase
         Reference ref1 = ReferenceFactory.newGeneric();
         setUuid(ref1, ref2UUID);
         ref1.setTitle("My first ref");
-        ref1.setAuthorship(Person.NewTitledInstance("Author"));
+        ref1.setAuthorship(createPerson("Author"));
         ref1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1980));
 
         Reference ref2 = ReferenceFactory.newGeneric();
         setUuid(ref2, ref3UUID);
         ref2.setTitle("My second ref");
-        ref2.setAuthorship(Person.NewTitledInstance("Author"));
+        ref2.setAuthorship(createPerson("Author"));
         ref2.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1980));
 
         //classification
@@ -547,6 +547,12 @@ public abstract class TaxonTreeExportTestBase
         Team team = Team.NewTitledInstance(title, nomTitle);
         agentService.save(team);
         return team;
+    }
+
+    private Person createPerson(String title) {
+        Person person = Person.NewTitledInstance(title);
+        agentService.save(person);
+        return person;
     }
 
     private void addWfoIdentifier(TaxonName taxonName, String identifier) {

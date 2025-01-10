@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
@@ -114,12 +115,15 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
 
         //
         getNameService().saveOrUpdate(name);
-        if (name.getNomenclaturalReference() != null && !name.getNomenclaturalReference().getInReference().isPersisted()) {
-            getReferenceService().save(name.getNomenclaturalReference().getInReference());
-        }
+        saveParsedName(name);
         state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);
 
         makeTaxon(state, name);
+    }
+
+    private void saveParsedName(TaxonName name) {
+        Reference nomRef = name.getNomenclaturalReference();
+        save(nomRef);
     }
 
     private void makeNomStatus(STATE state, TaxonName name) {
@@ -310,7 +314,8 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
             state.getResult().addWarning(message, state.getRow());
             return null;
         }else if (fullNameStr != null){
-            name = parser.parseFullName(fullNameStr, state.getConfig().getNomenclaturalCode(), null);
+            NameParserResult parserResult = parser.parseFullName2(fullNameStr, state.getConfig().getNomenclaturalCode(), null);
+            name = parserResult.getName();
             if (nameStr != null && !nameStr.equals(name.getNameCache())){
                 String message = "Name with authors (%s) and without authors (%s) is not consistent";
                 message = String.format(message, fullNameStr, nameStr);

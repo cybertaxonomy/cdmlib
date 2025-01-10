@@ -91,7 +91,13 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     private IRegistrationService registrationService;
 
     @SpringBeanByType
+    private IAgentService agentService;
+
+    @SpringBeanByType
     private ITaxonService taxonService;
+
+    @SpringBeanByType
+    private IReferenceService referenceService;
 
     @SpringBeanByType
     private ITermService termService;
@@ -1072,10 +1078,14 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(3, nameService.count(TaxonName.class));
 
         String nameToParseStr = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"alpa\"]";
-        TaxonName parsedName = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true).getCdmEntity();
+        UpdateResult parsedNameResult = nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true);
+
+        TaxonName parsedName = (TaxonName)parsedNameResult.getCdmEntity();
         UUID parsedNameUuid = parsedName.getUuid();
         UUID originalSpellingUuid = parsedName.getOriginalSpelling().getUuid();
         TaxonName originalSpellingName = parsedName.getOriginalSpelling();
+        referenceService.save(parsedName.getNomenclaturalReference());
+        agentService.save(parsedName.getCombinationAuthorship());
         nameService.save(originalSpellingName);
         nameService.save(parsedName);
 

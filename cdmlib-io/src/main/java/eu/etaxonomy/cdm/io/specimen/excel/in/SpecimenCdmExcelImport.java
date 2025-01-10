@@ -558,6 +558,7 @@ public class SpecimenCdmExcelImport
 				determinedBy = Team.NewTitledInstance(commonDetermination.determinedBy, commonDetermination.determinedBy);
 			}
 			sec.setAuthorship(determinedBy);
+			saveAuthor(determinedBy);
 		}
 
 		//taxon

@@ -393,7 +393,10 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 	 */
 	@Override
     protected void secondPass(TaxonExcelImportState state) {
-		if (logger.isDebugEnabled()){logger.debug(state.getCurrentLine());}
+
+	    Set<CdmBase> entitiesToSave = new HashSet<>();
+
+	    if (logger.isDebugEnabled()){logger.debug(state.getCurrentLine());}
 		try {
 			NormalExplicitRow taxonDataHolder = (NormalExplicitRow)state.getCurrentRow();
 			String taxonNameStr = taxonDataHolder.getScientificName();
@@ -572,6 +575,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 				//features
 				handleFeatures(state, taxonDataHolder, acceptedTaxon, nameUsedInSource);
 			}
+			getCommonService().save(entitiesToSave);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -594,7 +598,9 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
         return Synonym.NewInstance(name, null);
     }
 
-	private void handleFeatures(TaxonExcelImportState state, NormalExplicitRow taxonDataHolder, Taxon acceptedTaxon, TaxonName nameUsedInSource) {
+	private void handleFeatures(TaxonExcelImportState state,
+	        NormalExplicitRow taxonDataHolder,
+	        Taxon acceptedTaxon, TaxonName nameUsedInSource) {
 
 	    //feature
 		for (UUID featureUuid : taxonDataHolder.getFeatures()){
@@ -618,11 +624,14 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 
 					//ref
 					Reference ref = ReferenceFactory.newGeneric();
+					save(ref);
 					boolean refExists = false; //in case none of the ref fields exists, the ref should not be added
 					for (SourceType type : sourceMap.keySet()){
 						String value = sourceMap.get(type);
 						if (type.equals(SourceType.Author)){
 							TeamOrPersonBase<?> author = getAuthorAccordingToConfig(value, state);
+							//TODO implemented quick and dirty
+							save(author);
 							ref.setAuthorship(author);
 						}else if (type.equals(SourceType.Title)) {
 							ref.setTitle(value);

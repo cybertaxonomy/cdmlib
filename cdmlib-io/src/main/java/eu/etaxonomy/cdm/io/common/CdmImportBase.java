@@ -30,6 +30,8 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.common.utils.ImportDeduplicationHelper;
 import eu.etaxonomy.cdm.io.markup.MarkupTransformer;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -1558,5 +1560,27 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
     public ImportDeduplicationHelper createDeduplicationHelper(STATE state){
         return ImportDeduplicationHelper.NewInstance(this, state);
+    }
+
+
+    protected void save(Reference reference) {
+        if (reference != null) {
+            if (!reference.isPersisted()) {
+                getReferenceService().save(reference);
+            }
+            save(reference.getInReference());
+            save(reference.getAuthorship());
+        }
+    }
+
+    protected void save(TeamOrPersonBase<?> agent) {
+        if(agent == null || agent.isPersisted()) {
+            return;
+        }else {
+            getAgentService().save(agent);
+            if (agent instanceof Team) {
+                ((Team)agent).getTeamMembers().stream().forEach(m->getAgentService().save(m));
+            }
+        }
     }
 }

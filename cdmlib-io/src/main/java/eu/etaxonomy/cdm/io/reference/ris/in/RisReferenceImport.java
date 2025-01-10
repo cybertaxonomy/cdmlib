@@ -63,6 +63,7 @@ public class RisReferenceImport
             RisRecordReader risReader = new RisRecordReader(state, reader);
 
             Set<Reference> referencesToSave = new HashSet<>();
+            Set<TeamOrPersonBase> authorsToSave = new HashSet<>();
 
             Map<RisReferenceTag, List<RisValue>> next = risReader.readRecord();
             while (next != RisRecordReader.EOF){
@@ -96,15 +97,18 @@ public class RisReferenceImport
                 if (ref.getAuthorship() != null && !ref.getAuthorship().isPersisted()){
                     TeamOrPersonBase<?> newAuthor = ref.getAuthorship();
                     state.getResult().addNewRecord(newAuthor);
+                    authorsToSave.add(newAuthor);
                     if (newAuthor instanceof Team){
                         for (Person member : ((Team)newAuthor).getTeamMembers()){
                             if (!member.isPersisted()){
                                 state.getResult().addNewRecord(member);
+                                authorsToSave.add(member);
                             }
                         }
                     }
                 }
             }
+            getAgentService().save(authorsToSave);
             getReferenceService().saveOrUpdate(referencesToSave);
 
         } catch (Exception e) {

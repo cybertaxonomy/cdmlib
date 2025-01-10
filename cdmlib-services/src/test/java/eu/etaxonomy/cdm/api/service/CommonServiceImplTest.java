@@ -52,6 +52,9 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	@SpringBeanByType
 	private IReferenceService referenceService;
 
+    @SpringBeanByType
+    private IAgentService agentService;
+
 	@SpringBeanByType
 	private IOccurrenceService occurrenceService;
 
@@ -78,6 +81,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
         name.setBasionymAuthorship(author);
         name.setNomenclaturalReference(ref1);
 
+        agentService.save(author);
         taxonService.save(taxon);
 
         Set<ReferencingObjectDto> referencedObjects = service.getReferencingObjectDtos(ref1);
@@ -115,7 +119,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		ref1.setAuthorship(author);
 		name.setBasionymAuthorship(author);
 		name.setNomenclaturalReference(ref1);
-
+		agentService.save(author);
 		taxonService.save(taxon);
 
 		Set<CdmBase> referencedObjects = service.getReferencingObjects(ref1);

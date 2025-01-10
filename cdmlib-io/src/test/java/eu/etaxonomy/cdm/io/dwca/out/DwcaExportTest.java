@@ -25,7 +25,10 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -34,6 +37,7 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -53,6 +57,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -79,6 +84,15 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
     @SpringBeanByType
     private ITaxonNodeService taxonNodeService;
+
+    @SpringBeanByType
+    private INameService nameService;
+
+    @SpringBeanByType
+    private IReferenceService referenceService;
+
+    @SpringBeanByType
+    private IAgentService agentService;
 
     @SpringBeanByType
     private ITermService termService;
@@ -359,7 +373,12 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     }
 
     private void createFullTestDataSet() {
+
         Set<TaxonNode> nodesToSave = new HashSet<>();
+        Set<TeamOrPersonBase> authorsToSave = new HashSet<>();
+        Set<Reference> referencesToSave = new HashSet<>();
+        Set<TaxonName> namesToSave = new HashSet<>();
+
         Reference sec1 = ReferenceFactory.newGeneric();
         setUuid(sec1, "4b6acca1-959b-4790-b76e-e474a0882990");
         sec1.setTitle("My sec ref");
@@ -370,19 +389,22 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 
         //family
-        TaxonName familyName = parser.parseReferencedName("Family L., Sp. Pl. 3: 22. 1752",
+        NameParserResult parserResult = parser.parseReferencedName2("Family L., Sp. Pl. 3: 22. 1752",
                 NomenclaturalCode.ICNAFP, Rank.FAMILY());
+        TaxonName familyName = parserResult.getName();
         setUuid(familyName,"e983cc5e-4c77-4c80-8cb0-73d43df31ef7");
         setUuid(familyName.getNomenclaturalReference(), "b0dd7f4a-0c7f-4372-bc5d-3b676363bc63");
         Taxon family = Taxon.NewInstance(familyName, sec1);
         setUuid(family,"3162e136-f2e2-4f9a-9010-3f35908fbae1");
         TaxonNode node1 = classification.addChildTaxon(family, sec1, "22");
         setUuid(node1, "0fae5ad5-ffa2-4100-bcd7-8aa9dda0aebc");
+        saveParserResult(parserResult, authorsToSave, referencesToSave, namesToSave);
         nodesToSave.add(node1);
 
         //genus
-        TaxonName genusName = parser.parseReferencedName("Genus Humb., The book of botany 3: 22. 1804",
+        parserResult = parser.parseReferencedName2("Genus Humb., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.GENUS());
+        TaxonName genusName = parserResult.getName();
         setUuid(genusName,"5e83cc5e-4c77-4d80-8cb0-73d63df35ee3");
         setUuid(genusName.getNomenclaturalReference(), "5ed27f4a-6c7f-4372-bc5d-3b67636abc52");
         Taxon genus = Taxon.NewInstance(genusName, sec1);
@@ -390,11 +412,13 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
         TaxonNode node2 = node1.addChildTaxon(genus, sec1, "33");
         setUuid(node2, "43ca733b-fe3a-42ce-8a92-000e27badf44");
+        saveParserResult(parserResult, authorsToSave, referencesToSave, namesToSave);
         nodesToSave.add(node2);
 
         //species
-        TaxonName speciesName = parser.parseReferencedName("Genus species Mill., The book of botany 3: 22. 1804",
+        parserResult = parser.parseReferencedName2("Genus species Mill., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        TaxonName speciesName = parserResult.getName();
         setUuid(speciesName,"f983cc5e-4c77-4c80-8cb0-73d43df31ee9");
         setUuid(speciesName.getNomenclaturalReference(), "a0dd7f4a-0c7f-4372-bc5d-3b676363bc0e");
         Taxon species = Taxon.NewInstance(speciesName, sec1);
@@ -402,11 +426,14 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
         TaxonNode node3 = node2.addChildTaxon(species, sec1, "33");
         setUuid(node3, "a0c9733a-fe3a-42ce-8a92-000e27bfdfa3");
+        saveParserResult(parserResult, authorsToSave, referencesToSave, namesToSave);
+
         nodesToSave.add(node3);
 
         //subspecies
-        TaxonName subspeciesName = parser.parseReferencedName("Genus species subsp. subspec Mill., The book of botany 3: 22. 1804",
+        parserResult = parser.parseReferencedName2("Genus species subsp. subspec Mill., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.SUBSPECIES());
+        TaxonName subspeciesName = parserResult.getName();
         setUuid(subspeciesName,"3483cc5e-4c77-4c80-8cb0-73d43df31ee3");
         setUuid(subspeciesName.getNomenclaturalReference(), "b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f");
 
@@ -414,11 +441,13 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         setUuid(subspecies, "b2c86698-500e-4efb-b9ae-6bb6e701d4bc");
         TaxonNode node4 = node3.addChildTaxon(subspecies, sec1, "33");
         node4.setUuid(UUID_SUBSPEC_NODE);
+        saveParserResult(parserResult, authorsToSave, referencesToSave, namesToSave);
         nodesToSave.add(node4);
 
         //unpublished
-        TaxonName unpublishedName = parser.parseReferencedName("Genus species subsp. unpublish Mill., The book of botany 3: 22. 1804",
+        parserResult = parser.parseReferencedName2("Genus species subsp. unpublish Mill., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.SUBSPECIES());
+        TaxonName unpublishedName = parserResult.getName();
         setUuid(unpublishedName,"ebcf6bb6-6da8-46fe-9c22-127aa4cb9549");
         setUuid(unpublishedName.getNomenclaturalReference(), "51725dbd-e4a1-43ea-8363-fe8eb1152a49");
 
@@ -427,8 +456,12 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         setUuid(unpublishedSpecies, UUID_UNPUBLISHED_TAXON);
         TaxonNode nodeUnpublished = node3.addChildTaxon(unpublishedSpecies, sec1, "34");
         setUuid(nodeUnpublished, "01368584-b626-4255-9dc4-ff011d44f493");
+        saveParserResult(parserResult, authorsToSave, referencesToSave, namesToSave);
         nodesToSave.add(nodeUnpublished);
 
+        agentService.save(authorsToSave);
+        referenceService.save(referencesToSave);
+        nameService.save(namesToSave);
         classificationService.save(classification);
         taxonNodeService.save(nodesToSave);
 
@@ -458,6 +491,14 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
         commitAndStartNewTransaction(null);
 
+    }
+
+    private void saveParserResult(NameParserResult parserResult, Set<TeamOrPersonBase> authorsToSave,
+            Set<Reference> referencesToSave, Set<TaxonName> namesToSave) {
+        authorsToSave.addAll(parserResult.getAuthors());
+        referencesToSave.addAll(parserResult.getReferences());
+        namesToSave.addAll(parserResult.getOtherNames());
+        namesToSave.add(parserResult.getName());
     }
 
     private void setUuid(CdmBase cdmBase, String uuidStr) {

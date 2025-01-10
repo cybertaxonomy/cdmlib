@@ -599,6 +599,7 @@ public class SDDImport
 					team.addTeamMember(edit);
 				}
 			}
+			save(team);
 			sec.setAuthorship(team);
 			sourceReference.setAuthorship(team);
 		}
@@ -647,11 +648,11 @@ public class SDDImport
 		saveFeatures();
 
 		for (Reference publication : publications.values()){
-			getReferenceService().save(publication);
+			save(publication);
 		}
 
 		for (Reference source : sources){
-			getReferenceService().save(source);
+			save(source);
 		}
 
 		for (TermTree<Feature> featureTree : featureTrees) {

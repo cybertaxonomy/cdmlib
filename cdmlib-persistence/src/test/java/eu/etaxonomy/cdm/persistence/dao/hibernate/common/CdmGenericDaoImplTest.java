@@ -394,7 +394,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		ref1.setAuthorship(author);
 		name.setBasionymAuthorship(author);
 		name.setNomenclaturalReference(ref1);
-
+		agentDao.save(author);
 		taxonDao.save(taxon);
 
 //		UUID uuid = UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f");
@@ -437,6 +437,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = Taxon.NewInstance(name, ref1);
         Person author = Person.NewInstance();
         author.setTitleCache("Author", true);
+        agentDao.save(author);
         ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
         ref1.setAuthorship(author);
         name.setCombinationAuthorship(author);
@@ -1103,6 +1104,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 			person1.setPrefix("pre1");
 			person2.setPrefix("pre2");
 			person3.setPrefix("pre3");
+			agentDao.save(person1);
+			agentDao.save(person2);
+			agentDao.save(person3);
 
 //			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 //			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
