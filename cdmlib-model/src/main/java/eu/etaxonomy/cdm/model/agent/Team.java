@@ -92,7 +92,7 @@ public class Team extends TeamOrPersonBase<Team> {
     @OrderColumn(name="sortIndex")
     @ListIndexBase(value=0)  //not really needed as this is the default
 	@ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@Match(MatchMode.MATCH)
 	private List<Person> teamMembers;
 

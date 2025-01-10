@@ -358,7 +358,7 @@ public class Reference
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private TeamOrPersonBase<?> authorship;
 
     @XmlElement(name ="authorIsEditor")

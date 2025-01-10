@@ -54,10 +54,10 @@ public class NameParserResult {
     }
 
     //authors
-    public Set<TeamOrPersonBase> getAuthors() {
+    public Set<TeamOrPersonBase<?>> getAuthors() {
         return Collections.unmodifiableSet(authors);
     }
-    public void addAuthor(TeamOrPersonBase author) {
+    public void addAuthor(TeamOrPersonBase<?> author) {
         this.authors.add(author);
     }
 

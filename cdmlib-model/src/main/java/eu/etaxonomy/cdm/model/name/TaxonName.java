@@ -407,7 +407,6 @@ public class TaxonName
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> combinationAuthorship;
