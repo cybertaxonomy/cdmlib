@@ -760,6 +760,7 @@ public class FullCoverageDataGenerator {
 		reference.setUri(URI.create("http://rer.abc.de"));
 
 		Reference journal = ReferenceFactory.newJournal();
+		entitiesToSave.add(journal);
 		reference.setInJournal(journal);
 
 		handleIdentifiableEntity(reference, entitiesToSave);

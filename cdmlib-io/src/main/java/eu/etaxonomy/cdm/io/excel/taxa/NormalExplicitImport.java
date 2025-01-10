@@ -839,6 +839,10 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 			    Reference ref = state.getReference(pub);
 			    if (ref == null){
 			        ref = parser.parseReferenceTitle(pub, date, true);
+			        entitiesToSave.add(ref);
+			        if (ref.getInReference() != null) {
+			            entitiesToSave.add(ref.getInReference());
+			        }
 			        state.putReference(pub, ref);
 			    }
 			    if (split.length > 1){

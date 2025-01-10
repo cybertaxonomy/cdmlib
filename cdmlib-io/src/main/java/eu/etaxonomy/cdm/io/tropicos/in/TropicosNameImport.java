@@ -111,7 +111,11 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         }
         state.getDeduplicationHelper().replaceAuthorNamesAndNomRef(name);
 
+        //
         getNameService().saveOrUpdate(name);
+        if (name.getNomenclaturalReference() != null && !name.getNomenclaturalReference().getInReference().isPersisted()) {
+            getReferenceService().save(name.getNomenclaturalReference().getInReference());
+        }
         state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);
 
         makeTaxon(state, name);

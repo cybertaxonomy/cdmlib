@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
@@ -129,6 +130,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private ITaxonService taxonService;
+
+    @SpringBeanByType
+    private IReferenceService referenceService;
 
     @SpringBeanByType
     private INameService nameService;
@@ -734,9 +738,10 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         germany.addAnnotation(Annotation.NewInstance("Missing Type Annotation", null, Language.DEFAULT()));
         //.... germany source
         Reference germanRef = ReferenceFactory.newArticle();
-        germanRef.setInJournal(ReferenceFactory.newJournal());
+        Reference inJournal = save(ReferenceFactory.newJournal());
+        germanRef.setInJournal(inJournal);
         germanRef.setTitle("Second ref article");
-        germanRef.getInJournal().setTitle("The journal");
+        inJournal.setTitle("The journal");
         germany.addPrimaryTaxonomicSource(germanRef, "22");
 
         factSet1.addElement(germany);
@@ -871,6 +876,11 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //use data
         //TODO
+    }
+
+    private Reference save(Reference ref) {
+        this.referenceService.save(ref);
+        return ref;
     }
 
     private void createTermTrees() {

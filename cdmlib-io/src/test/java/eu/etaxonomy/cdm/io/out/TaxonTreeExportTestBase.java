@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
@@ -43,9 +44,9 @@ import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -75,6 +76,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
+import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -181,6 +183,9 @@ public abstract class TaxonTreeExportTestBase
 
     @SpringBeanByType
     protected IAgentService agentService;
+
+    @SpringBeanByType
+    protected IReferenceService referenceService;
 
     @SpringBeanByType
     protected ICommonService commonService;
@@ -344,11 +349,9 @@ public abstract class TaxonTreeExportTestBase
 
         //family
         TaxonName familyName = createParsedName(parser, "Familyname L., Sp. Pl. 3: 22. 1752",
-                NomenclaturalCode.ICNAFP, Rank.FAMILY());
+                NomenclaturalCode.ICNAFP, Rank.FAMILY(), familyNameUuid, familyNomRefUuid);
         familyName.addStatus(NomenclaturalStatusType.CONSERVED(), null, null);
         addWfoIdentifier(familyName, familyWfoId);
-        setUuid(familyName, familyNameUuid);
-        setUuid(familyName.getNomenclaturalReference(), familyNomRefUuid);
         Taxon family = Taxon.NewInstance(familyName, sec1);
         setUuid(family, familyTaxonUuid);
         TaxonNode node1 = classification.addChildTaxon(family, sec1, "22");
@@ -357,10 +360,8 @@ public abstract class TaxonTreeExportTestBase
 
         //genus
         TaxonName genusName = createParsedName(parser, "Genus Humb., The book of botany 3: 22. 1804",
-                NomenclaturalCode.ICNAFP, Rank.GENUS());
+                NomenclaturalCode.ICNAFP, Rank.GENUS(), genusNameUuid, genusNomRefUuid);
         addWfoIdentifier(genusName, "WFO-12347g");
-        setUuid(genusName, genusNameUuid);
-        setUuid(genusName.getNomenclaturalReference(), genusNomRefUuid);
         Taxon genus = Taxon.NewInstance(genusName, ref1);
         setUuid(genus, genusTaxonUuid);
 
@@ -370,11 +371,9 @@ public abstract class TaxonTreeExportTestBase
 
         //species
         TaxonName speciesName = createParsedName(parser, "Genus species (Mill.) Hook in J. Appl. Synon. 5: 33. 1824",
-                NomenclaturalCode.ICNAFP, Rank.SPECIES());
+                NomenclaturalCode.ICNAFP, Rank.SPECIES(), speciesNameUuid, speciesNomRefUuid);
         addWfoIdentifier(speciesName, speciesWfoId);
         addIpniIdentifier(speciesName, "100000-3");
-        setUuid(speciesName, speciesNameUuid);
-        setUuid(speciesName.getNomenclaturalReference(), speciesNomRefUuid);
         Taxon species = Taxon.NewInstance(speciesName, ref2);
         setUuid(species, speciesTaxonUuid);
         TaxonNode node3 = node2.addChildTaxon(species, sec1, "33");
@@ -424,9 +423,7 @@ public abstract class TaxonTreeExportTestBase
 
         //subspecies
         TaxonName subspeciesName = createParsedName(parser, "Genus species subsp. subspec Mill., The book of botany 3: 22. 1804",
-                NomenclaturalCode.ICNAFP, Rank.SUBSPECIES());
-        setUuid(subspeciesName, subspeciesNameUuid);
-        setUuid(subspeciesName.getNomenclaturalReference(), subspeciesNomRefUuid);
+                NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), subspeciesNameUuid, subspeciesNomRefUuid);
         setUuid(subspeciesName.getHomotypicalGroup(), subspeciesNameHgUuid);
         addWfoIdentifier(subspeciesName, subspeciesWfoId);
 
@@ -511,24 +508,44 @@ public abstract class TaxonTreeExportTestBase
         commitAndStartNewTransaction(null);
     }
 
+
+    private TaxonName createParsedName(NonViralNameParserImpl parser, String str, NomenclaturalCode code, Rank rank,
+            UUID nameUuid, UUID nomRefUuid) {
+
+        NameParserResult result = parser.parseReferencedName2(str, code, rank);
+        result.getName().setUuid(nameUuid);
+        result.getName().getNomenclaturalReference().setUuid(nomRefUuid);
+
+        saveAgents(result.getAuthors());
+        saveReferences(result.getReferences());
+        saveNames(result.getOtherNames());
+        return result.getName();
+    }
+
     private TaxonName createParsedName(NonViralNameParserImpl parser, String str, NomenclaturalCode code, Rank rank) {
-        TaxonName name = parser.parseReferencedName(str, code, rank);
-        saveAgent(name.getCombinationAuthorship());
-        saveAgent(name.getExCombinationAuthorship());
-        saveAgent(name.getInCombinationAuthorship());
-        saveAgent(name.getBasionymAuthorship());
-        saveAgent(name.getExBasionymAuthorship());
-        saveAgent(name.getInBasionymAuthorship());
-        return name;
+
+        NameParserResult result = parser.parseReferencedName2(str, code, rank);
+        saveAgents(result.getAuthors());
+        saveReferences(result.getReferences());
+        saveNames(result.getOtherNames());
+        return result.getName();
     }
 
-    private void saveAgent(AgentBase<?> agent) {
-        agentService.save(agent);
+    private  void saveNames(Set<TaxonName> names) {
+        nameService.save(names);
     }
 
-    private AgentBase createTeam(String title, String nomTitle) {
+    private void saveReferences(Set<Reference> references) {
+        referenceService.save(references);
+    }
+
+    private void saveAgents(Set<TeamOrPersonBase<?>> agents) {
+        agentService.save(agents);
+    }
+
+    private Team createTeam(String title, String nomTitle) {
         Team team = Team.NewTitledInstance(title, nomTitle);
-        saveAgent(team);
+        agentService.save(team);
         return team;
     }
 
