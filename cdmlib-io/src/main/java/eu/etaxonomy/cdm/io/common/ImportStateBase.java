@@ -97,7 +97,8 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 
 	protected ImportStateBase(CONFIG config){
 		this.config = config;
-		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.PERSON_STORE, new MapWrapper<>(service));
+        stores.put(ICdmIO.TEAM_STORE, new MapWrapper<>(service));
 		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<>(service));
 		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<>(service));
 		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<>(service));

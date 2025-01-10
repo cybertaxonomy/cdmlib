@@ -257,6 +257,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"authorteam");
 				Statement stateAuthorTeam = nameAbout.getProperty(prop);
 				Team authorTeam = Team.NewInstance();
+				this.getAgentService().save(authorTeam);
 				authorTeam.setTitleCache(stateAuthorship.getObject().toString(), true);
 				Statement stateAutorTeamTeam = null;
 				Statement stateAutorTeamName = null;
@@ -283,6 +284,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 							if (memberString != null){
 								Person person = Person.NewTitledInstance(memberString);
 								authorTeam.addTeamMember(person);
+								this.getAgentService().save(person);
 							}
 						}
 					}catch(Exception e){

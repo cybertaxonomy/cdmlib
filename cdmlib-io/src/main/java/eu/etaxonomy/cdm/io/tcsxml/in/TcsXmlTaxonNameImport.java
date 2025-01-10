@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.INonViralName;
@@ -65,8 +66,9 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 	public void doInvoke(TcsXmlImportState state){
 
 		logger.info("start make TaxonNames ...");
-		MapWrapper<Person> authorMap = (MapWrapper<Person>)state.getStore(ICdmIO.TEAM_STORE);
-		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<Person> personMap = (MapWrapper<Person>)state.getStore(ICdmIO.PERSON_STORE);
+		MapWrapper<Person> teamMap = (MapWrapper<Person>)state.getStore(ICdmIO.TEAM_STORE);
+        MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap =  (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
@@ -195,6 +197,8 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			taxonNameMap.put(removeVersionOfRef(strId), handleTaxonNameElement(elTaxonName, success, state));
 		}
 		logger.info(i + " names handled");
+		getAgentService().save(personMap.getAllValues());
+		getAgentService().save(teamMap.getAllValues());
 		Collection<TaxonName> col = taxonNameMap.objects();
 		getNameService().save(col);
 
@@ -257,13 +261,18 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		return result;
 	}
 
-	public TaxonName handleTaxonNameElement(Element elTaxonName,  ResultWrapper<Boolean> success, TcsXmlImportState state){
-		Namespace tcsNamespace = state.getConfig().getTcsXmlNamespace();
-		MapWrapper<Person> authorMap = (MapWrapper<Person>)state.getStore(ICdmIO.TEAM_STORE);
-		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<Reference> referenceMap =  (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
+	public TaxonName handleTaxonNameElement(Element elTaxonName, ResultWrapper<Boolean> success, TcsXmlImportState state){
 
+	    Namespace tcsNamespace = state.getConfig().getTcsXmlNamespace();
 
+		@SuppressWarnings("unchecked")
+        MapWrapper<Person> personMap = (MapWrapper<Person>)state.getStore(ICdmIO.PERSON_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<Team> teamMap = (MapWrapper<Team>)state.getStore(ICdmIO.TEAM_STORE);
+        @SuppressWarnings("unchecked")
+        MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<Reference> referenceMap =  (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 
 		List<String> elementList = new ArrayList<>();
 		String idNamespace = "TaxonName";
@@ -307,7 +316,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			childName = "CanonicalAuthorship";
 			obligatory = false;
 			Element elCanonicalAuthorship = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
-			makeCanonicalAuthorship(nameBase, elCanonicalAuthorship, authorMap, success);
+			makeCanonicalAuthorship(nameBase, elCanonicalAuthorship, personMap, teamMap, success);
 			elementList.add(childName.toString());
 
 			childName = "PublishedIn";
@@ -361,10 +370,9 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		return null;
 	}
 
+	private void makeCanonicalAuthorship(TaxonName name, Element elCanonicalAuthorship, MapWrapper<Person> personMap, MapWrapper<Team> teamMap, ResultWrapper<Boolean> success){
 
-
-	private void makeCanonicalAuthorship(TaxonName name, Element elCanonicalAuthorship, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
-		if (elCanonicalAuthorship != null){
+	    if (elCanonicalAuthorship != null){
 			Namespace ns = elCanonicalAuthorship.getNamespace();
 
 			if (name.isNonViral()){
@@ -381,7 +389,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				childName = "Authorship";
 				obligatory = false;
 				Element elAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				TeamOrPersonBase<?> author = makeNameCitation(elAuthorship, authorMap, success);
+				TeamOrPersonBase<?> author = makeAuthorship(elAuthorship, personMap, teamMap, success);
 				nonViralName.setCombinationAuthorship(author);
 				//setCombinationAuthorship(author);
 				testNoMoreElements();
@@ -389,14 +397,14 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				childName = "BasionymAuthorship";
 				obligatory = false;
 				Element elBasionymAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				TeamOrPersonBase<?> basionymAuthor = makeNameCitation(elBasionymAuthorship, authorMap, success);
+				TeamOrPersonBase<?> basionymAuthor = makeAuthorship(elBasionymAuthorship, personMap, teamMap, success);
 				nonViralName.setBasionymAuthorship(basionymAuthor);
 				testNoMoreElements();
 
 				childName = "CombinationAuthorship";
 				obligatory = false;
 				Element elCombinationAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				TeamOrPersonBase<?> combinationAuthor = makeNameCitation(elCombinationAuthorship, authorMap ,success);
+				TeamOrPersonBase<?> combinationAuthor = makeAuthorship(elCombinationAuthorship, personMap, teamMap, success);
 				if (combinationAuthor != null){
 					nonViralName.setCombinationAuthorship(combinationAuthor);
 				}

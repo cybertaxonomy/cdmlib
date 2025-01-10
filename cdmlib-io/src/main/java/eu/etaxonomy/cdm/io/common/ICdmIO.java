@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 public interface ICdmIO<STATE extends IoStateBase> extends  IIoObservable {
 
 	final String TEAM_STORE = "team";
+	final String PERSON_STORE = "person";
 	final String REFERENCE_STORE = "reference";
 	final String NOMREF_STORE = "nomRef";
 	final String TAXONNAME_STORE = "taxonName";

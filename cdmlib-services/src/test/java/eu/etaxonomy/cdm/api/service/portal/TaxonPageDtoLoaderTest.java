@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NameRelationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
+import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -131,6 +132,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private INameService nameService;
+
+    @SpringBeanByType
+    private IAgentService agentService;
 
     @SpringBeanByType
     private IOccurrenceService occurrenceService;
@@ -635,6 +639,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     private Taxon createSynonymy() {
 
         Person author = Person.NewInstance("Mill.", "Miller", "M.M.", "Michael");
+        agentService.save(author);
         Reference nomRef = ReferenceFactory.newBook();
         nomRef.setTitle("My book");
         Reference nomRef2 = ReferenceFactory.newBook();
@@ -651,6 +656,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //homotyp. synonym
         Person author2 = Person.NewInstance("Noll.", "Noller", "N.N.", "Norman");
+        agentService.save(author2);
         TaxonName homSynName = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Genusnovus", null, "species", null, author2, nomRef2, "66", accName.getHomotypicalGroup());
         homSynName.setBasionymAuthorship(author);
@@ -662,6 +668,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //... with homonym relation
         Person author3 = Person.NewInstance("Woll.", "Woller", "W.W.", "Wotan");
+        agentService.save(author3);
         TaxonName earlierHomonym = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Genusnovus", null, "species", null, author3, nomRef, "666", null);
         NameRelationship rel = homSynName.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM());

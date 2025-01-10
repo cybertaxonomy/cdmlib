@@ -172,9 +172,10 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         try {
             taxonService.update(taxon);
-            Assert.fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
+            // disabled since #10524 because missing cascading for name.combinationAuthor
+            // will prevent from throwing the expected LIE
+            //Assert.fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
         } catch(LazyInitializationException lie) {
-
             if(!lie.getMessage().equals(LIE_TEAMMEMBERS_NOSESSION)) {
                 Assert.fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION);
             }
@@ -274,8 +275,10 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // create / save new taxon with name and author team with team member
 
         Team combAuthor = Team.NewTitledInstance("X-Men", "X-Men");
-        combAuthor.addTeamMember(Person.NewTitledInstance("Wolverine"));
-
+        Person person = Person.NewTitledInstance("Wolverine");
+        combAuthor.addTeamMember(person);
+        agentService.save(person);
+        agentService.save(combAuthor);
 
         TaxonName name = TaxonNameFactory.NewBotanicalInstance(null, "Pinus Alba", null, null, null, null, null, null,  null);
         name.setCombinationAuthorship(combAuthor);
@@ -296,7 +299,9 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         try {
             taxonService.update(taxon);
-            Assert.fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
+            // disabled since #10524 because missing cascading for name.combinationAuthor
+            // will prevent from throwing the expected LIE
+            //Assert.fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
         } catch(LazyInitializationException lie) {
             if(!lie.getMessage().equals(LIE_TEAMMEMBERS_NOSESSION)) {
                 Assert.fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION);

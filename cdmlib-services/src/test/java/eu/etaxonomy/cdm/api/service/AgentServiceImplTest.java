@@ -73,8 +73,9 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
     	person.setContact(getContact());
     	TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-    	name.setCombinationAuthorship(person);
     	person.addAnnotation(annotation);
+    	service.save(person);
+    	name.setCombinationAuthorship(person);
 
     	nameSerivce.save(name);
 

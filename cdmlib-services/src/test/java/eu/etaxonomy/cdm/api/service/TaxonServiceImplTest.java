@@ -100,6 +100,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     private IReferenceService referenceService;
 
     @SpringBeanByType
+    private IAgentService agentService;
+
+    @SpringBeanByType
     private IClassificationService classificationService;
 
     @SpringBeanByType
@@ -1975,6 +1978,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Person deCandolle = Person.NewInstance();
         deCandolle.setTitleCache("DC.", true);
+        agentService.save(deCandolle);
 
         Reference sec = ReferenceFactory.newDatabase();
         sec.setTitleCache("Flora lunaea", true);
@@ -1985,7 +1989,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         IBotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         botName.setTitleCache("Hieracium L.", true);
         botName.setGenusOrUninomial("Hieracium");
-        botName.setCombinationAuthorship(Person.NewInstance());
+        botName.setCombinationAuthorship(createPerson());
         botName.getCombinationAuthorship().setNomenclaturalTitleCache("L.", true);
         botName.setUuid(GENUS_NAME_UUID);
         Taxon genusTaxon = Taxon.NewInstance(botName, sec);
@@ -2004,7 +2008,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         botSpecies.setTitleCache("Hieracium asturianum Pau", true);
         botSpecies.setGenusOrUninomial("Hieracium");
         botSpecies.setSpecificEpithet("asturianum");
-        botSpecies.setCombinationAuthorship(Person.NewInstance());
+        botSpecies.setCombinationAuthorship(createPerson());
         botSpecies.getCombinationAuthorship().setNomenclaturalTitleCache("Pau", true);
         botSpecies.setUuid(SPECIES1_NAME_UUID);
         Taxon childTaxon = Taxon.NewInstance(botSpecies, sec);
@@ -2034,7 +2038,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         botSpecies2.setTitleCache("Hieracium wolffii Zahn", true);
         botSpecies2.setGenusOrUninomial("Hieracium");
         botSpecies2.setSpecificEpithet("wolffii");
-        botSpecies2.setCombinationAuthorship(Person.NewInstance());
+        botSpecies2.setCombinationAuthorship(createPerson());
         botSpecies2.getCombinationAuthorship().setNomenclaturalTitleCache("Zahn", true);
         botSpecies2.setUuid(SPECIES2_NAME_UUID);
         Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec);
@@ -2069,6 +2073,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         service.save(misappliedNameTaxon);
 
         return genusTaxon;
+    }
+
+    private Person createPerson() {
+        Person person = Person.NewInstance();
+        agentService.save(person);
+        return person;
     }
 
     public TaxonDescription getTestDescription(int index){

@@ -70,6 +70,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
+import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -427,8 +428,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
      */
     protected TaxonName parseScientificName(String scientificName, STATE state, SpecimenImportReport report, Rank rank) {
 
-        NonViralNameParserImpl nvnpi = NonViralNameParserImpl.NewInstance();
-        TaxonName taxonName = null;
+        NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
+        NameParserResult parseResult;
         boolean problem = false;
 
         if (logger.isDebugEnabled()){
@@ -436,29 +437,25 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
 
         if (state.getDataHolder().getNomenclatureCode() != null && (state.getDataHolder().getNomenclatureCode().toString().equals("Zoological") || state.getDataHolder().getNomenclatureCode().toString().contains("ICZN"))) {
-            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICZN, rank);
-            if (taxonName.hasProblem()) {
-                problem = true;
-            }
+            parseResult = parser.parseFullName2(scientificName, NomenclaturalCode.ICZN, rank);
         }
         else if (state.getDataHolder().getNomenclatureCode() != null && (state.getDataHolder().getNomenclatureCode().toString().equals("Botanical") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN")  || state.getDataHolder().getNomenclatureCode().toString().contains("ICNAFP"))) {
-            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNAFP, rank);
-            if (taxonName.hasProblem()) {
-                problem = true;
-            }
+            parseResult = parser.parseFullName2(scientificName, NomenclaturalCode.ICNAFP, rank);
         }
         else if (state.getDataHolder().getNomenclatureCode() != null && (state.getDataHolder().getNomenclatureCode().toString().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN"))) {
-            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNP, rank);
-            if (taxonName.hasProblem()) {
-                problem = true;
-            }
+            parseResult = parser.parseFullName2(scientificName, NomenclaturalCode.ICNP, rank);
         }
         else if (state.getDataHolder().getNomenclatureCode() != null && (state.getDataHolder().getNomenclatureCode().toString().equals("Cultivar") || state.getDataHolder().getNomenclatureCode().toString().contains("ICNCP"))) {
-            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNCP, rank);
-            if (taxonName.hasProblem()) {
-                problem = true;
-            }
+            parseResult = parser.parseFullName2(scientificName, NomenclaturalCode.ICNCP, rank);
+        }else {
+            logger.warn("Unsupported nomenclatural code: " + state.getDataHolder().getNomenclatureCode().toString());
+            parseResult = new NameParserResult(null);
         }
+        TaxonName taxonName = parseResult.getName();
+        if (taxonName != null && taxonName.hasProblem()) {
+            problem = true;
+        }
+
         if (problem) {
             String message = String.format("Parsing problems for %s", scientificName);
             if(taxonName!=null){
@@ -469,6 +466,10 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             report.addInfoMessage(message);
             logger.info(message);
         }
+        parseResult.getAuthors().forEach(a->save(a, state));
+        parseResult.getOtherNames().forEach(n->save(n, state));
+        parseResult.getReferences().forEach(r->save(r, state));
+
         return taxonName;
 
     }

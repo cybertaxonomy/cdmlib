@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -67,6 +66,7 @@ import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
@@ -233,6 +233,8 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 	@Override
     protected void firstPass(TaxonExcelImportState state) {
 
+	    Set<CdmBase> entitiesToSave = new HashSet<>();
+
 //		if (1==1){
 //			return;
 //		}
@@ -330,7 +332,9 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 			    return;
 			}
 			 //taxon
-            taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, publishingAuthor, basionymAuthor, referenceStr, dateStr, nameStatus, taxonomicStatus);
+            taxonBase = findOrCreateTaxon(state, rank, taxonNameStr, authorStr,
+                    publishingAuthor, basionymAuthor, referenceStr, dateStr,
+                    nameStatus, taxonomicStatus, entitiesToSave);
 		}
 
 		if (taxonBase == null){
@@ -370,6 +374,8 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		//save
 		//state.putTaxon(id, taxonBase);
 		taxonBase = getTaxonService().save(taxonBase);
+		getCommonService().save(entitiesToSave);
+
 		taxonDataHolder.setCdmUuid(taxonBase.getUuid());
 		if (id == "0"){
 		    state.putTaxon(taxonNameStr, taxonBase);
@@ -719,19 +725,14 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		}
 	}
 
+	private TaxonBase<?> createTaxon(TaxonExcelImportState state, Rank rank,
+	        String familyNameStr, String infraFamilyNameStr, String genusNameStr,
+	        String infraGenusNameStr, String speciesNameStr, String infraSpeciesNameStr,
+	        String authorStr, String publishingAuthorStr, String basionymAuthorStr,
+	        String reference, String date, String nameStatus, String taxonomicStatus,
+	        Set<CdmBase> entitiesToSave) {
 
-	/**
-	 * @param state
-	 * @param rank
-	 * @param taxonNameStr
-	 * @param authorStr
-	 * @param nameStatus
-	 * @param nameStatus2
-	 * @return
-	 */
-	private TaxonBase createTaxon(TaxonExcelImportState state, Rank rank,
-	        String familyNameStr, String infraFamilyNameStr, String genusNameStr, String infraGenusNameStr, String speciesNameStr, String infraSpeciesNameStr, String authorStr, String publishingAuthorStr, String basionymAuthorStr,String reference, String date, String nameStatus, String taxonomicStatus) {
-		// Create the taxon name object depending on the setting of the nomenclatural code
+	    // Create the taxon name object depending on the setting of the nomenclatural code
 		// in the configurator (botanical code, zoological code, etc.)
 
 		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
@@ -760,22 +761,17 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 			logger.info("Matching taxon/synonym found for " + nameCache);
 			return null;
 		}else {
-			taxonBase = createTaxon(state, rank, nameCache, authorStr, publishingAuthorStr, basionymAuthorStr, reference, date, nameStatus, taxonomicStatus, nc);
+			taxonBase = createTaxon(state, rank, nameCache, authorStr, publishingAuthorStr,
+			        basionymAuthorStr, reference, date, nameStatus, taxonomicStatus, nc, entitiesToSave);
 		}
 		return taxonBase;
 	}
 
-	/**
-     * @param state
-     * @param rank
-     * @param taxonNameStr
-     * @param authorStr
-     * @param nameStatus
-     * @param nameStatus2
-     * @return
-     */
-    private TaxonBase createTaxon(TaxonExcelImportState state, Rank rank,
-            String taxonNameStr, String authorStr, String publishingAuthorStr, String basionymAuthorStr,String reference, String date, String nameStatus, String taxonomicStatus) {
+    private TaxonBase<?> findOrCreateTaxon(TaxonExcelImportState state, Rank rank,
+            String taxonNameStr, String authorStr, String publishingAuthorStr,
+            String basionymAuthorStr, String reference, String date, String nameStatus,
+            String taxonomicStatus, Set<CdmBase> entitiesToSave) {
+
         // Create the taxon name object depending on the setting of the nomenclatural code
         // in the configurator (botanical code, zoological code, etc.)
         if (StringUtils.isBlank(taxonNameStr)){
@@ -799,23 +795,28 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
             logger.info("Matching taxon/synonym found for " + titleCache + " - "+taxonBase.getTitleCache());
             return null;
         }else {
-            taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, publishingAuthorStr, basionymAuthorStr, reference, date, nameStatus, taxonomicStatus, nc);
+            taxonBase = createTaxon(state, rank, taxonNameStr, authorStr, publishingAuthorStr, basionymAuthorStr,
+                    reference, date, nameStatus, taxonomicStatus, nc, entitiesToSave);
         }
         return taxonBase;
     }
 
 	private TaxonBase<?> createTaxon(TaxonExcelImportState state, Rank rank, String taxonNameStr,
-			String authorStr, String publishingAutorStr, String basionymAuthor, String reference, String date, String nameStatus, String taxonomicStatus, NomenclaturalCode nc) {
-		TaxonBase<?> taxonBase;
-		INonViralName taxonName = null;
-		if (nc == NomenclaturalCode.ICVCN){
-			logger.warn("ICVCN not yet supported");
+			String authorStr, String publishingAutorStr, String basionymAuthor, String reference,
+			String date, String nameStatus, String taxonomicStatus, NomenclaturalCode nc,
+			Set<CdmBase> entitiesToSave) {
 
+	    TaxonBase<?> taxonBase;
+		TaxonName taxonName;
+		if (nc == NomenclaturalCode.ICVCN){
+			throw new RuntimeException("ICVCN not yet supported");
 		}else{
 		    //String taxonNameStr = titleCache.substring(0, titleCache.indexOf(authorStr));
-			taxonName = nc.getNewTaxonNameInstance(rank);
-			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
-			taxonName = parser.parseFullName(taxonNameStr, nc, rank);
+			NonViralNameParserImpl parser = NonViralNameParserImpl.DefaultInstance();
+
+			NameParserResult parserResult = parser.parseFullName2(taxonNameStr, nc, rank);
+			taxonName = parserResult.getName();
+			entitiesToSave.addAll(parserResult.getAllEntities());
 
 			if (! taxonName.getNameCache().equals(taxonNameStr)){
 				taxonName.setNameCache(taxonNameStr, true);
@@ -824,7 +825,8 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 			// Create the author
 			if (StringUtils.isNotBlank(authorStr)) {
 				try {
-					parser.parseAuthors(taxonName, authorStr);
+					NameParserResult authorParserResult = parser.parseAuthors2(taxonName, authorStr);
+					entitiesToSave.addAll(authorParserResult.getAllEntities());
 				} catch (StringNotParsableException e) {
 					taxonName.setAuthorshipCache(authorStr);
  				}
@@ -836,7 +838,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 
 			    Reference ref = state.getReference(pub);
 			    if (ref == null){
-			        ref = (Reference)parser.parseReferenceTitle(pub, date, true);
+			        ref = parser.parseReferenceTitle(pub, date, true);
 			        state.putReference(pub, ref);
 			    }
 			    if (split.length > 1){

@@ -288,7 +288,9 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	}
 
 	@SuppressWarnings("unchecked")
-	protected TeamOrPersonBase<?> makeNameCitation(Element elNameCitation, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
+	protected TeamOrPersonBase<?> makeAuthorship(Element elNameCitation, MapWrapper<Person> personMap,
+	        MapWrapper<Team> teamMap, ResultWrapper<Boolean> success){
+
 		TeamOrPersonBase<?> result = null;
 		String childName;
 		boolean obligatory;
@@ -307,31 +309,37 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 				    Team team = Team.NewInstance();
 				    result = team;
 					for(Element elAgent : elAgentList){
-						Person teamMember = makeAgent(elAgent, ns, authorMap, success);
+						Person teamMember = makeAgent(elAgent, ns, personMap, success);
 						team.addTeamMember(teamMember);
 					}
+					teamMap.put(team.getUuid(), team);
 				}else if(elAgentList.size() == 1){
-					result = makeAgent(elAgentList.get(0), ns, authorMap, success);
+					result = makeAgent(elAgentList.get(0), ns, personMap, success);
 				}
 			}else{
 				childName = "Simple";
 				obligatory = true;
 				Element elSimple = XmlHelp.getSingleChildElement(success, elNameCitation, childName, ns, obligatory);
 				String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
-				result = Team.NewInstance();
-				result.setNomenclaturalTitleCache(simple, true);
+				Team team = Team.NewInstance();
+				team.setNomenclaturalTitleCache(simple, true);
+				teamMap.put(team.getUuid(), team);
+				result = team;
 			}
 		}
 		return result;
 	}
 
-	private Person makeAgent(Element elAgentName, Namespace ns, MapWrapper<Person> agentMap, ResultWrapper<Boolean> success){
-		Person result = null;
+	private Person makeAgent(Element elAgentName, Namespace ns,
+	        MapWrapper<Person> personMap, ResultWrapper<Boolean> success){
+
+	    Person result = null;
 		if (elAgentName != null){
 			String authorTitle = elAgentName.getTextNormalize();
 			result = Person.NewTitledInstance(authorTitle);
+			personMap.put(result.getUuid(), result);
 			Class<? extends Person> clazz = Person.class;
-			result = makeReferenceType(elAgentName, clazz, agentMap, success);
+//			result = makeReferenceType(elAgentName, clazz, personMap, success);
 			return result;
 		}else{
 			return null;

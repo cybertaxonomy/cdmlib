@@ -66,6 +66,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
+import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
@@ -389,8 +390,8 @@ public class SpecimenCdmExcelImport
 		}
 	}
 
-	private void handleDeterminations(SpecimenCdmExcelImportState state,SpecimenRow row, DerivedUnitFacade facade,
-	        Set<AgentBase> agentsToSave) {
+	private void handleDeterminations(SpecimenCdmExcelImportState state,SpecimenRow row,
+	        DerivedUnitFacade facade, Set<AgentBase> agentsToSave) {
 
 		boolean isFirstDetermination = true;
 		DeterminationLight commonDetermination = row.getCommonDetermination();
@@ -418,6 +419,9 @@ public class SpecimenCdmExcelImport
 			}else{
 				commonTaxon = createTaxonFromDetermination(state, commonDetermination);
 				commonName = commonTaxon.getName();
+			}
+			if (!commonName.isPersisted()) {
+			    saveAuthors(commonName);
 			}
 		}
 
@@ -474,7 +478,26 @@ public class SpecimenCdmExcelImport
 		}
 	}
 
-	private Taxon createTaxonFromDetermination( SpecimenCdmExcelImportState state, DeterminationLight commonDetermination) {
+    private void saveAuthors(TaxonName commonName) {
+        saveAuthor(commonName.getCombinationAuthorship());
+        saveAuthor(commonName.getExCombinationAuthorship());
+        saveAuthor(commonName.getInCombinationAuthorship());
+        saveAuthor(commonName.getBasionymAuthorship());
+        saveAuthor(commonName.getExBasionymAuthorship());
+        saveAuthor(commonName.getInBasionymAuthorship());
+    }
+
+    private void saveAuthor(TeamOrPersonBase<?> author) {
+        if (author == null || author.isPersisted()) {
+            return;
+        } else if (author.isInstanceOf(Team.class)) {
+            CdmBase.deproxy(author, Team.class).getTeamMembers().forEach(m->saveAuthor(m));
+        } else {
+            getAgentService().save(author);
+        }
+    }
+
+    private Taxon createTaxonFromDetermination( SpecimenCdmExcelImportState state, DeterminationLight commonDetermination) {
 
 		//rank
 		Rank rank;
@@ -820,7 +843,10 @@ public class SpecimenCdmExcelImport
 		if (result == null){
 			NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 			NomenclaturalCode code = state.getConfig().getNomenclaturalCode();
-			result = (TaxonName)parser.parseFullName(name, code, null);
+			NameParserResult parseResult = parser.parseFullName2(name, code, null);
+			result = parseResult.getName();
+			//other entities not easy to use here because the parsing is done in the analyze context
+			//but maybe not necessary because only fullName parsing, no references etc.
 		}
 		if (result != null){
 			state.putName(name, result);
