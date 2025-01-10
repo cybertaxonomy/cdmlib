@@ -159,4 +159,6 @@ public interface INonViralNameParser<T extends INonViralName> extends IStrategy 
      */
     public NameParserResult parseAuthors2(TaxonName nonViralNameOrig, String authorString) throws StringNotParsableException;
 
+    public NameParserResult parseReferencedName2(String fullReferenceString, NomenclaturalCode nomCode, Rank rank);
+
 }

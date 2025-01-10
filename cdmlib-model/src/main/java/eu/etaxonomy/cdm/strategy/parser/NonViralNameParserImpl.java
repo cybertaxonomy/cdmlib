@@ -170,15 +170,25 @@ public class NonViralNameParserImpl
 		return parseReferencedName(fullReferenceString, null, null);
 	}
 
+    @Override
+    public NameParserResult parseReferencedName2(String fullReferenceString, NomenclaturalCode nomCode,
+            Rank rank) {
+
+        if (fullReferenceString == null){
+            return new NameParserResult(null);
+        }else{
+            INonViralName nameToBeFilled = getNonViralNameInstance(fullReferenceString, nomCode, rank);
+            NameParserResult result = parseReferencedName(nameToBeFilled, fullReferenceString, rank, MAKE_EMPTY);
+            return result;
+        }
+    }
+
 	@Override
-    public TaxonName parseReferencedName(String fullReferenceString, NomenclaturalCode nomCode, Rank rank) {
-		if (fullReferenceString == null){
-			return null;
-		}else{
-		    INonViralName nameToBeFilled = getNonViralNameInstance(fullReferenceString, nomCode, rank);
-			parseReferencedName(nameToBeFilled, fullReferenceString, rank, MAKE_EMPTY);
-			return TaxonName.castAndDeproxy(nameToBeFilled);
-		}
+    public TaxonName parseReferencedName(String fullReferenceString, NomenclaturalCode nomCode,
+            Rank rank) {
+
+	    NameParserResult result = this.parseReferencedName2(fullReferenceString, nomCode, rank);
+	    return result.getName();
 	}
 
 	private String standardize(INonViralName nameToBeFilled, String fullReferenceString, boolean makeEmpty){
@@ -253,7 +263,7 @@ public class NonViralNameParserImpl
 	    //standardize
 		String fullReferenceString = standardize(nameToBeFilled, fullReferenceStringOrig, makeEmpty);
 		if (fullReferenceString == null){
-			return new NameParserResult(null);
+			return new NameParserResult((TaxonName)nameToBeFilled);
 		}
 		// happens already in standardize(...)
 //		makeProblemEmpty(nameToBeFilled);
