@@ -25,17 +25,14 @@ import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dto.TeamOrPersonUuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -72,42 +69,11 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	}
 
 	@Override
-    public long countInstitutionalMemberships(Person person) {
-		AuditEvent auditEvent = getAuditEventFromContext();
-		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query<Long> query = getSession().createQuery("select count(institutionalMembership) from InstitutionalMembership institutionalMembership where institutionalMembership.person = :person", Long.class);
-		    query.setParameter("person", person);
-		    return query.uniqueResult();
-		} else {
-			AuditQuery query = makeAuditQuery(InstitutionalMembership.class, auditEvent);
-			query.add(AuditEntity.relatedId("person").eq(person.getId()));
-			query.addProjection(AuditEntity.id());
-			return (Long)query.getSingleResult();
-		}
-	}
-
-	@Override
     public long countMembers(Team team) {
 		checkNotInPriorView("AgentDaoImpl.countMembers(Team team)");
 		Query<Long> query = getSession().createQuery("select count(teamMember) from Team team join team.teamMembers teamMember where team = :team", Long.class);
 		query.setParameter("team", team);
 		return query.uniqueResult();
-	}
-
-	@Override
-    public List<InstitutionalMembership> getInstitutionalMemberships(Person person, Integer pageSize, Integer pageNumber) {
-		AuditEvent auditEvent = getAuditEventFromContext();
-		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query<InstitutionalMembership> query = getSession().createQuery("select institutionalMembership from InstitutionalMembership institutionalMembership left join fetch institutionalMembership.institute where institutionalMembership.person = :person", InstitutionalMembership.class);
-		    query.setParameter("person", person);
-		    addPageSizeAndNumber(query, pageSize, pageNumber);
-			return query.list();
-		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(InstitutionalMembership.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.relatedId("person").eq(person.getId()));
-			addPageSizeAndNumber(query, pageSize, pageNumber);
-			return query.getResultList();
-		}
 	}
 
 	@Override
@@ -119,39 +85,6 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		addPageSizeAndNumber(query, pageSize, pageNumber);
         List<Person> result = query.list();
 		return result;
-	}
-
-	@Override
-    public long countAddresses(AgentBase agent) {
-		checkNotInPriorView("AgentDaoImpl.countAddresses(AgentBase agent)");
-		Query<Long> query = getSession().createQuery("select count(address) from AgentBase agent join agent.contact.addresses address where agent = :agent", Long.class);
-		query.setParameter("agent", agent);
-		return query.uniqueResult();
-	}
-
-	@Override
-    public List<Address> getAddresses(AgentBase agent, Integer pageSize,Integer pageNumber) {
-		checkNotInPriorView("AgentDaoImpl.getAddresses(AgentBase agent, Integer pageSize,Integer pageNumber)");
-		Query<Address> query = getSession().createQuery("select address from AgentBase agent join agent.contact.addresses address where agent = :agent", Address.class);
-		query.setParameter("agent", agent);
-		addPageSizeAndNumber(query, pageSize, pageNumber);
-        List<Address> result = query.list();
-        return result;
-	}
-
-	@Override
-	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle() {
-		List<UuidAndTitleCache<Team>> list = new ArrayList<>();
-		Session session = getSession();
-
-		Query<Object[]> query = session.createQuery("select uuid, id, nomenclaturalTitleCache from " + type.getSimpleName() + " where dtype = 'Team'", Object[].class);
-
-		List<Object[]> result = query.list();
-
-		for(Object[] object : result){
-			list.add(new UuidAndTitleCache<>(Team.class, (UUID) object[0], (Integer)object[1], (String) object[2]));
-		}
-		return list;
 	}
 
 	@Override

@@ -26,7 +26,6 @@ import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -34,7 +33,6 @@ import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -99,28 +97,6 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet
-    public void testCountInstitutionalMemberships() {
-        Person person = (Person)agentDao.findByUuid(personUuid);
-        assert person != null : "person must exist";
-
-        long numberOfInstitutionalMemberships = agentDao.countInstitutionalMemberships(person);
-        assertEquals("countInstitutionalMemberships should return 3",3,numberOfInstitutionalMemberships);
-    }
-
-    @Test
-    @DataSet
-    public void testGetInstitutionalMemberships() {
-        Person person = (Person)agentDao.findByUuid(personUuid);
-        assert person != null : "person must exist";
-
-        List<InstitutionalMembership> memberships = agentDao.getInstitutionalMemberships(person, null, null);
-        assertNotNull("getInstitutionalMemberships should return a List", memberships);
-        assertFalse("getInstitutionalMemberships should not be empty",memberships.isEmpty());
-        assertEquals("getInstitutionalMemberships should return 3 institutional membership instances",3,memberships.size());
-    }
-
-    @Test
     @DataSet("AgentDaoImplTest.testSave.xml")
     @ExpectedDataSet
     public void testSave() {
@@ -128,14 +104,6 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         person.setGivenName("ben");
         agentDao.save(person);
         commit();
-    }
-
-    @Test
-    @DataSet
-    public void testGetTeamUuidAndNomenclaturalTitle() {
-        List<UuidAndTitleCache<Team>> list = agentDao.getTeamUuidAndNomenclaturalTitle();
-        Assert.assertEquals(1, list.size());
-        Assert.assertEquals(UUID.fromString("924fa059-1b83-45f8-bc3a-e754d2757364"), list.get(0).getUuid());
     }
 
     @Test
