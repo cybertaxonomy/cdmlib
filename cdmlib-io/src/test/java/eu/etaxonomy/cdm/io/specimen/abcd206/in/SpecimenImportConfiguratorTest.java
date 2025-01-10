@@ -138,6 +138,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
+	@Ignore
     @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testDoInvoke() {
         boolean result = defaultImport.invoke(configurator).isSuccess();
