@@ -44,6 +44,7 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
 
     @Override
     public List<UuidAndTitleCache<Rights>> getUuidAndTitleCache(Integer limit, String pattern) {
+
         List<UuidAndTitleCache<Rights>> list = new ArrayList<>();
         Session session = getSession();
 

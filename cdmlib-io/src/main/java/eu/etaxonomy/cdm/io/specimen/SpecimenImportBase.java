@@ -1559,7 +1559,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
     }
 
-
     public static TeamOrPersonBase<?> parseCollectorString(String collectorStr){
         TeamOrPersonBase<?> author = null;
         String[] teamMembers = collectorStr.split(authorSeparator);

@@ -514,13 +514,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             // look for existing fieldUnit
             FieldUnit fieldUnit = null;
-            if (StringUtils.isNotBlank(state.getDataHolder().getFieldNumber()) && !state.getDataHolder().getFieldNumber().equals("0") && !state.getDataHolder().getFieldNumber().equals("s.n.")){
-                fieldUnit = state.getFieldUnit(state.getDataHolder().getFieldNumber());
+            String fieldNumber = state.getDataHolder().getFieldNumber();
+            if (isNotBlank(fieldNumber) && !fieldNumber.equals("0") && !fieldNumber.equals("s.n.")){
+                fieldUnit = state.getFieldUnit(fieldNumber);
                 if (fieldUnit != null){
                     state.setLastFieldUnit(fieldUnit);
                 }
             }else{
-                if (StringUtils.isBlank(state.getDataHolder().getFieldNumber())|| state.getDataHolder().getFieldNumber().equals("0") || state.getDataHolder().getFieldNumber().equals("s.n.")){
+                if (isBlank(fieldNumber)|| fieldNumber.equals("0") || fieldNumber.equals("s.n.")){
                     state.getReport().addInfoMessage("Field Unit without field number: " + state.getDataHolder().locality + ", " + state.getDataHolder().gatheringAgentsText);
                 }
 //                else {
@@ -533,7 +534,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     fieldUnit = state.getLastFieldUnit();
                 }else {
                     fieldUnit = FieldUnit.NewInstance();
-                    fieldUnit.setFieldNumber(state.getDataHolder().getFieldNumber());
+                    fieldUnit.setFieldNumber(fieldNumber);
                     state.setLastFieldUnit(fieldUnit);
                 }
             }
@@ -555,13 +556,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             // unitsGatheringEvent.setHeight(heightText, heightMin, heightMax,
             // heightUnit);
             if (state.getDataHolder().gatheringAgentsList.isEmpty()) {
-                Person person = state.getPersonStoreCollector().get(state.getDataHolder().gatheringAgentsText);
+                String agentsText = state.getDataHolder().gatheringAgentsText;
+                Person person = state.getPersonStoreCollector().get(agentsText);
                 Team team = null;
                 if (person == null) {
-                    team = state.getTeamStoreCollector().get(state.getDataHolder().gatheringAgentsText);
+                    team = state.getTeamStoreCollector().get(agentsText);
                 }
                 if (team == null && person == null){
-                    TeamOrPersonBase teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsText);
+                    TeamOrPersonBase teamOrPerson = parseCollectorString(agentsText);
                     if (teamOrPerson != null){
                         if (teamOrPerson instanceof Person) {
                             state.getPersonStoreCollector().put(teamOrPerson.getTitleCache(), (Person)teamOrPerson);
@@ -691,12 +693,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 //TODO??
             }
 
-
             // derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
             // TODO exsiccatum
 
             // add fieldNumber
-            String fieldNumber = null;
             if (derivedUnitFacade.getFieldUnit(false) != null) {
                 fieldNumber = derivedUnitFacade.getFieldUnit(false).getFieldNumber();
                 if (fieldNumber == null){
@@ -739,6 +739,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     }
                 }
             }
+
             // multimedia for fieldUnit
             if (state.getDataHolder().getGatheringMultimediaObjects().size() != -1) {
                 for (String multimediaObject : state.getDataHolder().getGatheringMultimediaObjects().keySet()) {
@@ -769,8 +770,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             Map<String, OriginalSourceBase> sourceMap = new HashMap<>();
 
             state.getDataHolder().setDocSources(new ArrayList<>());
-
-
 
             IdentifiableSource sour = getIdentifiableSource(state.getImportReference(state.getActualAccessPoint()), null);
             String idInSource = derivedUnitFacade.getAccessionNumber() != null ? derivedUnitFacade.getAccessionNumber()
@@ -1172,6 +1171,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param state
      */
     protected void setCollectionData(Abcd206ImportState state, DerivedUnitFacade derivedUnitFacade) {
+
         Abcd206ImportConfigurator config = state.getConfig();
         SpecimenImportUtility.setUnitID(derivedUnitFacade.innerDerivedUnit(), state.getDataHolder().getUnitID(),
                 config);

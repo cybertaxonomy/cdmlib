@@ -143,7 +143,6 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	return contact;
     }
 
-
     @Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
@@ -187,6 +186,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testConvertTeam2PersonWithMember(){
+
     	String fullAuthor = "Original author";
     	String nomTitle = "Abrev. aut.";
     	Team team = Team.NewTitledInstance(fullAuthor, nomTitle);

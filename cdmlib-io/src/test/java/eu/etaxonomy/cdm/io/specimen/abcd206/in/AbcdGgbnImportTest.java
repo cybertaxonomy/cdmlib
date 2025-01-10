@@ -103,6 +103,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testImportTwoDnaUnitsWithTwoTaxa() throws ParseException {
+
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_2taxa.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
@@ -204,7 +205,8 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	@Test
     @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportUnitsWithoutFieldNumbers() {
-        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_test_missing_fieldnumber.xml";
+
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_test_missing_fieldnumber.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 
@@ -383,6 +385,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testImportAssociatedSpecimenSameIndividual() throws ParseException {
+
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_parent_child_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
 	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
@@ -442,6 +445,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 //	@Ignore
 	public void testImportAssociatedSpecimenSamePopulation() {
+
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sibling_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
 	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);

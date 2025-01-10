@@ -785,6 +785,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public void testMergePersons() throws MergeException {
+
         Team team1 = Team.NewInstance();
         Team team2 = Team.NewInstance();
         Team team3 = Team.NewInstance();
@@ -1341,6 +1342,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         UUID uuidTeam1 = cdmGenericDao.saveOrUpdate(team1);
         UUID uuidTeam2 = cdmGenericDao.saveOrUpdate(team2);
         commitAndStartNewTransaction();
+
         team1 = (Team) cdmGenericDao.findByUuid(uuidTeam1);
         team2 = (Team) cdmGenericDao.findByUuid(uuidTeam2);
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedCollectorPersonInstance();
