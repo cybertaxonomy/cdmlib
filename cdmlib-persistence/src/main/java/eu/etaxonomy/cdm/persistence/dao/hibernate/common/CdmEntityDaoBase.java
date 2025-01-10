@@ -358,6 +358,13 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
+    public void save(T newInstance1, T newInstance2) throws DataAccessException {
+        save(newInstance1);
+        save(newInstance2);
+    }
+
+
+    @Override
     public <S extends T> S save(S newInstance) throws DataAccessException {
         if (newInstance == null) {
             logger.warn("Object to save should not be null. NOP");
