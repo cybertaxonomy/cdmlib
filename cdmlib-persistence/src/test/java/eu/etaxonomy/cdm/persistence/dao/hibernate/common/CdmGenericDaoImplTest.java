@@ -639,6 +639,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	@Test
 	public void testMergeTaxonNameAndTaxon() throws MergeException {
+
 	    TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
 

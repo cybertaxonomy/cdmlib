@@ -474,7 +474,6 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         assertNull(taxonBase3.getSec());
     }
 
-
     /**
      * Persist data in two different , successive transactions from different conversations
      */

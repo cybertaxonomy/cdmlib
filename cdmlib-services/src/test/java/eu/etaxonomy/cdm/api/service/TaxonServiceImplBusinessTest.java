@@ -210,7 +210,8 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 	@Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/ClearDBDataSet.xml")
 	public final void testChangeSynonymToRelatedTaxon() {
-		t1.addSynonym(s1, homoTypicSynonymType);
+
+	    t1.addSynonym(s1, homoTypicSynonymType);
 		t1.addSynonym(s2, homoTypicSynonymType);
 		Set<TaxonBase> newInstances = new HashSet<>();
 		newInstances.add(s1);

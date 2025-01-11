@@ -123,20 +123,19 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     //   YUG-KO	Kosovo
     //   YUG-MA	Macedonia
     //   YUG-MN	Montenegro
-    private NamedArea yug = null;
-    private NamedArea yug_bh = null;
-    private NamedArea yug_cr = null;
-    private NamedArea yug_ko = null;
-    private NamedArea yug_ma = null;
-    private NamedArea yug_mn = null;
+    private NamedArea yug;
+    private NamedArea yug_bh;
+    private NamedArea yug_cr;
+    private NamedArea yug_ko;
+    private NamedArea yug_ma;
+    private NamedArea yug_mn;
 
-    List<UUID> superAreas = null;
-    Rank upperRank = null;
-    Rank lowerRank = null;
+    List<UUID> superAreas;
+    Rank upperRank;
+    Rank lowerRank;
 
-
-    private Reference book_a = null;
-    private Reference book_b = null;
+    private Reference book_a;
+    private Reference book_b;
 
     private TermTree<PresenceAbsenceTerm> statusOrder;
 
@@ -721,6 +720,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
     private Distribution newDistribution(Reference reference, NamedArea area, PresenceAbsenceTerm status,
             String microCitation) {
+
         Distribution distribution = Distribution.NewInstance(area, status);
         distribution.addPrimaryTaxonomicSource(reference, microCitation);
         return distribution;

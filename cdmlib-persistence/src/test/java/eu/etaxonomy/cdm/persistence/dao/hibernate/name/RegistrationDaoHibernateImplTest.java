@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 05.05.2017
  */
-public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrationTest {
+public class RegistrationDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IRegistrationDao registrationDao;
@@ -45,6 +45,7 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
 
     @Test
     public void testListByReference() {
+
         List<Registration> registrationList;
         List<RegistrationStatus> statusList = new ArrayList<>();
         statusList.add(RegistrationStatus.PUBLISHED);
@@ -94,7 +95,6 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
         assertTrue("List should be empty", registrationList.isEmpty());
         count = registrationDao.count( newRef, null);
         assertEquals(0, count);
-
 
         //test null
         Optional<Reference> nullRef = Optional.empty();
@@ -196,10 +196,12 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
 
     @Test
     public void testListWithSections() {
+
         // test nomRef as section
         Reference journal = ReferenceFactory.newJournal();
         Reference section = ReferenceFactory.newSection();
         section.setInReference(journal);
+
         TaxonName nameInJournal = TaxonNameFactory.NewBotanicalInstance(null);
         nameInJournal.setNomenclaturalReference(journal);
         TaxonName nameInSection = TaxonNameFactory.NewBotanicalInstance(null);

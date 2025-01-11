@@ -141,6 +141,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 	@Test
 	@DataSet
 	public void testStatusWithoutTypeCanBeLoaded() {
+
 	    //This is for testing if an occurrence status can be loaded if it has
 	    //no type although OccurrenceStatus.type has a NotNull constraint.
 	    //Result: it can be loaded and during update an constraint violation

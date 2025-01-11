@@ -62,7 +62,8 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 16.11.2015
  */
-public class AdvancedBeanInitializerTest<CDM extends CdmBase> extends CdmTransactionalIntegrationTest {
+public class AdvancedBeanInitializerTest<CDM extends CdmBase>
+        extends CdmTransactionalIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
