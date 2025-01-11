@@ -202,8 +202,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Annotation annotation3 = Annotation.NewDefaultLanguageInstance("Meine annotation3");
     	member.addAnnotation(annotation3);
     	team.addTeamMember(member);
-
-    	service.save(team);
+    	service.save(team, member);
 
     	nameSerivce.save(name);
 

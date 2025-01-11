@@ -713,9 +713,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		Credit credit1 = Credit.NewInstance(team3, TimePeriod.NewInstance(1955), "credit1");
 		book2.addCredit(credit1);
 
-		agentDao.save(team1);
-		agentDao.save(team2);
-		agentDao.save(team3);
+		agentDao.save(team1, team2);
+		agentDao.save(team3, person1);
+		agentDao.save(person2, person3);
 		cdmGenericDao.save((Reference)book1);
 		cdmGenericDao.save((Reference)book2);
 
@@ -807,10 +807,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
         team3.addTeamMember(person3);
 
-        agentDao.save(team1);
-        agentDao.save(team2);
-        agentDao.save(team3);
-        agentDao.save(person1b);
+        agentDao.save(team1, team2);
+        agentDao.save(team3, person1b);
+        agentDao.save(person1a, person2);
+        agentDao.save(person3);
         commitAndStartNewTransaction(null);
 
         IMergeStrategy personMergeStrategy = DefaultMergeStrategy.NewInstance(Person.class);
@@ -1264,8 +1264,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
         team3.setTitleCache("ProtectedTeam", true);
 
-        cdmGenericDao.saveOrUpdate(team1);
-        cdmGenericDao.saveOrUpdate(team2);
+        agentDao.save(team1, team2);
+        agentDao.save(person1, person2);
+        agentDao.save(person3);
         commitAndStartNewTransaction();
 
         //test
@@ -1339,8 +1340,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
         team3.setTitleCache("ProtectedTeam", true);
 
-        UUID uuidTeam1 = cdmGenericDao.saveOrUpdate(team1);
-        UUID uuidTeam2 = cdmGenericDao.saveOrUpdate(team2);
+        UUID uuidTeam1 = agentDao.save(team1).getUuid();
+        UUID uuidTeam2 = agentDao.save(team2).getUuid();
+        agentDao.save(person1, person2);
+        agentDao.save(person3, person4);
         commitAndStartNewTransaction();
 
         team1 = (Team) cdmGenericDao.findByUuid(uuidTeam1);
