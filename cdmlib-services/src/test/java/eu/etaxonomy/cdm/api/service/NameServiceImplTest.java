@@ -559,6 +559,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testDeleteTaxonName() {
+
         final String[] tableNames = new String[]{"TaxonName","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonName_TypeDesignationBase"};
 
         TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
@@ -571,15 +572,14 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
 
         name1 = nameService.find(name1.getUuid());
-        DeleteResult result = nameService.delete(name1);//should throw now exception
-
+        DeleteResult result = nameService.delete(name1);//should throw no exception
         setComplete();
         endTransaction();
+
         name1 = nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
 
 //		printDataSet(System.out, tableNames);
-
 
         //NomenclaturalStatus
         name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
@@ -591,13 +591,12 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         name1 = nameService.find(name1.getUuid());
 
-        nameService.delete(name1);  //should throw now exception
+        nameService.delete(name1);  //should throw no exception
         if (!result.isOk()){
         	Assert.fail();
         }
         commitAndStartNewTransaction();
 //		printDataSet(System.out, tableNames);
-
 
         //Type Designations
         name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
@@ -617,14 +616,13 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         name1 = nameService.find(name1.getUuid());
 
-        result = nameService.delete(name1);  //should throw now exception
+        result = nameService.delete(name1);  //should throw no exception
         if (!result.isOk()){
         	Assert.fail();
         }
         setComplete();
         endTransaction();
 //		printDataSet(System.out, tableNames);
-
     }
 
     @Test
@@ -808,7 +806,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         registration.addTypeDesignation(desigNew);
         registrationService.saveOrUpdate(registration);
         unsetAuthentication();
-
         commitAndStartNewTransaction(/*tableNames*/);
 
         name3 = nameService.load(name3.getUuid());
