@@ -593,7 +593,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                 state.getTeamStoreCollector().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
                             }
                         }
-                        save(teamOrPerson, state);
                     }
 
                 }
@@ -1331,7 +1330,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         teamOrPerson = team;
                     }
                 }
-                save(teamOrPerson);
                 findMatchingCollectorAndFillPersonStore(state, teamOrPerson);
             }
             if (!StringUtils.isBlank(state.getDataHolder().gatheringAgentsText)
