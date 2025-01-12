@@ -423,10 +423,15 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		logger.info(debug);
 	}
 
+    private Reference save(Reference ref, String title, UUID uuid) {
+        ref.setTitle(title);
+        ref.setUuid(uuid);
+        return save(ref);
+    }
+
     private Reference save(Reference ref) {
         referenceDao.save(ref);
         return ref;
-
     }
 
     //similar to testGetReferencingObjectsCdmBase but with DTO
@@ -834,17 +839,14 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testReallocateIntextReferenceForReferenceAndLanguageString() throws MergeException {
+
         UUID uuidRef1 = UUID.fromString("41743cec-b893-4e8b-b06c-91f9b9ba8fee");
         UUID uuidRef2 = UUID.fromString("8fd56b43-7cca-4c3b-bb90-7576da81c072");
 
         // CREATE DATA
 
-        Reference ref1 = save(ReferenceFactory.newGeneric());
-        ref1.setTitle("Reference1");
-        ref1.setUuid(uuidRef1);
-        Reference ref2 = save(ReferenceFactory.newGeneric());
-        ref2.setTitle("Reference2");
-        ref2.setUuid(uuidRef2);
+        Reference ref1 = save(ReferenceFactory.newGeneric(), "Reference1", uuidRef1);
+        Reference ref2 = save(ReferenceFactory.newGeneric(), "Reference2", uuidRef2);
         Taxon taxon = Taxon.NewInstance(null, null);
 
         TaxonDescription desc = TaxonDescription.NewInstance(taxon);
