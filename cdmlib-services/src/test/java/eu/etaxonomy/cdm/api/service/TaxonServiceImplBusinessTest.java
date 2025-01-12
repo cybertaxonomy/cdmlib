@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -54,6 +55,9 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 
     @SpringBeanByType
     private INameService nameService;
+
+    @SpringBeanByType
+    private IReferenceDao referenceDao;
 
 	private Synonym s1;
 	private Synonym s2;
@@ -89,6 +93,7 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 		homoTypicSynonymType = SynonymType.HOMOTYPIC_SYNONYM_OF;
 		heteroTypicSynonymType = SynonymType.HETEROTYPIC_SYNONYM_OF;
 		reference = ReferenceFactory.newGeneric();
+		referenceDao.save(reference);
 		referenceDetail = "test";
 	}
 

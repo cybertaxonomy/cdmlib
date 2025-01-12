@@ -79,6 +79,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -97,7 +99,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     private INameService nameService;
 
     @SpringBeanByType
-    private IReferenceService referenceService;
+    private IReferenceDao referenceDao;
 
     @SpringBeanByType
     private IAgentService agentService;
@@ -112,7 +114,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     private IDescriptionService descriptionService;
 
     @SpringBeanByType
-    private IDescriptionElementService descriptionElementService;
+    private IDescriptionElementDao descriptionElementDao;
 
     @SpringBeanByType
     private IMarkerService markerService;
@@ -215,6 +217,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public final void testSaveOrUpdateTaxonWithMisappliedName() {
+
         Taxon expectedTaxon = Taxon.NewInstance(null, null);
         TaxonName misappliedNameName = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null);
 
@@ -235,7 +238,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID uuid = service.save(expectedTaxon).getUuid();
         TaxonBase<?> actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
-        misappliedName.setSec(ReferenceFactory.newArticle());
+        misappliedName.setSec(save(ReferenceFactory.newArticle()));
 
         try{
             service.saveOrUpdate(actualTaxon);
@@ -284,7 +287,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testSwapSynonymAndAcceptedTaxonNewUuid() throws FileNotFoundException{
 
         createTestDataSet();
-        synonym.setSec(ReferenceFactory.newArticle());
+        synonym.setSec(save(ReferenceFactory.newArticle()));
         service.saveOrUpdate(synonym);
         UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym,
                 taxWithSyn, true, true, SecReferenceHandlingSwapEnum.AlwaysDelete, null, null);
@@ -357,11 +360,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public final void testChangeSynonymToAcceptedTaxonWithSecHandlingUseNewParentSec(){
+
         Taxon genus = getTestTaxon();
         TaxonNode node = genus.getTaxonNodes().iterator().next();
         UpdateResult result = new UpdateResult();
         TaxonBase<?> syn = service.find(SYNONYM2_UUID);
-        Reference sec = ReferenceFactory.newBook();
+        Reference sec = save(ReferenceFactory.newBook());
         sec.setTitleCache("Flora Cuba", true);
         syn.setSec(sec);
         service.saveOrUpdate(syn);
@@ -392,11 +396,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         UpdateResult result = new UpdateResult();
         TaxonBase<?> syn = service.find(SYNONYM2_UUID);
-        Reference sec = ReferenceFactory.newBook();
+        Reference sec = save(ReferenceFactory.newBook());
         sec.setTitleCache("Flora Cuba", true);
         Reference newSec = ReferenceFactory.newBook();
         newSec.setTitleCache("Flora Hawaii", true);
-        UUID newSecUuid = referenceService.saveOrUpdate(newSec);
+        UUID newSecUuid = referenceDao.saveOrUpdate(newSec);
         syn.setSec(sec);
         service.saveOrUpdate(syn);
         try {
@@ -456,8 +460,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public final void testMoveSynonymToAnotherTaxon_OLD() {
+
         SynonymType heteroTypicSynonymType = SynonymType.HETEROTYPIC_SYNONYM_OF;
-        Reference reference = ReferenceFactory.newGeneric();
+        Reference reference = save(ReferenceFactory.newGeneric());
         String referenceDetail = "test";
 
         INonViralName t1n = TaxonNameFactory.NewNonViralInstance(null);
@@ -597,7 +602,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //+ new detail
         newTaxon = (Taxon)service.load(uuidNewTaxon);
         heterotypicSynonym = (Synonym)service.load(uuidSyn3);
-        Reference ref1 = referenceService.load(uuidRef1);
+        Reference ref1 = referenceDao.load(uuidRef1);
         Assert.assertNotNull("Synonym should exist", heterotypicSynonym);
         Assert.assertNotNull("Synonym should have 1 relation", heterotypicSynonym.getAcceptedTaxon());
         Assert.assertEquals("Accepted taxon of single relation should be the old taxon", uuidOldTaxon, heterotypicSynonym.getAcceptedTaxon().getUuid());
@@ -642,7 +647,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //test single heterotypic synonym to homotypic synonym of new taxon
         //+ new reference
         newTaxon = (Taxon)service.load(uuidNewTaxon);
-        Reference ref2 = referenceService.load(uuidRef2);
+        Reference ref2 = referenceDao.load(uuidRef2);
         heterotypicSynonym = (Synonym)service.load(uuidSyn6);
         Assert.assertNotNull("Synonym should exist", heterotypicSynonym);
         Assert.assertNotNull("Synonym should have accepted taxon", heterotypicSynonym.getAcceptedTaxon());
@@ -675,8 +680,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public final void testGetHeterotypicSynonymyGroups(){
+
         Rank rank = Rank.SPECIES();
-        Reference ref1 = ReferenceFactory.newGeneric();
+        Reference ref1 = save(ReferenceFactory.newGeneric());
         //HomotypicalGroup group = HomotypicalGroup.NewInstance();
         Taxon taxon1 = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test3", null, null, null, null, null, null, null), null);
         Synonym synonym0 = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test2", null, null, null, null, null, null, null), null);
@@ -707,8 +713,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public final void testGetHomotypicSynonymsByHomotypicGroup(){
+
         Rank rank = Rank.SPECIES();
-        Reference ref1 = ReferenceFactory.newGeneric();
+        Reference ref1 = save(ReferenceFactory.newGeneric());
         //HomotypicalGroup group = HomotypicalGroup.NewInstance();
         Taxon taxon1 = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test3", null, null, null, null, null, null, null), null);
         Synonym synonym0 = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test2", null, null, null, null, null, null, null), null);
@@ -866,6 +873,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     //this test is more or less obsolete since we have no synonym relationships anymore
     //test delete synonym, only for a special taxon, but because of other relationships it will not be deleted at all
     public final void testDeleteSynonymSynonymTaxonBooleanDeleteOneTaxon(){
+
         final String[]tableNames = {
 //                "TaxonBase","TaxonBase_AUD", "TaxonName","TaxonName_AUD",
 //                "HomotypicalGroup","HomotypicalGroup_AUD"
@@ -880,7 +888,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Taxon taxon2 = (Taxon)service.load(uuidTaxon2);
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
-        synonym1.setSec(ReferenceFactory.newArticle());
+        synonym1.setSec(save(ReferenceFactory.newArticle()));
 
         taxon2.addSynonym(synonym1, SynonymType.HETEROTYPIC_SYNONYM_OF);
         service.saveOrUpdate(synonym1);
@@ -899,6 +907,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 3 names left in the database", 3, nNames);
         nRelations = service.countSynonyms(true);
         Assert.assertEquals("There should be 1 related synonym left in the database", 1, nRelations);
+    }
+
+    private Reference save(Reference ref) {
+        referenceDao.save(ref);
+        return ref;
     }
 
     @Test
@@ -1329,7 +1342,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         //descriptionService.find(descrUUID);
         assertNull(descriptionService.find(descrUUID));
-        assertNull(descriptionElementService.find(descrElementUUID));
+        assertNull(descriptionElementDao.load(descrElementUUID));
         //assertNull(synName);
         assertNotNull(taxonName);
         assertNull(taxon);
@@ -1380,7 +1393,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         //descriptionService.find(descrUUID);
         assertNull(descriptionService.find(descrUUID));
-        assertNull(descriptionElementService.find(descrElementUUID));
+        assertNull(descriptionElementDao.load(descrElementUUID));
         //assertNull(synName);
         assertNotNull(taxonName);
         assertNull(taxon);
@@ -1980,9 +1993,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         deCandolle.setTitleCache("DC.", true);
         agentService.save(deCandolle);
 
-        Reference sec = ReferenceFactory.newDatabase();
+        Reference sec = save(ReferenceFactory.newDatabase());
         sec.setTitleCache("Flora lunaea", true);
-        Reference citationRef = ReferenceFactory.newBook();
+        Reference citationRef = save(ReferenceFactory.newBook());
         citationRef.setTitleCache("Sp. lunarum", true);
 
         //genus taxon with Name, combinationAuthor,

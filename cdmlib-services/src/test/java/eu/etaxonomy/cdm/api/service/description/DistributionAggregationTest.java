@@ -38,8 +38,6 @@ import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionElementService;
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -68,6 +66,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -99,9 +98,6 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     private ITermService termService;
 
     @SpringBeanByType
-    private IDescriptionService descriptionService;
-
-    @SpringBeanByType
     private IDescriptionElementService descriptionElementService;
 
     @SpringBeanByType
@@ -111,7 +107,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     private IClassificationService classificationService;
 
     @SpringBeanByType
-    private IReferenceService referenceService;
+    private IReferenceDao referenceDao;
 
     private DistributionAggregation engine;
 
@@ -161,6 +157,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         book_a.setTitle("book_a");
         book_b = ReferenceFactory.newBook();
         book_b.setTitle("book_a");
+        referenceDao.save(book_a, book_b);
 
         engine = new DistributionAggregation();
         engine.setBatchMinFreeHeap(35 * 1024 * 1024);
@@ -791,9 +788,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         Reference nomRef = ReferenceFactory.newBook();
         sec.setTitleCache("Sp.Pl.", true);
 
-        referenceService.save(sec);
-        referenceService.save(nomRef);
-
+        referenceDao.save(sec, nomRef);
 
         // --- Taxa --- //
         //  Lapsana

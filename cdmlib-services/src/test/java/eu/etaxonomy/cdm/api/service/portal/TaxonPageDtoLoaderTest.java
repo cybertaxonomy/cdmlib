@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
@@ -101,6 +100,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -132,7 +132,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     private ITaxonService taxonService;
 
     @SpringBeanByType
-    private IReferenceService referenceService;
+    private IReferenceDao referenceDao;
 
     @SpringBeanByType
     private INameService nameService;
@@ -644,14 +644,14 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         Person author = Person.NewInstance("Mill.", "Miller", "M.M.", "Michael");
         agentService.save(author);
-        Reference nomRef = ReferenceFactory.newBook();
+        Reference nomRef = save(ReferenceFactory.newBook());
         nomRef.setTitle("My book");
-        Reference nomRef2 = ReferenceFactory.newBook();
+        Reference nomRef2 = save(ReferenceFactory.newBook());
         nomRef2.setTitle("My book2");
         nomRef2.setDatePublished(TimePeriodParser.parseStringVerbatim("1973"));
         TaxonName accName = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Genus", null, "species", null, author, nomRef, "55", null);
-        Reference secRef = ReferenceFactory.newBook();
+        Reference secRef = save(ReferenceFactory.newBook());
         secRef.setTitle("My secbook");
         accName.addIdentifier(Identifier.NewInstance("wfo-12345", IdentifierType.IDENTIFIER_NAME_WFO()));
         Taxon taxon = Taxon.NewInstance(accName, secRef);
@@ -684,7 +684,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //heterotyp. synonym
         TaxonName heteroSynName1 = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Genushetero", null, "hetero", null, author2, nomRef2, "99", null);
-        Reference heteroSecRef = ReferenceFactory.newBook();
+        Reference heteroSecRef = save(ReferenceFactory.newBook());
         heteroSecRef.setTitle("My hetero sec book");
         taxon.addHeterotypicSynonymName(heteroSynName1, heteroSecRef, "48", null);
 
@@ -693,7 +693,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         taxon.addHeterotypicSynonymName(heteroSynName1Recomb, heteroSecRef, "49",heteroSynName1.getHomotypicalGroup());
 
         //heterotyp. synonym group 2
-        Reference nomRef3 = ReferenceFactory.newBook();
+        Reference nomRef3 = save(ReferenceFactory.newBook());
         nomRef3.setTitle("My book3");
         nomRef3.setDatePublished(TimePeriodParser.parseStringVerbatim("2008"));
 
@@ -705,7 +705,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         taxon.addHeterotypicSynonymName(heteroSynName2Recomb, null, null, heteroSynName2.getHomotypicalGroup());
 
         //heterotyp. synonym group 3
-        Reference nomRef4 = ReferenceFactory.newBook();
+        Reference nomRef4 = save(ReferenceFactory.newBook());
         nomRef4.setTitle("My book4");
         nomRef4.setDatePublished(TimePeriodParser.parseStringVerbatim("2012"));
 
@@ -737,7 +737,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         germany.addAnnotation(Annotation.NewInstance("Technical Annotation", AnnotationType.INTERNAL(), Language.DEFAULT()));
         germany.addAnnotation(Annotation.NewInstance("Missing Type Annotation", null, Language.DEFAULT()));
         //.... germany source
-        Reference germanRef = ReferenceFactory.newArticle();
+        Reference germanRef = save(ReferenceFactory.newArticle());
         Reference inJournal = save(ReferenceFactory.newJournal());
         germanRef.setInJournal(inJournal);
         germanRef.setTitle("Second ref article");
@@ -753,7 +753,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //... sources
         //... ... primary
-        Reference franceRef = ReferenceFactory.newBook();
+        Reference franceRef = save(ReferenceFactory.newBook());
         franceRef.setAuthorship(taxon.getName().getCombinationAuthorship());
         franceRef.setTitle("My French distribution");
         franceRef.setDatePublished(TimePeriodParser.parseStringVerbatim("1978"));
@@ -768,7 +768,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         nameService.save(nameInSource);
 
         //... ... import
-        Reference importRef = ReferenceFactory.newDatabase();
+        Reference importRef = save(ReferenceFactory.newDatabase());
         importRef.setTitle("French distribution import");  //should not be shown in output
         franceDist.addImportSource("7777", "Distribution", importRef, "99");
 
@@ -809,7 +809,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         factSet1.addElements(cn1);
         TaxonDescription taxDesc2 = TaxonDescription.NewInstance(taxon);
         taxDesc2.addElement(cn2);
-        Reference descRef = ReferenceFactory.newBook();
+        Reference descRef = save(ReferenceFactory.newBook());
         descRef.setTitle("Common name description reference");
         //... with in-description source
         taxDesc2.addPrimaryTaxonomicSource(descRef, "91");
@@ -879,7 +879,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     }
 
     private Reference save(Reference ref) {
-        this.referenceService.save(ref);
+        this.referenceDao.save(ref);
         return ref;
     }
 

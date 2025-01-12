@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.TaxonGraphDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.ITaxonGraphDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
@@ -61,6 +62,9 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
     @SpringBeanByType
     private ITaxonNameDao nameDao;
+
+    @SpringBeanByType
+    private IReferenceDao referenceDao;
 
     @SpringBeanByType
     private IPreferenceDao prefDao;
@@ -133,6 +137,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
             Reference refX = ReferenceFactory.newBook();
             refX.setTitleCache("Ref-X", true);
+            referenceDao.save(refX);
 
             TaxonName n_t_argentinensis = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Trachelomonas", null,
                     "argentinensis", null, null, refX, null, null);
@@ -228,6 +233,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
             Reference refX = ReferenceFactory.newBook();
             refX.setTitleCache("Ref-X", true);
+            referenceDao.save(refX);
 
             TaxonName n_phacus = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Phacus", null, null, null, null,
                     refX, null, null);
@@ -258,6 +264,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
             Reference refX = ReferenceFactory.newBook();
             refX.setTitleCache("Ref-X", true);
+            referenceDao.save(refX);
 
             // printDataSet(System.err,"TaxonRelationship");
             TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
@@ -367,6 +374,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
             Reference refX = ReferenceFactory.newBook();
             refX.setTitleCache("Ref-X", true);
+            referenceDao.save(refX);
 
             // printDataSet(System.err,"TaxonRelationship");
             TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);

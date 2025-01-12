@@ -107,6 +107,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		name2.setAuthorshipCache("Mill.", true);
 		IBook ref = ReferenceFactory.newBook();
 		ref.setTitle("My Book");
+		referenceDao.save((Reference)ref);
 		name2.setNomenclaturalReference(ref);
 		name2.setNomenclaturalMicroReference("44");
 

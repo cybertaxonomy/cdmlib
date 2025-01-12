@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -65,6 +66,9 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
     @SpringBeanByType
     private ITaxonDao taxonDao;
+
+    @SpringBeanByType
+    private IReferenceDao referenceDao;
 
 //**************** TESTS ************************************************
 
@@ -302,6 +306,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
     	    //sec (not relevant here)
             Reference sec = ReferenceFactory.newBook();
             sec.setTitleCache("Taxon sec reference", true);
+            referenceDao.save(sec);
 
             //accepted taxon
             TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null);

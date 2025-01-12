@@ -61,10 +61,14 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
+import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -85,7 +89,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     private INameService nameService;
 
     @SpringBeanByType
-    private IOccurrenceService occurrenceService;
+    private IOccurrenceDao occurrenceDao;
 
     @SpringBeanByType
     private IRegistrationService registrationService;
@@ -97,7 +101,10 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     private ITaxonService taxonService;
 
     @SpringBeanByType
-    private IReferenceService referenceService;
+    private IReferenceDao referenceDao;
+
+    @SpringBeanByType
+    private ITypeDesignationDao typeDesignationDao;
 
     @SpringBeanByType
     private ITermService termService;
@@ -426,7 +433,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         specimen.setStoredUnder(name1);
 
-        occurrenceService.save(specimen);
+        occurrenceDao.save(specimen);
         UUID uuidName1 = nameService.save(name1).getUuid();
 
         commitAndStartNewTransaction(tableNames);
@@ -438,20 +445,20 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         name1 = nameService.find(uuidName1);
         Assert.assertNotNull("Name should still be in database",name1);
-        specimen = (DerivedUnit)occurrenceService.find(specimen.getUuid());
+        specimen = (DerivedUnit)occurrenceDao.load(specimen.getUuid());
         Assert.assertNotNull("Specimen should still be in database",name1);
         specimen.setStoredUnder(null);
-        occurrenceService.saveOrUpdate(specimen);
+        occurrenceDao.saveOrUpdate(specimen);
 
         nameService.delete(name1); //should throw no exception
         commitAndStartNewTransaction(tableNames);
 
         name1 = nameService.find(uuidName1);
         Assert.assertNull("Name should not be in database anymore",name1);
-        specimen = (DerivedUnit)occurrenceService.find(specimen.getUuid());
+        specimen = (DerivedUnit)occurrenceDao.load(specimen.getUuid());
         Assert.assertNotNull("Specimen should still be in database",specimen);
 
-        occurrenceService.delete(specimen); //this is to better run this test in the test suit
+        occurrenceDao.delete(specimen); //this is to better run this test in the test suit
 
     }
 
@@ -601,7 +608,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         typeDesignation.setTypeStatus(typeStatus);
         DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         specimen.setTitleCache("Type specimen", true);
-        occurrenceService.save(specimen);
+        occurrenceDao.save(specimen);
         typeDesignation.setTypeSpecimen(specimen);
 
         name1.addTypeDesignation(typeDesignation, true);
@@ -634,7 +641,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         specimen.setTitleCache("Type specimen 2", true);
-        occurrenceService.save(specimen);
+        occurrenceDao.save(specimen);
         SpecimenTypeDesignationStatus typeStatus = (SpecimenTypeDesignationStatus)termService.find(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid());
 
         SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
@@ -665,8 +672,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonName name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         TaxonName name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
         TaxonName name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-        DerivedUnit specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
-        DerivedUnit fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
+        DerivedUnit specimen1 = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
+        DerivedUnit fossil = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 
         @SuppressWarnings("rawtypes")
         Set<TypeDesignationBase> desigs1 = name1.getTypeDesignations();
@@ -688,8 +695,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-        specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
-        fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
+        specimen1 = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
+        fossil = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 
         desigs1 = name1.getTypeDesignations();
         desigs2 = name2.getTypeDesignations();
@@ -708,8 +715,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-        specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
-        fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
+        specimen1 = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
+        fossil = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 
         desigs1 = name1.getTypeDesignations();
         desigs2 = name2.getTypeDesignations();
@@ -729,8 +736,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-        specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
-        fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
+        specimen1 = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
+        fossil = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 
         desigs1 = name1.getTypeDesignations();
         desigs2 = name2.getTypeDesignations();
@@ -760,8 +767,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-        specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
-        fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
+        specimen1 = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
+        fossil = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 
         desigs1 = name1.getTypeDesignations();
         desigs2 = name2.getTypeDesignations();
@@ -777,6 +784,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDeleteTypeDesignationWithRegistration() {
+
 //        final String[] tableNames = new String[]{
 //                "TaxonName","TypeDesignationBase","TaxonName_TypeDesignationBase",
 //                "SpecimenOrObservationBase"};
@@ -787,7 +795,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
 
         NameTypeDesignation desig3 = (NameTypeDesignation)name3.getTypeDesignations().iterator().next();
-        name3.addTypeDesignation(SpecimenTypeDesignation.NewInstance(), false);
+        name3.addTypeDesignation(save(SpecimenTypeDesignation.NewInstance()), false);
         this.nameService.update(name3);
 
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
@@ -843,8 +851,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonName name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         TaxonName name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
         TaxonName name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-        DerivedUnit specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
-        DerivedUnit fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
+        DerivedUnit specimen1 = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
+        DerivedUnit fossil = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 
         @SuppressWarnings("rawtypes")
         Set<TypeDesignationBase> desigs1 = name1.getTypeDesignations();
@@ -868,8 +876,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-        specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
-        fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
+        specimen1 = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
+        fossil = CdmBase.deproxy(this.occurrenceDao.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 
         desigs1 = name1.getTypeDesignations();
         desigs2 = name2.getTypeDesignations();
@@ -1084,7 +1092,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID parsedNameUuid = parsedName.getUuid();
         UUID originalSpellingUuid = parsedName.getOriginalSpelling().getUuid();
         TaxonName originalSpellingName = parsedName.getOriginalSpelling();
-        referenceService.save(parsedName.getNomenclaturalReference());
+        save(parsedName.getNomenclaturalReference());
         agentService.save(parsedName.getCombinationAuthorship());
         nameService.save(originalSpellingName);
         nameService.save(parsedName);
@@ -1096,6 +1104,16 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotEquals(parsedNameUuid, parsedNameUuid2);  //currently we do not deduplicate the main name yet
 
         //tbc
+    }
+
+    private Reference save(Reference ref) {
+        referenceDao.save(ref);
+        return ref;
+    }
+
+    private <S extends TypeDesignationBase<?>> S save(S newInstance) {
+        typeDesignationDao.save(newInstance);
+        return newInstance;
     }
 
     private Rank getSpeciesRank() {
