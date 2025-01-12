@@ -54,6 +54,7 @@ public abstract class DaoBase {
     }
 
     protected Session getSession(){
+
         Session session ;
         try {
             session = factory.getCurrentSession();

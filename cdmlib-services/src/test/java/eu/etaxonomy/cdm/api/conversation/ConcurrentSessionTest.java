@@ -432,12 +432,9 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      * We load the same taxon in two different sessions. The reference of the first
      * taxon gets manipulated and the taxon saved afterwards.  When trying to persist the other
      * taxon we would expect some form of exception.
-     *
      */
     @Test(expected=HibernateSystemException.class)
-
     @DataSet("ConcurrentSessionTest.xml")
-
     public void testWhatHappensWhenEncounteringStaleData(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);

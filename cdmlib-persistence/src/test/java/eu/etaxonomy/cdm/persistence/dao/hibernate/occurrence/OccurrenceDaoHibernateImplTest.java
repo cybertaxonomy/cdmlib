@@ -79,6 +79,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
     @Test
     public void testCountMedia() {
+
         MediaSpecimen unit = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
         SpecimenDescription desc = SpecimenDescription.NewInstance(unit);
         desc.setImageGallery(true);
@@ -100,6 +101,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
     @Test
     public void testGetMedia() {
+
         MediaSpecimen unit = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
         SpecimenDescription desc = SpecimenDescription.NewInstance(unit);
         desc.setImageGallery(true);

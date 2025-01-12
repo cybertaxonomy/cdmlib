@@ -190,9 +190,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 		this.describedSpecimenOrObservation = describedSpecimenOrObservation;
 	}
 
-
-
-
     /**
      * Returns the set of {@link DescriptionElementBase elementary description data} which constitute
      * <i>this</i> description as a whole.
@@ -244,8 +241,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         this.descriptionElements.remove(element);
         element.setInDescription(null);
     }
-
-
 
     /**
      * Returns the number of {@link DescriptionElementBase elementary description data} which constitute

@@ -556,7 +556,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Higher name should not have type designations anymore",1, higherName.getTypeDesignations().size());
     }
 
-
     @Test
     public void testDeleteTaxonName() {
 

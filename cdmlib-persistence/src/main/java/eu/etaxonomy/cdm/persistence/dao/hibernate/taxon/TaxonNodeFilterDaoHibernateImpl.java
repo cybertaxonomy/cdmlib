@@ -71,6 +71,7 @@ public class TaxonNodeFilterDaoHibernateImpl
 
     @Override
     public List<UUID> listUuids(TaxonNodeFilter filter){
+
         String queryStr = query(filter, "tn.uuid");
         Query<UUID> query = getSession().createQuery(queryStr, UUID.class);
         List<UUID> list = query.list();
@@ -81,6 +82,7 @@ public class TaxonNodeFilterDaoHibernateImpl
 
     @Override
     public List<Integer> idList(TaxonNodeFilter filter){
+
         String queryStr = query(filter, "tn.id");
         Query<Integer> query = getSession().createQuery(queryStr, Integer.class);
         List<Integer> list = query.list();
@@ -90,6 +92,7 @@ public class TaxonNodeFilterDaoHibernateImpl
 
     //maybe we will later want to have ordering included
     private String query(TaxonNodeFilter filter, String selectPart){
+
         String select = " SELECT " + selectPart;
         String from = getFrom(filter);
         String subtreeFilter = getSubtreeFilter(filter);

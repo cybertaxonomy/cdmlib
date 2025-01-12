@@ -205,6 +205,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
     @Test
     public void testListUuidsByAreas() {
+
         String message = "wrong number of nodes filtered";
 //        System.out.println("start:" + new DateTime().toString());
 

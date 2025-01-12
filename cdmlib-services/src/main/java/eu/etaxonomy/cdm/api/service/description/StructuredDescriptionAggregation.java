@@ -153,10 +153,10 @@ public class StructuredDescriptionAggregation
         updated |= mergeDescriptionElements(targetDescription, structuredResultHolder.quantitativeMap, QuantitativeData.class);
         updated |= mergeDescriptionSources(targetDescription, structuredResultHolder);
 
-        if(!targetDescription.getElements().isEmpty()){
-            dataSet.addDescription(targetDescription);
-        }else{
+        if(targetDescription.getElements().isEmpty()){
             dataSet.removeDescription(targetDescription);
+        }else{
+            dataSet.addDescription(targetDescription);
         }
         return updated;
     }
@@ -493,7 +493,6 @@ public class StructuredDescriptionAggregation
         //"default" descriptions
         //TODO add default descriptions
         //xxx
-
     }
 
     private void addDescriptionToResultHolder(StructuredDescriptionResultHolder descriptiveResultHolder,
@@ -522,8 +521,8 @@ public class StructuredDescriptionAggregation
 
                 switch (sourceMode){
                     case DESCRIPTION:
-                        DescriptionBase<?> clonedDesc = cloneNewSourceDescription(desc);
-                        source.setCdmSource(clonedDesc);
+                        DescriptionBase<?> newClonedDesc = cloneNewSourceDescription(desc);
+                        source.setCdmSource(newClonedDesc);
                         break;
                     case TAXON:
                         if (desc instanceof TaxonDescription){
@@ -640,7 +639,7 @@ public class StructuredDescriptionAggregation
 
     /**
      * Computes all specimens attached to the given taxon within the given dataSet.
-     * For these secimens it returns all attache
+     * For these specimens it returns all attached descriptions.
      * */
     private Set<SpecimenDescription> getSpecimenDescriptions(Taxon taxon, DescriptiveDataSet dataSet) {
         Set<SpecimenDescription> result = new HashSet<>();

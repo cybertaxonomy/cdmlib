@@ -166,6 +166,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
     public void testReaggregation(){
+
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = createTestData();
         commitAndStartNewTransaction();
@@ -380,6 +381,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
     public void testSourceModes() {
+
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = createTestData();
         commitAndStartNewTransaction();

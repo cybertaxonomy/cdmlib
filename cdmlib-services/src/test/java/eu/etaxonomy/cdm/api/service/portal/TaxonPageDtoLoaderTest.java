@@ -236,6 +236,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testFacts() {
+
         //create test data
         createTestData();
         commitAndStartNewTransaction();
@@ -348,6 +349,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
      * and distributions status filter
      */
     private void testAllFacts() {
+
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
         DistributionInfoConfiguration distConfig = config.getDistributionInfoConfiguration();
 
@@ -368,6 +370,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     }
 
     private void testAllFactsDo(TaxonPageDtoConfiguration config, boolean isDto, boolean isExcludedMarker) {
+
         config.setUseDtoLoading(isDto);
         if (isExcludedMarker) {
             config.setExcludedFactDatasetMarkerTypes(new HashSet<>(Arrays.asList(new UUID[]{MarkerType.uuidComplete})));
