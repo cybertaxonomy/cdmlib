@@ -595,8 +595,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         if (!result.isOk()){
         	Assert.fail();
         }
-        setComplete();
-        endTransaction();
+        commitAndStartNewTransaction();
 //		printDataSet(System.out, tableNames);
 
 
@@ -801,7 +800,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         desigs3 = name3.getTypeDesignations();
 
-        NameTypeDesignation desigNew = NameTypeDesignation.NewInstance();
+        NameTypeDesignation desigNew = save(NameTypeDesignation.NewInstance());
 
         UsernamePasswordAuthenticationToken submiterToken = new UsernamePasswordAuthenticationToken("admin","sPePhAz6");
         setAuthentication(submiterToken);
