@@ -305,7 +305,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         distributions_LC.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "4")); // NATIVE should succeed
         addDistributions(T_LAPSANA_COMMUNIS_UUID, distributions_LC);
 
-        //aggregation
+        //configure aggregation
         TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
@@ -748,8 +748,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         TaxonDescription deleteFrom = null;
         for (TaxonDescription description : taxon.getDescriptions()){
             if (!description.isAggregatedDistribution()){
-                for (DescriptionElementBase el : description.getElements()){
-                    if (el.equals(distribution)){
+                for (DescriptionElementBase deb : description.getElements()){
+                    if (deb.equals(distribution)){
                         deleteFrom = description;
                     }
                 }

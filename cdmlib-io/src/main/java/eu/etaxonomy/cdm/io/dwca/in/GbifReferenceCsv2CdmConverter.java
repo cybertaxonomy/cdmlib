@@ -114,7 +114,8 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 
 	private void handleType(Reference reference, String strType, TaxonBase<?> taxon,
 	        List<MappedCdmBase<? extends CdmBase>> resultList, StreamItem item) {
-		// TODO handleType not yet implemented
+
+	    // TODO handleType not yet implemented
 
 		if (taxon == null){
 			String message = "Taxon is null. Reference not imported.";

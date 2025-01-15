@@ -156,7 +156,6 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		return keySet;
 	}
 
-
 	protected <T extends TaxonBase<?>> T getTaxonBase(String id, StreamItem item, Class<T> clazz, STATE state) {
 		if (clazz == null){
 			clazz = (Class)TaxonBase.class;

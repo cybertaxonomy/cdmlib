@@ -1933,8 +1933,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         try {
             createTestDataSet();
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+            Assert.fail("Could not create test data");
         }
         TaxonDescription description = TaxonDescription.NewInstance(taxWithoutSyn);
         SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>> specimen = FieldUnit.NewInstance();
@@ -1943,13 +1943,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         description.addElement(element);
         service.saveOrUpdate(taxWithoutSyn);
 
-
         Taxon tax = (Taxon)service.find(uuidTaxWithoutSyn);
-        Set<TaxonDescription> descr =  tax.getDescriptions();
-        assertEquals(1, descr.size());
-        description = descr.iterator().next();
+        Set<TaxonDescription> descriptions =  tax.getDescriptions();
+        assertEquals(1, descriptions.size());
+        description = descriptions.iterator().next();
         UUID uuidDescr = description.getUuid();
-
 
         tax.removeDescription(description, true);
         service.saveOrUpdate(tax);

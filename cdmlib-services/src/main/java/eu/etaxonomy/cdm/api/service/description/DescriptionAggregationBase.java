@@ -349,7 +349,10 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     protected abstract boolean mergeAggregationResultIntoTargetDescription(TaxonDescription targetDescription,
             ResultHolder resultHolder);
 
-    protected abstract void aggregateToParentTaxon(TaxonNode taxonNode, ResultHolder resultHolder,
+    /**
+     * Aggregates the data from child taxa to the given taxon.
+     */
+    protected abstract void aggregateToParentTaxon(TaxonNode parentTaxonNode, ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions);
 
     protected abstract void aggregateWithinSingleTaxon(Taxon taxon, ResultHolder resultHolder,

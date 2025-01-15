@@ -219,6 +219,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testFullData(){
+
         createFullTestDataSet();
         File destinationFolder = null;
         DwcaTaxExportConfigurator config = DwcaTaxExportConfigurator.NewInstance(null, destinationFolder, null);

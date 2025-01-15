@@ -120,7 +120,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 	@Override
     public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem csvTaxonRecord){
-		List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
+
+	    List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
 
 		//TODO what if not transactional?
 		Reference sourceReference = state.getTransactionalSourceReference();
@@ -226,17 +227,9 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 		handleIsExtinct(csvTaxonRecord, taxonBase);
 
-
-
 		return new ListReader<>(resultList);
 	}
 
-
-
-    /**
-     * @param csvTaxonRecord
-     * @param taxonBase
-     */
     private void handleIsExtinct(StreamItem item, TaxonBase<?> taxonBase) {
         String isExtinctStr = item.get(TermUri.GBIF_IS_EXTINCT);
         if (isBlank(isExtinctStr)){
@@ -257,11 +250,6 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
     }
 
-    /**
-     * @param item
-     * @param isExtinctStr
-     * @return
-     */
     private Boolean getBoolean(String booleanStr, StreamItem item) {
         try {
             return Boolean.valueOf(booleanStr);
@@ -272,12 +260,6 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
         }
     }
 
-
-
-    /**
-     * @param csvTaxonRecord
-     * @param taxonBase
-     */
     private void handleModified(StreamItem item, TaxonBase<?> taxonBase) {
         String modifiedStr = item.get(TermUri.DC_MODIFIED);
         if (isBlank(modifiedStr)){
@@ -293,14 +275,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
             String message = "GetMarkerType not available for import. This should not happen. Please conntact developer";
             fireWarningEvent(message, item.getLocation(), 8);
         }
-
-
     }
 
-    /**
-	 * @param item
-	 * @param taxonBase
-	 */
 	private void handleIdentifiableObjects(StreamItem item,TaxonBase<?> taxonBase) {
 
 		String references = item.get(TermUri.DC_REFERENCES);
@@ -319,7 +295,6 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			}
 		}
 
-
 		//TODO: Finish properly
 		String id = item.get(TermUri.CDM_SOURCE_IDINSOURCE);
 		String idNamespace = item.get(TermUri.CDM_SOURCE_IDNAMESPACE);
@@ -330,13 +305,10 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			Taxon taxon = (Taxon) taxonBase;
 			taxon.addSource(OriginalSourceType.Import, id, idNamespace, ref, null);
 		}
-
 	}
-
 
 	/**
 	 * If str is an uri it returns is as an {@link URI}. If not it returns <code>null</code>.
-	 * @param str
 	 * @return the URI.
 	 */
 	private URI makeUriIfIs(String str) {
@@ -350,14 +322,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				return null;
 			}
 		}
-
 	}
 
-
-	/**
-	 * @param item
-	 * @param taxonBase
-	 */
 	private void handleCommonNames(StreamItem item,TaxonBase<?> taxonBase) {
 		//TODO: handle comma separated values
 		String commonName = item.get(TermUri.DWC_VERNACULAR_NAME);
@@ -374,12 +340,6 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		}
 	}
 
-
-
-	/**
-	 * @param csvTaxonRecord
-	 * @param taxonBase
-	 */
 	private void handleTdwgArea(StreamItem item, TaxonBase<?> taxonBase) {
 		String tdwg_area = item.get(TermUri.DWC_COUNTRY_CODE);
 		if (tdwg_area != null){
@@ -415,11 +375,6 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
     	}
 	}
 
-
-	/**
-	 * @param item
-	 * @param taxonBase
-	 */
 	private void handleTaxonRemarks(StreamItem item,TaxonBase<?> taxonBase) {
 		String comment = item.get(TermUri.DWC_TAXON_REMARKS);
 		Language language = getLanguage(item);
@@ -432,7 +387,6 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 //			fireWarningEvent(message, item, 1);
 		}
 	}
-
 
 	//TODO handle non LSIDs
 	//TODO handle LSIDs for names
@@ -456,9 +410,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				fireWarningEvent(message, csvTaxonRecord, 1);
 			}
 		}
-
 	}
-
 
 	private void handleDataset(StreamItem item, TaxonBase<?> taxonBase,
 	        List<MappedCdmBase<? extends CdmBase>> resultList,
@@ -525,7 +477,6 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		removeItemInfo(item, strTerm);
 	}
 
-
 	@Override
 	public String getSourceId(StreamItem item) {
 		String id = item.get(ID);
@@ -582,9 +533,10 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		return nomCode;
 	}
 
+	private TaxonName getScientificName(StreamItem item, NomenclaturalCode nomCode,
+	        Rank rank, List<MappedCdmBase<? extends CdmBase>> resultList, Reference sourceReference) {
 
-	private TaxonName getScientificName(StreamItem item, NomenclaturalCode nomCode, Rank rank, List<MappedCdmBase<? extends CdmBase>> resultList, Reference sourceReference) {
-		TaxonName name = null;
+	    TaxonName name = null;
 		String strScientificName = getValue(item, TermUri.DWC_SCIENTIFIC_NAME);
 		//Name
 		if (strScientificName != null){
@@ -632,15 +584,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		return name;
 	}
 
-
 	/**
 	 * General method to handle references used for multiple attributes.
-	 * @param item
-	 * @param resultList
-	 * @param idTerm
-	 * @param strTerm
-	 * @param idIsInternal
-	 * @return
 	 */
 	private MappedCdmBase<Reference> getReference(StreamItem item,
 	        List<MappedCdmBase<? extends CdmBase>> resultList, TermUri idTerm,
@@ -690,10 +635,10 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		return result;
 	}
 
-
 	//TODO we may configure in configuration that scientific name never includes Authorship
 	private void checkAuthorship(TaxonName nameBase, StreamItem item) {
-		if (nameBase.isViral()){
+
+	    if (nameBase.isViral()){
 			return;
 		}
 		String strAuthors = getValue(item, TermUri.DWC_SCIENTIFIC_NAME_AUTHORS);
@@ -713,13 +658,13 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				//TODO throw warning (scientific name should always include authorship) by DwC definition
 			}
 		}
-
 	}
 
-
 	private Rank getRank(StreamItem csvTaxonRecord, NomenclaturalCode nomCode) {
-		boolean USE_UNKNOWN = true;
+
+	    boolean USE_UNKNOWN = true;
 		Rank rank = null;
+
 		String strRank = getValue(csvTaxonRecord,TermUri.DWC_TAXON_RANK);
 		String strVerbatimRank = getValue(csvTaxonRecord,TermUri.DWC_VERBATIM_TAXON_RANK);
 		if (strRank != null){
@@ -754,15 +699,13 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		return rank;
 	}
 
-
 	/**
 	 * Creates an empty taxon object with a given status.
 	 * <i>Empty</i> taxon means, without a defined name or sec.
-	 * @param item
-	 * @return
 	 */
 	private TaxonBase<?> getTaxonBase(StreamItem item) {
-		TaxonName name = null;
+
+	    TaxonName name = null;
 		Reference sec = null;
 		TaxonBase<?> result;
 		String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);
@@ -802,17 +745,11 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		}
 
 		return result;
-
 	}
 
-
-
-    /**
-	 * @param item
-	 * @return
-	 */
 	private Language getLanguage(StreamItem item) {
-		String langItem = item.get(TermUri.DC_LANGUAGE);
+
+	    String langItem = item.get(TermUri.DC_LANGUAGE);
 		Language language = null;
 
 		if(StringUtils.equalsIgnoreCase(langItem, "de")){
@@ -827,10 +764,10 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 // ********************** PARTITIONABLE ****************************************/
 
-
 	@Override
 	protected void makeForeignKeysForItem(StreamItem item, Map<String, Set<String>> fkMap) {
-		String value;
+
+	    String value;
 		String key;
 
 		//namePublishedIn
@@ -866,9 +803,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			Set<String> keySet = getKeySet(key, fkMap);
 			keySet.add(value);
 		}
-
 	}
-
 
 	@Override
 	public Set<String> requiredSourceNamespaces() {
@@ -884,17 +819,11 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 	return result;
 	}
 
-
-    /**
-     * @param item
-     * @param dwcTaxonomicStatus
-     */
     private void removeItemInfo(StreamItem item, TermUri dwcTaxonomicStatus) {
         if (!isFilterOnly){
             item.remove(dwcTaxonomicStatus);
         }
     }
-
 
 //** ***************************** TO STRING *********************************************/
 

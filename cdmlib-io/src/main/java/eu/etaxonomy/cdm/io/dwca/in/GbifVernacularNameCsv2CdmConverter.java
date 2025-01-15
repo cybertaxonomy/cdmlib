@@ -50,7 +50,8 @@ public class GbifVernacularNameCsv2CdmConverter
 
 	@Override
     public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem item ){
-		List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
+
+	    List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
 
 		Map<String, String> csv = item.map;
 		Reference sourceReference = state.getTransactionalSourceReference();

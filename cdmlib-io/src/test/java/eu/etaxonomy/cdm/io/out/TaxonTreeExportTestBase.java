@@ -503,7 +503,6 @@ public abstract class TaxonTreeExportTestBase
 
         //TODO textual type
 
-
         //commit
         commitAndStartNewTransaction(null);
     }
