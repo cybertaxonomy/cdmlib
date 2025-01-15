@@ -295,7 +295,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             logger.error(errorDuringImport, e);
             state.getReport().addException(errorDuringImport, e);
         } finally {
-            state.getReport().printReport(state.getConfig().getReportUri());
+            //state.getReport().printReport(state.getConfig().getReportUri());
         }
         if (state.getConfig().isDownloadSequenceData()) {
             for (URI uri : state.getSequenceDataStableIdentifier()) {
