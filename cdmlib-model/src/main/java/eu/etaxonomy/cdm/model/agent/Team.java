@@ -29,8 +29,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.envers.Audited;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -92,7 +90,6 @@ public class Team extends TeamOrPersonBase<Team> {
     @OrderColumn(name="sortIndex")
     @ListIndexBase(value=0)  //not really needed as this is the default
 	@ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@Match(MatchMode.MATCH)
 	private List<Person> teamMembers;
 
