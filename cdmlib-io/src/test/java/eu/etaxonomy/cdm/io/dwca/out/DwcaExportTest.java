@@ -27,6 +27,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -93,6 +94,9 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
     @SpringBeanByType
     private IAgentService agentService;
+
+    @SpringBeanByType
+    private IDescriptionService descriptionService;
 
     @SpringBeanByType
     private ITermService termService;
@@ -466,7 +470,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         classificationService.save(classification);
         taxonNodeService.save(nodesToSave);
 
-        TaxonDescription description = TaxonDescription.NewInstance(species);
+        TaxonDescription description = save(TaxonDescription.NewInstance(species));
 
         //Distribution
         Distribution distribution = Distribution.NewInstance(NamedArea.AFRICA(), PresenceAbsenceTerm.PRESENT());
@@ -492,6 +496,11 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
         commitAndStartNewTransaction(null);
 
+    }
+
+    private TaxonDescription save(TaxonDescription desc) {
+        descriptionService.save(desc);
+        return desc;
     }
 
     private void saveParserResult(NameParserResult parserResult, Set<TeamOrPersonBase> authorsToSave,

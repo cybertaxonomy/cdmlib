@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
@@ -180,6 +181,9 @@ public abstract class TaxonTreeExportTestBase
 
     @SpringBeanByType
     protected ICollectionService collectionService;
+
+    @SpringBeanByType
+    protected IDescriptionService descriptionService;
 
     @SpringBeanByType
     protected IAgentService agentService;
@@ -457,19 +461,19 @@ public abstract class TaxonTreeExportTestBase
         taxonNodeService.save(nodesToSave);
 
         //add Armenia distribution to subspecies //TODO why after save?
-        TaxonDescription description = TaxonDescription.NewInstance(subspecies);
+        TaxonDescription description = save(TaxonDescription.NewInstance(subspecies));
         Distribution distribution = Distribution.NewInstance(Country.ARMENIA(), PresenceAbsenceTerm.PRESENT());
         setUuid(distribution, distributionArmeniaUuid);
         description.addElement(distribution);
 
         //add common name to species
-        TaxonDescription description2 = TaxonDescription.NewInstance(species);
+        TaxonDescription description2 = save(TaxonDescription.NewInstance(species));
         CommonTaxonName commonName = CommonTaxonName.NewInstance("Tanne", Language.GERMAN());
         setUuid(commonName, commonNameTanneUuid);
         description2.addElement(commonName);
 
         //add media
-        TaxonDescription subspeciesImageGallery = TaxonDescription.NewInstance(subspecies, true);
+        TaxonDescription subspeciesImageGallery = save(TaxonDescription.NewInstance(subspecies, true));
         TextData mediaHolder = TextData.NewInstance(Feature.IMAGE());
         subspeciesImageGallery.addElement(mediaHolder);
         Media media = Media.NewInstance(URI.create("https://www.abc.de/fghi.jpg"), 10034, "image/jpg", "jpg");
@@ -540,6 +544,11 @@ public abstract class TaxonTreeExportTestBase
 
     private void saveAgents(Set<TeamOrPersonBase<?>> agents) {
         agentService.save(agents);
+    }
+
+    private TaxonDescription save(TaxonDescription desc) {
+        descriptionService.save(desc);
+        return desc;
     }
 
     private Team createTeam(String title, String nomTitle) {
