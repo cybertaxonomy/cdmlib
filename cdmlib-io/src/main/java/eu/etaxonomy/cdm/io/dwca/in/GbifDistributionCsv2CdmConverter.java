@@ -86,7 +86,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 
 			if (area != null){
 
-				TaxonDescription desc = getTaxonDescription(taxon, false);
+				TaxonDescription desc = getTaxonDescription(taxon, false, resultList);
 
 				Distribution distribution = Distribution.NewInstance(area, status);
 				desc.addElement(distribution);

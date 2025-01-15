@@ -169,10 +169,10 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		handleTaxonRemarks(csvTaxonRecord, taxonBase);
 
 		//TDWG_1
-		handleTdwgArea(csvTaxonRecord, taxonBase);
+		handleTdwgArea(csvTaxonRecord, taxonBase, resultList);
 
 		//VernecularName
-		handleCommonNames(csvTaxonRecord, taxonBase);
+		handleCommonNames(csvTaxonRecord, taxonBase, resultList);
 
 		//External Sources, ID's and References
 		handleIdentifiableObjects(csvTaxonRecord, taxonBase);
@@ -324,7 +324,9 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		}
 	}
 
-	private void handleCommonNames(StreamItem item,TaxonBase<?> taxonBase) {
+	private void handleCommonNames(StreamItem item, TaxonBase<?> taxonBase,
+	        List<MappedCdmBase<? extends CdmBase>> resultList) {
+
 		//TODO: handle comma separated values
 		String commonName = item.get(TermUri.DWC_VERNACULAR_NAME);
 		if (StringUtils.isNotBlank(commonName)){
@@ -333,21 +335,23 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(commonName, language);
 			if(taxonBase instanceof Taxon){
 				Taxon taxon = (Taxon) taxonBase;
-				TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
+				TaxonDescription taxonDescription = getTaxonDescription(taxon, false, resultList);
 				taxonDescription.addElement(commonTaxonName);
 				logger.info("Common name " + commonName + " added to " + taxon.getTitleCache());
 			}
 		}
 	}
 
-	private void handleTdwgArea(StreamItem item, TaxonBase<?> taxonBase) {
-		String tdwg_area = item.get(TermUri.DWC_COUNTRY_CODE);
+	private void handleTdwgArea(StreamItem item, TaxonBase<?> taxonBase,
+	        List<MappedCdmBase<? extends CdmBase>> resultList) {
+
+	    String tdwg_area = item.get(TermUri.DWC_COUNTRY_CODE);
 		if (tdwg_area != null){
     		if(taxonBase instanceof Synonym){
     			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
     			Taxon acceptedTaxon = synonym.getAcceptedTaxon();
     			if (acceptedTaxon != null){
-    			    TaxonDescription td = getTaxonDescription(acceptedTaxon, false);
+    			    TaxonDescription td = getTaxonDescription(acceptedTaxon, false, resultList);
     			    NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
 
     			    if (area == null){
@@ -361,7 +365,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
     		}
     		if(!(taxonBase instanceof Synonym)){
     			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-    			TaxonDescription td = getTaxonDescription(taxon, false);
+    			TaxonDescription td = getTaxonDescription(taxon, false, resultList);
     			NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
 
     			if (area == null){

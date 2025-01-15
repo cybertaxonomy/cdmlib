@@ -67,6 +67,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -100,6 +101,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
@@ -142,6 +144,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IOccurrenceService occurrenceService;
+
+    @SpringBeanByType
+    private IDescriptionDao descriptionDao;
 
     @SpringBeanByType
     private ITermService termService;
@@ -728,8 +733,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         createTermTrees();
 
         //factDatasets
-        TaxonDescription factSet1 = TaxonDescription.NewInstance(taxon);
-        TaxonDescription markedFactSet = TaxonDescription.NewInstance(taxon);
+        TaxonDescription factSet1 = save(TaxonDescription.NewInstance(taxon));
+        TaxonDescription markedFactSet = save(TaxonDescription.NewInstance(taxon));
         markedFactSet.addMarker(MarkerType.COMPLETE(), true);
 
         //distributions
@@ -810,7 +815,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         CommonTaxonName cn1 = CommonTaxonName.NewInstance("My flower", Language.ENGLISH(), Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND());
         CommonTaxonName cn2 = CommonTaxonName.NewInstance("Meine Blume", Language.GERMAN(), Country.GERMANY());
         factSet1.addElements(cn1);
-        TaxonDescription taxDesc2 = TaxonDescription.NewInstance(taxon);
+        TaxonDescription taxDesc2 = save(TaxonDescription.NewInstance(taxon));
         taxDesc2.addElement(cn2);
         Reference descRef = save(ReferenceFactory.newBook());
         descRef.setTitle("Common name description reference");
@@ -917,6 +922,11 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
             statusTree.getRoot().addChild(PresenceAbsenceTerm.PRESENT());
             termTreeService.save(statusTree);
         }
+    }
+
+    private <S extends DescriptionBase<?>> S save(S newDescription) {
+        descriptionDao.save(newDescription);
+        return newDescription;
     }
 
     @Override

@@ -174,8 +174,10 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		}
 	}
 
-	protected TaxonDescription getTaxonDescription(Taxon taxon, boolean isImageGallery) {
-		TaxonDescription result = null;
+	protected TaxonDescription getTaxonDescription(Taxon taxon, boolean isImageGallery,
+	        List<MappedCdmBase<? extends CdmBase>> resultList) {
+
+	    TaxonDescription result = null;
 		Set<TaxonDescription> descs = taxon.getDescriptions();
 		for (TaxonDescription desc : descs){
 			if (desc.isImageGallery() == isImageGallery){
@@ -185,6 +187,8 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 		}
 		if (result == null){
 			result = TaxonDescription.NewInstance(taxon);
+			MappedCdmBase<TaxonDescription> mcb = new MappedCdmBase<>(result);
+			resultList.add(mcb);
 			result.setImageGallery(isImageGallery);
 		}
 		return result;

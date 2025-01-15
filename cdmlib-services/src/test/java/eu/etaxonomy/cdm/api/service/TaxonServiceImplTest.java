@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -79,6 +80,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -112,6 +114,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IDescriptionService descriptionService;
+
+    @SpringBeanByType
+    private IDescriptionDao descriptionDao;
 
     @SpringBeanByType
     private IDescriptionElementDao descriptionElementDao;
@@ -912,6 +917,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     private Reference save(Reference ref) {
         referenceDao.save(ref);
         return ref;
+    }
+
+    private <S extends DescriptionBase<?>> S save(S newDescription) {
+        descriptionDao.save(newDescription);
+        return newDescription;
     }
 
     @Test
@@ -1902,7 +1912,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	TaxonDescription description = TaxonDescription.NewInstance(taxWithoutSyn);
+    	TaxonDescription description = save(TaxonDescription.NewInstance(taxWithoutSyn));
     	SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>> specimen = FieldUnit.NewInstance();
     	UUID uuid = occurenceService.saveOrUpdate(specimen);
     	DescriptionElementBase element = IndividualsAssociation.NewInstance(specimen);
@@ -1941,6 +1951,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID uuid = occurenceService.saveOrUpdate(specimen);
         DescriptionElementBase element = IndividualsAssociation.NewInstance(specimen);
         description.addElement(element);
+        descriptionDao.save(description);
         service.saveOrUpdate(taxWithoutSyn);
 
         Taxon tax = (Taxon)service.find(uuidTaxWithoutSyn);

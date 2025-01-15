@@ -849,7 +849,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         Reference ref2 = save(ReferenceFactory.newGeneric(), "Reference2", uuidRef2);
         Taxon taxon = Taxon.NewInstance(null, null);
 
-        TaxonDescription desc = TaxonDescription.NewInstance(taxon);
+        TaxonDescription desc = save(TaxonDescription.NewInstance(taxon));
         Language language = Language.DEFAULT();
         TextData textData = TextData.NewInstance(Feature.DESCRIPTION(), "And here is a citation" , language, null);
         LanguageString languageString = textData.getLanguageText(language);
@@ -1371,6 +1371,11 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         } catch (IllegalArgumentException | MatchException e) {
             Assert.fail("No exception should be thrown");
         }
+    }
+
+    private <S extends DescriptionBase<?>> S save(S newDescription) {
+        descriptionDao.save(newDescription);
+        return newDescription;
     }
 
 	@Test

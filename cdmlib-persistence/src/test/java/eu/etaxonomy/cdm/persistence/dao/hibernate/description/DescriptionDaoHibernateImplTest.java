@@ -262,6 +262,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         Taxon taxon = Taxon.NewInstance(null, null);
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         this.taxonDao.save(taxon);
+        descriptionDao.save(description);
         long n2 = this.descriptionDao.count();
         Assert.assertEquals(1, n2-n1);
 

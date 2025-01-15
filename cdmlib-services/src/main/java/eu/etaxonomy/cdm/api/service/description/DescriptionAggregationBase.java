@@ -291,6 +291,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
                 getResult().addUpdatedUuid(targetDescription);
             }else{
                 getResult().addInsertedUuid(targetDescription);
+                getDescriptionService().save(targetDescription);
             }
         }
         removeDescriptionIfEmpty(targetDescription, resultHolder);

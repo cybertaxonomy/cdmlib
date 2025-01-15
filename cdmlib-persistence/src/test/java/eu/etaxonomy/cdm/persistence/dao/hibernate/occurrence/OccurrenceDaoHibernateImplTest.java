@@ -30,6 +30,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -51,6 +52,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -70,6 +72,9 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
     @SpringBeanByType
     private IReferenceDao referenceDao;
 
+    @SpringBeanByType
+    private IDescriptionDao descriptionDao;
+
 //**************** TESTS ************************************************
 
 	@Test
@@ -81,7 +86,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
     public void testCountMedia() {
 
         MediaSpecimen unit = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
-        SpecimenDescription desc = SpecimenDescription.NewInstance(unit);
+        SpecimenDescription desc = save(SpecimenDescription.NewInstance(unit));
         desc.setImageGallery(true);
         TextData textData = TextData.NewInstance(Feature.IMAGE());
         desc.addElement(textData);
@@ -103,7 +108,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
     public void testGetMedia() {
 
         MediaSpecimen unit = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
-        SpecimenDescription desc = SpecimenDescription.NewInstance(unit);
+        SpecimenDescription desc = save(SpecimenDescription.NewInstance(unit));
         desc.setImageGallery(true);
         TextData textData = TextData.NewInstance(Feature.IMAGE());
         desc.addElement(textData);
@@ -381,7 +386,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             //*** Add assoziations ****
 
             //du_indAss is added as indiv. association
-            TaxonDescription td = TaxonDescription.NewInstance(taxon);
+            TaxonDescription td = save(TaxonDescription.NewInstance(taxon));
             IndividualsAssociation ia = IndividualsAssociation.NewInstance(du_indAss);
             td.addElement(ia);
 
@@ -404,8 +409,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             //du_heteroType2 is added as type designation for the other heterotypic synonym
             name4.addSpecimenTypeDesignation(du_heteroType2, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
-
-            TaxonDescription fieldUnitDescription = TaxonDescription.NewInstance(fieldUnitTaxon);
+            TaxonDescription fieldUnitDescription = save(TaxonDescription.NewInstance(fieldUnitTaxon));
             IndividualsAssociation fieldUnitIndAss = IndividualsAssociation.NewInstance(fieldUnit1);
             fieldUnitDescription.addElement(fieldUnitIndAss);
 
@@ -416,6 +420,11 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             return null;
         }
 	}
+
+    private <S extends DescriptionBase<?>> S save(S newDescription) {
+        descriptionDao.save(newDescription);
+        return newDescription;
+    }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {

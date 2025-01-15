@@ -414,6 +414,7 @@ public class FullCoverageDataGenerator {
 
 		Taxon taxon = createNewTaxon(entitiesToSave);
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
+		entitiesToSave.add(taxonDescription);
 		taxonDescription.addElements(categoricalData, quantitativeData,
 				textData, commonTaxonName, taxonInteraction, indAssoc, distribution, temporalData);
 
@@ -446,13 +447,15 @@ public class FullCoverageDataGenerator {
 
 		//Specimen description
 		SpecimenOrObservationBase<?> describedSpecimen = createNewSpecimen(entitiesToSave);
-		SpecimenDescription specDesc = SpecimenDescription.NewInstance(specimen);
 		entitiesToSave.add(describedSpecimen);
+		SpecimenDescription specDesc = SpecimenDescription.NewInstance(specimen);
+		entitiesToSave.add(specDesc);
 		handleAnnotatableEntity(specDesc);
 
 		//Name description
 		TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		TaxonNameDescription nameDesc = TaxonNameDescription.NewInstance(name);
+		entitiesToSave.add(nameDesc);
 		entitiesToSave.add(name);
 		handleAnnotatableEntity(nameDesc);
 
@@ -905,7 +908,7 @@ public class FullCoverageDataGenerator {
 		genusZooName.setPublicationYear(1922);
 		genusZooName.setOriginalPublicationYear(1987);
 		genusZooName.setAppendedPhrase("appended phrase");
-		genusZooName.addDescription(TaxonNameDescription.NewInstance());
+		genusZooName.addDescription(save(TaxonNameDescription.NewInstance(), entitiesToSave));
 		genusZooName.setNomenclaturalMicroReference("p. 123");
 		genusZooName.setNomenclaturalReference(createNewReference(entitiesToSave));
 		NameRelationship rel = genusZooName.addRelationshipFromName(botName, NameRelationshipType.LATER_HOMONYM() , "ruleConsidered", NomenclaturalCodeEdition.ICN_2017_SHENZHEN);
@@ -953,7 +956,12 @@ public class FullCoverageDataGenerator {
 		entitiesToSave.add(botName2);
 	}
 
-	private void handleEventBase(EventBase event, List<CdmBase> entitiesToSave){
+    private <T extends CdmBase> T save(T entity, List<CdmBase> entitiesToSave) {
+        entitiesToSave.add(entity);
+        return entity;
+    }
+
+    private void handleEventBase(EventBase event, List<CdmBase> entitiesToSave){
 		event.setTimeperiod(TimePeriodParser.parseString("1.4.1975-2.5.1980"));
 		event.setActor(createNewPerson("EventActor", entitiesToSave));
 		event.setDescription("Some interesing event");

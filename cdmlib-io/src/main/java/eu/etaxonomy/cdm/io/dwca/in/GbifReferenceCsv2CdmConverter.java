@@ -166,14 +166,14 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 			}
 			if (config.isHandleAllRefsAsCitation()){
 				if (taxon.isInstanceOf(Taxon.class)){
-					TaxonDescription desc = getTaxonDescription(CdmBase.deproxy(taxon, Taxon.class), false);
+					TaxonDescription desc = getTaxonDescription(CdmBase.deproxy(taxon, Taxon.class), false, resultList);
 					createCitation(desc, reference, taxon.getName());
 					resultList.add(new MappedCdmBase<CdmBase>(desc));
 				}else if (taxon.isInstanceOf(Synonym.class)){
 					Synonym syn = CdmBase.deproxy(taxon, Synonym.class);
 					Taxon tax = syn.getAcceptedTaxon();
 					if (tax != null){
-    					TaxonDescription desc = getTaxonDescription(tax, false);
+    					TaxonDescription desc = getTaxonDescription(tax, false, resultList);
     					createCitation(desc, reference, syn.getName());
     					resultList.add(new MappedCdmBase<CdmBase>(desc));
 					}

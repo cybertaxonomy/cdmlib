@@ -24,6 +24,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
@@ -53,6 +55,9 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
     @SpringBeanByType
     private IClassificationDao classificationDao;
+
+    @SpringBeanByType
+    private IDescriptionDao descriptionDao;
 
     @SpringBeanByType
     private ITaxonNodeFilterDao filterDao;
@@ -114,10 +119,10 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         NamedArea germany = (NamedArea) termDao.load(germanyUuid);
         NamedArea denmark = (NamedArea) termDao.load(denmarkUuid);
         NamedArea france = (NamedArea) termDao.load(franceUuid);
-        TaxonDescription.NewInstance(taxon1).addElement(Distribution.NewInstance(europe, PresenceAbsenceTerm.NATIVE()));
-        TaxonDescription.NewInstance(taxon2).addElement(Distribution.NewInstance(france, PresenceAbsenceTerm.NATIVE()));
-        TaxonDescription.NewInstance(taxon3).addElement(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
-        TaxonDescription.NewInstance(taxon4).addElement(Distribution.NewInstance(denmark, PresenceAbsenceTerm.ABSENT()));
+        save(TaxonDescription.NewInstance(taxon1)).addElement(Distribution.NewInstance(europe, PresenceAbsenceTerm.NATIVE()));
+        save(TaxonDescription.NewInstance(taxon2)).addElement(Distribution.NewInstance(france, PresenceAbsenceTerm.NATIVE()));
+        save(TaxonDescription.NewInstance(taxon3)).addElement(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
+        save(TaxonDescription.NewInstance(taxon4)).addElement(Distribution.NewInstance(denmark, PresenceAbsenceTerm.ABSENT()));
 
         node1 = classification1.addChildTaxon(taxon1, citation, microCitation);
         node1.setUuid(uuidNode1);
@@ -516,6 +521,11 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         filter.setIncludeRootNodes(true);
         n = filterDao.count(filter);
         Assert.assertEquals("All 6 children including root node should be returned", 6, n);
+    }
+
+    private <S extends DescriptionBase<?>> S save(S newDescription) {
+        descriptionDao.save(newDescription);
+        return newDescription;
     }
 
     @Override

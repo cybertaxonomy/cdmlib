@@ -131,6 +131,9 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     private IDescriptionService descriptionService;
 
     @SpringBeanByType
+    private IDescriptionService descriptionDao;
+
+    @SpringBeanByType
     private ITaxonService taxonService;
 
     @SpringBeanByType
@@ -521,7 +524,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         //literature description
         Taxon taxon = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
-        TaxonDescription literatureDescription = TaxonDescription.NewInstance(taxon);
+        TaxonDescription literatureDescription = save(TaxonDescription.NewInstance(taxon));
         literatureDescription.addType(DescriptionType.SECONDARY_DATA);
         addQuantitativeData(literatureDescription, uuidFeatureLeafLength, new BigDecimal("4.5"), new BigDecimal("6.5"));
         addCategoricalData(literatureDescription, uuidFeatureLeafColor, uuidLeafColorBlue);
@@ -873,7 +876,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         TaxonDescription taxonDescription = taxon.getDescriptions(DescriptionType.INDIVIDUALS_ASSOCIATION).stream()
             .findFirst()
             .orElseGet(()->{
-                TaxonDescription td = TaxonDescription.NewInstance(taxon);
+                TaxonDescription td = save(TaxonDescription.NewInstance(taxon));
                 td.addType(DescriptionType.INDIVIDUALS_ASSOCIATION);
                 td.setTitleCache("Specimens used by " + dataSet.getTitleCache() + " for " + getTaxonLabel(taxon), true);
                 return td;}
@@ -884,7 +887,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         // needed in the dataset for performance reasons
         taxonDescription.addElement(individualsAssociation);
         dataSet.addDescription(taxonDescription);
-        SpecimenDescription specDesc = SpecimenDescription.NewInstance(specimen);
+        SpecimenDescription specDesc = save(SpecimenDescription.NewInstance(specimen));
         dataSet.addDescription(specDesc);
 
         return specDesc;
@@ -949,6 +952,11 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         leafPANode.addChild(featureLeafAdd);
 
         vocabularyService.save(stateVoc);
+    }
+
+    private <S extends DescriptionBase<?>> S save(S newDescription) {
+        descriptionDao.save(newDescription);
+        return newDescription;
     }
 
 //    @Test

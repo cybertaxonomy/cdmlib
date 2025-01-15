@@ -66,6 +66,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -99,6 +100,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
     @SpringBeanByType
     private IDescriptionElementService descriptionElementService;
+
+    @SpringBeanByType
+    private IDescriptionDao descriptionDao;
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -732,7 +736,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
             throw new NullPointerException("No taxon found for " + taxonUuid);
         }
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
-
+        descriptionDao.save(description);
         for (Distribution distribution : distributions) {
             description.addElement(distribution);
         }

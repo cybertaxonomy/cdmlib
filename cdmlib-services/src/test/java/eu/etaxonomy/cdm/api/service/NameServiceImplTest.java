@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -66,6 +67,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
@@ -102,6 +104,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IReferenceDao referenceDao;
+
+    @SpringBeanByType
+    private IDescriptionDao descriptionDao;
 
     @SpringBeanByType
     private ITypeDesignationDao typeDesignationDao;
@@ -566,7 +571,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         //TaxonNameDescription
         name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
-        TaxonNameDescription.NewInstance(name1);
+        save(TaxonNameDescription.NewInstance(name1));
         nameService.saveOrUpdate(name1);
         commitAndStartNewTransaction(tableNames);
 
@@ -1109,6 +1114,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     private <S extends TypeDesignationBase<?>> S save(S newInstance) {
         typeDesignationDao.save(newInstance);
         return newInstance;
+    }
+
+    private <S extends DescriptionBase<?>> S save(S newDescription) {
+        descriptionDao.save(newDescription);
+        return newDescription;
     }
 
     private Rank getSpeciesRank() {

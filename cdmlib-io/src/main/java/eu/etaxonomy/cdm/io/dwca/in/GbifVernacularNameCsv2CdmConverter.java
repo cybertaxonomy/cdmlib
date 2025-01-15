@@ -62,7 +62,7 @@ public class GbifVernacularNameCsv2CdmConverter
 		if (taxon != null){
 			MappedCdmBase<? extends CdmBase>  mcb = new MappedCdmBase<>(item.term, csv.get(CORE_ID), taxon);
 			String vernacular = item.get(TermUri.DWC_VERNACULAR_NAME);
-			TaxonDescription desc = getTaxonDescription(taxon, false);
+			TaxonDescription desc = getTaxonDescription(taxon, false, resultList);
 
 			//TODO area,
 			Language language = getDcLanguage(item, resultList);

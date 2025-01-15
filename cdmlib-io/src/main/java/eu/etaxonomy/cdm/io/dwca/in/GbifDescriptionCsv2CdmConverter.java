@@ -74,7 +74,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			if (isNotBlank(description)){
 				Feature feature = getFeatureByDcType(item, resultList);
 
-				TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
+				TaxonDescription taxonDescription = getTaxonDescription(taxon, false, resultList);
 
 				//deduplicate - if this taxonDescription already got these Rights attached
 				boolean addRights = true;
