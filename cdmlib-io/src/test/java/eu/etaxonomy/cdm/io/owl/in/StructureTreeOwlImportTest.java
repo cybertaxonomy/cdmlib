@@ -103,11 +103,12 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
 
         assertEquals("Tree has wrong term type", TermType.Structure, tree.getTermType());
         assertEquals("Wrong number of distinct features", 4, tree.getDistinctTerms().size());
-        List rootChildren = tree.getRootChildren();
+        List<TermNode<Feature>> rootChildren = tree.getRootChildren();
         assertEquals("Wrong number of root children", 1, rootChildren.size());
         Object entirePlant = rootChildren.iterator().next();
         assertTrue("Root is no feature node", entirePlant instanceof TermNode);
-        assertEquals("Root node has wrong term type", TermType.Structure, ((TermNode)entirePlant).getTermType());
+        assertEquals("Root node has wrong term type", TermType.Structure, ((TermNode<?>)entirePlant).getTermType());
+        @SuppressWarnings("unchecked")
         TermNode<DefinedTerm> entirePlantNode = (TermNode<DefinedTerm>) entirePlant;
         List<TermNode<DefinedTerm>> childNodes = entirePlantNode.getChildNodes();
         assertEquals("Wrong number of children", 2, childNodes.size());
@@ -159,7 +160,7 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         String vocLabel = "03 Generative Structures";
         List<TermVocabulary> vocs = vocabularyService.findByTitle(TermVocabulary.class, vocLabel, MatchMode.EXACT, null, null, null, null, Arrays.asList("terms")).getRecords();
         assertEquals("wrong number of vocabularies", 1, vocs.size());
-        TermVocabulary termVoc = vocs.iterator().next();
+        TermVocabulary<?> termVoc = vocs.iterator().next();
         assertEquals("Wrong vocabulary label", vocLabel, termVoc.getTitleCache());
         Collection<TermDto> topLevelTerms = vocabularyService.getTopLevelTerms(termVoc.getUuid());
         assertEquals("wrong number of top level terms", 4, topLevelTerms.size());

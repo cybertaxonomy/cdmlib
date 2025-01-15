@@ -396,7 +396,6 @@ public class Reference
 
 // *********************** LISTENER ************************/
 
-
 	@Override
     public void initListener(){
         PropertyChangeListener listener = new PropertyChangeListener() {
@@ -495,12 +494,10 @@ public class Reference
 		this.abbrevTitle = isBlank(abbrevTitle) ? null : abbrevTitle;
 	}
 
-
 	@Override
     public String getEditor() {
 		return editor;
 	}
-
 
 	@Override
     public void setEditor(String editor) {

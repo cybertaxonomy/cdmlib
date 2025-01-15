@@ -203,6 +203,7 @@ public class SDDImport
 
 	@Override
 	public void doInvoke(SDDImportState state){
+
 	    init();
 		TransactionStatus ts = startTransaction();
 		SDDImportConfigurator sddConfig = state.getConfig();
@@ -630,7 +631,7 @@ public class SDDImport
 					AnnotationType annotationType = getAnnotationType(state, uuidAnnotationTypeLocation, "location", "location", "location", null);
 //					annotationTypes.add(annotationType);  TODO necessary??
 					location.setAnnotationType(annotationType);
-					(publication).addAnnotation(location);
+					publication.addAnnotation(location);
 				}
 				//TODO type
 				td.addSource(OriginalSourceType.Unknown, null, null, publication, null);
@@ -814,17 +815,17 @@ public class SDDImport
 
 			if (stringDateModified != null) {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
-				Date d = null;
+				Date date = null;
 				try {
-					d = sdf.parse(stringDateModified);
+				    date = sdf.parse(stringDateModified);
 				} catch(Exception e) {
 					System.err.println("Exception :");
 					e.printStackTrace();
 				}
 
 				DateTime updated = null;
-				if (d != null) {
-					updated = new DateTime(d);
+				if (date != null) {
+					updated = new DateTime(date);
 					sourceReference.setUpdated(updated);
 					sec.setUpdated(updated);
 				}
@@ -1500,7 +1501,7 @@ public class SDDImport
 					Reference publication = ReferenceFactory.newArticle();
 					importRepresentation(elPublication, sddNamespace, publication, idP, cdmState);
 
-					publications.put(idP,publication);
+					publications.put(idP, publication);
 
 				} catch (Exception e) {
 					logger.warn("Import of Publication " + j + " failed.");

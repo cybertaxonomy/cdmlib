@@ -115,6 +115,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testEmptyData(){
+
         File destinationFolder = null;
         DwcaTaxExportConfigurator config = DwcaTaxExportConfigurator.NewInstance(null, destinationFolder, null);
         config.setTarget(TARGET.EXPORT_DATA);
@@ -157,7 +158,9 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testSubTree(){
+
         createFullTestDataSet();
+
         File destinationFolder = null;
         DwcaTaxExportConfigurator config = DwcaTaxExportConfigurator.NewInstance(null, destinationFolder, null);
         config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(UUID_SUBSPEC_NODE));
@@ -225,6 +228,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     public void testFullData(){
 
         createFullTestDataSet();
+
         File destinationFolder = null;
         DwcaTaxExportConfigurator config = DwcaTaxExportConfigurator.NewInstance(null, destinationFolder, null);
         config.setTarget(TARGET.EXPORT_DATA);
@@ -318,7 +322,9 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testUnpublished(){
+
         createFullTestDataSet();
+
         File destinationFolder = null;
         DwcaTaxExportConfigurator config = DwcaTaxExportConfigurator.NewInstance(null, destinationFolder, null);
         config.setTarget(TARGET.EXPORT_DATA);
@@ -341,7 +347,9 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testNoHeader(){
+
         createFullTestDataSet();
+
         File destinationFolder = null;
         DwcaTaxExportConfigurator config = DwcaTaxExportConfigurator.NewInstance(null, destinationFolder, null);
         config.setTarget(TARGET.EXPORT_DATA);

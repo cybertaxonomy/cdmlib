@@ -71,7 +71,7 @@ public class TcsXmlImportConfiguratorTest extends CdmTransactionalIntegrationTes
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);
-		List<TaxonName> listz = nameService.list(TaxonName.class, null, 0, null, null);
+		List<TaxonName> list = nameService.list(TaxonName.class, null, 0, null, null);
 		assertEquals("Number of TaxonNames should be 16", 16, nameService.count(null));
 	}
 

@@ -114,9 +114,12 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 	public void doInvoke(TcsXmlImportState state){
 
 		logger.info("start make TaxonConcepts ...");
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
-		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		Map<String, CommonTaxonName> commonNameMap = new HashMap<String, CommonTaxonName>();
 
 		ITaxonService taxonService = getTaxonService();

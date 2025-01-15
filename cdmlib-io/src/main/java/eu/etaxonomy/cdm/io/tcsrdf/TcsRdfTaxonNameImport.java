@@ -50,8 +50,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 @Component
 public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
-    private static final long serialVersionUID = -2547422867292051979L;
 
+    private static final long serialVersionUID = -2547422867292051979L;
     private static final Logger logger = LogManager.getLogger();
 
 	public TcsRdfTaxonNameImport(){
@@ -98,7 +98,8 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	@Override
 	protected void doInvoke(TcsRdfImportState state){
 
-		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 
 		logger.info("start makeTaxonNames ...");
 		TcsRdfImportConfigurator config = state.getConfig();
@@ -144,7 +145,6 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	}
 
 	private TaxonName handleNameResource(Resource nameAbout, TcsRdfImportConfigurator config){
-		String idNamespace = "TaxonName";
 
 //		StmtIterator stmts = nameAbout.listProperties();
 //		while(stmts.hasNext()){

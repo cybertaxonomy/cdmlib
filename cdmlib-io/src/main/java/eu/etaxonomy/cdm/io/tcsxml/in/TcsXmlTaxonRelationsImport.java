@@ -154,7 +154,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			</tcs:Basionym>
 		 */
 
-
 		String childName = "Basionym";
 		boolean obligatory = false;
 		Element elBasionymRelationships = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
@@ -206,8 +205,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 						}
 					}
 				}
-
-
 			} else{
 				basionymName = TaxonNameFactory.NewNonViralInstance(name.getRank());
 				childName = "RelatedName";
@@ -313,15 +310,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		return i;
 	}
 
-
 	/**
 	 * Handles the TCS RelationshipType element.
-	 * @param tcsConfig
-	 * @param elRelationship
-	 * @param taxonMap
-	 * @param taxonStore
-	 * @param fromTaxon
-	 * @param success
 	 */
 	private void makeRelationshipType(
 			TcsXmlImportState state

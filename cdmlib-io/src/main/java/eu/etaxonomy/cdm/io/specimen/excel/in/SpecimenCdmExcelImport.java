@@ -828,7 +828,6 @@ public class SpecimenCdmExcelImport
 		return result;
 	}
 
-
 	private TaxonName getTaxonName(SpecimenCdmExcelImportState state, String name) {
 
 	    TaxonName result = null;

@@ -184,13 +184,13 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 
 	    T result = null;
 		String linkType = element.getAttributeValue("linkType");
-		String ref = element.getAttributeValue("ref");
-		if (ref != null){
-			if (ref.matches("urn:lsid:ipni.org:.*:*")){
-				ref = ref.substring(0,ref.lastIndexOf(":"));
+		String refStr = element.getAttributeValue("ref");
+		if (refStr != null){
+			if (refStr.matches("urn:lsid:ipni.org:.*:*")){
+				refStr = refStr.substring(0,refStr.lastIndexOf(":"));
 			}
 		}
-		if(ref == null && linkType == null){
+		if(refStr == null && linkType == null){
 			result = getInstance(clazz);
 			if (result != null){
 				String title = element.getTextNormalize();
@@ -198,7 +198,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			}
 		}else if (linkType == null || linkType.equals("local")){
 			//TODO
-			result = objectMap.get(ref);
+			result = objectMap.get(refStr);
 			if (result == null){
 				result = getInstance(clazz);
 				if (result != null){
@@ -245,31 +245,31 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 
 	    Reference result = null;
 		Namespace tcsNamespace = elAccordingToDetailed.getNamespace();
-		if (elAccordingToDetailed != null){
-			//AuthorTeam
-			String childName = "AuthorTeam";
-			boolean obligatory = false;
-			Element elAuthorTeam = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
-			makeAccordingToAuthorTeam(elAuthorTeam, success);
 
-			//PublishedIn
-			childName = "PublishedIn";
-			obligatory = false;
-			Element elPublishedIn = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
-			result = makeReferenceType(elPublishedIn, Reference.class, referenceMap, success);
+		//AuthorTeam
+		String childName = "AuthorTeam";
+		boolean obligatory = false;
+		Element elAuthorTeam = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
+		makeAccordingToAuthorTeam(elAuthorTeam, success);
 
-			//MicroReference
-			childName = "MicroReference";
-			obligatory = false;
-			Element elMicroReference = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
-			if (elMicroReference != null){
-				String microReference = elMicroReference.getTextNormalize();
-				if (CdmUtils.Nz(microReference).equals("")){
-					//TODO
-					logger.warn("MicroReference not yet implemented for AccordingToDetailed");
-				}
+		//PublishedIn
+		childName = "PublishedIn";
+		obligatory = false;
+		Element elPublishedIn = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
+		result = makeReferenceType(elPublishedIn, Reference.class, referenceMap, success);
+
+		//MicroReference
+		childName = "MicroReference";
+		obligatory = false;
+		Element elMicroReference = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
+		if (elMicroReference != null){
+			String microReference = elMicroReference.getTextNormalize();
+			if (CdmUtils.Nz(microReference).equals("")){
+				//TODO
+				logger.warn("MicroReference not yet implemented for AccordingToDetailed");
 			}
 		}
+
 		return result;
 	}
 

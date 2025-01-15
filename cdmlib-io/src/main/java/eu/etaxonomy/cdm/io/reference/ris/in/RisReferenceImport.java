@@ -53,6 +53,7 @@ public class RisReferenceImport
 
     @Override
     protected void doInvoke(RisReferenceImportState state) {
+
         RisReferenceImportConfigurator config = state.getConfig();
         try {
 //            new FileReader(file)

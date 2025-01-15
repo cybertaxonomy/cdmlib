@@ -39,7 +39,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 @Component("tcsXmlTaxonNameIO")
-public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
+public class TcsXmlTaxonNameImport
+        extends TcsXmlImportBase {
 
     private static final long serialVersionUID = -1978871518114999061L;
     private static final Logger logger = LogManager.getLogger();
@@ -66,15 +67,19 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 	public void doInvoke(TcsXmlImportState state){
 
 		logger.info("start make TaxonNames ...");
-		MapWrapper<Person> personMap = (MapWrapper<Person>)state.getStore(ICdmIO.PERSON_STORE);
-		MapWrapper<Person> teamMap = (MapWrapper<Person>)state.getStore(ICdmIO.TEAM_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<Person> personMap = (MapWrapper<Person>)state.getStore(ICdmIO.PERSON_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<Person> teamMap = (MapWrapper<Person>)state.getStore(ICdmIO.TEAM_STORE);
+        @SuppressWarnings("unchecked")
         MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<Reference> referenceMap =  (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 		String childName;
 		boolean obligatory;
-		String idNamespace = "TaxonName";
+//		String idNamespace = "TaxonName";
 
 		TcsXmlImportConfigurator config = state.getConfig();
 		Element elDataSet = getDataSetElement(config);
@@ -199,8 +204,8 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		logger.info(i + " names handled");
 		getAgentService().save(personMap.getAllValues());
 		getAgentService().save(teamMap.getAllValues());
-		Collection<TaxonName> col = taxonNameMap.objects();
-		getNameService().save(col);
+		Collection<TaxonName> names = taxonNameMap.objects();
+		getNameService().save(names);
 
 		logger.info("end makeTaxonNames ...");
 		if (!success.getValue()){
@@ -239,7 +244,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		}
 		Rank stringRank = null;
 		try {
-			boolean useUnknown = true;
+//			boolean useUnknown = true;
 			stringRank = TcsXmlTransformer.rankString2Rank(strRankString);
 			//stringRank = Rank.getRankByNameOrIdInVoc(strRankString, useUnknown);
 		} catch (UnknownCdmTypeException e1) {
@@ -249,8 +254,8 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		//codeRank exists
 		if ( (codeRank != null) && ! codeRank.equals(Rank.UNKNOWN_RANK())){
 			result = codeRank;
-			if (! codeRank.equals(stringRank) && ! stringRank.equals(Rank.UNKNOWN_RANK())){
-				logger.warn("code rank and string rank are unequal. code: " + codeRank.getLabel() + " <-> string: " + stringRank.getLabel());
+			if (! codeRank.equals(stringRank) && ! Rank.UNKNOWN_RANK().equals(stringRank)){
+				logger.warn("code rank and string rank are unequal. code: " + codeRank.getLabel() + " <-> string: " + (stringRank == null? "null": stringRank.getLabel()));
 			}
 		}
 		//codeRank does not exist
@@ -275,7 +280,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
         MapWrapper<Reference> referenceMap =  (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 
 		List<String> elementList = new ArrayList<>();
-		String idNamespace = "TaxonName";
+//		String idNamespace = "TaxonName";
 		//create TaxonName element
 		String strId = elTaxonName.getAttributeValue("id");
 		String strNomenclaturalCode = elTaxonName.getAttributeValue("nomenclaturalCode");
@@ -418,7 +423,8 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		}
 	}
 
-	private void makeMicroReference(TaxonName name, Element elMicroReference, ResultWrapper<Boolean> success){
+	private void makeMicroReference(TaxonName name, Element elMicroReference,
+	        @SuppressWarnings("unused") ResultWrapper<Boolean> success){
 		if (elMicroReference != null){
 			String microReference = elMicroReference.getTextNormalize();
 			name.setNomenclaturalMicroReference(microReference);
@@ -551,8 +557,10 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 
 	}
 
-	private void makePublishedIn(TaxonName name, Element elPublishedIn, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
-		if (elPublishedIn != null && name != null){
+	private void makePublishedIn(TaxonName name, Element elPublishedIn,
+	        MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
+
+	    if (elPublishedIn != null && name != null){
 			Class<Reference> clazz = Reference.class;
 			Reference ref = makeReferenceType(elPublishedIn, clazz, referenceMap, success);
 			if (ref == null){
@@ -566,8 +574,10 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		}
 	}
 
-	private void makeYear(TaxonName name, Element elYear, ResultWrapper<Boolean> success){
-		if (elYear != null){
+	private void makeYear(TaxonName name, Element elYear,
+	        @SuppressWarnings("unused") ResultWrapper<Boolean> success){
+
+	    if (elYear != null){
 			String year = elYear.getTextNormalize();
 			if (year != null){
     			if (name.isZoological()){

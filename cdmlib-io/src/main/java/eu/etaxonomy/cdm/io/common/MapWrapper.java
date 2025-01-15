@@ -66,7 +66,6 @@ public class MapWrapper<T extends CdmBase> {
 	/**
 	 * Returns all values that are either stored in the wrapper or the database.
 	 * If <code>service</code> is null then only the elements stored in the wrapper are returned.
-	 * @return
 	 */
 	public Set<T> getAllValues(){
 		Set<T> result = new HashSet<T>();
@@ -145,7 +144,6 @@ public class MapWrapper<T extends CdmBase> {
 		return internalPartMap.values();
 	}
 
-
 	public Collection<T> removeObjects(int start, int limit) {
 
 		for (int i = start; i < start + limit; i++) {
@@ -155,9 +153,7 @@ public class MapWrapper<T extends CdmBase> {
 		return internalMap.values();
 	}
 
-
 	public Set<Object> keySet() {
 		return internalMap.keySet();
 	}
-
 }

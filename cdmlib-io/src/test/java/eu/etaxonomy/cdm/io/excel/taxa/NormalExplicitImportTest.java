@@ -89,7 +89,8 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 
 	@Before
 	public void setUp() throws URISyntaxException {
-		String inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xls";
+
+	    String inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xls";
 		URL url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 		configurator = NormalExplicitImportConfigurator.NewInstance(URI.fromUrl(url), null, NomenclaturalCode.ICNAFP, null);
@@ -99,7 +100,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 		uuidConfigurator = NormalExplicitImportConfigurator.NewInstance(URI.fromUrl(url), null, NomenclaturalCode.ICNAFP, null);
-		assertNotNull("Configurator could be created", configurator);
+		assertNotNull("Configurator could be created", uuidConfigurator);
 
 		String inputFileXslx = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xlsx";
 		url = this.getClass().getResource(inputFileXslx);
@@ -127,6 +128,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
         @DataSet(value="NormalExplicitImportTest.xml")
     })
 	public void testDoInvoke() {
+
 		//printDataSet(System.out);
 		boolean result = defaultImport.invoke(configurator).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);

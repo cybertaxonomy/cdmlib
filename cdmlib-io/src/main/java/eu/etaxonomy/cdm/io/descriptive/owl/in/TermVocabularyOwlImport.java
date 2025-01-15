@@ -130,5 +130,4 @@ public class TermVocabularyOwlImport
     protected boolean isIgnore(StructureTreeOwlImportState state) {
         return false;
     }
-
 }
