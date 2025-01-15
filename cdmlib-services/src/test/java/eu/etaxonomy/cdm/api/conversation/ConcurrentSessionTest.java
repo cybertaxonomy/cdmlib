@@ -431,6 +431,9 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
      */
     @Test(expected=HibernateSystemException.class)
     @DataSet("ConcurrentSessionTest.xml")
+    @Ignore //this explaining "test" does not work anymore since removing cascading from OriginalSourceBase
+            //to citation #10524, we either should rewrite the test or remove it as it is only an explaining test
+            //how hibernate generally works
     public void testWhatHappensWhenEncounteringStaleData(){
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
@@ -461,6 +464,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         conversationHolder2.bind();
         taxonBase2.setSec(reference1);
         taxonService.save(taxonBase2);
+        //here the exception should be thrown
         conversationHolder2.commit();
 
         conversationHolder3.bind();
