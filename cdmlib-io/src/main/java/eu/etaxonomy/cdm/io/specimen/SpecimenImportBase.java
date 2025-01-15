@@ -108,6 +108,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	    Taxon acceptedTaxon = null;
         SpecimenImportConfiguratorBase<?,?,?> config = state.getConfig();
         TaxonName parsedName = null;
+        List<Person> personList = getAgentService().list(Person.class, null, null, null, null);
 
         //check atomised name data for rank
         //new name will be created
@@ -120,11 +121,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 rank = atomisedTaxonName.getRank();
             }
         }
+
         if(config.isReuseExistingTaxaWhenPossible()){
             parsedName = atomisedTaxonName;
             if(parsedName==null){
                 parsedName = parseScientificName(scientificName, state, state.getReport(), rank);
             }
+
             atomisedTaxonName = parsedName;
             if(config.isIgnoreAuthorship() && parsedName!=null){// && preferredFlag){
                 // do not ignore authorship for non-preferred names because they need
@@ -156,6 +159,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                     }
                 }
             }
+
         }
 
         if(acceptedTaxon == null && atomisedTaxonName != null){
@@ -189,13 +193,20 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
             logger.info("Created new taxon name "+taxonName);
         }
-
+        checkAllAuthors(state, acceptedTaxon);
+        List<Person> newPersons = new ArrayList<>();
+        List<Team> newTeams = new ArrayList<>();
+        state.getPersonStoreAuthor().values().stream().filter(p -> ((Person)p).getId() == 0).forEach(n -> newPersons.add((Person)n));
+        Map<UUID, AgentBase> map = getAgentService().saveOrUpdate((java.util.Collection)newPersons);
+        map.forEach((k, v) -> state.getPersonStoreAuthor().put(((Person)v).getTitleCache(), v));
+        state.getTeamStoreAuthor().values().stream().filter(p -> ((Team)p).getId() == 0).forEach(n -> newTeams.add((Team)n));
+        map = getAgentService().saveOrUpdate((java.util.Collection)newTeams);
+        map.forEach((k, v) -> state.getTeamStoreAuthor().put(((Team)v).getTitleCache(), v));
         if(acceptedTaxon != null && !acceptedTaxon.isPersisted()) {
-
             //check for already existing authors
-            checkAllAuthors(state, acceptedTaxon);
             save(acceptedTaxon, state);
-        }
+            }
+
         return acceptedTaxon;
     }
 
@@ -203,6 +214,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         //combination author
         TeamOrPersonBase<?> author = acceptedTaxon.getName().getCombinationAuthorship();
         acceptedTaxon.getName().setCombinationAuthorship(checkAuthor(state, author));
+        if (acceptedTaxon.getName().getNomenclaturalReference() != null && acceptedTaxon.getName().getNomenclaturalReference().getAuthorship() != null &&  acceptedTaxon.getName().getNomenclaturalReference().getAuthorship().getTitleCache().equals(acceptedTaxon.getName().getCombinationAuthorship().getTitleCache())) {
+            acceptedTaxon.getName().getNomenclaturalReference().setAuthorship(acceptedTaxon.getName().getCombinationAuthorship());
+        }
         //basionym author
         author = acceptedTaxon.getName().getBasionymAuthorship();
         acceptedTaxon.getName().setBasionymAuthorship(checkAuthor(state, author));
@@ -246,11 +260,16 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                             alreadyExistingMembers.add((Person)agents.get(0));
                             state.getPersonStoreAuthor().put(agents.get(0).getTitleCache(), agents.get(0));
                             removeTeamMember.add(member);
+                        }else {
+                            state.getPersonStoreAuthor().put (member.getTitleCache(), member);
                         }
                     }
                     ((Team) author).getTeamMembers().removeAll(removeTeamMember);
                     ((Team) author).getTeamMembers().addAll(alreadyExistingMembers);
+                    state.getTeamStoreAuthor().put(author.getTitleCache(), author);
 
+                }else {
+                    state.getPersonStoreAuthor().put(author.getTitleCache(), author);
                 }
                 return author;
             }
@@ -466,9 +485,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             report.addInfoMessage(message);
             logger.info(message);
         }
-        parseResult.getAuthors().forEach(a->save(a, state));
-        parseResult.getOtherNames().forEach(n->save(n, state));
-        parseResult.getReferences().forEach(r->save(r, state));
+//        parseResult.getAuthors().forEach(a->save(a, state));
+//        parseResult.getOtherNames().forEach(n->save(n, state));
+//        parseResult.getReferences().forEach(r->save(r, state));
 
         return taxonName;
 
@@ -538,11 +557,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                     taxonName.setAuthorshipCache(getFromMap(atomisedMap, "AuthorTeamAndYear"));
                 }
             }
+
             if (getFromMap(atomisedMap, "CombinationAuthorTeamAndYear") != null) {
                 team = Team.NewInstance();
                 team.setTitleCache(getFromMap(atomisedMap, "CombinationAuthorTeamAndYear"), true);
                 taxonName.setCombinationAuthorship(team);
             }
+
             if (taxonName.hasProblem()) {
                 logger.info("pb ICZN");
                 problem = true;
@@ -605,6 +626,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 team.setTitleCache(getFromMap(atomisedMap, "CombinationAuthorTeamAndYear"), true);
                 taxonName.setCombinationAuthorship(team);
             }
+
             if (taxonName.hasProblem()) {
                 logger.info("pb ICBN");
                 problem = true;
@@ -646,6 +668,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 team.setTitleCache(getFromMap(atomisedMap, "ParentheticalAuthorTeamAndYear"), true);
                 taxonName.setBasionymAuthorship(team);
             }
+
             if (taxonName.hasProblem()) {
                 logger.info("pb ICNP");
                 problem = true;
@@ -673,6 +696,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             taxonName.setFullTitleCache(fullName, true);
             return taxonName;
         }
+
         TaxonName tn = TaxonNameFactory.NewNonViralInstance(null);
         return tn;
     }
@@ -1077,6 +1101,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             state.getReport().addTaxonNode(node);
             return node.getTaxon();
         }
+        List<Person> personList = getAgentService().list(Person.class, null, null, null, propertyPaths);
         String message = "Could not create taxon node for " +child;
         state.getReport().addInfoMessage(message);
         logger.warn(message);
@@ -1182,8 +1207,11 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
             }
             Taxon taxon = getOrCreateTaxonName(scientificName, null, state, i);//getOrCreateTaxonForName(taxonName, state);
+
             addTaxonNode(taxon, state, preferredFlag);
+
             linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, identification.getIdentifier(), identification.getDate(), identification.getModifier());
+
         }
     }
 
@@ -1581,6 +1609,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                    ((Team)author).addTeamMember(teamMember);
                 }
             }
+            author.getCollectorTitleCache();
 
         } else {
             teamMembers = collectorStr.split(lastAuthorSeparator);
@@ -1600,6 +1629,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 }
 
             }
+            author.getCollectorTitleCache();
         }
         //author.getTitleCache(); we are only interested in collector string
         return author;

@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.io.specimen.SpecimenUserInteraction;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringEvent;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.molecular.AbcdDnaParser;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -237,13 +238,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 }
                 prepareCollectors(state, unitsList, abcdFieldGetter);
 
-                // save authors
-                getAgentService().saveOrUpdate((java.util.Collection) state.getPersonStoreCollector().values());
-                getAgentService().saveOrUpdate((java.util.Collection) state.getTeamStoreCollector().values());
+                // save collectors
 
-                getAgentService().saveOrUpdate((java.util.Collection) state.getPersonStoreAuthor().values());
-                getAgentService().saveOrUpdate((java.util.Collection) state.getTeamStoreAuthor().values());
+                Map<UUID, AgentBase> map = getAgentService().saveOrUpdate((java.util.Collection) state.getPersonStoreCollector().values());
+                map.forEach((k, v) -> state.getPersonStoreCollector().put(((Person)v).getCollectorTitleCache(), (Person)v));
 
+                map = getAgentService().saveOrUpdate((java.util.Collection) state.getTeamStoreCollector().values());
+                map.forEach((k, v) -> state.getTeamStoreCollector().put(((Team)v).getCollectorTitleCache(), (Team)v));
 
                 commitTransaction(state.getTx());
                 state.setTx(startTransaction());
@@ -562,37 +563,53 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 if (person == null) {
                     team = state.getTeamStoreCollector().get(agentsText);
                 }
-                if (team == null && person == null){
+                if (team == null && person == null && StringUtils.isNotBlank(agentsText)){
                     TeamOrPersonBase teamOrPerson = parseCollectorString(agentsText);
-                    if (teamOrPerson != null){
-                        if (teamOrPerson instanceof Person) {
-                            state.getPersonStoreCollector().put(teamOrPerson.getTitleCache(), (Person)teamOrPerson);
-                        }else {
-                            state.getTeamStoreCollector().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
-                        }
-                        save(teamOrPerson, state);
-                    }
+                    teamOrPerson.getCollectorTitleCache();
+                    findMatchingCollectorAndFillPersonStore(state, teamOrPerson);
+                    unitsGatheringEvent.setCollector(teamOrPerson, config);
+//                    if (teamOrPerson != null){
+//                        if (teamOrPerson instanceof Person) {
+//                            state.getPersonStoreCollector().put(teamOrPerson.getTitleCache(), (Person)teamOrPerson);
+//                        }else {
+//                            state.getTeamStoreCollector().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
+//                        }
+//                   //     save(teamOrPerson, state);
+//                    }
                 }
-                if (team != null){
-                    unitsGatheringEvent.setCollector(team, config);
-                }else if (person != null) {
-                    unitsGatheringEvent.setCollector(person, config);
-                }
+//                if (team != null){
+//                    unitsGatheringEvent.setCollector(team, config);
+//                }else if (person != null) {
+//                    unitsGatheringEvent.setCollector(person, config);
+//                }
+
 
             } else {
-                Team team = state.getTeamStoreCollector().get(state.getDataHolder().gatheringAgentsList.toString());
-
+                Team tempTeam = Team.NewInstance();
+                for (String gatheringAgentString: state.getDataHolder().gatheringAgentsList) {
+                    TeamOrPersonBase teamOrPerson = parseCollectorString(gatheringAgentString);
+                    if (teamOrPerson instanceof Person) {
+                        tempTeam.addTeamMember((Person)teamOrPerson);
+                    }else {
+                        state.getResult().addError("element of list seems to be a team: " + gatheringAgentString);
+                        tempTeam = (Team)teamOrPerson;
+                    }
+                }
+               // Team team = state.getTeamStoreCollector().get(state.getDataHolder().gatheringAgentsList.toString());
+                Team team = state.getTeamStoreCollector().get(tempTeam.getCollectorTitleCache());
                 if (team == null){
                     Person person = state.getPersonStoreCollector().get(state.getDataHolder().gatheringAgentsList.toString());
                     if (person == null) {
                         TeamOrPersonBase teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsList.toString());
-                        if (teamOrPerson != null){
-                            if (teamOrPerson instanceof Person) {
-                                state.getPersonStoreCollector().put(teamOrPerson.getTitleCache(), (Person)teamOrPerson);
-                            }else {
-                                state.getTeamStoreCollector().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
-                            }
-                        }
+                        findMatchingCollectorAndFillPersonStore(state, teamOrPerson);
+                        unitsGatheringEvent.setCollector(teamOrPerson, config);
+//                        if (teamOrPerson != null){
+//                            if (teamOrPerson instanceof Person) {
+//                                state.getPersonStoreCollector().put(teamOrPerson.getTitleCache(), (Person)teamOrPerson);
+//                            }else {
+//                                state.getTeamStoreCollector().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
+//                            }
+//                        }
                     }
 
                 }
@@ -600,6 +617,22 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     unitsGatheringEvent.setCollector(team, config);
                 }
             }
+            List<Person> newPersons = new ArrayList<>();
+            state.getPersonStoreCollector().values().stream().filter(p -> p.getId() == 0).forEach(n -> newPersons.add(n));
+
+            Map<UUID, AgentBase> map;
+            if (!newPersons.isEmpty()) {
+                map = getAgentService().saveOrUpdate((java.util.Collection)newPersons);
+                map.forEach((k, v) -> state.getPersonStoreCollector().put(((Person)v).getCollectorTitleCache(), (Person)v));
+            }
+
+            List<Team> newTeams = new ArrayList<>();
+            state.getTeamStoreCollector().values().stream().filter(p -> p.getId() == 0).forEach(n -> newTeams.add(n));
+            if (!newTeams.isEmpty()) {
+                map = getAgentService().saveOrUpdate((java.util.Collection) newTeams);
+                map.forEach((k, v) -> state.getTeamStoreCollector().put(((Team)v).getCollectorTitleCache(), (Team)v));
+            }
+
             // count
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
             // unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(),
@@ -822,6 +855,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     }
                 }
             }
+
             // siblings/ other children
             if (derivedUnitFacade.getType() != null
                     && (derivedUnitFacade.getType().equals(SpecimenOrObservationType.LivingSpecimen)
@@ -831,6 +865,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     && state.getConfig().isGetSiblings()) {
                 getSiblings(state, item, derivedUnitFacade);
             }
+
 
         } catch (Exception e) {
             String message = "Error when reading record! " + itemObject.toString();
@@ -1329,6 +1364,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     if (team.getTeamMembers() != null && !team.getTeamMembers().isEmpty()){
                         teamOrPerson = team;
                     }
+                    team.getCollectorTitleCache();
                 }
                 findMatchingCollectorAndFillPersonStore(state, teamOrPerson);
             }
