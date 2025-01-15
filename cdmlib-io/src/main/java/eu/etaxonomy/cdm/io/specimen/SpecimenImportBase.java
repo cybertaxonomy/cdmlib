@@ -205,7 +205,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         if(acceptedTaxon != null && !acceptedTaxon.isPersisted()) {
             //check for already existing authors
             save(acceptedTaxon, state);
-            }
+        }
 
         return acceptedTaxon;
     }
@@ -363,6 +363,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         if (existingPersons.size()>0) {
             person = CdmBase.deproxy(existingPersons.get(0));
             state.getReport().addInfoMessage("Person already exists, not imported: " + person.getCollectorTitle() + " UUID: " + person.getUuid());
+        }else {
+           person = getAgentService().save(person);
         }
         state.getPersonStoreCollector().put(person.getCollectorTitleCache(), person);
         return person;
@@ -485,10 +487,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             report.addInfoMessage(message);
             logger.info(message);
         }
-//        parseResult.getAuthors().forEach(a->save(a, state));
-//        parseResult.getOtherNames().forEach(n->save(n, state));
-//        parseResult.getReferences().forEach(r->save(r, state));
-
         return taxonName;
 
     }
@@ -1255,20 +1253,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                     }
                 }
             }
-// we do not need this because we already searched for taxa in db in the previous steps
-//    	        List<UuidAndTitleCache<TaxonNode>> uuidAndTitleCacheOfAllTaxa = cdmAppController.getClassificationService().getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification.getUuid());
-//    	        if (uuidAndTitleCacheOfAllTaxa != null){
-//        	        for (UuidAndTitleCache p : uuidAndTitleCacheOfAllTaxa){
-//        	            try{
-//        	                if(p.getTitleCache().equals(taxon.getTitleCache())) {
-//        	                    exist = true;
-//        	                }
-//        	            }
-//        	            catch(Exception e){
-//        	                logger.warn("TaxonNode doesn't seem to have a taxon");
-//        	            }
-//        	        }
-//    	        }
         }
         return exist;
     }
@@ -1609,8 +1593,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                    ((Team)author).addTeamMember(teamMember);
                 }
             }
-            author.getCollectorTitleCache();
-
         } else {
             teamMembers = collectorStr.split(lastAuthorSeparator);
             if (teamMembers.length>1){
@@ -1629,9 +1611,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 }
 
             }
-            author.getCollectorTitleCache();
         }
-        //author.getTitleCache(); we are only interested in collector string
+
         return author;
     }
 }

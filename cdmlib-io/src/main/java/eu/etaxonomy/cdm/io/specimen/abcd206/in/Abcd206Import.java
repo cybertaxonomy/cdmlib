@@ -240,13 +240,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                 // save collectors
 
-                Map<UUID, AgentBase> map = getAgentService().saveOrUpdate((java.util.Collection) state.getPersonStoreCollector().values());
-                map.forEach((k, v) -> state.getPersonStoreCollector().put(((Person)v).getCollectorTitleCache(), (Person)v));
-
-                map = getAgentService().saveOrUpdate((java.util.Collection) state.getTeamStoreCollector().values());
-                map.forEach((k, v) -> state.getTeamStoreCollector().put(((Team)v).getCollectorTitleCache(), (Team)v));
-
-                commitTransaction(state.getTx());
+                     commitTransaction(state.getTx());
                 state.setTx(startTransaction());
                 if (state.getDefaultClassification(false) != null) {
                     state.setDefaultClassification(
@@ -581,7 +575,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         tempTeam = (Team)teamOrPerson;
                     }
                 }
-               // Team team = state.getTeamStoreCollector().get(state.getDataHolder().gatheringAgentsList.toString());
+
                 Team team = state.getTeamStoreCollector().get(tempTeam.getCollectorTitleCache());
                 if (team == null){
                     Person person = state.getPersonStoreCollector().get(state.getDataHolder().gatheringAgentsList.toString());
@@ -614,8 +608,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             // count
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
-            // unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(),
-            // getTermService());
+
             unitsGatheringArea.setParams(state.getDataHolder().isocountry, state.getDataHolder().country,
                     (state.getConfig()), cdmAppController.getTermService(),
                     cdmAppController.getVocabularyService());
@@ -704,8 +697,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }else{
 //TODO??
             }
-
-            // derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
             // TODO exsiccatum
 
             // add fieldNumber
@@ -1314,6 +1305,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private void prepareCollectors(Abcd206ImportState state, NodeList unitsList,
             Abcd206XMLFieldGetter abcdFieldGetter) {
 
+
+
         for (int i = 0; i < unitsList.getLength(); i++) {
             this.getCollectorsFromXML((Element) unitsList.item(i), abcdFieldGetter, state);
             if (!(state.getDataHolder().gatheringAgentsList.isEmpty())) {
@@ -1352,7 +1345,23 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             + state.getDataHolder().gatheringAgentsList.toString());
                 }
             }
+       }
+
+        List<Person> newPersons = new ArrayList<>();
+        state.getPersonStoreCollector().values().stream().filter(p -> p.getId() == 0).forEach(n -> newPersons.add(n));
+
+        Map<UUID, AgentBase> map;
+        if (!newPersons.isEmpty()) {
+            map = getAgentService().saveOrUpdate((java.util.Collection)newPersons);
+            map.forEach((k, v) -> state.getPersonStoreCollector().put(((Person)v).getCollectorTitleCache(), (Person)v));
         }
+        List<Team> newTeams = new ArrayList<>();
+        state.getTeamStoreCollector().values().stream().filter(p -> p.getId() == 0).forEach(n -> newTeams.add(n));
+        if (!newTeams.isEmpty()) {
+            map = getAgentService().saveOrUpdate((java.util.Collection) newTeams);
+            map.forEach((k,v) -> state.getTeamStoreCollector().put(((Team)v).getCollectorTitleCache(), (Team)v));
+        }
+
     }
 
     @Override
