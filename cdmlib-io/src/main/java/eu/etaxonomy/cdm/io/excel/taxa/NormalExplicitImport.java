@@ -901,7 +901,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 			}
 			taxonBase = taxon;
 		}
-		taxonBase.getName().addSource(OriginalSourceType.Import, null,"TaxonName" ,state.getConfig().getSourceReference(), null);
+		taxonBase.getName().addSource(OriginalSourceType.Import, null, "TaxonName", save(state.getConfig().getSourceReference()), null);
 
 		taxonBase.addSource(OriginalSourceType.Import, null,"TaxonName" ,state.getConfig().getSourceReference(), null);
 

@@ -183,6 +183,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				IGeneric nomRef = ReferenceFactory.newGeneric(); //TODO
 				nomRef.setTitleCache(strPublishedIn, true);
 				nameBase.setNomenclaturalReference(nomRef);
+				this.getReferenceService().save((Reference)nomRef);
 				try{
     				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"year");
     				String strYear = nameAbout.getProperty(prop).getString();

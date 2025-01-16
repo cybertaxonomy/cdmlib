@@ -111,6 +111,12 @@ public class RisReferenceImport
             }
             getAgentService().save(authorsToSave);
             getReferenceService().saveOrUpdate(referencesToSave);
+            if (referencesToSave.size() > 0) {
+                Reference sourceRef = config.getSourceReference();
+                if (!sourceRef.isPersisted()) {
+                    getReferenceService().save(sourceRef);
+                }
+            }
 
         } catch (Exception e) {
             String message = "Unexpected exception during RIS Reference Import";

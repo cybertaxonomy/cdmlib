@@ -433,7 +433,7 @@ public class FullCoverageDataGenerator {
 		textData.addModifier(DefinedTerm.SEX_HERMAPHRODITE());
 		textData.putModifyingText(Language.ENGLISH(), "no modification");
 		textData.setTimeperiod(TimePeriodParser.parseString("1970-1980"));
-		Reference ref = ReferenceFactory.newArticle();
+		Reference ref = save(ReferenceFactory.newArticle(), entitiesToSave);
 		DescriptionElementSource source = textData.addSource(OriginalSourceType.Import, "22", "taxon description table", ref, "detail");
 		source.setNameUsedInSource(createNewTaxonName(entitiesToSave));
 	    ExternalLink link = ExternalLink.NewInstance(ExternalLinkType.WebSite,
@@ -736,7 +736,7 @@ public class FullCoverageDataGenerator {
 
     private void buildReference(List<CdmBase> entitiesToSave) {
 
-	    Reference reference = ReferenceFactory.newArticle();
+	    Reference reference = save(ReferenceFactory.newArticle(), entitiesToSave);
 		Person author = createNewPerson("Reference author", entitiesToSave);
 		reference.setAuthorship(author);
 		reference.setAuthorIsEditor(true);
@@ -762,7 +762,7 @@ public class FullCoverageDataGenerator {
 		reference.setVolume("vol. 3");
 		reference.setUri(URI.create("http://rer.abc.de"));
 
-		Reference journal = ReferenceFactory.newJournal();
+		Reference journal = save(ReferenceFactory.newJournal(), entitiesToSave);
 		entitiesToSave.add(journal);
 		reference.setInJournal(journal);
 
@@ -899,7 +899,7 @@ public class FullCoverageDataGenerator {
 		handleAnnotatableEntity(botName.getHomotypicalGroup());
 		TaxonName botName2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		HybridRelationship hybridRel = botName2.addHybridChild(botName, HybridRelationshipType.FIRST_PARENT(), "Rule 1.2.3");
-		hybridRel.setCitation(ReferenceFactory.newBook());
+		hybridRel.setCitation(save(ReferenceFactory.newBook(), entitiesToSave));
 		hybridRel.setCitationMicroReference("p. 123");
 		handleAnnotatableEntity(hybridRel);
 
@@ -1023,7 +1023,7 @@ public class FullCoverageDataGenerator {
 	}
 
 	private Reference createNewReference(List<CdmBase> entitiesToSave) {
-		 Reference result = ReferenceFactory.newGeneric();
+		 Reference result = save(ReferenceFactory.newGeneric(), entitiesToSave);
 		 result.setTitle("some generic reference");
 		 entitiesToSave.add(result);
 		 return result;

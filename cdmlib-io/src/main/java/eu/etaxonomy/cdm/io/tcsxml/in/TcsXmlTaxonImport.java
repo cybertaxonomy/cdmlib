@@ -25,6 +25,7 @@ import org.jdom.filter.ElementFilter;
 import org.jdom.filter.Filter;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
@@ -123,6 +124,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 		Map<String, CommonTaxonName> commonNameMap = new HashMap<String, CommonTaxonName>();
 
 		ITaxonService taxonService = getTaxonService();
+		IReferenceService referenceService = getReferenceService();
 
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 		String childName;
@@ -183,7 +185,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 				elementList.add(childName.toString());
 				// TODO may sec be null?
 				if (sec == null){
-					sec = unknownSec();
+					sec = unknownSec(referenceMap);
 				}
 
 				TaxonBase<?> taxonBase;
@@ -225,7 +227,9 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 				elementList.add(childName.toString());
 
 				testAdditionalElements(elTaxonConcept, elementList);
-				ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), strId, idNamespace);
+	            Reference sourceRef = config.getSourceReference();
+	            referenceMap.put(sourceRef.getUuid(), sourceRef);
+				ImportHelper.setOriginalSource(taxonBase, sourceRef, strId, idNamespace);
 				//delete the version information
 
 				taxonMap.put(removeVersionOfRef(strId), taxonBase);
@@ -234,6 +238,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 		state.setCommonNameMap(commonNameMap);
 
 		//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
+		referenceService.save(referenceMap.objects());
 		logger.info(i + " taxa handled. Saving ...");
 		taxonService.save(taxonMap.objects());
 		logger.info("end makeTaxa ...");

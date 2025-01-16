@@ -330,19 +330,13 @@ public abstract class TaxonTreeExportTestBase
         NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 
         //sec ref
-        Reference sec1 = ReferenceFactory.newGeneric();
-        setUuid(sec1, ref1UUID);
-        sec1.setTitle("My sec ref");
+        Reference sec1 = createGenericRef("My sec ref", ref1UUID);
 
-        Reference ref1 = ReferenceFactory.newGeneric();
-        setUuid(ref1, ref2UUID);
-        ref1.setTitle("My first ref");
+        Reference ref1 = createGenericRef("My first ref", ref2UUID);
         ref1.setAuthorship(createPerson("Author"));
         ref1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1980));
 
-        Reference ref2 = ReferenceFactory.newGeneric();
-        setUuid(ref2, ref3UUID);
-        ref2.setTitle("My second ref");
+        Reference ref2 = createGenericRef("My second ref", ref3UUID);
         ref2.setAuthorship(createPerson("Author"));
         ref2.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1980));
 
@@ -511,6 +505,13 @@ public abstract class TaxonTreeExportTestBase
         commitAndStartNewTransaction(null);
     }
 
+    private Reference createGenericRef(String title, UUID uuid) {
+        Reference result = ReferenceFactory.newGeneric();
+        setUuid(result, uuid);
+        result.setTitle(title);
+        referenceService.save(result);
+        return result;
+    }
 
     private TaxonName createParsedName(NonViralNameParserImpl parser, String str, NomenclaturalCode code, Rank rank,
             UUID nameUuid, UUID nomRefUuid) {

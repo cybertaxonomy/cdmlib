@@ -204,6 +204,7 @@ public class TcsXmlTaxonNameImport
 		logger.info(i + " names handled");
 		getAgentService().save(personMap.getAllValues());
 		getAgentService().save(teamMap.getAllValues());
+		getReferenceService().save(referenceMap.objects());
 		Collection<TaxonName> names = taxonNameMap.objects();
 		getNameService().save(names);
 
@@ -567,6 +568,9 @@ public class TcsXmlTaxonNameImport
 			    logger.warn("Nomecl. reference could not be created for '" + name.getTitleCache() + "'");
 			}else {
 			    name.setNomenclaturalReference(ref);
+			    if (!ref.isPersisted()) {
+			        referenceMap.put(ref.getUuid(), ref);
+			    }
 			}
 		}else if (name == null){
 			logger.warn("TaxonName must not be 'null'");

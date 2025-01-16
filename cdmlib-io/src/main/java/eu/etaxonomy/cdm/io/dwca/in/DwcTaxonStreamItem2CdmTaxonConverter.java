@@ -175,7 +175,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		handleCommonNames(csvTaxonRecord, taxonBase, resultList);
 
 		//External Sources, ID's and References
-		handleIdentifiableObjects(csvTaxonRecord, taxonBase);
+		handleIdentifiableObjects(csvTaxonRecord, taxonBase, resultList);
 
 
 		//		    <!-- Top level group; listed as kingdom but may be interpreted as domain or superkingdom
@@ -277,7 +277,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
         }
     }
 
-	private void handleIdentifiableObjects(StreamItem item,TaxonBase<?> taxonBase) {
+	private void handleIdentifiableObjects(StreamItem item,TaxonBase<?> taxonBase,
+	        List<MappedCdmBase<? extends CdmBase>> resultList) {
 
 		String references = item.get(TermUri.DC_REFERENCES);
 
@@ -302,6 +303,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		if(StringUtils.isNotBlank(id) && StringUtils.isNotBlank(idNamespace) && StringUtils.isNotBlank(reference)){
 			Reference ref = ReferenceFactory.newGeneric();
 			ref.setTitle(reference);
+			resultList.add(new MappedCdmBase<>(ref));
 			Taxon taxon = (Taxon) taxonBase;
 			taxon.addSource(OriginalSourceType.Import, id, idNamespace, ref, null);
 		}

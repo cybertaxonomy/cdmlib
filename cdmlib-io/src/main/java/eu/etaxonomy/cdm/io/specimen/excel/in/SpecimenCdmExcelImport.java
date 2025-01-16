@@ -298,6 +298,9 @@ public class SpecimenCdmExcelImport
 		facade.setCollection(getOrMakeCollection(state, row.getCollectionCode(), row.getCollection(), collectionsToSave));
 		for (IdentifiableSource source : row.getSources()){
 			facade.addSource(source);
+			if (source.getCitation() != null && !source.getCitation().isPersisted()) {
+			    getReferenceService().save(source.getCitation());
+			}
 		}
 		for (SpecimenTypeDesignation designation : row.getTypeDesignations()){
 			logger.warn("FIXME"); //FIXME
@@ -559,6 +562,7 @@ public class SpecimenCdmExcelImport
 			}
 			sec.setAuthorship(determinedBy);
 			saveAuthor(determinedBy);
+			save(sec);
 		}
 
 		//taxon

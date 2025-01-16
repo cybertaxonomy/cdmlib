@@ -392,9 +392,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Set<Reference> referencesToSave = new HashSet<>();
         Set<TaxonName> namesToSave = new HashSet<>();
 
-        Reference sec1 = ReferenceFactory.newGeneric();
-        setUuid(sec1, "4b6acca1-959b-4790-b76e-e474a0882990");
-        sec1.setTitle("My sec ref");
+        Reference sec1 = createGenericRef("My sec ref", "4b6acca1-959b-4790-b76e-e474a0882990");
 
         Classification classification = Classification.NewInstance("DwcaExportTest Classification");
         setUuid(classification, "4096df99-7274-421e-8843-211b603d832e");
@@ -521,6 +519,14 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
     private void setUuid(CdmBase cdmBase, String uuidStr) {
         cdmBase.setUuid(UUID.fromString(uuidStr));
+    }
+
+    private Reference createGenericRef(String title, String uuid) {
+        Reference result = ReferenceFactory.newGeneric();
+        setUuid(result, uuid);
+        result.setTitle(title);
+        referenceService.save(result);
+        return result;
     }
 
     @Override

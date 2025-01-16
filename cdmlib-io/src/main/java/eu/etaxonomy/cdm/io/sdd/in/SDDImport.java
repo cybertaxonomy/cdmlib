@@ -603,6 +603,9 @@ public class SDDImport
 			save(team);
 			sec.setAuthorship(team);
 			sourceReference.setAuthorship(team);
+			if (!sourceReference.isPersisted()) {
+			    this.getReferenceService().save(sourceReference);
+			}
 		}
 
 		if (copyright != null) {
@@ -906,10 +909,9 @@ public class SDDImport
 					IdentifiableSource source = null;
 					if (isNotBlank(uri)) {
 						//TODO type
-						source = IdentifiableSource.NewInstance(OriginalSourceType.Unknown, id, "TaxonName", ReferenceFactory.newGeneric(), uri);
-					} else {
-						source = IdentifiableSource.NewDataImportInstance(id, "TaxonName");
+					    tnb.addIdentifier(uri, null);
 					}
+					source = IdentifiableSource.NewDataImportInstance(id, "TaxonName");
 					tnb.addSource(source);
 					taxonNames.put(id,tnb);
 				}
@@ -1235,7 +1237,7 @@ public class SDDImport
 			}
 		} else {
 			logger.info("creating new Taxon from TaxonName '" + nonViralName.getTitleCache()+"'");
-			taxon = Taxon.NewInstance(nonViralName, sec);
+			taxon = Taxon.NewInstance(nonViralName, save(sec));
 			this.taxa.add(taxon);
 		}
 
@@ -1877,13 +1879,13 @@ public class SDDImport
 									String refP = elParent.getAttributeValue("ref");
 									if (!refP.equals("")) {
 										TaxonNode parent = taxonNodes.get(refP);
-										TaxonNode child = parent.addChildTaxon(taxon, sec, null);
+										TaxonNode child = parent.addChildTaxon(taxon, save(sec), null);
 										child.setSynonymToBeUsed( Synonym.NewInstance(tnb, sec)); //TODO is this required??
 										taxonNodes.put(idN,child);
 									}
 								}
 								else {
-									TaxonNode tn = classification.addChildTaxon(taxon, sec, null); // if no parent found or the reference is broken, add the node to the root of the tree
+									TaxonNode tn = classification.addChildTaxon(taxon, save(sec), null); // if no parent found or the reference is broken, add the node to the root of the tree
 									tn.setSynonymToBeUsed( Synonym.NewInstance(tnb, sec));  //TODO is this required??
 									taxonNodes.put(idN,tn);
 								}

@@ -1563,7 +1563,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
     }
 
 
-    protected void save(Reference reference) {
+    protected Reference save(Reference reference) {
         if (reference != null) {
             if (!reference.isPersisted()) {
                 getReferenceService().save(reference);
@@ -1571,6 +1571,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             save(reference.getInReference());
             save(reference.getAuthorship());
         }
+        return reference;
     }
 
     protected void save(TeamOrPersonBase<?> agent) {

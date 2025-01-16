@@ -234,6 +234,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 				result = makeAccordingToDetailed(elAccordingToDetailed, referenceMap, success);
 			}else{
 				result = ReferenceFactory.newGeneric();
+				referenceMap.put(result.getUuid(), result);
 				String title = elSimple.getTextNormalize();
 				result.setTitleCache(title, true);
 			}
@@ -436,9 +437,10 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		return ! state.getConfig().isDoTaxonNames();
 	}
 
-	protected static final Reference unknownSec(){
+	protected static final Reference unknownSec(MapWrapper<Reference> referenceMap){
 		Reference result = ReferenceFactory.newGeneric();
 		result.setTitleCache("UNKNOWN", true);
+		referenceMap.put(result.getUuid(), result);
 		return result;
 	}
 }

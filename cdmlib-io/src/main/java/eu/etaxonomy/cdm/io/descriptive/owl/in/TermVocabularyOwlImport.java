@@ -122,6 +122,7 @@ public class TermVocabularyOwlImport
             DefinedTermBase generalizationOfTerm = createTerm(vocabulary, generalizationOfIterator.next(), model, state);
             term.addGeneralizationOf(generalizationOfTerm);
         }
+        term.getSources().stream().map(s->s.getCitation()).forEach(ref->save(ref));
         getTermService().saveOrUpdate(term);
         return term;
     }
