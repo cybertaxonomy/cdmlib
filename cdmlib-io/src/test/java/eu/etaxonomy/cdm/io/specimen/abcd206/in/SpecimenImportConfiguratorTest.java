@@ -632,8 +632,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    assertEquals(1, classificationService.count(Classification.class));
 	    assertEquals(1, classification.getAllNodes().size());//taxon node
 	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//root node + Taxon node = 2 nodes
-	    List<SpecimenOrObservationBase> specimen = this.occurrenceService.list(SpecimenOrObservationBase.class, null, null, null, null);
-	    specimen.stream().forEach(p->System.err.println(p.getTitleCache()));
+
 
 	}
 
@@ -725,7 +724,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
         assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
         assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
-        taxonNodeService.list(TaxonNode.class, null, null, null, null);
+        List<TaxonNode> nodes = taxonNodeService.list(TaxonNode.class, null, null, null, null);
         occurrenceService.list(SpecimenOrObservationBase.class, null, null, null, null);
         /*
          * Default classification
