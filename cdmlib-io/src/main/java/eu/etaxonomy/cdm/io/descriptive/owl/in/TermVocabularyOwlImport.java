@@ -95,11 +95,11 @@ public class TermVocabularyOwlImport
 
         UUID termUuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
         if(getTermService().exists(termUuid)) {
-            return getTermService().load(termUuid);
+            return getTermService().load(termUuid); // only add term if it does not already exist
         }
         DefinedTermBase<?> term = OwlImportUtil.createTerm(termResource, this, model, state);
         term = getTermService().save(term);
-        ((TermVocabulary)vocabulary).addTerm(term); // only add term if it does not already exist
+        ((TermVocabulary)vocabulary).addTerm(term);
 
         //check media
         StmtIterator mediaIterator = termResource.listProperties(OwlUtil.propTermHasMedia);

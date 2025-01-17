@@ -180,7 +180,9 @@ public class OwlImportUtil {
 
         // import sources
         Set<IdentifiableSource> sources = new HashSet<>();
-        termResource.listProperties(OwlUtil.propTermHasSource).forEachRemaining(sourceStatement->sources.add(OwlImportUtil.createSource(sourceStatement, repo, model)));
+        termResource.listProperties(OwlUtil.propTermHasSource)
+            .forEachRemaining(sourceStatement->sources.add(
+                OwlImportUtil.createSource(sourceStatement, repo, model)));
         sources.forEach(source->term.addSource(source));
 
         // add import source

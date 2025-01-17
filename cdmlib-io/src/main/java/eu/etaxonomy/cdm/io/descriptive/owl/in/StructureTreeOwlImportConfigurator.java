@@ -35,6 +35,7 @@ public class StructureTreeOwlImportConfigurator
         return new StructureTreeOwlImportState(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[] {
