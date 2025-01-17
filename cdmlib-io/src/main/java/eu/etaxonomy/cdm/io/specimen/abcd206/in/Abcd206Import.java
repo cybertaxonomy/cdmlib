@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.io.specimen.SpecimenUserInteraction;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringEvent;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.molecular.AbcdDnaParser;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -51,6 +50,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
@@ -557,8 +557,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     team = state.getTeamStoreCollector().get(agentsText);
                 }
                 if (team == null && person == null && StringUtils.isNotBlank(agentsText)){
-                    TeamOrPersonBase teamOrPerson = parseCollectorString(agentsText);
-                    findMatchingCollectorAndFillPersonStore(state, teamOrPerson);
+                    TeamOrPersonBase teamOrPerson = parseAgentString(agentsText, true);
+                    findMatchingAgentAndFillStore(state, teamOrPerson, true);
                     unitsGatheringEvent.setCollector(teamOrPerson, config);
 
                 }
@@ -567,11 +567,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             } else {
                 Team tempTeam = Team.NewInstance();
                 for (String gatheringAgentString: state.getDataHolder().gatheringAgentsList) {
-                    TeamOrPersonBase teamOrPerson = parseCollectorString(gatheringAgentString);
+                    TeamOrPersonBase teamOrPerson = parseAgentString(gatheringAgentString, true);
                     if (teamOrPerson instanceof Person) {
                         tempTeam.addTeamMember((Person)teamOrPerson);
                     }else {
-                        state.getResult().addError("element of list seems to be a team: " + gatheringAgentString);
+                        //state.getResult().addError("element of list seems to be a team: " + gatheringAgentString);
                         tempTeam = (Team)teamOrPerson;
                     }
                 }
@@ -580,8 +580,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 if (team == null){
                     Person person = state.getPersonStoreCollector().get(state.getDataHolder().gatheringAgentsList.toString());
                     if (person == null) {
-                        TeamOrPersonBase teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsList.toString());
-                        findMatchingCollectorAndFillPersonStore(state, teamOrPerson);
+                        TeamOrPersonBase teamOrPerson = parseAgentString(state.getDataHolder().gatheringAgentsList.toString(), true);
+                        findMatchingAgentAndFillStore(state, teamOrPerson, true);
                         unitsGatheringEvent.setCollector(teamOrPerson, config);
                     }
 
@@ -590,21 +590,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     unitsGatheringEvent.setCollector(team, config);
                 }
             }
-            List<Person> newPersons = new ArrayList<>();
-            state.getPersonStoreCollector().values().stream().filter(p -> p.getId() == 0).forEach(n -> newPersons.add(n));
-
-            Map<UUID, AgentBase> map;
-            if (!newPersons.isEmpty()) {
-                map = getAgentService().saveOrUpdate((java.util.Collection)newPersons);
-                map.forEach((k, v) -> state.getPersonStoreCollector().put(((Person)v).getCollectorTitleCache(), (Person)v));
-            }
-
-            List<Team> newTeams = new ArrayList<>();
-            state.getTeamStoreCollector().values().stream().filter(p -> p.getId() == 0).forEach(n -> newTeams.add(n));
-            if (!newTeams.isEmpty()) {
-                map = getAgentService().saveOrUpdate((java.util.Collection) newTeams);
-                map.forEach((k, v) -> state.getTeamStoreCollector().put(((Team)v).getCollectorTitleCache(), (Team)v));
-            }
+            saveTeamOrPersons(state, true);
 
             // count
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
@@ -796,6 +782,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
 
             save(state.getDerivedUnitBase(), state);
+            Map<UUID, DescriptionBase> deriveedUnitDescriptions = saveDescriptions(state.getDerivedUnitBase().getSpecimenDescriptions(), state);
+            if (derivedUnitFacade.getFieldUnit(false) != null) {
+                Map<UUID, DescriptionBase> fieldUnitDescriptions = saveDescriptions(derivedUnitFacade.getFieldUnit(false).getSpecimenDescriptions(), state);
+            }
 
             if (logger.isDebugEnabled()) {
                 logger.info("saved ABCD specimen ...");
@@ -841,6 +831,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             String message = "Error when reading record! " + itemObject.toString();
             state.getReport().addException(message, e);
             state.setUnsuccessfull();
+            e.printStackTrace();
         }
 
         return;
@@ -875,34 +866,21 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
         if (attributes.containsKey("Creators")) {
             String creators = attributes.get("Creators");
-            Person artist;
-            Team artistTeam;
-            String[] artists;
-            if (creators != null) {
-                if (creators.contains("&")) {
-                    artists = creators.split("&");
-                    artistTeam = Team.NewInstance();
-                    for (String creator : artists) {
-                        artist = Person.NewTitledInstance(creator);
-                        artistTeam.addTeamMember(artist);
-                    }
-                    media.setArtist(artistTeam);
-                } else {
 
-                    artist = Person.NewTitledInstance(creators);
-                    media.setArtist(artist);
-                }
+            if (creators != null) {
+                TeamOrPersonBase creator = parseAgentString(creators, false);
+                creator = findMatchingAgentAndFillStore(state, creator, false);
+                saveTeamOrPersons(state, false);
+                media.setArtist(creator);
+
             }
 
         }
         if (attributes.containsKey("CreateDate")) {
             String createDate = attributes.get("CreateDate");
-
             if (createDate != null) {
-
                 media.setMediaCreated(TimePeriodParser.parseString(createDate));
             }
-
         }
 
         if (attributes.containsKey("License")) {
@@ -1312,11 +1290,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (!(state.getDataHolder().gatheringAgentsList.isEmpty())) {
                 TeamOrPersonBase<?> teamOrPerson = null;
                 if (state.getDataHolder().gatheringAgentsList.size() == 1) {
-                    teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsList.get(0));
+                    teamOrPerson = parseAgentString(state.getDataHolder().gatheringAgentsList.get(0), true);
                 } else {
                     Team team = Team.NewInstance();
                     for (String collector : state.getDataHolder().gatheringAgentsList) {
-                        teamOrPerson = parseCollectorString(collector);
+                        teamOrPerson = parseAgentString(collector, true);
                         if (teamOrPerson instanceof Person) {
                             team.addTeamMember((Person) teamOrPerson);
                         } else {
@@ -1330,14 +1308,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     }
 
                 }
-                findMatchingCollectorAndFillPersonStore(state, teamOrPerson);
+                findMatchingAgentAndFillStore(state, teamOrPerson, true);
             }
             if (!StringUtils.isBlank(state.getDataHolder().gatheringAgentsText)
                     && state.getDataHolder().gatheringAgentsList.isEmpty()) {
-                TeamOrPersonBase<?> teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsText);
+                TeamOrPersonBase<?> teamOrPerson = parseAgentString(state.getDataHolder().gatheringAgentsText, true);
 
                 if (!state.getPersonStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()) && !state.getTeamStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache())) {
-                    findMatchingCollectorAndFillPersonStore(state, teamOrPerson);
+                    findMatchingAgentAndFillStore(state, teamOrPerson, true);
                     if (logger.isDebugEnabled()) {
                         logger.debug("Stored author " + state.getDataHolder().gatheringAgentsText);
                     }
@@ -1347,20 +1325,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
        }
 
-        List<Person> newPersons = new ArrayList<>();
-        state.getPersonStoreCollector().values().stream().filter(p -> p.getId() == 0).forEach(n -> newPersons.add(n));
-
-        Map<UUID, AgentBase> map;
-        if (!newPersons.isEmpty()) {
-            map = getAgentService().saveOrUpdate((java.util.Collection)newPersons);
-            map.forEach((k, v) -> state.getPersonStoreCollector().put(((Person)v).getCollectorTitleCache(), (Person)v));
-        }
-        List<Team> newTeams = new ArrayList<>();
-        state.getTeamStoreCollector().values().stream().filter(p -> p.getId() == 0).forEach(n -> newTeams.add(n));
-        if (!newTeams.isEmpty()) {
-            map = getAgentService().saveOrUpdate((java.util.Collection) newTeams);
-            map.forEach((k,v) -> state.getTeamStoreCollector().put(((Team)v).getCollectorTitleCache(), (Team)v));
-        }
+        saveTeamOrPersons(state, true);
 
     }
 

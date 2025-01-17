@@ -632,6 +632,8 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    assertEquals(1, classificationService.count(Classification.class));
 	    assertEquals(1, classification.getAllNodes().size());//taxon node
 	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//root node + Taxon node = 2 nodes
+	    List<SpecimenOrObservationBase> specimen = this.occurrenceService.list(SpecimenOrObservationBase.class, null, null, null, null);
+	    specimen.stream().forEach(p->System.err.println(p.getTitleCache()));
 
 	}
 

@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -68,6 +70,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.strategy.match.IParsedMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
 import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
@@ -108,7 +111,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	    Taxon acceptedTaxon = null;
         SpecimenImportConfiguratorBase<?,?,?> config = state.getConfig();
         TaxonName parsedName = null;
-        List<Person> personList = getAgentService().list(Person.class, null, null, null, null);
 
         //check atomised name data for rank
         //new name will be created
@@ -194,14 +196,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             logger.info("Created new taxon name "+taxonName);
         }
         checkAllAuthors(state, acceptedTaxon);
-        List<Person> newPersons = new ArrayList<>();
-        List<Team> newTeams = new ArrayList<>();
-        state.getPersonStoreAuthor().values().stream().filter(p -> ((Person)p).getId() == 0).forEach(n -> newPersons.add((Person)n));
-        Map<UUID, AgentBase> map = getAgentService().saveOrUpdate((java.util.Collection)newPersons);
-        map.forEach((k, v) -> state.getPersonStoreAuthor().put(((Person)v).getTitleCache(), v));
-        state.getTeamStoreAuthor().values().stream().filter(p -> ((Team)p).getId() == 0).forEach(n -> newTeams.add((Team)n));
-        map = getAgentService().saveOrUpdate((java.util.Collection)newTeams);
-        map.forEach((k, v) -> state.getTeamStoreAuthor().put(((Team)v).getTitleCache(), v));
+        saveTeamOrPersons(state, false);       
         if(acceptedTaxon != null && !acceptedTaxon.isPersisted()) {
             //check for already existing authors
             save(acceptedTaxon, state);
@@ -229,54 +224,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     }
 
     private TeamOrPersonBase<?> checkAuthor(STATE state, TeamOrPersonBase<?> author) {
-        try {
-            if (author != null) {
-                if (author instanceof Person && state.getPersonStoreAuthor().containsKey(author.getTitleCache())) {
-                    return (TeamOrPersonBase<?>) state.getPersonStoreAuthor().get(author.getTitleCache());
-                }else if (author instanceof Team && state.getTeamStoreAuthor().containsKey(author.getTitleCache())) {
-                    return (TeamOrPersonBase<?>) state.getTeamStoreAuthor().get(author.getTitleCache());
-                }
-                List<TeamOrPersonBase<?>> agents = getCommonService().findMatching(author, MatchStrategyFactory.NewParsedTeamOrPersonInstance());
-                if (agents.size()>0) {
-                    author = agents.get(0);
-                    if (author instanceof Person) {
-                        state.getPersonStoreAuthor().put(author.getTitleCache(), author);
-                    }else {
-                        state.getTeamStoreAuthor().put(author.getTitleCache(), author);
-                    }
-                }else if (author instanceof Team) {
-                    //check for every team member
-                    Set<Person> alreadyExistingMembers = new HashSet<>();
-                    Set<Person> removeTeamMember = new HashSet<>();
-                    for (Person member: ((Team)author).getTeamMembers()) {
-                        if (state.getPersonStoreAuthor().containsKey(author.getTitleCache())) {
-                            if (state.getPersonStoreAuthor().get(author.getTitleCache()) instanceof Person){
-                                alreadyExistingMembers.add((Person) state.getPersonStoreAuthor().get(author.getTitleCache()));
-                                continue;
-                            }
-                        }
-                        agents = getCommonService().findMatching(member, MatchStrategyFactory.NewParsedPersonInstance());
-                        if (agents.size()>0) {
-                            alreadyExistingMembers.add((Person)agents.get(0));
-                            state.getPersonStoreAuthor().put(agents.get(0).getTitleCache(), agents.get(0));
-                            removeTeamMember.add(member);
-                        }else {
-                            state.getPersonStoreAuthor().put (member.getTitleCache(), member);
-                        }
-                    }
-                    ((Team) author).getTeamMembers().removeAll(removeTeamMember);
-                    ((Team) author).getTeamMembers().addAll(alreadyExistingMembers);
-                    state.getTeamStoreAuthor().put(author.getTitleCache(), author);
-
-                }else {
-                    state.getPersonStoreAuthor().put(author.getTitleCache(), author);
-                }
-                return author;
-            }
-        } catch (MatchException e) {
-            logger.debug("find matching author for " + author + " throws an exception.");
-        }
-        return null;
+        return findMatchingAgentAndFillStore(state, author, false);
     }
 
 
@@ -286,25 +234,47 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
      *
      * TODO: Follow up implementations should find a best matching team/person with for example same family name
      */
-    protected void findMatchingCollectorAndFillPersonStore(SpecimenImportStateBase<?,?> state, TeamOrPersonBase<?> teamOrPerson) {
+    protected TeamOrPersonBase findMatchingAgentAndFillStore(SpecimenImportStateBase<?,?> state, TeamOrPersonBase<?> teamOrPerson, boolean isCollector) {
+        if (teamOrPerson == null) {
+            return null;
+        }
+        Map<String, Person> personStore;
+        Map<String, Team> teamStore;
 
-        if (!(state.getPersonStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()) || state.getTeamStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()))) {
+        String titleCache;
+        IParsedMatchStrategy matchStrategy;
+        if (isCollector) {
+            personStore = state.getPersonStoreCollector();
+            teamStore = state.getTeamStoreCollector();
+            titleCache = teamOrPerson.getCollectorTitleCache();
+            matchStrategy = MatchStrategyFactory.NewParsedCollectorTeamInstance();
+        }else {
+            personStore = state.getPersonStoreAuthor();
+            teamStore = state.getTeamStoreAuthor();
+            titleCache = teamOrPerson.getTitleCache();
+            matchStrategy = MatchStrategyFactory.NewParsedTeamInstance();
+        }
+
+        if (!(personStore.containsKey(titleCache) || teamStore.containsKey(titleCache))) {
             if(teamOrPerson instanceof Person) {
                 Person person = (Person)teamOrPerson;
-                findCollectorPerson(state, person);
+                person = findPerson(state, person, isCollector);
+                return person;
 
             }else if (teamOrPerson instanceof Team){
                 List<Team> existingTeams = new ArrayList<>();
                 try {
                     Team team1 = (Team)teamOrPerson;
-                    existingTeams = getCommonService().findMatching(team1, MatchStrategyFactory.NewParsedCollectorTeamInstance());
+                    existingTeams = getCommonService().findMatching(team1, matchStrategy);
                 } catch (MatchException e) {
                     state.getReport().addInfoMessage("Matching " + teamOrPerson.getCollectorTitleCache() + " threw an exception" + e.getMessage());
                 }
                 if (existingTeams.size()== 0) {
                     Team teamNew = (Team)teamOrPerson;
-                    findCollectorTeamMembersAndReplace(state, teamNew);
-                    state.getTeamStoreCollector().put(teamNew.getCollectorTitleCache(), teamNew);
+                    findTeamMembersAndReplace(state, teamNew, isCollector);
+                    String title = isCollector? teamNew.getCollectorTitleCache(): teamNew.getTitleCache();
+                    teamStore.put(title, teamNew);
+                    return teamNew;
 
                 }else {
                     //TODO here we should try to find the best matching team, see also comment above for best matching person
@@ -314,17 +284,31 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
                     //As the members are already initialized (during matching) and matched against the collector string we can store them here.
                     //But this does not allow a "best" matching later on.
-                    putTeamMembersToPersonStore(state, team);
+                    putTeamMembersToPersonStore(state, team, isCollector);
+                    return team;
                 }
             }
+        }else {
+            if (teamStore.containsKey(titleCache)) {
+                return teamStore.get(titleCache);
+            }else {
+                return personStore.get(titleCache);
+            }
         }
+        return teamOrPerson;
     }
 
-    private void putTeamMembersToPersonStore(SpecimenImportStateBase state, Team team) {
+    private void putTeamMembersToPersonStore(SpecimenImportStateBase state, Team team, boolean isCollector) {
         for (Person member: team.getTeamMembers()) {
             member = CdmBase.deproxy(member);
-            if (!state.getPersonStoreCollector().containsKey(member.getTitleCache())) {
-                state.getPersonStoreCollector().put(member.getCollectorTitleCache(), member);
+            if (isCollector) {
+                if (!state.getPersonStoreCollector().containsKey(member.getCollectorTitleCache())) {
+                    state.getPersonStoreCollector().put(member.getCollectorTitleCache(), member);
+                }
+            }else {
+                if (!state.getPersonStoreAuthor().containsKey(member.getTitleCache())) {
+                    state.getPersonStoreAuthor().put(member.getTitleCache(), member);
+                }
             }
         }
     }
@@ -335,13 +319,17 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
      * @param state
      * @param teamNew
      */
-    private void findCollectorTeamMembersAndReplace(SpecimenImportStateBase state, Team teamNew) {
+    private void findTeamMembersAndReplace(SpecimenImportStateBase state, Team teamNew, boolean isCollector) {
         for (Person member: teamNew.getTeamMembers()) {
-            Person person = findCollectorPerson(state, member);
+            Person person = findPerson(state, member, isCollector);
             if (!person.equals(member)) {
                 teamNew.replaceTeamMember(person, member);
             }
         }
+    }
+
+    private Person findCollectorPerson(SpecimenImportStateBase state, Person person) {
+        return findPerson(state, person, true);
     }
 
     /**
@@ -349,11 +337,14 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
      *
      * @return the existing person or the parameter person
      */
-    private Person findCollectorPerson(SpecimenImportStateBase state, Person person) {
+    private Person findPerson(SpecimenImportStateBase state, Person person, boolean isCollector) {
         List<Person> existingPersons = new ArrayList<>();
-
+        IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedPersonInstance();
+        if (isCollector) {
+            matchStrategy = MatchStrategyFactory.NewParsedCollectorPersonInstance();
+        }
         try {
-            existingPersons = getCommonService().findMatching(person, MatchStrategyFactory.NewParsedCollectorPersonInstance());
+            existingPersons = getCommonService().findMatching(person, matchStrategy);
         } catch (MatchException e) {
             state.getReport().addInfoMessage("Matching " + person.getCollectorTitleCache() + " threw an exception" + e.getMessage());
         }
@@ -366,7 +357,11 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }else {
            person = getAgentService().save(person);
         }
-        state.getPersonStoreCollector().put(person.getCollectorTitleCache(), person);
+        if (isCollector) {
+            state.getPersonStoreCollector().put(person.getCollectorTitleCache(), person);
+        }else {
+            state.getPersonStoreAuthor().put(person.getTitleCache(), person);
+        }
         return person;
     }
 
@@ -772,6 +767,25 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             return cdmRepository.getTaxonNodeService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonNode.class));
         }else{
             throw new IllegalArgumentException("Class not supported in save method: " + CdmBase.deproxy(cdmBase, CdmBase.class).getClass().getSimpleName());
+        }
+    }
+
+    protected Map<UUID, DescriptionBase> saveDescriptions(Set<SpecimenDescription> set, SpecimenImportStateBase<?,?> state) {
+
+        ICdmRepository cdmRepository = state.getConfig().getCdmAppController();
+        if (cdmRepository == null){
+            cdmRepository = this;
+        }
+        if (set.isEmpty()) {
+            return null;
+        }
+        if (set.iterator().next().isInstanceOf(DescriptionBase.class)){
+            Set<DescriptionBase> descriptionsToSave = new HashSet<>();
+            set.stream().forEach(p -> descriptionsToSave.add(CdmBase.deproxy(p, DescriptionBase.class)));
+           // DescriptionBase<?> description = CdmBase.deproxy(cdmBase, DescriptionBase.class);
+            return cdmRepository.getDescriptionService().saveOrUpdate(descriptionsToSave);
+        }else{
+            throw new IllegalArgumentException("List of descriptions is empty");
         }
     }
 
@@ -1209,7 +1223,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             addTaxonNode(taxon, state, preferredFlag);
 
             linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, identification.getIdentifier(), identification.getDate(), identification.getModifier());
-
+            saveTeamOrPersons(state, false);
         }
     }
 
@@ -1278,10 +1292,10 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 
         determinationEvent.setIdentifiedUnit(state.getDerivedUnitBase());
-        if (state.getPersonStoreAuthor().get(identifierStr) != null){
-            determinationEvent.setActor((AgentBase)state.getPersonStoreAuthor().get(identifierStr));
-        } else if (identifierStr != null){
-            Person identifier = Person.NewTitledInstance(identifierStr);
+        if (StringUtils.isNotBlank(identifierStr)) {
+            TeamOrPersonBase<?> identifier = parseAgentString(identifierStr, false);
+            identifier = findMatchingAgentAndFillStore(state, identifier, preferredFlag);
+            saveTeamOrPersons(state, false);
             determinationEvent.setActor(identifier);
         }
         if (dateStr != null){
@@ -1571,7 +1585,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
     }
 
-    public static TeamOrPersonBase<?> parseCollectorString(String collectorStr){
+    public static TeamOrPersonBase<?> parseAgentString(String collectorStr, boolean isCollector){
         TeamOrPersonBase<?> author = null;
         String[] teamMembers = collectorStr.split(authorSeparator);
         if (teamMembers.length>1){
@@ -1582,14 +1596,23 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             for(String member:teamMembers){
                 if (!member.equals("")){
                     Person teamMember = Person.NewInstance();
-                    teamMember.setCollectorTitle(member);
+                    if (isCollector) {
+                        teamMember.setCollectorTitle(member);
+                    }else {
+                        teamMember.setNomenclaturalTitle(member);
+                    }
                    ((Team)author).addTeamMember(teamMember);
                 }
             }
             if (lastMembers != null){
                 for(String member:lastMembers){
                    Person teamMember = Person.NewInstance();
-                   teamMember.setCollectorTitle(member);
+                   if (isCollector) {
+                       teamMember.setCollectorTitle(member);
+                   }else {
+                       teamMember.setNomenclaturalTitle(member);
+                   }
+
                    ((Team)author).addTeamMember(teamMember);
                 }
             }
@@ -1599,13 +1622,23 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 author = Team.NewInstance();
                 for(String member:teamMembers){
                   Person teamMember = Person.NewInstance();
-                  teamMember.setCollectorTitle(member);
+                  if (isCollector) {
+                      teamMember.setCollectorTitle(member);
+                  }else {
+                      teamMember.setNomenclaturalTitle(member);
+                  }
+
                   ((Team)author).addTeamMember(teamMember);
                 }
             }else{
                 if (isNotBlank(collectorStr)){
                     author = Person.NewInstance();
-                    ((Person)author).setCollectorTitle(collectorStr);
+                    if (isCollector) {
+                        ((Person)author).setCollectorTitle(collectorStr);
+                    }else {
+                        ((Person)author).setNomenclaturalTitle(collectorStr);
+                    }
+
                 }else{
                     return null;
                 }
@@ -1614,5 +1647,35 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
 
         return author;
+    }
+
+    /**
+     * @param state
+     */
+    protected void saveTeamOrPersons(SpecimenImportStateBase state, boolean isCollector) {
+        List<Person> newPersons = new ArrayList<>();
+        Map<String, Person> personStore;
+        Map<String, Team> teamStore;
+        if (isCollector) {
+            personStore = state.getPersonStoreCollector();
+            teamStore = state.getTeamStoreCollector();
+        }else {
+            personStore = state.getPersonStoreAuthor();
+            teamStore = state.getTeamStoreAuthor();
+        }
+
+        personStore.values().stream().filter(p -> p.getId() == 0).forEach(n -> newPersons.add(n));
+
+        Map<UUID, AgentBase> map;
+        if (!newPersons.isEmpty()) {
+            map = getAgentService().saveOrUpdate((java.util.Collection)newPersons);
+            map.forEach((k, v) -> personStore.put(isCollector?((Person)v).getCollectorTitleCache():((Person)v).getTitleCache(), (Person)v));
+        }
+        List<Team> newTeams = new ArrayList<>();
+        teamStore.values().stream().filter(p -> p.getId() == 0).forEach(n -> newTeams.add(n));
+        if (!newTeams.isEmpty()) {
+            map = getAgentService().saveOrUpdate((java.util.Collection) newTeams);
+            map.forEach((k,v) -> teamStore.put(isCollector?((Team)v).getCollectorTitleCache():((Team)v).getTitleCache(), (Team)v));
+        }
     }
 }
