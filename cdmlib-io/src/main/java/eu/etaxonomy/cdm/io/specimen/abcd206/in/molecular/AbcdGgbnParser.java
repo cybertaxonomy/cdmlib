@@ -95,6 +95,7 @@ public class AbcdGgbnParser {
                 dnaSample.setDnaQuality(parseDnaQuality(element, state));
 
                 parseGelImage(gelImageList, state);
+
                 parseAmplifications(amplificationsList, dnaSample, state);
             }
         }

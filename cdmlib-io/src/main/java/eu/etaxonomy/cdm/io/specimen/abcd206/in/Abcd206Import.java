@@ -487,7 +487,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 AbcdDnaParser dnaParser = new AbcdDnaParser(state.getPrefix(), state.getReport(),
                         state.getCdmRepository());
                 Set<CdmBase> entitiesToSave = new HashSet<>();
-                DnaSample dnaSample = dnaParser.parse(item, state, entitiesToSave);
+
+                DnaSample dnaSample = dnaParser.createDNASampleAndFieldUnit(state);
+                NodeList specimenUnitList = item.getElementsByTagName(state.getPrefix()+"SpecimenUnit");
+                if(specimenUnitList.item(0)!=null && specimenUnitList.item(0) instanceof Element){
+                    dnaParser.parseSpecimenUnit((Element)specimenUnitList.item(0), dnaSample, state, entitiesToSave);
+                }
+                entitiesToSave.stream().forEach(e->save(e, state));
+                dnaParser.parse(item, state, dnaSample, entitiesToSave);
                 //dnaSample.addSource(OriginalSourceType.Import, dnaSample.getAccessionNumber(), "", state.getImportReference(state.getActualAccessPoint()), "");
                 save(dnaSample, state);
                 entitiesToSave.stream().forEach(e->save(e, state));

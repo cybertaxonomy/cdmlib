@@ -49,8 +49,36 @@ public class AbcdDnaParser {
         this.cdmAppController = cdmAppController;
     }
 
-    public DnaSample parse(Element item, Abcd206ImportState state, Set<CdmBase> entitiesToSave) {
+    public DnaSample parse(Element item, Abcd206ImportState state, DnaSample dnaSample, Set<CdmBase> entitiesToSave) {
 
+
+
+        //specimen unit
+//        NodeList specimenUnitList = item.getElementsByTagName(prefix+"SpecimenUnit");
+//        if(specimenUnitList.item(0)!=null && specimenUnitList.item(0) instanceof Element){
+//            parseSpecimenUnit((Element)specimenUnitList.item(0), dnaSample, entitiesToSave);
+//        }
+
+        NodeList unitExtensions = item.getElementsByTagName(prefix+"UnitExtensions");
+        for(int i=0;i<unitExtensions.getLength();i++){
+            if(unitExtensions.item(i) instanceof Element){
+                Element unitExtension = (Element) unitExtensions.item(i);
+                NodeList ggbn = unitExtension.getElementsByTagName("ggbn:GGBN");
+                if(ggbn.getLength()>0){
+                    AbcdGgbnParser ggbnParser = new AbcdGgbnParser(report, cdmAppController);
+                    ggbnParser.parse(ggbn, dnaSample, state);
+                }
+            }
+        }
+
+        return dnaSample;
+    }
+
+    /**
+     * @param state
+     * @param dnaSample
+     */
+    public DnaSample createDNASampleAndFieldUnit(Abcd206ImportState state ) {
         FieldUnit fieldUnit = null;
         String fieldNumber = state.getDataHolder().getFieldNumber();
         if (StringUtils.isNotBlank(fieldNumber) && !fieldNumber.equals("0") && !fieldNumber.equalsIgnoreCase("s.n.")){
@@ -70,28 +98,14 @@ public class AbcdDnaParser {
         }
         DnaSample dnaSample = DnaSample.NewInstance();
         DerivationEvent.NewSimpleInstance(fieldUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());
-
-        //specimen unit
-        NodeList specimenUnitList = item.getElementsByTagName(prefix+"SpecimenUnit");
-        if(specimenUnitList.item(0)!=null && specimenUnitList.item(0) instanceof Element){
-            parseSpecimenUnit((Element)specimenUnitList.item(0), dnaSample, entitiesToSave);
-        }
-        NodeList unitExtensions = item.getElementsByTagName(prefix+"UnitExtensions");
-        for(int i=0;i<unitExtensions.getLength();i++){
-            if(unitExtensions.item(i) instanceof Element){
-                Element unitExtension = (Element) unitExtensions.item(i);
-                NodeList ggbn = unitExtension.getElementsByTagName("ggbn:GGBN");
-                if(ggbn.getLength()>0){
-                    AbcdGgbnParser ggbnParser = new AbcdGgbnParser(report, cdmAppController);
-                    ggbnParser.parse(ggbn, dnaSample, state);
-                }
-            }
-        }
-
         return dnaSample;
     }
 
-    private void parseSpecimenUnit(Element item, DnaSample dnaSample, Set<CdmBase> entitiesToSave) {
+
+
+
+    public void parseSpecimenUnit(Element item, DnaSample dnaSample,Abcd206ImportState state, Set<CdmBase> entitiesToSave) {
+
         NodeList preparationsList = item.getElementsByTagName(prefix+"Preparations");
         if(preparationsList.item(0)!=null && preparationsList.item(0) instanceof Element){
             parsePreparations((Element) preparationsList.item(0), dnaSample, entitiesToSave);
@@ -113,6 +127,7 @@ public class AbcdDnaParser {
 
                 //preparation materials
                 String preparationMaterials = AbcdParseUtility.parseFirstTextContent(((Element) node).getElementsByTagName(prefix+"preparationMaterials"));
+
                 derivedFrom.setDescription(preparationMaterials);
                 //preparation actor
                 NodeList preparationAgentList = ((Element) node).getElementsByTagName(prefix+"preparationAgent");

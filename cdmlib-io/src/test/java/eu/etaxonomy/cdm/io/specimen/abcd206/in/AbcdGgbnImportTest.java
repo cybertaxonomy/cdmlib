@@ -795,6 +795,56 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	}
 
+
+    /**
+     * Tests importing of DNA unit without attaching it to an existing specimen.
+     * Creates a FieldUnit with an attached DnaSample.
+     */
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
+        @DataSet( value="AbcdGgbnImportTest.testNoAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+    })
+    public void testDnaSampleWithSiblingToDerivedUnit(){
+
+
+
+        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/DNA_AlgaTerra.xml";
+        URL url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+
+        Abcd206ImportConfigurator importConfigurator = null;
+        try {
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        URI dnaProvider;
+        try {
+            dnaProvider = new URI("https://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank");
+            importConfigurator.setDnaSoure(dnaProvider);
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        importConfigurator.setGetSiblings(true);
+        importConfigurator.setAddIndividualsAssociations(true);
+        importConfigurator.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
+        assertNotNull("Configurator could not be created", importConfigurator);
+
+        assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
+        boolean result = defaultImport.invoke(importConfigurator).isSuccess();
+
+        assertTrue("Return value for import.invoke should be true", result);
+        assertEquals("Number of derived units is incorrect", 4, occurrenceService.count(DerivedUnit.class));
+
+        assertEquals("Number of field units is incorrect", 2, occurrenceService.count(FieldUnit.class));
+        assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
+
+    }
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");

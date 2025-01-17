@@ -1,0 +1,153 @@
+<abcd21:DataSets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:abcd21="http://www.tdwg.org/schemas/abcd/2.1" xsi:schemaLocation=" http://www.tdwg.org/schemas/abcd/2.1 http://www.bgbm.org/tdwg/codata/schema/ABCD_2.1/ABCD_2.1.xsd">
+  <abcd21:DataSet>
+    <abcd21:TechnicalContacts>
+      <abcd21:TechnicalContact>
+        <abcd21:Name>Botanic Garden and Botanical Museum Berlin-Dahlem</abcd21:Name>
+        <abcd21:Email>biodiversitydata@bgbm.org</abcd21:Email>
+        <abcd21:Address>Koenigin-Luise-Str. 6-8, 14195 Berlin, Germany</abcd21:Address>
+      </abcd21:TechnicalContact>
+    </abcd21:TechnicalContacts>
+    <abcd21:ContentContacts>
+      <abcd21:ContentContact>
+        <abcd21:Name>Dr. Regine Jahn, Wolf-Henning Kusber</abcd21:Name>
+        <abcd21:Email>biodiversitydata@bgbm.org</abcd21:Email>
+        <abcd21:Address>Königin-Luise-Str.6-8, 14195 Berlin, Germany</abcd21:Address>
+      </abcd21:ContentContact>
+    </abcd21:ContentContacts>
+    <abcd21:Metadata>
+      <abcd21:Description>
+        <abcd21:Representation language="en">
+          <abcd21:Title>AlgaTerra</abcd21:Title>
+        </abcd21:Representation>
+      </abcd21:Description>
+      <abcd21:IconURI>http://www.algaterra.org/ATDB/images/ATLogo.jpg</abcd21:IconURI>
+      <abcd21:RevisionData>
+        <abcd21:Creators>BGBM</abcd21:Creators>
+        <abcd21:DateModified>2009-04-07T00:00:00</abcd21:DateModified>
+      </abcd21:RevisionData>
+      <abcd21:Owners>
+        <abcd21:Owner>
+          <abcd21:Organisation>
+            <abcd21:Name>
+              <abcd21:Representation language="en">
+                <abcd21:Text>Botanic Garden and Botanical Museum Berlin-Dahlem</abcd21:Text>
+                <abcd21:Abbreviation>BGBM</abcd21:Abbreviation>
+              </abcd21:Representation>
+            </abcd21:Name>
+          </abcd21:Organisation>
+          <abcd21:Addresses>
+            <abcd21:Address>Königin-Luise-Str. 6-8, 14195 Berlin, Germany</abcd21:Address>
+          </abcd21:Addresses>
+          <abcd21:LogoURI>http://ww3.bgbm.org/providerResources/BGBM.jpg</abcd21:LogoURI>
+        </abcd21:Owner>
+      </abcd21:Owners>
+      <abcd21:IPRStatements>
+        <abcd21:Copyrights>
+          <abcd21:Copyright language="en">
+            <abcd21:Text>Pictures and multi-media-objects are under copyright.</abcd21:Text>
+          </abcd21:Copyright>
+        </abcd21:Copyrights>
+        <abcd21:TermsOfUseStatements>
+          <abcd21:TermsOfUse language="en">
+            <abcd21:Text>For private scientific use only. No redistribution or commercial use without prior agreement of the legal owner.</abcd21:Text>
+          </abcd21:TermsOfUse>
+        </abcd21:TermsOfUseStatements>
+        <abcd21:Citations>
+          <abcd21:Citation language="en">
+            <abcd21:Text>Jahn, R. &amp; Kusber, W.-H. 2005 - (continuously updated):  AlgaTerra - Information System on Algae.</abcd21:Text>
+          </abcd21:Citation>
+        </abcd21:Citations>
+      </abcd21:IPRStatements>
+    </abcd21:Metadata>
+    <abcd21:Units>
+      <abcd21:Unit>
+        <abcd21:SourceInstitutionID>B</abcd21:SourceInstitutionID>
+        <abcd21:SourceID>Diatoms</abcd21:SourceID>
+        <abcd21:UnitID>AT_73Gel2</abcd21:UnitID>
+        <abcd21:Identifications>
+          <abcd21:Identification>
+            <abcd21:Result>
+              <abcd21:TaxonIdentified>
+                <abcd21:HigherTaxa>
+                  <abcd21:HigherTaxon>
+                    <abcd21:HigherTaxonName>Bacillariophyta</abcd21:HigherTaxonName>
+                    <abcd21:HigherTaxonRank>phylum</abcd21:HigherTaxonRank>
+                  </abcd21:HigherTaxon>
+                </abcd21:HigherTaxa>
+                <abcd21:ScientificName>
+                  <abcd21:FullScientificNameString>Eunotia Ehrenb.</abcd21:FullScientificNameString>
+                </abcd21:ScientificName>
+              </abcd21:TaxonIdentified>
+            </abcd21:Result>
+            <abcd21:PreferredFlag>1</abcd21:PreferredFlag>
+          </abcd21:Identification>
+        </abcd21:Identifications>
+        <abcd21:RecordBasis>LivingSpecimen</abcd21:RecordBasis>
+        <abcd21:KindOfUnit>culture strain</abcd21:KindOfUnit>
+        <abcd21:SpecimenUnit>
+          <abcd21:Loan>
+            <abcd21:blocked>1</abcd21:blocked>
+          </abcd21:Loan>
+          <abcd21:Preparations>
+            <abcd21:preparation>
+              <abcd21:preparationType>clone culture</abcd21:preparationType>
+              <abcd21:preparationAgent>
+                <abcd21:Person>
+                  <abcd21:FullName>Bruder, K.</abcd21:FullName>
+                </abcd21:Person>
+              </abcd21:preparationAgent>
+            </abcd21:preparation>
+          </abcd21:Preparations>
+        </abcd21:SpecimenUnit>
+        <abcd21:Associations>
+          <abcd21:UnitAssociation>
+            <abcd21:SourceInstitutionCode>AWI</abcd21:SourceInstitutionCode>
+            <abcd21:SourceName>Diatoms</abcd21:SourceName>
+            <abcd21:UnitID>AT_73</abcd21:UnitID>
+            <abcd21:AssociationType>isolated from mixed sample</abcd21:AssociationType>
+            <abcd21:DatasetAccessPoint>http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=test_AlgaTerra_Occurrences</abcd21:DatasetAccessPoint>
+          </abcd21:UnitAssociation>
+        </abcd21:Associations>
+        <abcd21:Gathering>
+          <abcd21:DateTime>
+            <abcd21:ISODateTimeBegin>2002-07-01T00:00:00</abcd21:ISODateTimeBegin>
+          </abcd21:DateTime>
+          <abcd21:Agents>
+            <abcd21:GatheringAgent>
+              <abcd21:Person>
+                <abcd21:FullName>Bruder, K., Beszteri, B., Strieben, S.</abcd21:FullName>
+              </abcd21:Person>
+            </abcd21:GatheringAgent>
+          </abcd21:Agents>
+          <abcd21:Project>
+            <abcd21:ProjectTitle>AlgaTerra</abcd21:ProjectTitle>
+          </abcd21:Project>
+          <abcd21:LocalityText>Schleswig-Holstein, Pinnsee</abcd21:LocalityText>
+          <abcd21:Country>
+            <abcd21:Name>Germany</abcd21:Name>
+            <abcd21:ISO3166Code>DE</abcd21:ISO3166Code>
+          </abcd21:Country>
+          <abcd21:NamedAreas>
+            <abcd21:NamedArea>
+              <abcd21:AreaClass>Continent</abcd21:AreaClass>
+              <abcd21:AreaName>Europe</abcd21:AreaName>
+            </abcd21:NamedArea>
+          </abcd21:NamedAreas>
+          <abcd21:SiteCoordinateSets>
+            <abcd21:SiteCoordinates>
+              <abcd21:CoordinatesLatLong>
+                <abcd21:LongitudeDecimal>10.74267</abcd21:LongitudeDecimal>
+                <abcd21:LatitudeDecimal>53.63517</abcd21:LatitudeDecimal>
+              </abcd21:CoordinatesLatLong>
+            </abcd21:SiteCoordinates>
+          </abcd21:SiteCoordinateSets>
+          <abcd21:Biotope>
+            <abcd21:Name>Lake</abcd21:Name>
+          </abcd21:Biotope>
+        </abcd21:Gathering>
+        <abcd21:CollectorsFieldNumber>s.n.</abcd21:CollectorsFieldNumber>
+      </abcd21:Unit>
+    </abcd21:Units>
+  </abcd21:DataSet>
+</abcd21:DataSets>
+  
