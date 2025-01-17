@@ -30,8 +30,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -105,7 +103,6 @@ public class Registration extends AnnotatableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @IndexedEmbedded
     private Institution institution;
 
@@ -114,7 +111,6 @@ public class Registration extends AnnotatableEntity {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 //    @IndexedEmbedded(includeEmbeddedObjectId=true)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private TaxonName name;
 
     @XmlElementWrapper(name = "TypeDesignations")
@@ -122,7 +118,6 @@ public class Registration extends AnnotatableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
     private Set<TypeDesignationBase> typeDesignations = new HashSet<>();
 
@@ -131,7 +126,6 @@ public class Registration extends AnnotatableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
     private Set<Registration> blockedBy = new HashSet<>();
 

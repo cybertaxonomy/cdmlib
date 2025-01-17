@@ -343,7 +343,6 @@ public class TaxonName
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="name", fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
     @IndexedEmbedded(depth=1)
     private Set<Registration> registrations = new HashSet<>();
