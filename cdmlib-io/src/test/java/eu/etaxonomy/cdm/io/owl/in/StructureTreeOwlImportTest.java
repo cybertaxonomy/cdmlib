@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -82,7 +81,6 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
 
     @Test
     @DataSet(value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
-    @Ignore //temporarily ignore until test runs without Source.citation cascading
     public void testImportStructureTree() throws URISyntaxException {
         URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/owl/in/test_structures.owl");
         URI uri = URI.fromUrl(url);

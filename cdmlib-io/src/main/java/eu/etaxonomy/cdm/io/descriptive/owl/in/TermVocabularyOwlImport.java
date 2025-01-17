@@ -98,6 +98,7 @@ public class TermVocabularyOwlImport
             return getTermService().load(termUuid); // only add term if it does not already exist
         }
         DefinedTermBase<?> term = OwlImportUtil.createTerm(termResource, this, model, state);
+        term.getSources().stream().map(s->s.getCitation()).forEach(ref->save(ref));
         term = getTermService().save(term);
         ((TermVocabulary)vocabulary).addTerm(term);
 
