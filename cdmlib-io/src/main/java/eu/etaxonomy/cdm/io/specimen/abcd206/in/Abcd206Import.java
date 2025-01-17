@@ -777,7 +777,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             } catch (Exception e) {
                 logger.warn("oups");
             }
-
+            save(sour.getCitation(), state);
             derivedUnitFacade.addSource(sour);
 
 

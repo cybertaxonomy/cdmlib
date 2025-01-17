@@ -196,7 +196,10 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             logger.info("Created new taxon name "+taxonName);
         }
         checkAllAuthors(state, acceptedTaxon);
-        saveTeamOrPersons(state, false);       
+        saveTeamOrPersons(state, false);
+        save(acceptedTaxon.getName().getNomenclaturalReference(), state);
+        save(acceptedTaxon.getSec(), state);
+
         if(acceptedTaxon != null && !acceptedTaxon.isPersisted()) {
             //check for already existing authors
             save(acceptedTaxon, state);
@@ -737,6 +740,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
      * Not yet complete.
      */
     protected UUID save(CdmBase cdmBase, SpecimenImportStateBase<?,?> state) {
+        if (cdmBase == null) {
+            return null;
+        }
 
         ICdmRepository cdmRepository = state.getConfig().getCdmAppController();
         if (cdmRepository == null){
