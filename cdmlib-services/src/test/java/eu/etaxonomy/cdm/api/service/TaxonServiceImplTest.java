@@ -62,6 +62,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -82,7 +83,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -110,6 +113,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     private IClassificationService classificationService;
 
     @SpringBeanByType
+    private ITaxonNodeDao taxonNodeDao;
+
+    @SpringBeanByType
     private ITaxonNodeService nodeService;
 
     @SpringBeanByType
@@ -117,6 +123,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IDescriptionDao descriptionDao;
+
+    @SpringBeanByType
+    private ITypeDesignationDao typeDesignationDao;
 
     @SpringBeanByType
     private IDescriptionElementDao descriptionElementDao;
@@ -228,7 +237,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         UUID misappliedNameNameUuid = nameService.save(misappliedNameName).getUuid();
         misappliedNameName = nameService.find(misappliedNameNameUuid);
-        SpecimenTypeDesignation typeDes = SpecimenTypeDesignation.NewInstance();
+        SpecimenTypeDesignation typeDes = save(SpecimenTypeDesignation.NewInstance());
         DerivedUnit derivedUnit = DerivedUnit.NewPreservedSpecimenInstance();
         occurenceService.save(derivedUnit);
 
@@ -922,6 +931,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     private <S extends DescriptionBase<?>> S save(S newDescription) {
         descriptionDao.save(newDescription);
         return newDescription;
+    }
+
+    private <S extends TypeDesignationBase<?>> S save(S td) {
+        typeDesignationDao.save(td);
+        return td;
     }
 
     @Test
@@ -2041,9 +2055,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         childTaxon.addDescription(taxDesc);
         service.saveOrUpdate(childTaxon);
         Classification classification = getTestClassification("TestClassification");
-        classification.addParentChild(genusTaxon, childTaxon, citationRef, "456");
+        TaxonNode child = classification.addParentChild(genusTaxon, childTaxon, citationRef, "456");
 //            childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456");
         classificationService.save(classification);
+//        taxonNodeDao.saveOrUpdate(child);
         //homotypic synonym of childTaxon1
         IBotanicalName botSpecies4= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         botSpecies4.setTitleCache("Hieracium gueri DC.", true);

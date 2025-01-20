@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -53,6 +54,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -74,6 +76,9 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
     @SpringBeanByType
     private IDescriptionDao descriptionDao;
+
+    @SpringBeanByType
+    private ITypeDesignationDao typeDesignationDao;
 
 //**************** TESTS ************************************************
 
@@ -398,16 +403,21 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             de.setPreferredFlag(true);
 
             //du_accType is added as type designation for the accepted taxon
-            name1.addSpecimenTypeDesignation(du_accType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            SpecimenTypeDesignation std1 = name1.addSpecimenTypeDesignation(du_accType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
             //du_homonymType is added as type designation for the homotypic synonym
-            name2.addSpecimenTypeDesignation(du_homonymType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            SpecimenTypeDesignation std2 = name2.addSpecimenTypeDesignation(du_homonymType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
             //du_heteroType1 is added as type designation for the heterotypic synonym
-            name3.addSpecimenTypeDesignation(du_heteroType1, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            SpecimenTypeDesignation std3 = name3.addSpecimenTypeDesignation(du_heteroType1, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
             //du_heteroType2 is added as type designation for the other heterotypic synonym
-            name4.addSpecimenTypeDesignation(du_heteroType2, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            SpecimenTypeDesignation std4 = name4.addSpecimenTypeDesignation(du_heteroType2, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+
+            typeDesignationDao.save(std1);
+            typeDesignationDao.save(std2);
+            typeDesignationDao.save(std3);
+            typeDesignationDao.save(std4);
 
             TaxonDescription fieldUnitDescription = save(TaxonDescription.NewInstance(fieldUnitTaxon));
             IndividualsAssociation fieldUnitIndAss = IndividualsAssociation.NewInstance(fieldUnit1);

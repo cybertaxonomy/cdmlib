@@ -61,10 +61,12 @@ import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -493,11 +495,13 @@ public abstract class TaxonTreeExportTestBase
         DerivedUnit specimen = facade.innerDerivedUnit();
         specimen.setUuid(specimenUuid);
         occurrenceService.save(specimen);
-        speciesName.addSpecimenTypeDesignation(specimen, SpecimenTypeDesignationStatus.HOLOTYPE(),
+        SpecimenTypeDesignation std = speciesName.addSpecimenTypeDesignation(specimen, SpecimenTypeDesignationStatus.HOLOTYPE(),
                 null, null, null, false, false);
+        nameService.saveTypeDesignation(std);
 
         //add name type
-        genusName.addNameTypeDesignation(basionymName, null, null, null, NameTypeDesignationStatus.ORIGINAL_DESIGNATION(), false);
+        NameTypeDesignation ntd = genusName.addNameTypeDesignation(basionymName, null, null, null, NameTypeDesignationStatus.ORIGINAL_DESIGNATION(), false);
+        nameService.saveTypeDesignation(ntd);
 
         //TODO textual type
 

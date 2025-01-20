@@ -116,6 +116,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -923,14 +924,16 @@ public class FullCoverageDataGenerator {
 		entitiesToSave.add(speciesZooName);
 		NameTypeDesignation nameDesig = genusZooName.addNameTypeDesignation(speciesZooName, createNewReference(entitiesToSave), "111", "original name",
 				NameTypeDesignationStatus.AUTOMATIC(), true, true, true, true);
+		entitiesToSave.add(nameDesig);
 		handleAnnotatableEntity(nameDesig);
 		SpecimenTypeDesignation specimenDesig = speciesZooName.addSpecimenTypeDesignation(
 		        createNewSpecimen(entitiesToSave), SpecimenTypeDesignationStatus.HOLOTYPE(),
 				createNewReference(entitiesToSave), "p,22", "original name", false, true);
+		entitiesToSave.add(specimenDesig);
 		handleAnnotatableEntity(specimenDesig);
-		speciesZooName.addTextualTypeDesignation("A textual type designation", Language.ENGLISH(), true,
+		TextualTypeDesignation ttd = speciesZooName.addTextualTypeDesignation("A textual type designation", Language.ENGLISH(), true,
 		        createNewReference(entitiesToSave), "123", "Species orginalus", false);
-
+		entitiesToSave.add(ttd);
 
 		TaxonName viralName = TaxonNameFactory.NewViralInstance(Rank.GENUS());
 		viralName.setAcronym("acronym");

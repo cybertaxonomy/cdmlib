@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.molecular.ISingleReadDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -59,6 +60,9 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
 
     @SpringBeanByType
     private IOccurrenceService occurrenceService;
+
+    @SpringBeanByType
+    private ITypeDesignationDao typeDesignationDao;
 
     @SpringBeanByType
     private IEventBaseService eventService;
@@ -128,6 +132,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         DnaSample dnaSample = (DnaSample) occurrenceService.load(DNA_SAMPLE_UUID);
         TaxonName name = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), "Test", null, "test", null, null, null, null, null);
         SpecimenTypeDesignation specimenTypeDesignation = SpecimenTypeDesignation.NewInstance();
+        typeDesignationDao.save(specimenTypeDesignation);
         specimenTypeDesignation.setTypeSpecimen(dnaSample);
         name.addTypeDesignation(specimenTypeDesignation, false);
         nameService.save(name);

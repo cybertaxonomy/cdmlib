@@ -433,6 +433,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
         name1.addTypeDesignation(desig1, true);
 
+        typeDesignationDao.save(desig1);
         taxonNameDao.saveOrUpdate(name1);
         commitAndStartNewTransaction(new String[]{"TypeDesignationBase", "TypeDesignationBase_AUD"});
 
@@ -478,6 +479,8 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         desig2.setUuid(UUID.fromString("bf357711-e752-44e9-bd3d-aef0a0bb5b91"));
         name1.addTypeDesignation(desig2, true);
 
+        //save all
+        typeDesignationDao.save(desig1, desig2);
         taxonNameDao.save(name1);
         taxonNameDao.save(name2);
 
@@ -514,16 +517,22 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         desig1 = (SpecimenTypeDesignation)typeDesignationDao.findByUuid(desig1.getUuid());
         Assert.assertSame("Desig1New should be same as desig1", desig1, desig1New);
 
-        try{
-            genericDao.delete(desig1);
-            this.setComplete();
-            this.endTransaction();
-            Assert.fail("desig1 should not be deletable as it is still connected to name2");
-        }catch (Exception e){
-            //this.setComplete();
-            this.endTransaction();
-            this.startNewTransaction();
-        }
+//      Note: the following is only true if TaxonName.typeDesignation is cascaded AND
+//            because the name2 is in the same session. The exception is a re-attache
+//            warning. So in general hibernate does not check if an object is in use
+//            via a foreign key. This must be assured via a FK constraint in the DB.
+//            With such a constraint the following should work again.
+              //related to #10524
+//        try{
+//            typeDesignationDao.delete(desig1);
+//            this.setComplete();
+//            this.endTransaction();
+//            Assert.fail("desig1 should not be deletable as it is still connected to name2");
+//        }catch (Exception e){
+//            //this.setComplete();
+//            this.endTransaction();
+//            this.startNewTransaction();
+//        }
         name2 = taxonNameDao.load(name2.getUuid());
         Assert.assertNotNull(name1);
         desig1 = (SpecimenTypeDesignation)typeDesignationDao.findByUuid(desig1.getUuid());

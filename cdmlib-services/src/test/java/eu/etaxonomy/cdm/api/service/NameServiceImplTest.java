@@ -530,9 +530,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         higherName.setTitleCache("genus name", true);
         NameTypeDesignationStatus typeStatus = (NameTypeDesignationStatus)termService.find(NameTypeDesignationStatus.AUTOMATIC().getUuid());
         boolean addToAllHomotypicNames = true;
-        higherName.addNameTypeDesignation(name1, null, null, null, typeStatus, addToAllHomotypicNames);
-        nameService.save(higherName);
-        nameService.save(name1);
+        NameTypeDesignation ntd = higherName.addNameTypeDesignation(name1, null, null, null, typeStatus, addToAllHomotypicNames);
+        typeDesignationDao.save(ntd);
+        nameService.save(higherName, name1);
 
         commitAndStartNewTransaction(tableNames);
         name1 = nameService.find(name1.getUuid());
@@ -602,7 +602,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         //Type Designations
         name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
         name1.setTitleCache("Name with type designation", true);
-        SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
+        SpecimenTypeDesignation typeDesignation = save(SpecimenTypeDesignation.NewInstance());
         SpecimenTypeDesignationStatus typeStatus = (SpecimenTypeDesignationStatus)termService.find(SpecimenTypeDesignationStatus.HOLOTYPE().getUuid());
         typeDesignation.setTypeStatus(typeStatus);
         DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
@@ -648,6 +648,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         boolean addToAllNames = true;
         name1.addTypeDesignation(typeDesignation, addToAllNames);
+        typeDesignationDao.save(typeDesignation);
         nameService.saveOrUpdate(name1);
         commitAndStartNewTransaction(tableNames);
 
@@ -748,7 +749,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
 
         NameTypeDesignation desig3 = (NameTypeDesignation)name3.getTypeDesignations().iterator().next();
-        name3.addTypeDesignation(SpecimenTypeDesignation.NewInstance(), false);
+        SpecimenTypeDesignation std3 = SpecimenTypeDesignation.NewInstance();
+        name3.addTypeDesignation(std3, false);
+        typeDesignationDao.save(std3);
         this.nameService.update(name3);
 
         this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));

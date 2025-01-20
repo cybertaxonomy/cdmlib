@@ -471,7 +471,12 @@ public class NameServiceImpl
     @Transactional(readOnly = false)
     @Deprecated
     public void saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection){
-        typeDesignationCollection.stream().forEach(td->genericDao.save(td));
+        typeDesignationCollection.stream().forEach(td->typeDesignationDao.save(td));
+    }
+
+    @Override
+    public void saveTypeDesignation(TypeDesignationBase<?> typeDesignation){
+        typeDesignationDao.save(typeDesignation);
     }
 
     /**

@@ -119,6 +119,13 @@ public interface INameService
 	public void saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection);
 
 	/**
+     * Saves the given type designation.
+     * @param typeDesignationCollection
+     * @return
+     */
+    public void saveTypeDesignation(TypeDesignationBase<?> typeDesignation);
+
+	/**
 	 * Saves the given homotypical groups.
 	 * @param homotypicalGroups
 	 * @return
