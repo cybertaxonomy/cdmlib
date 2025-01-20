@@ -406,6 +406,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         // I think this is preferable to catching lazy initialization errors
         // as that solution only swallows and hides the exception, but doesn't
         // actually solve it.
+        @SuppressWarnings("unchecked")
         T persistentObject = (T) getSession().merge(objectToDelete);
         getSession().delete(persistentObject);
         return persistentObject.getUuid();

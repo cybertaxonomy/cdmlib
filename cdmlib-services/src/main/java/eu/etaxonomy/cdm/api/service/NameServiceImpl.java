@@ -94,6 +94,7 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -131,6 +132,8 @@ public class NameServiceImpl
     private IHomotypicalGroupDao homotypicalGroupDao;
     @Autowired
     private ICdmGenericDao genericDao;
+    @Autowired
+    private ITypeDesignationDao typeDesignationDao;
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
     @Autowired
@@ -277,7 +280,7 @@ public class NameServiceImpl
     public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation){
 
         if(typeDesignation != null && typeDesignation .isPersisted()){
-    		typeDesignation = CdmBase.deproxy(genericDao.find(TypeDesignationBase.class, typeDesignation.getUuid()));
+    		typeDesignation = CdmBase.deproxy(typeDesignationDao.findByUuid(typeDesignation.getUuid()));
     	}
 
         DeleteResult result = new DeleteResult();
@@ -311,7 +314,7 @@ public class NameServiceImpl
     public DeleteResult deleteTypeDesignation(UUID nameUuid, UUID typeDesignationUuid){
 
         TaxonName nameBase = load(nameUuid);
-        TypeDesignationBase<?> typeDesignation = CdmBase.deproxy(genericDao.find(TypeDesignationBase.class, typeDesignationUuid));
+        TypeDesignationBase<?> typeDesignation = CdmBase.deproxy(typeDesignationDao.findByUuid(typeDesignationUuid));
         return deleteTypeDesignation(nameBase, typeDesignation);
     }
 

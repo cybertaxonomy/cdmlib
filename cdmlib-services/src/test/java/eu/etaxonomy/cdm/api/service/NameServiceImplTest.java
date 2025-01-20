@@ -195,12 +195,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         result = nameService.delete(name1); //should throw now exception
 
-
-
         commitAndStartNewTransaction(tableNames);
         name1 = nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
-
     }
 
     @Test

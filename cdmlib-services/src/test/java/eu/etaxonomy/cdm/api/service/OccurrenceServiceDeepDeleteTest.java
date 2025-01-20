@@ -117,7 +117,6 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="OccurrenceServiceTest.testDeleteDerivateHierarchyStepByStep.xml")
     public void testDeepDelete_FieldUnitWithTypeDesignation(){
 
-
         String assertMessage = "Incorrect number of specimens after deletion.";
         DeleteResult deleteResult = null;
         SpecimenDeleteConfigurator config = new SpecimenDeleteConfigurator();

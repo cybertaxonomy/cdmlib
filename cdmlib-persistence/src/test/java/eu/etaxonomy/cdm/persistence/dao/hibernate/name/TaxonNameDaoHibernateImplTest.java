@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -65,19 +66,22 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     private ITaxonDao taxonDao;
 
     @SpringBeanByType
+    private ITypeDesignationDao typeDesignationDao;
+
+    @SpringBeanByType
     private ICdmGenericDao genericDao;
 
     @SpringBeanByType
     private IHomotypicalGroupDao homotypicalGroupDao;
 
-    private UUID cryptocoryneGriffithiiUuid;
+    private UUID cryptoCoryneGriffithiIiUuid;
     private UUID acherontiaUuid;
     private UUID acherontiaLachesisUuid;
     private UUID atroposUuid;
 
     @Before
     public void setUp() {
-        cryptocoryneGriffithiiUuid = UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633");
+        cryptoCoryneGriffithiIiUuid = UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633");
         acherontiaUuid = UUID.fromString("c2cab2ad-3e3a-47b8-8aa8-d9e1c0857647");
         acherontiaLachesisUuid = UUID.fromString("7969821b-a2cf-4d01-95ec-6a5ed0ca3f69");
         // Atropos Agassiz, 1846
@@ -86,7 +90,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
     @Test
     public void testGetHybridRelationships() {
-        IBotanicalName cryptocoryneGriffithii = taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
+        IBotanicalName cryptocoryneGriffithii = taxonNameDao.findByUuid(cryptoCoryneGriffithiIiUuid);
         assert cryptocoryneGriffithii!= null : "name must exist";
 
         List<HybridRelationship> result = taxonNameDao.getHybridNames(cryptocoryneGriffithii, null, null, null,null,null);
@@ -98,7 +102,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
     @Test
     public void testCountHybridRelationships() {
-        IBotanicalName cryptocoryneGriffithii = taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
+        IBotanicalName cryptocoryneGriffithii = taxonNameDao.findByUuid(cryptoCoryneGriffithiIiUuid);
         assert cryptocoryneGriffithii != null : "name must exist";
 
         long count = taxonNameDao.countHybridNames(cryptocoryneGriffithii, null);
@@ -329,7 +333,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
     @Test
     public void testDeleteTaxon(){
-        TaxonName acherontiaLachesis = CdmBase.deproxy(taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid));
+        TaxonName acherontiaLachesis = CdmBase.deproxy(taxonNameDao.findByUuid(cryptoCoryneGriffithiIiUuid));
         @SuppressWarnings("rawtypes")
         Set<TaxonBase> taxonBases = acherontiaLachesis.getTaxonBases();
         HomotypicalGroup group = acherontiaLachesis.getHomotypicalGroup();
@@ -341,7 +345,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         TaxonBase<?> taxon = taxa.next();
         UUID taxonUuid = taxon.getUuid();
 
-        acherontiaLachesis = taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
+        acherontiaLachesis = taxonNameDao.findByUuid(cryptoCoryneGriffithiIiUuid);
         taxon = taxonDao.findByUuid(taxonUuid);
         group = CdmBase.deproxy(homotypicalGroupDao.findByUuid(groupUuid));
         assertNull("There should be no taxonName with the deleted uuid", acherontiaLachesis);
@@ -452,19 +456,24 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 //  @ExpectedDataSet
     public void testRemoveTypeDesignationsFromName() {
 
+        //create data
+        //..name1
         TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         name1.setTitleCache("Name1", true);
         name1.setUuid(UUID.fromString("2cfc05fc-138e-452d-b4ea-8798134c7410"));
 
+        //..name2
         TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         name2.setTitleCache("Name2", true);
         name2.setUuid(UUID.fromString("7a12057d-2e99-471e-ac7e-633f1d0b5686"));
 
+        //..desig1 (add to name1+2)
         SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();
         desig1.setUuid(UUID.fromString("fe9f7711-de4a-4789-8045-86b2cb5c4358"));
         name1.addTypeDesignation(desig1, true);
         name2.addTypeDesignation(desig1, true);
 
+        //..desig2 (add to name1)
         SpecimenTypeDesignation desig2 = SpecimenTypeDesignation.NewInstance();
         desig2.setUuid(UUID.fromString("bf357711-e752-44e9-bd3d-aef0a0bb5b91"));
         name1.addTypeDesignation(desig2, true);
@@ -472,42 +481,37 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         taxonNameDao.save(name1);
         taxonNameDao.save(name2);
 
-        this.setComplete();
-        this.endTransaction();
-        this.startNewTransaction();
+        this.commitAndStartNewTransaction();
 
         name1 = taxonNameDao.load(name1.getUuid());
         Assert.assertNotNull(name1);
         Assert.assertEquals("Name1 should have 2 type designations", 2, name1.getTypeDesignations().size());
 
-        desig1 = genericDao.find(SpecimenTypeDesignation.class, desig1.getUuid());
+        desig1 = (SpecimenTypeDesignation)typeDesignationDao.findByUuid(desig1.getUuid());
         name1.removeTypeDesignation(desig1);
 
-        this.setComplete();
-        this.endTransaction();
-        this.startNewTransaction();
+        this.commitAndStartNewTransaction();
 
         name1 = taxonNameDao.load(name1.getUuid());
         Assert.assertNotNull(name1);
         Assert.assertEquals("Name1 should have 1 type designation", 1, name1.getTypeDesignations().size());
 
-        desig2 = genericDao.find(SpecimenTypeDesignation.class, desig2.getUuid());
+        desig2 = (SpecimenTypeDesignation)typeDesignationDao.findByUuid(desig2.getUuid());
         Assert.assertNotNull(desig2);
         name1.removeTypeDesignation(desig2);
 
-        this.setComplete();
-        this.endTransaction();
-        this.startNewTransaction();
+        this.commitAndStartNewTransaction();
 
         name1 = taxonNameDao.load(name1.getUuid());
         Assert.assertNotNull(name1);
         Assert.assertEquals("Name1 should have no type designations", 0, name1.getTypeDesignations().size());
 
         name2 = taxonNameDao.load(name2.getUuid());
-        Assert.assertNotNull(name1);
+        Assert.assertNotNull(name2);
         Assert.assertEquals("Name2 should have 1 type designation", 1, name2.getTypeDesignations().size());
+
         SpecimenTypeDesignation desig1New = (SpecimenTypeDesignation)name2.getTypeDesignations().iterator().next();
-        desig1 = genericDao.find(SpecimenTypeDesignation.class, desig1.getUuid());
+        desig1 = (SpecimenTypeDesignation)typeDesignationDao.findByUuid(desig1.getUuid());
         Assert.assertSame("Desig1New should be same as desig1", desig1, desig1New);
 
         try{
@@ -522,14 +526,12 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         }
         name2 = taxonNameDao.load(name2.getUuid());
         Assert.assertNotNull(name1);
-        desig1 = genericDao.find(SpecimenTypeDesignation.class, desig1.getUuid());
+        desig1 = (SpecimenTypeDesignation)typeDesignationDao.findByUuid(desig1.getUuid());
         name2.removeTypeDesignation(desig1);
 
-        genericDao.delete(desig1);  //now it can be deleted
+        typeDesignationDao.delete(desig1);  //now it can be deleted
 
-        this.setComplete();
-        this.endTransaction();
-        this.startNewTransaction();
+        this.commitAndStartNewTransaction();
 
         desig2 = genericDao.find(SpecimenTypeDesignation.class, desig2.getUuid());
         genericDao.delete(desig2); //desig2 is already orphaned and therefore can be deleted
