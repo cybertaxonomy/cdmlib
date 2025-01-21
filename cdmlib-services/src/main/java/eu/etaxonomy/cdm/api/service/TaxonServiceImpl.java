@@ -1332,7 +1332,7 @@ public class TaxonServiceImpl
                      result.includeResult(nameResult);
                  }
              }
-       }
+        }
 
        return result;
     }

@@ -303,6 +303,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         createTestDataSet();
         synonym.setSec(save(ReferenceFactory.newArticle()));
         service.saveOrUpdate(synonym);
+
         UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym,
                 taxWithSyn, true, true, SecReferenceHandlingSwapEnum.AlwaysDelete, null, null);
 
@@ -366,11 +367,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertNotNull(taxWithSyn);
         assertNotNull(taxNew);
         assertNull(taxNew.getSec());
-
-
     }
-
-
 
     @Test
     public final void testChangeSynonymToAcceptedTaxonWithSecHandlingUseNewParentSec(){
@@ -1339,6 +1336,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon testTaxon = getTestTaxon();
         service.save(testTaxon).getUuid();
 
+
         //test
         Taxon speciesTaxon = (Taxon)service.find(SPECIES1_UUID);
         Iterator<TaxonDescription> descriptionIterator = speciesTaxon.getDescriptions().iterator();
@@ -1487,13 +1485,14 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/ClearDBDataSet.xml")
     public final void testDeleteTaxonDeleteSynonymRelations(){
 
-    	 final String[]tableNames = {
+    	final String[]tableNames = {
                  "Classification", "Classification_AUD",
                  "TaxonBase","TaxonBase_AUD",
                  "TaxonNode","TaxonNode_AUD",
                  "TaxonName","TaxonName_AUD"};
-    	 commitAndStartNewTransaction(tableNames);
-        //create a small classification
+    	commitAndStartNewTransaction(tableNames);
+
+    	//create a small classification
         Taxon testTaxon = getTestTaxon();
         service.save(testTaxon).getUuid();
         Taxon speciesTaxon = (Taxon)service.find(SPECIES2_UUID);
