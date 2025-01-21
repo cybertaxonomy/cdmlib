@@ -321,6 +321,7 @@ public class TaxonServiceImpl
         for (Synonym syn: synonyms){
             if (!syn.getName().equals(newTaxon.getName())){
                 newTaxon.addSynonym(syn, syn.getType());
+                save(syn);
             }
         }
 
@@ -366,7 +367,7 @@ public class TaxonServiceImpl
         }
 
         //synonym
-        Synonym newSynonym = oldSynonym.clone();
+        Synonym newSynonym = save(oldSynonym.clone());
         newSynonym.setName(taxonName);
         newSynonym.setPublish(oldAcceptedTaxon.isPublish());
         newSynonym.setSec(newSecSyn);
@@ -1265,8 +1266,8 @@ public class TaxonServiceImpl
                             node = null;
                         }
                         if (node != null){
-                            HibernateProxyHelper.deproxy(node, TaxonNode.class);
-                            success =taxon.removeTaxonNode(node, deleteChildren);
+                            HibernateProxyHelper.deproxy(node);
+                            success = taxon.removeTaxonNode(node, deleteChildren);
                             nodeService.delete(node);
                             result.addDeletedObject(node);
                         } else {

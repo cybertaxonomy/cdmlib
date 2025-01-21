@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
@@ -177,6 +178,9 @@ public abstract class TaxonTreeExportTestBase
 
     @SpringBeanByType
     protected ITaxonNodeService taxonNodeService;
+
+    @SpringBeanByType
+    protected ITaxonService taxonService;
 
     @SpringBeanByType
     protected INameService nameService;
@@ -386,12 +390,13 @@ public abstract class TaxonTreeExportTestBase
         addWfoIdentifier(basionymName, speciesBasionymWfoId);
         Synonym basionymSynonym = species.addBasionymSynonym(basionymName, species.getSec(), "67");
         basionymSynonym.setUuid(basionymSynonymUuid);
+        save(basionymSynonym);
 
         //heterotypic, illegal synonym
         TaxonName laterHomonymName = createParsedName(parser, "Pus illegitimus Late, The later book: 15. 1908", NomenclaturalCode.ICNAFP, Rank.SPECIES());
         addWfoIdentifier(laterHomonymName, "wfo-333888");
         @SuppressWarnings("unused")
-        Synonym laterHomonymSynonym = species.addHeterotypicSynonymName(laterHomonymName);
+        Synonym laterHomonymSynonym = save(species.addHeterotypicSynonymName(laterHomonymName));
 
         TaxonName earlierHomonymName = createParsedName(parser, "Pus illegitimus (Mus) Earl., The earlier book: 1. 1858", NomenclaturalCode.ICNAFP, Rank.SPECIES());
         earlierHomonymName.setUuid(earlierHomonymUuid);
@@ -418,6 +423,7 @@ public abstract class TaxonTreeExportTestBase
 
         Synonym synonymUnpublished = Synonym.NewInstance(synonymName, sec1);
         setUuid(synonymUnpublished, "a87c16b7-8299-4d56-a682-ce20973428ea");
+        save(synonymUnpublished);
         synonymUnpublished.setPublish(false);
         species.addHomotypicSynonym(synonymUnpublished);
 
@@ -554,6 +560,11 @@ public abstract class TaxonTreeExportTestBase
     private TaxonDescription save(TaxonDescription desc) {
         descriptionService.save(desc);
         return desc;
+    }
+
+    private Synonym save(Synonym syn) {
+        taxonService.save(syn);
+        return syn;
     }
 
     private Team createTeam(String title, String nomTitle) {

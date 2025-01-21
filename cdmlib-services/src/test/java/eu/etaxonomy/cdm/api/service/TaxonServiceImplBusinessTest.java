@@ -88,6 +88,7 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 
 		s2n = TaxonNameFactory.NewNonViralInstance(null);
 		s2 = Synonym.NewInstance(s2n, reference);
+		service.save(s2);
 
 		// referencing
 		homoTypicSynonymType = SynonymType.HOMOTYPIC_SYNONYM_OF;
@@ -239,7 +240,9 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 		assertTrue(synonymName.getTaxonBases().contains(newTaxon));
 
 		synonymName = s2.getName();
-        newTaxon = (Taxon)service.changeSynonymToRelatedTaxon(s2, t1, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), reference, referenceDetail).getCdmEntity();
+        newTaxon = (Taxon)service.changeSynonymToRelatedTaxon(
+                s2, t1, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), reference, referenceDetail)
+                .getCdmEntity();
         //check removeTaxonBase()
         //UUID s1UUID = service.update(s1);
         newTaxonUUID = service.save(newTaxon).getUuid();

@@ -538,6 +538,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 					logger.warn("Free text related taxon seems to be bug in TCS");
 					if (isSynonym){
 						result = Synonym.NewInstance(taxonName, TcsXmlImportBase.unknownSec(referenceMap));
+						getTaxonService().save(result);
 					}else{
 						result = Taxon.NewInstance(taxonName, TcsXmlImportBase.unknownSec(referenceMap));
 					}

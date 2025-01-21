@@ -481,7 +481,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         INonViralName t2n = TaxonNameFactory.NewNonViralInstance(null);
         Taxon t2 = Taxon.NewInstance(t2n, reference);
         INonViralName s1n = TaxonNameFactory.NewNonViralInstance(null);
-        Synonym s1 = Synonym.NewInstance(s1n, reference);
+        Synonym s1 = save(Synonym.NewInstance(s1n, reference));
         t1.addSynonym(s1, heteroTypicSynonymType);
         service.saveOrUpdate(t1);
 
@@ -923,6 +923,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     private Reference save(Reference ref) {
         referenceDao.save(ref);
         return ref;
+    }
+
+    private Synonym save(Synonym syn) {
+        service.save(syn);
+        return syn;
     }
 
     private <S extends DescriptionBase<?>> S save(S newDescription) {
@@ -2065,7 +2070,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         botSpecies4.setSpecificEpithet("gueri");
         botSpecies4.setCombinationAuthorship(deCandolle);
         botSpecies4.setUuid(SYNONYM_NAME_UUID);
-        Synonym homoSynonym = Synonym.NewInstance(botSpecies4, sec);
+        Synonym homoSynonym = save(Synonym.NewInstance(botSpecies4, sec));
 
         childTaxon.addSynonym(homoSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF);
         service.saveOrUpdate(childTaxon);
@@ -2092,6 +2097,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         botSpecies3.setUuid(SYNONYM2_NAME_UUID);
         Synonym heteroSynonym = Synonym.NewInstance(botSpecies3, sec);
         heteroSynonym.setUuid(SYNONYM2_UUID);
+        save(heteroSynonym);
         childTaxon2.addSynonym(heteroSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF);
         service.saveOrUpdate(childTaxon2);
         //missaplied Name for childTaxon2

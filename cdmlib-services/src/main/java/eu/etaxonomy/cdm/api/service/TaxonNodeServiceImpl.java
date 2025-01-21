@@ -326,7 +326,7 @@ public class TaxonNodeServiceImpl
         }
 
         //set homotypic group
-        TaxonName newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonName.class);
+        TaxonName newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName());
         newAcceptedTaxon.setName(newAcceptedTaxonName);
         Reference secNewAccepted = newAcceptedTaxon.getSec();
         Reference secOldAccepted = oldTaxon.getSec();
@@ -341,6 +341,7 @@ public class TaxonNodeServiceImpl
         }
 
         Synonym newSyn = newAcceptedTaxon.addSynonymName(newSynonymName, newSec, microReference, synonymType);
+        save(newSyn);
         if (newSec == null){
             newSyn.setSec(newSec);
         }
@@ -1436,6 +1437,11 @@ public class TaxonNodeServiceImpl
     @Override
     public List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid, String subTreeIndex) {
         return dao.getTaxonNodeDtosFromTaxon(taxonUuid, subTreeIndex);
+    }
+
+    private Synonym save(Synonym syn) {
+        taxonService.save(syn);
+        return syn;
     }
 
 }

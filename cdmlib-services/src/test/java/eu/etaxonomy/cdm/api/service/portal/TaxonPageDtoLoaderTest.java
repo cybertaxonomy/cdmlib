@@ -672,7 +672,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         TaxonName homSynName = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Genusnovus", null, "species", null, author2, nomRef2, "66", accName.getHomotypicalGroup());
         homSynName.setBasionymAuthorship(author);
-        Synonym homSyn = taxon.addHomotypicSynonymName(homSynName);
+        Synonym homSyn = save(taxon.addHomotypicSynonymName(homSynName));
         accName.addBasionym(homSynName);
         //... annotation
         homSyn.addAnnotation(Annotation.NewInstance("HomSyn Annotation", AnnotationType.EDITORIAL(), Language.DEFAULT()));
@@ -694,11 +694,11 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
                 "Genushetero", null, "hetero", null, author2, nomRef2, "99", null);
         Reference heteroSecRef = save(ReferenceFactory.newBook());
         heteroSecRef.setTitle("My hetero sec book");
-        taxon.addHeterotypicSynonymName(heteroSynName1, heteroSecRef, "48", null);
+        save(taxon.addHeterotypicSynonymName(heteroSynName1, heteroSecRef, "48", null));
 
         TaxonName heteroSynName1Recomb = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Newgenushetero", null, "hetero", null, author3, nomRef, "26", null);
-        taxon.addHeterotypicSynonymName(heteroSynName1Recomb, heteroSecRef, "49",heteroSynName1.getHomotypicalGroup());
+        save(taxon.addHeterotypicSynonymName(heteroSynName1Recomb, heteroSecRef, "49",heteroSynName1.getHomotypicalGroup()));
 
         //heterotyp. synonym group 2
         Reference nomRef3 = save(ReferenceFactory.newBook());
@@ -707,10 +707,10 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         TaxonName heteroSynName2 = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Second", null, "hetero", null, author2, nomRef3, "105", null);
-        taxon.addHeterotypicSynonymName(heteroSynName2, taxon.getSec(), taxon.getSecMicroReference(), null);
+        save(taxon.addHeterotypicSynonymName(heteroSynName2, taxon.getSec(), taxon.getSecMicroReference(), null));
         TaxonName heteroSynName2Recomb = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Newsecond", null, "hetero", null, author2, nomRef3, "105", null);
-        taxon.addHeterotypicSynonymName(heteroSynName2Recomb, null, null, heteroSynName2.getHomotypicalGroup());
+        save(taxon.addHeterotypicSynonymName(heteroSynName2Recomb, null, null, heteroSynName2.getHomotypicalGroup()));
 
         //heterotyp. synonym group 3
         Reference nomRef4 = save(ReferenceFactory.newBook());
@@ -719,10 +719,10 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         TaxonName heteroSynName3 = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Third", null, "hetero", null, author2, nomRef4, "305", null);
-        taxon.addHeterotypicSynonymName(heteroSynName3, nomRef4, null, null);
+        save(taxon.addHeterotypicSynonymName(heteroSynName3, nomRef4, null, null));
         TaxonName heteroSynName3Recomb = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Newthird", null, "hetero", null, author2, nomRef4, "308", null);
-        taxon.addHeterotypicSynonymName(heteroSynName3Recomb, nomRef4, "33", heteroSynName3.getHomotypicalGroup());
+        save(taxon.addHeterotypicSynonymName(heteroSynName3Recomb, nomRef4, "33", heteroSynName3.getHomotypicalGroup()));
 
         return taxon;
     }
@@ -889,6 +889,11 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     private Reference save(Reference ref) {
         this.referenceDao.save(ref);
         return ref;
+    }
+
+    private Synonym save(Synonym syn) {
+        taxonService.save(syn);
+        return syn;
     }
 
     private void createTermTrees() {

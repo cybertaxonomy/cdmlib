@@ -328,7 +328,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
             //homotypic synonym
             TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Pinus", null, "alba", null, null, null, null, null);
-            taxon.addHomotypicSynonymName(name2);
+            save(taxon.addHomotypicSynonymName(name2));
 
             //heterotypic group
             TaxonName name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Abies", null, "pinus", null, null, null, null, null);
@@ -336,9 +336,9 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             heteroSyn1.setUuid(uuid_hetero_syn_1);
 
             TaxonName name4 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Pinus", null, "pinus", null, null, null, null, null);
-            taxon.addHeterotypicSynonymName(name4, sec, null, name3.getHomotypicalGroup());
+            save(taxon.addHeterotypicSynonymName(name4, sec, null, name3.getHomotypicalGroup()));
 
-            taxonDao.save(taxon);
+            taxonDao.save(taxon, heteroSyn1);
             taxonDao.save(fieldUnitTaxon);
 
             //create associated derived units
@@ -434,6 +434,11 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
     private <S extends DescriptionBase<?>> S save(S newDescription) {
         descriptionDao.save(newDescription);
         return newDescription;
+    }
+
+    private Synonym save(Synonym synonym) {
+        taxonDao.save(synonym);
+        return synonym;
     }
 
     @Override
