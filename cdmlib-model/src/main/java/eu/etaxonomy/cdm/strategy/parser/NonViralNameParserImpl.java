@@ -89,6 +89,58 @@ public class NonViralNameParserImpl
         return new NonViralNameParserImpl();
     }
 
+//***************************** STATIC ******************************************/
+
+    public static Set<CdmBase> getTransientEntitiesOfParsedName(TaxonName parsedName) {
+        Set<CdmBase> transientEntities = new HashSet<>();
+        if (parsedName.isPersisted()) {
+            return transientEntities;
+        } else {
+            //authors
+            parsedName.allAuthors()
+                  .forEach(a->fillTransientEntitiesOfAuthor(a, transientEntities));
+            //reference
+            fillTransientEntitiesOfReference(parsedName.getNomenclaturalReference(), transientEntities);
+            //names
+            //hybrid parents
+            parsedName.getHybridChildRelations().stream().map(rel->rel.getParentName())
+                .forEach(n->fillTransientEntitiesOfName(n, transientEntities));
+            //original comb.
+            fillTransientEntitiesOfName(parsedName.getOriginalSpelling(), transientEntities);
+        }
+        return transientEntities;
+    }
+
+    private static void fillTransientEntitiesOfName(TaxonName n, Set<CdmBase> transientEntities) {
+        if (!n.isPersisted()) {
+            transientEntities.add(n);
+        }
+        transientEntities.addAll(getTransientEntitiesOfParsedName(n)); //only necessary for possibly existing authors of hybrid parent
+    }
+
+    private static void fillTransientEntitiesOfReference(Reference ref,
+            Set<CdmBase> transientEntities) {
+        if (ref != null && !ref.isPersisted()) {
+            transientEntities.add(ref);
+            fillTransientEntitiesOfReference(ref.getInReference(), transientEntities);
+            fillTransientEntitiesOfAuthor(ref.getAuthorship(), transientEntities);
+        }
+    }
+
+    private static void fillTransientEntitiesOfAuthor(TeamOrPersonBase<?> author, Set<CdmBase> transientEntities){
+        if (!author.isPersisted()) {
+            transientEntities.add(author);
+        }
+        if (author.isInstanceOf(Team.class)) {
+            CdmBase.deproxy(author, Team.class).getTeamMembers()
+                .forEach(m->{if (!m.isPersisted()) {
+                    transientEntities.add(m);
+                }});
+        }
+    }
+
+//***********************************************************************************/
+
 	@Override
     public INonViralName parseSimpleName(String simpleName){
 		return parseSimpleName(simpleName, null, null);

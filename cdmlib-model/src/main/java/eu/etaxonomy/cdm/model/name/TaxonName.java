@@ -3355,6 +3355,21 @@ public class TaxonName
         }
     }
 
+    /**
+     * @return all authors of this name. This includes the 2 combination authors,
+     *         the 2 basionym authors and the 2 in-authors
+     */
+    public Set<TeamOrPersonBase> allAuthors() {
+        Set<TeamOrPersonBase> result = new HashSet<>();
+        result.add(this.combinationAuthorship);
+        result.add(this.exCombinationAuthorship);
+        result.add(this.basionymAuthorship);
+        result.add(this.exBasionymAuthorship);
+        result.add(this.inCombinationAuthorship);
+        result.add(this.inBasionymAuthorship);
+        result.remove(null);
+        return result;
+    }
 
     /**
      * Defines the last part of the name.

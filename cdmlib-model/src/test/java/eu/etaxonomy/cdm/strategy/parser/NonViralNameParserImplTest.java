@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.compare.name.NomenclaturalStatusTypeComparator;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -136,6 +138,43 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals("1 name + 7 persons + 3 teams" , 11, result.getAllEntities().size());
     }
 
+    @Test
+    public final void testGetTransientEntitiesOfParsedName(){
+        String fullReference = "Abies alba Exmill ex Mill. & Mall. in Otto, Sp. Pl. 4(6): 455. 1987";
+        INonViralName name = parser.parseReferencedName(fullReference + ".", null, Rank.SPECIES());
+
+        Set<CdmBase> transientEntities = NonViralNameParserImpl.getTransientEntitiesOfParsedName((TaxonName)name);
+        Assert.assertTrue(transientEntities.contains(name.getCombinationAuthorship()));
+        Assert.assertTrue(transientEntities.contains(((Team)name.getCombinationAuthorship()).getTeamMembers().get(1)));
+                Assert.assertTrue(transientEntities.contains(name.getExCombinationAuthorship()));
+        Assert.assertTrue(transientEntities.contains(name.getNomenclaturalReference()));
+        Assert.assertTrue(transientEntities.contains(name.getNomenclaturalReference().getAuthorship()));
+        Assert.assertTrue(transientEntities.contains(name.getNomenclaturalReference().getInReference()));
+
+        //.. with persisted entities
+        name.getCombinationAuthorship().setId(2); //make comb. author persisted
+        transientEntities = NonViralNameParserImpl.getTransientEntitiesOfParsedName((TaxonName)name);
+        Assert.assertFalse(transientEntities.contains(name.getCombinationAuthorship()));
+        Assert.assertFalse("As the combination author team is persistent the team members should not be checked further, therefore they should not be returned as transient",
+                transientEntities.contains(((Team)name.getCombinationAuthorship()).getTeamMembers().get(1)));
+
+
+        //hybrid formulas
+        name = parser.parseFullName("Abies alba L. \u00D7 Pinus bus Mill.", botanicCode, null);
+        transientEntities = NonViralNameParserImpl.getTransientEntitiesOfParsedName((TaxonName)name);
+        TaxonName aParent = name.getHybridChildRelations().iterator().next().getParentName();
+        Assert.assertTrue(transientEntities.contains(aParent));
+        Assert.assertTrue(transientEntities.contains(aParent.getCombinationAuthorship()));
+
+        //original spelling
+        fullReference = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"alpa\"]";
+        name = parser.parseReferencedName(fullReference + ".", null, Rank.SPECIES());
+        transientEntities = NonViralNameParserImpl.getTransientEntitiesOfParsedName((TaxonName)name);
+        Assert.assertTrue(transientEntities.contains(name.getOriginalSpelling()));
+
+
+
+    }
 
     @Test
     public final void testParseSimpleName() {
