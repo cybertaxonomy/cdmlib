@@ -93,9 +93,7 @@ public class NonViralNameParserImpl
 
     public static Set<CdmBase> getTransientEntitiesOfParsedName(TaxonName parsedName) {
         Set<CdmBase> transientEntities = new HashSet<>();
-        if (parsedName.isPersisted()) {
-            return transientEntities;
-        } else {
+        if (parsedName != null && !parsedName.isPersisted()) {
             //authors
             parsedName.allAuthors()
                   .forEach(a->fillTransientEntitiesOfAuthor(a, transientEntities));
@@ -112,10 +110,10 @@ public class NonViralNameParserImpl
     }
 
     private static void fillTransientEntitiesOfName(TaxonName n, Set<CdmBase> transientEntities) {
-        if (!n.isPersisted()) {
+        if (n != null && !n.isPersisted()) {
             transientEntities.add(n);
+            transientEntities.addAll(getTransientEntitiesOfParsedName(n)); //only necessary for possibly existing authors of hybrid parent
         }
-        transientEntities.addAll(getTransientEntitiesOfParsedName(n)); //only necessary for possibly existing authors of hybrid parent
     }
 
     private static void fillTransientEntitiesOfReference(Reference ref,
@@ -128,14 +126,14 @@ public class NonViralNameParserImpl
     }
 
     private static void fillTransientEntitiesOfAuthor(TeamOrPersonBase<?> author, Set<CdmBase> transientEntities){
-        if (!author.isPersisted()) {
+        if (author != null && !author.isPersisted()) {
             transientEntities.add(author);
-        }
-        if (author.isInstanceOf(Team.class)) {
-            CdmBase.deproxy(author, Team.class).getTeamMembers()
+            if (author.isInstanceOf(Team.class)) {
+                CdmBase.deproxy(author, Team.class).getTeamMembers()
                 .forEach(m->{if (!m.isPersisted()) {
                     transientEntities.add(m);
                 }});
+            }
         }
     }
 
