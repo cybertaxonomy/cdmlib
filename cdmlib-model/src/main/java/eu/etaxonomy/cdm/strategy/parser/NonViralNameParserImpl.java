@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.parser;
 
 import java.util.HashSet;
@@ -50,7 +49,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
-
 /**
  * Parser for {@link TaxonName}s of type NonViralName and below.
  *
@@ -71,6 +69,8 @@ public class NonViralNameParserImpl
 	private boolean removeSpaceAfterDot = false;
 
 	private static NonViralNameParserImpl defaultInstance;
+
+//*********************** FACTORY ********************************************/
 
     public static final NonViralNameParserImpl DefaultInstance(){
         if (defaultInstance == null) {
@@ -1853,4 +1853,5 @@ public class NonViralNameParserImpl
     private boolean isBlank(String str){
         return StringUtils.isBlank(str);
     }
+
 }
