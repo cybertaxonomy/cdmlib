@@ -75,7 +75,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptionBase", propOrder = {
-    "describedSpecimenOrObservation",
     "descriptionSources",
     "descriptiveDataSets",
     "descriptionElements",

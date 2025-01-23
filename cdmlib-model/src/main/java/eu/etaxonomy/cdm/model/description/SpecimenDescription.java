@@ -42,7 +42,9 @@ import eu.etaxonomy.cdm.strategy.cache.description.SpecimenDescriptionDefaultCac
  * @since 08-Jul-2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SpecimenDescription")
+@XmlType(name = "SpecimenDescription", propOrder = {
+        "describedSpecimenOrObservation"
+})
 @XmlRootElement(name = "SpecimenDescription")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
