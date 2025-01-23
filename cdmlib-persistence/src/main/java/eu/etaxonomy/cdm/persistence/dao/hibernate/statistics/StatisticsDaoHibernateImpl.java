@@ -246,15 +246,6 @@ public class StatisticsDaoHibernateImpl
 										// possible???
 				+ "and sy.name is not null ");
 
-		// SpecimenOrObservationBase description elements:
-		// 1. via determinations
-		queryStrings.add("select distinct " + selection
-				+ "from DescriptionBase d, TaxonNode tn "
-				+ "join d.describedSpecimenOrObservation as so "
-				+ "join so.determinations as det " + sourceRefJoins
-				+ "where tn.classification=:classification "
-				+ "and tn.taxon=det.taxon " + sourceRefWhere);
-
 		// 2. via derived units in taxon description
 		// already done with the taxon/synonym descriptions
 
@@ -528,21 +519,6 @@ public class StatisticsDaoHibernateImpl
 				+ "WHERE tn.classification=:classification "
 				+ "  AND tn.taxon IS NOT NULL "
 				+ "  AND tn.taxon.name IS NOT NULL ");
-
-		// get sequences which contain citations and publishedIn ------
-		// and contain "Media" which could be of the subtype
-		// "ReferencedMediaBase"
-		// which has a citation
-
-		queryStrings.add("SELECT DISTINCT cit.uuid "
-		        + "FROM TaxonNode tn "
-				+ "  JOIN tn.taxon.descriptions as db "
-				+ "  JOIN db.describedSpecimenOrObservation as so "
-				+ "  JOIN so.sequences as seq "
-				+ "  JOIN seq.citations as cit "
-				+ "WHERE so.class=:dnaSample "
-				+ "  AND tn.classification=:classification "
-				+ "  AND cit IS NOT NULL ");
 
 		// traverse to specimenOrObservation via individualsAssociation
 
@@ -908,22 +884,6 @@ public class StatisticsDaoHibernateImpl
 				+ " and sy is not null " // TODO: is this case actually
 										// possible???
 				+ " and sy.name is not null ");
-
-		// get sequences which contain citations and publishedIn ------
-		// and contain "Media" which could be of the subtype
-		// "ReferencedMediaBase"
-		// which has a citation
-
-		queryStrings.add("SELECT COUNT(DISTINCT cit.id) "
-		        + "from TaxonNode tn "
-				+ "join tn.taxon.descriptions as db "
-
-				+ "join db.describedSpecimenOrObservation as so "
-				+ "join so.sequences as seq "
-				+ "join seq.citations as cit "
-				+ "where so.class=:dnaSample "
-				+ " and tn.classification=:classification "
-				+ " and cit is not null ");
 
 		// traverse to specimenOrObservation via individualsAssociation
 
