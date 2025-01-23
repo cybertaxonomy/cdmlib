@@ -633,15 +633,9 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         td.addElement(textData);
     }
 
-    /**
-     * @param acceptedTaxon
-     * @param refMods
-     * @param td
-     * @param soo
-     */
     private void handleAssociation(Taxon acceptedTaxon, Reference refMods, TaxonDescription td, MySpecimenOrObservation soo) {
         logger.info("handleAssociation");
-        String descr=soo.getDescr();
+        String descr = soo.getDescr();
         DerivedUnit derivedUnitBase = soo.getDerivedUnitBase();
 
         sourceHandler.addAndSaveSource(refMods, derivedUnitBase);

@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -323,7 +324,7 @@ public class DescriptionServiceImpl
         UpdateResult result = new UpdateResult();
         DescriptiveDataSet dataSet = descriptiveDataSetDao.load(descriptiveDataSetUuid);
         Set<DescriptionBase> descriptionsOfDataSet = dataSet.getDescriptions();
-        HashMap<UUID, Set<DescriptionBase>> descriptionSpecimenMap = new HashMap<>();
+        Map<UUID, Set<DescriptionBase>> descriptionSpecimenMap = new HashMap<>();
         Set<DescriptionBase> specimenDescriptions;
         for (DescriptionBase<?> descriptionBase: descriptionsOfDataSet){
             if (descriptionBase.isInstanceOf(SpecimenDescription.class)){
