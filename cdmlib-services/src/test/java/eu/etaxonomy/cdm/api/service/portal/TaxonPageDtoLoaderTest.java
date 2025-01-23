@@ -68,6 +68,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -102,6 +103,7 @@ import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
@@ -147,6 +149,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IDescriptionDao descriptionDao;
+
+    @SpringBeanByType
+    private IDescriptionElementDao descriptionElementDao;
 
     @SpringBeanByType
     private ITermService termService;
@@ -740,7 +745,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //distributions
         Country.GERMANY().setSymbol("De");
         PresenceAbsenceTerm.PRESENT().setSymbol("");
-        Distribution germany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT());
+        Distribution germany = save(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT()));
         germany.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Editorial Annotation"));
         germany.addAnnotation(Annotation.NewInstance("Technical Annotation", AnnotationType.INTERNAL(), Language.DEFAULT()));
         germany.addAnnotation(Annotation.NewInstance("Missing Type Annotation", null, Language.DEFAULT()));
@@ -756,7 +761,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         Country.FRANCE().setSymbol("Fr");
 //        PresenceAbsenceTerm.INTRODUCED().setSymbol("i");
-        Distribution franceDist = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
+        Distribution franceDist = save(Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE()));
         markedFactSet.addElement(franceDist);
 
         //... sources
@@ -782,14 +787,15 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //text facts
         //data
-        TextData td1 = TextData.NewInstance(Feature.DESCRIPTION(), "My first description", Language.DEFAULT(), null);
-        TextData td2 = TextData.NewInstance(Feature.DESCRIPTION(), "My second description", Language.DEFAULT(), null);
-        TextData td3 = TextData.NewInstance(Feature.DESCRIPTION(), "My third description", Language.DEFAULT(), null);
+        TextData td1 = save(TextData.NewInstance(Feature.DESCRIPTION(), "My first description", Language.DEFAULT(), null));
+        TextData td2 = save(TextData.NewInstance(Feature.DESCRIPTION(), "My second description", Language.DEFAULT(), null));
+        TextData td3 = save(TextData.NewInstance(Feature.DESCRIPTION(), "My third description", Language.DEFAULT(), null));
         td3.setSortIndex(2);
         td3.addPrimaryTaxonomicSource(franceRef, "63");
         TextData td4 = TextData.NewInstance(Feature.DESCRIPTION(), "My fourth description", Language.DEFAULT(), null);
         td4.setSortIndex(1);
         td4.setUuid(td4Uuid);
+        save(td4);
         factSet1.addElements(td1, td2, td3);
         markedFactSet.addElements(td4);
         //... with media
@@ -805,15 +811,15 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         td3.addMedia(media2);
 
         //empty text
-        TextData emptyTd = TextData.NewInstance(Feature.DISCUSSION(), "", Language.DEFAULT(), null);
+        TextData emptyTd = save(TextData.NewInstance(Feature.DISCUSSION(), "", Language.DEFAULT(), null));
         factSet1.addElements(emptyTd);
         //annotation
         factSet1.addAnnotation(Annotation.NewInstance("Missing Type Annotation for empty", null, Language.DEFAULT()));
         factSet1.addMarker(MarkerType.IS_DOUBTFUL(), true);
 
         //common names
-        CommonTaxonName cn1 = CommonTaxonName.NewInstance("My flower", Language.ENGLISH(), Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND());
-        CommonTaxonName cn2 = CommonTaxonName.NewInstance("Meine Blume", Language.GERMAN(), Country.GERMANY());
+        CommonTaxonName cn1 = save(CommonTaxonName.NewInstance("My flower", Language.ENGLISH(), Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND()));
+        CommonTaxonName cn2 = save(CommonTaxonName.NewInstance("Meine Blume", Language.GERMAN(), Country.GERMANY()));
         factSet1.addElements(cn1);
         TaxonDescription taxDesc2 = save(TaxonDescription.NewInstance(taxon));
         taxDesc2.addElement(cn2);
@@ -823,10 +829,10 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         taxDesc2.addPrimaryTaxonomicSource(descRef, "91");
 
         //temporal data
-        TemporalData temporalData1 = TemporalData.NewInstance(Feature.FLOWERING_PERIOD(),
-                ExtendedTimePeriod.NewExtendedMonthAndDayInstance(4, 15, 6, 30, 3, 10, 7, 20));
-        TemporalData temporalData2 = TemporalData.NewInstance(Feature.FLOWERING_PERIOD(),
-                ExtendedTimePeriod.NewExtendedMonthAndDayInstance(5, 1, 6, 15, 4, 1, 7, 1));
+        TemporalData temporalData1 = save(TemporalData.NewInstance(Feature.FLOWERING_PERIOD(),
+                ExtendedTimePeriod.NewExtendedMonthAndDayInstance(4, 15, 6, 30, 3, 10, 7, 20)));
+        TemporalData temporalData2 = save(TemporalData.NewInstance(Feature.FLOWERING_PERIOD(),
+                ExtendedTimePeriod.NewExtendedMonthAndDayInstance(5, 1, 6, 15, 4, 1, 7, 1)));
         factSet1.addElements(temporalData1, temporalData2);
 
         //individual association
@@ -834,7 +840,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         specimen1.setTitleCache("My specimen", true);
         specimen1.setUuid(specimenUuid1);
         occurrenceService.save(specimen1);
-        IndividualsAssociation indAss1 = IndividualsAssociation.NewInstance(specimen1);
+        IndividualsAssociation indAss1 = save(IndividualsAssociation.NewInstance(specimen1));
         indAss1.putDescription(Language.DEFAULT(), "Associated specimen description1");
         indAss1.setFeature(Feature.MATERIALS_EXAMINED());
 
@@ -842,7 +848,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         specimen2.setTitleCache("My specimen2", true);
         specimen2.setUuid(specimenUuid2);
         occurrenceService.save(specimen2);
-        IndividualsAssociation indAss2 = IndividualsAssociation.NewInstance(specimen2);
+        IndividualsAssociation indAss2 = save(IndividualsAssociation.NewInstance(specimen2));
         indAss2.putDescription(Language.DEFAULT(), "Associated specimen description2");
         indAss2.setFeature(Feature.MATERIALS_EXAMINED());
 
@@ -852,7 +858,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Taxon taxon1 = Taxon.NewInstance(taxon.getName(), taxon.getSec());
         taxon1.setUuid(taxonUuid1);
         taxonService.save(taxon1);
-        TaxonInteraction taxInteract1 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
+        TaxonInteraction taxInteract1 = save(TaxonInteraction.NewInstance(Feature.HOSTPLANT()));
         taxInteract1.setTaxon2(taxon1);
         taxInteract1.putDescription(Language.DEFAULT(), "Taxon interaction description1");
 
@@ -861,7 +867,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Taxon taxon2 = Taxon.NewInstance(name2, taxon.getSec());
         taxon2.setUuid(taxonUuid2);
         taxonService.save(taxon2);
-        TaxonInteraction taxInteract2 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
+        TaxonInteraction taxInteract2 = save(TaxonInteraction.NewInstance(Feature.HOSTPLANT()));
         taxInteract2.setTaxon2(taxon2);
         taxInteract2.putDescription(Language.DEFAULT(), "Taxon interaction description2");
 
@@ -870,7 +876,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //categorical data
         State state1 = State.NewInstance("State1", "State1", null);
         termService.save(state1);
-        CategoricalData cd = CategoricalData.NewInstance(state1, Feature.LIFEFORM());
+        CategoricalData cd = save(CategoricalData.NewInstance(state1, Feature.LIFEFORM()));
         StateData stateData = cd.getStateData().get(0);
         stateData.putModifyingText(Language.DEFAULT(), "State modifying");
         cd.putModifyingText(Language.DEFAULT(), "Fact modifying");
@@ -878,8 +884,8 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //quantitative data
         Feature feature = Feature.INTRODUCTION();
-        QuantitativeData qd = QuantitativeData.NewMinMaxInstance(feature,
-                MeasurementUnit.METER(), new BigDecimal(5), new BigDecimal(10));
+        QuantitativeData qd = save(QuantitativeData.NewMinMaxInstance(feature,
+                MeasurementUnit.METER(), new BigDecimal(5), new BigDecimal(10)));
         factSet1.addElements(qd);
 
         //use data
@@ -932,6 +938,11 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     private <S extends DescriptionBase<?>> S save(S newDescription) {
         descriptionDao.save(newDescription);
         return newDescription;
+    }
+
+    private <S extends DescriptionElementBase> S save(S newElement) {
+        descriptionElementDao.save(newElement);
+        return newElement;
     }
 
     @Override

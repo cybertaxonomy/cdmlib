@@ -73,6 +73,8 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -131,7 +133,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     private IDescriptionService descriptionService;
 
     @SpringBeanByType
-    private IDescriptionService descriptionDao;
+    private IDescriptionDao descriptionDao;
+
+    @SpringBeanByType
+    private IDescriptionElementDao descriptionElementDao;
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -840,7 +845,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private void addQuantitativeData(DescriptionBase<?> desc, UUID uuidFeature, StatisticalMeasure type, BigDecimal value) {
         Feature feature = (Feature)termService.find(uuidFeature);
-        QuantitativeData qd = QuantitativeData.NewInstance(feature);
+        QuantitativeData qd = save(QuantitativeData.NewInstance(feature));
         StatisticalMeasurementValue smv = StatisticalMeasurementValue.NewInstance(type, value);
         qd.addStatisticalValue(smv);
         Assert.assertNotNull(MeasurementUnit.METER());
@@ -850,7 +855,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private void addQuantitativeData(DescriptionBase<?> desc, UUID uuidFeature, BigDecimal min, BigDecimal max) {
         Feature feature = (Feature)termService.find(uuidFeature);
-        QuantitativeData qd = QuantitativeData.NewInstance(feature);
+        QuantitativeData qd = save(QuantitativeData.NewInstance(feature));
         StatisticalMeasurementValue smv = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MIN(), min);
         qd.addStatisticalValue(smv);
         smv = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MAX(), max);
@@ -861,7 +866,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     private void addCategoricalData(DescriptionBase<?> desc, UUID featureUuid, UUID stateUUID) {
         Feature feature = (Feature)termService.find(featureUuid);
         DefinedTermBase<?> state = termService.find(stateUUID);
-        CategoricalData cd = CategoricalData.NewInstance(state, feature);
+        CategoricalData cd = save(CategoricalData.NewInstance(state, feature));
         desc.addElement(cd);
     }
 
@@ -883,7 +888,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
                 return td;}
              );
 
-        IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance(specimen);
+        IndividualsAssociation individualsAssociation = save(IndividualsAssociation.NewInstance(specimen));
         // TODO this has to be discussed; currently the description with the InidividualsAssociation is
         // needed in the dataset for performance reasons
         taxonDescription.addElement(individualsAssociation);
@@ -958,6 +963,11 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     private <S extends DescriptionBase<?>> S save(S newDescription) {
         descriptionDao.save(newDescription);
         return newDescription;
+    }
+
+    private <T extends DescriptionElementBase> T save(T newInstance) {
+        descriptionElementDao.save(newInstance);
+        return newInstance;
     }
 
 //    @Test
