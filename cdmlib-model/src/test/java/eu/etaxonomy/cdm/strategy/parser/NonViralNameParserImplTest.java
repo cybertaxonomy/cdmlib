@@ -152,11 +152,14 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertTrue(transientEntities.contains(name.getNomenclaturalReference().getInReference()));
 
         //.. with persisted entities
+        name.setId(3);  //this should not change anything as name can be persisted when passed to the parser (TaxEditor usecase)
         name.getCombinationAuthorship().setId(2); //make comb. author persisted
         transientEntities = NonViralNameParserImpl.getTransientEntitiesOfParsedName((TaxonName)name);
         Assert.assertFalse(transientEntities.contains(name.getCombinationAuthorship()));
         Assert.assertFalse("As the combination author team is persistent the team members should not be checked further, therefore they should not be returned as transient",
                 transientEntities.contains(((Team)name.getCombinationAuthorship()).getTeamMembers().get(1)));
+        Assert.assertTrue("Even if name is persisted related entities may be transient",
+                transientEntities.contains(name.getNomenclaturalReference()));
 
 
         //hybrid formulas
