@@ -393,20 +393,21 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             dao.save(fieldUnit3);
             dao.save(fu4);
 
-            //*** Add assoziations ****
+            //*** Add associations ****
 
             //du_indAss is added as indiv. association
             TaxonDescription td = save(TaxonDescription.NewInstance(taxon));
             IndividualsAssociation ia = save(IndividualsAssociation.NewInstance(du_indAss));
             td.addElement(ia);
 
-            //du_determination is assoziated as determination
+            //du_determination is associated as determination
             DeterminationEvent.NewInstance(taxon, du_determination);
 
-            //fieldUnit3 is assoziated with name3 (first heterotypic synonym) as current determination
+            //fieldUnit3 is associated with name3 (first heterotypic synonym) as current determination
             DeterminationEvent de = DeterminationEvent.NewInstance(heteroSyn1.getName(), fieldUnit3);
             de.setPreferredFlag(true);
 
+            //type designations
             //du_accType is added as type designation for the accepted taxon
             SpecimenTypeDesignation std1 = name1.addSpecimenTypeDesignation(du_accType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
