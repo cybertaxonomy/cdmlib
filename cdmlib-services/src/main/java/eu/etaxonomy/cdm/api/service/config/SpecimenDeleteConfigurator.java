@@ -80,13 +80,6 @@ public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
         this.deleteFromIndividualsAssociation = deleteFromIndividualsAssociation;
     }
 
-    public boolean isDeleteFromDescription() {
-        return deleteFromDescription;
-    }
-    public void setDeleteFromDescription(boolean deleteFromDescription) {
-        this.deleteFromDescription = deleteFromDescription;
-    }
-
     public boolean isDeleteMolecularData() {
         return isDeleteMolecularData;
     }

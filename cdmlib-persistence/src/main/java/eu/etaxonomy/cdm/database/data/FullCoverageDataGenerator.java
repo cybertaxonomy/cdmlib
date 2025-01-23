@@ -419,9 +419,6 @@ public class FullCoverageDataGenerator {
 		taxonDescription.addElements(categoricalData, quantitativeData,
 				textData, commonTaxonName, taxonInteraction, indAssoc, distribution, temporalData);
 
-		DerivedUnit describedSpecimenOrObservation = createNewSpecimen(entitiesToSave);
-		taxonDescription.setDescribedSpecimenOrObservation(describedSpecimenOrObservation);
-
 		taxonDescription.addScope(DefinedTerm.SEX_FEMALE());
 		taxonDescription.addGeoScope(Country.GERMANY());
 		handleIdentifiableEntity(taxonDescription, entitiesToSave);

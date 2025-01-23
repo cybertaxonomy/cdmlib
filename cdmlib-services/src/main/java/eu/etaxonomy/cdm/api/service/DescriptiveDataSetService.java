@@ -612,7 +612,7 @@ public class DescriptiveDataSetService
                     .collect(Collectors.toSet());
 
             for (IndividualsAssociation individualsAssociation : associations) {
-                if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(description.getDescribedSpecimenOrObservation())){
+                if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(((SpecimenDescription)description).getDescribedSpecimenOrObservation())){
                     dataSet.removeDescription(individualsAssociation.getInDescription());
                     result.addUpdatedObject(individualsAssociation.getInDescription());
                 }

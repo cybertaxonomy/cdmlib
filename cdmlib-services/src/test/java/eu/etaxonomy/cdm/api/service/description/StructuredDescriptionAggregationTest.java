@@ -217,7 +217,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private void addNewFeature() {
         SpecimenOrObservationBase<?> spec1 = occurrenceService.find(T_LAPSANA_COMMUNIS_ADENOPHORA_SPEC1_UUID);
-        SpecimenDescription specimenDescription = (SpecimenDescription)spec1.getDescriptions().stream()
+        SpecimenDescription specimenDescription = spec1.getDescriptions().stream()
                 .filter(desc->!desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
                 .filter(desc->!desc.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))
                 .findFirst().get();
@@ -265,7 +265,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private void removeSomeDataFromFirstAggregation() {
         SpecimenOrObservationBase<?> spec3 = occurrenceService.find(T_LAPSANA_COMMUNIS_ALPINA_SPEC3_UUID);
-        DescriptionBase<?> spec3Desc = spec3.getDescriptions().stream()
+        SpecimenDescription spec3Desc = spec3.getDescriptions().stream()
                 .filter(desc->!desc.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))
                 .findFirst().get();
 
@@ -683,8 +683,9 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
     private static Function<DescriptionBase<?>, UUID> fDescToDescribedUuid =
-            ((Function<DescriptionBase<?>, IDescribable<?>>)(d->d.isInstanceOf(SpecimenDescription.class)? d.getDescribedSpecimenOrObservation(): CdmBase.deproxy(d, TaxonDescription.class).getTaxon()))
-            .andThen(IDescribable::getUuid);
+            ((Function<DescriptionBase<?>, IDescribable<?>>)(d->
+                d.isInstanceOf(SpecimenDescription.class)? CdmBase.deproxy(d, SpecimenDescription.class).getDescribedSpecimenOrObservation(): CdmBase.deproxy(d, TaxonDescription.class).getTaxon()))
+                .andThen(IDescribable::getUuid);
 
     //a map of the taxon to the attached taxon (source link)
     private Map<UUID, List<Taxon>> getSourceTaxonMap(TaxonDescription desc) {

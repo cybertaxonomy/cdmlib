@@ -326,13 +326,14 @@ public class DescriptionServiceImpl
         HashMap<UUID, Set<DescriptionBase>> descriptionSpecimenMap = new HashMap<>();
         Set<DescriptionBase> specimenDescriptions;
         for (DescriptionBase<?> descriptionBase: descriptionsOfDataSet){
-            if (descriptionBase.getDescribedSpecimenOrObservation() != null){
-                specimenDescriptions = descriptionSpecimenMap.get(descriptionBase.getDescribedSpecimenOrObservation().getUuid());
+            if (descriptionBase.isInstanceOf(SpecimenDescription.class)){
+                SpecimenDescription specimenDescription = CdmBase.deproxy(descriptionBase, SpecimenDescription.class);
+                specimenDescriptions = descriptionSpecimenMap.get(specimenDescription.getDescribedSpecimenOrObservation().getUuid());
                 if (specimenDescriptions == null){
                     specimenDescriptions = new HashSet<>();
                 }
-                specimenDescriptions.add(descriptionBase);
-                descriptionSpecimenMap.put(descriptionBase.getDescribedSpecimenOrObservation().getUuid(), specimenDescriptions);
+                specimenDescriptions.add(specimenDescription);
+                descriptionSpecimenMap.put(specimenDescription.getDescribedSpecimenOrObservation().getUuid(), specimenDescriptions);
             }
             if (descriptionBase instanceof TaxonDescription){
                 specimenDescriptions = descriptionSpecimenMap.get(((TaxonDescription)descriptionBase).getTaxon().getUuid());
@@ -390,7 +391,7 @@ public class DescriptionServiceImpl
                     UUID descElementUuid = elementBase.getUuid();
                     if (descElementUuid != null){
                         List<DescriptionElementDto> equalUuidsElements = elements.stream().filter( e -> e != null && e.getElementUuid() != null && e.getElementUuid().equals(descElementUuid)).collect(Collectors.toList());
-                        if (equalUuidsElements.size() == 0 || (equalUuidsElements.size() == 1 && equalUuidsElements.get(0)instanceof QuantitativeDataDto && (((QuantitativeDataDto)equalUuidsElements.get(0)).getValues().isEmpty()) &&(((QuantitativeDataDto)equalUuidsElements.get(0)).getNoDataStatus() == null))){
+                        if (equalUuidsElements.size() == 0 || (equalUuidsElements.size() == 1 && equalUuidsElements.get(0)instanceof QuantitativeDataDto && (((QuantitativeDataDto)equalUuidsElements.get(0)).getValues().isEmpty()) &&(equalUuidsElements.get(0).getNoDataStatus() == null))){
                             removeElements.add(elementBase);
                         }
                     }

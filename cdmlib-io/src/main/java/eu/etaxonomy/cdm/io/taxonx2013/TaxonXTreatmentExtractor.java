@@ -659,7 +659,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         taxonDescription.addElement(indAssociation);
         sourceHandler.addAndSaveSource(refMods, taxonDescription,null);
         importer.getTaxonService().saveOrUpdate(acceptedTaxon);
-        td.setDescribedSpecimenOrObservation(soo.getDerivedUnitBase());
+        //removed for #10669 - not checked if this could create any issues
+        //td.setDescribedSpecimenOrObservation(soo.getDerivedUnitBase());
     }
 
     /**

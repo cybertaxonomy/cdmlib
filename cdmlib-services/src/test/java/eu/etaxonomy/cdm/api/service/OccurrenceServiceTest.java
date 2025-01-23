@@ -565,8 +565,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         deleteResult = occurrenceService.isDeletable(associatedFieldUnit.getUuid(), config);
         assertFalse(deleteResult.toString(), deleteResult.isOk());
 
-        // allow deletion from TaxonDescription and deletion of child derivates
-        config.setDeleteFromDescription(true);
+        // allow deletion of child derivatives
         config.setDeleteChildren(true);
         deleteResult = occurrenceService.isDeletable(associatedFieldUnit.getUuid(), config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
@@ -811,7 +810,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(deleteResult.toString(), deleteResult.getRelatedObjects().contains(derivedUnitToDnaSampleEvent));
 
         // check deletion of fieldUnit
-        config.setDeleteFromDescription(true);
         deleteResult = occurrenceService.isDeletable(fieldUnit.getUuid(), config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
 

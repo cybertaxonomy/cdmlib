@@ -1225,12 +1225,6 @@ public class TaxonServiceImpl
                 for (TaxonDescription desc: descriptions){
                     //TODO use description delete configurator ?
                     //FIXME check if description is ALWAYS deletable
-                    if (desc.getDescribedSpecimenOrObservation() != null){
-                        result.setAbort();
-                        result.addException(new Exception("Taxon can't be deleted as it is used in a TaxonDescription" +
-                                " which also describes specimens or observations"));
-                        break;
-                    }
                     removeDescriptions.add(desc);
                 }
                 if (result.isOk()){
