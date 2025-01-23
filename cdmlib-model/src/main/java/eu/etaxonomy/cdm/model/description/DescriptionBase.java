@@ -125,7 +125,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         @XmlElement(name = "TemporalData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TemporalData.class)
     })
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription", orphanRemoval=true)
-    @Cascade(CascadeType.DELETE)
+    @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @ContainedIn
     private Set<DescriptionElementBase> descriptionElements = new HashSet<>();
 
