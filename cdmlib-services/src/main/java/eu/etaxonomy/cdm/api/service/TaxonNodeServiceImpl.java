@@ -93,6 +93,7 @@ import eu.etaxonomy.cdm.persistence.dto.HomotypicGroupDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author n.hoffmann
@@ -913,12 +914,30 @@ public class TaxonNodeServiceImpl
                     UpdateResult tmpResult = nameService.parseName(taxonDto.getTaxonNameString(),
                             taxonDto.getCode(), taxonDto.getPreferredRank(),  true);
                     result.addUpdatedObjects(tmpResult.getUpdatedObjects());
+
                     name = (TaxonName)tmpResult.getCdmEntity();
+                    Set<CdmBase> transientObjects =  NonViralNameParserImpl.getTransientEntitiesOfParsedName(name);
+                    if (transientObjects != null && !transientObjects.isEmpty()) {
+                        //TODO other transient objects
+                        Set<TeamOrPersonBase> authors = new HashSet<>();
+                        Set<Reference> references = new HashSet<>();
+
+                        for (CdmBase cdmBase: transientObjects) {
+                            if (cdmBase instanceof TeamOrPersonBase) {
+                                authors.add((TeamOrPersonBase)cdmBase);
+                            }else if(cdmBase instanceof Reference){
+                                references.add((Reference)cdmBase);
+                            }
+                        }
+                        agentService.save(authors);
+                        referenceDao.saveAll(references);
+                    }
                 }
                 Reference sec = null;
                 if (taxonDto.getSecUuid() != null ){
                     sec = referenceDao.load(taxonDto.getSecUuid());
                 }
+
                 if (name != null && !name.isPersisted()){
                     for (HybridRelationship rel : name.getHybridChildRelations()){
                         if (!rel.getHybridName().isPersisted()) {
