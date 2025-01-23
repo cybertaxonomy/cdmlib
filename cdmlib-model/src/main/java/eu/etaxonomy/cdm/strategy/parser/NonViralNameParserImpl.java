@@ -93,7 +93,7 @@ public class NonViralNameParserImpl
 
     public static Set<CdmBase> getTransientEntitiesOfParsedName(TaxonName parsedName) {
         Set<CdmBase> transientEntities = new HashSet<>();
-        if (parsedName != null && !parsedName.isPersisted()) {
+        if (parsedName != null) {  //we don't test for !name.isPersisted() here as the name can be persisted even if parsed (this happens if the name instance is passed to the parser)
             //authors
             parsedName.allAuthors()
                   .forEach(a->fillTransientEntitiesOfAuthor(a, transientEntities));
