@@ -81,6 +81,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
@@ -130,6 +131,9 @@ public class TaxonNodeServiceImpl
 
     @Autowired
     private ITaxonNodeFilterDao nodeFilterDao;
+
+    @Autowired
+    private ICdmEntityDao genericDao;
 
     @Autowired
     private IReferenceDao referenceDao;
@@ -917,21 +921,9 @@ public class TaxonNodeServiceImpl
 
                     name = (TaxonName)tmpResult.getCdmEntity();
                     Set<CdmBase> transientObjects =  NonViralNameParserImpl.getTransientEntitiesOfParsedName(name);
-                    if (transientObjects != null && !transientObjects.isEmpty()) {
-                        //TODO other transient objects
-                        Set<TeamOrPersonBase> authors = new HashSet<>();
-                        Set<Reference> references = new HashSet<>();
-
-                        for (CdmBase cdmBase: transientObjects) {
-                            if (cdmBase instanceof TeamOrPersonBase) {
-                                authors.add((TeamOrPersonBase)cdmBase);
-                            }else if(cdmBase instanceof Reference){
-                                references.add((Reference)cdmBase);
-                            }
-                        }
-                        agentService.save(authors);
-                        referenceDao.saveAll(references);
-                    }
+                    if (!transientObjects.isEmpty()) {
+                        genericDao.saveAll(transientObjects);
+                     }
                 }
                 Reference sec = null;
                 if (taxonDto.getSecUuid() != null ){

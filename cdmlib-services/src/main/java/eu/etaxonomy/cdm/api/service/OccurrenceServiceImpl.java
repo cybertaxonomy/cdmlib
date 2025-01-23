@@ -411,8 +411,8 @@ public class OccurrenceServiceImpl
         if (!getSession().contains(derivedUnit)) {
             derivedUnit = (DerivedUnit) load(derivedUnit.getUuid());
         }
-        DerivedUnitDTO derivedUnitDTO = DerivedUnitDtoLoader.INSTANCE().fromEntity(derivedUnit, null, null);
-
+        //DerivedUnitDTO derivedUnitDTO = DerivedUnitDtoLoader.INSTANCE().fromEntity(derivedUnit, null, null);
+        DerivedUnitDTO  derivativeDTO = (DerivedUnitDTO) SpecimenOrObservationDTOFactory.fromEntity(derivedUnit, null);
         // individuals associations
         Collection<IndividualsAssociation> individualsAssociations = listIndividualsAssociations(derivedUnit, null, null, null, null);
         if(individualsAssociations != null) {
@@ -422,14 +422,14 @@ public class OccurrenceServiceImpl
                         TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
                         Taxon taxon = taxonDescription.getTaxon();
                         if (taxon != null) {
-                            derivedUnitDTO.addAssociatedTaxon(taxon);
+                            derivativeDTO.addAssociatedTaxon(taxon);
                         }
                     }
                 }
             }
         }
 
-        return derivedUnitDTO;
+        return derivativeDTO;
     }
 
     @Override
