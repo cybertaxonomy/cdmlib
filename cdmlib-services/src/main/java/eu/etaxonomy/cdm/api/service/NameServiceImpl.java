@@ -1161,7 +1161,6 @@ public class NameServiceImpl
     @Transactional(readOnly = false) //as long as the deduplication may lead to a flush which may cause a titleCache update, this happens in  CdmGenericDaoImpl.findMatching()
     public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank,
             boolean doEmpty, boolean doDeduplicate){
-        nameToBeFilled.getAnnotations();
         UpdateResult result = new UpdateResult();
         NonViralNameParserImpl nonViralNameParser = NonViralNameParserImpl.NewInstance();
         NameParserResult parserResult = nonViralNameParser.parseReferencedName(nameToBeFilled, stringToBeParsed, preferredRank, doEmpty);
