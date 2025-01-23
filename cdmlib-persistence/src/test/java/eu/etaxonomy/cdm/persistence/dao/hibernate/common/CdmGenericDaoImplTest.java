@@ -148,6 +148,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
@@ -182,6 +183,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IDescriptionDao descriptionDao;
+
+    @SpringBeanByType
+    private IDescriptionElementDao descriptionElementDao;
 
 	@SpringBeanByType
 	private IOccurrenceDao occurrenceDao;
@@ -851,7 +855,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
         TaxonDescription desc = save(TaxonDescription.NewInstance(taxon));
         Language language = Language.DEFAULT();
-        TextData textData = TextData.NewInstance(Feature.DESCRIPTION(), "And here is a citation" , language, null);
+        TextData textData = save(TextData.NewInstance(Feature.DESCRIPTION(), "And here is a citation" , language, null));
         LanguageString languageString = textData.getLanguageText(language);
         IntextReference intextRefRef = languageString.addIntextReference(ref1, 4, 8);
         String uuidIntextRefRef = intextRefRef.getUuid().toString();
@@ -1376,6 +1380,11 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
     private <S extends DescriptionBase<?>> S save(S newDescription) {
         descriptionDao.save(newDescription);
         return newDescription;
+    }
+
+    private <S extends DescriptionElementBase> S save(S newElement) {
+        descriptionElementDao.save(newElement);
+        return newElement;
     }
 
 	@Test

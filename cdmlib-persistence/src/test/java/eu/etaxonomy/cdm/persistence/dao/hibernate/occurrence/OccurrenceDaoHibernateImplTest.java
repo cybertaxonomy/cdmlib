@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -54,6 +55,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
@@ -78,6 +80,9 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
     private IDescriptionDao descriptionDao;
 
     @SpringBeanByType
+    private IDescriptionElementDao descriptionElementDao;
+
+    @SpringBeanByType
     private ITypeDesignationDao typeDesignationDao;
 
 //**************** TESTS ************************************************
@@ -93,7 +98,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
         MediaSpecimen unit = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
         SpecimenDescription desc = save(SpecimenDescription.NewInstance(unit));
         desc.setImageGallery(true);
-        TextData textData = TextData.NewInstance(Feature.IMAGE());
+        TextData textData = save(TextData.NewInstance(Feature.IMAGE()));
         desc.addElement(textData);
         Media media1 = Media.NewInstance(URI.create("https://www.abc.de"), 5, "jpg", "jpg");
         Media media2 = Media.NewInstance(URI.create("https://www.abc.de"), 5, "jpg", "jpg");
@@ -115,7 +120,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
         MediaSpecimen unit = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
         SpecimenDescription desc = save(SpecimenDescription.NewInstance(unit));
         desc.setImageGallery(true);
-        TextData textData = TextData.NewInstance(Feature.IMAGE());
+        TextData textData = save(TextData.NewInstance(Feature.IMAGE()));
         desc.addElement(textData);
         Media media1 = Media.NewInstance(URI.create("https://www.abc.de"), 5, "jpg", "jpg");
         Media media2 = Media.NewInstance(URI.create("https://www.defg.de"), 5, "jpg", "jpg");
@@ -392,7 +397,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
             //du_indAss is added as indiv. association
             TaxonDescription td = save(TaxonDescription.NewInstance(taxon));
-            IndividualsAssociation ia = IndividualsAssociation.NewInstance(du_indAss);
+            IndividualsAssociation ia = save(IndividualsAssociation.NewInstance(du_indAss));
             td.addElement(ia);
 
             //du_determination is assoziated as determination
@@ -420,7 +425,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             typeDesignationDao.save(std4);
 
             TaxonDescription fieldUnitDescription = save(TaxonDescription.NewInstance(fieldUnitTaxon));
-            IndividualsAssociation fieldUnitIndAss = IndividualsAssociation.NewInstance(fieldUnit1);
+            IndividualsAssociation fieldUnitIndAss = save(IndividualsAssociation.NewInstance(fieldUnit1));
             fieldUnitDescription.addElement(fieldUnitIndAss);
 
             return taxon;
@@ -434,6 +439,11 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
     private <S extends DescriptionBase<?>> S save(S newDescription) {
         descriptionDao.save(newDescription);
         return newDescription;
+    }
+
+    private <S extends DescriptionElementBase> S save(S newElement) {
+        descriptionElementDao.save(newElement);
+        return newElement;
     }
 
     private Synonym save(Synonym synonym) {
