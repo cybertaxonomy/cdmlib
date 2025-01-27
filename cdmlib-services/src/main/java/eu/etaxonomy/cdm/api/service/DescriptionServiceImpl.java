@@ -301,13 +301,29 @@ public class DescriptionServiceImpl
     @Transactional(readOnly = false)
     public List<MergeResult<DescriptionBase>> mergeDescriptionElements(Collection<TaxonDistributionDTO> descriptionElements, boolean returnTransientEntity) {
         List<MergeResult<DescriptionBase>> mergedObjects = new ArrayList<>();
+        Set<TaxonDistributionDTO> removeList = new HashSet<>();
+        for (TaxonDistributionDTO dto: descriptionElements){
+            Taxon taxon = null;
+            Set<TaxonDescription>  descriptions = dto.getDescriptionsWrapper().getDescriptions();
 
+            for(TaxonDescription desc: dto.getDescriptionsWrapper().getDescriptions()){
+                if (desc.getTaxon() == null){
+                    if (taxon == null){
+                        taxon = (Taxon) taxonDao.load(dto.getTaxonUuid());
+                    }
+                    taxon.addDescription(desc);
+                    removeList.add(dto);
+                }
+
+            }
+            if (taxon != null){
+                mergedObjects.addAll(merge(new ArrayList<>(descriptions), true));
+            }
+        }
+        descriptionElements.removeAll(removeList);
         for(TaxonDistributionDTO obj : descriptionElements) {
             Iterator<TaxonDescription> iterator = obj.getDescriptionsWrapper().getDescriptions().iterator();
             List<DescriptionBase> list = new ArrayList(obj.getDescriptionsWrapper().getDescriptions());
-          //  Map<UUID, DescriptionBase> map = dao.saveOrUpdateAll(list);
-//            MergeResult<DescriptionBase> mergeResult = new MergeResult<DescriptionBase>(mergedEntity, newEntities)
-//            mergedObjects.add(map.values());
             while (iterator.hasNext()){
                 TaxonDescription desc = iterator.next();
                 mergedObjects.add(dao.merge(desc, returnTransientEntity));

@@ -917,6 +917,7 @@ public class TaxonNodeServiceImpl
                 } else {
                     UpdateResult tmpResult = nameService.parseName(taxonDto.getTaxonNameString(),
                             taxonDto.getCode(), taxonDto.getPreferredRank(),  true);
+
                     result.addUpdatedObjects(tmpResult.getUpdatedObjects());
 
                     name = (TaxonName)tmpResult.getCdmEntity();
