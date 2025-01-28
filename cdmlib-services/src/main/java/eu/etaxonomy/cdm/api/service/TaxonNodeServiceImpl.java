@@ -921,7 +921,15 @@ public class TaxonNodeServiceImpl
                     result.addUpdatedObjects(tmpResult.getUpdatedObjects());
 
                     name = (TaxonName)tmpResult.getCdmEntity();
-                    Set<CdmBase> transientObjects =  NonViralNameParserImpl.getTransientEntitiesOfParsedName(name);
+                    Set<CdmBase> transientObjects = new HashSet<>();
+                    if (!name.getHybridChildRelations().isEmpty()) {
+                        for (HybridRelationship rel :name.getHybridChildRelations()){
+                            transientObjects.add(rel.getParentName());
+                            transientObjects.add(rel.getHybridName());
+                        }
+
+                    }
+                    transientObjects.addAll(NonViralNameParserImpl.getTransientEntitiesOfParsedName(name));
                     if (!transientObjects.isEmpty()) {
                         genericDao.saveAll(transientObjects);
                      }
