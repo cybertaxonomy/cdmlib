@@ -918,21 +918,12 @@ public class TaxonNodeServiceImpl
                     UpdateResult tmpResult = nameService.parseName(taxonDto.getTaxonNameString(),
                             taxonDto.getCode(), taxonDto.getPreferredRank(),  true);
 
-                    result.addUpdatedObjects(tmpResult.getUpdatedObjects());
-
                     name = (TaxonName)tmpResult.getCdmEntity();
                     Set<CdmBase> transientObjects = new HashSet<>();
-                    if (!name.getHybridChildRelations().isEmpty()) {
-                        for (HybridRelationship rel :name.getHybridChildRelations()){
-                            transientObjects.add(rel.getParentName());
-                            transientObjects.add(rel.getHybridName());
-                        }
-
-                    }
                     transientObjects.addAll(NonViralNameParserImpl.getTransientEntitiesOfParsedName(name));
-                    if (!transientObjects.isEmpty()) {
-                        genericDao.saveAll(transientObjects);
-                     }
+                    genericDao.saveAll(transientObjects);
+                    UUID nameUuid = nameService.saveOrUpdate(name);
+                    name = nameService.load(nameUuid);
                 }
                 Reference sec = null;
                 if (taxonDto.getSecUuid() != null ){
@@ -949,6 +940,7 @@ public class TaxonNodeServiceImpl
                         }
                     }
                 }
+
                 taxon = Taxon.NewInstance(name, sec);
                 taxon.setPublish(taxonDto.isPublish());
             }

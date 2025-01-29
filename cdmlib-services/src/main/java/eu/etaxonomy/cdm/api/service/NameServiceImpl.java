@@ -1177,16 +1177,32 @@ public class NameServiceImpl
                     List<Reference> matchingReferences = commonService.findMatching(nomRef, referenceMatcher);
                     if(matchingReferences.size() >= 1){
                         Reference duplicate = findBestMatching(nomRef, matchingReferences, referenceMatcher);
+
+                        if (duplicate != null && !duplicate.equals(nomRef)) {
+                            if(parserResult.getReferences().contains(nomRef)) {
+                                parserResult.getReferences().remove(nomRef);
+                            }
+                        }
                         name.setNomenclaturalReference(duplicate);
                     }else{
                         if (nomRef.getInReference() != null){
                             List<Reference> matchingInReferences = commonService.findMatching(nomRef.getInReference(), MatchStrategyFactory.NewParsedReferenceInstance(nomRef.getInReference()));
                             if(matchingInReferences.size() >= 1){
-                                Reference duplicate = findBestMatching(nomRef, matchingInReferences, referenceMatcher);
+                                Reference duplicate = findBestMatching(nomRef.getInReference(), matchingInReferences, referenceMatcher);
+                                if (duplicate != null && !duplicate.equals(nomRef.getInReference())) {
+                                    if(parserResult.getReferences().contains(nomRef.getInReference())) {
+                                        parserResult.getReferences().remove(nomRef.getInReference());
+                                    }
+                                }
                                 nomRef.setInReference(duplicate);
                             }
                         }
                         TeamOrPersonBase<?> author = deduplicateAuthor(nomRef.getAuthorship());
+                        if (author != null && !author.equals(nomRef.getAuthorship())) {
+                            if(parserResult.getAuthors().contains(nomRef.getAuthorship())) {
+                                parserResult.getAuthors().remove(nomRef.getAuthorship());
+                            }
+                        }
                         nomRef.setAuthorship(author);
                     }
                 }
@@ -1201,16 +1217,42 @@ public class NameServiceImpl
                             name.setCombinationAuthorship(nomRef.getAuthorship());
                         }
                     }
+                    TeamOrPersonBase combinationAuthorship = deduplicateAuthor(name.getCombinationAuthorship());
+                    if (combinationAuthorship != null && !combinationAuthorship.equals(name.getCombinationAuthorship())) {
+                        if(parserResult.getAuthors().contains(name.getCombinationAuthorship())) {
+                            parserResult.getAuthors().remove(name.getCombinationAuthorship());
+                        }
+                    }
                     name.setCombinationAuthorship(deduplicateAuthor(name.getCombinationAuthorship()));
+
                 }
                 if (name.getExCombinationAuthorship()!= null && !name.getExCombinationAuthorship().isPersisted()){
-                    name.setExCombinationAuthorship(deduplicateAuthor(name.getExCombinationAuthorship()));
+                    TeamOrPersonBase exCombinationAuthorship = deduplicateAuthor(name.getExCombinationAuthorship());
+                    if (exCombinationAuthorship != null && !exCombinationAuthorship.equals(name.getExCombinationAuthorship())) {
+                        if(parserResult.getAuthors().contains(name.getExCombinationAuthorship())) {
+                            parserResult.getAuthors().remove(name.getExCombinationAuthorship());
+                        }
+                    }
+                    name.setExCombinationAuthorship(exCombinationAuthorship);
                 }
                 if (name.getBasionymAuthorship()!= null && !name.getBasionymAuthorship().isPersisted()){
-                    name.setBasionymAuthorship(deduplicateAuthor(name.getBasionymAuthorship()));
+                    TeamOrPersonBase basionymAuthor = deduplicateAuthor(name.getBasionymAuthorship());
+                    if (basionymAuthor != null && !basionymAuthor.equals(name.getBasionymAuthorship())) {
+                        if(parserResult.getAuthors().contains(name.getBasionymAuthorship())) {
+                            parserResult.getAuthors().remove(name.getBasionymAuthorship());
+                        }
+                    }
+                    name.setBasionymAuthorship(basionymAuthor);
+
                 }
                 if (name.getExBasionymAuthorship()!= null && !name.getExBasionymAuthorship().isPersisted()){
-                    name.setExBasionymAuthorship(deduplicateAuthor(name.getExBasionymAuthorship()));
+                    TeamOrPersonBase exBasionymAuthor = deduplicateAuthor(name.getExBasionymAuthorship());
+                    if (exBasionymAuthor != null && !exBasionymAuthor.equals(name.getExBasionymAuthorship())) {
+                        if(parserResult.getAuthors().contains(name.getExBasionymAuthorship())) {
+                            parserResult.getAuthors().remove(name.getExBasionymAuthorship());
+                        }
+                    }
+                    name.setExBasionymAuthorship(exBasionymAuthor);
                 }
 
                 //originalSpelling
@@ -1221,6 +1263,9 @@ public class NameServiceImpl
                     if(matchingNames.size() >= 1){
                         TaxonName duplicate = findBestMatching(origName, matchingNames, nameMatcher);
                         name.setOriginalSpelling(duplicate);
+                        if(parserResult.getOtherNames().contains(origName)) {
+                            parserResult.getOtherNames().remove(origName);
+                        }
                     }
                 }
 //              LogUtils.setLevel("org.hibernate.SQL", sqlLogLevel);
@@ -1228,7 +1273,7 @@ public class NameServiceImpl
                 throw new RuntimeException(e);
             }
         }
-        result.setCdmEntity(name);
+       result.setCdmEntity(name);
         return result;
     }
 
