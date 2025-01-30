@@ -119,7 +119,7 @@ public class Taxon
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
     @OneToMany(mappedBy="taxon", fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.DELETE})
     @NotNull
     @ContainedIn
     private Set<TaxonDescription> descriptions = new HashSet<>();

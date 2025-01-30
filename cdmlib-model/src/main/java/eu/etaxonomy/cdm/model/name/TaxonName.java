@@ -266,7 +266,7 @@ public class TaxonName
         joinColumns=@javax.persistence.JoinColumn(name="TaxonName_id"),
         inverseJoinColumns=@javax.persistence.JoinColumn(name="typedesignations_id")
     )
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+   //@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
     private Set<TypeDesignationBase> typeDesignations = new HashSet<>();
 
