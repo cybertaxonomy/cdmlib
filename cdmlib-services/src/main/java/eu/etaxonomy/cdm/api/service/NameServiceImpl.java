@@ -96,6 +96,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -473,6 +474,18 @@ public class NameServiceImpl
     public void saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection){
         typeDesignationCollection.stream().forEach(td->typeDesignationDao.save(td));
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public List<MergeResult<TypeDesignationBase>> mergeTypeDesignations(Collection<TypeDesignationBase<?>> typeDesignationCollection){
+        List<MergeResult<TypeDesignationBase>> mergedObjects = new ArrayList<MergeResult<TypeDesignationBase>>();
+        for(TypeDesignationBase obj : typeDesignationCollection) {
+            mergedObjects.add(typeDesignationDao.merge(obj, true));
+        }
+        return mergedObjects;
+
+    }
+
 
     @Override
     public void saveTypeDesignation(TypeDesignationBase<?> typeDesignation){

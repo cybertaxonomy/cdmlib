@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -117,6 +118,13 @@ public interface INameService
 	 * @return
 	 */
 	public void saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection);
+
+	/**
+     * Merges the given type designations.
+     * @param typeDesignationCollection
+     * @return
+     */
+	public List<MergeResult<TypeDesignationBase>> mergeTypeDesignations(Collection<TypeDesignationBase<?>> typeDesignationCollection);
 
 	/**
      * Saves the given type designation.
