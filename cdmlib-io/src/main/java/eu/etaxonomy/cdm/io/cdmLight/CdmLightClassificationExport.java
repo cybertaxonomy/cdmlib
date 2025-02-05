@@ -1363,19 +1363,20 @@ public class CdmLightClassificationExport
                     nonTextualTypeDesignations.add(nameTypeDesignation);
                 }
             }
-            TypeDesignationGroupContainer tdContainer = new TypeDesignationGroupContainer(nonTextualTypeDesignations,
-                    name, TypeDesignationGroupComparator.ORDER_BY.TYPE_STATUS);
-            HTMLTagRules rules = new HTMLTagRules();
-            rules.addRule(TagEnum.name, "i");
-            //TODO params
-            boolean withCitation = false;  //TODO AM: why?
-            boolean withStartingLabel = false;
-            boolean withNameIfAvailable = false;
-            boolean withPrecedingMainType = true;
-            boolean withAccessionNoType = state.getConfig().isShowTypeOfDesignationIdentifier();//false;
-            csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = tdContainer.print(
-                    withCitation, withStartingLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType, rules);
-
+            if (!nonTextualTypeDesignations.isEmpty()) {
+                TypeDesignationGroupContainer tdContainer = new TypeDesignationGroupContainer(nonTextualTypeDesignations,
+                        name, TypeDesignationGroupComparator.ORDER_BY.TYPE_STATUS);
+                HTMLTagRules rules = new HTMLTagRules();
+                rules.addRule(TagEnum.name, "i");
+                //TODO params
+                boolean withCitation = false;  //TODO AM: why?
+                boolean withStartingLabel = false;
+                boolean withNameIfAvailable = false;
+                boolean withPrecedingMainType = true;
+                boolean withAccessionNoType = state.getConfig().isShowTypeOfDesignationIdentifier();//false;
+                csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = tdContainer.print(
+                        withCitation, withStartingLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType, rules);
+            }
             StringBuilder stringbuilder = new StringBuilder();
             int i = 1;
             for (TextualTypeDesignation typeDesignation : textualTypeDesignations) {
@@ -2184,13 +2185,14 @@ public class CdmLightClassificationExport
 
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
-                TypeDesignationGroupContainer manager = new TypeDesignationGroupContainer(group);
+                TypeDesignationGroupContainer manager = new TypeDesignationGroupContainer(group, false);
 
                 list.addAll(new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(false)
                         .toTaggedText(manager));
             }
             String typeTextDesignations = "";
             //The typeDesignationManager does not handle the textual typeDesignations
+
             for (TypeDesignationBase<?> typeDes: designationList) {
                 if (typeDes instanceof TextualTypeDesignation) {
                     typeTextDesignations = typeTextDesignations + ((TextualTypeDesignation)typeDes).getText(Language.getDefaultLanguage());

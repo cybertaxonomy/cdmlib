@@ -137,6 +137,15 @@ public class TypeDesignationGroupContainer {
         //findTypifiedName();
         groupAndSort();
     }
+    public TypeDesignationGroupContainer(HomotypicalGroup group, boolean containsTypeStatements) {
+        for (TypeDesignationBase<?> typeDes: group.getTypeDesignations()){
+            if (!(typeDes instanceof TextualTypeDesignation)) {
+                this.typeDesignations.put(typeDes.getUuid(), typeDes);
+            }
+        }
+        //findTypifiedName();
+        groupAndSort();
+    }
 
     public TypeDesignationGroupContainer(TaxonName typifiedName) {
         this.typifiedName = typifiedName;
