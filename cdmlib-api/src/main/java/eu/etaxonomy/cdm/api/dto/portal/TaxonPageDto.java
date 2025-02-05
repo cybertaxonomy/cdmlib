@@ -146,6 +146,7 @@ public class TaxonPageDto extends TaxonBaseDto {
         private String types;
         //should always be empty for homotypic synonyms
         private ContainerDto<SourceDto> synSecSources;
+        private List<TaggedText> taggedSynSecSources = new ArrayList<>();  //TODO maybe not necessary to always initialize this
 
         public void addSynonym(TaxonBaseDto synonymDto) {
             synonyms.addItem(synonymDto);
@@ -179,6 +180,15 @@ public class TaxonPageDto extends TaxonBaseDto {
                 synSecSources = new ContainerDto<>();
             }
             this.synSecSources.addItem(synSecSource);
+        }
+        public List<TaggedText> getTaggedSynSecSources() {
+            return taggedSynSecSources;
+        }
+        public void addTaggedSynSecSources(List<TaggedText> taggedSynSecSources) {
+            if (this.taggedSynSecSources == null) {
+                this.taggedSynSecSources = new ArrayList<>();
+            }
+            this.taggedSynSecSources.addAll(taggedSynSecSources);
         }
     }
 

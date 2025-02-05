@@ -358,7 +358,7 @@ public abstract class TaxonPageDtoLoaderBase {
         }
     }
 
-    private boolean sourceMatches(SourceDto existingSource, SourceDto newSource) {
+    protected boolean sourceMatches(SourceDto existingSource, SourceDto newSource) {
         if (existingSource == newSource) {
             return true;
         }else if (existingSource == null || newSource == null) {
@@ -381,6 +381,7 @@ public abstract class TaxonPageDtoLoaderBase {
     }
 
     private void mergeSource(SourceDto existingSource, SourceDto newSource) {
+
         //doi
         if (existingSource.getDoi() == null) {
             existingSource.setDoi(newSource.getDoi());

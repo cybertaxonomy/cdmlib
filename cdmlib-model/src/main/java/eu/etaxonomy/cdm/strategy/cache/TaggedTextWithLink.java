@@ -38,8 +38,14 @@ public class TaggedTextWithLink extends TaggedText {
     public String getLink() {
         return link;
     }
+    public void setLink(String link) {
+        this.link = link;
+    }
 
     public String getDoi() {
         return doi;
+    }
+    public void setDoi(String doi) {
+        this.doi = doi;
     }
 }

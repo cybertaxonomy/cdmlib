@@ -85,6 +85,7 @@ import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextWithLink;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
@@ -431,9 +432,11 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
             if (homotypicSynonmys != null && !homotypicSynonmys.isEmpty()) {
                 loadBaseData(config, name.getHomotypicalGroup(), homotypicGroupDto);
 
+                List<List<TaggedText>> taggedSynSecs = new ArrayList<>();
                 for (Synonym syn : homotypicSynonmys) {
-                    loadSynonymInGroup(homotypicGroupDto, syn, config, result, acceptedSecSourceDto);
+                    loadSynonymInGroup(homotypicGroupDto, syn, config, result, acceptedSecSourceDto, taggedSynSecs);
                 }
+                taggedSynSecs.forEach(tss->homotypicGroupDto.addTaggedSynSecSources(tss));
             }
             if (name != null) {
                 handleTypification(name.getHomotypicalGroup(), homotypicGroupDto, result, config);
@@ -454,9 +457,11 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 heteroContainer.addItem(hgDto);
 
                 List<Synonym> heteroSyns = filterPublished(taxon.getSynonymsInGroup(hg, comparator));
+                List<List<TaggedText>> taggedSynSecs = new ArrayList<>();
                 for (Synonym syn : heteroSyns) {
-                    loadSynonymInGroup(hgDto, syn, config, result, acceptedSecSourceDto);
+                    loadSynonymInGroup(hgDto, syn, config, result, acceptedSecSourceDto, taggedSynSecs);
                 }
+                taggedSynSecs.forEach(tss->hgDto.addTaggedSynSecSources(tss));
                 handleTypification(hg, hgDto, result, config);
             }
         } catch (Exception e) {
@@ -567,7 +572,8 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
     }
 
     private void loadSynonymInGroup(TaxonPageDto.HomotypicGroupDTO hgDto, Synonym syn,
-            TaxonPageDtoConfiguration config, TaxonPageDto pageDto, SourceDto acceptedSecSourceDto) {
+            TaxonPageDtoConfiguration config, TaxonPageDto pageDto, SourceDto acceptedSecSourceDto,
+            List<List<TaggedText>> taggedSynSecs) {
 
         TaxonBaseDto synDto = new TaxonBaseDto();
         loadBaseData(config, syn, synDto);
@@ -584,8 +590,66 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
         //syn. sec. merge
         if (syn.getSecSource() != null) {
             SourceDto sourceDto = makeSource(config, syn.getSecSource());
-            mergeSources(sourceDto, hgDto, acceptedSecSourceDto);
+            if (!sourceMatches(sourceDto, acceptedSecSourceDto)){
+                mergeSources(sourceDto, hgDto, acceptedSecSourceDto);
+
+                //tagged text
+                List<TaggedText> taggedSource = TaxonBaseDefaultCacheStrategy.INSTANCE().getSecundumTags(syn, false);
+                mergeTaggedSources(taggedSynSecs, taggedSource);
+            }
         }
+    }
+
+    private void mergeTaggedSources(List<List<TaggedText>> taggedSynSecs, List<TaggedText> taggedSource) {
+        boolean exists = false;
+        for (List<TaggedText> existing : taggedSynSecs) {
+            if (taggedTextMatches(existing, taggedSource)) {
+                exists = true;
+            }
+        }
+        if (!exists) {
+            taggedSynSecs.add(taggedSource);
+        }
+    }
+
+    private boolean taggedTextMatches(List<TaggedText> existing, List<TaggedText> taggedSource) {
+        if (existing.size() != taggedSource.size()) {
+            return false;
+        }
+        for (int i = 0; i<existing.size(); i++) {
+            boolean match = singleTagMatches(existing.get(i), taggedSource.get(i));
+            if (!match) {
+                return false;
+            }
+        }
+        //it matches, so merge now
+        for (int i = 0; i<existing.size(); i++) {
+            mergeSingleTag(existing.get(i), taggedSource.get(i));
+        }
+        return true;
+    }
+
+    private void mergeSingleTag(TaggedText existing, TaggedText newTag) {
+        if (existing instanceof TaggedTextWithLink && newTag instanceof TaggedTextWithLink) {
+            TaggedTextWithLink existingLinked = (TaggedTextWithLink)existing;
+            TaggedTextWithLink newTagLinked = (TaggedTextWithLink)newTag;
+            if ( existingLinked.getDoi() == null) {
+                existingLinked.setDoi(newTagLinked.getDoi());
+            }
+            if ( existingLinked.getLink() == null) {
+                existingLinked.setLink(newTagLinked.getLink());
+            }
+        }
+
+    }
+
+    private boolean singleTagMatches(TaggedText taggedText1, TaggedText taggedText2) {
+        if (taggedText1 instanceof TaggedTextWithLink && taggedText2 instanceof TaggedTextWithLink) {
+            return CdmUtils.nullSafeEqual(taggedText1.getText(), taggedText2.getText())
+                && CdmUtils.nullSafeEqual(taggedText1.getType(), taggedText2.getType())
+                && CdmUtils.nullSafeEqual(taggedText1.getEntityReference(), taggedText2.getEntityReference());
+        }
+        return taggedText1.equals(taggedText2);
     }
 
     private void loadProtologues(TaxonName name, TaxonBaseDto taxonBaseDto) {
