@@ -222,20 +222,20 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         HomotypicGroupDTO firstHeteroSynGroup = heteroSynGroups.getItems().get(0);
         Assert.assertEquals(2, firstHeteroSynGroup.getSynonyms().getCount());
         Assert.assertEquals(2, firstHeteroSynGroup.getSynSecSources().getCount());
-        Assert.assertEquals("My hetero sec book: 48 My hetero sec book: 49", TaggedTextFormatter.createString(firstHeteroSynGroup.getTaggedSynSecSources()));
+        Assert.assertEquals("My hetero sec book: 48 My hetero sec book: 49", TaggedTextFormatter.createString(firstHeteroSynGroup.getTaggedSynSecs()));
 
         //... second group
         HomotypicGroupDTO secondHeteroSynGroup = heteroSynGroups.getItems().get(1);
         Assert.assertEquals(2, secondHeteroSynGroup.getSynonyms().getCount());
         Assert.assertNull("No syn sec should exist as all syn sec do not exist or are equal with taxon sec",
                 secondHeteroSynGroup.getSynSecSources());
-        Assert.assertEquals("", TaggedTextFormatter.createString(secondHeteroSynGroup.getTaggedSynSecSources()));
+        Assert.assertEquals("", TaggedTextFormatter.createString(secondHeteroSynGroup.getTaggedSynSecs()));
 
         //... third group
         HomotypicGroupDTO thirdHeteroSynGroup = heteroSynGroups.getItems().get(2);
         Assert.assertEquals(2, thirdHeteroSynGroup.getSynonyms().getCount());
         Assert.assertEquals(2, thirdHeteroSynGroup.getSynSecSources().getCount());
-        Assert.assertEquals("2012: My book4: 33 2012: My book4", TaggedTextFormatter.createString(thirdHeteroSynGroup.getTaggedSynSecSources()));
+        Assert.assertEquals("2012: My book4: 33 2012: My book4", TaggedTextFormatter.createString(thirdHeteroSynGroup.getTaggedSynSecs()));
 
         //types
 

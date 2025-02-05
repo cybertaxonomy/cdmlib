@@ -436,7 +436,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 for (Synonym syn : homotypicSynonmys) {
                     loadSynonymInGroup(homotypicGroupDto, syn, config, result, acceptedSecSourceDto, taggedSynSecs);
                 }
-                taggedSynSecs.forEach(tss->homotypicGroupDto.addTaggedSynSecSources(tss));
+                taggedSynSecs.forEach(tss->homotypicGroupDto.addTaggedSynSecs(tss));
             }
             if (name != null) {
                 handleTypification(name.getHomotypicalGroup(), homotypicGroupDto, result, config);
@@ -461,7 +461,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 for (Synonym syn : heteroSyns) {
                     loadSynonymInGroup(hgDto, syn, config, result, acceptedSecSourceDto, taggedSynSecs);
                 }
-                taggedSynSecs.forEach(tss->hgDto.addTaggedSynSecSources(tss));
+                taggedSynSecs.forEach(tss->hgDto.addTaggedSynSecs(tss));
                 handleTypification(hg, hgDto, result, config);
             }
         } catch (Exception e) {
@@ -640,7 +640,6 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 existingLinked.setLink(newTagLinked.getLink());
             }
         }
-
     }
 
     private boolean singleTagMatches(TaggedText taggedText1, TaggedText taggedText2) {
