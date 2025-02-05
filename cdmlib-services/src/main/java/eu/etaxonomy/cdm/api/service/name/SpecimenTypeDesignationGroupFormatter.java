@@ -43,7 +43,8 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.FieldUnitDefaultCacheStrategy;
  * @author muellera
  * @since 22.04.2024
  */
-public class SpecimenTypeDesignationGroupFormatter extends TypeDesignationGroupFormatterBase<SpecimenOrObservationBase<?>> {
+public class SpecimenTypeDesignationGroupFormatter
+        extends TypeDesignationGroupFormatterBase<SpecimenOrObservationBase<?>> {
 
     public static final SpecimenTypeDesignationGroupFormatter INSTANCE() {
         return new SpecimenTypeDesignationGroupFormatter();
