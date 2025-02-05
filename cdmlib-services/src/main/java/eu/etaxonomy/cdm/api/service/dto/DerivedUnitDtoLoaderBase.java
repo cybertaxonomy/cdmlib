@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.codehaus.plexus.util.StringUtils;
+
 import eu.etaxonomy.cdm.api.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.dto.DerivedUnitStatusDto;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -128,9 +130,14 @@ public abstract class DerivedUnitDtoLoaderBase<T extends DerivedUnit>
         if (occurrenceStatus != null && !occurrenceStatus.isEmpty()) {
             List<DerivedUnitStatusDto> status = new ArrayList<>();
             for (OccurrenceStatus specimenStatus : occurrenceStatus) {
-                DerivedUnitStatusDto statusDto = new DerivedUnitStatusDto(specimenStatus.getType().getLabel());
-                statusDto.setStatusSource(SourceDtoLoader.fromEntity(specimenStatus.getSource()) ) ;
-                status.add(statusDto);
+                if (specimenStatus != null) {
+                    String typeLabel = specimenStatus.getType() == null ? null : specimenStatus.getType().getLabel();
+                    typeLabel = StringUtils.isBlank(typeLabel)? "-no type-" : typeLabel;
+                    DerivedUnitStatusDto statusDto = new DerivedUnitStatusDto(typeLabel);
+                    statusDto.setStatusSource(SourceDtoLoader.fromEntity(specimenStatus.getSource()) ) ;
+                    status.add(statusDto);
+
+                }
             }
             dto.setStatus(status);
         }
