@@ -44,6 +44,7 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
     DESCRIPTIVEDATASET("DescriptiveDataSet"),
     EXTENSION("Extension"),
     EXTENSIONTYPE("ExtensionType"),
+    EXTERNALLINK("ExternalLink"),
     FEATURE("Feature"),
     TERMNODE("TermNode"),
     TERMTREE("TermTree"),
