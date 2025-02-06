@@ -2194,26 +2194,30 @@ public class CdmLightClassificationExport
             for (TypeDesignationBase<?> typeDes: designationList) {
                 if (typeDes instanceof TextualTypeDesignation) {
                     typeTextDesignations = typeTextDesignations + ((TextualTypeDesignation)typeDes).getText(Language.getDefaultLanguage());
+                    if (((TextualTypeDesignation)typeDes).isVerbatim()) {
+                        typeTextDesignations = "\"" + typeTextDesignations + "\"";
+                    }
                     String typeDesStateRefs = "";
                     if (typeDes.getDesignationSource() != null ){
                         typeDesStateRefs = "[";
                         NamedSource source = typeDes.getDesignationSource();
                         if (source.getCitation() != null){
-                            typeDesStateRefs += "fide " + OriginalSourceFormatter.INSTANCE.format(source.getCitation(), null);
+                            typeDesStateRefs += "fide " + OriginalSourceFormatter.INSTANCE.format(source.getCitation(), source.getCitationMicroReference());
                         }
                         typeDesStateRefs += "]";
-                    }else if (typeDes.getSources() != null && !typeDes.getSources().isEmpty()){
+                    }else if (!CdmUtils.isNullSafeEmpty(typeDes.getSources())){
                         typeDesStateRefs = "[";
                         for (IdentifiableSource source: typeDes.getSources()) {
                             if (source.getCitation() != null){
-                                typeDesStateRefs += "fide " +OriginalSourceFormatter.INSTANCE.format(source.getCitation(), null);
+                                String sep = typeDesStateRefs.equals("[") ? "fide " : ", ";
+                                typeDesStateRefs += sep +OriginalSourceFormatter.INSTANCE.format(source.getCitation(), source.getCitationMicroReference());
                             }
                         }
 
                         typeDesStateRefs += "]";
                     }
 
-                    typeTextDesignations =  typeTextDesignations + typeDesStateRefs +"; ";
+                    typeTextDesignations = typeTextDesignations + typeDesStateRefs +"; ";
 
                 }else if (typeDes instanceof SpecimenTypeDesignation){
                     DerivedUnit specimen =  ((SpecimenTypeDesignation)typeDes).getTypeSpecimen();
