@@ -64,6 +64,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStanding;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
@@ -674,7 +675,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
      * If label, text and labelAbbrev are all <code>null</code> no status type is created.
      */
     protected NomenclaturalStatusType getNomenclaturalStatusType(STATE state, UUID uuid, String label,
-            String description, String labelAbbrev, Language language, TermVocabulary<NomenclaturalStatusType> voc){
+            String description, String labelAbbrev, NomenclaturalStanding nomenclaturalStanding,
+            Language language, TermVocabulary<NomenclaturalStatusType> voc){
+
         if (uuid == null){
             return null;
         }
@@ -685,7 +688,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
                 if (language == null){
                     language = Language.UNKNOWN_LANGUAGE();
                 }
-                nomStatusType = NomenclaturalStatusType.NewInstance(description, label, labelAbbrev, language);
+                nomStatusType = NomenclaturalStatusType.NewInstance(description, label, labelAbbrev, language, nomenclaturalStanding);
                 nomStatusType.setUuid(uuid);
                 if (voc == null){
                     boolean isOrdered = false;
