@@ -61,7 +61,7 @@ public class SchemaUpdater_5480_5490 extends SchemaUpdaterBase {
         stepName = "Update symbol for MAN";
         String nonAuditedTableName = "DefinedTermBase";
         String defaultQuery = "UPDATE @@DefinedTermBase@@ "
-                + " SET symbol = 'misapplied for' "
+                + " SET symbol = 'misapplied for', idInVocabulary = 'misapplied for' "
                 + " WHERE uuid = '1ed87175-59dd-437e-959e-0d71583d8417' ";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
@@ -75,7 +75,7 @@ public class SchemaUpdater_5480_5490 extends SchemaUpdaterBase {
         stepName = "Update symbol for p.p. MAN";
         nonAuditedTableName = "DefinedTermBase";
         defaultQuery = "UPDATE @@DefinedTermBase@@ "
-                + " SET symbol = 'p.p. misapplied for' "
+                + " SET symbol = 'p.p. misapplied for', idInVocabulary = 'p.p. misapplied for' "
                 + " WHERE uuid = 'b59b4bd2-11ff-45d1-bae2-146efdeee206' ";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
@@ -89,7 +89,7 @@ public class SchemaUpdater_5480_5490 extends SchemaUpdaterBase {
         stepName = "Update symbol for part. MAN";
         nonAuditedTableName = "DefinedTermBase";
         defaultQuery = "UPDATE @@DefinedTermBase@@ "
-                + " SET symbol = 'part. misapplied for' "
+                + " SET symbol = 'part. misapplied for', idInVocabulary = 'part. misapplied for' "
                 + " WHERE uuid = '859fb615-b0e8-440b-866e-8a19f493cd36' ";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
@@ -103,7 +103,7 @@ public class SchemaUpdater_5480_5490 extends SchemaUpdaterBase {
         stepName = "Update symbol for part. synoynm for";
         nonAuditedTableName = "DefinedTermBase";
         defaultQuery = "UPDATE @@DefinedTermBase@@ "
-                + " SET symbol = 'part. for' "
+                + " SET symbol = 'part. for', idInVocabulary = 'part. for' "
                 + " WHERE uuid = '9d7a5e56-973c-474c-b6c3-a1cb00833a3c' ";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
@@ -117,7 +117,7 @@ public class SchemaUpdater_5480_5490 extends SchemaUpdaterBase {
         stepName = "Update symbol for p.p. synoynm for";
         nonAuditedTableName = "DefinedTermBase";
         defaultQuery = "UPDATE @@DefinedTermBase@@ "
-                + " SET symbol = 'p.p. for' "
+                + " SET symbol = 'p.p. for', idInVocabulary = 'p.p. for' "
                 + " WHERE uuid = '8a896603-0fa3-44c6-9cd7-df2d8792e577' ";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
@@ -126,7 +126,6 @@ public class SchemaUpdater_5480_5490 extends SchemaUpdaterBase {
         uuidLanguage = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
         abbrevLabel = "p.p. for";
         TermRepresentationUpdater.NewInstance(stepList, stepName, uuidTerm, null, null, abbrevLabel, uuidLanguage);
-
 
         return stepList;
     }
