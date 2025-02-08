@@ -134,7 +134,7 @@ public class NomenclaturalStatusType
 	}
 
 	public static NomenclaturalStatusType NewInstance(String description, String label, String labelAbbrev) {
-		return new NomenclaturalStatusType(description, label, labelAbbrev, null, null);
+		return new NomenclaturalStatusType(description, label, labelAbbrev, Language.DEFAULT(), null);
 	}
 
     public static NomenclaturalStatusType NewInstance(String description, String label, String labelAbbrev,
@@ -207,9 +207,8 @@ public class NomenclaturalStatusType
 	        Language language, NomenclaturalStanding nomenclaturalStanding) {
 
 	    super(TermType.NomenclaturalStatusType);
-		if (language != null) {
-		    this.addRepresentation(Representation.NewInstance(term, label, labelAbbrev, language));
-		}
+		this.addRepresentation(Representation.NewInstance(term, label, labelAbbrev, language));
+
 		this.nomenclaturalStanding = nomenclaturalStanding;
 		if (this.nomenclaturalStanding == null) {
 		    logger.warn("Nomenclatural standing should not be null");
