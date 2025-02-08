@@ -77,7 +77,7 @@ public class Cdm2CdmTaxonNodeImport
         }
         try {
             if (result != null){
-                getTaxonNodeService().saveOrUpdate(node);
+                getTaxonNodeService().saveOrUpdate(saveCascading(node));
                 getCommonService().saveOrUpdate(state.getToSave());
                 state.clearToSave();
             }
@@ -89,6 +89,10 @@ public class Cdm2CdmTaxonNodeImport
         return result;
     }
 
+    private TaxonNode saveCascading(TaxonNode node) {
+        node.getAgentRelations().forEach(ar->getAgentService().saveOrUpdate(ar.getAgent()));
+        return node;
+    }
 
     @Override
     protected boolean doCheck(Cdm2CdmImportState state) {
