@@ -185,36 +185,6 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *            scoped by one of the Features passed (can be null or empty)
      * @param type
      *            A filter for DescriptionElements of a specific class
-     * @param pageSize
-     *            The maximum number of description elements returned (can be
-     *            null for all description elements)
-     * @param pageNumber
-     *            The offset (in pageSize chunks) from the start of the result
-     *            set (0 - based)
-     * @param propertyPaths
-     *            Properties to initialize in the returned entities, following
-     *            the syntax described in
-     *            {@link IBeanInitializer#initialize(Object, List)}
-     * @return a List containing all matching DescriptionElementBase instances
-     *
-     * @deprecated use {@link #listDescriptionElementsForTaxon(Taxon, Set, Class, Integer, Integer, List)} instead
-     */
-    @Deprecated
-    public <T extends DescriptionElementBase> List<T>  getDescriptionElementsForTaxon(
-            Taxon taxon, Set<Feature> features, Class<T> type, boolean includeUnpublished,
-            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
-    /**
-     * Provides access to all DescriptionElements associated with the given Taxon
-     * via a TaxonDescrition.
-     *
-     * @param taxon
-     *            The Taxon to return Description elements for
-     * @param features
-     *            Restrict the results to those description elements which are
-     *            scoped by one of the Features passed (can be null or empty)
-     * @param type
-     *            A filter for DescriptionElements of a specific class
      * @param includeUnpublished
      *            If true factual data in a description not being published
      *            is included.

@@ -664,17 +664,6 @@ public class DescriptionServiceImpl
     }
 
     @Override
-    @Deprecated
-    public <T extends DescriptionElementBase> List<T> getDescriptionElementsForTaxon(
-            Taxon taxon, Set<Feature> features,
-            Class<T> type, boolean includeUnpublished,
-            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-
-        return listDescriptionElementsForTaxon(taxon, features, type, includeUnpublished,
-                pageSize, pageNumber, propertyPaths);
-    }
-
-    @Override
     public <T extends DescriptionElementBase> List<T> listDescriptionElementsForTaxon(
             Taxon taxon, Set<Feature> features,
             Class<T> type, boolean includePublished,

@@ -393,7 +393,10 @@ public interface INameService
 	 *            {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
 	 */
-	public List<NameRelationship> listNameRelationships(TaxonName name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<NameRelationship> listNameRelationships(TaxonName name,
+	        NameRelationship.Direction direction, NameRelationshipType type,
+	        Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+	        List<String> propertyPaths);
 
 	/**
 	 * Return a List of hybrids related to this name, optionally filtered
