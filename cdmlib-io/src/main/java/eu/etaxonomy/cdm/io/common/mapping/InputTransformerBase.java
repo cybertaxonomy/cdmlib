@@ -18,9 +18,9 @@ import org.apache.logging.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.IRelationshipType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
@@ -242,7 +242,7 @@ public class InputTransformerBase implements IInputTransformer, Serializable {
     }
 
     @Override
-    public RelationshipTermBase<?>[] getSynonymRelationTypesByKey(String key, DbImportStateBase<?,?> state) {
+    public IRelationshipType[] getSynonymRelationTypesByKey(String key, DbImportStateBase<?,?> state) {
         String warning = "getSynonymRelationTypesByKey is not implemented in implementing transformer class";
         logger.warn(warning);
         return null;
