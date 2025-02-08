@@ -85,17 +85,16 @@ public class SchemaUpdater_5480_5490 extends SchemaUpdaterBase {
         abbrevLabel = "p.p. misapplied for";
         TermRepresentationUpdater.NewInstance(stepList, stepName, uuidTerm, null, null, abbrevLabel, uuidLanguage);
 
-
-        //Update symbol part. MAN
+        //Update symbol + label for part. MAN
         stepName = "Update symbol for part. MAN";
         nonAuditedTableName = "DefinedTermBase";
         defaultQuery = "UPDATE @@DefinedTermBase@@ "
                 + " SET symbol = 'part. misapplied for' "
-                + " WHERE uuid = '9d7a5e56-973c-474c-b6c3-a1cb00833a3c' ";
+                + " WHERE uuid = '859fb615-b0e8-440b-866e-8a19f493cd36' ";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
         stepName = "Update abbrev label for part. MAN";
-        uuidTerm = UUID.fromString("9d7a5e56-973c-474c-b6c3-a1cb00833a3c");
+        uuidTerm = UUID.fromString("859fb615-b0e8-440b-866e-8a19f493cd36");
         uuidLanguage = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
         abbrevLabel = "part. misapplied for";
         TermRepresentationUpdater.NewInstance(stepList, stepName, uuidTerm, null, null, abbrevLabel, uuidLanguage);
@@ -105,11 +104,11 @@ public class SchemaUpdater_5480_5490 extends SchemaUpdaterBase {
         nonAuditedTableName = "DefinedTermBase";
         defaultQuery = "UPDATE @@DefinedTermBase@@ "
                 + " SET symbol = 'part. for' "
-                + " WHERE uuid = '859fb615-b0e8-440b-866e-8a19f493cd36' ";
+                + " WHERE uuid = '9d7a5e56-973c-474c-b6c3-a1cb00833a3c' ";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName);
 
         stepName = "Update abbrev label for part. synonym for";
-        uuidTerm = UUID.fromString("859fb615-b0e8-440b-866e-8a19f493cd36");
+        uuidTerm = UUID.fromString("9d7a5e56-973c-474c-b6c3-a1cb00833a3c");
         uuidLanguage = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
         abbrevLabel = "part. for";
         TermRepresentationUpdater.NewInstance(stepList, stepName, uuidTerm, null, null, abbrevLabel, uuidLanguage);
