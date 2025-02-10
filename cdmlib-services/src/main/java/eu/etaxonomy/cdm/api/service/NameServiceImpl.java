@@ -267,6 +267,7 @@ public class NameServiceImpl
         typeDesignation.setTypeSpecimen(duplicate);
         typeDesignation.setTypeStatus(typeStatus);
         typeDesignation.getTypeSpecimen().setPreferredStableUri(preferredStableUri);
+        this.typeDesignationDao.saveOrUpdate(typeDesignation);
 
         TaxonName name = load(nameUuid);
         name.getTypeDesignations().add(typeDesignation);
@@ -480,7 +481,9 @@ public class NameServiceImpl
     public List<MergeResult<TypeDesignationBase>> mergeTypeDesignations(Collection<TypeDesignationBase<?>> typeDesignationCollection){
         List<MergeResult<TypeDesignationBase>> mergedObjects = new ArrayList<MergeResult<TypeDesignationBase>>();
         for(TypeDesignationBase obj : typeDesignationCollection) {
-            mergedObjects.add(typeDesignationDao.merge(obj, true));
+            if (obj != null) {
+                mergedObjects.add(typeDesignationDao.merge(obj, true));
+            }
         }
         return mergedObjects;
 
