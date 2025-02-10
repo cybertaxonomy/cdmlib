@@ -588,7 +588,8 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
         hgDto.addSynonym(synDto);
 
         //syn. sec. merge
-        if (syn.getSecSource() != null) {
+        if (syn.getSecSource() != null && syn.getSecSource().getCitation() != null) {
+
             SourceDto sourceDto = makeSource(config, syn.getSecSource());
             if (!sourceMatches(sourceDto, acceptedSecSourceDto)){
                 mergeSources(sourceDto, hgDto, acceptedSecSourceDto);
