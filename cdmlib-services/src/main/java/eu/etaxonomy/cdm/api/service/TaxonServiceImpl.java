@@ -140,6 +140,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
 /**
  * @author a.kohlbecker
@@ -905,18 +906,38 @@ public class TaxonServiceImpl
             TaxonFindDto dto = new TaxonFindDto();
             //entity
             dto.setEntity(entity);
-            //accUuid
+
+            //taxon related attributes
+            Taxon taxon;
             if (entity.isInstanceOf(Synonym.class)) {
-                Taxon taxon = CdmBase.deproxy(entity, Synonym.class).getAcceptedTaxon();
+                //synonym
+                Synonym synonym = CdmBase.deproxy(entity, Synonym.class);
+                taxon = CdmBase.deproxy(entity, Synonym.class).getAcceptedTaxon();
+                //accUuid
                 if (taxon != null) {
                     dto.setAcceptedTaxonUuid(taxon.getUuid());
                 }
+                dto.setTaxonTaggedText(TaxonBaseDefaultCacheStrategy.INSTANCE().getTaggedTitle(synonym));
+            }else {
+                //taxon
+                taxon = CdmBase.deproxy(entity, Taxon.class);
+                dto.setTaxonTaggedText(TaxonBaseDefaultCacheStrategy.INSTANCE().getTaggedTitle(taxon));
             }
+            if (taxon != null) {
+                //classificationUuids
+
+                taxon.getTaxonNodes().stream()
+                    .filter(tn->tn.getClassification() != null)
+                    .forEach(tn->dto.addClassificationUuid(tn.getClassification().getUuid()));
+            }
+
             //source
             TaxonName name = entity.isInstanceOf(TaxonName.class)? CdmBase.deproxy(entity, TaxonName.class) : CdmBase.deproxy(entity, TaxonBase.class).getName();
             String source = NomenclaturalSourceFormatter.INSTANCE().format(name.getNomenclaturalSource());
             dto.setSourceString(source);
             result.getRecords().set(i, dto);
+
+
         }
 
         return result;
