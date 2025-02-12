@@ -187,6 +187,8 @@ public class TaxonPageDto extends TaxonBaseDto {
         public void addTaggedSynSecs(List<TaggedText> taggedSynSecs) {
             if (this.taggedSynSecs == null) {
                 this.taggedSynSecs = new ArrayList<>();
+            }else {
+                this.taggedSynSecs.add(TaggedText.NewSeparatorInstance(", "));
             }
             this.taggedSynSecs.addAll(taggedSynSecs);
         }
