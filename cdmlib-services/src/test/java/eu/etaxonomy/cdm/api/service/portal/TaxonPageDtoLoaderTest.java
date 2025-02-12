@@ -222,7 +222,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         HomotypicGroupDTO firstHeteroSynGroup = heteroSynGroups.getItems().get(0);
         Assert.assertEquals(2, firstHeteroSynGroup.getSynonyms().getCount());
         Assert.assertEquals(2, firstHeteroSynGroup.getSynSecSources().getCount());
-        Assert.assertEquals("My hetero sec book: 48 My hetero sec book: 49", TaggedTextFormatter.createString(firstHeteroSynGroup.getTaggedSynSecs()));
+        Assert.assertEquals("My hetero sec book: 48, My hetero sec book: 49", TaggedTextFormatter.createString(firstHeteroSynGroup.getTaggedSynSecs()));
 
         //... second group
         HomotypicGroupDTO secondHeteroSynGroup = heteroSynGroups.getItems().get(1);
@@ -235,7 +235,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         HomotypicGroupDTO thirdHeteroSynGroup = heteroSynGroups.getItems().get(2);
         Assert.assertEquals(2, thirdHeteroSynGroup.getSynonyms().getCount());
         Assert.assertEquals(2, thirdHeteroSynGroup.getSynSecSources().getCount());
-        Assert.assertEquals("2012: My book4: 33 2012: My book4", TaggedTextFormatter.createString(thirdHeteroSynGroup.getTaggedSynSecs()));
+        Assert.assertEquals("2012: My book4: 33, 2012: My book4", TaggedTextFormatter.createString(thirdHeteroSynGroup.getTaggedSynSecs()));
 
         //types
 
