@@ -1271,7 +1271,6 @@ public abstract class Cdm2CdmImportBase
         //others
         handleCollection(result, DescriptionBase.class, "descriptiveDataSets", DescriptiveDataSet.class, state);
         handleCollection(result, DescriptionBase.class, "descriptionSources", Reference.class, state);
-        result.setDescribedSpecimenOrObservation(detach(descriptionBase.getDescribedSpecimenOrObservation(), state));
         return result;
     }
 

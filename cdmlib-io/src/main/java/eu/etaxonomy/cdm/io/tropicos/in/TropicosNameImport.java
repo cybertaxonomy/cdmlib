@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
@@ -74,6 +75,7 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
 
     @Override
     protected void handleSingleLine(STATE state) {
+
         TaxonName name = makeName(state);
         if (name == null){
             return;
@@ -111,10 +113,17 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         }
         state.getDeduplicationHelper().replaceAuthorNamesAndNomRef(name);
 
+        //
         getNameService().saveOrUpdate(name);
+        saveParsedName(name);
         state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);
 
         makeTaxon(state, name);
+    }
+
+    private void saveParsedName(TaxonName name) {
+        Reference nomRef = name.getNomenclaturalReference();
+        save(nomRef);
     }
 
     private void makeNomStatus(STATE state, TaxonName name) {
@@ -284,6 +293,7 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
     private NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 
     private TaxonName makeName(STATE state) {
+
         Map<String, String> record = state.getCurrentRecord();
         String fullNameStr = record.get(OUTPUT_FULL_NAME_WITH_AUTHORS);
         String nameStr = record.get(INPUT_FULL_NAME_NO_AUTHORS);
@@ -304,12 +314,14 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
             state.getResult().addWarning(message, state.getRow());
             return null;
         }else if (fullNameStr != null){
-            name = parser.parseFullName(fullNameStr, state.getConfig().getNomenclaturalCode(), null);
+            NameParserResult parserResult = parser.parseFullName2(fullNameStr, state.getConfig().getNomenclaturalCode(), null);
+            name = parserResult.getName();
             if (nameStr != null && !nameStr.equals(name.getNameCache())){
                 String message = "Name with authors (%s) and without authors (%s) is not consistent";
                 message = String.format(message, fullNameStr, nameStr);
                 state.getResult().addWarning(message, state.getRow());
             }
+
         }else{
             name = parser.parseSimpleName(nameStr, state.getConfig().getNomenclaturalCode(), null);
         }
@@ -349,10 +361,8 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
             addSourceReference(state, taxon);
             this.getTaxonService().saveOrUpdate(taxon);
             state.getResult().addNewRecords(Taxon.class.getSimpleName(), 1);
-
         }
     }
-
 
     /**
      * Transactional save method to retrieve the parent node
@@ -364,12 +374,12 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
                 parentNode = getTaxonNodeService().find(state.getConfig().getParentNodeUuid());
                 if (parentNode == null){
                     //node does not exist => create new classification
-                    Classification classification = makeClassification(state);
+                    Classification classification = createClassification(state);
                     parentNode = classification.getRootNode();
                     parentNode.setUuid(state.getConfig().getParentNodeUuid());
                 }
             }else {
-                Classification classification = makeClassification(state);
+                Classification classification = createClassification(state);
                 state.getConfig().setParentNodeUuid(classification.getRootNode().getUuid());
                 parentNode = classification.getRootNode();
             }
@@ -378,13 +388,14 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         return parentNode;
     }
 
-    protected Classification makeClassification(STATE state) {
+    protected Classification createClassification(STATE state) {
         Reference ref = getTransactionalSourceReference(state);
         String classificationStr = state.getConfig().getClassificationName();
         if (isBlank(classificationStr)){
             classificationStr = "Tropicos import " + UUID.randomUUID();
         }
         Classification classification = Classification.NewInstance(classificationStr, ref, Language.UNDETERMINED());
+        this.getClassificationService().save(classification);
         return classification;
     }
 }

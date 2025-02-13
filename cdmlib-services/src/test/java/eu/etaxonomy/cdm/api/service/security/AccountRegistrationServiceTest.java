@@ -45,11 +45,15 @@ import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.common.LogUtils;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
+/**
+ * @author a.kohlbecker
+ * @since 18.11.2021
+ */
 public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest {
 
     private static final double maxRequestRate = 4.0;
 
-    Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private static final int rateLimiterTimeout = 200;
     private static final String userName = "pwdResetTestUser";
@@ -79,7 +83,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
 
     private CountDownLatch createRequestTokenSendSignal;
     private CountDownLatch accountCreatedSignal;
-    Throwable assyncError = null;
+    private Throwable assyncError = null;
 
     @Before
     public void startEmailServer() {
@@ -89,7 +93,6 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
         wiser.start();
         logger.debug("Wiser email server started");
     }
-
 
     @Before
     public void accountRegistrationService() throws InterruptedException {
@@ -118,8 +121,6 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testSuccessfulEmailReset() throws Throwable {
-
-        logger.debug("testSuccessfulEmailReset() ...");
 
         // printDataSet(System.err, "UserAccount");
 
@@ -180,9 +181,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
-    public void emailResetToken_ivalidEmailAddress() throws Throwable {
-
-        logger.debug("emailResetToken_ivalidEmailAddress() ...");
+    public void emailResetToken_invalidEmailAddress() throws Throwable {
 
         createRequestTokenSendSignal = new CountDownLatch(1);
 
@@ -208,8 +207,6 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testInvalidToken() throws Throwable {
 
-        logger.debug("testInvalidToken() ...");
-
         accountCreatedSignal = new CountDownLatch(1);
 
         // -- change password
@@ -231,8 +228,6 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
     // @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testUserNameExists() throws Throwable {
-
-        logger.debug("testUserNameExists() ...");
 
         createRequestTokenSendSignal = new CountDownLatch(1);
 
@@ -268,7 +263,5 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
     }
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // not needed
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

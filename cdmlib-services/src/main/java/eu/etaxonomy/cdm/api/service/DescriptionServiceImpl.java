@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -300,13 +301,29 @@ public class DescriptionServiceImpl
     @Transactional(readOnly = false)
     public List<MergeResult<DescriptionBase>> mergeDescriptionElements(Collection<TaxonDistributionDTO> descriptionElements, boolean returnTransientEntity) {
         List<MergeResult<DescriptionBase>> mergedObjects = new ArrayList<>();
+        Set<TaxonDistributionDTO> removeList = new HashSet<>();
+        for (TaxonDistributionDTO dto: descriptionElements){
+            Taxon taxon = null;
+            Set<TaxonDescription>  descriptions = dto.getDescriptionsWrapper().getDescriptions();
 
+            for(TaxonDescription desc: dto.getDescriptionsWrapper().getDescriptions()){
+                if (desc.getTaxon() == null){
+                    if (taxon == null){
+                        taxon = (Taxon) taxonDao.load(dto.getTaxonUuid());
+                    }
+                    taxon.addDescription(desc);
+                    removeList.add(dto);
+                }
+
+            }
+            if (taxon != null){
+                mergedObjects.addAll(merge(new ArrayList<>(descriptions), true));
+            }
+        }
+        descriptionElements.removeAll(removeList);
         for(TaxonDistributionDTO obj : descriptionElements) {
             Iterator<TaxonDescription> iterator = obj.getDescriptionsWrapper().getDescriptions().iterator();
             List<DescriptionBase> list = new ArrayList(obj.getDescriptionsWrapper().getDescriptions());
-          //  Map<UUID, DescriptionBase> map = dao.saveOrUpdateAll(list);
-//            MergeResult<DescriptionBase> mergeResult = new MergeResult<DescriptionBase>(mergedEntity, newEntities)
-//            mergedObjects.add(map.values());
             while (iterator.hasNext()){
                 TaxonDescription desc = iterator.next();
                 mergedObjects.add(dao.merge(desc, returnTransientEntity));
@@ -323,16 +340,17 @@ public class DescriptionServiceImpl
         UpdateResult result = new UpdateResult();
         DescriptiveDataSet dataSet = descriptiveDataSetDao.load(descriptiveDataSetUuid);
         Set<DescriptionBase> descriptionsOfDataSet = dataSet.getDescriptions();
-        HashMap<UUID, Set<DescriptionBase>> descriptionSpecimenMap = new HashMap<>();
+        Map<UUID, Set<DescriptionBase>> descriptionSpecimenMap = new HashMap<>();
         Set<DescriptionBase> specimenDescriptions;
         for (DescriptionBase<?> descriptionBase: descriptionsOfDataSet){
-            if (descriptionBase.getDescribedSpecimenOrObservation() != null){
-                specimenDescriptions = descriptionSpecimenMap.get(descriptionBase.getDescribedSpecimenOrObservation().getUuid());
+            if (descriptionBase.isInstanceOf(SpecimenDescription.class)){
+                SpecimenDescription specimenDescription = CdmBase.deproxy(descriptionBase, SpecimenDescription.class);
+                specimenDescriptions = descriptionSpecimenMap.get(specimenDescription.getDescribedSpecimenOrObservation().getUuid());
                 if (specimenDescriptions == null){
                     specimenDescriptions = new HashSet<>();
                 }
-                specimenDescriptions.add(descriptionBase);
-                descriptionSpecimenMap.put(descriptionBase.getDescribedSpecimenOrObservation().getUuid(), specimenDescriptions);
+                specimenDescriptions.add(specimenDescription);
+                descriptionSpecimenMap.put(specimenDescription.getDescribedSpecimenOrObservation().getUuid(), specimenDescriptions);
             }
             if (descriptionBase instanceof TaxonDescription){
                 specimenDescriptions = descriptionSpecimenMap.get(((TaxonDescription)descriptionBase).getTaxon().getUuid());
@@ -390,7 +408,7 @@ public class DescriptionServiceImpl
                     UUID descElementUuid = elementBase.getUuid();
                     if (descElementUuid != null){
                         List<DescriptionElementDto> equalUuidsElements = elements.stream().filter( e -> e != null && e.getElementUuid() != null && e.getElementUuid().equals(descElementUuid)).collect(Collectors.toList());
-                        if (equalUuidsElements.size() == 0 || (equalUuidsElements.size() == 1 && equalUuidsElements.get(0)instanceof QuantitativeDataDto && (((QuantitativeDataDto)equalUuidsElements.get(0)).getValues().isEmpty()) &&(((QuantitativeDataDto)equalUuidsElements.get(0)).getNoDataStatus() == null))){
+                        if (equalUuidsElements.size() == 0 || (equalUuidsElements.size() == 1 && equalUuidsElements.get(0)instanceof QuantitativeDataDto && (((QuantitativeDataDto)equalUuidsElements.get(0)).getValues().isEmpty()) &&(equalUuidsElements.get(0).getNoDataStatus() == null))){
                             removeElements.add(elementBase);
                         }
                     }
@@ -435,7 +453,7 @@ public class DescriptionServiceImpl
                                 elementBase.addStateData(newStateData);
                             }
                             desc.addElement(elementBase);
-                            elementBase.setNoDataStatus(((CategoricalDataDto)descElement).getNoDataStatus());
+                            elementBase.setNoDataStatus(descElement.getNoDataStatus());
                         }
                         if (descElement instanceof QuantitativeDataDto){
 
@@ -459,7 +477,7 @@ public class DescriptionServiceImpl
                             data = StructuredDescriptionAggregation.handleMissingMinOrMax(data,
                                     MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
                             desc.addElement(data);
-                            data.setNoDataStatus(((QuantitativeDataDto)descElement).getNoDataStatus());
+                            data.setNoDataStatus(descElement.getNoDataStatus());
                         }
 
                         //create new element
@@ -471,7 +489,7 @@ public class DescriptionServiceImpl
                             List<StateDataDto> stateDtos = ((CategoricalDataDto)descElement).getStates();
 
                             data.getStateData().clear();
-                            if (stateDtos.isEmpty() && ((CategoricalDataDto)descElement).getNoDataStatus() == null){
+                            if (stateDtos.isEmpty() && descElement.getNoDataStatus() == null){
                                 desc.removeElement(data);
                             }else{
                                 for (StateDataDto dataDto: stateDtos){
@@ -487,7 +505,7 @@ public class DescriptionServiceImpl
                                     }
                                 }
 
-                                data.setNoDataStatus(((CategoricalDataDto)descElement).getNoDataStatus());
+                                data.setNoDataStatus(descElement.getNoDataStatus());
                             }
                         }else if (elementBase.isInstanceOf(QuantitativeData.class)){
                             QuantitativeData data = HibernateProxyHelper.deproxy(elementBase, QuantitativeData.class);
@@ -501,7 +519,7 @@ public class DescriptionServiceImpl
                             }
                             Set<StatisticalMeasurementValueDto> valueDtos = ((QuantitativeDataDto)descElement).getValues();
                             data.getStatisticalValues().clear();
-                            if (valueDtos.isEmpty() && ((QuantitativeDataDto)descElement).getNoDataStatus() == null){
+                            if (valueDtos.isEmpty() && descElement.getNoDataStatus() == null){
                                 desc.removeElement(data);
                             }else{
                                 for (StatisticalMeasurementValueDto dataDto: valueDtos){
@@ -516,7 +534,7 @@ public class DescriptionServiceImpl
     //                            data.getStatisticalValues().addAll(statisticalValues);
                                 data = StructuredDescriptionAggregation.handleMissingMinOrMax(data,
                                         MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
-                                data.setNoDataStatus(((QuantitativeDataDto)descElement).getNoDataStatus());
+                                data.setNoDataStatus(descElement.getNoDataStatus());
                             }
 
                         }
@@ -643,17 +661,6 @@ public class DescriptionServiceImpl
         }
 
         return result;
-    }
-
-    @Override
-    @Deprecated
-    public <T extends DescriptionElementBase> List<T> getDescriptionElementsForTaxon(
-            Taxon taxon, Set<Feature> features,
-            Class<T> type, boolean includeUnpublished,
-            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-
-        return listDescriptionElementsForTaxon(taxon, features, type, includeUnpublished,
-                pageSize, pageNumber, propertyPaths);
     }
 
     @Override

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.parser;
 
 import java.util.HashSet;
@@ -15,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTimeFieldType;
@@ -49,7 +49,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
-
 /**
  * Parser for {@link TaxonName}s of type NonViralName and below.
  *
@@ -69,9 +68,76 @@ public class NonViralNameParserImpl
 	private final boolean authorIsAlwaysTeam = false;
 	private boolean removeSpaceAfterDot = false;
 
-    public static NonViralNameParserImpl NewInstance(){
-		return new NonViralNameParserImpl();
+	private static NonViralNameParserImpl defaultInstance;
+
+//*********************** FACTORY ********************************************/
+
+    public static final NonViralNameParserImpl DefaultInstance(){
+        if (defaultInstance == null) {
+            defaultInstance = new NonViralNameParserImpl();
+        }
+        return defaultInstance;
+    }
+
+    public static NonViralNameParserImpl NewInstance(boolean removeSpaceAfterDot){
+        NonViralNameParserImpl result = new NonViralNameParserImpl();
+		result.removeSpaceAfterDot = removeSpaceAfterDot;
+		return result;
 	}
+
+    public static NonViralNameParserImpl NewInstance(){
+        return new NonViralNameParserImpl();
+    }
+
+//***************************** STATIC ******************************************/
+
+    public static Set<CdmBase> getTransientEntitiesOfParsedName(TaxonName parsedName) {
+        Set<CdmBase> transientEntities = new HashSet<>();
+        if (parsedName != null) {  //we don't test for !name.isPersisted() here as the name can be persisted even if parsed (this happens if the name instance is passed to the parser)
+            //authors
+            parsedName.allAuthors()
+                  .forEach(a->fillTransientEntitiesOfAuthor(a, transientEntities));
+            //reference
+            fillTransientEntitiesOfReference(parsedName.getNomenclaturalReference(), transientEntities);
+            //names
+            //hybrid parents
+            parsedName.getHybridChildRelations().stream().map(rel->rel.getParentName())
+                .forEach(n->fillTransientEntitiesOfName(n, transientEntities));
+            //original comb.
+            fillTransientEntitiesOfName(parsedName.getOriginalSpelling(), transientEntities);
+        }
+        return transientEntities;
+    }
+
+    private static void fillTransientEntitiesOfName(TaxonName n, Set<CdmBase> transientEntities) {
+        if (n != null && !n.isPersisted()) {
+            transientEntities.add(n);
+            transientEntities.addAll(getTransientEntitiesOfParsedName(n)); //only necessary for possibly existing authors of hybrid parent
+        }
+    }
+
+    private static void fillTransientEntitiesOfReference(Reference ref,
+            Set<CdmBase> transientEntities) {
+        if (ref != null && !ref.isPersisted()) {
+            transientEntities.add(ref);
+            fillTransientEntitiesOfReference(ref.getInReference(), transientEntities);
+            fillTransientEntitiesOfAuthor(ref.getAuthorship(), transientEntities);
+        }
+    }
+
+    private static void fillTransientEntitiesOfAuthor(TeamOrPersonBase<?> author, Set<CdmBase> transientEntities){
+        if (author != null && !author.isPersisted()) {
+            transientEntities.add(author);
+            if (author.isInstanceOf(Team.class)) {
+                CdmBase.deproxy(author, Team.class).getTeamMembers()
+                .forEach(m->{if (!m.isPersisted()) {
+                    transientEntities.add(m);
+                }});
+            }
+        }
+    }
+
+//***********************************************************************************/
 
 	@Override
     public INonViralName parseSimpleName(String simpleName){
@@ -94,7 +160,8 @@ public class NonViralNameParserImpl
 	}
 
 	public INonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code, Rank rank){
-		INonViralName result = null;
+
+	    INonViralName result = null;
 		if(code == null) {
 			boolean isBotanicalName = anyBotanicFullNamePattern.matcher(fullString).find();
 			boolean isZoologicalName = anyZooFullNamePattern.matcher(fullString).find();
@@ -153,15 +220,25 @@ public class NonViralNameParserImpl
 		return parseReferencedName(fullReferenceString, null, null);
 	}
 
+    @Override
+    public NameParserResult parseReferencedName2(String fullReferenceString, NomenclaturalCode nomCode,
+            Rank rank) {
+
+        if (fullReferenceString == null){
+            return new NameParserResult(null);
+        }else{
+            INonViralName nameToBeFilled = getNonViralNameInstance(fullReferenceString, nomCode, rank);
+            NameParserResult result = parseReferencedName(nameToBeFilled, fullReferenceString, rank, MAKE_EMPTY);
+            return result;
+        }
+    }
+
 	@Override
-    public TaxonName parseReferencedName(String fullReferenceString, NomenclaturalCode nomCode, Rank rank) {
-		if (fullReferenceString == null){
-			return null;
-		}else{
-		    INonViralName result = getNonViralNameInstance(fullReferenceString, nomCode, rank);
-			parseReferencedName(result, fullReferenceString, rank, MAKE_EMPTY);
-			return TaxonName.castAndDeproxy(result);
-		}
+    public TaxonName parseReferencedName(String fullReferenceString, NomenclaturalCode nomCode,
+            Rank rank) {
+
+	    NameParserResult result = this.parseReferencedName2(fullReferenceString, nomCode, rank);
+	    return result.getName();
 	}
 
 	private String standardize(INonViralName nameToBeFilled, String fullReferenceString, boolean makeEmpty){
@@ -229,11 +306,14 @@ public class NonViralNameParserImpl
 	}
 
 	@Override
-    public void parseReferencedName(INonViralName nameToBeFilled, String fullReferenceStringOrig, Rank rank, boolean makeEmpty) {
-		//standardize
+    public NameParserResult parseReferencedName(INonViralName nameToBeFilled, String fullReferenceStringOrig, Rank rank, boolean makeEmpty) {
+
+	    NameParserResult parserResult;
+
+	    //standardize
 		String fullReferenceString = standardize(nameToBeFilled, fullReferenceStringOrig, makeEmpty);
 		if (fullReferenceString == null){
-			return;
+			return new NameParserResult((TaxonName)nameToBeFilled);
 		}
 		// happens already in standardize(...)
 //		makeProblemEmpty(nameToBeFilled);
@@ -262,24 +342,25 @@ public class NonViralNameParserImpl
 
 		if (onlyNameMatcher.matches()){
 			makeEmpty = false;
-			parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);
+			parserResult = parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);
 		}else if (nameAndRefSeparatorMatcher.find()){
-			makeNameWithReference(nameToBeFilled, fullReferenceString, nameAndRefSeparatorMatcher, rank, makeEmpty);
+			parserResult = makeNameWithReference(nameToBeFilled, fullReferenceString, nameAndRefSeparatorMatcher, rank, makeEmpty);
 		}else if (hybridMatcher.matches() ){
 		    //I do not remember why we need makeEmpty = false for onlyNameMatcher,
 		    //but for hybridMatcher we need to remove old Hybrid Relationships if necessary, therefore
 		    //I removed it from here
-            parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);
+            parserResult = parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);
         }else if (onlySimpleNameMatcher.matches()){
 			makeEmpty = false;
-			parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);	//simpleName not yet implemented
+			parserResult = parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);	//simpleName not yet implemented
 		}else{
-			makeNoFullRefMatch(nameToBeFilled, fullReferenceString, rank);
+		    parserResult = makeNoFullRefMatch(nameToBeFilled, fullReferenceString, rank);
 		}
 		//problem handling. Start and end solved in subroutines
 		if (! nameToBeFilled.hasProblem()){
 			makeProblemEmpty(nameToBeFilled);
 		}
+		return parserResult;
 	}
 
 	private void makeProblemEmpty(IParsable parsable){
@@ -292,7 +373,10 @@ public class NonViralNameParserImpl
 		parsable.setProblemEnds(-1);
 	}
 
-	private void makeNoFullRefMatch(INonViralName nameToBeFilled, String fullReferenceString, Rank rank){
+	private NameParserResult makeNoFullRefMatch(INonViralName nameToBeFilled, String fullReferenceString, Rank rank){
+
+	    NameParserResult parserResult;
+
 	    //try to parse first part as name, but keep in mind full string is not parsable
 		int start = 0;
 
@@ -301,9 +385,11 @@ public class NonViralNameParserImpl
 		if (fullNameMatcher.find()){
 			String fullNameString = fullNameMatcher.group(0);
 			nameToBeFilled.setProtectedNameCache(false);
-			parseFullName(nameToBeFilled, fullNameString, rank, false);
+			parserResult = parseFullName(nameToBeFilled, fullNameString, rank, false);
 			String sure = nameToBeFilled.getNameCache();
 			start = sure.length();
+		}else {
+		    parserResult = new NameParserResult((TaxonName)nameToBeFilled);
 		}
 
 //		String localSimpleName = getLocalSimpleName(nameToBeFilled);
@@ -324,14 +410,17 @@ public class NonViralNameParserImpl
 		nameToBeFilled.setProblemStarts(start);
 		nameToBeFilled.setProblemEnds(fullReferenceString.length());
 		logger.info("no applicable parsing rule could be found for \"" + fullReferenceString + "\"");
+
+		return parserResult;
 	}
 
-	private void makeNameWithReference(INonViralName nameToBeFilled,
+	private NameParserResult makeNameWithReference(INonViralName nameToBeFilled,
 			String fullReferenceString,
 			Matcher nameAndRefSeparatorMatcher,
 			Rank rank,
 			boolean makeEmpty){
 
+	    NameParserResult parserResult;
 		String nameAndSeparator = nameAndRefSeparatorMatcher.group(0);
 	    String name = nameAndRefSeparatorMatcher.group(1);
 	    String referenceString = fullReferenceString.substring(nameAndRefSeparatorMatcher.end());
@@ -343,11 +432,11 @@ public class NonViralNameParserImpl
 	    //parse subparts
 
 		int oldProblemEnds = nameToBeFilled.getProblemEnds();
-		parseFullName(nameToBeFilled, name, rank, makeEmpty);
+		parserResult = parseFullName(nameToBeFilled, name, rank, makeEmpty);
 	    nameToBeFilled.setProblemEnds(oldProblemEnds);
 
 	    //original spelling
-        handleOriginalSpelling(nameToBeFilled);
+        handleOriginalSpelling(parserResult, nameToBeFilled);
 
 		//zoological new combinations should not have a nom. reference to be parsed
 	    if (nameToBeFilled.isZoological()){
@@ -361,7 +450,7 @@ public class NonViralNameParserImpl
 			}
 		}
 
-	    parseReference(nameToBeFilled, referenceString, isInReference);
+	    parseReference(parserResult, referenceString, isInReference);
 	    Reference ref = nameToBeFilled.getNomenclaturalReference();
 
 	    //problem start
@@ -400,12 +489,16 @@ public class NonViralNameParserImpl
 		if ( (nomRef = nameToBeFilled.getNomenclaturalReference()) != null ){
 			nomRef.setAuthorship(nameToBeFilled.getCombinationAuthorship());
 		}
+
+		return parserResult;
 	}
 
 	/**
      * Tries to create the best name (without authors) that makes an original spelling name for the nameToBeFilled.
+	 * @param parserResult
      */
-    private void handleOriginalSpelling(INonViralName nameToBeFilled) {
+    private void handleOriginalSpelling(NameParserResult parserResult, INonViralName nameToBeFilled) {
+
         if (nameToBeFilled.getNomenclaturalSource()== null || CdmUtils.isBlank(nameToBeFilled.getNomenclaturalSource().getOriginalInfo())){
             return;
         }
@@ -433,7 +526,7 @@ public class NonViralNameParserImpl
                     off2++;
                 }
                 if (originalPart != null){
-                    int newDiff = StringUtils.getLevenshteinDistance(namePart, originalPart);
+                    int newDiff = LevenshteinDistance.getDefaultInstance().apply(namePart, originalPart);
                     diff += newDiff;
                 }
             }
@@ -466,6 +559,7 @@ public class NonViralNameParserImpl
 
         nameToBeFilled.setOriginalSpelling(originalName);
         nameToBeFilled.setOriginalInfo(null);
+        parserResult.addOtherName(originalName);
         return;
     }
 
@@ -546,13 +640,12 @@ public class NonViralNameParserImpl
         return fullString;
     }
 
+	private void parseReference(NameParserResult parserResult, String strReference, boolean isInReference){
 
-	private void parseReference(INonViralName nameToBeFilled, String strReference, boolean isInReference){
-
-		INomenclaturalReference ref;
 		String originalStrReference = strReference;
+		INonViralName nameToBeFilled = parserResult.getName();
 
-		//End (just delete end (e.g. '.', may be ambigous for yearPhrase, but no real information gets lost
+		//End (just delete end (e.g. '.', may be ambiguous for yearPhrase, but no real information gets lost
 		Matcher endMatcher = getMatcher(referenceEnd + end, strReference);
 		if (endMatcher.find()){
 			String endPart = endMatcher.group(0);
@@ -577,8 +670,8 @@ public class NonViralNameParserImpl
 				yearPart = String.valueOf(zooName.getPublicationYear());
 				//continue
 			}else{
-				ref = makeDetailYearUnparsable(nameToBeFilled,strReference);
-				ref.setDatePublished(TimePeriodParser.parseStringVerbatim(yearPart));
+				makeDetailYearUnparsable(parserResult, strReference)
+				    .setDatePublished(TimePeriodParser.parseStringVerbatim(yearPart));
 				return;
 			}
 		}
@@ -592,11 +685,12 @@ public class NonViralNameParserImpl
 			detailPart = detailPart.replaceFirst(pStart + detailSeparator, "").trim();
 			nameToBeFilled.setNomenclaturalMicroReference(detailPart);
 		}else{
-			makeDetailYearUnparsable(nameToBeFilled, strReferenceWithYear);
+			makeDetailYearUnparsable(parserResult, strReferenceWithYear);
 			return;
 		}
+
 		//parse title and author
-		ref = parseReferenceTitle(strReference, yearPart, isInReference);
+		Reference ref = parseReferenceTitle(parserResult, strReference, yearPart, isInReference);
 		if (ref.hasProblem()){
 		    //we need to protect both caches otherwise the titleCache is incorrectly build from atomized parts
 			ref.setTitleCache( (isInReference ? "in ":"") +  originalStrReference, true);
@@ -607,24 +701,33 @@ public class NonViralNameParserImpl
 		ref.setProblemEnds(end);
 	}
 
-	private Reference makeDetailYearUnparsable(INonViralName nameToBeFilled, String strReference) {
-		Reference ref;
+	private Reference makeDetailYearUnparsable(NameParserResult parserResult, String strReference) {
 
-		ref = ReferenceFactory.newGeneric();
-		ref.setTitleCache(strReference, true);
+	    TaxonName nameToBeFilled = parserResult.getName();
+	    Reference ref = ReferenceFactory.newGeneric();
+
+	    ref.setTitleCache(strReference, true);
         ref.setAbbrevTitleCache(strReference, true);
 		ref.setProblemEnds(strReference.length());
 		ref.addParsingProblem(ParserProblem.CheckDetailOrYear);
 		nameToBeFilled.addParsingProblem(ParserProblem.CheckDetailOrYear);
 		nameToBeFilled.setNomenclaturalReference(ref);
+		parserResult.addReference(ref);
+
 		return ref;
 	}
 
-	/**
-	 * Parses the referenceTitlePart, including the author volume and edition.
-	 */
-	public INomenclaturalReference parseReferenceTitle(String strReference, String year, boolean isInReference){
-		IBook result = null;
+    /**
+     * Parses the referenceTitlePart, including the author volume and edition.
+     */
+	public Reference parseReferenceTitle(String strReference, String year, boolean isInReference){
+	    NameParserResult parserResult = new NameParserResult(null);
+	    return parseReferenceTitle(parserResult, strReference, year, isInReference);
+	}
+
+	private Reference parseReferenceTitle(NameParserResult parserResult, String strReference, String year, boolean isInReference){
+
+	    Reference result;
 
 		Matcher refSineDetailMatcher = referenceSineDetailPattern.matcher(strReference);
 		if (! refSineDetailMatcher.matches()){
@@ -640,7 +743,7 @@ public class NonViralNameParserImpl
 
 		if(isInReference == false){
 			if (bookMatcher.matches() ){
-				result = parseBook(strReference);
+				result = (Reference)parseBook(parserResult, strReference);
 			}else{
 				logger.info("Non-InRef must be book but does not match book: "+ strReference);
 				result = ReferenceFactory.newBook();
@@ -649,21 +752,24 @@ public class NonViralNameParserImpl
 		}else{  //inRef
 			if (articleMatcher.matches()){
 				//article without separators like ","
-				result = parseArticle(strReference);
+				result = parseArticle(parserResult, strReference);
 			}else if (softArticleMatcher.matches()){
-				result = parseArticle(strReference);
+				result = parseArticle(parserResult, strReference);
 			}else if (bookSectionMatcher.matches()){
-				result = parseBookSection(strReference);
+				result = parseBookSection(parserResult, strReference);
 			}else{
 				result =  ReferenceFactory.newGeneric();
 				makeUnparsableRefTitle(result, "in " + strReference);
+				parserResult.addReference(result);
 			}
 		}
+
 		//make year
 		if (makeYear(result, year) == false){
 			//TODO
 			logger.warn("Year could not be parsed");
 		}
+
 		result.setProblemStarts(0);
 		result.setProblemEnds(strReference.length());
 		return result;
@@ -786,31 +892,41 @@ public class NonViralNameParserImpl
 		return strReference;
 	}
 
-	private IBook parseBook(String reference){
-		IBook result = ReferenceFactory.newBook();
+	private IBook parseBook(NameParserResult parserResult, String reference){
+
+	    IBook result = ReferenceFactory.newBook();
 		reference = makeEdition(result, reference);
 		reference = makeVolumeAndSeries(result, reference);
 		result.setAbbrevTitle(reference);
+		parserResult.addReference((Reference)result);
+
 		return result;
 	}
 
-	private Reference parseArticle(String reference){
-		//if (articlePattern)
+	private Reference parseArticle(NameParserResult parserResult, String referenceStr){
+
+	    //if (articlePattern)
 		//(type, author, title, volume, editor, series;
-		Reference result = ReferenceFactory.newArticle();
-		reference = makeVolumeAndSeries(result, reference);
+		Reference article = ReferenceFactory.newArticle();
+		referenceStr = makeVolumeAndSeries(article, referenceStr);
+
+		//journal
 		Reference inJournal = ReferenceFactory.newJournal();
-		if (isNotBlank(result.getSeriesPart()) && result.getSeriesPart().matches(notReallySeriesPart)) {
-		    reference += ", " + result.getSeriesPart();
-		    result.setSeriesPart(null);
+		if (isNotBlank(article.getSeriesPart()) && article.getSeriesPart().matches(notReallySeriesPart)) {
+		    referenceStr += ", " + article.getSeriesPart();
+		    article.setSeriesPart(null);
 		}
-		inJournal.setAbbrevTitle(reference);
-		result.setInReference(inJournal);
-		return result;
+		inJournal.setAbbrevTitle(referenceStr);
+		article.setInReference(inJournal);
+
+		parserResult.addReference(article);
+		parserResult.addReference(inJournal);
+		return article;
 	}
 
-	private Reference parseBookSection(String reference){
-		Reference result = ReferenceFactory.newBookSection();
+	private Reference parseBookSection(NameParserResult parserResult, String reference){
+
+	    Reference bookSection = ReferenceFactory.newBookSection();
 
 		Matcher authorMatcher = authorSepPattern.matcher(reference);
 		boolean find = authorMatcher.find();
@@ -825,19 +941,25 @@ public class NonViralNameParserImpl
 			    authorIsEditor = true;
 			}
 
-			TeamOrPersonBase<?> authorTeam = author(authorString);
-			IBook inBook = parseBook(bookString);
-			inBook.setAuthorship(authorTeam);
+			TeamOrPersonBase<?> author = author(authorString);
+			IBook inBook = parseBook(parserResult, bookString);
+			inBook.setAuthorship(author);
+			parserResult.addAuthor(author);
+			if (author instanceof Team) {
+			    ((Team)author).getTeamMembers().forEach(m->parserResult.addAuthor(m));
+			}
+
 			inBook.setAuthorIsEditor(authorIsEditor);
-			result.setInBook(inBook);
+			bookSection.setInBook(inBook);
 		}else{
 			logger.warn("Unexpected non matching book section author part");
 			//TODO do we want to record a 'problem' here?
-			result.setTitleCache(reference, true);
-			result.setAbbrevTitleCache(reference, true);
+			bookSection.setTitleCache(reference, true);
+			bookSection.setAbbrevTitleCache(reference, true);
 		}
 
-		return result;
+		parserResult.addReference(bookSection);
+		return bookSection;
 	}
 
 	/**
@@ -871,20 +993,28 @@ public class NonViralNameParserImpl
 		return parseFullName(fullNameString, null, null);
 	}
 
-	@Override
+
+    @Override
     public INonViralName parseFullName(String fullNameString, NomenclaturalCode nomCode, Rank rank) {
+        return parseFullName2(fullNameString, nomCode, rank).getName();
+    }
+
+	@Override
+    public NameParserResult parseFullName2(String fullNameString, NomenclaturalCode nomCode, Rank rank) {
 
 		if (fullNameString == null){
-			return null;
+			return new NameParserResult(null);
 		}else{
-			INonViralName result = getNonViralNameInstance(fullNameString, nomCode, rank);
-			parseFullName(result, fullNameString, rank, false);
+			INonViralName nameToUse = getNonViralNameInstance(fullNameString, nomCode, rank);
+			NameParserResult result = parseFullName(nameToUse, fullNameString, rank, false);
 			return result;
 		}
 	}
 
 	@Override
-	public void parseFullName(INonViralName nameToBeFilledOrig, String fullNameStringOrig, Rank rank, boolean makeEmpty) {
+	public NameParserResult parseFullName(final INonViralName nameToBeFilledOrig, String fullNameStringOrig, Rank rank, boolean makeEmpty) {
+
+	    NameParserResult parserResult = new NameParserResult((TaxonName)nameToBeFilledOrig);
 	    INonViralName nameToBeFilled = nameToBeFilledOrig;
 
 	    //TODO prol. etc.
@@ -897,7 +1027,7 @@ public class NonViralNameParserImpl
 		}
 		String authorString = null;
 		if (fullNameStringOrig == null){
-			return;
+			return new NameParserResult(null);
 		}
 		if (makeEmpty){
 			makeEmpty(nameToBeFilled);
@@ -1150,10 +1280,10 @@ public class NonViralNameParserImpl
 
 			//authors
 		    if (isNotBlank(authorString) ){
-				handleAuthors(nameToBeFilled, fullNameString, authorString);
+				handleAuthors(parserResult, fullNameString, authorString);
 			}
-		    handleOriginalSpelling(nameToBeFilled);
-		    return;
+		    handleOriginalSpelling(parserResult, nameToBeFilled);
+		    return parserResult;
 		} catch (UnknownCdmTypeException e) {
 			nameToBeFilled.addParsingProblem(ParserProblem.RankNotSupported);
 			nameToBeFilled.setTitleCache(fullNameString, true);
@@ -1162,7 +1292,7 @@ public class NonViralNameParserImpl
 			// END
 			logger.info("unknown rank (" + (rank == null? "null":rank) + ") or abbreviation in string " +  fullNameString);
 			//return result;
-			return;
+			return parserResult;
 		}
 	}
 
@@ -1272,36 +1402,51 @@ public class NonViralNameParserImpl
         return fullNameString;
     }
 
+    @Override
+    public NameParserResult parseAuthors2(TaxonName nonViralNameOrig, String authorString) throws StringNotParsableException{
 
-	/**
+        NameParserResult parserResult = new NameParserResult(nonViralNameOrig);
+
+        INonViralName nonViralName = CdmBase.deproxy(nonViralNameOrig);
+        TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[6];
+        Integer[] years = new Integer[4];
+        NomenclaturalCode code = nonViralName.getNameType();
+
+        //parse
+        fullAuthors(parserResult, authorString, authors, years, code);
+
+        nonViralName.setCombinationAuthorship(authors[0]);
+        nonViralName.setExCombinationAuthorship(authors[1]);
+        nonViralName.setInCombinationAuthorship(authors[2]);
+        nonViralName.setBasionymAuthorship(authors[3]);
+        nonViralName.setExBasionymAuthorship(authors[4]);
+        nonViralName.setInBasionymAuthorship(authors[5]);
+        if (nonViralName.isZoological()){
+            IZoologicalName zooName = (IZoologicalName)nonViralName;
+            zooName.setPublicationYear(years[0]);
+            zooName.setOriginalPublicationYear(years[2]);
+        }
+
+        return parserResult;
+    }
+
+    /**
 	 * Author parser for external use
 	 */
 	@Override
 	public void parseAuthors(INonViralName nonViralNameOrig, String authorString) throws StringNotParsableException{
-	    INonViralName nonViralName = CdmBase.deproxy(nonViralNameOrig);
-	    TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[6];
-		Integer[] years = new Integer[4];
-		NomenclaturalCode code = nonViralName.getNameType();
-		fullAuthors(authorString, authors, years, code);
-		nonViralName.setCombinationAuthorship(authors[0]);
-		nonViralName.setExCombinationAuthorship(authors[1]);
-		nonViralName.setInCombinationAuthorship(authors[2]);
-		nonViralName.setBasionymAuthorship(authors[3]);
-		nonViralName.setExBasionymAuthorship(authors[4]);
-		nonViralName.setInBasionymAuthorship(authors[5]);
-        if (nonViralName.isZoological()){
-			IZoologicalName zooName = (IZoologicalName)nonViralName;
-			zooName.setPublicationYear(years[0]);
-			zooName.setOriginalPublicationYear(years[2]);
-		}
+	    this.parseAuthors2((TaxonName)nonViralNameOrig, authorString);
+        return;
 	}
 
-	public void handleAuthors(INonViralName nameToBeFilled, String fullNameString, String authorString) {
+	public void handleAuthors(NameParserResult parserResult, String fullNameString, String authorString) {
+
+	    TaxonName nameToBeFilled = parserResult.getName();
 	    TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[6];
 		Integer[] years = new Integer[4];
 		try {
 			NomenclaturalCode code = nameToBeFilled.getNameType();
-			fullAuthors(authorString, authors, years, code);
+			fullAuthors(parserResult, authorString, authors, years, code);
 		} catch (StringNotParsableException e) {
 			nameToBeFilled.addParsingProblem(ParserProblem.UnparsableAuthorPart);
 			nameToBeFilled.setTitleCache(fullNameString, true);
@@ -1318,16 +1463,28 @@ public class NonViralNameParserImpl
 		nameToBeFilled.setExBasionymAuthorship(authors[4]);
         nameToBeFilled.setInBasionymAuthorship(authors[5]);
 		if (nameToBeFilled.isZoological()){
-			IZoologicalName zooName = (IZoologicalName)nameToBeFilled;
+			IZoologicalName zooName = nameToBeFilled;
 			zooName.setPublicationYear(years[0]);
 			zooName.setOriginalPublicationYear(years[2]);
 		}
 	}
 
-	/**
+    /**
+     * Adds newly created author entities to the parse result.
+     */
+    private TeamOrPersonBase<?> saveAuthor(NameParserResult parserResult, TeamOrPersonBase<?> author) {
+        if (author != null) {
+            parserResult.addAuthor(author);
+            if (author instanceof Team) {
+                ((Team) author).getTeamMembers().stream().forEach(tm->parserResult.addAuthor(tm));
+            }
+        }
+
+        return author;
+    }
+
+    /**
 	 * Guesses the rank of uninomial depending on the typical endings for ranks
-	 * @param nameToBeFilled
-	 * @param string
 	 */
 	private Rank guessUninomialRank(INonViralName nameToBeFilled, String uninomial) {
 		Rank result = Rank.GENUS();
@@ -1388,7 +1545,7 @@ public class NonViralNameParserImpl
 	 *          ExTeam[1], InTeam[2], BasionymTeam[3],
 	 *          ExBasionymTeam[4], InBasionymTeam[5]
 	 */
-	protected void fullAuthors (String fullAuthorStringOrig, TeamOrPersonBase<?>[] authors,
+	void fullAuthors (NameParserResult parserResult, String fullAuthorStringOrig, TeamOrPersonBase<?>[] authors,
 	        Integer[] years, NomenclaturalCode code)
 			throws StringNotParsableException{
 
@@ -1419,14 +1576,15 @@ public class NonViralNameParserImpl
 			logger.warn ("Full author String parsable only for defined BotanicalNames or ZoologicalNames but this is " + code.getLabel());
 			throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable.");
 		}
-		fullAuthorsChecked(fullAuthorString, authors, years);
+		fullAuthorsChecked(parserResult, fullAuthorString, authors, years);
 	}
 
 	/*
 	 * like fullTeams but without trim and match check
 	 */
-	protected void fullAuthorsChecked (String fullAuthorString, TeamOrPersonBase<?>[] authors, Integer[] years){
-		int authorShipStart = 0;
+	private void fullAuthorsChecked (NameParserResult parserResult, String fullAuthorString, TeamOrPersonBase<?>[] authors, Integer[] years){
+
+	    int authorShipStart = 0;
 		Matcher basionymMatcher = basionymPattern.matcher(fullAuthorString);
 
 		if (basionymMatcher.find(0)){
@@ -1438,7 +1596,7 @@ public class NonViralNameParserImpl
 
 			TeamOrPersonBase<?>[] basAuthors = new TeamOrPersonBase[3];
 			Integer[] basYears = new Integer[2];
-			authorsAndExAndIn(basString, basAuthors, basYears);
+			authorsAndExAndIn(parserResult, basString, basAuthors, basYears);
 			authors[3] = basAuthors[0];
 			years[2] = basYears[0];
 			authors[4] = basAuthors[1];
@@ -1448,7 +1606,7 @@ public class NonViralNameParserImpl
 		if (fullAuthorString.length() >= authorShipStart){
 			TeamOrPersonBase<?>[] combinationAuthors = new TeamOrPersonBase[3];
 			Integer[] combinationYears = new Integer[2];
-			authorsAndExAndIn(fullAuthorString.substring(authorShipStart), combinationAuthors, combinationYears);
+			authorsAndExAndIn(parserResult, fullAuthorString.substring(authorShipStart), combinationAuthors, combinationYears);
 			authors[0] = combinationAuthors[0] ;
 			years[0] = combinationYears[0];
 			authors[1] = combinationAuthors[1];
@@ -1457,14 +1615,14 @@ public class NonViralNameParserImpl
 		}
 	}
 
-
 	/**
 	 * Parses the author and ex-author String
 	 * @param authorShipStringOrig String representing the author and the ex-author team
 	 * @return array of Teams containing the Team[0] and the ExTeam[1]
 	 */
-	protected void authorsAndExAndIn (String authorShipStringOrig, TeamOrPersonBase<?>[] authors, Integer[] years){
-		//TODO more general at the beginning by replace etc.
+	protected void authorsAndExAndIn (NameParserResult parserResult, String authorShipStringOrig, TeamOrPersonBase<?>[] authors, Integer[] years){
+
+	    //TODO more general at the beginning by replace etc.
 		String authorShipString = authorShipStringOrig.trim();
 		authorShipString = authorShipString.replaceFirst(oWs + "ex" + oWs, " ex. " );
 
@@ -1477,7 +1635,7 @@ public class NonViralNameParserImpl
 			authorBegin = exAuthorMatcher.end(0);
 			int exAuthorEnd = exAuthorMatcher.start(0);
 			String exAuthorString = authorShipString.substring(0, exAuthorEnd).trim();
-			authors [1] = author(exAuthorString);
+			authors [1] = saveAuthor(parserResult, author(exAuthorString));
 			authorShipString = authorShipString.substring(authorBegin).trim();
 		}
 
@@ -1493,13 +1651,13 @@ public class NonViralNameParserImpl
         if (!authorTeamMatcher.matches() && inAuthorMatcher.matches()) {
             String inAuthorStr = inAuthorMatcher.group(2);
             TeamOrPersonBase<?>[] inAuthor = new TeamOrPersonBase<?>[1];
-            zooOrBotanicAuthor(inAuthorStr, inAuthor, years);
+            zooOrBotanicAuthor(parserResult, inAuthorStr, inAuthor, years);
             authors[2] = inAuthor[0];
             authorShipString = inAuthorMatcher.group(1);
         }
 
         //author
-		zooOrBotanicAuthor(authorShipString, authors, years );
+		zooOrBotanicAuthor(parserResult, authorShipString, authors, years );
 	}
 
 	/**
@@ -1510,7 +1668,7 @@ public class NonViralNameParserImpl
 	 * @param team
 	 * @param year
 	 */
-	protected void zooOrBotanicAuthor(String authorString, TeamOrPersonBase<?>[] team, Integer[] year){
+	protected void zooOrBotanicAuthor(NameParserResult parserResult, String authorString, TeamOrPersonBase<?>[] team, Integer[] year){
 		if (authorString == null){
 			return;
 		}else if ((authorString = authorString.trim()).length() == 0){
@@ -1524,7 +1682,7 @@ public class NonViralNameParserImpl
 			year[0] = Integer.valueOf(strYear);
 			authorString = authorString.substring(0, index).trim();
 		}
-		team[0] = author(authorString);
+		team[0] = saveAuthor(parserResult, author(authorString));
 	}
 
 
@@ -1534,7 +1692,8 @@ public class NonViralNameParserImpl
 	 * @return a person or team
 	 */
 	public TeamOrPersonBase<?> author (String authorString){
-		if (authorString == null){
+
+	    if (authorString == null){
 			return null;
 		}else if ((authorString = authorString.trim()).length() == 0){
 			return null;
@@ -1686,12 +1845,6 @@ public class NonViralNameParserImpl
     public boolean isRemoveSpaceAfterDot() {
         return removeSpaceAfterDot;
     }
-    /**
-     * @see #isRemoveSpaceAfterDot()
-     */
-    public void setRemoveSpaceAfterDot(boolean removeSpaceAfterDot) {
-        this.removeSpaceAfterDot = removeSpaceAfterDot;
-    }
 
     private boolean isNotBlank(String str){
         return StringUtils.isNotBlank(str);
@@ -1700,4 +1853,5 @@ public class NonViralNameParserImpl
     private boolean isBlank(String str){
         return StringUtils.isBlank(str);
     }
+
 }

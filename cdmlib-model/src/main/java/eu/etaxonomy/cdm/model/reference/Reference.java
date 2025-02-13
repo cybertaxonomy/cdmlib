@@ -39,8 +39,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -295,7 +293,6 @@ public class Reference
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Institution institution;
 
 	@XmlElement(name = "School")
@@ -303,14 +300,12 @@ public class Reference
     @XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Institution school;
 
     @XmlElement(name = "InReference")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 //  @InReference(groups=Level2.class)
     private Reference inReference;
 
@@ -360,7 +355,6 @@ public class Reference
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TeamOrPersonBase<?> authorship;
 
     @XmlElement(name ="authorIsEditor")
@@ -401,7 +395,6 @@ public class Reference
 	}
 
 // *********************** LISTENER ************************/
-
 
 	@Override
     public void initListener(){
@@ -501,12 +494,10 @@ public class Reference
 		this.abbrevTitle = isBlank(abbrevTitle) ? null : abbrevTitle;
 	}
 
-
 	@Override
     public String getEditor() {
 		return editor;
 	}
-
 
 	@Override
     public void setEditor(String editor) {

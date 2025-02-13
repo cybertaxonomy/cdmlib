@@ -38,6 +38,17 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 
     final static UUID uuid = UUID.fromString("931e48f0-2033-11de-8c30-0800200c9a66");
 
+    @SuppressWarnings("rawtypes")
+    static TaxonBaseDefaultCacheStrategy instance;
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public final static <T extends TaxonBase> TaxonBaseDefaultCacheStrategy<T> INSTANCE() {
+        if (instance == null) {
+            instance = new TaxonBaseDefaultCacheStrategy<T>();
+        }
+        return instance;
+    }
+
 	@Override
 	protected UUID getUuid() {
 		return uuid;
@@ -163,7 +174,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
      * Handle all data related to the secundum part of a taxon. This includes also
      * the appended phrase field (beside the
      */
-    private List<TaggedText> getSecundumTags(T taxonBase, boolean isMisapplication) {
+    public List<TaggedText> getSecundumTags(T taxonBase, boolean isMisapplication) {
         List<TaggedText> tags = new ArrayList<>();
 
         Reference sec = taxonBase.getSec();

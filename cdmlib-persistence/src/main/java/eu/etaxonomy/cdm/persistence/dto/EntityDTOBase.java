@@ -13,8 +13,6 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-
 
 /**
  * @author a.mueller

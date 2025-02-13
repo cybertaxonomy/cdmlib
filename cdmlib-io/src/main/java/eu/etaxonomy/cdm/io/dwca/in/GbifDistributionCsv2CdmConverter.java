@@ -55,7 +55,8 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 
 	@Override
     public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem item ){
-		List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
+
+	    List<MappedCdmBase<? extends CdmBase>> resultList = new ArrayList<>();
 
 		Map<String, String> csv = item.map;
 		Reference sourceReference = state.getTransactionalSourceReference();
@@ -85,7 +86,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 
 			if (area != null){
 
-				TaxonDescription desc = getTaxonDescription(taxon, false);
+				TaxonDescription desc = getTaxonDescription(taxon, false, resultList);
 
 				Distribution distribution = Distribution.NewInstance(area, status);
 				desc.addElement(distribution);

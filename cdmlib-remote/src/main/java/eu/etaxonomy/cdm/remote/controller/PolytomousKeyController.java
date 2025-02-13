@@ -35,7 +35,8 @@ public class PolytomousKeyController extends AbstractIdentifiableController<Poly
     private static final Logger logger = LogManager.getLogger();
 
     private static final List<String> KEY_INIT_STRATEGY = Arrays.asList(new String[]{
-            "annotations.annotationType.includes"
+            "annotations.annotationType.includes",
+            "sources.citation.$"
     });
 
     @Override

@@ -303,6 +303,12 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     }
 
     @Override
+    public void save(T newInstance1, T newInstance2) {
+        save(newInstance1);
+        save(newInstance2);
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public UUID saveOrUpdate(T transientObject) {
         return dao.saveOrUpdate(transientObject);

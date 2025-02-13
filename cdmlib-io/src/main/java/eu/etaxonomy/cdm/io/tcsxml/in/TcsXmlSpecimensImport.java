@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +23,6 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -49,24 +50,13 @@ public class TcsXmlSpecimensImport
 		return result;
 	}
 
-	private static boolean checkXXX(IImportConfigurator tcsConfig){
-		try {
-			boolean result = true;
-			//TODO
-			//				result = firstRow = false;
-//			}
-			return result;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
 	@Override
 	public void doInvoke(TcsXmlImportState state){
 		logger.info("start make Specimens ...");
 
 		MapWrapper<DerivedUnit> specimenMap = (MapWrapper<DerivedUnit>)state.getStore(ICdmIO.SPECIMEN_STORE);
+		Set<Institution> institutions = new HashSet<>();
+		Set<Collection> collections = new HashSet<>();
 
 		boolean success = true;
 		String childName;
@@ -84,7 +74,8 @@ public class TcsXmlSpecimensImport
 		Element elSpecimens = doubleResult.getFirstResult();
 
 		String tcsElementName = "Specimen";
-		List<Element> elSpecimenList = elSpecimens == null ? new ArrayList<>() : (List<Element>)elSpecimens.getChildren(tcsElementName, tcsNamespace);
+		@SuppressWarnings("unchecked")
+        List<Element> elSpecimenList = elSpecimens == null ? new ArrayList<>() : (List<Element>)elSpecimens.getChildren(tcsElementName, tcsNamespace);
 
 		int i = 0;
 		//for each taxonName
@@ -105,21 +96,19 @@ public class TcsXmlSpecimensImport
 			DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 			specimen.setTitleCache(simple, true);
 
-
 			childName = "Collection";
 			obligatory = false;
 			doubleResult = XmlHelp.getSingleChildElement(elSpecimen, childName, tcsNamespace, obligatory);
 			success &= doubleResult.getSecondResult();
 			Element elCollection = doubleResult.getFirstResult();
-			success &= makeCollection(specimen, elCollection);
-			Collection collection = specimen.getCollection();
+			success &= makeCollection(specimen, elCollection, collections);
 
 			childName = "Institution";
 			obligatory = false;
 			doubleResult = XmlHelp.getSingleChildElement(elSpecimen, childName, tcsNamespace, obligatory);
 			success &= doubleResult.getSecondResult();
 			Element elInstitution = doubleResult.getFirstResult();
-			success &= makeInstitution(specimen, elInstitution);
+			success &= makeInstitution(specimen, elInstitution, institutions);
 
 			childName = "SpecimenItem";
 			obligatory = true;
@@ -132,6 +121,8 @@ public class TcsXmlSpecimensImport
 		}
 
 		logger.info("Save specimen (" + i +")");
+		getCollectionService().save(collections);
+		getAgentService().save(institutions);
 	    getOccurrenceService().save(specimenMap.objects());
 
 		logger.info("end make Specimens ...");
@@ -141,7 +132,7 @@ public class TcsXmlSpecimensImport
 		return;
 	}
 
-	private boolean makeInstitution(DerivedUnit specimen, Element elInstitution){
+	private boolean makeInstitution(DerivedUnit specimen, Element elInstitution, Set<Institution> institutions){
 		boolean success = true;
 		Institution institution = null;
 		if (specimen == null){
@@ -151,6 +142,7 @@ public class TcsXmlSpecimensImport
 		if (elInstitution != null){
 			Namespace ns = elInstitution.getNamespace();
 			institution = Institution.NewInstance();
+			institutions.add(institution);
 
 			String childName = "InstitutionName";
 			boolean obligatory = false;
@@ -214,13 +206,13 @@ public class TcsXmlSpecimensImport
 		return success;
 	}
 
-	private boolean makeCollection(DerivedUnit specimen, Element elCollection){
+	private boolean makeCollection(DerivedUnit specimen, Element elCollection, Set<Collection> collections){
 		boolean success = true;
 		Collection  collection = null;
 		if (elCollection != null){
 			Namespace ns = elCollection.getNamespace();
 			collection = Collection.NewInstance();
-
+			collections.add(collection);
 			//TODO collection placeholder
 			specimen.setCollection(collection);
 		}
@@ -229,11 +221,11 @@ public class TcsXmlSpecimensImport
 
 	private boolean makeSpecimenItem(DerivedUnit specimen, Element elSpecimenItem){
 		boolean success = true;
-		Namespace ns = elSpecimenItem.getNamespace();
 		if (specimen == null){
 			logger.warn("No specimen");
 			return false;
 		}else if (elSpecimenItem != null){
+		    Namespace ns = elSpecimenItem.getNamespace();
 			logger.warn("not yet implemented");
 			//TODO specimenItem placeholder
 		}

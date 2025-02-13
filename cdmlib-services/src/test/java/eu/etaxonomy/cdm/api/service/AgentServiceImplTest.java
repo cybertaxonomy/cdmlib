@@ -73,8 +73,9 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
     	person.setContact(getContact());
     	TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-    	name.setCombinationAuthorship(person);
     	person.addAnnotation(annotation);
+    	service.save(person);
+    	name.setCombinationAuthorship(person);
 
     	nameSerivce.save(name);
 
@@ -142,7 +143,6 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	return contact;
     }
 
-
     @Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
@@ -186,6 +186,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testConvertTeam2PersonWithMember(){
+
     	String fullAuthor = "Original author";
     	String nomTitle = "Abrev. aut.";
     	Team team = Team.NewTitledInstance(fullAuthor, nomTitle);
@@ -201,8 +202,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Annotation annotation3 = Annotation.NewDefaultLanguageInstance("Meine annotation3");
     	member.addAnnotation(annotation3);
     	team.addTeamMember(member);
-
-    	service.save(team);
+    	service.save(team, member);
 
     	nameSerivce.save(name);
 

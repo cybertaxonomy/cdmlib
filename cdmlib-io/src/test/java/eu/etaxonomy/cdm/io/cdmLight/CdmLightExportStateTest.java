@@ -28,5 +28,4 @@ public class CdmLightExportStateTest {
         }
         Assert.assertEquals("abcdefghikl", result);
     }
-
 }

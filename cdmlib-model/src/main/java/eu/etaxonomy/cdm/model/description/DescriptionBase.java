@@ -16,9 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -50,7 +48,6 @@ import org.hibernate.search.bridge.builtin.BooleanBridge;
 
 import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
-import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -78,7 +75,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptionBase", propOrder = {
-    "describedSpecimenOrObservation",
     "descriptionSources",
     "descriptiveDataSets",
     "descriptionElements",
@@ -101,17 +97,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     private static final long serialVersionUID = 5504218413819040193L;
     private static final Logger logger = LogManager.getLogger();
 
-    @XmlElement( name = "DescribedSpecimenOrObservation")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @XmlIDREF
-    @XmlSchemaType(name="IDREF")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    @JoinColumn(name="specimen_id")
-    @FieldBridge(impl=NotNullAwareIdBridge.class)
-    //TODO maybe move down to specific classes SpecimenDescription (with Cascade.Delete) and TaxonDescription (without Cascade)
-    private SpecimenOrObservationBase<?> describedSpecimenOrObservation;
-
-
     @XmlElementWrapper(name = "DescriptionSources")
     @XmlElement(name = "DescriptionSource")
     @XmlIDREF
@@ -125,7 +110,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "descriptions")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<DescriptiveDataSet> descriptiveDataSets = new HashSet<>();
 
     @XmlElementWrapper(name = "DescriptionElements")
@@ -163,37 +147,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     private EnumSet<DescriptionType> types = EnumSet.noneOf(DescriptionType.class);
 
 //******************************** GETTER / SETTER ***************************/
-
-    /**
-     * Returns a {@link SpecimenOrObservationBase specimen or observation} involved in
-     * <i>this</i> description as a whole. {@link TaxonDescription Taxon descriptions} are also often based
-     * on concrete specimens or observations. For {@link TaxonNameDescription taxon name descriptions}
-     * this attribute should be empty.
-     * To handle sets of specimen or observations one may first group them by a derivation event of type
-     * "Grouping" and then use the grouped unit here.
-     */
-    public SpecimenOrObservationBase getDescribedSpecimenOrObservation() {
-		return describedSpecimenOrObservation;
-	}
-
-	/**
-	 * @see #getDescribedSpecimenOrObservation()
-	 * @param describedSpecimenOrObservation
-	 */
-	//TODO bidirectional method should maybe removed as a description should belong to its specimen or taxon
-    public void setDescribedSpecimenOrObservation(SpecimenOrObservationBase describedSpecimenOrObservation) {
-		if (describedSpecimenOrObservation == null ){
-			if (this.describedSpecimenOrObservation != null){
-			    this.describedSpecimenOrObservation.removeDescription(this);
-			}
-		}else if (! describedSpecimenOrObservation.getDescriptions().contains(this)){
-			describedSpecimenOrObservation.addDescription(this);
-		}
-		this.describedSpecimenOrObservation = describedSpecimenOrObservation;
-	}
-
-
-
 
     /**
      * Returns the set of {@link DescriptionElementBase elementary description data} which constitute
@@ -246,8 +199,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         this.descriptionElements.remove(element);
         element.setInDescription(null);
     }
-
-
 
     /**
      * Returns the number of {@link DescriptionElementBase elementary description data} which constitute

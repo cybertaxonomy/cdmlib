@@ -125,18 +125,22 @@ public class NomenclaturalStatusType
 	private static final UUID uuidZooSuppressed = UUID.fromString("a61602c7-fbd4-4eb4-98a2-44919db8920b");
 	private static final UUID uuidZooOblitum = UUID.fromString("6a6f7a88-991f-4f76-8ce9-4110839fae8b");
 
-
-    public static NomenclaturalStatusType NewLatinInstance(String description, String label, String labelAbbrev) {
-        return new NomenclaturalStatusType(description, label, labelAbbrev, Language.LATIN());
+	public static NomenclaturalStatusType NewLatinInstance(String description, String label, String labelAbbrev) {
+        return new NomenclaturalStatusType(description, label, labelAbbrev, Language.LATIN(), null);
     }
 
 	public static NomenclaturalStatusType NewInstance(String description, String label, String labelAbbrev, Language language) {
-		return new NomenclaturalStatusType(description, label, labelAbbrev, language);
+		return new NomenclaturalStatusType(description, label, labelAbbrev, language, null);
 	}
 
 	public static NomenclaturalStatusType NewInstance(String description, String label, String labelAbbrev) {
-		return new NomenclaturalStatusType(description, label, labelAbbrev);
+		return new NomenclaturalStatusType(description, label, labelAbbrev, Language.DEFAULT(), null);
 	}
+
+    public static NomenclaturalStatusType NewInstance(String description, String label, String labelAbbrev,
+            Language language, NomenclaturalStanding nomenclaturalStanding) {
+        return new NomenclaturalStatusType(description, label, labelAbbrev, language, nomenclaturalStanding);
+    }
 
 	protected static Map<UUID, NomenclaturalStatusType> termMap = null;
 	private static Map<String, UUID> abbrevMap = null;
@@ -199,13 +203,16 @@ public class NomenclaturalStatusType
 	 * @see 				 #readCsvLine(List, Language)
 	 * @see 				 #readCsvLine(List)
 	 */
-	private NomenclaturalStatusType(String term, String label, String labelAbbrev) {
-		super(TermType.NomenclaturalStatusType, term, label, labelAbbrev);
-	}
+	private NomenclaturalStatusType(String term, String label, String labelAbbrev,
+	        Language language, NomenclaturalStanding nomenclaturalStanding) {
 
-	private NomenclaturalStatusType(String term, String label, String labelAbbrev, Language language) {
-		super(TermType.NomenclaturalStatusType);
+	    super(TermType.NomenclaturalStatusType);
 		this.addRepresentation(Representation.NewInstance(term, label, labelAbbrev, language));
+
+		this.nomenclaturalStanding = nomenclaturalStanding;
+		if (this.nomenclaturalStanding == null) {
+		    logger.warn("Nomenclatural standing should not be null");
+		}
 	}
 
 // ************************ GETTER / SETTER ******************/

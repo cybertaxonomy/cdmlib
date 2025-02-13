@@ -29,7 +29,7 @@ public class TypeDesignationGroupFormatterConfiguration {
     private boolean ignoreSyntypesWithLectotype = false;
     //should become List<Locale>
     private List<Language> languages = new ArrayList<>();
-    private EnumSet<OriginalSourceType> sourceTypeFilter = null; //null means there is no filter, empty means filter all
+    private EnumSet<OriginalSourceType> sourceTypeFilter = OriginalSourceType.allPublicTypes(); //null means there is no filter, empty means filter all
 
     private boolean withBrackets = true;  //still unclear if this should become a parameter or should be always true
 

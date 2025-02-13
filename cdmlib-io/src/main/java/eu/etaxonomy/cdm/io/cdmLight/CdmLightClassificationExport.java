@@ -1363,19 +1363,20 @@ public class CdmLightClassificationExport
                     nonTextualTypeDesignations.add(nameTypeDesignation);
                 }
             }
-            TypeDesignationGroupContainer tdContainer = new TypeDesignationGroupContainer(nonTextualTypeDesignations,
-                    name, TypeDesignationGroupComparator.ORDER_BY.TYPE_STATUS);
-            HTMLTagRules rules = new HTMLTagRules();
-            rules.addRule(TagEnum.name, "i");
-            //TODO params
-            boolean withCitation = false;  //TODO AM: why?
-            boolean withStartingLabel = false;
-            boolean withNameIfAvailable = false;
-            boolean withPrecedingMainType = true;
-            boolean withAccessionNoType = state.getConfig().isShowTypeOfDesignationIdentifier();//false;
-            csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = tdContainer.print(
-                    withCitation, withStartingLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType, rules);
-
+            if (!nonTextualTypeDesignations.isEmpty()) {
+                TypeDesignationGroupContainer tdContainer = new TypeDesignationGroupContainer(nonTextualTypeDesignations,
+                        name, TypeDesignationGroupComparator.ORDER_BY.TYPE_STATUS);
+                HTMLTagRules rules = new HTMLTagRules();
+                rules.addRule(TagEnum.name, "i");
+                //TODO params
+                boolean withCitation = false;  //TODO AM: why?
+                boolean withStartingLabel = false;
+                boolean withNameIfAvailable = false;
+                boolean withPrecedingMainType = true;
+                boolean withAccessionNoType = state.getConfig().isShowTypeOfDesignationIdentifier();//false;
+                csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = tdContainer.print(
+                        withCitation, withStartingLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType, rules);
+            }
             StringBuilder stringbuilder = new StringBuilder();
             int i = 1;
             for (TextualTypeDesignation typeDesignation : textualTypeDesignations) {
@@ -1610,10 +1611,11 @@ public class CdmLightClassificationExport
                         csvLine = new String[table.getSize()];
                         csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
                         csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
-                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = type.getLabel();
+                        String typeLabel = type == null ? "no type" : type.getLabel();
+                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = typeLabel;
                         csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
                                 identifiersByType);
-                        state.getProcessor().put(table, name.getUuid() + ", " + type.getLabel(), csvLine);
+                        state.getProcessor().put(table, name.getUuid() + ", " + typeLabel, csvLine);
                     }
 
 
@@ -1650,8 +1652,6 @@ public class CdmLightClassificationExport
                 }catch(Exception e){
                     state.getResult().addWarning("Please check the identifiers for "
                             + cdmBaseStr(cdmBase) + " maybe there is an empty identifier");
-
-
                 }
             }else{
                 if (cdmBase instanceof IdentifiableEntity){
@@ -2185,36 +2185,41 @@ public class CdmLightClassificationExport
 
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
-                TypeDesignationGroupContainer manager = new TypeDesignationGroupContainer(group);
+                TypeDesignationGroupContainer manager = new TypeDesignationGroupContainer(group, false);
 
                 list.addAll(new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(false)
                         .toTaggedText(manager));
             }
             String typeTextDesignations = "";
             //The typeDesignationManager does not handle the textual typeDesignations
+
             for (TypeDesignationBase<?> typeDes: designationList) {
                 if (typeDes instanceof TextualTypeDesignation) {
                     typeTextDesignations = typeTextDesignations + ((TextualTypeDesignation)typeDes).getText(Language.getDefaultLanguage());
+                    if (((TextualTypeDesignation)typeDes).isVerbatim()) {
+                        typeTextDesignations = "\"" + typeTextDesignations + "\"";
+                    }
                     String typeDesStateRefs = "";
                     if (typeDes.getDesignationSource() != null ){
                         typeDesStateRefs = "[";
                         NamedSource source = typeDes.getDesignationSource();
                         if (source.getCitation() != null){
-                            typeDesStateRefs += "fide " + OriginalSourceFormatter.INSTANCE.format(source.getCitation(), null);
+                            typeDesStateRefs += "fide " + OriginalSourceFormatter.INSTANCE.format(source.getCitation(), source.getCitationMicroReference());
                         }
                         typeDesStateRefs += "]";
-                    }else if (typeDes.getSources() != null && !typeDes.getSources().isEmpty()){
+                    }else if (!CdmUtils.isNullSafeEmpty(typeDes.getSources())){
                         typeDesStateRefs = "[";
                         for (IdentifiableSource source: typeDes.getSources()) {
                             if (source.getCitation() != null){
-                                typeDesStateRefs += "fide " +OriginalSourceFormatter.INSTANCE.format(source.getCitation(), null);
+                                String sep = typeDesStateRefs.equals("[") ? "fide " : ", ";
+                                typeDesStateRefs += sep +OriginalSourceFormatter.INSTANCE.format(source.getCitation(), source.getCitationMicroReference());
                             }
                         }
 
                         typeDesStateRefs += "]";
                     }
 
-                    typeTextDesignations =  typeTextDesignations + typeDesStateRefs +"; ";
+                    typeTextDesignations = typeTextDesignations + typeDesStateRefs +"; ";
 
                 }else if (typeDes instanceof SpecimenTypeDesignation){
                     DerivedUnit specimen =  ((SpecimenTypeDesignation)typeDes).getTypeSpecimen();

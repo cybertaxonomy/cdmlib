@@ -169,11 +169,14 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 */
 	public int countAllNodesForClassification(Classification classification);
 
-    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid, int movingType, SecReferenceHandlingEnum secHandling, UUID secUuid);
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid, int movingType,
+            SecReferenceHandlingEnum secHandling, UUID secUuid);
 
-    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, int movingType, SecReferenceHandlingEnum secHandling, Reference sec);
+    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, int movingType,
+            SecReferenceHandlingEnum secHandling, Reference sec);
 
-    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType, SecReferenceHandlingEnum secHandling, UUID secUuid,            IProgressMonitor monitor);
+    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType,
+            SecReferenceHandlingEnum secHandling, UUID secUuid, IProgressMonitor monitor);
 
     /**
      * deletes the given taxon nodes

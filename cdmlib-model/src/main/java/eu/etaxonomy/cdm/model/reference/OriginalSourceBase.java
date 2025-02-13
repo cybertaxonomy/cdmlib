@@ -107,7 +107,6 @@ public abstract class OriginalSourceBase
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Reference citation;
 
     //Details of the reference. These are mostly (implicitly) pages but can also be tables or any other element of a

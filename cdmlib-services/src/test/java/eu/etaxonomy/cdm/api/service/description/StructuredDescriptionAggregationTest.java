@@ -73,6 +73,8 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -131,6 +133,12 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     private IDescriptionService descriptionService;
 
     @SpringBeanByType
+    private IDescriptionDao descriptionDao;
+
+    @SpringBeanByType
+    private IDescriptionElementDao descriptionElementDao;
+
+    @SpringBeanByType
     private ITaxonService taxonService;
 
     @SpringBeanByType
@@ -166,6 +174,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
     public void testReaggregation(){
+
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = createTestData();
         commitAndStartNewTransaction();
@@ -213,7 +222,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private void addNewFeature() {
         SpecimenOrObservationBase<?> spec1 = occurrenceService.find(T_LAPSANA_COMMUNIS_ADENOPHORA_SPEC1_UUID);
-        SpecimenDescription specimenDescription = (SpecimenDescription)spec1.getDescriptions().stream()
+        SpecimenDescription specimenDescription = spec1.getDescriptions().stream()
                 .filter(desc->!desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
                 .filter(desc->!desc.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))
                 .findFirst().get();
@@ -261,7 +270,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private void removeSomeDataFromFirstAggregation() {
         SpecimenOrObservationBase<?> spec3 = occurrenceService.find(T_LAPSANA_COMMUNIS_ALPINA_SPEC3_UUID);
-        DescriptionBase<?> spec3Desc = spec3.getDescriptions().stream()
+        SpecimenDescription spec3Desc = spec3.getDescriptions().stream()
                 .filter(desc->!desc.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))
                 .findFirst().get();
 
@@ -380,6 +389,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
     public void testSourceModes() {
+
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = createTestData();
         commitAndStartNewTransaction();
@@ -519,7 +529,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         //literature description
         Taxon taxon = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
-        TaxonDescription literatureDescription = TaxonDescription.NewInstance(taxon);
+        TaxonDescription literatureDescription = save(TaxonDescription.NewInstance(taxon));
         literatureDescription.addType(DescriptionType.SECONDARY_DATA);
         addQuantitativeData(literatureDescription, uuidFeatureLeafLength, new BigDecimal("4.5"), new BigDecimal("6.5"));
         addCategoricalData(literatureDescription, uuidFeatureLeafColor, uuidLeafColorBlue);
@@ -678,8 +688,9 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
     private static Function<DescriptionBase<?>, UUID> fDescToDescribedUuid =
-            ((Function<DescriptionBase<?>, IDescribable<?>>)(d->d.isInstanceOf(SpecimenDescription.class)? d.getDescribedSpecimenOrObservation(): CdmBase.deproxy(d, TaxonDescription.class).getTaxon()))
-            .andThen(IDescribable::getUuid);
+            ((Function<DescriptionBase<?>, IDescribable<?>>)(d->
+                d.isInstanceOf(SpecimenDescription.class)? CdmBase.deproxy(d, SpecimenDescription.class).getDescribedSpecimenOrObservation(): CdmBase.deproxy(d, TaxonDescription.class).getTaxon()))
+                .andThen(IDescribable::getUuid);
 
     //a map of the taxon to the attached taxon (source link)
     private Map<UUID, List<Taxon>> getSourceTaxonMap(TaxonDescription desc) {
@@ -714,6 +725,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
     private DescriptiveDataSet createTestData() {
+
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
         dataSet.setLabel("Test dataset");
         datasetService.save(dataSet);
@@ -833,7 +845,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private void addQuantitativeData(DescriptionBase<?> desc, UUID uuidFeature, StatisticalMeasure type, BigDecimal value) {
         Feature feature = (Feature)termService.find(uuidFeature);
-        QuantitativeData qd = QuantitativeData.NewInstance(feature);
+        QuantitativeData qd = save(QuantitativeData.NewInstance(feature));
         StatisticalMeasurementValue smv = StatisticalMeasurementValue.NewInstance(type, value);
         qd.addStatisticalValue(smv);
         Assert.assertNotNull(MeasurementUnit.METER());
@@ -843,7 +855,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private void addQuantitativeData(DescriptionBase<?> desc, UUID uuidFeature, BigDecimal min, BigDecimal max) {
         Feature feature = (Feature)termService.find(uuidFeature);
-        QuantitativeData qd = QuantitativeData.NewInstance(feature);
+        QuantitativeData qd = save(QuantitativeData.NewInstance(feature));
         StatisticalMeasurementValue smv = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MIN(), min);
         qd.addStatisticalValue(smv);
         smv = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MAX(), max);
@@ -854,31 +866,36 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     private void addCategoricalData(DescriptionBase<?> desc, UUID featureUuid, UUID stateUUID) {
         Feature feature = (Feature)termService.find(featureUuid);
         DefinedTermBase<?> state = termService.find(stateUUID);
-        CategoricalData cd = CategoricalData.NewInstance(state, feature);
+        CategoricalData cd = save(CategoricalData.NewInstance(state, feature));
         desc.addElement(cd);
     }
 
-    private SpecimenDescription createSpecimenDescription(DescriptiveDataSet dataSet, UUID taxonUuid, String specLabel, UUID specimenUuid ) {
+    private SpecimenDescription createSpecimenDescription(DescriptiveDataSet dataSet,
+            UUID taxonUuid, String specLabel, UUID specimenUuid ) {
+
         Taxon taxon = (Taxon)taxonService.find(taxonUuid);
         DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         specimen.setTitleCache(specLabel, true);
         specimen.setUuid(specimenUuid);
+        occurrenceService.save(specimen);
+
         TaxonDescription taxonDescription = taxon.getDescriptions(DescriptionType.INDIVIDUALS_ASSOCIATION).stream()
             .findFirst()
             .orElseGet(()->{
-                TaxonDescription td = TaxonDescription.NewInstance(taxon);
+                TaxonDescription td = save(TaxonDescription.NewInstance(taxon));
                 td.addType(DescriptionType.INDIVIDUALS_ASSOCIATION);
                 td.setTitleCache("Specimens used by " + dataSet.getTitleCache() + " for " + getTaxonLabel(taxon), true);
                 return td;}
              );
-        IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance(specimen);
+
+        IndividualsAssociation individualsAssociation = save(IndividualsAssociation.NewInstance(specimen));
         // TODO this has to be discussed; currently the description with the InidividualsAssociation is
         // needed in the dataset for performance reasons
         taxonDescription.addElement(individualsAssociation);
         dataSet.addDescription(taxonDescription);
-        SpecimenDescription specDesc = SpecimenDescription.NewInstance(specimen);
-
+        SpecimenDescription specDesc = save(SpecimenDescription.NewInstance(specimen));
         dataSet.addDescription(specDesc);
+
         return specDesc;
     }
 
@@ -941,6 +958,16 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         leafPANode.addChild(featureLeafAdd);
 
         vocabularyService.save(stateVoc);
+    }
+
+    private <S extends DescriptionBase<?>> S save(S newDescription) {
+        descriptionDao.save(newDescription);
+        return newDescription;
+    }
+
+    private <T extends DescriptionElementBase> T save(T newInstance) {
+        descriptionElementDao.save(newInstance);
+        return newInstance;
     }
 
 //    @Test

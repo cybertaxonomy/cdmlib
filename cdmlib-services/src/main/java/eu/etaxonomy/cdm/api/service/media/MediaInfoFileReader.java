@@ -85,7 +85,7 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
     /**
      * Reads the image info (width, height, bitPerPixel, metadata, format, mime type)
      */
-    public AbstactMediaMetadataReader readImageInfo() throws IOException, HttpException{
+    public AbstactMediaMetadataReader readImageInfo() throws IOException {
 
         InputStream inputStream;
         try {
@@ -99,7 +99,7 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
             cdmImageInfo.setBitPerPixel(imageInfo.getBitsPerPixel());
             inputStream.close();
 
-        } catch (ImageReadException e) {
+        } catch (Exception e) {
             logger.error("Could not read: " + cdmImageInfo.getUri() + ". " + e.getMessage());
             throw new IOException(e);
         }
@@ -116,6 +116,9 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
         }catch (ImageReadException e) {
             logger.error("Could not read: " + cdmImageInfo.getUri() + ". " + e.getMessage());
             //throw new IOException(e);
+        }catch (IOException e) {
+            logger.error("IOException while reading: " + cdmImageInfo.getUri() + ". " + e.getMessage());
+            throw e;
         }
 
         if(mediaData != null) {

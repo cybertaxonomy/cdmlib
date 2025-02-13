@@ -75,14 +75,12 @@ public class NameRelationship
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TaxonName relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TaxonName relatedTo;
 
     @XmlElement(name = "Type")

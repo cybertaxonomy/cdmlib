@@ -120,6 +120,14 @@ public abstract class AnnotatableEntity
 	}
 
     @Override
+    public boolean hasAnyMarkerOf(Set<UUID> uuidMarkerTypes, boolean value){
+        return this.getMarkers().stream().anyMatch(m->
+            m.getMarkerType() != null &&
+            uuidMarkerTypes.contains(m.getMarkerType().getUuid())
+            && m.getValue() == value);
+    }
+
+    @Override
     public Set<Marker> getMarkers(UUID uuidMarkerType){
         Set<Marker> result = new HashSet<>();
         for (Marker marker: getMarkers()){

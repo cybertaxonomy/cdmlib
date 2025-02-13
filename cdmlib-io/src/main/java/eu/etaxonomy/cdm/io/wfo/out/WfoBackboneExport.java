@@ -16,13 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -43,7 +39,6 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -189,6 +184,9 @@ public class WfoBackboneExport
         }
     }
 
+    /**
+     * @return <code>true</code> if the taxon should not be used in the export
+     */
     private boolean filterTaxon(WfoBackboneExportState state, TaxonNode taxonNode) {
         Taxon taxon = taxonNode.getTaxon();
         if (taxon == null) {
@@ -223,6 +221,8 @@ public class WfoBackboneExport
      */
     private String handleTaxon(WfoBackboneExportState state, TaxonNode taxonNode, String parentWfoId) {
 
+        final int classificationId = getClassificationId(taxonNode);
+
         //check null
         if (taxonNode == null) {
             state.getResult().addError("The taxonNode was null.", "handleTaxon");
@@ -250,13 +250,13 @@ public class WfoBackboneExport
 
             //accepted name
             TaxonName name = taxon.getName();
-            wfoId = handleName(state, table, csvLine, name, null);
+            wfoId = handleName(state, table, csvLine, name, null, classificationId, true);
 
             //... parentNameUsageID
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_PARENT_ID)] = parentWfoId;
 
             //... higher taxa
-            //TODO 3 do we want/should fill the higher classification fields?
+            //not necessary to fill according to #10652#note-2
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBFAMILY)] = null;
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_TRIBE)] = null;
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_SUBTRIBE)] = null;
@@ -268,7 +268,7 @@ public class WfoBackboneExport
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = taxonStatus;
 
             //remarks
-            csvLine[table.getIndex(WfoBackboneExportTable.TAXON_REMARKS)] = getRemarks(state, taxon);
+            csvLine[table.getIndex(WfoBackboneExportTable.TAXON_REMARKS)] = getRemarks(state, taxon, taxon.getName());
 
             //TODO 7 URL to taxon, take it from a repository information (currently not yet possible, but maybe we could use a CDM preference instead)
             if (isNotBlank(state.getConfig().getSourceLinkBaseUrl())) {
@@ -281,7 +281,7 @@ public class WfoBackboneExport
 
             handleTaxonBase(state, table, csvLine, taxon);
 
-            handleSynonyms(state, taxon);
+            handleSynonyms(state, taxon, classificationId);
 
             //process taxon line
             state.getProcessor().put(table, taxon, csvLine);
@@ -295,6 +295,11 @@ public class WfoBackboneExport
             state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
             return null;
         }
+    }
+
+    private int getClassificationId(TaxonNode taxonNode) {
+        //check null just in case
+        return taxonNode.getClassification() == null ? 0 : taxonNode.getClassification().getId();
     }
 
     private String makeExcluded(@SuppressWarnings("unused") WfoBackboneExportState state, TaxonNode taxonNode) {
@@ -323,41 +328,45 @@ public class WfoBackboneExport
             handleReference(state, taxonBase.getSecSource());
         }
 
-        //TODO 2 created
+        //created (not needed according to #10652#note-2)
         csvLine[table.getIndex(WfoBackboneExportTable.CREATED)] = null;
 
-        //TODO 2 modified
+        //modified (not needed according to #10652#note-2)
         csvLine[table.getIndex(WfoBackboneExportTable.MODIFIED)] = null;
 
     }
 
     private String makeTaxonSourceLink(WfoBackboneExportState state, Taxon taxon) {
-        String baseUrl = state.getConfig().getSourceLinkBaseUrl();
-        if (!baseUrl.endsWith("/")) {
-            baseUrl += "/";
-        }
         if (state.getConfig().isUseNameLink()) {
-            return baseUrl + "cdm_dataportal/name/" + taxon.getName().getUuid();
+            return makeNameSourceLink(state, taxon.getName());
         } else {
-            return baseUrl + "cdm_dataportal/taxon/" + taxon.getUuid() ;
+            return getBaseUrl(state) + "cdm_dataportal/taxon/" + taxon.getUuid() ;
         }
     }
 
     private String makeSynonymSourceLink(WfoBackboneExportState state, Synonym synonym) {
-        String baseUrl = state.getConfig().getSourceLinkBaseUrl();
-        if (!baseUrl.endsWith("/")) {
-            baseUrl += "/";
-        }
         if (state.getConfig().isUseNameLink()) {
-            return baseUrl + "cdm_dataportal/name/" + synonym.getName().getUuid();
+            return makeNameSourceLink(state, synonym.getName());
         } else {
-            return baseUrl + "cdm_dataportal/taxon/" +
+            return getBaseUrl(state) + "cdm_dataportal/taxon/" +
                 synonym.getAcceptedTaxon().getUuid()
                     + "/synonymy?highlight=" + synonym.getUuid();
         }
     }
 
-    private void handleSynonyms(WfoBackboneExportState state, Taxon taxon) {
+    private String makeNameSourceLink(WfoBackboneExportState state, TaxonName name) {
+        return getBaseUrl(state) + "cdm_dataportal/name/" + name.getUuid();
+    }
+
+    private String getBaseUrl(WfoBackboneExportState state) {
+        String baseUrl = state.getConfig().getSourceLinkBaseUrl();
+        if (!baseUrl.endsWith("/")) {
+            baseUrl += "/";
+        }
+        return baseUrl;
+    }
+
+    private void handleSynonyms(WfoBackboneExportState state, Taxon taxon, final int classificationId) {
 
         if (!state.getConfig().isDoSynonyms()) {
             return;
@@ -367,14 +376,14 @@ public class WfoBackboneExport
         HomotypicalGroup homotypicGroup = taxon.getHomotypicGroup();
         handleHomotypicalGroup(state, homotypicGroup, taxon);
         for (Synonym syn : taxon.getSynonymsInGroup(homotypicGroup)) {
-            handleSynonym(state, syn, true);
+            handleSynonym(state, syn, true, classificationId);
         }
 
         List<HomotypicalGroup> heterotypicHomotypicGroups = taxon.getHeterotypicSynonymyGroups();
         for (HomotypicalGroup group: heterotypicHomotypicGroups){
             handleHomotypicalGroup(state, group, taxon);
             for (Synonym syn : taxon.getSynonymsInGroup(group)) {
-                handleSynonym(state, syn, false);
+                handleSynonym(state, syn, false, classificationId);
             }
         }
     }
@@ -391,40 +400,8 @@ public class WfoBackboneExport
         return false;
     }
 
-    private String toIsoDate(TimePeriod mediaCreated) {
-        //TODO 2 date, what if end or freetext exist?
-        Partial partial = mediaCreated.getStart();
-        if (partial == null || !partial.isSupported(DateTimeFieldType.year())
-                || !partial.isSupported(DateTimeFieldType.monthOfYear()) && partial.isSupported(DateTimeFieldType.dayOfMonth())) {
-            //TODO 2 date, log warning, also if mediaCreated.getEnd() != null or so
-            return null;
-        } else {
-            DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                    .appendYear(4, 4).appendLiteral('-')
-                    .appendMonthOfYear(2).appendLiteral('-')
-                    .appendDayOfMonth(2)
-                    .toFormatter();
-            return partial.toString(formatter);
-        }
-    }
-
-    /**
-     * transforms the given date to an iso date
-     */
-    protected String toIsoDate(DateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                .appendYear(4, 4).appendLiteral('-')
-                .appendMonthOfYear(2).appendLiteral('-')
-                .appendDayOfMonth(2)
-                .toFormatter();
-        return formatter.print(dateTime);
-    }
-
     //TODO 4 is remark handling correct?
-    private String getRemarks(WfoBackboneExportState state, TaxonBase<?> taxonBase) {
+    private String getRemarks(WfoBackboneExportState state, TaxonBase<?> taxonBase, TaxonName name) {
 
         String remarks = null;
 
@@ -436,11 +413,10 @@ public class WfoBackboneExport
         includedTaxonFactTypes.add(Feature.uuidNotes);
         Set<UUID> includedNameFactTypes = null;  //TODO 7 make name facts configurable
 
-
-        String nameAnnotations = getAnnotations(state, taxonBase.getName(), includedAnnotationTypes);
-        String nameFacts = getFacts(state, taxonBase.getName(), includedNameFactTypes);
+        String nameAnnotations = getAnnotations(state, name, includedAnnotationTypes);
+        String nameFacts = getFacts(state, name, includedNameFactTypes);
         String taxonAnnotations = getAnnotations(state, taxonBase, includedAnnotationTypes);
-        String taxonFacts = !taxonBase.isInstanceOf(Taxon.class)? null :
+        String taxonFacts = taxonBase == null || !taxonBase.isInstanceOf(Taxon.class)? null :
             getFacts(state, CdmBase.deproxy(taxonBase, Taxon.class), includedTaxonFactTypes);
 
         remarks = CdmUtils.concat("; ", nameAnnotations, nameFacts, taxonAnnotations, taxonFacts);
@@ -536,7 +512,7 @@ public class WfoBackboneExport
     }
 
     private void handleSynonym(WfoBackboneExportState state, Synonym synonym,
-            boolean isHomotypic) {
+            boolean isHomotypic, final int classificationId) {
         try {
             if (isUnpublished(state.getConfig(), synonym)) {
                 return;
@@ -560,14 +536,14 @@ public class WfoBackboneExport
                 csvLine[table.getIndex(WfoBackboneExportTable.TAX_ACCEPTED_NAME_ID)] = acceptedWfoId;
             }
 
-            String wfoId = handleName(state, table, csvLine, name, acceptedWfoId);
+            String wfoId = handleName(state, table, csvLine, name, acceptedWfoId, classificationId, isHomotypic);
             if (wfoId == null) {
                 return;
             }
 
 
             //status
-            csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = isHomotypic ? "homotypicSynonym" : "heterotypicSynonym";
+            csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = isHomotypicStr(isHomotypic);
 
             //TODO 5 URL to taxon, take it from a repository information (currently not yet possible, but maybe we could use a CDM preference instead)
             if (isNotBlank(state.getConfig().getSourceLinkBaseUrl())) {
@@ -584,8 +560,12 @@ public class WfoBackboneExport
         }
     }
 
+    private String isHomotypicStr(boolean isHomotypic) {
+        return isHomotypic ? "homotypicSynonym" : "heterotypicSynonym";
+    }
+
     private String handleName(WfoBackboneExportState state, WfoBackboneExportTable table, String[] csvLine,
-            TaxonName name, String acceptedNameWfoId) {
+            TaxonName name, String acceptedNameWfoId, final int classificationId, boolean isHomotypic) {
 
         name = CdmBase.deproxy(name);
         if (name == null || state.getNameStore().containsKey(name.getId())) {
@@ -600,7 +580,7 @@ public class WfoBackboneExport
 
             state.getNameStore().put(name.getId(), name.getUuid());
 
-            //taxon ID
+            //taxon ID/WFO ID
             wfoId = getWfoId(state, name, false);
             if (isBlank(wfoId)) {
                 String message = "No WFO-ID given for taxon name " + name.getTitleCache() + ". Taxon/Synonym/Name ignored.";
@@ -640,18 +620,22 @@ public class WfoBackboneExport
             if (rankStr == null) {
                 String message = rank == null ? "No rank" : ("Rank not supported by WFO: " + rank.getLabel())
                         + "Taxon not handled in export: " + name.getTitleCache();
-                state.getResult().addWarning(message);  //TODO 2 warning sufficient for missing rank? + location
-                //TODO 2 handling of not-recognized rank, move up as this creates an have ready record otherwise
-                return wfoId;
+                state.getResult().addWarning(message, wfoId);
             }
             csvLine[table.getIndex(WfoBackboneExportTable.RANK)] = rankStr;
+            //verbatimTaxonRank (only needed for exceptional ranks, see #10652#note-2)
+            String verbatimRankStr = rank == null ? "no rank given" : rankStr == null ? rank.getLabel() : rankStr.startsWith("infra") ? rankStr : null;
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_VERBATIM_RANK)] = verbatimRankStr;
 
             //authorship
-            //TODO 3 handle empty authorship cache warning
-            csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)]
-                    = normalizedAuthor(state, name);
+            String authorshipCache = normalizedAuthor(state, name);
+            if (CdmUtils.isBlank(authorshipCache)) {
+                String message = "Taxon name has no authorship: " + name.getTitleCache();
+                state.getResult().addWarning(message, wfoId);
+            }
+            csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)] = authorshipCache;
 
-            //family (use familystr if provided, otherwise try to compute from the family taxon
+            //family (use familyStr if provided, otherwise try to compute from the family taxon)
             String familyStr = state.getFamilyStr();
             if (StringUtils.isBlank(familyStr)){
                 if (Rank.FAMILY().equals(name.getRank())){
@@ -671,9 +655,6 @@ public class WfoBackboneExport
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_SPECIFIC_EPITHET)] = name.getSpecificEpithet();
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_INFRASPECIFIC_EPITHET)] = name.getInfraSpecificEpithet();
 
-            //TODO 3 verbatimTaxonRank, is this needed at all?
-            csvLine[table.getIndex(WfoBackboneExportTable.NAME_VERBATIM_RANK)] = rankStr;
-
             //name status
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_STATUS)] = makeNameStatus(state, name);
 
@@ -689,7 +670,12 @@ public class WfoBackboneExport
 
             if (originalName != null) {
                 if (!state.getNameStore().containsKey(originalName.getId())) {
-                    //TODO 2 handle basionym is in file assertion
+                    boolean originalNameIsAlsoTaxonBase = isNameAlsoPartOfExportedTaxonBase(originalName, classificationId);
+                    if (!originalNameIsAlsoTaxonBase) {
+                        String message = "Original name/basionym exists but is not a taxon/synonym in the "
+                                + "classification. New name: " + name.getTitleCache() + ", originalName: " + originalName.getTitleCache() ;
+                        state.getResult().addWarning(message, wfoId);
+                    }
                 }
                 String basionymId = getWfoId(state, originalName, false);
                 csvLine[table.getIndex(WfoBackboneExportTable.NAME_ORIGINAL_NAME_ID)] = basionymId;
@@ -699,13 +685,13 @@ public class WfoBackboneExport
             TaxonName originalSpelling = name.getOriginalSpelling();
             acceptedNameWfoId = acceptedNameWfoId == null? wfoId : acceptedNameWfoId;
             if (originalSpelling != null) {
-                handleOrthographicVariants(state, table, originalSpelling, name, acceptedNameWfoId);
+                handleOrthographicVariants(state, table, originalSpelling, name, acceptedNameWfoId, classificationId, isHomotypic);
             }
 
             //orth. var.
             Set<TaxonName> orthVars = getOrthographicVariants(name);
             for (TaxonName orthVar : orthVars) {
-                handleOrthographicVariants(state, table, orthVar, name, acceptedNameWfoId);
+                handleOrthographicVariants(state, table, orthVar, name, acceptedNameWfoId, classificationId, isHomotypic);
             }
 
          } catch (Exception e) {
@@ -717,6 +703,10 @@ public class WfoBackboneExport
         return wfoId;
     }
 
+    /**
+     * Normalizes the author string by, for example, normalizing to IPNI standard
+     * (no whitespaces) and removing double whitespaces
+     */
     private String normalizedAuthor(WfoBackboneExportState state, TaxonName name) {
         if (name == null) {
             return null;
@@ -736,7 +726,7 @@ public class WfoBackboneExport
         Set<TaxonName> result = new HashSet<>();
         Set<NameRelationship> rels = name.getRelationsToThisName();
         for(NameRelationship rel : rels) {
-            //TODO 2 handle also other type and other direction for orth. var.
+            //TODO 2 orth. var. handle also other type and other direction for orth. var.
             if(rel.getType().getUuid().equals(NameRelationshipType.uuidOrthographicVariant)) {
                 result.add(rel.getFromName());
             }
@@ -746,19 +736,22 @@ public class WfoBackboneExport
 
     /**
      * Handle names not being handled via taxonbase.
-     * @param acceptedNameWfoId
      */
     private void handleOrthographicVariants(WfoBackboneExportState state, WfoBackboneExportTable table,
-            TaxonName name, TaxonName mainName, String acceptedNameWfoId) {
+            TaxonName name, TaxonName mainName, String acceptedNameWfoId, final int classificationId,
+            boolean isHomotypic) {
 
-        //TODO 1 names only check if implemented correctly
-        if (!name.getTaxonBases().isEmpty()) {
-            //TODO 2 find a better way to guarantee that the name is not added as a taxonbase elsewhere
+        //check, if orth. var. name is not used elsewhere as synonym or accepted name
+        boolean isAlsoTaxonBase = isNameAlsoPartOfExportedTaxonBase(name, classificationId);
+        if (isAlsoTaxonBase) {
             return;
         }
 
+        //create record
         String[] csvLine = new String[table.getSize()];
-        String wfoID = handleName(state, table, csvLine, name, acceptedNameWfoId);
+
+        //handle name related values
+        String wfoID = handleName(state, table, csvLine, name, acceptedNameWfoId, classificationId, isHomotypic);
         if (wfoID == null) {
             String message = "Original spelling, orthographic variant or misspelling "
                     + "'" + name + "' for name '" + mainName +"' does not have a WFO-ID"
@@ -767,33 +760,58 @@ public class WfoBackboneExport
             return;
         }
 
+        //acceptedNameId
         csvLine[table.getIndex(WfoBackboneExportTable.TAX_ACCEPTED_NAME_ID)] = acceptedNameWfoId;
 
-        //authorship, take from mainname if it does not exist
-        //TODO 3 take from csvLine of both names
+        //authorship, take from main name if it does not exist
+        //TODO 3 take from csvLine of both names (AM: 2025-01-03 don't know what is meant here)
         if (isBlank(normalizedAuthor(state, name))) {
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_AUTHORSHIP)]
                     = normalizedAuthor(state, mainName);
         }
 
         //nom. ref, take from main name if it does not exist
-        //TODO 3 take from csvLine of both names
+        //TODO 3 take from csvLine of both names (AM: 2025-01-03 don't know what is meant here)
         String nomRef = NomenclaturalSourceFormatter.INSTANCE().format(name.getNomenclaturalSource());
         if (isBlank(nomRef)) {
             nomRef = NomenclaturalSourceFormatter.INSTANCE().format(mainName.getNomenclaturalSource());
             csvLine[table.getIndex(WfoBackboneExportTable.NAME_PUBLISHED_IN)] = nomRef;
         }
 
-        //TODO 2 tax status correct?
-        csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = "Synonym";
+        csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = isHomotypicStr(isHomotypic);
 
         csvLine[table.getIndex(WfoBackboneExportTable.NAME_STATUS)] = "orthografia";
 
-        //TODO 2 remarks, REFERENCES, family, taxonBase, created, modified
+        //nameAccordingTo
+        //for now we do not add a secundum references to pure names
+        csvLine[table.getIndex(WfoBackboneExportTable.TAX_NAME_ACCORDING_TO_ID)] = null;
+
+        //remarks
+        getRemarks(state, null, name);
+
+        //references
+        //TODO 5 references, take baseUrl from a repository information (currently not yet possible, but maybe we could use a CDM preference instead)
+        //TODO 5 if we know without doubt that original spelling/orth. var. is shown in synonymy we could also link to synonymy
+        if (isNotBlank(state.getConfig().getSourceLinkBaseUrl())) {
+            String taxonSourceLink = makeNameSourceLink(state, name);
+            csvLine[table.getIndex(WfoBackboneExportTable.REFERENCES)] = taxonSourceLink;
+        }
+
+        //created, modified not needed (#10652#note-2)
 
         //process original spelling
-        state.getProcessor().put(table, name, csvLine); // TODO Auto-generated method stub
+        state.getProcessor().put(table, name, csvLine);
+    }
 
+    private boolean isNameAlsoPartOfExportedTaxonBase(TaxonName name, int classificationId) {
+        //TODO 7 maybe better compare with root node treeindex of exported root node
+        //       instead of classificationId to check if it is even in the exported group
+
+        Set<TaxonNode> taxonBasesInClassificationForName = name.getTaxonBases().stream().map(tb->tb.acceptedTaxon()).flatMap(acc->acc.getTaxonNodes().stream())
+                .filter(tn->getClassificationId(tn) == classificationId)
+                .collect(Collectors.toSet());
+
+        return !taxonBasesInClassificationForName.isEmpty();
     }
 
     private String getWfoId(WfoBackboneExportState state, TaxonName name, boolean warnIfNotExists) {
@@ -811,7 +829,11 @@ public class WfoBackboneExport
             String message = "No ipni-id given for name: " + name.getTitleCache()+"/"+ name.getUuid();
             state.getResult().addWarning(message);  //TODO 5 data location
         }
-        return ipniId == null ? null : ipniId.getIdentifier();
+        String ipniIdStr = ipniId == null ? null : ipniId.getIdentifier();
+        if (ipniIdStr != null && ipniIdStr.matches(IdentifierType.IPNI_NAME_ID_PATTERN)){
+            ipniIdStr = "urn:lsid:ipni.org:names:" + ipniIdStr;
+        }
+        return ipniIdStr;
     }
 
     private String makeNameStatus(WfoBackboneExportState state, TaxonName name) {

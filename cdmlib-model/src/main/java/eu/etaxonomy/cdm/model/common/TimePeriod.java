@@ -522,6 +522,9 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
         return formatter.getYear(this);
     }
 
+    /**
+     * True, if there is no start date, no end date and no freetext representation.
+     */
     @Override
     public boolean checkEmpty() {
         //TODO unify isEmpty && checkEmpty

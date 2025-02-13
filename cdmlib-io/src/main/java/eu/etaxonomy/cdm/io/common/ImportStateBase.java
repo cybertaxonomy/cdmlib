@@ -97,7 +97,8 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 
 	protected ImportStateBase(CONFIG config){
 		this.config = config;
-		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<>(service));
+		stores.put(ICdmIO.PERSON_STORE, new MapWrapper<>(service));
+        stores.put(ICdmIO.TEAM_STORE, new MapWrapper<>(service));
 		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<>(service));
 		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<>(service));
 		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<>(service));
@@ -118,7 +119,8 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	 * This is usually needed when a new transaction is opened and user defined terms are reused.
 	 */
 	public void resetUuidTermMaps(){
-		extensionTypeMap = new HashMap<>();
+
+	    extensionTypeMap = new HashMap<>();
 		markerTypeMap = new HashMap<>();
 		annotationTypeMap = new HashMap<>();
 

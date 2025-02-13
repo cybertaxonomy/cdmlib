@@ -216,10 +216,10 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
         ListenableFuture<Boolean> emailResetFuture = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
         emailResetFuture.addCallback(
                 requestSuccessVal -> {
-                    logger.debug("success 1");
+//                    logger.debug("success 1");
                     resetTokenSendSignal.countDown();
                 }, futureException -> {
-                    logger.debug("error 1");
+//                    logger.debug("error 1");
                     assyncError = futureException;
                     resetTokenSendSignal.countDown();
                 });
@@ -230,22 +230,22 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
         ListenableFuture<Boolean> emailResetFuture2 = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
         emailResetFuture2.addCallback(
                 requestSuccessVal -> {
-                    logger.debug("success 2");
+//                    logger.debug("success 2");
                     resetTokenSendSignal2.countDown();
                 }, futureException -> {
-                    logger.debug("error 2");
+//                    logger.debug("error 2");
                     assyncError = futureException;
                     resetTokenSendSignal2.countDown();
                 }
         );
 
-        logger.debug("3. request");
+//        logger.debug("3. request");
         //wait another 4 seconds to totally wait 6s and therefore be allowed to request another token again
         try {Thread.sleep(4000);} catch (InterruptedException e1) {}
         ListenableFuture<Boolean> emailResetFuture3 = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
         emailResetFuture3.addCallback(
                 requestSuccessVal -> {
-                    logger.debug("success 3");
+//                    logger.debug("success 3");
                     resetTokenSendSignal3.countDown();
                 }, futureException -> {
                     logger.debug("error 3");
@@ -259,7 +259,7 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
         resetTokenSendSignal2.await();
         resetTokenSendSignal3.await();
 
-        logger.debug("all completed, testing assertions");
+//        logger.debug("all completed, testing assertions");
 
         if(assyncError != null) {
             throw assyncError; // an error should not have been thrown

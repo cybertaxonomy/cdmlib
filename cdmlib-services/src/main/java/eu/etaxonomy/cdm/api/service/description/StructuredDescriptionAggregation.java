@@ -129,6 +129,7 @@ public class StructuredDescriptionAggregation
         String title = taxon.getTitleCache();
         if (logger.isDebugEnabled()){logger.debug("creating new description for " + title);}
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
+        //Note: this new description is not saved here as it may be deleted later again. Saving takes place when the resultHolder is updated
         description.addType(DescriptionType.AGGREGATED_STRUC_DESC);
         setDescriptionTitle(description, taxon);
         return description;
@@ -153,10 +154,10 @@ public class StructuredDescriptionAggregation
         updated |= mergeDescriptionElements(targetDescription, structuredResultHolder.quantitativeMap, QuantitativeData.class);
         updated |= mergeDescriptionSources(targetDescription, structuredResultHolder);
 
-        if(!targetDescription.getElements().isEmpty()){
-            dataSet.addDescription(targetDescription);
-        }else{
+        if(targetDescription.getElements().isEmpty()){
             dataSet.removeDescription(targetDescription);
+        }else{
+            dataSet.addDescription(targetDescription);
         }
         return updated;
     }
@@ -225,6 +226,7 @@ public class StructuredDescriptionAggregation
                 @SuppressWarnings("unchecked")
                 T description = (T)CdmBase.deproxy(target);
                 ((IDescribable<T>)description.describedEntity()).addDescription(description);
+                getDescriptionService().save(description);
             }
         }
     }
@@ -493,7 +495,6 @@ public class StructuredDescriptionAggregation
         //"default" descriptions
         //TODO add default descriptions
         //xxx
-
     }
 
     private void addDescriptionToResultHolder(StructuredDescriptionResultHolder descriptiveResultHolder,
@@ -522,8 +523,9 @@ public class StructuredDescriptionAggregation
 
                 switch (sourceMode){
                     case DESCRIPTION:
-                        DescriptionBase<?> clonedDesc = cloneNewSourceDescription(desc);
-                        source.setCdmSource(clonedDesc);
+                        DescriptionBase<?> newClonedDesc = cloneNewSourceDescription(desc);
+                        source.setCdmSource(newClonedDesc);
+                        //we do not persist here yet as the source/description can still be merged with an existing description and therefore not be persisted
                         break;
                     case TAXON:
                         if (desc instanceof TaxonDescription){
@@ -640,7 +642,7 @@ public class StructuredDescriptionAggregation
 
     /**
      * Computes all specimens attached to the given taxon within the given dataSet.
-     * For these secimens it returns all attache
+     * For these specimens it returns all attached descriptions.
      * */
     private Set<SpecimenDescription> getSpecimenDescriptions(Taxon taxon, DescriptiveDataSet dataSet) {
         Set<SpecimenDescription> result = new HashSet<>();

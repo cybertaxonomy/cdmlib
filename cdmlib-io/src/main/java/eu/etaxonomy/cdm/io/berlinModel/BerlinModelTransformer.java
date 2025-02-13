@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStanding;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -570,21 +571,24 @@ public class BerlinModelTransformer {
 			return null;
 		}else if (nomStatus.equalsIgnoreCase("comb. ined.")){
 			if (nomStatusCombIned == null){
-				nomStatusCombIned = NomenclaturalStatusType.NewInstance("comb. ined.", "comb. ined.", "comb. ined.", Language.LATIN());
+			    NomenclaturalStanding nomenclaturalStanding = NomenclaturalStanding.OTHER_DESIGNATION;
+                nomStatusCombIned = NomenclaturalStatusType.NewInstance("comb. ined.", "comb. ined.", "comb. ined.", Language.LATIN(), nomenclaturalStanding);
 				nomStatusCombIned.setUuid(uuidNomStatusCombIned);
 				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusCombIned);
 			}
 			result = nomStatusCombIned;
 		}else if (nomStatus.equalsIgnoreCase("sp. nov. ined.")){
 			if (nomStatusSpNovIned == null){
-				nomStatusSpNovIned = NomenclaturalStatusType.NewInstance("sp. nov. ined.", "sp. nov. ined.", "sp. nov. ined.", Language.LATIN());
+			    NomenclaturalStanding nomenclaturalStanding = NomenclaturalStanding.OTHER_DESIGNATION;
+                nomStatusSpNovIned = NomenclaturalStatusType.NewInstance("sp. nov. ined.", "sp. nov. ined.", "sp. nov. ined.", Language.LATIN(), nomenclaturalStanding);
 				nomStatusSpNovIned.setUuid(uuidNomStatusSpNovIned);
 				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusSpNovIned);
 			}
 			result = nomStatusSpNovIned;
 		}else if (nomStatus.equalsIgnoreCase("nom. & orth. cons.")){
 			if (nomStatusNomOrthCons == null){
-				nomStatusNomOrthCons = NomenclaturalStatusType.NewInstance("nom. & orth. cons.", "nom. & orth. cons.", "nom. & orth. cons.", Language.LATIN());
+			    NomenclaturalStanding nomenclaturalStanding = NomenclaturalStanding.VALID;
+                nomStatusNomOrthCons = NomenclaturalStatusType.NewInstance("nom. & orth. cons.", "nom. & orth. cons.", "nom. & orth. cons.", Language.LATIN(), nomenclaturalStanding);
 				nomStatusNomOrthCons.setUuid(uuidNomStatusNomOrthCons);
 				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusNomOrthCons);
 			}

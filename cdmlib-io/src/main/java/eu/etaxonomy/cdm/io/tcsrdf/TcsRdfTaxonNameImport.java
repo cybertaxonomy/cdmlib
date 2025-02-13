@@ -50,8 +50,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 @Component
 public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
-    private static final long serialVersionUID = -2547422867292051979L;
 
+    private static final long serialVersionUID = -2547422867292051979L;
     private static final Logger logger = LogManager.getLogger();
 
 	public TcsRdfTaxonNameImport(){
@@ -98,7 +98,8 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	@Override
 	protected void doInvoke(TcsRdfImportState state){
 
-		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 
 		logger.info("start makeTaxonNames ...");
 		TcsRdfImportConfigurator config = state.getConfig();
@@ -107,13 +108,10 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		String rdfNamespace = config.getRdfNamespaceURIString();
 		String taxonNameNamespace = config.getTnNamespaceURIString();
 
-		String idNamespace = "TaxonName";
-
 		Resource elTaxonName = root.getResource(taxonNameNamespace);
 
 		int i = 0;
 
-		TaxonName name;
 		Property property = root.getProperty(taxonNameNamespace+"authorship");
 
 		ResIterator iterator = root.listSubjectsWithProperty(property, (RDFNode) null);
@@ -122,7 +120,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 
 			Resource resource = iterator.next();
 
-			name = handleNameResource(resource, config);
+			TaxonName name = handleNameResource(resource, config);
 			id = resource.getNameSpace();
 			taxonNameMap.put(id, name);
 		}
@@ -132,7 +130,6 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 //		makeNameSpecificData(nameMap);
 		logger.info("end makeTaxonNames ...");
 		return;
-
 	}
 
 	@Override
@@ -145,11 +142,9 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		TaxonName result = handleNameResource(nameAbout, config);
 		taxonNameMap.put(uri, result);
 		return result;
-
 	}
 
 	private TaxonName handleNameResource(Resource nameAbout, TcsRdfImportConfigurator config){
-		String idNamespace = "TaxonName";
 
 //		StmtIterator stmts = nameAbout.listProperties();
 //		while(stmts.hasNext()){
@@ -188,6 +183,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				IGeneric nomRef = ReferenceFactory.newGeneric(); //TODO
 				nomRef.setTitleCache(strPublishedIn, true);
 				nameBase.setNomenclaturalReference(nomRef);
+				this.getReferenceService().save((Reference)nomRef);
 				try{
     				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"year");
     				String strYear = nameAbout.getProperty(prop).getString();
@@ -261,7 +257,8 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				Statement stateAuthorship = nameAbout.getProperty(prop);
 				prop =  nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"authorteam");
 				Statement stateAuthorTeam = nameAbout.getProperty(prop);
-				Team authorTeam = new Team();
+				Team authorTeam = Team.NewInstance();
+				this.getAgentService().save(authorTeam);
 				authorTeam.setTitleCache(stateAuthorship.getObject().toString(), true);
 				Statement stateAutorTeamTeam = null;
 				Statement stateAutorTeamName = null;
@@ -283,20 +280,18 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 						prop =  nameAbout.getModel().getProperty(config.getTeamNamespaceURIString()+"hasMember");
 						stateTeamMember = ((Resource)stateAuthorTeam.getObject()).listProperties(prop);
 						String memberString = null;
-						Person person;
-						for (Statement statement :stateTeamMember.toList()){
+						for (Statement statement: stateTeamMember.toList()){
 							memberString =statement.getObject().toString();
 							if (memberString != null){
-								person = Person.NewTitledInstance(memberString);
+								Person person = Person.NewTitledInstance(memberString);
 								authorTeam.addTeamMember(person);
+								this.getAgentService().save(person);
 							}
 						}
 					}catch(Exception e){
 						System.err.println(e.getMessage());
 					}
 				}
-
-
 
 				nonViralName.setCombinationAuthorship(authorTeam);
 
@@ -354,9 +349,9 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 
 			return nameBase;
 
-			}catch(Exception e){
-			e.printStackTrace();
-			return null;
+		}catch(Exception e){
+		    e.printStackTrace();
+		    return null;
 		}
 			/*
 			//name
@@ -503,16 +498,13 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			nameAbout = XmlHelp.getChildAttributeValue(elTaxonName, "TaxonName", taxonNameNamespace, "about", rdfNamespace);
 		}
 
-
 		String strRank = XmlHelp.getChildAttributeValue(elTaxonName, "rankString", taxonNameNamespace, "rankString", rdfNamespace);
 		if (strRank == null){
 			strRank = XmlHelp.getChildContent(elTaxonName, "TaxonName", taxonNameNamespace, "rankString", rdfNamespace);
-
 		}
 
 		if (strRank == null){
 			strRank = XmlHelp.getChildAttributeValue(elTaxonName, "rank", taxonNameNamespace, "resource", rdfNamespace);
-
 		}
 
 		String strNomenclaturalCode = XmlHelp.getChildContentAttributeValue(elTaxonName, "TaxonName", taxonNameNamespace, "nomenclaturalCode", rdfNamespace);

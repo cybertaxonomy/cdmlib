@@ -110,7 +110,6 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY , mappedBy="typeDesignations")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Set<TaxonName> typifiedNames = new HashSet<>();
 
     //******* REGISTRATION *****************/
@@ -120,7 +119,6 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(mappedBy="typeDesignations", fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
     @IndexedEmbedded(depth=1)
     private Set<Registration> registrations = new HashSet<>();

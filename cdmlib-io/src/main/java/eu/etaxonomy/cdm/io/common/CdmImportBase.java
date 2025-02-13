@@ -30,6 +30,8 @@ import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.common.utils.ImportDeduplicationHelper;
 import eu.etaxonomy.cdm.io.markup.MarkupTransformer;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -62,6 +64,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStanding;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
@@ -375,8 +378,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return refSystem;
 	}
 
-	protected Rank getRank(STATE state, UUID uuid, String label, String text, String labelAbbrev,OrderedTermVocabulary<Rank> voc, Rank lowerRank, RankClass rankClass){
-		if (uuid == null){
+	protected Rank getRank(STATE state, UUID uuid, String label, String text, String labelAbbrev,OrderedTermVocabulary<Rank> voc,
+	        Rank lowerRank, RankClass rankClass){
+
+	    if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
 		Rank rank = state.getRank(uuid);
@@ -672,7 +677,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
      * If label, text and labelAbbrev are all <code>null</code> no status type is created.
      */
     protected NomenclaturalStatusType getNomenclaturalStatusType(STATE state, UUID uuid, String label,
-            String description, String labelAbbrev, Language language, TermVocabulary<NomenclaturalStatusType> voc){
+            String description, String labelAbbrev, NomenclaturalStanding nomenclaturalStanding,
+            Language language, TermVocabulary<NomenclaturalStatusType> voc){
+
         if (uuid == null){
             return null;
         }
@@ -683,7 +690,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
                 if (language == null){
                     language = Language.UNKNOWN_LANGUAGE();
                 }
-                nomStatusType = NomenclaturalStatusType.NewInstance(description, label, labelAbbrev, language);
+                nomStatusType = NomenclaturalStatusType.NewInstance(description, label, labelAbbrev, language, nomenclaturalStanding);
                 nomStatusType.setUuid(uuid);
                 if (voc == null){
                     boolean isOrdered = false;
@@ -1558,5 +1565,28 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
     public ImportDeduplicationHelper createDeduplicationHelper(STATE state){
         return ImportDeduplicationHelper.NewInstance(this, state);
+    }
+
+
+    protected Reference save(Reference reference) {
+        if (reference != null) {
+            if (!reference.isPersisted()) {
+                getReferenceService().save(reference);
+            }
+            save(reference.getInReference());
+            save(reference.getAuthorship());
+        }
+        return reference;
+    }
+
+    protected void save(TeamOrPersonBase<?> agent) {
+        if(agent == null || agent.isPersisted()) {
+            return;
+        }else {
+            getAgentService().save(agent);
+            if (agent instanceof Team) {
+                ((Team)agent).getTeamMembers().stream().forEach(m->getAgentService().save(m));
+            }
+        }
     }
 }

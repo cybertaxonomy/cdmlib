@@ -1127,4 +1127,14 @@ public class CdmGenericDaoImpl
         List<UUID> list = query.list();
         return list;
     }
+
+    @Override
+    public Set<CdmBase> saveAll(Set<CdmBase> cdmBases){
+        Set<CdmBase> result = new HashSet<>();
+        for (CdmBase cdmBase: cdmBases) {
+            result.add(save(cdmBase));
+        }
+        return result;
+    }
+
 }

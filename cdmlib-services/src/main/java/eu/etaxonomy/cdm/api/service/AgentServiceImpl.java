@@ -23,10 +23,8 @@ import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurato
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -34,7 +32,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dto.TeamOrPersonUuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.merge.ConvertMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
@@ -85,18 +82,6 @@ public class AgentServiceImpl
 	}
 
 	@Override
-	public Pager<InstitutionalMembership> getInstitutionalMemberships(Person person, Integer pageSize, Integer pageNumber) {
-        long numberOfResults = dao.countInstitutionalMemberships(person);
-
-		List<InstitutionalMembership> results = new ArrayList<>();
-		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getInstitutionalMemberships(person, pageSize, pageNumber);
-		}
-
-		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
-	}
-
-	@Override
 	public Pager<Person> getMembers(Team team, Integer pageSize, Integer pageNumber) {
 		long numberOfResults = dao.countMembers(team);
 
@@ -109,23 +94,6 @@ public class AgentServiceImpl
 	}
 
 	@Override
-	public Pager<Address> getAddresses(AgentBase agent, Integer pageSize, Integer pageNumber) {
-		long numberOfResults = dao.countAddresses(agent);
-
-		List<Address> results = new ArrayList<>();
-		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getAddresses(agent, pageSize, pageNumber);
-		}
-
-		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
-	}
-
-	@Override
-	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle() {
-		return dao.getTeamUuidAndNomenclaturalTitle();
-	}
-
-	@Override
 	@Transactional(readOnly = false)
     public DeleteResult delete(UUID agentUUID){
 	    DeleteResult result = new DeleteResult();
@@ -134,7 +102,7 @@ public class AgentServiceImpl
 	        result.addException(new Exception("Can't delete object without UUID."));
 	        return result;
 	    }
-		AgentBase base = dao.load(agentUUID);
+		AgentBase<?> base = dao.load(agentUUID);
 		result = isDeletable(agentUUID, null);
 
     	if (result.isOk()){

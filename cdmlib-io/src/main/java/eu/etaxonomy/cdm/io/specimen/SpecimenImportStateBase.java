@@ -105,10 +105,10 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     }
 
     public Map<String, Team> getTeamStoreAuthor() {
-        return teamStoreCollector;
+        return teamStoreAuthor;
     }
     public void setTeamStoreAuthor(Map<String, Team>teamStore) {
-        this.teamStoreCollector = teamStore;
+        this.teamStoreAuthor = teamStore;
     }
 
     public FieldUnit getFieldUnit(String fieldNumber) {

@@ -71,7 +71,6 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Person commentator;
 
     @XmlElement(name = "AnnotationType")

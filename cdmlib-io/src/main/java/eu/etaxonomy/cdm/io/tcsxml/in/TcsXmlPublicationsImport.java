@@ -116,7 +116,9 @@ public class TcsXmlPublicationsImport
 			Element elPublicationDetailed = doubleResult.getFirstResult();
 
 			success &= config.getPlaceholderClass().makePublicationDetailed(config, elPublicationDetailed, reference);
-			ImportHelper.setOriginalSource(reference, config.getSourceReference(), strId, idNamespace);
+			Reference sourceRef = config.getSourceReference();
+			referenceMap.put(sourceRef.getUuid(), sourceRef);
+			ImportHelper.setOriginalSource(reference, sourceRef, strId, idNamespace);
 
 			referenceMap.put(strId, reference);
 		}

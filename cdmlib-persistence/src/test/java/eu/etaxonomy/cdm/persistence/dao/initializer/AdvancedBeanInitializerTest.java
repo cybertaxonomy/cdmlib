@@ -62,7 +62,8 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 16.11.2015
  */
-public class AdvancedBeanInitializerTest<CDM extends CdmBase> extends CdmTransactionalIntegrationTest {
+public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the test in exclipse remove generics as with generics it is not recognized as UnitTest by eclipse
+        extends CdmTransactionalIntegrationTest {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -157,8 +158,9 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> extends CdmTransac
     @DataSet
     @Test
     public void testFullNameGraphWithPreloadedReference() {
+
         // find the reference by iD (not load!)
-        Reference ref = referenceDao.findById(5000);
+        referenceDao.findById(5000);
         TaxonName name = nameDao.findById(5000);
         assertFalse("for this test to be significant the authorship must be uninitialized", Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship()));
         initializer.initialize(name, Arrays.asList(new String[]{"nomenclaturalSource.citation.authorship.$"}));
@@ -172,7 +174,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> extends CdmTransac
         deacivatedAutoIntitializers = clearAutoinitializers();
         assureSessionClear();
 
-        TaxonName name = nameDao.load(nameUuid, Arrays.asList("$"));
+        TaxonName name = nameDao.load(nameUuid, Arrays.asList("$", "nomenclaturalSource.$")); //former it was only "$" but since nomenclaturalSource was introduced in combination with removing cascading 2 different paths were needed for testing the 2 examples -> the test should be adapted by using a better example
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference()));
         assertFalse(Hibernate.isInitialized(name.getAnnotations()));
 
@@ -235,7 +237,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> extends CdmTransac
         deacivatedAutoIntitializers = clearAutoinitializers();
         assureSessionClear();
 
-        TaxonName name = nameDao.load(nameUuid, Arrays.asList("*"));
+        TaxonName name = nameDao.load(nameUuid, Arrays.asList("*", "nomenclaturalSource.*"));  //former it was only "*" but since nomenclaturalSource was introduced in combination with removing cascading 2 different paths were needed for testing the 2 examples -> the test should be adapted by using a better example
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference()));
         assertTrue(Hibernate.isInitialized(name.getAnnotations()));
     }

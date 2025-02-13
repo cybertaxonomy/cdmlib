@@ -147,6 +147,8 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
@@ -178,6 +180,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
 	private ITaxonDao taxonDao;
+
+    @SpringBeanByType
+    private IDescriptionDao descriptionDao;
+
+    @SpringBeanByType
+    private IDescriptionElementDao descriptionElementDao;
 
 	@SpringBeanByType
 	private IOccurrenceDao occurrenceDao;
@@ -378,19 +386,21 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
 	     @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")})
 	public void testGetReferencingObjectsCdmBase() {
-		IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+
+	    //create data
+	    IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setTitleCache("A name", true);
-		Reference ref1 = ReferenceFactory.newArticle();
+		Reference ref1 = save(ReferenceFactory.newArticle());
 		Taxon taxon = Taxon.NewInstance(name, ref1);
 		Person author = Person.NewInstance();
 		author.setTitleCache("Author", true);
 		ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
 		ref1.setAuthorship(author);
 		name.setBasionymAuthorship(author);
-
 		name.setNomenclaturalReference(ref1);
-
+		agentDao.save(author);
 		taxonDao.save(taxon);
+
 //		UUID uuid = UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f");
 //		Reference ref1 = referenceService.findByUuid(uuid);
 		commitAndStartNewTransaction(null);
@@ -417,8 +427,18 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		logger.info(debug);
 	}
 
+    private Reference save(Reference ref, String title, UUID uuid) {
+        ref.setTitle(title);
+        ref.setUuid(uuid);
+        return save(ref);
+    }
 
-	//similar to testGetReferencingObjectsCdmBase but with DTO
+    private Reference save(Reference ref) {
+        referenceDao.save(ref);
+        return ref;
+    }
+
+    //similar to testGetReferencingObjectsCdmBase but with DTO
 	@Test
     @DataSets({
          @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
@@ -427,17 +447,17 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	    IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         name.setTitleCache("A name", true);
-        Reference ref1 = ReferenceFactory.newArticle();
+        Reference ref1 = save(ReferenceFactory.newArticle());
         Taxon taxon = Taxon.NewInstance(name, ref1);
         Person author = Person.NewInstance();
         author.setTitleCache("Author", true);
+        agentDao.save(author);
         ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
         ref1.setAuthorship(author);
         name.setCombinationAuthorship(author);
         name.setBasionymAuthorship(author);  //to test deduplication
 
         name.setNomenclaturalReference(ref1);
-
         taxonDao.save(taxon);
 //	      UUID uuid = UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f");
 //	      Reference ref1 = referenceService.findByUuid(uuid);
@@ -514,8 +534,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		TaxonName zooName1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
 		name1.setTitleCache("ZoologicalName1", true);
 
-		Reference article1 = ReferenceFactory.newArticle();
-		Reference article2 = ReferenceFactory.newArticle();
+		Reference article1 = save(ReferenceFactory.newArticle());
+		Reference article2 = save(ReferenceFactory.newArticle());
 
 		name1.setNomenclaturalReference(article1);
 		name2.setNomenclaturalReference(article2);
@@ -543,9 +563,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		article1.addRights(rights1);
 		article2.addRights(rights2);
 
-		Credit credit1 = Credit.NewInstance(Team.NewInstance(), TimePeriod.NewInstance(2002), "credit1");
-		Credit credit2 = Credit.NewInstance(Team.NewInstance(), TimePeriod.NewInstance(2015), "credit2");
-
+		Team creditTeam1 = Team.NewInstance();
+		Team creditTeam2 = Team.NewInstance();
+		agentDao.save(creditTeam1);
+		agentDao.save(creditTeam2);
+        Credit credit1 = Credit.NewInstance(creditTeam1, TimePeriod.NewInstance(2002), "credit1");
+		Credit credit2 = Credit.NewInstance(creditTeam2, TimePeriod.NewInstance(2015), "credit2");
 		article1.addCredit(credit1);
 		article2.addCredit(credit2);
 
@@ -581,6 +604,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		taxDesc.addSource(OriginalSourceType.Unknown, null, null, article2, null);
 
 		taxonDao.save(taxon1);
+		descriptionDao.save(taxDesc);
 
 		//unidircetional reference to the merged object should be redirected
 		cdmGenericDao.merge(article1, article2, null);
@@ -627,6 +651,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	@Test
 	public void testMergeTaxonNameAndTaxon() throws MergeException {
+
 	    TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
 
@@ -636,7 +661,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		IBotanicalName name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name3.setTitleCache("BotanicalName3", true);
 
-		Reference database = ReferenceFactory.newDatabase();
+		Reference database = save(ReferenceFactory.newDatabase());
 
 		Taxon taxon1 = Taxon.NewInstance(name1, database);
 		Taxon taxon2 = Taxon.NewInstance(name2, database);
@@ -701,9 +726,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		Credit credit1 = Credit.NewInstance(team3, TimePeriod.NewInstance(1955), "credit1");
 		book2.addCredit(credit1);
 
-		agentDao.save(team1);
-		agentDao.save(team2);
-		agentDao.save(team3);
+		agentDao.save(team1, team2);
+		agentDao.save(team3, person1);
+		agentDao.save(person2, person3);
 		cdmGenericDao.save((Reference)book1);
 		cdmGenericDao.save((Reference)book2);
 
@@ -773,6 +798,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public void testMergePersons() throws MergeException {
+
         Team team1 = Team.NewInstance();
         Team team2 = Team.NewInstance();
         Team team3 = Team.NewInstance();
@@ -794,10 +820,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
         team3.addTeamMember(person3);
 
-        agentDao.save(team1);
-        agentDao.save(team2);
-        agentDao.save(team3);
-        agentDao.save(person1b);
+        agentDao.save(team1, team2);
+        agentDao.save(team3, person1b);
+        agentDao.save(person1a, person2);
+        agentDao.save(person3);
         commitAndStartNewTransaction(null);
 
         IMergeStrategy personMergeStrategy = DefaultMergeStrategy.NewInstance(Person.class);
@@ -817,23 +843,19 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testReallocateIntextReferenceForReferenceAndLanguageString() throws MergeException {
+
         UUID uuidRef1 = UUID.fromString("41743cec-b893-4e8b-b06c-91f9b9ba8fee");
         UUID uuidRef2 = UUID.fromString("8fd56b43-7cca-4c3b-bb90-7576da81c072");
 
         // CREATE DATA
 
-        Reference ref1 = ReferenceFactory.newGeneric();
-        ref1.setTitle("Reference1");
-        ref1.setUuid(uuidRef1);
-        Reference ref2 = ReferenceFactory.newGeneric();
-        ref2.setTitle("Reference2");
-        ref2.setUuid(uuidRef2);
-        referenceDao.save(ref2);
+        Reference ref1 = save(ReferenceFactory.newGeneric(), "Reference1", uuidRef1);
+        Reference ref2 = save(ReferenceFactory.newGeneric(), "Reference2", uuidRef2);
         Taxon taxon = Taxon.NewInstance(null, null);
 
-        TaxonDescription desc = TaxonDescription.NewInstance(taxon);
+        TaxonDescription desc = save(TaxonDescription.NewInstance(taxon));
         Language language = Language.DEFAULT();
-        TextData textData = TextData.NewInstance(Feature.DESCRIPTION(), "And here is a citation" , language, null);
+        TextData textData = save(TextData.NewInstance(Feature.DESCRIPTION(), "And here is a citation" , language, null));
         LanguageString languageString = textData.getLanguageText(language);
         IntextReference intextRefRef = languageString.addIntextReference(ref1, 4, 8);
         String uuidIntextRefRef = intextRefRef.getUuid().toString();
@@ -1020,6 +1042,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	@Test
 	public void findMatching(){
+
 		IBook book1 = ReferenceFactory.newBook();
 		IBook book2 = ReferenceFactory.newBook();
 		IBook book3 = ReferenceFactory.newBook();
@@ -1090,6 +1113,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 			person1.setPrefix("pre1");
 			person2.setPrefix("pre2");
 			person3.setPrefix("pre3");
+			agentDao.save(person1);
+			agentDao.save(person2);
+			agentDao.save(person3);
 
 //			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 //			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
@@ -1246,8 +1272,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
         team3.setTitleCache("ProtectedTeam", true);
 
-        cdmGenericDao.saveOrUpdate(team1);
-        cdmGenericDao.saveOrUpdate(team2);
+        agentDao.save(team1, team2);
+        agentDao.save(person1, person2);
+        agentDao.save(person3);
         commitAndStartNewTransaction();
 
         //test
@@ -1321,9 +1348,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
         team3.setTitleCache("ProtectedTeam", true);
 
-        UUID uuidTeam1 = cdmGenericDao.saveOrUpdate(team1);
-        UUID uuidTeam2 = cdmGenericDao.saveOrUpdate(team2);
+        UUID uuidTeam1 = agentDao.save(team1).getUuid();
+        UUID uuidTeam2 = agentDao.save(team2).getUuid();
+        agentDao.save(person1, person2);
+        agentDao.save(person3, person4);
         commitAndStartNewTransaction();
+
         team1 = (Team) cdmGenericDao.findByUuid(uuidTeam1);
         team2 = (Team) cdmGenericDao.findByUuid(uuidTeam2);
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedCollectorPersonInstance();
@@ -1345,6 +1375,16 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         } catch (IllegalArgumentException | MatchException e) {
             Assert.fail("No exception should be thrown");
         }
+    }
+
+    private <S extends DescriptionBase<?>> S save(S newDescription) {
+        descriptionDao.save(newDescription);
+        return newDescription;
+    }
+
+    private <S extends DescriptionElementBase> S save(S newElement) {
+        descriptionElementDao.save(newElement);
+        return newElement;
     }
 
 	@Test

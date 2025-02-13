@@ -277,12 +277,13 @@ public class ReferenceDefaultCacheStrategyTest {
         VerbatimTimePeriod newDatePublished = TimePeriodParser.parseStringVerbatim("1975 (after Aug.)");
         book1.setDatePublished(newDatePublished);
         book1.setTitleCache(null, false);
-        //TODO this behaviour needs to be discussed. Maybe better the complete date published string should be returned.
-        Assert.assertEquals("Unexpected title cache.", "Book Author: My book, ed. 3", book1.getTitleCache());
+        //still unclear if in case of a not-atomized year the whole date published should be shown or not
+        //#1866
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975 (after Aug.): My book, ed. 3", book1.getTitleCache());
 
         book1.setPages("1-405");
         book1.resetTitleCache();
-        Assert.assertEquals("Unexpected title cache.", "Book Author: My book, ed. 3: 1-405", book1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975 (after Aug.): My book, ed. 3: 1-405", book1.getTitleCache());
     }
 
     @Test
@@ -481,6 +482,7 @@ public class ReferenceDefaultCacheStrategyTest {
 
     @Test
     public void testSectionInArticle(){
+
         //#9326, #3764
         Reference journal = ReferenceFactory.newJournal();
         journal.setTitle("Phytotaxa");
@@ -508,6 +510,7 @@ public class ReferenceDefaultCacheStrategyTest {
 
     @Test
     public void testSectionInJournal(){
+
         //#9326, #3764
         Reference journal = ReferenceFactory.newJournal();
         journal.setTitle("Phytotaxa");
@@ -641,14 +644,14 @@ public class ReferenceDefaultCacheStrategyTest {
         database.setDatePublished(TimePeriodParser.parseStringVerbatim("1984"));
         String result = defaultStrategy.getTitleCache(database);
         //TODO position of data still needs to be discussed
-        assertEquals("Miller: My nice database. 1984. "+UTF8.EN_DASH+" Berlin: Springer", result);
+        assertEquals("Miller 1984: My nice database. "+UTF8.EN_DASH+" Berlin: Springer", result);
 
         //#10647
         URI uri = URI.create("https://available.at");
         database.setUri(uri);
         database.setAccessed(DateTime.parse("2010-06-30T01:20+02:00"));
         result = defaultStrategy.getTitleCache(database);
-        assertEquals("Miller: My nice database. 1984. "+UTF8.EN_DASH+" Berlin: Springer. Published at https://available.at [accessed 2010-06-30 01:20]", result);
+        assertEquals("Miller 1984: My nice database. "+UTF8.EN_DASH+" Berlin: Springer. Published at https://available.at [accessed 2010-06-30 01:20]", result);
     }
 
     @Test

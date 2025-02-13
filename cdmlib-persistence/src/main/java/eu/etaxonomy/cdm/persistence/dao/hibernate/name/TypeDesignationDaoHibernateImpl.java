@@ -1,62 +1,31 @@
 /**
- * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy
- * http://www.e-taxonomy.eu
- *
- * The contents of this file are subject to the Mozilla Public License Version 1.1
- * See LICENSE.TXT at the top of this package for the full license terms.
- *
- */
+* Copyright (C) 2025 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*/
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
-
-import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.SourcedEntityDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 
 /**
  * @author a.mueller
+ * @since 11.01.2025
  */
 @Repository
 public class TypeDesignationDaoHibernateImpl
-			extends SourcedEntityDaoImpl<TypeDesignationBase<?>>
-            implements ITypeDesignationDao {
+        extends CdmEntityDaoBase<TypeDesignationBase>
+        implements ITypeDesignationDao {
 
-    @SuppressWarnings("unused")
+	@SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
 	public TypeDesignationDaoHibernateImpl() {
-		super((Class)(TypeDesignationBase.class));
+		super(TypeDesignationBase.class);
 	}
-
-	//TODO limit start
-	@Override
-    public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer limit, Integer start) {
-		Criteria crit = getSession().createCriteria(TypeDesignationBase.class);
-		if(limit != null){
-		    crit.setMaxResults(limit);
-		}
-		if(start != null){
-		    crit.setFirstResult(start);
-		}
-		@SuppressWarnings("unchecked")
-        List<TypeDesignationBase<?>> results = crit.list();
-		return results;
-	}
-
-    @Override
-    public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse() {
-        Query<TypeDesignationStatusBase> query = getSession().createQuery(
-                "select distinct tdb.typeStatus from TypeDesignationBase tdb", TypeDesignationStatusBase.class);
-        List<TypeDesignationStatusBase> terms = query.list();
-        return terms;
-    }
 }

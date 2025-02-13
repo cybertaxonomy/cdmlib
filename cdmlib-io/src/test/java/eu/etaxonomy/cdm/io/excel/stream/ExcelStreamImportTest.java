@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.excel.stream;
 
 import static org.junit.Assert.assertEquals;
@@ -62,22 +61,22 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
     private static final Logger logger = LogManager.getLogger();
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport<?> defaultImport;
+	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
-	INameService nameService;
+	private INameService nameService;
 
 	@SpringBeanByType
-	ITaxonService taxonService;
+	private ITaxonService taxonService;
 
 	@SpringBeanByType
-	ITermService termService;
+	private ITermService termService;
 
 	@SpringBeanByType
-	IClassificationService classificationService;
+	private IClassificationService classificationService;
 
 	@SpringBeanByType
-	IDescriptionService descriptionService;
+	private IDescriptionService descriptionService;
 
 	private IImportConfigurator configurator;
 	private IImportConfigurator uuidConfigurator;

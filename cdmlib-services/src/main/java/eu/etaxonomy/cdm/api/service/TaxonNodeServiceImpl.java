@@ -81,6 +81,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
@@ -93,6 +94,7 @@ import eu.etaxonomy.cdm.persistence.dto.HomotypicGroupDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author n.hoffmann
@@ -129,6 +131,9 @@ public class TaxonNodeServiceImpl
 
     @Autowired
     private ITaxonNodeFilterDao nodeFilterDao;
+
+    @Autowired
+    private ICdmGenericDao genericDao;
 
     @Autowired
     private IReferenceDao referenceDao;
@@ -326,7 +331,7 @@ public class TaxonNodeServiceImpl
         }
 
         //set homotypic group
-        TaxonName newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonName.class);
+        TaxonName newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName());
         newAcceptedTaxon.setName(newAcceptedTaxonName);
         Reference secNewAccepted = newAcceptedTaxon.getSec();
         Reference secOldAccepted = oldTaxon.getSec();
@@ -341,6 +346,7 @@ public class TaxonNodeServiceImpl
         }
 
         Synonym newSyn = newAcceptedTaxon.addSynonymName(newSynonymName, newSec, microReference, synonymType);
+        save(newSyn);
         if (newSec == null){
             newSyn.setSec(newSec);
         }
@@ -911,13 +917,19 @@ public class TaxonNodeServiceImpl
                 } else {
                     UpdateResult tmpResult = nameService.parseName(taxonDto.getTaxonNameString(),
                             taxonDto.getCode(), taxonDto.getPreferredRank(),  true);
-                    result.addUpdatedObjects(tmpResult.getUpdatedObjects());
+
                     name = (TaxonName)tmpResult.getCdmEntity();
+                    Set<CdmBase> transientObjects = new HashSet<>();
+                    transientObjects.addAll(NonViralNameParserImpl.getTransientEntitiesOfParsedName(name));
+                    genericDao.saveAll(transientObjects);
+                    UUID nameUuid = nameService.saveOrUpdate(name);
+                    name = nameService.load(nameUuid);
                 }
                 Reference sec = null;
                 if (taxonDto.getSecUuid() != null ){
                     sec = referenceDao.load(taxonDto.getSecUuid());
                 }
+
                 if (name != null && !name.isPersisted()){
                     for (HybridRelationship rel : name.getHybridChildRelations()){
                         if (!rel.getHybridName().isPersisted()) {
@@ -928,6 +940,7 @@ public class TaxonNodeServiceImpl
                         }
                     }
                 }
+
                 taxon = Taxon.NewInstance(name, sec);
                 taxon.setPublish(taxonDto.isPublish());
             }
@@ -1436,6 +1449,11 @@ public class TaxonNodeServiceImpl
     @Override
     public List<TaxonNodeDto> getTaxonNodeDtosFromTaxon(UUID taxonUuid, String subTreeIndex) {
         return dao.getTaxonNodeDtosFromTaxon(taxonUuid, subTreeIndex);
+    }
+
+    private Synonym save(Synonym syn) {
+        taxonService.save(syn);
+        return syn;
     }
 
 }

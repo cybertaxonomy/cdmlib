@@ -144,6 +144,10 @@ public class TaxonPageDto extends TaxonBaseDto {
         private List<TypedLabel> typedTypes;
         private List<TaggedText> taggedTypes;
         private String types;
+        //should always be empty for homotypic synonyms
+        //NOTE: the synSecSources are not used anymore and could be removed (#10645#note-36)
+        private ContainerDto<SourceDto> synSecSources;
+        private List<TaggedText> taggedSynSecs = new ArrayList<>();  //TODO maybe not necessary to always initialize this
 
         public void addSynonym(TaxonBaseDto synonymDto) {
             synonyms.addItem(synonymDto);
@@ -168,6 +172,26 @@ public class TaxonPageDto extends TaxonBaseDto {
         }
         public void setTaggedTypes(List<TaggedText> taggedTypes) {
             this.taggedTypes = taggedTypes;
+        }
+        public ContainerDto<SourceDto> getSynSecSources() {
+            return synSecSources;
+        }
+        public void addSynSecSource(SourceDto synSecSource) {
+            if (synSecSources == null) {
+                synSecSources = new ContainerDto<>();
+            }
+            this.synSecSources.addItem(synSecSource);
+        }
+        public List<TaggedText> getTaggedSynSecs() {
+            return taggedSynSecs;
+        }
+        public void addTaggedSynSecs(List<TaggedText> taggedSynSecs) {
+            if (this.taggedSynSecs == null) {
+                this.taggedSynSecs = new ArrayList<>();
+            }else if (!this.taggedSynSecs.isEmpty()) {
+                this.taggedSynSecs.add(TaggedText.NewSeparatorInstance(", "));
+            }
+            this.taggedSynSecs.addAll(taggedSynSecs);
         }
     }
 

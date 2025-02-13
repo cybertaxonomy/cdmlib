@@ -53,6 +53,7 @@ public class RisReferenceImport
 
     @Override
     protected void doInvoke(RisReferenceImportState state) {
+
         RisReferenceImportConfigurator config = state.getConfig();
         try {
 //            new FileReader(file)
@@ -63,6 +64,7 @@ public class RisReferenceImport
             RisRecordReader risReader = new RisRecordReader(state, reader);
 
             Set<Reference> referencesToSave = new HashSet<>();
+            Set<TeamOrPersonBase> authorsToSave = new HashSet<>();
 
             Map<RisReferenceTag, List<RisValue>> next = risReader.readRecord();
             while (next != RisRecordReader.EOF){
@@ -96,16 +98,25 @@ public class RisReferenceImport
                 if (ref.getAuthorship() != null && !ref.getAuthorship().isPersisted()){
                     TeamOrPersonBase<?> newAuthor = ref.getAuthorship();
                     state.getResult().addNewRecord(newAuthor);
+                    authorsToSave.add(newAuthor);
                     if (newAuthor instanceof Team){
                         for (Person member : ((Team)newAuthor).getTeamMembers()){
                             if (!member.isPersisted()){
                                 state.getResult().addNewRecord(member);
+                                authorsToSave.add(member);
                             }
                         }
                     }
                 }
             }
+            getAgentService().save(authorsToSave);
             getReferenceService().saveOrUpdate(referencesToSave);
+            if (referencesToSave.size() > 0) {
+                Reference sourceRef = config.getSourceReference();
+                if (!sourceRef.isPersisted()) {
+                    getReferenceService().save(sourceRef);
+                }
+            }
 
         } catch (Exception e) {
             String message = "Unexpected exception during RIS Reference Import";

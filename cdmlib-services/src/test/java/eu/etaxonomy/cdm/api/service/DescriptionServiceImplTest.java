@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertNotNull;
@@ -54,6 +53,9 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
     @SpringBeanByType
     private ITermService termService;
 
+    @SpringBeanByType
+    private ITaxonService taxonService;
+
     @Test
     @DataSet("CommonServiceImplTest.xml")
     public void testChangeDescriptionElement(){
@@ -93,8 +95,10 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
     @Test
     @DataSet("../../database/ClearDBDataSet.xml")
     public void testMoveDescriptionElement(){
+
         //Create data
         Taxon taxon = Taxon.NewInstance(null, null);
+        taxonService.save(taxon);
         TaxonDescription desc1 = TaxonDescription.NewInstance(taxon);
         TextData textData1 = TextData.NewInstance(Feature.HABITAT(), "My habitat", Language.GERMAN(), null);
         desc1.addElement(textData1);

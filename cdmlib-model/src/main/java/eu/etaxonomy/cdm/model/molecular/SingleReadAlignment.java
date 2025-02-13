@@ -49,7 +49,6 @@ public class SingleReadAlignment extends VersionableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY)
-	//for now we do not cascade but expect the user to save the sequence manually
 	private Sequence consensusAlignment;
 
 	/** @see #getDnaMarker() */

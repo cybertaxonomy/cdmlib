@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,6 +50,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
@@ -94,6 +96,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     @Override
     // @SuppressWarnings("rawtypes")
     public void doInvoke(Abcd206ImportState state) {
+
         Abcd206ImportConfigurator config = state.getConfig();
         Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
         Map<String, Person> personStoreCollector = new HashMap<>();
@@ -235,15 +238,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 }
                 prepareCollectors(state, unitsList, abcdFieldGetter);
 
-                // save authors
-                getAgentService().saveOrUpdate((java.util.Collection) state.getPersonStoreCollector().values());
-                getAgentService().saveOrUpdate((java.util.Collection) state.getTeamStoreCollector().values());
+                // save collectors
 
-                getAgentService().saveOrUpdate((java.util.Collection) state.getPersonStoreAuthor().values());
-                getAgentService().saveOrUpdate((java.util.Collection) state.getTeamStoreAuthor().values());
-
-
-                commitTransaction(state.getTx());
+                     commitTransaction(state.getTx());
                 state.setTx(startTransaction());
                 if (state.getDefaultClassification(false) != null) {
                     state.setDefaultClassification(
@@ -292,7 +289,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             logger.error(errorDuringImport, e);
             state.getReport().addException(errorDuringImport, e);
         } finally {
-            state.getReport().printReport(state.getConfig().getReportUri());
+            //state.getReport().printReport(state.getConfig().getReportUri());
         }
         if (state.getConfig().isDownloadSequenceData()) {
             for (URI uri : state.getSequenceDataStableIdentifier()) {
@@ -304,7 +301,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-
             }
         }
 
@@ -329,14 +325,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 String kindOfUnitLabel = kindOfUnit.getLabel().toLowerCase();
                 kindOfUnitsMap.put(kindOfUnitLabel, kindOfUnit);
             }
-
         }
     }
 
-    /**
-     * @param state
-     * @param item
-     */
     private void getSiblings(Abcd206ImportState state, Object item, DerivedUnitFacade facade) {
         String unitId = facade.getCatalogNumber();
         if (unitId == null) {
@@ -451,6 +442,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
     @SuppressWarnings("rawtypes")
     public void handleSingleUnit(Abcd206ImportState state, Object itemObject, boolean handleAssociatedUnits) {
+
         Element item = (Element) itemObject;
 
         Abcd206ImportConfigurator config = state.getConfig();
@@ -494,9 +486,18 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     && state.getDataHolder().getKindOfUnit().equalsIgnoreCase("dna")) {
                 AbcdDnaParser dnaParser = new AbcdDnaParser(state.getPrefix(), state.getReport(),
                         state.getCdmRepository());
-                DnaSample dnaSample = dnaParser.parse(item, state);
+                Set<CdmBase> entitiesToSave = new HashSet<>();
+
+                DnaSample dnaSample = dnaParser.createDNASampleAndFieldUnit(state);
+                NodeList specimenUnitList = item.getElementsByTagName(state.getPrefix()+"SpecimenUnit");
+                if(specimenUnitList.item(0)!=null && specimenUnitList.item(0) instanceof Element){
+                    dnaParser.parseSpecimenUnit((Element)specimenUnitList.item(0), dnaSample, state, entitiesToSave);
+                }
+                entitiesToSave.stream().forEach(e->save(e, state));
+                dnaParser.parse(item, state, dnaSample, entitiesToSave);
                 //dnaSample.addSource(OriginalSourceType.Import, dnaSample.getAccessionNumber(), "", state.getImportReference(state.getActualAccessPoint()), "");
                 save(dnaSample, state);
+                entitiesToSave.stream().forEach(e->save(e, state));
                 // set dna as derived unit to avoid creating an extra specimen
                 // for this dna sample (instead just the field unit will be
                 // created)
@@ -515,13 +516,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             // look for existing fieldUnit
             FieldUnit fieldUnit = null;
-            if (StringUtils.isNotBlank(state.getDataHolder().getFieldNumber()) && !state.getDataHolder().getFieldNumber().equals("0") && !state.getDataHolder().getFieldNumber().equals("s.n.")){
-                fieldUnit = state.getFieldUnit(state.getDataHolder().getFieldNumber());
+            String fieldNumber = state.getDataHolder().getFieldNumber();
+            if (isNotBlank(fieldNumber) && !fieldNumber.equals("0") && !fieldNumber.equals("s.n.")){
+                fieldUnit = state.getFieldUnit(fieldNumber);
                 if (fieldUnit != null){
                     state.setLastFieldUnit(fieldUnit);
                 }
             }else{
-                if (StringUtils.isBlank(state.getDataHolder().getFieldNumber())|| state.getDataHolder().getFieldNumber().equals("0") || state.getDataHolder().getFieldNumber().equals("s.n.")){
+                if (isBlank(fieldNumber)|| fieldNumber.equals("0") || fieldNumber.equals("s.n.")){
                     state.getReport().addInfoMessage("Field Unit without field number: " + state.getDataHolder().locality + ", " + state.getDataHolder().gatheringAgentsText);
                 }
 //                else {
@@ -534,7 +536,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     fieldUnit = state.getLastFieldUnit();
                 }else {
                     fieldUnit = FieldUnit.NewInstance();
-                    fieldUnit.setFieldNumber(state.getDataHolder().getFieldNumber());
+                    fieldUnit.setFieldNumber(fieldNumber);
                     state.setLastFieldUnit(fieldUnit);
                 }
             }
@@ -553,44 +555,41 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             unitsGatheringEvent.setGatheringDepth(state.getDataHolder().getGatheringDepthText(),
                     state.getDataHolder().getGatheringDepthMin(), state.getDataHolder().getGatheringDepthMax(),
                     state.getDataHolder().getGatheringDepthUnit());
-            // unitsGatheringEvent.setHeight(heightText, heightMin, heightMax,
-            // heightUnit);
+
             if (state.getDataHolder().gatheringAgentsList.isEmpty()) {
-                Person person = state.getPersonStoreCollector().get(state.getDataHolder().gatheringAgentsText);
+                String agentsText = state.getDataHolder().gatheringAgentsText;
+                Person person = state.getPersonStoreCollector().get(agentsText);
                 Team team = null;
                 if (person == null) {
-                    team = state.getTeamStoreCollector().get(state.getDataHolder().gatheringAgentsText);
+                    team = state.getTeamStoreCollector().get(agentsText);
                 }
-                if (team == null && person == null){
-                    TeamOrPersonBase teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsText);
-                    if (teamOrPerson != null){
-                        if (teamOrPerson instanceof Person) {
-                            state.getPersonStoreCollector().put(teamOrPerson.getTitleCache(), (Person)teamOrPerson);
-                        }else {
-                            state.getTeamStoreCollector().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
-                        }
-                    }
+                if (team == null && person == null && StringUtils.isNotBlank(agentsText)){
+                    TeamOrPersonBase teamOrPerson = parseAgentString(agentsText, true);
+                    findMatchingAgentAndFillStore(state, teamOrPerson, true);
+                    unitsGatheringEvent.setCollector(teamOrPerson, config);
+
                 }
-                if (team != null){
-                    unitsGatheringEvent.setCollector(team, config);
-                }else if (person != null) {
-                    unitsGatheringEvent.setCollector(person, config);
-                }
+
 
             } else {
-                Team team = state.getTeamStoreCollector().get(state.getDataHolder().gatheringAgentsList.toString());
+                Team tempTeam = Team.NewInstance();
+                for (String gatheringAgentString: state.getDataHolder().gatheringAgentsList) {
+                    TeamOrPersonBase teamOrPerson = parseAgentString(gatheringAgentString, true);
+                    if (teamOrPerson instanceof Person) {
+                        tempTeam.addTeamMember((Person)teamOrPerson);
+                    }else {
+                        //state.getResult().addError("element of list seems to be a team: " + gatheringAgentString);
+                        tempTeam = (Team)teamOrPerson;
+                    }
+                }
 
+                Team team = state.getTeamStoreCollector().get(tempTeam.getCollectorTitleCache());
                 if (team == null){
                     Person person = state.getPersonStoreCollector().get(state.getDataHolder().gatheringAgentsList.toString());
                     if (person == null) {
-                        TeamOrPersonBase teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsList.toString());
-                        if (teamOrPerson != null){
-                            if (teamOrPerson instanceof Person) {
-                                state.getPersonStoreCollector().put(teamOrPerson.getTitleCache(), (Person)teamOrPerson);
-                            }else {
-                                state.getTeamStoreCollector().put(teamOrPerson.getTitleCache(), (Team)teamOrPerson);
-                            }
-                        }
+                        TeamOrPersonBase teamOrPerson = parseAgentString(state.getDataHolder().gatheringAgentsList.toString(), true);
+                        findMatchingAgentAndFillStore(state, teamOrPerson, true);
+                        unitsGatheringEvent.setCollector(teamOrPerson, config);
                     }
 
                 }
@@ -598,10 +597,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     unitsGatheringEvent.setCollector(team, config);
                 }
             }
+            saveTeamOrPersons(state, true);
+
             // count
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
-            // unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(),
-            // getTermService());
+
             unitsGatheringArea.setParams(state.getDataHolder().isocountry, state.getDataHolder().country,
                     (state.getConfig()), cdmAppController.getTermService(),
                     cdmAppController.getVocabularyService());
@@ -690,13 +690,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }else{
 //TODO??
             }
-
-
-            // derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
             // TODO exsiccatum
 
             // add fieldNumber
-            String fieldNumber = null;
             if (derivedUnitFacade.getFieldUnit(false) != null) {
                 fieldNumber = derivedUnitFacade.getFieldUnit(false).getFieldNumber();
                 if (fieldNumber == null){
@@ -739,6 +735,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     }
                 }
             }
+
             // multimedia for fieldUnit
             if (state.getDataHolder().getGatheringMultimediaObjects().size() != -1) {
                 for (String multimediaObject : state.getDataHolder().getGatheringMultimediaObjects().keySet()) {
@@ -770,12 +767,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             state.getDataHolder().setDocSources(new ArrayList<>());
 
-
-
             IdentifiableSource sour = getIdentifiableSource(state.getImportReference(state.getActualAccessPoint()), null);
             String idInSource = derivedUnitFacade.getAccessionNumber() != null ? derivedUnitFacade.getAccessionNumber()
                     : derivedUnitFacade.getCatalogNumber() != null ? derivedUnitFacade.getCatalogNumber() : derivedUnitFacade.getBarcode();
-            //sour.getCitation().setUri(state.getActualAccessPoint());
+
             sour.setIdInSource(idInSource);
             try {
                 if (sour.getCitation() != null) {
@@ -789,11 +784,15 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             } catch (Exception e) {
                 logger.warn("oups");
             }
-
+            save(sour.getCitation(), state);
             derivedUnitFacade.addSource(sour);
 
 
             save(state.getDerivedUnitBase(), state);
+            Map<UUID, DescriptionBase> deriveedUnitDescriptions = saveDescriptions(state.getDerivedUnitBase().getSpecimenDescriptions(), state);
+            if (derivedUnitFacade.getFieldUnit(false) != null) {
+                Map<UUID, DescriptionBase> fieldUnitDescriptions = saveDescriptions(derivedUnitFacade.getFieldUnit(false).getSpecimenDescriptions(), state);
+            }
 
             if (logger.isDebugEnabled()) {
                 logger.info("saved ABCD specimen ...");
@@ -822,8 +821,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         state.setUnsuccessfull();
                     }
                 }
-
             }
+
             // siblings/ other children
             if (derivedUnitFacade.getType() != null
                     && (derivedUnitFacade.getType().equals(SpecimenOrObservationType.LivingSpecimen)
@@ -834,10 +833,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 getSiblings(state, item, derivedUnitFacade);
             }
 
+
         } catch (Exception e) {
             String message = "Error when reading record! " + itemObject.toString();
             state.getReport().addException(message, e);
             state.setUnsuccessfull();
+            e.printStackTrace();
         }
 
         return;
@@ -872,34 +873,21 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
         if (attributes.containsKey("Creators")) {
             String creators = attributes.get("Creators");
-            Person artist;
-            Team artistTeam;
-            String[] artists;
-            if (creators != null) {
-                if (creators.contains("&")) {
-                    artists = creators.split("&");
-                    artistTeam = new Team();
-                    for (String creator : artists) {
-                        artist = Person.NewTitledInstance(creator);
-                        artistTeam.addTeamMember(artist);
-                    }
-                    media.setArtist(artistTeam);
-                } else {
 
-                    artist = Person.NewTitledInstance(creators);
-                    media.setArtist(artist);
-                }
+            if (creators != null) {
+                TeamOrPersonBase creator = parseAgentString(creators, false);
+                creator = findMatchingAgentAndFillStore(state, creator, false);
+                saveTeamOrPersons(state, false);
+                media.setArtist(creator);
+
             }
 
         }
         if (attributes.containsKey("CreateDate")) {
             String createDate = attributes.get("CreateDate");
-
             if (createDate != null) {
-
                 media.setMediaCreated(TimePeriodParser.parseString(createDate));
             }
-
         }
 
         if (attributes.containsKey("License")) {
@@ -1074,12 +1062,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         Abcd206ImportParser.setUnitPropertiesXML((Element) associatedUnits.item(m),
                                 fieldGetter,
                                 state);
-                        // logger.debug("derived unit: " +
-                        // state.getDerivedUnitBase().toString() + " associated
-                        // unit: " +state.getDataHolder().getKindOfUnit() + ", "
-                        // + state.getDataHolder().accessionNumber + ", " +
-                        // state.getDataHolder().getRecordBasis() + ", " +
-                        // state.getDataHolder().getUnitID());
+
                         URI lastAccessPoint = state.getActualAccessPoint();
                         state.setActualAccessPoint(dnaSource);
                         String oldPrefix = state.getPrefix();
@@ -1173,13 +1156,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param state
      */
     protected void setCollectionData(Abcd206ImportState state, DerivedUnitFacade derivedUnitFacade) {
+
         Abcd206ImportConfigurator config = state.getConfig();
         SpecimenImportUtility.setUnitID(derivedUnitFacade.innerDerivedUnit(), state.getDataHolder().getUnitID(),
                 config);
         if (!config.isMapUnitIdToAccessionNumber()) {
             derivedUnitFacade.setAccessionNumber(NB(state.getDataHolder().accessionNumber));
         }
-        // derivedUnitFacade.setCollectorsNumber(NB(state.getDataHolder().collectorsNumber));
+
 
         /*
          * INSTITUTION & COLLECTION
@@ -1287,7 +1271,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 break;
             }
         }
-        // state.getDataHolder().gatheringAgents = "";
 
         abcdFieldGetter.getType(root);
         abcdFieldGetter.getGatheringPeople(root);
@@ -1307,19 +1290,18 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private void prepareCollectors(Abcd206ImportState state, NodeList unitsList,
             Abcd206XMLFieldGetter abcdFieldGetter) {
 
-        TeamOrPersonBase<?> teamOrPerson = null;
-        Team team = null;
-        // ImportHelper.setOriginalSource(teamOrPerson,
-        // state.getConfig().getSourceReference(), collector, "Collector");
+
+
         for (int i = 0; i < unitsList.getLength(); i++) {
             this.getCollectorsFromXML((Element) unitsList.item(i), abcdFieldGetter, state);
             if (!(state.getDataHolder().gatheringAgentsList.isEmpty())) {
+                TeamOrPersonBase<?> teamOrPerson = null;
                 if (state.getDataHolder().gatheringAgentsList.size() == 1) {
-                    teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsList.get(0));
+                    teamOrPerson = parseAgentString(state.getDataHolder().gatheringAgentsList.get(0), true);
                 } else {
-                    team = new Team();
+                    Team team = Team.NewInstance();
                     for (String collector : state.getDataHolder().gatheringAgentsList) {
-                        teamOrPerson = parseCollectorString(collector);
+                        teamOrPerson = parseAgentString(collector, true);
                         if (teamOrPerson instanceof Person) {
                             team.addTeamMember((Person) teamOrPerson);
                         } else {
@@ -1331,15 +1313,16 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     if (team.getTeamMembers() != null && !team.getTeamMembers().isEmpty()){
                         teamOrPerson = team;
                     }
+
                 }
-                findMatchingCollectorAndFillPersonStore(state, teamOrPerson);
+                findMatchingAgentAndFillStore(state, teamOrPerson, true);
             }
             if (!StringUtils.isBlank(state.getDataHolder().gatheringAgentsText)
                     && state.getDataHolder().gatheringAgentsList.isEmpty()) {
-                teamOrPerson = parseCollectorString(state.getDataHolder().gatheringAgentsText);
+                TeamOrPersonBase<?> teamOrPerson = parseAgentString(state.getDataHolder().gatheringAgentsText, true);
 
                 if (!state.getPersonStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()) && !state.getTeamStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache())) {
-                    findMatchingCollectorAndFillPersonStore(state, teamOrPerson);
+                    findMatchingAgentAndFillStore(state, teamOrPerson, true);
                     if (logger.isDebugEnabled()) {
                         logger.debug("Stored author " + state.getDataHolder().gatheringAgentsText);
                     }
@@ -1347,7 +1330,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             + state.getDataHolder().gatheringAgentsList.toString());
                 }
             }
-        }
+       }
+
+        saveTeamOrPersons(state, true);
+
     }
 
     @Override

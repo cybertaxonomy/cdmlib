@@ -174,9 +174,7 @@ public class Contact implements Serializable, Cloneable {
 	}
 
 // ************************ CONSTRUCTOR **************************/
-	/**
-	 * Class constructor.
-	 */
+
 	public Contact() {
 	}
 

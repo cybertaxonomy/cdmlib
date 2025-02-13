@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -116,7 +117,21 @@ public interface INameService
 	 * @param typeDesignationCollection
 	 * @return
 	 */
-	public Map<UUID, TypeDesignationBase<?>> saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection);
+	public void saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection);
+
+	/**
+     * Merges the given type designations.
+     * @param typeDesignationCollection
+     * @return
+     */
+	public List<MergeResult<TypeDesignationBase>> mergeTypeDesignations(Collection<TypeDesignationBase<?>> typeDesignationCollection);
+
+	/**
+     * Saves the given type designation.
+     * @param typeDesignationCollection
+     * @return
+     */
+    public void saveTypeDesignation(TypeDesignationBase<?> typeDesignation);
 
 	/**
 	 * Saves the given homotypical groups.
@@ -378,7 +393,10 @@ public interface INameService
 	 *            {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
 	 */
-	public List<NameRelationship> listNameRelationships(TaxonName name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<NameRelationship> listNameRelationships(TaxonName name,
+	        NameRelationship.Direction direction, NameRelationshipType type,
+	        Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+	        List<String> propertyPaths);
 
 	/**
 	 * Return a List of hybrids related to this name, optionally filtered

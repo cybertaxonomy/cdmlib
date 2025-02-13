@@ -99,7 +99,8 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 	protected static CdmSingleAttributeXmlMapperBase[] unclearMappers = new CdmSingleAttributeXmlMapperBase[]{};
 
 	private boolean makeStandardMapper(Statement resource, Reference ref, Set<String> omitAttributes){
-		if (omitAttributes == null){
+
+	    if (omitAttributes == null){
 			omitAttributes = new HashSet<>();
 		}
 
@@ -112,8 +113,6 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 				logger.error("Unrecognized mapper type");
 				return false;
 			}
-
-
 		}
 		return true;
 	}

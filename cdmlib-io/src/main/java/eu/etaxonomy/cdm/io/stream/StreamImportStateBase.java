@@ -100,7 +100,8 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 	}
 
 	public <CLASS extends IdentifiableEntity> List<CLASS> get(String namespace, String sourceKey, Class<CLASS> destinationClass){
-		List<CLASS> result = new ArrayList<>();
+
+	    List<CLASS> result = new ArrayList<>();
 		if (this.partitionStore != null){
 			Map<String, IdentifiableEntity> namespaceMap = this.partitionStore.get(namespace);
 			if (namespaceMap != null){
@@ -111,7 +112,6 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 					CLASS typedCdmBase = CdmBase.deproxy(cdmBase, destinationClass);
 					result.add(typedCdmBase);
 				}
-
 			}
 		}else{
 			Set<CdmKey> keySet = mapping.get(namespace, sourceKey);
@@ -226,7 +226,8 @@ public abstract class StreamImportStateBase<CONFIG extends StreamImportConfigura
 	 * Returns the source reference object that is attached to the current transaction.
 	 */
 	public Reference getTransactionalSourceReference() {
-		TermUri namespaceSourceReference = TermUri.CDM_SOURCE_REFERENCE;
+
+	    TermUri namespaceSourceReference = TermUri.CDM_SOURCE_REFERENCE;
 		UUID sourceReferenceUuid = getConfig().getSourceRefUuid();
 		List<Reference> references = this.get(namespaceSourceReference.toString(), sourceReferenceUuid.toString(), Reference.class);
 		if (references.isEmpty()){

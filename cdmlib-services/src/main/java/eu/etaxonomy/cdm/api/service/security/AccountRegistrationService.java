@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.model.permission.User;
+import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.permission.IGroupDao;
 
 /**
@@ -55,6 +56,8 @@ public class AccountRegistrationService
 
     @Autowired
     protected IGroupDao groupDao;
+    @Autowired
+    protected IAgentDao agentDao;
 
     @Autowired
     @Qualifier("accountCreationRequestTokenStore")
@@ -92,7 +95,8 @@ public class AccountRegistrationService
     @Override
     @Async
     @Transactional(readOnly = false)
-    public ListenableFuture<Boolean> createUserAccount(String token, String userName, String password, String givenName, String familyName, String prefix)
+    public ListenableFuture<Boolean> createUserAccount(String token, String userName, String password,
+            String givenName, String familyName, String prefix)
             throws MailException, AccountSelfManagementException, AddressException {
 
         if (resetPassword_rateLimiter.tryAcquire(getRateLimiterTimeout())) {
@@ -120,6 +124,7 @@ public class AccountRegistrationService
                         Person person = Person.NewInstance(null, familyName, null, givenName);
                         person.setPrefix(CdmUtils.Nb(prefix));
                         newUser.setPerson(person);
+                        agentDao.save(person);
                     }
 
                     //group, #10116
@@ -136,7 +141,9 @@ public class AccountRegistrationService
                     sendEmail(creationRequest.get().getUserEmail(), userName,
                             UserAccountEmailTemplates.REGISTRATION_SUCCESS_EMAIL_SUBJECT_TEMPLATE,
                             UserAccountEmailTemplates.REGISTRATION_SUCCESS_EMAIL_BODY_TEMPLATE, null);
+
                     return new AsyncResult<Boolean>(true);
+
                 } catch (DataAccessException e) {
                     String message = "Failed to create a new user [userName: " + userName + ", email: " + creationRequest.get().getUserEmail() + "]";
                     logger.error(message, e);

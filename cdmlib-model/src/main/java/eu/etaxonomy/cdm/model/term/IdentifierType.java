@@ -54,6 +54,7 @@ public class IdentifierType
     //currently only used in Caryophyllales_spp
     public static final UUID uuidPlantListIdentifier = UUID.fromString("06e4c3bd-7bf6-447a-b96e-2844b279f276");
 
+    public static final String IPNI_NAME_ID_PATTERN = "[1-9][0-9]{0,7}-[123]";  //according to https://www.wikidata.org/wiki/Property:P961
 
     //#10260
     //a pattern representing an URL and which includes the placeholde "{@ID}"
@@ -121,6 +122,9 @@ public class IdentifierType
     }
     public static IdentifierType IDENTIFIER_NAME_IF(){
         return getTermByUuid(uuidIndexFungorumIdentifier);
+    }
+    public static IdentifierType WIKIDATA_ITEM_ID(){
+        return getTermByUuid(uuidWikidataItemId);
     }
 
 // ******************** GETTER /SETTER *********

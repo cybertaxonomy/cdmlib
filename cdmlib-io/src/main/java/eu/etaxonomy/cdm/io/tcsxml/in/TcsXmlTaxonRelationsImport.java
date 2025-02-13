@@ -101,7 +101,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		Element elTaxonConcepts = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
 
 		childName = "TaxonConcept";
-		List<Element> elTaxonConceptList =  elTaxonConcepts == null ? new ArrayList<Element>() : elTaxonConcepts.getChildren(childName, tcsNamespace);
+		List<Element> elTaxonConceptList =  elTaxonConcepts == null ? new ArrayList<>() : elTaxonConcepts.getChildren(childName, tcsNamespace);
 
 		int i = 0;
 		int taxonRelCount = 0;
@@ -110,13 +110,14 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		logger.info("NUmber of taxon concepts: " + elTaxonConceptList.size());
 		for (Element elTaxonConcept : elTaxonConceptList){
 			if ((i++ % modCount) == 0){ logger.info("Taxa handled: " + (i-1));}
-			taxonRelCount += makeTaxonConcept(state, taxonMap, taxonStore, elTaxonConcept, tcsNamespace, success);
+			taxonRelCount += makeTaxonConcept(state, taxonMap, referenceMap, taxonStore, elTaxonConcept, tcsNamespace, success);
 		}//elTaxonConcept
 		logger.info("Taxa handled: " + taxonStore.size());
 		//TaxonRelationshipAssertions
 		taxonRelCount += makeTaxonRelationshipAssertion(state, taxonMap, referenceMap, taxonStore, elDataSet, tcsNamespace, success);
 
 		logger.info("Taxa to save: " + taxonStore.size());
+		getReferenceService().save(referenceMap.objects());
 		getTaxonService().save(taxonStore);
 
 		//do basionym relationships
@@ -125,12 +126,12 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		Element elTaxonNames = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
 
 		childName = "TaxonName";
-		List<Element> elTaxonNameList =  elTaxonNames == null ? new ArrayList<Element>() : elTaxonNames.getChildren(childName, tcsNamespace);
+		List<Element> elTaxonNameList =  elTaxonNames == null ? new ArrayList<>() : elTaxonNames.getChildren(childName, tcsNamespace);
 
 		logger.info("NUmber of taxon concepts: " + elTaxonNameList.size());
 		for (Element elTaxonName : elTaxonNameList){
 			if ((i++ % modCount) == 0){ logger.info("Taxa handled: " + (i-1));}
-			taxonRelCount += makeBasionymRelations(state, taxonMap, taxonNameMap, taxonStore, elTaxonName, tcsNamespace, success);
+			taxonRelCount += makeBasionymRelations(state, taxonNameMap, referenceMap, taxonStore, elTaxonName, tcsNamespace, success);
 		}//elTaxonConcept
 		logger.info("Taxa handled: " + taxonStore.size());
 
@@ -144,7 +145,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	}
 
 	private int makeBasionymRelations(TcsXmlImportState state,
-			MapWrapper<TaxonBase> taxonMap, MapWrapper<TaxonName> taxonNameMap, Set<TaxonBase> taxonStore,
+			MapWrapper<TaxonName> taxonNameMap,
+			MapWrapper<Reference> referenceMap, Set<TaxonBase> taxonStore,
 			Element elTaxonName, Namespace tcsNamespace,
 			ResultWrapper<Boolean> success) {
 
@@ -153,7 +155,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 				<tcs:RelatedName ref="urn:lsid:ipni.org:names:50000063-1">Caryophyllaceae</tcs:RelatedName>
 			</tcs:Basionym>
 		 */
-
 
 		String childName = "Basionym";
 		boolean obligatory = false;
@@ -166,14 +167,14 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			String id = elTaxonName.getAttributeValue("id");
 			TaxonName name = taxonNameMap.get(removeVersionOfRef(id));
 
-			TaxonBase taxonBase = name.getTaxonBases().iterator().next();
+			TaxonBase<?> taxonBase = name.getTaxonBases().iterator().next();
 
 			String ref = elBasionym.getAttributeValue("ref");
 			TaxonName basionymName = taxonNameMap.get(removeVersionOfRef(ref));
 
 			if (basionymName != null){
 				basionymName = HibernateProxyHelper.deproxy(basionymName, TaxonName.class);
-				TaxonBase basionym;
+				TaxonBase<?> basionym;
 				if (basionymName.getTaxonBases().isEmpty()){
 					 basionym = Synonym.NewInstance(basionymName, null);
 				}else{
@@ -206,8 +207,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 						}
 					}
 				}
-
-
 			} else{
 				basionymName = TaxonNameFactory.NewNonViralInstance(name.getRank());
 				childName = "RelatedName";
@@ -215,7 +214,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 				Element elName = XmlHelp.getSingleChildElement(success, elBasionym, childName, tcsNamespace, obligatory);
 				String strName = (elName == null)? "" : elName.getTextNormalize();
 				basionymName.setTitleCache(strName, false);
-				Synonym basionymSyn = Synonym.NewInstance(basionymName, unknownSec());
+				Synonym basionymSyn = Synonym.NewInstance(basionymName, unknownSec(referenceMap));
 				if (taxonBase instanceof Taxon){
 					Taxon taxon = (Taxon)taxonBase;
 					taxon.addSynonym(basionymSyn, SynonymType.HOMOTYPIC_SYNONYM_OF);
@@ -235,8 +234,10 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		return 1;
 	}
 
-	private int makeTaxonConcept(TcsXmlImportState state, MapWrapper<TaxonBase> taxonMap, Set<TaxonBase> taxonStore, Element elTaxonConcept, Namespace tcsNamespace, ResultWrapper<Boolean> success){
-		int taxonRelCount = 0;
+	private int makeTaxonConcept(TcsXmlImportState state, MapWrapper<TaxonBase> taxonMap, MapWrapper<Reference> referenceMap,
+	        Set<TaxonBase> taxonStore, Element elTaxonConcept, Namespace tcsNamespace, ResultWrapper<Boolean> success){
+
+	    int taxonRelCount = 0;
 
 		String childName = "TaxonRelationships";
 		boolean obligatory = false;
@@ -259,7 +260,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 //				String strForm = elTaxonConcept.getAttributeValue("form");  //anamorph, teleomorph, hybrid
 
 				TaxonBase fromTaxon = taxonMap.get(removeVersionOfRef(strId));
-				makeRelationshipType(state, elTaxonRelationship, taxonMap, taxonStore, fromTaxon, success);
+				makeRelationshipType(state, elTaxonRelationship, taxonMap, referenceMap, taxonStore, fromTaxon, success);
 
 				if (fromTaxon instanceof Taxon){
 					makeHomotypicSynonymRelations((Taxon)fromTaxon);
@@ -307,26 +308,20 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			//TODO if synonym
 			TaxonBase fromTaxon = makeReferenceType(elFromTaxonConcept, clazz, taxonMap, success);
 
-			makeRelationshipType(state, elTaxonRelationshipAssertion, taxonMap, taxonStore, fromTaxon, success);
+			makeRelationshipType(state, elTaxonRelationshipAssertion, taxonMap, referenceMap, taxonStore, fromTaxon, success);
 		}//elTaxonRelationshipAssertion
 
 		return i;
 	}
 
-
 	/**
 	 * Handles the TCS RelationshipType element.
-	 * @param tcsConfig
-	 * @param elRelationship
-	 * @param taxonMap
-	 * @param taxonStore
-	 * @param fromTaxon
-	 * @param success
 	 */
 	private void makeRelationshipType(
 			TcsXmlImportState state
 			, Element elRelationship
 			, MapWrapper<TaxonBase> taxonMap
+			, MapWrapper<Reference> referenceMap
 			, Set<TaxonBase> taxonStore
 			, TaxonBase fromTaxon
 			, ResultWrapper<Boolean> success
@@ -348,7 +343,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 
 				//toTaxon (should be part of relationshipType)
 				boolean isSynonym = (relType instanceof SynonymType);
-				TaxonBase toTaxon = getToTaxon(elRelationship, taxonMap, state.getMissingConceptLSIDs(), isSynonym, success, state);
+				TaxonBase toTaxon = getToTaxon(elRelationship, taxonMap, referenceMap, state.getMissingConceptLSIDs(), isSynonym, success, state);
 
 				if (toTaxon != null && fromTaxon != null){
 					//exchange taxa if relationship is inverse
@@ -487,15 +482,16 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 
 
 	@SuppressWarnings("rawtypes")
-	private TaxonBase getToTaxon(Element elTaxonRelationship, MapWrapper<TaxonBase> map, List<String> missingNameID,boolean isSynonym, ResultWrapper<Boolean> success, TcsXmlImportState state){
-		TaxonBase result = null;
+	private TaxonBase getToTaxon(Element elTaxonRelationship, MapWrapper<TaxonBase> map, MapWrapper<Reference> referenceMap,
+	        List<String> missingNameID,boolean isSynonym, ResultWrapper<Boolean> success, TcsXmlImportState state){
+
+	    TaxonBase result = null;
 		if (elTaxonRelationship == null || map == null){
 			success.setValue(false);
 		}else{
 			String childName = "ToTaxonConcept";
 			boolean obligatory = true;
 			Element elToTaxonConcept = XmlHelp.getSingleChildElement(success, elTaxonRelationship, childName, elTaxonRelationship.getNamespace(), obligatory);
-
 
 			String linkType = elToTaxonConcept.getAttributeValue("linkType");
 			if (linkType == null || linkType.equals("local")){
@@ -504,7 +500,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 					result = map.get(ref);
 					if (result == null && state.getConfig().isDoGetMissingNames()){
 
-
 						String[] split= ref.split(":");
 						String id = split[split.length-1];
 						logger.info("get name for id " + id);
@@ -512,7 +507,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 						    return null;
 						}
 						InputStream nameStream = service.getNamesById(id);
-
 
 						try{
 							String nameUri = "urn:lsid:ipni.org:names:"+ id;
@@ -543,9 +537,10 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 					taxonName.setTitleCache(title, true);
 					logger.warn("Free text related taxon seems to be bug in TCS");
 					if (isSynonym){
-						result = Synonym.NewInstance(taxonName, TcsXmlTaxonImport.unknownSec());
+						result = Synonym.NewInstance(taxonName, TcsXmlImportBase.unknownSec(referenceMap));
+						getTaxonService().save(result);
 					}else{
-						result = Taxon.NewInstance(taxonName, TcsXmlTaxonImport.unknownSec());
+						result = Taxon.NewInstance(taxonName, TcsXmlImportBase.unknownSec(referenceMap));
 					}
 					result.setTitleCache(title, true);
 				}

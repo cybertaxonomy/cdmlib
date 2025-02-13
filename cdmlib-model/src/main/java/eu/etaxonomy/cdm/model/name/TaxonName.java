@@ -266,7 +266,6 @@ public class TaxonName
         joinColumns=@javax.persistence.JoinColumn(name="TaxonName_id"),
         inverseJoinColumns=@javax.persistence.JoinColumn(name="typedesignations_id")
     )
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
     private Set<TypeDesignationBase> typeDesignations = new HashSet<>();
 
@@ -343,7 +342,6 @@ public class TaxonName
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="name", fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
     @IndexedEmbedded(depth=1)
     private Set<Registration> registrations = new HashSet<>();
@@ -407,7 +405,6 @@ public class TaxonName
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> combinationAuthorship;
@@ -416,7 +413,6 @@ public class TaxonName
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> exCombinationAuthorship;
@@ -426,7 +422,6 @@ public class TaxonName
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> inCombinationAuthorship;
@@ -435,7 +430,6 @@ public class TaxonName
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> basionymAuthorship;
@@ -444,7 +438,6 @@ public class TaxonName
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> exBasionymAuthorship;
@@ -454,7 +447,6 @@ public class TaxonName
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
     private TeamOrPersonBase<?> inBasionymAuthorship;
@@ -3362,6 +3354,21 @@ public class TaxonName
         }
     }
 
+    /**
+     * @return all authors of this name. This includes the 2 combination authors,
+     *         the 2 basionym authors and the 2 in-authors
+     */
+    public Set<TeamOrPersonBase> allAuthors() {
+        Set<TeamOrPersonBase> result = new HashSet<>();
+        result.add(this.combinationAuthorship);
+        result.add(this.exCombinationAuthorship);
+        result.add(this.basionymAuthorship);
+        result.add(this.exBasionymAuthorship);
+        result.add(this.inCombinationAuthorship);
+        result.add(this.inBasionymAuthorship);
+        result.remove(null);
+        return result;
+    }
 
     /**
      * Defines the last part of the name.

@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.api.service.portal;
 
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -42,7 +44,9 @@ import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.NameRelationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
+import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
@@ -63,6 +67,8 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -96,6 +102,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -127,7 +136,22 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     private ITaxonService taxonService;
 
     @SpringBeanByType
+    private IReferenceDao referenceDao;
+
+    @SpringBeanByType
     private INameService nameService;
+
+    @SpringBeanByType
+    private IAgentService agentService;
+
+    @SpringBeanByType
+    private IOccurrenceService occurrenceService;
+
+    @SpringBeanByType
+    private IDescriptionDao descriptionDao;
+
+    @SpringBeanByType
+    private IDescriptionElementDao descriptionElementDao;
 
     @SpringBeanByType
     private ITermService termService;
@@ -179,6 +203,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //... annotation on name and synonym
         Assert.assertEquals("The synonym must have 2 annotations, a synonym annotation and a name annotation",
                 2, homoSyn.getAnnotations().getCount());
+        Assert.assertNull("No homotypic syn sec should exist as the syn sec is same as acc sec", homoSyns.getSynSecSources());
 
         //... related homonym
         Assert.assertEquals(1, homoSyn.getRelatedNames().getCount());
@@ -189,9 +214,28 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Shenzhen 2017", homonymRel.getCodeEdition());
         Assert.assertEquals("Turland, N.J., Wiersema, J.H., Barrie, F.R., Greuter, W., Hawksworth, D.L., Herendeen, P.S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T.W., McNeill, J., Monro, A.M., Prado, J., Price, M.J. & Smith, G.F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017. Regnum Vegetabile 159. – Glash"+UTF8.U_UMLAUT+"tten: Koeltz Botanical Books",
                 homonymRel.getCodeEditionSource().getLabel().get(0).getLabel());
-        //
 
         //heterotypic synonyms
+        ContainerDto<HomotypicGroupDTO> heteroSynGroups = dto.getHeterotypicSynonymGroups();
+        Assert.assertEquals(3, heteroSynGroups.getCount());
+        //... first group
+        HomotypicGroupDTO firstHeteroSynGroup = heteroSynGroups.getItems().get(0);
+        Assert.assertEquals(2, firstHeteroSynGroup.getSynonyms().getCount());
+        Assert.assertEquals(2, firstHeteroSynGroup.getSynSecSources().getCount());
+        Assert.assertEquals("My hetero sec book: 48, My hetero sec book: 49", TaggedTextFormatter.createString(firstHeteroSynGroup.getTaggedSynSecs()));
+
+        //... second group
+        HomotypicGroupDTO secondHeteroSynGroup = heteroSynGroups.getItems().get(1);
+        Assert.assertEquals(2, secondHeteroSynGroup.getSynonyms().getCount());
+        Assert.assertNull("No syn sec should exist as all syn sec do not exist or are equal with taxon sec",
+                secondHeteroSynGroup.getSynSecSources());
+        Assert.assertEquals("", TaggedTextFormatter.createString(secondHeteroSynGroup.getTaggedSynSecs()));
+
+        //... third group
+        HomotypicGroupDTO thirdHeteroSynGroup = heteroSynGroups.getItems().get(2);
+        Assert.assertEquals(2, thirdHeteroSynGroup.getSynonyms().getCount());
+        Assert.assertEquals(2, thirdHeteroSynGroup.getSynSecSources().getCount());
+        Assert.assertEquals("2012: My book4: 33, 2012: My book4", TaggedTextFormatter.createString(thirdHeteroSynGroup.getTaggedSynSecs()));
 
         //types
 
@@ -205,6 +249,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testFacts() {
+
         //create test data
         createTestData();
         commitAndStartNewTransaction();
@@ -317,6 +362,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
      * and distributions status filter
      */
     private void testAllFacts() {
+
         TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
         DistributionInfoConfiguration distConfig = config.getDistributionInfoConfiguration();
 
@@ -325,15 +371,26 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         config.setWithSpecimens(false);
         config.setTaxonUuid(taxonUuid);
         config.addAnnotationType(AnnotationType.uuidUndefined);
-
         config.setLanguage(Language.GERMAN());
-        config.setUseDtoLoading(false);
-        testAllFactsDo(config, false); //with model instance loading
-        config.setUseDtoLoading(true);
-        testAllFactsDo(config, true); //with dto loading
+
+        //with entity loading
+        testAllFactsDo(config, false, false); //with model instance loading
+        testAllFactsDo(config, false, true); //with model instance loading and excluded marker
+        //with dto loading;
+        testAllFactsDo(config, true, false); //with dto loading
+        //FIXME #10622 does not yet use dto loading
+        testAllFactsDo(config, true, true); //with dto loading and excluded marker
     }
 
-    private void testAllFactsDo(TaxonPageDtoConfiguration config, boolean isDto) {
+    private void testAllFactsDo(TaxonPageDtoConfiguration config, boolean isDto, boolean isExcludedMarker) {
+
+        config.setUseDtoLoading(isDto);
+        if (isExcludedMarker) {
+            config.setExcludedFactDatasetMarkerTypes(new HashSet<>(Arrays.asList(new UUID[]{MarkerType.uuidComplete})));
+        }else {
+            config.setExcludedFactDatasetMarkerTypes(null);
+        }
+
         TaxonPageDto dto = portalService.taxonPageDto(config);
         Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
 
@@ -357,7 +414,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         FeatureDto descriptionDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically. Also as >1 'Description' exists it should use plural and German as locale was set to German and German representation exists.",
                 "Beschreibungen", descriptionDto.getLabel());
-        testTextDataAndMedia(descriptionDto);
+        testTextDataAndMedia(descriptionDto, isExcludedMarker);
 
         //... discussion
         FeatureDto discussionDto = features.getItems().get(i++);
@@ -369,7 +426,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         FeatureDto distributionDto = features.getItems().get(i++);
         Assert.assertEquals("As no feature tree is defined features should be sorted alphabetically",
                 "Distribution", distributionDto.getLabel());
-        testDistributions(distributionDto);
+        testDistributions(distributionDto, isExcludedMarker);
 
         //termporal data
         FeatureDto floweringDto = features.getItems().get(i++);
@@ -485,14 +542,15 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull(typedLabel.getUuid());
     }
 
-    private void testTextDataAndMedia(FeatureDto descriptionDto) {
+    private void testTextDataAndMedia(FeatureDto descriptionDto, boolean isExcludedMarker) {
 
         ContainerDto<IFactDto> descriptions = descriptionDto.getFacts();
-        Assert.assertEquals(4, descriptions.getCount());
+        Assert.assertEquals(isExcludedMarker? 3: 4, descriptions.getCount());
         FactDto description1 = (FactDto)descriptions.getItems().get(0);
         FactDto description2 = (FactDto)descriptions.getItems().get(1);
-        FactDto description3 = (FactDto)descriptions.getItems().get(2);
-        FactDto description4 = (FactDto)descriptions.getItems().get(3);
+        FactDto NULL_FACT = new FactDto();  //to avoid null-warnings
+        FactDto description3 = isExcludedMarker? NULL_FACT: (FactDto)descriptions.getItems().get(2);
+        FactDto description4 = (FactDto)descriptions.getItems().get(isExcludedMarker? 2: 3);
 
         //test sorting
         Assert.assertNull("Current sorting should sort null to the top. This may change in future.",
@@ -502,16 +560,20 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertTrue("Current sorting should work on id if no sortIndex is given. This may change in future.",
                 description1.getId() < description2.getId());
         //TODO use typed label formatter (once implemented)
-        Assert.assertEquals("If sortindex is given it should be used for sorting.",
-                "My fourth description", description3.getTypedLabel().get(0).getLabel());
+        if (!isExcludedMarker) {
+            Assert.assertEquals("If sortindex is given it should be used for sorting.",
+                    "My fourth description", description3.getTypedLabel().get(0).getLabel());
+        }
         Assert.assertEquals("If sortindex is given it should be used for sorting.",
                 "My third description", description4.getTypedLabel().get(0).getLabel());
 
-        FactDto td4Fact = description3; //renaming to original name td4 for better understanding
-        Assert.assertEquals(td4Uuid, td4Fact.getUuid());
-        TypedLabel td4TypedLabel = td4Fact.getTypedLabel().get(0);
-        Assert.assertEquals(td4Uuid, td4TypedLabel.getUuid());
-        Assert.assertEquals("TextData", td4TypedLabel.getCdmClass());
+        if (!isExcludedMarker) {
+            FactDto td4Fact = description3; //renaming to original name td4 for better understanding
+            Assert.assertEquals(td4Uuid, td4Fact.getUuid());
+            TypedLabel td4TypedLabel = td4Fact.getTypedLabel().get(0);
+            Assert.assertEquals(td4Uuid, td4TypedLabel.getUuid());
+            Assert.assertEquals("TextData", td4TypedLabel.getCdmClass());
+        }
 
         FactDto td3Fact = description4; //renaming to original name td3 for better understanding
         Assert.assertEquals(1, td3Fact.getSources().getCount());
@@ -519,7 +581,6 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(1, source.getLabel().size());
         TypedLabel sourceTypedLabel = source.getLabel().get(0);
         Assert.assertEquals("DescriptionElementSource", sourceTypedLabel.getCdmClass());
-
 
         //media
         ContainerDto<MediaDto2> factMedia = description4.getMedia();
@@ -539,7 +600,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("ImageFile", rep.getClazz());
     }
 
-    private void testDistributions(FeatureDto distributionDto) {
+    private void testDistributions(FeatureDto distributionDto, boolean isExcludedMarker) {
         ContainerDto<IFactDto> distributions = distributionDto.getFacts();
         Assert.assertEquals(1, distributions.getCount());
         IFactDto distribution = distributions.getItems().get(0);
@@ -547,13 +608,20 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         DistributionInfoDto distributionInfo = (DistributionInfoDto)distribution;
         //... condensed distribution
         //TODO maybe the order is not deterministic
-        Assert.assertEquals("FRA – DEU", distributionInfo.getCondensedDistribution().getHtmlString());
+        String expectedCondensedHtml = isExcludedMarker ? "DEU": "FRA – DEU";
+        Assert.assertEquals(expectedCondensedHtml, distributionInfo.getCondensedDistribution().getHtmlString());
         //TODO probably the order is not deterministic, so we may need to check single parts only, same as in according builder test
         String mapUriParamsStart = distributionInfo.getMapUriParams().substring(0, 62);
         String mapUriParamsEnd = distributionInfo.getMapUriParams().replace(mapUriParamsStart, "");
-        Assert.assertTrue("was:" + mapUriParamsStart, "as=a:4daf4a,,0.1,|b:377eb8,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart)
-                || "as=a:377eb8,,0.1,|b:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart));
-        Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:native%3A\\+doubtfully\\+native"));
+        if(isExcludedMarker) {
+            Assert.assertEquals("as=a:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:a:DEU&title=a:present", distributionInfo.getMapUriParams());
+            //as the filtering generally seems to work we do not further test details here
+            return;
+        }else {
+            Assert.assertTrue("was:" + mapUriParamsStart, "as=a:4daf4a,,0.1,|b:377eb8,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart)
+                    || "as=a:377eb8,,0.1,|b:4daf4a,,0.1,&ad=country_earth%3Agmi_cntry:".equals(mapUriParamsStart));
+            Assert.assertTrue("End does not match, but is: " + mapUriParamsEnd, mapUriParamsEnd.matches("a:(FRA|DEU)\\|b:(FRA|DEU)&title=[ab]:present\\|[ab]:native%3A\\+doubtfully\\+native"));
+        }
         //...tree
         DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
         Assert.assertEquals("Tree:2<FRA:native: doubtfully native{Miller, M.M. 1978: My French distribution. p 44}:0><Germany:present{Second ref article. – The journal. p 22}:0>", new DistributionInfoBuilderTest().tree2String(tree));
@@ -591,13 +659,15 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
     private Taxon createSynonymy() {
 
         Person author = Person.NewInstance("Mill.", "Miller", "M.M.", "Michael");
-        Reference nomRef = ReferenceFactory.newBook();
+        agentService.save(author);
+        Reference nomRef = save(ReferenceFactory.newBook());
         nomRef.setTitle("My book");
-        Reference nomRef2 = ReferenceFactory.newBook();
-        nomRef.setTitle("My book2");
+        Reference nomRef2 = save(ReferenceFactory.newBook());
+        nomRef2.setTitle("My book2");
+        nomRef2.setDatePublished(TimePeriodParser.parseStringVerbatim("1973"));
         TaxonName accName = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Genus", null, "species", null, author, nomRef, "55", null);
-        Reference secRef = ReferenceFactory.newBook();
+        Reference secRef = save(ReferenceFactory.newBook());
         secRef.setTitle("My secbook");
         accName.addIdentifier(Identifier.NewInstance("wfo-12345", IdentifierType.IDENTIFIER_NAME_WFO()));
         Taxon taxon = Taxon.NewInstance(accName, secRef);
@@ -606,10 +676,11 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //homotyp. synonym
         Person author2 = Person.NewInstance("Noll.", "Noller", "N.N.", "Norman");
+        agentService.save(author2);
         TaxonName homSynName = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Genusnovus", null, "species", null, author2, nomRef2, "66", accName.getHomotypicalGroup());
         homSynName.setBasionymAuthorship(author);
-        Synonym homSyn = taxon.addHomotypicSynonymName(homSynName);
+        Synonym homSyn = save(taxon.addHomotypicSynonymName(homSynName));
         accName.addBasionym(homSynName);
         //... annotation
         homSyn.addAnnotation(Annotation.NewInstance("HomSyn Annotation", AnnotationType.EDITORIAL(), Language.DEFAULT()));
@@ -617,6 +688,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
 
         //... with homonym relation
         Person author3 = Person.NewInstance("Woll.", "Woller", "W.W.", "Wotan");
+        agentService.save(author3);
         TaxonName earlierHomonym = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
                 "Genusnovus", null, "species", null, author3, nomRef, "666", null);
         NameRelationship rel = homSynName.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM());
@@ -624,6 +696,41 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         rel.setCodeEdition(NomenclaturalCodeEdition.ICN_2017_SHENZHEN);
         earlierHomonym.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Homonym annotation"));
         nameService.save(earlierHomonym);
+
+        //heterotyp. synonym
+        TaxonName heteroSynName1 = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Genushetero", null, "hetero", null, author2, nomRef2, "99", null);
+        Reference heteroSecRef = save(ReferenceFactory.newBook());
+        heteroSecRef.setTitle("My hetero sec book");
+        save(taxon.addHeterotypicSynonymName(heteroSynName1, heteroSecRef, "48", null));
+
+        TaxonName heteroSynName1Recomb = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Newgenushetero", null, "hetero", null, author3, nomRef, "26", null);
+        save(taxon.addHeterotypicSynonymName(heteroSynName1Recomb, heteroSecRef, "49",heteroSynName1.getHomotypicalGroup()));
+
+        //heterotyp. synonym group 2
+        Reference nomRef3 = save(ReferenceFactory.newBook());
+        nomRef3.setTitle("My book3");
+        nomRef3.setDatePublished(TimePeriodParser.parseStringVerbatim("2008"));
+
+        TaxonName heteroSynName2 = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Second", null, "hetero", null, author2, nomRef3, "105", null);
+        save(taxon.addHeterotypicSynonymName(heteroSynName2, taxon.getSec(), taxon.getSecMicroReference(), null));
+        TaxonName heteroSynName2Recomb = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Newsecond", null, "hetero", null, author2, nomRef3, "105", null);
+        save(taxon.addHeterotypicSynonymName(heteroSynName2Recomb, null, null, heteroSynName2.getHomotypicalGroup()));
+
+        //heterotyp. synonym group 3
+        Reference nomRef4 = save(ReferenceFactory.newBook());
+        nomRef4.setTitle("My book4");
+        nomRef4.setDatePublished(TimePeriodParser.parseStringVerbatim("2012"));
+
+        TaxonName heteroSynName3 = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Third", null, "hetero", null, author2, nomRef4, "305", null);
+        save(taxon.addHeterotypicSynonymName(heteroSynName3, nomRef4, null, null));
+        TaxonName heteroSynName3Recomb = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(),
+                "Newthird", null, "hetero", null, author2, nomRef4, "308", null);
+        save(taxon.addHeterotypicSynonymName(heteroSynName3Recomb, nomRef4, "33", heteroSynName3.getHomotypicalGroup()));
 
         return taxon;
     }
@@ -633,31 +740,36 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         //feature tree
         createTermTrees();
 
+        //factDatasets
+        TaxonDescription factSet1 = save(TaxonDescription.NewInstance(taxon));
+        TaxonDescription markedFactSet = save(TaxonDescription.NewInstance(taxon));
+        markedFactSet.addMarker(MarkerType.COMPLETE(), true);
+
         //distributions
-        TaxonDescription taxDesc = TaxonDescription.NewInstance(taxon);
         Country.GERMANY().setSymbol("De");
         PresenceAbsenceTerm.PRESENT().setSymbol("");
-        Distribution germany = Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT());
+        Distribution germany = save(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.PRESENT()));
         germany.addAnnotation(Annotation.NewEditorialDefaultLanguageInstance("Editorial Annotation"));
         germany.addAnnotation(Annotation.NewInstance("Technical Annotation", AnnotationType.INTERNAL(), Language.DEFAULT()));
         germany.addAnnotation(Annotation.NewInstance("Missing Type Annotation", null, Language.DEFAULT()));
         //.... germany source
-        Reference germanRef = ReferenceFactory.newArticle();
-        germanRef.setInJournal(ReferenceFactory.newJournal());
+        Reference germanRef = save(ReferenceFactory.newArticle());
+        Reference inJournal = save(ReferenceFactory.newJournal());
+        germanRef.setInJournal(inJournal);
         germanRef.setTitle("Second ref article");
-        germanRef.getInJournal().setTitle("The journal");
+        inJournal.setTitle("The journal");
         germany.addPrimaryTaxonomicSource(germanRef, "22");
 
-        taxDesc.addElement(germany);
+        factSet1.addElement(germany);
 
         Country.FRANCE().setSymbol("Fr");
 //        PresenceAbsenceTerm.INTRODUCED().setSymbol("i");
-        Distribution franceDist = Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
-        taxDesc.addElement(franceDist);
+        Distribution franceDist = save(Distribution.NewInstance(Country.FRANCE(), PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE()));
+        markedFactSet.addElement(franceDist);
 
         //... sources
         //... ... primary
-        Reference franceRef = ReferenceFactory.newBook();
+        Reference franceRef = save(ReferenceFactory.newBook());
         franceRef.setAuthorship(taxon.getName().getCombinationAuthorship());
         franceRef.setTitle("My French distribution");
         franceRef.setDatePublished(TimePeriodParser.parseStringVerbatim("1978"));
@@ -669,23 +781,26 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         nameInSource.setGenusOrUninomial("Genus");
         nameInSource.setSpecificEpithet("insourcus");
         source.setNameUsedInSource(nameInSource);
+        nameService.save(nameInSource);
 
         //... ... import
-        Reference importRef = ReferenceFactory.newDatabase();
+        Reference importRef = save(ReferenceFactory.newDatabase());
         importRef.setTitle("French distribution import");  //should not be shown in output
         franceDist.addImportSource("7777", "Distribution", importRef, "99");
 
         //text facts
         //data
-        TextData td1 = TextData.NewInstance(Feature.DESCRIPTION(), "My first description", Language.DEFAULT(), null);
-        TextData td2 = TextData.NewInstance(Feature.DESCRIPTION(), "My second description", Language.DEFAULT(), null);
-        TextData td3 = TextData.NewInstance(Feature.DESCRIPTION(), "My third description", Language.DEFAULT(), null);
+        TextData td1 = save(TextData.NewInstance(Feature.DESCRIPTION(), "My first description", Language.DEFAULT(), null));
+        TextData td2 = save(TextData.NewInstance(Feature.DESCRIPTION(), "My second description", Language.DEFAULT(), null));
+        TextData td3 = save(TextData.NewInstance(Feature.DESCRIPTION(), "My third description", Language.DEFAULT(), null));
         td3.setSortIndex(2);
         td3.addPrimaryTaxonomicSource(franceRef, "63");
         TextData td4 = TextData.NewInstance(Feature.DESCRIPTION(), "My fourth description", Language.DEFAULT(), null);
         td4.setSortIndex(1);
         td4.setUuid(td4Uuid);
-        taxDesc.addElements(td1, td2, td3, td4);
+        save(td4);
+        factSet1.addElements(td1, td2, td3);
+        markedFactSet.addElements(td4);
         //... with media
         Media media1 = Media.NewInstance(URI.create("http://media.de/file.jpg"), 2, "JPG", "jpg");
         media1.setTitleCache("Media title", true);
@@ -699,77 +814,95 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         td3.addMedia(media2);
 
         //empty text
-        TextData emptyTd = TextData.NewInstance(Feature.DISCUSSION(), "", Language.DEFAULT(), null);
-        taxDesc.addElements(emptyTd);
+        TextData emptyTd = save(TextData.NewInstance(Feature.DISCUSSION(), "", Language.DEFAULT(), null));
+        factSet1.addElements(emptyTd);
         //annotation
-        taxDesc.addAnnotation(Annotation.NewInstance("Missing Type Annotation for empty", null, Language.DEFAULT()));
-        taxDesc.addMarker(MarkerType.IS_DOUBTFUL(), true);
+        factSet1.addAnnotation(Annotation.NewInstance("Missing Type Annotation for empty", null, Language.DEFAULT()));
+        factSet1.addMarker(MarkerType.IS_DOUBTFUL(), true);
 
         //common names
-        CommonTaxonName cn1 = CommonTaxonName.NewInstance("My flower", Language.ENGLISH(), Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND());
-        CommonTaxonName cn2 = CommonTaxonName.NewInstance("Meine Blume", Language.GERMAN(), Country.GERMANY());
-        taxDesc.addElements(cn1);
-        TaxonDescription taxDesc2 = TaxonDescription.NewInstance(taxon);
+        CommonTaxonName cn1 = save(CommonTaxonName.NewInstance("My flower", Language.ENGLISH(), Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND()));
+        CommonTaxonName cn2 = save(CommonTaxonName.NewInstance("Meine Blume", Language.GERMAN(), Country.GERMANY()));
+        factSet1.addElements(cn1);
+        TaxonDescription taxDesc2 = save(TaxonDescription.NewInstance(taxon));
         taxDesc2.addElement(cn2);
-        Reference descRef = ReferenceFactory.newBook();
+        Reference descRef = save(ReferenceFactory.newBook());
         descRef.setTitle("Common name description reference");
         //... with in-description source
         taxDesc2.addPrimaryTaxonomicSource(descRef, "91");
 
         //temporal data
-        TemporalData temporalData1 = TemporalData.NewInstance(Feature.FLOWERING_PERIOD(),
-                ExtendedTimePeriod.NewExtendedMonthAndDayInstance(4, 15, 6, 30, 3, 10, 7, 20));
-        TemporalData temporalData2 = TemporalData.NewInstance(Feature.FLOWERING_PERIOD(),
-                ExtendedTimePeriod.NewExtendedMonthAndDayInstance(5, 1, 6, 15, 4, 1, 7, 1));
-        taxDesc.addElements(temporalData1, temporalData2);
+        TemporalData temporalData1 = save(TemporalData.NewInstance(Feature.FLOWERING_PERIOD(),
+                ExtendedTimePeriod.NewExtendedMonthAndDayInstance(4, 15, 6, 30, 3, 10, 7, 20)));
+        TemporalData temporalData2 = save(TemporalData.NewInstance(Feature.FLOWERING_PERIOD(),
+                ExtendedTimePeriod.NewExtendedMonthAndDayInstance(5, 1, 6, 15, 4, 1, 7, 1)));
+        factSet1.addElements(temporalData1, temporalData2);
 
         //individual association
         DerivedUnit specimen1 = DerivedUnit.NewPreservedSpecimenInstance();
         specimen1.setTitleCache("My specimen", true);
         specimen1.setUuid(specimenUuid1);
-        IndividualsAssociation indAss1 = IndividualsAssociation.NewInstance(specimen1);
+        occurrenceService.save(specimen1);
+        IndividualsAssociation indAss1 = save(IndividualsAssociation.NewInstance(specimen1));
         indAss1.putDescription(Language.DEFAULT(), "Associated specimen description1");
         indAss1.setFeature(Feature.MATERIALS_EXAMINED());
+
         DerivedUnit specimen2 = DerivedUnit.NewPreservedSpecimenInstance();
         specimen2.setTitleCache("My specimen2", true);
         specimen2.setUuid(specimenUuid2);
-        IndividualsAssociation indAss2 = IndividualsAssociation.NewInstance(specimen2);
+        occurrenceService.save(specimen2);
+        IndividualsAssociation indAss2 = save(IndividualsAssociation.NewInstance(specimen2));
         indAss2.putDescription(Language.DEFAULT(), "Associated specimen description2");
         indAss2.setFeature(Feature.MATERIALS_EXAMINED());
-        taxDesc.addElements(indAss1, indAss2);
+
+        factSet1.addElements(indAss1, indAss2);
 
         //taxon interaction
         Taxon taxon1 = Taxon.NewInstance(taxon.getName(), taxon.getSec());
         taxon1.setUuid(taxonUuid1);
-        TaxonInteraction taxInteract1 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
+        taxonService.save(taxon1);
+        TaxonInteraction taxInteract1 = save(TaxonInteraction.NewInstance(Feature.HOSTPLANT()));
         taxInteract1.setTaxon2(taxon1);
         taxInteract1.putDescription(Language.DEFAULT(), "Taxon interaction description1");
+
         TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         name2.setTitleCache("Name three Mill.", true);
         Taxon taxon2 = Taxon.NewInstance(name2, taxon.getSec());
         taxon2.setUuid(taxonUuid2);
-        TaxonInteraction taxInteract2 = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
+        taxonService.save(taxon2);
+        TaxonInteraction taxInteract2 = save(TaxonInteraction.NewInstance(Feature.HOSTPLANT()));
         taxInteract2.setTaxon2(taxon2);
         taxInteract2.putDescription(Language.DEFAULT(), "Taxon interaction description2");
-        taxDesc.addElements(taxInteract1, taxInteract2);
+
+        factSet1.addElements(taxInteract1, taxInteract2);
 
         //categorical data
         State state1 = State.NewInstance("State1", "State1", null);
         termService.save(state1);
-        CategoricalData cd = CategoricalData.NewInstance(state1, Feature.LIFEFORM());
+        CategoricalData cd = save(CategoricalData.NewInstance(state1, Feature.LIFEFORM()));
         StateData stateData = cd.getStateData().get(0);
         stateData.putModifyingText(Language.DEFAULT(), "State modifying");
         cd.putModifyingText(Language.DEFAULT(), "Fact modifying");
-        taxDesc.addElements(cd);
+        factSet1.addElements(cd);
 
         //quantitative data
         Feature feature = Feature.INTRODUCTION();
-        QuantitativeData qd = QuantitativeData.NewMinMaxInstance(feature,
-                MeasurementUnit.METER(), new BigDecimal(5), new BigDecimal(10));
-        taxDesc.addElements(qd);
+        QuantitativeData qd = save(QuantitativeData.NewMinMaxInstance(feature,
+                MeasurementUnit.METER(), new BigDecimal(5), new BigDecimal(10)));
+        factSet1.addElements(qd);
 
         //use data
         //TODO
+    }
+
+    private Reference save(Reference ref) {
+        this.referenceDao.save(ref);
+        return ref;
+    }
+
+    private Synonym save(Synonym syn) {
+        taxonService.save(syn);
+        return syn;
     }
 
     private void createTermTrees() {
@@ -803,6 +936,16 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
             statusTree.getRoot().addChild(PresenceAbsenceTerm.PRESENT());
             termTreeService.save(statusTree);
         }
+    }
+
+    private <S extends DescriptionBase<?>> S save(S newDescription) {
+        descriptionDao.save(newDescription);
+        return newDescription;
+    }
+
+    private <S extends DescriptionElementBase> S save(S newElement) {
+        descriptionElementDao.save(newElement);
+        return newElement;
     }
 
     @Override

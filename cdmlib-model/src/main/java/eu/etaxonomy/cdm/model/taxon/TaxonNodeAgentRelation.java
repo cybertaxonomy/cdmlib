@@ -22,8 +22,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -60,7 +58,6 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})  //the
     @NotNull
     private TaxonNode taxonNode;
 
@@ -68,7 +65,6 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @NotNull
     private TeamOrPersonBase<?> agent;
 

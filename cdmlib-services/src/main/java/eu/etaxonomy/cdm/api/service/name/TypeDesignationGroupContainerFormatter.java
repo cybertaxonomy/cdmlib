@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.name;
 
 import java.net.URI;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
@@ -126,6 +128,11 @@ public class TypeDesignationGroupContainerFormatter {
 
     public TypeDesignationGroupContainerFormatter withAccessionNoType(boolean withAccessionNoType) {
         configuration.setWithAccessionNoType(withAccessionNoType);
+        return this;
+    }
+
+    public TypeDesignationGroupContainerFormatter withSourceTypeFilter(EnumSet<OriginalSourceType> sourceTypes) {
+        configuration.setSourceTypeFilter(sourceTypes);
         return this;
     }
 

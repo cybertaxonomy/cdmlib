@@ -280,6 +280,7 @@ public class DescriptiveDataSetService
                         td.addType(DescriptionType.INDIVIDUALS_ASSOCIATION);
                         td.setTitleCache("Specimens used by " + dataSet.getTitleCache() + " for " + getTaxonLabel(taxon), true);
                         return td;});
+
             IndividualsAssociation association = null;
             for (DescriptionElementBase el:taxonDescription.getElements()){
                 if (el instanceof IndividualsAssociation){
@@ -293,8 +294,9 @@ public class DescriptiveDataSetService
             if (association == null){
                 association = IndividualsAssociation.NewInstance(specimen);
                 taxonDescription.addElement(association);
-                taxonService.saveOrUpdate(taxon);
-                result.addUpdatedObject(taxon);
+                descriptionService.save(taxonDescription);
+                //taxonService.saveOrUpdate(taxon);
+                result.addUpdatedObject(taxonDescription);
             }
 
             UUID specimenDescriptionUuid = wrapper.getDescription().getDescriptionUuid();
@@ -383,11 +385,18 @@ public class DescriptiveDataSetService
             specimenDescription.addDescriptiveDataSet(dataSet);
             //add taxon description with IndividualsAssociation to the specimen to data set
             taxonDescription.addDescriptiveDataSet(dataSet);
+            descriptionService.saveOrUpdate(taxonDescription);
+            descriptionService.saveOrUpdate(specimenDescription);
             result.addUpdatedObject(specimen);
             result.addUpdatedObject(specimenDescription);
             result.addUpdatedObject(taxonDescription);
+
+
         }
+
+
         saveOrUpdate(dataSet);
+
         return result;
     }
 
@@ -612,7 +621,7 @@ public class DescriptiveDataSetService
                     .collect(Collectors.toSet());
 
             for (IndividualsAssociation individualsAssociation : associations) {
-                if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(description.getDescribedSpecimenOrObservation())){
+                if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(((SpecimenDescription)description).getDescribedSpecimenOrObservation())){
                     dataSet.removeDescription(individualsAssociation.getInDescription());
                     result.addUpdatedObject(individualsAssociation.getInDescription());
                 }

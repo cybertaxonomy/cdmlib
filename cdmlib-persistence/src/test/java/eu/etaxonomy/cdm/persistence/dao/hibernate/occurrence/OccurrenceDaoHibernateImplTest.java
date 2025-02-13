@@ -30,6 +30,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -37,6 +39,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -51,7 +54,11 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -66,6 +73,18 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
     @SpringBeanByType
     private ITaxonDao taxonDao;
 
+    @SpringBeanByType
+    private IReferenceDao referenceDao;
+
+    @SpringBeanByType
+    private IDescriptionDao descriptionDao;
+
+    @SpringBeanByType
+    private IDescriptionElementDao descriptionElementDao;
+
+    @SpringBeanByType
+    private ITypeDesignationDao typeDesignationDao;
+
 //**************** TESTS ************************************************
 
 	@Test
@@ -75,10 +94,11 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
     @Test
     public void testCountMedia() {
+
         MediaSpecimen unit = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
-        SpecimenDescription desc = SpecimenDescription.NewInstance(unit);
+        SpecimenDescription desc = save(SpecimenDescription.NewInstance(unit));
         desc.setImageGallery(true);
-        TextData textData = TextData.NewInstance(Feature.IMAGE());
+        TextData textData = save(TextData.NewInstance(Feature.IMAGE()));
         desc.addElement(textData);
         Media media1 = Media.NewInstance(URI.create("https://www.abc.de"), 5, "jpg", "jpg");
         Media media2 = Media.NewInstance(URI.create("https://www.abc.de"), 5, "jpg", "jpg");
@@ -96,10 +116,11 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
     @Test
     public void testGetMedia() {
+
         MediaSpecimen unit = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
-        SpecimenDescription desc = SpecimenDescription.NewInstance(unit);
+        SpecimenDescription desc = save(SpecimenDescription.NewInstance(unit));
         desc.setImageGallery(true);
-        TextData textData = TextData.NewInstance(Feature.IMAGE());
+        TextData textData = save(TextData.NewInstance(Feature.IMAGE()));
         desc.addElement(textData);
         Media media1 = Media.NewInstance(URI.create("https://www.abc.de"), 5, "jpg", "jpg");
         Media media2 = Media.NewInstance(URI.create("https://www.defg.de"), 5, "jpg", "jpg");
@@ -141,6 +162,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 	@Test
 	@DataSet
 	public void testStatusWithoutTypeCanBeLoaded() {
+
 	    //This is for testing if an occurrence status can be loaded if it has
 	    //no type although OccurrenceStatus.type has a NotNull constraint.
 	    //Result: it can be loaded and during update an constraint violation
@@ -184,6 +206,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
         //load data
 	    //TODO make DB empty
 	    Taxon taxon = createListByAssociationTestData();
+
         this.commitAndStartNewTransaction();
 
         //test
@@ -300,6 +323,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
     	    //sec (not relevant here)
             Reference sec = ReferenceFactory.newBook();
             sec.setTitleCache("Taxon sec reference", true);
+            referenceDao.save(sec);
 
             //accepted taxon
             TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null);
@@ -309,17 +333,17 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
             //homotypic synonym
             TaxonName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Pinus", null, "alba", null, null, null, null, null);
-            taxon.addHomotypicSynonymName(name2);
+            save(taxon.addHomotypicSynonymName(name2));
 
             //heterotypic group
             TaxonName name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Abies", null, "pinus", null, null, null, null, null);
-            Synonym heteroSyn1 = taxon.addHeterotypicSynonymName(name2, sec, null, null);
+            Synonym heteroSyn1 = taxon.addHeterotypicSynonymName(name3, sec, null, null);
             heteroSyn1.setUuid(uuid_hetero_syn_1);
 
             TaxonName name4 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Pinus", null, "pinus", null, null, null, null, null);
-            taxon.addHeterotypicSynonymName(name4, sec, null, name3.getHomotypicalGroup());
+            save(taxon.addHeterotypicSynonymName(name4, sec, null, name3.getHomotypicalGroup()));
 
-            taxonDao.save(taxon);
+            taxonDao.save(taxon, heteroSyn1);
             taxonDao.save(fieldUnitTaxon);
 
             //create associated derived units
@@ -337,11 +361,14 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
             DerivedUnit du_homonymType = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
             du_homonymType.setTitleCache("Specimen Homotypic Name Type", true);
+
             DerivedUnit du_heteroType1 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
             du_heteroType1.setTitleCache("Specimen Heterotypic Name Type 1", true);
+
             DerivedUnit du_heteroType2 = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
             du_heteroType2.setTitleCache("Specimen Heterotypic Name Type 2", true);
             du_heteroType2.setPublish(false);
+
             //not associated derived unit
             DerivedUnit du_notAssociated = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
             du_notAssociated.setTitleCache("Specimen Not Associated", true);
@@ -353,64 +380,83 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
             dao.save(du_heteroType1);
             dao.save(du_heteroType2);
 
+            FieldUnit fieldUnit1 = DerivedUnitFacade.NewInstance(du_indAss).getFieldUnit(true);
+            fieldUnit1.setTitleCache("FieldUnit 1", true);
             //TODO unused
-            FieldUnit fu1 = DerivedUnitFacade.NewInstance(du_indAss).getFieldUnit(true);
-            fu1.setTitleCache("FieldUnit 1", true);
             FieldUnit fu2 = DerivedUnitFacade.NewInstance(du_determination).getFieldUnit(true);
-            FieldUnit fu3 = DerivedUnitFacade.NewInstance(du_accType).getFieldUnit(true);
-            fu3.setTitleCache("FieldUnit 3", true);
+            FieldUnit fieldUnit3 = DerivedUnitFacade.NewInstance(du_accType).getFieldUnit(true);
+            fieldUnit3.setTitleCache("FieldUnit 3", true);
+            //TODO unused
             FieldUnit fu4 = DerivedUnitFacade.NewInstance(du_homonymType).getFieldUnit(true);
-            dao.save(fu1);
+            dao.save(fieldUnit1);
             dao.save(fu2);
-            dao.save(fu3);
+            dao.save(fieldUnit3);
             dao.save(fu4);
 
-            //*** Add assoziations ****
+            //*** Add associations ****
 
-            //du1 is added as indiv. association
-            TaxonDescription td = TaxonDescription.NewInstance(taxon);
-            IndividualsAssociation ia = IndividualsAssociation.NewInstance(du_indAss);
+            //du_indAss is added as indiv. association
+            TaxonDescription td = save(TaxonDescription.NewInstance(taxon));
+            IndividualsAssociation ia = save(IndividualsAssociation.NewInstance(du_indAss));
             td.addElement(ia);
 
-            //du2 is assoziated as determination
+            //du_determination is associated as determination
             DeterminationEvent.NewInstance(taxon, du_determination);
 
-            //fu3 is assoziated with name3 (first heterotypic synonym) as current determination
-            DeterminationEvent de = DeterminationEvent.NewInstance(heteroSyn1.getName(), fu3);
+            //fieldUnit3 is associated with name3 (first heterotypic synonym) as current determination
+            DeterminationEvent de = DeterminationEvent.NewInstance(heteroSyn1.getName(), fieldUnit3);
             de.setPreferredFlag(true);
 
-            //du3 is added as type designation for the accepted taxon
-            name1.addSpecimenTypeDesignation(du_accType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            //type designations
+            //du_accType is added as type designation for the accepted taxon
+            SpecimenTypeDesignation std1 = name1.addSpecimenTypeDesignation(du_accType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
-            //du4 is added as type designation for the homotypic synonym
-            name2.addSpecimenTypeDesignation(du_homonymType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            //du_homonymType is added as type designation for the homotypic synonym
+            SpecimenTypeDesignation std2 = name2.addSpecimenTypeDesignation(du_homonymType, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
-            //du5 is added as type designation for the heterotypic synonym
-            name3.addSpecimenTypeDesignation(du_heteroType1, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            //du_heteroType1 is added as type designation for the heterotypic synonym
+            SpecimenTypeDesignation std3 = name3.addSpecimenTypeDesignation(du_heteroType1, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
-            //du6 is added as type designation for the other heterotypic synonym
-            name4.addSpecimenTypeDesignation(du_heteroType2, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            //du_heteroType2 is added as type designation for the other heterotypic synonym
+            SpecimenTypeDesignation std4 = name4.addSpecimenTypeDesignation(du_heteroType2, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
 
+            typeDesignationDao.save(std1);
+            typeDesignationDao.save(std2);
+            typeDesignationDao.save(std3);
+            typeDesignationDao.save(std4);
 
-            TaxonDescription fieldUnitDescription = TaxonDescription.NewInstance(fieldUnitTaxon);
-            IndividualsAssociation fieldUnitIndAss = IndividualsAssociation.NewInstance(fu1);
+            TaxonDescription fieldUnitDescription = save(TaxonDescription.NewInstance(fieldUnitTaxon));
+            IndividualsAssociation fieldUnitIndAss = save(IndividualsAssociation.NewInstance(fieldUnit1));
             fieldUnitDescription.addElement(fieldUnitIndAss);
 
             return taxon;
+
         } catch (Exception e) {
             Assert.fail("No exception should be thrown during data creation: " + e.getMessage());
             return null;
         }
 	}
 
+    private <S extends DescriptionBase<?>> S save(S newDescription) {
+        descriptionDao.save(newDescription);
+        return newDescription;
+    }
+
+    private <S extends DescriptionElementBase> S save(S newElement) {
+        descriptionElementDao.save(newElement);
+        return newElement;
+    }
+
+    private Synonym save(Synonym synonym) {
+        taxonDao.save(synonym);
+        return synonym;
+    }
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {
 
 
         // 1. create the entities   and save them
-
-
-
 
         //add determination
 

@@ -45,7 +45,7 @@ public class WfoBackboneExportTest
     private String expectedSubspeciesTaxonLine = str(subspeciesWfoId)+ NONE + uuid(subspeciesNameUuid) +
             str("Genus species subsp. subspec") + str("subspecies") + str(speciesWfoId) + str("Mill.") +
             str("Myfamily")+ NONE3 + str("Genus") + NONE + str("species") + str("subspec")
-            + str("subspecies") + str("Valid") + str("The book of botany 3: 22. 1804") + str("Accepted")
+            + NONE + str("Valid") + str("The book of botany 3: 22. 1804") + str("Accepted")
             + NONE2 + uuid(ref1UUID) + NONE3 + str("https://www.abc.de/mytaxon/cdm_dataportal/taxon/" + subspeciesTaxonUuid)
             + NONE_END;
 
@@ -54,21 +54,21 @@ public class WfoBackboneExportTest
     private String expectedFamilyNameLine = str(familyWfoId) + NONE + uuid(familyNameUuid) +
             str("Familyname") + str("family") + str("") + str("L.") +
             str("Familyname") + NONE4 + NONE3 +
-            str("family") + str("Conserved") + str("Sp. Pl. 3: 22. 1752") + str("Accepted")
+            NONE + str("Conserved") + str("Sp. Pl. 3: 22. 1752") + str("Accepted")
             + NONE2 + uuid(ref1UUID) + NONE3 + str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + familyTaxonUuid)
             + NONE_END;
 
-    private String expectedSpeciesNameLine = str(speciesWfoId) + NONE + uuid(speciesNameUuid) +
+    private String expectedSpeciesNameLine = str(speciesWfoId) + str("urn:lsid:ipni.org:names:100000-3") + uuid(speciesNameUuid) +
             str("Genus species") + str("species") + str("WFO-12347g") + str("(Mill.) Hook") +
             str("Familyname") + NONE3 + str("Genus") + NONE + str("species") + NONE +
-            str("species") + str("Valid") + str("in J. Appl. Synon. 5: 33. 1824") + str("Accepted")
+            NONE + str("Valid") + str("in J. Appl. Synon. 5: 33. 1824") + str("Accepted")
             + NONE + str(speciesBasionymWfoId) + uuid(ref3UUID) + NONE3 + str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + speciesTaxonUuid)
             + NONE_END;
 
     private String expectedSpeciesBasionymNameLine = str(speciesBasionymWfoId) + NONE + uuid(basionymNameUuid) +
             str("Sus basionus") + str("species") + NONE + str("Mill.") +
             str("Familyname") + NONE3 + str("Sus") + NONE + str("basionus") + NONE +
-            str("species") + str("Valid") + str("The book of botany 3: 22. 1804") + str("homotypicSynonym") +
+            NONE + str("Valid") + str("The book of botany 3: 22. 1804") + str("homotypicSynonym") +
             str(speciesWfoId) + NONE + uuid(ref3UUID) + NONE3 +
             str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + speciesTaxonUuid + "/synonymy?highlight=" + basionymSynonymUuid)
             + NONE_END;
@@ -129,7 +129,7 @@ public class WfoBackboneExportTest
         config.getTaxonNodeFilter().setIncludeUnpublished(true);
         //Note: on purpose we do not define a familyStr here as it is to be taken from the persisted family
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = checkAndGetData(result, 0, 0, 1);  //1 warning expected for missing basionym author
 
         //test counts
         List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
@@ -158,7 +158,7 @@ public class WfoBackboneExportTest
         String expectedExcluded = str(subspeciesUnpublishedWfoId)+ NONE + uuid(subspeciesUnpublishedNameUUID) +
                 str("Genus species subsp. unpublished") + str("subspecies") +
                 str(speciesWfoId) + str("Mill.") + str("Familyname") + NONE3 + str("Genus")
-                + NONE + str("species") + str("unpublished") + str("subspecies") +
+                + NONE + str("species") + str("unpublished") + NONE +
                 str ("Valid") + str("The book of botany 3: 22. 1804") +
                 str("Accepted") + NONE2 + uuid(ref1UUID) + NONE3 + str("http://www.abc.de/mytaxon/cdm_dataportal/taxon/" + subspeciesUnpublishedTaxonUuid)
                 + strEnd("Excluded: My status note");
@@ -169,11 +169,10 @@ public class WfoBackboneExportTest
         String expectedOrigSpellingLine = str(speciesOrigSpellingWfoId) + NONE + uuid(origSpellingNameUuid) +
                 str("Sus basyonus") + str("species") + NONE + str("Mill.") +
                 str("Familyname") + NONE3 + str("Sus") + NONE + str("basyonus") + NONE +
-                str("species") + str("orthografia") + str("The book of botany 3: 22. 1804") +
-                str("Synonym") +
+                NONE + str("orthografia") + str("The book of botany 3: 22. 1804") +
+                str("homotypicSynonym") +
                 str(speciesWfoId) + NONE + NONE + NONE3 +
-                //TODO 2 link for orig spelling
-                NONE //str("" + speciesTaxonUuid + "/synonymy?highlight=" + basionymSynonymUuid)
+                str("http://www.abc.de/mytaxon/cdm_dataportal/name/bde06b48-bbda-428c-af4e-50c39db55821")
                 + NONE_END;
         Assert.assertEquals(expectedOrigSpellingLine, originalSpellingLine);
 
@@ -217,7 +216,7 @@ public class WfoBackboneExportTest
         //config+invoke
         WfoBackboneExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = checkAndGetData(result, 0, 0, 1);  //1 warning expected for missing basionym author
         Assert.assertTrue(result.getExportType().equals(ExportType.WFO_BACKBONE)); //test export type
 
         //test counts
@@ -234,7 +233,7 @@ public class WfoBackboneExportTest
 
     @Override
     public void testFullSampleData() {
-        super.testFullSampleData();
+        super.testFullSampleData(0, 0, 1);  //1 warning expected for missing basionym author);
     }
 
     @Override

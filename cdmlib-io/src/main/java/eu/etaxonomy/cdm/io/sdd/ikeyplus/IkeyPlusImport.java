@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import fr.lis.ikeyplus.IO.SDDSaxParser;
@@ -52,22 +53,23 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
     private static final long serialVersionUID = -6817762818458834785L;
     private static final Logger logger = LogManager.getLogger();
 
+    //*************** NEW ENTITIES ************************/
+
     private TermVocabulary<Feature> featureVoc;
 
     private PolytomousKey cdmKey;
 
-    public PolytomousKey getCdmKey() {
-        return cdmKey;
-    }
-
-    public void setCdmKey(PolytomousKey cdmKey) {
-        this.cdmKey = cdmKey;
-    }
-
     private Map<String, Feature>featureMap = new HashMap<>();
 
-    public IkeyPlusImport() {
+    private Set<TaxonBase> taxa = new HashSet<>();
 
+//************************ CONSTRUCTOR **************************/
+
+    public IkeyPlusImport() {}
+
+
+    public PolytomousKey getCdmKey() {
+        return cdmKey;
     }
 
     public PolytomousKey getKey(URI sddUri, Utils utils) throws Exception {
@@ -118,23 +120,23 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
     private void persistNewEntities() {
 
         // persist features
-        Collection features = featureMap.values();
-        getTermService().saveOrUpdate(features);
+        Collection<Feature> features = featureMap.values();
+        getTermService().saveOrUpdate((Collection)features);
         getVocabularyService().saveOrUpdate(featureVoc);
+
+        //persist new taxa
+        getTaxonService().save(taxa);
 
         // persist the rest
         getPolytomousKeyService().saveOrUpdate(cdmKey);
     }
 
     /**
-     * @param node
      * @param parentNode may be null if node is the root node
-     * @return
      */
     private Set<PolytomousKeyNode> recursivlyCreateKeyNodes(SingleAccessKeyNode node, SingleAccessKeyNode parentNode) {
 
         boolean isRootNode = (parentNode == null);
-
 
         Set<PolytomousKeyNode> pkNodeSet = new HashSet<>();
         if(node == null){
@@ -160,6 +162,7 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
                 nonViralName.setTitleCache(taxon.getName(), true);
                 eu.etaxonomy.cdm.model.taxon.Taxon cdmTaxon = eu.etaxonomy.cdm.model.taxon.Taxon.NewInstance(
                         nonViralName, null); //FIXME !!!!!!
+                this.taxa.add(cdmTaxon);
                 // TODO add taxon to covered taxa
                 // TODO media: get media from the parent node
 
@@ -170,7 +173,6 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
             // do the children
             Feature feature = getFeatureFrom(childNodes.iterator().next().getCharacter());
 
-
             pkNode = createPkNode(feature, statement);
             for(SingleAccessKeyNode childNode : childNodes){
 
@@ -178,7 +180,6 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
                 for(PolytomousKeyNode nodeToAdd : nodesToAdd){
                     pkNode.addChild(nodeToAdd);
                 }
-
             }
             pkNodeSet.add(pkNode);
 
@@ -237,18 +238,17 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
             this.getKey(state.getConfig().getSource(), utils);
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     protected boolean doCheck(IkeyPlusImportState state) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     protected boolean isIgnore(IkeyPlusImportState state) {
-        // TODO Auto-generated method stub
         return false;
     }
 }

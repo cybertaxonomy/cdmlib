@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.compare.name.NomenclaturalStatusTypeComparator;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -104,11 +106,6 @@ public class NonViralNameParserImplTest extends TermTestBase {
     }
 
     @Test
-    public final void testTaxonNameParserBotanicalNameImpl() {
-        logger.warn("Not yet implemented"); // TODO
-    }
-
-    @Test
     public final void testTeamSeperation(){
         Rank speciesRank = Rank.SPECIES();
         INonViralName name;
@@ -133,6 +130,53 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals("Name should not include reference part", "Abies alba Mess., L. & Mill.", name.getTitleCache());
         Assert.assertEquals("Name should have authorship with 2 authors", 3, ((Team)name.getCombinationAuthorship()).getTeamMembers().size());
         Assert.assertEquals("Mess., L. & Mill. 1987: Sp. Pl., ed. 3", name.getNomenclaturalReference().getTitleCache());
+    }
+
+    @Test
+    public final void testParserResult(){
+        NameParserResult result = parser.parseFullName2("Genus multiautorus (Mill. ex Mull. & Moll) Ball & Bill ex Bull & Bell ", NomenclaturalCode.ICNAFP, null);
+        Assert.assertEquals("1 name + 7 persons + 3 teams" , 11, result.getAllEntities().size());
+    }
+
+    @Test
+    public final void testGetTransientEntitiesOfParsedName(){
+        String fullReference = "Abies alba Exmill ex Mill. & Mall. in Otto, Sp. Pl. 4(6): 455. 1987";
+        INonViralName name = parser.parseReferencedName(fullReference + ".", null, Rank.SPECIES());
+
+        Set<CdmBase> transientEntities = NonViralNameParserImpl.getTransientEntitiesOfParsedName((TaxonName)name);
+        Assert.assertTrue(transientEntities.contains(name.getCombinationAuthorship()));
+        Assert.assertTrue(transientEntities.contains(((Team)name.getCombinationAuthorship()).getTeamMembers().get(1)));
+                Assert.assertTrue(transientEntities.contains(name.getExCombinationAuthorship()));
+        Assert.assertTrue(transientEntities.contains(name.getNomenclaturalReference()));
+        Assert.assertTrue(transientEntities.contains(name.getNomenclaturalReference().getAuthorship()));
+        Assert.assertTrue(transientEntities.contains(name.getNomenclaturalReference().getInReference()));
+
+        //.. with persisted entities
+        name.setId(3);  //this should not change anything as name can be persisted when passed to the parser (TaxEditor usecase)
+        name.getCombinationAuthorship().setId(2); //make comb. author persisted
+        transientEntities = NonViralNameParserImpl.getTransientEntitiesOfParsedName((TaxonName)name);
+        Assert.assertFalse(transientEntities.contains(name.getCombinationAuthorship()));
+        Assert.assertFalse("As the combination author team is persistent the team members should not be checked further, therefore they should not be returned as transient",
+                transientEntities.contains(((Team)name.getCombinationAuthorship()).getTeamMembers().get(1)));
+        Assert.assertTrue("Even if name is persisted related entities may be transient",
+                transientEntities.contains(name.getNomenclaturalReference()));
+
+
+        //hybrid formulas
+        name = parser.parseFullName("Abies alba L. \u00D7 Pinus bus Mill.", botanicCode, null);
+        transientEntities = NonViralNameParserImpl.getTransientEntitiesOfParsedName((TaxonName)name);
+        TaxonName aParent = name.getHybridChildRelations().iterator().next().getParentName();
+        Assert.assertTrue(transientEntities.contains(aParent));
+        Assert.assertTrue(transientEntities.contains(aParent.getCombinationAuthorship()));
+
+        //original spelling
+        fullReference = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"alpa\"]";
+        name = parser.parseReferencedName(fullReference + ".", null, Rank.SPECIES());
+        transientEntities = NonViralNameParserImpl.getTransientEntitiesOfParsedName((TaxonName)name);
+        Assert.assertTrue(transientEntities.contains(name.getOriginalSpelling()));
+
+
+
     }
 
     @Test
@@ -586,10 +630,9 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals(expected, name1.getTitleCache()); //we expect the cache strategy to create the same result
 
         //remove space since #7094
-        parser.setRemoveSpaceAfterDot(true);
-        name1 = parser.parseReferencedName(nameStr);
+        NonViralNameParserImpl.NewInstance(true);
+        name1 = NonViralNameParserImpl.NewInstance(true).parseReferencedName(nameStr);
         assertEquals(expected.replace("E. Kl", "E.Kl"), name1.getTitleCache()); //we expect the cache strategy to create the same result
-        parser.setRemoveSpaceAfterDot(false);
     }
 
     @Test
@@ -2416,7 +2459,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         TeamOrPersonBase<?>[] authorArray = new TeamOrPersonBase[4];
         try {
             DateTime start = DateTime.now();
-            parser.fullAuthors(authorStr, authorArray, new Integer[]{1800, null, null, null}, NomenclaturalCode.ICNAFP);
+            parser.fullAuthors(new NameParserResult(null), authorStr, authorArray, new Integer[]{1800, null, null, null}, NomenclaturalCode.ICNAFP);
             DateTime end = DateTime.now();
             Duration duration = new Duration(start, end);
             long seconds = duration.getStandardSeconds();

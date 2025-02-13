@@ -43,6 +43,10 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 /**
  * This test class tries to describe how hibernate works with objects (save, update, merge).
  *
+ * Note by AM: Therefore this is not a real product test as a failing test does not necessarily
+ *             indicate that something goes wrong in cdmlib itself. However, it indicates that something
+ *             has changed in the hibernate behaviour or in the model behaviour.
+ *
  * @author cmathew
  * @since 17 Sep 2014
  */
@@ -82,6 +86,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     @Override
     @Transactional(TransactionMode.DISABLED)
     public final void createTestDataSet() {
+
         Team combAuthor = Team.NewTitledInstance("Avengers", "Avengers");
         combAuthor.addTeamMember(Person.NewTitledInstance("Iron Man"));
         IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(null, "Abies alba", null, null, null, null, null, null, null);
@@ -95,6 +100,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     @DataSet
     @Transactional(TransactionMode.DISABLED)
     public void testNonTransactionalUpdateForExistingTaxon() {
+
         // this method tests the updating of a 'truely' detached object which
         // attempts to initialize a lazy loaded proxy object while trying to
         // update the same.
@@ -113,7 +119,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         // since name is lazy loaded the call to getName should fail
         try {
-            CdmBase.deproxy(taxon.getName(), TaxonName.class);
+            CdmBase.deproxy(taxon.getName());
             Assert.fail("LazyInitializationException not thrown for lazy loaded Taxon.name");
         } catch(LazyInitializationException lie) {
             assertIsLieNoSession(lie);
@@ -166,9 +172,10 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         try {
             taxonService.update(taxon);
-            Assert.fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
+            // disabled since #10524 because missing cascading for name.combinationAuthor
+            // will prevent from throwing the expected LIE
+            //Assert.fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
         } catch(LazyInitializationException lie) {
-
             if(!lie.getMessage().equals(LIE_TEAMMEMBERS_NOSESSION)) {
                 Assert.fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION);
             }
@@ -201,6 +208,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     @Test
     @DataSet
     public void testTransactionalUpdateAfterFindTaxonByUuidForExistingTaxon() {
+
         // this method tests the updating of a detached object inside a single
         // transaction.
 
@@ -261,16 +269,18 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     @Transactional(TransactionMode.DISABLED)
     public void testNonTransactionalUpdateForNewTaxon() {
 
-        // this test is only to prove that the update problem occurs
-        // also for newly created objects (as expected)
+        // this test is only to prove that the update problem (see #testNonTransactionalUpdateForExistingTaxon)
+        // occurs also for newly created objects (as expected)
 
         // create / save new taxon with name and author team with team member
 
         Team combAuthor = Team.NewTitledInstance("X-Men", "X-Men");
-        combAuthor.addTeamMember(Person.NewTitledInstance("Wolverine"));
+        Person person = Person.NewTitledInstance("Wolverine");
+        combAuthor.addTeamMember(person);
+        agentService.save(person);
+        agentService.save(combAuthor);
 
-
-        IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(null, "Pinus Alba", null, null, null, null, null, null,  null);
+        TaxonName name = TaxonNameFactory.NewBotanicalInstance(null, "Pinus Alba", null, null, null, null, null, null,  null);
         name.setCombinationAuthorship(combAuthor);
 
         Taxon taxon = Taxon.NewInstance(name, null);
@@ -289,14 +299,14 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         try {
             taxonService.update(taxon);
-            Assert.fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
+            // disabled since #10524 because missing cascading for name.combinationAuthor
+            // will prevent from throwing the expected LIE
+            //Assert.fail("LazyInitializationException not thrown for lazy loaded Team.teamMembers");
         } catch(LazyInitializationException lie) {
-
             if(!lie.getMessage().equals(LIE_TEAMMEMBERS_NOSESSION)) {
                 Assert.fail("LazyInitializationException thrown, but not : " + LIE_TEAMMEMBERS_NOSESSION);
             }
-        }
-
+       }
     }
 
     @Test
@@ -354,11 +364,8 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // to initialize the teamMembers persistent collection which fails
         team.setProtectedTitleCache(false);
 
-
         taxonService.merge(taxon);
-
     }
-
 
     @Test
     public final void testTaxonDescriptionMerge() {

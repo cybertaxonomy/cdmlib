@@ -140,6 +140,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
 /**
  * @author a.kohlbecker
@@ -282,7 +283,9 @@ public class TaxonServiceImpl
 		return result;
     }
 
-    private UpdateResult swapSynonymAndAcceptedTaxonNewUuid(Synonym oldSynonym, Taxon oldAcceptedTaxon, boolean setNameInSource, SecReferenceHandlingSwapEnum secHandling, Reference newSecAcc, Reference newSecSyn){
+    private UpdateResult swapSynonymAndAcceptedTaxonNewUuid(Synonym oldSynonym, Taxon oldAcceptedTaxon, boolean setNameInSource,
+            SecReferenceHandlingSwapEnum secHandling, Reference newSecAcc, Reference newSecSyn){
+
         UpdateResult result = new UpdateResult();
         oldAcceptedTaxon.removeSynonym(oldSynonym);
         TaxonName synonymName = oldSynonym.getName();
@@ -300,8 +303,10 @@ public class TaxonServiceImpl
         for (Synonym syn: synonyms){
             oldAcceptedTaxon.removeSynonym(syn);
         }
+
         Taxon newTaxon = oldAcceptedTaxon.clone(true, true, false, true);
         newTaxon.setSec(newSecAcc);
+        save(newTaxon);
 
         //move descriptions
         Set<TaxonDescription> descriptionsToCopy = new HashSet<>(oldAcceptedTaxon.getDescriptions());
@@ -317,6 +322,7 @@ public class TaxonServiceImpl
         for (Synonym syn: synonyms){
             if (!syn.getName().equals(newTaxon.getName())){
                 newTaxon.addSynonym(syn, syn.getType());
+                save(syn);
             }
         }
 
@@ -362,7 +368,7 @@ public class TaxonServiceImpl
         }
 
         //synonym
-        Synonym newSynonym = oldSynonym.clone();
+        Synonym newSynonym = save(oldSynonym.clone());
         newSynonym.setName(taxonName);
         newSynonym.setPublish(oldAcceptedTaxon.isPublish());
         newSynonym.setSec(newSecSyn);
@@ -900,18 +906,39 @@ public class TaxonServiceImpl
             TaxonFindDto dto = new TaxonFindDto();
             //entity
             dto.setEntity(entity);
-            //accUuid
+            dto.setEntityUuid(entity.getUuid());
+
+            //taxon related attributes
+            Taxon taxon;
             if (entity.isInstanceOf(Synonym.class)) {
-                Taxon taxon = CdmBase.deproxy(entity, Synonym.class).getAcceptedTaxon();
+                //synonym
+                Synonym synonym = CdmBase.deproxy(entity, Synonym.class);
+                taxon = CdmBase.deproxy(entity, Synonym.class).getAcceptedTaxon();
+                //accUuid
                 if (taxon != null) {
                     dto.setAcceptedTaxonUuid(taxon.getUuid());
                 }
+                dto.setTaxonTaggedText(TaxonBaseDefaultCacheStrategy.INSTANCE().getTaggedTitle(synonym));
+            }else {
+                //taxon
+                taxon = CdmBase.deproxy(entity, Taxon.class);
+                dto.setTaxonTaggedText(TaxonBaseDefaultCacheStrategy.INSTANCE().getTaggedTitle(taxon));
             }
+            if (taxon != null) {
+                //classificationUuids
+
+                taxon.getTaxonNodes().stream()
+                    .filter(tn->tn.getClassification() != null)
+                    .forEach(tn->dto.addClassificationUuid(tn.getClassification().getUuid()));
+            }
+
             //source
             TaxonName name = entity.isInstanceOf(TaxonName.class)? CdmBase.deproxy(entity, TaxonName.class) : CdmBase.deproxy(entity, TaxonBase.class).getName();
             String source = NomenclaturalSourceFormatter.INSTANCE().format(name.getNomenclaturalSource());
             dto.setSourceString(source);
             result.getRecords().set(i, dto);
+
+
         }
 
         return result;
@@ -1220,12 +1247,6 @@ public class TaxonServiceImpl
                 for (TaxonDescription desc: descriptions){
                     //TODO use description delete configurator ?
                     //FIXME check if description is ALWAYS deletable
-                    if (desc.getDescribedSpecimenOrObservation() != null){
-                        result.setAbort();
-                        result.addException(new Exception("Taxon can't be deleted as it is used in a TaxonDescription" +
-                                " which also describes specimens or observations"));
-                        break;
-                    }
                     removeDescriptions.add(desc);
                 }
                 if (result.isOk()){
@@ -1261,8 +1282,8 @@ public class TaxonServiceImpl
                             node = null;
                         }
                         if (node != null){
-                            HibernateProxyHelper.deproxy(node, TaxonNode.class);
-                            success =taxon.removeTaxonNode(node, deleteChildren);
+                            HibernateProxyHelper.deproxy(node);
+                            success = taxon.removeTaxonNode(node, deleteChildren);
                             nodeService.delete(node);
                             result.addDeletedObject(node);
                         } else {
@@ -1328,7 +1349,7 @@ public class TaxonServiceImpl
                      result.includeResult(nameResult);
                  }
              }
-       }
+        }
 
        return result;
     }

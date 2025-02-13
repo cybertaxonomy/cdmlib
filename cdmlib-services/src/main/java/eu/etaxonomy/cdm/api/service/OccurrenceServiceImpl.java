@@ -411,8 +411,8 @@ public class OccurrenceServiceImpl
         if (!getSession().contains(derivedUnit)) {
             derivedUnit = (DerivedUnit) load(derivedUnit.getUuid());
         }
-        DerivedUnitDTO derivedUnitDTO = DerivedUnitDtoLoader.INSTANCE().fromEntity(derivedUnit, null, null);
-
+        //DerivedUnitDTO derivedUnitDTO = DerivedUnitDtoLoader.INSTANCE().fromEntity(derivedUnit, null, null);
+        DerivedUnitDTO  derivativeDTO = (DerivedUnitDTO) SpecimenOrObservationDTOFactory.fromEntity(derivedUnit, null);
         // individuals associations
         Collection<IndividualsAssociation> individualsAssociations = listIndividualsAssociations(derivedUnit, null, null, null, null);
         if(individualsAssociations != null) {
@@ -422,14 +422,14 @@ public class OccurrenceServiceImpl
                         TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
                         Taxon taxon = taxonDescription.getTaxon();
                         if (taxon != null) {
-                            derivedUnitDTO.addAssociatedTaxon(taxon);
+                            derivativeDTO.addAssociatedTaxon(taxon);
                         }
                     }
                 }
             }
         }
 
-        return derivedUnitDTO;
+        return derivativeDTO;
     }
 
     @Override
@@ -1046,15 +1046,6 @@ public class OccurrenceServiceImpl
                 deleteResult.addRelatedObject(cdmBase);
                 break;
             }
-            // check for taxon description
-            else if(cdmBase.isInstanceOf(TaxonDescription.class)
-                    && HibernateProxyHelper.deproxy(cdmBase, TaxonDescription.class).getDescribedSpecimenOrObservation().equals(specimen)
-                    && !specimenDeleteConfigurator.isDeleteFromDescription()){
-                deleteResult.setAbort();
-                deleteResult.addException(new ReferencedObjectUndeletableException("Specimen or obeservation is still used as \"Described Specimen\" in a taxon description."));
-                deleteResult.addRelatedObject(cdmBase);
-                break;
-            }
             // check for children and parents (derivation events)
             else if (cdmBase.isInstanceOf(DerivationEvent.class)) {
                 DerivationEvent derivationEvent = HibernateProxyHelper.deproxy(cdmBase, DerivationEvent.class);
@@ -1169,11 +1160,6 @@ public class OccurrenceServiceImpl
                 IndividualsAssociation association = HibernateProxyHelper.deproxy(relatedObject, IndividualsAssociation.class);
                 association.setAssociatedSpecimenOrObservation(null);
                 association.getInDescription().removeElement(association);
-            }
-            // check for "described specimen" (deprecated)
-            if (relatedObject.isInstanceOf(TaxonDescription.class)) {
-                TaxonDescription description = HibernateProxyHelper.deproxy(relatedObject, TaxonDescription.class);
-                description.setDescribedSpecimenOrObservation(null);
             }
             // check for specimen description
             if (relatedObject.isInstanceOf(SpecimenDescription.class)) {

@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmImportBase.TermMatchMode;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -24,7 +23,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @author a.mueller
  * @since 05.05.2011
  */
-public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator {
+public class SpecimenCdmExcelImportConfigurator
+        extends ExcelImportConfiguratorBase {
 
     private static final long serialVersionUID = -114046010543496409L;
     private static final Logger logger = LogManager.getLogger();

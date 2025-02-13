@@ -43,7 +43,8 @@ public class PolytomousKeyNodeServiceImpl
 
 	@Override
 	public DeleteResult delete(UUID nodeUUID, boolean deleteChildren){
-        DeleteResult result = new DeleteResult();
+
+	    DeleteResult result = new DeleteResult();
         PolytomousKeyNode node = dao.findByUuid(nodeUUID);
         node = HibernateProxyHelper.deproxy(node);
         if (node == null) {

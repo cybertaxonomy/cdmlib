@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.dto.compare;
 import java.util.Comparator;
 
 import eu.etaxonomy.cdm.api.dto.DeterminationEventDTO;
+import eu.etaxonomy.cdm.compare.common.TimePeriodComparator;
 
 /**
  * @author muellera
@@ -34,15 +35,19 @@ public class DeterminationEventDtoComparator implements Comparator<Determination
         }else if (o2.isPreferred()) {
             return -1;
         }
-        if (o1.getTimePeriod().checkEmpty() && o2.getTimePeriod().checkEmpty()) {
+        if (hasNoTimePeriod(o1) && hasNoTimePeriod(o2)) {
             return o1.compareTo(o2);
         }
-        if (o1.getTimePeriod().checkEmpty() ) {
+        if (hasNoTimePeriod(o1)) {
             return -1;
         }
-        if (o2.getTimePeriod().checkEmpty()) {
+        if (hasNoTimePeriod(o2)) {
             return 1;
         }
-        return o2.getTimePeriod().getStart().compareTo(o1.getTimePeriod().getStart());
+        return TimePeriodComparator.INSTANCE().compare(o1.getTimePeriod(), o2.getTimePeriod());
+    }
+
+    private boolean hasNoTimePeriod(DeterminationEventDTO o1) {
+        return o1.getTimePeriod() == null ? true : o1.getTimePeriod().checkEmpty();
     }
 }

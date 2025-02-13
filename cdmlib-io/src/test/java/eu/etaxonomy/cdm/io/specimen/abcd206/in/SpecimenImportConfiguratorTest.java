@@ -138,7 +138,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-    @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testDoInvoke() {
         boolean result = defaultImport.invoke(configurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
@@ -633,6 +633,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    assertEquals(1, classification.getAllNodes().size());//taxon node
 	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//root node + Taxon node = 2 nodes
 
+
 	}
 
     /**
@@ -648,6 +649,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         @DataSet( value="SpecimenImportConfiguratorTest.testImportTwoUnitsOfSameTaxonIntoExistingClassification.xml")
     })
 	public void testImportTwoUnitsOfSameTaxonIntoExistingClassification(){
+
         UUID classificationUUID = UUID.fromString("18d22d00-5f70-4c8e-a1ed-dc45fae5b816");
 
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_barbata.xml";
@@ -722,7 +724,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
         assertEquals("Number of dna samples is incorrect", 1, occurrenceService.count(DnaSample.class));
         assertEquals("Number of field units is incorrect", 1, occurrenceService.count(FieldUnit.class));
-        taxonNodeService.list(TaxonNode.class, null, null, null, null);
+        List<TaxonNode> nodes = taxonNodeService.list(TaxonNode.class, null, null, null, null);
         occurrenceService.list(SpecimenOrObservationBase.class, null, null, null, null);
         /*
          * Default classification

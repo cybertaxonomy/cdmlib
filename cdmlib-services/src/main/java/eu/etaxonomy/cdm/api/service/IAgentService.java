@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
@@ -14,14 +13,11 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.persistence.dto.TeamOrPersonUuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
@@ -30,16 +26,8 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	public List<Institution> searchInstitutionByCode(String code);
 
 	/**
-	 * Return a paged list of the institutional memberships held by a person
+	 * FIXME #10663 needed? (but is less dirty as aggregate roots are returned)
 	 *
-	 * @param person the person
-	 * @param pageSize The maximum number of memberships returned (can be null for all memberships)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @return a Pager containing InstitutionalMembership  instances
-	 */
-	public Pager<InstitutionalMembership> getInstitutionalMemberships(Person person, Integer pageSize, Integer pageNumber);
-
-	/**
 	 * Return a paged list of the members of a team
 	 *
 	 * @param team the team
@@ -48,16 +36,6 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * @return a Pager containing Person  instances
 	 */
 	public Pager<Person> getMembers(Team team, Integer pageSize, Integer pageNumber);
-
-	/**
-	 * Return a paged list of the addresses of an agent
-	 *
-	 * @param agent the agent
-	 * @param pageSize The maximum number of addresses returned (can be null for all members)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @return a Pager containing Address  instances
-	 */
-	public Pager<Address> getAddresses(AgentBase agent, Integer pageSize, Integer pageNumber);
 
 	/**
 	 * Returns a Paged List of AgentBase instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)
@@ -75,15 +53,8 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
 	@Override
-    public Pager<AgentBase> search(Class<? extends AgentBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-	/**
-	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> objects
-	 * with their respective nomenclaturalTitle instead of regular titleCache
-	 *
-	 * @return a list of <code>UuidAndTitleCache</code> instances
-	 */
-	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle();
+    public Pager<AgentBase> search(Class<? extends AgentBase> clazz, String queryString, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
      * Returns a list of <code>UuidAndTitleCache</code> containing all {@link Institution} objects

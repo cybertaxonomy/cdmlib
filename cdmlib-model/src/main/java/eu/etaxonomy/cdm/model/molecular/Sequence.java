@@ -140,14 +140,13 @@ public class Sequence
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="consensusAlignment", fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private Set<SingleReadAlignment> singleReadAlignments = new HashSet<SingleReadAlignment>();
+	private Set<SingleReadAlignment> singleReadAlignments = new HashSet<>();
 
 	/** @see #getDnaMarker() */
 	@XmlElement(name = "DnaMarker")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	//no cascade as it is a defined term
 	private DefinedTerm dnaMarker;
 
 	/** @see #getHaplotype() */
@@ -161,7 +160,6 @@ public class Sequence
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Set<Reference> citations = new HashSet<>();
 
 //	//should be calculated in case sequence is set

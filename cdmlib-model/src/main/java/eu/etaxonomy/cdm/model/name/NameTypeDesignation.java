@@ -22,8 +22,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -72,14 +70,13 @@ public class NameTypeDesignation
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private TaxonName typeName;
 
+// ********************* FACTORY *************************/
 
 	public static NameTypeDesignation NewInstance() {
 		return new NameTypeDesignation();
 	}
-
 
 	// ************* CONSTRUCTORS *************/
 	/**
@@ -89,7 +86,6 @@ public class NameTypeDesignation
 	 */
 	protected NameTypeDesignation() {
 	}
-
 
 	/**
 	 * Class constructor: creates a new name type designation instance

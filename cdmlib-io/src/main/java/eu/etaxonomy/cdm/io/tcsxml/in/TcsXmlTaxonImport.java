@@ -25,6 +25,7 @@ import org.jdom.filter.ElementFilter;
 import org.jdom.filter.Filter;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
@@ -88,7 +89,8 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 				continue;
 			}
 			String tcsElementName = "TaxonRelationship";
-			List<Element> elTaxonRelationshipList = elTaxonRelationships == null ? new ArrayList<Element>() : elTaxonRelationships.getChildren(tcsElementName, tcsNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> elTaxonRelationshipList = elTaxonRelationships.getChildren(tcsElementName, tcsNamespace);
 			for (Element elTaxonRelationship : elTaxonRelationshipList){
 
 				String relationshipType = elTaxonRelationship.getAttributeValue("type");
@@ -114,12 +116,16 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 	public void doInvoke(TcsXmlImportState state){
 
 		logger.info("start make TaxonConcepts ...");
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
-		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		Map<String, CommonTaxonName> commonNameMap = new HashMap<String, CommonTaxonName>();
 
 		ITaxonService taxonService = getTaxonService();
+		IReferenceService referenceService = getReferenceService();
 
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 		String childName;
@@ -180,7 +186,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 				elementList.add(childName.toString());
 				// TODO may sec be null?
 				if (sec == null){
-					sec = unknownSec();
+					sec = unknownSec(referenceMap);
 				}
 
 				TaxonBase<?> taxonBase;
@@ -222,7 +228,9 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 				elementList.add(childName.toString());
 
 				testAdditionalElements(elTaxonConcept, elementList);
-				ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), strId, idNamespace);
+	            Reference sourceRef = config.getSourceReference();
+	            referenceMap.put(sourceRef.getUuid(), sourceRef);
+				ImportHelper.setOriginalSource(taxonBase, sourceRef, strId, idNamespace);
 				//delete the version information
 
 				taxonMap.put(removeVersionOfRef(strId), taxonBase);
@@ -231,6 +239,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 		state.setCommonNameMap(commonNameMap);
 
 		//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
+		referenceService.save(referenceMap.objects());
 		logger.info(i + " taxa handled. Saving ...");
 		taxonService.save(taxonMap.objects());
 		logger.info("end makeTaxa ...");

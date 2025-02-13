@@ -56,6 +56,8 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
+ * Test class for {@link SpecimenTypeDesignationGroupFormatter}.
+ *
  * @author muellera
  * @since 27.06.2024
  */
@@ -397,6 +399,23 @@ public class SpecimenTypeDesignationGroupFormatterTest extends TermTestBase {
                 typeDesignationContainer.print(!WITH_CITATION,!WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
         assertEquals("Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC)",
                 typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+
+        //10677
+        Reference importSource = ReferenceFactory.newDatabase();
+        importSource.setTitle("Import source");
+        importSource.setAuthorship(Person.NewTitledInstance("Importer"));
+        importSource.setDatePublished(TimePeriodParser.parseStringVerbatim("2024"));
+        std_LT.addImportSource("22", "", importSource, "detail");
+
+        TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter()
+                .withCitation(WITH_CITATION).withPrecedingMainType(!WITH_PRECEDING_MAIN_TYPE).withStartingTypeLabel(!WITH_TYPE_LABEL);
+        assertEquals("The import source should not be shown by default",
+                "Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype (designated by Decandolle & al. 1962): LEC [fide Miller 1989: 55])",
+                formatter.format(typeDesignationContainer));
+
+        assertEquals("Without source type filter also the import source should be shown",
+                "Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype (designated by Decandolle & al. 1962): LEC [fide Miller 1989: 55, Importer 2024: detail])",
+                formatter.withSourceTypeFilter(null).format(typeDesignationContainer));
     }
 
     @Test

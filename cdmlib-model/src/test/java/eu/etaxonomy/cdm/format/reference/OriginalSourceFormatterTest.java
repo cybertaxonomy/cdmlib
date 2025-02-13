@@ -13,10 +13,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
+import eu.etaxonomy.cdm.model.reference.ISection;
 import eu.etaxonomy.cdm.model.reference.IWebPage;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -110,10 +113,13 @@ public class OriginalSourceFormatterTest {
         webpage.setAuthorship(person);
 
         //assert with author
-        Assert.assertEquals("Should be author and source.accessed", "Miller 2020", formatter.format((Reference)webpage, null, accessed));
+        Assert.assertEquals("Should be author and source.accessed",
+                "Miller 2020", formatter.format((Reference)webpage, null, accessed));
         //not sure if details is needed but to be on the save side...
-        Assert.assertEquals("Should be author, source.accessed and detail", "Miller 2020: detail", formatter.format((Reference)webpage, "detail", accessed));
-        Assert.assertEquals("Should be author and webpage.accessed year", "Miller 2010", formatter.format((Reference)webpage, null, null));
+        Assert.assertEquals("Should be author, source.accessed and detail",
+                "Miller 2020: detail", formatter.format((Reference)webpage, "detail", accessed));
+        Assert.assertEquals("Should be author and webpage.accessed year",
+                "Miller 2010", formatter.format((Reference)webpage, null, null));
         webpage.setAccessed(null);
         Assert.assertEquals("Should be author and webpage.datePublished year", "Miller 2001", formatter.format((Reference)webpage, null, null));
         Assert.assertEquals("Should be author and webpage.datePublished unique year", "Miller 2001c", formatter.format((Reference)webpage, null, null, "c"));
@@ -136,6 +142,81 @@ public class OriginalSourceFormatterTest {
                 "A beautiful taxon page 2001: detail", formatter.format((Reference)webpage, "detail", null));
         Assert.assertEquals("Formatting of webpages without author is still undefined",
                 "A beautiful taxon page 2001c: detail", formatter.format((Reference)webpage, "detail", null, "c"));
+    }
+
+    @Test
+    public void testDatabase(){
+
+        //create database
+        IDatabase database = ReferenceFactory.newDatabase();
+        database.setAbbrevTitle("A beautiful taxon page");
+        Person person = Person.NewInstance(null, "Miller", "A.", "Adam");
+        database.setAuthorship(person);
+
+        VerbatimTimePeriod datePublished = TimePeriodParser.parseStringVerbatim("2001");
+        datePublished.setContinued(true);
+        database.setDatePublished(datePublished);
+
+        DateTime databaseAccessed = DateTime.parse("2010-06-30T01:20+02:00");
+        database.setAccessed(databaseAccessed);
+
+        TimePeriod sourceAccessed = TimePeriodParser.parseStringVerbatim("2020");
+
+        //assert with author
+        Assert.assertEquals("Should be author and source.accessed", "Miller 2020", formatter.format((Reference)database, null, sourceAccessed));
+        //not sure if details is needed but to be on the save side...
+        Assert.assertEquals("Should be author, source.accessed and detail", "Miller 2020: detail", formatter.format((Reference)database, "detail", sourceAccessed));
+        Assert.assertEquals("Should be author and webpage.accessed year", "Miller 2010", formatter.format((Reference)database, null, null));
+        database.setAccessed(null);
+        //TODO not clear yet how to handle the "+"
+        Assert.assertEquals("Should be author and webpage.datePublished year", "Miller 2001+", formatter.format((Reference)database, null, null));
+        Assert.assertEquals("Should be author and webpage.datePublished unique year", "Miller 2001+c", formatter.format((Reference)database, null, null, "c"));
+
+        //long form
+        Assert.assertEquals("Should be author and source.accessed", "Miller, A. 2001+: A beautiful taxon page [accessed: 2020]", formatterLongCitation.format((Reference)database, null, sourceAccessed));
+        //not sure if details is needed but to be on the save side...
+        Assert.assertEquals("Should be author, source.accessed and detail", "Miller, A. 2001+: A beautiful taxon page. detail [accessed: 2020]", formatterLongCitation.format((Reference)database, "detail", sourceAccessed));
+        Assert.assertEquals("Should be author and webpage.accessed year", "Miller, A. 2001+: A beautiful taxon page", formatterLongCitation.format((Reference)database, null, null));
+        database.setAccessed(null);
+        Assert.assertEquals("Should be author and webpage.datePublished year", "Miller, A. 2001+: A beautiful taxon page", formatterLongCitation.format((Reference)database, null, null));
+        Assert.assertEquals("Should be author and webpage.datePublished unique year", "Miller, A. 2001+: A beautiful taxon page", formatterLongCitation.format((Reference)database, null, null, "c"));
+
+
+        //assert without author (the expected behavior is still undefined)
+        database.setAuthorship(null);
+        database.setAccessed(databaseAccessed);
+        database.setUri(URI.create("https://abc.de/"));
+        //TODO do we really want to show the URI in the short form?
+        database.resetTitleCache();
+        Assert.assertEquals("Formatting of webpages without author is still undefined",
+                "A beautiful taxon page. Published at https://abc.de/ 2020", formatter.format((Reference)database, null, sourceAccessed));
+        Assert.assertEquals("Formatting of webpages without author is still undefined",
+                "A beautiful taxon page. Published at https://abc.de/ 2020: detail", formatter.format((Reference)database, "detail", sourceAccessed));
+        Assert.assertEquals("Formatting of webpages without author is still undefined",
+                "A beautiful taxon page. Published at https://abc.de/ 2010", formatter.format((Reference)database, null, null));
+        database.setAccessed(null);
+        database.resetTitleCache();
+        //TODO is it really correct to have the date at the end here
+        Assert.assertEquals("Formatting of webpages without author is still undefined",
+                "A beautiful taxon page. Published at https://abc.de/ 2001+", formatter.format((Reference)database, null, null));
+        Assert.assertEquals("Formatting of webpages without author is still undefined",
+                "A beautiful taxon page. Published at https://abc.de/ 2001+: detail", formatter.format((Reference)database, "detail", null));
+        Assert.assertEquals("Formatting of webpages without author is still undefined",
+                "A beautiful taxon page. Published at https://abc.de/ 2001+c: detail", formatter.format((Reference)database, "detail", null, "c"));
+
+        //long form
+        Assert.assertEquals("Should be author and source.accessed", "2001+: A beautiful taxon page. Published at https://abc.de/ [accessed: 2020]", formatterLongCitation.format((Reference)database, null, sourceAccessed));
+
+        //section
+        database.setAuthorship(person);
+        ISection databaseSection = ReferenceFactory.newSection();
+        databaseSection.setTitle("My database section");
+        DateTime sectionAccessed = DateTime.parse("2010-06-30T01:20+02:00");
+        ((Reference)databaseSection).setAccessed(sectionAccessed);
+        Assert.assertEquals("Formatting of webpages without author is still undefined",
+                "Miller 2020: detail", formatter.format((Reference)database, "detail", sourceAccessed));
+        Assert.assertEquals("Formatting of webpages without author is still undefined",
+                "Miller, A. 2001+: A beautiful taxon page. Published at https://abc.de/. detail [accessed: 2020]", formatterLongCitation.format((Reference)database, "detail", sourceAccessed));
     }
 
 

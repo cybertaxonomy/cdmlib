@@ -278,9 +278,9 @@ public class StatisticsDaoHibernateImplTest
 					// create a description and 2 description elements with
 					// references for taxon name
 					TaxonNameDescription nameDescr = TaxonNameDescription.NewInstance();
-					CommonTaxonName nameElement = CommonTaxonName.NewInstance(
-							"Veilchen" + taxonCounter, Language.GERMAN());
-					TextData textElement = new TextData();
+					CommonTaxonName nameElement = save(CommonTaxonName.NewInstance(
+							"Veilchen" + taxonCounter, Language.GERMAN()));
+					TextData textElement = save(TextData.NewInstance());
 					Reference nameElementRef = ReferenceFactory.newArticle();
 					Reference textElementRef = ReferenceFactory
 							.newBookSection();
@@ -299,7 +299,7 @@ public class StatisticsDaoHibernateImplTest
 					// for taxon
 					TaxonDescription taxonDescription = new TaxonDescription();
 					for (int i = 0; i < descriptiveElementsPerTaxon; i++) {
-						DescriptionElementBase descriptionElement = new TextData();
+						DescriptionElementBase descriptionElement = save(TextData.NewInstance());
 						DescriptionElementSource descriptionElementSource = DescriptionElementSource
 								.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
 						Reference article = ReferenceFactory.newArticle();
@@ -359,10 +359,10 @@ public class StatisticsDaoHibernateImplTest
 						// create a description and 2 description elements with
 						// references for synonym name
 						TaxonNameDescription nameDescr = TaxonNameDescription.NewInstance();
-						CommonTaxonName nameElement = CommonTaxonName
+						CommonTaxonName nameElement = save(CommonTaxonName
 								.NewInstance("anderes Veilchen" + taxonCounter,
-										Language.GERMAN());
-						TextData textElement = new TextData();
+										Language.GERMAN()));
+						TextData textElement = save(TextData.NewInstance());
 						Reference nameElementRef = ReferenceFactory.newArticle();
 						Reference textElementRef = ReferenceFactory.newBookSection();
 						nameElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, nameElementRef,"name: ");
@@ -467,7 +467,12 @@ public class StatisticsDaoHibernateImplTest
 				no_of_all_references_c);
 	}
 
-	/**
+    private <T extends DescriptionElementBase> T save(T newInstance) {
+        descriptionElementDao.save(newInstance);
+        return newInstance;
+    }
+
+    /**
 	 * create and count a new sec Reference
 	 */
 	private Reference createSecReference(int classiCounter, int taxonCounter) {

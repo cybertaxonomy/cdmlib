@@ -171,6 +171,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @RequestParam(value = "subtree", required = true) UUID subtreeUuid,  //if subtree does not exist the base class method is used, therefore required
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
+
         if(request != null) {
             logger.info("doGet() " + requestPathAndQuery(request));
         }
@@ -263,10 +264,10 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
+        logger.info("doGetClassifications() - " + request.getRequestURI());
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        logger.info("doGetClassifications(): " + request.getRequestURI());
         TaxonBase<?> taxonBase = service.load(uuid);
         taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
 
@@ -279,8 +280,8 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-
         logger.info("doGetTaxonNodes" + requestPathAndQuery(request));
+
         //this should be done by treeIndex as parameter, but as first implementation we get the node and then the treeinde
         String subTreeIndex = null;
         if (subtreeUuid != null){
@@ -311,6 +312,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
+        logger.info("doGetTaxonNodeAgentRelations() - " + request.getRequestURI());
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
@@ -327,7 +329,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletRequest request,
             HttpServletResponse response) {
 
-        logger.info("doListSpecimensOrObservations() - " + request.getRequestURI());
+        logger.info("doCountSpecimensOrObservations() - " + request.getRequestURI());
         boolean includeUnpublished = NO_UNPUBLISHED;
         EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = bindAssociationFilter(taxOccRelFilter);
 
@@ -349,9 +351,9 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @RequestParam(value = "taxOccRelFilter", required = false) String taxOccRelFilter,
             HttpServletRequest request,
             HttpServletResponse response) {
+        logger.info("doListRooUnitDTOs() - " + request.getRequestURI());
 
         // OccurrenceListController.doListlistRootUnitDTOsByAssociatedTaxon()
-        logger.info("rootUnitDTOs() - " + request.getRequestURI());
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
@@ -426,7 +428,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     public ModelAndView doGetTaggedName(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request) {
-        logger.info("doGetDescriptionElementsByType() - " + request.getRequestURI());
+        logger.info("doGetTaggedName() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
 
@@ -449,7 +451,6 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @RequestParam(value="onlyCongruent", required=false) final boolean onlyCongruent,
             HttpServletResponse response,
             HttpServletRequest request) {
-
 
         if(request != null){
             logger.info("doGetIncludedTaxa()" + requestPathAndQuery(request));
@@ -589,10 +590,10 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @RequestParam(value="groupMisapplications", required=false, defaultValue="false") final boolean groupMisapplications,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
+        logger.info("doGetTaxonRelationshipDTOs(): " + request.getRequestURI());
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        logger.info("doGetTaxonRelationshipDTOs(): " + request.getRequestURI());
         TaxonBase<?> taxonBase = service.load(taxonUuid);
         checkExistsAccessType(taxonBase, includeUnpublished, Taxon.class, response);
 

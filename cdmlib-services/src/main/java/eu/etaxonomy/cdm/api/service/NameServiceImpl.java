@@ -96,6 +96,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -107,6 +108,7 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.IParsedMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
+import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 @Service
@@ -128,11 +130,11 @@ public class NameServiceImpl
     @Autowired
     private INomenclaturalStatusDao nomStatusDao;
     @Autowired
-    private ITypeDesignationDao typeDesignationDao;
-    @Autowired
     private IHomotypicalGroupDao homotypicalGroupDao;
     @Autowired
     private ICdmGenericDao genericDao;
+    @Autowired
+    private ITypeDesignationDao typeDesignationDao;
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
     @Autowired
@@ -265,6 +267,7 @@ public class NameServiceImpl
         typeDesignation.setTypeSpecimen(duplicate);
         typeDesignation.setTypeStatus(typeStatus);
         typeDesignation.getTypeSpecimen().setPreferredStableUri(preferredStableUri);
+        this.typeDesignationDao.saveOrUpdate(typeDesignation);
 
         TaxonName name = load(nameUuid);
         name.getTypeDesignations().add(typeDesignation);
@@ -277,8 +280,9 @@ public class NameServiceImpl
     @Override
     @Transactional
     public DeleteResult deleteTypeDesignation(TaxonName name, TypeDesignationBase<?> typeDesignation){
-    	if(typeDesignation != null && typeDesignation .isPersisted()){
-    		typeDesignation = HibernateProxyHelper.deproxy(typeDesignationDao.load(typeDesignation.getUuid()));
+
+        if(typeDesignation != null && typeDesignation .isPersisted()){
+    		typeDesignation = CdmBase.deproxy(typeDesignationDao.findByUuid(typeDesignation.getUuid()));
     	}
 
         DeleteResult result = new DeleteResult();
@@ -310,8 +314,9 @@ public class NameServiceImpl
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteTypeDesignation(UUID nameUuid, UUID typeDesignationUuid){
+
         TaxonName nameBase = load(nameUuid);
-        TypeDesignationBase<?> typeDesignation = HibernateProxyHelper.deproxy(typeDesignationDao.load(typeDesignationUuid));
+        TypeDesignationBase<?> typeDesignation = CdmBase.deproxy(typeDesignationDao.findByUuid(typeDesignationUuid));
         return deleteTypeDesignation(nameBase, typeDesignation);
     }
 
@@ -329,17 +334,10 @@ public class NameServiceImpl
                 }
             }
 
-            typeDesignationDao.delete(typeDesignation);
-
+            genericDao.delete(typeDesignation);
         }
     }
 
-
-
-    /**
-     * @param name
-     * @param config
-     */
     private void removeNameRelationshipsByDeleteConfig(TaxonName name, NameDeletionConfigurator config) {
         try {
             if (config.isRemoveAllNameRelationships()){
@@ -468,11 +466,33 @@ public class NameServiceImpl
     /**
      * TODO candidate for harmonization
      * new name saveTypeDesignations
+     *
+     * @deprecated should be saved via names they belong to, not separately
      */
     @Override
     @Transactional(readOnly = false)
-    public Map<UUID, TypeDesignationBase<?>> saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection){
-        return typeDesignationDao.saveAll(typeDesignationCollection);
+    @Deprecated
+    public void saveTypeDesignationAll(Collection<TypeDesignationBase<?>> typeDesignationCollection){
+        typeDesignationCollection.stream().forEach(td->typeDesignationDao.save(td));
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public List<MergeResult<TypeDesignationBase>> mergeTypeDesignations(Collection<TypeDesignationBase<?>> typeDesignationCollection){
+        List<MergeResult<TypeDesignationBase>> mergedObjects = new ArrayList<MergeResult<TypeDesignationBase>>();
+        for(TypeDesignationBase obj : typeDesignationCollection) {
+            if (obj != null) {
+                mergedObjects.add(typeDesignationDao.merge(obj, true));
+            }
+        }
+        return mergedObjects;
+
+    }
+
+
+    @Override
+    public void saveTypeDesignation(TypeDesignationBase<?> typeDesignation){
+        typeDesignationDao.save(typeDesignation);
     }
 
     /**
@@ -495,17 +515,17 @@ public class NameServiceImpl
      */
     @Override
     public List<TypeDesignationBase<?>> getAllTypeDesignations(int limit, int start){
-        return typeDesignationDao.getAllTypeDesignations(limit, start);
+        return dao.getAllTypeDesignations(limit, start);
     }
 
     @Override
     public TypeDesignationBase<?> loadTypeDesignation(int id, List<String> propertyPaths){
-        return typeDesignationDao.load(id, propertyPaths);
+        return genericDao.find(TypeDesignationBase.class, id, propertyPaths);
     }
 
     @Override
     public TypeDesignationBase<?> loadTypeDesignation(UUID uuid, List<String> propertyPaths){
-        return typeDesignationDao.load(uuid, propertyPaths);
+        return genericDao.find(TypeDesignationBase.class, uuid, propertyPaths);
     }
 
     @Override
@@ -516,7 +536,7 @@ public class NameServiceImpl
 
         List<TypeDesignationBase<?>> entities = new ArrayList<>();
         for(UUID uuid : uuids) {
-            entities.add(uuid == null ? null : typeDesignationDao.load(uuid, propertyPaths));
+            entities.add(uuid == null ? null : genericDao.find(TypeDesignationBase.class, uuid, propertyPaths));
         }
         return entities;
     }
@@ -1093,12 +1113,13 @@ public class NameServiceImpl
 
     @Override
     public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse(){
-        return typeDesignationDao.getTypeDesignationStatusInUse();
+        return dao.getTypeDesignationStatusInUse();
     }
 
     @Override
     public Collection<TypeDesignationStatusFilter> getTypeDesignationStatusFilterTerms(List<Language> preferredLanguages){
-        List<TypeDesignationStatusBase> termList = typeDesignationDao.getTypeDesignationStatusInUse();
+
+        List<TypeDesignationStatusBase> termList = dao.getTypeDesignationStatusInUse();
         Map<String, TypeDesignationStatusFilter>  filterMap = new HashMap<>();
         for(TypeDesignationStatusBase<?> term : termList){
             TypeDesignationStatusFilter filter = new TypeDesignationStatusFilter(term, preferredLanguages, true);
@@ -1156,10 +1177,9 @@ public class NameServiceImpl
     @Transactional(readOnly = false) //as long as the deduplication may lead to a flush which may cause a titleCache update, this happens in  CdmGenericDaoImpl.findMatching()
     public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank,
             boolean doEmpty, boolean doDeduplicate){
-
         UpdateResult result = new UpdateResult();
         NonViralNameParserImpl nonViralNameParser = NonViralNameParserImpl.NewInstance();
-        nonViralNameParser.parseReferencedName(nameToBeFilled, stringToBeParsed, preferredRank, doEmpty);
+        NameParserResult parserResult = nonViralNameParser.parseReferencedName(nameToBeFilled, stringToBeParsed, preferredRank, doEmpty);
         TaxonName name = nameToBeFilled;
         if(doDeduplicate) {
             try {
@@ -1173,16 +1193,19 @@ public class NameServiceImpl
                     List<Reference> matchingReferences = commonService.findMatching(nomRef, referenceMatcher);
                     if(matchingReferences.size() >= 1){
                         Reference duplicate = findBestMatching(nomRef, matchingReferences, referenceMatcher);
+
                         name.setNomenclaturalReference(duplicate);
                     }else{
                         if (nomRef.getInReference() != null){
                             List<Reference> matchingInReferences = commonService.findMatching(nomRef.getInReference(), MatchStrategyFactory.NewParsedReferenceInstance(nomRef.getInReference()));
                             if(matchingInReferences.size() >= 1){
-                                Reference duplicate = findBestMatching(nomRef, matchingInReferences, referenceMatcher);
+                                Reference duplicate = findBestMatching(nomRef.getInReference(), matchingInReferences, referenceMatcher);
+
                                 nomRef.setInReference(duplicate);
                             }
                         }
                         TeamOrPersonBase<?> author = deduplicateAuthor(nomRef.getAuthorship());
+
                         nomRef.setAuthorship(author);
                     }
                 }
@@ -1197,16 +1220,26 @@ public class NameServiceImpl
                             name.setCombinationAuthorship(nomRef.getAuthorship());
                         }
                     }
+                    TeamOrPersonBase combinationAuthorship = deduplicateAuthor(name.getCombinationAuthorship());
+
                     name.setCombinationAuthorship(deduplicateAuthor(name.getCombinationAuthorship()));
+
                 }
                 if (name.getExCombinationAuthorship()!= null && !name.getExCombinationAuthorship().isPersisted()){
-                    name.setExCombinationAuthorship(deduplicateAuthor(name.getExCombinationAuthorship()));
+                    TeamOrPersonBase exCombinationAuthorship = deduplicateAuthor(name.getExCombinationAuthorship());
+
+                    name.setExCombinationAuthorship(exCombinationAuthorship);
                 }
                 if (name.getBasionymAuthorship()!= null && !name.getBasionymAuthorship().isPersisted()){
-                    name.setBasionymAuthorship(deduplicateAuthor(name.getBasionymAuthorship()));
+                    TeamOrPersonBase basionymAuthor = deduplicateAuthor(name.getBasionymAuthorship());
+
+                    name.setBasionymAuthorship(basionymAuthor);
+
                 }
                 if (name.getExBasionymAuthorship()!= null && !name.getExBasionymAuthorship().isPersisted()){
-                    name.setExBasionymAuthorship(deduplicateAuthor(name.getExBasionymAuthorship()));
+                    TeamOrPersonBase exBasionymAuthor = deduplicateAuthor(name.getExBasionymAuthorship());
+
+                    name.setExBasionymAuthorship(exBasionymAuthor);
                 }
 
                 //originalSpelling
@@ -1218,13 +1251,14 @@ public class NameServiceImpl
                         TaxonName duplicate = findBestMatching(origName, matchingNames, nameMatcher);
                         name.setOriginalSpelling(duplicate);
                     }
+
                 }
 //              LogUtils.setLevel("org.hibernate.SQL", sqlLogLevel);
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
         }
-        result.setCdmEntity(name);
+       result.setCdmEntity(name);
         return result;
     }
 

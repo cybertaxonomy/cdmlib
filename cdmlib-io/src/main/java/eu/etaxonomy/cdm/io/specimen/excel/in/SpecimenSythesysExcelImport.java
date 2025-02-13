@@ -1034,7 +1034,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         Map <String,Integer>teamdone = new HashMap<String, Integer>();
         for (List<String> collteam: collectorinteams){
             if (!teamdone.containsKey(StringUtils.join(collteam.toArray(),"-"))){
-                Team team = new Team();
+                Team team = Team.NewInstance();
                 boolean em =true;
                 for (String collector:collteam){
                     ptmp = Person.NewInstance();

@@ -138,7 +138,6 @@ public class Media
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private AgentBase<?> artist;
 
     @XmlElement(name = "Link")

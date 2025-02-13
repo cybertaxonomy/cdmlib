@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 
@@ -321,6 +320,13 @@ public interface IService<T extends ICdmBase>{
      * @return The new persistent entity
      */
     public <S extends T> S save(S newInstance);
+
+    /**
+     * Save 2 new entities (persists the entity)
+     * @param newInstance the new entity to be persisted
+     * @return The new persistent entity
+     */
+    public void save(T newInstance1, T newInstance2);
 
     /**
      * Save a new entity or update the persistent state of an existing

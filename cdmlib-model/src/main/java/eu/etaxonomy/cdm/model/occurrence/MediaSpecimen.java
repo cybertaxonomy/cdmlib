@@ -27,16 +27,24 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.MediaSpecimenDefaultCacheStrategy;
 
 /**
  * Instances of MediaSpecimen represent a specimen which IS a media (photo, drawing, ...).
- * Therefore it usually the media is part of a collection and has it's own catalog/collection
- * number. The individuum shown by the media may or may not be a collection specimen on it's own.
+ * The individuum shown by the media may or may not be a collection specimen on it's own.
  * Often it is not, which may be the reason why a picture (or other media) is taken instead.
+ *
  * This is often the case for older (type) specimen which have only be drawn or painted.
  * Also it may be the cases for small biota which can not be individualized
  * or preserved accordingly and may therefore be photographed instead.
+ *
+ * The media may or may not be part of a collection and have it's own catalog/collection
+ * number.
+ * It also may or may not be available online. If it is online the according URIs should
+ * be given via the {@link MediaRepresentation}s.
+ * Finally the media may be published in a print publication or not. If published in a print
+ * publication this publication should be referenced by the media's source(s).
  *
  * @author a.mueller
  * @since 14-Jul-2013 13:06:22

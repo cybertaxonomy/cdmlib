@@ -1103,6 +1103,30 @@ public class TaxonNameDaoHibernateImpl
         return results;
     }
 
+    //TODO limit start
+    @Override
+    public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer limit, Integer start) {
+
+        Criteria crit = getSession().createCriteria(TypeDesignationBase.class);
+        if(limit != null){
+            crit.setMaxResults(limit);
+        }
+        if(start != null){
+            crit.setFirstResult(start);
+        }
+        @SuppressWarnings("unchecked")
+        List<TypeDesignationBase<?>> results = crit.list();
+        return results;
+    }
+
+    @Override
+    public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse() {
+        Query<TypeDesignationStatusBase> query = getSession().createQuery(
+                "select distinct tdb.typeStatus from TypeDesignationBase tdb", TypeDesignationStatusBase.class);
+        List<TypeDesignationStatusBase> terms = query.list();
+        return terms;
+    }
+
     @Override
     public List<String> distinctGenusOrUninomial(String pattern, Rank maxRank, Rank minRank){
         String hql = " SELECT DISTINCT n.genusOrUninomial "

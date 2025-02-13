@@ -66,14 +66,6 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	@Override
     protected abstract void doInvoke(TcsXmlImportState state);
 
-//	@Override
-//	protected boolean doInvoke(IImportConfigurator config,
-//			Map<String, MapWrapper<? extends CdmBase>> stores){
-//		TcsXmlImportState state = ((TcsXmlImportConfigurator)config).getState();
-//		state.setConfig((TcsXmlImportConfigurator)config);
-//		return doInvoke(state);
-//	}
-
 	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, CdmSingleAttributeXmlMapperBase[] classMappers){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<>();
@@ -187,16 +179,18 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		return result;
 	}
 
-	protected <T extends IdentifiableEntity> T makeReferenceType(Element element, Class<? extends T> clazz, MapWrapper<? extends T> objectMap, ResultWrapper<Boolean> success){
-		T result = null;
+	protected <T extends IdentifiableEntity> T makeReferenceType(Element element,
+	        Class<? extends T> clazz, MapWrapper<? extends T> objectMap, ResultWrapper<Boolean> success){
+
+	    T result = null;
 		String linkType = element.getAttributeValue("linkType");
-		String ref = element.getAttributeValue("ref");
-		if (ref != null){
-			if (ref.matches("urn:lsid:ipni.org:.*:*")){
-				ref = ref.substring(0,ref.lastIndexOf(":"));
+		String refStr = element.getAttributeValue("ref");
+		if (refStr != null){
+			if (refStr.matches("urn:lsid:ipni.org:.*:*")){
+				refStr = refStr.substring(0,refStr.lastIndexOf(":"));
 			}
 		}
-		if(ref == null && linkType == null){
+		if(refStr == null && linkType == null){
 			result = getInstance(clazz);
 			if (result != null){
 				String title = element.getTextNormalize();
@@ -204,7 +198,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			}
 		}else if (linkType == null || linkType.equals("local")){
 			//TODO
-			result = objectMap.get(ref);
+			result = objectMap.get(refStr);
 			if (result == null){
 				result = getInstance(clazz);
 				if (result != null){
@@ -240,6 +234,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 				result = makeAccordingToDetailed(elAccordingToDetailed, referenceMap, success);
 			}else{
 				result = ReferenceFactory.newGeneric();
+				referenceMap.put(result.getUuid(), result);
 				String title = elSimple.getTextNormalize();
 				result.setTitleCache(title, true);
 			}
@@ -248,33 +243,34 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	}
 
 	private Reference makeAccordingToDetailed(Element elAccordingToDetailed, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
-		Reference result = null;
+
+	    Reference result = null;
 		Namespace tcsNamespace = elAccordingToDetailed.getNamespace();
-		if (elAccordingToDetailed != null){
-			//AuthorTeam
-			String childName = "AuthorTeam";
-			boolean obligatory = false;
-			Element elAuthorTeam = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
-			makeAccordingToAuthorTeam(elAuthorTeam, success);
 
-			//PublishedIn
-			childName = "PublishedIn";
-			obligatory = false;
-			Element elPublishedIn = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
-			result = makeReferenceType(elPublishedIn, Reference.class, referenceMap, success);
+		//AuthorTeam
+		String childName = "AuthorTeam";
+		boolean obligatory = false;
+		Element elAuthorTeam = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
+		makeAccordingToAuthorTeam(elAuthorTeam, success);
 
-			//MicroReference
-			childName = "MicroReference";
-			obligatory = false;
-			Element elMicroReference = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
-			if (elMicroReference != null){
-				String microReference = elMicroReference.getTextNormalize();
-				if (CdmUtils.Nz(microReference).equals("")){
-					//TODO
-					logger.warn("MicroReference not yet implemented for AccordingToDetailed");
-				}
+		//PublishedIn
+		childName = "PublishedIn";
+		obligatory = false;
+		Element elPublishedIn = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
+		result = makeReferenceType(elPublishedIn, Reference.class, referenceMap, success);
+
+		//MicroReference
+		childName = "MicroReference";
+		obligatory = false;
+		Element elMicroReference = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
+		if (elMicroReference != null){
+			String microReference = elMicroReference.getTextNormalize();
+			if (CdmUtils.Nz(microReference).equals("")){
+				//TODO
+				logger.warn("MicroReference not yet implemented for AccordingToDetailed");
 			}
 		}
+
 		return result;
 	}
 
@@ -293,7 +289,9 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	}
 
 	@SuppressWarnings("unchecked")
-	protected TeamOrPersonBase<?> makeNameCitation(Element elNameCitation, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
+	protected TeamOrPersonBase<?> makeAuthorship(Element elNameCitation, MapWrapper<Person> personMap,
+	        MapWrapper<Team> teamMap, ResultWrapper<Boolean> success){
+
 		TeamOrPersonBase<?> result = null;
 		String childName;
 		boolean obligatory;
@@ -308,35 +306,41 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			if (elAuthors != null){
 				childName = "AgentName";
 				List<Element> elAgentList = elAuthors.getChildren(childName, ns);
-				Team team = Team.NewInstance();
-				result = team;
 				if (elAgentList.size() > 1){
+				    Team team = Team.NewInstance();
+				    result = team;
 					for(Element elAgent : elAgentList){
-						Person teamMember = makeAgent(elAgent, ns, authorMap, success);
+						Person teamMember = makeAgent(elAgent, ns, personMap, success);
 						team.addTeamMember(teamMember);
 					}
+					teamMap.put(team.getUuid(), team);
 				}else if(elAgentList.size() == 1){
-					result = makeAgent(elAgentList.get(0), ns, authorMap, success);
+					result = makeAgent(elAgentList.get(0), ns, personMap, success);
 				}
 			}else{
 				childName = "Simple";
 				obligatory = true;
 				Element elSimple = XmlHelp.getSingleChildElement(success, elNameCitation, childName, ns, obligatory);
 				String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
-				result = Team.NewInstance();
-				result.setNomenclaturalTitleCache(simple, true);
+				Team team = Team.NewInstance();
+				team.setNomenclaturalTitleCache(simple, true);
+				teamMap.put(team.getUuid(), team);
+				result = team;
 			}
 		}
 		return result;
 	}
 
-	private Person makeAgent(Element elAgentName, Namespace ns, MapWrapper<Person> agentMap, ResultWrapper<Boolean> success){
-		Person result = null;
+	private Person makeAgent(Element elAgentName, Namespace ns,
+	        MapWrapper<Person> personMap, ResultWrapper<Boolean> success){
+
+	    Person result = null;
 		if (elAgentName != null){
 			String authorTitle = elAgentName.getTextNormalize();
 			result = Person.NewTitledInstance(authorTitle);
+			personMap.put(result.getUuid(), result);
 			Class<? extends Person> clazz = Person.class;
-			result = makeReferenceType(elAgentName, clazz, agentMap, success);
+//			result = makeReferenceType(elAgentName, clazz, personMap, success);
 			return result;
 		}else{
 			return null;
@@ -433,9 +437,10 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		return ! state.getConfig().isDoTaxonNames();
 	}
 
-	protected static final Reference unknownSec(){
+	protected static final Reference unknownSec(MapWrapper<Reference> referenceMap){
 		Reference result = ReferenceFactory.newGeneric();
 		result.setTitleCache("UNKNOWN", true);
+		referenceMap.put(result.getUuid(), result);
 		return result;
 	}
 }

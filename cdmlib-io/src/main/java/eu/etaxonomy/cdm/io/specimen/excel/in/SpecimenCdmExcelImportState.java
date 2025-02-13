@@ -28,14 +28,15 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author a.mueller
  * @since 11.05.2009
  */
-public class SpecimenCdmExcelImportState extends ExcelImportState<SpecimenCdmExcelImportConfigurator, SpecimenRow>{
+public class SpecimenCdmExcelImportState
+        extends ExcelImportState<SpecimenCdmExcelImportConfigurator, SpecimenRow>{
 
     @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
 	private NamedAreaLevellRow namedAreaLevelRow;
 
-	private Map<String, Reference> references = new HashMap<String, Reference>();
+	private Map<String, Reference> references = new HashMap<>();
 	private Map<String, Collection> collections = new HashMap<>();
 	private Map<String, Person> persons = new HashMap<>();
 	private Map<String, Team> teams = new HashMap<>();

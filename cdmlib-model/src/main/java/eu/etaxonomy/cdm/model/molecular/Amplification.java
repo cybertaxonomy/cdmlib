@@ -133,7 +133,6 @@ public class Amplification extends EventBase {
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@JoinColumn(name="institution_id")
 	private Institution institution;
 

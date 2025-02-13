@@ -255,7 +255,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         if(!CdmUtils.isNullSafeEmpty(regs)){
             Set<Registration> regsFiltered = new HashSet<>(regs.size());
             for(Registration reg : regs){
-                if(userHelper.userIsAutheticated() && reg.isPublished()) {
+                if(reg.isPublished()) {
                     regsFiltered.add(reg);
                 } else {
                     logger.debug("skipping unpublished registration");

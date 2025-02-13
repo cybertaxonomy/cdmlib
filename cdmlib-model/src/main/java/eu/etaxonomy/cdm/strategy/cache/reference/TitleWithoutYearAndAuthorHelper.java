@@ -63,6 +63,8 @@ public class TitleWithoutYearAndAuthorHelper {
             return getTitleWithoutYearAndAuthorGeneric(ref, isAbbrev);
         }else if (type == ReferenceType.WebPage) {
             return getTitleWithoutYearAndAuthorWebPage(ref, isAbbrev);
+        }else if (type == ReferenceType.Database) {
+            return getTitleWithoutYearAndAuthorDatabase(ref, isAbbrev);
         }else if (type == ReferenceType.Thesis) {
             return getTitleWithoutYearAndAuthorThesis(ref, isAbbrev);
         }else if(type == ReferenceType.BookSection){
@@ -344,6 +346,31 @@ public class TitleWithoutYearAndAuthorHelper {
     }
 
     private static String getTitleWithoutYearAndAuthorWebPage(Reference ref, boolean isAbbrev) {
+        //FIXME this is only a very fast copy and paste from "Generic". Must still be cleaned !
+
+        if (ref == null){
+            return null;
+        }
+
+        //titleAbbrev
+        //TODO
+        String titleAbbrev = CdmUtils.getPreferredNonEmptyString(ref.getTitle(), ref.getAbbrevTitle(), isAbbrev, true);
+        if (isBlank(titleAbbrev) && ref.getUri() != null){
+            titleAbbrev = ref.getUri().toString();
+        }
+
+        //titelAbbrev
+        String nomRefCache = titleAbbrev + blank;
+
+        //delete .
+        while (nomRefCache.endsWith(".")){
+            nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
+        }
+
+        return nomRefCache.trim();
+    }
+
+    private static String getTitleWithoutYearAndAuthorDatabase(Reference ref, boolean isAbbrev) {
         //FIXME this is only a very fast copy and paste from "Generic". Must still be cleaned !
 
         if (ref == null){

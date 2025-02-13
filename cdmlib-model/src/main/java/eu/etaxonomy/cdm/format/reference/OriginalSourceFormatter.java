@@ -127,9 +127,9 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         }
 
         String fullRefCitation = CdmUtils.concat(". ", refCitation, microReference);
-        String accessedStr = accessed == null? null : accessed.toString();
+        String accessedStr = accessed == null? null : "[accessed: "+accessed.toString()+"]";
 
-        String withDateCitation = CdmUtils.concat(". ", fullRefCitation, accessedStr);
+        String withDateCitation = CdmUtils.concat(" ", fullRefCitation, accessedStr);
         if (withDateCitation != null) {
             withDateCitation = withDateCitation.replace("..", ".");
         }

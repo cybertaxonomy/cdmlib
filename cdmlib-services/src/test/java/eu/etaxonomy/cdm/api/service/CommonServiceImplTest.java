@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -50,7 +51,13 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	private ITaxonService taxonService;
 
 	@SpringBeanByType
-	private IReferenceService referenceService;
+	private IReferenceDao referenceDao;
+
+    @SpringBeanByType
+    private IReferenceService referenceService;
+
+    @SpringBeanByType
+    private IAgentService agentService;
 
 	@SpringBeanByType
 	private IOccurrenceService occurrenceService;
@@ -68,7 +75,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 
         IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         name.setTitleCache("A name", true);
-        Reference ref1 = ReferenceFactory.newArticle();
+        Reference ref1 = save(ReferenceFactory.newArticle());
         Taxon taxon = Taxon.NewInstance(name, ref1);
         taxon.addImportSource("id1", null, ref1, null);
         Person author = Person.NewInstance();
@@ -76,9 +83,9 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
         ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
         ref1.setAuthorship(author);
         name.setBasionymAuthorship(author);
-
         name.setNomenclaturalReference(ref1);
 
+        agentService.save(author);
         taxonService.save(taxon);
 
         Set<ReferencingObjectDto> referencedObjects = service.getReferencingObjectDtos(ref1);
@@ -108,16 +115,15 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 
 		IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setTitleCache("A name", true);
-		Reference ref1 = ReferenceFactory.newArticle();
+		Reference ref1 = save(ReferenceFactory.newArticle());
 		Taxon taxon = Taxon.NewInstance(name, ref1);
 		Person author = Person.NewInstance();
 		author.setTitleCache("Author", true);
 		ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
 		ref1.setAuthorship(author);
 		name.setBasionymAuthorship(author);
-
 		name.setNomenclaturalReference(ref1);
-
+		agentService.save(author);
 		taxonService.save(taxon);
 
 		Set<CdmBase> referencedObjects = service.getReferencingObjects(ref1);
@@ -137,7 +143,12 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		System.out.println("############## END ###################\n");
 	}
 
-	@Test
+    private Reference save(Reference ref) {
+        referenceDao.save(ref);
+        return ref;
+    }
+
+    @Test
 	@DataSet
 	public final void testGetReferencingObjects2() {
 //		SpecimenDescription desc1 = SpecimenDescription.NewInstance();
@@ -168,9 +179,9 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	@Test
 	@DataSet
 	public final void testLoadCacheStrategyForReference(){
-		Reference ref = referenceService.load(UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f"));
+		Reference ref = referenceDao.load(UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f"));
 		ref.setType(ReferenceType.Article);
-		referenceService.update(ref);
+		referenceDao.update(ref);
 		referenceService.updateCaches();
 	}
 

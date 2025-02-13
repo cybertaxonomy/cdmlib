@@ -390,6 +390,13 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
     }
 
     /**
+     * Returns the accepted taxon of this taxon base.
+     * In case of a synonym this is the accepted taxon, in case of an
+     * already accepted taxon it is the taxon itself.
+     */
+    public abstract Taxon acceptedTaxon();
+
+    /**
      * This method compares 2 taxa on it's name titles and caches.
      * If both are equal it compares on the secundum titleCache as well.
      * It is not fully clear/defined how this method relates to

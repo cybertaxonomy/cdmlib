@@ -358,6 +358,13 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
+    public void save(T newInstance1, T newInstance2) throws DataAccessException {
+        save(newInstance1);
+        save(newInstance2);
+    }
+
+
+    @Override
     public <S extends T> S save(S newInstance) throws DataAccessException {
         if (newInstance == null) {
             logger.warn("Object to save should not be null. NOP");
@@ -399,6 +406,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         // I think this is preferable to catching lazy initialization errors
         // as that solution only swallows and hides the exception, but doesn't
         // actually solve it.
+        @SuppressWarnings("unchecked")
         T persistentObject = (T) getSession().merge(objectToDelete);
         getSession().delete(persistentObject);
         return persistentObject.getUuid();

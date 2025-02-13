@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup.TypeDesignationSetType;
 import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
+import eu.etaxonomy.cdm.compare.reference.SourceComparator;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -42,6 +43,8 @@ public abstract class TypeDesignationGroupFormatterBase<T extends VersionableEnt
 
     @SuppressWarnings("rawtypes")
     protected static TypeDesignationStatusComparator statusComparator = new TypeDesignationStatusComparator<>();
+
+    protected static SourceComparator sourceComparator = new SourceComparator();
 
     /**
      * Returns <code>true</code> if the working set has either multiple working sets
@@ -184,7 +187,9 @@ public abstract class TypeDesignationGroupFormatterBase<T extends VersionableEnt
             workingsetBuilder.add(TagEnum.separator,
                     TypeDesignationGroupContainerFormatter.REFERENCE_PARENTHESIS_LEFT + TypeDesignationGroupContainerFormatter.REFERENCE_FIDE);
             int count = 0;
-            for (IdentifiableSource source: typeDes.getSources()){
+            List<IdentifiableSource> sources = new ArrayList<>(typeDes.getSources());
+            Collections.sort(sources, sourceComparator);
+            for (IdentifiableSource source: sources){
                 if (config.getSourceTypeFilter() == null || config.getSourceTypeFilter().contains(source.getType())) {
                     if (count++ > 0){
                         workingsetBuilder.add(TagEnum.separator, TypeDesignationGroupContainerFormatter.SOURCE_SEPARATOR);

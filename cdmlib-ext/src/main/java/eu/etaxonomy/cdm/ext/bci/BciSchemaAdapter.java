@@ -153,7 +153,7 @@ public class BciSchemaAdapter extends SchemaAdapterBase<Reference>{
 					reference.setPublisher(text);
 				}
 				if(dcFieldName.equals(DC_CREATOR)){
-					TeamOrPersonBase<?> authorship = new Team();
+					TeamOrPersonBase<?> authorship = Team.NewInstance();
 					authorship.setTitleCache(text, true);
 					reference.setAuthorship(authorship);
 				}

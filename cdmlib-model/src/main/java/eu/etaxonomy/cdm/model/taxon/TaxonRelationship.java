@@ -67,7 +67,6 @@ public class TaxonRelationship
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
     @ContainedIn  //see #5477 at least MAN and proparte synonym relations need to update the TaxonBase index of the related taxon to fully work
     private Taxon relatedFrom;
@@ -76,7 +75,6 @@ public class TaxonRelationship
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-//  @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
     @ContainedIn
     private Taxon relatedTo;

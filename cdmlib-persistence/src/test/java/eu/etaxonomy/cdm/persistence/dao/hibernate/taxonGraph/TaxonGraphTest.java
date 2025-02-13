@@ -119,6 +119,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
         Reference refX = ReferenceFactory.newBook();
         refX.setTitleCache("Ref-X", true);
+        referenceDao.save(refX);
 
         TaxonName n_t_argentinensis = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Trachelomonas", null, "argentinensis", null, null, refX, null, null);
         n_t_argentinensis = nameDao.save(n_t_argentinensis);
@@ -146,6 +147,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
         Reference refX = ReferenceFactory.newBook();
         refX.setTitleCache("Ref-X", true);
+        referenceDao.save(refX);
 
         TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
         Reference oldNomReference = n_trachelomonas_a.getNomenclaturalReference();

@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service.portal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,8 +30,10 @@ import eu.etaxonomy.cdm.api.dto.portal.SingleSourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourceDto;
 import eu.etaxonomy.cdm.api.dto.portal.SourcedDto;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
+import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.HomotypicGroupDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto.MediaRepresentationDTO;
 import eu.etaxonomy.cdm.api.dto.portal.config.ISourceableLoaderConfiguration;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.common.TypedLabel;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -105,6 +108,16 @@ public abstract class TaxonPageDtoLoaderBase {
             return null;
         }else {
             return setToPublish.stream().filter(s->s.isPublish()).collect(Collectors.toSet());
+        }
+    }
+
+    protected <E extends AnnotatableEntity> Set<E> excludeMarked(Set<E> setToFilter, Set<UUID> excludeMarkerTypes) {
+        if (setToFilter == null) {
+            return null;
+        }else {
+            return setToFilter.stream()
+                .filter(e->!e.hasAnyMarkerOf(excludeMarkerTypes, true))
+                .collect(Collectors.toSet());
         }
     }
 
@@ -327,6 +340,66 @@ public abstract class TaxonPageDtoLoaderBase {
         SourceDto sourceDto = new SourceDto();
         loadSource(config, source, sourceDto);
         return sourceDto;
+    }
+
+    protected void mergeSources(SourceDto newSource, HomotypicGroupDTO hgDto, SourceDto sourceToExclude) {
+        if (sourceMatches(sourceToExclude, newSource)) {
+            return;
+        }
+
+        Optional<SourceDto> matching =
+                hgDto.getSynSecSources() == null?
+                        Optional.empty()
+                        : hgDto.getSynSecSources().getItems().stream().filter(s->sourceMatches(s, newSource)).findFirst();
+        if (!matching.isPresent()){
+            hgDto.addSynSecSource(newSource);
+        }else{
+            mergeSource(matching.get(), newSource);
+        }
+    }
+
+    protected boolean sourceMatches(SourceDto existingSource, SourceDto newSource) {
+        if (existingSource == newSource) {
+            return true;
+        }else if (existingSource == null || newSource == null) {
+            return false;
+        }else {
+            return existingSource.getReferenceUuid() != null
+                    && CdmUtils.nullSafeEqual(existingSource.getReferenceUuid(), newSource.getReferenceUuid())
+                    && CdmUtils.nullSafeEqual(existingSource.getCitationDetail(), newSource.getCitationDetail())
+                    && CdmUtils.nullSafeEqual(existingSource.getType(), newSource.getType())
+                    && CdmUtils.nullSafeEqual(existingSource.getAccessed(), newSource.getAccessed())
+                    && CdmUtils.nullSafeEqual(existingSource.getNameInSourceUuid(), newSource.getNameInSourceUuid())
+                    ;
+            //not compared:
+            //specimenReferenceUuid - does not exist yet
+            //for merge: doi, uri, last updated, originalInfo,
+            //??: label, linkedUuid, linkedClass,
+            //??: nameInSource tagged text
+            //not relevant id, uuid, sortableDate,
+        }
+    }
+
+    private void mergeSource(SourceDto existingSource, SourceDto newSource) {
+
+        //doi
+        if (existingSource.getDoi() == null) {
+            existingSource.setDoi(newSource.getDoi());
+        }
+        //uri
+        if (existingSource.getUri() == null) {
+            existingSource.setUri(newSource.getUri());
+        }
+        //originalInfo, NOTE: we could also try to merge but for now this is not needed and difficult to implement
+        if (existingSource.getOriginalInfo() == null) {
+            existingSource.setOriginalInfo(newSource.getOriginalInfo());
+        }
+        //last updated //
+        if (existingSource.getLastUpdated() == null
+                || newSource.getLastUpdated() != null && existingSource.getLastUpdated().isBefore(newSource.getLastUpdated())) {
+            existingSource.setLastUpdated(newSource.getLastUpdated());
+        }
+        //others ??
     }
 
     protected static UUID getUuid(ICdmBase cdmBase) {

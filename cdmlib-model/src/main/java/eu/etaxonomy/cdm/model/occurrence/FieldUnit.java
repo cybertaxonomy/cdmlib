@@ -75,7 +75,6 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-    @Cascade( { CascadeType.SAVE_UPDATE,CascadeType.MERGE })
     @IndexedEmbedded(depth = 2)
     @Valid
 	private Person primaryCollector;

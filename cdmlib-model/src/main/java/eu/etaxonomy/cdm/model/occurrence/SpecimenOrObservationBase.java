@@ -68,9 +68,11 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IDescribable;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -112,7 +114,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
         @Index(name = "specimenOrObservationBaseIdentityCacheIndex", columnList = "identityCache") })
 public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy<?>>
                 extends IdentifiableEntity<S>
-                implements IMultiLanguageTextHolder, IIntextReferenceTarget, IDescribable<DescriptionBase<S>>, IPublishable  {
+                implements IMultiLanguageTextHolder, IIntextReferenceTarget, IDescribable<SpecimenDescription>, IPublishable  {
 
     private static final long serialVersionUID = 6932680139334408031L;
     private static final Logger logger = LogManager.getLogger();
@@ -142,7 +144,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @OneToMany(mappedBy="describedSpecimenOrObservation", fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
-    private Set<DescriptionBase<S>> descriptions = new HashSet<>();
+    private Set<SpecimenDescription> descriptions = new HashSet<>();
 
 
     @XmlElementWrapper(name = "Determinations")
@@ -337,7 +339,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      * @return
      */
     @Override
-    public Set<DescriptionBase<S>> getDescriptions() {
+    public Set<SpecimenDescription> getDescriptions() {
         if(descriptions == null) {
             this.descriptions = new HashSet<>();
         }
@@ -394,7 +396,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      * Adds a new description to this specimen or observation
      */
     @Override
-    public void addDescription(DescriptionBase description) {
+    public void addDescription(SpecimenDescription description) {
         if (description.getDescribedSpecimenOrObservation() != null){
             description.getDescribedSpecimenOrObservation().removeDescription(description);
         }
@@ -406,7 +408,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      * Removes a specimen from a description (removes a description from this specimen)
      */
     @Override
-    public void removeDescription(DescriptionBase description) {
+    public void removeDescription(SpecimenDescription description) {
         boolean existed = descriptions.remove(description);
         if (existed){
             description.setDescribedSpecimenOrObservation(null);
@@ -608,15 +610,12 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
 
     public boolean hasCharacterData() {
-        Set<DescriptionBase<S>> descriptions = this.getDescriptions();
-        for (DescriptionBase<?> descriptionBase : descriptions) {
-            if (descriptionBase.isInstanceOf(SpecimenDescription.class)) {
-                SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(descriptionBase, SpecimenDescription.class);
-                Set<DescriptionElementBase> elements = specimenDescription.getElements();
-                for (DescriptionElementBase descriptionElementBase : elements) {
-                    if (descriptionElementBase.isCharacterData()){
-                        return true;
-                    }
+        Set<SpecimenDescription> descriptions = this.getDescriptions();
+        for (SpecimenDescription description : descriptions) {
+            Set<DescriptionElementBase> elements = description.getElements();
+            for (DescriptionElementBase descriptionElementBase : elements) {
+                if (descriptionElementBase.isCharacterData()){
+                    return true;
                 }
             }
         }
@@ -633,8 +632,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @Transient
     public Collection<DescriptionElementBase> characterData() {
         Collection<DescriptionElementBase> characterData = new ArrayList<>();
-        Set<DescriptionBase<S>> descriptions = this.getDescriptions();
-        for (DescriptionBase<?> description : descriptions) {
+        Set<SpecimenDescription> descriptions = this.getDescriptions();
+        for (SpecimenDescription description : descriptions) {
             if (description.isInstanceOf(SpecimenDescription.class)) {
                 SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(description, SpecimenDescription.class);
                 Set<DescriptionElementBase> elements = specimenDescription.getElements();
@@ -680,7 +679,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
         result.descriptions = new HashSet<>();
         //Descriptions
-        for(DescriptionBase<S> description : this.descriptions) {
+        for(SpecimenDescription description : this.descriptions) {
             result.addDescription(description.clone());
         }
 

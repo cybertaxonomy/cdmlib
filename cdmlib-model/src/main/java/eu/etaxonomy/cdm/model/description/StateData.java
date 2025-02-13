@@ -104,7 +104,6 @@ public class StateData
     @XmlElementWrapper(name = "Modifiers")
     @XmlElement(name = "Modifier")
     @ManyToMany(fetch = FetchType.LAZY)
-    //no  cascade #5755
     @IndexedEmbedded(depth=1)
 //	@NotNull // avoids creating a UNIQUE key for this field -> not needed for ManyToMany
     private Set<DefinedTerm> modifiers = new HashSet<>();
@@ -246,6 +245,7 @@ public class StateData
      * stored in the modifying text. This is only metainformation
      * (like "Some experts express doubt about this assertion").
      */
+    @Override
     public Map<Language,LanguageString> getModifyingText(){
         return this.modifyingText;
     }
@@ -262,6 +262,7 @@ public class StateData
      * @see    	   		#getModifyingText()
      * @see    	   		#addModifyingText(LanguageString)
      */
+    @Override
     public LanguageString putModifyingText(Language language, String text){
         return this.modifyingText.put(language, LanguageString.NewInstance(text, language));
     }
@@ -276,6 +277,7 @@ public class StateData
      * @see    	   	#getModifyingText()
      * @see    	   	#putModifyingText(Language, String)
      */
+    @Override
     public LanguageString putModifyingText(LanguageString text){
         return this.modifyingText.put(text.getLanguage(),text);
     }
@@ -288,6 +290,7 @@ public class StateData
      * 				has been formulated
      * @see     	#getModifyingText()
      */
+    @Override
     public LanguageString removeModifyingText(Language lang){
         return this.modifyingText.remove(lang);
     }

@@ -89,7 +89,7 @@ public class RisReferenceImportConfigurator
 
     @Override
     public Reference getSourceReference() {
-        if (this.sourceReference == null){
+         if (this.sourceReference == null){
             sourceReference = ReferenceFactory.newGeneric();
             if (this.getSource() == null){
                 sourceReference.setTitleCache("RIS Reference Import " + getDateString(), true);

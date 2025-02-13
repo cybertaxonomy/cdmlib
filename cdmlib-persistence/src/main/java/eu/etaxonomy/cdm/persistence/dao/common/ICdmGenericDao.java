@@ -32,7 +32,9 @@ public interface ICdmGenericDao {
 
 	public UUID saveOrUpdate(CdmBase transientObject) throws DataAccessException;
 
-	public <S extends CdmBase> CdmBase save(S newInstance) throws DataAccessException;
+	public <S extends CdmBase> CdmBase save(S transientObject) throws DataAccessException;
+	public Set<CdmBase> saveAll(Set<CdmBase> transientObject) throws DataAccessException;
+
 
 	public UUID update(CdmBase transientObject) throws DataAccessException;
 
@@ -360,4 +362,6 @@ public interface ICdmGenericDao {
     public List<UUID> listUuid(Class<? extends CdmBase> clazz);
 
     public UUID refresh(CdmBase persistentObject) throws DataAccessException;
+
+
 }

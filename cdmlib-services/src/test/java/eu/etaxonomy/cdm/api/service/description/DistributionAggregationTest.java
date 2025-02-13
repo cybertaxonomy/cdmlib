@@ -38,8 +38,6 @@ import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionElementService;
-import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -68,6 +66,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -99,10 +99,10 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     private ITermService termService;
 
     @SpringBeanByType
-    private IDescriptionService descriptionService;
+    private IDescriptionElementService descriptionElementService;
 
     @SpringBeanByType
-    private IDescriptionElementService descriptionElementService;
+    private IDescriptionDao descriptionDao;
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -111,7 +111,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     private IClassificationService classificationService;
 
     @SpringBeanByType
-    private IReferenceService referenceService;
+    private IReferenceDao referenceDao;
 
     private DistributionAggregation engine;
 
@@ -123,20 +123,19 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     //   YUG-KO	Kosovo
     //   YUG-MA	Macedonia
     //   YUG-MN	Montenegro
-    private NamedArea yug = null;
-    private NamedArea yug_bh = null;
-    private NamedArea yug_cr = null;
-    private NamedArea yug_ko = null;
-    private NamedArea yug_ma = null;
-    private NamedArea yug_mn = null;
+    private NamedArea yug;
+    private NamedArea yug_bh;
+    private NamedArea yug_cr;
+    private NamedArea yug_ko;
+    private NamedArea yug_ma;
+    private NamedArea yug_mn;
 
-    List<UUID> superAreas = null;
-    Rank upperRank = null;
-    Rank lowerRank = null;
+    List<UUID> superAreas;
+    Rank upperRank;
+    Rank lowerRank;
 
-
-    private Reference book_a = null;
-    private Reference book_b = null;
+    private Reference book_a;
+    private Reference book_b;
 
     private TermTree<PresenceAbsenceTerm> statusOrder;
 
@@ -162,6 +161,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         book_a.setTitle("book_a");
         book_b = ReferenceFactory.newBook();
         book_b.setTitle("book_a");
+        referenceDao.save(book_a, book_b);
 
         engine = new DistributionAggregation();
         engine.setBatchMinFreeHeap(35 * 1024 * 1024);
@@ -309,7 +309,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         distributions_LC.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "4")); // NATIVE should succeed
         addDistributions(T_LAPSANA_COMMUNIS_UUID, distributions_LC);
 
-        //aggregation
+        //configure aggregation
         TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
@@ -721,6 +721,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
     private Distribution newDistribution(Reference reference, NamedArea area, PresenceAbsenceTerm status,
             String microCitation) {
+
         Distribution distribution = Distribution.NewInstance(area, status);
         distribution.addPrimaryTaxonomicSource(reference, microCitation);
         return distribution;
@@ -735,7 +736,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
             throw new NullPointerException("No taxon found for " + taxonUuid);
         }
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
-
+        descriptionDao.save(description);
         for (Distribution distribution : distributions) {
             description.addElement(distribution);
         }
@@ -751,8 +752,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         TaxonDescription deleteFrom = null;
         for (TaxonDescription description : taxon.getDescriptions()){
             if (!description.isAggregatedDistribution()){
-                for (DescriptionElementBase el : description.getElements()){
-                    if (el.equals(distribution)){
+                for (DescriptionElementBase deb : description.getElements()){
+                    if (deb.equals(distribution)){
                         deleteFrom = description;
                     }
                 }
@@ -791,9 +792,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         Reference nomRef = ReferenceFactory.newBook();
         sec.setTitleCache("Sp.Pl.", true);
 
-        referenceService.save(sec);
-        referenceService.save(nomRef);
-
+        referenceDao.save(sec, nomRef);
 
         // --- Taxa --- //
         //  Lapsana

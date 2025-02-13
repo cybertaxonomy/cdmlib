@@ -125,7 +125,6 @@ public class TaxonNode
     //see https://dev.e-taxonomy.eu/redmine/issues/5536
     @OrderColumn(name="sortIndex", nullable=true)
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY) //no orphanRemoval (#10101)
-    //do not cascade
     private List<TaxonNode> childNodes = new ArrayList<>();
 
     @XmlElement(name = "countChildren")
@@ -140,7 +139,6 @@ public class TaxonNode
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 //	TODO @NotNull // avoids creating a UNIQUE key for this field
     @IndexedEmbedded(includeEmbeddedObjectId=true)
     private Classification classification;
@@ -178,7 +176,6 @@ public class TaxonNode
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Synonym synonymToBeUsed;
 
 // ******************** CONSTRUCTOR **********************************************/
@@ -711,7 +708,7 @@ public class TaxonNode
     @Deprecated //for CDM lib internal use only, may be removed in future versions
     public int treeId() {
         if (this.classification == null){
-        	logger.warn("TaxonNode has no classification. This should not happen.");  //#3840
+        	logger.warn("TaxonNode has no classification. This should not happen, except when taxon node is deleted.");  //#3840
         	return -1;
         }else{
         	return this.classification.getId();

@@ -59,7 +59,6 @@ public class Character extends Feature {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
-//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     /**
      * @deprecated the concept of structure modifiers has been abandoned (#10133)
      */
@@ -78,7 +77,6 @@ public class Character extends Feature {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
-//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private TermNode<DefinedTerm> property;
 
     //#9507
