@@ -145,6 +145,7 @@ public class TaxonPageDto extends TaxonBaseDto {
         private List<TaggedText> taggedTypes;
         private String types;
         //should always be empty for homotypic synonyms
+        //NOTE: the synSecSources are not used anymore and could be removed (#10645#note-36)
         private ContainerDto<SourceDto> synSecSources;
         private List<TaggedText> taggedSynSecs = new ArrayList<>();  //TODO maybe not necessary to always initialize this
 

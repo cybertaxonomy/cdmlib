@@ -588,6 +588,8 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
         hgDto.addSynonym(synDto);
 
         //syn. sec. merge
+        //NOTE: the synSecSources are not used by portal code anymore and could be removed (#10645#note-36)
+        //      Use only taggedSynSecs instead (but needs some cleanup here)
         if (syn.getSecSource() != null && syn.getSecSource().getCitation() != null) {
 
             SourceDto sourceDto = makeSource(config, syn.getSecSource());
