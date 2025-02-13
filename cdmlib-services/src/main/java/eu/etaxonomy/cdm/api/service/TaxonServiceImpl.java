@@ -905,6 +905,7 @@ public class TaxonServiceImpl
             IdentifiableEntity<?> entity = config.getRecords().get(i);
             TaxonFindDto dto = new TaxonFindDto();
             //entity
+            dto.setEntity(entity);
             dto.setEntityUuid(entity.getUuid());
 
             //taxon related attributes
