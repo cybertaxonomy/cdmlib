@@ -29,6 +29,8 @@ public class TaxonFindDto {
 
     private UUID acceptedTaxonUuid;
 
+    private UUID entityUuid;
+
     private String sourceString;
 
     //#10597
@@ -72,5 +74,12 @@ public class TaxonFindDto {
     }
     public void setTaxonTaggedText(List<TaggedText> taxonTaggedText) {
         this.taxonTaggedText = taxonTaggedText;
+    }
+
+    public UUID getEntityUuid() {
+        return entityUuid;
+    }
+    public void setEntityUuid(UUID entityUuid) {
+        this.entityUuid = entityUuid;
     }
 }

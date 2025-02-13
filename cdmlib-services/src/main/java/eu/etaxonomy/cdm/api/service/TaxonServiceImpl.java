@@ -906,6 +906,7 @@ public class TaxonServiceImpl
             TaxonFindDto dto = new TaxonFindDto();
             //entity
             dto.setEntity(entity);
+            dto.setEntityUuid(entity.getUuid());
 
             //taxon related attributes
             Taxon taxon;
