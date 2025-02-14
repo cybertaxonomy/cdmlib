@@ -147,7 +147,7 @@ public class TaxonNode
     @XmlElement(name = "agentRelation")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="taxonNode", fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="taxonNode", fetch=FetchType.LAZY, orphanRemoval = true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<>();
 
@@ -423,7 +423,7 @@ public class TaxonNode
         this.agentRelations.add(agentRelation);
     }
     public void removeAgentRelation(TaxonNodeAgentRelation agentRelation) {
-        agentRelation.setTaxonNode(this);
+        //agentRelation.setTaxonNode(this);
         agentRelations.remove(agentRelation);
     }
 
