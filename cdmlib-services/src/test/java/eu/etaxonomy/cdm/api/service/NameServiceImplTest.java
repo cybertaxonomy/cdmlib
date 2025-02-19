@@ -1126,7 +1126,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         agentService.merge(listAgents, true);
         referenceService.merge(listReference, true);
         nameService.merge(parsedName2, true);
-        nameService.getSession().flush();
+//        nameService.getSession().flush();
 
         //tbc
     }
