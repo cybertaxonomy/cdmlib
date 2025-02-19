@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorFactor
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -73,6 +75,7 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -104,6 +107,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IReferenceDao referenceDao;
+
+    @SpringBeanByType
+    private IReferenceService referenceService;
 
     @SpringBeanByType
     private IDescriptionDao descriptionDao;
@@ -1093,15 +1099,34 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID originalSpellingUuid = parsedName.getOriginalSpelling().getUuid();
         TaxonName originalSpellingName = parsedName.getOriginalSpelling();
         save(parsedName.getNomenclaturalReference());
-        agentService.save(parsedName.getCombinationAuthorship());
-        nameService.save(originalSpellingName);
-        nameService.save(parsedName);
+        agentService.merge(parsedName.getCombinationAuthorship(), true);
+//        referenceService.merge(parsedName.getNomenclaturalReference());
+        nameService.merge(originalSpellingName, true);
+        nameService.merge(parsedName, true);
 
+        nameService.getSession().flush();
         TaxonName parsedName2 = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true).getCdmEntity();
         UUID parsedNameUuid2 = parsedName2.getUuid();
         UUID originalSpelling2Uuid = parsedName2.getOriginalSpelling().getUuid();
         Assert.assertEquals(originalSpellingUuid, originalSpelling2Uuid);
         Assert.assertNotEquals(parsedNameUuid, parsedNameUuid2);  //currently we do not deduplicate the main name yet
+
+        nameToParseStr = "Campanula aizoon Boiss. & Spruner in Boissiers, Diagn. Pl. Orient. 4: 34. 1844";
+        nameService.parseName(parsedName2, nameToParseStr, null, true, true);
+        Set<CdmBase> transientObjects = NonViralNameParserImpl.getTransientEntitiesOfParsedName(parsedName2);
+        List<AgentBase> listAgents = new ArrayList<>();
+        List<Reference> listReference = new ArrayList<>();
+        for (CdmBase cdmObj: transientObjects) {
+            if (cdmObj instanceof AgentBase) {
+                listAgents.add((AgentBase)cdmObj) ;
+            }else if (cdmObj instanceof Reference) {
+                listReference.add((Reference)cdmObj);
+            }
+        }
+        agentService.merge(listAgents, true);
+        referenceService.merge(listReference, true);
+        nameService.merge(parsedName2, true);
+        nameService.getSession().flush();
 
         //tbc
     }
