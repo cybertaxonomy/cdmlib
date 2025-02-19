@@ -139,7 +139,7 @@ public class TypeDesignationGroupContainer {
     }
     public TypeDesignationGroupContainer(HomotypicalGroup group, boolean containsTypeStatements) {
         for (TypeDesignationBase<?> typeDes: group.getTypeDesignations()){
-            if (!(typeDes instanceof TextualTypeDesignation)) {
+            if (!(typeDes instanceof TextualTypeDesignation) || (typeDes instanceof TextualTypeDesignation && containsTypeStatements) ) {
                 this.typeDesignations.put(typeDes.getUuid(), typeDes);
             }
         }
@@ -272,7 +272,7 @@ public class TypeDesignationGroupContainer {
            = new LinkedHashMap<>(baseEntity2TypeDesignationsMap.size());
 
        for(TypeDesignationGroup entry : baseEntityKeyList){
-           VersionableEntity baseEntity = entry.getBaseEntity();
+           VersionableEntity baseEntity = HibernateProxyHelper.deproxy(entry.getBaseEntity());
            TypeDesignationGroup typeDesignationGroup = baseEntity2TypeDesignationsMap.get(baseEntity);
            // order the TypeDesignationStatusBase keys
             List<TypeDesignationStatusBase<?>> keyList = new LinkedList<>(typeDesignationGroup.keySet());
