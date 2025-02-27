@@ -423,7 +423,6 @@ public class TaxonNode
         this.agentRelations.add(agentRelation);
     }
     public void removeAgentRelation(TaxonNodeAgentRelation agentRelation) {
-        //agentRelation.setTaxonNode(this);
         agentRelations.remove(agentRelation);
     }
 
