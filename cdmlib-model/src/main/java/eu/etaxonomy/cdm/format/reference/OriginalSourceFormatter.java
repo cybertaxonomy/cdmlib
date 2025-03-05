@@ -56,10 +56,11 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         }
         Reference reference = source.getCitation();
         String microReference = source.getCitationMicroReference();
-        if (reference == null && isBlank(microReference)){
+        TimePeriod accessed = source.getAccessed();
+        if (reference == null && isBlank(microReference) && accessed == null){
             return null;
         }
-        return format(reference, microReference);
+        return format(reference, microReference, accessed );
     }
 
     /**
