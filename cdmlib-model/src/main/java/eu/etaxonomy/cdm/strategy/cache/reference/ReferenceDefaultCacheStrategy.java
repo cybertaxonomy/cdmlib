@@ -272,6 +272,9 @@ public class ReferenceDefaultCacheStrategy
 // ************************ TITLE CACHE SUBS ********************************************/
 
     //section, book section or generic with inRef
+    /**
+     * @param uniqueString String added after the date to make author + date string unique
+     */
     private String titleCacheRealInRef(Reference reference, boolean isAbbrev, String uniqueString) {
 
         Reference inRef = reference.getInReference();
@@ -395,6 +398,12 @@ public class ReferenceDefaultCacheStrategy
                 authorStr += inRefAuthor.isInstanceOf(Team.class) ? " (eds.)" : " (ed.)";
             }
             inRefAuthorAndTitle = CdmUtils.concat(afterInRefAuthor, authorStr, inRefTitle);
+            //in-in-ref for secion-in section-in ref #10675
+            if (inRef.isSectionOnly() && inRef.getInReference() != null) {
+                String inInRefStr = getInRefAuthorAndTitle(inRef.getInReference(), inRef.getType(), isAbbrev);
+                inInRefStr = handleWebPageAndAccessed(inRef.getInReference(), inInRefStr);
+                inRefAuthorAndTitle = CdmUtils.concat(". ", inRefAuthorAndTitle, inInRefStr);
+            }
         }else{
             inRefAuthorAndTitle = String.format("- undefined %s -", getUndefinedLabel(type));
         }

@@ -605,6 +605,29 @@ public class ReferenceDefaultCacheStrategyTest {
                 "Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P. 2024: My record title. "+UTF8.EN_DASH+" In: "
                 + "Other database. Published at https://available.at [accessed 2010-06-30 01:20]",
                 section.getTitleCache());
+        //... cleanup
+        database.setTitle("My database");
+        database.setTitleCache(null, false);
+        database.resetTitleCache();
+        section.resetTitleCache();
+
+
+        //Section in Section in Database //#10675
+        Reference inSection = ReferenceFactory.newSection();
+        Person inSectionAuthor = Person.NewTitledInstance("Abel, A.");
+        inSection.setAuthorship(inSectionAuthor);
+        inSection.setInReference(section);
+        DateTime inSectionAccessed = DateTime.parse("2008-04-30T09:10+01:00");
+        inSection.setAccessed(inSectionAccessed);
+        section.setAccessed(null); //TODO handle this
+        inSection.setDatePublished(TimePeriodParser.parseStringVerbatim("2023"));
+        inSection.setTitle("My section title");
+
+        Assert.assertEquals("Unexpected title cache.",
+                "Abel, A. 2023: My section title. – In: Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P., My record title. "
+                + "My database. Published at https://available.at [accessed 2008-04-30 09:10]",
+                inSection.getTitleCache());
+
     }
 
     @Test
