@@ -106,7 +106,7 @@ public class SourceDtoLoader {
                         //sortableDate
                         dto.setSortableDate(citation.getSortableDateString());
                     }
-                    String label = OriginalSourceFormatter.INSTANCE_LONG_CITATION.format(citation, detail);
+                    String label = OriginalSourceFormatter.INSTANCE_LONG_CITATION.format(citation, detail, accessed);
                     String clazz = (String)e.get("cdmClass");
                     TypedLabel typedLabel = new TypedLabel(uuid, clazz, label);
                     dto.addLabel(typedLabel);

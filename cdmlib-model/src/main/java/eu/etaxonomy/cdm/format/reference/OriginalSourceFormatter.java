@@ -120,6 +120,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
      * Implementation is temporarily. May change or be further improved in future.
      */
     private String handleLongformCitation(Reference reference, String microReference, TimePeriod accessed) {
+
         ReferenceDefaultCacheStrategy referenceFormatter = ReferenceDefaultCacheStrategy.NewInstance();
 
         String refCitation = referenceFormatter.getTitleCache(reference);
@@ -128,7 +129,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         }
 
         String fullRefCitation = CdmUtils.concat(". ", refCitation, microReference);
-        String accessedStr = accessed == null? null : "[accessed: "+accessed.toString()+"]";
+        String accessedStr = TimePeriod.isBlank(accessed) ? null : "[accessed: "+accessed.toString()+"]";
 
         String withDateCitation = CdmUtils.concat(" ", fullRefCitation, accessedStr);
         if (withDateCitation != null) {
