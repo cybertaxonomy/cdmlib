@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +96,6 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -2184,57 +2184,37 @@ public class CdmLightClassificationExport
             Collections.sort(designationList, new TypeComparator());
 
             List<TaggedText> list = new ArrayList<>();
+            List<TaggedText> listText = new ArrayList<>();
             if (!designationList.isEmpty()) {
                 TypeDesignationGroupContainer manager = new TypeDesignationGroupContainer(group, false);
 
                 list.addAll(new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(false)
                         .toTaggedText(manager));
             }
-            String typeTextDesignations = "";
-            //The typeDesignationManager does not handle the textual typeDesignations
+
+            if (!designationList.isEmpty()) {
+                List<TypeDesignationBase> textList = new ArrayList<>();
+                textList = designationList.stream()
+                .filter(td -> td instanceof TextualTypeDesignation).collect(Collectors.toList());
+
+                TypeDesignationGroupContainer manager = TypeDesignationGroupContainer.NewDefaultInstance(textList);
+
+                listText.addAll(new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(false)
+                        .toTaggedText(manager));
+            }
+
+
 
             for (TypeDesignationBase<?> typeDes: designationList) {
-                if (typeDes instanceof TextualTypeDesignation) {
-                    typeTextDesignations = typeTextDesignations + ((TextualTypeDesignation)typeDes).getText(Language.getDefaultLanguage());
-                    if (((TextualTypeDesignation)typeDes).isVerbatim()) {
-                        typeTextDesignations = "\"" + typeTextDesignations + "\"";
-                    }
-                    String typeDesStateRefs = "";
-                    if (typeDes.getDesignationSource() != null ){
-                        typeDesStateRefs = "[";
-                        NamedSource source = typeDes.getDesignationSource();
-                        if (source.getCitation() != null){
-                            typeDesStateRefs += "fide " + OriginalSourceFormatter.INSTANCE.format(source.getCitation(), source.getCitationMicroReference());
-                        }
-                        typeDesStateRefs += "]";
-                    }else if (!CdmUtils.isNullSafeEmpty(typeDes.getSources())){
-                        typeDesStateRefs = "[";
-                        for (IdentifiableSource source: typeDes.getSources()) {
-                            if (source.getCitation() != null){
-                                String sep = typeDesStateRefs.equals("[") ? "fide " : ", ";
-                                typeDesStateRefs += sep +OriginalSourceFormatter.INSTANCE.format(source.getCitation(), source.getCitationMicroReference());
-                            }
-                        }
-
-                        typeDesStateRefs += "]";
-                    }
-
-                    typeTextDesignations = typeTextDesignations + typeDesStateRefs +"; ";
-
-                }else if (typeDes instanceof SpecimenTypeDesignation){
+                if (typeDes instanceof SpecimenTypeDesignation){
                     DerivedUnit specimen =  ((SpecimenTypeDesignation)typeDes).getTypeSpecimen();
                     if(specimen != null && !state.getSpecimenStore().contains( specimen.getUuid())){
                         handleSpecimen(state, specimen);
                     }
                 }
             }
-            if (typeTextDesignations.equals("; ")) {
-                typeTextDesignations = "";
-            }
-            if (StringUtils.isNotBlank(typeTextDesignations)) {
-                typeTextDesignations = typeTextDesignations.substring(0, typeTextDesignations.length()-2);
-            }
-            String specimenTypeString = !list.isEmpty()? createTypeDesignationString(list, true, typifiedNames.get(0).isSpecies() || typifiedNames.get(0).isInfraSpecific()):"";
+
+            String specimenTypeString = !list.isEmpty()? createTypeDesignationString(list):"";
 
             if (StringUtils.isNotBlank(specimenTypeString)) {
                 if (!specimenTypeString.endsWith(".")) {
@@ -2245,11 +2225,13 @@ public class CdmLightClassificationExport
             } else {
                 csvLine[table.getIndex(CdmLightExportTable.TYPE_STRING)] = "";
             }
-            if (StringUtils.isNotBlank(typeTextDesignations)) {
-                if (!typeTextDesignations.endsWith(".")) {
-                    typeTextDesignations = typeTextDesignations + ".";
+
+            String typeCacheString = !listText.isEmpty()? createTypeDesignationString(listText):"";
+            if (StringUtils.isNotBlank(typeCacheString)) {
+                if (!typeCacheString.endsWith(".")) {
+                    typeCacheString = typeCacheString + ".";
                 }
-                csvLine[table.getIndex(CdmLightExportTable.TYPE_CACHE)] = typeTextDesignations;
+                csvLine[table.getIndex(CdmLightExportTable.TYPE_CACHE)] = typeCacheString;
 
             } else {
                 csvLine[table.getIndex(CdmLightExportTable.TYPE_CACHE)] = "";
@@ -2261,8 +2243,8 @@ public class CdmLightClassificationExport
         }
     }
 
-    private String createTypeDesignationString(List<TaggedText> list, boolean isHomotypicGroup, boolean isSpecimenTypeDesignation) {
-        StringBuffer homotypicalGroupTypeDesignationString = new StringBuffer();
+    private String createTypeDesignationString(List<TaggedText> list) {
+
         HTMLTagRules rules = new HTMLTagRules();
         rules.addRule(TagEnum.name, "i");
         String typeDesignations = TaggedTextFormatter.createString(list, rules);
