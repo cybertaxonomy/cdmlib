@@ -199,7 +199,8 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                 ref.setAuthorship(authorship);
             }
             if (editors.size()>0) {
-                ref.setEditor(StringUtils.join(editors,", "));
+                logger.warn("Editor handling not implemented anymore in Mods import. See #7987");
+//                ref.setEditor(StringUtils.join(editors,", "));
             }
         }
 	}
