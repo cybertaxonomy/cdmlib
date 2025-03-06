@@ -2164,13 +2164,13 @@ public class CdmLightClassificationExport
 
                 csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITH_SEC_STRING)] = typifiedNamesWithSecString.trim();
 
-                if (typifiedNamesWithoutAccepted != null && firstname != null) {
+                if (firstname != null) {
                     csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = typifiedNamesWithoutAccepted.trim();
                 } else {
                     csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = "";
                 }
 
-                if (typifiedNamesWithoutAcceptedWithSec != null && firstname != null) {
+                if (firstname != null) {
                     csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = typifiedNamesWithoutAcceptedWithSec.trim();
                 } else {
                     csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = "";
@@ -2178,13 +2178,11 @@ public class CdmLightClassificationExport
                 index++;
             }
 
-            Set<TypeDesignationBase<?>> typeDesigantionSet = group.getTypeDesignations();
-            List<TypeDesignationBase<?>> designationList = new ArrayList<>();
-            designationList.addAll(typeDesigantionSet);
+            List<TypeDesignationBase<?>> designationList = new ArrayList<>(group.getTypeDesignations());
             Collections.sort(designationList, new TypeComparator());
 
+            //atomized type string (specimen + name types)
             List<TaggedText> list = new ArrayList<>();
-            List<TaggedText> listText = new ArrayList<>();
             if (!designationList.isEmpty()) {
                 TypeDesignationGroupContainer manager = new TypeDesignationGroupContainer(group, false);
 
@@ -2192,19 +2190,7 @@ public class CdmLightClassificationExport
                         .toTaggedText(manager));
             }
 
-            if (!designationList.isEmpty()) {
-                List<TypeDesignationBase> textList = new ArrayList<>();
-                textList = designationList.stream()
-                .filter(td -> td instanceof TextualTypeDesignation).collect(Collectors.toList());
-
-                TypeDesignationGroupContainer manager = TypeDesignationGroupContainer.NewDefaultInstance(textList);
-
-                listText.addAll(new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(false)
-                        .toTaggedText(manager));
-            }
-
-
-
+            //handle specimen
             for (TypeDesignationBase<?> typeDes: designationList) {
                 if (typeDes instanceof SpecimenTypeDesignation){
                     DerivedUnit specimen =  ((SpecimenTypeDesignation)typeDes).getTypeSpecimen();
@@ -2214,29 +2200,46 @@ public class CdmLightClassificationExport
                 }
             }
 
-            String specimenTypeString = !list.isEmpty()? createTypeDesignationString(list):"";
+            String atomizedTypeString = !list.isEmpty()? createTypeDesignationString(list): "";
 
-            if (StringUtils.isNotBlank(specimenTypeString)) {
-                if (!specimenTypeString.endsWith(".")) {
-                    specimenTypeString = specimenTypeString + ".";
+            if (isNotBlank(atomizedTypeString)) {
+                if (!atomizedTypeString.endsWith(".")) {
+                    atomizedTypeString = atomizedTypeString + ".";
                 }
-                csvLine[table.getIndex(CdmLightExportTable.TYPE_STRING)] = specimenTypeString;
-
+                csvLine[table.getIndex(CdmLightExportTable.TYPE_STRING)] = atomizedTypeString;
             } else {
                 csvLine[table.getIndex(CdmLightExportTable.TYPE_STRING)] = "";
             }
 
-            String typeCacheString = !listText.isEmpty()? createTypeDesignationString(listText):"";
-            if (StringUtils.isNotBlank(typeCacheString)) {
-                if (!typeCacheString.endsWith(".")) {
-                    typeCacheString = typeCacheString + ".";
+            //textual type designations
+            List<TaggedText> listText = new ArrayList<>();
+            if (!designationList.isEmpty()) {
+                List<TextualTypeDesignation> textList = new ArrayList<>();
+                textList = designationList.stream()
+                    .filter(td -> td instanceof TextualTypeDesignation)
+                    .map(td -> CdmBase.deproxy(td, TextualTypeDesignation.class))
+                    .collect(Collectors.toList());
+
+                TypeDesignationGroupContainer manager = TypeDesignationGroupContainer.NewDefaultInstance(textList);
+
+                listText.addAll(new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(false)
+                    .toTaggedText(manager));
+            }
+
+            String textualTypeString = !listText.isEmpty()? createTypeDesignationString(listText): "";
+            if (isNotBlank(textualTypeString)) {
+                if (!textualTypeString.endsWith(".")) {
+                    textualTypeString = textualTypeString + ".";
                 }
-                csvLine[table.getIndex(CdmLightExportTable.TYPE_CACHE)] = typeCacheString;
+                csvLine[table.getIndex(CdmLightExportTable.TYPE_TEXTUAL)] = textualTypeString;
 
             } else {
-                csvLine[table.getIndex(CdmLightExportTable.TYPE_CACHE)] = "";
+                csvLine[table.getIndex(CdmLightExportTable.TYPE_TEXTUAL)] = "";
             }
+
+            //process
             state.getProcessor().put(table, String.valueOf(group.getId()), csvLine);
+
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling homotypic group "
                     + cdmBaseStr(group) + ": " + e.getMessage());

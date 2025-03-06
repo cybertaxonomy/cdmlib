@@ -90,7 +90,7 @@ public class TypeDesignationGroupContainer {
 // **************************** FACTORY ***************************************/
 
     public static TypeDesignationGroupContainer NewDefaultInstance(
-            @SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations)
+            @SuppressWarnings("rawtypes") Collection<? extends TypeDesignationBase> typeDesignations)
             throws TypeDesignationSetException{
         return new TypeDesignationGroupContainer(typeDesignations, null, null);
     }
@@ -105,8 +105,10 @@ public class TypeDesignationGroupContainer {
 
 // **************************** CONSTRUCTOR ***********************************/
 
+    //TODO make constructors protected
+
     public TypeDesignationGroupContainer(
-            @SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
+            @SuppressWarnings("rawtypes") Collection<? extends TypeDesignationBase> typeDesignations,
             TaxonName typifiedName,
             ORDER_BY orderBy) throws TypeDesignationSetException  {
 
