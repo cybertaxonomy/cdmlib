@@ -82,6 +82,7 @@ public class ReferencePropertyDefinitions {
 
         iArticle = merge(iSection, iVolumeReference);
         put(iArticle, "inReference", "inJournal");
+        put(iArticle, "authorIsEditor");
 
         iBook = merge(iPrintedUnitBase);
         put(iBook, "inReference", "inSeries");
