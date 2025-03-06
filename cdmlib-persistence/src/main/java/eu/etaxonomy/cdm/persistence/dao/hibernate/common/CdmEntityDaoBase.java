@@ -56,7 +56,6 @@ import org.springframework.util.ReflectionUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
@@ -285,14 +284,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             } else {
                 result = new MergeResult(persistentObject, null);
             }
-            if (transientObject instanceof DescriptionBase) {
-                logger.info("merged object: "+result.getMergedEntity().getUuid() + " - " + result.getMergedEntity().getUserFriendlyTypeName());
-                for(Object newEntity : result.getNewEntities()) {
-                    if (newEntity instanceof CdmBase) {
-                        logger.info("new object: "+((CdmBase)newEntity).getUuid() + " - " + ((CdmBase)newEntity).getUserFriendlyTypeName());
-                    }
-                }
-            }
+//            if (transientObject instanceof DescriptionBase) {
+//                logger.info("merged object: "+result.getMergedEntity().getUuid() + " - " + result.getMergedEntity().getUserFriendlyTypeName());
+//                for(Object newEntity : result.getNewEntities()) {
+//                    if (newEntity instanceof CdmBase) {
+//                        logger.info("new object: "+((CdmBase)newEntity).getUuid() + " - " + ((CdmBase)newEntity).getUserFriendlyTypeName());
+//                    }
+//                }
+//            }
             return result;
         } finally {
             PostMergeEntityListener.removeSession(session);
