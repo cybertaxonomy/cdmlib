@@ -25,13 +25,8 @@ package eu.etaxonomy.cdm.model.reference;
  * <li> "SubReference"
  * </ul>
  */
-public interface IGeneric extends IAuthoredPublicationBase, INomenclaturalReference, IVolumeReference{
-    /**
-     * If true, the {@link #getAuthorship() author} is the editor
-     * and should be formatted accordingly. See #7987
-     */
-    public boolean isAuthorIsEditor();
-    public void setAuthorIsEditor(boolean authorIsEditor);
+public interface IGeneric extends IAuthoredPublicationBase, INomenclaturalReference,
+        IVolumeReference, IHasEditor {
 
 	/**
 	 * Returns the series of this generic reference

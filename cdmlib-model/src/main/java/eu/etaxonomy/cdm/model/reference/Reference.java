@@ -761,7 +761,7 @@ public class Reference
 
     /**
      * If true, the {@link #getAuthorship() author} is the editor
-     * and should be formatted accordingly. See #7987
+     * and should be formatted accordingly. See #7987, #10710
      */
     @Override
     public boolean isAuthorIsEditor() {

@@ -22,8 +22,10 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
  * <li> "NewspaperArticle"
  * <li> "MagazineArticle"
  * </ul>
+ * It also implements {@link IHasEditor} as in rare cases (e.g. Notulae) an "article" may have an editor
+ * (and no author). See #10710
  */
-public interface IArticle extends ISection, IVolumeReference, ISeriesPart{
+public interface IArticle extends ISection, IVolumeReference, ISeriesPart, IHasEditor {
 
 	/**
 	 * Returns this articles journal.
@@ -31,11 +33,9 @@ public interface IArticle extends ISection, IVolumeReference, ISeriesPart{
 	 */
 	public IJournal getInJournal();
 
-
 	/**
 	 * Sets this articles journal
 	 * @param journal
 	 */
 	public void setInJournal(IJournal journal);
-
 }
