@@ -394,19 +394,19 @@ public class CdmLightClassificationExport
                             taxonNode.getClassification());
                     csvLine[table.getIndex(CdmLightExportTable.CLASSIFICATION_TITLE)] = taxonNode.getClassification()
                             .getTitleCache();
-                    csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = taxon.isPublish() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = bool(taxon.isPublish());
 
                     //taxon node
-                    csvLine[table.getIndex(CdmLightExportTable.INCLUDED)] = taxonNode.getStatus() == null  ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.DOUBTFUL)] = taxonNode.isDoubtful() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.UNPLACED)] = taxonNode.isUnplaced() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED)] = taxonNode.isExcluded() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_EXACT)] = taxonNode.isExcludedExact() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_GEO)] = taxonNode.isGeographicallyExcluded() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_TAX)] = taxonNode.isTaxonomicallyExcluded() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_NOM)] = taxonNode.isNomenclaturallyExcluded() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.UNCERTAIN_APPLICATION)] = taxonNode.isUncertainApplication() ? "1" : "0";
-                    csvLine[table.getIndex(CdmLightExportTable.UNRESOLVED)] = taxonNode.isUnresolved() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.INCLUDED)] = bool(taxonNode.getStatus() == null);
+                    csvLine[table.getIndex(CdmLightExportTable.DOUBTFUL)] = bool(taxonNode.isDoubtful());
+                    csvLine[table.getIndex(CdmLightExportTable.UNPLACED)] = bool(taxonNode.isUnplaced());
+                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED)] = bool(taxonNode.isExcluded());
+                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_EXACT)] = bool(taxonNode.isExcludedExact());
+                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_GEO)] = bool(taxonNode.isGeographicallyExcluded());
+                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_TAX)] = bool(taxonNode.isTaxonomicallyExcluded());
+                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_NOM)] = bool(taxonNode.isNomenclaturallyExcluded());
+                    csvLine[table.getIndex(CdmLightExportTable.UNCERTAIN_APPLICATION)] = bool(taxonNode.isUncertainApplication());
+                    csvLine[table.getIndex(CdmLightExportTable.UNRESOLVED)] = bool(taxonNode.isUnresolved());
                     csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_STATUS)] = taxonNode.getStatus() == null ? null : taxonNode.getStatus().getLabel();
 
                     csvLine[table.getIndex(CdmLightExportTable.PLACEMENT_NOTES)] = taxonNode.preferredPlacementNote(Language.getDefaultLanguage());
@@ -1008,7 +1008,7 @@ public class CdmLightClassificationExport
                         state.getReferenceStore().get(synonym.getSec().getUuid()));
                 csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = secStr;
             }
-            csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = synonym.isPublish() ? "1" : "0";
+            csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = bool(synonym.isPublish());
             csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = "0";
             csvLine[table.getIndex(CdmLightExportTable.IS_PARTIAL)] = "0";
             csvLine[table.getIndex(CdmLightExportTable.IS_MISAPPLIED)] = "0";
@@ -1051,7 +1051,7 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
 
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = titleCache;//getTitleCache(secRef);
-            csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = ppSynonym.isPublish() ? "1" : "0" ;
+            csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = bool(ppSynonym.isPublish());
 
             Set<TaxonRelationship> rels = accepted.getTaxonRelations(ppSynonym);
             TaxonRelationship rel = null;
@@ -1095,16 +1095,15 @@ public class CdmLightClassificationExport
 
             // pro parte type
 
-            csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = isProParte ? "1" : "0";
-            csvLine[table.getIndex(CdmLightExportTable.IS_PARTIAL)] = isPartial ? "1" : "0";
-            csvLine[table.getIndex(CdmLightExportTable.IS_MISAPPLIED)] = isMisapplied ? "1" : "0";
+            csvLine[table.getIndex(CdmLightExportTable.IS_PRO_PARTE)] = bool(isProParte);
+            csvLine[table.getIndex(CdmLightExportTable.IS_PARTIAL)] = bool(isPartial);
+            csvLine[table.getIndex(CdmLightExportTable.IS_MISAPPLIED)] = bool(isMisapplied);
             csvLine[table.getIndex(CdmLightExportTable.SORT_INDEX)] = String.valueOf(index);
             state.getProcessor().put(table, ppSynonym, csvLine);
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling "
                     + "pro parte/partial synonym or misapplied name  " + cdmBaseStr(taxon) + ": " + e.getMessage());
         }
-
     }
 
     /**
@@ -2689,6 +2688,10 @@ public class CdmLightClassificationExport
         } else {
             return cdmBase.getClass().getSimpleName() + ": " + cdmBase.getUuid();
         }
+    }
+
+    private String bool(boolean boolValue) {
+        return boolValue ? "1" : "0";
     }
 
     @Override
