@@ -88,7 +88,7 @@ public class CdmLightExportTest
         //reference table
         List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
         String subspeciesNomRefLine = getLine(referenceResult, subspeciesNomRefUuid);
-        expected = uuid(subspeciesNomRefUuid) +"\"Mill. (1804)\",\"\",\"The book of botany\",\"1804\"," + NONE10 + "\"3\",\"1804\",\"Mill.\"";
+        expected = uuid(subspeciesNomRefUuid) +"\"Mill. (1804)\",\"\",\"The book of botany\",\"1804\"," + NONE + "\"0\"," + NONE4 + NONE4 + "\"3\",\"1804\",\"Mill.\"";
         Assert.assertTrue(subspeciesNomRefLine.contains(expected));
 
         //geographic fact
@@ -170,7 +170,7 @@ public class CdmLightExportTest
 
         //references
         String nomRefLine = getLine(referenceResult, UUID.fromString("b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f"));
-        expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. (1804)\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
+        expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. (1804)\",\"\",\"The book of botany\",\"1804\",\"\",\"0\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
         Assert.assertEquals(expected, nomRefLine.substring(0, expected.length()));
         Assert.assertTrue(nomRefLine.contains(",\"BK\","));
         String expectedAfterRefType = nomRefLine.substring(nomRefLine.indexOf(",\"BK\","));
