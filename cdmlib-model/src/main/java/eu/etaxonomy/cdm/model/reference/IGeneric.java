@@ -26,17 +26,6 @@ package eu.etaxonomy.cdm.model.reference;
  * </ul>
  */
 public interface IGeneric extends IAuthoredPublicationBase, INomenclaturalReference, IVolumeReference{
-
-	/**
-	 * Returns the editor of this generic reference
-	 */
-	public String getEditor();
-	/**
-	 * Sets the editor for this generic reference
-	 * @param editor
-	 */
-	public void setEditor(String editor);
-
     /**
      * If true, the {@link #getAuthorship() author} is the editor
      * and should be formatted accordingly. See #7987

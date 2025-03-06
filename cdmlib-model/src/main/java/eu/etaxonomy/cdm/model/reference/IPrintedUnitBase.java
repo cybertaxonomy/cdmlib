@@ -30,18 +30,6 @@ public interface IPrintedUnitBase extends IAuthoredPublicationBase, ISection, IV
 	 */
 	public void setInSeries(IPrintSeries series);
 
-
-	/**
-	 * Returns the editor of this reference
-	 */
-	public String getEditor();
-
-	/**
-	 * Sets the editor for this reference
-	 * @param editor
-	 */
-	public void setEditor(String editor);
-
     /**
      * If true, the {@link #getAuthorship() author} is the editor
      * and should be formatted accordingly. See #7987

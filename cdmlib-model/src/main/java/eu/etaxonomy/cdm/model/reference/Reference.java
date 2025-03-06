@@ -111,7 +111,6 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "referenceAbstract",
     "title",
     "abbrevTitle",
-    "editor",
 	"volume",
 	"pages",
 	"edition",
@@ -492,16 +491,6 @@ public class Reference
 	@Override
 	public void setAbbrevTitle(String abbrevTitle) {
 		this.abbrevTitle = isBlank(abbrevTitle) ? null : abbrevTitle;
-	}
-
-	@Override
-    public String getEditor() {
-		return editor;
-	}
-
-	@Override
-    public void setEditor(String editor) {
-		this.editor = isBlank(editor)? null : editor;
 	}
 
 	@Override

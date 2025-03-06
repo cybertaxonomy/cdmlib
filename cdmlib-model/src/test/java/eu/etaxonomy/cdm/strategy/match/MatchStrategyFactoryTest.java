@@ -484,7 +484,6 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         book.setAbbrevTitle("Fl. Hell.");
         book.setVolume("2");
         book.setEdition("ed. 3");
-        book.setEditor("editor");
         book.setAuthorship(getDefaultParsedTeam());
         book.setDatePublished(TimePeriodParser.parseStringVerbatim("1982-10-06"));
         ((Reference)book).updateCaches();
