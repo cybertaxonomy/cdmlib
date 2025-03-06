@@ -8,8 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.remoting;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -46,6 +48,13 @@ public class DebuggingRemoteInvocationExecutor implements RemoteInvocationExecut
         if(domeasure) {
         targetInvocationStr = targetCdmServiceInterfaces(targetObject) + "#" + invocation.getMethodName() + "(" +
                 ClassUtils.classNamesToString(invocation.getParameterTypes()) + ")";
+        Map<String, Serializable> attributes =  invocation.getAttributes();
+
+        String attributeListString = attributes.values().stream()
+        .map( n -> n.toString() )
+        .collect( Collectors.joining( "," ) );
+
+        targetInvocationStr = targetInvocationStr + attributeListString;
         logger.debug("invoking: " + targetInvocationStr);
         start = System.currentTimeMillis();
         }
