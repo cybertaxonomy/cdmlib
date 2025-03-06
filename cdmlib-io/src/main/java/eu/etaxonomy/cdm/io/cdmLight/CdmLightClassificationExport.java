@@ -2417,7 +2417,7 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.DATE_PUBLISHED)] = reference.getDatePublishedString();
             // TBC
             csvLine[table.getIndex(CdmLightExportTable.EDITION)] = reference.getEdition();
-            csvLine[table.getIndex(CdmLightExportTable.EDITOR)] = reference.getEditor();
+            csvLine[table.getIndex(CdmLightExportTable.AUTHOR_IS_EDITOR)] = bool(reference.isAuthorIsEditor());
             csvLine[table.getIndex(CdmLightExportTable.ISBN)] = reference.getIsbn();
             csvLine[table.getIndex(CdmLightExportTable.ISSN)] = reference.getIssn();
             csvLine[table.getIndex(CdmLightExportTable.ORGANISATION)] = reference.getOrganization();

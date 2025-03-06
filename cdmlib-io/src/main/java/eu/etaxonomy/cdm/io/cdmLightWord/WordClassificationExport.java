@@ -2352,7 +2352,7 @@ public class WordClassificationExport
             csvLine[table.getIndex(WordClassificationExportTable.DATE_PUBLISHED)] = reference.getDatePublishedString();
             // TBC
             csvLine[table.getIndex(WordClassificationExportTable.EDITION)] = reference.getEdition();
-            csvLine[table.getIndex(WordClassificationExportTable.EDITOR)] = reference.getEditor();
+            csvLine[table.getIndex(WordClassificationExportTable.AUTHOR_IS_EDITOR)] = bool(reference.isAuthorIsEditor());
             csvLine[table.getIndex(WordClassificationExportTable.ISBN)] = reference.getIsbn();
             csvLine[table.getIndex(WordClassificationExportTable.ISSN)] = reference.getIssn();
             csvLine[table.getIndex(WordClassificationExportTable.ORGANISATION)] = reference.getOrganization();

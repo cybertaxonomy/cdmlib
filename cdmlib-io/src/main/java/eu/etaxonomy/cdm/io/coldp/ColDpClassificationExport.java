@@ -102,6 +102,7 @@ import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 
 /**
  * Classification or taxon tree exporter into COL-DP format.
@@ -2173,14 +2174,9 @@ public class ColDpClassificationExport
             //author
             if (reference.getAuthorship() != null) {
                 TeamOrPersonBase<?> author = reference.getAuthorship();
+                String authorShip = ReferenceDefaultCacheStrategy.addAuthorIsEditor(reference, author.getTitleCache());
                 //TODO 3 reference author formatting fine tuning
-                csvLine[table.getIndex(ColDpExportTable.REF_AUTHOR)] = author.getTitleCache();
-            }
-
-            //editor
-            if (reference.getEditor() != null) {  //if in future this is not a String
-                //TODO 3 reference editor formatting fine tuning, not yet relevant
-                csvLine[table.getIndex(ColDpExportTable.REF_AUTHOR)] = reference.getEditor();
+                csvLine[table.getIndex(ColDpExportTable.REF_AUTHOR)] = authorShip;
             }
 
             // TODO 1 reference get preferred title
@@ -2221,10 +2217,10 @@ public class ColDpClassificationExport
                 Reference series = reference.getInReference();
 
                 //containerEditor
-                if (series.getEditor() != null) {
+                if (series.isAuthorIsEditor() && series.getAuthorship() != null) {
 //                    TeamOrPersonBase<?> containerAuthor = series.getAuthorship();
                     //TODO 2 reference collection editor
-                    csvLine[table.getIndex(ColDpExportTable.REF_COLLECTION_EDITOR)] = series.getEditor();
+                    csvLine[table.getIndex(ColDpExportTable.REF_COLLECTION_EDITOR)] = series.getAuthorship().getTitleCache();
                 }
 
                 // TODO 2 reference get preferred title
