@@ -57,23 +57,23 @@ public class DebuggingRemoteInvocationExecutor implements RemoteInvocationExecut
                 String attributeListString = "";
                 for (Object o:attributes) {
                     if (o instanceof ArrayList) {
-                        for (Object object: (ArrayList)o) {
+                        for (Object object: (ArrayList<?>)o) {
                             if (object instanceof DescriptionBase) {
-                                DescriptionBase desc = (DescriptionBase)object;
-                                attributeListString = attributeListString + " Description UUID: "+desc.getUuid() + " \n ";
+                                DescriptionBase<?> desc = (DescriptionBase<?>)object;
+                                String descLabel = desc.getTitleCache();
+                                attributeListString += " Description UUID: " + desc.getUuid() + ", " + descLabel + " \n ";
                                 for (Object element: desc.getElements()) {
                                     if (element instanceof Distribution) {
                                         Distribution dist = (Distribution)element;
                                         String area = dist.getArea()!= null? dist.getArea().getLabel(): "";
-                                        String status = dist.getStatus()!= null? dist.getStatus().getLabel():"";
-                                        attributeListString = attributeListString + " Distribution UUID: " + dist.getUuid() +" Distribution Area: " + area + " Distribution Status: "+ status + "\n";
+                                        String status = dist.getStatus()!= null? dist.getStatus().getLabel(): "";
+                                        attributeListString += "  Distribution UUID: " + dist.getUuid() + ", Area: " + area + ", Status: " + status + "\n";
                                     }
                                 }
                             }
                         }
                     }
                 }
-
 
                 targetInvocationStr = targetInvocationStr + attributeListString;
             }
