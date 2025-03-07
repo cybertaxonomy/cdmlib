@@ -8,10 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.remoting;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,6 +19,9 @@ import org.springframework.remoting.support.RemoteInvocation;
 import org.springframework.remoting.support.RemoteInvocationExecutor;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 
 /**
  * Alternative implementation of the {@link RemoteInvocationExecutor} interface which behaves exactly
@@ -49,12 +51,29 @@ public class DebuggingRemoteInvocationExecutor implements RemoteInvocationExecut
         if(doMeasure) {
             targetInvocationStr = targetCdmServiceInterfaces(targetObject) + "#" + invocation.getMethodName() + "(" +
                     ClassUtils.classNamesToString(invocation.getParameterTypes()) + ")";
-            Map<String, Serializable> attributes =  invocation.getAttributes();
+            Object[] attributes =  invocation.getArguments();
 
             if (attributes != null) {
-                String attributeListString = attributes.values().stream()
-                        .map( a -> a.toString() )
-                        .collect( Collectors.joining( "," ) );
+                String attributeListString = "";
+                for (Object o:attributes) {
+                    if (o instanceof ArrayList) {
+                        for (Object object: (ArrayList)o) {
+                            if (object instanceof DescriptionBase) {
+                                DescriptionBase desc = (DescriptionBase)object;
+                                attributeListString = attributeListString + " Description UUID: "+desc.getUuid() + " \n ";
+                                for (Object element: desc.getElements()) {
+                                    if (element instanceof Distribution) {
+                                        Distribution dist = (Distribution)element;
+                                        String area = dist.getArea()!= null? dist.getArea().getLabel(): "";
+                                        String status = dist.getStatus()!= null? dist.getStatus().getLabel():"";
+                                        attributeListString = attributeListString + " Distribution UUID: " + dist.getUuid() +" Distribution Area: " + area + " Distribution Status: "+ status + "\n";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
 
                 targetInvocationStr = targetInvocationStr + attributeListString;
             }
