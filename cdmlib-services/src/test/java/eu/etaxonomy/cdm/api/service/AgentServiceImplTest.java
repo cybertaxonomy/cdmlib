@@ -149,9 +149,12 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testConvertTeam2Person(){
-    	String fullAuthor = "Original author";
+
+        String fullAuthor = "Original author";
     	String nomTitle = "Abrev. aut.";
-    	Team team = Team.NewTitledInstance(fullAuthor, nomTitle);
+    	String collectorTitle = "Coll. author";
+
+    	Team team = Team.NewTitledInstance(fullAuthor, nomTitle, collectorTitle);
     	Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
     	team.addAnnotation(annotation);
     	team.setContact(getContact());
@@ -173,10 +176,28 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 		}
     	Assert.assertNotNull(person);
     	Assert.assertEquals("Title cache must be equal", fullAuthor, person.getTitleCache());
-    	Assert.assertEquals("Nom. title must be equal", nomTitle, person.getNomenclaturalTitleCache());
+    	Assert.assertEquals("Nom. title must be equal to protected team nom. title cache", nomTitle, person.getNomenclaturalTitle());
+    	Assert.assertEquals("Collector title must be equal to protected team collector title cache", collectorTitle, person.getCollectorTitleCache());
+
     	Assert.assertEquals("Annotations should be moved", 1, person.getAnnotations().size());
     	Assert.assertNotNull("Contact must be copied too", person.getContact());
     	Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorship());
+
+    	//no protected nom. and collector cache
+    	team = Team.NewTitledInstance(fullAuthor, nomTitle, collectorTitle);
+        team.setProtectedNomenclaturalTitleCache(false);
+    	team.setProtectedCollectorTitleCache(false);
+    	try {
+            result = service.convertTeam2Person(team);
+            person = (Person)result.getCdmEntity();
+        } catch (Exception e) {
+            Assert.fail("No Exception should be thrown");
+        }
+    	Assert.assertNotNull(person);
+        Assert.assertEquals("Title cache must be equal", fullAuthor, person.getTitleCache());
+        Assert.assertNull("Nom. title must be empty as team nom. title cache is not protected", person.getNomenclaturalTitle());
+        Assert.assertNull("Collector title must be empty as team collector title cache is not protected", person.getCollectorTitleCache());
+
     }
 
 
