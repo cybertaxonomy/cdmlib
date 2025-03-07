@@ -40,6 +40,7 @@ public class TeamDefaultCacheStrategyTest {
 
 	@Before
 	public void setUp() throws Exception {
+
 		team1 = Team.NewInstance();
 		team2 = Team.NewInstance();
 		team3 = Team.NewInstance(); //empty team
@@ -121,10 +122,24 @@ public class TeamDefaultCacheStrategyTest {
 		//don't take next test to serious, may be also something different, but not empty
 		Assert.assertEquals("team3 nomenclatural title should be empty team replacement string",
 		        TeamDefaultCacheStrategy.EMPTY_TEAM, team3.getNomenclaturalTitleCache());
+		team3.setCollectorTitleCache("CollTitleCache", true);
+		team3.resetCaches();
+        Assert.assertEquals("unprotected team3 nomenclatural title should show collector title cache",
+                "CollTitleCache", team3.getNomenclaturalTitleCache());
+        Assert.assertEquals("unprotected team3 title cache should show collector title cache",
+                "CollTitleCache", team3.getTitleCache());
 
 		team3.setNomenclaturalTitleCache("ProtectedNomCache", true);
 		Assert.assertEquals("ProtectedNomCache", team3.getNomenclaturalTitleCache());
 	    Assert.assertEquals("ProtectedNomCache", team3.cacheStrategy().getNomenclaturalTitleCache(team3));
+	    team3.setCollectorTitleCache(null, false);
+	    Assert.assertEquals("unprotected team3 collector title should show abbrev title cache",
+                "ProtectedNomCache", team3.getCollectorTitleCache());
+	    Assert.assertEquals("unprotected team3 title cache should show abbrev title cache",
+                "ProtectedNomCache", team3.getTitleCache());
+
+
+
 	}
 
 	@Test
@@ -173,6 +188,7 @@ public class TeamDefaultCacheStrategyTest {
 
     @Test
     public final void testFullTitle(){
+
         Assert.assertNotNull("team1 full title must not to be null", team1.getFullTitle());
         Assert.assertEquals("team1 full title should be created by elements",
                 "Dr1. P1GN P1FN Suff1", team1.getFullTitle());
@@ -199,6 +215,7 @@ public class TeamDefaultCacheStrategyTest {
 
     @Test
     public final void testGetCollectorTitleCache(){
+
         Assert.assertNotNull("team1 collector title cache must not to be null",
                 team1.getCollectorTitleCache());
         Assert.assertEquals("team1 collector title cache title should be created by elements",

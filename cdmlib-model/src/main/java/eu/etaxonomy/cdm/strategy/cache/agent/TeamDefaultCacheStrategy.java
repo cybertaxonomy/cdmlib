@@ -197,7 +197,13 @@ public class TeamDefaultCacheStrategy
         }
         if (teamMembers.size() == 0){
             if (cacheType == CacheType.TITLECACHE){
-                result = EMPTY_TEAM;
+                if (team.isProtectedNomenclaturalTitleCache() && isNotBlank(team.getNomenclaturalTitleCache())) {
+                    return team.getNomenclaturalTitleCache();
+                }else if (team.isProtectedCollectorTitleCache() && isNotBlank(team.getCollectorTitleCache())) {
+                    return team.getCollectorTitleCache();
+                }else {
+                    result = EMPTY_TEAM;
+                }
             }else{
                 return team.getTitleCache();
             }
