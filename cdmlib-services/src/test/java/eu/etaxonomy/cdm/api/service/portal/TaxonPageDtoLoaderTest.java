@@ -624,7 +624,7 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         }
         //...tree
         DistributionTreeDto tree = (DistributionTreeDto)distributionInfo.getTree();
-        Assert.assertEquals("Tree:2<FRA:native: doubtfully native{Miller, M.M. 1978: My French distribution. p 44}:0><Germany:present{Second ref article. – The journal. p 22}:0>", new DistributionInfoBuilderTest().tree2String(tree));
+        Assert.assertEquals("Tree:2<FRA:native: doubtfully native{Miller, M.M. 1978: My French distribution. p 44 [accessed: 1792]}:0><Germany:present{Second ref article. – The journal. p 22}:0>", new DistributionInfoBuilderTest().tree2String(tree));
         Assert.assertEquals("Should be France and Germany", 2, tree.getRootElement().children.size());
         TreeNode<Set<DistributionDto>, NamedAreaDto> germanyNode = tree.getRootElement().getChildren().get(1);
         Assert.assertEquals("Germany", germanyNode.getNodeId().getLabel());

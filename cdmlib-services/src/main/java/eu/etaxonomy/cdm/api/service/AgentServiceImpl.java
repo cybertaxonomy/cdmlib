@@ -158,6 +158,12 @@ public class AgentServiceImpl
 			strategy.setDefaultMergeMode(MergeMode.SECOND);
 			strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
 			genericDao.merge(newPerson, team, strategy);
+			if (team.isProtectedCollectorTitleCache()) {
+			    newPerson.setNomenclaturalTitle(team.getNomenclaturalTitleCache());
+			}
+			if (team.isProtectedCollectorTitleCache()) {
+			    newPerson.setCollectorTitle(team.getCollectorTitleCache());
+			}
 		}else{
 			throw new IllegalStateException("Unhandled state of team members collection");
 		}

@@ -80,7 +80,7 @@ public class ColDpExportTest
 
     //FIXME type material line
     private String expectedTypeMaterialLine = uuid(specimenUuid) + NONE + uuid(speciesNameUuid) +
-            NONE + NONE + "\"B\",\"A555\"," + NONE + "\"Somewhere in the forest\",\"Armenia\",\"55.55611111111111\",\"-15.22\"," +
+            "\"Textual typedesignation test.\"," + NONE + "\"B\",\"A555\"," + NONE + "\"Somewhere in the forest\",\"Armenia\",\"55.55611111111111\",\"-15.22\"," +
             NONE + NONE3 + "\"Collector team\"," + NONE + NONE + NONE_END;
 
     //FIXME vernacular name line

@@ -145,6 +145,10 @@ public enum ReferenceType implements IEnumTerm<ReferenceType> {
 		return (this == Book || this == Proceedings);
 	}
 
+    public boolean hasEditor(){
+        return isPrintedUnit() || isGeneric() || isDatabase() || isArticle();
+    }
+
 	/**
 	 * Returns true if references of this type are parts of other references (inheriting from
 	 * {@link ISection}) and therefore may have an in-reference and pages.

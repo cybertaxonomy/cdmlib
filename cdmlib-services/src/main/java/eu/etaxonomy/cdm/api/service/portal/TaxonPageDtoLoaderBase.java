@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -285,11 +286,10 @@ public abstract class TaxonPageDtoLoaderBase {
                 }
             }
             sourceDto.setSortableDate(ref.getSortableDateString());
-
         }
 
         //accessed
-        if(source.getAccessed() != null) {
+        if(!TimePeriod.isBlank(source.getAccessed())) {
             sourceDto.setAccessed(source.getAccessed().toString());
         }else if (ref != null && ref.getAccessed() != null) {
             //TODO better formatting

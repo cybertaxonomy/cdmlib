@@ -742,7 +742,6 @@ public class FullCoverageDataGenerator {
 		reference.setAbbrevTitle("abbrev title");
 		reference.setDatePublished(TimePeriodParser.parseStringVerbatim("1999"));
 		reference.setEdition("edition");
-		reference.setEditor("editor");
 		Institution institution = createNewInstitution(entitiesToSave);
 		reference.setInstitution(institution);
 		reference.setIsbn("1234556");

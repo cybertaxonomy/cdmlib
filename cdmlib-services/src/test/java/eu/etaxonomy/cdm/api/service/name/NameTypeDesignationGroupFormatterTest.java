@@ -59,6 +59,7 @@ public class NameTypeDesignationGroupFormatterTest extends TermTestBase {
 
     @Before
     public void setUp() throws Exception {
+
         Person person1 = Person.NewInstance("DC", "Decandolle", "A.", null);
         Person person2 = Person.NewInstance("Hab.", "Haber", "M.", null);
         Person person3 = Person.NewInstance("Moler", "Moler", "A.P.", null);

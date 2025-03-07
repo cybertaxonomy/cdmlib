@@ -169,7 +169,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
         book.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
         book.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(new Partial(DateTimeFieldType.year(), 1800)));
         book.setEdition("1st Edition");
-        book.setEditor("Editor");
         book.setIsbn("isbn");
         book.setPlacePublished("placePublished");
         book.setPublisher("publisher");

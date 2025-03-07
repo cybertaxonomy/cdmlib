@@ -45,7 +45,7 @@ public class TestModelUpdate {
 	private static final Logger logger = LogManager.getLogger();
 
 	private void testSelectedDb(){
-		DbSchemaValidation schema = DbSchemaValidation.CREATE;
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm548" : "cdm549");

@@ -175,14 +175,14 @@ public class ManagementController {
      *
      * @param frontendBaseUrl
      *            if the CDM server is running behind a reverse proxy you need
-    *            to supply the base URL of web service front-end which is
-    *            provided by the proxy server.
-    * @param request
-    * @param respone
-    * @return
-    * @throws Exception
-    */
-   @RequestMapping(value = { "redict" }, method = {RequestMethod.GET, RequestMethod.OPTIONS})
+     *            to supply the base URL of web service front-end which is
+     *            provided by the proxy server.
+     * @param request
+     * @param respone
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = { "redict" }, method = {RequestMethod.GET, RequestMethod.OPTIONS})
     public synchronized ModelAndView doRedict(
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
             @RequestParam(value = "priority", required = false) Integer priority,

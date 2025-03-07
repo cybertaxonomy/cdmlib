@@ -896,7 +896,7 @@ public class WordClassificationExport
             csvLine[table.getIndex(WordClassificationExportTable.APPENDED_PHRASE)] = synonym.getAppendedPhrase();
             csvLine[table.getIndex(WordClassificationExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, synonym.getSec());
             csvLine[table.getIndex(WordClassificationExportTable.SYN_SEC_REFERENCE)] = getTitleCache(synonym.getSec());
-            csvLine[table.getIndex(WordClassificationExportTable.PUBLISHED)] = synonym.isPublish() ? "1" : "0";
+            csvLine[table.getIndex(WordClassificationExportTable.PUBLISHED)] = bool(synonym.isPublish());
             csvLine[table.getIndex(WordClassificationExportTable.IS_PRO_PARTE)] = "0";
             csvLine[table.getIndex(WordClassificationExportTable.IS_PARTIAL)] = "0";
             csvLine[table.getIndex(WordClassificationExportTable.IS_MISAPPLIED)] = "0";
@@ -971,9 +971,9 @@ public class WordClassificationExport
 
             // pro parte type
 
-            csvLine[table.getIndex(WordClassificationExportTable.IS_PRO_PARTE)] = isProParte ? "1" : "0";
-            csvLine[table.getIndex(WordClassificationExportTable.IS_PARTIAL)] = isPartial ? "1" : "0";
-            csvLine[table.getIndex(WordClassificationExportTable.IS_MISAPPLIED)] = isMisapplied ? "1" : "0";
+            csvLine[table.getIndex(WordClassificationExportTable.IS_PRO_PARTE)] = bool(isProParte);
+            csvLine[table.getIndex(WordClassificationExportTable.IS_PARTIAL)] = bool(isPartial);
+            csvLine[table.getIndex(WordClassificationExportTable.IS_MISAPPLIED)] = bool(isMisapplied);
             csvLine[table.getIndex(WordClassificationExportTable.SORT_INDEX)] = String.valueOf(index);
             state.getProcessor().put(table, ppSyonym, csvLine);
         } catch (Exception e) {
@@ -2352,7 +2352,7 @@ public class WordClassificationExport
             csvLine[table.getIndex(WordClassificationExportTable.DATE_PUBLISHED)] = reference.getDatePublishedString();
             // TBC
             csvLine[table.getIndex(WordClassificationExportTable.EDITION)] = reference.getEdition();
-            csvLine[table.getIndex(WordClassificationExportTable.EDITOR)] = reference.getEditor();
+            csvLine[table.getIndex(WordClassificationExportTable.AUTHOR_IS_EDITOR)] = bool(reference.isAuthorIsEditor());
             csvLine[table.getIndex(WordClassificationExportTable.ISBN)] = reference.getIsbn();
             csvLine[table.getIndex(WordClassificationExportTable.ISSN)] = reference.getIssn();
             csvLine[table.getIndex(WordClassificationExportTable.ORGANISATION)] = reference.getOrganization();
@@ -2623,6 +2623,10 @@ public class WordClassificationExport
         } else {
             return cdmBase.getClass().getSimpleName() + ": " + cdmBase.getUuid();
         }
+    }
+
+    private String bool(boolean boolValue) {
+        return boolValue ? "1" : "0";
     }
 
     @Override

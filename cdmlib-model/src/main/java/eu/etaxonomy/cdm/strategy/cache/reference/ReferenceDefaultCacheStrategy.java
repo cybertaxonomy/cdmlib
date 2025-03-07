@@ -178,11 +178,18 @@ public class ReferenceDefaultCacheStrategy
         TeamOrPersonBase<?> author = reference.getAuthorship();
         String authorStr = (author == null)? "" : CdmUtils.getPreferredNonEmptyString(author.getTitleCache(),
                 author.getNomenclaturalTitleCache(), isAbbrev, trim);
+        authorStr = addAuthorIsEditor(reference, authorStr);
+        String result = addAuthorYear(authorStr, reference, useFullDatePublished, uniqueString);
+        return result;
+    }
+
+    public static String addAuthorIsEditor(Reference reference, String authorStr) {
+
+        TeamOrPersonBase<?> author = reference.getAuthorship();
         if (StringUtils.isNotBlank(authorStr) && reference.isAuthorIsEditor() && author != null) {
             authorStr += author.isInstanceOf(Team.class) ? " (eds.)" : " (ed.)";
         }
-        String result = addAuthorYear(authorStr, reference, useFullDatePublished, uniqueString);
-        return result;
+        return authorStr;
     }
 
     public String getAccessedPart(Reference reference) {
@@ -272,6 +279,9 @@ public class ReferenceDefaultCacheStrategy
 // ************************ TITLE CACHE SUBS ********************************************/
 
     //section, book section or generic with inRef
+    /**
+     * @param uniqueString String added after the date to make author + date string unique
+     */
     private String titleCacheRealInRef(Reference reference, boolean isAbbrev, String uniqueString) {
 
         Reference inRef = reference.getInReference();
@@ -321,9 +331,7 @@ public class ReferenceDefaultCacheStrategy
         TeamOrPersonBase<?> author = reference.getAuthorship();
         String authorStr = (author == null)? "" : CdmUtils.getPreferredNonEmptyString(author.getTitleCache(),
                 author.getNomenclaturalTitleCache(), isAbbrev, trim);
-        if (StringUtils.isNotBlank(authorStr) && reference.isAuthorIsEditor() && author != null) {
-            authorStr += author.isInstanceOf(Team.class) ? " (eds.)" : " (ed.)";
-        }
+        authorStr = addAuthorIsEditor(reference, authorStr);
 
         //date
         //TODO compare with addAuthorYear()
@@ -391,10 +399,14 @@ public class ReferenceDefaultCacheStrategy
             TeamOrPersonBase<?> inRefAuthor = inRef.getAuthorship();
             String authorStr = (inRefAuthor == null)? "" : CdmUtils.getPreferredNonEmptyString(inRefAuthor.getTitleCache(),
                     inRefAuthor.getNomenclaturalTitleCache(), isAbbrev, trim);
-            if (StringUtils.isNotBlank(authorStr) && inRef.isAuthorIsEditor() && inRefAuthor != null) {
-                authorStr += inRefAuthor.isInstanceOf(Team.class) ? " (eds.)" : " (ed.)";
-            }
+            authorStr = addAuthorIsEditor(inRef, authorStr);
             inRefAuthorAndTitle = CdmUtils.concat(afterInRefAuthor, authorStr, inRefTitle);
+            //in-in-ref for secion-in section-in ref #10675
+            if (inRef.isSectionOnly() && inRef.getInReference() != null) {
+                String inInRefStr = getInRefAuthorAndTitle(inRef.getInReference(), inRef.getType(), isAbbrev);
+                inInRefStr = handleWebPageAndAccessed(inRef.getInReference(), inInRefStr);
+                inRefAuthorAndTitle = CdmUtils.concat(". ", inRefAuthorAndTitle, inInRefStr);
+            }
         }else{
             inRefAuthorAndTitle = String.format("- undefined %s -", getUndefinedLabel(type));
         }

@@ -57,6 +57,7 @@ public enum PreferencePredicate
     TaxonNodeOrder(UUID.fromString("ce06bd8e-4371-4ee5-8f57-cf23930cfd12"), "Taxon node order", "model.taxon.TNO", NodeOrderEnum.RankAndNameOrder),  //default alphabet + rank
     NameDetailsView(UUID.fromString("3c4ec5f5-feb5-44a8-8533-c3c3484a6869"), "NameDetailsView", "model.editor.NDV", null),
     DeterminationOnlyForFieldUnits(UUID.fromString("91b9224b-6610-4cf1-b3da-d60d6f9d59b1"), "DeterminationOnlyForFieldUnit", "model.editor.DOFU", Boolean.FALSE),
+    LogSaveActivities(UUID.fromString("f634a98a-3449-4231-9d58-32d76b07496f"), "Log save activities", "editor.save.log", Boolean.FALSE),
 
     //Taxeditor UI
     ShowMediaView(UUID.fromString("ba7ba1bb-47e3-4b68-bc44-c5ac45775db4"), "Show media view", "views.showMediaView", Boolean.TRUE),
@@ -102,11 +103,13 @@ public enum PreferencePredicate
     NumberOfVisibleStatusInDropDown(UUID.fromString("5e5ed585-2212-4d07-bbaf-c5e19a61dace"), "Distribution Editor: Number of visible status in drop down", "distribution.editor.status.numberVisibleStatus",  10),
     DescriptionForDistributionEditor(UUID.fromString("38282571-049c-473e-bec3-bde6f65f796a"), "Distribution Editor: Create distribution editor TaxonDescription", "distribution.editor.distributionOwnDescription",  DistributionDescription.AlwaysDefault),
     AvailableDistributionAreaTerms(UUID.fromString("34469acc-9e23-4f95-92d4-1695e02cb5a0"), "Available Distribution Area Terms", "distribution.area.terms", null),  //default: all/no filter
+    ShowRankInDistributionEditor(UUID.fromString("fb13b4f2-2d82-4fd3-8abe-2b955a695245"), "Distribution Editor: Show Rank", "distribution.editor.showRank", Boolean.FALSE),
+    ShowSynonymsInDistributionEditor(UUID.fromString("5376fa2e-1dbf-4dee-bfe2-a7d4e5e15b85"), "Distribution Editor: Show Synonyms", "distribution.editor.showSynonyms", Boolean.TRUE),
 
     //Character matrix
     CharacterMatrixTableState(UUID.fromString("c2b52b1e-3e39-4890-88ce-3bf0abb49709"), "Character Matrix Table State", "character.matrix.table.state",  null),
 
-    ShowRankInDistributionEditor(UUID.fromString("fb13b4f2-2d82-4fd3-8abe-2b955a695245"), "Distribution Editor: Show Rank", "distribution.editor.showRank", Boolean.FALSE),
+
 
 
     //Import

@@ -284,6 +284,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             } else {
                 result = new MergeResult(persistentObject, null);
             }
+//            if (transientObject instanceof DescriptionBase) {
+//                logger.info("merged object: "+result.getMergedEntity().getUuid() + " - " + result.getMergedEntity().getUserFriendlyTypeName());
+//                for(Object newEntity : result.getNewEntities()) {
+//                    if (newEntity instanceof CdmBase) {
+//                        logger.info("new object: "+((CdmBase)newEntity).getUuid() + " - " + ((CdmBase)newEntity).getUserFriendlyTypeName());
+//                    }
+//                }
+//            }
             return result;
         } finally {
             PostMergeEntityListener.removeSession(session);

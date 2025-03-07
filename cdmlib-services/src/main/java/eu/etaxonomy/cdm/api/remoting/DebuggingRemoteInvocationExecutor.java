@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.remoting;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,9 @@ import org.springframework.remoting.support.RemoteInvocation;
 import org.springframework.remoting.support.RemoteInvocationExecutor;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 
 /**
  * Alternative implementation of the {@link RemoteInvocationExecutor} interface which behaves exactly
@@ -40,17 +44,44 @@ public class DebuggingRemoteInvocationExecutor implements RemoteInvocationExecut
 
         Assert.notNull(invocation, "RemoteInvocation must not be null");
         Assert.notNull(targetObject, "Target object must not be null");
-        boolean domeasure = logger.isDebugEnabled();
+
+        boolean doMeasure = logger.isDebugEnabled();
         String targetInvocationStr = null;
         long start = 0;
-        if(domeasure) {
-        targetInvocationStr = targetCdmServiceInterfaces(targetObject) + "#" + invocation.getMethodName() + "(" +
-                ClassUtils.classNamesToString(invocation.getParameterTypes()) + ")";
-        logger.debug("invoking: " + targetInvocationStr);
-        start = System.currentTimeMillis();
+        if(doMeasure) {
+            targetInvocationStr = targetCdmServiceInterfaces(targetObject) + "#" + invocation.getMethodName() + "(" +
+                    ClassUtils.classNamesToString(invocation.getParameterTypes()) + ")";
+            Object[] attributes =  invocation.getArguments();
+
+            if (attributes != null) {
+                String attributeListString = "";
+                for (Object o:attributes) {
+                    if (o instanceof ArrayList) {
+                        for (Object object: (ArrayList<?>)o) {
+                            if (object instanceof DescriptionBase) {
+                                DescriptionBase<?> desc = (DescriptionBase<?>)object;
+                                String descLabel = desc.getTitleCache();
+                                attributeListString += " Description UUID: " + desc.getUuid() + ", " + descLabel + " \n ";
+                                for (Object element: desc.getElements()) {
+                                    if (element instanceof Distribution) {
+                                        Distribution dist = (Distribution)element;
+                                        String area = dist.getArea()!= null? dist.getArea().getLabel(): "";
+                                        String status = dist.getStatus()!= null? dist.getStatus().getLabel(): "";
+                                        attributeListString += "  Distribution UUID: " + dist.getUuid() + ", Area: " + area + ", Status: " + status + "\n";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                targetInvocationStr = targetInvocationStr + attributeListString;
+            }
+            logger.debug("invoking: " + targetInvocationStr);
+            start = System.currentTimeMillis();
         }
         Object invocationResult = invocation.invoke(targetObject);
-        if (domeasure) {
+        if (doMeasure) {
             logger.debug("invocation: " + targetInvocationStr + " completed [" + (System.currentTimeMillis() - start) + " ms]");
         }
 

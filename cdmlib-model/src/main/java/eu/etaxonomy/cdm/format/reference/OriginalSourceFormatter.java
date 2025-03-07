@@ -56,10 +56,11 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         }
         Reference reference = source.getCitation();
         String microReference = source.getCitationMicroReference();
-        if (reference == null && isBlank(microReference)){
+        TimePeriod accessed = source.getAccessed();
+        if (reference == null && isBlank(microReference) && accessed == null){
             return null;
         }
-        return format(reference, microReference);
+        return format(reference, microReference, accessed );
     }
 
     /**
@@ -119,6 +120,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
      * Implementation is temporarily. May change or be further improved in future.
      */
     private String handleLongformCitation(Reference reference, String microReference, TimePeriod accessed) {
+
         ReferenceDefaultCacheStrategy referenceFormatter = ReferenceDefaultCacheStrategy.NewInstance();
 
         String refCitation = referenceFormatter.getTitleCache(reference);
@@ -127,7 +129,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         }
 
         String fullRefCitation = CdmUtils.concat(". ", refCitation, microReference);
-        String accessedStr = accessed == null? null : "[accessed: "+accessed.toString()+"]";
+        String accessedStr = TimePeriod.isBlank(accessed) ? null : "[accessed: "+accessed.toString()+"]";
 
         String withDateCitation = CdmUtils.concat(" ", fullRefCitation, accessedStr);
         if (withDateCitation != null) {

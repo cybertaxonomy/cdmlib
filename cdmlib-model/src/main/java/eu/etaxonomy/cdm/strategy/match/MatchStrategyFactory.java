@@ -280,7 +280,7 @@ public class MatchStrategyFactory {
         }
 
         String[] equalParams = new String[]{"datePublished","edition",
-                "editor","seriesPart","volume"};
+                "authorIsEditor","seriesPart","volume"};
         for(String param : equalParams){
             referenceMatchStrategy.setMatchMode(param, MatchMode.EQUAL);
         }
@@ -331,7 +331,7 @@ public class MatchStrategyFactory {
         }
 
         String[] equalParams = new String[]{"datePublished","edition",
-                "editor","seriesPart","volume"};
+                "authorIsEditor","seriesPart","volume"};
         for(String param : equalParams){
             referenceMatchStrategy.setMatchMode(param, MatchMode.EQUAL);
         }

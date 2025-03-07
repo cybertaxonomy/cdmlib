@@ -278,6 +278,12 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
         return toVerbatim(this);
     }
 
+//*************************** IS BLANK ******************************/
+
+    public static boolean isBlank(TimePeriod timePeriod) {
+        return timePeriod == null || timePeriod.isEmpty();
+    }
+
 //*********************** CONSTRUCTOR *********************************/
 
     protected TimePeriod() {

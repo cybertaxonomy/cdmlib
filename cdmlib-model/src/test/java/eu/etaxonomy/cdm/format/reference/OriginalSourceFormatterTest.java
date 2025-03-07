@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ISection;
 import eu.etaxonomy.cdm.model.reference.IWebPage;
@@ -216,7 +217,14 @@ public class OriginalSourceFormatterTest {
         Assert.assertEquals("Formatting of webpages without author is still undefined",
                 "Miller 2020: detail", formatter.format((Reference)database, "detail", sourceAccessed));
         Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "Miller, A. 2001+: A beautiful taxon page. Published at https://abc.de/. detail [accessed: 2020]", formatterLongCitation.format((Reference)database, "detail", sourceAccessed));
+                "Miller, A. 2001+: A beautiful taxon page. Published at https://abc.de/. detail [accessed: 2020]",
+                formatterLongCitation.format((Reference)database, "detail", sourceAccessed));
+        //... again with source
+        DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance((Reference)database, "detail");
+        source.setAccessed(sourceAccessed);
+        Assert.assertEquals("Formatting of webpages without author is still undefined",
+                "Miller, A. 2001+: A beautiful taxon page. Published at https://abc.de/. detail [accessed: 2020]",
+                formatterLongCitation.format(source));
     }
 
 

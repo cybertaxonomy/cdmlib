@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -933,10 +934,17 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 	private void handleEditorsInCitation(String edition, String editors, Reference reference, XMLEvent parentEvent) {
 		//editor
-		reference.setEditor(editors);
 		if ( editors != null){
-			String message = "Citation reference has an editor. This is unusual for a citation reference (appears regularly in <reference> references";
-			fireWarningEvent(message, parentEvent, 4);
+		    if (reference.getAuthorship() != null) {
+	            String message = "Citation reference has 'editors' and author. This can currently not be handled in CDM. Please handle manually. Editors = " + editors + ". 'Editors' is unusual for a citation reference";
+	            fireWarningEvent(message, parentEvent, 4);
+		    }else {
+		        Person person = Person.NewTitledInstance(editors);
+		        reference.setAuthorship(person);
+		        reference .setAuthorIsEditor(true);
+		        String message = "Citation reference has an editor. This is unusual for a citation reference (appears regularly in <reference> references";
+		        fireWarningEvent(message, parentEvent, 4);
+		    }
 		}
 	}
 

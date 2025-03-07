@@ -111,7 +111,6 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "referenceAbstract",
     "title",
     "abbrevTitle",
-    "editor",
 	"volume",
 	"pages",
 	"edition",
@@ -198,13 +197,6 @@ public class Reference
 	private boolean protectedAbbrevTitleCache;
 
 //********************************************************/
-
-    @XmlElement(name = "Editor")
-    @Field
-    //TODO Val #3379
-//    @NullOrNotEmpty
-    @Column(length=255)
-    private String editor;
 
     @XmlElement(name = "Volume")
     @Field
@@ -495,16 +487,6 @@ public class Reference
 	}
 
 	@Override
-    public String getEditor() {
-		return editor;
-	}
-
-	@Override
-    public void setEditor(String editor) {
-		this.editor = isBlank(editor)? null : editor;
-	}
-
-	@Override
     public String getVolume() {
 		return volume;
 	}
@@ -772,7 +754,7 @@ public class Reference
 
     /**
      * If true, the {@link #getAuthorship() author} is the editor
-     * and should be formatted accordingly. See #7987
+     * and should be formatted accordingly. See #7987, #10710
      */
     @Override
     public boolean isAuthorIsEditor() {

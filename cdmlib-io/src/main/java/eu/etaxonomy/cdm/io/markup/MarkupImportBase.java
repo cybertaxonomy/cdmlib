@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.io.common.CdmImportBase.TermMatchMode;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -2238,14 +2239,14 @@ public abstract class MarkupImportBase  {
             reference.setTitleCache(titleCache, true);
         }
 
-        //edition
+        //edition // editor
         if(reference.getInReference() != null){
             reference.getInReference().setEdition(edition);
-            reference.getInReference().setEditor(editors);
+            handleEditor(reference.getInReference(), editors, parentEvent);
         }else{
             //edition
             reference.setEdition(edition);
-            reference.setEditor(editors);
+            handleEditor(reference, editors, parentEvent);
         }
 
         //volume
@@ -2256,6 +2257,21 @@ public abstract class MarkupImportBase  {
 
         return reference;
     }
+
+    private void handleEditor(Reference ref, String editors, XMLEvent parentEvent) {
+        if (isNotBlank(editors)) {
+            if (ref.getAuthorship() != null) {
+                String message = "Reference has author and editor. This is not handled in CDM. Editor ('"+editors+"') is not imported";
+                fireWarningEvent(message, parentEvent, 4);
+            }else {
+                Person person = Person.NewTitledInstance(editors);
+                ref.setAuthorship(person);
+                ref .setAuthorIsEditor(true);
+            }
+        }
+
+    }
+
 
     private boolean isBookSection(String type, String authorStr, String pubTitle,
             String editors, String pubName, String volume) {

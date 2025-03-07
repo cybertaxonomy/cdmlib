@@ -70,6 +70,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -145,7 +146,8 @@ public abstract class TaxonTreeExportTestBase
 
     //HG uuid
     protected static final UUID subspeciesNameHgUuid = UUID.fromString("c60c0ce1-0fa0-468a-9908-8e9afed05714");
-
+    protected static final UUID speciesNameHgUuid = UUID.fromString("cf25c1d1-abbd-423d-bf4e-ee57d2846396");
+    protected static final UUID genusNameHgUuid = UUID.fromString("58e042e2-aa0a-4a02-96f1-4c2600182f68");
     //WFO IDs
     protected static final String familyWfoId = "WFO-12347f";
     protected static final String speciesWfoId = "WFO-123477";
@@ -365,6 +367,7 @@ public abstract class TaxonTreeExportTestBase
         //genus
         TaxonName genusName = createParsedName(parser, "Genus Humb., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.GENUS(), genusNameUuid, genusNomRefUuid);
+        genusName.getHomotypicalGroup().setUuid(genusNameHgUuid);
         addWfoIdentifier(genusName, "WFO-12347g");
         Taxon genus = Taxon.NewInstance(genusName, ref1);
         setUuid(genus, genusTaxonUuid);
@@ -376,6 +379,7 @@ public abstract class TaxonTreeExportTestBase
         //species
         TaxonName speciesName = createParsedName(parser, "Genus species (Mill.) Hook in J. Appl. Synon. 5: 33. 1824",
                 NomenclaturalCode.ICNAFP, Rank.SPECIES(), speciesNameUuid, speciesNomRefUuid);
+        speciesName.getHomotypicalGroup().setUuid(speciesNameHgUuid);
         addWfoIdentifier(speciesName, speciesWfoId);
         addIpniIdentifier(speciesName, "100000-3");
         Taxon species = Taxon.NewInstance(speciesName, ref2);
@@ -508,9 +512,9 @@ public abstract class TaxonTreeExportTestBase
         //add name type
         NameTypeDesignation ntd = genusName.addNameTypeDesignation(basionymName, null, null, null, NameTypeDesignationStatus.ORIGINAL_DESIGNATION(), false);
         nameService.saveTypeDesignation(ntd);
-
-        //TODO textual type
-
+        //add textual type
+        TextualTypeDesignation ttd = speciesName.addTextualTypeDesignation("Textual typedesignation test", null, false, null, null, null, false);
+        nameService.saveTypeDesignation(ttd);
         //commit
         commitAndStartNewTransaction(null);
     }

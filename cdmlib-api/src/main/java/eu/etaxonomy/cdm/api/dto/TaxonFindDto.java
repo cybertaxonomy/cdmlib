@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -24,8 +23,6 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @since 25.02.2024
  */
 public class TaxonFindDto {
-
-    private IdentifiableEntity<?> entity;
 
     private UUID acceptedTaxonUuid;
 
@@ -39,14 +36,7 @@ public class TaxonFindDto {
     //#10597
     private List<TaggedText> taxonTaggedText = null;
 
-
-    public IdentifiableEntity<?> getEntity() {
-        return entity;
-    }
-    public void setEntity(IdentifiableEntity<?> entity) {
-        this.entity = entity;
-    }
-
+//****************** GETTER / SETTER ****************************/
 
     public UUID getAcceptedTaxonUuid() {
         return acceptedTaxonUuid;

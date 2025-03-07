@@ -90,7 +90,7 @@ public class TypeDesignationGroupContainer {
 // **************************** FACTORY ***************************************/
 
     public static TypeDesignationGroupContainer NewDefaultInstance(
-            @SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations)
+            @SuppressWarnings("rawtypes") Collection<? extends TypeDesignationBase> typeDesignations)
             throws TypeDesignationSetException{
         return new TypeDesignationGroupContainer(typeDesignations, null, null);
     }
@@ -105,8 +105,10 @@ public class TypeDesignationGroupContainer {
 
 // **************************** CONSTRUCTOR ***********************************/
 
+    //TODO make constructors protected
+
     public TypeDesignationGroupContainer(
-            @SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
+            @SuppressWarnings("rawtypes") Collection<? extends TypeDesignationBase> typeDesignations,
             TaxonName typifiedName,
             ORDER_BY orderBy) throws TypeDesignationSetException  {
 
@@ -139,7 +141,7 @@ public class TypeDesignationGroupContainer {
     }
     public TypeDesignationGroupContainer(HomotypicalGroup group, boolean containsTypeStatements) {
         for (TypeDesignationBase<?> typeDes: group.getTypeDesignations()){
-            if (!(typeDes instanceof TextualTypeDesignation)) {
+            if (!(typeDes instanceof TextualTypeDesignation) || (typeDes instanceof TextualTypeDesignation && containsTypeStatements) ) {
                 this.typeDesignations.put(typeDes.getUuid(), typeDes);
             }
         }
@@ -272,7 +274,7 @@ public class TypeDesignationGroupContainer {
            = new LinkedHashMap<>(baseEntity2TypeDesignationsMap.size());
 
        for(TypeDesignationGroup entry : baseEntityKeyList){
-           VersionableEntity baseEntity = entry.getBaseEntity();
+           VersionableEntity baseEntity = HibernateProxyHelper.deproxy(entry.getBaseEntity());
            TypeDesignationGroup typeDesignationGroup = baseEntity2TypeDesignationsMap.get(baseEntity);
            // order the TypeDesignationStatusBase keys
             List<TypeDesignationStatusBase<?>> keyList = new LinkedList<>(typeDesignationGroup.keySet());
