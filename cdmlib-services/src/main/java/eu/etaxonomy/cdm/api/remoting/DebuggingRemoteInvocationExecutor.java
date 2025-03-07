@@ -42,26 +42,27 @@ public class DebuggingRemoteInvocationExecutor implements RemoteInvocationExecut
 
         Assert.notNull(invocation, "RemoteInvocation must not be null");
         Assert.notNull(targetObject, "Target object must not be null");
-        boolean domeasure = logger.isDebugEnabled();
+
+        boolean doMeasure = logger.isDebugEnabled();
         String targetInvocationStr = null;
         long start = 0;
-        if(domeasure) {
-        targetInvocationStr = targetCdmServiceInterfaces(targetObject) + "#" + invocation.getMethodName() + "(" +
-                ClassUtils.classNamesToString(invocation.getParameterTypes()) + ")";
-        Map<String, Serializable> attributes =  invocation.getAttributes();
+        if(doMeasure) {
+            targetInvocationStr = targetCdmServiceInterfaces(targetObject) + "#" + invocation.getMethodName() + "(" +
+                    ClassUtils.classNamesToString(invocation.getParameterTypes()) + ")";
+            Map<String, Serializable> attributes =  invocation.getAttributes();
 
-        if (attributes != null) {
-            String attributeListString = attributes.values().stream()
-                    .map( a -> a.toString() )
-                    .collect( Collectors.joining( "," ) );
+            if (attributes != null) {
+                String attributeListString = attributes.values().stream()
+                        .map( a -> a.toString() )
+                        .collect( Collectors.joining( "," ) );
 
-            targetInvocationStr = targetInvocationStr + attributeListString;
-        }
-        logger.debug("invoking: " + targetInvocationStr);
-        start = System.currentTimeMillis();
+                targetInvocationStr = targetInvocationStr + attributeListString;
+            }
+            logger.debug("invoking: " + targetInvocationStr);
+            start = System.currentTimeMillis();
         }
         Object invocationResult = invocation.invoke(targetObject);
-        if (domeasure) {
+        if (doMeasure) {
             logger.debug("invocation: " + targetInvocationStr + " completed [" + (System.currentTimeMillis() - start) + " ms]");
         }
 

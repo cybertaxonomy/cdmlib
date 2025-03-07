@@ -88,7 +88,7 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
     static final String ABBREV_REF_TITLE = "AbbrevTitle";
     static final String DATE_PUBLISHED = "DatePublished";
     static final String EDITION = "Edition";
-    static final String AUTHOR_IS_EDITOR= "AuthorIsEditor";
+    static final String AUTHOR_IS_EDITOR = "AuthorIsEditor";
     static final String ISBN = "ISBN";
     static final String ISSN = "ISSN";
     static final String ORGANISATION = "Organisation";
