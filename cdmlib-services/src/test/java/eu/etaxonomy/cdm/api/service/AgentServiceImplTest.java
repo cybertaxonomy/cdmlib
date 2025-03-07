@@ -177,7 +177,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Assert.assertNotNull(person);
     	Assert.assertEquals("Title cache must be equal", fullAuthor, person.getTitleCache());
     	Assert.assertEquals("Nom. title must be equal to protected team nom. title cache", nomTitle, person.getNomenclaturalTitle());
-    	Assert.assertEquals("Collector title must be equal to protected team collector title cache", collectorTitle, person.getCollectorTitleCache());
+    	Assert.assertEquals("Collector title must be equal to protected team collector title cache", collectorTitle, person.getCollectorTitle());
 
     	Assert.assertEquals("Annotations should be moved", 1, person.getAnnotations().size());
     	Assert.assertNotNull("Contact must be copied too", person.getContact());
@@ -196,7 +196,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Assert.assertNotNull(person);
         Assert.assertEquals("Title cache must be equal", fullAuthor, person.getTitleCache());
         Assert.assertNull("Nom. title must be empty as team nom. title cache is not protected", person.getNomenclaturalTitle());
-        Assert.assertNull("Collector title must be empty as team collector title cache is not protected", person.getCollectorTitleCache());
+        Assert.assertNull("Collector title must be empty as team collector title cache is not protected", person.getCollectorTitle());
 
     }
 
