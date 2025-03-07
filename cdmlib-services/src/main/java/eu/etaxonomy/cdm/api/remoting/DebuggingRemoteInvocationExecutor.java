@@ -50,11 +50,13 @@ public class DebuggingRemoteInvocationExecutor implements RemoteInvocationExecut
                 ClassUtils.classNamesToString(invocation.getParameterTypes()) + ")";
         Map<String, Serializable> attributes =  invocation.getAttributes();
 
-        String attributeListString = attributes.values().stream()
-        .map( n -> n.toString() )
-        .collect( Collectors.joining( "," ) );
+        if (attributes != null) {
+            String attributeListString = attributes.values().stream()
+                    .map( a -> a.toString() )
+                    .collect( Collectors.joining( "," ) );
 
-        targetInvocationStr = targetInvocationStr + attributeListString;
+            targetInvocationStr = targetInvocationStr + attributeListString;
+        }
         logger.debug("invoking: " + targetInvocationStr);
         start = System.currentTimeMillis();
         }
