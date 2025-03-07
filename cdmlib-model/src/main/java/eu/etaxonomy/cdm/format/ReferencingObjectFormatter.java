@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.format.description.DescriptionElementFormatter;
 import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
 import eu.etaxonomy.cdm.format.occurrences.DistanceStringFormatter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -312,7 +313,8 @@ public class ReferencingObjectFormatter {
 
         //collector
         AgentBase<?> collector = CdmBase.deproxy(gatheringEvent.getCollector());
-        String collectorStr = collector == null? null : collector.getTitleCache();
+        String collectorStr = collector == null? null : collector instanceof TeamOrPersonBase
+                ? ((TeamOrPersonBase<?>)collector).getCollectorTitleCache() : collector.getTitleCache();
         result = CdmUtils.concat(", ", result, collectorStr);
 
         //gathering period
