@@ -1928,6 +1928,7 @@ public class CdmLightClassificationExport
                 Set<TaxonBase> taxonBases = name.getTaxonBases();
                 TaxonBase<?> taxonBase;
 
+
                 String sec = "";
                 String nameString = name.getFullTitleCache();
                 String doubtful = "";
@@ -2080,6 +2081,7 @@ public class CdmLightClassificationExport
 
                      }else{
                          if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
+                             acceptedTaxon = (Taxon)taxonBase;
                              isAccepted = true;
                              synonymSign = "";
                          }else {
@@ -2196,7 +2198,44 @@ public class CdmLightClassificationExport
                     if(specimen != null && !state.getSpecimenStore().contains( specimen.getUuid())){
                         handleSpecimen(state, specimen);
                     }
+                }else if (typeDes instanceof NameTypeDesignation) {
+                    TaxonName name = ((NameTypeDesignation)typeDes).getTypeName();
+                    if (name != null && !state.getNameStore().containsValue(name.getUuid())) {
+                        if (name.getTaxonBases().size() == 1) {
+                            TaxonBase taxonBase = name.getTaxonBases().iterator().next();
+                            if (taxonBase instanceof Taxon) {
+                                handleName(state, name,(Taxon)taxonBase , true);
+                            }else {
+                                handleName(state, name,((Synonym)taxonBase).getAcceptedTaxon(), true);
+                            }
+                        }else if (name.getTaxonBases().isEmpty()){
+                            handleName(state, name, null, true);
+                        }else {
+                            Taxon taxon;
+                            Synonym syn;
+                            UUID classificationUUID = state.getClassificationUUID(null);
+                            boolean nameHandled = false;
+                            for (TaxonBase taxonBase: name.getTaxonBases()) {
+                                if (taxonBase instanceof Taxon) {
+                                    taxon = (Taxon)taxonBase;
+                                }else {
+                                    syn = (Synonym)taxonBase;
+                                    taxon = syn.getAcceptedTaxon();
+                                }
+                                for (TaxonNode node:taxon.getTaxonNodes()) {
+                                    if (node.getClassification().getUuid().equals(classificationUUID)) {
+                                        handleName(state, name, taxon, true);
+                                        nameHandled = true;
+                                    }
+                                }
+                            }
+                            if (!nameHandled) {
+                                handleName(state, name, null, true);
+                            }
+                        }
+                    }
                 }
+
             }
 
             String atomizedTypeString = !list.isEmpty()? createTypeDesignationString(list): "";
