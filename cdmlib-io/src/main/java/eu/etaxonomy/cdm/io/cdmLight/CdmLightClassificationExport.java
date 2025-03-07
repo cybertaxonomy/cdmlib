@@ -2235,7 +2235,6 @@ public class CdmLightClassificationExport
                         }
                     }
                 }
-
             }
 
             String atomizedTypeString = !list.isEmpty()? createTypeDesignationString(list): "";
