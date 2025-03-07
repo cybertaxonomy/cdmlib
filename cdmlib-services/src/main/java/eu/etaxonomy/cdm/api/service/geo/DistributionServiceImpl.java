@@ -212,7 +212,7 @@ public class DistributionServiceImpl implements IDistributionService {
     }
 
     @Override
-    //TODO needed?
+    //TODO needed?  //2025-03-07 currently used by TaxEditor for DistributionMap for feature "Distribution"
     public String getDistributionServiceRequestParameterString(
             Set<Distribution> distributions,
             boolean preferSubareas,
