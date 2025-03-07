@@ -17,7 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -255,7 +254,43 @@ public class CdmLightExportTest
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
-    @Ignore
+    public void testUniqueCitation(){
+
+        //config + invoke
+        CdmLightExportConfigurator config = newConfigurator();
+        ExportResult result = defaultExport.invoke(config);
+        Map<String, byte[]> data = checkAndGetData(result);
+        Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
+
+        //test ...
+        //taxon
+        List<String> taxonResult = getStringList(data, CdmLightExportTable.TAXON);
+        Assert.assertEquals("There should be 4 taxa", 4, taxonResult.size() - COUNT_HEADER);
+
+        //reference
+        List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
+        Assert.assertEquals("There should be 11 references (8 nomenclatural references and 3 sec reference)", 11, referenceResult.size() - COUNT_HEADER);
+
+        //Test for unique citation
+        String line = getLine(referenceResult, ref2UUID);
+        String expected = "Author (1980)";
+        Assert.assertTrue(line.contains(expected));
+        line = getLine(referenceResult, ref3UUID);
+        expected = "Author (1980a)";
+        Assert.assertTrue(line.contains(expected));
+
+
+        //synonyms
+        List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
+        Assert.assertEquals("There should be 2 synonyms", 2, synonymResult.size() - COUNT_HEADER);
+    }
+
+
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    })
     public void testTypeDesignationOutput(){
 
 
@@ -267,9 +302,16 @@ public class CdmLightExportTest
         List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
         Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
         Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
-        //String line = getLine(hgList, speciesNameHgUuid);
-        //the reference is another than the sec1 therefore it should be Mustermann 2012a
-        //String expected = "Holotype (designated by Mustermann 2012a): Armenia, Somewhere in the forest, 55°33'22""N, 15°13'12""W (WGS84), Collector team CT222 (B A555).";
+        String line = getLine(hgList, speciesNameHgUuid);
+
+        String expectedSpecimen = "Holotype: Armenia, Somewhere in the forest, 55°33'22\"\"N, 15°13'12\"\"W (WGS84), Collector team CT222 (B A555).";
+
+        Assert.assertTrue(line.contains(expectedSpecimen));
+        String expectedText = "Textual typedesignation test.";
+        Assert.assertTrue(line.contains(expectedText));
+        //textual type designation should be contained only once
+        Assert.assertTrue(line.lastIndexOf(expectedText)== line.indexOf(expectedText));
+        //TODO: NameTypedesignation
 
 
     }
