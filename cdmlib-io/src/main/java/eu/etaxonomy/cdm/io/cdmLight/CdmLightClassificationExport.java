@@ -263,6 +263,7 @@ public class CdmLightClassificationExport
         } else {
             try {
                 TaxonNode root = taxonNode;
+                state.setClassificationUUID(root.getClassification().getUuid());
                 List<TaxonNodeDto> childNodes;
                 if (root.hasChildNodes()) {
                     childNodes = new ArrayList<>();
@@ -2278,6 +2279,9 @@ public class CdmLightClassificationExport
             state.getProcessor().put(table, String.valueOf(group.getId()), csvLine);
 
         } catch (Exception e) {
+            group = HibernateProxyHelper.deproxy(group, HomotypicalGroup.class);
+            e.printStackTrace();
+
             state.getResult().addException(e, "An unexpected error occurred when handling homotypic group "
                     + cdmBaseStr(group) + ": " + e.getMessage());
         }
