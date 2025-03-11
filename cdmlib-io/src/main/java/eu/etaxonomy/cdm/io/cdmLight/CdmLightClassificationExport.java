@@ -2201,38 +2201,46 @@ public class CdmLightClassificationExport
                     }
                 }else if (typeDes instanceof NameTypeDesignation) {
                     TaxonName name = ((NameTypeDesignation)typeDes).getTypeName();
+                    //if name is not handled already, do it now
                     if (name != null && !state.getNameStore().containsValue(name.getUuid())) {
+                        Taxon taxon = null;
+                        boolean nameHandled = false;
                         if (name.getTaxonBases().size() == 1) {
+                            //for the synonyms in homotypic group we need the accepted taxon, this should be in the same classification
                             TaxonBase taxonBase = name.getTaxonBases().iterator().next();
                             if (taxonBase instanceof Taxon) {
-                                handleName(state, name,(Taxon)taxonBase , true);
+                                taxon = (Taxon) taxonBase;
                             }else {
-                                handleName(state, name,((Synonym)taxonBase).getAcceptedTaxon(), true);
+                                taxon = ((Synonym)taxonBase).getAcceptedTaxon();
                             }
                         }else if (name.getTaxonBases().isEmpty()){
                             handleName(state, name, null, true);
+                            nameHandled = true;
                         }else {
-                            Taxon taxon;
+                            Taxon taxonTemp = null;
                             Synonym syn;
                             UUID classificationUUID = state.getClassificationUUID(null);
-                            boolean nameHandled = false;
                             for (TaxonBase taxonBase: name.getTaxonBases()) {
                                 if (taxonBase instanceof Taxon) {
-                                    taxon = (Taxon)taxonBase;
+                                    taxonTemp = (Taxon)taxonBase;
                                 }else {
                                     syn = (Synonym)taxonBase;
-                                    taxon = syn.getAcceptedTaxon();
+                                    taxonTemp = syn.getAcceptedTaxon();
                                 }
-                                for (TaxonNode node:taxon.getTaxonNodes()) {
+                                //check whether the taxon is part of the exported classification
+                                for (TaxonNode node:taxonTemp.getTaxonNodes()) {
                                     if (node.getClassification().getUuid().equals(classificationUUID)) {
-                                        handleName(state, name, taxon, true);
-                                        nameHandled = true;
+                                        taxon = taxonTemp;
+                                        break;
                                     }
                                 }
                             }
-                            if (!nameHandled) {
-                                handleName(state, name, null, true);
-                            }
+                        }
+                        if (taxon != null) {
+                            handleName(state, name, taxon, true);
+                        }else {
+                            //if no taxon using the name is part of the classification, handle the name without taxon
+                            handleName(state, name, null, true);
                         }
                     }
                 }
