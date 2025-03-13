@@ -745,7 +745,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     Media media;
                     try {
                         media = extractMedia(state, multimediaObject);
-                        if (media == null) {
+                       if (media == null) {
                             continue;
                         }
                         derivedUnitFacade.addFieldObjectMedia(media);
@@ -792,6 +792,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
 
             save(state.getDerivedUnitBase(), state);
+
             Map<UUID, DescriptionBase> deriveedUnitDescriptions = saveDescriptions(state.getDerivedUnitBase().getSpecimenDescriptions(), state);
             if (derivedUnitFacade.getFieldUnit(false) != null) {
                 Map<UUID, DescriptionBase> fieldUnitDescriptions = saveDescriptions(derivedUnitFacade.getFieldUnit(false).getSpecimenDescriptions(), state);
@@ -998,8 +999,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                                                                                   // deleted
                                     ) {
                                         currentFieldUnit.removeDerivationEvent(currentDerivedFrom);
-                                        if (associatedFieldUnit != null && associatedFieldUnit.getGatheringEvent() != null && associatedFieldUnit.getGatheringEvent().getActor() == null && currentFieldUnit.getGatheringEvent().getActor() != null){
-                                            associatedFieldUnit.getGatheringEvent().setActor(currentFieldUnit.getGatheringEvent().getActor());
+                                        if (associatedFieldUnit != null && currentFieldUnit.getGatheringEvent().getActor() != null){
+                                            if (associatedFieldUnit.getGatheringEvent() == null) {
+                                                associatedFieldUnit.setGatheringEvent(currentFieldUnit.getGatheringEvent());
+                                            }else {
+                                                associatedFieldUnit.getGatheringEvent().setActor(currentFieldUnit.getGatheringEvent().getActor());
+                                            }
                                         }
                                         if (associatedFieldUnit != null && associatedFieldUnit.getFieldNumber() == null && currentFieldUnit.getFieldNumber() != null) {
                                             associatedFieldUnit.setFieldNumber(currentFieldUnit.getFieldNumber());
