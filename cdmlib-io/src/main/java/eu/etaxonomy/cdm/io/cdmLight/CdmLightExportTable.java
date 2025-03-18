@@ -149,7 +149,7 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
     static final String NOM_STATUS = "NomenclaturalStatus";
     static final String NOM_STATUS_ABBREV = "NomenclaturalStatusAbbreviation";
     static final String HOMOTYPIC_GROUP_FK = "HomotypicGroup_Fk";
-    static final String HOMOTYPIC_GROUP_SEQ = "HomotypicGroupSequenceNumber";
+    //static final String HOMOTYPIC_GROUP_SEQ = "HomotypicGroupSequenceNumber";
     static final String PROTOLOGUE_TYPE_STATEMENT = "ProtologueTypeStatement";
     static final String TYPE_SPECIMEN = "TypeSpecimens";
     static final String TYPE_STATEMENT = "TypeStatements";
@@ -353,7 +353,7 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
                 ABBREV_REF_AUTHOR, FULL_REF_AUTHOR, COLLATION, VOLUME_ISSUE,
                 DETAIL, DATE_PUBLISHED, YEAR_PUBLISHED, VERBATIM_DATE, PROTOLOGUE_URI,
                 NOM_STATUS, NOM_STATUS_ABBREV, HOMOTYPIC_GROUP_FK,
-                HOMOTYPIC_GROUP_SEQ, PROTOLOGUE_TYPE_STATEMENT, TYPE_SPECIMEN, TYPE_STATEMENT,
+                PROTOLOGUE_TYPE_STATEMENT, TYPE_SPECIMEN, TYPE_STATEMENT,
                 FULL_NAME_WITH_REF, ORIGINAL_SPELLING_FK, ORIGINAL_SPELLING, APPENDED_PHRASE
         };
     }

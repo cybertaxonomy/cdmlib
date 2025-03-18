@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.name.TypeComparator;
 import eu.etaxonomy.cdm.compare.reference.SourceComparator;
-import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
 import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
@@ -315,7 +314,7 @@ public class CdmLightClassificationExport
                 try {
                     //accepted name
                     TaxonName name = taxon.getName();
-                    handleName(state, name, taxon, WITH_NAME_REL);
+                    handleName(state, name, WITH_NAME_REL);
                     if (taxon.getSec() != null) {
                         handleReference(state, taxon.getSec());
                     }
@@ -382,7 +381,7 @@ public class CdmLightClassificationExport
                     TaxonName subName = taxon.getSecSource() == null? null : taxon.getSecSource().getNameUsedInSource();
                     if (subName != null) {
                         csvLine[table.getIndex(CdmLightExportTable.SEC_SUBNAME_FK)] = getId(state, subName);
-                        handleName(state, subName, null, !WITH_NAME_REL);
+                        handleName(state, subName, !WITH_NAME_REL);
                         List<TaggedText> subNameTaggedText  = subName.getTaggedName();
                         List<TaggedText> subNameTaggedTextWithoutAuthor = new ArrayList<>();
                         subNameTaggedText.stream().filter(tt->!tt.getType().equals(TagEnum.authors)).forEach(tt->subNameTaggedTextWithoutAuthor.add(tt));
@@ -990,7 +989,7 @@ public class CdmLightClassificationExport
                 return;
             }
             TaxonName name = synonym.getName();
-            handleName(state, name, synonym.getAcceptedTaxon(), WITH_NAME_REL);
+            handleName(state, name, WITH_NAME_REL);
 
             CdmLightExportTable table = CdmLightExportTable.SYNONYM;
             String[] csvLine = new String[table.getSize()];
@@ -1032,7 +1031,7 @@ public class CdmLightClassificationExport
                 return;
             }
             TaxonName name = ppSynonym.getName();
-            handleName(state, name, accepted, WITH_NAME_REL);  //TODO unclear if really with name rel
+            handleName(state, name, WITH_NAME_REL);  //TODO unclear if really with name rel
 
             CdmLightExportTable table = CdmLightExportTable.SYNONYM;
             String[] csvLine = new String[table.getSize()];
@@ -1112,7 +1111,7 @@ public class CdmLightClassificationExport
      *        the name exists in the synonymy, therefore this parameter only needs to be set
      *        to true if the given name parameter is found in the synonymy.
      */
-    private void handleName(CdmLightExportState state, TaxonName name, Taxon acceptedTaxon,
+    private void handleName(CdmLightExportState state, TaxonName name,
             boolean withNameRelationships) {
 
         if (name == null || state.getNameStore().containsKey(name.getId())) {
@@ -1224,7 +1223,7 @@ public class CdmLightClassificationExport
 
             NomenclaturalSource nomenclaturalSource = name.getNomenclaturalSource();
             if (nomenclaturalSource != null &&nomenclaturalSource.getNameUsedInSource() != null){
-                handleName(state, nomenclaturalSource.getNameUsedInSource(), null, !WITH_NAME_REL);
+                handleName(state, nomenclaturalSource.getNameUsedInSource(), !WITH_NAME_REL);
                 csvLine[table.getIndex(CdmLightExportTable.ORIGINAL_SPELLING_FK)] = getId(state, nomenclaturalSource.getNameUsedInSource());
                 csvLine[table.getIndex(CdmLightExportTable.ORIGINAL_SPELLING)] = createNameWithItalics(nomenclaturalSource.getNameUsedInSource().getTaggedFullTitle());
             }
@@ -1421,24 +1420,7 @@ public class CdmLightClassificationExport
 
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_FK)] = getId(state, group);
             List<TaxonName> typifiedNames = new ArrayList<>();
-            if (acceptedTaxon != null){
-                HomotypicGroupTaxonComparator comparator = new HomotypicGroupTaxonComparator(acceptedTaxon);
-                List<Synonym> synonymsInGroup = null;
-                if (group.equals(acceptedTaxon.getHomotypicGroup())){
-                    synonymsInGroup = acceptedTaxon.getHomotypicSynonymsByHomotypicGroup(comparator);
-                    typifiedNames.add(name);
-                }else{
-                    synonymsInGroup = acceptedTaxon.getSynonymsInGroup(group, comparator);
-                }
 
-                synonymsInGroup.stream().forEach(synonym -> typifiedNames.add(HibernateProxyHelper.deproxy(synonym.getName())));
-
-            }else{
-                typifiedNames.addAll(group.getTypifiedNames());
-            }
-
-            Integer seqNumber = typifiedNames.indexOf(name);
-            csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_SEQ)] = String.valueOf(seqNumber);
             state.getProcessor().put(table, name, csvLine);
             if (withNameRelationships) {
                 handleNameRelationships(state, name);
@@ -1532,7 +1514,7 @@ public class CdmLightClassificationExport
                 NameRelationshipType type = rel.getType();
                 TaxonName name2 = rel.getToName();
                 name2 = HibernateProxyHelper.deproxy(name2, TaxonName.class);
-                handleName(state, name2, null, !WITH_NAME_REL);
+                handleName(state, name2, !WITH_NAME_REL);
                 csvLine = new String[table.getSize()];
                 csvLine[table.getIndex(CdmLightExportTable.NAME_REL_TYPE)] = type.getLabel();
                 csvLine[table.getIndex(CdmLightExportTable.NAME1_FK)] = getId(state, name);
@@ -1547,7 +1529,7 @@ public class CdmLightClassificationExport
             for (NameRelationship rel : rels) {
                 TaxonName name2 = rel.getFromName();
                 name2 = HibernateProxyHelper.deproxy(name2);
-                handleName(state, name2, null, !WITH_NAME_REL);
+                handleName(state, name2, !WITH_NAME_REL);
             }
         } catch (ClassCastException e) {
             state.getResult().addException(e,
@@ -2203,45 +2185,7 @@ public class CdmLightClassificationExport
                     TaxonName name = ((NameTypeDesignation)typeDes).getTypeName();
                     //if name is not handled already, do it now
                     if (name != null && !state.getNameStore().containsValue(name.getUuid())) {
-                        Taxon taxon = null;
-                        boolean nameHandled = false;
-                        if (name.getTaxonBases().size() == 1) {
-                            //for the synonyms in homotypic group we need the accepted taxon, this should be in the same classification
-                            TaxonBase taxonBase = name.getTaxonBases().iterator().next();
-                            if (taxonBase instanceof Taxon) {
-                                taxon = (Taxon) taxonBase;
-                            }else {
-                                taxon = ((Synonym)taxonBase).getAcceptedTaxon();
-                            }
-                        }else if (name.getTaxonBases().isEmpty()){
-                            handleName(state, name, null, true);
-                            nameHandled = true;
-                        }else {
-                            Taxon taxonTemp = null;
-                            Synonym syn;
-                            UUID classificationUUID = state.getClassificationUUID(null);
-                            for (TaxonBase taxonBase: name.getTaxonBases()) {
-                                if (taxonBase instanceof Taxon) {
-                                    taxonTemp = (Taxon)taxonBase;
-                                }else {
-                                    syn = (Synonym)taxonBase;
-                                    taxonTemp = syn.getAcceptedTaxon();
-                                }
-                                //check whether the taxon is part of the exported classification
-                                for (TaxonNode node:taxonTemp.getTaxonNodes()) {
-                                    if (node.getClassification().getUuid().equals(classificationUUID)) {
-                                        taxon = taxonTemp;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        if (taxon != null) {
-                            handleName(state, name, taxon, true);
-                        }else {
-                            //if no taxon using the name is part of the classification, handle the name without taxon
-                            handleName(state, name, null, true);
-                        }
+                        handleName(state, name, true);
                     }
                 }
             }
