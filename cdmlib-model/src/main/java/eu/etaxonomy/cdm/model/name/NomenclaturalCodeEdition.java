@@ -52,13 +52,22 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     //0
     /**
      * International Code of Nomenclature for algae, fungi, and plants.
+     * Madrid 2017
+     * Turland, N.J., Wiersema, J.H., Barrie, F.R., Gandhi, K.N., Gravendyck, J., Greuter, W.R., Hawksworth, D.L., Herendeen, P.S., Klopper, R.R., Knapp, S.D., Kusber, W.-H., Li, D.Z., May, T.W., Monro, A.M., Prado, J., Price, M.J., Smith, G.F. & Zamora Señoret, J.C 2025: International Code of Nomenclature for algae, fungi, and plants (Madrid Code): 1-288. – Chicago: The University of Chicago Press
+     */
+    @XmlEnumValue("Madrid")
+    ICN_2024_MADRID(UUID.fromString("acac1bdb-3227-4cbf-b945-c252af439a0c"), "ICN", "Madrid", 2024, 2025, NomenclaturalCode.ICNAFP, null, "10.7208/chicago/9780226839479.001.0001" ),
+
+    //1
+    /**
+     * International Code of Nomenclature for algae, fungi, and plants.
      * Shenzhen 2017
      * Turland, N. J., Wiersema, J. H., Barrie, F. R., Greuter, W., Hawksworth, D. L., Herendeen, P. S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T. W., McNeill, J., Monro, A. M., Prado, J., Price, M. J. & Smith, G. F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017. Regnum Vegetabile 159. Glashütten: Koeltz Botanical Books. DOI https://doi.org/10.12705/Code.2018
      */
     @XmlEnumValue("Shenzhen")
-    ICN_2017_SHENZHEN(UUID.fromString("87e8ac37-97c4-43c7-a016-43f1a5c3503f"), "ICN", "Shenzhen", 2017, 2018, NomenclaturalCode.ICNAFP, "Q56701992","10.12705/Code.2018" ),
+    ICN_2017_SHENZHEN(UUID.fromString("87e8ac37-97c4-43c7-a016-43f1a5c3503f"), "ICN", "Shenzhen", 2017, 2018, NomenclaturalCode.ICNAFP, "Q56701992", "10.12705/Code.2018" ),
 
-    //1
+    //2
     /**
      * International Code of Nomenclature for algae, fungi, and plants.
      * Melbourne 2011
@@ -66,7 +75,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Melbourne")
     ICN_2011_MELBOURNE(UUID.fromString("ea2ebf9e-e3eb-4aaf-8007-c6f9f8877451"), "ICN", "Melbourne", 2011, 2012, NomenclaturalCode.ICNAFP, "Q15895076", null),
 
-    //2
+    //3
     /**
      * International Code of Botanical Nomenclature.
      * Vienna 2005
@@ -74,7 +83,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Vienna")
     ICN_2005_VIENNA(UUID.fromString("d8f9f3d6-96af-4d83-a8d5-04ff62ba4d9c"), "ICBN", "Vienna", 2005, 2006, NomenclaturalCode.ICNAFP, "Q15895126", null),
 
-    //3
+    //4
     /**
      * International Code of Botanical Nomenclature.
      * Saint Louis 1999
@@ -82,7 +91,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Saint Louis")
     ICN_1999_ST_LOUIS(UUID.fromString("2746b72e-43be-4073-90d0-494a7afac271"), "ICBN", "Saint Louis", 1999, 2000, NomenclaturalCode.ICNAFP, "Q15895151", null),
 
-    //4
+    //5
     /**
      * International Code of Botanical Nomenclature.
      * Tokyo 1993
@@ -90,7 +99,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Tokyo")
     ICN_1993_TOKYO(UUID.fromString("5a846761-839f-4f77-b614-7181b9b29355"), "ICBN", "Tokyo", 1993, 1994, NomenclaturalCode.ICNAFP, "Q15895201", null),
 
-    //5
+    //6
     /**
      * International Code of Botanical Nomenclature.
      * Berlin 1987
@@ -98,7 +107,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Berlin")
     ICN_1987_BERLIN(UUID.fromString("5702fc16-e194-4ad2-bdaf-4451af523db2"), "ICBN", "Berlin", 1987, 1988, NomenclaturalCode.ICNAFP, null, null),
 
-    //6
+    //7
     /**
      * International Code of Botanical Nomenclature.
      * Sydney 1981
@@ -106,7 +115,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Sydney")
     ICN_1981_SYDNEY(UUID.fromString("f956c556-6d79-4e0f-adeb-ed9d81f2fa24"), "ICBN", "Sydney", 1981, 1983, NomenclaturalCode.ICNAFP, null, null),
 
-    //7
+    //8
     /**
      * International Code of Botanical Nomenclature.
      * Leningrad 1975
@@ -114,7 +123,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Leningrad")
     ICN_1975_LENINGRAD(UUID.fromString("f52e50b4-4c75-42dd-8efe-39cd966da712"), "ICBN", "Leningrad", 1975, 1978, NomenclaturalCode.ICNAFP, null, null),
 
-    //8
+    //9
     /**
      * International Code of Botanical Nomenclature.
      * Seattle 1969
@@ -122,7 +131,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Seattle")
     ICN_1969_SEATTLE(UUID.fromString("2d19b5af-27cc-428e-affb-8a06563ff9cd"), "ICBN", "Seattle", 1969, 1972, NomenclaturalCode.ICNAFP, null, null),
 
-    //9
+    //10
     /**
      * International Code of Botanical Nomenclature.
      * Edinburgh 1959
@@ -130,7 +139,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Edinburgh")
     ICN_1964_EDINBURGH(UUID.fromString("7ca16490-10a4-4991-9d70-2aade1706c76"), "ICBN", "Edinburgh", 1964, 1966, NomenclaturalCode.ICNAFP, null, null),
 
-    //10
+    //11
     /**
      * International Code of Botanical Nomenclature.
      * Montreal 1959
@@ -138,7 +147,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Montreal")
     ICN_1959_EDINBURGH(UUID.fromString("bebcdcf2-b479-43d0-8635-f586334be204"), "ICBN", "Montreal", 1959, 1961, NomenclaturalCode.ICNAFP, null, null),
 
-    //11
+    //12
     /**
      * International Code of Botanical Nomenclature.
      * Paris 1954
@@ -146,7 +155,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Paris")
     ICN_1954_PARIS(UUID.fromString("c57adbf9-890e-4e38-a667-3fdf2328f3c8"), "ICBN", "Paris", 1954, 1956, NomenclaturalCode.ICNAFP, null, null),
 
-    //12
+    //13
     /**
      * International Code of Botanical Nomenclature.
      * Stockholm 1952
@@ -154,7 +163,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Stockholm")
     ICN_1950_STOCKHOLM(UUID.fromString("a0c07e5f-9b2b-4cd7-9f14-acd4729f175a"), "ICBN", "Stockholm", 1950, 1952, NomenclaturalCode.ICNAFP, null, null),
 
-    //13
+    //14
     /**
      * International Code of Botanical Nomenclature.
      * Stockholm 1952
@@ -162,7 +171,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     @XmlEnumValue("Amsterdam")
     ICN_1935_AMSTERDAM(UUID.fromString("4676654f-41ef-4311-a708-ba9b4b301117"), "ICBN", "Amsterdam", 1935, 1950, NomenclaturalCode.ICNAFP, null, null),
 
-    //14
+    //15
     /**
      * International Code of Botanical Nomenclature.
      * Cambridge Rules 1935
@@ -171,7 +180,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     //TODO abbrev correct?
     ICN_1930_CAMBRIDGE(UUID.fromString("e6f7e578-2ce5-434d-9904-aaf2a6e06c43"), "Rules", "Cambrdige", 1930, 1935, NomenclaturalCode.ICNAFP, null, null),
 
-    //15
+    //16
     /**
      * International Code of Botanical Nomenclature.
      * Cambridge Rules 1935
@@ -180,7 +189,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     //TODO abbrev correct?
     ICN_1910_BRUSSELS(UUID.fromString("954c4a71-86ec-489d-b7f1-1878e3b31ebb"), "Rules", "Brussels", 1910, 1912, NomenclaturalCode.ICNAFP, null, null),
 
-    //16
+    //17
     /**
      * International Code of Botanical Nomenclature.
      * Vienna Rules 1905
@@ -189,7 +198,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     //TODO abbrev correct?
     ICN_1905_VIENNA(UUID.fromString("23781153-540f-4c54-a5ae-5d6b6f490332"), "Rules", "Vienna", 1905, 1906, NomenclaturalCode.ICNAFP, null, null),
 
-    //17
+    //18
     /**
      * International Code of Botanical Nomenclature.
      * Laws of botanical nomenclature 1867
@@ -428,7 +437,40 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     }
 
     private Reference getCitation() {
-        if (this.citation == null) {
+        if (this == NomenclaturalCodeEdition.ICN_2024_MADRID) {
+            citation = ReferenceFactory.newBook();
+            citation.setTitle("International Code of Nomenclature for algae, fungi, and plants (Madrid Code)");
+            Team team = Team.NewInstance();
+            citation.setAuthorship(team);
+            team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
+            team.addTeamMember(Person.NewInstance(null, "Wiersema", "J.H.", null));
+            team.addTeamMember(Person.NewInstance(null, "Barrie", "F.R.", null));
+            team.addTeamMember(Person.NewInstance(null, "Gandhi", "K.N.", null));
+            team.addTeamMember(Person.NewInstance(null, "Gravendyck", "J.", null));
+            team.addTeamMember(Person.NewInstance(null, "Greuter", "W.", null));
+            team.addTeamMember(Person.NewInstance(null, "Hawksworth", "D.L.", null));
+            team.addTeamMember(Person.NewInstance(null, "Herendeen", "P.S.", null));
+            team.addTeamMember(Person.NewInstance(null, "Klopper", "R.R.", null));
+            team.addTeamMember(Person.NewInstance(null, "Knapp", "S.", null));
+            team.addTeamMember(Person.NewInstance(null, "Kusber", "W.-H.", null));
+            team.addTeamMember(Person.NewInstance(null, "Li", "D.-Z.", null));
+            team.addTeamMember(Person.NewInstance(null, "May", "T.W.", null));
+            team.addTeamMember(Person.NewInstance(null, "Monro", "A.M.", null));
+            team.addTeamMember(Person.NewInstance(null, "Prado", "J.", null));
+            team.addTeamMember(Person.NewInstance(null, "Price", "M.J.", null));
+            team.addTeamMember(Person.NewInstance(null, "Smith", "G.F.", null));
+            team.addTeamMember(Person.NewInstance(null, "Zamora Se" + UTF8.SMALL_N_TILDE + "oret", "J.C.", null));
+            citation.setAuthorIsEditor(true);
+
+            citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2025"));
+            citation.setPublisher("The University of Chicago Press", "Chicago");
+            citation.setDoi(ICN_2024_MADRID.getDoi());
+            citation.setIsbn("978-0-226-83946-2");
+            citation.setSeriesPart(null);  //TODO ??
+            //TODO is this according to the official how to cite? See also Shenzhen Code; https://www.iapt-taxon.org/nomen/pages/intro/citation.html
+            citation.setPages("1-288");
+            citation.setUuid(UUID.fromString("6c2ba9b0-0368-4222-a4c0-5930d7c60825"));
+        } else if (this.citation == null) {
             if (this == NomenclaturalCodeEdition.ICN_2017_SHENZHEN) {
                 citation = ReferenceFactory.newBook();
                 citation.setTitle("International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017.");
@@ -449,8 +491,9 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 team.addTeamMember(Person.NewInstance(null, "Monro", "A.M.", null));
                 team.addTeamMember(Person.NewInstance(null, "Prado", "J.", null));
                 team.addTeamMember(Person.NewInstance(null, "Price", "M.J.", null));
-                //TODO eds.
-                team.addTeamMember(Person.NewInstance(null, "Smith", "G.F. (eds.)", null));
+                team.addTeamMember(Person.NewInstance(null, "Smith", "G.F.", null));
+                citation.setAuthorIsEditor(true);
+
                 citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2018"));
                 citation.setPublisher("Koeltz Botanical Books", "Glash"+UTF8.U_UMLAUT+"tten");
                 citation.setDoi(ICN_2017_SHENZHEN.getDoi());
@@ -476,8 +519,8 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 team.addTeamMember(Person.NewInstance(null, "Prud’homme van Reine", "W.F.", null));
                 team.addTeamMember(Person.NewInstance(null, "Smith", "G.F.", null));
                 team.addTeamMember(Person.NewInstance(null, "Wiersema", "J.H.", null));
-                //TODO eds.
                 team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
+                citation.setAuthorIsEditor(true);
 
                 citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2012"));
                 citation.setPublisher("Koeltz Scientific Books", "K"+UTF8.O_UMLAUT+"nigstein");
@@ -503,8 +546,8 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 team.addTeamMember(Person.NewInstance(null, "Silva", "P.C.", null));
                 team.addTeamMember(Person.NewInstance(null, "Skog", "J.E.", null));
                 team.addTeamMember(Person.NewInstance(null, "Wiersema", "J.H.", null));
-                //TODO eds.
                 team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
+                citation.setAuthorIsEditor(true);
 
                 citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2006"));
                 citation.setPublisher("A.R.G. Gantner Verlag KG", null);
@@ -530,8 +573,8 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 team.addTeamMember(Person.NewInstance(null, "Skog", "J.E.", null));
                 team.addTeamMember(Person.NewInstance(null, "Trehane", "P.", null));
                 team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
-                //TODO eds.
                 team.addTeamMember(Person.NewInstance(null, "Hawksworth", "D.L.", null));
+                citation.setAuthorIsEditor(true);
 
                 citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2000"));
                 citation.setPublisher("Koeltz Scientific Books", "K"+UTF8.O_UMLAUT+"nigstein");
@@ -552,8 +595,8 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
                 team.addTeamMember(Person.NewInstance(null, "Hawksworth", "D.L.", null));
                 team.addTeamMember(Person.NewInstance(null, "Lendemer", "J.", null));
                 team.addTeamMember(Person.NewInstance(null, "Lombard", "L.", null));
-                //TODO eds.
                 team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
+                citation.setAuthorIsEditor(true);
 
                 citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2019"));
                 Reference journal = ReferenceFactory.newJournal();

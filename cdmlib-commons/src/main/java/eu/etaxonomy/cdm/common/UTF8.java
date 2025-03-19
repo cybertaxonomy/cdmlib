@@ -27,6 +27,7 @@ public enum UTF8 {
 	O_UMLAUT("\u00F6"),   //small o umlaut, latin small letter o with diaeresis
     U_UMLAUT("\u00FC"),   //small u umlaut, latin small letter u with diaeresis
     SMALL_O_WITH_STROKE("\u00F8"),   //"Danish" o
+    SMALL_N_TILDE("\u00F1"),   //https://www.compart.com/de/unicode/U+00F1
 	NO_BREAK_SPACE("\u00A0"),
 	POLISH_L("\u0142"),
 	SMALL_A_ACUTE("\u00E1"),
