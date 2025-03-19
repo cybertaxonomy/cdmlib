@@ -624,7 +624,7 @@ public class ReferenceDefaultCacheStrategyTest {
         inSection.setTitle("My section title");
 
         Assert.assertEquals("Unexpected title cache.",
-                "Abel, A. 2023: My section title. – In: Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P., My record title. "
+                "Abel, A. 2023: My section title. "+UTF8.EN_DASH+" In: Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P., My record title. "
                 + "My database. Published at https://available.at [accessed 2008-04-30 09:10]",
                 inSection.getTitleCache());
 
