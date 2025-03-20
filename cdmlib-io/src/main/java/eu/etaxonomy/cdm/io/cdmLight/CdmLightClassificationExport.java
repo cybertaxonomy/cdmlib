@@ -1419,7 +1419,6 @@ public class CdmLightClassificationExport
             HomotypicalGroup group = HibernateProxyHelper.deproxy(name.getHomotypicalGroup());
 
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_FK)] = getId(state, group);
-            List<TaxonName> typifiedNames = new ArrayList<>();
 
             state.getProcessor().put(table, name, csvLine);
             if (withNameRelationships) {
@@ -1884,8 +1883,6 @@ public class CdmLightClassificationExport
                 }
                 synonymsInGroup.stream().forEach(synonym -> typifiedNames.add(CdmBase.deproxy(synonym.getName())));
             }
-
-
             TaxonName firstname = null;
             for (TaxonName name: typifiedNames){
                 Iterator<Taxon> taxa = name.getTaxa().iterator();
@@ -1897,8 +1894,6 @@ public class CdmLightClassificationExport
                     }
                 }
             }
-
-//            Collections.sort(typifiedNames, new HomotypicalGroupNameComparator(firstname, true));
             String typifiedNamesString = "";
             String typifiedNamesWithSecString = "";
             String typifiedNamesWithoutAccepted = "";
@@ -1947,18 +1942,8 @@ public class CdmLightClassificationExport
                     }
                     if (state.getConfig().isShowInverseNameRelationsInHomotypicGroup()) {
                         if (rel.getToName().equals(name)){
-                            // alle Homonyme und inverse blocking names
-//                               if (rel.getType().equals(NameRelationshipType.LATER_HOMONYM())
-//                                       || rel.getType().equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())
-//                                       || (rel.getType().equals(NameRelationshipType.BLOCKING_NAME_FOR()))
-//                                       || (rel.getType().equals(NameRelationshipType.UNSPECIFIC_NON()))
-//                                       || (rel.getType().equals(NameRelationshipType.AVOIDS_HOMONYM_OF()))
-//                                       ){
-//                                   nonNames.add(rel);
-//                               }else if (!rel.getType().isBasionymRelation()){
-                                   otherRelationships.add(rel);
-//                               }
-                         }
+                            otherRelationships.add(rel);
+                        }
                     }
                 }
 
@@ -1979,11 +1964,6 @@ public class CdmLightClassificationExport
                             nonRelNames += label + relatedName.getTitleCache();
                         }
                     }
-//                    else{
-//                        label = relName.getType().getInverseLabel() + " ";
-//                        relatedName = relName.getFromName();
-//                        nonRelNames += label + relatedName.getTitleCache() + " ";
-//                    }
                 }
                 nonRelNames.trim();
                 if (nonNames.size() > 0){
@@ -2022,8 +2002,6 @@ public class CdmLightClassificationExport
                     relNames = StringUtils.stripEnd(relNames, null);
                     relNames += "] ";
                 }
-
-
                 String synonymSign = "";
                 if (index > 0){
                     if (name.isInvalid()){
@@ -2042,7 +2020,6 @@ public class CdmLightClassificationExport
 
                 if (taxonBases.size() == 1){
                      taxonBase = HibernateProxyHelper.deproxy(taxonBases.iterator().next());
-
                      if (taxonBase.getSec() != null){
                          handleReference(state, taxonBase.getSec());
 
@@ -2060,8 +2037,6 @@ public class CdmLightClassificationExport
                          }else {
                              sec = "";
                          }
-
-
                      }else{
                          if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
                              acceptedTaxon = (Taxon)taxonBase;
@@ -2111,7 +2086,6 @@ public class CdmLightClassificationExport
                             }else {
                                 sec = "";
                             }
-
                             break;
                         }else{
                             sec = " sec. " + sec;
@@ -2121,10 +2095,6 @@ public class CdmLightClassificationExport
                                 synonymSign = "";
                                 break;
                             }else {
-//                                TaxonRelationshipFormatter taxRelFormatter = TaxonRelationshipFormatter.INSTANCE();
-//                              List<TaggedText> tags = taxRelFormatter.getTaggedText(rel, inverse, languages, withoutName);
-//                              String relLabel = TaggedTextFormatter.createString(tags);
-
                                 synonymSign = "\u003D ";
                             }
                         }
@@ -2135,14 +2105,11 @@ public class CdmLightClassificationExport
                         typifiedNamesWithoutAcceptedWithSec = typifiedNamesWithoutAcceptedWithSec.trim() + "; ";
                     }else {
                         sec = " sec. " + sec;
-
                     }
                 }
                 typifiedNamesString += synonymSign + doubtful + nameString + nonRelNames + relNames;
                 typifiedNamesWithSecString += synonymSign + doubtful + nameString.trim() + sec + nonRelNames + relNames;
                 typifiedNamesWithSecString = typifiedNamesWithSecString.trim() + " ";
-
-
 
                 csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
 
@@ -2169,7 +2136,6 @@ public class CdmLightClassificationExport
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
                 TypeDesignationGroupContainer manager = new TypeDesignationGroupContainer(group, false);
-
                 list.addAll(new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(false)
                         .toTaggedText(manager));
             }
@@ -2232,8 +2198,6 @@ public class CdmLightClassificationExport
 
         } catch (Exception e) {
             group = HibernateProxyHelper.deproxy(group, HomotypicalGroup.class);
-            e.printStackTrace();
-
             state.getResult().addException(e, "An unexpected error occurred when handling homotypic group "
                     + cdmBaseStr(group) + ": " + e.getMessage());
         }

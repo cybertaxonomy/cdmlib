@@ -36,9 +36,7 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
     FACT_SOURCES("FactSources", factSourcesColumns()),
     IDENTIFIER("Identifier", identifierColumns()),
     MEDIA("MediaFact", mediaColumns()),
-//    CONDENSED_DISTRIBUTION_FACT("CondensedDistributionFact", compressedDistributionFactColumns()),
     NAME_FACT("NameFact", nameFactColumns())//,
-    //TYPE_SPECIMEN_NAME("NameSpecimenTypeRelation", typeDesignationNameColumns())
     ;
 
     //Taxon/Synonym
@@ -104,16 +102,12 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
 
     static final String IN_REFERENCE = "InReference";
     static final String INSTITUTION = "Institution";
-   // static final String LSID = "LSID";
     static final String SCHOOL = "School";
     static final String REF_TYPE = "ReferenceType";
     static final String URI = "URI";
 
     //Name
     static final String NAME_ID = "Name_ID";
-//    static final String TROPICOS_ID = "Tropicos_ID";
-//    static final String IPNI_ID = "IPNI_ID";
-//    static final String WFO_ID = "WorldFloraOnline_ID";
     static final String LSID = "LSID";
     static final String RANK = "Rank";
     static final String RANK_SEQUENCE = "RankSequence";
@@ -134,7 +128,6 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
     static final String AUTHOR_TEAM_STRING = "AuthorTeamString";
     static final String ORIGINAL_SPELLING_FK = "OriginalSpelling_Fk";
     static final String ORIGINAL_SPELLING = "OriginalSpelling";
-   // static final String REFERENCE_FK = "Reference_Fk"
     static final String PUBLICATION_TYPE = "PublicationType";
     static final String ABBREV_TITLE = "AbbreviatedTitle";
     static final String FULL_TITLE = "FullTitle";
@@ -149,7 +142,6 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
     static final String NOM_STATUS = "NomenclaturalStatus";
     static final String NOM_STATUS_ABBREV = "NomenclaturalStatusAbbreviation";
     static final String HOMOTYPIC_GROUP_FK = "HomotypicGroup_Fk";
-    //static final String HOMOTYPIC_GROUP_SEQ = "HomotypicGroupSequenceNumber";
     static final String PROTOLOGUE_TYPE_STATEMENT = "ProtologueTypeStatement";
     static final String TYPE_SPECIMEN = "TypeSpecimens";
     static final String TYPE_STATEMENT = "TypeStatements";
@@ -281,10 +273,6 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
         return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING, TYPE_TEXTUAL, HOMOTYPIC_GROUP_WITH_SEC_STRING, HOMOTYPIC_GROUP_WITHOUT_ACCEPTED, HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC, SORT_INDEX, HOMOTYPIC_GROUP_TYPE_STATEMENT_REFERENCE};
     }
 
-//    private static String[] compressedDistributionFactColumns() {
-//        return new String[]{FACT_ID, TAXON_FK, FACT_TEXT};
-//    }
-
     private Object usageFactColumns() {
         return new String[]{FACT_ID, TAXON_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
     }
@@ -378,10 +366,6 @@ public enum CdmLightExportTable implements ITaxonTreeExportTable {
         return new String[]{TYPE_ID, TYPIFIED_NAME_FK, SPECIMEN_FK, //TYPE_VERBATIM_CITATION,
                 TYPE_STATUS, TYPE_DESIGNATED_BY_REF_FK, TYPE_DESIGNATED_BY_STRING, TYPE_INFORMATION_REF_STRING, TYPE_INFORMATION_REF_FK};
     }
-
-//    private final static String[] typeDesignationNameColumns(){
-//        return new String[]{TYPE_FK, NAME_FK};
-//    }
 
     private final static String[] specimenColumns() {
         return new String[]{SPECIMEN_ID, SPECIMEN_CITATION, FIELDUNIT_CITATION, LOCALITY, COUNTRY, AREA_CATEGORY1, AREA_NAME1, AREA_CATEGORY2, AREA_NAME2, AREA_CATEGORY3, AREA_NAME3,
