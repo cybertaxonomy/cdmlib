@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
@@ -553,17 +552,10 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertEquals(specimenFieldUnit, dnaSampleFieldUnit);
         assertEquals("fieldUnit1", dnaSampleFieldUnit.getTitleCache());
 
-        AgentBase collector1 = specimenFieldUnit.getGatheringEvent().getCollector();
-//
-//        AgentBase collector2 = dnaSampleFieldUnit.getGatheringEvent().getCollector();
-
         //test deduplication of collector
         Pager<Person> persons = agentService.findByTitle(Person.class, "Leon", MatchMode.BEGINNING, null, null, null, null, null);
         assertEquals("Collector Leonhard,A. already in database, therefore only one should be found.",
                 Long.valueOf(1), persons.getCount());
-
-
-
 	}
 
 	/**
@@ -652,23 +644,13 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         //agentService.find(Team.class, "Sch", MatchMode.B);
         assertEquals("There should be only one because the used one is already in the database", 1, count);
         List<Taxon> taxonList = taxonService.list(Taxon.class, null, null, null, null);
-        Taxon cichorium_intibus = null;
-        for (Taxon tax: taxonList) {
-            if (tax.getName().isSpecies()) {
-                cichorium_intibus = tax;
-                break;
-            }
-        }
+
         FindOccurrencesConfigurator dnaConfig = new FindOccurrencesConfigurator();
         dnaConfig.setSignificantIdentifier("B 10 0066577");
         List<DerivedUnitDTO> derivedUnitDtos = occurrenceService.findByTitleDerivedUnitDTO(dnaConfig);
 
         assertNotNull(derivedUnitDtos.get(0).getCollectorsString());
         assertEquals("Collectors String is wrong", derivedUnitDtos.get(0).getCollectorsString(), "Schweinfurt,C. & Meyer,B. Rec.It2993/88");
-
-
-
-
     }
 
 	@Test //#10570
@@ -697,11 +679,11 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertTrue("Return value for import.invoke should be true", result);
 
         count = agentService.count(Team.class);
-        //agentService.find(Team.class, "Sch", MatchMode.B);
+
         assertEquals("There should be two teams because the used one is not in the database", 2, count);
 
         count = agentService.count(Person.class);
-        //agentService.find(Team.class, "Sch", MatchMode.B);
+
         assertEquals("There should be 5 persons because all used are already in the database (3 existing + Jana + L.)", 5, count);
         Pager<Person> persons = agentService.findByTitle(Person.class, "Leon", MatchMode.BEGINNING, null, null, null, null, null);
         assertEquals("Collector Leonhard,A. already in database, therefore only one should be found.",
