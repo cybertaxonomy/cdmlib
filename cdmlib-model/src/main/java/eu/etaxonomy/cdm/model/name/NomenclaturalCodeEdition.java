@@ -439,7 +439,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
     private Reference getCitation() {
         if (this == NomenclaturalCodeEdition.ICN_2024_MADRID) {
             citation = ReferenceFactory.newBook();
-            citation.setTitle("International Code of Nomenclature for algae, fungi, and plants (Madrid Code)");
+            citation.setTitle("International Code of Nomenclature for algae, fungi, and plants (Madrid Code). Regnum Vegetabile 162");
             Team team = Team.NewInstance();
             citation.setAuthorship(team);
             team.addTeamMember(Person.NewInstance(null, "Turland", "N.J.", null));
@@ -460,7 +460,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
             team.addTeamMember(Person.NewInstance(null, "Price", "M.J.", null));
             team.addTeamMember(Person.NewInstance(null, "Smith", "G.F.", null));
             team.addTeamMember(Person.NewInstance(null, "Zamora Se" + UTF8.SMALL_N_TILDE + "oret", "J.C.", null));
-            citation.setAuthorIsEditor(true);
+            citation.setAuthorIsEditor(false);  //here they are all authors //#10733
 
             citation.setDatePublished(TimePeriodParser.parseStringVerbatim("2025"));
             citation.setPublisher("The University of Chicago Press", "Chicago");
@@ -468,7 +468,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
             citation.setIsbn("978-0-226-83946-2");
             citation.setSeriesPart(null);  //TODO ??
             //TODO is this according to the official how to cite? See also Shenzhen Code; https://www.iapt-taxon.org/nomen/pages/intro/citation.html
-            citation.setPages("1-288");
+            citation.setPages("i-xlvii, 1-288");
             citation.setUuid(UUID.fromString("6c2ba9b0-0368-4222-a4c0-5930d7c60825"));
         } else if (this.citation == null) {
             if (this == NomenclaturalCodeEdition.ICN_2017_SHENZHEN) {
