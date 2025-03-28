@@ -40,7 +40,7 @@
     <httpcomponents.version>4.5.13</httpcomponents.version>
     <doxia.version>1.11.1</doxia.version>                <!-- checked 2021-12 -->
     <poi.version>5.2.2</poi.version>                    <!-- checked 2022-06 -->
-    <jackson.version>2.13.3</jackson.version>           <!-- checked 2022-05 -->
+    <jackson.version>2.13.4.1</jackson.version>           <!-- checked 2022-05 -->
 	<!-- CAUTION when upgrading, 1.8x requires another log4j binding: https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html -->
     <slf4j.version>1.7.36</slf4j.version>               <!-- checked 2022-06 -->
 	<log4j.version>2.19.0</log4j.version>
