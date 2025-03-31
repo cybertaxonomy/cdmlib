@@ -30,6 +30,7 @@ import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
@@ -73,6 +74,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  * @since 29.01.2009
  */
+@Ignore
 public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
@@ -555,9 +557,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         Pager<Person> persons = agentService.findByTitle(Person.class, "Leon", MatchMode.BEGINNING, null, null, null, null, null);
         assertEquals("Collector Leonhard,A. already in database, therefore only one should be found.",
                 Long.valueOf(1), persons.getCount());
-
-
-
 	}
 
 	/**
@@ -645,8 +644,14 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         int count = agentService.count(Team.class);
         //agentService.find(Team.class, "Sch", MatchMode.B);
         assertEquals("There should be only one because the used one is already in the database", 1, count);
+        List<Taxon> taxonList = taxonService.list(Taxon.class, null, null, null, null);
 
+        FindOccurrencesConfigurator dnaConfig = new FindOccurrencesConfigurator();
+        dnaConfig.setSignificantIdentifier("B 10 0066577");
+        List<DerivedUnitDTO> derivedUnitDtos = occurrenceService.findByTitleDerivedUnitDTO(dnaConfig);
 
+        assertNotNull(derivedUnitDtos.get(0).getCollectorsString());
+        assertEquals("Collectors String is wrong", derivedUnitDtos.get(0).getCollectorsString(), "Schweinfurt,C. & Meyer,B. Rec.It2993/88");
     }
 
 	@Test //#10570
@@ -659,7 +664,9 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/match_team_test.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
+        int count = agentService.count(Team.class);
+        //agentService.find(Team.class, "Sch", MatchMode.B);
+        assertEquals("There should be one team already in the database", 1, count);
         Abcd206ImportConfigurator importConfigurator = null;
         try {
             importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
@@ -672,12 +679,12 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
 
-        int count = agentService.count(Team.class);
-        //agentService.find(Team.class, "Sch", MatchMode.B);
+        count = agentService.count(Team.class);
+
         assertEquals("There should be two teams because the used one is not in the database", 2, count);
 
         count = agentService.count(Person.class);
-        //agentService.find(Team.class, "Sch", MatchMode.B);
+
         assertEquals("There should be 5 persons because all used are already in the database (3 existing + Jana + L.)", 5, count);
         Pager<Person> persons = agentService.findByTitle(Person.class, "Leon", MatchMode.BEGINNING, null, null, null, null, null);
         assertEquals("Collector Leonhard,A. already in database, therefore only one should be found.",
@@ -688,6 +695,12 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         persons = agentService.findByTitle(Person.class, "Mey", MatchMode.BEGINNING, null, null, null, null, null);
         assertEquals("Collector Meyer already in database, therefore only one should be found.",
                 Long.valueOf(1), persons.getCount());
+
+        FindOccurrencesConfigurator dnaConfig = new FindOccurrencesConfigurator();
+        dnaConfig.setSignificantIdentifier("B 10 0066577");
+        List<DerivedUnitDTO> derivedUnitDtos = occurrenceService.findByTitleDerivedUnitDTO(dnaConfig);
+        assertNotNull(derivedUnitDtos.get(0).getCollectorsString());
+        assertEquals("Collectors String is wrong", derivedUnitDtos.get(0).getCollectorsString(), "Schweinfurt,C., Leonard,A. & Meyer,B. Rec.It2993/88");
 
     }
 

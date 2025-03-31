@@ -277,4 +277,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * Returns a map of {@link UUID} and {@link TermDto} of terms with uuid matches one of uuids in list
      */
     public Map<UUID, TermDto> findFeatureByUUIDsAsDtos(List<UUID> uuidList);
+
+
+    Collection<TermDto> findByTypeAsDto(TermType termType);
 }

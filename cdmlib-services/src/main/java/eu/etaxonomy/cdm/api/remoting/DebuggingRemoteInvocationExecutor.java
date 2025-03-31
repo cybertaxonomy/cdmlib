@@ -60,8 +60,8 @@ public class DebuggingRemoteInvocationExecutor implements RemoteInvocationExecut
                         for (Object object: (ArrayList<?>)o) {
                             if (object instanceof DescriptionBase) {
                                 DescriptionBase<?> desc = (DescriptionBase<?>)object;
-                                String descLabel = desc.getTitleCache();
-                                attributeListString += " Description UUID: " + desc.getUuid() + ", " + descLabel + " \n ";
+//                                String descLabel = desc.getTitleCache();
+                                attributeListString += " Description UUID: " + desc.getUuid() + " \n ";
                                 for (Object element: desc.getElements()) {
                                     if (element instanceof Distribution) {
                                         Distribution dist = (Distribution)element;
