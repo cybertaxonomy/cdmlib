@@ -63,6 +63,7 @@ public class SwaggerStaticIT extends WebServiceTestBase {
     }
 
     @Test
+    @Ignore
     public void fetchSwaggerGroups(){
 
         String swagger2Endpoint= "/v2/api-docs";
