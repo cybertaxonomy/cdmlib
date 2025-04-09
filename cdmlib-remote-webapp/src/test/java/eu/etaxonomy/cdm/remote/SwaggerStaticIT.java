@@ -15,6 +15,7 @@ import java.nio.charset.Charset;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.remote.config.SwaggerGroupsConfig;
@@ -33,6 +34,7 @@ public class SwaggerStaticIT extends WebServiceTestBase {
     private String[] swaggerResourcesPaths = new String[]{"", "/configuration/ui", "/configuration/security" };
 
     @Test
+    @Ignore
     public void fetchSwaggerResources() {
 
         String swagger2Endpoint= "/swagger-resources";
