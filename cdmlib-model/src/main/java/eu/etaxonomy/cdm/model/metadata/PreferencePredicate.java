@@ -130,7 +130,7 @@ public enum PreferencePredicate
     DefaultBehaviourForSecundumWhenSwap(UUID.fromString("8ae1a0e3-78aa-4284-9c34-10b23d52905b"), "Default behaviour for secundum reference when swapping synonym and accepted taxon", "defaultBehaviourSecSwap", SecReferenceHandlingSwapEnum.KeepOrWarn),
     ConceptRelationshipType(UUID.fromString("04e4c69c-6741-4224-81ef-8df0a03bb81e"), "Concept Relationship Types", "conceptRelationshipTypes", null),
     AllowPartialMisapplied(UUID.fromString("3aaa90c1-1466-4f86-918b-f65f4ceb3084"), "Allow partial misapplied", "allowPartialMisapplied", Boolean.TRUE),
-    AllowProParteSynonym(UUID.fromString("2d3c0c5f-078a-4874-b4bf-0fa55309a834"), "Allow pro parte synonym", "allowProParteSynonym", Boolean.FALSE),
+    AllowProParteSynonym(UUID.fromString("2d3c0c5f-078a-4874-b4bf-0fa55309a834"), "Allow pro parte synonym", "allowProParteSynonym", ProParteSynonymHandling.Disable),
     SecundumForSubtreeConfigurator(UUID.fromString("aa43a7de-4098-4b2e-9d76-5caceda70a39"), "Default configurator for set secundum for subtree", "defaultSetSecForSubtreeConfig", null),
 
     ShowExperimentalFeatures(UUID.fromString("ba617c58-1801-4feb-9819-859aea5869a2"), "Show Experimental Features", "editor.experimentalFeatures", Boolean.TRUE),
