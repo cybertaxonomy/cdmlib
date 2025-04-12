@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
@@ -66,6 +65,7 @@ public abstract class DbImportDefinedTermCreationMapperBase<TERM extends Defined
 			TERM definedTerm = getDefinedTermIfExist(rs);
 			if (definedTerm == null){
 				definedTerm = createDefinedTerm(rs);
+
 				Reference citation = null;
 				getState().getCurrentIO().addOriginalSource(rs, definedTerm, dbIdAttribute, objectToCreateNamespace, citation);
 
@@ -123,7 +123,7 @@ public abstract class DbImportDefinedTermCreationMapperBase<TERM extends Defined
 		return term;
 	}
 
-	protected TERM getTermByUuid(UUID uuidTerm, ResultSet rs) throws SQLException{
+	protected TERM getTermByUuid(UUID uuidTerm, ResultSet rs){
 		TERM term = getTermFromState(uuidTerm);
 		if (term == null){
 			term = (TERM)getState().getCurrentIO().getTermService().find(uuidTerm);
