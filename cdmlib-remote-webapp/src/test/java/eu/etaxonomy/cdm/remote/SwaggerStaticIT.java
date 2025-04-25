@@ -34,7 +34,7 @@ public class SwaggerStaticIT extends WebServiceTestBase {
     private String[] swaggerResourcesPaths = new String[]{"", "/configuration/ui", "/configuration/security" };
 
     @Test
-    @Ignore
+    @Ignore //Problems with static sources (see https://dev.e-taxonomy.eu/redmine/issues/10751)
     public void fetchSwaggerResources() {
 
         String swagger2Endpoint= "/swagger-resources";
