@@ -266,13 +266,17 @@ public class CdmLightExportTest
         //taxon
         List<String> taxonResult = getStringList(data, CdmLightExportTable.TAXON);
         Assert.assertEquals("There should be 4 taxa", 4, taxonResult.size() - COUNT_HEADER);
+        String line = getLine(taxonResult, speciesTaxonUuid);
+        Assert.assertTrue(line.contains("Author (1980a)"));
+        line = getLine(taxonResult, genusTaxonUuid);
+        Assert.assertTrue(line.contains("Author (1980)"));
 
         //reference
         List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
-        Assert.assertEquals("There should be 11 references (8 nomenclatural references and 3 sec reference)", 11, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 16 references (9 nomenclatural references and 4 sec reference, 2 fact sources, 1 in-reference)", 16, referenceResult.size() - COUNT_HEADER);
 
         //Test for unique citation
-        String line = getLine(referenceResult, ref2UUID);
+        line = getLine(referenceResult, ref2UUID);
         String expected = "Author (1980)";
         Assert.assertTrue(line.contains(expected));
         line = getLine(referenceResult, ref3UUID);
@@ -282,7 +286,25 @@ public class CdmLightExportTest
 
         //synonyms
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
-        Assert.assertEquals("There should be 2 synonyms", 2, synonymResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 3 synonyms (2 synonyms, 1 MAN)", 3, synonymResult.size() - COUNT_HEADER);
+        line = getLine(synonymResult, basionymSynonymUuid);
+        //unique citation with detail
+        Assert.assertTrue(line.contains("Author (1980a: 67)"));
+
+        line = getLine(synonymResult, misappliedTaxonUuid);
+        //unique citation for MAN sec
+        Assert.assertTrue(line.contains("Author (1980b)"));
+
+        List<String> factsResult = getStringList(data, CdmLightExportTable.FACT_SOURCES);
+        line = getLine(factsResult, "81c7b7db-e12b-45fe-96ed-dab940043232");//UUID of Common name
+        line.contains("c68e0a88-7b96-465d-b4ce-d14b13daf94f");//UUID of fact citation
+        line = getLine(referenceResult, "c68e0a88-7b96-465d-b4ce-d14b13daf94f"); // line of fact citation in references
+        Assert.assertTrue(line.contains("Testauthor (1981)"));
+
+        line = getLine(factsResult, "674e9e27-9102-4166-8626-8cb871a9a89b");//UUID of distribution
+        line.contains("e2edf07d-552a-46cd-85da-86a491847aeb");//UUID of fact citation
+        line = getLine(referenceResult, "e2edf07d-552a-46cd-85da-86a491847aeb"); // line of fact citation in references
+        Assert.assertTrue(line.contains("Testauthor (1981a)"));
     }
 
 
