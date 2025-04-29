@@ -144,10 +144,10 @@ public class CdmLightExportTest
         Assert.assertEquals("There should be 5 taxa", 5, taxonResult.size() - COUNT_HEADER);
 
         List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
-        Assert.assertEquals("There should be 16 references (10 nomenclatural references including 1 in-reference and 4 sec reference, 2 fact sources)", 16, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 18 references", 18, referenceResult.size() - COUNT_HEADER);
 
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
-        Assert.assertEquals("There should be 3 synonym", 3, synonymResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 4 synonym", 4, synonymResult.size() - COUNT_HEADER);
 
         //test single data
         Assert.assertEquals("Result must not contain root taxon",
@@ -245,7 +245,7 @@ public class CdmLightExportTest
 
         //synonyms
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
-        Assert.assertEquals("There should be 2 synonyms", 2, synonymResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 3 synonyms (two synonyms, 1 MAN)", 3, synonymResult.size() - COUNT_HEADER);
     }
 
     @Test
