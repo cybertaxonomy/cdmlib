@@ -446,13 +446,19 @@ public class TaxonNodeServiceImpl
         taxonService.saveOrUpdate(newAcceptedTaxon);
 
         taxonService.saveOrUpdate(oldTaxon);
-        taxonService.getSession().flush();
+        try {
+            taxonService.getSession().flush();
+        }catch(Exception e) {
+            DeleteResult result = new DeleteResult();
+            result.addException(e);
+            result.setAbort();
+            return result;
+        }
 
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
         conf.setDeleteNameIfPossible(false);
         DeleteResult taxonDeleteResult = taxonService.isDeletable(oldTaxon.getUuid(), conf);
-
         DeleteResult result;
         if (taxonDeleteResult.isOk()){
         	 result = taxonService.deleteTaxon(oldTaxon.getUuid(), conf, classification.getUuid());
@@ -1452,7 +1458,7 @@ public class TaxonNodeServiceImpl
     }
 
     private Synonym save(Synonym syn) {
-        taxonService.save(syn);
+        taxonService.saveOrUpdate(syn);
         return syn;
     }
 
