@@ -13,8 +13,8 @@ package eu.etaxonomy.cdm.model.metadata;
  * @since 10.04.2025
  */
 public enum ProParteSynonymHandling implements IKeyLabel{
-    EnablePP("enableProParte", "Enable pro-parte synonyms"),
-    EnablePP_Partial("enablePP_Partial", "Enable pro-parte and partial synonyms"),
+    EnablePP("enableProParte", "Pro parte"),
+    EnablePP_Partial("enablePP_Partial", "Pro parte and partial"),
     Disable("disable", "Disable both");
 
     private String label;
