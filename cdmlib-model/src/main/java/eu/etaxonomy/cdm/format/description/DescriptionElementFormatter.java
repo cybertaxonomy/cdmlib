@@ -11,17 +11,23 @@ package eu.etaxonomy.cdm.format.description;
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.format.occurrences.SpecimenOrObservationBaseFormatter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
+import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -54,11 +60,15 @@ public class DescriptionElementFormatter {
         element = CdmBase.deproxy(element);
         String cache = null;
         if (element instanceof TextData) {
+
 //            LanguageString ls = ((TextData) element).getPreferredLanguageString(Language.DEFAULT());
 //            cache = "Text Data" + ((ls == null|| isBlank(ls.getText())) ?
 //                        "" : "("+ls.getText()+")");
-            String feature = element.getFeature() == null? null : element.getFeature().getLabel();
-            cache = "Text Data" + (isBlank(feature)? "" : " ("+ feature +")");
+//            String feature = element.getFeature() == null? null : element.getFeature().getLabel();
+//            cache = isBlank(feature)? " ("+ feature + ")" : "Text Data";
+
+            TextDataFormatter formatter = TextDataFormatter.NewInstance(null);
+            cache = formatter.format(element, defaultLanguage);
         }else if (element instanceof CommonTaxonName) {
             cache = ((CommonTaxonName) element).getName();
         }else if (element instanceof TaxonInteraction) {
@@ -87,8 +97,18 @@ public class DescriptionElementFormatter {
         }else if (element instanceof CategoricalData) {
             CategoricalDataFormatter formatter = CategoricalDataFormatter.NewInstance(null);
             cache = formatter.format(element, defaultLanguage);
+        }else if (element instanceof TemporalData) {
+            ExtendedTimePeriod period = ((TemporalData)element).getPeriod();
+            TemporalDataFormatter formatter = TemporalDataFormatter.NewInstance();
+            return period == null ? "no data available" : formatter.format(element);
+        }else if (element instanceof IndividualsAssociation) {
+            SpecimenOrObservationBase specimen = ((IndividualsAssociation)element).getAssociatedSpecimenOrObservation();
+            SpecimenOrObservationBaseFormatter formatter = new SpecimenOrObservationBaseFormatter(specimen, null);
+            cache = formatter.format(specimen);
+        }else if (element instanceof TaxonInteraction) {
+            TaxonName name = ((TaxonInteraction)element).getTaxon2().getName();
+            cache = name.getNameCache();
         }
-
         String result = CdmUtils.Nz(cache);
         return result;
     }
