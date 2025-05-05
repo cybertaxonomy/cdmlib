@@ -311,4 +311,5 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
             UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications,
             boolean includeDoubtful);
 
+    public boolean existsTaxonInClassification(UUID classification, UUID taxonUuid);
 }

@@ -103,5 +103,9 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      */
     public Map<UUID, UUID> getTaxonNodeUuidByTaxonUuid(UUID classificationUuid, List<UUID> taxonUuids);
 
-
+    /**
+     * @return <code>true</code> if taxon exists in classification
+     */
+    //#10732
+    public boolean existsTaxonInClassification(UUID classificationUuid, UUID taxonUuid);
 }
