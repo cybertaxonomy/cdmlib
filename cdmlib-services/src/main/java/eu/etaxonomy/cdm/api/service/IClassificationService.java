@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
@@ -33,7 +32,6 @@ import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-
 
 /**
  * @author n.hoffmann
@@ -309,7 +307,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, boolean searchForClassifications);
 
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications,
             boolean includeDoubtful);
 

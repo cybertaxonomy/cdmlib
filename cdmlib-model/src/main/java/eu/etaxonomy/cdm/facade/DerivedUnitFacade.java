@@ -1534,7 +1534,7 @@ public class DerivedUnitFacade {
 		setPlantDescription(null, language);
 	}
 
-	// life-form
+	// life-form  #6722
     @Transient
     public String getLifeform() {
         return getLifeform(Language.DEFAULT());
