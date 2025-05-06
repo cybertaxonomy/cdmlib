@@ -50,6 +50,7 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
 
     private IGrantedAuthorityDao grantedAuthorityDao;
 
+    @Autowired
     private ICommonService commonService;
 
     @Override
@@ -233,12 +234,15 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     @Override
     @Transactional(readOnly=false)
     public DeleteResult delete(UUID groupUUID ){
-
+       DeleteResult result = isDeletable(groupUUID);
+       if (result.isAbort()) {
+           return result;
+       }
        String groupUUIDString = groupUUID.toString();
        Group group = dao.findByUuid(groupUUID);
        //org.springframework.security.provisioning.GroupManager#deleteGroup needs a string argument
        this.deleteGroup(groupUUIDString);
-       DeleteResult result = new DeleteResult();
+       result = new DeleteResult();
        result.addDeletedObject(group);
         //there is no feedback from the deleteGroup method...
         return result;
