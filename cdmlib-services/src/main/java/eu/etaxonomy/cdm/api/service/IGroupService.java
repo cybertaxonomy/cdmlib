@@ -59,4 +59,10 @@ public interface IGroupService extends IService<Group>, GroupManager{
      * does not exist.
      */
     public Group findGroup(String groupName);
+
+    /**
+     * @param groupUUID
+     * @return
+     */
+    public DeleteResult isDeletable(UUID groupUUID);
 }
