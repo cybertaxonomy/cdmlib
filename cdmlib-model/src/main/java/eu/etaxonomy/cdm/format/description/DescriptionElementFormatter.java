@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.format.description;
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.format.occurrences.SpecimenOrObservationBaseFormatter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -103,8 +102,7 @@ public class DescriptionElementFormatter {
             return period == null ? "no data available" : formatter.format(element);
         }else if (element instanceof IndividualsAssociation) {
             SpecimenOrObservationBase specimen = ((IndividualsAssociation)element).getAssociatedSpecimenOrObservation();
-            SpecimenOrObservationBaseFormatter formatter = new SpecimenOrObservationBaseFormatter(specimen, null);
-            cache = formatter.format(specimen);
+            cache = specimen.getTitleCache();
         }else if (element instanceof TaxonInteraction) {
             TaxonName name = ((TaxonInteraction)element).getTaxon2().getName();
             cache = name.getNameCache();
