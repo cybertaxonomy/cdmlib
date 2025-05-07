@@ -36,14 +36,14 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
 
     private final boolean withHTML;
 
-    public static OriginalSourceFormatter INSTANCE = new OriginalSourceFormatter(false, false);
+    public static OriginalSourceFormatter INSTANCE = new OriginalSourceFormatter(false, false, false);
 
     //this can be used e.g. for in-text references, like "... following the opinion of Autor (2000: 22) we posit that ..."
-    public static OriginalSourceFormatter INSTANCE_WITH_YEAR_BRACKETS = new OriginalSourceFormatter(true, false);
+    public static OriginalSourceFormatter INSTANCE_WITH_YEAR_BRACKETS = new OriginalSourceFormatter(true, false, false);
 
-    public static OriginalSourceFormatter INSTANCE_LONG_CITATION = new OriginalSourceFormatter(false, true);
+    public static OriginalSourceFormatter INSTANCE_LONG_CITATION = new OriginalSourceFormatter(false, true, false);
 
-    public static OriginalSourceFormatter INSTANCE_WITH_HTML = new OriginalSourceFormatter(false, true, true);
+    public static OriginalSourceFormatter INSTANCE_LONG_CITATION_WITH_HTML = new OriginalSourceFormatter(false, true, true);
 
     /**
       * @param withYearBrackets if <code>false</code> the result comes without brackets (default is <code>false</code>)
@@ -53,15 +53,6 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         this.longForm = longForm;
         this.withHTML = withHtml;
     }
-
-    /**
-     * @param withYearBrackets if <code>false</code> the result comes without brackets (default is <code>false</code>)
-     */
-   private OriginalSourceFormatter(boolean withYearBrackets, boolean longForm) {
-       this.withYearBrackets = withYearBrackets;
-       this.longForm = longForm;
-       this.withHTML = false;
-   }
 
     @Override
     public String format(OriginalSourceBase source) {

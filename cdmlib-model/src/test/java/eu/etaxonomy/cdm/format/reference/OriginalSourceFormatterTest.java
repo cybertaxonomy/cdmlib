@@ -42,7 +42,7 @@ public class OriginalSourceFormatterTest {
     private static OriginalSourceFormatter formatter = OriginalSourceFormatter.INSTANCE;
     private static OriginalSourceFormatter formatterWithBrackets = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS;
     private static OriginalSourceFormatter formatterLongCitation = OriginalSourceFormatter.INSTANCE_LONG_CITATION;
-    private static OriginalSourceFormatter formatterWithHtml = OriginalSourceFormatter.INSTANCE_WITH_HTML;
+    private static OriginalSourceFormatter formatterWithHtml = OriginalSourceFormatter.INSTANCE_LONG_CITATION_WITH_HTML;
 
     @Before
     public void setUp() throws Exception {
