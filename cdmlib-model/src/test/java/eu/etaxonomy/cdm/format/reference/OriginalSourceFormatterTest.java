@@ -36,10 +36,13 @@ public class OriginalSourceFormatterTest {
     //book // book section
     private static Reference book1;
     private static Team bookTeam1;
+    private static Reference section1;
+    private static Reference database1;
 
     private static OriginalSourceFormatter formatter = OriginalSourceFormatter.INSTANCE;
     private static OriginalSourceFormatter formatterWithBrackets = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS;
     private static OriginalSourceFormatter formatterLongCitation = OriginalSourceFormatter.INSTANCE_LONG_CITATION;
+    private static OriginalSourceFormatter formatterWithHtml = OriginalSourceFormatter.INSTANCE_WITH_HTML;
 
     @Before
     public void setUp() throws Exception {
@@ -187,6 +190,7 @@ public class OriginalSourceFormatterTest {
         database.setAuthorship(null);
         database.setAccessed(databaseAccessed);
         database.setUri(URI.create("https://abc.de/"));
+        //database.setUri(URI.create("https://redlist.necca.gov.gr/"));
         //TODO do we really want to show the URI in the short form?
         database.resetTitleCache();
         Assert.assertEquals("Formatting of webpages without author is still undefined",
@@ -225,6 +229,11 @@ public class OriginalSourceFormatterTest {
         Assert.assertEquals("Formatting of webpages without author is still undefined",
                 "Miller, A. 2001+: A beautiful taxon page. Published at https://abc.de/. detail [accessed: 2020]",
                 formatterLongCitation.format(source));
+
+        Assert.assertEquals("Formatting of webpages with html around url",
+                "Miller, A. 2001+: A beautiful taxon page. Published at <a href=\"https://abc.de/\">https://abc.de/</a>. detail [accessed: 2020]",
+                formatterWithHtml.format(source));
+
     }
 
 
@@ -286,4 +295,15 @@ public class OriginalSourceFormatterTest {
         Assert.assertEquals("Unexpected title cache.", "Person, P., Lerson, L., Gerson, G. & al. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
         team.setHasMoreMembers(false);  //in case we want to continue test
     }
+
+    @Test
+    public void testCreateCitationWithHtml(){
+        //TODO this is still preliminary, formatting may change in future.
+
+        book1.setTitle("My book");
+        book1.setAuthorship(bookTeam1);
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book", book1.getTitleCache());
+    }
+
 }

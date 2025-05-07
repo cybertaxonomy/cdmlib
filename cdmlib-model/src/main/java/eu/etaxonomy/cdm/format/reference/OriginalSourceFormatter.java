@@ -34,6 +34,8 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
 
     private final boolean longForm;
 
+    private final boolean withHTML;
+
     public static OriginalSourceFormatter INSTANCE = new OriginalSourceFormatter(false, false);
 
     //this can be used e.g. for in-text references, like "... following the opinion of Autor (2000: 22) we posit that ..."
@@ -41,13 +43,25 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
 
     public static OriginalSourceFormatter INSTANCE_LONG_CITATION = new OriginalSourceFormatter(false, true);
 
+    public static OriginalSourceFormatter INSTANCE_WITH_HTML = new OriginalSourceFormatter(false, true, true);
+
     /**
       * @param withYearBrackets if <code>false</code> the result comes without brackets (default is <code>false</code>)
       */
-    private OriginalSourceFormatter(boolean withYearBrackets, boolean longForm) {
+    private OriginalSourceFormatter(boolean withYearBrackets, boolean longForm, boolean withHtml) {
         this.withYearBrackets = withYearBrackets;
         this.longForm = longForm;
+        this.withHTML = withHtml;
     }
+
+    /**
+     * @param withYearBrackets if <code>false</code> the result comes without brackets (default is <code>false</code>)
+     */
+   private OriginalSourceFormatter(boolean withYearBrackets, boolean longForm) {
+       this.withYearBrackets = withYearBrackets;
+       this.longForm = longForm;
+       this.withHTML = false;
+   }
 
     @Override
     public String format(OriginalSourceBase source) {
@@ -112,16 +126,15 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
             }
         }
         String result = CdmUtils.concat(" ", authorStr, getShortCitationDateAndDetail(reference, microReference, accessed, uniqueString));
-
         return result;
     }
 
-    /**
+   /**
      * Implementation is temporarily. May change or be further improved in future.
      */
     private String handleLongformCitation(Reference reference, String microReference, TimePeriod accessed) {
 
-        ReferenceDefaultCacheStrategy referenceFormatter = ReferenceDefaultCacheStrategy.NewInstance();
+        ReferenceDefaultCacheStrategy referenceFormatter = ReferenceDefaultCacheStrategy.NewInstance(withHTML);
 
         String refCitation = referenceFormatter.getTitleCache(reference);
         if (isPage(microReference)) {
