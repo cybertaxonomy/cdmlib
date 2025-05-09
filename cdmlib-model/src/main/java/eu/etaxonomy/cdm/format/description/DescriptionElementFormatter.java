@@ -102,7 +102,11 @@ public class DescriptionElementFormatter {
             return period == null ? "no data available" : formatter.format(element);
         }else if (element instanceof IndividualsAssociation) {
             SpecimenOrObservationBase specimen = ((IndividualsAssociation)element).getAssociatedSpecimenOrObservation();
-            cache = specimen.getTitleCache();
+            if (specimen != null) {
+                cache = specimen.getTitleCache();
+            }else {
+                cache = "no unit chosen";
+            }
         }else if (element instanceof TaxonInteraction) {
             TaxonName name = ((TaxonInteraction)element).getTaxon2().getName();
             cache = name.getNameCache();
