@@ -346,6 +346,7 @@ public class TaxonNodeServiceImpl
         }
 
         Synonym newSyn = newAcceptedTaxon.addSynonymName(newSynonymName, newSec, microReference, synonymType);
+        sourceDao.saveOrUpdate(newSyn.getSecSource());
         save(newSyn);
         if (newSec == null){
             newSyn.setSec(newSec);
@@ -452,6 +453,7 @@ public class TaxonNodeServiceImpl
             DeleteResult result = new DeleteResult();
             result.addException(e);
             result.setAbort();
+            e.printStackTrace();
             return result;
         }
 
