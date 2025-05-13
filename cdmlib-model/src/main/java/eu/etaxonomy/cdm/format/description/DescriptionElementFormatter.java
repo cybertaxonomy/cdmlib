@@ -75,7 +75,7 @@ public class DescriptionElementFormatter {
             if(taxon2 != null && taxon2.getName() != null){
                 cache = taxon2.getName().getTitleCache();
             }else{
-                cache = "No taxon chosen";
+                cache = "no taxon chosen";
             }
         }else if (element instanceof Distribution) {
             Distribution distribution = (Distribution) element;
@@ -91,15 +91,21 @@ public class DescriptionElementFormatter {
                 }
             }
         }else if (element instanceof QuantitativeData) {
-            QuantitativeDataFormatter formatter = QuantitativeDataFormatter.NewInstance(null);
-            cache = formatter.format(element, defaultLanguage);
+            QuantitativeData quantData = (QuantitativeData)element;
+            if (quantData.getStatisticalValues().isEmpty()) {
+                cache = "no data available";
+            }else {
+                QuantitativeDataFormatter formatter = QuantitativeDataFormatter.NewInstance(null);
+                cache = formatter.format(element, defaultLanguage);
+            }
+
         }else if (element instanceof CategoricalData) {
             CategoricalDataFormatter formatter = CategoricalDataFormatter.NewInstance(null);
             cache = formatter.format(element, defaultLanguage);
         }else if (element instanceof TemporalData) {
             ExtendedTimePeriod period = ((TemporalData)element).getPeriod();
             TemporalDataFormatter formatter = TemporalDataFormatter.NewInstance();
-            return period == null ? "no data available" : formatter.format(element);
+            cache = period.isEmpty()? "no data available" : formatter.format(element);
         }else if (element instanceof IndividualsAssociation) {
             SpecimenOrObservationBase specimen = ((IndividualsAssociation)element).getAssociatedSpecimenOrObservation();
             if (specimen != null) {
@@ -110,6 +116,9 @@ public class DescriptionElementFormatter {
         }else if (element instanceof TaxonInteraction) {
             TaxonName name = ((TaxonInteraction)element).getTaxon2().getName();
             cache = name.getNameCache();
+        }
+        if (StringUtils.isBlank(cache)){
+            cache = "no data available";
         }
         String result = CdmUtils.Nz(cache);
         return result;
