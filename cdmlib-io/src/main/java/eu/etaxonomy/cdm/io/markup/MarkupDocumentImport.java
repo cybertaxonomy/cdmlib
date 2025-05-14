@@ -196,8 +196,8 @@ public class MarkupDocumentImport
 	}
 
 	@Override
-    public AnnotationType getAnnotationType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<AnnotationType> voc){
-		return super.getAnnotationType(state, uuid, label, text, labelAbbrev, voc);
+    public AnnotationType getAnnotationType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, UUID vocUuid){
+		return super.getAnnotationType(state, uuid, label, text, labelAbbrev, vocUuid);
 	}
 
 	@Override

@@ -1091,8 +1091,8 @@ public abstract class MarkupImportBase  {
 		return docImport.getIdentifierType(state, uuid, label, text, labelAbbrev, voc);
 	}
 
-	protected AnnotationType getAnnotationType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<AnnotationType> voc){
-		return docImport.getAnnotationType(state, uuid, label, text, labelAbbrev, voc);
+	protected AnnotationType getAnnotationType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, UUID vocUuid){
+		return docImport.getAnnotationType(state, uuid, label, text, labelAbbrev, vocUuid);
 	}
 
 	protected MarkerType getMarkerType(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<MarkerType> voc){

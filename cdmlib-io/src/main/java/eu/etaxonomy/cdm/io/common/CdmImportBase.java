@@ -332,7 +332,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return markerType;
 	}
 
-	protected AnnotationType getAnnotationType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<AnnotationType> voc){
+	protected AnnotationType getAnnotationType(STATE state, UUID uuid, String label, String text, String labelAbbrev, UUID vocUuid){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -342,10 +342,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			if (annotationType == null){
 				annotationType = AnnotationType.NewInstance(label, text, labelAbbrev);
 				annotationType.setUuid(uuid);
-				if (voc == null){
-					boolean isOrdered = false;
-					voc = getVocabulary(state, TermType.AnnotationType, uuidUserDefinedAnnotationTypeVocabulary, "User defined vocabulary for annotation types", "User Defined Annotation Types", null, null, isOrdered, annotationType);
+				if (vocUuid == null){
+				    vocUuid = uuidUserDefinedAnnotationTypeVocabulary;
 				}
+				boolean isOrdered = false;
+				TermVocabulary<AnnotationType> voc = getVocabulary(state, TermType.AnnotationType, vocUuid, "User defined vocabulary for annotation types", "User Defined Annotation Types", null, null, isOrdered, annotationType);
 
 				voc.addTerm(annotationType);
 				getTermService().save(annotationType);

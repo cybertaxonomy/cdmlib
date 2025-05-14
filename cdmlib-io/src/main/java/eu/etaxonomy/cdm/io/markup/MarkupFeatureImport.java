@@ -25,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -433,7 +434,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		textData.addPrimaryTaxonomicSource(state.getConfig().getSourceReference());
 		result.add(textData);
 
-		AnnotationType annType = getAnnotationType(state, MarkupTransformer.uuidOriginalOrder, "Original order", "Order in original treatment", null, AnnotationType.INTERNAL().getVocabulary());
+		AnnotationType annType = getAnnotationType(state, MarkupTransformer.uuidOriginalOrder, "Original order", "Order in original treatment", null, CdmImportBase.uuidUserDefinedAnnotationTypeVocabulary);
 		textData.addAnnotation(Annotation.NewInstance(myCharOrder.orderString(), annType, Language.ENGLISH()));
 
 		boolean isTextMode = true;
