@@ -140,7 +140,7 @@ public class ManifestComposer {
         this.mediaInfoFactory = mediaInfoFactory;
     }
 
-    <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid, String metaDataSource) throws IOException {
+    <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid, String metaDataSource, boolean showNameCache) throws IOException {
 
 //        LogUtils.setLevel(MediaUtils.class, Level.DEBUG);
 //        LogUtils.setLevel(logger, Level.DEBUG);
@@ -176,7 +176,7 @@ public class ManifestComposer {
         } else {
             manifest.setLabel(new PropertyValue("No media found for " + onEntitiyType + "[" + onEntityUuid + "]")); // TODO better label!!
         }
-        List<MetadataEntry> entityMetadata = entityMetadata(entityMediaContext.getEntity());
+        List<MetadataEntry> entityMetadata = entityMetadata(entityMediaContext.getEntity(), showNameCache);
         manifest.addMetadata(entityMetadata.toArray(new MetadataEntry[entityMetadata.size()]));
         copyAttributionAndLicenseToManifest(manifest);
 
@@ -442,11 +442,20 @@ public class ManifestComposer {
         descriptions.stream().forEach(mde -> resource.addDescription(mde.getValueString()));
     }
 
-    private <T extends IdentifiableEntity> List<MetadataEntry> entityMetadata(T entity) {
+//    private <T extends IdentifiableEntity> List<MetadataEntry> entityMetadata(T entity) {
+//        return entityMetadata(entity, false);
+//    }
+
+    private <T extends IdentifiableEntity> List<MetadataEntry> entityMetadata(T entity, boolean showNameCache) {
 
         List<MetadataEntry> metadata = new ArrayList<>();
         if(entity instanceof TaxonBase){
-            List taggedTitle = ((TaxonBase)entity).getTaggedTitle();
+            List taggedTitle;
+            if (!showNameCache) {
+                taggedTitle = ((TaxonBase)entity).getTaggedTitle();
+            }else {
+                taggedTitle = ((TaxonBase)entity).getName().getTaggedName();
+            }
             if(taggedTitle != null){
                 //FIXME taggedTitel to HTML!!!!
                 metadata.add(new MetadataEntry(entity.getClass().getSimpleName(), TaggedTextFormatter.createString(taggedTitle)));
