@@ -1286,22 +1286,20 @@ public class TaxonDaoHibernateImpl
                         continue;  //just in case we have duplicates in the list
                     }
 
-                    Query<String> query = getSession().createQuery(
-                            " SELECT DISTINCT n1.nameCache "
-                          + " FROM TaxonBase t1 JOIN t1.name n1 JOIN t1.sources s1 JOIN s1.citation ref1 "
-                          +         " , TaxonBase t2 JOIN t2.name n2 JOIN t2.sources s2 JOIN s2.citation ref2 "
-                          + " WHERE  ref1.uuid = (:sourceUuid1) "
-                          + "       AND n1.id <> n2.id "
-                          + "       AND ref2.uuid IN (:sourceUuid2)"
-                          + "       AND ref1.uuid <> ref2.uuid "
-                          + "       AND n1.nameCache = n2.nameCache) "
-                          + "       AND t1.publish = 1 AND t2.publish = 1) "
-                          + " ORDER BY n1.nameCache ",
-                          String.class);
+                    String  hql = " SELECT DISTINCT n1.nameCache "
+                            + " FROM TaxonBase t1 JOIN t1.name n1 JOIN t1.sources s1 JOIN s1.citation ref1 "
+                            +         " , TaxonBase t2 JOIN t2.name n2 JOIN t2.sources s2 JOIN s2.citation ref2 "
+                            + " WHERE  ref1.uuid = (:sourceUuid1) "
+                            + "       AND n1.id <> n2.id "
+                            + "       AND ref2.uuid IN (:sourceUuid2)"
+                            + "       AND ref1.uuid <> ref2.uuid "
+                            + "       AND n1.nameCache = n2.nameCache "
+                            + "       AND t1.publish = 1 AND t2.publish = 1 "
+                            + " ORDER BY n1.nameCache ";
+                    Query<String> query = getSession().createQuery(hql, String.class);
                     query.setParameter("sourceUuid1", sourceUuid1);
                     query.setParameter("sourceUuid2", sourceUuid2);
 
-                    @SuppressWarnings("unchecked")
                     List<String> queryNameCacheCandidates = query.list();
                     nameCacheCandidates.addAll(queryNameCacheCandidates);
                 }
@@ -1328,8 +1326,9 @@ public class TaxonDaoHibernateImpl
                 Map<UUID,Set<TaxonName>> uuidNameMap = new HashMap<>();
                 result.put(nameCache, uuidNameMap);
                 for(UUID sourceUuid: duplicates.keySet()){
-                    Set<TaxonName> names = duplicates.get(sourceUuid).stream().filter(name->
-                            name.getNameCache().equals(nameCache)).collect(Collectors.toSet());
+                    Set<TaxonName> names = duplicates.get(sourceUuid).stream()
+                            .filter(name->name.getNameCache().equals(nameCache))
+                            .collect(Collectors.toSet());
                     uuidNameMap.put(sourceUuid, names);
                 }
             }
