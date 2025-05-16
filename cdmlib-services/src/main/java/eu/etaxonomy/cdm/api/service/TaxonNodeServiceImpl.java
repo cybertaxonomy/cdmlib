@@ -243,7 +243,7 @@ public class TaxonNodeServiceImpl
             allRecords.addAll(synList);
         }
 
-        List<TaxonNodeDto> dtos = new ArrayList<>(pageSize==null?25:pageSize);
+        List<TaxonNodeDto> dtos = new ArrayList<TaxonNodeDto>(pageSize==null?25:pageSize);
         long totalCount = Long.valueOf(allRecords.size());
 
         TaxonName parentName = null;
