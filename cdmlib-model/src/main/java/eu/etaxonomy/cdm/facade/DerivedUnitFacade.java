@@ -1784,32 +1784,91 @@ public class DerivedUnitFacade {
 	}
 
 	// life stage
-	@Transient
-	public DefinedTerm getLifeStage() {
-		return (hasFieldUnit() ? getFieldUnit(true).getLifeStage() : null);
-	}
+//	@Transient
+//	public DefinedTerm getLifeStage() {
+//		return (hasFieldUnit() ? getFieldUnit(true).getLifeStage() : null);
+//	}
+//
+//	public void setLifeStage(DefinedTerm lifeStage) {
+//	    FieldUnit fieldUnit = getFieldUnit(lifeStage != null);
+//        if (fieldUnit != null){
+//            fieldUnit.setLifeStage(lifeStage);
+//        }
+//	}
 
-	public void setLifeStage(DefinedTerm lifeStage) {
-	    FieldUnit fieldUnit = getFieldUnit(lifeStage != null);
+	@Transient
+    public DefinedTerm getFieldUnitLifeStage() {
+        return (hasFieldUnit() ? fieldUnit.getLifeStage() : null);
+    }
+//
+   @Transient
+    public DefinedTerm getDerivedUnitLifeStage() {
+       checkDerivedUnit();
+       return checkDerivedUnit() ? derivedUnit.getLifeStage() : null;
+    }
+
+
+    /**
+     * Sets the sex
+     * @param sex
+     */
+    public void setFieldUnitLifeStage(DefinedTerm lifeStage) {
+        FieldUnit fieldUnit = getFieldUnit(lifeStage != null);
         if (fieldUnit != null){
             fieldUnit.setLifeStage(lifeStage);
         }
-	}
+    }
 
-	// sex
+    public void setDerivedUnitLifeStage(DefinedTerm lifeStage) {
+        testDerivedUnit();
+
+        baseUnit().setLifeStage(lifeStage);
+    }
+
+//	// sex
+//	@Transient
+//	public DefinedTerm getSex() {
+//		return (hasFieldUnit() ? getFieldUnit(true).getSex(): null);
+//	}
+//
+//	public void setSex(DefinedTerm sex) {
+//	    FieldUnit fieldUnit = getFieldUnit(sex != null);
+//        if (fieldUnit != null){
+//            fieldUnit.setSex(sex);
+//        }
+//	}
 	@Transient
-	public DefinedTerm getSex() {
-		return (hasFieldUnit() ? getFieldUnit(true).getSex(): null);
-	}
+    public DefinedTerm getFieldUnitSex() {
+        return (hasFieldUnit() ? fieldUnit.getSex() : null);
+    }
+//
+   @Transient
+    public DefinedTerm getDerivedUnitSex() {
+       checkDerivedUnit();
+       return checkDerivedUnit() ? derivedUnit.getSex() : null;
+    }
 
-	public void setSex(DefinedTerm sex) {
-	    FieldUnit fieldUnit = getFieldUnit(sex != null);
+
+    /**
+     * Sets the sex
+     * @param sex
+     */
+    public void setFieldUnitSex(DefinedTerm sex) {
+        FieldUnit fieldUnit = getFieldUnit(sex != null);
         if (fieldUnit != null){
             fieldUnit.setSex(sex);
         }
-	}
+    }
 
-	// kind of Unit
+    public void setDerivedUnitSex(DefinedTerm sex) {
+        testDerivedUnit();
+
+        baseUnit().setSex(sex);
+    }
+
+
+
+	// kind-of-unit
 	@Transient
 	public DefinedTerm getFieldUnitKindOfUnit() {
 		return (hasFieldUnit() ? fieldUnit.getKindOfUnit() : null);

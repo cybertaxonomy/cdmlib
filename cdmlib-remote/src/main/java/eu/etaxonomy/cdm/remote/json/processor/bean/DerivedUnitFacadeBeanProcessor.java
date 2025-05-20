@@ -74,8 +74,8 @@ public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<Derive
 			addJsonElement(json, jsonConfig, "fieldNumber", bean.getFieldNumber());
 			addJsonElement(json, jsonConfig, "fieldNotes", bean.getFieldNotes());
 			addJsonElement(json, jsonConfig, "individualCount", bean.getIndividualCount());
-			addJsonElement(json, jsonConfig, "lifeStage", bean.getLifeStage());
-			addJsonElement(json, jsonConfig, "sex", bean.getSex());
+			addJsonElement(json, jsonConfig, "lifeStage", bean.getFieldUnitLifeStage());
+			addJsonElement(json, jsonConfig, "sex", bean.getFieldUnitSex());
 		}
 
 		if(Hibernate.isInitialized(bean.innerDerivedUnit())){
@@ -85,6 +85,8 @@ public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<Derive
 			addJsonElement(json, jsonConfig, "accessionNumber", bean.getAccessionNumber());
 			addJsonElement(json, jsonConfig, "catalogNumber", bean.getCatalogNumber());
 			addJsonElement(json, jsonConfig, "barcode", bean.getBarcode());
+			addJsonElement(json, jsonConfig, "lifeStage", bean.getDerivedUnitLifeStage());
+            addJsonElement(json, jsonConfig, "sex", bean.getDerivedUnitSex());
 			try {
 				addJsonElement(json, jsonConfig, "preservationMethod", bean.getPreservationMethod());
 			} catch (MethodNotSupportedByDerivedUnitTypeException e) {
