@@ -206,7 +206,11 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 		}
 		record.setCatalogNumber(facade.getCatalogNumber());
 		record.setLocality(facade.getLocalityText());
-		record.setSex(facade.getSex());
+		if (facade.getFieldUnitSex() != null) {
+		    record.setSex(facade.getFieldUnitSex());
+		}else {
+		    record.setSex(facade.getDerivedUnitSex());
+		}
 		record.setRecordedBy(facade.getCollector());
 		//TODO ???
 
