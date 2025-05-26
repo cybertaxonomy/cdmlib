@@ -55,6 +55,7 @@ public class CdmLightExportConfigurator
     private boolean isAddHTML = true;
 
     private boolean isShowTypeOfDesignationIdentifier = true;
+    private boolean isShowSynSecForHomotypicGroup = false;
 
     private Comparator<TaxonNodeDto> taxonNodeComparator;
 
@@ -141,6 +142,14 @@ public class CdmLightExportConfigurator
     }
     public void setEncoding(String encoding) {
         this.csvIOConfig.setEncoding(encoding);
+    }
+
+    public boolean isShowSynSecForHomotypicGroup() {
+        return isShowSynSecForHomotypicGroup;
+    }
+
+    public void setShowSynSecForHomotypicGroup(boolean isShowSynSecForHomotypicGroup) {
+        this.isShowSynSecForHomotypicGroup = isShowSynSecForHomotypicGroup;
     }
 
     public String getLinesTerminatedBy() {

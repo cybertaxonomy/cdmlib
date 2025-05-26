@@ -337,6 +337,46 @@ public class CdmLightExportTest
 
     }
 
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    })
+    public void testSynSecOutput(){
+
+
+      //config + invoke
+        CdmLightExportConfigurator config = newConfigurator();
+        config.setShowSynSecForHomotypicGroup(true);
+
+        ExportResult result = defaultExport.invoke(config);
+        Map<String, byte[]> data = checkAndGetData(result);
+        Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
+        List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
+        Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
+        Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
+        String line = getLine(hgList, speciesNameHgUuid);
+
+        String expectedSynSec = "syn. sec. Author (1980: 67), My sec ref";
+
+        Assert.assertTrue(line.contains(expectedSynSec));
+
+        //show syn sec for every synonym
+        config.setShowSynSecForHomotypicGroup(false);
+        result = defaultExport.invoke(config);
+        data = checkAndGetData(result);
+        Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
+        hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
+        Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
+        Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
+        line = getLine(hgList, speciesNameHgUuid);
+        expectedSynSec = "syn. sec. My sec ref";
+
+        Assert.assertTrue(line.contains(expectedSynSec));
+
+    }
+
+
     @Override
     protected CdmLightExportConfigurator newConfigurator() {
         return CdmLightExportConfigurator.NewInstance();
