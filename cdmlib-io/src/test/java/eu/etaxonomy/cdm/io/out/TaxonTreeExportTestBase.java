@@ -460,6 +460,15 @@ public abstract class TaxonTreeExportTestBase
         synonymUnpublished.setPublish(false);
         species.addHomotypicSynonym(synonymUnpublished);
 
+        TaxonName synonymName2 = createParsedName(parser, "Genus second L., The second book: 2. 1905", NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        setUuid(synonymName2, "33a0a275-9838-40e4-9df6-cb4f79c4b781");
+
+        Synonym synonymUnpublished2 = Synonym.NewInstance(synonymName2, ref2);
+        setUuid(synonymUnpublished2, "7bd48f8b-568f-4648-a9c3-ec00dbfed06da");
+        save(synonymUnpublished2);
+        synonymUnpublished2.setPublish(true);
+        species.addHomotypicSynonym(synonymUnpublished2);
+
         //subspecies
         TaxonName subspeciesName = createParsedName(parser, "Genus species subsp. subspec Mill., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), subspeciesNameUuid, subspeciesNomRefUuid);
