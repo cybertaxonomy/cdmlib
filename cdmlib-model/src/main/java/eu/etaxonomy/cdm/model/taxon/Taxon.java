@@ -130,7 +130,6 @@ public class Taxon
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="acceptedTaxon", fetch=FetchType.LAZY, orphanRemoval=false) //we allow synonyms to stay on their own for dirty data and for intermediate states during e.g. imports
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @NotNull
     @Valid
     @ContainedIn
