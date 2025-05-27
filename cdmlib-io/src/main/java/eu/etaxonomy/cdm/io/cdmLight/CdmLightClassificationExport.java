@@ -1901,7 +1901,7 @@ public class CdmLightClassificationExport
             String typifiedNamesWithoutAccepted = "";
             String typifiedNamesWithoutAcceptedWithSec = "";
             int index = 0;
-            Set<SecundumSource> secSources = new HashSet<>();
+            List<SecundumSource> secSources = new ArrayList<>();
             for (TaxonName name : typifiedNames) {
                 // Concatenated output string for homotypic group (names and
                 // citations) + status + some name relations (e.g. “non”)
@@ -2089,12 +2089,7 @@ public class CdmLightClassificationExport
                             }
                             String secTemp = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(tb.getSec(), tb.getSecSource().getCitationMicroReference(), null,
                                     state.getReferenceStore().get(tb.getSec().getUuid()));
-                            if (state.getConfig().isShowSynSecForHomotypicGroup() && tb instanceof Synonym) {
-                                if (!StringUtils.isBlank(sec) ) {
-                                    sec = sec.trim() + ", ";
-                                }
-                                sec = sec + secTemp;
-                            }else{
+                            if (!(state.getConfig().isShowSynSecForHomotypicGroup() && tb instanceof Synonym)) {
                                 sec = secTemp;
                             }
 
@@ -2148,34 +2143,34 @@ public class CdmLightClassificationExport
                 }
                 typifiedNamesWithSecString = typifiedNamesWithSecString.trim() + " ";
             }
-                if (state.getConfig().isShowSynSecForHomotypicGroup() && !secSources.isEmpty()) {
-                    String synSecs = "syn. sec. ";
-                    for (SecundumSource synSec: secSources) {
-                        synSecs += OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(synSec.getCitation(), synSec.getCitationMicroReference(), null,
-                                state.getReferenceStore().get(synSec.getUuid()));
-                        synSecs += ", ";
-                    }
-                    synSecs = synSecs.substring(0, synSecs.length()-2);
-                    typifiedNamesWithSecString +=  synSecs ;
-                    typifiedNamesWithoutAcceptedWithSec += synSecs;
+            if (state.getConfig().isShowSynSecForHomotypicGroup() && !secSources.isEmpty()) {
+                String synSecs = "syn. sec. ";
+                for (SecundumSource synSec: secSources) {
+                    synSecs += OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(synSec.getCitation(), synSec.getCitationMicroReference(), null,
+                            state.getReferenceStore().get(synSec.getUuid()));
+                    synSecs += ", ";
                 }
+                synSecs = synSecs.substring(0, synSecs.length()-2);
+                typifiedNamesWithSecString +=  synSecs ;
+                typifiedNamesWithoutAcceptedWithSec += synSecs;
+            }
 
-                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
+            csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
 
-                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITH_SEC_STRING)] = typifiedNamesWithSecString.trim();
+            csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITH_SEC_STRING)] = typifiedNamesWithSecString.trim();
 
-                if (firstname != null) {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = typifiedNamesWithoutAccepted.trim();
-                } else {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = "";
-                }
+            if (firstname != null) {
+                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = typifiedNamesWithoutAccepted.trim();
+            } else {
+                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = "";
+            }
 
-                if (firstname != null) {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = typifiedNamesWithoutAcceptedWithSec.trim();
-                } else {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = "";
-                }
-                index++;
+            if (firstname != null) {
+                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = typifiedNamesWithoutAcceptedWithSec.trim();
+            } else {
+                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = "";
+            }
+            index++;
 
 
             List<TypeDesignationBase<?>> designationList = new ArrayList<>(group.getTypeDesignations());
@@ -2278,7 +2273,7 @@ public class CdmLightClassificationExport
         }
     }
 
-    protected void mergeSources(SecundumSource newSource, Set<SecundumSource> synSecSources, SecundumSource sourceToExclude) {
+    protected void mergeSources(SecundumSource newSource, List<SecundumSource> synSecSources, SecundumSource sourceToExclude) {
         if (sourceMatches(sourceToExclude, newSource)) {
             return;
         }
