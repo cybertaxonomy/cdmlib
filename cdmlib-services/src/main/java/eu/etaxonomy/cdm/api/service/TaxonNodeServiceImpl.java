@@ -874,7 +874,12 @@ public class TaxonNodeServiceImpl
         }
         if (!monitor.isCanceled()){
             monitor.subTask("saving and reindex");
-            dao.saveOrUpdateAll(nodes);
+            try {
+                referenceDao.saveOrUpdate(sec);
+                dao.saveOrUpdateAll(nodes);
+            }catch(Exception e) {
+                result.addException(e);
+            }
         }else{
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
