@@ -451,7 +451,7 @@ public class ManifestComposer {
         List<MetadataEntry> metadata = new ArrayList<>();
         if(entity instanceof TaxonBase){
             List taggedTitle;
-            if (!showNameCache) {
+            if (!showNameCache || ((TaxonBase)entity).getName() == null) {
                 taggedTitle = ((TaxonBase)entity).getTaggedTitle();
             }else {
                 taggedTitle = ((TaxonBase)entity).getName().getTaggedName();
