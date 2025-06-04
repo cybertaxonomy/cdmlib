@@ -346,12 +346,14 @@ public class TaxonNodeServiceImpl
         }
 
         Synonym newSyn = newAcceptedTaxon.addSynonymName(newSynonymName, newSec, microReference, synonymType);
-        sourceDao.saveOrUpdate(newSyn.getSecSource());
-        save(newSyn);
+
+
         if (newSec == null){
             newSyn.setSec(newSec);
         }
         newSyn.setPublish(oldTaxon.isPublish());
+        sourceDao.saveOrUpdate(newSyn.getSecSource());
+        save(newSyn);
 
         // Move Synonyms to new Taxon
         // From ticket 3163 we can move taxon with accepted name having homotypic synonyms
@@ -383,9 +385,11 @@ public class TaxonNodeServiceImpl
             }
             if (secHandling != null &&  !secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn)){
                 synonym.setSec(newSec);
+                sourceDao.saveOrUpdate(synonym.getSecSource());
             }
             newAcceptedTaxon.addSynonym(synonym, srt);
         }
+        taxonService.saveOrUpdate(new HashSet(syns));
 
         // CHILD NODES
         if(oldTaxonNode.getChildNodes() != null && oldTaxonNode.getChildNodes().size() != 0){
