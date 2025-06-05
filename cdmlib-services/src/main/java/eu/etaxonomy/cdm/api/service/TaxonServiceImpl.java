@@ -436,16 +436,18 @@ public class TaxonServiceImpl
 
         Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, newSecRef, microRef);
         newAcceptedTaxon.setPublish(synonym.isPublish());
-        sourceDao.saveOrUpdate(newAcceptedTaxon.getSecSource());
-        dao.save(newAcceptedTaxon);
+        Set<OriginalSourceBase> sourcesToUpdate = new HashSet<>();
+        sourcesToUpdate.add(newAcceptedTaxon.getSecSource());
+
 
         result.setCdmEntity(newAcceptedTaxon);
         SynonymType relTypeForGroup = SynonymType.HOMOTYPIC_SYNONYM_OF;
         List<Synonym> heteroSynonyms = acceptedTaxon.getSynonymsInGroup(synonymHomotypicGroup);
-        Set<OriginalSourceBase> sourcesToUpdate = new HashSet<>();
+
         for (Synonym heteroSynonym : heteroSynonyms){
             if (secHandling == null || !secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn)){
                 heteroSynonym.setSec(newSecRef);
+                sourcesToUpdate.add(heteroSynonym.getSecSource());
             }
             if (synonym.equals(heteroSynonym)){
                 acceptedTaxon.removeSynonym(heteroSynonym, false);
@@ -454,7 +456,9 @@ public class TaxonServiceImpl
                 newAcceptedTaxon.addSynonym(heteroSynonym, relTypeForGroup);
             }
         }
+        sourceDao.saveOrUpdateAll(sourcesToUpdate);
         dao.saveOrUpdate(acceptedTaxon);
+        dao.save(newAcceptedTaxon);
         result.addUpdatedObject(acceptedTaxon);
         if (deleteSynonym){
 
