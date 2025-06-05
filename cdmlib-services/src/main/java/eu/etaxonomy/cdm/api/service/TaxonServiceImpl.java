@@ -437,7 +437,9 @@ public class TaxonServiceImpl
         Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, newSecRef, microRef);
         newAcceptedTaxon.setPublish(synonym.isPublish());
         Set<OriginalSourceBase> sourcesToUpdate = new HashSet<>();
-        sourcesToUpdate.add(newAcceptedTaxon.getSecSource());
+        if (newAcceptedTaxon.getSecSource()!= null) {
+            sourcesToUpdate.add(newAcceptedTaxon.getSecSource());
+        }
 
 
         result.setCdmEntity(newAcceptedTaxon);
@@ -447,7 +449,9 @@ public class TaxonServiceImpl
         for (Synonym heteroSynonym : heteroSynonyms){
             if (secHandling == null || !secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn)){
                 heteroSynonym.setSec(newSecRef);
-                sourcesToUpdate.add(heteroSynonym.getSecSource());
+                if (heteroSynonym.getSecSource() != null) {
+                    sourcesToUpdate.add(heteroSynonym.getSecSource());
+                }
             }
             if (synonym.equals(heteroSynonym)){
                 acceptedTaxon.removeSynonym(heteroSynonym, false);
