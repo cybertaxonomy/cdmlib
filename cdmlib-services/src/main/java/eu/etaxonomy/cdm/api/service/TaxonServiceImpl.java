@@ -456,7 +456,9 @@ public class TaxonServiceImpl
                 newAcceptedTaxon.addSynonym(heteroSynonym, relTypeForGroup);
             }
         }
-        sourceDao.saveOrUpdateAll(sourcesToUpdate);
+        if (!sourcesToUpdate.isEmpty()) {
+            sourceDao.saveOrUpdateAll(sourcesToUpdate);
+        }
         dao.saveOrUpdate(acceptedTaxon);
         dao.save(newAcceptedTaxon);
         result.addUpdatedObject(acceptedTaxon);
