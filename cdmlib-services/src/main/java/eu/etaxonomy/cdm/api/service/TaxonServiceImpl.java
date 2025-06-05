@@ -113,6 +113,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -441,9 +442,9 @@ public class TaxonServiceImpl
         result.setCdmEntity(newAcceptedTaxon);
         SynonymType relTypeForGroup = SynonymType.HOMOTYPIC_SYNONYM_OF;
         List<Synonym> heteroSynonyms = acceptedTaxon.getSynonymsInGroup(synonymHomotypicGroup);
-
+        Set<OriginalSourceBase> sourcesToUpdate = new HashSet<>();
         for (Synonym heteroSynonym : heteroSynonyms){
-            if (secHandling == null){
+            if (secHandling == null || !secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn)){
                 heteroSynonym.setSec(newSecRef);
             }
             if (synonym.equals(heteroSynonym)){
