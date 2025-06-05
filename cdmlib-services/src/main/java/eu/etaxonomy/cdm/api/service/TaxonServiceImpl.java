@@ -130,6 +130,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
@@ -180,6 +181,9 @@ public class TaxonServiceImpl
 
     @Autowired
     private IReferenceService referenceService;
+
+    @Autowired
+    private IOriginalSourceDao sourceDao;
 //
 //    @Autowired
 //    private IOrderedTermVocabularyDao orderedVocabularyDao;
@@ -431,7 +435,9 @@ public class TaxonServiceImpl
 
         Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, newSecRef, microRef);
         newAcceptedTaxon.setPublish(synonym.isPublish());
+        sourceDao.saveOrUpdate(newAcceptedTaxon.getSecSource());
         dao.save(newAcceptedTaxon);
+
         result.setCdmEntity(newAcceptedTaxon);
         SynonymType relTypeForGroup = SynonymType.HOMOTYPIC_SYNONYM_OF;
         List<Synonym> heteroSynonyms = acceptedTaxon.getSynonymsInGroup(synonymHomotypicGroup);
@@ -455,7 +461,10 @@ public class TaxonServiceImpl
                 this.dao.flush();
                 SynonymDeletionConfigurator config = new SynonymDeletionConfigurator();
                 config.setDeleteNameIfPossible(false);
-                this.deleteSynonym(synonym, config);
+                DeleteResult resultDelete = this.deleteSynonym(synonym, config);
+                if (resultDelete.isAbort() || resultDelete.isError()) {
+                    result.addExceptions(resultDelete.getExceptions());
+                }
 
             } catch (Exception e) {
                 result.addException(e);
@@ -496,6 +505,9 @@ public class TaxonServiceImpl
             case KeepOrSelect:
                 newSecRef = CdmBase.deproxy(referenceService.load(newSec));
                 break;
+            case AlwaysSelect:
+                newSecRef = CdmBase.deproxy(referenceService.load(newSec));
+                break;
             default:
                 break;
         }
@@ -522,6 +534,11 @@ public class TaxonServiceImpl
         UpdateResult result = new UpdateResult();
         Taxon toTaxon = (Taxon) dao.load(toTaxonUuid);
         Synonym synonym = (Synonym) dao.load(synonymUuid);
+        if (toTaxon == null || synonym == null) {
+            result.setAbort();
+            result.addException(new Exception("The synonym or the related taxon not exist"));
+            return result;
+        }
         result = changeSynonymToRelatedTaxon(synonym, toTaxon, taxonRelationshipType, citation, microcitation);
         Taxon relatedTaxon = (Taxon)result.getCdmEntity();
 //        result.setCdmEntity(relatedTaxon);
