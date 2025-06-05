@@ -297,7 +297,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 //        String taxonTitleCache, String nameTitleCache, Rank nameRank, UUID parentNodeUuid,
 //        Integer sortIndex, UUID classificationUuid, Boolean taxonPublish, TaxonNodeStatus status,
 //        Integer childrenCount, UUID secUuid
-        String queryString = getTaxonNodeDtoWithoutSecQuery();
+        String queryString = getTaxonNodeDtoQuery();
         queryString += " WHERE p.id = :parent_id ";
 
 
