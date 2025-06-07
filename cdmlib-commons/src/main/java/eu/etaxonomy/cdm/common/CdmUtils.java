@@ -18,6 +18,7 @@ import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -607,5 +608,14 @@ public class CdmUtils {
             tmpMap.putAll(overrideMap);
         }
         return tmpMap;
+    }
+
+    public static String convertToAscii(String str) {
+        String nomalizedText =
+                Normalizer
+                    .normalize(str, Normalizer.Form.NFD)
+                    .replaceAll("[^\\p{ASCII}]", "")
+                    ;
+        return nomalizedText;
     }
 }
