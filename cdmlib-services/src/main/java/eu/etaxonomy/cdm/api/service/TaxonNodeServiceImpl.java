@@ -860,13 +860,15 @@ public class TaxonNodeServiceImpl
         taxonNodePropertyPath.add("parent.taxon.secSource.*");
         TaxonNode targetNode = dao.load(newParentNodeUuid, taxonNodePropertyPath);
         List<TaxonNode> nodes = dao.list(taxonNodeUuids, null, null, null, null);
-        Reference sec = referenceDao.load(secUuid);
 
+        Reference sec = referenceDao.load(secUuid);
+        result.addUpdatedObject(targetNode);
         monitor.beginTask("Move Taxonnodes", nodes.size()*2);
         monitor.subTask("move taxon nodes");
         for (TaxonNode node: nodes){
             if (!monitor.isCanceled()){
                 if (!nodes.contains(node.getParent())){
+                    result.addUpdatedObject(node.getParent());
                     result.includeResult(moveTaxonNode(node, targetNode, movingType, secHandling, sec));
                 }
                 monitor.worked(1);
@@ -876,11 +878,14 @@ public class TaxonNodeServiceImpl
                 break;
             }
         }
-        if (!monitor.isCanceled()){
+        monitor.done();
+        if (!monitor.isCanceled() ){
             monitor.subTask("saving and reindex");
+            IProgressMonitor subMonitor = new SubProgressMonitor(monitor, nodes.size());
             try {
                 referenceDao.saveOrUpdate(sec);
                 dao.saveOrUpdateAll(nodes);
+                subMonitor.internalWorked(nodes.size());
             }catch(Exception e) {
                 result.addException(e);
             }
