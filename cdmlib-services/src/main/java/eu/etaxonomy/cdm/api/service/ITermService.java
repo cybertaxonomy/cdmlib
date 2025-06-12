@@ -262,7 +262,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param uuidList
      * @return
      */
-    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList);
+    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList, Language lang);
 
 
     public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList);

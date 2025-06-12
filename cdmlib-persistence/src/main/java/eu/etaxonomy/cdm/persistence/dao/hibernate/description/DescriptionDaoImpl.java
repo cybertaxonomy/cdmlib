@@ -637,7 +637,7 @@ public class DescriptionDaoImpl
             addPageSizeAndNumber(query, pageSize, pageNumber);
             parentResults = query.list();
         }
-        List<TermDto> dtoList = TermDto.termDtoListFrom(parentResults);
+        List<TermDto> dtoList = TermDto.termDtoListFrom(parentResults, null);
 
         return dtoList;
     }

@@ -669,8 +669,8 @@ public class TermServiceImpl
     }
 
     @Override
-    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList){
-        return dao.findByUUIDsAsDto(uuidList);
+    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList, Language lang){
+        return dao.findByUUIDsAsDto(uuidList, lang);
     }
 
     @Override

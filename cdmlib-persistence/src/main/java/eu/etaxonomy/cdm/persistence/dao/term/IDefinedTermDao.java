@@ -262,7 +262,7 @@ public interface IDefinedTermDao
      */
     public Map<UUID, List<TermDto>> getSupportedStatesForFeature(Set<UUID> featureUuids);
 
-    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList);
+    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList, Language lang);
 
     public Collection<TermDto> findByTypeAsDto(TermType termType);
 

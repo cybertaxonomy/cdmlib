@@ -19,7 +19,8 @@ public enum TermOrder implements IKeyLabel{
     Label("Label", "Label"),
     Symbol1("Symbol1", "Symbol 1"),
     Symbol2("Symbol2", "Symbol 2"),
-    Natural("Natural", "Natural");
+    Natural("Natural", "Natural"),
+    Tree("Tree", "Tree");
 
     private String label;
     private String key;

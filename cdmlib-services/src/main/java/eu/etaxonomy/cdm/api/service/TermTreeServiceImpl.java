@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -209,6 +210,10 @@ public class TermTreeServiceImpl
     @Override
     public List<TermTreeDto> getTermTreeDtosByUuids(List<UUID> uuid) {
         return dao.findTermTreeDtoByUuids(uuid);
+    }
+    @Override
+    public List<TermDto> getListOfChildren(UUID treeUuid){
+        return dao.getListOfChildren(dao.load(treeUuid));
     }
 
 }
