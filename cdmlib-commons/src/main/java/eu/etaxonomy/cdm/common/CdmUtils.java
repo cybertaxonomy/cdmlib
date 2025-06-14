@@ -377,6 +377,16 @@ public class CdmUtils {
     }
 
     /**
+     * Tests if two Strings are equal (with ignore case) or both null. Otherwise returns <code>false</code>.
+     */
+    public static boolean nullSafeEqualIgnoreCase(String str1, String str2) {
+        if (str1 == null){
+            return str2 == null;
+        }
+        return (str1 == str2) || (str1.equalsIgnoreCase(str2));
+    }
+
+    /**
      * Compares 2 instances of {@link Comparable} with defined values for <code>null</code>
      */
     public static <T extends Comparable<T>> int nullSafeCompareTo(T c1, T c2) {
@@ -611,6 +621,9 @@ public class CdmUtils {
     }
 
     public static String convertToAscii(String str) {
+        if (str == null) {
+            return null;
+        }
         String nomalizedText =
                 Normalizer
                     .normalize(str, Normalizer.Form.NFD)
