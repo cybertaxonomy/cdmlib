@@ -557,7 +557,7 @@ public class BerlinModelTransformer {
     public static final UUID uuidFeatureEditorialNotes = UUID.fromString("5f971b66-1bc7-4b12-923e-2b4ee8b3737d");
     public static final UUID uuidFeatureHabitatSalvador = UUID.fromString("d03a5e2c-fd93-4fff-b0b3-e16cefbb9847");
 
-	public static UUID uuidNomStatusCombIned = UUID.fromString("dde8a2e7-bf9e-42ec-b186-d5bde9c9c128");
+	public static UUID uuidNomStatusCombIned = UUID.fromString("71c13910-19a4-46b2-9ec8-2a8dbd45cd83");
 	public static UUID uuidNomStatusSpNovIned = UUID.fromString("1a359ca1-9364-43bc-93e4-834bdcd52b72");
 	public static UUID uuidNomStatusNomOrthCons = UUID.fromString("0f838183-ffa0-4014-928e-0e3a27eb3918");
 
@@ -571,6 +571,7 @@ public class BerlinModelTransformer {
 			return null;
 		}else if (nomStatus.equalsIgnoreCase("comb. ined.")){
 			if (nomStatusCombIned == null){
+                logger.error("This should not happen as comb. ined. is part of CDM core now");
 			    NomenclaturalStanding nomenclaturalStanding = NomenclaturalStanding.OTHER_DESIGNATION;
                 nomStatusCombIned = NomenclaturalStatusType.NewInstance("comb. ined.", "comb. ined.", "comb. ined.", Language.LATIN(), nomenclaturalStanding);
 				nomStatusCombIned.setUuid(uuidNomStatusCombIned);
@@ -579,7 +580,7 @@ public class BerlinModelTransformer {
 			result = nomStatusCombIned;
 		}else if (nomStatus.equalsIgnoreCase("sp. nov. ined.")){
 			if (nomStatusSpNovIned == null){
-			    NomenclaturalStanding nomenclaturalStanding = NomenclaturalStanding.OTHER_DESIGNATION;
+                NomenclaturalStanding nomenclaturalStanding = NomenclaturalStanding.OTHER_DESIGNATION;
                 nomStatusSpNovIned = NomenclaturalStatusType.NewInstance("sp. nov. ined.", "sp. nov. ined.", "sp. nov. ined.", Language.LATIN(), nomenclaturalStanding);
 				nomStatusSpNovIned.setUuid(uuidNomStatusSpNovIned);
 				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusSpNovIned);
@@ -587,6 +588,7 @@ public class BerlinModelTransformer {
 			result = nomStatusSpNovIned;
 		}else if (nomStatus.equalsIgnoreCase("nom. & orth. cons.")){
 			if (nomStatusNomOrthCons == null){
+			    logger.error("This should not happen as nom. & orth. cons. is part of CDM core now");
 			    NomenclaturalStanding nomenclaturalStanding = NomenclaturalStanding.VALID;
                 nomStatusNomOrthCons = NomenclaturalStatusType.NewInstance("nom. & orth. cons.", "nom. & orth. cons.", "nom. & orth. cons.", Language.LATIN(), nomenclaturalStanding);
 				nomStatusNomOrthCons.setUuid(uuidNomStatusNomOrthCons);
