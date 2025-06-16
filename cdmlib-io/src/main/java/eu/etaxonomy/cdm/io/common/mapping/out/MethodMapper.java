@@ -35,7 +35,8 @@ public class MethodMapper
 	private Class<?>[] parameterTypes;
 
 	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase exportBase){
-		String methodName = getMethodName(dbAttributeString);
+
+	    String methodName = getMethodName(dbAttributeString);
 		return NewInstance(dbAttributeString, exportBase, methodName);
 	}
 
@@ -44,28 +45,42 @@ public class MethodMapper
 		return new MethodMapper(dbAttributeString, exportBase.getClass(), methodName, parameterTypes);
 	}
 
-	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase exportBase, String methodName){
-		Class<?> parameterTypes = exportBase.getStandardMethodParameter();
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase exportBase,
+	        String methodName){
+
+	    Class<?> parameterTypes = exportBase.getStandardMethodParameter();
 		MethodMapper result = new MethodMapper(dbAttributeString, exportBase.getClass(), methodName, parameterTypes);
 		return result;
 	}
 
-	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz, Class<?>... parameterTypes){
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz,
+	        Class<?>... parameterTypes){
+
 	    String methodName = getMethodName(dbAttributeString);
         MethodMapper result = new MethodMapper(dbAttributeString, clazz, methodName, parameterTypes);
         return result;
     }
 
-	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz, String methodName, Class<?>... parameterTypes){
-		MethodMapper result = new MethodMapper(dbAttributeString, clazz, methodName, parameterTypes);
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz,
+	        String methodName, Class<?>... parameterTypes){
+
+	    MethodMapper result = new MethodMapper(dbAttributeString, clazz, methodName, parameterTypes);
 		return result;
 	}
 
-	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz, String methodName, Class<?> parameterType1, Class<?> parameterType2){
-		MethodMapper result = new MethodMapper(dbAttributeString, clazz, methodName, parameterType1, parameterType2);
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz,
+	        String methodName, Class<?> parameterType1, Class<?> parameterType2){
+
+	    MethodMapper result = new MethodMapper(dbAttributeString, clazz, methodName, parameterType1, parameterType2);
 		return result;
 	}
 
+	/**
+	 * @param dbAttributeString the database attribute name
+	 * @param clazz the class that holds the method to call
+	 * @param methodName the method name
+	 * @param parameterTypes the parameter types to pass to the method
+	 */
 	protected MethodMapper(String dbAttributeString, Class<?> clazz, String methodName, Class<?>... parameterTypes) {
 		super(null, dbAttributeString, null);
 		try {
