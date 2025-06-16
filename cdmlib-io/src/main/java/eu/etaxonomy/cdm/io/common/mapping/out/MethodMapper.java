@@ -40,8 +40,17 @@ public class MethodMapper
 		return NewInstance(dbAttributeString, exportBase, methodName);
 	}
 
-	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase exportBase, Class<?>... parameterTypes){
-		String methodName = getMethodName(dbAttributeString);
+    public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz, DbExportBase exportBase){
+
+        String methodName = getMethodName(dbAttributeString);
+        Class<?> parameterTypes = exportBase.getStandardMethodParameter();
+        return new MethodMapper(dbAttributeString, clazz, methodName, parameterTypes);
+    }
+
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase exportBase,
+	        Class<?>... parameterTypes){
+
+	    String methodName = getMethodName(dbAttributeString);
 		return new MethodMapper(dbAttributeString, exportBase.getClass(), methodName, parameterTypes);
 	}
 
