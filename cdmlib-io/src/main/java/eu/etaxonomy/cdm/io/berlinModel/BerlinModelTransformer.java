@@ -323,6 +323,20 @@ public class BerlinModelTransformer {
 	public static UUID uuidKo = UUID.fromString("f3f05e88-99af-48fa-92ef-1a169bcc7acf");
 	public static UUID uuidSe = UUID.fromString("75facd9a-125d-41b5-8f90-776234e782e9");
 
+	//E+M Mosses Areas
+	public static UUID uuidRf_A2 = UUID.fromString("59321008-4ac7-4606-8ea4-7e150f157ad2");
+	public static UUID uuidRf_C2 = UUID.fromString("46522349-95bf-4400-8b83-e6ac59c523cd");
+	public static UUID uuidEgSn = UUID.fromString("46522349-95bf-4400-8b83-e6ac59c523cd");
+	public static UUID uuidEUR = UUID.fromString("865e0fcc-bfb5-4af2-8822-08c90c7ba61e");
+	public static UUID uuidGr_AE_G = UUID.fromString("1b397872-a669-4eeb-8f9d-99b97d544ed8");
+	public static UUID uuidIt_I = UUID.fromString("ca411e6e-db82-4413-aba3-798d9ff7d7ae");
+	public static UUID uuidRf_NE = UUID.fromString("7e646713-052c-4c1b-9e80-b83c9945284a");
+	public static UUID uuidRf_NW2 = UUID.fromString("d0ff629f-b6d1-461a-8d39-f742096ac86a");
+	public static UUID uuidIt_S = UUID.fromString("0ecb56cb-52c9-471c-9247-3a24c31a7b3b");
+	public static UUID uuidRf_SE = UUID.fromString("e1cae7bb-6841-468d-9942-490806bbd7de");
+	public static UUID uuidRf_SU = UUID.fromString("b233032e-8bbb-4448-93a8-4202715bf76f");
+	public static UUID uuidIt_V = UUID.fromString("9bdf8a42-611c-4b48-9170-4aa58f5cd2b8");
+
 	//MCL
 	public static UUID uuidVocMclAreas = UUID.fromString("30dfb403-2c89-4567-8726-0b9528f8716e");
 
