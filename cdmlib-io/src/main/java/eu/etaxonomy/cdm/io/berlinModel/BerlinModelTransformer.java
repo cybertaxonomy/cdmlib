@@ -172,7 +172,8 @@ public class BerlinModelTransformer {
     //E+M areas
 	public static UUID uuidVocEuroMedAreas = UUID.fromString("625a4962-c211-4597-816e-5804083efe26");
 	public static UUID uuidEM = UUID.fromString("111BDF38-7A32-440A-9808-8AF1C9E54B51");
-	public static UUID uuidEUR = UUID.fromString("80B3CEEE-2F78-45CE-B4F4-E473F5ED8343");
+	//OLD
+//	public static UUID uuidEUR = UUID.fromString("80B3CEEE-2F78-45CE-B4F4-E473F5ED8343");
 	public static UUID uuid14 = UUID.fromString("4FF83A35-97DE-4C39-BEDE-27EE9ECEFB45");
 	public static UUID uuid20 = UUID.fromString("19D93AD1-59E7-49ED-B513-D7D493EDC4DE");
 	public static UUID uuid21 = UUID.fromString("1B98DAF0-A709-4871-9A8B-CFDD09F41763");
@@ -266,8 +267,9 @@ public class BerlinModelTransformer {
 	public static UUID uuidHs_G = UUID.fromString("35350D75-6952-48BD-B265-C005BC1B2909");
 	public static UUID uuidHs_S = UUID.fromString("264649F7-192D-4AE5-9840-81FC782F59F0");
 	public static UUID uuidIr = UUID.fromString("A3B35528-5FFD-43B1-B605-711807C1EC9F");
-	public static UUID uuidIt_I = UUID.fromString("E3BC327E-0B42-4439-811B-595BC55A8FF8");
-	public static UUID uuidIt_S = UUID.fromString("57F35807-8CFA-4698-BB04-AAD3549C12EB");
+	//OLD
+//	public static UUID uuidIt_I = UUID.fromString("E3BC327E-0B42-4439-811B-595BC55A8FF8");
+//	public static UUID uuidIt_S = UUID.fromString("57F35807-8CFA-4698-BB04-AAD3549C12EB");
 	public static UUID uuidJo = UUID.fromString("567A537D-F2FA-43EF-A20A-AEC76723E269");
 	public static UUID uuidKz = UUID.fromString("F8ABE715-D859-4B6F-B8F1-DB1A847DEAC4");
 	public static UUID uuidLa = UUID.fromString("8E338882-2631-4AD6-BC53-799C698C807D");

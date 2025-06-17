@@ -113,7 +113,6 @@ public class OrderHint implements Serializable {
     }
 
     public OrderHint(String fieldName, SortOrder sortOrder) {
-        super();
         this.propertyName = fieldName;
         this.sortOrder = sortOrder;
     }
