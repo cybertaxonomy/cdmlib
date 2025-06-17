@@ -201,7 +201,7 @@ public class Source {
         }
     }
 
-    public int getUniqueInteger (String query){
+    public Integer getUniqueInteger (String query){
         Object result = getUniqueResult(query);
         if (result instanceof Long){
             Long theLong = (Long)result;
