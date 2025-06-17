@@ -13,12 +13,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
@@ -150,31 +154,44 @@ public class OriginalSourceDaoImpl
 		return results;
 	}
 
-	@Override
+    @Override
     public <T extends NamedSourceBase> Long countWithNameUsedInSource(Class<T> clazz){
 
         clazz = clazz != null? clazz : (Class<T>)NamedSourceBase.class;
-        Criteria crit = getSession().createCriteria(clazz);
-        //count
-        crit.setProjection(Projections.rowCount());
-        long result = (Long)crit.uniqueResult();
 
+        CriteriaBuilder builder = getSession().getCriteriaBuilder();
+        CriteriaQuery<Long> cq = builder.createQuery(Long.class);
+        Root<T> root = cq.from(clazz);
+        cq.where(root.get("nameUsedInSource").isNotNull());
+        cq.select(builder.count(root));
+
+        long result = getSession().createQuery(cq).getSingleResult();
         return result;
 	}
 
 
 	@Override
 	public <T extends NamedSourceBase> List<T> listWithNameUsedInSource(Class<T> clazz,
-	        Integer pageSize, Integer pageNumber,List<OrderHint> orderHints, List<String> propertyPaths){
+	        Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
 
 	    clazz = clazz != null? clazz : (Class<T>) NamedSourceBase.class;
-	    Criteria crit = getSession().createCriteria(clazz);
-	    crit.add(Restrictions.isNotNull("nameUsedInSource"));
 
-	    crit.addOrder(Order.desc("created"));
-	    @SuppressWarnings({ "unchecked" })
-	    List<T> results = crit.list();
 
+	    CriteriaBuilder builder = getSession().getCriteriaBuilder();
+        CriteriaQuery<T> cq = builder.createQuery(clazz);
+        Root<T> root = cq.from(clazz);
+        cq.where(root.get("nameUsedInSource").isNotNull());
+
+        //TODO use order hints (see also OrderHint.add(Criteria, ...)
+//        if (pageSize != null && pageNumber != null && CdmUtils.isNullSafeEmpty(orderHints)) {
+//            orderHints = OrderHint.ORDER_BY_ID.asList();
+//        }
+        cq.orderBy(builder.asc(root.get("id")));
+
+        TypedQuery<T> query = getSession().createQuery(cq);
+        addPageSizeAndNumber(query, pageSize, pageNumber);
+
+        List<T> results = query.getResultList();
 	    return results;
 	}
 }
