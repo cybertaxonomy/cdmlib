@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.CdmMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 
 /**
  * @author a.mueller
@@ -88,6 +89,9 @@ public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG, TRA
 					result = false;
 					continue;
 				}
+				if (isEmpty(collectionObject) ) {
+				    continue;
+				}
 				if (isFiltered(collectionObject)){
 					continue;
 				}
@@ -106,6 +110,16 @@ public class CollectionExportMapping<STATE extends DbExportStateBase<CONFIG, TRA
 		}
 		return result;
 	}
+
+    private boolean isEmpty(CdmBase collectionObject) {
+        //NOTE: currently only implemented for original source base,
+        //     but others may have this check, too, in future
+        if (collectionObject.isInstanceOf(OriginalSourceBase.class)
+                && CdmBase.deproxy(collectionObject, OriginalSourceBase.class).checkEmpty(true)) {
+            return true;
+        }
+        return false;
+    }
 
     private boolean handleSingleMapper(CdmBase parent, CdmBase collectionObject, CdmMapperBase mapper)
             throws SQLException {
