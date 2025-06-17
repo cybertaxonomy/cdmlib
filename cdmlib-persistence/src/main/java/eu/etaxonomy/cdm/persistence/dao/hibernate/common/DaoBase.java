@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.TypedQuery;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.search.Sort;
@@ -30,7 +32,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.query.Query;
 import org.hibernate.search.FullTextQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -136,17 +137,6 @@ public abstract class DaoBase {
         }
     }
 
-    protected void addPageSizeAndNumber(Query<?> query, Integer pageSize, Integer pageNumber) {
-        if(pageSize != null) {
-            query.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                query.setFirstResult(pageNumber * pageSize);
-            } else {
-                query.setFirstResult(0);
-            }
-        }
-    }
-
     protected void addPageSizeAndNumber(AuditQuery query, Integer pageSize, Integer pageNumber) {
         if(pageSize != null) {
             query.setMaxResults(pageSize);
@@ -177,17 +167,6 @@ public abstract class DaoBase {
                 criteria.setFirstResult(0);
             }
             criteria.setMaxResults(limit);
-        }
-    }
-
-    protected void addLimitAndStart(Query<?> query, Integer limit, Integer start) {
-        if(limit != null) {
-            if(start != null) {
-                query.setFirstResult(start);
-            } else {
-                query.setFirstResult(0);
-            }
-            query.setMaxResults(limit);
         }
     }
 
@@ -271,5 +250,30 @@ public abstract class DaoBase {
 
     protected void addOrder(StringBuilder hql, String alias, List<OrderHint> orderHints) {
         hql.append(orderByClause(alias, orderHints));
-     }
+    }
+
+    //*************************** JPA **********************************************/
+
+
+    protected void addLimitAndStart(TypedQuery<?> query, Integer limit, Integer start) {
+        if(limit != null) {
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+            query.setMaxResults(limit);
+        }
+    }
+
+    protected void addPageSizeAndNumber(TypedQuery<?> query, Integer pageSize, Integer pageNumber) {
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                query.setFirstResult(pageNumber * pageSize);
+            } else {
+                query.setFirstResult(0);
+            }
+        }
+    }
 }
