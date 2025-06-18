@@ -1041,7 +1041,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	public void findMatching(){
+	public void testFindMatching(){
 
 		IBook book1 = ReferenceFactory.newBook();
 		IBook book2 = ReferenceFactory.newBook();

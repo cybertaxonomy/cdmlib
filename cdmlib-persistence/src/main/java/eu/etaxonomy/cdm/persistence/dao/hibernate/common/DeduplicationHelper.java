@@ -496,7 +496,7 @@ public class DeduplicationHelper {
 		Class<?> clazz1 = cdmBase1.getClass();
 		if (! targetClass.isAssignableFrom(clazz1)){
 			//FIXME only do count or hasXXX, we do not need to instantiate objects here
-			List<CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
+			List<? extends CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
 			if (! referencingObjects.isEmpty()){
 				return false;
 			}
@@ -505,7 +505,7 @@ public class DeduplicationHelper {
 	}
 
 	private void reallocateSingleItem(CdmBase cdmBase1, CdmBase cdmBase2, ReferenceHolder refHolder, Set<ICdmBase> cloneSet) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-		List<CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
+		List<? extends CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
 		for (CdmBase referencingObject : referencingObjects){
 			if (!cloneSet.contains(referencingObject)){
 		        String className = refHolder.otherClass.getSimpleName();
@@ -556,7 +556,7 @@ public class DeduplicationHelper {
 	}
 
 	private void reallocateSingleItem_Old(CdmBase cdmBase1, CdmBase cdmBase2, ReferenceHolder refHolder) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-		List<CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
+		List<? extends CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
 		for (CdmBase referencingObject : referencingObjects){
 			Field referencingField = refHolder.otherClass.getDeclaredField(refHolder.propertyName);
 			referencingField.setAccessible(true);
