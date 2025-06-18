@@ -36,6 +36,7 @@ public class TestingTermVocabularyDao {
     @Autowired
     private SessionFactory factory;
 
+
     protected TermVocabulary<?> findByUuid(UUID uuid) throws DataAccessException{
         Session session = getSession();
         Criteria crit = session.createCriteria(TermVocabulary.class);

@@ -30,8 +30,9 @@ public abstract class ToManyReferringObjectMetadata extends ReferringObjectMetad
 
 	@Override
     public List<CdmBase> getReferringObjects(CdmBase x, Session session) {
-		Criteria criteria = session.createCriteria(type);
-		Set<Integer> values = new HashSet<Integer>();
+
+	    Criteria criteria = session.createCriteria(type);
+		Set<Integer> values = new HashSet<>();
 		values.add(x.getId());
         criteria.createCriteria(this.fieldName).add(Restrictions.in("id", values));
 

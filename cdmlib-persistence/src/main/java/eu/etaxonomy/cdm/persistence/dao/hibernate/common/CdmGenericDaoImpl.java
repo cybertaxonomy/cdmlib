@@ -642,6 +642,7 @@ public class CdmGenericDaoImpl
 
     @Override
     public <T extends CdmBase> T find(Class<T> clazz, UUID uuid, List<String> propertyPaths){
+
         Session session = getSession();
         Criteria crit = session.createCriteria(type);
         crit.add(Restrictions.eq("uuid", uuid));
@@ -709,6 +710,7 @@ public class CdmGenericDaoImpl
 		Session session = getSession();
 		Class<?> matchClass = objectToMatch.getClass();
 		ClassMetadata classMetaData = session.getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
+
 		Criteria criteria = session.createCriteria(matchClass);
 		boolean noMatch = makeCriteria(objectToMatch, matchStrategy, classMetaData, criteria, 1);
 		if (logger.isDebugEnabled()){logger.debug(criteria);}

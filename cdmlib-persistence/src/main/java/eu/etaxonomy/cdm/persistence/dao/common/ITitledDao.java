@@ -20,7 +20,7 @@ public interface ITitledDao<T extends CdmBase> {
 
 	public List<T> findByTitle(String queryString);
 
-	public List<T> findByTitle(String queryString, CdmBase sessionObject);
+    public List<T> findByTitle(String queryString, CdmBase sessionObject);
 
 	public long countByTitle(String queryString);
 

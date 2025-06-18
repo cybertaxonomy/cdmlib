@@ -710,9 +710,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return restriction;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public long count(Class<? extends T> type, List<Restriction<?>> restrictions) {
 
@@ -724,14 +721,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     }
 
-    /**
-     * @param uuids
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyName
-     * @return
-     */
     private Criteria prepareList(Class<? extends T> clazz, Collection<?> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             String propertyName) {
         if (clazz == null){

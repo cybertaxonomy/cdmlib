@@ -26,7 +26,8 @@ public class ToOneReferringObjectMetadata extends ReferringObjectMetadataImpl {
 
 	@Override
     public List<CdmBase> getReferringObjects(CdmBase x, Session session) {
-		Criteria criteria = session.createCriteria(type);
+
+	    Criteria criteria = session.createCriteria(type);
         criteria.add(Restrictions.eq(fieldName,x));
         @SuppressWarnings("unchecked")
         List<CdmBase> result = criteria.list();
