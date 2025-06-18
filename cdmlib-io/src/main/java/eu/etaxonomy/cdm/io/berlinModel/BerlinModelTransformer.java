@@ -326,7 +326,7 @@ public class BerlinModelTransformer {
 	//E+M Mosses Areas
 	public static UUID uuidRf_A2 = UUID.fromString("59321008-4ac7-4606-8ea4-7e150f157ad2");
 	public static UUID uuidRf_C2 = UUID.fromString("46522349-95bf-4400-8b83-e6ac59c523cd");
-	public static UUID uuidEgSn = UUID.fromString("46522349-95bf-4400-8b83-e6ac59c523cd");
+	public static UUID uuidEgSn = UUID.fromString("f3d52c4c-099b-4867-9186-0fd421c92808");
 	public static UUID uuidEUR = UUID.fromString("865e0fcc-bfb5-4af2-8822-08c90c7ba61e");
 	public static UUID uuidGr_AE_G = UUID.fromString("1b397872-a669-4eeb-8f9d-99b97d544ed8");
 	public static UUID uuidIt_I = UUID.fromString("ca411e6e-db82-4413-aba3-798d9ff7d7ae");
