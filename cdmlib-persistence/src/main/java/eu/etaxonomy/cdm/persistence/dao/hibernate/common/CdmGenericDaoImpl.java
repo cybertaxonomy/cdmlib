@@ -660,11 +660,14 @@ public class CdmGenericDaoImpl
     public <T extends CdmBase> T find(Class<T> clazz, UUID uuid, List<String> propertyPaths){
 
         Session session = getSession();
-        Criteria crit = session.createCriteria(type);
-        crit.add(Restrictions.eq("uuid", uuid));
-        crit.addOrder(Order.desc("created"));
-        @SuppressWarnings("unchecked")
-        List<T> results = crit.list();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(clazz);
+        Root<T> root = cq.from(clazz);
+        cq.where(predicateUuid(cb, root, uuid));
+        cq.orderBy(cb.desc(root.get("created")));
+        List<T> results = session.createQuery(cq).getResultList();
+
         if (results.isEmpty()){
             return null;
         }else{
