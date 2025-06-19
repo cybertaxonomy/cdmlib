@@ -230,11 +230,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	public void testGetCdmBasesByFieldAndClass() {
-		logger.warn("Not yet implemented");
-	}
-
-	@Test
 	public void testGetCdmBasesWithItemInCollection() {
 		logger.warn("Not yet implemented");
 	}

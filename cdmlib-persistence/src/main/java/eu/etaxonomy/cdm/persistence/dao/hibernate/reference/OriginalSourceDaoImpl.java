@@ -154,12 +154,13 @@ public class OriginalSourceDaoImpl
 		return results;
 	}
 
+
     @Override
     public <T extends NamedSourceBase> Long countWithNameUsedInSource(Class<T> clazz){
 
         clazz = clazz != null? clazz : (Class<T>)NamedSourceBase.class;
 
-        CriteriaBuilder builder = getSession().getCriteriaBuilder();
+        CriteriaBuilder builder = getCriteriaBuilder();
         CriteriaQuery<Long> cq = builder.createQuery(Long.class);
         Root<T> root = cq.from(clazz);
         cq.where(root.get("nameUsedInSource").isNotNull());
@@ -176,17 +177,16 @@ public class OriginalSourceDaoImpl
 
 	    clazz = clazz != null? clazz : (Class<T>) NamedSourceBase.class;
 
-
-	    CriteriaBuilder builder = getSession().getCriteriaBuilder();
-        CriteriaQuery<T> cq = builder.createQuery(clazz);
-        Root<T> root = cq.from(clazz);
-        cq.where(root.get("nameUsedInSource").isNotNull());
+	    CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(clazz);
+        Root<T> source = cq.from(clazz);
+        cq.where(source.get("nameUsedInSource").isNotNull());
 
         //TODO use order hints (see also OrderHint.add(Criteria, ...)
 //        if (pageSize != null && pageNumber != null && CdmUtils.isNullSafeEmpty(orderHints)) {
 //            orderHints = OrderHint.ORDER_BY_ID.asList();
 //        }
-        cq.orderBy(builder.asc(root.get("id")));
+        cq.orderBy(cb.asc(source.get("id")));
 
         TypedQuery<T> query = getSession().createQuery(cq);
         addPageSizeAndNumber(query, pageSize, pageNumber);
