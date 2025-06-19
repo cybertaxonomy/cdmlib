@@ -132,9 +132,9 @@ public class CdmGenericDaoImpl
         return result;
     }
 
-	@Override
-    public List<CdmBase> getCdmBasesByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase, Integer limit){
-        Session session = super.getSession();
+    @Override
+    public <T extends CdmBase> List<T> getCdmBasesByFieldAndClass(Class<T> clazz, String propertyName,
+            CdmBase referencedCdmBase, Integer limit){
 
       Criteria criteria = session.createCriteria(clazz);
       criteria.add(Restrictions.eq(propertyName, referencedCdmBase));
