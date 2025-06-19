@@ -20,6 +20,15 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.From;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -136,15 +145,30 @@ public class CdmGenericDaoImpl
     public List<CdmBase> getCdmBasesByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName,
             CdmBase referencedCdmBase, Integer limit){
 
-      Criteria criteria = session.createCriteria(clazz);
-      criteria.add(Restrictions.eq(propertyName, referencedCdmBase));
-      if (limit != null){
-          criteria.setMaxResults(limit);
-      }
+        //FIXME replace CdmBase by T extends CdmBase, but this created compile errors
+        //for now on jenkins
 
-        @SuppressWarnings("unchecked")
-        List<CdmBase> result = criteria.list();
-        return result;
+	    Session session = super.getSession();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<CdmBase> cq = (CriteriaQuery)cb.createQuery(clazz);
+        Root<CdmBase> root = (Root)cq.from(clazz);
+        cq.where(predicateEqual(cb, root, propertyName, referencedCdmBase));
+        TypedQuery<CdmBase> query = session.createQuery(cq);
+        if (limit != null){
+            query.setMaxResults(limit);
+        }
+        List<CdmBase> results = query.getResultList();
+
+//        Criteria criteria = session.createCriteri(clazz);
+//        criteria.add(Restrictions.eq(propertyName, referencedCdmBase));
+//        if (limit != null){
+//            criteria.setMaxResults(limit);
+//        }
+//        @SuppressWarnings("unchecked")
+//        List<T> result = criteria.list();
+
+        return results;
 	}
 
 	@Override
