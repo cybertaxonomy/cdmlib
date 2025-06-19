@@ -270,6 +270,7 @@ public abstract class DaoBase {
      */
     protected <T> List<T> list(Class<T> type){
         CriteriaQuery<T> q = getCriteriaBuilder().createQuery(type);
+        q.from(type);
         return getSession().createQuery(q).getResultList();
     }
 
@@ -288,7 +289,7 @@ public abstract class DaoBase {
 
         CriteriaBuilder cb = getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(long.class);
-
+        cq.from(type);
         cq.select(cb.count(cq.from(type)));
         Long result = getSession().createQuery(cq).uniqueResult();
 
