@@ -316,4 +316,120 @@ public abstract class DaoBase {
             }
         }
     }
+
+
+    /**
+     * Returns a {@link Predicate} that compares a string including null compare
+     *
+     * @param builder the {@link CriteriaBuilder}
+     * @param path the path representing the entity
+     * @param field the entitie's field
+     * @param str the text to compare with
+     * @return the predicate
+     */
+    protected <T extends CdmBase> Predicate predicateStrOrNull(CriteriaBuilder builder,
+            Path<T> path, String field, String str) {
+
+        if (str == null){
+            return predicateIsNull(builder, path, field);
+        }else{
+            return predicateStrNotNull(builder, path, field, str);
+        }
+    }
+
+    /**
+     *
+     * Returns a {@link Predicate} that compares a string but does not allow null
+     *
+     * @param builder the {@link CriteriaBuilder}
+     * @param path the path representing the entity
+     * @param field the entitie's field
+     * @param str the text to compare with
+     * @return the predicate
+     */
+    protected <T extends CdmBase> Predicate predicateStrNotNull(CriteriaBuilder builder,
+            Path<T> path, String field, String str) {
+
+        return builder.equal(path.get(field), str);
+    }
+
+    protected <T extends CdmBase> Predicate predicateLike(CriteriaBuilder builder,
+            Path<T> path, String field, String pattern) {
+
+        return builder.like(path.get(field), pattern);
+    }
+
+    protected <T extends CdmBase> Predicate predicateILike(CriteriaBuilder builder,
+            Path<T> path, String field, String pattern) {
+
+        return builder.like(builder.lower(path.get(field)), pattern.toLowerCase());
+    }
+
+    protected <T extends CdmBase> Predicate predicateEqual(CriteriaBuilder builder,
+            Path<T> path, String field, Object obj) {
+
+        return builder.equal(path.get(field), obj);
+    }
+
+    protected <T extends CdmBase> Predicate predicateCollectionSize(CriteriaBuilder builder,
+            Path<T> path, String field, Number num) {
+
+        return builder.equal(builder.size(path.get(field)), num);
+    }
+
+    /**
+     * Returns a {@link Predicate} that checks if a field is null.
+     *
+     * @param builder the {@link CriteriaBuilder}
+     * @param path the path representing the entity
+     * @param field the entitie's field
+     * @return the predicate
+     */
+    protected <T extends CdmBase> Predicate predicateIsNull(CriteriaBuilder builder,
+            Path<T> path, String field) {
+
+        Predicate result = builder.isNull(path.get(field));
+        result.alias(field+"_isNull");
+        return result;
+    }
+
+    /**
+    *
+    * Returns a {@link Predicate} that compares a string but does not allow null
+    *
+    * @param builder the {@link CriteriaBuilder}
+    * @param path the path representing the entity
+    * @param field the entitie's field
+    * @param str the text to compare with
+    * @return the predicate
+    */
+    protected <T extends CdmBase> Predicate predicateUuid(CriteriaBuilder builder,
+            Path<T> path, UUID uuid) {
+
+        return builder.equal(path.get("uuid"), uuid);
+    }
+
+   /**
+    *
+    * Returns a {@link Predicate} that compares a string but does not allow null
+    *
+    * @param builder the {@link CriteriaBuilder}
+    * @param path the path representing the entity
+    * @param field the entitie's field
+    * @param str the text to compare with
+    * @return the predicate
+    */
+    protected <T extends CdmBase> Predicate predicateBoolean(CriteriaBuilder builder,
+            Path<T> path, String field, Boolean bool) {
+
+        return builder.equal(path.get(field), bool);
+    }
+
+    /**
+     * Shortcut to get a {@link CriteriaBuilder} from the current session.
+     */
+    protected CriteriaBuilder getCriteriaBuilder() {
+        CriteriaBuilder builder = getSession().getCriteriaBuilder();
+        return builder;
+    }
 }
