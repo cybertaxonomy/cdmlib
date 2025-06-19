@@ -299,7 +299,7 @@ public class CommonServiceImpl
     @Override
     public Map<CdmMetaDataPropertyName, CdmMetaData> getCdmMetaData() {
         Map<CdmMetaDataPropertyName, CdmMetaData> result = new HashMap<>();
-        List<CdmMetaData> metaDataList = genericDao.getMetaData();
+        List<CdmMetaData> metaDataList = genericDao.listCdmMetaData();
         for (CdmMetaData metaData : metaDataList){
             CdmMetaDataPropertyName propertyName = metaData.getPropertyName();
             result.put(propertyName, metaData);
