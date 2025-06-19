@@ -810,7 +810,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public long count() {
-        return super.count_(type);
+        return this.count(null);
     }
 
     @Override
