@@ -38,7 +38,6 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Example.PropertySelector;
 import org.hibernate.criterion.LogicalExpression;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -472,11 +471,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             // set flush mode to manual so that the session does not flush
             // when before performing the query
             session.setHibernateFlushMode(FlushMode.MANUAL);
-            Criteria crit = session.createCriteria(clazz);
-            crit.add(Restrictions.eq("uuid", uuid));
-            crit.addOrder(Order.desc("created"));
-            @SuppressWarnings("unchecked")
-            List<T> results = crit.list();
+
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<T> cq = cb.createQuery(type);
+            Root<T> root = cq.from(type);
+            cq.where(predicateUuid(cb, root, uuid));
+            cq.orderBy(cb.desc(root.get("created")));
+            List<T> results = session.createQuery(cq).getResultList();
+
             results = deduplicateResult(results);
             if (results.isEmpty()) {
                 return null;
