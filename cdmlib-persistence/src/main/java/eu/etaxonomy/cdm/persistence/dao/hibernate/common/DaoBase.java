@@ -289,7 +289,6 @@ public abstract class DaoBase {
 
         CriteriaBuilder cb = getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(long.class);
-        cq.from(type);
         cq.select(cb.count(cq.from(type)));
         Long result = getSession().createQuery(cq).uniqueResult();
 
