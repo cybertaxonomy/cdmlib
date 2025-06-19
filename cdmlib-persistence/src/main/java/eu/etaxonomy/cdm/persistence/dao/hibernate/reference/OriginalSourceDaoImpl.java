@@ -20,10 +20,7 @@ import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -136,24 +133,6 @@ public class OriginalSourceDaoImpl
 
 		return results;
 	}
-
-	@Override
-    public List<OriginalSourceBase> findOriginalSourceByIdInSource(String idInSource, String idNamespace) {
-		Session session = getSession();
-		Criteria crit = session.createCriteria(type);
-		crit.add(Restrictions.eq("idInSource", idInSource));
-		if (idNamespace == null){
-			crit.add(Restrictions.isNull("idNamespace"));
-		}else{
-			crit.add(Restrictions.eq("idNamespace", idNamespace));
-		}
-		crit.addOrder(Order.desc("created"));
-		@SuppressWarnings({ "unchecked"})
-        List<OriginalSourceBase> results = crit.list();
-
-		return results;
-	}
-
 
     @Override
     public <T extends NamedSourceBase> Long countWithNameUsedInSource(Class<T> clazz){
