@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -64,25 +68,58 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
 
     @Override
+    public long countByTitle(String queryString) {
+        return countByTitle(queryString, null);
+    }
+
+    /**
+     * FIXME Candidate for removal. Method not in use.
+     * @deprecated method not in production use. Will maybe be removed.
+     */
+    @Deprecated
+    @Override
+    public long countByTitle(String queryString, CdmBase sessionObject) {
+
+        Session session = getSession();
+        checkNotInPriorView("IdentifiableDaoBase.countByTitle(String queryString, CdmBase sessionObject)");
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<T> root = cq.from(type);
+        cq.where(predicateILike(cb, root, "titleCache", queryString));
+        cq.select(cb.count(root));
+        Long result = session.createQuery(cq).getSingleResult();
+
+//        Criteria crit = session.createCriteri(type);
+//        crit.add(Restrictions.ilike("titleCache", queryString))
+//            .setProjection(Projections.rowCount());
+//        long result =  (Long)crit.uniqueResult();
+        return result;
+    }
+
+    @Override
     public List<T> findByTitle(String queryString) {
         return findByTitle(queryString, null);
     }
 
+
+    /**
+     * FIXME Candidate for removal. Method not in use.
+     * @deprecated method not in production use. Will maybe be removed.
+     */
     @Override
+    @Deprecated
     public List<T> findByTitle(String queryString, CdmBase sessionObject) {
-        /**
-         *  FIXME why do we need to call update in a find* method? I don't know for sure
-         *  that this is a good idea . . .
-         */
+
         Session session = getSession();
-        if ( sessionObject != null ) {
-            session.update(sessionObject);
-        }
         checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, CdmBase sessionObject)");
-        Criteria crit = session.createCriteria(type);
-        crit.add(Restrictions.ilike("titleCache", queryString));
-        @SuppressWarnings("unchecked")
-		List<T> results = crit.list();
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(type);
+        Root<T> root = cq.from(type);
+        cq.where(predicateILike(cb, root, "titleCache", queryString));
+        List<T> results = session.createQuery(cq).getResultList();
+
         List<String> propertyPaths = null;
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
@@ -441,24 +478,6 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         throw new UnsupportedOperationException("suggestQuery is not supported for objects of class " + type.getName());
     }
 
-    @Override
-    public long countByTitle(String queryString) {
-        return countByTitle(queryString, null);
-    }
-
-    @Override
-    public long countByTitle(String queryString, CdmBase sessionObject) {
-        Session session = getSession();
-        if ( sessionObject != null ) {
-            session.update(sessionObject);
-        }
-        checkNotInPriorView("IdentifiableDaoBase.countByTitle(String queryString, CdmBase sessionObject)");
-        Criteria crit = session.createCriteria(type);
-        crit.add(Restrictions.ilike("titleCache", queryString))
-            .setProjection(Projections.rowCount());
-        long result =  (Long)crit.uniqueResult();
-        return result;
-    }
 
     @Override
     public long countByTitle(String queryString, MatchMode matchMode, List<Criterion> criteria) {
