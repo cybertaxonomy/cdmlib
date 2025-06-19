@@ -1349,8 +1349,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         agentDao.save(person3, person4);
         commitAndStartNewTransaction();
 
-        team1 = (Team) cdmGenericDao.findByUuid(uuidTeam1);
-        team2 = (Team) cdmGenericDao.findByUuid(uuidTeam2);
+        team1 = (Team) agentDao.findByUuid(uuidTeam1);
+        team2 = (Team) agentDao.findByUuid(uuidTeam2);
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedCollectorPersonInstance();
         try {
             //matching a person saved as a team member with same family name and collector title
