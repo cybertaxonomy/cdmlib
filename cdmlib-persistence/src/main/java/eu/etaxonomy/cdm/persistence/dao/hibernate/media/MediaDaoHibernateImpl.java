@@ -89,7 +89,8 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 
 	@Override
     public List<MediaKey> getMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-		AuditEvent auditEvent = getAuditEventFromContext();
+
+	    AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria inner = getSession().createCriteria(MediaKey.class);
 

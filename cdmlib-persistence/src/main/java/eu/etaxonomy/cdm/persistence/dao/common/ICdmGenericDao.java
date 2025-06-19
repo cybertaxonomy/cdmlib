@@ -42,7 +42,7 @@ public interface ICdmGenericDao {
 
 	public void saveMetaData(CdmMetaData cdmMetaData);
 
-	public List<CdmMetaData> getMetaData();
+	public List<CdmMetaData> listCdmMetaData();
 
 	/**
 	 * Returns a CdmBase object of class <code>clazz</code> that has a property with name

@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,10 +61,7 @@ public class TermTreeDaoImpl
 
     @Override
     public List<TermTree> list() {
-        Criteria crit = getSession().createCriteria(type);
-        @SuppressWarnings("unchecked")
-        List<TermTree> result = crit.list();
-        return result;
+        return super.list();
     }
 
     @Override

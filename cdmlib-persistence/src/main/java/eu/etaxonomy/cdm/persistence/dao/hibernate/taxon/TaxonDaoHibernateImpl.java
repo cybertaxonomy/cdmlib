@@ -170,11 +170,8 @@ public class TaxonDaoHibernateImpl
         checkNotInPriorView("TaxonDaoHibernateImpl.getTaxaByName(String name, Reference sec)");
 
         Criteria criteria = null;
-        if (accepted == true) {
-            criteria = getSession().createCriteria(Taxon.class);
-        } else {
-            criteria = getSession().createCriteria(Synonym.class);
-        }
+        Class<? extends TaxonBase<?>> clazz = accepted ? Taxon.class : Synonym.class;
+        criteria = getSession().createCriteria(clazz);
 
         criteria.setFetchMode( "name", FetchMode.JOIN );
         criteria.createAlias("name", "name");

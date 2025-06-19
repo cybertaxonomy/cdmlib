@@ -37,14 +37,6 @@ public class TermNodeDaoImpl
 		super(TermNode.class);
 	}
 
-	@Override
-    public List<TermNode> list() {
-		Criteria crit = getSession().createCriteria(type);
-		@SuppressWarnings("unchecked")
-        List<TermNode> result = crit.list();
-		return result;
-	}
-
 	//TODO still needs to be tested
 	@Override
     public List<TermNode> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints,

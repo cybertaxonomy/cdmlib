@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.permission.User;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
@@ -809,24 +810,22 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public long count() {
-        return count(type);
+        return super.count_(type);
     }
 
     @Override
     public long count(Class<? extends T> clazz) {
-        Session session = getSession();
-        Criteria criteria = null;
-        if (clazz == null) {
-            criteria = session.createCriteria(type);
-        } else {
-            criteria = session.createCriteria(clazz);
-        }
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+        return super.count_(type);
+    }
 
-        // since hibernate 4 (or so) uniqueResult returns Long, not Integer,
-        // therefore needs
-        // to be casted. Think about returning long rather then int!
-        return (long) criteria.uniqueResult();
+    /**
+     * Lists all entries of the given class. Should be open to the pulic
+     * only for those DAOs which are expected to not have larger numbers
+     * of entries (e.g. CdmPreference , {@link Classification}, ...)
+     */
+    protected List<T> list(){
+        return super.list(type);
+        // or send to another list(...) method
     }
 
     @Override
@@ -939,6 +938,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     @Override
     public <S extends T> List<S> list(Class<S> clazz, Integer limit, Integer start, List<OrderHint> orderHints,
             List<String> propertyPaths) {
+
         Criteria criteria = null;
         if (clazz == null) {
             criteria = getSession().createCriteria(type);

@@ -150,7 +150,7 @@ public class DefinedTermDaoImpl
 
 	@Override
     public List<DefinedTermBase> findByTitle(String queryString, MatchMode matchMode, int page, int pagesize, List<Criterion> criteria) {
-		//FIXME is query parametrised?
+		//FIXME is query parameterized?
 		checkNotInPriorView("DefinedTermDaoImpl.findByTitle(String queryString, ITitledDao.MATCH_MODE matchMode, int page, int pagesize, List<Criterion> criteria)");
 		Criteria crit = getSession().createCriteria(type);
 		crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));

@@ -806,7 +806,8 @@ public class CdmGenericDaoImpl
 	private void matchComponentType(Criteria criteria,
 			FieldMatcher fieldMatcher, String propertyName, Object value,
 			List<MatchMode> matchModes) throws MatchException, IllegalAccessException {
-		if (value == null){
+
+	    if (value == null){
 			boolean requiresSecondNull = requiresSecondNull(matchModes, null);
 			if (requiresSecondNull){
 				criteria.add(Restrictions.isNull(propertyName));
@@ -1015,12 +1016,8 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-    public List<CdmMetaData> getMetaData() {
-		Session session = getSession();
-		Criteria crit = session.createCriteria(CdmMetaData.class);
-		@SuppressWarnings("unchecked")
-        List<CdmMetaData> results = crit.list();
-		return results;
+    public List<CdmMetaData> listCdmMetaData() {
+	    return super.list(CdmMetaData.class);
 	}
 
     @Override

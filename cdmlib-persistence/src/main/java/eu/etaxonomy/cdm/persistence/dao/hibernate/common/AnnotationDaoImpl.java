@@ -32,12 +32,13 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
 
 	@Override
 	public long count(Person commentator, MarkerType status) {
-		checkNotInPriorView("AnnotationDaoImpl.count(Person commentator, MarkerType status)");
+
+	    checkNotInPriorView("AnnotationDaoImpl.count(Person commentator, MarkerType status)");
 		Criteria criteria = getSession().createCriteria(Annotation.class);
 
-		 if(commentator != null) {
+		if(commentator != null) {
 	        criteria.add(Restrictions.eq("commentator",commentator));
-	     }
+	    }
 
 		if(status != null) {
 			criteria.createCriteria("markers").add(Restrictions.eq("markerType", status));
@@ -50,7 +51,8 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
 
 	@Override
     public List<Annotation> list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		checkNotInPriorView("AnnotationDaoImpl.list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber)");
+
+	    checkNotInPriorView("AnnotationDaoImpl.list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber)");
         Criteria criteria = getSession().createCriteria(Annotation.class);
 
         if(commentator != null) {
@@ -76,7 +78,8 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
 
 	@Override
     public long count(User creator, MarkerType status) {
-		checkNotInPriorView("AnnotationDaoImpl.count(User creator, MarkerType statu)");
+
+	    checkNotInPriorView("AnnotationDaoImpl.count(User creator, MarkerType statu)");
 		Criteria criteria = getSession().createCriteria(Annotation.class);
 
 		 if(creator != null) {

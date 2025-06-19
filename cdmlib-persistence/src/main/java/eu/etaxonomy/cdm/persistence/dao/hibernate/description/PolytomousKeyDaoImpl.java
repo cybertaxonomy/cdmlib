@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -47,10 +46,7 @@ public class PolytomousKeyDaoImpl
 
 	@Override
 	public List<PolytomousKey> list() {
-		Criteria crit = getSession().createCriteria(type);
-		@SuppressWarnings("unchecked")
-        List<PolytomousKey> result = crit.list();
-		return result;
+	    return super.list();
 	}
 
 	//FIXME rewrite as node has a key attribute now

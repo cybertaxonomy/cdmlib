@@ -64,7 +64,8 @@ public class DescriptiveDataSetDao
 
 		addPageSizeAndNumber(query, pageSize, pageNumber);
         List<DescriptionBase> descriptions = query.list();
-		Map<DescriptionBase, Set<DescriptionElementBase>> result = new HashMap<>();
+
+        Map<DescriptionBase, Set<DescriptionElementBase>> result = new HashMap<>();
 		for(DescriptionBase description : descriptions) {
 			Criteria criteria = getSession().createCriteria(DescriptionElementBase.class);
 			criteria.add(Restrictions.eq("inDescription", description));

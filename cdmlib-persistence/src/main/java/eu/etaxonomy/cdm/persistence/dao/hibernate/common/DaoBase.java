@@ -19,8 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,6 +40,8 @@ import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class DaoBase {
@@ -254,6 +261,39 @@ public abstract class DaoBase {
 
     //*************************** JPA **********************************************/
 
+    /**
+     * Lists all entries of the given class. Should be open to the public
+     * only for those DAOs which are expected to not have larger numbers
+     * of entries (e.g. CdmPreference , {@link Classification}, ...).
+     * Callers must ensure that class of <code>type</code> is a valid
+     * entity class managed by the entity manager.
+     */
+    protected <T> List<T> list(Class<T> type){
+        CriteriaQuery<T> q = getCriteriaBuilder().createQuery(type);
+        return getSession().createQuery(q).getResultList();
+    }
+
+    /**
+     * Returns the count of all entities for the given entity class.
+     * Callers must ensure that class of <code>type</code> is a valid
+     * entity class managed by the entity manager. Should be called only
+     * by {@link CdmEntityDaoBase} except for cases where entities
+     * have no <code>id</code> (are not of type {@link CdmBase},
+     * e.g. CdmMetaData).
+     *
+     * @param type the entity type
+     * @return the count result
+     */
+    protected long count_(Class<?> type) {
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(long.class);
+
+        cq.select(cb.count(cq.from(type)));
+        Long result = getSession().createQuery(cq).uniqueResult();
+
+        return result;
+    }
 
     protected void addLimitAndStart(TypedQuery<?> query, Integer limit, Integer start) {
         if(limit != null) {

@@ -11,9 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
@@ -61,7 +59,6 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
             getSession().delete(pref);
         }
     }
-
 
     @Override
     public List<CdmPreference> list(IPreferencePredicate<?> predicate){
@@ -111,22 +108,16 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 
 	@Override
 	public long count(){
-		Criteria crit = getSession().createCriteria(CdmPreference.class);
-        crit.setProjection(Projections.rowCount());
-        return (Long)crit.uniqueResult();
+		return super.count_(CdmPreference.class);
 	}
 
     @Override
     public List<CdmPreference> list(){
-        Criteria crit = getSession().createCriteria(CdmPreference.class);
-        @SuppressWarnings("unchecked")
-        List<CdmPreference> result = crit.list();
-        return result;
+        return super.list(CdmPreference.class);
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
         CdmPreferenceCache.instance(this);
     }
-
 }

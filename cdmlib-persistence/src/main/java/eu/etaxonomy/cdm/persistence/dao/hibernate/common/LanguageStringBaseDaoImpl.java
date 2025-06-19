@@ -11,9 +11,13 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 
 /**
+ * FIXME Remove (check if it is used for JAXB, first)
+ *
  * @author a.babadshanjan
  * @since 10.09.2008
+ * @deprecated will removed as of no use, but see comment below
  */
+@Deprecated
 @Repository(value="langStrBaseDao")  //Note AM: used in TermServiceImpl for some reason, shouldn't it be abstract?
 public class LanguageStringBaseDaoImpl<T extends LanguageStringBase>
         extends AnnotatableDaoBaseImpl<T>
