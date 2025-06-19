@@ -20,6 +20,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
@@ -432,16 +436,18 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     private T findByUuid(UUID uuid, boolean includeUnpublished) throws DataAccessException {
-        Session session = getSession();
-        Criteria crit = session.createCriteria(type);
-        crit.add(Restrictions.eq("uuid", uuid));
-        crit.addOrder(Order.desc("created"));
-        if (IPublishable.class.isAssignableFrom(type) && !includeUnpublished) {
-            crit.add(Restrictions.eq("publish", Boolean.TRUE));
-        }
 
-        @SuppressWarnings("unchecked")
-        List<T> results = crit.list();
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(type);
+        Root<T> root = cq.from(type);
+        cq.where(predicateUuid(cb, root, uuid));
+        if (IPublishable.class.isAssignableFrom(type) && !includeUnpublished) {
+            cq.where(predicateBoolean(cb, root, "publish", Boolean.TRUE));
+        }
+        cq.orderBy(cb.desc(root.get("created")));
+
+        List<T> results = getSession().createQuery(cq).getResultList();
+
         Set<T> resultSet = new HashSet<>();
         resultSet.addAll(results);
         if (resultSet.isEmpty()) {
