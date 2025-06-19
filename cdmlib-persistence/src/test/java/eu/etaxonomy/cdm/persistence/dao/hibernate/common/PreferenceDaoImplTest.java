@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  */
-public class PreferenceDaoTest  extends CdmTransactionalIntegrationTest {
+public class PreferenceDaoImplTest  extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
 	private IPreferenceDao dao;
@@ -119,7 +119,7 @@ public class PreferenceDaoTest  extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="PreferenceDaoTest.testFindTaxonNodeString.xml")
+    @DataSet(value="PreferenceDaoImplTest.testFindTaxonNodeString.xml")
     public void testFindTaxonNodeString() {
         Classification classification = classificationDao.findByUuid(uuidClassification);
         TaxonNode genusNode = classification.getRootNode().getChildNodes().get(0);
