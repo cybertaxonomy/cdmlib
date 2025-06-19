@@ -196,6 +196,8 @@ public class SDDCdmExporter
 		if (sddExpConfig.isDoLanguageData() == true) {
 			if (languageDataRows == 0) { languageDataRows = MAX_ROWS; }
 			logger.info("# Representation, Language String");
+			//FIXME this method will soon be removed , generally it does not make sense
+			//      to export all representations here, they need to be dataset dependent
 			sddDataSet.setLanguageData(getTermService().getAllRepresentations(MAX_ROWS, 0));
 			sddDataSet.addLanguageData(getTermService().getAllLanguageStrings(MAX_ROWS, 0));
 		}
