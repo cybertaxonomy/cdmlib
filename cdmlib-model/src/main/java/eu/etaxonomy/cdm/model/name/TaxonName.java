@@ -1404,7 +1404,13 @@ public class TaxonName
     @Override
     @Transient
     public boolean isAutonym(){
-        if (isBotanical()){
+        return isAutonym(false);
+    }
+
+    @Override
+    @Transient
+    public boolean isAutonym(boolean forAllCodes){
+        if (forAllCodes || isBotanical()){
             if (this.getRank() != null && this.getSpecificEpithet() != null && this.getInfraSpecificEpithet() != null &&
                 this.isInfraSpecific() && this.getSpecificEpithet().trim().equals(this.getInfraSpecificEpithet().trim())){
                 return true;
