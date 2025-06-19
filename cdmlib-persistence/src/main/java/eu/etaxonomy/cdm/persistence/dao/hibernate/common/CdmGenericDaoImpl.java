@@ -101,7 +101,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 @Repository
 public class CdmGenericDaoImpl
          extends CdmEntityDaoBase<CdmBase>
-         implements ICdmGenericDao{
+         implements ICdmGenericDao {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -159,14 +159,6 @@ public class CdmGenericDaoImpl
             query.setMaxResults(limit);
         }
         List<CdmBase> results = query.getResultList();
-
-//        Criteria criteria = session.createCriteri(clazz);
-//        criteria.add(Restrictions.eq(propertyName, referencedCdmBase));
-//        if (limit != null){
-//            criteria.setMaxResults(limit);
-//        }
-//        @SuppressWarnings("unchecked")
-//        List<T> result = criteria.list();
 
         return results;
 	}
