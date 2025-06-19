@@ -815,7 +815,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public long count(Class<? extends T> clazz) {
-        return super.count_(type);
+        clazz = clazz == null ? type : clazz;
+        return super.count_(clazz);
     }
 
     /**
