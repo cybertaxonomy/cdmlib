@@ -52,7 +52,7 @@ public interface ICdmGenericDao {
 	 * @param value
 	 * @return
 	 */
-	public <T extends CdmBase> List<T> getCdmBasesByFieldAndClass(Class<T> clazz, String propertyName, CdmBase referencedCdmBase, Integer limit);
+	public List<CdmBase> getCdmBasesByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase, Integer limit);
 
 	/**
 	 * Returns ...
