@@ -14,12 +14,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
@@ -54,10 +56,13 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
     public List<Institution> getInstitutionByCode(String code) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Criteria crit = getSession().createCriteria(Institution.class);
-    		crit.add(Restrictions.eq("code", code));
- 	    	@SuppressWarnings("unchecked")
-            List<Institution> result = crit.list();
+		    CriteriaBuilder cb = getCriteriaBuilder();
+		    CriteriaQuery<Institution> cq = cb.createQuery(Institution.class);
+		    Root<Institution> root = cq.from(Institution.class);
+		    cq.select(root)
+		      .where(predicateStrNotNull(cb, root, "code", code));
+
+		    List<Institution> result = getSession().createQuery(cq).getResultList();
  	    	return result;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Institution.class,auditEvent.getRevisionNumber());
