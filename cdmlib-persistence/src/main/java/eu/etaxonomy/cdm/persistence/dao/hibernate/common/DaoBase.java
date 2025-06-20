@@ -26,6 +26,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -306,7 +307,8 @@ public abstract class DaoBase {
      */
     protected <T> List<T> list(Class<T> type){
         CriteriaQuery<T> q = getCriteriaBuilder().createQuery(type);
-        q.from(type);
+        Root<T> root = q.from(type);
+        q.select(root);
         return getSession().createQuery(q).getResultList();
     }
 

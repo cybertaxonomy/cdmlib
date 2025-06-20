@@ -117,7 +117,8 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         CriteriaBuilder cb = getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(type);
         Root<T> root = cq.from(type);
-        cq.where(predicateILike(cb, root, "titleCache", queryString));
+        cq.select(root)
+          .where(predicateILike(cb, root, "titleCache", queryString));
         List<T> results = session.createQuery(cq).getResultList();
 
         List<String> propertyPaths = null;

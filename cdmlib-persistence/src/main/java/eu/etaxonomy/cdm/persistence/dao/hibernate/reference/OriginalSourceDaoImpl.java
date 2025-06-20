@@ -139,11 +139,11 @@ public class OriginalSourceDaoImpl
 
         clazz = clazz != null? clazz : (Class<T>)NamedSourceBase.class;
 
-        CriteriaBuilder builder = getCriteriaBuilder();
-        CriteriaQuery<Long> cq = builder.createQuery(Long.class);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<T> root = cq.from(clazz);
-        cq.where(root.get("nameUsedInSource").isNotNull());
-        cq.select(builder.count(root));
+        cq.select(cb.count(root))
+          .where(root.get("nameUsedInSource").isNotNull());
 
         long result = getSession().createQuery(cq).getSingleResult();
         return result;
@@ -159,13 +159,14 @@ public class OriginalSourceDaoImpl
 	    CriteriaBuilder cb = getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(clazz);
         Root<T> source = cq.from(clazz);
-        cq.where(source.get("nameUsedInSource").isNotNull());
+        cq.select(source)
+          .where(source.get("nameUsedInSource").isNotNull())
+          .orderBy(cb.asc(source.get("id")));
 
         //TODO use order hints (see also OrderHint.add(Criteria, ...)
 //        if (pageSize != null && pageNumber != null && CdmUtils.isNullSafeEmpty(orderHints)) {
 //            orderHints = OrderHint.ORDER_BY_ID.asList();
 //        }
-        cq.orderBy(cb.asc(source.get("id")));
 
         TypedQuery<T> query = getSession().createQuery(cq);
         addPageSizeAndNumber(query, pageSize, pageNumber);

@@ -42,14 +42,16 @@ public class TestingTermVocabularyDao {
 
         CriteriaBuilder cb = getSession().getCriteriaBuilder();
 
-        @SuppressWarnings({"rawtypes", "unchecked" })
-        CriteriaQuery<TermVocabulary<?>> cq = (CriteriaQuery)cb.createQuery(TermVocabulary.class);
+        @SuppressWarnings({"rawtypes"})
+        CriteriaQuery<TermVocabulary> cq = cb.createQuery(TermVocabulary.class);
         @SuppressWarnings({"rawtypes" })
         Root<TermVocabulary> voc = cq.from(TermVocabulary.class);
-        cq.where(cb.equal(voc.get("uuid"), uuid));
-        cq.orderBy(cb.desc(voc.get("created")));
+        cq.select(voc)
+          .where(cb.equal(voc.get("uuid"), uuid))
+          .orderBy(cb.desc(voc.get("created")));
 
-        List<TermVocabulary<?>> results = getSession().createQuery(cq).getResultList();
+        @SuppressWarnings("rawtypes")
+        List<TermVocabulary> results = getSession().createQuery(cq).getResultList();
 
         if (results.isEmpty()){
             return null;

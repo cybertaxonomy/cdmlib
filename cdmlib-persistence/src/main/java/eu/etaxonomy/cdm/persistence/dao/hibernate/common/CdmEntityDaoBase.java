@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.LogManager;
@@ -430,11 +431,13 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         CriteriaBuilder cb = getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(type);
         Root<T> root = cq.from(type);
-        cq.where(predicateUuid(cb, root, uuid));
+        Predicate where = predicateUuid(cb, root, uuid);
         if (IPublishable.class.isAssignableFrom(type) && !includeUnpublished) {
-            cq.where(predicateBoolean(cb, root, "publish", Boolean.TRUE));
+            where = cb.and(where, predicateBoolean(cb, root, "publish", Boolean.TRUE));
         }
-        cq.orderBy(cb.desc(root.get("created")));
+        cq.select(root)
+          .where(where)
+          .orderBy(cb.desc(root.get("created")));
 
         List<T> results = getSession().createQuery(cq).getResultList();
 
