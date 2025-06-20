@@ -308,43 +308,43 @@ public class CommonServiceImpl
     }
 
     @Override
-    public Object initializeCollection(UUID ownerUuid, String fieldName) {
-        return genericDao.initializeCollection(ownerUuid, fieldName);
+    public Object initializeCollection(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName) {
+        return genericDao.initializeCollection(clazz, ownerUuid, fieldName);
     }
 
     @Override
-    public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> propertyPaths) {
-        return genericDao.initializeCollection(ownerUuid, fieldName, propertyPaths);
+    public Object initializeCollection(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName, List<String> propertyPaths) {
+        return genericDao.initializeCollection(clazz, ownerUuid, fieldName, propertyPaths);
     }
 
     @Override
-    public boolean isEmpty(UUID ownerUuid, String fieldName) {
-        return genericDao.isEmpty(ownerUuid, fieldName);
+    public boolean isEmpty(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName) {
+        return genericDao.isEmpty(clazz, ownerUuid, fieldName);
     }
 
     @Override
-    public int size(UUID ownerUuid, String fieldName) {
-        return genericDao.size(ownerUuid, fieldName);
+    public int size(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName) {
+        return genericDao.size(clazz, ownerUuid, fieldName);
     }
 
     @Override
-    public Object get(UUID ownerUuid, String fieldName, int index) {
-        return genericDao.get(ownerUuid, fieldName, index);
+    public Object get(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName, int index) {
+        return genericDao.get(clazz, ownerUuid, fieldName, index);
     }
 
     @Override
-    public boolean contains(UUID ownerUuid, String fieldName, Object element) {
-        return genericDao.contains(ownerUuid, fieldName, element);
+    public boolean contains(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName, Object element) {
+        return genericDao.contains(clazz, ownerUuid, fieldName, element);
     }
 
     @Override
-    public boolean containsKey(UUID ownerUuid, String fieldName, Object key) {
-        return genericDao.containsKey(ownerUuid, fieldName, key);
+    public boolean containsKey(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName, Object key) {
+        return genericDao.containsKey(clazz, ownerUuid, fieldName, key);
     }
 
     @Override
-    public boolean containsValue(UUID ownerUuid, String fieldName, Object value) {
-        return genericDao.containsValue(ownerUuid, fieldName, value);
+    public boolean containsValue(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName, Object value) {
+        return genericDao.containsValue(clazz, ownerUuid, fieldName, value);
     }
 
     @Override

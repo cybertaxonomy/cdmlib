@@ -257,31 +257,34 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
     /**
      * Initializes a collection or map.
      *
+     * @param clazz the owner's class
      * @param ownerUuid uuid of owner cdm entity
      * @param fieldName field name of collection or map
      * @return initialised collection or map
      */
-    public Object initializeCollection(UUID ownerUuid, String fieldName);
+    public Object initializeCollection(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName);
 
-    public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> propertyPaths);
+    public Object initializeCollection(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName, List<String> propertyPaths);
 
 	/**
 	 * Checks if a collection or map is empty.
 	 *
+     * @param clazz the owner's class
      * @param ownerUuid uuid of owner cdm entity
      * @param fieldName field name of collection or map
 	 * @return true if the collection of map is empty, else false
 	 */
-	public boolean isEmpty(UUID ownerUuid, String fieldName);
+	public boolean isEmpty(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName);
 
 	/**
 	 * Returns the size of requested collection or map.
 	 *
+     * @param clazz the owner's class
      * @param ownerUuid uuid of owner cdm entity
      * @param fieldName field name of collection or map
 	 * @return the size of the persistent collection
 	 */
-	public int size(UUID ownerUuid, String fieldName);
+	public int size(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName);
 
 	/**
 	 * Returns the object contained in a collection or map at the given index.
@@ -291,39 +294,42 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 * @param index the index of the requested element
 	 * @return the object at the requested index
 	 */
-	public Object get(UUID ownerUuid, String fieldName, int index);
+	public Object get(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName, int index);
 
 	/**
 	 * Checks whether an object is contained within a persistent collection.
 	 *
+     * @param clazz the owner's class
      * @param ownerUuid uuid of owner cdm entity
      * @param fieldName field name of collection or map
 	 * @param element the element to check for
 	 * @return true if the element exists in the collection, false o/w
 	 */
-	public boolean contains(UUID ownerUuid, String fieldName, Object element);
+	public boolean contains(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName, Object element);
 
 	/**
 	 * Checks whether an index object exists within a persistent collection
 	 * (usually a map)
 	 *
+     * @param clazz the owner's class
      * @param ownerUuid uuid of owner cdm entity
      * @param fieldName field name of map
 	 * @param key the index object to look for.
 	 * @return true if the index object exists in the collection, false o/w
 	 */
-	public boolean containsKey(UUID ownerUuid, String fieldName, Object key);
+	public boolean containsKey(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName, Object key);
 
 	/**
 	 * checks whether an value object exists within a persistent collection
 	 * (usually a map)
 	 *
+     * @param clazz the owner's class
      * @param ownerUuid uuid of owner cdm entity
      * @param fieldName field name of map
 	 * @param key the value object to look for.
 	 * @return true if the value object exists in the collection, false o/w
 	 */
-	public boolean containsValue(UUID ownerUuid, String fieldName, Object element);
+	public boolean containsValue(Class<? extends CdmBase> clazz, UUID ownerUuid, String fieldName, Object element);
 
 	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
 
