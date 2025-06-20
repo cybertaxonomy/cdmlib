@@ -568,18 +568,6 @@
     <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
-  <bean id="httpEventBaseService"
-    class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
-    <property name="service">
-      <ref bean="eventBaseServiceImpl" />
-    </property>
-    <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IEventBaseService
-      </value>
-    </property>
-    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
-  </bean>
-
   <bean id="httpIOService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">

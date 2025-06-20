@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
-import eu.etaxonomy.cdm.api.service.IGatheringEventService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
@@ -205,11 +204,6 @@ public abstract class CdmApplicationControllerBase<R extends ICdmRepository>
     @Override
     public ISequenceService getSequenceService(){
         return configuration.getSequenceService();
-    }
-
-    @Override
-    public IGatheringEventService getEventBaseService() {
-        return configuration.getEventBaseService();
     }
 
     @Override
