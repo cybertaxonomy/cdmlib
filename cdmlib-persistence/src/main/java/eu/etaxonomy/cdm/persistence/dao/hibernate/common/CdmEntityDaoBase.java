@@ -465,9 +465,10 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<T> cq = cb.createQuery(type);
-            Root<T> root = cq.from(type);
-            cq.where(predicateUuid(cb, root, uuid));
-            cq.orderBy(cb.desc(root.get("created")));
+            Root<T> root = cq.from(clazz);
+            cq.select(root)
+              .where(predicateUuid(cb, root, uuid))
+              .orderBy(cb.desc(root.get("created")));
             List<T> results = session.createQuery(cq).getResultList();
 
             results = deduplicateResult(results);
