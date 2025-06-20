@@ -20,6 +20,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.event.spi.MergeEvent;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -401,6 +402,11 @@ public interface IService<T extends ICdmBase>{
      * @return DeleteResult object
      */
     public DeleteResult delete(Collection<UUID> persistentObjectUUIDs);
+
+    /**
+     * Checks whether the object is deletable concerning the configurator or not
+     */
+    public DeleteResult isDeletable(UUID object, DeleteConfiguratorBase config);
 
     /**
      * Merges a list of detached objects and returns the new

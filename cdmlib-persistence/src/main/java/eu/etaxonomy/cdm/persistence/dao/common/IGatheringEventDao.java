@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.common;
 
-import eu.etaxonomy.cdm.model.common.EventBase;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 
 /**
  * @author a.kohlbecker
  * @since Jan 9, 2013
  *
  */
-public interface IEventBaseDao extends IAnnotatableDao<EventBase> {
+public interface IGatheringEventDao extends IAnnotatableDao<GatheringEvent> {
 
 }

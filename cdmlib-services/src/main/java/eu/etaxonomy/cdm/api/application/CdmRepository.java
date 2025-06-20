@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
-import eu.etaxonomy.cdm.api.service.IEventBaseService;
+import eu.etaxonomy.cdm.api.service.IGatheringEventService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
@@ -146,7 +146,7 @@ public class CdmRepository implements ICdmApplication, ApplicationContextAware {
 	private ISequenceService sequenceService;
 	@Autowired
 	//@Qualifier("eventBaseService")
-	private IEventBaseService eventBaseService;
+	private IGatheringEventService gatheringEventService;
 	@Autowired
 	//@Qualifier("mediaService")
 	private IMediaService mediaService;
@@ -326,8 +326,8 @@ public class CdmRepository implements ICdmApplication, ApplicationContextAware {
 	}
 
 	@Override
-	public IEventBaseService getEventBaseService() {
-	    return this.eventBaseService;
+	public IGatheringEventService getEventBaseService() {
+	    return this.gatheringEventService;
 	}
 
 	@Override

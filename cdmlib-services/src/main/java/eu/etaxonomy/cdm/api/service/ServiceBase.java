@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,13 +20,17 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.LockOptions;
+import org.hibernate.ObjectDeletedException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -33,6 +38,7 @@ import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
@@ -52,6 +58,12 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     public final static boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;  //constant for unpublished
 
     protected DAO dao;
+
+    @Autowired
+    protected ICdmGenericDao genericDao;
+
+    @Autowired
+    protected ICommonService commonService;
 
     @Override
     @Transactional(readOnly = true)
@@ -107,6 +119,44 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     		result.setError();
     		result.addException(e);
     	}
+        return result;
+    }
+
+    /**
+     * The basic isDeletable method return false if the object is referenced from any other object.
+     * To be used only for the main type of this service.
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public DeleteResult isDeletable(UUID baseUUID, DeleteConfiguratorBase config){
+        return this.isDeletable(baseUUID, dao.getType(), config);
+    }
+
+    /**
+     * The basic isDeletable method return false if the object is referenced from
+     * any other object. This is a generic method that can be used for any
+     * CDM class, not only the main CDM class of the given service.
+     */
+    protected <S extends CdmBase> DeleteResult isDeletable(UUID baseUUID, Class<S> clazz, DeleteConfiguratorBase config){
+
+        DeleteResult result = new DeleteResult();
+        S base = genericDao.find(clazz, baseUUID);
+        if (base == null){
+            result.setAbort();
+            result.addException(new ObjectDeletedException("The object was already deleted.", baseUUID, null));
+        }
+        Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(base);
+        if (references != null){
+            result.addRelatedObjects(references);
+            Iterator<CdmBase> iterator = references.iterator();
+            CdmBase ref;
+            while (iterator.hasNext()){
+                ref = iterator.next();
+                String message = "An object of " + ref.getClass().getName() + " with ID " + ref.getId() + " is referencing the object" ;
+                result.addException(new ReferencedObjectUndeletableException(message));
+                result.setAbort();
+            }
+        }
         return result;
     }
 

@@ -10,19 +10,19 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.EventBase;
-import eu.etaxonomy.cdm.persistence.dao.common.IEventBaseDao;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.persistence.dao.common.IGatheringEventDao;
 
 /**
  * @author a.kohlbecker
  * @since Jan 9, 2013
  */
 @Repository
-public class EventBaseDaoImpl
-        extends AnnotatableDaoBaseImpl<EventBase>
-        implements IEventBaseDao {
+public class GatheringEventDaoImpl
+        extends AnnotatableDaoBaseImpl<GatheringEvent>
+        implements IGatheringEventDao {
 
-    public EventBaseDaoImpl() {
-        super(EventBase.class);
+    public GatheringEventDaoImpl() {
+        super(GatheringEvent.class);
     }
 }

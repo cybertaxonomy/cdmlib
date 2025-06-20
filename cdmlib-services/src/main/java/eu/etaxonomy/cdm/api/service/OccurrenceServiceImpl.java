@@ -32,6 +32,7 @@ import org.apache.lucene.search.grouping.TopGroups;
 import org.apache.lucene.util.BytesRef;
 import org.hibernate.TransientObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,6 +100,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
@@ -126,7 +128,7 @@ public class OccurrenceServiceImpl
     private INameService nameService;
 
     @Autowired
-    private IEventBaseService eventService;
+    private ICdmGenericDao genericDao;
 
     @Autowired
     private ITaxonService taxonService;
@@ -1193,12 +1195,12 @@ public class OccurrenceServiceImpl
                     if (derivationEvent.getDerivatives().isEmpty()) {
                         Set<SpecimenOrObservationBase> originals = new HashSet<>();
                         originals.addAll(derivationEvent.getOriginals());
-                        for (SpecimenOrObservationBase specimenOrObservationBase : originals) {
+                        for (SpecimenOrObservationBase<?> specimenOrObservationBase : originals) {
                             specimenOrObservationBase.removeDerivationEvent(derivationEvent);
                             deleteResult.addUpdatedObject(specimenOrObservationBase);
                         }
                         // if derivationEvent has no derivates anymore, delete it
-                        deleteResult.includeResult(eventService.delete(derivationEvent));
+                        deleteResult.includeResult(this.deleteDerivationEvent(derivationEvent));
                     }
                 }
                 else{
@@ -1211,9 +1213,9 @@ public class OccurrenceServiceImpl
             GatheringEvent event = fieldUnit.getGatheringEvent();
             fieldUnit.setGatheringEvent(null);
             if (event != null){
-                DeleteResult result = eventService.isDeletable(event.getUuid(), null);
+                DeleteResult result = isDeletable(event.getUuid(), GatheringEvent.class, null);
                 if (result.isOk()){
-                    deleteResult.includeResult( eventService.delete(event));
+                    deleteResult.includeResult(deleteGatheringEvent(event));
                 }
             }
 
@@ -1221,6 +1223,42 @@ public class OccurrenceServiceImpl
         deleteResult.includeResult(delete(specimen));
 
         return deleteResult;
+    }
+
+    /**
+     * Use with care, only events that are not referenced anymore
+     * should be deleted this way.
+     * @param event
+     * @return
+     */
+    public DeleteResult deleteDerivationEvent(DerivationEvent event) {
+        DeleteResult result = new DeleteResult();
+        try{
+            genericDao.delete(event);
+            result.addDeletedObject(event);
+        } catch(DataAccessException e){
+            result.setError();
+            result.addException(e);
+        }
+        return result;
+    }
+
+    /**
+     * Use with care, only events that are not referenced anymore
+     * should be deleted this way.
+     * @param event the gathering event to delete
+     * @return the delete result
+     */
+    public DeleteResult deleteGatheringEvent(GatheringEvent event) {
+        DeleteResult result = new DeleteResult();
+        try{
+            genericDao.delete(event);
+            result.addDeletedObject(event);
+        } catch(DataAccessException e){
+            result.setError();
+            result.addException(e);
+        }
+        return result;
     }
 
     @Override

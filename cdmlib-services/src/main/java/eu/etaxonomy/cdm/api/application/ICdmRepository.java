@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
-import eu.etaxonomy.cdm.api.service.IEventBaseService;
+import eu.etaxonomy.cdm.api.service.IGatheringEventService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
@@ -94,7 +94,7 @@ public interface ICdmRepository extends ICdmImportSource {
 
 	public ISequenceService getSequenceService();
 
-	public IEventBaseService getEventBaseService();
+	public IGatheringEventService getEventBaseService();
 
 	public IMediaService getMediaService();
 
