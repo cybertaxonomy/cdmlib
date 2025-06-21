@@ -344,7 +344,7 @@ public abstract class DaoBase {
         }
     }
 
-    protected void addPageSizeAndNumber(TypedQuery<?> query, Integer pageSize, Integer pageNumber) {
+    protected <T> TypedQuery<T> addPageSizeAndNumber(TypedQuery<T> query, Integer pageSize, Integer pageNumber) {
         if(pageSize != null) {
             query.setMaxResults(pageSize);
             if(pageNumber != null) {
@@ -353,6 +353,7 @@ public abstract class DaoBase {
                 query.setFirstResult(0);
             }
         }
+        return query;
     }
 
 
