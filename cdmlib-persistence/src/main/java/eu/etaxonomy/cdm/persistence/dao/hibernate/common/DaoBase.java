@@ -534,6 +534,15 @@ public abstract class DaoBase {
         return builder.equal(path.get(field), bool);
     }
 
+
+    /**
+     * Creates a predicate which is an AND-predicate for all predicates
+     * in the list.
+     */
+    protected Predicate predicateAnd(CriteriaBuilder cb, List<Predicate> predicates) {
+        return cb.and(predicates.toArray(new Predicate[0]));
+    }
+
     /**
      * Shortcut to get a {@link CriteriaBuilder} from the current session.
      */

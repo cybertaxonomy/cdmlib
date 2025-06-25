@@ -21,6 +21,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
@@ -351,11 +357,19 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             boolean recursive, boolean includeUnpublished, List<String> propertyPaths, Comparator<TaxonNode> comparator){
 
         if (recursive == true && comparator == null ){
-    		Criteria crit = childrenOfCriteria(node, includeUnpublished);
 
-    		this.addPageSizeAndNumber(crit, pageSize, pageIndex);
-    		@SuppressWarnings("unchecked")
-            List<TaxonNode> results = crit.list();
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<TaxonNode> cq = cb.createQuery(TaxonNode.class);
+            Root<TaxonNode> root = cq.from(TaxonNode.class);
+    		Predicate predicate = childrenOfCriteria(cb, root, node, includeUnpublished);
+
+    		cq.select(root)
+    		  .where(predicate);
+
+    		List<TaxonNode> results = addPageSizeAndNumber(
+    		        getSession().createQuery(cq), pageSize, pageIndex)
+    		    .getResultList();
+
     		results.remove(node);
     		defaultBeanInitializer.initializeAll(results, propertyPaths);
     		return results;
@@ -385,22 +399,28 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 			boolean recursive, boolean includeUnpublished) {
 
 		if (recursive == true){
-			Criteria crit = childrenOfCriteria(node, includeUnpublished);
-    		crit.setProjection(Projections.rowCount());
-    		return ((Integer)crit.uniqueResult().hashCode()).longValue();
+		    CriteriaBuilder cb = getCriteriaBuilder();
+		    CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		    Root<TaxonNode> root = cq.from(TaxonNode.class);
+
+		    cq.select(cb.count(root))
+		      .where(childrenOfCriteria(cb, root, node, includeUnpublished));
+		    return getSession().createQuery(cq).getSingleResult();
 		}else{
 			return classificationDao.countChildrenOf(
 			        node.getTaxon(), classification, null, includeUnpublished);
 		}
 	}
 
-    private Criteria childrenOfCriteria(TaxonNode node, boolean includeUnpublished) {
-        Criteria crit = getSession().createCriteria(TaxonNode.class);
-        crit.add( Restrictions.like("treeIndex", node.treeIndex()+ "%") );
+    private Predicate childrenOfCriteria(CriteriaBuilder cb, Root<TaxonNode> root, TaxonNode node, boolean includeUnpublished) {
+
+        Predicate p = predicateLike(cb, root, "treeIndex", node.treeIndex()+ "%");
+
         if (!includeUnpublished){
-            crit.createCriteria("taxon").add( Restrictions.eq("publish", Boolean.TRUE));
+            Join<TaxonNode, Taxon> taxonJoin = root.join("taxon");
+            p = cb.and(p, predicateBoolean(cb, taxonJoin, "publish", Boolean.TRUE));
         }
-        return crit;
+        return p;
     }
 
     @Override
@@ -432,7 +452,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
     @Override
     public <S extends TaxonNode> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
             Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        // TODO Auto-generated method stub
+
         return list(type, restrictions, limit, start, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
     }
 
@@ -495,7 +515,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
      *     limit to taxa having this rank, only applies if <code>taxonUuid = null</code>
      * @return
      */
-    private StringBuilder prepareListTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid, boolean doCount) {
+    private StringBuilder prepareListTaxonNodeAgentRelations(UUID taxonUuid,
+            UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid,
+            boolean doCount) {
 
         StringBuilder hql = new StringBuilder();
 
@@ -628,7 +650,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         Query<Object[]> query =  getSession().createQuery(hql, Object[].class);
         query.setParameterList("treeIndexes", TreeIndex.toString(treeIndexes));
 
-        @SuppressWarnings("unchecked")
         List<Object[]> list = query.list();
         for (Object[] o : list){
             result.put(TreeIndex.NewInstance((String)o[0]), new UuidAndTitleCache<>((UUID)o[1], null, (String)o[2]));
@@ -655,15 +676,23 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             String treeIndex = node.treeIndex();
             List<Integer> ancestorNodeIds = TreeIndex.NewInstance(treeIndex).parentNodeIds(false);
 
-            Criteria nodeCrit = getSession().createCriteria(TaxonNode.class);
-            Criteria taxonCrit = nodeCrit.createCriteria("taxon");
-            Criteria nameCrit = taxonCrit.createCriteria("name");
-            nodeCrit.add(Restrictions.in("id", ancestorNodeIds));
-            nodeCrit.add(Restrictions.eq("classification", classification));
-            nameCrit.add(Restrictions.eq("rank", rank));
 
-            @SuppressWarnings("unchecked")
-            List<TaxonNode> list = nodeCrit.list();
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<TaxonNode> cq = cb.createQuery(TaxonNode.class);
+            Root<TaxonNode> root = cq.from(TaxonNode.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+            Join<TaxonNode, Taxon> taxonJoin = root.join("taxon");
+            Join<Taxon, TaxonName> nameJoin = taxonJoin.join("name");
+
+            predicates.add(predicateIn(root, "id", ancestorNodeIds));
+            predicates.add(predicateEqual(cb, root, "classification", classification));
+            predicates.add(predicateEqual(cb, nameJoin, "rank", rank));
+
+            cq.select(root)
+              .where(predicateAnd(cb, predicates));
+            List<TaxonNode> list = getSession().createQuery(cq).getResultList();
+
             for (TaxonNode rankNode : list){
                 TaxonNodeDto dto = new TaxonNodeDto(rankNode);
                 result.add(dto);
@@ -671,7 +700,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         }
         return result;
     }
-
 
     @Override
     public List<TaxonNodeDto> getParentTaxonNodeDtoForRank(
