@@ -142,28 +142,4 @@ public abstract class CdmBaseDaoImpl
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
-
-
-
-
-//  @Override
-//  public long count(Class<? extends CdmBase> type) {
-//      // TODO Auto-generated method stub
-//      return 0;
-//  }
-//
-//  @Override
-//  public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints,
-//          List<String> propertyPaths) {
-//      // TODO Auto-generated method stub
-//      return null;
-//  }
-//
-//  @Override
-//  public UUID refresh(CdmBase persistentObject) throws DataAccessException {
-//      // TODO Auto-generated method stub
-//      return null;
-//  }
-
-
 }

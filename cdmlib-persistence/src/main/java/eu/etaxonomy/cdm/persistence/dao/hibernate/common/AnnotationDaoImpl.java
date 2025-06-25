@@ -101,30 +101,30 @@ public class AnnotationDaoImpl extends AnnotatableDaoBaseImpl<Annotation> implem
     public long count(User creator, MarkerType markerType) {
 
 	    checkNotInPriorView("AnnotationDaoImpl.count(User creator, MarkerType statu)");
-	       CriteriaBuilder cb = getCriteriaBuilder();
-	        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-	        Root<Annotation> root = cq.from(Annotation.class);
 
-	        List<Predicate> predicates = new ArrayList<>();
+	    CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<Annotation> root = cq.from(Annotation.class);
 
-	        if (creator != null) {
-	            predicates.add(cb.equal(root.get("creator"), creator));
-	        }
+        List<Predicate> predicates = new ArrayList<>();
 
-	        // Add marker type Filter
-	        if (markerType != null) {
-	            Join<Annotation, ?> markersJoin = root.join("markers");
-	            predicates.add(cb.equal(markersJoin.get("markerType"), markerType));
-	        }
+        if (creator != null) {
+            predicates.add(cb.equal(root.get("createdBy"), creator));
+        }
 
-	        cq.select(cb.countDistinct(root.get("id")));
+        // Add marker type Filter
+        if (markerType != null) {
+            Join<Annotation, ?> markersJoin = root.join("markers");
+            predicates.add(cb.equal(markersJoin.get("markerType"), markerType));
+        }
 
-	        if (!predicates.isEmpty()) {
-	            cq.where(cb.and(predicates.toArray(new Predicate[0])));
-	        }
+        cq.select(cb.countDistinct(root.get("id")));
 
-	        return getSession().createQuery(cq).getSingleResult();
+        if (!predicates.isEmpty()) {
+            cq.where(cb.and(predicates.toArray(new Predicate[0])));
+        }
 
+        return getSession().createQuery(cq).getSingleResult();
 	}
 
 	@Override
@@ -151,7 +151,6 @@ public class AnnotationDaoImpl extends AnnotatableDaoBaseImpl<Annotation> implem
         cq.select(root);
         cq.where(cb.and(predicates.toArray(new Predicate[0])));
         cq.orderBy(ordersFrom(cb, root, orderHints));
-//        order(cb, cq, root, orderHints);
 
         List<Annotation> results = addPageSizeAndNumber(
                 getSession().createQuery(cq), pageSize, pageNumber)
