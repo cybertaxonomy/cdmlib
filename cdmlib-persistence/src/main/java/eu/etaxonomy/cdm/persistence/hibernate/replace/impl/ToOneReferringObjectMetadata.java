@@ -10,9 +10,11 @@ package eu.etaxonomy.cdm.persistence.hibernate.replace.impl;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -25,12 +27,15 @@ public class ToOneReferringObjectMetadata extends ReferringObjectMetadataImpl {
 	}
 
 	@Override
-    public List<CdmBase> getReferringObjects(CdmBase x, Session session) {
+    public List<? extends CdmBase> getReferringObjects(CdmBase x, Session session) {
 
-	    Criteria criteria = session.createCriteria(type);
-        criteria.add(Restrictions.eq(fieldName,x));
-        @SuppressWarnings("unchecked")
-        List<CdmBase> result = criteria.list();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<? extends CdmBase> cq = cb.createQuery(type);
+        Root<? extends CdmBase> root = cq.from(type);
+
+        cq.select((Root)root);
+        cq.where(cb.equal(root.get("fieldName"), x));
+        List<? extends CdmBase> result = session.createQuery(cq).getResultList();
         return result;
 	}
 

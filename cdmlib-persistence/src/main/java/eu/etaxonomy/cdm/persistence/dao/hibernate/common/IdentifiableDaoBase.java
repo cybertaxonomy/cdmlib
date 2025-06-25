@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.LogManager;
@@ -303,17 +304,24 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     @Override
     public T find(LSID lsid) {
         checkNotInPriorView("IdentifiableDaoBase.find(LSID lsid)");
-        Criteria criteria = getSession().createCriteria(type);
-        criteria.add(Restrictions.eq("lsid.authority", lsid.getAuthority()));
-        criteria.add(Restrictions.eq("lsid.namespace", lsid.getNamespace()));
-        criteria.add(Restrictions.eq("lsid.object", lsid.getObject()));
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(type);
+        Root<T> root = cq.from(type);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(cb.equal(root.get("lsid").get("authority"), lsid.getAuthority()));
+        predicates.add(cb.equal(root.get("lsid").get("namespace"), lsid.getNamespace()));
+        predicates.add(cb.equal(root.get("lsid").get("object"), lsid.getObject()));
 
         if(lsid.getRevision() != null) {
-            criteria.add(Restrictions.eq("lsid.revision", lsid.getRevision()));
+            predicates.add(cb.equal(root.get("lsid").get("revision"), lsid.getRevision()));
         }
+        cq.select(root);
+        cq.where(cb.and(predicates.toArray(new Predicate[0])));
+        T object = getSession().createQuery(cq).uniqueResult();
 
-        @SuppressWarnings("unchecked")
-		T object = (T)criteria.uniqueResult();
         if(object != null) {
             return object;
         } else {

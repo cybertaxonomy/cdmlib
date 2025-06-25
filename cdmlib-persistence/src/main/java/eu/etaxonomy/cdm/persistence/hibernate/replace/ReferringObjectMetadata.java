@@ -15,7 +15,8 @@ import org.hibernate.Session;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 public interface ReferringObjectMetadata {
-	public List<CdmBase> getReferringObjects(CdmBase x,Session session);
+
+    public List<? extends CdmBase> getReferringObjects(CdmBase x, Session session);
 
 	public void replace(CdmBase referringObject, CdmBase x, CdmBase y) throws IllegalArgumentException, IllegalAccessException;
 

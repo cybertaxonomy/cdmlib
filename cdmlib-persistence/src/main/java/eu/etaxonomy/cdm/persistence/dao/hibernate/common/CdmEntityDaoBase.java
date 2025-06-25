@@ -229,7 +229,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
         for (ReferringObjectMetadata referringObjectMetadata : referringObjectMetas) {
 
-            List<CdmBase> referringObjects = referringObjectMetadata.getReferringObjects(x, getSession());
+            List<? extends CdmBase> referringObjects = referringObjectMetadata.getReferringObjects(x, getSession());
 
             for (CdmBase referringObject : referringObjects) {
                 try {
@@ -426,14 +426,19 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             return new ArrayList<>(0);
         }
 
-        Criteria criteria = prepareList(null, ids, null, null, orderHints, "id");
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(type);
+        Root<T> root = cq.from(type);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(criteria.toString());
+        if (orderHints == null) {
+            orderHints = OrderHint.defaultOrderHintsFor(type);
         }
 
-        @SuppressWarnings("unchecked")
-        List<T> result = criteria.list();
+        cq.select(root)
+          .where(root.get("id").in(ids))
+          .orderBy(ordersFrom(cb, root, orderHints));
+        List<T> result = getSession().createQuery(cq).getResultList();
+
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
@@ -442,28 +447,39 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     public List<T> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws DataAccessException {
 
-        if (uuids == null || uuids.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        Criteria criteria = prepareList(null, uuids, pageSize, pageNumber, orderHints, "uuid");
-        @SuppressWarnings("unchecked")
-        List<T> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
-        return result;
+        return list(null, uuids, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
-    public <S extends T> List<S> list(Class<S> clazz, Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            List<String> propertyPaths) throws DataAccessException {
+    public <S extends T> List<S> list(Class<S> clazz, Collection<UUID> uuids, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
 
         if (uuids == null || uuids.isEmpty()) {
             return new ArrayList<>();
         }
+        if (clazz == null){
+            clazz = (Class)type;
+        }
+        if (orderHints == null) {
+            orderHints = OrderHint.defaultOrderHintsFor(clazz);
+        }
 
-        Criteria criteria = prepareList(clazz, uuids, pageSize, pageNumber, orderHints, "uuid");
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<S> cq = cb.createQuery(clazz);
+        Root<S> root = cq.from(clazz);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(root.get("uuid").in(uuids));
+
+        cq.select(root)
+          .where(cb.and(predicates.toArray(new Predicate[0])))
+          .orderBy(ordersFrom(cb, root, orderHints));
+        List<S> result = addPageSizeAndNumber(
+                    getSession().createQuery(cq)
+                    , pageSize, pageNumber)
+                .getResultList();
+
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }

@@ -410,7 +410,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             }
 
             if (config.getDoReUseTaxon()){
-                List<TaxonBase> c = null;
+                List<? extends TaxonBase> c = null;
                 try {
                     Taxon cc= getTaxonService().findBestMatchingTaxon(scientificName);
                     if (cc != null){

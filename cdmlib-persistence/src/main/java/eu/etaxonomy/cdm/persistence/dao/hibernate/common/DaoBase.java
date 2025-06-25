@@ -482,6 +482,10 @@ public abstract class DaoBase {
         return builder.equal(builder.size(path.get(field)), num);
     }
 
+    protected <T extends CdmBase> Predicate predicateIn(Path<T> root, String fieldName, Collection<?> collection) {
+        return root.get(fieldName).in(collection);
+    }
+
     /**
      * Returns a {@link Predicate} that checks if a field is null.
      *

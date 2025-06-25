@@ -84,7 +84,7 @@ public interface ITaxonService
      * @param sec the taxons sec reference
      * @return a list of taxa matching the name and the sec reference
      */
-    public List<TaxonBase> searchByName(String name, boolean includeUnpublished, Reference sec);
+    public List<? extends TaxonBase> searchByName(String name, boolean includeUnpublished, Reference sec);
 
     /**
      * Swaps given synonym and accepted taxon.

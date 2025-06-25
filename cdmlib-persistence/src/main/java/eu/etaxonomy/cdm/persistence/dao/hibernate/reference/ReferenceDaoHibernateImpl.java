@@ -14,13 +14,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
@@ -136,19 +139,21 @@ public class ReferenceDaoHibernateImpl
 	    if (uuids.isEmpty()){
             return new ArrayList<>();
         }
-        Criteria criteria = null;
 
-        criteria = getSession().createCriteria(Reference.class);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Reference> cq = cb.createQuery(Reference.class);
+        Root<Reference> root = cq.from(Reference.class);
 
-        if (refType != null){
-            criteria.add(Restrictions.and(Restrictions.in("uuid", uuids ),Restrictions.eq("type", refType)));
-        }else{
-            criteria.add(Restrictions.in("uuid", uuids ) );
+        List<Predicate> predicates = new ArrayList<>();
+        if (refType != null) {
+            predicates.add(cb.equal(root.get("refType"), refType));
         }
+        predicates.add(root.get("uuid").in(uuids));
 
-        @SuppressWarnings("unchecked")
-        List<Reference> result = criteria.list();
-        return result;
+        cq.select(root)
+          .where(cb.and(predicates.toArray(new Predicate[0])));
+
+        return getSession().createQuery(cq).getResultList();
 	}
 
 	@Override
