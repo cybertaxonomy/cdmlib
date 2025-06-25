@@ -88,7 +88,7 @@ public class AnnotationDaoImpl extends AnnotatableDaoBaseImpl<Annotation> implem
         }
 
         cq.select(root);
-        cq.where(cb.and(predicates.toArray(new Predicate[0])));
+        cq.where(predicateAnd(cb, predicates));
         cq.orderBy(ordersFrom(cb, root, orderHints));
 
 		List<Annotation> results = addPageSizeAndNumber(

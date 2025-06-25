@@ -777,8 +777,6 @@ public class CdmGenericDaoImpl
 		query.select(root)
 		     .where(finalPredicate);
 
-//		Criteria criteria = session.createCriteria(matchClass);
-//        boolean noMatch = makeCriteria(objectToMatch, matchStrategy, classMetaData, criteria, 1);
 		if (logger.isDebugEnabled()){logger.warn(query);}
 
 		//session.flush();
@@ -787,7 +785,6 @@ public class CdmGenericDaoImpl
 			@SuppressWarnings({ "rawtypes", "unchecked" })
             //deduplicate (for some reason the match candidate list return matching teams >1x if they have >1 member, so we deduplicate to be on the safe site
 			List<T> matchCandidates = deduplicateResult((List)session.createQuery(query).getResultList());
-//            List<T> matchCandidates = deduplicateResult(criteria.list());
 			matchCandidates.remove(objectToMatch);
 			for (T matchCandidate : matchCandidates ){
 				if (includeCandidates || matchStrategy.invoke(objectToMatch, matchCandidate).isSuccessful()){
@@ -821,6 +818,8 @@ public class CdmGenericDaoImpl
 	    Matching matching = matchStrategy.getMatching((IMatchable)objectToMatch);
 		boolean noMatch = false;
 		Map<String, List<MatchMode>> replaceMatchers = new HashMap<>();
+
+		//cache matcher
 		for (CacheMatcher cacheMatcher: matching.getCacheMatchers()){
 		    Field protectedField = cacheMatcher.getProtectedField(matching);
 			boolean cacheProtected = protectedField == null ? false : (Boolean)protectedField.get(objectToMatch);
@@ -835,9 +834,6 @@ public class CdmGenericDaoImpl
 				    Predicate p2 = predicateBoolean(cb, from, cacheMatcher.getProtectedPropertyName(), cacheProtected);
 				    finalAndPredicates.add(p2);
 
-//					criteria.add(Restrictions.eq(cacheMatcher.getPropertyName(), cacheValue));
-//					criteria.add(Restrictions.eq(cacheMatcher.getProtectedPropertyName(), cacheProtected));
-
 					List<DoubleResult<String, MatchMode>> replacementModes = cacheMatcher.getReplaceMatchModes(matching);
 					for (DoubleResult<String, MatchMode> replacementMode: replacementModes ){
 						String propertyName = replacementMode.getFirstResult();
@@ -848,10 +844,11 @@ public class CdmGenericDaoImpl
 						}
 						replaceMatcherList.add(replacementMode.getSecondResult());
 					}
-
 				}
 			}
 		}
+
+		//field matcher
 		for (FieldMatcher fieldMatcher : matching.getFieldMatchers(false)){
 			String propertyName = fieldMatcher.getPropertyName();
 			Type propertyType = classMetaData.getPropertyType(propertyName);
@@ -926,7 +923,6 @@ public class CdmGenericDaoImpl
 			return noMatch;
 		}else if (requiresSecondNull(matchModes,value)){
 		    finalAndPredicates.add(predicateIsNull(cb, root, propertyName));
-//			criteria.add(Restrictions.isNull(propertyName));
 		}else{
 			if (isMatch(matchModes)){
 				if (propertyType.isCollectionType()){
@@ -950,11 +946,9 @@ public class CdmGenericDaoImpl
                     }
 
 					//TODO Object
-//					Join<CdmBase, CdmBase> join = root.join(propertyName, joinType);
 					Join<CdmBase, CdmBase> join = root.join(propertyName, joinType);
 //					join.on(cb.isNotNull(join.get("id")));
 
-//					Criteria matchCriteria = criteria.createCriteria(propertyName, joinTypeHib).add(Restrictions.isNotNull("id"));
 					@SuppressWarnings("rawtypes")
                     Class matchClass = value.getClass();
                     if (IMatchable.class.isAssignableFrom(matchClass)){
