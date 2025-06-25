@@ -55,11 +55,8 @@ public class AnnotationDaoImpl extends AnnotatableDaoBaseImpl<Annotation> implem
 	        predicates.add(cb.equal(markersJoin.get("markerType"), markerType));
 	    }
 
-	    cq.select(cb.countDistinct(root.get("id")));
-
-	    if (!predicates.isEmpty()) {
-	        cq.where(cb.and(predicates.toArray(new Predicate[0])));
-	    }
+	    cq.select(cb.countDistinct(root.get("id")))
+	      .where(predicateAnd(cb, predicates));
 
 	    return getSession().createQuery(cq).getSingleResult();
 	}
@@ -87,9 +84,9 @@ public class AnnotationDaoImpl extends AnnotatableDaoBaseImpl<Annotation> implem
             predicates.add(cb.equal(markersJoin.get("markerType"), markerType));
         }
 
-        cq.select(root);
-        cq.where(predicateAnd(cb, predicates));
-        cq.orderBy(ordersFrom(cb, root, orderHints));
+        cq.select(root)
+          .where(predicateAnd(cb, predicates))
+          .orderBy(ordersFrom(cb, root, orderHints));
 
 		List<Annotation> results = addPageSizeAndNumber(
 		         getSession().createQuery(cq), pageSize, pageNumber)
