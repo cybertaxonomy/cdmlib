@@ -193,7 +193,7 @@ public class DistributionServiceImpl implements IDistributionService {
         for (TaxonDescription taxonDescription : taxonDescriptions) {
             List<Distribution> distributions;
             if (taxonDescription.getId() > 0){
-                distributions = dao.getDescriptionElements(taxonDescription,
+                distributions = dao.listDescriptionElements(taxonDescription,
                         null, features, Distribution.class, includeUnpublished, null, null, null);
             }else{
                 distributions = new ArrayList<>();

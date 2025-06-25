@@ -238,7 +238,7 @@ public class DescriptionServiceImpl
         long numberOfResults = dao.countDescriptionElements(description, descriptionType, features, type, includeUnpublished);
         List<T> results = new ArrayList<>();
         if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) {
-            results = dao.getDescriptionElements(description, descriptionType, features, type, includeUnpublished, pageSize, pageNumber, propertyPaths);
+            results = dao.listDescriptionElements(description, descriptionType, features, type, includeUnpublished, pageSize, pageNumber, propertyPaths);
         }
         return results;
     }

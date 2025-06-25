@@ -238,7 +238,7 @@ public class DescriptionDaoImpl
     }
 
     @Override
-    public <T extends DescriptionElementBase> List<T> getDescriptionElements(
+    public <T extends DescriptionElementBase> List<T> listDescriptionElements(
             DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
             Set<Feature> features,
             Class<T> clazz, boolean includeUnpublished,

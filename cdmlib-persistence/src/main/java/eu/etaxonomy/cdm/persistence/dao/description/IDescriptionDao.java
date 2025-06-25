@@ -71,7 +71,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      *            {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of DescriptionElementBase instances
      */
-    public <T extends DescriptionElementBase> List<T> getDescriptionElements(
+    public <T extends DescriptionElementBase> List<T> listDescriptionElements(
             DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
             Set<Feature> features, Class<T> type, boolean includeUnpublished,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths);
