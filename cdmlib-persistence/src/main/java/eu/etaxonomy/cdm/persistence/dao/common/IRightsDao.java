@@ -16,15 +16,9 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 /**
  * @author k.luther
  * @since 15.02.2017
- *
  */
-public interface IRightsDao extends ILanguageStringBaseDao<Rights> {
+public interface IRightsDao extends IAnnotatableDao<Rights> {
 
-    /**
-     * @param limit
-     * @param pattern
-     * @return
-     */
-    List<UuidAndTitleCache<Rights>> getUuidAndTitleCache(Integer limit, String pattern);
+    public List<UuidAndTitleCache<Rights>> getUuidAndTitleCache(Integer limit, String pattern);
 
 }

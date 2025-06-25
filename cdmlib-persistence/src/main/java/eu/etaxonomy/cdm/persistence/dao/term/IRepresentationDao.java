@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.term;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.term.Representation;
-import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
 /**
  * FIXME Candidate for removal. This class is only used in SDDExport and it is
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
  * @deprecated this class will be removed
  */
 @Deprecated
-public interface IRepresentationDao extends ILanguageStringBaseDao<Representation> {
+public interface IRepresentationDao extends IAnnotatableDao<Representation> {
 
 	public List<Representation> getAllRepresentations(Integer limit, Integer start);
 

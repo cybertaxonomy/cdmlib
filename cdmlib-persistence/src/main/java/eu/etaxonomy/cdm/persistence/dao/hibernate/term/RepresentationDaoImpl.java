@@ -14,7 +14,7 @@ import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.term.Representation;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.LanguageStringBaseDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.dao.term.IRepresentationDao;
 
 /**
@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.IRepresentationDao;
 @Repository
 @Deprecated
 public class RepresentationDaoImpl
-        extends LanguageStringBaseDaoImpl<Representation>
+        extends AnnotatableDaoBaseImpl<Representation>
         implements IRepresentationDao {
 
     @SuppressWarnings("unused")

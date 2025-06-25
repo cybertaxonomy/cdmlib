@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
  */
 @Repository
 public class LanguageStringDaoImpl
-        extends LanguageStringBaseDaoImpl<LanguageString>
+        extends AnnotatableDaoBaseImpl<LanguageString>
         implements ILanguageStringDao {
 
     @SuppressWarnings("unused")
