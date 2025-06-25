@@ -37,7 +37,7 @@ public class AnnotationDaoImpl extends AnnotatableDaoBaseImpl<Annotation> implem
 	@Override
 	public long count(Person commentator, MarkerType markerType) {
 
-//	    checkNotInPriorView("AnnotationDaoImpl.count(Person commentator, MarkerType status)");
+	    checkNotInPriorView("AnnotationDaoImpl.count(Person commentator, MarkerType status)");
 
 	    CriteriaBuilder cb = getCriteriaBuilder();
 	    CriteriaQuery<Long> cq = cb.createQuery(Long.class);
