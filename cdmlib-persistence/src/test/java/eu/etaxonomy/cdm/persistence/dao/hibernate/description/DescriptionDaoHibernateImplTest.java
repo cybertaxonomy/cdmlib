@@ -86,19 +86,20 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     @Test
     public void testCountDescriptionElements() {
 
-        long numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, null, null, null, false);
-        assertEquals("expecting 38 description elements in total", 38, numberOfDescriptionElements);
+        boolean includeUnpublished = false;
+        long numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, null, null, null, includeUnpublished);
+        assertEquals("expecting 35 description elements in total", 35, numberOfDescriptionElements);
 
-        numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, null, null, TextData.class, false);
-        assertEquals("expecting 4 description elements of type TextData", 4, numberOfDescriptionElements);
+        numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, null, null, TextData.class, includeUnpublished);
+        assertEquals("expecting 3 published description elements of type TextData", 3, numberOfDescriptionElements);
 
-        numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, TaxonDescription.class, null, TextData.class, false);
-        assertEquals("expecting 3 description elements of type TextData", 3, numberOfDescriptionElements);
+        numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, TaxonDescription.class, null, TextData.class, includeUnpublished);
+        assertEquals("expecting 2 published description elements of type TextData", 2, numberOfDescriptionElements);
 
         DescriptionBase<?> description = descriptionDao.findByUuid(uuidTaxonDescription1);
         assert description != null : "description must exist";
 
-        numberOfDescriptionElements = descriptionDao.countDescriptionElements(description, null, null, TextData.class, false);
+        numberOfDescriptionElements = descriptionDao.countDescriptionElements(description, null, null, TextData.class, includeUnpublished);
 
         assertEquals("expecting 2 description elements of type TextData in specific description", 2, numberOfDescriptionElements);
     }
@@ -109,13 +110,13 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         boolean includeUnpublished = false;
 
         List<TextData> elements = descriptionDao.getDescriptionElements(null, null, null, null, includeUnpublished, null, null, null);
-        assertEquals("expecting 38 description elements in total", 38, elements.size());
+        assertEquals("expecting 35 description elements in total without unpublished", 35, elements.size());
 
         elements = descriptionDao.getDescriptionElements(null, null, null, TextData.class, includeUnpublished, null, null, null);
-        assertEquals("expecting 4 description elements of type TextData", 4, elements.size());
+        assertEquals("expecting 4 published description elements of type TextData", 3, elements.size());
 
         elements = descriptionDao.getDescriptionElements(null, TaxonDescription.class, null, TextData.class, includeUnpublished, null, null, null);
-        assertEquals("expecting 3 description elements of type TextData", 3, elements.size());
+        assertEquals("expecting 3 published description elements of type TextData", 2, elements.size());
 
         elements = descriptionDao.getDescriptionElements(null, SpecimenDescription.class, null, TextData.class, includeUnpublished, null, null, null);
         assertEquals("expecting 1 description elements of type TextData", 1, elements.size());
@@ -205,10 +206,10 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         // 2. search for more Features: ECOLOGY & DESCRIPTION
         features.add(Feature.DESCRIPTION());
         elements = descriptionDao.getDescriptionElements(null, null, features, TextData.class, includeUnpublished, null, null,null);
-        assertEquals("getDescriptionElement should return 4 elements", 4, elements.size());
+        assertEquals("getDescriptionElement should return 3 elements", 3, elements.size());
 
         elements = descriptionDao.getDescriptionElements(null, TaxonDescription.class, features, TextData.class, includeUnpublished, null, null,null);
-        assertEquals("getDescriptionElement should return 3 elements", 3, elements.size());
+        assertEquals("getDescriptionElement should return 2 published elements", 2, elements.size());
     }
 
     @Test

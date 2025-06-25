@@ -15,6 +15,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -239,36 +246,40 @@ public class DescriptionDaoImpl
 
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = null;
-            if(clazz == null) {
-                criteria = getSession().createCriteria(DescriptionElementBase.class);
-            } else {
-                criteria = getSession().createCriteria(clazz);
-            }
+            clazz = clazz == null? (Class)DescriptionElementBase.class : clazz;
 
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<T> cq = cb.createQuery(clazz);
+            Root<T> root = cq.from(clazz);
+            List<Predicate> predicates = new ArrayList<>();
             if(description != null) {
-                criteria.add(Restrictions.eq("inDescription", description));
+                predicates.add(predicateEqual(cb, root, "inDescription", description));
+            }
+            if (!includeUnpublished) {
+                Join<T, DescriptionBase> descriptionJoin = root.join("inDescription", JoinType.INNER);
+                predicates.add(predicateBoolean(cb, descriptionJoin, "publish", true));
             }
             if(descriptionType != null) {
-                criteria.createAlias("inDescription", "d").add(Restrictions.eq("d.class", descriptionType));
+                Join<T, DescriptionBase> join = root.join("inDescription", JoinType.INNER);
+                Join<T, ? extends DescriptionBase> treatJoin = cb.treat(join, descriptionType);
+                predicates.add(treatJoin.isNotNull());
+//                cb.equal(cb.typ .type(join), descriptionType);  //CriteriaBuilder.type() should exist in HibernateCriteriaBuilder since 5.2 but doesn't
+            }
+            if(!CdmUtils.isNullSafeEmpty(features)) {
+                predicates.add(predicateIn(root, "feature", features));
             }
 
-            if(features != null && !features.isEmpty()) {
-                criteria.add(Restrictions.in("feature", features));
-            }
+            cq.select(root)
+              .where(predicateAnd(cb, predicates));
 
-            if(pageSize != null) {
-                criteria.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    criteria.setFirstResult(pageNumber * pageSize);
-                }
-            }
-
-            List<T> results = criteria.list();
+            List<T> results = addPageSizeAndNumber(
+                     getSession().createQuery(cq), pageSize, pageNumber)
+                    .getResultList();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
+
         } else {
-            List<T> result = new ArrayList<T>();
+            List<T> result = new ArrayList<>();
             if(features != null && !features.isEmpty()) {
 
                 for(Feature f : features) {
