@@ -316,18 +316,10 @@ public class StatisticsDaoHibernateImpl
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#countTaxonNames
-	 * (eu.etaxonomy.cdm.model.taxon.Classification)
-	 */
 	@Override
 	public Long countTaxonNames(Classification classification) {
 
-		if (classification == null)
-         {
+		if (classification == null){
             return null; // or MAYDO: throw some Exception???
         }
 
@@ -362,7 +354,6 @@ public class StatisticsDaoHibernateImpl
 
 		return Long.valueOf(processQueriesWithIdDistinctListResult(
 				queryStrings, parameters).size());
-
 	}
 
 	@Override

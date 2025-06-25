@@ -22,5 +22,4 @@ public interface ReferringObjectMetadata {
 	public Class<? extends CdmBase> getType();
 
 	public String getFieldName();
-
 }

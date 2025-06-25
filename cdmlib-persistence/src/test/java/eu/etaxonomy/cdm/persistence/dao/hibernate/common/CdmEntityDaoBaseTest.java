@@ -300,7 +300,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         Integer[] ids = new Integer[]{1, 2};
         List<TaxonBase> list = cdmEntityDaoBase.loadList(Arrays.asList(ids), orderHints, null);
         assertNotNull("list() should not return null",list);
-        assertEquals("list() should return a list with two entities in it",2,list.size());
+        assertEquals("list() should return a list with two entities in it", 2, list.size());
     }
 
     @Test

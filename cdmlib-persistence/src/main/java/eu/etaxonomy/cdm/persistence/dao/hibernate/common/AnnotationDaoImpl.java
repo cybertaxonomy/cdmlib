@@ -69,7 +69,8 @@ public class AnnotationDaoImpl extends AnnotatableDaoBaseImpl<Annotation> implem
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
 	    checkNotInPriorView("AnnotationDaoImpl.list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber)");
-        CriteriaBuilder cb = getCriteriaBuilder();
+
+	    CriteriaBuilder cb = getCriteriaBuilder();
         CriteriaQuery<Annotation> cq = cb.createQuery(Annotation.class);
         Root<Annotation> root = cq.from(Annotation.class);
 
@@ -91,7 +92,7 @@ public class AnnotationDaoImpl extends AnnotatableDaoBaseImpl<Annotation> implem
         cq.orderBy(ordersFrom(cb, root, orderHints));
 
 		List<Annotation> results = addPageSizeAndNumber(
-		        getSession().createQuery(cq), pageSize, pageNumber)
+		         getSession().createQuery(cq), pageSize, pageNumber)
 		        .getResultList();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
@@ -153,7 +154,7 @@ public class AnnotationDaoImpl extends AnnotatableDaoBaseImpl<Annotation> implem
         cq.orderBy(ordersFrom(cb, root, orderHints));
 
         List<Annotation> results = addPageSizeAndNumber(
-                getSession().createQuery(cq), pageSize, pageNumber)
+                 getSession().createQuery(cq), pageSize, pageNumber)
                 .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;

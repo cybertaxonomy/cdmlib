@@ -90,10 +90,6 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         cq.select(cb.count(root));
         Long result = session.createQuery(cq).getSingleResult();
 
-//        Criteria crit = session.createCriteri(type);
-//        crit.add(Restrictions.ilike("titleCache", queryString))
-//            .setProjection(Projections.rowCount());
-//        long result =  (Long)crit.uniqueResult();
         return result;
     }
 
@@ -200,6 +196,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     @Override
     public List<T> findByTitle(String queryString, MatchMode matchmode, int page, int pagesize, List<Criterion> criteria) {
         checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<Criterion> criteria)");
+
         Criteria crit = getSession().createCriteria(type);
         if (matchmode == MatchMode.EXACT) {
             crit.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(queryString)));

@@ -655,6 +655,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     private Criteria prepareList(Class<? extends T> clazz, Collection<?> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             String propertyName) {
+
         if (clazz == null){
             clazz = type;
         }

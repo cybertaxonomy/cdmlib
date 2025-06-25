@@ -77,8 +77,10 @@ public class TermVocabularyDaoImpl
 	}
 
 	@Override
-    public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> vocabulary,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
-		AuditEvent auditEvent = getAuditEventFromContext();
+    public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> vocabulary, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+	    AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = getCriteria(DefinedTermBase.class);
 			criteria.createCriteria("vocabulary").add(Restrictions.idEq(vocabulary.getId()));
@@ -152,7 +154,7 @@ public class TermVocabularyDaoImpl
     public List<TermVocabulary> listByTermType(TermType termType, boolean includeSubTypes, Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths) {
         checkNotInPriorView("TermVocabularyDao.listByTermType(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)");
 
-        Set<TermType> allTermTypes = new HashSet<TermType>();
+        Set<TermType> allTermTypes = new HashSet<>();
         allTermTypes.add(termType);
         if (includeSubTypes){
             allTermTypes.addAll(termType.getGeneralizationOf(true));

@@ -89,6 +89,7 @@ public class TaxonDaoHibernateImpl
 //    private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
     private static final Logger logger = LogManager.getLogger();
 
+    @SuppressWarnings("unchecked")
     public TaxonDaoHibernateImpl() {
         super(TaxonBase.class);
         indexedClasses = new Class[2];

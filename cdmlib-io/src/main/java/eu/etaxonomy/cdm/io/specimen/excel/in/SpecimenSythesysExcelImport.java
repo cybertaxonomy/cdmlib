@@ -430,7 +430,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                         }
                     }
                 } catch (Exception e) {
-                    logger.info("Searchtaxabyname failed" + e);
+                    logger.info("SearchTaxaByName failed" + e);
                     taxon = null;
                 }
 

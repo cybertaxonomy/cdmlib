@@ -17,10 +17,9 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
 
-public abstract class ToManyReferringObjectMetadata extends ReferringObjectMetadataImpl
-		implements ReferringObjectMetadata {
+public abstract class ToManyReferringObjectMetadata
+            extends ReferringObjectMetadataImpl {
 
 	public ToManyReferringObjectMetadata(Class fromClass, String propertyName,
 			Class<? extends CdmBase> toClass) throws SecurityException,
