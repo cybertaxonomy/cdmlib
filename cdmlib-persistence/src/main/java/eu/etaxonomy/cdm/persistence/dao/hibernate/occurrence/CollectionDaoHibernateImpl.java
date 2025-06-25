@@ -11,9 +11,11 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Hibernate;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextSession;
@@ -29,7 +31,8 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.ICollectionDao;
 public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> implements
 		ICollectionDao {
 
-	public CollectionDaoHibernateImpl() {
+	@SuppressWarnings("unchecked")
+    public CollectionDaoHibernateImpl() {
 		super(Collection.class);
 		indexedClasses = new Class[1];
 		indexedClasses[0] = Collection.class;
@@ -39,10 +42,16 @@ public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> 
     public List<Collection> getCollectionByCode(String code) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Criteria crit = getSession().createCriteria(Collection.class);
-    		crit.add(Restrictions.eq("code", code));
+		    CriteriaBuilder cb = getCriteriaBuilder();
+	        CriteriaQuery<Collection> cq = cb.createQuery(Collection.class);
+	        Root<Collection> root = cq.from(Collection.class);
 
-		    return crit.list();
+	        cq.select(root);
+	        cq.where(predicateStrNotNull(cb, root, "code", code));
+
+	        List<Collection> results = getSession().createQuery(cq).getResultList();
+	        return results;
+
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Collection.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("code").eq(code));
