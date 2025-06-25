@@ -77,6 +77,7 @@ public class AnnotationDaoImpl extends AnnotatableDaoBaseImpl<Annotation> implem
 
         if (commentator != null) {
             predicates.add(cb.equal(root.get("commentator"), commentator));
+//          root.join("commentator", JoinType.LEFT);  //not needed as long as we do not order on any commentator attributes like commentator.titleCache
         }
 
         // Add marker type Filter

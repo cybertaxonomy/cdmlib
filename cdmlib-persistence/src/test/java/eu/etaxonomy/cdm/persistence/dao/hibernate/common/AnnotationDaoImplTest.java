@@ -120,6 +120,8 @@ public class AnnotationDaoImplTest extends CdmIntegrationTest {
         assertEquals("getAnnotations should return 5", 5, annotations.size());
 
         List<OrderHint> orderHints = new ArrayList<>();
+//        orderHints.add(new OrderHint("commentator.titleCache", SortOrder.ASCENDING));  //requires to join the commentator first, see according comments in base method
+        orderHints.add(new OrderHint("commentator", SortOrder.ASCENDING));
         orderHints.add(OrderHint.ORDER_BY_ID_DESC);
         annotations = annotationDao.list(person, markerType, null, null, orderHints, null);
         assertEquals("getAnnotations should still return 5", 5, annotations.size());
