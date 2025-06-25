@@ -289,6 +289,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	/**
 	 * Returns the object contained in a collection or map at the given index.
 	 *
+     * @param clazz the owner's class
      * @param ownerUuid uuid of owner cdm entity
      * @param fieldName field name of collection or map
 	 * @param index the index of the requested element

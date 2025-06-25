@@ -13,7 +13,6 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 /**
  * @author a.kohlbecker
  * @since Jan 9, 2013
- *
  */
 public interface IGatheringEventDao extends IAnnotatableDao<GatheringEvent> {
 
