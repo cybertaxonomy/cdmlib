@@ -8,9 +8,12 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -36,9 +39,17 @@ public class RepresentationDaoImpl
 
 	@Override
     public List<Representation> getAllRepresentations(Integer limit, Integer start) {
-		Criteria crit = getSession().createCriteria(Representation.class);
-		List<Representation> results = crit.list();
-		return results;
+
+	    CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Representation> cq = cb.createQuery(Representation.class);
+        Root<Representation> root = cq.from(Representation.class);
+
+        cq.select(root);
+
+        List<Representation> results = addLimitAndStart(
+                getSession().createQuery(cq), limit, start)
+                .getResultList();
+        return results;
 	}
 }
 
