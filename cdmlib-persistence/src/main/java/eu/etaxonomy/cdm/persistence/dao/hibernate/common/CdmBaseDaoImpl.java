@@ -11,9 +11,12 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
@@ -127,15 +130,15 @@ public abstract class CdmBaseDaoImpl
     <S extends CdmBase> List<S> list_(Class<S> clazz, Integer limit, Integer start, List<OrderHint> orderHints,
             List<String> propertyPaths) {
 
-        Criteria criteria = getSession().createCriteria(clazz);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<S> cq = cb.createQuery(clazz);
+        Root<S> root = cq.from(clazz);
+        cq.select(root)
+          .orderBy(ordersFrom(cb, root, orderHints));
 
-        addLimitAndStart(criteria, limit, start);
 
-        addOrder(criteria, orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<S> results = criteria.list();
-
+        List<S> results = addLimitAndStart(getSession().createQuery(cq), limit, start)
+                .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }

@@ -335,7 +335,7 @@ public abstract class DaoBase {
         return result;
     }
 
-    protected void addLimitAndStart(TypedQuery<?> query, Integer limit, Integer start) {
+    protected <T> TypedQuery<T> addLimitAndStart(TypedQuery<T> query, Integer limit, Integer start) {
         if(limit != null) {
             if(start != null) {
                 query.setFirstResult(start);
@@ -344,6 +344,7 @@ public abstract class DaoBase {
             }
             query.setMaxResults(limit);
         }
+        return query;
     }
 
     protected <T> TypedQuery<T> addPageSizeAndNumber(TypedQuery<T> query, Integer pageSize, Integer pageNumber) {
