@@ -10,9 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -42,19 +45,23 @@ public class TermNodeDaoImpl
     public List<TermNode> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints,
             List<String> propertyPaths){
 
-	    Criteria criteria = getSession().createCriteria(type);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TermNode> cq = cb.createQuery(TermNode.class);
+        Root<TermNode> root = cq.from(TermNode.class);
+        List<Predicate> predicates = new ArrayList<>();
+
         if (termType != null){
             Set<TermType> types = termType.getGeneralizationOf(true);
             types.add(termType);
-            criteria.add(Restrictions.in("termType", types));
+            predicates.add(predicateIn(root, "termType", types));
         }
 
-        addLimitAndStart(criteria, limit, start);
+        cq.select(root)
+          .where(predicateAnd(cb, predicates))
+          .orderBy(ordersFrom(cb, root, orderHints));
 
-        addOrder(criteria, orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<TermNode> results = criteria.list();
+        List<TermNode> results = addLimitAndStart(getSession().createQuery(cq), limit, start)
+                .getResultList() ;
 
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
