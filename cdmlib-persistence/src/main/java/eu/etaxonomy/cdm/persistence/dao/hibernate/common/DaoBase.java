@@ -24,6 +24,7 @@ import java.util.UUID;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -41,6 +42,7 @@ import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -355,6 +357,69 @@ public abstract class DaoBase {
         }
         return query;
     }
+
+    protected <T> CriteriaQuery<?> order(CriteriaBuilder builder, CriteriaQuery<T> query,
+            Root<?> root, List<OrderHint> orderHints){
+        if (CdmUtils.isNullSafeEmpty(orderHints)) {
+            return query;
+        }else {
+            List<Order> orders = ordersFrom(builder, root, orderHints);
+            query.orderBy(orders);
+            return query;
+        }
+    }
+
+    protected List<Order> ordersFrom(CriteriaBuilder builder, Root<?> root, List<OrderHint> orderHints) {
+        List<Order> orders = new ArrayList<>();
+        if (CdmUtils.isNullSafeEmpty(orderHints)) {
+            return orders;
+        }else {
+            orderHints.forEach(oh->{
+               String propertyName = oh.getPropertyName();
+               String[] props = propertyName.split("\\.");
+               Path<?> currentPath = root;
+//               int i = 1;
+               for (String prop : props) {
+                   //** if the order path includes a non-terminal attribute which
+                   //   is not joined before the join (inner join) will be automatically
+                   //   created. This also influences the general query result
+                   //   as the inner join filters the result if null values are allowed
+                   //   for the attribute. Here we try to check if the attribute is joined
+                   //   already and if not, the OUTER join is added.
+                   //   Problems to solve are:
+                   //     1) Distinguish attributes representing an entity from those for a
+//                             component or basic type
+                   //     2) recursively pass the Path/From as path.get(name) returns a Path only
+//                   if (i < props.length && !hasJoin(currentPath, prop)) {
+//                       Join<Object, Object> propJoin = root.join(prop, JoinType.LEFT);
+//                   }
+//                   joins.forEach(j->{
+//                       System.out.println (j.getAttribute().getName());
+//                   });
+                   currentPath = currentPath.get(prop);
+//                   boolean isCompound = currentPath.isCompoundSelection();
+//                   if (isCompound) {
+//                       List<Selection<?>> sel = currentPath.getCompoundSelectionItems();
+//                   }
+//                   Bindable<?> model = currentPath.getModel();
+//                   BindableType bt = model.getBindableType();
+//                   Class<?> bjt = model.getBindableJavaType();
+//                   Class<?> t = currentPath.getJavaType();
+//                   System.out.println("1");
+               }
+               Order ord = oh.isAscending() ? builder.asc(currentPath) : builder.desc(currentPath);
+               orders.add(ord);
+            });
+            return orders;
+        }
+    }
+
+//    private boolean hasJoin(From<?,?> path, String propName) {
+//        Set<Join> joins = (Set)path.getJoins();
+//        return joins.stream()
+//            .filter(j->j.getAttribute().getName().equals(propName))
+//            .count() > 0;
+//    }
 
 
     /**

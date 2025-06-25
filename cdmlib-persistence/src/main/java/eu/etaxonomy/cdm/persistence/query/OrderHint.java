@@ -56,6 +56,10 @@ public class OrderHint implements Serializable {
         public String toHql(){
             return hql;
         }
+
+        public boolean isAsc(){
+            return this == ASCENDING;
+        }
     }
 
     private final String propertyName;
@@ -132,7 +136,7 @@ public class OrderHint implements Serializable {
     }
 
     public boolean isAscending(){
-        return sortOrder.equals(SortOrder.ASCENDING);
+        return sortOrder.isAsc();
     }
 
     /**
