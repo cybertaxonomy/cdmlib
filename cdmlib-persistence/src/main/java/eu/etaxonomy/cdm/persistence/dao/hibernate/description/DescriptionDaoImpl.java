@@ -25,10 +25,6 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
@@ -37,7 +33,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -90,32 +88,21 @@ public class DescriptionDaoImpl
             Set<Feature> features, Class<T> clazz, boolean includeUnpublished) {
 
         AuditEvent auditEvent = getAuditEventFromContext();
-        if (clazz == null){
-            clazz = (Class<T>)DescriptionElementBase.class;
-        }
+        clazz = clazz == null? (Class)DescriptionElementBase.class : clazz;
+
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getCriteria(clazz);
-            criteria.createAlias("inDescription", "d");
 
-            if(description != null) {
-                criteria.add(Restrictions.eq("inDescription", description));
-            }
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+            Root<T> root = cq.from(clazz);
+            List<Predicate> predicates = makeListDescriptionElementsPredicates(
+                    description, descriptionType, features, includeUnpublished, cb, root);
 
-            if(descriptionType != null) {
-                criteria.add(Restrictions.eq("d.class", descriptionType));
-            }
+            cq.select(cb.countDistinct(root.get("id")))
+              .where(predicateAnd(cb, predicates));
 
-            if(features != null && !features.isEmpty()) {
-                criteria.add(Restrictions.in("feature", features));
-            }
+            return getSession().createQuery(cq).getSingleResult();
 
-            if (!includeUnpublished) {
-                criteria.add(Restrictions.eq("d.publish", true));
-            }
-
-            criteria.setProjection(Projections.rowCount());
-
-            return (Long)criteria.uniqueResult();
         } else {
             if(features != null && !features.isEmpty()) {
                 long count = 0;
@@ -159,37 +146,23 @@ public class DescriptionDaoImpl
 
     @Override
     public long countTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes,
-            Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes, Set<DescriptionType> descriptionTypes) {
+            Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes,
+            Set<DescriptionType> descriptionTypes) {
+
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getCriteria(TaxonDescription.class);
 
-            if(taxon != null) {
-                criteria.add(Restrictions.eq("taxon", taxon));
-            }
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+            Root<TaxonDescription> root = cq.from(TaxonDescription.class);
+            List<Predicate> predicates = makeTaxonDescriptionPredicates(taxon,
+                    scopes, geographicalScopes, markerTypes, descriptionTypes, cb, root);
 
-            if(scopes != null && !scopes.isEmpty()) {
-                Set<Integer> scopeIds = new HashSet<>();
-                for(DefinedTerm s : scopes) {
-                    scopeIds.add(s.getId());
-                }
-                criteria.createCriteria("scopes").add(Restrictions.in("id", scopeIds));
-            }
+            cq.select(cb.countDistinct(root.get("id")))
+              .where(predicateAnd(cb, predicates));
 
-            if(geographicalScopes != null && !geographicalScopes.isEmpty()) {
-                Set<Integer> geoScopeIds = new HashSet<>();
-                for(NamedArea n : geographicalScopes) {
-                    geoScopeIds.add(n.getId());
-                }
-                criteria.createCriteria("geoScopes").add(Restrictions.in("id", geoScopeIds));
-            }
+            return getSession().createQuery(cq).getSingleResult();
 
-            addMarkerTypesCriterion(markerTypes, criteria);
-            addDescriptionTypesCriterion(descriptionTypes, criteria);
-
-            criteria.setProjection(Projections.rowCount());
-
-            return (Long)criteria.uniqueResult();
         } else {
             if((scopes == null || scopes.isEmpty())&& (geographicalScopes == null || geographicalScopes.isEmpty()) && (markerTypes == null || markerTypes.isEmpty())) {
                 AuditQuery query = makeAuditQuery(TaxonDescription.class,auditEvent);
@@ -206,35 +179,67 @@ public class DescriptionDaoImpl
         }
     }
 
-    private void addDescriptionTypesCriterion(Set<DescriptionType> descriptionTypes, Criteria criteria) {
-        if(descriptionTypes != null && !descriptionTypes.isEmpty()) {
-            Set<Criterion> typeCriteria = new HashSet<>();
-            for (DescriptionType descriptionType : descriptionTypes) {
-                typeCriteria.add(Restrictions.sqlRestriction("{alias}.types like '%"+descriptionType.getKey()+"%'"));
-            }
-            criteria.add(Restrictions.and(typeCriteria.toArray(new Criterion[]{})));
+    private List<Predicate> makeTaxonDescriptionPredicates(Taxon taxon, Set<DefinedTerm> scopes,
+            Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes, Set<DescriptionType> descriptionTypes,
+            CriteriaBuilder cb, Root<TaxonDescription> root) {
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        //taxon
+        if(taxon != null) {
+            predicates.add(predicateEqual(cb, root, "taxon", taxon));
         }
+
+        //scopes
+        if (!CdmUtils.isNullSafeEmpty(scopes)) {
+            Set<Integer> scopeIds = new HashSet<>();
+            for(DefinedTerm s : scopes) {
+                scopeIds.add(s.getId());
+            }
+            Join<TaxonDescription, DefinedTerm> join = root.join("scopes");
+            predicates.add(predicateIn(join, "id", scopeIds));
+        }
+
+        //geoscopes
+        if (!CdmUtils.isNullSafeEmpty(geographicalScopes)) {
+            Set<Integer> scopeIds = new HashSet<>();
+            for(NamedArea scope : geographicalScopes) {
+                scopeIds.add(scope.getId());
+            }
+            Join<TaxonDescription, NamedArea> join = root.join("geoScopes");
+            predicates.add(predicateIn(join, "id", geographicalScopes));
+        }
+
+        //markerTypes
+        predicates.addAll(makeMarkerTypesPredicate(cb, root, markerTypes));
+        //descriptionTypes
+        if(!CdmUtils.isNullSafeEmpty(descriptionTypes)) {
+            predicates.add(predicateIn(root, "types", descriptionTypes));
+        }
+
+        return predicates;
     }
 
-    /**
-     * @param markerTypes
-     * @param criteria
-     *
-     */
     //TODO move to AnnotatableEntityDao(?)
-    private void addMarkerTypesCriterion(Set<MarkerType> markerTypes, Criteria criteria) {
+    private <T extends AnnotatableEntity> List<Predicate> makeMarkerTypesPredicate(CriteriaBuilder cb, Root<T> root,
+            Set<MarkerType> markerTypes) {
 
-        if(markerTypes != null && !markerTypes.isEmpty()) {
-            Set<Integer> markerTypeIds = new HashSet<Integer>();
+        List<Predicate> predicates = new ArrayList<>();
+
+        if(!CdmUtils.isNullSafeEmpty(markerTypes)) {
+            Set<Integer> markerTypeIds = new HashSet<>();
             for(MarkerType markerType : markerTypes) {
                 markerTypeIds.add(markerType.getId());
             }
-            criteria.createCriteria("markers").add(Restrictions.eq("flag", true))
-                    .createAlias("markerType", "mt")
-                     .add(Restrictions.in("mt.id", markerTypeIds));
+            Join<T, Marker> markersJoin = root.join("markers");
+            predicates.add(cb.isTrue(markersJoin.get("flag")));
+            Join<Marker, MarkerType> mtJoin = markersJoin.join("markerType");
+            predicates.add(predicateIn(mtJoin, "id", markerTypeIds));
+
         } else if (markerTypes != null && markerTypes.isEmpty()){
-            //AT: added in case the projects requires an third state description, An empty Marker type set
+            //AT: added in case the projects require a third state description, An empty Marker type set
         }
+        return predicates;
     }
 
     @Override
@@ -245,29 +250,17 @@ public class DescriptionDaoImpl
             Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
         AuditEvent auditEvent = getAuditEventFromContext();
+        clazz = clazz == null? (Class)DescriptionElementBase.class : clazz;
+
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            clazz = clazz == null? (Class)DescriptionElementBase.class : clazz;
 
             CriteriaBuilder cb = getCriteriaBuilder();
             CriteriaQuery<T> cq = cb.createQuery(clazz);
             Root<T> root = cq.from(clazz);
-            List<Predicate> predicates = new ArrayList<>();
-            if(description != null) {
-                predicates.add(predicateEqual(cb, root, "inDescription", description));
-            }
-            if (!includeUnpublished) {
-                Join<T, DescriptionBase> descriptionJoin = root.join("inDescription", JoinType.INNER);
-                predicates.add(predicateBoolean(cb, descriptionJoin, "publish", true));
-            }
-            if(descriptionType != null) {
-                Join<T, DescriptionBase> join = root.join("inDescription", JoinType.INNER);
-                Join<T, ? extends DescriptionBase> treatJoin = cb.treat(join, descriptionType);
-                predicates.add(treatJoin.isNotNull());
-//                cb.equal(cb.typ .type(join), descriptionType);  //CriteriaBuilder.type() should exist in HibernateCriteriaBuilder since 5.2 but doesn't
-            }
-            if(!CdmUtils.isNullSafeEmpty(features)) {
-                predicates.add(predicateIn(root, "feature", features));
-            }
+
+
+            List<Predicate> predicates = makeListDescriptionElementsPredicates(description, descriptionType, features,
+                    includeUnpublished, cb, root);
 
             cq.select(root)
               .where(predicateAnd(cb, predicates));
@@ -283,12 +276,7 @@ public class DescriptionDaoImpl
             if(features != null && !features.isEmpty()) {
 
                 for(Feature f : features) {
-                    AuditQuery query = null;
-                    if(clazz == null) {
-                        query = getAuditReader().createQuery().forEntitiesAtRevision(DescriptionElementBase.class,auditEvent.getRevisionNumber());
-                    } else {
-                        query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
-                    }
+                    AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
 
                     if(description != null) {
                         query.add(AuditEntity.relatedId("inDescription").eq(description.getId()));
@@ -303,11 +291,7 @@ public class DescriptionDaoImpl
                 }
             } else {
                 AuditQuery query = null;
-                if(clazz == null) {
-                    query = getAuditReader().createQuery().forEntitiesAtRevision(DescriptionElementBase.class,auditEvent.getRevisionNumber());
-                } else {
-                    query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
-                }
+                query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
 
                 if(description != null) {
                     query.add(AuditEntity.relatedId("inDescription").eq(description.getId()));
@@ -325,47 +309,55 @@ public class DescriptionDaoImpl
         }
     }
 
+    private <T extends DescriptionElementBase> List<Predicate> makeListDescriptionElementsPredicates(
+            DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features,
+            boolean includeUnpublished, CriteriaBuilder cb, Root<T> root) {
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if(description != null) {
+            predicates.add(predicateEqual(cb, root, "inDescription", description));
+        }
+        if (!includeUnpublished) {
+            Join<T, DescriptionBase> descriptionJoin = root.join("inDescription", JoinType.INNER);
+            predicates.add(predicateBoolean(cb, descriptionJoin, "publish", true));
+        }
+        if(descriptionType != null) {
+            Join<T, DescriptionBase> join = root.join("inDescription", JoinType.INNER);
+            Join<T, ? extends DescriptionBase> treatJoin = cb.treat(join, descriptionType);
+            predicates.add(treatJoin.isNotNull());
+//                cb.equal(cb.typ .type(join), descriptionType);  //CriteriaBuilder.type() should exist in HibernateCriteriaBuilder since 5.2 but doesn't
+        }
+        if(!CdmUtils.isNullSafeEmpty(features)) {
+            predicates.add(predicateIn(root, "feature", features));
+        }
+        return predicates;
+    }
+
     @Override
-    public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes, Set<DescriptionType> descriptionTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes,
+            Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes,
+            Set<DescriptionType> descriptionTypes, Integer pageSize, Integer pageNumber,
+            List<String> propertyPaths) {
+
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(TaxonDescription.class);
 
-            if(taxon != null) {
-                criteria.add(Restrictions.eq("taxon", taxon));
-            }
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<TaxonDescription> cq = cb.createQuery(TaxonDescription.class);
+            Root<TaxonDescription> root = cq.from(TaxonDescription.class);
 
-            if(scopes != null && !scopes.isEmpty()) {
-                Set<Integer> scopeIds = new HashSet<Integer>();
-                for(DefinedTerm s : scopes) {
-                    scopeIds.add(s.getId());
-                }
-                criteria.createCriteria("scopes").add(Restrictions.in("id", scopeIds));
-            }
+            List<Predicate> predicates = makeTaxonDescriptionPredicates(taxon, scopes, geographicalScopes, markerTypes, descriptionTypes, cb, root);
 
-            if(geographicalScopes != null && !geographicalScopes.isEmpty()) {
-                Set<Integer> geoScopeIds = new HashSet<Integer>();
-                for(NamedArea n : geographicalScopes) {
-                    geoScopeIds.add(n.getId());
-                }
-                criteria.createCriteria("geoScopes").add(Restrictions.in("id", geoScopeIds));
-            }
+            cq.select(root)
+              .where(predicateAnd(cb, predicates));
 
-            addMarkerTypesCriterion(markerTypes, criteria);
-            addDescriptionTypesCriterion(descriptionTypes, criteria);
+            List<TaxonDescription> results = addPageSizeAndNumber(
+                    getSession().createQuery(cq), pageSize, pageNumber)
+                   .getResultList();
+           defaultBeanInitializer.initializeAll(results, propertyPaths);
+           return results;
 
-            if(pageSize != null) {
-                criteria.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    criteria.setFirstResult(pageNumber * pageSize);
-                }
-            }
-
-            List<TaxonDescription> results = criteria.list();
-
-            defaultBeanInitializer.initializeAll(results, propertyPaths);
-
-            return results;
         } else {
             if((scopes == null || scopes.isEmpty())&& (geographicalScopes == null || geographicalScopes.isEmpty())&& (markerTypes == null || markerTypes.isEmpty())) {
                 AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonDescription.class,auditEvent.getRevisionNumber());
@@ -392,27 +384,26 @@ public class DescriptionDaoImpl
     }
 
     @Override
-    public List<TaxonNameDescription> getTaxonNameDescriptions(TaxonName name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public List<TaxonNameDescription> getTaxonNameDescriptions(TaxonName name, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths) {
+
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(TaxonNameDescription.class);
 
-          if(name != null) {
-              criteria.add(Restrictions.eq("taxonName", name));
-          }
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<TaxonNameDescription> cq = cb.createQuery(TaxonNameDescription.class);
+            Root<TaxonNameDescription> root = cq.from(TaxonNameDescription.class);
 
-          if(pageSize != null) {
-              criteria.setMaxResults(pageSize);
-              if(pageNumber != null) {
-                  criteria.setFirstResult(pageNumber * pageSize);
-              }
-          }
+            List<Predicate> predicates = makeTaxonNameDescriptionPredicates(cb, root, name);
+            cq.select(root)
+              .where(predicateAnd(cb, predicates));
 
-          List<TaxonNameDescription> results = criteria.list();
+            List<TaxonNameDescription> results = addPageSizeAndNumber(
+                       getSession().createQuery(cq), pageSize, pageNumber)
+                      .getResultList();
+            defaultBeanInitializer.initializeAll(results, propertyPaths);
+            return results;
 
-          defaultBeanInitializer.initializeAll(results, propertyPaths);
-
-          return results;
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonNameDescription.class,auditEvent.getRevisionNumber());
 
@@ -433,19 +424,33 @@ public class DescriptionDaoImpl
         }
     }
 
+    private List<Predicate> makeTaxonNameDescriptionPredicates(CriteriaBuilder cb, Root<TaxonNameDescription> root,
+            TaxonName name) {
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(predicateEqual(cb, root, "taxonName", name));
+        return predicates;
+    }
+
     @Override
     public long countTaxonNameDescriptions(TaxonName name) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getCriteria(TaxonNameDescription.class);
 
-            if(name != null) {
-                criteria.add(Restrictions.eq("taxonName", name));
-            }
 
-            criteria.setProjection(Projections.rowCount());
+            checkNotInPriorView("AnnotationDaoImpl.count(Person commentator, MarkerType status)");
 
-            return (Long)criteria.uniqueResult();
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+            Root<TaxonNameDescription> root = cq.from(TaxonNameDescription.class);
+
+            List<Predicate> predicates = makeTaxonNameDescriptionPredicates(cb, root, name);
+
+            cq.select(cb.countDistinct(root.get("id")))
+              .where(predicateAnd(cb, predicates));
+
+            return getSession().createQuery(cq).getSingleResult();
+
         } else {
             AuditQuery query = makeAuditQuery(TaxonNameDescription.class,auditEvent);
 
