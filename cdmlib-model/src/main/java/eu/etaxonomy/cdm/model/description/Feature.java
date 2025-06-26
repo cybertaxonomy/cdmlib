@@ -208,6 +208,7 @@ public class Feature extends AvailableForTermBase<Feature> {
     public static final UUID uuidFloweringPeriod = UUID.fromString("03710cb5-606e-444a-a3e6-594268e3cc47");
     public static final UUID uuidFruitingPeriod = UUID.fromString("04aa8993-24b4-43e3-888c-5afaa733376e");
     public static final UUID uuidAltitude = UUID.fromString("1a28ed59-e15f-4001-b5c2-ea89f0012671");
+    public static final UUID uuidAcknowledgments = UUID.fromString("555a46bc-211a-476f-a022-c472970d6f8b");
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 
