@@ -180,7 +180,7 @@ public class Feature extends AvailableForTermBase<Feature> {
     private static final UUID uuidKey = UUID.fromString("a677f827-22b9-4205-bb37-11cb48dd9106");
     private static final UUID uuidMaterialsExamined = UUID.fromString("7c0c7571-a864-47c1-891d-01f59000dae1");
     private static final UUID uuidMaterialsMethods = UUID.fromString("1e87d9c3-0844-4a03-9686-773e2ccb3ab6");
-    private static final UUID uuidEtymology = UUID.fromString("dd653d48-355c-4aec-a4e7-724f6eb29f8d");
+    public static final UUID uuidEtymology = UUID.fromString("3b46f5f2-5619-4f1a-884f-d7a805471942");
     private static final UUID uuidDiagnosis = UUID.fromString("d43d8501-ceab-4caa-9e51-e87138528fac");
     private static final UUID uuidProtologue = UUID.fromString("71b356c5-1e3f-4f5d-9b0f-c2cf8ae7779f");
     public static final UUID uuidCommonName = UUID.fromString("fc810911-51f0-4a46-ab97-6562fe263ae5");
