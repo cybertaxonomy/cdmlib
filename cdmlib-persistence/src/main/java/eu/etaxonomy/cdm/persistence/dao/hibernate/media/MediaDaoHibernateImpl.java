@@ -54,7 +54,8 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 
 	@Override
     public long countMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes) {
-		AuditEvent auditEvent = getAuditEventFromContext();
+
+	    AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 
 
