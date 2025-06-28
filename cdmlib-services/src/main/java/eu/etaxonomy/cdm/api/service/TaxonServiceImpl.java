@@ -214,7 +214,7 @@ public class TaxonServiceImpl
     }
 
     @Override
-    public List<TaxonBase> searchByName(String name, boolean includeUnpublished, Reference sec) {
+    public List<? extends TaxonBase> searchByName(String name, boolean includeUnpublished, Reference sec) {
         return dao.getTaxaByName(name, includeUnpublished, sec);
     }
 
