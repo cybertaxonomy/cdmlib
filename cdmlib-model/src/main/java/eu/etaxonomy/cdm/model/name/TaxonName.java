@@ -2012,10 +2012,10 @@ public class TaxonName
     }
 
     /**
-     *
-     * @param direction
-     * @param type
-     * @return
+     * Returns the related names for a given (<code>this</code>) name,
+     * a given relationship type and given relationship direction.
+     * The {@link Direction} defines if <code>this</code> name
+     * is the source or the target in the relationship.
      */
     public Set<TaxonName> getRelatedNames(Direction direction, NameRelationshipType type) {
         return getRelatedNames(relationsWithThisName(direction), type);
@@ -2025,8 +2025,8 @@ public class TaxonName
         Set<TaxonName> result = new HashSet<>();
         for (NameRelationship rel : rels){
             if (rel.getType()!= null && rel.getType().isRelationshipType(type)){
-                TaxonName basionym = rel.getFromName();
-                result.add(basionym);
+                TaxonName relatedName = rel.getFromName();
+                result.add(relatedName);
             }
         }
         return result;

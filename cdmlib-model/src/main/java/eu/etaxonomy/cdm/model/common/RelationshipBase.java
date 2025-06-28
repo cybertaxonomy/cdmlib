@@ -66,8 +66,17 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
      */
     @XmlEnum
     public enum Direction {
+        /**
+         * This instance is the source in the relationship, the returned instance
+         * is the target.
+         */
         @XmlEnumValue("relatedFrom")
         relatedFrom,
+
+        /**
+         * This instance is the target in the relationship, the returned instance
+         * is the source.
+         */
         @XmlEnumValue("relatedTo")
         relatedTo;
 
