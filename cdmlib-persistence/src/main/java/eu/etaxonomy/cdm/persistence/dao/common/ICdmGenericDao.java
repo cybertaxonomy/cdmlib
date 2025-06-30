@@ -231,9 +231,10 @@ public interface ICdmGenericDao {
     public <T> List<T> getHqlResult(String hqlQuery, Class<T> clazz);
 
 	/**
-	 * TODO remove as this is Hibernate specific.
+	 * TODO remove as this is Hibernate specific. Or better use JPQL or JP Criteria which is at least
+	 *      common for all ORM implementations.
 	 * Returns a Query.
-	 * @deprecated this is not clean implemantation as it is hibernate related.
+	 * @deprecated this is not clean implementation as it is hibernate related.
 	 * Will be replaced in future
 	 * @param hqlQuery
 	 * @return
