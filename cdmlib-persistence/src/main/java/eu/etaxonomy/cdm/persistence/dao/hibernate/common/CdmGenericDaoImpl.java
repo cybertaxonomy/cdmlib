@@ -747,6 +747,8 @@ public class CdmGenericDaoImpl
 			List<T> result = new ArrayList<>();
 			if(objectToMatch == null){
 				return result;
+			}else {
+			    objectToMatch = CdmBase.deproxy(objectToMatch);
 			}
 			if (matchStrategy == null){
 				matchStrategy = DefaultMatchStrategy.NewInstance(objectToMatch.getClass());
