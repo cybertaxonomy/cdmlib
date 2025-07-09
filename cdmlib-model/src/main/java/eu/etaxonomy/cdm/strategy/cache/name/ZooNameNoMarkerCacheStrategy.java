@@ -29,6 +29,7 @@ public class ZooNameNoMarkerCacheStrategy
     private static final Logger logger = LogManager.getLogger();
 
 	final static UUID uuid = UUID.fromString("8ffa5f04-0303-4875-be44-dac5ff95b874");
+
 	@Override
 	public UUID getUuid(){return uuid;}
 
@@ -52,7 +53,8 @@ public class ZooNameNoMarkerCacheStrategy
 	@Override
 	protected void addInfraGenericPart(INonViralName name, List<TaggedText> tags, String infraGenericMarker,
 	        String infraGenEpi) {
-		//add epitheton
+
+	    //add epitheton
 		if (isNotBlank(infraGenEpi)){
 	        tags.add(new TaggedText(TagEnum.name, "(" + infraGenEpi + ")"));
         }
