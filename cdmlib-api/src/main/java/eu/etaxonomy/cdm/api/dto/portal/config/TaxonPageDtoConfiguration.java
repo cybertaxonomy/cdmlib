@@ -51,7 +51,7 @@ public class TaxonPageDtoConfiguration implements ISourceableLoaderConfiguration
 
     private boolean includeUnpublished = false;
 
-    private EnumSet<TaxonOccurrenceRelationType> specimenAssociationFilter;
+    private EnumSet<TaxonOccurrenceRelationType> specimenAssociationFilter = TaxonOccurrenceRelationType.All();
 
     private Set<UUID> annotationTypes = defaultAnnotationTypes();
     private Set<UUID> markerTypes = new HashSet<>();

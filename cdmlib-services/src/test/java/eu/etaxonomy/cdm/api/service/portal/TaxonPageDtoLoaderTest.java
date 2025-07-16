@@ -248,6 +248,50 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
+    public void testEmptyFeatureTree() {
+
+        //create test data
+        createTestData();
+        commitAndStartNewTransaction();
+
+        //test
+        testEmptyFeatureTreeFacts(false);
+        testEmptyFeatureTreeFacts(true);
+    }
+
+    private UUID uuidTermTree = UUID.fromString("53061e5e-50d9-4805-abb1-4d0c56afb08c");
+    private void testEmptyFeatureTreeFacts(boolean isDto) {
+
+        //show that no taxon tree returns some facts
+        TaxonPageDtoConfiguration config = new TaxonPageDtoConfiguration();
+        config.setTaxonUuid(taxonUuid);
+        config.setUseDtoLoading(isDto);
+        TaxonPageDto dto = portalService.taxonPageDto(config);
+        Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
+        ContainerDto<FeatureDto> features = dto.getTaxonFacts();
+        Assert.assertEquals("There should be 9 features, distribution and description and common names",
+                9, features.getCount());
+
+
+        //test with feature tree, that has only features that do not exist in taxon
+        TermTree<Feature> termTree = this.termTreeService.load(uuidTermTree);
+        if (termTree == null) {
+            termTree = TermTree.NewFeatureInstance(Feature.uuidLifeform);
+            termTree.setUuid(uuidTermTree);
+            this.termTreeService.save(termTree);
+        }
+        config.setFeatureTree(termTree.getUuid());
+        dto = portalService.taxonPageDto(config);
+        Assert.assertTrue("There should be no warnings", CdmUtils.isNullSafeEmpty(dto.getMessages()));
+        features = dto.getTaxonFacts();
+        Assert.assertNull(features);
+    }
+
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    })
     public void testFacts() {
 
         //create test data

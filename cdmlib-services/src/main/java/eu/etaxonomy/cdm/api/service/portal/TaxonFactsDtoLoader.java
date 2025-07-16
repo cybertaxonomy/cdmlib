@@ -172,6 +172,9 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
                 TermTree<Feature> featureTree = repository.getTermTreeService().find(config.getFeatureTree());
                 if (featureTree != null) {
                     filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids);
+                    if (filteredRootNode == null) {
+                        filteredRootNode = new TreeNode<>();
+                    }
                 }
             }
             if (filteredRootNode == null) {
