@@ -68,7 +68,7 @@ public class DbExportIgnoreMapper
         if (StringUtils.isNotBlank(ignoreReason)){
             localReason = " (" + ignoreReason +")";
         }
-        logger.warn(attributeName + " ignored" +  localReason + ".");
+        logger.info(attributeName + " ignored" +  localReason + ".");
     }
 
     @Override

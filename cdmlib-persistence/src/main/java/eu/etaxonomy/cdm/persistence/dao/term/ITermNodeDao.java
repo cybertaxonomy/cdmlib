@@ -20,8 +20,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 public interface ITermNodeDao extends IVersionableDao<TermNode> {
 
-	public List<TermNode> list();
-
     /**
      * Loads a list of term nodes depending on the term type including included term types
      * @param termType the term type
@@ -30,12 +28,5 @@ public interface ITermNodeDao extends IVersionableDao<TermNode> {
     public List<TermNode> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints,
             List<String> propertyPaths);
 
-    /**
-     * @param limit
-     * @param pattern
-     * @return
-     */
-    List<UuidAndTitleCache<TermNode>> getUuidAndTitleCache(Integer limit, String pattern);
-
-
+    public List<UuidAndTitleCache<TermNode>> getUuidAndTitleCache(Integer limit, String pattern);
 }

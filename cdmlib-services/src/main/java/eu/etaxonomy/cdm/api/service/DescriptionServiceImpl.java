@@ -238,7 +238,7 @@ public class DescriptionServiceImpl
         long numberOfResults = dao.countDescriptionElements(description, descriptionType, features, type, includeUnpublished);
         List<T> results = new ArrayList<>();
         if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) {
-            results = dao.getDescriptionElements(description, descriptionType, features, type, includeUnpublished, pageSize, pageNumber, propertyPaths);
+            results = dao.listDescriptionElements(description, descriptionType, features, type, includeUnpublished, pageSize, pageNumber, propertyPaths);
         }
         return results;
     }
@@ -908,7 +908,7 @@ public class DescriptionServiceImpl
             Set<UUID> descriptionElementUUIDs,
             DescriptionBase targetDescription,
             boolean isCopy, boolean setNameInSource) {
-        Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+        Set<DescriptionElementBase> descriptionElements = new HashSet<>();
         for(UUID deUuid : descriptionElementUUIDs) {
             DescriptionElementBase element = descriptionElementDao.load(deUuid);
             if (element != null){
@@ -959,17 +959,19 @@ public class DescriptionServiceImpl
         }
         if (targetDescription == null) {
             targetDescription = TaxonDescription.NewInstance(targetTaxon);
+            targetDescription.setTitleCache(moveMessage, true);
         }
         if (!targetTaxon.hasDefaultDescription()) {
             targetDescription.setDefault(true);
         }
-        targetDescription.setTitleCache(moveMessage, true);
+
+
         Annotation annotation = Annotation.NewInstance(moveMessage, Language.getDefaultLanguage());
         annotation.setAnnotationType(AnnotationType.INTERNAL());
         targetDescription.addAnnotation(annotation);
 
         targetDescription = dao.save(targetDescription);
-        Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+        Set<DescriptionElementBase> descriptionElements = new HashSet<>();
         for(UUID deUuid : descriptionElementUUIDs) {
             DescriptionElementBase descEl = descriptionElementDao.load(deUuid);
             descriptionElements.add(descEl);
@@ -1141,7 +1143,7 @@ public class DescriptionServiceImpl
             Set<UUID> descriptionElementUUIDs,
             UUID targetDescriptionUuid,
             boolean isCopy, boolean setNameInSource) {
-        Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+        Set<DescriptionElementBase> descriptionElements = new HashSet<>();
         for(UUID deUuid : descriptionElementUUIDs) {
             DescriptionElementBase element = descriptionElementDao.load(deUuid);
             if (element != null){

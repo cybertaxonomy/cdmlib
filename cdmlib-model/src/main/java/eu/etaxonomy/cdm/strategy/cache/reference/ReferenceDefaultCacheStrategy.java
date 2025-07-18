@@ -76,12 +76,21 @@ public class ReferenceDefaultCacheStrategy
 
     private static final boolean trim = true;
 
+
     private final NomenclaturalSourceFormatter nomSourceFormatter = NomenclaturalSourceFormatter.INSTANCE();
+    //#10472
+    private boolean withHtml = false;
 
 // ************************ FACTORY ****************************/
 
     public static ReferenceDefaultCacheStrategy NewInstance(){
         return new ReferenceDefaultCacheStrategy();
+    }
+
+    public static ReferenceDefaultCacheStrategy NewInstance(boolean withHtml){
+        ReferenceDefaultCacheStrategy cacheStrategy = new ReferenceDefaultCacheStrategy();
+        cacheStrategy.withHtml = withHtml;
+        return cacheStrategy;
     }
 
 // ******************************* Main methods ******************************/
@@ -141,9 +150,17 @@ public class ReferenceDefaultCacheStrategy
         }
         if (reference.getType().hasUri() && reference.getUri() != null && !result.contains(reference.getUri().toString())){
             if (reference.getType() == ReferenceType.Database) {
-                result = CdmUtils.concat(". Published at ", result, reference.getUri().toString());
+                if (withHtml) {
+                    result = CdmUtils.concat(". Published at ", result, "<a href=\""+reference.getUri().toString()+"\">"+ reference.getUri().toString() + "</a>");
+                }else {
+                    result = CdmUtils.concat(". Published at ", result, reference.getUri().toString());
+                }
             } else {
-                result = CdmUtils.concat(webpageUriSeparator, result, reference.getUri().toString());
+                if (withHtml) {
+                    result = CdmUtils.concat(webpageUriSeparator, result, "<a href=\""+reference.getUri().toString()+"\">"+ reference.getUri().toString() + "</a>");
+                }else {
+                    result = CdmUtils.concat(webpageUriSeparator, result, reference.getUri().toString());
+                }
             }
         }
         if(reference.getAccessed() != null){

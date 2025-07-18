@@ -179,7 +179,7 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
     private void prepareBeanWildcardForBulkLoad(BeanInitNode node, Object bean){
 
         if(logger.isTraceEnabled()){logger.trace(">> prepare bulk wildcard initialization of a bean of type " + bean.getClass().getSimpleName()); }
-        Set<Class<?>> restrictions = new HashSet<Class<?>>();
+        Set<Class<?>> restrictions = new HashSet<>();
         restrictions.add(CdmBase.class);
         if(node.isToManyWildcard()){
             restrictions.add(Collection.class);
@@ -426,7 +426,6 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
 	        }
 	    }
     }
-
 
 	/**
 	 * Load all beans which are added to the node

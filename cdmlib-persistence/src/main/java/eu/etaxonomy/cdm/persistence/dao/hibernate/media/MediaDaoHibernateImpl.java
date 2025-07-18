@@ -21,6 +21,7 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -52,21 +53,24 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 	}
 
 	@Override
-    public long countMediaKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes) {
-		AuditEvent auditEvent = getAuditEventFromContext();
-		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Criteria criteria = getCriteria(MediaKey.class);
+    public long countMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes) {
 
-			if(taxonomicScope != null && !taxonomicScope.isEmpty()) {
-				Set<Integer> taxonomicScopeIds = new HashSet<Integer>();
+	    AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+
+
+		    Criteria criteria = getCriteria(MediaKey.class);
+
+			if(!CdmUtils.isNullSafeEmpty(taxonomicScope)) {
+				Set<Integer> taxonomicScopeIds = new HashSet<>();
 				for(Taxon n : taxonomicScope) {
 					taxonomicScopeIds.add(n.getId());
 				}
 				criteria.createCriteria("taxonomicScope").add(Restrictions.in("id", taxonomicScopeIds));
 			}
 
-			if(geoScopes != null && !geoScopes.isEmpty()) {
-				Set<Integer> geoScopeIds = new HashSet<Integer>();
+			if(!CdmUtils.isNullSafeEmpty(geoScopes)) {
+				Set<Integer> geoScopeIds = new HashSet<>();
 				for(NamedArea n : geoScopes) {
 					geoScopeIds.add(n.getId());
 				}
@@ -89,7 +93,8 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 
 	@Override
     public List<MediaKey> getMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-		AuditEvent auditEvent = getAuditEventFromContext();
+
+	    AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria inner = getSession().createCriteria(MediaKey.class);
 

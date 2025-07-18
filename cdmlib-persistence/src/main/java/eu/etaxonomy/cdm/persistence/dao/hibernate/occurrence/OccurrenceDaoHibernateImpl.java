@@ -202,6 +202,7 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence,
             TaxonBase taxonBase, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getSession().createCriteria(DeterminationEvent.class);
@@ -210,7 +211,7 @@ public class OccurrenceDaoHibernateImpl
             }
 
             if(taxonBase != null) {
-                criteria.add(Restrictions.eq("taxon",taxonBase));
+                criteria.add(Restrictions.eq("taxon", taxonBase));
             }
 
             addPageSizeAndNumber(criteria, pageSize, pageNumber);

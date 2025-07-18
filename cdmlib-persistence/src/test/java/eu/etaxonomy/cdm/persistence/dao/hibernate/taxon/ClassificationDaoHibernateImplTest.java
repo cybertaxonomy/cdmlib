@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -337,6 +338,27 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
         ClassificationLookupDTO classificationLookupDto = classificationDao.classificationLookup(classification);
         assertEquals(4, classificationLookupDto.getTaxonIds().size());
     }
+
+    @Test
+    @DataSet(value="ClassificationDaoHibernateImplTest.listRankSpecificRootNodes.xml")
+    public void testExistsInClassification() {
+
+        UUID uuidClassification = FLAT_CLASSIFICATION_UUID;
+        UUID uuidTaxon = UUID.fromString("dd4e8be8-1098-4a79-be43-4d82e5abd31c");  //root taxon
+
+//        Classification classification = classificationDao.load(FLAT_CLASSIFICATION_UUID);
+        boolean exists = classificationDao.existsTaxonInClassification(uuidClassification, uuidTaxon);
+        Assert.assertTrue("Root taxon should exist in flat classification", exists);
+
+        UUID anyUuid = UUID.fromString("fd485ddd-3b75-4cb2-a98e-472d09a730fb");
+        exists = classificationDao.existsTaxonInClassification(uuidClassification, anyUuid);
+        Assert.assertFalse("Abitrary uuid should not exist in flat classification", exists);
+
+        exists = classificationDao.existsTaxonInClassification(anyUuid, uuidTaxon);
+        Assert.assertFalse("Abitrary uuid should not exist in flat classification", exists);
+
+    }
+
 
 
     /**

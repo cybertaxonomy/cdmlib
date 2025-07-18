@@ -86,7 +86,8 @@ public class IdIncMapper
     private Integer computeStartValue() {
         String sql = "SELECT max("+this.getDestinationAttribute()+") FROM " + this.getTableName();
         Source destination = this.getState().getConfig().getDestination();
-        return destination.getUniqueInteger(sql) + 1;
+        Integer max = destination.getUniqueInteger(sql);
+        return max == null ? 1 : max + 1;
     }
 
     @Override

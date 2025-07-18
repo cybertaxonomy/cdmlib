@@ -11,13 +11,14 @@ package eu.etaxonomy.cdm.database;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
@@ -36,13 +37,22 @@ public class TestingTermVocabularyDao {
     @Autowired
     private SessionFactory factory;
 
+
     protected TermVocabulary<?> findByUuid(UUID uuid) throws DataAccessException{
-        Session session = getSession();
-        Criteria crit = session.createCriteria(TermVocabulary.class);
-        crit.add(Restrictions.eq("uuid", uuid));
-        crit.addOrder(Order.desc("created"));
-        @SuppressWarnings("unchecked")
-        List<TermVocabulary<?>> results = crit.list();
+
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+
+        @SuppressWarnings({"rawtypes"})
+        CriteriaQuery<TermVocabulary> cq = cb.createQuery(TermVocabulary.class);
+        @SuppressWarnings({"rawtypes" })
+        Root<TermVocabulary> voc = cq.from(TermVocabulary.class);
+        cq.select(voc)
+          .where(cb.equal(voc.get("uuid"), uuid))
+          .orderBy(cb.desc(voc.get("created")));
+
+        @SuppressWarnings("rawtypes")
+        List<TermVocabulary> results = getSession().createQuery(cq).getResultList();
+
         if (results.isEmpty()){
             return null;
         }else{

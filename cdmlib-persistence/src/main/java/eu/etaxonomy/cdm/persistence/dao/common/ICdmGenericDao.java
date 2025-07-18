@@ -42,7 +42,7 @@ public interface ICdmGenericDao {
 
 	public void saveMetaData(CdmMetaData cdmMetaData);
 
-	public List<CdmMetaData> getMetaData();
+	public List<CdmMetaData> listCdmMetaData();
 
 	/**
 	 * Returns a CdmBase object of class <code>clazz</code> that has a property with name
@@ -74,8 +74,8 @@ public interface ICdmGenericDao {
 	 * (via e.g. hibernate.cfg.xml)
 	 * <BR>
 	 * @param includeAbstractClasses if <code>false</code> the abstract classes
-	 * will not be in the result set.
-	 * @return
+	 *                               will not be in the result set.
+	 * @return the persisted classes
 	 */
 	public Set<Class<? extends CdmBase>> getAllPersistedClasses(boolean includeAbstractClasses);
 
@@ -231,9 +231,10 @@ public interface ICdmGenericDao {
     public <T> List<T> getHqlResult(String hqlQuery, Class<T> clazz);
 
 	/**
-	 * TODO remove as this is Hibernate specific.
+	 * TODO remove as this is Hibernate specific. Or better use JPQL or JP Criteria which is at least
+	 *      common for all ORM implementations.
 	 * Returns a Query.
-	 * @deprecated this is not clean implemantation as it is hibernate related.
+	 * @deprecated this is not clean implementation as it is hibernate related.
 	 * Will be replaced in future
 	 * @param hqlQuery
 	 * @return
@@ -282,25 +283,27 @@ public interface ICdmGenericDao {
      * @param appendedPropertyPaths
      * @return
      */
-    public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> appendedPropertyPaths);
+    public <T extends CdmBase> Object initializeCollection(Class<T> clazz, UUID ownerUuid, String fieldName, List<String> appendedPropertyPaths);
 
     /**
      * Initializes a collection or map.
      *
+     * @param clazz the owner's class
      * @param ownerUuid uuid of owner cdm entity
      * @param fieldName field name of collection or map
      * @return initialised collection or map
      */
-    public Object initializeCollection(UUID ownerUuid, String fieldName);
+    public <T extends CdmBase> Object initializeCollection(Class<T> clazz, UUID ownerUuid, String fieldName);
 
     /**
      * Checks if a collection or map is empty.
      *
+     * @param clazz the owner's class
      * @param ownerUuid uuid of owner cdm entity
      * @param fieldName field name of collection or map
      * @return true if the collection of map is empty, else false
      */
-    public boolean isEmpty(UUID ownerUuid, String fieldName);
+    public <T extends CdmBase> boolean isEmpty(Class<T> clazz, UUID ownerUuid, String fieldName);
 
     /**
      * Returns the size of requested collection or map.
@@ -309,7 +312,7 @@ public interface ICdmGenericDao {
      * @param fieldName field name of collection or map
      * @return the size of the persistent collection
      */
-    public int size(UUID ownerUuid, String fieldName);
+    public <T extends CdmBase> int size(Class<T> clazz, UUID ownerUuid, String fieldName);
 
     /**
      * Returns the object contained in a collection or map at the given index.
@@ -319,7 +322,7 @@ public interface ICdmGenericDao {
      * @param index the index of the requested element
      * @return the object at the requested index
      */
-    public Object get(UUID ownerUuid, String fieldName, int index);
+    public <T extends CdmBase> Object get(Class<T> clazz, UUID ownerUuid, String fieldName, int index);
 
     /**
      * Checks whether an object is contained within a persistent collection.
@@ -329,7 +332,7 @@ public interface ICdmGenericDao {
      * @param element the element to check for
      * @return true if the element exists in the collection, false o/w
      */
-    public boolean contains(UUID ownerUuid, String fieldName, Object element);
+    public <T extends CdmBase> boolean contains(Class<T> clazz, UUID ownerUuid, String fieldName, Object element);
 
     /**
      * Checks whether an index object exists within a persistent collection
@@ -340,7 +343,7 @@ public interface ICdmGenericDao {
      * @param key the index object to look for.
      * @return true if the index object exists in the collection, false o/w
      */
-    public boolean containsKey(UUID ownerUuid, String fieldName, Object key);
+    public <T extends CdmBase> boolean containsKey(Class<T> clazz, UUID ownerUuid, String fieldName, Object key);
 
     /**
      * checks whether an value object exists within a persistent collection
@@ -351,7 +354,7 @@ public interface ICdmGenericDao {
      * @param key the value object to look for.
      * @return true if the value object exists in the collection, false o/w
      */
-    public boolean containsValue(UUID ownerUuid, String fieldName, Object element);
+    public <T extends CdmBase> boolean containsValue(Class<T> clazz, UUID ownerUuid, String fieldName, Object element);
 
     public long getCountWithItemInCollection(Class<?> itemClass, Class<?> clazz, String propertyName, CdmBase item);
 

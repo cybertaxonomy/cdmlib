@@ -210,14 +210,14 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet("AgentDaoImplTest.testExists.xml")
     public void testCountPeople() {
-        Assert.assertEquals("There should be four agents in the current view",4, agentDao.count(Person.class));
+        Assert.assertEquals("There should be four agents in the current view", 4, agentDao.count(Person.class));
     }
 
     @Test
     @DataSet("AgentDaoImplTest.testExists.xml")
     public void testCountPeopleInPreviousView() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
-        Assert.assertEquals("There should be five agents in the previous view",5, agentDao.count(Person.class));
+        Assert.assertEquals("There should be five agents in the previous view", 5, agentDao.count(Person.class));
     }
 
     @Test
@@ -225,7 +225,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     public void testListPeople() {
         List<Person> result = agentDao.list(Person.class, null, null);
         Assert.assertNotNull("list() should return a list",result);
-        Assert.assertEquals("list() should return four agents in the current view", result.size(),4);
+        Assert.assertEquals("list() should return four agents in the current view", 4, result.size());
     }
 
     @Test

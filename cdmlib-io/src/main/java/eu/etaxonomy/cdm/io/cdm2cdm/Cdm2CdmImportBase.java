@@ -72,6 +72,7 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -139,6 +140,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.AvailableForIdentifiableBase;
 import eu.etaxonomy.cdm.model.term.AvailableForTermBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -365,6 +367,8 @@ public abstract class Cdm2CdmImportBase
             return handlePersistedState((State)cdmBase, state);
         }else if(cdmBase instanceof PresenceAbsenceTerm){
             return handlePersistedPresenceAbsenceTerm((PresenceAbsenceTerm)cdmBase, state);
+        }else if(cdmBase instanceof TaxonRelationshipType){
+            return handlePersistedTaxonRelationshipType((TaxonRelationshipType)cdmBase, state);
         }else if(cdmBase instanceof DefinedTermBase){
             return handlePersistedTerm((DefinedTermBase<?>)cdmBase, state);
         }else if(cdmBase instanceof ExternalLink){
@@ -942,6 +946,12 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
+    protected TaxonRelationshipType handlePersistedTaxonRelationshipType(TaxonRelationshipType term, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        TaxonRelationshipType result = handlePersisted(term, state);
+        //complete
+        return result;
+    }
+
     protected NomenclaturalStatusType handlePersistedNomenclaturalStatusType(NomenclaturalStatusType term, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         NomenclaturalStatusType result = handlePersisted((DefinedTermBase)term, state);
         //complete
@@ -1190,6 +1200,15 @@ public abstract class Cdm2CdmImportBase
         result.setPartOf(detach(result.getPartOf(), state));
         setInvisible(result, DefinedTermBase.class, "vocabulary", detach(result.getVocabulary(), state));
 
+        return result;
+    }
+
+    protected <T extends RelationshipTermBase> T handlePersisted(
+            @SuppressWarnings("rawtypes") RelationshipTermBase relTerm, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+
+        T result = handlePersisted((DefinedTermBase)relTerm, state);
+        handleCollection(result, RelationshipTermBase.class, "inverseRepresentations", Representation.class, state);
+        //complete
         return result;
     }
 

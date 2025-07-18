@@ -28,6 +28,10 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * Base class for all DAOs intended for persisting instances of a certain CdmBase subclass.
+ * Methods in this DAO are typified already, so passing the class parameter is
+ * usually not (in contrary to the more generic interface {@link ICdmGenericDao}.
+ * Only if a subclass filter is needed during data retrieval, passing a class
+ * parameter is still needed.
  *
  * @param <T> The CdmBase subclass type.
  *

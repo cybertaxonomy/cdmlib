@@ -65,7 +65,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
     private ITypeDesignationDao typeDesignationDao;
 
     @SpringBeanByType
-    private IEventBaseService eventService;
+    private ICommonService commonService;
 
     @SpringBeanByType
     private ISingleReadDao singleReadDao;
@@ -95,26 +95,26 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
 
         //check initial state
         assertEquals(assertMessage, 6, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 4, eventService.count(DerivationEvent.class));
+        assertEquals(assertMessage, 4, commonService.count(DerivationEvent.class));
         assertEquals(assertMessage, 2, occurrenceService.count(FieldUnit.class));
         assertEquals(assertMessage, 4, occurrenceService.count(DerivedUnit.class));
         assertEquals(assertMessage, 2, occurrenceService.count(DnaSample.class));
         assertEquals("incorrect number of amplification results", 1, dnaSample.getAmplificationResults().size());
         assertEquals("number of sequences incorrect", 1, dnaSample.getSequences().size());
         assertEquals("incorrect number of single reads", 1, dnaSample.getAmplificationResults().iterator().next().getSingleReads().size());
-        assertEquals("incorrect number of gathering events", 1, eventService.count(GatheringEvent.class));
+        assertEquals("incorrect number of gathering events", 1, commonService.count(GatheringEvent.class));
         //delete field unit
         deleteResult = occurrenceService.delete(fieldUnit, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 2, eventService.count(DerivationEvent.class));
+        assertEquals(assertMessage, 2, commonService.count(DerivationEvent.class));
         assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
         assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));
         assertEquals(assertMessage, 1, occurrenceService.count(DnaSample.class));
-        assertEquals("incorrect number of gathering events", 1, eventService.count(GatheringEvent.class));
+        assertEquals("incorrect number of gathering events", 1, commonService.count(GatheringEvent.class));
 
         deleteResult = occurrenceService.delete(fieldUnit2, config);
-        assertEquals(assertMessage, 0, eventService.count(GatheringEvent.class));
+        assertEquals(assertMessage, 0, commonService.count(GatheringEvent.class));
     }
 
     @Test
@@ -140,7 +140,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         Long oldCount= typeDesignations.getCount();
         //check initial state
         assertEquals(assertMessage, 6, occurrenceService.count(SpecimenOrObservationBase.class));
-        assertEquals(assertMessage, 4, eventService.count(DerivationEvent.class));
+        assertEquals(assertMessage, 4, commonService.count(DerivationEvent.class));
         assertEquals(assertMessage, 2, occurrenceService.count(FieldUnit.class));
         assertEquals(assertMessage, 4, occurrenceService.count(DerivedUnit.class));
         assertEquals(assertMessage, 2, occurrenceService.count(DnaSample.class));
@@ -151,7 +151,7 @@ public class OccurrenceServiceDeepDeleteTest extends CdmTransactionalIntegration
         //delete field unit
         deleteResult = occurrenceService.delete(fieldUnit, config);
         assertTrue(deleteResult.toString(), deleteResult.isOk());
-        assertEquals(assertMessage, 2, eventService.count(DerivationEvent.class));
+        assertEquals(assertMessage, 2, commonService.count(DerivationEvent.class));
         assertEquals(assertMessage, 3, occurrenceService.count(SpecimenOrObservationBase.class));
         assertEquals(assertMessage, 1, occurrenceService.count(FieldUnit.class));
         assertEquals(assertMessage, 2, occurrenceService.count(DerivedUnit.class));

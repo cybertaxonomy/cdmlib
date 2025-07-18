@@ -419,12 +419,15 @@ public class ReferencingObjectFormatter {
     }
 
     private static String getCache(TaxonNode taxonNode) {
-        String result = "";
+
+        //taxon name
+        String taxonStr = null;
         Taxon taxon = taxonNode.getTaxon();
         if (taxon != null){
-            result = taxon.getName() != null ? taxon.getName().getTitleCache() : taxon.getTitleCache();
+            taxonStr = taxon.getName() != null ? taxon.getName().getTitleCache() : taxon.getTitleCache();
         }
 
+        //parent
         final String invisible = "Invisible root of ";
         String parentStr;
         TaxonNode parentNode = taxonNode.getParent();
@@ -457,7 +460,7 @@ public class ReferencingObjectFormatter {
             classificationStr = "-no classification-"; //should not happen
         }
 
-        result = CdmUtils.concat("", parentStr, classificationStr, parentStr == invisible? "" : ")");
+        String result = CdmUtils.concat("", taxonStr, parentStr, classificationStr, parentStr == invisible? "" : ")");
 
         return result;
     }

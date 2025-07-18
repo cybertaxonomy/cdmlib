@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.ObjectDeletedException;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.model.permission.User;
@@ -46,6 +49,9 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     private IUserDao userDao;
 
     private IGrantedAuthorityDao grantedAuthorityDao;
+
+    @Autowired
+    private ICommonService commonService;
 
     @Override
     public List<String> findAllGroups() {
@@ -83,10 +89,9 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
 
         Group group = dao.findByUuid(UUID.fromString(groupUUID));
         Iterator<User> it = group.getMembers().iterator();
-        group.getMembers().clear();
-//        while (it.hasNext()){
-//            it.remove();
-//        }
+        while (it.hasNext()){
+            group.removeMember(it.next());
+        }
         dao.delete(group);
     }
 
@@ -229,15 +234,49 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     @Override
     @Transactional(readOnly=false)
     public DeleteResult delete(UUID groupUUID ){
-
+       DeleteResult result = isDeletable(groupUUID);
+       if (result.isAbort()) {
+           return result;
+       }
        String groupUUIDString = groupUUID.toString();
        Group group = dao.findByUuid(groupUUID);
        //org.springframework.security.provisioning.GroupManager#deleteGroup needs a string argument
        this.deleteGroup(groupUUIDString);
-       DeleteResult result = new DeleteResult();
+       result = new DeleteResult();
        result.addDeletedObject(group);
         //there is no feedback from the deleteGroup method...
         return result;
+    }
+
+    @Override
+    @Transactional(readOnly=false)
+    public DeleteResult isDeletable(UUID groupUUID ){
+        DeleteResult result = new DeleteResult();
+        Group base = this.find(groupUUID);
+        if (base == null){
+            result.setAbort();
+            result.addException(new ObjectDeletedException("The object was already deleted.", base, null));
+        }
+        Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(base);
+        if (references != null){
+            result.addRelatedObjects(references);
+            Iterator<CdmBase> iterator = references.iterator();
+            CdmBase ref;
+            while (iterator.hasNext()){
+                ref = iterator.next();
+                if (ref instanceof User) {
+                    result.setError();
+                    result.addRelatedObject(ref);
+                }else {
+                    String message = "An object of " + ref.getClass().getName() + " with ID " + ref.getId() + " is referencing the object" ;
+                    result.addException(new ReferencedObjectUndeletableException(message));
+                    result.setAbort();
+                }
+
+            }
+        }
+        return result;
+
     }
 
     @Override

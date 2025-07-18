@@ -15,9 +15,11 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * This class retrieves or creates an existing or a new feature and adds it to
@@ -79,6 +81,8 @@ public class DbImportFeatureCreationMapper<STATE extends DbImportStateBase<?,?>>
 		String labelAbbrev = this.getStringDbValue(rs, dbLabelAbbrevAttribute);
 		if (term != null || label != null || labelAbbrev != null){
 			Feature feature = Feature.NewInstance(term, label, labelAbbrev);
+			TermVocabulary voc = getState().getCurrentIO().getVocabularyService().find(CdmImportBase.uuidUserDefinedFeatureVocabulary);
+			voc.addTerm(feature);
 			return feature;
 		}else{
 			return null;

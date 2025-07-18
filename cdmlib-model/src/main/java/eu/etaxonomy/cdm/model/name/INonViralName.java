@@ -319,6 +319,13 @@ public interface INonViralName extends ITaxonNameBase{
    @Transient
    public boolean isAutonym();
 
+   /**
+     * @param forAllCodes
+     * @return
+     */
+   @Transient
+   public boolean isAutonym(boolean forAllCodes);
+
 
    /**
     * Returns the boolean value of the flag indicating whether the name of <i>this</i>

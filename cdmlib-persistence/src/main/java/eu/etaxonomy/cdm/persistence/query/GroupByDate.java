@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.query;
 
@@ -24,14 +24,14 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
  * @author ben.clark
  */
 public class GroupByDate extends Grouping {
-	
+
 	private Resolution resolution;
-	
+
 	public GroupByDate(String propertyPath,String name, SortOrder order,Resolution resolution) {
 		super(propertyPath, name, null, order);
 		this.resolution = resolution;
 	}
-	
+
 	@Override
 	public void addProjection(ProjectionList projectionList) {
 		if(resolution.equals(Resolution.YEAR)) {
@@ -48,8 +48,9 @@ public class GroupByDate extends Grouping {
 			projectionList.add(Projections.sqlGroupProjection(selectSqlString.toString(), projectSqlString.toString(), new String[] {"year","month", "day"}, new Type[] { IntegerType.INSTANCE, IntegerType.INSTANCE, IntegerType.INSTANCE }),name);
 		}
 	}
-	
-	public void addOrder(Criteria criteria) {
+
+	@Override
+    public void addOrder(Criteria criteria) {
 		if(getOrder() != null) {
 			if(getOrder().equals(SortOrder.ASCENDING)) {
 				if(resolution.equals(Resolution.YEAR)) {
@@ -76,7 +77,7 @@ public class GroupByDate extends Grouping {
 			}
 		}
 	}
-	
+
 	//"year({alias}.property) as year"
 	private StringBuffer getYearSelect() {
 		StringBuffer stringBuffer = new StringBuffer();
@@ -85,7 +86,7 @@ public class GroupByDate extends Grouping {
 		stringBuffer.append(") as year");
 		return stringBuffer;
 	}
-	
+
 	private StringBuffer getYearMonthSelect() {
 		StringBuffer stringBuffer = getYearSelect();
 		stringBuffer.append(", month({alias}.");
@@ -93,7 +94,7 @@ public class GroupByDate extends Grouping {
 		stringBuffer.append(") as month");
 		return stringBuffer;
 	}
-	
+
 	private StringBuffer getYearMonthDaySelect() {
 		StringBuffer stringBuffer = getYearProjection();
 		stringBuffer.append(", day(");
@@ -114,7 +115,7 @@ public class GroupByDate extends Grouping {
 		stringBuffer.append(")");
 		return stringBuffer;
 	}
-	
+
 	private StringBuffer getYearMonthProjection() {
 		StringBuffer stringBuffer = getYearProjection();
 		stringBuffer.append(", month({alias}.");
@@ -122,7 +123,7 @@ public class GroupByDate extends Grouping {
 		stringBuffer.append(")");
 		return stringBuffer;
 	}
-	
+
 	private StringBuffer getYearMonthDayProjection() {
 		StringBuffer stringBuffer = getYearProjection();
 		stringBuffer.append(", day(");
@@ -134,33 +135,34 @@ public class GroupByDate extends Grouping {
 		stringBuffer.append(")");
 		return stringBuffer;
 	}
-	
+
 	public enum Resolution {
 		DAY,
 		MONTH,
 		YEAR;
 	}
-	
+
 	public  Order asc(String propertyName, String function) {
 		return new GroupByDateOrder(propertyName,function, true);
 	}
-	
+
 	public  Order desc(String propertyName, String function) {
 		return new GroupByDateOrder(propertyName,function, false);
 	}
 
 	public class GroupByDateOrder extends Order {
+        private static final long serialVersionUID = 4463504020211978634L;
         String function;
 		String propertyName;
-		boolean ascending;		
-		
+		boolean ascending;
+
 		protected GroupByDateOrder(String propertyName, String function, boolean ascending) {
 			super(propertyName,ascending);
 			this.propertyName = propertyName;
 			this.ascending = ascending;
 			this.function = function;
 		}
-		
+
 		@Override
 		public String 	toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) {
 			StringBuffer stringBuffer = new StringBuffer();
@@ -168,17 +170,17 @@ public class GroupByDate extends Grouping {
 			stringBuffer.append("(this_.");
 			stringBuffer.append(propertyName);
 			stringBuffer.append(")");
-			
+
 			if(ascending) {
 				stringBuffer.append(" asc");
 			} else {
 				stringBuffer.append(" desc");
 			}
-			
+
 			return stringBuffer.toString();
-		} 
-		
-		
-		
+		}
+
+
+
 	}
 }

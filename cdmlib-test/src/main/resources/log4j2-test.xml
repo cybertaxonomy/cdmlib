@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
+<Configuration xmlns="https://logging.apache.org/xml/ns"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://logging.apache.org/xml/ns https://logging.apache.org/xml/ns/log4j-config-2.xsd">
   <Appenders>
     <!-- 
     <File name="FILE" fileName="cdmlib-test.log" append="true">
@@ -11,13 +13,13 @@
     </Console>
   </Appenders>
   <Loggers>
-    <Root level="warn">
+    <Root level="WARN">
       <AppenderRef ref="STDOUT"/>
       <!-- <AppenderRef ref="FILE"/> -->
     </Root>
-    <Logger name="eu.etaxonomy.cdm.common" level="warn"/>
+    <Logger name="eu.etaxonomy.cdm.common" level="WARN"/>
     
-    <Logger name="org.dbunit" level="warn"/>
+    <Logger name="org.dbunit" level="WARN"/>
     <!-- Logger name="eu.etaxonomy.cdm" level="info"/ -->
     <!-- Logger name="eu.etaxonomy.cdm.database.init" level="debug"/ -->
     <!-- Logger name="eu.etaxonomy.cdm.database.update" level="info"/ -->
@@ -43,9 +45,9 @@
     <!-- Logger name="org.hibernate.connection.DriverManagerConnectionProvider" level="debug"/ -->
     
     <!-- suppress HHH90000003 (but be aware there might be other deprecations) -->
-    <Logger name="org.hibernate.orm.deprecation" level="error"/>
+    <Logger name="org.hibernate.orm.deprecation" level="ERROR"/>
     <!-- suppress HHH000179: Narrowing proxy to class ... issues -->
-    <Logger name="org.hibernate.engine.internal.StatefulPersistenceContext" level="error"/>
+    <Logger name="org.hibernate.engine.internal.StatefulPersistenceContext" level="ERROR"/>
     
   </Loggers>
 </Configuration>

@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AuthorityType;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -49,17 +50,26 @@ public class TermDto extends AbstractTermDto{
     private Collection<TermDto> generalizationOf;
     private Collection<UUID> media = null;
     private NamedAreaLevel level = null;
+    private String symbol = null;
+    private String symbol2 = null;
 
     public TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
-            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary,  String titleCache) {
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary,  String titleCache, String symbol, String symbol2) {
         super(uuid, representations, titleCache);
         this.partOfUuid = partOfUuid;
         this.kindOfUuid = kindOfUuid;
         this.vocabularyUuid = vocabularyUuid;
         this.orderIndex = orderIndex;
         this.idInVocabulary = idInVocabulary;
-//        this.vocabularyDto = vocDto;
+        this.symbol = symbol;
+        this.symbol2 = symbol2;
         setTermType(termType);
+    }
+    
+    public TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary,  String titleCache) {
+        this(uuid, representations, termType, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, titleCache, null, null);
+        
     }
 
     static public TermDto fromTerm(DefinedTermBase<?> term) {
@@ -95,7 +105,9 @@ public class TermDto extends AbstractTermDto{
                         (vocabulary!=null?vocabulary.getUuid():null),
                         term.getOrderIndex(),
                         term.getIdInVocabulary(),
-                        term.getTitleCache());
+                        term.getTitleCache(),
+                        term.getSymbol(),
+                        term.getSymbol2());
         dto.setUri(term.getUri());
         if(initializeToTop){
             if(partOf!=null){
@@ -150,12 +162,33 @@ public class TermDto extends AbstractTermDto{
         return partOfDto;
     }
 
+    /**
+     * @return the kindOfDto
+     */
+    public TermDto getKindOfDto() {
+        return kindOfDto;
+    }
+
+    /**
+     * @param kindOfDto the kindOfDto to set
+     */
     public void setKindOfDto(TermDto kindOfDto) {
         this.kindOfDto = kindOfDto;
     }
 
-    public TermDto getKindOfDto() {
-        return kindOfDto;
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+    public String getSymbol2() {
+        return symbol2;
+    }
+
+    public void setSymbol2(String symbol) {
+        this.symbol2 = symbol;
     }
 
     public void setVocabularyDto(TermCollectionDto vocabularyDto) {
@@ -257,7 +290,9 @@ public class TermDto extends AbstractTermDto{
                 + "a.uri,  "
                 + "m,  "
                 + "a.titleCache, "
-                + "a.externallyManaged ";
+                + "a.externallyManaged, "
+                + "a.symbol, "
+                + "a.symbol2 ";
 
         String sqlFromString =   " FROM "+fromTable+" as a ";
 
@@ -281,7 +316,11 @@ public class TermDto extends AbstractTermDto{
         return result[0]+  ", level  " + result[1] + result[2]+ "LEFT JOIN a.level as level ";
     }
 
-    public static List<TermDto> termDtoListFrom(List<Object[]> results) {
+    public static List<TermDto> termDtoListFrom(List<Object[]> results){
+        return termDtoListFrom(results, null);
+    }
+
+    public static List<TermDto> termDtoListFrom(List<Object[]> results, Language lang) {
         List<TermDto> dtos = new ArrayList<>(); // list to ensure order
         // map to handle multiple representations/media/vocRepresentation because of LEFT JOIN
         Map<UUID, TermDto> dtoMap = new HashMap<>(results.size());
@@ -318,20 +357,43 @@ public class TermDto extends AbstractTermDto{
                         (UUID)elements[4],
                         (Integer)elements[5],
                         (String)elements[6],
-                        (String)elements[10]);
+                        (String)elements[10],
+                        (String)elements[12],
+                        (String)elements[13]);
                 termDto.setUri((URI)elements[8]);
                 termDto.setMedia(mediaUuids);
-                if (elements.length>12 && elements[12] != null){
-                    termDto.setLevel((NamedAreaLevel)elements[12]);
+                if (elements.length>14 && elements[14] != null){
+                    termDto.setLevel((NamedAreaLevel)elements[14]);
                 }
                 if (elements[11] != null) {
                     ExternallyManaged extManaged = (ExternallyManaged)elements[11];
                     termDto.setManaged(extManaged!= null && extManaged.getAuthorityType()!= null? extManaged.getAuthorityType().equals(AuthorityType.EXTERN):false);
+                }
+                if (lang != null) {
+                    termDto.setLabel(lang);
                 }
                 dtoMap.put(uuid, termDto);
                 dtos.add(termDto);
             }
         }
         return dtos;
+    }
+
+    private void setLabel(Language lang) {
+        if (lang == null) {
+            return;
+        }
+        if (representations != null && representations.iterator().hasNext()) {
+            for (Representation rep: representations) {
+                if (rep.getLanguage().equals(lang)) {
+                    this.setLabel(rep.getLabel());
+                    break;
+                }
+            }
+            if (this.getLabel() == null) {
+                this.setLabel(representations.iterator().next().getLabel());
+            }
+        }
+
     }
 }

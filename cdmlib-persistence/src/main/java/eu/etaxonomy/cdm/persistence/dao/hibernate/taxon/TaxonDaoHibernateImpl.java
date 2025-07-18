@@ -22,6 +22,14 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Fetch;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,6 +62,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.SecundumSource;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -89,6 +98,7 @@ public class TaxonDaoHibernateImpl
 //    private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
     private static final Logger logger = LogManager.getLogger();
 
+    @SuppressWarnings("unchecked")
     public TaxonDaoHibernateImpl() {
         super(TaxonBase.class);
         indexedClasses = new Class[2];
@@ -160,39 +170,43 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public List<TaxonBase> getTaxaByName(String queryString, boolean includeUnpublished, Reference sec) {
+    public List<? extends TaxonBase> getTaxaByName(String queryString, boolean includeUnpublished, Reference sec) {
 
         return getTaxaByName(queryString, true, includeUnpublished, sec);
     }
 
     @Override
-    public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, boolean includeUnpublished, Reference sec) {
+    public <S extends TaxonBase> List<S> getTaxaByName(String queryString, Boolean accepted, boolean includeUnpublished,
+            Reference sec) {
+
         checkNotInPriorView("TaxonDaoHibernateImpl.getTaxaByName(String name, Reference sec)");
 
-        Criteria criteria = null;
-        if (accepted == true) {
-            criteria = getSession().createCriteria(Taxon.class);
-        } else {
-            criteria = getSession().createCriteria(Synonym.class);
-        }
+        Class<S> clazz = (Class<S>) (accepted ? Taxon.class : Synonym.class);
 
-        criteria.setFetchMode( "name", FetchMode.JOIN );
-        criteria.createAlias("name", "name");
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<S> cq = cb.createQuery(clazz);
+        Root<S> root = cq.from(clazz);
+
+        Fetch<S, TaxonName> nameFetch = root.fetch("name", JoinType.LEFT);
+
+        List<Predicate> predicates = new ArrayList<>();
 
         if (!includeUnpublished){
-            criteria.add(Restrictions.eq("publish", Boolean.TRUE ));
+            predicates.add(predicateBoolean(cb, root, "publish", Boolean.TRUE));
         }
-
         if (sec != null && sec.getId() != 0) {
-            criteria.createCriteria("secSource").add(Restrictions.eq("citation", sec ) );
+            Join<? extends TaxonBase, SecundumSource> secJoin = root.join("secSource");
+            predicates.add(predicateEqual(cb, secJoin, "citation", sec));
         }
-
         if (queryString != null) {
-            criteria.add(Restrictions.ilike("name.nameCache", queryString));
+            Join<S, TaxonName> nameJoin = root.join("name");
+            predicates.add(predicateILike(cb, nameJoin, "nameCache", queryString));
         }
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        List<TaxonBase> result = criteria.list();
+        cq.select(root)
+          .where(cb.and(predicates.toArray(new Predicate[0])));
+
+        List<S> result = getSession().createQuery(cq).getResultList();
         return result;
     }
 
@@ -1286,22 +1300,20 @@ public class TaxonDaoHibernateImpl
                         continue;  //just in case we have duplicates in the list
                     }
 
-                    Query<String> query = getSession().createQuery(
-                            " SELECT DISTINCT n1.nameCache "
-                          + " FROM TaxonBase t1 JOIN t1.name n1 JOIN t1.sources s1 JOIN s1.citation ref1 "
-                          +         " , TaxonBase t2 JOIN t2.name n2 JOIN t2.sources s2 JOIN s2.citation ref2 "
-                          + " WHERE  ref1.uuid = (:sourceUuid1) "
-                          + "       AND n1.id <> n2.id "
-                          + "       AND ref2.uuid IN (:sourceUuid2)"
-                          + "       AND ref1.uuid <> ref2.uuid "
-                          + "       AND n1.nameCache = n2.nameCache) "
-                          + "       AND t1.publish = 1 AND t2.publish = 1) "
-                          + " ORDER BY n1.nameCache ",
-                          String.class);
+                    String  hql = " SELECT DISTINCT n1.nameCache "
+                            + " FROM TaxonBase t1 JOIN t1.name n1 JOIN t1.sources s1 JOIN s1.citation ref1 "
+                            +         " , TaxonBase t2 JOIN t2.name n2 JOIN t2.sources s2 JOIN s2.citation ref2 "
+                            + " WHERE  ref1.uuid = (:sourceUuid1) "
+                            + "       AND n1.id <> n2.id "
+                            + "       AND ref2.uuid IN (:sourceUuid2)"
+                            + "       AND ref1.uuid <> ref2.uuid "
+                            + "       AND n1.nameCache = n2.nameCache "
+                            + "       AND t1.publish = 1 AND t2.publish = 1 "
+                            + " ORDER BY n1.nameCache ";
+                    Query<String> query = getSession().createQuery(hql, String.class);
                     query.setParameter("sourceUuid1", sourceUuid1);
                     query.setParameter("sourceUuid2", sourceUuid2);
 
-                    @SuppressWarnings("unchecked")
                     List<String> queryNameCacheCandidates = query.list();
                     nameCacheCandidates.addAll(queryNameCacheCandidates);
                 }
@@ -1328,8 +1340,9 @@ public class TaxonDaoHibernateImpl
                 Map<UUID,Set<TaxonName>> uuidNameMap = new HashMap<>();
                 result.put(nameCache, uuidNameMap);
                 for(UUID sourceUuid: duplicates.keySet()){
-                    Set<TaxonName> names = duplicates.get(sourceUuid).stream().filter(name->
-                            name.getNameCache().equals(nameCache)).collect(Collectors.toSet());
+                    Set<TaxonName> names = duplicates.get(sourceUuid).stream()
+                            .filter(name->name.getNameCache().equals(nameCache))
+                            .collect(Collectors.toSet());
                     uuidNameMap.put(sourceUuid, names);
                 }
             }

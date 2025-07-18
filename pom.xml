@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>5.51.0</version>
+  <version>5.52.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>https://cybertaxonomy.org/cdmlib/</url>
@@ -1698,7 +1698,8 @@
       <dependency>
         <groupId>com.microsoft.sqlserver</groupId>
         <artifactId>mssql-jdbc</artifactId>
-        <version>9.4.1.jre8</version>
+        <version>12.10.0.jre8</version>
+        <!-- version>9.4.1.jre8</version -->
       </dependency>
       <dependency>
         <!-- SQL Server and Sybase -->

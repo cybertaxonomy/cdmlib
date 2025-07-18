@@ -17,10 +17,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
@@ -34,6 +37,8 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.CharacterDto;
@@ -76,19 +81,30 @@ public class TermVocabularyDaoImpl
 	}
 
 	@Override
-    public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> vocabulary,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
-		AuditEvent auditEvent = getAuditEventFromContext();
+    public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> vocabulary, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+	    AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Criteria criteria = getCriteria(DefinedTermBase.class);
-			criteria.createCriteria("vocabulary").add(Restrictions.idEq(vocabulary.getId()));
 
-			addPageSizeAndNumber(criteria, pageSize, pageNumber);
-		    this.addOrder(criteria, orderHints);
+		    CriteriaBuilder cb = getCriteriaBuilder();
+	        CriteriaQuery<T> cq = (CriteriaQuery)cb.createQuery(DefinedTermBase.class);
+	        Root<T> root = (Root)cq.from(DefinedTermBase.class);
 
-		    @SuppressWarnings("unchecked")
-            List<T> result = DefinedTermDaoImpl.deduplicateResult(criteria.list());
-		    defaultBeanInitializer.initializeAll(result, propertyPaths);
-		    return result;
+	        // Join with vocabulary and filter by ID
+	        Join<T, ?> vocabularyJoin = root.join("vocabulary", JoinType.INNER);
+
+	        cq.select(root)
+	          .where(cb.equal(vocabularyJoin.get("id"), vocabulary.getId()))
+	          .orderBy(ordersFrom(cb, root, orderHints));
+
+	        List<T> result = addPageSizeAndNumber(
+	                 getSession().createQuery(cq), pageSize, pageNumber)
+	                .getResultList();
+	        result = DaoBase.deduplicateResult(result);
+	        defaultBeanInitializer.initializeAll(result, propertyPaths);
+            return result;
+
 		} else {
 			AuditQuery query = makeAuditQuery(null, auditEvent);
 			query.add(AuditEntity.relatedId("vocabulary").eq(vocabulary.getId()));
@@ -96,7 +112,7 @@ public class TermVocabularyDaoImpl
 			addPageSizeAndNumber(query, pageSize, pageNumber);
 
 			@SuppressWarnings("unchecked")
-            List<T> result = DefinedTermDaoImpl.deduplicateResult(query.getResultList());
+            List<T> result = CdmEntityDaoBase.deduplicateResult(query.getResultList());
 		    defaultBeanInitializer.initializeAll(result, propertyPaths);
 			return result;
 		}
@@ -134,15 +150,19 @@ public class TermVocabularyDaoImpl
 	}
 
     @Override
-    public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType, List<String> propertyPaths) {
+    public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType,
+            List<String> propertyPaths) {
 
-        Criteria criteria = getSession().createCriteria(type);
-        criteria.add(Restrictions.eq("termType", termType));
-        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
-        //this.addOrder(criteria, orderHints);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TermVocabulary<T>> cq = (CriteriaQuery)cb.createQuery(type);
+        Root<TermVocabulary<T>> root = (Root)cq.from(type);
 
-        @SuppressWarnings("unchecked")
-        List<TermVocabulary<T>> result = DefinedTermDaoImpl.deduplicateResult(criteria.list());
+        cq.select(root)
+          .distinct(true)
+          .where(cb.equal(root.get("termType"), termType));
+
+        List<TermVocabulary<T>> result = getSession().createQuery(cq).getResultList();
+        result = DaoBase.deduplicateResult(result);
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
@@ -151,26 +171,25 @@ public class TermVocabularyDaoImpl
     public List<TermVocabulary> listByTermType(TermType termType, boolean includeSubTypes, Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths) {
         checkNotInPriorView("TermVocabularyDao.listByTermType(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)");
 
-        Set<TermType> allTermTypes = new HashSet<TermType>();
+        Set<TermType> allTermTypes = new HashSet<>();
         allTermTypes.add(termType);
         if (includeSubTypes){
             allTermTypes.addAll(termType.getGeneralizationOf(true));
         }
 
-        Criteria criteria = getSession().createCriteria(type);
-        criteria.add(Restrictions.in("termType", allTermTypes));
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TermVocabulary> cq = cb.createQuery(type);
+        Root<TermVocabulary> root = cq.from(type);
 
-        if(limit != null) {
-            criteria.setMaxResults(limit);
-            if(start != null) {
-                criteria.setFirstResult(start);
-            }
-        }
+        cq.select(root)
+          .distinct(true)
+          .where(predicateIn(root, "termType", allTermTypes))
+          .orderBy(ordersFrom(cb, root, orderHints));
 
-        this.addOrder(criteria, orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<TermVocabulary> result = DefinedTermDaoImpl.deduplicateResult(criteria.list());
+        List<TermVocabulary> result = addLimitAndStart(
+                 getSession().createQuery(cq), limit, start)
+                .getResultList();
+        result = DaoBase.deduplicateResult(result);
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
@@ -388,7 +407,7 @@ public class TermVocabularyDaoImpl
                 }
             }
         }
-        String queryString = TermVocabularyDto.getTermCollectionDtoSelect("TermVocabulary");
+        String queryString = TermCollectionDto.getTermCollectionDtoSelect("TermVocabulary");
 
         if (!termTypeWithSubType.isEmpty()){
             queryString += " WHERE a.termType in (:termTypes) ";
@@ -504,41 +523,41 @@ public class TermVocabularyDaoImpl
     @Override
     public List<TermVocabulary> loadList(Collection<Integer> ids, List<OrderHint> orderHints,
             List<String> propertyPaths) throws DataAccessException {
-        return DefinedTermDaoImpl.deduplicateResult(super.loadList(ids, orderHints, propertyPaths));
+        return CdmEntityDaoBase.deduplicateResult(super.loadList(ids, orderHints, propertyPaths));
     }
 
     @Override
     public List<TermVocabulary> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
-        return DefinedTermDaoImpl.deduplicateResult(super.list(uuids, pageSize, pageNumber, orderHints, propertyPaths));
+        return CdmEntityDaoBase.deduplicateResult(super.list(uuids, pageSize, pageNumber, orderHints, propertyPaths));
     }
 
     @Override
     public <S extends TermVocabulary> List<S> list(Class<S> clazz, Collection<UUID> uuids, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
-        return DefinedTermDaoImpl.deduplicateResult(super.list(clazz, uuids, pageSize, pageNumber, orderHints, propertyPaths));
+        return CdmEntityDaoBase.deduplicateResult(super.list(clazz, uuids, pageSize, pageNumber, orderHints, propertyPaths));
     }
 
     @Override
     public <S extends TermVocabulary> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
             Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return DefinedTermDaoImpl.deduplicateResult(super.list(type, restrictions, limit, start, orderHints, propertyPaths));
+        return CdmEntityDaoBase.deduplicateResult(super.list(type, restrictions, limit, start, orderHints, propertyPaths));
     }
 
     @Override
     public List<TermVocabulary> list(Integer limit, Integer start, List<OrderHint> orderHints) {
-        return DefinedTermDaoImpl.deduplicateResult(super.list(limit, start, orderHints));
+        return CdmEntityDaoBase.deduplicateResult(super.list(limit, start, orderHints));
     }
 
     @Override
     public List<TermVocabulary> list(Integer limit, Integer start, List<OrderHint> orderHints,
             List<String> propertyPaths) {
-        return DefinedTermDaoImpl.deduplicateResult(super.list(limit, start, orderHints, propertyPaths));
+        return CdmEntityDaoBase.deduplicateResult(super.list(limit, start, orderHints, propertyPaths));
     }
 
     @Override
     public <S extends TermVocabulary> List<S> list(Class<S> type, Integer limit, Integer start,
             List<OrderHint> orderHints) {
-        return DefinedTermDaoImpl.deduplicateResult(super.list(type, limit, start, orderHints));
+        return CdmEntityDaoBase.deduplicateResult(super.list(type, limit, start, orderHints));
     }
 }

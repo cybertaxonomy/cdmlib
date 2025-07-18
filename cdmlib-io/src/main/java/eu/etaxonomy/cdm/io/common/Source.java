@@ -41,9 +41,8 @@ public class Source {
     private final static boolean DEBUG_LOG_WRITER = false;
 
     //DB info
-//	public final static String SQL_SERVER_2000 = "SQLServer2000";
-	public final static String SQL_SERVER_2005 = "SQLServer2005";
-	public final static String SQL_SERVER_2008 = "SQLServer2008";
+	public final static String SQL_SERVER = "SQLServer";
+	public final static String SQL_SERVER_TRUSTED = "SQLServer_Trusted";
 	public final static String ACCESS = "Access";
 	public final static String EXCEL = "Excel";
 	public final static String ODDBC = "ODBC";
@@ -58,9 +57,7 @@ public class Source {
 	public final static String SELECT_CURSOR = "cursor";
 
     //driver class
-//    private static String clsSQLServer2000 = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
-    private static String clsSQLServer2005 = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    private static String clsSQLServer2008 = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+    private static String clsSQLServer = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     private static String clsODBC = "sun.jdbc.odbc.JdbcOdbcDriver";
     private static String clsOracle = "oracle.jdbc.driver.OracleDriver";
     private static String clsDB2 = "COM.ibm.db2.jdbc.net.DB2Driver";
@@ -70,9 +67,7 @@ public class Source {
     private static String clsMySQL = "com.mysql.cj.jdbc.Driver";
 
     //url
-//    private static String urlSQLServer = "jdbc:microsoft:sqlserver://";
-    private static String urlSQLServer2005 = "jdbc:sqlserver://";
-    private static String urlSQLServer2008 = "jdbc:sqlserver://";
+    private static String urlSQLServer = "jdbc:sqlserver://";
     private static String urlDB2 = "jdbc:db2://";
     private static String urlOracle = "jdbc:oracle:thin:@:1243:";
     private static String urlDataDirectSQLServer = "jdbc:datadirect:sqlserver://";
@@ -206,7 +201,7 @@ public class Source {
         }
     }
 
-    public int getUniqueInteger (String query){
+    public Integer getUniqueInteger (String query){
         Object result = getUniqueResult(query);
         if (result instanceof Long){
             Long theLong = (Long)result;
@@ -326,16 +321,21 @@ public class Source {
 	    try{
 	        if (DEBUG_LOG_WRITER) {
                 DriverManager.setLogWriter((new PrintWriter(System.out)));
-            } else if (mDbms.equalsIgnoreCase(SQL_SERVER_2005)) {
-	            Class.forName(clsSQLServer2005);
-	            server = mServer + ":" + mPort;
-	            mUrl = urlSQLServer2005 + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod;
+//            } else if (mDbms.equalsIgnoreCase(SQL_SERVER_2005)) {
+//	            Class.forName(clsSQLServer2005);
+//	            server = mServer + ":" + mPort;
+//	            mUrl = urlSQLServer2005 + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod;
 	        }
-	        else if (mDbms.equalsIgnoreCase(SQL_SERVER_2008)) {
-	            Class.forName(clsSQLServer2008);
+	        else if (mDbms.equalsIgnoreCase(SQL_SERVER)) {
+	            Class.forName(clsSQLServer);
 	            server = mServer + ":" + mPort;
-	            mUrl = urlSQLServer2008 + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod;
+	            mUrl = urlSQLServer + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod;
 	        }
+	        else if (mDbms.equalsIgnoreCase(SQL_SERVER_TRUSTED)) {
+                Class.forName(clsSQLServer);
+                server = mServer + ":" + mPort;
+                mUrl = urlSQLServer + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod+";trustServerCertificate=true";
+            }
 	        else if (mDbms.equalsIgnoreCase(ACCESS)) {
 	        	Class.forName(clsODBC);
 
@@ -465,7 +465,7 @@ public class Source {
      * @throws MethodNotSupportedException
      */
     public boolean checkColumnExists(String tableName, String dbAttribute) throws DatabaseTypeNotSupportedException{
-    	if (mDbms.equalsIgnoreCase(SQL_SERVER_2005)|| mDbms.equalsIgnoreCase(SQL_SERVER_2008) ){
+    	if (mDbms.equalsIgnoreCase(SQL_SERVER) ){
     		String strQuery = "SELECT  Count(t.id) as n " +
 				" FROM sysobjects AS t " +
 				" INNER JOIN syscolumns AS c ON t.id = c.id " +

@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService;
 import eu.etaxonomy.cdm.api.service.IEntityValidationService;
-import eu.etaxonomy.cdm.api.service.IEventBaseService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
 import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IIdentificationKeyService;
@@ -90,7 +89,6 @@ public abstract class CdmApplicationControllerBase<R extends ICdmRepository>
         return configuration.getAccountRegistrationService();
     }
 
-
     @Override
     public IRegistrationWorkingSetService getRegistrationWorkingSetService() {
         return configuration.getRegistrationWorkingSetService();
@@ -100,7 +98,6 @@ public abstract class CdmApplicationControllerBase<R extends ICdmRepository>
     public MediaInfoFactory getMediaInfoFactory() {
         return configuration.getMediaInfoFactory();
     }
-
 
     @Override
     public final IDatabaseService getDatabaseService(){
@@ -210,11 +207,6 @@ public abstract class CdmApplicationControllerBase<R extends ICdmRepository>
     }
 
     @Override
-    public IEventBaseService getEventBaseService() {
-        return configuration.getEventBaseService();
-    }
-
-    @Override
     public final IPrimerService getPrimerService(){
         return configuration.getPrimerService();
     }
@@ -231,36 +223,30 @@ public abstract class CdmApplicationControllerBase<R extends ICdmRepository>
         return configuration.getMetadataService();
     }
 
-
     @Override
     public final ICommonService getCommonService(){
         return configuration.getCommonService();
     }
-
 
     @Override
     public final ILocationService getLocationService(){
         return configuration.getLocationService();
     }
 
-
     @Override
     public final IUserService getUserService(){
         return configuration.getUserService();
     }
-
 
     @Override
     public final IGrantedAuthorityService getGrantedAuthorityService(){
         return configuration.getGrantedAuthorityService();
     }
 
-
     @Override
     public IGroupService getGroupService(){
         return configuration.getGroupService();
     }
-
 
     @Override
     public final ICollectionService getCollectionService(){

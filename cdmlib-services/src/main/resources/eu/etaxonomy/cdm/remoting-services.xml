@@ -41,7 +41,6 @@
         <prop key="/remoting/descriptivedataset.service">httpDescriptiveDataSetService</prop>
         <prop key="/remoting/entityconstraintviolation.service">httpEntityConstraintViolationService</prop>
         <prop key="/remoting/entityvalidation.service">httpEntityValidationService</prop>
-        <prop key="/remoting/eventbase.service">httpEventBaseService</prop> 
         <prop key="/remoting/grantedauthority.service">httpGrantedAuthorityService</prop>
         <prop key="/remoting/group.service">httpGroupService</prop>
         <prop key="/remoting/identificationkey.service">httpIdentificationKeyService</prop>

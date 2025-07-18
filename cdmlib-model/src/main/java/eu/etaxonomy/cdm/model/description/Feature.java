@@ -165,49 +165,49 @@ public class Feature extends AvailableForTermBase<Feature> {
     //#10328 the maximum number of states in StateData (if this feature supports categorical data), null = unlimited
 	private Integer maxStates;
 
-
-    private static final UUID uuidUnknown = UUID.fromString("910307f1-dc3c-452c-a6dd-af5ac7cd365c");
+	public static final UUID uuidAcknowledgments = UUID.fromString("555a46bc-211a-476f-a022-c472970d6f8b");
+	private static final UUID uuidAdditionalPublication = UUID.fromString("2c355c16-cb04-4858-92bf-8da8d56dea95");
+	public static final UUID uuidAltitude = UUID.fromString("1a28ed59-e15f-4001-b5c2-ea89f0012671");
+	private static final UUID uuidAnatomy = UUID.fromString("94213b2c-e67a-4d37-25ef-e8d316edfba1");
+	private static final UUID uuidBiologyEcology = UUID.fromString("9832e24f-b670-43b4-ac7c-20a7261a1d8c");
+	private static final UUID uuidChromosomeNumber = UUID.fromString("6f677e98-d8d5-4bc5-80bf-affdb7e3945a");
+	private static final UUID uuidCitation = UUID.fromString("99b2842f-9aa7-42fa-bd5f-7285311e0101");
+	public static final UUID uuidCommonName = UUID.fromString("fc810911-51f0-4a46-ab97-6562fe263ae5");
+	private static final UUID uuidConservation = UUID.fromString("4518fc20-2492-47de-b345-777d2b83c9cf");
+	private static final UUID uuidCultivation = UUID.fromString("e28965b2-a367-48c5-b954-8afc8ac2c69b");
     public static final UUID uuidDescription = UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb493");
+    private static final UUID uuidDiagnosis = UUID.fromString("d43d8501-ceab-4caa-9e51-e87138528fac");
+    private static final UUID uuidDiscussion = UUID.fromString("d3c4cbb6-0025-4322-886b-cd0156753a25");
     public static final UUID uuidDistribution = UUID.fromString("9fc9d10c-ba50-49ee-b174-ce83fc3f80c6");
     private static final UUID uuidDistributionGeneral = UUID.fromString("fd8c64f0-6ea5-44b0-9f70-e95833d6076e");
-    public static final UUID uuidIucnStatus = UUID.fromString("0b17d701-4159-488e-a6e7-0045992e61af");
     private static final UUID uuidEcology = UUID.fromString("aa923827-d333-4cf5-9a5f-438ae0a4746b");
-    public static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
-    private static final UUID uuidHabitatAndEcology = UUID.fromString("9fdc4663-4d56-47d0-90b5-c0bf251bafbb");
-    private static final UUID uuidChromosomeNumber = UUID.fromString("6f677e98-d8d5-4bc5-80bf-affdb7e3945a");
-
-    private static final UUID uuidBiologyEcology = UUID.fromString("9832e24f-b670-43b4-ac7c-20a7261a1d8c");
-    private static final UUID uuidKey = UUID.fromString("a677f827-22b9-4205-bb37-11cb48dd9106");
-    private static final UUID uuidMaterialsExamined = UUID.fromString("7c0c7571-a864-47c1-891d-01f59000dae1");
-    private static final UUID uuidMaterialsMethods = UUID.fromString("1e87d9c3-0844-4a03-9686-773e2ccb3ab6");
-    private static final UUID uuidEtymology = UUID.fromString("dd653d48-355c-4aec-a4e7-724f6eb29f8d");
-    private static final UUID uuidDiagnosis = UUID.fromString("d43d8501-ceab-4caa-9e51-e87138528fac");
-    private static final UUID uuidProtologue = UUID.fromString("71b356c5-1e3f-4f5d-9b0f-c2cf8ae7779f");
-    public static final UUID uuidCommonName = UUID.fromString("fc810911-51f0-4a46-ab97-6562fe263ae5");
-    private static final UUID uuidPhenology = UUID.fromString("a7786d3e-7c58-4141-8416-346d4c80c4a2");
-    private static final UUID uuidOccurrence = UUID.fromString("5deff505-1a32-4817-9a74-50e6936fd630");
-    private static final UUID uuidCitation = UUID.fromString("99b2842f-9aa7-42fa-bd5f-7285311e0101");
-    private static final UUID uuidAdditionalPublication = UUID.fromString("2c355c16-cb04-4858-92bf-8da8d56dea95");
-    public static final UUID uuidUses = UUID.fromString("e5374d39-b210-47c7-bec1-bee05b5f1cb6");
-    private static final UUID uuidConservation = UUID.fromString("4518fc20-2492-47de-b345-777d2b83c9cf");
-    private static final UUID uuidCultivation = UUID.fromString("e28965b2-a367-48c5-b954-8afc8ac2c69b");
-    private static final UUID uuidIntroduction = UUID.fromString("e75255ca-8ff4-4905-baad-f842927fe1d3");
-    private static final UUID uuidDiscussion = UUID.fromString("d3c4cbb6-0025-4322-886b-cd0156753a25");
-    public static final UUID uuidImage = UUID.fromString("84193b2c-327f-4cce-90ef-c8da18fd5bb5");
-    private static final UUID uuidAnatomy = UUID.fromString("94213b2c-e67a-4d37-25ef-e8d316edfba1");
-    private static final UUID uuidHostPlant = UUID.fromString("6e9de1d5-05f0-40d5-8786-2fe30d0d894d");
-    private static final UUID uuidPathogenAgent = UUID.fromString("002d05f2-fd72-49f1-ba4d-196cf09240b5");
-    private static final UUID uuidIndividualsAssociation = UUID.fromString("e2308f37-ddc5-447d-b483-5e2171dd85fd");
-    public static final UUID uuidSpecimen = UUID.fromString("8200e050-d5fd-4cac-8a76-4b47afb13809");
-    private static final UUID uuidObservation = UUID.fromString("f59e747d-0b4f-4bf7-b69a-cbd50bc78595");
-    public static final UUID uuidStatus = UUID.fromString("86d40635-2a63-4ad6-be75-9faa4a6a57fb");
-    private static final UUID uuidSystematics = UUID.fromString("bd9aca17-cd0e-4418-a3a1-1a4b80dbc162");
-    private static final UUID uuidUseRecord = UUID.fromString("8125a59d-b4d5-4485-89ea-67306297b599");
-    public static final UUID uuidNotes = UUID.fromString("b5780b45-6439-4f3c-9818-d89d26d36eb2");
-    public static final UUID uuidLifeform = UUID.fromString("db9228d3-8bbf-4460-abfe-0b1326c82f8e");
+    public static final UUID uuidEtymology = UUID.fromString("3b46f5f2-5619-4f1a-884f-d7a805471942");
     public static final UUID uuidFloweringPeriod = UUID.fromString("03710cb5-606e-444a-a3e6-594268e3cc47");
     public static final UUID uuidFruitingPeriod = UUID.fromString("04aa8993-24b4-43e3-888c-5afaa733376e");
-    public static final UUID uuidAltitude = UUID.fromString("1a28ed59-e15f-4001-b5c2-ea89f0012671");
+    public static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
+    private static final UUID uuidHabitatAndEcology = UUID.fromString("9fdc4663-4d56-47d0-90b5-c0bf251bafbb");
+    private static final UUID uuidHostPlant = UUID.fromString("6e9de1d5-05f0-40d5-8786-2fe30d0d894d");
+    public static final UUID uuidImage = UUID.fromString("84193b2c-327f-4cce-90ef-c8da18fd5bb5");
+    private static final UUID uuidIndividualsAssociation = UUID.fromString("e2308f37-ddc5-447d-b483-5e2171dd85fd");
+    private static final UUID uuidIntroduction = UUID.fromString("e75255ca-8ff4-4905-baad-f842927fe1d3");
+    public static final UUID uuidIucnStatus = UUID.fromString("0b17d701-4159-488e-a6e7-0045992e61af");
+    private static final UUID uuidKey = UUID.fromString("a677f827-22b9-4205-bb37-11cb48dd9106");
+
+    public static final UUID uuidLifeform = UUID.fromString("db9228d3-8bbf-4460-abfe-0b1326c82f8e");
+    private static final UUID uuidMaterialsExamined = UUID.fromString("7c0c7571-a864-47c1-891d-01f59000dae1");
+    private static final UUID uuidMaterialsMethods = UUID.fromString("1e87d9c3-0844-4a03-9686-773e2ccb3ab6");
+    public static final UUID uuidNotes = UUID.fromString("b5780b45-6439-4f3c-9818-d89d26d36eb2");
+    private static final UUID uuidObservation = UUID.fromString("f59e747d-0b4f-4bf7-b69a-cbd50bc78595");
+    private static final UUID uuidOccurrence = UUID.fromString("5deff505-1a32-4817-9a74-50e6936fd630");
+    private static final UUID uuidPathogenAgent = UUID.fromString("002d05f2-fd72-49f1-ba4d-196cf09240b5");
+    private static final UUID uuidProtologue = UUID.fromString("71b356c5-1e3f-4f5d-9b0f-c2cf8ae7779f");
+    private static final UUID uuidPhenology = UUID.fromString("a7786d3e-7c58-4141-8416-346d4c80c4a2");
+    public static final UUID uuidSpecimen = UUID.fromString("8200e050-d5fd-4cac-8a76-4b47afb13809");
+    public static final UUID uuidStatus = UUID.fromString("86d40635-2a63-4ad6-be75-9faa4a6a57fb");
+    private static final UUID uuidSystematics = UUID.fromString("bd9aca17-cd0e-4418-a3a1-1a4b80dbc162");
+    private static final UUID uuidUnknown = UUID.fromString("910307f1-dc3c-452c-a6dd-af5ac7cd365c");
+    private static final UUID uuidUseRecord = UUID.fromString("8125a59d-b4d5-4485-89ea-67306297b599");
+    public static final UUID uuidUses = UUID.fromString("e5374d39-b210-47c7-bec1-bee05b5f1cb6");
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 

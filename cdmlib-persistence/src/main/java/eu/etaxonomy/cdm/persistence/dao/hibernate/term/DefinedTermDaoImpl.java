@@ -150,7 +150,7 @@ public class DefinedTermDaoImpl
 
 	@Override
     public List<DefinedTermBase> findByTitle(String queryString, MatchMode matchMode, int page, int pagesize, List<Criterion> criteria) {
-		//FIXME is query parametrised?
+		//FIXME is query parameterized?
 		checkNotInPriorView("DefinedTermDaoImpl.findByTitle(String queryString, ITitledDao.MATCH_MODE matchMode, int page, int pagesize, List<Criterion> criteria)");
 		Criteria crit = getSession().createCriteria(type);
 		crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
@@ -962,7 +962,7 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList) {
+    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList, Language lang) {
         List<TermDto> list = new ArrayList<>();
         if (uuidList == null || uuidList.isEmpty()){
             return null;
@@ -975,7 +975,7 @@ public class DefinedTermDaoImpl
         query.setParameterList("uuidList", uuidList);
 
         List<Object[]> result = query.list();
-        list = TermDto.termDtoListFrom(result);
+        list = TermDto.termDtoListFrom(result, lang);
         return list;
     }
 

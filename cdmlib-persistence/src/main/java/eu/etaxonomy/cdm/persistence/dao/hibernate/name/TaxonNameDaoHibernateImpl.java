@@ -266,7 +266,9 @@ public class TaxonNameDaoHibernateImpl
 
     @Override
     public List<HybridRelationship> getHybridNames(INonViralName name, HybridRelationshipType type,
-            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
+
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getSession().createCriteria(HybridRelationship.class);

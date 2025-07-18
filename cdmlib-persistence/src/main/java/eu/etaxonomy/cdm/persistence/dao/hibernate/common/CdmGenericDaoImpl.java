@@ -20,22 +20,27 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.From;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
+import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.query.Query;
-import org.hibernate.sql.JoinType;
 import org.hibernate.type.BooleanType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
@@ -78,6 +83,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.match.CacheMatcher;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.FieldMatcher;
@@ -91,8 +97,8 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 @Repository
 public class CdmGenericDaoImpl
-         extends CdmEntityDaoBase<CdmBase>
-         implements ICdmGenericDao{
+          extends CdmBaseDaoImpl
+          implements ICdmGenericDao {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -111,7 +117,6 @@ public class CdmGenericDaoImpl
 	}
 
 	public CdmGenericDaoImpl() {
-		super(CdmBase.class);
 	}
 
 //    @Override
@@ -132,19 +137,27 @@ public class CdmGenericDaoImpl
         return result;
     }
 
-	@Override
-    public List<CdmBase> getCdmBasesByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase, Integer limit){
-        Session session = super.getSession();
+    @Override
+    public List<CdmBase> getCdmBasesByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName,
+            CdmBase referencedCdmBase, Integer limit){
 
-      Criteria criteria = session.createCriteria(clazz);
-      criteria.add(Restrictions.eq(propertyName, referencedCdmBase));
-      if (limit != null){
-          criteria.setMaxResults(limit);
-      }
+        //FIXME replace CdmBase by T extends CdmBase, but this created compile errors
+        //for now on jenkins
 
-        @SuppressWarnings("unchecked")
-        List<CdmBase> result = criteria.list();
-        return result;
+	    Session session = super.getSession();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<CdmBase> cq = (CriteriaQuery)cb.createQuery(clazz);
+        Root<CdmBase> root = (Root)cq.from(clazz);
+        cq.select(root)
+          .where(predicateEqual(cb, root, propertyName, referencedCdmBase));
+        TypedQuery<CdmBase> query = session.createQuery(cq);
+        if (limit != null){
+            query.setMaxResults(limit);
+        }
+        List<CdmBase> results = query.getResultList();
+
+        return results;
 	}
 
 	@Override
@@ -642,12 +655,17 @@ public class CdmGenericDaoImpl
 
     @Override
     public <T extends CdmBase> T find(Class<T> clazz, UUID uuid, List<String> propertyPaths){
+
         Session session = getSession();
-        Criteria crit = session.createCriteria(type);
-        crit.add(Restrictions.eq("uuid", uuid));
-        crit.addOrder(Order.desc("created"));
-        @SuppressWarnings("unchecked")
-        List<T> results = crit.list();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(clazz);
+        Root<T> root = cq.from(clazz);
+        cq.select(root)
+          .where(predicateUuid(cb, root, uuid))
+          .orderBy(cb.desc(root.get("created")));
+        List<T> results = session.createQuery(cq).getResultList();
+
         if (results.isEmpty()){
             return null;
         }else{
@@ -670,6 +688,44 @@ public class CdmGenericDaoImpl
         return (T)this.findByUuidWithoutFlush((Class<CdmBase>)clazz, uuid);
     }
 
+    /**
+     * This is a copy of see (see also)
+     * @see CdmEntityDaoBase#findByUuidWithoutFlush(Class, UUID)
+     */
+    private <T extends CdmBase> T findByUuidWithoutFlush(Class<T> clazz, UUID uuid) throws DataAccessException {
+        Session session = getSession();
+        FlushMode currentFlushMode = session.getHibernateFlushMode();
+        try {
+            // set flush mode to manual so that the session does not flush
+            // when before performing the query
+            session.setHibernateFlushMode(FlushMode.MANUAL);
+
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<T> cq = cb.createQuery(clazz);
+            Root<T> root = cq.from(clazz);
+            cq.select(root)
+              .where(predicateUuid(cb, root, uuid))
+              .orderBy(cb.desc(root.get("created")));
+            List<T> results = session.createQuery(cq).getResultList();
+
+            results = deduplicateResult(results);
+            if (results.isEmpty()) {
+                return null;
+            } else {
+                if (results.size() > 1) {
+                    logger.error("findByUuid() delivers more than one result for UUID: " + uuid);
+                }
+                return results.get(0);
+            }
+        } finally {
+            // set back the session flush mode
+            if (currentFlushMode != null) {
+                session.setHibernateFlushMode(currentFlushMode);
+            }
+        }
+    }
+
+
     @Override
     public <T extends IMatchable> List<T> findMatching(
             T objectToMatch, IMatchStrategy matchStrategy) throws MatchException{
@@ -691,6 +747,8 @@ public class CdmGenericDaoImpl
 			List<T> result = new ArrayList<>();
 			if(objectToMatch == null){
 				return result;
+			}else {
+			    objectToMatch = CdmBase.deproxy(objectToMatch);
 			}
 			if (matchStrategy == null){
 				matchStrategy = DefaultMatchStrategy.NewInstance(objectToMatch.getClass());
@@ -707,16 +765,28 @@ public class CdmGenericDaoImpl
 
 	    List<T> result = new ArrayList<>();
 		Session session = getSession();
-		Class<?> matchClass = objectToMatch.getClass();
+		Class<CdmBase> matchClass = (Class)objectToMatch.getClass();
 		ClassMetadata classMetaData = session.getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
-		Criteria criteria = session.createCriteria(matchClass);
-		boolean noMatch = makeCriteria(objectToMatch, matchStrategy, classMetaData, criteria, 1);
-		if (logger.isDebugEnabled()){logger.debug(criteria);}
+
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<CdmBase> query = cb.createQuery(matchClass);
+		List<Predicate> finalAndPredicates = new ArrayList<>();
+		Root<CdmBase> root = query.from(matchClass);
+		root.alias("root");
+		boolean noMatch = makeCriteria(objectToMatch, matchStrategy, classMetaData,
+		        cb, finalAndPredicates, root, 1);
+		Predicate finalPredicate = cb.and(finalAndPredicates.toArray(new Predicate[0]));
+		query.select(root)
+		     .where(finalPredicate);
+
+		if (logger.isDebugEnabled()){logger.warn(query);}
+
 		//session.flush();
 		if (noMatch == false){
-			@SuppressWarnings("unchecked")
-			//deduplicate (for some reason the match candidate list return matching teams >1x if they have >1 member, so we deduplicate to be on the safe site
-            List<T> matchCandidates = deduplicateResult(criteria.list());
+
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+            //deduplicate (for some reason the match candidate list return matching teams >1x if they have >1 member, so we deduplicate to be on the safe site
+			List<T> matchCandidates = deduplicateResult((List)session.createQuery(query).getResultList());
 			matchCandidates.remove(objectToMatch);
 			for (T matchCandidate : matchCandidates ){
 				if (includeCandidates || matchStrategy.invoke(objectToMatch, matchCandidate).isSuccessful()){
@@ -736,6 +806,7 @@ public class CdmGenericDaoImpl
 	 * @param objectToMatch the object to match
 	 * @param matchStrategy the match strategy used
 	 * @param classMetaData the precomputed class metadata
+	 * @param finalAndPredicates
 	 * @param criteria the criteria to fill
 	 * @param level recursion level
 	 * @return <code>true</code> if definitely no matching object will be found,
@@ -743,11 +814,14 @@ public class CdmGenericDaoImpl
 	 */
 	private boolean makeCriteria(Object objectToMatch,
 			IMatchStrategy matchStrategy, ClassMetadata classMetaData,
-			Criteria criteria, int level) throws IllegalAccessException, MatchException {
+			CriteriaBuilder cb, List<Predicate> finalAndPredicates,
+			From<CdmBase, CdmBase> from, int level) throws IllegalAccessException, MatchException {
 
 	    Matching matching = matchStrategy.getMatching((IMatchable)objectToMatch);
 		boolean noMatch = false;
 		Map<String, List<MatchMode>> replaceMatchers = new HashMap<>();
+
+		//cache matcher
 		for (CacheMatcher cacheMatcher: matching.getCacheMatchers()){
 		    Field protectedField = cacheMatcher.getProtectedField(matching);
 			boolean cacheProtected = protectedField == null ? false : (Boolean)protectedField.get(objectToMatch);
@@ -756,8 +830,11 @@ public class CdmGenericDaoImpl
 				if (StringUtils.isBlank(cacheValue)){
 					return true;  //no match
 				}else{
-					criteria.add(Restrictions.eq(cacheMatcher.getPropertyName(), cacheValue));
-					criteria.add(Restrictions.eq(cacheMatcher.getProtectedPropertyName(), cacheProtected));
+//				    cacheMatcher.getField().getDeclaringClass();
+				    Predicate p = predicateStrNotNull(cb, from, cacheMatcher.getPropertyName(), cacheValue);
+				    finalAndPredicates.add(p);
+				    Predicate p2 = predicateBoolean(cb, from, cacheMatcher.getProtectedPropertyName(), cacheProtected);
+				    finalAndPredicates.add(p2);
 
 					List<DoubleResult<String, MatchMode>> replacementModes = cacheMatcher.getReplaceMatchModes(matching);
 					for (DoubleResult<String, MatchMode> replacementMode: replacementModes ){
@@ -769,10 +846,11 @@ public class CdmGenericDaoImpl
 						}
 						replaceMatcherList.add(replacementMode.getSecondResult());
 					}
-
 				}
 			}
 		}
+
+		//field matcher
 		for (FieldMatcher fieldMatcher : matching.getFieldMatchers(false)){
 			String propertyName = fieldMatcher.getPropertyName();
 			Type propertyType = classMetaData.getPropertyType(propertyName);
@@ -789,9 +867,9 @@ public class CdmGenericDaoImpl
 			}
 			if (! isIgnore ){
 				if (propertyType.isComponentType()){
-					matchComponentType(criteria, fieldMatcher, propertyName, value, matchModes);
+					matchComponentType(cb, finalAndPredicates, from, fieldMatcher, propertyName, value, matchModes);
 				}else{
-					noMatch = matchNonComponentType(criteria, fieldMatcher, propertyName, value, matchModes, propertyType, level);
+					noMatch = matchNonComponentType(cb, finalAndPredicates, from, fieldMatcher, propertyName, value, matchModes, propertyType, level);
 				}
 			}
 			if (noMatch){
@@ -801,13 +879,16 @@ public class CdmGenericDaoImpl
 		return noMatch;
 	}
 
-	private void matchComponentType(Criteria criteria,
+	private void matchComponentType(CriteriaBuilder cb, List<Predicate> andPredicates, Path<CdmBase> root,
 			FieldMatcher fieldMatcher, String propertyName, Object value,
 			List<MatchMode> matchModes) throws MatchException, IllegalAccessException {
-		if (value == null){
+
+	    if (value == null){
 			boolean requiresSecondNull = requiresSecondNull(matchModes, null);
 			if (requiresSecondNull){
-				criteria.add(Restrictions.isNull(propertyName));
+			    Predicate p = predicateIsNull(cb, root, propertyName);
+			    andPredicates.add(p);
+//				criteria.add(Restrictions.isNull(propertyName));
 			}else{
 				//this should not happen, should be handled as ignore before
 				logger.warn("Component type not yet implemented for (null) value: " + propertyName);
@@ -817,10 +898,12 @@ public class CdmGenericDaoImpl
 			Class<?> componentClass = fieldMatcher.getField().getType();
 			Map<String, Field> fields = CdmUtils.getAllFields(componentClass, Object.class, false, false, true, false);
 			for (String fieldName : fields.keySet()){
-				String restrictionPath = propertyName +"."+fieldName;
+//			    String restrictionPath = propertyName +"."+fieldName;
 				Object componentValue = fields.get(fieldName).get(value);
+				Path<Object> path = root.get(propertyName).get(fieldName);
 				//TODO differentiate matchMode
-				createCriterion(criteria, restrictionPath, componentValue, matchModes);
+				Predicate predicate = createCriterion(cb, path, componentValue, matchModes);
+				andPredicates.add(predicate);
 			}
 		}
 	}
@@ -828,7 +911,7 @@ public class CdmGenericDaoImpl
     /**
      * @param level the recursion level
      */
-    private boolean matchNonComponentType(Criteria criteria,
+    private boolean matchNonComponentType(CriteriaBuilder cb, List<Predicate> finalAndPredicates, From<CdmBase,CdmBase> root,
 			FieldMatcher fieldMatcher,
 			String propertyName,
 			Object value,
@@ -841,13 +924,13 @@ public class CdmGenericDaoImpl
 			noMatch = true;
 			return noMatch;
 		}else if (requiresSecondNull(matchModes,value)){
-			criteria.add(Restrictions.isNull(propertyName));
+		    finalAndPredicates.add(predicateIsNull(cb, root, propertyName));
 		}else{
 			if (isMatch(matchModes)){
 				if (propertyType.isCollectionType()){
 				    if (value instanceof Collection) {
 				        //TODO fieldMatcher?
-	                    matchCollection(criteria, propertyName, (Collection<?>)value, level);
+	                    matchCollection(cb, finalAndPredicates, root, propertyName, (Collection<?>)value, level);
 
 				    }else if (value instanceof Map) {
 				        //TODO map not yet handled for match
@@ -855,24 +938,39 @@ public class CdmGenericDaoImpl
 				        //TODO not yet handled
 				    }
 				}else{
-					JoinType joinType = JoinType.INNER_JOIN;
-					if (! requiresSecondValue(matchModes, value)){
-						joinType = JoinType.LEFT_OUTER_JOIN;
-					}
-					Criteria matchCriteria = criteria.createCriteria(propertyName, joinType).add(Restrictions.isNotNull("id"));
+//					JoinType joinTypeHib = JoinType.INNER_JOIN;
+//					if (! requiresSecondValue(matchModes, value)){
+//						joinType = JoinType.LEFT_OUTER_JOIN;
+//					}
+					JoinType joinType = JoinType.INNER;
+                    if (! requiresSecondValue(matchModes, value)){
+                        joinType = JoinType.LEFT;
+                    }
+
+					//TODO Object
+					Join<CdmBase, CdmBase> join = root.join(propertyName, joinType);
+//					join.on(cb.isNotNull(join.get("id")));
+
 					@SuppressWarnings("rawtypes")
                     Class matchClass = value.getClass();
-					if (IMatchable.class.isAssignableFrom(matchClass)){
+                    if (IMatchable.class.isAssignableFrom(matchClass)){
+                        @SuppressWarnings({ "rawtypes", "unchecked" })
+                        Join specificJoin = cb.treat(join, matchClass);
+                        //TODO do we want an explicit type check here like cb.equal(join.type(), matchClass);
+                        //     maybe not needed as we want to allow 2 objects to match even if they are of different subtypes
+                        //     but they have only attributes in use that are available also in the superclass
 						IMatchStrategy valueMatchStrategy = fieldMatcher.getMatchStrategy() != null? fieldMatcher.getMatchStrategy() : DefaultMatchStrategy.NewInstance(matchClass);
 						ClassMetadata valueClassMetaData = getSession().getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
-						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria, level+1);
+						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, cb, finalAndPredicates, specificJoin, level+1);
+//						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria, level+1);
 					}else{
 						logger.error("Class to match (" + matchClass + ") is not of type IMatchable");
 						throw new MatchException("Class to match (" + matchClass + ") is not of type IMatchable");
 					}
 				}
 			}else if (isEqual(matchModes)){
-				createCriterion(criteria, propertyName, value, matchModes);
+				Predicate p = createCriterion(cb, root, propertyName, value, matchModes);
+				finalAndPredicates.add(p);
 			}else {
 				logger.warn("Unhandled match mode: " + matchModes + ", value: " + (value==null?"null":value));
 			}
@@ -891,7 +989,7 @@ public class CdmGenericDaoImpl
      *
      * @param level recursion level
      */
-    private void matchCollection(Criteria criteria, String propertyName, Collection<?> collection, int level) {
+    private void matchCollection(CriteriaBuilder cb, List<Predicate> andPredicates, From<CdmBase,CdmBase> root, String propertyName, Collection<?> collection, int level) {
         int i = 0;
         //this is a workaround to avoid handling TeamOrPersonBase e.g. in references.
         //TeamOrPersonBase does not have a property 'teamMembers' and therefore an
@@ -900,14 +998,17 @@ public class CdmGenericDaoImpl
             return;
         }
 
-        criteria.add(Restrictions.sizeEq(propertyName, collection.size()));
+        andPredicates.add(predicateCollectionSize(cb, root, propertyName, collection.size()));
+//        criteria.add(Restrictions.sizeEq(propertyName, collection.size()));
 
 //        String propertyAlias = propertyName+"Alias";
 //        criteria.createAlias(propertyName, propertyAlias);
         //In future (hibernate >5.1 JPA will allow using index joins: https://www.logicbig.com/tutorials/java-ee-tutorial/jpa/criteria-api-collection-operations.html
 //        Criteria subCriteria = criteria.createCriteria(propertyName+"[1]");
 
-        Criteria subCriteria = criteria.createCriteria(propertyName);
+        Join<CdmBase,CdmBase> join = root.join(propertyName, JoinType.INNER);
+        //join.alias(propertyName); only for debugging
+//        Criteria subCriteria = criteria.createCriteria(propertyName);
 
         for (Object single : collection) {
             Class<?> classOfSingle = CdmBase.deproxy(single).getClass();
@@ -924,7 +1025,9 @@ public class CdmGenericDaoImpl
 //              criteria.add(criterion2);
 
                 if (StringUtils.isNotBlank(person.getNomenclaturalTitle())) {
-                    subCriteria.add(Restrictions.eq("nomenclaturalTitle", person.getNomenclaturalTitle()));
+                    Predicate nomTitlePred = cb.equal(join.get("nomenclaturalTitle"), person.getNomenclaturalTitle());
+                    andPredicates.add(nomTitlePred);
+                    //subCriteria.add(Restrictions.eq("nomenclaturalTitle", person.getNomenclaturalTitle()));
 //                    subCriteria.add(Restrictions.eq("index()", i));
                     i++;
                 }else {
@@ -937,20 +1040,38 @@ public class CdmGenericDaoImpl
         }
     }
 
-	private void createCriterion(Criteria criteria, String propertyName,
+    private Predicate createCriterion(CriteriaBuilder cb, Path<CdmBase> root, String propertyName,
+            Object value, List<MatchMode> matchModes) throws MatchException {
+        return createCriterion(cb, root.get(propertyName), value, matchModes);
+    }
+
+    private Predicate createCriterion(CriteriaBuilder cb, Path<Object> path,
 			Object value, List<MatchMode> matchModes) throws MatchException {
-		Criterion finalRestriction = null;
-		Criterion equalRestriction = Restrictions.eq(propertyName, value);
-		Criterion nullRestriction = Restrictions.isNull(propertyName);
-		if (this.requiresSecondValue(matchModes, value)){
-			finalRestriction = equalRestriction;
-		}else if (requiresSecondNull(matchModes, value) ){
-			finalRestriction = nullRestriction;
-		}else{
-			finalRestriction = Restrictions.or(equalRestriction, nullRestriction);
-		}
+
+	    Predicate eqPred = cb.equal(path, value);
+	    Predicate nullPred = cb.isNull(path);
+        Predicate finalPredicate = null;
+	    if (this.requiresSecondValue(matchModes, value)){
+	        finalPredicate = eqPred;
+        }else if (requiresSecondNull(matchModes, value) ){
+            finalPredicate = nullPred;
+        }else{
+            finalPredicate = cb.or(eqPred, nullPred);
+        }
+	    return finalPredicate;
+
+//	    Criterion finalRestriction = null;
+//		Criterion equalRestriction = Restrictions.eq(propertyName, value);
+//		Criterion nullRestriction = Restrictions.isNull(propertyName);
+//		if (this.requiresSecondValue(matchModes, value)){
+//			finalRestriction = equalRestriction;
+//		}else if (requiresSecondNull(matchModes, value) ){
+//			finalRestriction = nullRestriction;
+//		}else{
+//			finalRestriction = Restrictions.or(equalRestriction, nullRestriction);
+//		}
 		//return finalRestriction;
-		criteria.add(finalRestriction);
+//		criteria.add(finalRestriction);
 	}
 
 	private boolean requiresSecondNull(List<MatchMode> matchModes, Object value) throws MatchException {
@@ -1013,16 +1134,12 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-    public List<CdmMetaData> getMetaData() {
-		Session session = getSession();
-		Criteria crit = session.createCriteria(CdmMetaData.class);
-		@SuppressWarnings("unchecked")
-        List<CdmMetaData> results = crit.list();
-		return results;
+    public List<CdmMetaData> listCdmMetaData() {
+	    return super.list(CdmMetaData.class);
 	}
 
     @Override
-    public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> appendedPropertyPaths)  {
+    public <S extends CdmBase> Object initializeCollection(Class<S> clazz, UUID ownerUuid, String fieldName, List<String> appendedPropertyPaths)  {
         List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add(fieldName);
         if(appendedPropertyPaths != null && !appendedPropertyPaths.isEmpty()) {
@@ -1030,7 +1147,7 @@ public class CdmGenericDaoImpl
                 propertyPaths.add(fieldName + "." + app);
             }
         }
-        CdmBase cdmBase = load(ownerUuid, propertyPaths);
+        S cdmBase = find(clazz, ownerUuid, propertyPaths);
         Field field = ReflectionUtils.findField(cdmBase.getClass(), fieldName);
         field.setAccessible(true);
         Object obj;
@@ -1047,13 +1164,13 @@ public class CdmGenericDaoImpl
     }
 
     @Override
-    public Object initializeCollection(UUID ownerUuid, String fieldName)  {
-        return initializeCollection(ownerUuid, fieldName, null);
+    public <S extends CdmBase> Object initializeCollection(Class<S> clazz, UUID ownerUuid, String fieldName)  {
+        return initializeCollection(clazz, ownerUuid, fieldName, null);
     }
 
     @Override
-    public boolean isEmpty(UUID ownerUuid, String fieldName) {
-        Object col = initializeCollection(ownerUuid, fieldName);
+    public <S extends CdmBase> boolean isEmpty(Class<S> clazz, UUID ownerUuid, String fieldName) {
+        Object col = initializeCollection(clazz, ownerUuid, fieldName);
         if(col instanceof Collection) {
             return ((Collection<?>)col).isEmpty();
         } else if(col instanceof Map){
@@ -1064,8 +1181,8 @@ public class CdmGenericDaoImpl
     }
 
     @Override
-    public int size(UUID ownerUuid, String fieldName) {
-        Object col = initializeCollection(ownerUuid, fieldName);
+    public <S extends CdmBase> int size(Class<S> clazz, UUID ownerUuid, String fieldName) {
+        Object col = initializeCollection(clazz, ownerUuid, fieldName);
         if(col instanceof Collection) {
             return ((Collection<?>)col).size();
         } else if(col instanceof Map){
@@ -1075,8 +1192,8 @@ public class CdmGenericDaoImpl
     }
 
     @Override
-    public Object get(UUID ownerUuid, String fieldName, int index) {
-        Object col = initializeCollection(ownerUuid, fieldName);
+    public <S extends CdmBase> Object get(Class<S> clazz, UUID ownerUuid, String fieldName, int index) {
+        Object col = initializeCollection(clazz, ownerUuid, fieldName);
         if(col instanceof List) {
             return ((List<?>)col).get(index);
         } else {
@@ -1085,8 +1202,8 @@ public class CdmGenericDaoImpl
     }
 
     @Override
-    public boolean contains(UUID ownerUuid, String fieldName, Object element) {
-        Object col = initializeCollection(ownerUuid, fieldName);
+    public <S extends CdmBase> boolean contains(Class<S> clazz, UUID ownerUuid, String fieldName, Object element) {
+        Object col = initializeCollection(clazz, ownerUuid, fieldName);
         if(col instanceof Collection) {
             return ((Collection<?>)col).contains(element);
         } else {
@@ -1095,8 +1212,8 @@ public class CdmGenericDaoImpl
     }
 
     @Override
-    public boolean containsKey(UUID ownerUuid, String fieldName, Object key) {
-        Object col = initializeCollection(ownerUuid, fieldName);
+    public <S extends CdmBase> boolean containsKey(Class<S> clazz, UUID ownerUuid, String fieldName, Object key) {
+        Object col = initializeCollection(clazz, ownerUuid, fieldName);
         if(col instanceof Map) {
             return ((Map<?,?>)col).containsKey(key);
         } else {
@@ -1105,8 +1222,8 @@ public class CdmGenericDaoImpl
     }
 
     @Override
-    public boolean containsValue(UUID ownerUuid, String fieldName, Object value) {
-        Object col = initializeCollection(ownerUuid, fieldName);
+    public <S extends CdmBase> boolean containsValue(Class<S> clazz, UUID ownerUuid, String fieldName, Object value) {
+        Object col = initializeCollection(clazz, ownerUuid, fieldName);
         if(col instanceof Map) {
             return ((Map<?,?>)col).containsValue(value);
         } else {
@@ -1137,4 +1254,40 @@ public class CdmGenericDaoImpl
         return result;
     }
 
+
+    @Override
+    public UUID delete(CdmBase objectToDelete) throws DataAccessException {
+        return super.delete_(objectToDelete);
+    }
+
+    @Override
+    public <S extends CdmBase> CdmBase save(S newInstance) throws DataAccessException {
+        return super.save_(newInstance);
+    }
+
+    @Override
+    public UUID saveOrUpdate(CdmBase transientObject) throws DataAccessException {
+        return super.saveOrUpdate_(transientObject);
+    }
+
+    @Override
+    public UUID update(CdmBase transientObject) throws DataAccessException {
+        return super.update_(transientObject);
+    }
+
+    @Override
+    public long count(Class<? extends CdmBase> type) {
+        return super.count_(type);
+    }
+
+    @Override
+    public <S extends CdmBase> List<S> list(Class<S> clazz, Integer limit, Integer start, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
+        return super.list_(clazz, limit, start, orderHints, propertyPaths);
+    }
+
+    @Override
+    public UUID refresh(CdmBase persistentObject) throws DataAccessException {
+        return super.refresh_(persistentObject);
+    }
 }

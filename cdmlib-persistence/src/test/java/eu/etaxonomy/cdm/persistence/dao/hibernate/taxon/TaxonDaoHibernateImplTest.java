@@ -174,7 +174,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assert sec != null : "sec must exist";
 
         @SuppressWarnings("rawtypes")
-        List<TaxonBase> results = taxonDao.getTaxaByName("Aus", includeUnpublished, sec);
+        List<? extends TaxonBase> results = taxonDao.getTaxaByName("Aus", includeUnpublished, sec);
         assertNotNull("getTaxaByName should return a List", results);
         //assertFalse("The list should not be empty", results.isEmpty());
         assertEquals(1, results.size());

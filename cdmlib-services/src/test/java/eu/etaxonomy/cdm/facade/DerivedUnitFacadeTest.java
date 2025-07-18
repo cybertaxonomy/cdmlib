@@ -39,9 +39,6 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UTF8;
-import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.facade.DerivedUnitFacadeNotSupportedException;
-import eu.etaxonomy.cdm.facade.MethodNotSupportedByDerivedUnitTypeException;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -1223,13 +1220,13 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public void testGetSetLifeStage() {
-        assertNotNull("Life stage must not be null", specimenFacade.getLifeStage());
-        assertEquals("Life stage must be same", lifeStage, specimenFacade.getLifeStage());
-        specimenFacade.setLifeStage(null);
-        assertNull("Life stage must be null", specimenFacade.getLifeStage());
+        assertNotNull("Life stage must not be null", specimenFacade.getFieldUnitLifeStage());
+        assertEquals("Life stage must be same", lifeStage, specimenFacade.getFieldUnitLifeStage());
+        specimenFacade.setFieldUnitLifeStage(null);
+        assertNull("Life stage must be null", specimenFacade.getFieldUnitLifeStage());
         //don't create if null
         DerivedUnitFacade facade = emptyFacade();
-        emptyFacade().setLifeStage(null);
+        emptyFacade().setFieldUnitLifeStage(null);
         assertNull(facade.innerFieldUnit());
     }
 
@@ -1239,13 +1236,13 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public void testGetSetSex() {
-        assertNotNull("Sex must not be null", specimenFacade.getSex());
-        assertEquals("Sex must be same", sex, specimenFacade.getSex());
-        specimenFacade.setSex(null);
-        assertNull("Sex must be null", specimenFacade.getSex());
+        assertNotNull("Sex must not be null", specimenFacade.getFieldUnitSex());
+        assertEquals("Sex must be same", sex, specimenFacade.getFieldUnitSex());
+        specimenFacade.setFieldUnitSex(null);
+        assertNull("Sex must be null", specimenFacade.getFieldUnitSex());
         //don't create if null
         DerivedUnitFacade facade = emptyFacade();
-        emptyFacade().setSex(null);
+        emptyFacade().setFieldUnitSex(null);
         assertNull(facade.innerFieldUnit());
     }
 

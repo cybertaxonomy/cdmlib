@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -46,7 +45,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      */
     public DefinedTermBase getByUri(URI uri);
 
-    public UUID saveLanguageData(LanguageStringBase languageData);
+    public UUID saveLanguageData(LanguageString languageData);
 
     public List<LanguageString> getAllLanguageStrings(int limit, int start);
 
@@ -262,7 +261,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param uuidList
      * @return
      */
-    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList);
+    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList, Language lang);
 
 
     public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList);

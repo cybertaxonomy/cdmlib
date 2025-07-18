@@ -9,21 +9,13 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
-import org.hibernate.ObjectDeletedException;
 import org.hibernate.envers.query.criteria.AuditCriterion;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
-import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
@@ -33,9 +25,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 public abstract class VersionableServiceBase<T extends VersionableEntity, DAO extends IVersionableDao<T>>
         extends ServiceBase<T,DAO>
         implements IVersionableService<T> {
-
-    @Autowired
-    protected ICommonService commonService;
 
 	@Override
     @Transactional(readOnly = true)
@@ -74,32 +63,4 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
 
 		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
-
-	 /**
-     * the basic isDeletable method return false if the object is referenced from any other object.
-     */
-
-    @Override
-    @Transactional(readOnly = true)
-    public DeleteResult isDeletable(UUID baseUUID, DeleteConfiguratorBase config){
-    	DeleteResult result = new DeleteResult();
-    	T base = this.find(baseUUID);
-    	if (base == null){
-    	    result.setAbort();
-    	    result.addException(new ObjectDeletedException("The object was already deleted.", baseUUID, null));
-    	}
-    	Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(base);
-    	if (references != null){
-	    	result.addRelatedObjects(references);
-	    	Iterator<CdmBase> iterator = references.iterator();
-	    	CdmBase ref;
-	    	while (iterator.hasNext()){
-	    		ref = iterator.next();
-	    		String message = "An object of " + ref.getClass().getName() + " with ID " + ref.getId() + " is referencing the object" ;
-	    		result.addException(new ReferencedObjectUndeletableException(message));
-	    		result.setAbort();
-	    	}
-    	}
-    	return result;
-    }
 }

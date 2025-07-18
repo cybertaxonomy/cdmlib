@@ -39,7 +39,8 @@ public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
 
 	@Override
     public long countAnnotations(T annotatableEntity, MarkerType status) {
-		checkNotInPriorView("AnnotatableDaoBaseImpl.countAnnotations(T annotatableEntity, MarkerType status)");
+
+	    checkNotInPriorView("AnnotatableDaoBaseImpl.countAnnotations(T annotatableEntity, MarkerType status)");
 		Query<Long> query = null;
 
 		String className = annotatableEntity.getClass().getName();

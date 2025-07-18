@@ -4,7 +4,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>5.51.0</version>
+    <version>5.52.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>cdmlib-remote-webapp</artifactId>
@@ -272,6 +272,7 @@
             -Dcdm.forceSchemaCreate=${integrationTest.jvmArgs.cdm.forceSchemaCreate}
             -Dlog4j.configuration=${integrationTest.jvmArgs.log4j.configuration}
             -Dorg.eclipse.jetty.annotations.AnnotationParser.LEVEL=OFF
+            --add-opens java.base/java.lang=ALL-UNNAMED
            </jvmArgs>
           <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty.xml,${basedir}/src/test/resources/etc/jetty/jetty-http.xml</jettyXml>
           <!-- <jettyXml>./src/test/resources/etc/jetty/jetty.xml,./src/test/resources/etc/jetty/jetty-http.xml,./src/test/resources/etc/jetty/jetty-ssl.xml,./src/test/resources/etc/jetty/jetty-https.xml</jettyXml> -->

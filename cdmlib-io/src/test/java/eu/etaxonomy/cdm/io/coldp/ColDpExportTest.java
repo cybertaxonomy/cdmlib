@@ -51,7 +51,7 @@ public class ColDpExportTest
 
     //TODO check referenceID and remarks
     private String expectedArmenianDistributionLine = uuid(subspeciesTaxonUuid) + NONE +
-            "\"ARM\",\"Armenia\",\"iso\",\"uncertain\"," + NONE + NONE_END;
+            "\"ARM\",\"Armenia\",\"iso\",\"uncertain\",\"e2edf07d-552a-46cd-85da-86a491847aeb\"," + NONE_END;
 
     private String expectedFamilyNameLine = uuid(familyNameUuid) + "\"wfo:WFO-12347f\"," + NONE2 + "\"Familyname\",\"L.\",\"family\",\"Familyname\"," +
             NONE4 + NONE + "\"L.\"," + NONE + "\"1752\"," + NONE3 + "\"ICN\",\"conserved\"," +
@@ -86,7 +86,7 @@ public class ColDpExportTest
     //FIXME vernacular name line
     //TODO vern name: area + refID
     private String expectedVernacularNameLine = uuid(speciesTaxonUuid) + NONE +
-            "\"Tanne\"," + NONE + "\"ger\"," + NONE3 + NONE_END;
+            "\"Tanne\"," + NONE + "\"ger\"," + NONE3 + "\"c68e0a88-7b96-465d-b4ce-d14b13daf94f\"" ;
 
     @Before
     public void setUp()  {
@@ -116,7 +116,7 @@ public class ColDpExportTest
         Assert.assertEquals("There should be no synonym", 0, synonymResult.size() - COUNT_HEADER);
 
         List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
-        Assert.assertEquals("There should be 2 references (1 nomenclatural references and 1 sec reference)", 2, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 3 references (1 nomenclatural references and 1 sec reference, 1 fact reference)", 3, referenceResult.size() - COUNT_HEADER);
 
         List<String> distributionResult = getStringList(data, ColDpExportTable.DISTRIBUTION);
         Assert.assertEquals("There should be 1 distribution", 1, distributionResult.size() - COUNT_HEADER);
@@ -165,13 +165,13 @@ public class ColDpExportTest
         Assert.assertEquals("There should be 5 taxa", 5, taxonResult.size() - COUNT_HEADER);
 
         List<String> synonymResult = getStringList(data, ColDpExportTable.SYNONYM);
-        Assert.assertEquals("There should be 3 synonym", 3, synonymResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 4 synonym", 4, synonymResult.size() - COUNT_HEADER);
 
         List<String> nameResult = getStringList(data, ColDpExportTable.NAME);
-        Assert.assertEquals("There should be 8 names", 8, nameResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 9 names", 9, nameResult.size() - COUNT_HEADER);
 
         List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
-        Assert.assertEquals("There should be 11 references (8 nomenclatural references and 3 sec reference)", 11, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 14 references (9 nomenclatural references and 3 sec reference, 2 fact references)", 14, referenceResult.size() - COUNT_HEADER);
 
         List<String> distributionResult = getStringList(data, ColDpExportTable.DISTRIBUTION);
         Assert.assertEquals("There should be 1 distribution", 1, distributionResult.size() - COUNT_HEADER);
@@ -281,13 +281,13 @@ public class ColDpExportTest
         Assert.assertEquals("There should be 4 taxa", 4, taxonResult.size() - COUNT_HEADER);
 
         List<String> nameResult = getStringList(data, ColDpExportTable.NAME);
-        Assert.assertEquals("There should be 6 names", 6, nameResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 7 names", 7, nameResult.size() - COUNT_HEADER);
 
         List<String> referenceResult = getStringList(data, ColDpExportTable.REFERENCE);
-        Assert.assertEquals("There should be 9 references", 9, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 12 references", 12, referenceResult.size() - COUNT_HEADER);
 
         List<String> synonymResult = getStringList(data, ColDpExportTable.SYNONYM);
-        Assert.assertEquals("There should be two synonyms", 2, synonymResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be three synonyms", 3, synonymResult.size() - COUNT_HEADER);
 
         //tbc
     }

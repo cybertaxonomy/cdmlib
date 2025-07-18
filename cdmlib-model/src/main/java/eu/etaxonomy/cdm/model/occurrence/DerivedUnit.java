@@ -136,7 +136,7 @@ public class DerivedUnit
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@IndexedEmbedded(depth = 4)
 	private DerivationEvent derivedFrom;
 

@@ -65,16 +65,13 @@ public interface ITaxonDao
      * @param sec
      * @return
      */
-    public List<TaxonBase> getTaxaByName(String name, boolean includeUnpublished, Reference sec);
+    public List<? extends TaxonBase> getTaxaByName(String name, boolean includeUnpublished, Reference sec);
 
     /**
      * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false)
      * where the taxonBase.name.nameCache property matches the String queryString, and taxon.sec matches the sec parameter.
-     * @param name
-     * @param sec
-     * @return
      */
-    public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, boolean includeUnpublished, Reference sec);
+    public <S extends TaxonBase> List<S> getTaxaByName(String queryString, Boolean accepted, boolean includeUnpublished, Reference sec);
 
     /**
      * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false)

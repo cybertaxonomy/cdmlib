@@ -8,16 +8,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -64,18 +68,27 @@ public class DescriptiveDataSetDao
 
 		addPageSizeAndNumber(query, pageSize, pageNumber);
         List<DescriptionBase> descriptions = query.list();
-		Map<DescriptionBase, Set<DescriptionElementBase>> result = new HashMap<>();
-		for(DescriptionBase description : descriptions) {
-			Criteria criteria = getSession().createCriteria(DescriptionElementBase.class);
-			criteria.add(Restrictions.eq("inDescription", description));
-			if(features != null && !features.isEmpty()) {
-				criteria.add(Restrictions.in("feature", features));
-			}
 
-			@SuppressWarnings("unchecked")
-            List<DescriptionElementBase> r = criteria.list();
-			defaultBeanInitializer.initializeAll(r, propertyPaths);
-			result.put(description, new HashSet<>(r));
+        Map<DescriptionBase, Set<DescriptionElementBase>> result = new HashMap<>();
+		for(DescriptionBase<?> description : descriptions) {
+
+		    CriteriaBuilder cb = getCriteriaBuilder();
+	        CriteriaQuery<DescriptionElementBase> cq = cb.createQuery(DescriptionElementBase.class);
+	        Root<DescriptionElementBase> root = cq.from(DescriptionElementBase.class);
+
+	        List<Predicate> predicates = new ArrayList<>();
+
+	        predicates.add(cb.equal(root.get("inDescription"), description));
+	        if(!CdmUtils.isNullSafeEmpty(features)) {
+	            root.get("feature").in(features);
+	            predicates.add(root.get("feature").in(features));
+            }
+	        cq.select(root);
+	        cq.where(cb.and(predicates.toArray(new Predicate[0])));
+	        List<DescriptionElementBase> r = getSession().createQuery(cq).getResultList();
+
+	        defaultBeanInitializer.initializeAll(r, propertyPaths);
+            result.put(description, new HashSet<>(r));
 		}
 		return result;
 	}

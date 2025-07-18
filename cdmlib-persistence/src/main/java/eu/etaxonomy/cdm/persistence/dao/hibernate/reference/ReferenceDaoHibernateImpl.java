@@ -14,25 +14,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.reference.IArticle;
-import eu.etaxonomy.cdm.model.reference.IBookSection;
-import eu.etaxonomy.cdm.model.reference.IInProceedings;
-import eu.etaxonomy.cdm.model.reference.IPrintedUnitBase;
-import eu.etaxonomy.cdm.model.reference.IReport;
-import eu.etaxonomy.cdm.model.reference.IThesis;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -67,17 +64,17 @@ public class ReferenceDaoHibernateImpl
 			Hibernate.initialize(reference.getAuthorship());
 
 			if(reference.getType().equals(ReferenceType.Article)) {
-				Hibernate.initialize(((IArticle)reference).getInJournal());
+				Hibernate.initialize(reference.getInJournal());
 			} else if(reference.getType().equals(ReferenceType.BookSection)) {
-				   Hibernate.initialize(((IBookSection)reference).getInBook());
+				   Hibernate.initialize(reference.getInBook());
 			} else if(reference.getType().equals(ReferenceType.InProceedings)) {
-					Hibernate.initialize(((IInProceedings)reference).getInProceedings());
+					Hibernate.initialize(reference.getInProceedings());
 			}else if(reference.getType().equals(ReferenceType.Thesis)) {
-				Hibernate.initialize(((IThesis)reference).getSchool());
+				Hibernate.initialize(reference.getSchool());
 			} else if(reference.getType().equals(ReferenceType.Report)) {
-				Hibernate.initialize(((IReport)reference).getInstitution());
+				Hibernate.initialize(reference.getInstitution());
 			} else if(reference.getType().isPrintedUnit()) {
-				Hibernate.initialize(((IPrintedUnitBase)reference).getInSeries());
+				Hibernate.initialize(reference.getInSeries());
 			}
 			fullTextSession.index(reference);
 		}
@@ -118,7 +115,7 @@ public class ReferenceDaoHibernateImpl
         List<UuidAndTitleCache<Reference>> list = new ArrayList<>();
 
         for(Reference object : result){
-                list.add(new UuidAndTitleCache<Reference>(type, object.getUuid(), object.getId(), object.getTitleCache(), object.getAbbrevTitleCache()));
+                list.add(new UuidAndTitleCache<>(type, object.getUuid(), object.getId(), object.getTitleCache(), object.getAbbrevTitleCache()));
         }
 
         return list;
@@ -142,19 +139,21 @@ public class ReferenceDaoHibernateImpl
 	    if (uuids.isEmpty()){
             return new ArrayList<>();
         }
-        Criteria criteria = null;
 
-        criteria = getSession().createCriteria(Reference.class);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Reference> cq = cb.createQuery(Reference.class);
+        Root<Reference> root = cq.from(Reference.class);
 
-        if (refType != null){
-            criteria.add(Restrictions.and(Restrictions.in("uuid", uuids ),Restrictions.eq("type", refType)));
-        }else{
-            criteria.add(Restrictions.in("uuid", uuids ) );
+        List<Predicate> predicates = new ArrayList<>();
+        if (refType != null) {
+            predicates.add(cb.equal(root.get("refType"), refType));
         }
+        predicates.add(root.get("uuid").in(uuids));
 
-        @SuppressWarnings("unchecked")
-        List<Reference> result = criteria.list();
-        return result;
+        cq.select(root)
+          .where(cb.and(predicates.toArray(new Predicate[0])));
+
+        return getSession().createQuery(cq).getResultList();
 	}
 
 	@Override

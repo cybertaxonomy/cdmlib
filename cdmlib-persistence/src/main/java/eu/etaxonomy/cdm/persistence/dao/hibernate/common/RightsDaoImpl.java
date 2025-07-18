@@ -29,7 +29,9 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
  * @since 15.02.2017
  */
 @Repository
-public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements IRightsDao  {
+public class RightsDaoImpl
+            extends AnnotatableDaoBaseImpl<Rights>
+            implements IRightsDao  {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();

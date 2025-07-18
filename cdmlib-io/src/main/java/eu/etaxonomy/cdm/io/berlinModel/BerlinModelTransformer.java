@@ -172,7 +172,8 @@ public class BerlinModelTransformer {
     //E+M areas
 	public static UUID uuidVocEuroMedAreas = UUID.fromString("625a4962-c211-4597-816e-5804083efe26");
 	public static UUID uuidEM = UUID.fromString("111BDF38-7A32-440A-9808-8AF1C9E54B51");
-	public static UUID uuidEUR = UUID.fromString("80B3CEEE-2F78-45CE-B4F4-E473F5ED8343");
+	//OLD
+//	public static UUID uuidEUR = UUID.fromString("80B3CEEE-2F78-45CE-B4F4-E473F5ED8343");
 	public static UUID uuid14 = UUID.fromString("4FF83A35-97DE-4C39-BEDE-27EE9ECEFB45");
 	public static UUID uuid20 = UUID.fromString("19D93AD1-59E7-49ED-B513-D7D493EDC4DE");
 	public static UUID uuid21 = UUID.fromString("1B98DAF0-A709-4871-9A8B-CFDD09F41763");
@@ -266,8 +267,9 @@ public class BerlinModelTransformer {
 	public static UUID uuidHs_G = UUID.fromString("35350D75-6952-48BD-B265-C005BC1B2909");
 	public static UUID uuidHs_S = UUID.fromString("264649F7-192D-4AE5-9840-81FC782F59F0");
 	public static UUID uuidIr = UUID.fromString("A3B35528-5FFD-43B1-B605-711807C1EC9F");
-	public static UUID uuidIt_I = UUID.fromString("E3BC327E-0B42-4439-811B-595BC55A8FF8");
-	public static UUID uuidIt_S = UUID.fromString("57F35807-8CFA-4698-BB04-AAD3549C12EB");
+	//OLD
+//	public static UUID uuidIt_I = UUID.fromString("E3BC327E-0B42-4439-811B-595BC55A8FF8");
+//	public static UUID uuidIt_S = UUID.fromString("57F35807-8CFA-4698-BB04-AAD3549C12EB");
 	public static UUID uuidJo = UUID.fromString("567A537D-F2FA-43EF-A20A-AEC76723E269");
 	public static UUID uuidKz = UUID.fromString("F8ABE715-D859-4B6F-B8F1-DB1A847DEAC4");
 	public static UUID uuidLa = UUID.fromString("8E338882-2631-4AD6-BC53-799C698C807D");
@@ -320,6 +322,20 @@ public class BerlinModelTransformer {
 	public static UUID uuidTcs = UUID.fromString("904C3980-B98D-422E-A195-95F4F41FC734");
 	public static UUID uuidKo = UUID.fromString("f3f05e88-99af-48fa-92ef-1a169bcc7acf");
 	public static UUID uuidSe = UUID.fromString("75facd9a-125d-41b5-8f90-776234e782e9");
+
+	//E+M Mosses Areas
+	public static UUID uuidRf_A2 = UUID.fromString("59321008-4ac7-4606-8ea4-7e150f157ad2");
+	public static UUID uuidRf_C2 = UUID.fromString("46522349-95bf-4400-8b83-e6ac59c523cd");
+	public static UUID uuidEgSn = UUID.fromString("f3d52c4c-099b-4867-9186-0fd421c92808");
+	public static UUID uuidEUR = UUID.fromString("865e0fcc-bfb5-4af2-8822-08c90c7ba61e");
+	public static UUID uuidGr_AE_G = UUID.fromString("1b397872-a669-4eeb-8f9d-99b97d544ed8");
+	public static UUID uuidIt_I = UUID.fromString("ca411e6e-db82-4413-aba3-798d9ff7d7ae");
+	public static UUID uuidRf_NE = UUID.fromString("7e646713-052c-4c1b-9e80-b83c9945284a");
+	public static UUID uuidRf_NW2 = UUID.fromString("d0ff629f-b6d1-461a-8d39-f742096ac86a");
+	public static UUID uuidIt_S = UUID.fromString("0ecb56cb-52c9-471c-9247-3a24c31a7b3b");
+	public static UUID uuidRf_SE = UUID.fromString("e1cae7bb-6841-468d-9942-490806bbd7de");
+	public static UUID uuidRf_SU = UUID.fromString("b233032e-8bbb-4448-93a8-4202715bf76f");
+	public static UUID uuidIt_V = UUID.fromString("9bdf8a42-611c-4b48-9170-4aa58f5cd2b8");
 
 	//MCL
 	public static UUID uuidVocMclAreas = UUID.fromString("30dfb403-2c89-4567-8726-0b9528f8716e");
@@ -557,7 +573,7 @@ public class BerlinModelTransformer {
     public static final UUID uuidFeatureEditorialNotes = UUID.fromString("5f971b66-1bc7-4b12-923e-2b4ee8b3737d");
     public static final UUID uuidFeatureHabitatSalvador = UUID.fromString("d03a5e2c-fd93-4fff-b0b3-e16cefbb9847");
 
-	public static UUID uuidNomStatusCombIned = UUID.fromString("dde8a2e7-bf9e-42ec-b186-d5bde9c9c128");
+	public static UUID uuidNomStatusCombIned = UUID.fromString("71c13910-19a4-46b2-9ec8-2a8dbd45cd83");
 	public static UUID uuidNomStatusSpNovIned = UUID.fromString("1a359ca1-9364-43bc-93e4-834bdcd52b72");
 	public static UUID uuidNomStatusNomOrthCons = UUID.fromString("0f838183-ffa0-4014-928e-0e3a27eb3918");
 
@@ -571,6 +587,7 @@ public class BerlinModelTransformer {
 			return null;
 		}else if (nomStatus.equalsIgnoreCase("comb. ined.")){
 			if (nomStatusCombIned == null){
+                logger.error("This should not happen as comb. ined. is part of CDM core now");
 			    NomenclaturalStanding nomenclaturalStanding = NomenclaturalStanding.OTHER_DESIGNATION;
                 nomStatusCombIned = NomenclaturalStatusType.NewInstance("comb. ined.", "comb. ined.", "comb. ined.", Language.LATIN(), nomenclaturalStanding);
 				nomStatusCombIned.setUuid(uuidNomStatusCombIned);
@@ -579,7 +596,7 @@ public class BerlinModelTransformer {
 			result = nomStatusCombIned;
 		}else if (nomStatus.equalsIgnoreCase("sp. nov. ined.")){
 			if (nomStatusSpNovIned == null){
-			    NomenclaturalStanding nomenclaturalStanding = NomenclaturalStanding.OTHER_DESIGNATION;
+                NomenclaturalStanding nomenclaturalStanding = NomenclaturalStanding.OTHER_DESIGNATION;
                 nomStatusSpNovIned = NomenclaturalStatusType.NewInstance("sp. nov. ined.", "sp. nov. ined.", "sp. nov. ined.", Language.LATIN(), nomenclaturalStanding);
 				nomStatusSpNovIned.setUuid(uuidNomStatusSpNovIned);
 				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusSpNovIned);
@@ -587,6 +604,7 @@ public class BerlinModelTransformer {
 			result = nomStatusSpNovIned;
 		}else if (nomStatus.equalsIgnoreCase("nom. & orth. cons.")){
 			if (nomStatusNomOrthCons == null){
+			    logger.error("This should not happen as nom. & orth. cons. is part of CDM core now");
 			    NomenclaturalStanding nomenclaturalStanding = NomenclaturalStanding.VALID;
                 nomStatusNomOrthCons = NomenclaturalStatusType.NewInstance("nom. & orth. cons.", "nom. & orth. cons.", "nom. & orth. cons.", Language.LATIN(), nomenclaturalStanding);
 				nomStatusNomOrthCons.setUuid(uuidNomStatusNomOrthCons);

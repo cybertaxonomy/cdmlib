@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewE
 public class RandomOrder extends OrderHint {
 
     private static final long serialVersionUID = 9013839425292632385L;
-    private final static String PROPERTY_NAME = "uselessAnyways";
+    private final static String PROPERTY_NAME = "uuid"; //Note by AM: was "uselessAnyways" before switching to JPA, with JPA an incorrect property name is not allowed;
 
 	public RandomOrder() {
 		super(RandomOrder.PROPERTY_NAME,SortOrder.ASCENDING);

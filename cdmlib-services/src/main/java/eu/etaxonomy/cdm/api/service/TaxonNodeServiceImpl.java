@@ -243,7 +243,7 @@ public class TaxonNodeServiceImpl
             allRecords.addAll(synList);
         }
 
-        List<TaxonNodeDto> dtos = new ArrayList<>(pageSize==null?25:pageSize);
+        List<TaxonNodeDto> dtos = new ArrayList<TaxonNodeDto>(pageSize==null?25:pageSize);
         long totalCount = Long.valueOf(allRecords.size());
 
         TaxonName parentName = null;
@@ -346,11 +346,14 @@ public class TaxonNodeServiceImpl
         }
 
         Synonym newSyn = newAcceptedTaxon.addSynonymName(newSynonymName, newSec, microReference, synonymType);
-        save(newSyn);
+
+
         if (newSec == null){
             newSyn.setSec(newSec);
         }
         newSyn.setPublish(oldTaxon.isPublish());
+        sourceDao.saveOrUpdate(newSyn.getSecSource());
+        save(newSyn);
 
         // Move Synonyms to new Taxon
         // From ticket 3163 we can move taxon with accepted name having homotypic synonyms
@@ -382,9 +385,11 @@ public class TaxonNodeServiceImpl
             }
             if (secHandling != null &&  !secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn)){
                 synonym.setSec(newSec);
+                sourceDao.saveOrUpdate(synonym.getSecSource());
             }
             newAcceptedTaxon.addSynonym(synonym, srt);
         }
+        taxonService.saveOrUpdate(new HashSet(syns));
 
         // CHILD NODES
         if(oldTaxonNode.getChildNodes() != null && oldTaxonNode.getChildNodes().size() != 0){
@@ -446,13 +451,20 @@ public class TaxonNodeServiceImpl
         taxonService.saveOrUpdate(newAcceptedTaxon);
 
         taxonService.saveOrUpdate(oldTaxon);
-        taxonService.getSession().flush();
+        try {
+            taxonService.getSession().flush();
+        }catch(Exception e) {
+            DeleteResult result = new DeleteResult();
+            result.addException(e);
+            result.setAbort();
+            e.printStackTrace();
+            return result;
+        }
 
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
         conf.setDeleteNameIfPossible(false);
         DeleteResult taxonDeleteResult = taxonService.isDeletable(oldTaxon.getUuid(), conf);
-
         DeleteResult result;
         if (taxonDeleteResult.isOk()){
         	 result = taxonService.deleteTaxon(oldTaxon.getUuid(), conf, classification.getUuid());
@@ -848,13 +860,15 @@ public class TaxonNodeServiceImpl
         taxonNodePropertyPath.add("parent.taxon.secSource.*");
         TaxonNode targetNode = dao.load(newParentNodeUuid, taxonNodePropertyPath);
         List<TaxonNode> nodes = dao.list(taxonNodeUuids, null, null, null, null);
-        Reference sec = referenceDao.load(secUuid);
 
+        Reference sec = referenceDao.load(secUuid);
+        result.addUpdatedObject(targetNode);
         monitor.beginTask("Move Taxonnodes", nodes.size()*2);
         monitor.subTask("move taxon nodes");
         for (TaxonNode node: nodes){
             if (!monitor.isCanceled()){
                 if (!nodes.contains(node.getParent())){
+                    result.addUpdatedObject(node.getParent());
                     result.includeResult(moveTaxonNode(node, targetNode, movingType, secHandling, sec));
                 }
                 monitor.worked(1);
@@ -864,9 +878,17 @@ public class TaxonNodeServiceImpl
                 break;
             }
         }
-        if (!monitor.isCanceled()){
+        monitor.done();
+        if (!monitor.isCanceled() ){
             monitor.subTask("saving and reindex");
-            dao.saveOrUpdateAll(nodes);
+            IProgressMonitor subMonitor = new SubProgressMonitor(monitor, nodes.size());
+            try {
+                referenceDao.saveOrUpdate(sec);
+                dao.saveOrUpdateAll(nodes);
+                subMonitor.internalWorked(nodes.size());
+            }catch(Exception e) {
+                result.addException(e);
+            }
         }else{
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
@@ -1452,7 +1474,7 @@ public class TaxonNodeServiceImpl
     }
 
     private Synonym save(Synonym syn) {
-        taxonService.save(syn);
+        taxonService.saveOrUpdate(syn);
         return syn;
     }
 

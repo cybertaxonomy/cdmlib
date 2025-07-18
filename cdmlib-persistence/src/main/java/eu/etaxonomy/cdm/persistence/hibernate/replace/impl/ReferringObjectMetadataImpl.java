@@ -20,7 +20,8 @@ public abstract class ReferringObjectMetadataImpl implements ReferringObjectMeta
 
     public ReferringObjectMetadataImpl(Class fromClass, String propertyName,
 			Class<? extends CdmBase> toClass) throws SecurityException, NoSuchFieldException {
-		this.type = fromClass;
+
+        this.type = fromClass;
 		this.fieldName = propertyName;
 		try {
 		    this.field = type.getDeclaredField(fieldName);

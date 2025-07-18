@@ -517,4 +517,15 @@ public class ClassificationDaoHibernateImpl
         }
         return result;
     }
+
+    @Override
+    public boolean existsTaxonInClassification(UUID classificationUuid, UUID taxonUuid){
+        String hql = "SELECT count(*) as n FROM TaxonNode tn JOIN tn.taxon "
+                + " WHERE tn.taxon.uuid =: taxonUuid AND tn.classification.uuid =: classificationUuid ";
+        Query<Long> query = this.getSession().createQuery(hql, Long.class);
+        query.setParameter("taxonUuid", taxonUuid);
+        query.setParameter("classificationUuid", classificationUuid);
+        long n = query.getSingleResult();
+        return n > 0;
+    }
 }

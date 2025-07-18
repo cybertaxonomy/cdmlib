@@ -73,6 +73,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -129,6 +130,7 @@ public abstract class TaxonTreeExportTestBase
     protected static final UUID familyTaxonUuid = UUID.fromString("3162e136-f2e2-4f9a-9010-3f35908fbae1");
     protected static final UUID genusTaxonUuid = UUID.fromString("3f52e136-f2e1-4f9a-9010-2f35908fbd39");
     protected static final UUID speciesTaxonUuid = UUID.fromString("9182e136-f2e2-4f9a-9010-3f35908fb5e0");
+    protected static final UUID misappliedTaxonUuid = UUID.fromString("cd6d635a-7b23-48cd-b34b-e439f52fe049");
     protected static final UUID basionymSynonymUuid = UUID.fromString("08dfb25d-2283-42d6-9711-45656d988f4c");
     protected static final UUID subspeciesTaxonUuid = UUID.fromString("b2c86698-500e-4efb-b9ae-6bb6e701d4bc");
     protected static final UUID subspeciesUnpublishedTaxonUuid = UUID.fromString("290e295a-9089-4616-a30c-15ded79e064f");
@@ -137,6 +139,7 @@ public abstract class TaxonTreeExportTestBase
     protected static final UUID familyNameUuid = UUID.fromString("e983cc5e-4c77-4c80-8cb0-73d43df31ef7");
     protected static final UUID genusNameUuid = UUID.fromString("5e83cc5e-4c77-4d80-8cb0-73d63df35ee3");
     protected static final UUID speciesNameUuid = UUID.fromString("f983cc5e-4c77-4c80-8cb0-73d43df31ee9");
+    protected static final UUID misappliedNameNameUuid = UUID.fromString("635c3197-caef-4fe8-9201-095625677e30");
     protected static final UUID subspeciesNameUuid = UUID.fromString("3483cc5e-4c77-4c80-8cb0-73d43df31ee3");
     protected static final UUID subspeciesUnpublishedNameUUID = UUID.fromString("b6da7ab2-6c67-44b7-9719-2557542f5a23");
     protected static final UUID basionymNameUuid = UUID.fromString("c7962b1f-950e-4e28-a3d1-aa0583dfdc92");
@@ -160,10 +163,14 @@ public abstract class TaxonTreeExportTestBase
     protected static final UUID familyNomRefUuid = UUID.fromString("b0dd7f4a-0c7f-4372-bc5d-3b676363bc63");
     protected static final UUID genusNomRefUuid = UUID.fromString("5ed27f4a-6c7f-4372-bc5d-3b67636abc52");
     protected static final UUID speciesNomRefUuid = UUID.fromString("a0dd7f4a-0c7f-4372-bc5d-3b676363bc0e");
+    protected static final UUID misappliedNomRefUuid = UUID.fromString("2972d35a-8ddd-4f0c-919f-a8f7f6b9d8e4");
     protected static final UUID subspeciesNomRefUuid = UUID.fromString("b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f");
     protected static final UUID ref1UUID = UUID.fromString("4b6acca1-959b-4790-b76e-e474a0882990");
     protected static final UUID ref2UUID = UUID.fromString("b70e6ff1-c559-4b4c-860d-f035fce936b1");
     protected static final UUID ref3UUID = UUID.fromString("fa2a13e2-140b-44ef-8eec-3cffdda36e44");
+    protected static final UUID ref4UUID = UUID.fromString("c68e0a88-7b96-465d-b4ce-d14b13daf94f");
+    protected static final UUID ref5UUID = UUID.fromString("e2edf07d-552a-46cd-85da-86a491847aeb");
+    protected static final UUID ref6UUID = UUID.fromString("02a3e91f-b1c5-4fc4-bda2-d44ba7922867");
 
     //facts uuid
     protected static final UUID distributionArmeniaUuid = UUID.fromString("674e9e27-9102-4166-8626-8cb871a9a89b");
@@ -348,6 +355,18 @@ public abstract class TaxonTreeExportTestBase
         ref2.setAuthorship(createPerson("Author"));
         ref2.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1980));
 
+        Reference ref5 = createGenericRef("My fifth ref", ref6UUID);
+        ref5.setAuthorship(createPerson("Author"));
+        ref5.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1980));
+
+        Reference ref3 = createGenericRef("My third ref", ref4UUID);
+        ref3.setAuthorship(createPerson("Testauthor"));
+        ref3.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1981));
+
+        Reference ref4 = createGenericRef("My fourth ref", ref5UUID);
+        ref4.setAuthorship(createPerson("Testauthor"));
+        ref4.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1981));
+
         //classification
         Classification classification = Classification.NewInstance("CdmLightExportTest Classification");
         setUuid(classification, classificationUuid);
@@ -387,6 +406,16 @@ public abstract class TaxonTreeExportTestBase
         TaxonNode node3 = node2.addChildTaxon(species, sec1, "33");
         setUuid(node3, node3Uuid.toString());
         nodesToSave.add(node3);
+
+        TaxonName misappliedNameName = createParsedName(parser, "Genus misapplied Muell. in Sp. Pl. 4: 24. 1753",
+                NomenclaturalCode.ICNAFP, Rank.SPECIES(), misappliedNameNameUuid, misappliedNomRefUuid);
+
+        Taxon misapplied = Taxon.NewInstance(misappliedNameName, sec1);
+        setUuid(misapplied, misappliedTaxonUuid);
+        species.addMisappliedName(misapplied, ref5, null);
+
+        nameService.save(misappliedNameName);
+        taxonService.save(misapplied);
 
         //species basionym
         TaxonName basionymName = createParsedName(parser, "Sus basionus Mill., The book of botany 3: 22. 1804", NomenclaturalCode.ICNAFP, Rank.SPECIES());
@@ -431,6 +460,15 @@ public abstract class TaxonTreeExportTestBase
         synonymUnpublished.setPublish(false);
         species.addHomotypicSynonym(synonymUnpublished);
 
+        TaxonName synonymName2 = createParsedName(parser, "Genus second L., The second book: 2. 1905", NomenclaturalCode.ICNAFP, Rank.SPECIES());
+        setUuid(synonymName2, "33a0a275-9838-40e4-9df6-cb4f79c4b781");
+
+        Synonym synonymUnpublished2 = Synonym.NewInstance(synonymName2, ref2);
+        setUuid(synonymUnpublished2, "7bd48f8b-568f-4648-a9c3-ec00dbfed06da");
+        save(synonymUnpublished2);
+        synonymUnpublished2.setPublish(true);
+        species.addHomotypicSynonym(synonymUnpublished2);
+
         //subspecies
         TaxonName subspeciesName = createParsedName(parser, "Genus species subsp. subspec Mill., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), subspeciesNameUuid, subspeciesNomRefUuid);
@@ -470,11 +508,13 @@ public abstract class TaxonTreeExportTestBase
         TaxonDescription description = save(TaxonDescription.NewInstance(subspecies));
         Distribution distribution = Distribution.NewInstance(Country.ARMENIA(), PresenceAbsenceTerm.PRESENT());
         setUuid(distribution, distributionArmeniaUuid);
+        distribution.addSource(OriginalSourceType.PrimaryTaxonomicSource, ref4, null, null);
         description.addElement(distribution);
 
         //add common name to species
         TaxonDescription description2 = save(TaxonDescription.NewInstance(species));
         CommonTaxonName commonName = CommonTaxonName.NewInstance("Tanne", Language.GERMAN());
+        commonName.addSource(OriginalSourceType.PrimaryTaxonomicSource, ref3, null, null);
         setUuid(commonName, commonNameTanneUuid);
         description2.addElement(commonName);
 

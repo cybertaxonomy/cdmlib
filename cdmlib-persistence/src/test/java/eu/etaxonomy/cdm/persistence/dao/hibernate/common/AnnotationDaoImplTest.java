@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.permission.User;
@@ -33,7 +34,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @DataSet
-public class AnnotationDaoTest extends CdmIntegrationTest {
+public class AnnotationDaoImplTest extends CdmIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -71,6 +72,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		assertNotNull("getAnnotations should return a List",annotations);
 		assertFalse("the list should contain Annotation instances",annotations.isEmpty());
 		assertEquals("getAnnotations should return 4", 4, annotations.size());
+		assertEquals("First result should be first annotation created (id=2)", UUID.fromString("80d00b2d-3ad6-4ad5-83ac-b43dd6f13d94"), annotations.get(0).getUuid());
 	}
 
 	@Test
@@ -99,9 +101,9 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 	}
 
 	@Test
-	public void testCountAllAnnotationsWithStatus() {
-		MarkerType markerType = MarkerType.TO_BE_CHECKED();
+	public void testCount() {
 
+	    MarkerType markerType = MarkerType.TO_BE_CHECKED();
 		assert markerType != null : "markerType must exist";
 
 		long numberOfAnnotations = annotationDao.count((User)null, markerType);
@@ -109,13 +111,28 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 	}
 
 	@Test
-	public void testListAllAnnotationsWithStatus() {
-		MarkerType markerType = MarkerType.TO_BE_CHECKED();
+	public void testListAnnotations() {
+	    MarkerType markerType = null;
+	    User user = null;
+	    Person person = null;
+
+        List<Annotation> annotations = annotationDao.list(person, markerType, null, null, null, null);
+        assertEquals("getAnnotations should return 5", 5, annotations.size());
+
+        List<OrderHint> orderHints = new ArrayList<>();
+//        orderHints.add(new OrderHint("commentator.titleCache", SortOrder.ASCENDING));  //requires to join the commentator first, see according comments in base method
+        orderHints.add(new OrderHint("commentator", SortOrder.ASCENDING));
+        orderHints.add(OrderHint.ORDER_BY_ID_DESC);
+        annotations = annotationDao.list(person, markerType, null, null, orderHints, null);
+        assertEquals("getAnnotations should still return 5", 5, annotations.size());
+        assertEquals("First result should have highest ID (id=5)", UUID.fromString("76ff6174-a650-4cd8-88a0-cc140a1cbff2"), annotations.get(0).getUuid());
+
+
+	    //with status
+		markerType = MarkerType.TO_BE_CHECKED();
 		assert markerType != null : "markerType must exist";
 
-		List<Annotation> annotations = annotationDao.list((User)null, markerType, null, null, null, null);
-		assertNotNull("getAnnotations should return a List", annotations);
-		assertFalse("the list should contain Annotation instances", annotations.isEmpty());
+		annotations = annotationDao.list(user, markerType, null, null, null, null);
 		assertEquals("getAnnotations should return 2", 2, annotations.size());
 	}
 

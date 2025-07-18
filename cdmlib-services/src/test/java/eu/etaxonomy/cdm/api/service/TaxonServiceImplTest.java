@@ -134,9 +134,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     private IMarkerService markerService;
 
     @SpringBeanByType
-    private IEventBaseService eventService;
-
-    @SpringBeanByType
     private IOccurrenceService occurenceService;
 
     private Synonym synonym;

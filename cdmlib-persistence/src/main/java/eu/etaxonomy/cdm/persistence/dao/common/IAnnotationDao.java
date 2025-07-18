@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @author a.babadshanjan
  * @since 12.09.2008
  */
-public interface IAnnotationDao extends ILanguageStringBaseDao<Annotation> {
+public interface IAnnotationDao extends IAnnotatableDao<Annotation> {
 
 	/**
 	 * Returns a count of Annotations, optionally filtered by commentator and status

@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.cdm2cdm;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -15,7 +18,9 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.io.common.ITaxonNodeOutStreamPartitioner;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
  * Imports taxon based data from a CDM source to another CDM source.
@@ -77,8 +82,16 @@ public class Cdm2CdmTaxonNodeImport
         }
         try {
             if (result != null){
+                //We save terms first as we got non-nullable transient object exception during erms import for a taxon having a source reference having an annotation with a non-CDM annotation type
+                Set<DefinedTermBase> termsToSave = state.getToSave().stream()
+                        .filter(s->s.isInstanceOf(DefinedTermBase.class))
+                        .map(s->CdmBase.deproxy(s, DefinedTermBase.class))
+                        .collect(Collectors.toSet());
+                getTermService().saveOrUpdate(termsToSave);
+
                 getTaxonNodeService().saveOrUpdate(saveCascading(node));
-                getCommonService().saveOrUpdate(state.getToSave());
+                Set<CdmBase> remainingToSave = state.getToSave().stream().filter(s->!s.isPersisted()).collect(Collectors.toSet());
+                getCommonService().saveOrUpdate(remainingToSave);
                 state.clearToSave();
             }
         } catch (Exception e) {

@@ -997,4 +997,9 @@ public class ClassificationServiceImpl
         return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
                 classificationUuid, limit, pattern, searchForClassifications, false);
     }
+
+    @Override
+    public boolean existsTaxonInClassification(UUID classificationUuid, UUID taxonUuid) {
+        return dao.existsTaxonInClassification(classificationUuid, taxonUuid);
+    }
 }

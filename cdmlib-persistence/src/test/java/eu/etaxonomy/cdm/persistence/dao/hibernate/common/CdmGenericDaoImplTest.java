@@ -230,11 +230,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	public void testGetCdmBasesByFieldAndClass() {
-		logger.warn("Not yet implemented");
-	}
-
-	@Test
 	public void testGetCdmBasesWithItemInCollection() {
 		logger.warn("Not yet implemented");
 	}
@@ -1041,7 +1036,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	public void findMatching(){
+	public void testFindMatching(){
 
 		IBook book1 = ReferenceFactory.newBook();
 		IBook book2 = ReferenceFactory.newBook();
@@ -1141,8 +1136,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
 
 		} catch (MatchException e) {
+		    e.printStackTrace();
 			Assert.fail("Find match must not throw Exception: " + e.getMessage());
-			e.printStackTrace();
 		}
 	}
 
@@ -1312,8 +1307,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
             Assert.assertEquals("We don't expect matchings, only tested that no exceptions are thrown", 0, matching.size());
 
         } catch (IllegalArgumentException | MatchException e) {
-            Assert.fail("No exception should be thrown");
             e.printStackTrace();
+            Assert.fail("No exception should be thrown");
         }
     }
 
@@ -1354,8 +1349,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         agentDao.save(person3, person4);
         commitAndStartNewTransaction();
 
-        team1 = (Team) cdmGenericDao.findByUuid(uuidTeam1);
-        team2 = (Team) cdmGenericDao.findByUuid(uuidTeam2);
+        team1 = cdmGenericDao.find(Team.class, uuidTeam1);
+        team2 = cdmGenericDao.find(Team.class, uuidTeam2);
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedCollectorPersonInstance();
         try {
             //matching a person saved as a team member with same family name and collector title

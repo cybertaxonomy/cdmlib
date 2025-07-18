@@ -103,6 +103,7 @@ public enum PreferencePredicate
     NumberOfVisibleStatusInDropDown(UUID.fromString("5e5ed585-2212-4d07-bbaf-c5e19a61dace"), "Distribution Editor: Number of visible status in drop down", "distribution.editor.status.numberVisibleStatus",  10),
     DescriptionForDistributionEditor(UUID.fromString("38282571-049c-473e-bec3-bde6f65f796a"), "Distribution Editor: Create distribution editor TaxonDescription", "distribution.editor.distributionOwnDescription",  DistributionDescription.AlwaysDefault),
     AvailableDistributionAreaTerms(UUID.fromString("34469acc-9e23-4f95-92d4-1695e02cb5a0"), "Available Distribution Area Terms", "distribution.area.terms", null),  //default: all/no filter
+    AvailableDistributionAreaTermsForEFlora(UUID.fromString("a64a28c0-98c4-49c4-9f98-54958ac9a252"), "Available Distribution Area Terms For eFlora", "distribution.area.terms.eflora", null),  //default: all/no filter
     ShowRankInDistributionEditor(UUID.fromString("fb13b4f2-2d82-4fd3-8abe-2b955a695245"), "Distribution Editor: Show Rank", "distribution.editor.showRank", Boolean.FALSE),
     ShowSynonymsInDistributionEditor(UUID.fromString("5376fa2e-1dbf-4dee-bfe2-a7d4e5e15b85"), "Distribution Editor: Show Synonyms", "distribution.editor.showSynonyms", Boolean.TRUE),
 
@@ -130,6 +131,7 @@ public enum PreferencePredicate
     DefaultBehaviourForSecundumWhenSwap(UUID.fromString("8ae1a0e3-78aa-4284-9c34-10b23d52905b"), "Default behaviour for secundum reference when swapping synonym and accepted taxon", "defaultBehaviourSecSwap", SecReferenceHandlingSwapEnum.KeepOrWarn),
     ConceptRelationshipType(UUID.fromString("04e4c69c-6741-4224-81ef-8df0a03bb81e"), "Concept Relationship Types", "conceptRelationshipTypes", null),
     AllowPartialMisapplied(UUID.fromString("3aaa90c1-1466-4f86-918b-f65f4ceb3084"), "Allow partial misapplied", "allowPartialMisapplied", Boolean.TRUE),
+    AllowProParteSynonym(UUID.fromString("2d3c0c5f-078a-4874-b4bf-0fa55309a834"), "Allow pro parte synonym", "allowProParteSynonym", ProParteSynonymHandling.EnablePP),
     SecundumForSubtreeConfigurator(UUID.fromString("aa43a7de-4098-4b2e-9d76-5caceda70a39"), "Default configurator for set secundum for subtree", "defaultSetSecForSubtreeConfig", null),
 
     ShowExperimentalFeatures(UUID.fromString("ba617c58-1801-4feb-9819-859aea5869a2"), "Show Experimental Features", "editor.experimentalFeatures", Boolean.TRUE),

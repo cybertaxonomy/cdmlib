@@ -14,14 +14,14 @@ import org.apache.logging.log4j.Logger;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotationDaoTest;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotationDaoImplTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBaseTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.TaxonGraphTest;
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-            AnnotationDaoTest.class,
+            AnnotationDaoImplTest.class,
             CdmEntityDaoBaseTest.class,
             TaxonGraphTest.class
             //database
@@ -60,7 +60,7 @@ public class CdmTestSuite {
 //                //dao.Taxon
 //                TaxonDaoHibernateImplTest.class
 
-                AnnotationDaoTest.class,
+                AnnotationDaoImplTest.class,
                 CdmEntityDaoBaseTest.class,
                 TaxonGraphTest.class
                     );

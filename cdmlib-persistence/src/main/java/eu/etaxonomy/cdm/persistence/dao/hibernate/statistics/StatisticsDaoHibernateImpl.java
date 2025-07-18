@@ -16,11 +16,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -39,7 +40,7 @@ import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
  *
  * only functionality, that is not covered by other daos is implemented
  *
- * MAYDO: restructure and using {@link Criteria} and methods like prepareQuery
+ * MAYDO: restructure and using {@link CriteriaQuery} and methods like prepareQuery
  *
  * @author s.buers
  *
@@ -293,11 +294,14 @@ public class StatisticsDaoHibernateImpl
 		}
 
 		if (clazz.equals(Taxon.class)) {
-			Criteria criteria = getSession().createCriteria(TaxonNode.class);
 
-			criteria.add(Restrictions.eq("classification", classification));
-			criteria.setProjection(Projections.rowCount());
-			return Long.valueOf((Long) criteria.uniqueResult());
+		    CriteriaBuilder cb = getCriteriaBuilder();
+	        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+	        Root<TaxonNode> root = cq.from(TaxonNode.class);
+
+	        cq.select(cb.countDistinct(root.get("id")))
+	          .where(predicateEqual(cb, root, "classification", classification));
+	        return getSession().createQuery(cq).getSingleResult();
 		}
 
 		else if (clazz.equals(Synonym.class)) {
@@ -316,18 +320,10 @@ public class StatisticsDaoHibernateImpl
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#countTaxonNames
-	 * (eu.etaxonomy.cdm.model.taxon.Classification)
-	 */
 	@Override
 	public Long countTaxonNames(Classification classification) {
 
-		if (classification == null)
-         {
+		if (classification == null){
             return null; // or MAYDO: throw some Exception???
         }
 
@@ -362,7 +358,6 @@ public class StatisticsDaoHibernateImpl
 
 		return Long.valueOf(processQueriesWithIdDistinctListResult(
 				queryStrings, parameters).size());
-
 	}
 
 	@Override

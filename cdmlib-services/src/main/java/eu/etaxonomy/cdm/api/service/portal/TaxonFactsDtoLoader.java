@@ -172,6 +172,9 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
                 TermTree<Feature> featureTree = repository.getTermTreeService().find(config.getFeatureTree());
                 if (featureTree != null) {
                     filteredRootNode = filterFeatureNode(featureTree.getRoot(), existingFeatureUuids);
+                    if (filteredRootNode == null) {
+                        filteredRootNode = new TreeNode<>();
+                    }
                 }
             }
             if (filteredRootNode == null) {
@@ -341,7 +344,7 @@ public class TaxonFactsDtoLoader extends TaxonFactsDtoLoaderBase {
     }
 
     /**
-     * Recursive call to a feature tree's feature node in order to creates a tree structure
+     * Recursive call to a feature tree's feature node in order to create a tree structure
      * ordered in the same way as the according feature tree but only containing features
      * that do really exist for the given taxon. If only a child node is required the parent
      * node/feature is also considered to be required.<BR>

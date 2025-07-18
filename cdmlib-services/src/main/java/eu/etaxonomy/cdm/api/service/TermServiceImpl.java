@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +42,6 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -57,7 +55,6 @@ import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermGraphBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IRepresentationDao;
@@ -85,9 +82,6 @@ public class TermServiceImpl
 	@Autowired
 	private ITermCollectionDao termCollectionDao;
 
-	@Autowired
-	@Qualifier("langStrBaseDao")
-	private ILanguageStringBaseDao languageStringBaseDao;
 	private IRepresentationDao representationDao;
 
 	@Autowired
@@ -270,8 +264,8 @@ public class TermServiceImpl
 	}
 
 	@Override
-	public UUID saveLanguageData(LanguageStringBase languageData) {
-		return languageStringBaseDao.save(languageData).getUuid();
+	public UUID saveLanguageData(LanguageString languageData) {
+		return languageStringDao.save(languageData).getUuid();
 	}
 
 
@@ -669,8 +663,8 @@ public class TermServiceImpl
     }
 
     @Override
-    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList){
-        return dao.findByUUIDsAsDto(uuidList);
+    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList, Language lang){
+        return dao.findByUUIDsAsDto(uuidList, lang);
     }
 
     @Override

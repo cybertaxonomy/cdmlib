@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -99,6 +100,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.SecundumSource;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -1899,6 +1901,7 @@ public class CdmLightClassificationExport
             String typifiedNamesWithoutAccepted = "";
             String typifiedNamesWithoutAcceptedWithSec = "";
             int index = 0;
+            List<SecundumSource> secSources = new ArrayList<>();
             for (TaxonName name : typifiedNames) {
                 // Concatenated output string for homotypic group (names and
                 // citations) + status + some name relations (e.g. “non”)
@@ -1910,6 +1913,7 @@ public class CdmLightClassificationExport
                 String sec = "";
                 String nameString = name.getFullTitleCache();
                 String doubtful = "";
+
 
 
                 if (state.getConfig().isAddHTML()){
@@ -2021,10 +2025,17 @@ public class CdmLightClassificationExport
                 if (taxonBases.size() == 1){
                      taxonBase = HibernateProxyHelper.deproxy(taxonBases.iterator().next());
                      if (taxonBase.getSec() != null){
+
                          handleReference(state, taxonBase.getSec());
 
-                         sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxonBase.getSec(), taxonBase.getSecSource().getCitationMicroReference(), null,
+                         if (taxonBase instanceof Synonym && state.getConfig().isShowSynSecForHomotypicGroup()) {
+                             mergeSources(taxonBase.getSecSource(), secSources, ((Synonym)taxonBase).getAcceptedTaxon().getSecSource());
+                             sec = "";
+                         }else {
+                             sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxonBase.getSec(), taxonBase.getSecSource().getCitationMicroReference(), null,
                                  state.getReferenceStore().get(taxonBase.getSec().getUuid()));
+                         }
+
                      }
                      if (taxonBase.isDoubtful()){
                          doubtful = "?";
@@ -2033,7 +2044,10 @@ public class CdmLightClassificationExport
                      }
                      if (taxonBase instanceof Synonym){
                          if (isNotBlank(sec)){
-                             sec = " syn. sec. " + sec + " ";
+                             String secSignOrSec = "";
+                             if (!state.getConfig().isShowSynSecForHomotypicGroup()) {
+                                 sec = " syn. sec. " + sec + " ";
+                             }
                          }else {
                              sec = "";
                          }
@@ -2056,7 +2070,11 @@ public class CdmLightClassificationExport
                      }
                      if (!isAccepted){
                          typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + nonRelNames + relNames +"; ";
-                         typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec + nonRelNames + relNames;
+                         if (!state.getConfig().isShowSynSecForHomotypicGroup()) {
+                             typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec + nonRelNames + relNames;
+                         }else {
+                             typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + nonRelNames + relNames;
+                         }
                          typifiedNamesWithoutAcceptedWithSec = typifiedNamesWithoutAcceptedWithSec.trim() + "; ";
                      }else {
                          sec = " sec. " + sec;
@@ -2066,9 +2084,15 @@ public class CdmLightClassificationExport
                     for (TaxonBase<?> tb: taxonBases){
                         if (tb.getSec() != null){
                             handleReference(state, tb.getSec());
-
-                            sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(tb.getSec(), tb.getSecSource().getCitationMicroReference(), null,
+                            if (tb instanceof Synonym && state.getConfig().isShowSynSecForHomotypicGroup()) {
+                                mergeSources(tb.getSecSource(), secSources, ((Synonym)tb).getAcceptedTaxon().getSecSource());
+                            }
+                            String secTemp = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(tb.getSec(), tb.getSecSource().getCitationMicroReference(), null,
                                     state.getReferenceStore().get(tb.getSec().getUuid()));
+                            if (!(state.getConfig().isShowSynSecForHomotypicGroup() && tb instanceof Synonym)) {
+                                sec = secTemp;
+                            }
+
                         }
                         if (tb.isDoubtful()){
                             doubtful = "?";
@@ -2101,33 +2125,53 @@ public class CdmLightClassificationExport
                     }
                     if (!isAccepted){
                         typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString +  nonRelNames + relNames +"; ";
-                        typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec+ nonRelNames + relNames;
+                        if (state.getConfig().isShowSynSecForHomotypicGroup() ) {
+                            typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + nonRelNames + relNames;
+                        } else {
+                            typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec+ nonRelNames + relNames;
+                        }
                         typifiedNamesWithoutAcceptedWithSec = typifiedNamesWithoutAcceptedWithSec.trim() + "; ";
                     }else {
                         sec = " sec. " + sec;
                     }
                 }
                 typifiedNamesString += synonymSign + doubtful + nameString + nonRelNames + relNames;
-                typifiedNamesWithSecString += synonymSign + doubtful + nameString.trim() + sec + nonRelNames + relNames;
+                if (state.getConfig().isShowSynSecForHomotypicGroup() &&  !isAccepted) {
+                    typifiedNamesWithSecString += synonymSign + doubtful + nameString.trim() + nonRelNames + relNames;
+                }else {
+                    typifiedNamesWithSecString += synonymSign + doubtful + nameString.trim() + sec + nonRelNames + relNames;
+                }
                 typifiedNamesWithSecString = typifiedNamesWithSecString.trim() + " ";
-
-                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
-
-                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITH_SEC_STRING)] = typifiedNamesWithSecString.trim();
-
-                if (firstname != null) {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = typifiedNamesWithoutAccepted.trim();
-                } else {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = "";
-                }
-
-                if (firstname != null) {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = typifiedNamesWithoutAcceptedWithSec.trim();
-                } else {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = "";
-                }
-                index++;
             }
+            if (state.getConfig().isShowSynSecForHomotypicGroup() && !secSources.isEmpty()) {
+                String synSecs = "syn. sec. ";
+                for (SecundumSource synSec: secSources) {
+                    synSecs += OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(synSec.getCitation(), synSec.getCitationMicroReference(), null,
+                            state.getReferenceStore().get(synSec.getUuid()));
+                    synSecs += ", ";
+                }
+                synSecs = synSecs.substring(0, synSecs.length()-2);
+                typifiedNamesWithSecString +=  synSecs ;
+                typifiedNamesWithoutAcceptedWithSec += synSecs;
+            }
+
+            csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
+
+            csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITH_SEC_STRING)] = typifiedNamesWithSecString.trim();
+
+            if (firstname != null) {
+                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = typifiedNamesWithoutAccepted.trim();
+            } else {
+                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = "";
+            }
+
+            if (firstname != null) {
+                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = typifiedNamesWithoutAcceptedWithSec.trim();
+            } else {
+                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = "";
+            }
+            index++;
+
 
             List<TypeDesignationBase<?>> designationList = new ArrayList<>(group.getTypeDesignations());
             Collections.sort(designationList, new TypeComparator());
@@ -2200,6 +2244,43 @@ public class CdmLightClassificationExport
             group = HibernateProxyHelper.deproxy(group, HomotypicalGroup.class);
             state.getResult().addException(e, "An unexpected error occurred when handling homotypic group "
                     + cdmBaseStr(group) + ": " + e.getMessage());
+        }
+    }
+
+    protected boolean sourceMatches(SecundumSource existingSource, SecundumSource newSource) {
+        if (existingSource == newSource) {
+            return true;
+        }else if (existingSource == null || newSource == null) {
+            return false;
+        }else {
+            UUID existingCitationUUID = existingSource.getCitation()!= null? existingSource.getCitation().getUuid(): null;
+            UUID existingNameUsedInSourceUUID = existingSource.getNameUsedInSource()!= null? existingSource.getNameUsedInSource().getUuid(): null;
+            UUID newSourceCitationUUID = newSource.getCitation()!= null? newSource.getCitation().getUuid(): null;
+            UUID newSourceNameUsedInSourceUUID = newSource.getNameUsedInSource()!= null? newSource.getNameUsedInSource().getUuid(): null;
+            return existingSource.getCitation().getUuid() != null
+                    && CdmUtils.nullSafeEqual(existingCitationUUID, newSourceCitationUUID)
+                    && CdmUtils.nullSafeEqual(existingSource.getCitationMicroReference(), newSource.getCitationMicroReference())
+                    && CdmUtils.nullSafeEqual(existingSource.getType(), newSource.getType())
+                    && CdmUtils.nullSafeEqual(existingSource.getAccessed(), newSource.getAccessed())
+                    && CdmUtils.nullSafeEqual(existingNameUsedInSourceUUID, newSourceNameUsedInSourceUUID)
+                    ;
+            //not compared:
+            //specimenReferenceUuid - does not exist yet
+            //for merge: doi, uri, last updated, originalInfo,
+            //??: label, linkedUuid, linkedClass,
+            //??: nameInSource tagged text
+            //not relevant id, uuid, sortableDate,
+        }
+    }
+
+    protected void mergeSources(SecundumSource newSource, List<SecundumSource> synSecSources, SecundumSource sourceToExclude) {
+        if (sourceMatches(sourceToExclude, newSource)) {
+            return;
+        }
+
+        Optional<SecundumSource> match = synSecSources.stream().filter(s->sourceMatches(s, newSource)).findFirst();
+        if (!match.isPresent()){
+            synSecSources.add(newSource);
         }
     }
 

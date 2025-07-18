@@ -82,9 +82,9 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public static final UUID uuidValidatedByName = UUID.fromString("a176c9ad-b4c2-4c57-addd-90373f8270eb");
 	public static final UUID uuidLaterValidatedByName = UUID.fromString("a25ee4c1-863a-4dab-9499-290bf9b89639");
 	private static final UUID uuidBlockingNameFor = UUID.fromString("1dab357f-2e12-4511-97a4-e5153589e6a6");
-	private static final UUID uuidAvoidsHomonymOf = UUID.fromString("c7d59ab9-a8c6-4645-a990-04c698f2c123");
+	public static final UUID uuidAvoidsHomonymOf = UUID.fromString("c7d59ab9-a8c6-4645-a990-04c698f2c123");
 	public static final UUID uuidLaterIsonym = UUID.fromString("29ab238d-598d-45b9-addd-003cf39ccc3e");
-	private static final UUID uuidNonUnspecific = UUID.fromString("78360e2a-159d-4e2f-893e-8666805840fa");
+	public static final UUID uuidNonUnspecific = UUID.fromString("78360e2a-159d-4e2f-893e-8666805840fa");
 
 
 	public static NameRelationshipType NewInstance(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {

@@ -20,13 +20,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.LockOptions;
-import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
@@ -34,7 +38,6 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Example.PropertySelector;
 import org.hibernate.criterion.LogicalExpression;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -45,24 +48,19 @@ import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.sql.JoinType;
 import org.hibernate.type.Type;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.permission.User;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
-import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
@@ -75,7 +73,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * Hibernate implementation for {@link ICdmEntityDao}.
  */
 public abstract class CdmEntityDaoBase<T extends CdmBase>
-        extends DaoBase
+        extends CdmBaseDaoImpl
         implements ICdmEntityDao<T> {
 
     private static final Logger logger = LogManager.getLogger();
@@ -84,14 +82,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     private ICdmGenericDao genericDao;
 
     protected Class<T> type;
-
-    @Autowired
-    // @Qualifier("defaultBeanInitializer")
-    protected IBeanInitializer defaultBeanInitializer;
-
-    public void setDefaultBeanInitializer(IBeanInitializer defaultBeanInitializer) {
-        this.defaultBeanInitializer = defaultBeanInitializer;
-    }
 
     @Autowired
     private ReferringObjectMetadataFactory referringObjectMetadataFactory;
@@ -107,6 +97,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     @Override
     public void lock(T t, LockOptions lockOptions) {
         getSession().buildLockRequest(lockOptions).lock(t);
+    }
+
+
+    @Override
+    public UUID refresh(T persistentObject) throws DataAccessException {
+        return super.refresh_(persistentObject);
     }
 
     @Override
@@ -233,7 +229,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
         for (ReferringObjectMetadata referringObjectMetadata : referringObjectMetas) {
 
-            List<CdmBase> referringObjects = referringObjectMetadata.getReferringObjects(x, getSession());
+            List<? extends CdmBase> referringObjects = referringObjectMetadata.getReferringObjects(x, getSession());
 
             for (CdmBase referringObject : referringObjects) {
                 try {
@@ -323,46 +319,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public UUID saveOrUpdate(T transientObject) throws DataAccessException {
-        if (transientObject == null) {
-            logger.warn("Object to save should not be null. NOP");
-            return null;
-        }
-        try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("dao saveOrUpdate start...");
-            }
-            if (logger.isDebugEnabled()) {
-                logger.debug("transientObject(" + transientObject.getClass().getSimpleName() + ") ID:"
-                        + transientObject.getId() + ", UUID: " + transientObject.getUuid());
-            }
-            Session session = getSession();
-            if (transientObject.getId() != 0 && VersionableEntity.class.isAssignableFrom(transientObject.getClass())) {
-                VersionableEntity versionableEntity = (VersionableEntity) transientObject;
-                versionableEntity.setUpdated(new DateTime());
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                if (authentication != null && authentication.getPrincipal() != null
-                        && authentication.getPrincipal() instanceof User) {
-                    User user = (User) authentication.getPrincipal();
-                    versionableEntity.setUpdatedBy(user);
-                }
-            }
-            session.saveOrUpdate(transientObject);
-            if (logger.isDebugEnabled()) {
-                logger.debug("dao saveOrUpdate end");
-            }
-            return transientObject.getUuid();
-        } catch (NonUniqueObjectException e) {
-            logger.error("Error in CdmEntityDaoBase.saveOrUpdate(obj). ID=" + e.getIdentifier() + ". Class="
-                    + e.getEntityName());
-            logger.error(e.getMessage());
-
-            e.printStackTrace();
-            throw e;
-        } catch (HibernateException e) {
-
-            e.printStackTrace();
-            throw e;
-        }
+        return super.saveOrUpdate_(transientObject);
     }
 
     @Override
@@ -374,50 +331,17 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public <S extends T> S save(S newInstance) throws DataAccessException {
-        if (newInstance == null) {
-            logger.warn("Object to save should not be null. NOP");
-            return null;
-        }
-        getSession().save(newInstance);
-        return newInstance;
+        return super.save_(newInstance);
     }
 
     @Override
     public UUID update(T transientObject) throws DataAccessException {
-        if (transientObject == null) {
-            logger.warn("Object to update should not be null. NOP");
-            return null;
-        }
-        getSession().update(transientObject);
-        return transientObject.getUuid();
-    }
-
-    @Override
-    public UUID refresh(T persistentObject) throws DataAccessException {
-        getSession().refresh(persistentObject);
-        return persistentObject.getUuid();
+        return super.update_(transientObject);
     }
 
     @Override
     public UUID delete(T objectToDelete) throws DataAccessException {
-        if (objectToDelete == null) {
-            logger.info(type.getName() + " was 'null'");
-            return null;
-        } else if (!objectToDelete.isPersisted()) {
-            logger.info(type.getName() + " was not persisted yet");
-            return null;
-        }
-
-        // Ben Clark:
-        // Merge the object in if it is detached
-        //
-        // I think this is preferable to catching lazy initialization errors
-        // as that solution only swallows and hides the exception, but doesn't
-        // actually solve it.
-        @SuppressWarnings("unchecked")
-        T persistentObject = (T) getSession().merge(objectToDelete);
-        getSession().delete(persistentObject);
-        return persistentObject.getUuid();
+        return super.delete_(objectToDelete);
     }
 
     @Override
@@ -431,16 +355,20 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     private T findByUuid(UUID uuid, boolean includeUnpublished) throws DataAccessException {
-        Session session = getSession();
-        Criteria crit = session.createCriteria(type);
-        crit.add(Restrictions.eq("uuid", uuid));
-        crit.addOrder(Order.desc("created"));
-        if (IPublishable.class.isAssignableFrom(type) && !includeUnpublished) {
-            crit.add(Restrictions.eq("publish", Boolean.TRUE));
-        }
 
-        @SuppressWarnings("unchecked")
-        List<T> results = crit.list();
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(type);
+        Root<T> root = cq.from(type);
+        Predicate where = predicateUuid(cb, root, uuid);
+        if (IPublishable.class.isAssignableFrom(type) && !includeUnpublished) {
+            where = cb.and(where, predicateBoolean(cb, root, "publish", Boolean.TRUE));
+        }
+        cq.select(root)
+          .where(where)
+          .orderBy(cb.desc(root.get("created")));
+
+        List<T> results = getSession().createQuery(cq).getResultList();
+
         Set<T> resultSet = new HashSet<>();
         resultSet.addAll(results);
         if (resultSet.isEmpty()) {
@@ -465,11 +393,15 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             // set flush mode to manual so that the session does not flush
             // when before performing the query
             session.setHibernateFlushMode(FlushMode.MANUAL);
-            Criteria crit = session.createCriteria(clazz);
-            crit.add(Restrictions.eq("uuid", uuid));
-            crit.addOrder(Order.desc("created"));
-            @SuppressWarnings("unchecked")
-            List<T> results = crit.list();
+
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<T> cq = cb.createQuery(type);
+            Root<T> root = cq.from(clazz);
+            cq.select(root)
+              .where(predicateUuid(cb, root, uuid))
+              .orderBy(cb.desc(root.get("created")));
+            List<T> results = session.createQuery(cq).getResultList();
+
             results = deduplicateResult(results);
             if (results.isEmpty()) {
                 return null;
@@ -494,14 +426,19 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             return new ArrayList<>(0);
         }
 
-        Criteria criteria = prepareList(null, ids, null, null, orderHints, "id");
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(type);
+        Root<T> root = cq.from(type);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(criteria.toString());
+        if (orderHints == null) {
+            orderHints = OrderHint.defaultOrderHintsFor(type);
         }
 
-        @SuppressWarnings("unchecked")
-        List<T> result = criteria.list();
+        cq.select(root)
+          .where(root.get("id").in(ids))
+          .orderBy(ordersFrom(cb, root, orderHints));
+        List<T> result = getSession().createQuery(cq).getResultList();
+
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
@@ -510,28 +447,39 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     public List<T> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws DataAccessException {
 
-        if (uuids == null || uuids.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        Criteria criteria = prepareList(null, uuids, pageSize, pageNumber, orderHints, "uuid");
-        @SuppressWarnings("unchecked")
-        List<T> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
-        return result;
+        return list(null, uuids, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
-    public <S extends T> List<S> list(Class<S> clazz, Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            List<String> propertyPaths) throws DataAccessException {
+    public <S extends T> List<S> list(Class<S> clazz, Collection<UUID> uuids, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
 
         if (uuids == null || uuids.isEmpty()) {
             return new ArrayList<>();
         }
+        if (clazz == null){
+            clazz = (Class)type;
+        }
+        if (orderHints == null) {
+            orderHints = OrderHint.defaultOrderHintsFor(clazz);
+        }
 
-        Criteria criteria = prepareList(clazz, uuids, pageSize, pageNumber, orderHints, "uuid");
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<S> cq = cb.createQuery(clazz);
+        Root<S> root = cq.from(clazz);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(root.get("uuid").in(uuids));
+
+        cq.select(root)
+          .where(cb.and(predicates.toArray(new Predicate[0])))
+          .orderBy(ordersFrom(cb, root, orderHints));
+        List<S> result = addPageSizeAndNumber(
+                    getSession().createQuery(cq)
+                    , pageSize, pageNumber)
+                .getResultList();
+
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
@@ -710,9 +658,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return restriction;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public long count(Class<? extends T> type, List<Restriction<?>> restrictions) {
 
@@ -724,16 +669,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     }
 
-    /**
-     * @param uuids
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyName
-     * @return
-     */
     private Criteria prepareList(Class<? extends T> clazz, Collection<?> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             String propertyName) {
+
         if (clazz == null){
             clazz = type;
         }
@@ -820,24 +758,23 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public long count() {
-        return count(type);
+        return this.count(null);
     }
 
     @Override
     public long count(Class<? extends T> clazz) {
-        Session session = getSession();
-        Criteria criteria = null;
-        if (clazz == null) {
-            criteria = session.createCriteria(type);
-        } else {
-            criteria = session.createCriteria(clazz);
-        }
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+        clazz = clazz == null ? type : clazz;
+        return super.count_(clazz);
+    }
 
-        // since hibernate 4 (or so) uniqueResult returns Long, not Integer,
-        // therefore needs
-        // to be casted. Think about returning long rather then int!
-        return (long) criteria.uniqueResult();
+    /**
+     * Lists all entries of the given class. Should be open to the pulic
+     * only for those DAOs which are expected to not have larger numbers
+     * of entries (e.g. CdmPreference , {@link Classification}, ...)
+     */
+    protected List<T> list(){
+        return super.list(type);
+        // or send to another list(...) method
     }
 
     @Override
@@ -947,30 +884,20 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return results;
     }
 
-    @Override
-    public <S extends T> List<S> list(Class<S> clazz, Integer limit, Integer start, List<OrderHint> orderHints,
-            List<String> propertyPaths) {
-        Criteria criteria = null;
-        if (clazz == null) {
-            criteria = getSession().createCriteria(type);
-        } else {
-            criteria = getSession().createCriteria(clazz);
-        }
-
-        addLimitAndStart(criteria, limit, start);
-
-        addOrder(criteria, orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<S> results = criteria.list();
-
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
-    }
-
     public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints) {
         return list(type, limit, start, orderHints, null);
     }
+
+
+    @Override
+    public <S extends T> List<S> list(Class<S> clazz, Integer limit, Integer start, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
+
+        clazz = clazz == null ? (Class)type : clazz;
+        return super.list_(clazz, limit, start, orderHints, propertyPaths);
+
+    }
+
 
     @Override
     public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start) {
@@ -1137,7 +1064,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     /**
      * Creates a criteria query for the CDM <code>type</code> either for counting or listing matching entities.
      * <p>
-     * The set of matching entities can be restricted by passing a list  of {@link Restriction} objects.
+     * The set of matching entities can be restricted by passing a list of {@link Restriction} objects.
      * Restrictions can logically combined:
      <pre>
        Arrays.asList(
@@ -1272,33 +1199,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             criteria = getSession().createCriteria(clazz);
         }
         return criteria;
-    }
-
-
-    /**
-     * Workaround for https://dev.e-taxonomy.eu/redmine/issues/5871 and #5945
-     * Terms with multiple representations return identical duplicates
-     * due to eager representation loading. We expect these duplicates to appear
-     * in line wo we only compare one term with its predecessor. If it already
-     * exists we remove it from the result.
-     * @param orginals
-     * @return
-     */
-    protected static <S extends CdmBase> List<S> deduplicateResult(List<S> orginals) {
-        List<S> result = new ArrayList<>();
-        Iterator<S> it = orginals.iterator();
-        S last = null;
-        while (it.hasNext()){
-            S a = it.next();
-            if (a != last){
-                //AM: why is this necessary?
-                if (!result.contains(a)){
-                    result.add(a);
-                }
-            }
-            last = a;
-        }
-        return result;
     }
 
     protected AuditQuery makeAuditQuery(Class<? extends CdmBase> clazz, AuditEvent auditEvent) {

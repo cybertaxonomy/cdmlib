@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.model.common.EventBase;
-import eu.etaxonomy.cdm.persistence.dao.common.IEventBaseDao;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.persistence.dao.common.IGatheringEventDao;
 
 /**
  * @author a.kohlbecker
@@ -21,13 +21,13 @@ import eu.etaxonomy.cdm.persistence.dao.common.IEventBaseDao;
  */
 @Service
 @Transactional(readOnly = true)
-public class EventBaseServiceImpl
-        extends AnnotatableServiceBase<EventBase, IEventBaseDao>
-        implements IEventBaseService {
+public class GatheringEventServiceImpl
+        extends AnnotatableServiceBase<GatheringEvent, IGatheringEventDao>
+        implements IGatheringEventService {
 
     @Override
     @Autowired
-    protected void setDao(IEventBaseDao dao) {
+    protected void setDao(IGatheringEventDao dao) {
         this.dao = dao;
     }
 }

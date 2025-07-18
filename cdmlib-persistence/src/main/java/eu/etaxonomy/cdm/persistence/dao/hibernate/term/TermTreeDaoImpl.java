@@ -9,20 +9,22 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.compare.term.DefinedTermComparator;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -32,6 +34,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
@@ -58,10 +61,7 @@ public class TermTreeDaoImpl
 
     @Override
     public List<TermTree> list() {
-        Criteria crit = getSession().createCriteria(type);
-        @SuppressWarnings("unchecked")
-        List<TermTree> result = crit.list();
-        return result;
+        return super.list();
     }
 
     @Override
@@ -186,4 +186,19 @@ public class TermTreeDaoImpl
 
         return !list.isEmpty()? (TermTreeDto)list.get(0): null;
     }
+
+    @Override
+    public List<TermDto> getListOfChildren(TermTree tree){
+        if (tree == null) {
+            return null;
+        }
+        TermNode parent = HibernateProxyHelper.deproxy(tree.getRoot(), TermNode.class);
+        Collection<DefinedTermBase> resultAsNodes = parent.asTermListRecursive();
+        List<TermDto> result = new ArrayList<>();
+
+        resultAsNodes.forEach(term-> result.add(TermDto.fromTerm(term)));
+        return result;
+    }
+
+
 }

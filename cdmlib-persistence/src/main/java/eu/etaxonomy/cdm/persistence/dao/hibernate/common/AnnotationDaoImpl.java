@@ -9,11 +9,15 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -24,97 +28,132 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotationDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Repository
-public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> implements IAnnotationDao {
+public class AnnotationDaoImpl extends AnnotatableDaoBaseImpl<Annotation> implements IAnnotationDao {
 
 	public AnnotationDaoImpl() {
 		super(Annotation.class);
 	}
 
 	@Override
-	public long count(Person commentator, MarkerType status) {
-		checkNotInPriorView("AnnotationDaoImpl.count(Person commentator, MarkerType status)");
-		Criteria criteria = getSession().createCriteria(Annotation.class);
+	public long count(Person commentator, MarkerType markerType) {
 
-		 if(commentator != null) {
-	        criteria.add(Restrictions.eq("commentator",commentator));
-	     }
+	    checkNotInPriorView("AnnotationDaoImpl.count(Person commentator, MarkerType status)");
 
-		if(status != null) {
-			criteria.createCriteria("markers").add(Restrictions.eq("markerType", status));
-		}
+	    CriteriaBuilder cb = getCriteriaBuilder();
+	    CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+	    Root<Annotation> root = cq.from(Annotation.class);
 
-		criteria.setProjection(Projections.countDistinct("id"));
+	    List<Predicate> predicates = new ArrayList<>();
 
-		return (Long)criteria.uniqueResult();
+	    if (commentator != null) {
+	        predicates.add(cb.equal(root.get("commentator"), commentator));
+	    }
+
+	    // Add marker type Filter
+	    if (markerType != null) {
+	        Join<Annotation, ?> markersJoin = root.join("markers");
+	        predicates.add(cb.equal(markersJoin.get("markerType"), markerType));
+	    }
+
+	    cq.select(cb.countDistinct(root.get("id")))
+	      .where(predicateAnd(cb, predicates));
+
+	    return getSession().createQuery(cq).getSingleResult();
 	}
 
 	@Override
-    public List<Annotation> list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		checkNotInPriorView("AnnotationDaoImpl.list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber)");
-        Criteria criteria = getSession().createCriteria(Annotation.class);
+    public List<Annotation> list(Person commentator, MarkerType markerType, Integer pageSize,
+            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        if(commentator != null) {
-            criteria.add(Restrictions.eq("commentator",commentator));
+	    checkNotInPriorView("AnnotationDaoImpl.list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber)");
+
+	    CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Annotation> cq = cb.createQuery(Annotation.class);
+        Root<Annotation> root = cq.from(Annotation.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (commentator != null) {
+            predicates.add(cb.equal(root.get("commentator"), commentator));
+//          root.join("commentator", JoinType.LEFT);  //not needed as long as we do not order on any commentator attributes like commentator.titleCache
         }
 
-		if(status != null) {
-			criteria.createCriteria("markers").add(Restrictions.eq("markerType", status));
-		}
+        // Add marker type Filter
+        if (markerType != null) {
+            Join<Annotation, ?> markersJoin = root.join("markers");
+            predicates.add(cb.equal(markersJoin.get("markerType"), markerType));
+        }
 
-		if(pageSize != null) {
-			criteria.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	criteria.setFirstResult(pageNumber * pageSize);
-		    }
-		}
+        cq.select(root)
+          .where(predicateAnd(cb, predicates))
+          .orderBy(ordersFrom(cb, root, orderHints));
 
-		addOrder(criteria, orderHints);
-		List<Annotation> results = criteria.list();
+		List<Annotation> results = addPageSizeAndNumber(
+		         getSession().createQuery(cq), pageSize, pageNumber)
+		        .getResultList();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}
 
 	@Override
-    public long count(User creator, MarkerType status) {
-		checkNotInPriorView("AnnotationDaoImpl.count(User creator, MarkerType statu)");
-		Criteria criteria = getSession().createCriteria(Annotation.class);
+    public long count(User creator, MarkerType markerType) {
 
-		 if(creator != null) {
-	        criteria.add(Restrictions.eq("createdBy",creator));
-	     }
+	    checkNotInPriorView("AnnotationDaoImpl.count(User creator, MarkerType statu)");
 
-		if(status != null) {
-			criteria.createCriteria("markers").add(Restrictions.eq("markerType", status));
-		}
+	    CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<Annotation> root = cq.from(Annotation.class);
 
-		criteria.setProjection(Projections.countDistinct("id"));
+        List<Predicate> predicates = new ArrayList<>();
 
-		return (Long)criteria.uniqueResult();
+        if (creator != null) {
+            predicates.add(cb.equal(root.get("createdBy"), creator));
+        }
+
+        // Add marker type Filter
+        if (markerType != null) {
+            Join<Annotation, ?> markersJoin = root.join("markers");
+            predicates.add(cb.equal(markersJoin.get("markerType"), markerType));
+        }
+
+        cq.select(cb.countDistinct(root.get("id")));
+
+        if (!predicates.isEmpty()) {
+            cq.where(cb.and(predicates.toArray(new Predicate[0])));
+        }
+
+        return getSession().createQuery(cq).getSingleResult();
 	}
 
 	@Override
-    public List<Annotation> list(User creator, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
-		checkNotInPriorView("AnnotationDaoImpl.list(User creator, MarkerType status,	Integer pageSize, Integer pageNumber)");
-        Criteria criteria = getSession().createCriteria(Annotation.class);
+    public List<Annotation> list(User creator, MarkerType markerType, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
 
-        if(creator != null) {
-            criteria.add(Restrictions.eq("createdBy",creator));
+	    checkNotInPriorView("AnnotationDaoImpl.list(User creator, MarkerType status,	Integer pageSize, Integer pageNumber)");
+
+	    CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Annotation> cq = cb.createQuery(Annotation.class);
+        Root<Annotation> root = cq.from(Annotation.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (creator != null) {
+            predicates.add(cb.equal(root.get("createdBy"), creator));
         }
 
-		if(status != null) {
-			criteria.createCriteria("markers").add(Restrictions.eq("markerType", status));
-		}
+        // Add marker type Filter
+        if (markerType != null) {
+            Join<Annotation, ?> markersJoin = root.join("markers");
+            predicates.add(cb.equal(markersJoin.get("markerType"), markerType));
+        }
 
-		if(pageSize != null) {
-			criteria.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	criteria.setFirstResult(pageNumber * pageSize);
-		    }
-		}
+        cq.select(root);
+        cq.where(cb.and(predicates.toArray(new Predicate[0])));
+        cq.orderBy(ordersFrom(cb, root, orderHints));
 
-		addOrder(criteria, orderHints);
-		List<Annotation> results = criteria.list();
-		defaultBeanInitializer.initializeAll(results, propertyPaths);
-		return results;
+        List<Annotation> results = addPageSizeAndNumber(
+                 getSession().createQuery(cq), pageSize, pageNumber)
+                .getResultList();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
 	}
 }

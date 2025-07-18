@@ -144,11 +144,10 @@ public class CdmLightExportTest
         Assert.assertEquals("There should be 5 taxa", 5, taxonResult.size() - COUNT_HEADER);
 
         List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
-        Assert.assertEquals("There should be 11 references (10 nomenclatural references including an in-reference"
-                + " and 3 sec reference)", 13, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 19 references", 19, referenceResult.size() - COUNT_HEADER);
 
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
-        Assert.assertEquals("There should be 3 synonym", 3, synonymResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 5 synonym", 5, synonymResult.size() - COUNT_HEADER);
 
         //test single data
         Assert.assertEquals("Result must not contain root taxon",
@@ -233,7 +232,7 @@ public class CdmLightExportTest
 
         //reference
         List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
-        Assert.assertEquals("There should be 11 references (8 nomenclatural references and 3 sec reference)", 11, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 17 references (11 nomenclatural references including 1 in-reference and 4 sec reference, 2 fact sources)", 17, referenceResult.size() - COUNT_HEADER);
 
         //Test for unique citation
         String line = getLine(referenceResult, ref2UUID);
@@ -246,7 +245,7 @@ public class CdmLightExportTest
 
         //synonyms
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
-        Assert.assertEquals("There should be 2 synonyms", 2, synonymResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 4 synonyms (three synonyms, 1 MAN)", 4, synonymResult.size() - COUNT_HEADER);
     }
 
     @Test
@@ -266,13 +265,17 @@ public class CdmLightExportTest
         //taxon
         List<String> taxonResult = getStringList(data, CdmLightExportTable.TAXON);
         Assert.assertEquals("There should be 4 taxa", 4, taxonResult.size() - COUNT_HEADER);
+        String line = getLine(taxonResult, speciesTaxonUuid);
+        Assert.assertTrue(line.contains("Author (1980a)"));
+        line = getLine(taxonResult, genusTaxonUuid);
+        Assert.assertTrue(line.contains("Author (1980)"));
 
         //reference
         List<String> referenceResult = getStringList(data, CdmLightExportTable.REFERENCE);
-        Assert.assertEquals("There should be 11 references (8 nomenclatural references and 3 sec reference)", 11, referenceResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 17 references (10 nomenclatural references and 4 sec reference, 2 fact sources, 1 in-reference)", 17, referenceResult.size() - COUNT_HEADER);
 
         //Test for unique citation
-        String line = getLine(referenceResult, ref2UUID);
+        line = getLine(referenceResult, ref2UUID);
         String expected = "Author (1980)";
         Assert.assertTrue(line.contains(expected));
         line = getLine(referenceResult, ref3UUID);
@@ -282,7 +285,25 @@ public class CdmLightExportTest
 
         //synonyms
         List<String> synonymResult = getStringList(data, CdmLightExportTable.SYNONYM);
-        Assert.assertEquals("There should be 2 synonyms", 2, synonymResult.size() - COUNT_HEADER);
+        Assert.assertEquals("There should be 4 synonyms (3 synonyms, 1 MAN)", 4, synonymResult.size() - COUNT_HEADER);
+        line = getLine(synonymResult, basionymSynonymUuid);
+        //unique citation with detail
+        Assert.assertTrue(line.contains("Author (1980a: 67)"));
+
+        line = getLine(synonymResult, misappliedTaxonUuid);
+        //unique citation for MAN sec
+        Assert.assertTrue(line.contains("Author (1980b)"));
+
+        List<String> factsResult = getStringList(data, CdmLightExportTable.FACT_SOURCES);
+        line = getLine(factsResult, "81c7b7db-e12b-45fe-96ed-dab940043232");//UUID of Common name
+        line.contains("c68e0a88-7b96-465d-b4ce-d14b13daf94f");//UUID of fact citation
+        line = getLine(referenceResult, "c68e0a88-7b96-465d-b4ce-d14b13daf94f"); // line of fact citation in references
+        Assert.assertTrue(line.contains("Testauthor (1981)"));
+
+        line = getLine(factsResult, "674e9e27-9102-4166-8626-8cb871a9a89b");//UUID of distribution
+        line.contains("e2edf07d-552a-46cd-85da-86a491847aeb");//UUID of fact citation
+        line = getLine(referenceResult, "e2edf07d-552a-46cd-85da-86a491847aeb"); // line of fact citation in references
+        Assert.assertTrue(line.contains("Testauthor (1981a)"));
     }
 
 
@@ -315,6 +336,46 @@ public class CdmLightExportTest
 
 
     }
+
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    })
+    public void testSynSecOutput(){
+
+
+      //config + invoke
+        CdmLightExportConfigurator config = newConfigurator();
+        config.setShowSynSecForHomotypicGroup(true);
+
+        ExportResult result = defaultExport.invoke(config);
+        Map<String, byte[]> data = checkAndGetData(result);
+        Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
+        List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
+        Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
+        Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
+        String line = getLine(hgList, speciesNameHgUuid);
+
+        String expectedSynSec = "syn. sec. Author (1980: 67), My sec ref";
+
+        Assert.assertTrue(line.contains(expectedSynSec));
+
+        //show syn sec for every synonym
+        config.setShowSynSecForHomotypicGroup(false);
+        result = defaultExport.invoke(config);
+        data = checkAndGetData(result);
+        Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
+        hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
+        Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
+        Assert.assertTrue("HomotypicGroup table must not be empty or only have header line", hgList.size() > 1);
+        line = getLine(hgList, speciesNameHgUuid);
+        expectedSynSec = "syn. sec. My sec ref";
+
+        Assert.assertTrue(line.contains(expectedSynSec));
+
+    }
+
 
     @Override
     protected CdmLightExportConfigurator newConfigurator() {

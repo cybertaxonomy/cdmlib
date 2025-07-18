@@ -6,9 +6,6 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
-import java.util.List;
-
-import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
@@ -20,18 +17,11 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.VersionableDaoBase;
  * @since 08.11.2010
  */
 @Repository
-public class PolytomousKeyNodeDaoImpl extends VersionableDaoBase<PolytomousKeyNode> implements IPolytomousKeyNodeDao {
+public class PolytomousKeyNodeDaoImpl
+        extends VersionableDaoBase<PolytomousKeyNode>
+        implements IPolytomousKeyNodeDao {
 
 	public PolytomousKeyNodeDaoImpl() {
 		super(PolytomousKeyNode.class);
 	}
-
-    @Override
-    public List<PolytomousKeyNode> list() {
-		Criteria crit = getSession().createCriteria(type);
-		@SuppressWarnings("unchecked")
-        List<PolytomousKeyNode> result = crit.list();
-		return result;
-	}
-
 }
