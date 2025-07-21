@@ -54,6 +54,7 @@ public abstract class OccurrenceCacheStrategyBase<T extends SpecimenOrObservatio
         if (specimen == null){
             return null;
         }
+        specimen = CdmBase.deproxy(specimen);
         String result = doGetTitleCache(specimen);
         if (isBlank(result)){
             if (emptyIfBlank){
