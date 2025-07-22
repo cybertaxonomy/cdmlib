@@ -64,7 +64,6 @@ import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
-import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -346,7 +345,6 @@ public class SDDDocumentBuilder {
 		baselement.appendChild(dataset);
 		buildRepresentation(dataset, reference);
 		buildRevisionData(dataset, reference);
-		buildIPRStatements(dataset, reference);
 		buildTaxonNames(dataset);
 		buildDescriptiveConcepts(dataset);
 		buildCharacters(dataset);
@@ -572,39 +570,6 @@ public class SDDDocumentBuilder {
 
 			revisionData.appendChild(dateModified);
 		}
-
-	}
-
-	/**
-	 * Builds IPRStatements associated with the Dataset
-	 */
-	public void buildIPRStatements(ElementImpl dataset, IDatabase database)
-			throws ParseException {
-
-		// <IPRStatements>
-		// <IPRStatement role="Copyright">
-		// <Label xml:lang="en-au">(c) 2003-2006 Centre for Occasional
-		// Botany.</Label>
-		// </IPRStatement>
-		// </IPRStatements>
-
-		if (database.getRights() != null) {
-			// create IPRStatements
-			ElementImpl iprStatements = new ElementImpl(document,
-					IPR_STATEMENTS);
-			dataset.appendChild(iprStatements);
-
-			// mapping between IPRStatement Copyright (SDD) and first Right in
-			// the list of Rights
-			ElementImpl iprStatement = new ElementImpl(document, IPR_STATEMENT);
-			iprStatement.setAttribute("role", "Copyright");
-			iprStatements.appendChild(iprStatement);
-			if (!database.getRights().isEmpty()) {
-				buildLabel(iprStatement, ((Rights) database.getRights()
-						.toArray()[0]).getText());
-			}
-		}
-
 	}
 
 	/**
