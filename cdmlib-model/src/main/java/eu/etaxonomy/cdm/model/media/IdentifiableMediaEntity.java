@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Audited
 public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCacheStrategy<?>>
         extends IdentifiableEntity<S>
-        implements IMediaEntity{
+        implements IHasMedia{
 
     private static final long serialVersionUID = 4038647011021908313L;
 	@SuppressWarnings("unused")
