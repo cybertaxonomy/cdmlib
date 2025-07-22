@@ -33,6 +33,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.cache.agent.InstitutionDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -63,7 +64,9 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 //@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 @Configurable
-public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Institution>> {
+public class Institution
+        extends AgentBase<IIdentifiableEntityCacheStrategy<Institution>>
+        implements IHasLink {
 
 	private static final long serialVersionUID = -951321271656955808L;
     private static final Logger logger = LogManager.getLogger();

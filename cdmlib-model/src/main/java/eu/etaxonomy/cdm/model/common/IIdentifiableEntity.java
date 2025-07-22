@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.List;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 
@@ -86,32 +85,25 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
 
     public void setProtectedTitleCache(boolean protectedTitleCache);
 
-    public Set<Rights> getRights();
+//    public Set<Rights> getRights();
+//
+//    public void addRights(Rights right);
+//
+//    public void removeRights(Rights right);
+//
+//    public List<Credit> getCredits();
+//
+//    public Credit getCredits(Integer index);
+//
+//    public void addCredit(Credit credig);
+//
+//    public void addCredit(Credit credit, int index);
+//
+//    public void removeCredit(Credit credit);
+//
+//    public void removeCredit(int index);
 
-    public void addRights(Rights right);
-
-    public void removeRights(Rights right);
-
-    public List<Credit> getCredits();
-
-    public Credit getCredits(Integer index);
-
-    public void addCredit(Credit credig);
-
-    public void addCredit(Credit credit, int index);
-
-    public void removeCredit(Credit credit);
-
-    public void removeCredit(int index);
-
-
-    /**
-     * Replaces all occurrences of oldObject in the credits list with newObject
-     * @param newObject the replacement object
-     * @param oldObject the object to be replaced
-     * @return true, if an object was replaced, false otherwise
-     */
-    public boolean replaceCredit(Credit newObject, Credit oldObject);
+//    public boolean replaceCredit(Credit newObject, Credit oldObject);
 
     public Set<Extension> getExtensions();
 

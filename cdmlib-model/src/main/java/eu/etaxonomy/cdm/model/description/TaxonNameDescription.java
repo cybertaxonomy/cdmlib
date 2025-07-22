@@ -27,6 +27,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -51,7 +52,8 @@ import eu.etaxonomy.cdm.strategy.cache.description.TaxonNameDescriptionDefaultCa
 @Audited
 @Configurable
 public class TaxonNameDescription
-        extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonNameDescription>> {
+        extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonNameDescription>>
+        implements IHasLink {
 
     private static final long serialVersionUID = -7349160369642038687L;
     @SuppressWarnings("unused")

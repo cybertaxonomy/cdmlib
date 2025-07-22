@@ -61,9 +61,10 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
-import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
@@ -140,11 +141,11 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @InReference(groups=Level3.class)
 @NoRecursiveInReference(groups=Level3.class)  //may become Level1 in future  #
 public class Reference
-        extends IdentifiableMediaEntity<IReferenceCacheStrategy>
+        extends IdentifiableEntity<IReferenceCacheStrategy>
         implements IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,
                    IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport,
                    IThesis,IWebPage, IPersonalCommunication,
-                   IIntextReferenceTarget {
+                   IIntextReferenceTarget, IHasLink {
 
     private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = LogManager.getLogger();

@@ -35,6 +35,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.FieldUnitDefaultCacheStrategy;
 
@@ -59,7 +60,9 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.FieldUnitDefaultCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
 @Configurable
-public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>> implements Cloneable{
+public class FieldUnit
+        extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>>
+        implements IHasLink {
 
     private static final long serialVersionUID = -7586670941559035171L;
 	private static final Logger logger = LogManager.getLogger();

@@ -30,6 +30,8 @@ import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.model.common.IHasCredits;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -64,7 +66,9 @@ import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGro
 @Audited
 @Configurable
 @HomotypicSynonymsShouldBelongToGroup(groups = Level3.class)
-public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
+public class Synonym
+        extends TaxonBase<ITaxonCacheStrategy<Synonym>>
+        implements IHasCredits, IHasLink {
 
     private static final long serialVersionUID = 6977221584815363620L;
 

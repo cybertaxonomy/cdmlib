@@ -46,6 +46,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -87,7 +88,8 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media
         extends IdentifiableEntity<IMediaCacheStrategy>
-        implements IMultiLanguageTextHolder, IIntextReferenceTarget {
+        implements IMultiLanguageTextHolder, IIntextReferenceTarget,
+                   IHasRights, IHasCredits, IHasLink {
 
     private static final long serialVersionUID = -1927421567263473658L;
     @SuppressWarnings("unused")

@@ -45,12 +45,14 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -76,7 +78,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.ClassificationDefaultCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.Classification")
 public class Classification
             extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<Classification>>
-            implements ITaxonTreeNode{
+            implements ITaxonTreeNode, IHasCredits, IHasLink {
 
     private static final long serialVersionUID = -753804821474209635L;
     private static final Logger logger = LogManager.getLogger();
