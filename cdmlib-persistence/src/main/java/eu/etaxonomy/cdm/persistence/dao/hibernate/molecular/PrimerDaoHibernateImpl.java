@@ -69,7 +69,7 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoBaseImpl<Primer> imple
     @Override
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache(Integer limitOfInitialElements, String pattern) {
 
-        String queryString = "SELECT uuid, id, label FROM Prime ";
+        String queryString = "SELECT uuid, id, label FROM Primer ";
 
         if ( pattern != null){
             queryString += " WHERE ";
