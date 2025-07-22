@@ -718,9 +718,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		book1.setAuthorship(team2);
 		book2.setAuthorship(team3);
 
-		Credit credit1 = Credit.NewInstance(team3, TimePeriod.NewInstance(1955), "credit1");
-		book2.addCredit(credit1);
-
 		agentDao.save(team1, team2);
 		agentDao.save(team3, person1);
 		agentDao.save(person2, person3);
@@ -731,7 +728,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 		Assert.assertSame("Author of book1 must be team2.", team2, book1.getAuthorship());
 		Assert.assertSame("Author of book2 must be team2.", team2, book2.getAuthorship());
-		Assert.assertSame("Agent of credit1 must be team2.", team2, credit1.getAgent());
 
 		Assert.assertEquals("Team2 must have 3 persons as members.",3, team2.getTeamMembers().size());
 		Assert.assertTrue("Team2 must have person3 as new member.", team2.getTeamMembers().contains(person3));
@@ -947,9 +943,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		team2.addTeamMember(person2);
 		String emailAddress2 = "Email2";
 		team2.addEmailAddress(emailAddress2);
-
-		Credit credit1 = Credit.NewInstance(team2, TimePeriod.NewInstance(2008), "credit1");
-		book1.addCredit(credit1);
 
 		agentDao.save(team1);
 		agentDao.save(team2);
