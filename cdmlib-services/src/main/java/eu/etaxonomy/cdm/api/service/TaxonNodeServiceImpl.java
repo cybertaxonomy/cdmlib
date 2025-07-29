@@ -278,7 +278,11 @@ public class TaxonNodeServiceImpl
         if (taxonNodeUuid == null){
             return null;
         }
-        return dao.getTaxonNodeDto(taxonNodeUuid);
+        TaxonNodeDto nodeDto = dao.getTaxonNodeDto(taxonNodeUuid);
+        if (nodeDto == null) {
+            nodeDto = dao.getTaxonNodeDtoWithoutTaxon(taxonNodeUuid);
+        }
+        return nodeDto;
     }
 
     @Override
@@ -886,6 +890,7 @@ public class TaxonNodeServiceImpl
                 referenceDao.saveOrUpdate(sec);
                 dao.saveOrUpdateAll(nodes);
                 subMonitor.internalWorked(nodes.size());
+                subMonitor.done();
             }catch(Exception e) {
                 result.addException(e);
             }
@@ -894,6 +899,7 @@ public class TaxonNodeServiceImpl
         }
 
         monitor.done();
+//        ((RemotingProgressMonitor)monitor).setResult(result);
         return result;
     }
 

@@ -1227,9 +1227,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
                 + ") "
                 + " FROM TaxonNode p "
                 + "   INNER JOIN p.childNodes AS tn"
+                + "   INNER JOIN tn.classification AS cl "
                 + "   INNER JOIN tn.taxon AS t "
                 + "   INNER JOIN t.name AS name "
-                + "   INNER JOIN tn.classification AS cl "
                 + "   LEFT OUTER JOIN t.secSource as secSource "
                 + "   LEFT OUTER JOIN secSource.citation as sec "
                 + "	  LEFT OUTER JOIN tn.placementNote as note "
@@ -1244,11 +1244,18 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             + ") "
             + " FROM TaxonNode p "
             + "   INNER JOIN p.childNodes AS tn"
-            + "   INNER JOIN tn.taxon AS t "
-            + "   INNER JOIN t.name AS name "
+            + "   LEFT JOIN tn.taxon AS t "
+            + "   LEFT JOIN t.name AS name "
             + "   INNER JOIN tn.classification AS cl "
             + "   LEFT OUTER JOIN tn.placementNote as note "
             + "   LEFT OUTER JOIN name.rank AS rank ";
+    return queryString;
+}
+    private String getTaxonNodeDtoQueryWithoutTaxon() {
+
+        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                + "tn.uuid, tn.id)"
+                + " FROM TaxonNode tn ";
     return queryString;
 }
 
@@ -1345,6 +1352,28 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern, boolean searchForClassifications) {
         return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, limit, pattern, searchForClassifications, false);
+    }
+
+    @Override
+    public TaxonNodeDto getTaxonNodeDtoWithoutTaxon(UUID taxonNodeUuid) {
+        String queryString = getTaxonNodeDtoQueryWithoutTaxon();
+        queryString = queryString + " WHERE tn.uuid = :uuid ";
+        try {
+            Query<SortableTaxonNodeQueryResult> query =  getSession().createQuery(queryString, SortableTaxonNodeQueryResult.class);
+            query.setParameter("uuid", taxonNodeUuid);
+
+            List<SortableTaxonNodeQueryResult> result = query.list();
+            List<TaxonNodeDto> list = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
+            if (list.isEmpty()) {
+                return null;
+            }
+            return list.get(0);
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
+
     }
 
 
