@@ -115,21 +115,19 @@ public class ReferenceDaoHibernateImpl
         List<UuidAndTitleCache<Reference>> list = new ArrayList<>();
 
         for(Reference object : result){
-                list.add(new UuidAndTitleCache<>(type, object.getUuid(), object.getId(), object.getTitleCache(), object.getAbbrevTitleCache()));
+            list.add(new UuidAndTitleCache<>(type, object.getUuid(), object.getId(), object.getTitleCache(), object.getAbbrevTitleCache()));
         }
 
         return list;
     }
-
-
 
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids, ReferenceType refType) {
         List<Reference> result = getReferenceListForUuids(uuids, refType);
         List<UuidAndTitleCache<Reference>> list = new ArrayList<>();
 
-        for(Reference object : result){
-                list.add(new UuidAndTitleCache<Reference>(type, object.getUuid(), object.getId(), object.getTitleCache()));
+        for(Reference ref : result){
+                list.add(new UuidAndTitleCache<Reference>(type, ref.getUuid(), ref.getId(), ref.getTitleCache()));
         }
 
         return list;
@@ -406,25 +404,25 @@ public class ReferenceDaoHibernateImpl
     }
 
     @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern, ReferenceType refType) {
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String authorPattern, ReferenceType refType) {
         Session session = getSession();
 
         Query<Object[]> query = null;
-        if (pattern != null){
+        if (authorPattern != null){
             query = session.createQuery("SELECT uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName()
             +" as r where r.authorship.nomenclaturalTitleCache like :pattern  ", Object[].class);
 
-            query.setParameter("pattern", pattern);
+            query.setParameter("pattern", authorPattern);
         } else {
             query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName(), Object[].class);
         }
         if (limit != null){
            query.setMaxResults(limit);
         }
-        if(pattern != null){
-            pattern = pattern.replace("*", "%");
-            pattern = pattern.replace("?", "_");
-            query.setParameter("pattern", pattern);
+        if(authorPattern != null){
+            authorPattern = authorPattern.replace("*", "%");
+            authorPattern = authorPattern.replace("?", "_");
+            query.setParameter("pattern", authorPattern);
         }
         return getUuidAndAbbrevTitleCache(query);
     }

@@ -72,86 +72,32 @@ public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<R
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<TaxonBase> listCoveredTaxa(Reference reference,
+	        boolean includeSubordinateReferences, List<OrderHint> orderHints,
+	        List<String> propertyPaths);
 
-	/**
-     * @param limit
-     * @param pattern
-     * @param refType
-     * @return
-     */
-    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, ReferenceType refType);
+    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit,
+            String pattern, ReferenceType refType);
 
-    /**
-     * @param limit
-     * @param pattern
-     * @param refType
-     * @return
-     */
-    List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType refType);
+    List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit,
+            String pattern, ReferenceType refType);
 
-    /**
-     * @param identifier
-     * @param identifierType
-     * @param matchmode
-     * @param limit
-     * @return
-     */
-    List<Object[]> findByIdentifierAbbrev(String identifier, DefinedTermBase identifierType, MatchMode matchmode,
-            Integer limit);
+    List<Object[]> findByIdentifierAbbrev(String identifier, DefinedTermBase identifierType,
+            MatchMode matchmode, Integer limit);
 
-    /**
-     * @param limit
-     * @param pattern
-     * @param refType
-     * @return
-     */
-    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern,
-            ReferenceType refType);
+    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit,
+            String pattern, ReferenceType refType);
 
-    /**
-     * @param uuids
-     * @return
-     */
     List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids);
 
-    /**
-     * @param uuids
-     * @param refType
-     * @return
-     */
     List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids, ReferenceType refType);
 
-    /**
-     * @param clazz
-     * @param queryString
-     * @param matchmode
-     * @param criterion
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     */
     List<Reference> findByTitleAndAbbrevTitle(Class clazz, String queryString, MatchMode matchmode,
             List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
 
-	List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit, Integer authorID,
-			ReferenceType refType);
+	List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit,
+	        Integer authorID, ReferenceType refType);
 
-    /**
-     * @param uuids
-     * @param refType
-     * @return
-     */
     List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitle(Set<UUID> uuids, ReferenceType refType);
-
-    /**
-     * @param uuids
-     * @return
-     */
-    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitle(Set<UUID> uuids);
-
-
 }

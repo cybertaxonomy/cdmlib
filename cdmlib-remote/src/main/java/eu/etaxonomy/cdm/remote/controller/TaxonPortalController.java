@@ -1207,12 +1207,8 @@ public class TaxonPortalController extends TaxonController{
             return media;
         }
 
-        /**
-         * @param addTaxonomicChildrenMedia
-         */
         public void setMedia(List<Media> media) {
             this.media = media;
-
         }
     }
 
