@@ -104,7 +104,7 @@ public class ReferenceDaoHibernateImpl
 
         List<Predicate> predicates = new ArrayList<>();
         if (refType != null) {
-            predicates.add(cb.equal(root.get("refType"), refType));
+            predicates.add(cb.equal(root.get("type"), refType));
         }
         predicates.add(root.get("uuid").in(uuids));
 
