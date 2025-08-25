@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -319,6 +321,41 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         TaxonDescription desc = descriptions.iterator().next();
         boolean hasMarkerImportedAsFalse = desc.hasMarker(importedMarkerType, false);
         Assert.assertTrue("The only description should have a negative marker on 'imported'", hasMarkerImportedAsFalse);
+    }
+
+    @Test
+    public void testListTaxonDescriptionWithTypes(){
+
+        Taxon taxon = (Taxon)this.taxonDao.findByUuid(UUID.fromString("b04cc9cb-2b4a-4cc4-a94a-3c93a2158b06"));
+        Set<DefinedTerm> scopes = null;
+        Set<NamedArea> geographicalScope = null;
+        Set<MarkerType> markerTypes = null;
+        Integer pageSize = null;
+        Integer pageNumber = null;
+        List<String> propertyPaths = null;
+
+        //types
+        Set<DescriptionType> types = EnumSet.noneOf(DescriptionType.class);
+        long n = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, types);
+        Assert.assertEquals("There should be 1 description for the given taxon", 1, n);
+
+        types = EnumSet.of(DescriptionType.AGGREGATED);
+        n = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, types);
+        Assert.assertEquals("There should be 1 description of type 'aggregated' for the given taxon", 1, n);
+
+        types = EnumSet.of(DescriptionType.COMPUTED);
+        n = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, types);
+        Assert.assertEquals("There should be 0 descriptions of type 'computed' for the given taxon", 0, n);
+
+        types = EnumSet.of(DescriptionType.AGGREGATED, DescriptionType.COMPUTED);
+        n = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, types);
+        Assert.assertEquals("There should be 0 descriptions of type 'aggregated' "
+                + "and type 'computed' for the given taxon", 0, n);
+
+        types = EnumSet.of(DescriptionType.AGGREGATED, DescriptionType.SECONDARY_DATA);
+        n = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, types);
+        Assert.assertEquals("There should be 1 descriptions of type 'aggregated' "
+                + "and type 'secondary data' for the given taxon", 1, n);
 
     }
 
