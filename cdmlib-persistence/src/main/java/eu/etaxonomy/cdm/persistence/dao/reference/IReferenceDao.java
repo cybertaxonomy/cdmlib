@@ -98,6 +98,4 @@ public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<R
 
 	List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit,
 	        Integer authorID, ReferenceType refType);
-
-    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitle(Set<UUID> uuids, ReferenceType refType);
 }
