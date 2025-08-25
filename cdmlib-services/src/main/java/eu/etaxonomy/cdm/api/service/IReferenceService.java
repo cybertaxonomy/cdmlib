@@ -124,6 +124,4 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
 
     List<Reference> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<Reference> config);
 
-    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForUUIDS(Set<UUID> uuids);
-
 }

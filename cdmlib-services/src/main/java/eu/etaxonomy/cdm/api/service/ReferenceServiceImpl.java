@@ -203,11 +203,6 @@ public class ReferenceServiceImpl
     }
 
     @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForUUIDS(Set<UUID> uuids ) {
-        return dao.getUuidAndAbbrevTitle(uuids);
-    }
-
-    @Override
     public List<Reference> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<Reference> config){
         return dao.findByTitleAndAbbrevTitle(config.getClazz(),config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
     }
