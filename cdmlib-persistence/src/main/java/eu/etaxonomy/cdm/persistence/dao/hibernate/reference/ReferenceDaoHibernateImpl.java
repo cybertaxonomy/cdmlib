@@ -345,6 +345,7 @@ public class ReferenceDaoHibernateImpl
         Query<Object[]> query = null;
         if (pattern != null){
             if (pattern.startsWith("*")){
+                //requirement probably by WGB to allow search also on titleCache if search starts with *
                 query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() +" where abbrevTitleCache like :pattern OR titleCache like :pattern ", Object[].class);
             }else{
                 query = session.createQuery("select uuid, id, abbrevTitleCache, titleCache from " + type.getSimpleName() +" where abbrevTitleCache like :pattern ", Object[].class);
@@ -363,6 +364,10 @@ public class ReferenceDaoHibernateImpl
         return getUuidAndAbbrevTitleCache(query);
     }
 
+    /**
+     * @deprecated not used, may be removed in future
+     */
+    @Deprecated
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String authorPattern, ReferenceType refType) {
         Session session = getSession();

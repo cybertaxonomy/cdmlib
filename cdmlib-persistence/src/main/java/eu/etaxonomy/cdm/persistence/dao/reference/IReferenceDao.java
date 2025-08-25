@@ -83,8 +83,12 @@ public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<R
     List<Object[]> findByIdentifierAbbrev(String identifier, DefinedTermBase identifierType,
             MatchMode matchmode, Integer limit);
 
+    /**
+     * @deprecated not used, may be removed in future
+     */
+    @Deprecated
     List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit,
-            String pattern, ReferenceType refType);
+            String authorPattern, ReferenceType refType);
 
     List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Set<UUID> uuids, ReferenceType refType);
 

@@ -105,18 +105,25 @@ public class ReferenceServiceImpl
         return dao.getUuidAndAbbrevTitleCache(limit, pattern, inReferenceType);
     }
 
+    /**
+     * @deprecated not used, may be removed in future
+     */
+    @Deprecated
     @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern, ReferenceType type) {
-        return dao.getUuidAndAbbrevTitleCacheForAuthor(limit, pattern, null);
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit,
+            String authorPattern, ReferenceType type) {
+        return dao.getUuidAndAbbrevTitleCacheForAuthor(limit, authorPattern, null);
     }
 
     @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit, Integer authorID, ReferenceType type) {
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit,
+            Integer authorID, ReferenceType type) {
         return dao.getUuidAndAbbrevTitleCacheForAuthorID(limit, authorID, null);
     }
 
     @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType type) {
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit,
+            String pattern, ReferenceType type) {
         ReferenceType inReferenceType = null;
         inReferenceType = getInReferenceType(type);
         return dao.getUuidAndTitleCache(limit, pattern, inReferenceType);

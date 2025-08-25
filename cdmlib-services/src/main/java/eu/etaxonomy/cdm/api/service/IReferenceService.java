@@ -91,6 +91,10 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
     public List<IdentifiedEntityDTO<Reference>> listByIdentifierAbbrev(String identifier, IdentifierType identifierType,
         MatchMode matchmode, Integer limit);
 
+    /**
+     * @deprecated not used, may be removed in future
+     */
+    @Deprecated
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern,
             ReferenceType type);
 

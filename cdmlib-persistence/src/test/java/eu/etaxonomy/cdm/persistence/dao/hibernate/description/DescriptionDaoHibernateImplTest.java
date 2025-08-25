@@ -312,6 +312,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         Assert.assertEquals("There should be no description marked 'imported' as true", 0, n3);
         descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null, pageSize, pageNumber, propertyPaths);
         Assert.assertEquals("There should be no description marked 'imported' as true", 0, descriptions.size());
+
         markerTypes = null;
         descriptions = this.descriptionDao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null, pageSize, pageNumber, propertyPaths);
         Assert.assertEquals("There should be 1 description", 1, descriptions.size());
