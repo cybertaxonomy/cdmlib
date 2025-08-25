@@ -47,14 +47,6 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
     public Pager<Reference> search(Class<? extends Reference> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
-	 * Returns a map that holds uuid, titleCache pairs of all references in the current database
-	 *
-	 * @return
-	 * 			a <code>Map</code> containing uuid and titleCache of references
-	 */
-	public List<UuidAndTitleCache<Reference>> getUuidAndTitle();
-
-	/**
 	 * lists all references marked as "publish" and not used as nomenclatural references
 	 */
 	public List<Reference> listReferencesForPublishing();

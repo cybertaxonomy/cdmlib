@@ -81,31 +81,8 @@ public class ReferenceDaoHibernateImpl
 		fullTextSession.flushToIndexes();
 	}
 
-	@Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndTitle(){
-		List<UuidAndTitleCache<Reference>> list = new ArrayList<>();
-		Session session = getSession();
-
-		Query<Object[]> query = session.createQuery(
-		        "select uuid, id, titleCache from " + type.getSimpleName(),
-		        Object[].class);
-
-        List<Object[]> result = query.list();
-
-		for(Object[] object : result){
-			list.add(new UuidAndTitleCache<Reference>(type, (UUID) object[0], (Integer)object[1], (String) object[2]));
-		}
-
-		return list;
-	}
-
-	@Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids){
-	    return getUuidAndTitle(uuids, null);
-    }
-
     @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids, ReferenceType refType) {
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Set<UUID> uuids, ReferenceType refType) {
         List<Reference> result = getReferenceListForUuids(uuids, refType);
         List<UuidAndTitleCache<Reference>> list = new ArrayList<>();
 

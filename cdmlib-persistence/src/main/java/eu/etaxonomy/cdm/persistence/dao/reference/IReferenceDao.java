@@ -29,8 +29,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<Reference> {
 
-	public List<UuidAndTitleCache<Reference>> getUuidAndTitle();
-
 	/**
 	 * TODO candidate for harmonization: rename to listAllReferencesForPublishing
 	 * @return all references marked with publish-flag
@@ -88,9 +86,7 @@ public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<R
     List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit,
             String pattern, ReferenceType refType);
 
-    List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids);
-
-    List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids, ReferenceType refType);
+    List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Set<UUID> uuids, ReferenceType refType);
 
     List<Reference> findByTitleAndAbbrevTitle(Class clazz, String queryString, MatchMode matchmode,
             List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,

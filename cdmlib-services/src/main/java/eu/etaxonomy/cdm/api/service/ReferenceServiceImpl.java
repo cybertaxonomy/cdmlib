@@ -59,11 +59,6 @@ public class ReferenceServiceImpl
     }
 
     @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndTitle() {
-        return dao.getUuidAndTitle();
-    }
-
-    @Override
     public List<Reference> listReferencesForPublishing(){
         return dao.getAllNotNomenclaturalReferencesForPublishing();
     }
@@ -194,12 +189,12 @@ public class ReferenceServiceImpl
 
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids, ReferenceType refType ) {
-        return dao.getUuidAndTitle(uuids, getInReferenceType(refType));
+        return dao.getUuidAndTitleCache(uuids, getInReferenceType(refType));
     }
 
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids ) {
-        return dao.getUuidAndTitle(uuids);
+        return dao.getUuidAndTitleCache(uuids, null);
     }
 
     @Override
