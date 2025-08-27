@@ -37,10 +37,12 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -78,7 +80,8 @@ import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
 @Audited
 public class PolytomousKey
             extends IdentifiableEntity<PolytomousKeyDefaultCacheStrategy>
-            implements IIdentificationKey, IIntextReferenceTarget {
+            implements IIdentificationKey, IIntextReferenceTarget, IHasCredits,
+                IHasLink {
 
     private static final long serialVersionUID = -3368243754557343942L;
     private static final Logger logger = LogManager.getLogger();

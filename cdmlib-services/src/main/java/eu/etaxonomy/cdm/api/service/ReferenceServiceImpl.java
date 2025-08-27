@@ -59,11 +59,6 @@ public class ReferenceServiceImpl
     }
 
     @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndTitle() {
-        return dao.getUuidAndTitle();
-    }
-
-    @Override
     public List<Reference> listReferencesForPublishing(){
         return dao.getAllNotNomenclaturalReferencesForPublishing();
     }
@@ -110,18 +105,25 @@ public class ReferenceServiceImpl
         return dao.getUuidAndAbbrevTitleCache(limit, pattern, inReferenceType);
     }
 
+    /**
+     * @deprecated not used, may be removed in future
+     */
+    @Deprecated
     @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern, ReferenceType type) {
-        return dao.getUuidAndAbbrevTitleCacheForAuthor(limit, pattern, null);
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit,
+            String authorPattern, ReferenceType type) {
+        return dao.getUuidAndAbbrevTitleCacheForAuthor(limit, authorPattern, null);
     }
 
     @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit, Integer authorID, ReferenceType type) {
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit,
+            Integer authorID, ReferenceType type) {
         return dao.getUuidAndAbbrevTitleCacheForAuthorID(limit, authorID, null);
     }
 
     @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType type) {
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit,
+            String pattern, ReferenceType type) {
         ReferenceType inReferenceType = null;
         inReferenceType = getInReferenceType(type);
         return dao.getUuidAndTitleCache(limit, pattern, inReferenceType);
@@ -194,17 +196,12 @@ public class ReferenceServiceImpl
 
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids, ReferenceType refType ) {
-        return dao.getUuidAndTitle(uuids, getInReferenceType(refType));
+        return dao.getUuidAndTitleCache(uuids, getInReferenceType(refType));
     }
 
     @Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids ) {
-        return dao.getUuidAndTitle(uuids);
-    }
-
-    @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForUUIDS(Set<UUID> uuids ) {
-        return dao.getUuidAndAbbrevTitle(uuids);
+        return dao.getUuidAndTitleCache(uuids, null);
     }
 
     @Override

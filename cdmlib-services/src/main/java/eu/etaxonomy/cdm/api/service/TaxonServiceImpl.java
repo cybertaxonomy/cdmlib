@@ -110,7 +110,6 @@ import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
@@ -1132,14 +1131,6 @@ public class TaxonServiceImpl
                     }
                 }
 
-                if (occurrence.isInstanceOf(DerivedUnit.class)) {
-                    DerivedUnit derivedUnit = CdmBase.deproxy(occurrence, DerivedUnit.class);
-                    // Collection
-                    //TODO why may collections have media attached? #
-                    if (derivedUnit.getCollection() != null){
-                        taxonMedia.addAll(derivedUnit.getCollection().getMedia());
-                    }
-                }
                 //media in hierarchy
 
                 taxonMedia.addAll(occurrenceService.getMediaInHierarchy(occurrence, includeOriginalOccurences, includeOccurrences, null, null, propertyPath).getRecords());

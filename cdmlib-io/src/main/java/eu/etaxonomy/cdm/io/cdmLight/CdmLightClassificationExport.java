@@ -2142,6 +2142,7 @@ public class CdmLightClassificationExport
                     typifiedNamesWithSecString += synonymSign + doubtful + nameString.trim() + sec + nonRelNames + relNames;
                 }
                 typifiedNamesWithSecString = typifiedNamesWithSecString.trim() + " ";
+                index++;
             }
             if (state.getConfig().isShowSynSecForHomotypicGroup() && !secSources.isEmpty()) {
                 String synSecs = "syn. sec. ";
@@ -2153,6 +2154,7 @@ public class CdmLightClassificationExport
                 synSecs = synSecs.substring(0, synSecs.length()-2);
                 typifiedNamesWithSecString +=  synSecs ;
                 typifiedNamesWithoutAcceptedWithSec += synSecs;
+
             }
 
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
@@ -2170,7 +2172,7 @@ public class CdmLightClassificationExport
             } else {
                 csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = "";
             }
-            index++;
+
 
 
             List<TypeDesignationBase<?>> designationList = new ArrayList<>(group.getTypeDesignations());

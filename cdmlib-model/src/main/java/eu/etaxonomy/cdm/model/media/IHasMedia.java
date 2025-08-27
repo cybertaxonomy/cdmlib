@@ -18,13 +18,11 @@ import java.util.Set;
  * @author a.mueller
  * @since 07.07.2008
  */
-public interface IMediaEntity extends IMediaDocumented{
+public interface IHasMedia {
 
 	/**
 	 * Gets all media belonging to this object
-	 * @return
 	 */
-	@Override
     public Set<Media> getMedia();
 
 	/**

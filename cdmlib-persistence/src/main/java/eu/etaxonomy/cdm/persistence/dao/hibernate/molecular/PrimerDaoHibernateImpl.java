@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author pplitzner
  * @since 11.03.2014
- *
  */
 @Repository
 public class PrimerDaoHibernateImpl extends AnnotatableDaoBaseImpl<Primer> implements IPrimerDao{
@@ -43,7 +42,7 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoBaseImpl<Primer> imple
 
     @Override
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache() {
-        List<UuidAndTitleCache<Primer>> list = new ArrayList<UuidAndTitleCache<Primer>>();
+        List<UuidAndTitleCache<Primer>> list = new ArrayList<>();
         Session session = getSession();
 
         Query<Object[]> query = session.createQuery("select uuid, id, label from Primer", Object[].class);
@@ -51,7 +50,7 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoBaseImpl<Primer> imple
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
-            list.add(new UuidAndTitleCache<Primer>(Primer.class, (UUID) object[0], (Integer)object[1], (String) object[2]));
+            list.add(new UuidAndTitleCache<>(Primer.class, (UUID) object[0], (Integer)object[1], (String) object[2]));
         }
         return list;
     }
@@ -70,7 +69,7 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoBaseImpl<Primer> imple
     @Override
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache(Integer limitOfInitialElements, String pattern) {
 
-        String queryString = "SELECT uuid, id, label FROM Prime ";
+        String queryString = "SELECT uuid, id, label FROM Primer ";
 
         if ( pattern != null){
             queryString += " WHERE ";
@@ -92,7 +91,7 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoBaseImpl<Primer> imple
         List<Object[]> result = query.list();
         List<UuidAndTitleCache<Primer>> list = new ArrayList<>();
         for(Object[] object : result){
-            list.add(new UuidAndTitleCache<Primer>(Primer.class, (UUID) object[0],(Integer)object[1], (String)object[2]));
+            list.add(new UuidAndTitleCache<>(Primer.class, (UUID) object[0],(Integer)object[1], (String)object[2]));
         }
         return list;
     }

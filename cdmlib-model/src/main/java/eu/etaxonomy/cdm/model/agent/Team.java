@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterException;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -69,7 +70,9 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 @Entity
 @Audited
 @Configurable
-public class Team extends TeamOrPersonBase<Team> {
+public class Team
+        extends TeamOrPersonBase<Team>
+        implements IHasLink {
 
     private static final long serialVersionUID = 97640416905934622L;
 	private static final Logger logger = LogManager.getLogger();

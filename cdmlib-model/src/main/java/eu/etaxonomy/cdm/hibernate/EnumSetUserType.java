@@ -14,7 +14,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -108,7 +115,11 @@ public class EnumSetUserType<E extends Enum<E>>
 			throws HibernateException, SQLException {
 		if (value == null) {
             StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);
-        } else {
+		} else if (value instanceof String) {
+		    //this happens in queries, see #hasEnumValue(...)
+		    String enumStr = (String)value;
+		    StandardBasicTypes.STRING.nullSafeSet(statement, enumStr, index, session);
+		} else {
         	@SuppressWarnings("unchecked")
             EnumSet<E> enumSet = (EnumSet<E>)value;
         	String key = "#";
@@ -128,4 +139,26 @@ public class EnumSetUserType<E extends Enum<E>>
 	public int[] sqlTypes() {
 		return SQL_TYPES;
 	}
+
+
+	//******** FOR QUERIES *********//
+
+	//Note: in future maybe better use spring-data Specification.toPredicate(...) (e.g. https://docs.spring.io/spring-data/jpa/docs/current/api/org/springframework/data/jpa/domain/Specification.html)
+
+	public static <F extends Enum<F>> Predicate hasEnumValue(F enumValue, CriteriaBuilder cb, Root<?> root) {
+	    if (! (enumValue instanceof IKeyTerm)) {
+	        throw new IllegalArgumentException("Enum is not of type IKeyTerm and can not be handled by EnumSetUserType");
+	    }
+	    IKeyTerm keyValue = (IKeyTerm)enumValue;
+	    Predicate p = cb.like(root.get("types"), "%#"+keyValue.getKey()+"#%");
+	    return p;
+    }
+
+	public static <F extends Enum<F>> Predicate hasAllEnumValues(Set<F> enumValues, CriteriaBuilder cb, Root<?> root) {
+        List<Predicate> predicates = enumValues.stream()
+                .map(enumValue -> hasEnumValue(enumValue, cb, root))
+                .collect(Collectors.toList());
+        Predicate[] predicateArray = predicates.toArray(new Predicate[0]);
+        return cb.and(predicateArray);
+    }
 }

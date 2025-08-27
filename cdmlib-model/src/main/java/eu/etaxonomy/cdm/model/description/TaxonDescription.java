@@ -36,7 +36,10 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.IHasLink;
+import eu.etaxonomy.cdm.model.media.IHasRights;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -69,7 +72,8 @@ import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheS
 @Audited
 @Configurable
 public class TaxonDescription
-            extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonDescription>>{
+            extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonDescription>>
+            implements IHasRights, IHasCredits, IHasLink {
 
     private static final long serialVersionUID = 8065879180505546803L;
     @SuppressWarnings("unused")

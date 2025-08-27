@@ -81,6 +81,7 @@ import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.ExternalLinkType;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -197,7 +198,8 @@ public class TaxonName
                 IBotanicalName, ICultivarPlantName, IFungusName,
                 IParsable, IRelated, IMatchable, IIntextReferenceTarget,
                 IDescribable<TaxonNameDescription>,
-                INomenclaturalStanding {
+                INomenclaturalStanding,
+                IHasLink {
 
     private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = LogManager.getLogger();

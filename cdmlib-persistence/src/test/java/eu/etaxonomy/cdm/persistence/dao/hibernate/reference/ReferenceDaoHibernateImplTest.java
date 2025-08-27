@@ -41,15 +41,17 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	private UUID firstBookUuid;
 	private UUID firstJournalUuid;
 	private UUID proceedingsUuid;
-	private UUID bookSectionUuid;
+	private UUID articleUuid;
 	private UUID nomenclaturalReferenceBookUuid;
 
 	@Before
 	public void setUp() {
+	    //TODO: is proceedings in reality (!! dirty data !!) AND same as proceedingsUuid below
 		firstBookUuid = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2");
 	    firstJournalUuid = UUID.fromString("ad4322b7-4b05-48af-be70-f113e46c545e");
 	    proceedingsUuid = UUID.fromString("596b1327-be50-4b0a-9aa2-3ecd610215f2");
-	    bookSectionUuid = UUID.fromString("596b1327-be51-4b0a-9aa2-3ecd610215f1");
+	    //note: is an article in book in reality (!!dirty data!!)
+	    articleUuid = UUID.fromString("596b1327-be51-4b0a-9aa2-3ecd610215f1");
 	    nomenclaturalReferenceBookUuid = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f3");
 	}
 
@@ -70,7 +72,7 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("expecting one subordinate reference", book_subordinateReferences.size(), 1);
 		Reference sub_1 = book_subordinateReferences.get(0);
 		assertEquals("expecting BookSection as first subordinateReferences", "Better Testing made easy", sub_1.getTitleCache());
-		assertEquals("first subordinateReferences matches uuid", bookSectionUuid, sub_1.getUuid());
+		assertEquals("first subordinateReferences matches uuid", articleUuid, sub_1.getUuid());
 
 		// 2.)
 		List<Reference> proceedings_subordinateReferences = referenceDao.getSubordinateReferences(proceedings);
@@ -80,7 +82,7 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("expecting BookSection as first subordinateReferences", "Proceedings of Testing Vol. 1", sub_1.getTitleCache());
 		assertEquals("expecting BookSection as first subordinateReferences", "Better Testing made easy", sub_2.getTitleCache());
 		assertEquals("first subordinateReferences matches uuid", firstBookUuid, sub_1.getUuid());
-		assertEquals("second subordinateReferences matches uuid", bookSectionUuid, sub_2.getUuid());
+		assertEquals("second subordinateReferences matches uuid", articleUuid, sub_2.getUuid());
 	}
 
 	@Test
@@ -100,7 +102,7 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 		Assert.assertTrue("covered taxon must contain 'Lactuca virosa'", titles.contains("Lactuca virosa"));
 		assertEquals("2nd covered taxon is 'Lactuca virosa'", "Lactuca virosa", coveredTaxa.get(1).getName().getTitleCache() );
 
-		Reference bookSection = referenceDao.findByUuid(bookSectionUuid);
+		Reference bookSection = referenceDao.findByUuid(articleUuid);
 		coveredTaxa = referenceDao.listCoveredTaxa(bookSection, false, orderHints, null);
 		assertEquals("expecting two Taxa covered by this bookSection", 2, coveredTaxa.size());
 		titles = makeTitleCacheSet(coveredTaxa);
@@ -134,6 +136,20 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	    referenceUuidAndTitleCacheList = referenceDao.getUuidAndTitleCache(100, "Better Testing*", ReferenceType.Book);
 	    assertEquals(0, referenceUuidAndTitleCacheList.size());
 	}
+
+    @Test
+    public void testGetUuidAndTitleCacheForUuidsAndType(){
+        Set<UUID> referenceUuids = new HashSet<>(Arrays.asList(new UUID[]{proceedingsUuid, articleUuid}));
+
+        List<UuidAndTitleCache<Reference>> referenceUuidAndTitleCacheList = referenceDao.getUuidAndTitleCache(referenceUuids, null);
+        assertEquals("2 references should be found for 2 UUIDs", 2, referenceUuidAndTitleCacheList.size());
+
+        referenceUuidAndTitleCacheList = referenceDao.getUuidAndTitleCache(referenceUuids, ReferenceType.Article);
+        assertEquals(1, referenceUuidAndTitleCacheList.size());
+
+        referenceUuidAndTitleCacheList = referenceDao.getUuidAndTitleCache(referenceUuids, ReferenceType.Book);
+        assertEquals(0, referenceUuidAndTitleCacheList.size());
+    }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

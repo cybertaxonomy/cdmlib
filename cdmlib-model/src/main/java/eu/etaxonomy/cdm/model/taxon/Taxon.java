@@ -58,6 +58,7 @@ import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.CdmClass;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -66,6 +67,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -108,7 +110,8 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
 })
 public class Taxon
             extends TaxonBase<ITaxonCacheStrategy<Taxon>>
-            implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, ICdmTarget{
+            implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, ICdmTarget,
+                       IHasCredits, IHasLink {
 
     private static final long serialVersionUID = -584946869762749006L;
     private static final Logger logger = LogManager.getLogger();

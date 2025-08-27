@@ -21,7 +21,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 
 
 /**
@@ -36,7 +38,8 @@ import eu.etaxonomy.cdm.model.common.Language;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class DefinedTerm
-        extends DefinedTermBase<DefinedTerm> {
+        extends DefinedTermBase<DefinedTerm>
+        implements IHasCredits, IHasLink {
 
     private static final long serialVersionUID = -6965540410672076893L;
 

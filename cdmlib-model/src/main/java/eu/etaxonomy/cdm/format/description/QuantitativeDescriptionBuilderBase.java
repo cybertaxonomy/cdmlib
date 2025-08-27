@@ -37,7 +37,7 @@ public abstract class QuantitativeDescriptionBuilderBase
 		       }
 		       measures.get(smv.getType()).add(smv.getValue());
 		   }
-		   return doBuild(measures,data.getUnit(), languages);
+		   return doBuild(measures, data.getUnit(), languages);
 		 }
 
 	protected abstract TextData doBuild(Map<StatisticalMeasure,List<BigDecimal>> measures,

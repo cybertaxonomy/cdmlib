@@ -31,7 +31,9 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 
 /**
  * @author a.mueller
@@ -49,7 +51,8 @@ import eu.etaxonomy.cdm.model.common.Language;
 @Table(name="TermCollection")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class TermCollection<TERM extends DefinedTermBase, REL extends TermRelationBase>
-            extends TermBase{
+            extends TermBase
+            implements IHasCredits, IHasLink {
 
     private static final long serialVersionUID = 6102175902060054329L;
 

@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.hibernate.search.OrcidBridge;
 import eu.etaxonomy.cdm.hibernate.search.WikiDataItemIdBridge;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.WikiDataItemId;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -85,7 +86,9 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 //@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 @Configurable
-public class Person extends TeamOrPersonBase<Person>{
+public class Person
+        extends TeamOrPersonBase<Person>
+        implements IHasLink {
 
     private static final long serialVersionUID = 4153566493065539763L;
 	private static final Logger logger = LogManager.getLogger();

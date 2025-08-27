@@ -321,26 +321,24 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     public void setLsid(LSID lsid){
         this.lsid = lsid;
     }
-    @Override
+
+//************* RIGHTS *************************************
+
     public Set<Rights> getRights() {
         if(rights == null) {
             this.rights = new HashSet<>();
         }
         return this.rights;
     }
-
-    @Override
     public void addRights(Rights right){
         getRights().add(right);
     }
-    @Override
     public void removeRights(Rights right){
         getRights().remove(right);
     }
 
 
 //********************** External Links **********************************************
-
 
     public Set<ExternalLink> getLinks(){
         return this.links;
@@ -369,7 +367,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 //********************** CREDITS **********************************************
 
-    @Override
     public List<Credit> getCredits() {
         if(credits == null) {
             this.credits = new ArrayList<>();
@@ -377,37 +374,31 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return this.credits;
     }
 
-    @Override
     public Credit getCredits(Integer index){
         return getCredits().get(index);
     }
 
-    @Override
     public void addCredit(Credit credit){
         getCredits().add(credit);
     }
 
-
-    @Override
     public void addCredit(Credit credit, int index){
         getCredits().add(index, credit);
     }
 
-    @Override
     public void removeCredit(Credit credit){
         getCredits().remove(credit);
     }
 
-    @Override
     public void removeCredit(int index){
         getCredits().remove(index);
     }
 
-    @Override
     public boolean replaceCredit(Credit newObject, Credit oldObject){
         return replaceInList(this.credits, newObject, oldObject);
     }
 
+//************ IDENTIFIERS ********************************************/
 
     @Override
     public List<Identifier> getIdentifiers(){

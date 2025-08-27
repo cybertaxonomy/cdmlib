@@ -35,9 +35,9 @@ public class DefaultQuantitativeDescriptionBuilder extends QuantitativeDescripti
 		// booleans indicating whether a kind of value is present or not and the float that will eventually hold the value
 
 		String unit = "";
-		mUnit = HibernateProxyHelper.deproxy(mUnit, MeasurementUnit.class);
+		mUnit = HibernateProxyHelper.deproxy(mUnit);
 
-		if ((mUnit!=null)&&(mUnit.getIdInVocabulary()!=null)){
+		if ((mUnit!=null) && (mUnit.getIdInVocabulary()!=null)){
 			unit = mUnit.getIdInVocabulary();
 		}else if ((mUnit!=null)&&(mUnit.getLabel()!=null)){
             unit = mUnit.getIdInVocabulary();

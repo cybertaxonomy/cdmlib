@@ -1,5 +1,5 @@
 /**
-* Copyright (C) 2009 EDIT
+* Copyright (C) 2025 EDIT
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 *
@@ -8,12 +8,13 @@
 */
 package eu.etaxonomy.cdm.model.media;
 
-import java.util.Set;
-
 /**
- * Interface for all objects having {@link Media} attached
- * @author a.mueller
+ * Interface indicating that an entity supports {@link ExternalLink}s
+ *
+ * @author muellera
+ * @since 22.07.2025
+ * @see https://dev.e-taxonomy.eu/redmine/issues/10772
  */
-public interface IMediaDocumented {
-	public Set<Media> getMedia();
+public interface IHasLink {
+
 }

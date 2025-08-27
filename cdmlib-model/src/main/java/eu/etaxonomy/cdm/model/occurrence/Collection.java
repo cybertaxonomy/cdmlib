@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy;
@@ -63,7 +65,8 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy
 @Configurable
 @Table(name="Collection", indexes = { @javax.persistence.Index(name = "collectionTitleCacheIndex", columnList = "titleCache") })
 public class Collection
-        extends IdentifiableMediaEntity<IIdentifiableEntityCacheStrategy<Collection>> {
+        extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<Collection>>
+        implements IHasLink {
 
     private static final long serialVersionUID = -7833674897174732255L;
 	private static final Logger logger = LogManager.getLogger();

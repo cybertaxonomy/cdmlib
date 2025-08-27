@@ -47,14 +47,6 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
     public Pager<Reference> search(Class<? extends Reference> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
-	 * Returns a map that holds uuid, titleCache pairs of all references in the current database
-	 *
-	 * @return
-	 * 			a <code>Map</code> containing uuid and titleCache of references
-	 */
-	public List<UuidAndTitleCache<Reference>> getUuidAndTitle();
-
-	/**
 	 * lists all references marked as "publish" and not used as nomenclatural references
 	 */
 	public List<Reference> listReferencesForPublishing();
@@ -86,44 +78,35 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
 	 * @param propertyPaths
 	 * @return
 	 */
-	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<String> propertyPaths);
+	public List<TaxonBase> listCoveredTaxa(Reference reference,
+	        boolean includeSubordinateReferences, List<String> propertyPaths);
 
 
     public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern);
 
-    /**
-     * @param limit
-     * @param pattern
-     * @param type
-     * @return
-     */
-   public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, ReferenceType type);
-   /**
-    * @param limit
-    * @param pattern
-    * @param type
-    * @return
-    */
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCache(Integer limit, String pattern, ReferenceType type);
+
     public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Integer limit, String pattern, ReferenceType type);
 
     public List<IdentifiedEntityDTO<Reference>> listByIdentifierAbbrev(String identifier, IdentifierType identifierType,
         MatchMode matchmode, Integer limit);
 
-    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern,
+    /**
+     * @deprecated not used, may be removed in future
+     */
+    @Deprecated
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit, String pattern,
             ReferenceType type);
 
-    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit, Integer authorID,
+    public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit, Integer authorID,
 			ReferenceType refType);
 
-    List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids);
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids);
 
-    List<IdentifiedEntityDTO<Reference>> listByIdentifierAndTitleCacheAbbrev(String identifier,
+    public List<IdentifiedEntityDTO<Reference>> listByIdentifierAndTitleCacheAbbrev(String identifier,
             IdentifierType identifierType, MatchMode matchmode, Integer limit);
 
-    List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids, ReferenceType refType);
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids, ReferenceType refType);
 
-    List<Reference> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<Reference> config);
-
-    List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForUUIDS(Set<UUID> uuids);
-
+    public List<Reference> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<Reference> config);
 }

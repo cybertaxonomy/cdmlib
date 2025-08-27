@@ -41,6 +41,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterException;
+import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -84,7 +85,8 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrateg
 // this is needed, otherwise the fields of the also abstract super class are missed during indexing
 @Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 public class DerivedUnit
-        extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<? extends DerivedUnit>> {
+        extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<? extends DerivedUnit>>
+        implements IHasLink {
 
     private static final long serialVersionUID = -3525746216270843517L;
 	private static final Logger logger = LogManager.getLogger();

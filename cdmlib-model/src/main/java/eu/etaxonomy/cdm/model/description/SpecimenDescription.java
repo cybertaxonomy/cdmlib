@@ -28,6 +28,9 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
+import eu.etaxonomy.cdm.model.media.IHasLink;
+import eu.etaxonomy.cdm.model.media.IHasRights;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.description.SpecimenDescriptionDefaultCacheStrategy;
@@ -52,7 +55,8 @@ import eu.etaxonomy.cdm.strategy.cache.description.SpecimenDescriptionDefaultCac
 @Audited
 @Configurable
 public class SpecimenDescription
-        extends DescriptionBase<IIdentifiableEntityCacheStrategy<SpecimenDescription>>{
+        extends DescriptionBase<IIdentifiableEntityCacheStrategy<SpecimenDescription>>
+        implements IHasRights, IHasCredits, IHasLink {
 
 	private static final long serialVersionUID = -8506790426682192703L;
 	@SuppressWarnings("unused")
