@@ -300,6 +300,9 @@ public class NameServiceImpl
             }
         }else if (typeDesignation != null){
             Set<TaxonName> nameSet = new HashSet<>(typeDesignation.getTypifiedNames());
+            if (nameSet.isEmpty()) {
+                typeDesignationDao.delete(typeDesignation);
+            }
             for (TaxonName singleName : nameSet){
                 singleName = CdmBase.deproxy(singleName);
                 removeSingleDesignation(singleName, typeDesignation);
