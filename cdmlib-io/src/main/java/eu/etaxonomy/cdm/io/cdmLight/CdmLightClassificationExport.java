@@ -1827,6 +1827,7 @@ public class CdmLightClassificationExport
 
                     if (state.getAuthorFromStore(member.getId()) == null) {
                         state.addAuthorToStore(member);
+                        handleIdentifier(state, member);
                         csvLineMember = new String[table.getSize()];
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_ID)] = getId(state, member);
                         csvLineMember[table.getIndex(CdmLightExportTable.ABBREV_AUTHOR)] = member
