@@ -2529,11 +2529,11 @@ public class TaxonServiceImpl
 
         UUID nameUuid= taxon.getName().getUuid();
         IZoologicalName taxonName = getZoologicalName(nameUuid, zooHashMap);
-        String epithetOfTaxon = null;
+        String specificEpithetOfTaxon = null;
         String infraGenericEpithetOfTaxon = null;
         String infraSpecificEpithetOfTaxon = null;
         if (taxonName.isSpecies()){
-             epithetOfTaxon = taxonName.getSpecificEpithet();
+             specificEpithetOfTaxon = taxonName.getSpecificEpithet();
         } else if (taxonName.isInfraGeneric()){
             infraGenericEpithetOfTaxon = taxonName.getInfraGenericEpithet();
         } else if (taxonName.isInfraSpecific()){
@@ -2584,7 +2584,7 @@ public class TaxonServiceImpl
                     for (Synonym synonymOfParent: synonymsOfParent){
 
                         inferredEpithetSynonym = createInferredEpithets(taxon,
-                                zooHashMap, taxonName, epithetOfTaxon,
+                                zooHashMap, taxonName, specificEpithetOfTaxon,
                                 infraGenericEpithetOfTaxon,
                                 infraSpecificEpithetOfTaxon,
                                 taxonNames, parentName,
@@ -2601,7 +2601,7 @@ public class TaxonServiceImpl
                              Taxon misappliedName = taxonRelationship.getFromTaxon();
 
                              inferredEpithetSynonym = createInferredEpithets(taxon,
-                                     zooHashMap, taxonName, epithetOfTaxon,
+                                     zooHashMap, taxonName, specificEpithetOfTaxon,
                                      infraGenericEpithetOfTaxon,
                                      infraSpecificEpithetOfTaxon,
                                      taxonNames, parentName,
@@ -2637,7 +2637,7 @@ public class TaxonServiceImpl
                     for (Synonym synonymOfTaxon: synonymsOfTaxon){
 
                         inferredGenusSynonym = createInferredGenus(taxon,
-                                zooHashMap, taxonName, epithetOfTaxon,
+                                zooHashMap, taxonName, specificEpithetOfTaxon,
                                 genusOfTaxon, taxonNames, parentName, synonymOfTaxon);
 
                         inferredSynonyms.add(inferredGenusSynonym);
