@@ -684,7 +684,7 @@ public class TaxonServiceImpl
         long numberOfResults = dao.countTaxonRelationships(taxon, type, includeUnpublished, TaxonRelationship.Direction.relatedTo);
 
         List<TaxonRelationship> results = new ArrayList<>();
-        if(numberOfResults > 0) { // no point checking again
+        if(numberOfResults > 0) {
             results = dao.getTaxonRelationships(taxon, type, includeUnpublished, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo);
         }
         return results;

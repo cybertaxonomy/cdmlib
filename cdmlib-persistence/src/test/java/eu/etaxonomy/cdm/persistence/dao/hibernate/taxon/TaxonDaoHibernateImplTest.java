@@ -953,7 +953,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
                 null, nameTypes, null, null, null);
 
         assertNotNull("findTaxaByName should return a List", result);
-        assertTrue("findTaxaByName should return an empty List",result.isEmpty());
+        assertTrue("findTaxaByName should return an empty List", result.isEmpty());
     }
 
     @Test
