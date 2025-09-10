@@ -884,7 +884,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public void testGetTaxonMatchingUninomial() {
+    public void testFindTaxaByName_Uninomial() {
 
         EnumSet<NomenclaturalCode> nameTypes = EnumSet.allOf(NomenclaturalCode.class);
         List<Taxon> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", "*", "*", "*", "*",
@@ -971,7 +971,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public void testNegativeMatch() {
+    public void testFindTaxaByName_NegativeMatch() {
         EnumSet<NomenclaturalCode> nameTypes = EnumSet.allOf(NomenclaturalCode.class);
         List<Taxon> result = taxonDao.findTaxaByName(Taxon.class, "Acherontia", null, "atropos", "dehli", null,
                 null, nameTypes, null, null, null);
