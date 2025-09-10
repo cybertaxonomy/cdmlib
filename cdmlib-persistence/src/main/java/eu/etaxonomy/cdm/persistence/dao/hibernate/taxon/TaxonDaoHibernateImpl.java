@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -58,6 +59,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -896,7 +898,9 @@ public class TaxonDaoHibernateImpl
 
     @Override
     public <T extends TaxonBase> List<T> findTaxaByName(Class<T> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
-            String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+            String infraSpecificEpithet, String authorship, Rank rank, EnumSet<NomenclaturalCode> nameTypes,
+            Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+
         checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber, List<String> propertyPaths)");
         Criteria criteria = getCriteria(clazz);
 
@@ -935,6 +939,10 @@ public class TaxonDaoHibernateImpl
 
         if(rank != null) {
             criteria.add(Restrictions.eq("name.rank", rank));
+        }
+
+        if (nameTypes != null) {
+            criteria.add(Restrictions.in("name.nameType", nameTypes));
         }
 
         if(pageSize != null) {

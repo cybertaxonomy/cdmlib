@@ -107,6 +107,7 @@ import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingSwapEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -652,13 +653,16 @@ public class TaxonServiceImpl
     }
 
     @Override
-    public <T extends TaxonBase> Pager<T> findTaxaByName(Class<T> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,
-            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+    public <T extends TaxonBase> Pager<T> findTaxaByName(Class<T> clazz, String uninomial,
+            String infragenericEpithet, String specificEpithet, String infraspecificEpithet,
+            String authorshipCache, Rank rank, EnumSet<NomenclaturalCode> nameTypes,
+            Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+
         long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorshipCache, rank);
 
         List<T> results = new ArrayList<>();
-        if(numberOfResults > 0) { // no point checking again
-            results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorshipCache, rank,
+        if(numberOfResults > 0) {
+            results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorshipCache, rank, nameTypes,
                     pageSize, pageNumber, propertyPaths);
         }
 
@@ -667,9 +671,10 @@ public class TaxonServiceImpl
 
     @Override
     public <T extends TaxonBase> List<T> listTaxaByName(Class<T> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
-            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+            String infraspecificEpithet, String authorshipCache, Rank rank, EnumSet<NomenclaturalCode> nameTypes,
+            Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
 
-        return findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infragenericEpithet, authorshipCache, rank,
+        return findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infragenericEpithet, authorshipCache, rank, nameTypes,
                 pageSize, pageNumber, propertyPaths).getRecords();
     }
 
@@ -3440,9 +3445,17 @@ public class TaxonServiceImpl
 
     @Override
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config){
+        Classification classification = null;
+        if (config.getClassificationUuid() != null && config.isOnlyMatchingClassificationUuid()) {
+            classification = classificationDao.findByUuid(config.getClassificationUuid());
+            if (classification == null) {
+                return new ArrayList<>();
+            }
+        }
+        classification = null;
         @SuppressWarnings("rawtypes")
         List<TaxonBase> taxonList = dao.getTaxaByName(true, config.isIncludeSynonyms(), false, false, false,
-                config.getTaxonNameTitle(), null, null, MatchMode.EXACT, null, config.isIncludeSynonyms(), null, null, null, config.getPropertyPath());
+                config.getTaxonNameTitle(), classification, null, MatchMode.EXACT, null, config.isIncludeSynonyms(), null, null, null, config.getPropertyPath());
         return taxonList;
     }
 

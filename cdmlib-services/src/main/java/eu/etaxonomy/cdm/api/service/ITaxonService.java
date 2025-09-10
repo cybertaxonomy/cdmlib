@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingSwapEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -459,12 +460,15 @@ public interface ITaxonService
      * @param specificEpithet
      * @param infraspecificEpithet
      * @param rank
+     * @param nameTypes filter on nomenclatural code(s)
      * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a list of TaxonBase instances
      */
-    public <T extends TaxonBase>  Pager<T> findTaxaByName(Class<T> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
-            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends TaxonBase> Pager<T> findTaxaByName(Class<T> clazz, String uninomial, String infragenericEpithet,
+            String specificEpithet, String infraspecificEpithet, String authorshipCache,
+            Rank rank, EnumSet<NomenclaturalCode> nameTypes,
+            Integer pageSize,Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns a list of TaxonBase instances where the
@@ -476,14 +480,16 @@ public interface ITaxonService
      * @param infragenericEpithet
      * @param specificEpithet
      * @param infraspecificEpithet
-     * @param rank
      * @param authorshipCache
+     * @param rank
+     * @param nameTypes filter on nomenclatural code(s)
      * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a List of TaxonBase instances
      */
     public <T extends TaxonBase> List<T> listTaxaByName(Class<T> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
-            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+            String infraspecificEpithet, String authorshipCache, Rank rank, EnumSet<NomenclaturalCode> nameTypes,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns a list of IdentifiableEntity instances (in particular, TaxonName and TaxonBase instances)

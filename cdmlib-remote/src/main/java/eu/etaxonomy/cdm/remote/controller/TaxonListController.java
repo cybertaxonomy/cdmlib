@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -599,11 +600,13 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "infraspecificEpithet", required = false) String infraspecificEpithet,
             @RequestParam(value = "authorshipCache", required = false) String authorshipCache,
             @RequestParam(value = "rankUuid", required = false) UUID rankUuid,
+            //TODO nameTypes/nomenclaturalCodes #10818
             @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response)throws IOException {
 
+        EnumSet<NomenclaturalCode> nameTypes = null;
         logger.info("doFindByNameParts : " + requestPathAndQuery(request) );
 
         if (genusOrUninomial == null && infragenericEpithet == null && specificEpithet == null && infraspecificEpithet == null){
@@ -617,7 +620,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         }
 
         Pager<TaxonBase> result = service.findTaxaByName(null, genusOrUninomial, infragenericEpithet, specificEpithet, infraspecificEpithet,
-                authorshipCache, rank, pageSize, pageIndex, initializationStrategy);
+                authorshipCache, rank, nameTypes, pageSize, pageIndex, initializationStrategy);
 
         return result;
     }
