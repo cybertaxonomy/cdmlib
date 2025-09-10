@@ -2530,12 +2530,12 @@ public class TaxonServiceImpl
         UUID nameUuid= taxon.getName().getUuid();
         IZoologicalName taxonName = getZoologicalName(nameUuid, zooHashMap);
         String epithetOfTaxon = null;
-        String infragenericEpithetOfTaxon = null;
+        String infraGenericEpithetOfTaxon = null;
         String infraSpecificEpithetOfTaxon = null;
         if (taxonName.isSpecies()){
              epithetOfTaxon = taxonName.getSpecificEpithet();
         } else if (taxonName.isInfraGeneric()){
-            infragenericEpithetOfTaxon = taxonName.getInfraGenericEpithet();
+            infraGenericEpithetOfTaxon = taxonName.getInfraGenericEpithet();
         } else if (taxonName.isInfraSpecific()){
             infraSpecificEpithetOfTaxon = taxonName.getInfraSpecificEpithet();
         }
@@ -2547,8 +2547,7 @@ public class TaxonServiceImpl
         // List<String> synonymsEpithet = new ArrayList<>();
 
         if (node != null && !node.isTopmostNode()){
-            TaxonNode parent = CdmBase.deproxy(node.getParent());
-            Taxon parentTaxon = CdmBase.deproxy(parent.getTaxon());
+            Taxon parentTaxon = CdmBase.deproxy(node.getParent().getTaxon());
             TaxonName parentName = CdmBase.deproxy(parentTaxon.getName());
 
             //create inferred synonyms for species, subspecies
@@ -2586,7 +2585,7 @@ public class TaxonServiceImpl
 
                         inferredEpithetSynonym = createInferredEpithets(taxon,
                                 zooHashMap, taxonName, epithetOfTaxon,
-                                infragenericEpithetOfTaxon,
+                                infraGenericEpithetOfTaxon,
                                 infraSpecificEpithetOfTaxon,
                                 taxonNames, parentName,
                                 synonymOfParent);
@@ -2603,7 +2602,7 @@ public class TaxonServiceImpl
 
                              inferredEpithetSynonym = createInferredEpithets(taxon,
                                      zooHashMap, taxonName, epithetOfTaxon,
-                                     infragenericEpithetOfTaxon,
+                                     infraGenericEpithetOfTaxon,
                                      infraSpecificEpithetOfTaxon,
                                      taxonNames, parentName,
                                      misappliedName);
