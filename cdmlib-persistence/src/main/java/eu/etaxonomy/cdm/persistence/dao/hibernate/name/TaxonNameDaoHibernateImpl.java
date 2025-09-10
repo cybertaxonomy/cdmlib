@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -825,7 +824,8 @@ public class TaxonNameDaoHibernateImpl
 
 
     @Override
-    public IZoologicalName findZoologicalNameByUUID(UUID uuid){
+    public TaxonName findZoologicalNameByUUID(UUID uuid){
+
         Criteria criteria = getSession().createCriteria(type);
         if (uuid != null) {
             criteria.add(Restrictions.eq("uuid", uuid));
@@ -840,8 +840,7 @@ public class TaxonNameDaoHibernateImpl
             defaultBeanInitializer.initializeAll(results, null);
             TaxonName taxonName = results.iterator().next();
             if (taxonName.isZoological()) {
-                IZoologicalName zoologicalName = taxonName;
-                return zoologicalName;
+                return taxonName;
             } else {
                 logger.warn("This UUID (" + uuid + ") does not belong to a ZoologicalName. It belongs to: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
             }

@@ -20,7 +20,6 @@ import org.hibernate.criterion.Criterion;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -322,7 +321,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 */
 	public long countByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 
-	public IZoologicalName findZoologicalNameByUUID(UUID uuid);
+	public TaxonName findZoologicalNameByUUID(UUID uuid);
 
 	List<HashMap<String, String>> getNameRecords();
 
