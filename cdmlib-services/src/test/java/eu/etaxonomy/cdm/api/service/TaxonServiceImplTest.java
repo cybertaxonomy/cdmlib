@@ -13,7 +13,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -186,9 +185,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon expectedTaxon = Taxon.NewInstance(name, null);
         expectedTaxon.setDoubtful(true);
         service.save(expectedTaxon);
+        @SuppressWarnings("rawtypes")
         IdentifiableServiceConfiguratorImpl<TaxonBase> config = new IdentifiableServiceConfiguratorImpl<TaxonBase>();
         config.setTitleSearchString("Abies alba*");
         //doubtful taxa should be found
+        @SuppressWarnings("rawtypes")
         Pager<TaxonBase> actualTaxa = service.findByTitle(config);
         assertEquals(expectedTaxon, actualTaxa.getRecords().get(0));
 
@@ -270,9 +271,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
     }
 
-
     @Test
-    public final void testSwapSynonymAndAcceptedTaxon() throws FileNotFoundException{
+    public final void testSwapSynonymAndAcceptedTaxon() {
 
         createTestDataSet();
         synonym.setSec(ReferenceFactory.newArticle());
@@ -296,7 +296,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    public final void testSwapSynonymAndAcceptedTaxonNewUuid() throws FileNotFoundException{
+    public final void testSwapSynonymAndAcceptedTaxonNewUuid() {
 
         createTestDataSet();
         synonym.setSec(save(ReferenceFactory.newArticle()));
@@ -322,7 +322,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    public final void testChangeSynonymToAcceptedTaxon() throws FileNotFoundException{
+    public final void testChangeSynonymToAcceptedTaxon() {
 
 		createTestDataSet();
 
@@ -428,19 +428,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertNotNull(taxNew);
         assertNotNull(taxNew.getSec());
         assertEquals(newSec, taxNew.getSec());
-
     }
-
 
     @Test
     public final void testChangeSynonymToAcceptedTaxonSynonymForTwoTaxa(){
-        try {
-			createTestDataSet();
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 
+        createTestDataSet();
 
         Taxon taxon = null;
         UpdateResult result = new UpdateResult();
@@ -1782,7 +1775,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon misappliedNameTaxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
 
         Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
-        TaxonNode node =nodes.next();
+        TaxonNode node = nodes.next();
         testTaxon.addMisappliedName(misappliedNameTaxon, null, null);
         UUID misappliedNameUUID = service.save(misappliedNameTaxon).getUuid();
         misappliedNameTaxon = (Taxon)service.find(misappliedNameUUID);
@@ -1805,6 +1798,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(value="../../database/ClearDBDataSet.xml")
     public final void testListIncludedTaxa(){
+
     	Reference citation = null;
     	String microcitation = null;
 
@@ -1895,12 +1889,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testDeleteDescriptions(){
-    	try {
-			createTestDataSet();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+        createTestDataSet();
+
     	TaxonDescription description = save(TaxonDescription.NewInstance(taxWithoutSyn));
     	SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>> specimen = FieldUnit.NewInstance();
     	UUID uuid = occurenceService.saveOrUpdate(specimen);
@@ -1920,21 +1911,18 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	service.saveOrUpdate(tax);
 
     	description = (TaxonDescription) descriptionService.find(uuidDescr);
-    	specimen = occurenceService.find(uuid);
+    	SpecimenOrObservationBase<?> specimen2 = occurenceService.find(uuid);
     	assertNull(description);
-    	DeleteResult result = occurenceService.delete(specimen);
+    	DeleteResult result = occurenceService.delete(specimen2);
     	assertTrue(result.isOk());
 
     }
 
     @Test
     public void testRemoveDescriptionsFromTaxa(){
-        try {
-            createTestDataSet();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Assert.fail("Could not create test data");
-        }
+
+        createTestDataSet();
+
         TaxonDescription description = TaxonDescription.NewInstance(taxWithoutSyn);
         SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>> specimen = FieldUnit.NewInstance();
         UUID uuid = occurenceService.saveOrUpdate(specimen);
@@ -1953,9 +1941,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         service.saveOrUpdate(tax);
 
         description = (TaxonDescription) descriptionService.find(uuidDescr);
-        specimen = occurenceService.find(uuid);
+        SpecimenOrObservationBase<?> specimen2 = occurenceService.find(uuid);
         assertNotNull(description);
-        DeleteResult result = occurenceService.delete(specimen);
+        DeleteResult result = occurenceService.delete(specimen2);
         assertTrue(result.isOk());
     }
 
@@ -2086,7 +2074,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         taxonDescription.addElement(textData);
 
         //commonName
-
         String commonNameString = "Schönveilchen";
         CommonTaxonName commonName = CommonTaxonName.NewInstance(commonNameString, language);
         taxonDescription.addElement(commonName);
@@ -2102,7 +2089,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Override
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDBDataSet.xml")
-    public void createTestDataSet() throws FileNotFoundException {
+    public void createTestDataSet() {
 
         Rank rank = Rank.SPECIES();
         taxWithoutSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test1", null, null, null, null, null, null, null), null);
