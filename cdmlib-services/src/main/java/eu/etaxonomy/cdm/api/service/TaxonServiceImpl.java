@@ -2827,7 +2827,7 @@ public class TaxonServiceImpl
             synonymsEpithet.add(epithetName);
         }*/
 
-        //create potential combinations...
+        //create pot. comb. synonym name
         IZoologicalName inferredSynName = TaxonNameFactory.NewZoologicalInstance(synonymOfTaxon.getName().getRank());
 
         inferredSynName.setGenusOrUninomial(synParentGenus);
@@ -2836,16 +2836,16 @@ public class TaxonServiceImpl
               if (parentSynZooName.isInfraGeneric()){
                   inferredSynName.setInfraGenericEpithet(synParentInfragenericName);
               }
-        }
-        if (zooSynName.isInfraSpecific()){
+        } else if (zooSynName.isInfraSpecific()){
             inferredSynName.setSpecificEpithet(synParentSpecificEpithet);
             inferredSynName.setInfraSpecificEpithet(synTaxonInfraSpecificEpithet);
         }
+
         if (parentSynZooName.isInfraGeneric()){
             inferredSynName.setInfraGenericEpithet(synParentInfragenericName);
         }
 
-        //create synonym
+        //create pot. comb. synonym
         Synonym potentialCombinationSynonym = Synonym.NewInstance(inferredSynName, null);
 
         // Set the sourceReference
