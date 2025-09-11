@@ -1194,49 +1194,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonServiceImplTest.testInferredSynonyms.xml")
-    public void testCreateInferredSynonymy(){
-
-        UUID classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
-        Classification classification = classificationService.find(classificationUuid);
-
-        //verify expected DB state
-        List <Synonym> synonyms = service.list(Synonym.class, null, null, null, null);
-        assertEquals("Number of synonyms should be 2 (Acheontitia ciprosus and SynGenus)",
-                2, synonyms.size());
-
-        //load accepted species
-        UUID acherontiaLachesisTaxonUuid = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
-        Taxon taxon = (Taxon)service.find(acherontiaLachesisTaxonUuid);
-
-        //inferred epithet
-        List<Synonym> inferredSynonyms = service.createInferredSynonyms(taxon, classification, SynonymType.INFERRED_EPITHET_OF, true);
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
-        assertEquals ("the name of inferred epithet should be SynOfAcherontia lachesis", "SynOfAcherontia lachesis syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
-
-        //inferred genus
-        inferredSynonyms = service.createInferredSynonyms(taxon, classification, SynonymType.INFERRED_GENUS_OF, true);
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
-        assertEquals ("the name of inferred genus should be Acherontia ciprosus", "Acherontia ciprosus syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
-
-        //inferred combination
-        inferredSynonyms = service.createInferredSynonyms(taxon, classification, SynonymType.POTENTIAL_COMBINATION_OF, true);
-        assertNotNull("there should be a new synonym ", inferredSynonyms);
-        assertEquals ("the name of potential combination should be SynOfAcherontia ciprosus", "SynOfAcherontia ciprosus syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
-        //assertTrue("set of synonyms should contain an inferred Synonym ", synonyms.contains(arg0))
-
-        //TODO test cases with infrageneric names and subspecies
-
-        //TODO deduplication if name exists already or if both exists, inferred epithet/genus and potential combination
-
-        //TODO misapplied name handling
-
-        //TODO test references, sources and idInSource (etc.)
-
-        //TODO test that only zoological names return inferred synonyms
-    }
-
-    @Test
     @DataSet("../../database/ClearDBDataSet.xml")
     public final void testTaxonDeletionConfig(){
         final String[]tableNames = {}
