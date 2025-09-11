@@ -283,6 +283,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon tax = (Taxon)service.find(result.getCdmEntity().getUuid());
         MatchingTaxonConfigurator configurator = MatchingTaxonConfigurator.NewInstance();
         configurator.setTaxonNameTitle("Test3");
+        @SuppressWarnings("rawtypes")
         List<TaxonBase> synList = service.findTaxaByName(configurator);
 
         if (synList.size() > 0){
@@ -1573,15 +1574,15 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.setDeleteInAllClassifications(false);
-       //     try {
-       DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, secondClassification.getUuid());
+        //     try {
+        DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, secondClassification.getUuid());
 /*                Assert.fail("The taxon should not be deletable because it is used in a second classification and the configuration is set to deleteInAllClassifications = false");
             } catch (DataChangeNoRollbackException e) {
                 logger.debug(e.getMessage());
             }
   */
 
-       if (result.isOk()){
+        if (result.isOk()){
            	Assert.fail("The taxon should not be deletable because it is used in a second classification and the configuration is set to deleteInAllClassifications = false");
         }
 
@@ -1958,31 +1959,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertTrue(result.isOk());
     }
 
-    @Override
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDBDataSet.xml")
-    public void createTestDataSet() throws FileNotFoundException {
-
-        Rank rank = Rank.SPECIES();
-        taxWithoutSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test1", null, null, null, null, null, null, null), null);
-        taxWithSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test3", null, null, null, null, null, null, null), null);
-        tax2WithSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test5", null, null, null, null, null, null, null), null);
-        synonym = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test2", null, null, null, null, null, null, null), null);
-        synonym2 = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test4", null, null, null, null, null, null, null), null);
-        synonym2.getName().setHomotypicalGroup(synonym.getHomotypicGroup());
-
-        taxWithSyn.addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF);
-        taxWithSyn.addSynonym(synonym2, SynonymType.HETEROTYPIC_SYNONYM_OF);
-
-        uuidTaxWithoutSyn = service.save(taxWithoutSyn).getUuid();
-        uuidSyn = service.save(synonym).getUuid();
-        uuidSyn2 = service.save(synonym2).getUuid();
-        uuidTaxWithSyn =service.save(taxWithSyn).getUuid();
-    }
-
 //    public static UUID DESCRIPTION1_UUID = UUID.fromString("f3e061f6-c5df-465c-a253-1e18ab4c7e50");
 //    public static UUID DESCRIPTION2_UUID = UUID.fromString("1b009a40-ebff-4f7e-9f7f-75a850ba995d");
 
-    public Taxon getTestTaxon(){
+    private Taxon getTestTaxon(){
 
         int descrIndex = 6000;
 
@@ -2118,5 +2098,26 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Classification classification = Classification.NewInstance(name);
         classificationService.save(classification);
         return classification;
+    }
+
+    @Override
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDBDataSet.xml")
+    public void createTestDataSet() throws FileNotFoundException {
+
+        Rank rank = Rank.SPECIES();
+        taxWithoutSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test1", null, null, null, null, null, null, null), null);
+        taxWithSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test3", null, null, null, null, null, null, null), null);
+        tax2WithSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test5", null, null, null, null, null, null, null), null);
+        synonym = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test2", null, null, null, null, null, null, null), null);
+        synonym2 = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test4", null, null, null, null, null, null, null), null);
+        synonym2.getName().setHomotypicalGroup(synonym.getHomotypicGroup());
+
+        taxWithSyn.addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF);
+        taxWithSyn.addSynonym(synonym2, SynonymType.HETEROTYPIC_SYNONYM_OF);
+
+        uuidTaxWithoutSyn = service.save(taxWithoutSyn).getUuid();
+        uuidSyn = service.save(synonym).getUuid();
+        uuidSyn2 = service.save(synonym2).getUuid();
+        uuidTaxWithSyn =service.save(taxWithSyn).getUuid();
     }
 }
