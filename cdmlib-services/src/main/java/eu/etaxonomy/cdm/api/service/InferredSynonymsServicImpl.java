@@ -524,8 +524,7 @@ public class InferredSynonymsServicImpl
             inferredSynName.setSpecificEpithet(synSpeciesEpithetName);
         }else if (taxonName.isInfraSpecific()){
             inferredSynName.setSpecificEpithet(specificEpithetOfTaxon);
-            //TODO GENERIC seems to be incorrect
-            inferredSynName.setInfraSpecificEpithet(synZooName.getInfraGenericEpithet());
+            inferredSynName.setInfraSpecificEpithet(synZooName.getInfraSpecificEpithet());
         }
 
         //create inferred synonym
