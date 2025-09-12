@@ -1989,7 +1989,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDescription taxDesc = getTestDescription(descrIndex++);
         childTaxon.addDescription(taxDesc);
         service.saveOrUpdate(childTaxon);
+
         Classification classification = getTestClassification("TestClassification");
+        classification.addParentChild(genusTaxon, childTaxon, citationRef, "456");
         classificationService.save(classification);
         //homotypic synonym of childTaxon1
         IBotanicalName botSpecies4= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
