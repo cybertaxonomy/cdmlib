@@ -1583,7 +1583,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon tax = (Taxon)service.find(uuid);
         assertNotNull(tax);
         Taxon childTaxon = (Taxon)service.find(childUUID);
-        assertNotNull(tax);
+        assertNotNull(childTaxon);
         //when calling delete taxon and the taxon can not be deleted the children should not be deleted as well. If children should be deleted call delete taxonnode
         node = nodeService.find(childNodeUUID);
         assertNotNull(node);
@@ -1773,9 +1773,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID uuid = service.save(testTaxon).getUuid();
 
         Taxon misappliedNameTaxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
-
-        Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
-        TaxonNode node = nodes.next();
         testTaxon.addMisappliedName(misappliedNameTaxon, null, null);
         UUID misappliedNameUUID = service.save(misappliedNameTaxon).getUuid();
         misappliedNameTaxon = (Taxon)service.find(misappliedNameUUID);
@@ -1905,7 +1902,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	assertEquals(1, descr.size());
     	description = descr.iterator().next();
     	UUID uuidDescr = description.getUuid();
-    	UUID uuidDescEl = description.getElements().iterator().next().getUuid();
 
     	descriptionService.deleteDescription(description);
     	service.saveOrUpdate(tax);
@@ -1962,7 +1958,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         sec.setTitleCache("Flora lunaea", true);
         Reference citationRef = save(ReferenceFactory.newBook());
         citationRef.setTitleCache("Sp. lunarum", true);
-
         //genus taxon with Name, combinationAuthor,
         IBotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
         botName.setTitleCache("Hieracium L.", true);
@@ -1992,14 +1987,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon childTaxon = Taxon.NewInstance(botSpecies, sec);
         childTaxon.setUuid(SPECIES1_UUID);
         TaxonDescription taxDesc = getTestDescription(descrIndex++);
-        //taxDesc.setUuid(DESCRIPTION1_UUID);
         childTaxon.addDescription(taxDesc);
         service.saveOrUpdate(childTaxon);
         Classification classification = getTestClassification("TestClassification");
-        TaxonNode child = classification.addParentChild(genusTaxon, childTaxon, citationRef, "456");
-//            childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456");
         classificationService.save(classification);
-//        taxonNodeDao.saveOrUpdate(child);
         //homotypic synonym of childTaxon1
         IBotanicalName botSpecies4= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         botSpecies4.setTitleCache("Hieracium gueri DC.", true);
@@ -2008,10 +1999,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         botSpecies4.setCombinationAuthorship(deCandolle);
         botSpecies4.setUuid(SYNONYM_NAME_UUID);
         Synonym homoSynonym = save(Synonym.NewInstance(botSpecies4, sec));
-
         childTaxon.addSynonym(homoSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF);
         service.saveOrUpdate(childTaxon);
-
         //2nd child species taxon that is the child of genus taxon
         IBotanicalName botSpecies2= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         botSpecies2.setTitleCache("Hieracium wolffii Zahn", true);
@@ -2023,7 +2012,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec);
         childTaxon2.setUuid(SPECIES2_UUID);
         classification.addParentChild(genusTaxon, childTaxon2, citationRef, "499");
-        //childTaxon2.setTaxonomicParent(genusTaxon, citationRef, "499");
         service.saveOrUpdate(childTaxon2);
         //heterotypic synonym of childTaxon2
         IBotanicalName botSpecies3= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -2047,7 +2035,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon misappliedNameTaxon = Taxon.NewInstance(missName, sec);
         childTaxon2.addMisappliedName(misappliedNameTaxon, citationRef, "125");
         taxDesc = getTestDescription(descrIndex++);
-       // taxDesc.setUuid(DESCRIPTION2_UUID);
         genusTaxon.addDescription(taxDesc);
         service.saveOrUpdate(genusTaxon);
         service.save(misappliedNameTaxon);
