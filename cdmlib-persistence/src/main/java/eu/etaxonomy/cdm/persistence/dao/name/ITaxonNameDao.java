@@ -408,4 +408,14 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
     public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer limit, Integer start);
 
     public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse();
+
+    /**
+     * Returns all distinct nameCaches in the database filtered by the optional parameters.
+     *
+     * @param pattern the nameCache pattern to search for
+     * @param maxRank the highest rank
+     * @param minRank the lowes rank
+     */
+    public List<String> distinctNameCaches(String pattern, Rank maxRank, Rank minRank);
+
 }

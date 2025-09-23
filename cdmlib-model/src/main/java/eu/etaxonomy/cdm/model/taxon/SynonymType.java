@@ -126,4 +126,10 @@ public enum SynonymType implements IEnumTerm<SynonymType>, IRelationshipType {
     public static SynonymType getByKey(String key){return delegateVoc.getByKey(key);}
     public static SynonymType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
+// **************************************
+
+    public boolean isInferredSynonym() {
+        return this == INFERRED_EPITHET_OF || this == INFERRED_GENUS_OF || this == POTENTIAL_COMBINATION_OF;
+    }
+
 }

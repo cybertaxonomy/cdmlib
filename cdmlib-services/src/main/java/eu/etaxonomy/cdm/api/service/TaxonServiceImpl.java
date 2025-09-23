@@ -2520,7 +2520,9 @@ public class TaxonServiceImpl
     public List<Synonym> createInferredSynonyms(Taxon taxon, Classification classification,
             SynonymType inferredSynonymType, boolean doWithMisappliedNames){
 
-        return inferredSynonymsService.createInferredSynonyms(taxon, classification, inferredSynonymType, doWithMisappliedNames, INCLUDE_UNPUBLISHED);
+        return inferredSynonymsService.computeInferredSynonyms(taxon.getUuid(),
+                classification.getUuid(), inferredSynonymType, doWithMisappliedNames,
+                INCLUDE_UNPUBLISHED, null);
     }
 
     /**
@@ -2543,9 +2545,10 @@ public class TaxonServiceImpl
     }
 
     @Override
-    public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames){
+    public List<Synonym> createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames, boolean doPersist){
 
-        return inferredSynonymsService.createAllInferredSynonyms(taxon, tree, doWithMisappliedNames, INCLUDE_UNPUBLISHED);
+        return inferredSynonymsService.createAllInferredSynonyms(taxon.getUuid(), tree.getUuid(),
+                    doWithMisappliedNames, INCLUDE_UNPUBLISHED, null, doPersist);
     }
 
     @Override

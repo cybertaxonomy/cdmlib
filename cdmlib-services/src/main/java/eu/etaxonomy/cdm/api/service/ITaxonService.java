@@ -864,7 +864,7 @@ public interface ITaxonService
      * @param iDatabase
      * @return list of inferred synonyms
      */
-    public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames);
+    public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames, boolean doPersist);
 
     public Taxon findAcceptedTaxonFor(UUID synonymUuid, UUID classificationUuid, boolean includeUnpublished,
             List<String> propertyPaths) throws UnpublishedException;
