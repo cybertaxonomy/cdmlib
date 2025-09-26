@@ -524,7 +524,7 @@ public class InferredSynonymsServiceImpl
     }
 
     public boolean isFauEuSource(IdentifiableSource source) {
-        UUID FauEu2025uuid = UUID.fromString("f27a5e67-d065-4b79-8d41-eabd3ae0edd0");
+//        UUID FauEu2025uuid = UUID.fromString("f27a5e67-d065-4b79-8d41-eabd3ae0edd0");
         //see PesiTransformer.uuidSourceRefFaunaEuropaea_fromSql
         UUID fauEuDbUuid = UUID.fromString("6786d863-75d4-4796-b916-c1c3dff4cb70");
         if (source.getType() != OriginalSourceType.Import
