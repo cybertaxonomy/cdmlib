@@ -364,14 +364,16 @@ public class InferredSynonymsServiceImpl
         Synonym inferredEpithetSynonym = Synonym.NewInstance(inferredSynName, sourceReference);
 
         /* ... Add the original source*/
-        String taxonId = idInSourceTaxon + "; " + idInSourceSyn;
-        IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
-                taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
-        inferredEpithetSynonym.addSource(originalSource);
+        if (idInSourceTaxon != null || idInSourceSyn != null) {
+            String taxonId = idInSourceTaxon + "; " + idInSourceSyn;
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                    taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+            inferredEpithetSynonym.addSource(originalSource);
 
-        originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
-                taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
-        inferredSynName.addSource(originalSource);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                    taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+            inferredSynName.addSource(originalSource);
+        }
 
         //add synonym to taxon
         taxon.addSynonym(inferredEpithetSynonym, SynonymType.INFERRED_EPITHET_OF);

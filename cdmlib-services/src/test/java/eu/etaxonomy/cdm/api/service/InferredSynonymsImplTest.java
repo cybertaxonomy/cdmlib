@@ -72,16 +72,13 @@ public class InferredSynonymsImplTest extends CdmTransactionalIntegrationTest {
         classification = classificationService.find(classificationUuid);
     }
 
-
     /****************** TESTS *****************************/
-
-
 
     @Test
     @DataSet
     public void testComputeInferredSynonymy(){
 
-        //verify expected DB state
+        //verify expected initial DB state
         List<Synonym> synonyms = taxonService.list(Synonym.class, null, null, null, null);
         assertEquals("Number of synonyms should be 5", 5, synonyms.size());
 
@@ -98,16 +95,24 @@ public class InferredSynonymsImplTest extends CdmTransactionalIntegrationTest {
         assertEquals("There should be 1 inferred epithet synonym", 1, inferredSynonyms.size());
         assertEquals("the name of inferred epithet should be SynOfAcherontia lachesis",
                 "SynOfAcherontia lachesis syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
+        Synonym inferredSyn = inferredSynonyms.iterator().next();
+        assertEquals(1, inferredSyn.getSources().size());
+        IdentifiableSource source = inferredSyn.getSources().iterator().next();
+        assertEquals("Inferred epithet", source.getIdNamespace());
+        assertEquals("ALACH12; SYN45", source.getIdInSource());
+        assertEquals(OriginalSourceType.Transformation, source.getType());
+
         commitAndStartNewTransaction();
 
         //... with MAN
         includeMisapplied = true;
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid, classificationUuid,
                 SynonymType.INFERRED_EPITHET_OF, includeMisapplied, includeUnpublished, null);
-        assertEquals("There should still be only 1 inferred epithet synonym", 1, inferredSynonyms.size());
-        Synonym inferredSyn = inferredSynonyms.iterator().next();
+        assertEquals("There should still be only 1 inferred epithet synonym because genus Acherontia has no MAN.",
+                1, inferredSynonyms.size());
+        inferredSyn = inferredSynonyms.iterator().next();
         assertEquals(1, inferredSyn.getSources().size());
-        IdentifiableSource source = inferredSyn.getSources().iterator().next();
+        source = inferredSyn.getSources().iterator().next();
         assertEquals("Inferred epithet", source.getIdNamespace());
         assertEquals("Sp. Pl.", source.getCitation().getTitleCache());
         assertEquals("ALACH12; SYN45", source.getIdInSource());
