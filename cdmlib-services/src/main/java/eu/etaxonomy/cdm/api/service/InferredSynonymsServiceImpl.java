@@ -426,7 +426,7 @@ public class InferredSynonymsServiceImpl
 
         // Add the original source
         if (idInSourceSyn == null || idInSourceTaxon == null) {
-            logger.warn("There is an idInSource missing: " + idInSourceSyn + " of Synonym or " + idInSourceTaxon + " of Taxon");
+            logger.debug("There is an idInSource missing: " + idInSourceSyn + " of Synonym or " + idInSourceTaxon + " of Taxon");
         }
         IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
                 idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
@@ -480,7 +480,7 @@ public class InferredSynonymsServiceImpl
         String idInSourceSyn= synonymOfTaxon.getIdInSource();
 
         if (idInSourceSyn == null || idInSourceParentSyn == null) {
-            logger.warn("There is an idInSource missing: " + idInSourceSyn + " of taxon synonym or " + idInSourceParentSyn + " of parent synonyms.");
+            logger.debug("There is an idInSource missing: " + idInSourceSyn + " of taxon synonym or " + idInSourceParentSyn + " of parent synonyms.");
         }
         IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, idInSourceSyn + "; " + idInSourceParentSyn, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
         inferredSynName.addSource(originalSource);
@@ -519,7 +519,7 @@ public class InferredSynonymsServiceImpl
             }
         } else if (sources.size() == 0){
             String titleCache = taxonBase.isInstanceOf(IdentifiableEntity.class)? (CdmBase.deproxy(taxonBase, IdentifiableEntity.class).getTitleCache()) : "";
-            logger.warn("No idInSource for TaxonBase " + taxonBase.getUuid() + " - " + titleCache);
+            logger.debug("No idInSource for TaxonBase " + taxonBase.getUuid() + " - " + titleCache);
         }
 
         return CdmUtils.Ne(idInSource);
