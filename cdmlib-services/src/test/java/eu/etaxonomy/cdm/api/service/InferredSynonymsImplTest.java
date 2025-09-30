@@ -162,7 +162,7 @@ public class InferredSynonymsImplTest extends CdmTransactionalIntegrationTest {
         includeMisapplied = true;
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid, classificationUuid,
                 SynonymType.POTENTIAL_COMBINATION_OF, includeMisapplied, includeUnpublished, null);
-        inferredSynonyms.forEach(s->System.out.println(s.getTitleCache()));
+//        inferredSynonyms.forEach(s->System.out.println(s.getTitleCache()));
         assertEquals("There should be 3 potential combination synonyms (SynOfAcherontia ciprosus, SynOfAcherontia balosus)",
                 3, inferredSynonyms.size());
         syn1 = inferredSynonyms.stream().filter(s->s.getName().getNameCache().equals("SynOfAcherontia ciprosus")).findFirst().get();
@@ -229,8 +229,7 @@ public class InferredSynonymsImplTest extends CdmTransactionalIntegrationTest {
         inferredSynonyms = taxonService.createInferredSynonyms(taxon, classification,
                 SynonymType.POTENTIAL_COMBINATION_OF, includeMisapplied);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
-//        inferredSynonyms.stream().map(s->s.getName()).forEach(n->System.out.println(n.getTitleCache()));
-        inferredSynonyms.stream().map(s->s.getTitleCache()).forEach(n->System.out.println(n));
+//        inferredSynonyms.stream().map(s->s.getTitleCache()).forEach(n->System.out.println(n));
         assertEquals("There should be 3 potential combination synonyms",
                 3, inferredSynonyms.size());
         Synonym syn1 = inferredSynonyms.stream().filter(s->s.getName().getNameCache().equals("Acherontia ciprosus subsp. subsynonus")).findFirst().get();
@@ -279,8 +278,7 @@ public class InferredSynonymsImplTest extends CdmTransactionalIntegrationTest {
         inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid, classificationUuid,
                 SynonymType.POTENTIAL_COMBINATION_OF, includeUnpublished, includeUnpublished, null);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
-//        inferredSynonyms.stream().map(s->s.getName()).forEach(n->System.out.println(n.getTitleCache()));
-        inferredSynonyms.stream().map(s->s.getTitleCache()).forEach(n->System.out.println(n));
+//        inferredSynonyms.stream().map(s->s.getTitleCache()).forEach(n->System.out.println(n));
         assertEquals("There should be 1 potential combination", 1, inferredSynonyms.size());
         assertEquals("the name of potential combinatio should be SynOfAcherontia subg. Synbonsa",
                 "SynOfAcherontia subg. Synbonsa syn. sec. Sp. Pl.", inferredSynonyms.get(0).getTitleCache());
@@ -396,7 +394,7 @@ public class InferredSynonymsImplTest extends CdmTransactionalIntegrationTest {
 
         //with cache
         caches = inferredSynonymService.getDistinctNameCaches();
-        caches.forEach(c->System.out.println(c));
+//        caches.forEach(c->System.out.println(c));
         assertEquals("There should be 9 distinct nameCaches for names below genus", 9, caches.size());
 
         caches.add("SynOfAcherontia lachesis");
