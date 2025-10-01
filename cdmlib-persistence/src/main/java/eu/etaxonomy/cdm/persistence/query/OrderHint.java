@@ -56,15 +56,12 @@ public class OrderHint implements Serializable {
             hql = hqlStr;
         }
 
-        public String toHql(){
-            return hql;
-        }
-        public String toHql(Boolean nullLast){
+        private String toHql(Boolean nullLast){
             String nullLastStr = nullLast != null && nullLast? " NULL LAST" : "";
             return hql + nullLastStr;
         }
 
-        public boolean isAsc(){
+        private boolean isAsc(){
             return this == ASCENDING;
         }
     }
