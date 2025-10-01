@@ -46,7 +46,6 @@ public abstract class DbExportBase<CONFIG extends DbExportConfiguratorBase<STATE
 			e.printStackTrace();
 			return false;
 		}
-
 	}
 
 	public abstract Class<? extends CdmBase> getStandardMethodParameter();
@@ -78,14 +77,10 @@ public abstract class DbExportBase<CONFIG extends DbExportConfiguratorBase<STATE
 			logger.warn("Unknown idType: " + type);
 			return cdmBase.getId();
 		}
-
 	}
 
 	protected Object getDbIdCdmWithExceptions(CdmBase cdmBase, STATE state) {
 		//default -> override
 		return cdmBase.getId();
 	}
-
-
-
 }
