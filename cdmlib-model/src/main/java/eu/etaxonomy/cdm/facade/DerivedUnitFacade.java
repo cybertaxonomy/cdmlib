@@ -1391,12 +1391,13 @@ public class DerivedUnitFacade {
 	// ecology
 	@Transient
 	public String getEcology() {
-		return getEcology(Language.DEFAULT());
+	    LanguageString languageString = getEcologyAll().get(Language.DEFAULT());
+		return (languageString == null ? null : languageString.getText());
 	}
 
 	public String getEcology(Language language) {
 		LanguageString languageString = getEcologyAll().get(language);
-		return (languageString == null ? null : languageString.getText());
+		return (languageString == null ? getEcology() : languageString.getText());
 	}
 
 	// public String getEcologyPreferred(List<Language> languages){
@@ -1466,7 +1467,8 @@ public class DerivedUnitFacade {
 	// plant description
 	@Transient
 	public String getPlantDescription() {
-		return getPlantDescription(null);
+	    LanguageString languageString = getPlantDescriptionAll().get(Language.DEFAULT());
+        return (languageString == null ? null : languageString.getText());
 	}
 
 	public String getPlantDescription(Language language) {
@@ -1474,7 +1476,7 @@ public class DerivedUnitFacade {
 			language = Language.DEFAULT();
 		}
 		LanguageString languageString = getPlantDescriptionAll().get(language);
-		return (languageString == null ? null : languageString.getText());
+		return (languageString == null ? getPlantDescription() : languageString.getText());
 	}
 
 	// public String getPlantDescriptionPreferred(List<Language> languages){
@@ -1537,12 +1539,14 @@ public class DerivedUnitFacade {
 	// life-form  #6722
     @Transient
     public String getLifeform() {
-        return getLifeform(Language.DEFAULT());
+        LanguageString languageString = getLifeformAll().get(Language.DEFAULT());
+        return (languageString == null ? null : languageString.getText());
+
     }
 
     public String getLifeform(Language language) {
         LanguageString languageString = getLifeformAll().get(language);
-        return (languageString == null ? null : languageString.getText());
+        return (languageString == null ? getLifeform() : languageString.getText());
     }
 
     // public String getLifeformPreferred(List<Language> languages){
@@ -1629,7 +1633,7 @@ public class DerivedUnitFacade {
 		if (languageString != null) {
 			return languageString.getText();
 		} else {
-			return null;
+			return getFieldObjectDefinition().get(Language.DEFAULT()) != null? getFieldObjectDefinition().get(Language.DEFAULT()).getText(): null;
 		}
 	}
 
@@ -1974,7 +1978,7 @@ public class DerivedUnitFacade {
 		if (languageString != null) {
 			return languageString.getText();
 		} else {
-			return null;
+			return languageMap.get(Language.DEFAULT())!= null ? languageMap.get(Language.DEFAULT()).getText(): null;
 		}
 	}
 
