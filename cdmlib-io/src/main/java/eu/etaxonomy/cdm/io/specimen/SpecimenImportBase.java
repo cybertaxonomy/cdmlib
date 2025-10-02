@@ -753,6 +753,10 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             return cdmRepository.getTermService().saveLanguageData(CdmBase.deproxy(cdmBase, LanguageString.class));
         }else if (cdmBase.isInstanceOf(SpecimenOrObservationBase.class)){
             SpecimenOrObservationBase<?> specimen = CdmBase.deproxy(cdmBase, SpecimenOrObservationBase.class);
+            if (specimen instanceof DerivedUnit) {
+                DerivedUnit derivedUnit = (DerivedUnit)specimen;
+                cdmRepository.getNameService().mergeTypeDesignations(new ArrayList(derivedUnit.getSpecimenTypeDesignations()));
+            }
             return cdmRepository.getOccurrenceService().saveOrUpdate(specimen);
         }else if (cdmBase.isInstanceOf(Reference.class)){
             return cdmRepository.getReferenceService().saveOrUpdate(CdmBase.deproxy(cdmBase, Reference.class));
@@ -1224,11 +1228,11 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                state.getDataHolder().setNomenclatureCode(identification.getCode());
 	            }
             }
-            Taxon taxon = getOrCreateTaxonName(scientificName, null, state, i);//getOrCreateTaxonForName(taxonName, state);
-
-            addTaxonNode(taxon, state, preferredFlag);
-
-            linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, identification.getIdentifier(), identification.getDate(), identification.getModifier());
+            if (config.isAddDeterminations() || preferredFlag) {
+                Taxon taxon = getOrCreateTaxonName(scientificName, null, state, i);//getOrCreateTaxonForName(taxonName, state);
+                addTaxonNode(taxon, state, preferredFlag);
+                linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, identification.getIdentifier(), identification.getDate(), identification.getModifier());
+            }
             saveTeamOrPersons(state, false);
         }
     }
@@ -1594,27 +1598,33 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     public static TeamOrPersonBase<?> parseAgentString(String collectorStr, boolean isCollector){
         TeamOrPersonBase<?> author = null;
         String[] teamMembers = collectorStr.split(authorSeparator);
+
         if (teamMembers.length>1){
             String lastMember = teamMembers[teamMembers.length -1];
             String[] lastMembers = lastMember.split(lastAuthorSeparator);
-            teamMembers[teamMembers.length -1] = "";
+            if (lastMembers[0] != lastMember) {
+                teamMembers[teamMembers.length -1] = "";
+            }else {
+                lastMembers = null;
+            }
             author = Team.NewInstance();
             for(String member:teamMembers){
                 if (!member.equals("")){
                     Person teamMember = Person.NewInstance();
                     if (isCollector) {
-                        teamMember.setCollectorTitle(member);
+                        createCollector(member, teamMember);
+
                     }else {
                         teamMember.setNomenclaturalTitle(member);
                     }
                    ((Team)author).addTeamMember(teamMember);
                 }
             }
-            if (lastMembers != null){
+            if (lastMembers != null && lastMembers.length > 1){
                 for(String member:lastMembers){
                    Person teamMember = Person.NewInstance();
                    if (isCollector) {
-                       teamMember.setCollectorTitle(member);
+                       createCollector(member, teamMember);
                    }else {
                        teamMember.setNomenclaturalTitle(member);
                    }
@@ -1629,7 +1639,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 for(String member:teamMembers){
                   Person teamMember = Person.NewInstance();
                   if (isCollector) {
-                      teamMember.setCollectorTitle(member);
+                      createCollector(member, teamMember);
                   }else {
                       teamMember.setNomenclaturalTitle(member);
                   }
@@ -1640,7 +1650,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 if (isNotBlank(collectorStr)){
                     author = Person.NewInstance();
                     if (isCollector) {
-                        ((Person)author).setCollectorTitle(collectorStr);
+                        createCollector(collectorStr, (Person)author);
                     }else {
                         ((Person)author).setNomenclaturalTitle(collectorStr);
                     }
@@ -1653,6 +1663,21 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
 
         return author;
+    }
+
+    /**
+     * @param collectorStr
+     * @param collector
+     */
+    private static void createCollector(String collectorStr, Person collector) {
+        String[] collectorArray = collectorStr.split(",");
+        if (collectorArray.length == 2 ) {
+            collector.setFamilyName(collectorArray[0]);
+            collector.setInitials(collectorArray[1]);
+            collector.getCollectorTitleCache();
+        }else {
+            collector.setCollectorTitle(collectorStr);
+        }
     }
 
     /**
