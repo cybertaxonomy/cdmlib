@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -18,6 +20,7 @@ import javax.persistence.criteria.Root;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.query.Query;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.stereotype.Repository;
@@ -26,6 +29,8 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.ICollectionDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCacheWithCode;
 
 @Repository
 public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> implements
@@ -58,6 +63,44 @@ public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> 
 			return query.getResultList();
 		}
 	}
+
+	@Override
+    public List<UuidAndTitleCache<Collection>> getUuidAndTitleCacheByCode(String codePattern){
+        String queryString = "SELECT c.uuid, c.id, c.titleCache, c.code FROM Collection as c WHERE c.code = :code";
+
+
+        Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
+
+        query.setParameter("code", codePattern);
+
+        List<Object[]> queryResults = query.list();
+        List<UuidAndTitleCache<Collection>> results = new ArrayList<>();
+        for (Object[] result: queryResults) {
+            results.add(new UuidAndTitleCacheWithCode((UUID)result[0], (Integer)result[1], (String)result[2], (String)result[3]));
+        }
+
+        return results;
+    }
+
+	@Override
+    public List<UuidAndTitleCache<Collection>> getUuidAndTitleCache(Integer limit, String pattern){
+        String queryString = "SELECT c.uuid, c.id, c.titleCache, c.code FROM Collection as c WHERE c.titleCache like  :pattern";
+
+
+        Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
+        pattern = pattern + "%";
+        pattern = pattern.replace("*", "%");
+        pattern = pattern.replace("?", "_");
+        query.setParameter("pattern", pattern);
+
+        List<Object[]> queryResults = query.list();
+        List<UuidAndTitleCache<Collection>> results = new ArrayList<>();
+        for (Object[] result: queryResults) {
+            results.add(new UuidAndTitleCacheWithCode((UUID)result[0], (Integer)result[1], (String)result[2], (String)result[3]));
+        }
+
+        return results;
+    }
 
 	@Override
 	public void rebuildIndex() {
