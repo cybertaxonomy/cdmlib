@@ -316,12 +316,12 @@ public class RegistrationServiceImpl
 
         if(!reg.isPersisted()){
             if(minter != null){
-                Identifier<String> identifiers = minter.mint();
-                if(identifiers.getIdentifier() == null){
+                Identifier<String> identifier = minter.mint();
+                if(identifier.getIdentifier() == null){
                     throw new RuntimeException("RegistrationIdentifierMinter configuration incomplete.");
                 }
-                reg.setIdentifier(identifiers.getIdentifier());
-                reg.setSpecificIdentifier(identifiers.getLocalId());
+                reg.setIdentifier(identifier.getIdentifier());
+                reg.setSpecificIdentifier(identifier.getLocalId());
 
                 //registration center /TODO dirty to handle this inside the minter, we need a configurator instead that configures a registration center which includes the minter and the registration center link separately
                 reg.setInstitution(minter.registrationCenter());

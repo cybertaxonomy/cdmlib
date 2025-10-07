@@ -191,6 +191,5 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
             registrationCenterInstitution = (Institution)agentService.find(registrationCenter.institutionUuid);
         }
         return registrationCenterInstitution;
-
     }
 }

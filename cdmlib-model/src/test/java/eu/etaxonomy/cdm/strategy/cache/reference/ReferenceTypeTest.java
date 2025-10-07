@@ -81,7 +81,6 @@ public class ReferenceTypeTest {
 		Assert.assertFalse("WebPage must not be volume reference", ReferenceType.WebPage.isVolumeReference());
 	}
 
-
 	@Test
 	public void testIsSection(){
 		Assert.assertTrue("Proceedings must be section", ReferenceType.Proceedings.isSection());
