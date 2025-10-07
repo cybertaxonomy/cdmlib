@@ -564,8 +564,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     person = state.getPersonStoreCollector().get(teamOrPerson.getCollectorTitleCache());
                 }
                 Team team = null;
-                if (person == null) {
-                    team = state.getTeamStoreCollector().get(agentsText);
+                if (person == null && teamOrPerson != null) {
+                    team = state.getTeamStoreCollector().get(teamOrPerson.getCollectorTitleCache());
                 }
                 if (team == null && person == null && StringUtils.isNotBlank(agentsText)){
 //                    teamOrPerson = parseAgentString(agentsText, true);
@@ -592,7 +592,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                 Team team = state.getTeamStoreCollector().get(tempTeam.getCollectorTitleCache());
                 if (team == null){
-                    Person person = state.getPersonStoreCollector().get(state.getDataHolder().gatheringAgentsList.toString());
+                    Person person = state.getPersonStoreCollector().get(tempTeam.getCollectorTitleCache());
                     if (person == null) {
                         TeamOrPersonBase teamOrPerson = parseAgentString(state.getDataHolder().gatheringAgentsList.toString(), true);
                         findMatchingAgentAndFillStore(state, teamOrPerson, true);

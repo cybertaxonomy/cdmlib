@@ -66,10 +66,10 @@ public class MatchStrategyFactory {
 
             addParsedAgentBaseMatchModes(parsedPersonMatchStrategy);
 
-            parsedPersonMatchStrategy.setMatchMode("collectorTitle", MatchMode.EQUAL);
+            parsedPersonMatchStrategy.setMatchMode("collectorTitleCache", MatchMode.EQUAL);
 
             String[] equalOrFirstNullParams = new String[]{"nomenclaturalTitle", "givenName","initials",
-                    "lifespan","orcid","prefix","suffix", "familyName","wikiDataItemId"};
+                    "lifespan","orcid","prefix","suffix", "familyName","wikiDataItemId", "collectorTitle"};
             for(String param : equalOrFirstNullParams){
                 parsedPersonMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
             }
