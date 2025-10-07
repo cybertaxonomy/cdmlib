@@ -37,7 +37,7 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
         minter.setMinLocalId("100");
         minter.setMaxLocalId("110");
         Identifier<String> indentifier = minter.mint();
-        Assert.assertEquals("104", indentifier.localId);
+        Assert.assertEquals("104", indentifier.getLocalId());
     }
 
     @Test
@@ -49,7 +49,7 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
         minter.setMaxLocalId("110");
         minter.setIdentifierFormatString("http://phycobank/%s");
         Identifier<String> indentifier = minter.mint();
-        Assert.assertEquals("103", indentifier.localId);
+        Assert.assertEquals("103", indentifier.getLocalId());
         Assert.assertEquals("http://phycobank/103", indentifier.identifier);
     }
 
@@ -62,7 +62,7 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
         minter.setMaxLocalId("400");
         minter.setIdentifierFormatString("http://phycobank/%s");
         Identifier<String> indentifier = minter.mint();
-        Assert.assertEquals("300", indentifier.localId);
+        Assert.assertEquals("300", indentifier.getLocalId());
     }
 
     @Test

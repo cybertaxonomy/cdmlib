@@ -85,11 +85,11 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
         StatelessSession session = factory.openStatelessSession();
         try{
 
-            String filter = " where cast(reg.specificIdentifier as int) >= " + minLocalId + " AND cast(reg.specificIdentifier as int) <= " + maxLocalId;
+            String filter = " WHERE CAST(reg.specificIdentifier AS int) >= " + minLocalId + " AND CAST(reg.specificIdentifier AS int) <= " + maxLocalId;
             if(identifierFormatString != null){
-                filter += " AND reg.identifier like '" + identifierFormatString.replaceAll("%s", "%") + "'";
+                filter += " AND reg.identifier LIKE '" + identifierFormatString.replaceAll("%s", "%") + "'";
             }
-            String hql = "select max(cast(reg.specificIdentifier as int)) from Registration as reg" + filter;
+            String hql = "SELECT MAX(CAST(reg.specificIdentifier AS int)) FROM Registration AS reg" + filter;
 
             // a query with correlated sub-select should allow to filter out registrations which are not matching the formatString
             // but the hql below is not working as expected:
@@ -126,7 +126,7 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
             Identifier<String> identifier = new Identifier<>();
             identifier.localId = localid.toString();
             if(identifierFormatString != null){
-                identifier.identifier = String.format(identifierFormatString, identifier.localId);
+                identifier.identifier = String.format(identifierFormatString, identifier.getLocalId());
             }else {
                 identifier.identifier = String.format("Missing_identifier_format_" + identifier.getLocalId());
             }

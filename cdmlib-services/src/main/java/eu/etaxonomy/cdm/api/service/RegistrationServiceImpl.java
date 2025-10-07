@@ -50,8 +50,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Service
 @Transactional(readOnly = true)
-public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration, IRegistrationDao>
-    implements IRegistrationService {
+public class RegistrationServiceImpl
+        extends AnnotatableServiceBase<Registration, IRegistrationDao>
+        implements IRegistrationService {
 
     @Autowired
     @Override
@@ -188,6 +189,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return map;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Registration save(Registration newInstance) {
         return assureIsPersisted(newInstance);

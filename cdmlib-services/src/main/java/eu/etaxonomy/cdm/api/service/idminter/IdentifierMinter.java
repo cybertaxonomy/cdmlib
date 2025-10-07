@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.service.idminter;
 /**
  * @author a.kohlbecker
  * @since Dec 12, 2017
- *
  */
 public interface IdentifierMinter<T> {
 
