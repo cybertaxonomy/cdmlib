@@ -106,7 +106,7 @@ public enum ReferenceType implements IEnumTerm<ReferenceType> {
 	Thesis(UUID.fromString("cd054393-4f5e-4842-b820-b820e5732d72"), "Thesis", "THE", null),
 	//15
 	@XmlEnumValue("Web Page")
-	WebPage(UUID.fromString("1ed8b0df-0532-40ea-aef6-ee4361341165"), "Web Page", "WEB", null),
+	WebPage(UUID.fromString("1ed8b0df-0532-40ea-aef6-ee4361341165"), "Web Page", "WEB", Section),
 
 	;
 

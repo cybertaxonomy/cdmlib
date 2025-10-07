@@ -98,6 +98,6 @@ public class ReferenceTypeTest {
 		Assert.assertFalse("PrintSeries must not be section", ReferenceType.PrintSeries.isSection());
 		Assert.assertFalse("Report must not be section", ReferenceType.Report.isSection());
 		Assert.assertFalse("Thesis must not be section", ReferenceType.Thesis.isSection());
-		Assert.assertFalse("WebPage must not be section", ReferenceType.WebPage.isSection());
+		Assert.assertTrue("WebPage must be section", ReferenceType.WebPage.isSection());
 	}
 }
