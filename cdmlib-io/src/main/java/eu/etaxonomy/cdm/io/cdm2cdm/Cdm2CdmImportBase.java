@@ -1176,7 +1176,8 @@ public abstract class Cdm2CdmImportBase
             @SuppressWarnings("rawtypes") IdentifiableEntity identifiableEntity,
             Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
 
-        T result = handlePersisted((SourcedEntityBase<?>)identifiableEntity, state);
+        @SuppressWarnings("unchecked")
+        T result = (T) handlePersisted((SourcedEntityBase<?>)identifiableEntity, state);
         //complete
         handleCollection(result, IdentifiableEntity.class, "credits", Credit.class, state);
         handleCollection(result, IdentifiableEntity.class, "extensions", Extension.class, state);
@@ -1275,7 +1276,9 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends DescriptionBase> T handlePersisted(DescriptionBase descriptionBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends DescriptionBase> T handlePersisted(DescriptionBase descriptionBase,
+            Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+
         T result = handlePersisted((IdentifiableEntity<?>)descriptionBase, state);
         //complete
         //elements
