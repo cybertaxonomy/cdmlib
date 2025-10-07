@@ -103,6 +103,7 @@ public enum PreferencePredicate
     NumberOfVisibleStatusInDropDown(UUID.fromString("5e5ed585-2212-4d07-bbaf-c5e19a61dace"), "Distribution Editor: Number of visible status in drop down", "distribution.editor.status.numberVisibleStatus",  10),
     DescriptionForDistributionEditor(UUID.fromString("38282571-049c-473e-bec3-bde6f65f796a"), "Distribution Editor: Create distribution editor TaxonDescription", "distribution.editor.distributionOwnDescription",  DistributionDescription.AlwaysDefault),
     AvailableDistributionAreaTerms(UUID.fromString("34469acc-9e23-4f95-92d4-1695e02cb5a0"), "Available Distribution Area Terms", "distribution.area.terms", null),  //default: all/no filter
+    AvailableDistributionTree(UUID.fromString("a663c772-91e9-47ed-8d6a-427584cea898"), "Available Distribution Area Tree", "distribution.area.tree", null),  //default: all/no filter
     AvailableDistributionAreaTermsForEFlora(UUID.fromString("a64a28c0-98c4-49c4-9f98-54958ac9a252"), "Available Distribution Area Terms For eFlora", "distribution.area.terms.eflora", null),  //default: all/no filter
     ShowRankInDistributionEditor(UUID.fromString("fb13b4f2-2d82-4fd3-8abe-2b955a695245"), "Distribution Editor: Show Rank", "distribution.editor.showRank", Boolean.FALSE),
     ShowSynonymsInDistributionEditor(UUID.fromString("5376fa2e-1dbf-4dee-bfe2-a7d4e5e15b85"), "Distribution Editor: Show Synonyms", "distribution.editor.showSynonyms", Boolean.TRUE),
@@ -177,6 +178,8 @@ public enum PreferencePredicate
     ShowIdInSelectionDialog(UUID.fromString("2b2dbafe-186e-4411-aca0-74348c0946b7"), "Show Id In Selection Dialog", "search.selectionDialog.showId", Boolean.TRUE),
     SearchForIdentifierAsDefault(UUID.fromString("b059f371-c9ee-4dca-b419-bdf142f14876"), "Search For Identifier As Default", "search.selectionDialog.searchForIdentifierAsDefault", Boolean.FALSE),
     SearchForIdentifierAndTitleCache(UUID.fromString("5b5c2c6d-071a-4b3c-b645-8db5c704b63b"), "Search For Identifier And TitleCache", "search.selectionDialog.searchForIdentifierAndTitleCache", Boolean.TRUE),
+    SearchForCodeAsDefault(UUID.fromString("ae42dd6b-dbda-4844-8152-7cf2ebfdfd52"), "Search For Collection Code", "search.selectionDialog.searchForCode", Boolean.TRUE),
+    ShowCodeInSelectionDialog(UUID.fromString("7e65d428-9310-488a-8134-663b42592d2d"), "Show Collection Code in search result", "search.selectionDialog.showCode", Boolean.TRUE),
     SortTaxaByRankAndName(UUID.fromString("2b7e90b2-1722-4bbf-989a-113281fa0b30"), "Sort Taxa By Rank And Name", "search.selectionDialog.sortTaxaByRankAndName", Boolean.FALSE),
     NamedAreaSearchForAbbrev(UUID.fromString("1db58b79-048b-4981-9cd1-51cb2b915c8a"), "Search Field for Named Areas", "search.selectionDialog.searchField", TermSearchField.NoAbbrev),
 
