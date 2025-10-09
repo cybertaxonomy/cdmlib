@@ -81,6 +81,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -939,6 +940,9 @@ public class TaxonNodeServiceImpl
             }else{
                 if (taxonDto.getNameUuid() != null){
                     name = nameService.load(taxonDto.getNameUuid());
+                    if (taxonDto.getWfoIdentifierString() != null) {
+                        name.addIdentifier(taxonDto.getWfoIdentifierString(), IdentifierType.IDENTIFIER_NAME_WFO());
+                    }
                     if (name == null){
                         throw new RuntimeException("Taxon name not found for id " + taxonDto.getTaxonUuid());
                     }
@@ -947,6 +951,9 @@ public class TaxonNodeServiceImpl
                             taxonDto.getCode(), taxonDto.getPreferredRank(),  true);
 
                     name = (TaxonName)tmpResult.getCdmEntity();
+                    if (taxonDto.getWfoIdentifierString() != null) {
+                        name.addIdentifier(taxonDto.getWfoIdentifierString(), IdentifierType.IDENTIFIER_NAME_WFO());
+                    }
                     Set<CdmBase> transientObjects = new HashSet<>();
                     transientObjects.addAll(NonViralNameParserImpl.getTransientEntitiesOfParsedName(name));
                     genericDao.saveAll(transientObjects);
@@ -971,6 +978,7 @@ public class TaxonNodeServiceImpl
 
                 taxon = Taxon.NewInstance(name, sec);
                 taxon.setPublish(taxonDto.isPublish());
+
             }
 
             parent = dao.load(parentNodeUuid);

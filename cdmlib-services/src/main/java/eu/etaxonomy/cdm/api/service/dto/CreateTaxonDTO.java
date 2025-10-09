@@ -37,11 +37,12 @@ public class CreateTaxonDTO implements Serializable{
     private boolean isDoubtful;
     private String appendedPhrase;
     private boolean isPublish;
+    private String wfoIdentifierString;
 
     Set<TaxonNodeAgentRelation> agentRelations;
 
     public CreateTaxonDTO(UUID nameUuid, UUID secUuid, String secMicroRef, boolean isDoubtful,
-            String appendedPhrase, boolean isPublish, String taxonNameString,
+            String appendedPhrase, boolean isPublish, String taxonNameString, String wfoIdentifierString,
             NomenclaturalCode nomenclaturalCode, Rank preferredRank){
 
         this.nameUuid = nameUuid;
@@ -53,11 +54,12 @@ public class CreateTaxonDTO implements Serializable{
         this.taxonNameString = taxonNameString;
         this.nomenclaturalCode = nomenclaturalCode;
         this.preferredRank = preferredRank;
+        this.wfoIdentifierString = wfoIdentifierString;
     }
 
     public CreateTaxonDTO(UUID taxonUuid, boolean isDoubtful,
             String appendedPhrase, boolean isPublish, String taxonNameString,
-            NomenclaturalCode nomenclaturalCode, Rank preferredRank){
+            NomenclaturalCode nomenclaturalCode, Rank preferredRank, String wfoIdentifierString){
         this.taxonUuid = taxonUuid;
         this.isDoubtful = isDoubtful;
         this.appendedPhrase= appendedPhrase;
@@ -65,6 +67,7 @@ public class CreateTaxonDTO implements Serializable{
         this.taxonNameString = taxonNameString;
         this.nomenclaturalCode = nomenclaturalCode;
         this.preferredRank = preferredRank;
+        this.wfoIdentifierString = wfoIdentifierString;
     }
 
     public UUID getNameUuid() {
@@ -93,6 +96,13 @@ public class CreateTaxonDTO implements Serializable{
     }
     public void setSecMicroReference(String secMicroReference) {
         this.secMicroReference = secMicroReference;
+    }
+
+    public String getWfoIdentifierString() {
+        return wfoIdentifierString;
+    }
+    public void setWfoIdentifierString(String wfoIdentifierString) {
+        this.wfoIdentifierString = wfoIdentifierString;
     }
 
     /**
