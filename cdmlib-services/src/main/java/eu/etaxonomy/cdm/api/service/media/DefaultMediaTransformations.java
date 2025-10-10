@@ -51,7 +51,7 @@ public class DefaultMediaTransformations {
          * prevent the universal viewer from corrupting the last query parameter. UV appends a parameter t with
          * question mark character which causes problems for the URI query parser see https://dev.e-taxonomy.eu/redmine/issues/9132#note-8
          */
-        String universalViewerThumbnail = "digilib/Scaler/?fn=$1/$2&mo=crop&dw=200&dh=147&uvfix=1";
+        String universalViewerThumbnail = "iiif/2/$1!$2/full/,120/0/default.jpg";
         Point universalViewerThumbnailSize = new Point(200,147);
 
         MediaUriTransformation tr1 = new MediaUriTransformation();
