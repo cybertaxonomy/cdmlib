@@ -76,7 +76,7 @@ public class CdmDbExportMapping<STATE extends DbExportStateBase<CONFIG, TRANSFOR
 			for (CdmMapperBase mapper : this.mapperList){
 				if (mapper instanceof ObjectChangeMapper){
 					ObjectChangeMapper changeMapper = (ObjectChangeMapper)mapper;
-					cdmBase = changeMapper.getNewObject(cdmBase);
+					cdmBase = CdmBase.deproxy(changeMapper.getNewObject(cdmBase));
 				}else if (mapper instanceof IDbExportMapper){
 					IDbExportMapper<DbExportStateBase<?,TRANSFORM>, TRANSFORM> dbMapper = (IDbExportMapper)mapper;
 					try {

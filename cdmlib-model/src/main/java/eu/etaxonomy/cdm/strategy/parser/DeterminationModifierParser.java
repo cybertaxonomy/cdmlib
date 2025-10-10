@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 public class DeterminationModifierParser {
 
-
 //	public static final String qualifierPattern = "(?i)(aff|cf|vel. aff)\\.?";
 
 

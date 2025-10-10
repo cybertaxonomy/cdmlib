@@ -283,7 +283,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public MeasurementUnit getMeasurementUnit(UUID uuid){
 		return measurementUnitMap.get(uuid);
 	}
-
 	public void putMeasurementUnit(MeasurementUnit unit){
 		measurementUnitMap.put(unit.getUuid(), unit);
 	}
@@ -291,7 +290,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public void putStatisticalMeasure(StatisticalMeasure unit){
 		statisticalMeasureMap.put(unit.getUuid(), unit);
 	}
-
 	public StatisticalMeasure getStatisticalMeasure(UUID uuid){
 		return statisticalMeasureMap.get(uuid);
 	}
@@ -308,7 +306,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	public TaxonRelationshipType getTaxonRelationshipType(UUID uuid){
 		return taxonRelationshipTypeMap.get(uuid);
 	}
-
 	public void putTaxonRelationshipType(TaxonRelationshipType relType){
 		taxonRelationshipTypeMap.put(relType.getUuid(), relType);
 	}

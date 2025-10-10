@@ -604,16 +604,13 @@ public class ManifestComposer {
         MetadataEntry remove = null;
         String copyRightText = "";
 
-
-            for (MetadataEntry entry: metadata) {
-                if (entry.getLabelString().equalsIgnoreCase("copyright")) {
-                    if (metadataSource.contains("mediaServer") || metadataSource.contains("onlyMediaServer")) {
-                        copyRightText = "© " + entry.getValueString();
-                        rightsTexts.add(copyRightText);
-                    }
-                    remove = entry;
-
-
+        for (MetadataEntry entry: metadata) {
+            if (entry.getLabelString().equalsIgnoreCase("copyright")) {
+                if (metadataSource.contains("mediaServer") || metadataSource.contains("onlyMediaServer")) {
+                    copyRightText = "© " + entry.getValueString();
+                    rightsTexts.add(copyRightText);
+                }
+                remove = entry;
             }
         }
 
@@ -753,7 +750,7 @@ public class ManifestComposer {
         if(index != null){
             indexPart = "/" + index.toString();
         }
-        return this.iiifIdPrefix + onEntitiyType + "/" + onEntityUuid + "/" + iiifType.getSimpleName().toLowerCase() + indexPart;
+        return this.iiifIdPrefix + onEntitiyType + "/" + onEntityUuid + "/" +
+                iiifType.getSimpleName().toLowerCase() + indexPart;
     }
-
 }
