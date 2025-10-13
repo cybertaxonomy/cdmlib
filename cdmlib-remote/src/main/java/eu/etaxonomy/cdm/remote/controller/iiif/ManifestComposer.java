@@ -701,7 +701,6 @@ public class ManifestComposer {
 
         if(rightsTexts.size() > 0){
             String joinedRights = rightsTexts.stream().collect(Collectors.joining(", "));
-            resource.addAttribution(joinedRights);
 
             if(metadata != null ){
                 if (remove!= null) {
@@ -712,7 +711,6 @@ public class ManifestComposer {
         }
         if(creditTexts.size() > 0){
             String joinedCredits = creditTexts.stream().collect(Collectors.joining(", "));
-            resource.addAttribution(joinedCredits);
             if(metadata != null){
                 metadata.add(new MetadataEntry(new PropertyValue("Credit"), new PropertyValue(joinedCredits)));
             }
