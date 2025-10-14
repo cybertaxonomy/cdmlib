@@ -10,8 +10,10 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -62,8 +64,14 @@ public class CollectionServiceImpl
 
 	@Override
     public List<UuidAndTitleCache<Collection>> getUuidAndTitleCacheByCodeAndTitleCache(String codePattern){
-	    Set<UuidAndTitleCache<Collection>> result = new HashSet<>( dao.getUuidAndTitleCache(null, codePattern));
-	    result.addAll(this.dao.getUuidAndTitleCacheByCode(codePattern));
+	    Set<UuidAndTitleCache<Collection>> resultByTitleCache = new HashSet<>( dao.getUuidAndTitleCache(null, codePattern));
+	    Set<UuidAndTitleCache<Collection>> resultByCode = new HashSet<>(dao.getUuidAndTitleCacheByCode(codePattern));
+	    Set<UuidAndTitleCache<Collection>> result = new HashSet<>();
+	    Map<Integer, UuidAndTitleCache> map = new HashMap<>();
+	    resultByCode.forEach(e-> map.put(e.getId(), e));
+	    result.addAll(resultByCode);
+	    resultByTitleCache.stream().filter(r -> map.get(r.getId()) == null).forEach(r -> result.add(r));
+
         return new ArrayList<UuidAndTitleCache<Collection>>(result);
     }
 }
