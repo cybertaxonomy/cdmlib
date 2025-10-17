@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpException;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
@@ -55,12 +56,24 @@ public abstract class AbstactMediaMetadataReader {
         if(text.startsWith("'") && text.endsWith("'")) {
             text = text.substring(1 , text.length() - 1);
         }
-
         //if text contains date with time informations, remove the time information
-        Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}");
+        Pattern pattern = Pattern.compile("\\d{4}[-:]\\d{2}[:-]\\d{2}[T ]\\d{2}:\\d{2}:\\d{2}");
         Matcher matcher = pattern.matcher(text);
         if (matcher.matches()) {
-            text = text.substring(0, text.indexOf("T"));
+            try {
+                DateTime date = DateTime.parse(text);
+                String result = date.year()+ "-" + date.monthOfYear() + "-" + date.dayOfMonth();
+                return result;
+            }catch(Exception e) {
+                if (text.contains("T")) {
+                    text = text.substring(0, text.indexOf("T"));
+                }else {
+                    text = text.substring(0, text.indexOf(" "));
+                }
+                if (text.contains(":")) {
+                    text = text.replace(":", "-");
+                }
+            }
         }
 
         return text;
@@ -97,9 +110,9 @@ public abstract class AbstactMediaMetadataReader {
     public void appendMetadataEntry(String key, String text) {
         key = convert(key);
         if(cdmImageInfo.getMetaData().containsKey(key)) {
-           
+
             cdmImageInfo.getMetaData().put(key, cdmImageInfo.getMetaData().get(key).concat("; ").concat(text));
-            
+
         } else {
             cdmImageInfo.getMetaData().put(key, text);
         }
