@@ -244,6 +244,100 @@ public class DescriptiveDataSetDao
         return list;
     }
 
+    private List<UUID> getDescriptionUuidsForDescriptiveDataSetForSubtree(UUID uuid, String subtreeIndex) {
+        Session session = getSession();
+
+        String queryStringTaxonDescriptions = "SELECT d.uuid FROM DescriptiveDataSet a " +
+                                "JOIN a.descriptions as d " +
+                                "JOIN d.taxon t, TaxonNode tn " +
+                                "WHERE a.uuid = :uuid " +
+                                    "AND tn.taxon = t ";
+        if (subtreeIndex != null) {
+            queryStringTaxonDescriptions += "AND tn.treeIndex LIKE :treeIndex";
+        }
+
+        Query<UUID> query = session.createQuery(queryStringTaxonDescriptions, UUID.class);
+        query.setParameter("uuid", uuid);
+        if (subtreeIndex != null) {
+            query.setParameter("treeIndex", subtreeIndex+"%");
+        }
+
+        String queryStringSpecimenDescriptions = "SELECT d.uuid FROM DescriptiveDataSet a " +
+                "JOIN a.descriptions as d " +
+                "JOIN d.describedSpecimenOrObservation s, " +
+                "IndividualsAssociation deb , TaxonNode tn, Taxon t, TaxonDescription td " +
+                "WHERE a.uuid = :uuid " +
+                    "AND tn.taxon = t " +
+                    "AND td.taxon = t " +
+                    "AND deb.inDescription = td " +
+                    "AND deb.associatedSpecimenOrObservation = s ";
+
+        if (subtreeIndex != null) {
+            queryStringSpecimenDescriptions += "AND tn.treeIndex LIKE :treeIndex " ;
+        }
+
+        Query<UUID> querySpecimenDescriptions = session.createQuery(queryStringSpecimenDescriptions, UUID.class);
+        querySpecimenDescriptions.setParameter("uuid", uuid);
+        if (subtreeIndex != null) {
+            querySpecimenDescriptions.setParameter("treeIndex", subtreeIndex+"%");
+        }
+
+
+        List<UUID> result = query.list();
+        List<UUID> resultSpecimen = querySpecimenDescriptions.list();
+        List<UUID> list = new ArrayList<>();
+        result.forEach(e -> list.add(e));
+        resultSpecimen.forEach(e -> list.add(e));
+//        for(UUID object : result){
+//            list.add(object);
+//        }
+        return list;
+    }
+    @Override
+    public DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuidForSubtree(UUID uuid, String subtreeIndex) {
+        String queryString = DescriptiveDataSetBaseDto.getDescriptiveDataSetDtoSelect()
+                + " WHERE a.uuid = :uuid"
+                + " ORDER BY a.titleCache";
+        Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
+        query.setParameter("uuid", uuid);
+
+        List<Object[]> result = query.list();
+
+        List<DescriptiveDataSetBaseDto> list = DescriptiveDataSetBaseDto.descriptiveDataSetBaseDtoListFrom(result);
+        UUID descriptiveSystemUuid = null;
+        UUID minRankUuid = null;
+        UUID maxRankUuid = null;
+        if (result != null && !result.isEmpty()){
+            Object[] descriptiveDataSetResult = result.get(0);
+            descriptiveSystemUuid = (UUID)descriptiveDataSetResult[4];
+            minRankUuid = (UUID)descriptiveDataSetResult[5];
+            maxRankUuid = (UUID)descriptiveDataSetResult[6];
+        }else{
+            return null;
+        }
+        //get descriptiveSystem
+        DescriptiveDataSetBaseDto dto = list.get(0);
+        if (descriptiveSystemUuid != null){
+            TermCollectionDto treeDto = termTreeDao.getTermTreeDtosByUuid(descriptiveSystemUuid);
+            dto.setDescriptiveSystem(treeDto);
+        }
+        //get taxon nodes
+        List<UUID> nodeUuids = getNodeUuidsForDescriptiveDataSet(uuid);
+        List<TaxonNodeDto> nodeDtos = nodeDao.getTaxonNodeDtosWithoutParent(nodeUuids);
+        Set<TaxonNodeDto> nodeSet = new HashSet<>(nodeDtos);
+        dto.setSubTreeFilter(nodeSet);
+
+        List<UUID> descriptionUuidList = getDescriptionUuidsForDescriptiveDataSetForSubtree(uuid, subtreeIndex);
+        Set<UUID> descriptionUuids = new HashSet<>(descriptionUuidList);
+        dto.setDescriptionUuids(descriptionUuids);
+
+        TermDto minRank = termDao.getTermDto(minRankUuid);
+        TermDto maxRank = termDao.getTermDto(maxRankUuid);
+        dto.setMaxRank(maxRank);
+        dto.setMinRank(minRank);
+        return dto;
+    }
+
     @Override
     public DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuid(UUID uuid) {
         String queryString = DescriptiveDataSetBaseDto.getDescriptiveDataSetDtoSelect()

@@ -67,7 +67,7 @@ public interface ILongRunningTasksService {
      * @param descriptiveDataSetUuid the working set for which getRowWrapper() is invoked
      * @return the uuid of the monitor
      */
-    public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid, Language lang);
+    public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid, String subTreeIndex, Language lang);
 
     public UUID monitLongRunningTask(SortIndexUpdaterConfigurator configurator);
 

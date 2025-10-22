@@ -71,7 +71,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param descriptiveDataSet the data set for which the specimens should be fetched
      * @return a collection of wrapper objects
      */
-    public Collection<SpecimenNodeWrapper> loadSpecimens(DescriptiveDataSet descriptiveDataSet);
+    public Collection<SpecimenNodeWrapper> loadSpecimens(DescriptiveDataSet descriptiveDataSet, UUID subtreeNodeUuid);
 
     /**
      * Lists all taxon nodes that match the filter set defined in the
@@ -80,7 +80,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @return a list of {@link UUID}s from the filtered nodes
      *
      */
-    public List<UUID> findFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet);
+    public List<UUID> findFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet, UUID subtreeNodeUuid);
 
     /**
      * Creates a {@link SpecimenRowWrapperDTO} from the given SpecimenNodeWrapper.<br>
@@ -172,7 +172,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @return a list of {@link TaxonNode}s from the filtered nodes
      *
      */
-    public List<TaxonNode> loadFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet, List<String> propertyPaths);
+    public List<TaxonNode> loadFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet, UUID subtreeNodeUuid, List<String> propertyPaths);
 
     /**
      * Generates a {@link PolytomousKey} for the given {@link DescriptiveDataSet} and sets
@@ -192,7 +192,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      */
     public DescriptionBaseDto findDefaultDescription(UUID specimenDescriptionUuid, UUID dataSetUuid);
 
-    public Collection<SpecimenNodeWrapper> loadSpecimens(UUID descriptiveDataSetUuid);
+    public Collection<SpecimenNodeWrapper> loadSpecimens(UUID descriptiveDataSetUuid, UUID subtreeNodeUuid);
 
     /**
      * @param datasetUuid
@@ -236,6 +236,16 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
 
 
     public Map<UUID, List<TermDto>> getRecommendedModifiersForFeature(Set<UUID> featureUuids);
+
+    /**
+     * @param descriptiveDataSetUuid
+     * @param subtreeUuid
+     * @param lang
+     * @param monitor
+     * @return
+     */
+    List<RowWrapperDTO<?>> getRowWrapperForSubtree(UUID descriptiveDataSetUuid, String subtreeIndex, Language lang,
+            IProgressMonitor monitor);
 
     //public Map<UUID, List<TermDto>> getRecommendedModifiersForFeature(Set<UUID> featureUuids, Language lang);
 

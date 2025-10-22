@@ -65,11 +65,11 @@ public class LongRunningTasksService implements ILongRunningTasksService{
     private ICdmApplication repository;
 
     @Override
-    public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid, Language lang) {
+    public UUID monitGetRowWrapper(UUID descriptiveDataSetUuid, String subTreeIndex, Language lang) {
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                return (Serializable)descriptiveDataSetService.getRowWrapper(descriptiveDataSetUuid, lang, monitor);
+                return (Serializable)descriptiveDataSetService.getRowWrapperForSubtree(descriptiveDataSetUuid, subTreeIndex, lang, monitor);
             }
         };
         UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
@@ -77,6 +77,7 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         monitorThread.start();
         return uuid;
     }
+
 
     @Override
     public <T extends DescriptionAggregationBase<T,C>, C extends DescriptionAggregationConfigurationBase<T>>
@@ -207,6 +208,7 @@ public class LongRunningTasksService implements ILongRunningTasksService{
                     remotingMonitor.addReport(e.getMessage());
                 }
                 remotingMonitor.setResult(result);
+                remotingMonitor.done();
                 return result;
             }
         };

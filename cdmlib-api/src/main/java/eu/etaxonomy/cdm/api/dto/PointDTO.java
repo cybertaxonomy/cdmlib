@@ -8,11 +8,13 @@
 */
 package eu.etaxonomy.cdm.api.dto;
 
+import java.io.Serializable;
+
 /**
  * @author muellera
  * @since 16.02.2024
  */
-public class PointDTO {
+public class PointDTO implements Serializable{
 
     private Double longitude;
     private String longitudeSexagesimal;

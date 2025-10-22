@@ -37,4 +37,11 @@ public interface IDescriptiveDataSetDao extends IIdentifiableDao<DescriptiveData
      * @return
      */
     DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuid(UUID uuid);
+
+    /**
+     * @param uuid
+     * @param subtreeUUID
+     * @return
+     */
+    DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuidForSubtree(UUID uuid, String subtreeIndex);
 }

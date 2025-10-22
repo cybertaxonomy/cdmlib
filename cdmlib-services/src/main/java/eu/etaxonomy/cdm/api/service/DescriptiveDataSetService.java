@@ -171,9 +171,41 @@ public class DescriptiveDataSetService
 	    return wrappers;
 	}
 
+	   @Override
+	    public List<RowWrapperDTO<?>> getRowWrapperForSubtree(UUID descriptiveDataSetUuid, String subtreeIndex, Language lang, IProgressMonitor monitor) {
+	        DescriptiveDataSetBaseDto datasetDto = dao.getDescriptiveDataSetDtoByUuidForSubtree(descriptiveDataSetUuid, subtreeIndex);
+//	      DescriptiveDataSet descriptiveDataSet = load(descriptiveDataSetUuid);
+	        monitor.beginTask("Load row wrapper", datasetDto.getDescriptionUuids().size());
+	        List<RowWrapperDTO<?>> wrappers = new ArrayList<>();
+	        Set<UUID> descriptions = datasetDto.getDescriptionUuids();
+	        for (UUID description : descriptions) {
+	            if(monitor.isCanceled()){
+	                return new ArrayList<>();
+	            }
+	            DescriptionBaseDto descDto = descriptionService.loadDto(description);
+	            RowWrapperDTO<?> rowWrapper = null;
+	            if (descDto != null && descDto.getTaxonDto() != null &&
+	                    (descDto.getTypes().contains(DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION)
+	                            || descDto.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC)
+	                            || descDto.getTypes().contains(DescriptionType.SECONDARY_DATA)
+	                            )){
+	                rowWrapper = createTaxonRowWrapper(descDto, datasetDto.getUuid(), lang);
+	            }
+	            else if (descDto != null &&descDto.getSpecimenDto() != null && (descDto.getTypes() == null ||
+	                    !descDto.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))){
+	                rowWrapper = createSpecimenRowWrapper(descDto, descriptiveDataSetUuid, lang);
+	            }
+	            if(rowWrapper!=null){
+	                wrappers.add(rowWrapper);
+	            }
+	            monitor.worked(1);
+	        }
+	        return wrappers;
+	    }
+
     @Override
-    public Collection<SpecimenNodeWrapper> loadSpecimens(DescriptiveDataSet descriptiveDataSet){
-        List<UUID> filteredNodes = findFilteredTaxonNodes(descriptiveDataSet);
+    public Collection<SpecimenNodeWrapper> loadSpecimens(DescriptiveDataSet descriptiveDataSet, UUID subtreeNodeUuid){
+        List<UUID> filteredNodes = findFilteredTaxonNodes(descriptiveDataSet, subtreeNodeUuid);
         if(filteredNodes.isEmpty()){
             return Collections.emptySet();
         }
@@ -183,25 +215,36 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public Collection<SpecimenNodeWrapper> loadSpecimens(UUID descriptiveDataSetUuid){
+    public Collection<SpecimenNodeWrapper> loadSpecimens(UUID descriptiveDataSetUuid, UUID subtreeNodeUuid){
         DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
-        return loadSpecimens(dataSet);
+        return loadSpecimens(dataSet, subtreeNodeUuid);
     }
 
 
     @Override
-    public List<UUID> findFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet){
+    public List<UUID> findFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet, UUID subtreeNodeUuid){
         TaxonNodeFilter filter = TaxonNodeFilter.NewRankInstance(descriptiveDataSet.getMinRank(), descriptiveDataSet.getMaxRank());
         descriptiveDataSet.getGeoFilter().forEach(area -> filter.orArea(area.getUuid()));
-        descriptiveDataSet.getTaxonSubtreeFilter().forEach(node -> filter.orSubtree(node));
+        if (subtreeNodeUuid == null) {
+            descriptiveDataSet.getTaxonSubtreeFilter().forEach(node -> filter.orSubtree(node));
+        }else {
+            filter.orSubtree(subtreeNodeUuid);
+        }
+//        .stream().filter(node ->node.treeIndex().startsWith(subtreeIndex))
+
+
+
+
+
+//        forEach(node -> node.treeIndex().startsWith(subtreeIndex)? filter.orSubtree(node):continue);
         filter.setIncludeUnpublished(true);
 
         return taxonNodeService.uuidList(filter);
     }
 
     @Override
-    public List<TaxonNode> loadFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet, List<String> propertyPaths){
-        return taxonNodeService.load(findFilteredTaxonNodes(descriptiveDataSet), propertyPaths);
+    public List<TaxonNode> loadFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet, UUID subtreeNodeUuid, List<String> propertyPaths){
+        return taxonNodeService.load(findFilteredTaxonNodes(descriptiveDataSet, subtreeNodeUuid), propertyPaths);
     }
 
     @Override

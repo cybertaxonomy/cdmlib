@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
+import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -136,6 +137,9 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
     private ITaxonNodeService taxonNodeService;
 
     @SpringBeanByType
+    private IOccurrenceService specimenService;
+
+    @SpringBeanByType
     private IClassificationService classificationService;
 
     @SpringBeanByType
@@ -153,7 +157,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         monitor = DefaultProgressMonitor.NewInstance();
     }
 
-    @Ignore // the tesat fails when running in suite because no dataset is available, running the test in eclipse works as expected.
+//    @Ignore // the tesat fails when running in suite because no dataset is available, running the test in eclipse works as expected.
     @Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
@@ -166,6 +170,85 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         commitAndStartNewTransaction();
 
         List<RowWrapperDTO<?>> rowWrappers =  datasetService.getRowWrapper(dataSet.getUuid(), Language.DEFAULT(), monitor);
+
+        //There are 4 specimen descriptions and one literature description (taxon association), added a new one to test the subtree filter
+        assertTrue(rowWrappers.size() == 6);
+        //check rowWrapper
+        //specimen_1 2 categorical and 1 quantitative
+        List<SpecimenRowWrapperDTO> alpinaSpec1List = rowWrappers.stream().filter(r->r instanceof SpecimenRowWrapperDTO)
+            .map(r->(SpecimenRowWrapperDTO)r)
+            .filter(s->s.getSpecimenDto().getLabel().equals("alpina specimen1")).collect(Collectors.toList());
+        Assert.assertEquals(1, alpinaSpec1List.size());
+        SpecimenRowWrapperDTO alpinaSpec1Dto = alpinaSpec1List.get(0);
+
+        //leafColor
+        Set<DescriptionElementDto> leafColorElements = alpinaSpec1Dto.getDataValueForFeature(uuidFeatureLeafColor);
+        Assert.assertNotNull(leafColorElements);
+        Assert.assertTrue(leafColorElements.size() == 1);
+        DescriptionElementDto dto = leafColorElements.iterator().next();
+        Assert.assertTrue(dto instanceof CategoricalDataDto);
+        CategoricalDataDto cDto = (CategoricalDataDto)dto;
+        assertTrue("The states should contain one element", cDto.getStates().size() == 1);
+        StateDataDto stateData = cDto.getStates().iterator().next();
+        assertEquals(uuidLeafColorBlue, stateData.getState().getUuid());
+
+        //leaf length
+        Set<DescriptionElementDto> leafLengthElements = alpinaSpec1Dto.getDataValueForFeature(uuidFeatureLeafLength);
+        Assert.assertNotNull(leafLengthElements);
+        Assert.assertTrue(leafLengthElements.size() == 1);
+        dto = leafLengthElements.iterator().next();
+        Assert.assertTrue(dto instanceof QuantitativeDataDto);
+        QuantitativeDataDto qDto = (QuantitativeDataDto)dto;
+        assertTrue("The statistical values should contain one element", qDto.getValues().size() == 1);
+        StatisticalMeasurementValueDto statValue = qDto.getValues().iterator().next();
+        assertEquals(new BigDecimal("5.0"), statValue.getValue());
+
+        Set<DescriptionElementDto> leafPAElements = alpinaSpec1Dto.getDataValueForFeature(uuidFeatureLeafPA);
+        Assert.assertNotNull(leafPAElements);
+        Assert.assertTrue(leafPAElements.size() == 1);
+        dto = leafPAElements.iterator().next();
+        Assert.assertTrue(dto instanceof CategoricalDataDto);
+        cDto = (CategoricalDataDto)dto;
+        assertTrue("The statistical values should contain one element", cDto.getStates().size() == 1);
+        stateData = cDto.getStates().iterator().next();
+        assertEquals(State.uuidPresent, stateData.getState().getUuid());
+
+
+        //taxon descriptions
+        List<TaxonRowWrapperDTO> taxonDescList = rowWrappers.stream().filter(r->r instanceof TaxonRowWrapperDTO)
+                .map(r->(TaxonRowWrapperDTO)r).collect(Collectors.toList());
+        Assert.assertEquals(1, taxonDescList.size());
+//        .filter(s->s.getTaxonDto().getLabel().equals("alpina specimen1")).collect(Collectors.toList());
+        TaxonRowWrapperDTO taxonDto = taxonDescList.get(0);
+        leafLengthElements = taxonDto.getDataValueForFeature(uuidFeatureLeafLength);
+        Assert.assertNotNull(leafLengthElements);
+        Assert.assertTrue(leafLengthElements.size() == 1);
+        dto = leafLengthElements.iterator().next();
+        Assert.assertTrue(dto instanceof QuantitativeDataDto);
+        qDto = (QuantitativeDataDto)dto;
+        assertTrue("The statistical values should contain one element", qDto.getValues().size() == 2);
+        List<StatisticalMeasurementValueDto> minList = qDto.getValues().stream()
+                .filter(vs->vs.getValue().equals(new BigDecimal("4.5"))).collect(Collectors.toList());
+        Assert.assertEquals(1, minList.size());
+        TermDto minDtoType = minList.get(0).getType();
+        Assert.assertTrue(minDtoType.getUuid().equals(StatisticalMeasure.MIN().getUuid()));
+        Assert.assertTrue(minDtoType.getTermType().equals(TermType.StatisticalMeasure));
+
+    }
+//    @Ignore // the tesat fails when running in suite because no dataset is available, running the test in eclipse works as expected.
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    })
+    public void testGetRowWrapperForSubtree(){
+        createDefaultFeatureTree();
+        DescriptiveDataSet dataSet = createTestDataset();
+        commitAndStartNewTransaction();
+        String subtreeIndex ="#t5000#5000#5001#5002#";
+
+        List<RowWrapperDTO<?>> rowWrappers =  datasetService.getRowWrapperForSubtree(dataSet.getUuid(),subtreeIndex, Language.DEFAULT(), monitor);
 
         //There are 4 specimen descriptions and one literature description (taxon association)
         assertTrue(rowWrappers.size() == 5);
@@ -231,6 +314,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         Assert.assertTrue(minDtoType.getTermType().equals(TermType.StatisticalMeasure));
 
     }
+
 
     @Ignore   //the test currently does not run in suite due to exception during descriptionService.mergeDescriptions(descToUpdate, dataSet.getUuid());
     @Test
@@ -305,6 +389,11 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         addQuantitativeData(specDescAlpina1, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), new BigDecimal("5.0"));
         addCategoricalData(specDescAlpina1, uuidFeatureLeafColor, uuidLeafColorBlue);
 
+        SpecimenDescription specDescLapsana = createSpecimenDescription(dataSet, T_LAPSANA_UUID, "lapsana specimen");
+        addCategoricalData(specDescLapsana, uuidFeatureLeafPA, State.uuidPresent);
+        addQuantitativeData(specDescLapsana, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), new BigDecimal("5.0"));
+        addCategoricalData(specDescLapsana, uuidFeatureLeafColor, uuidLeafColorBlue);
+
         SpecimenDescription specDescAlpina2 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen2");
         addCategoricalData(specDescAlpina2, uuidFeatureLeafPA, State.uuidPresent);
         addQuantitativeData(specDescAlpina2, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), new BigDecimal("7.0"));
@@ -339,6 +428,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         StatisticalMeasurementValue smv = StatisticalMeasurementValue.NewInstance(type, value);
         qd.addStatisticalValue(smv);
         desc.addElement(qd);
+        descriptionService.merge(desc, true);
     }
 
     private void addQuantitativeData(DescriptionBase<?> desc, UUID uuidFeature, BigDecimal min, BigDecimal max) {
@@ -349,6 +439,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         smv = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MAX(), max);
         qd.addStatisticalValue(smv);
         desc.addElement(qd);
+        descriptionService.merge(desc, true);
     }
 
     private void addCategoricalData(DescriptionBase<?> desc, UUID featureUuid, UUID stateUUID) {
@@ -356,20 +447,24 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         State state = (State)termService.find(stateUUID);
         CategoricalData cd = CategoricalData.NewInstance(state, feature);
         desc.addElement(cd);
+        descriptionService.merge(desc, true);
     }
 
     private SpecimenDescription createSpecimenDescription(DescriptiveDataSet dataSet, UUID taxonUuid, String specLabel ) {
         Taxon taxon = (Taxon)taxonService.find(taxonUuid);
         TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
+
         DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         specimen.setTitleCache(specLabel, true);
+        specimenService.merge(specimen, true);
         IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance(specimen);
         // TODO this has to be discussed; currently the description with the InidividualsAssociation is
         // needed in the dataset for performance reasons
         taxonDescription.addElement(individualsAssociation);
+        descriptionService.merge(taxonDescription, true);
         dataSet.addDescription(taxonDescription);
         SpecimenDescription specDesc = SpecimenDescription.NewInstance(specimen);
-
+        descriptionService.merge(specDesc, true);
         dataSet.addDescription(specDesc);
         return specDesc;
     }
