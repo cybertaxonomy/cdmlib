@@ -125,9 +125,10 @@ public enum PreferencePredicate
     ShowTaxonAssociations(UUID.fromString("849c24f9-b62b-4f70-b0a0-1b02182b3433"), "Show Taxon Associations", "specimen.detail.showTaxonAssociations", Boolean.FALSE),
     ShowLifeForm(UUID.fromString("85870e7d-a6a3-4c9b-97d6-eb27e6516860"), "Show Life Form", "showLifeForm", Boolean.FALSE),
     MeasurementUnit(UUID.fromString("f1d6a2e7-8903-46e0-b1ea-deb74110f83a"), "Measurement Units", "measurementUnits", ""),
-    ShowSpecimenListEditor(UUID.fromString("298d0c47-a4dc-4ab1-a3ef-442df8c67bd0"), "Show Specimen List Editor", "specimen.editor.showListEditor", Boolean.TRUE),
+    ShowSpecimenListEditor(UUID.fromString("298d0c47-a4dc-4ab1-a3ef-442df8c67bd0"), "Show Specimen List Editor", "specimen.editor.showListEditor", Boolean.FALSE),
     //Taxa
     DefaultBehaviourForPublishFlag(UUID.fromString("24e636fc-ef3b-4a2c-8c9e-018143e66949"), "Default behaviour for publish flag", "defaultBehaviourForPublishFlag", PublishEnum.InheritFromParent),
+    DefaultBehaviourWhenMovingForPublishFlag(UUID.fromString("27edfb7b-e30f-4e1a-8ee9-90c2bdc8e6b9"), "Default behaviour when moving for publish flag", "defaultBehaviourWhenMovingForPublishFlag", PublishEnumForMoving.KeepOrWarn),
     DefaultBehaviourForSecundum(UUID.fromString("b62bfebd-2633-46da-828c-5dcc181a137f"), "Default behaviour for secundum reference when moving synonym to accepted taxon", "defaultBehaviourSecMovSyn", SecReferenceHandlingEnum.KeepOrWarn),
     DefaultBehaviourForSecundumWhenSwap(UUID.fromString("8ae1a0e3-78aa-4284-9c34-10b23d52905b"), "Default behaviour for secundum reference when swapping synonym and accepted taxon", "defaultBehaviourSecSwap", SecReferenceHandlingSwapEnum.KeepOrWarn),
     ConceptRelationshipType(UUID.fromString("04e4c69c-6741-4224-81ef-8df0a03bb81e"), "Concept Relationship Types", "conceptRelationshipTypes", null),
