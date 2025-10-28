@@ -107,6 +107,17 @@ public class IndividualsAssociation extends DescriptionElementBase {
 		return result;
 	}
 
+    /**
+     * Creates a new empty individuals association instance of feature "Specimen".<BR>
+     * @see Feature#SPECIMEN()
+     */
+    public static IndividualsAssociation NewSpecimenInstance(SpecimenOrObservationBase specimen){
+        IndividualsAssociation result =  new IndividualsAssociation();
+        result.setFeature(Feature.SPECIMEN());
+        result.setAssociatedSpecimenOrObservation(specimen);
+        return result;
+    }
+
 
 	/**
 	 * Returns the second {@link SpecimenOrObservationBase specimen or observation}
