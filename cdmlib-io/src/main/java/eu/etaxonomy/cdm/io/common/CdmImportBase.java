@@ -1521,7 +1521,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             String recordLocation,
             String attributeName) {
 
-        if (strToConvert == null){
+        if (isBlank(strToConvert)){
             return null;
         }
         try {
@@ -1550,7 +1550,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             String recordLocation,
             String attributeName) {
 
-        if (strToConvert == null){
+        if (isBlank(strToConvert)){
             return null;
         }
         try {
