@@ -107,9 +107,6 @@ public class CollectorParser {
             Matcher matcher = initialsPattern.matcher(str);
             if (matcher.matches()) {
                 //initials not separated by comma
-                for (int j = 0; j < matcher.groupCount(); j++) {
-                    System.out.println(matcher.group(j));
-                }
                 String initials = matcher.group(1).trim();
                 person.setInitials(initials);
                 String family = matcher.group(matcher.groupCount()); //str.replaceAll(initials + "$", "").trim();
