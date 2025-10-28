@@ -80,6 +80,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 
 	private Map<UUID, StatisticalMeasure> statisticalMeasureMap = new HashMap<>();
 	private Map<UUID, DefinedTerm> modifierMap = new HashMap<>();
+	private Map<UUID, DefinedTerm> determinationModifierMap = new HashMap<>();
 
 	private Map<UUID, PresenceAbsenceTerm> presenceTermMap = new HashMap<>();
 	private Map<UUID, Language> languageMap = new HashMap<>();
@@ -294,14 +295,19 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		return statisticalMeasureMap.get(uuid);
 	}
 
-
-	public DefinedTerm getModifier(UUID uuid){
-		return modifierMap.get(uuid);
+	public DefinedTerm getDeterminationModifier(UUID uuid){
+		return determinationModifierMap.get(uuid);
+	}
+	public void putDeterminationModifier(DefinedTerm unit){
+	    determinationModifierMap.put(unit.getUuid(), unit);
 	}
 
-	public void putModifier(DefinedTerm unit){
-		modifierMap.put(unit.getUuid(), unit);
-	}
+    public DefinedTerm getModifier(UUID uuid){
+        return modifierMap.get(uuid);
+    }
+    public void putModifier(DefinedTerm unit){
+        modifierMap.put(unit.getUuid(), unit);
+    }
 
 	public TaxonRelationshipType getTaxonRelationshipType(UUID uuid){
 		return taxonRelationshipTypeMap.get(uuid);

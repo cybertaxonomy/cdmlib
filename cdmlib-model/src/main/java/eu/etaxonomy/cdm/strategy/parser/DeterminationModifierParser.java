@@ -21,7 +21,7 @@ public class DeterminationModifierParser {
 
 //	public static final String qualifierPattern = "(?i)(aff|cf|vel. aff)\\.?";
 
-
+    //TODO for "confirm.", "det." and "rev." see #10839
 
 	public static DefinedTerm parseDeterminationQualifier(String qualifier) throws UnknownCdmTypeException {
 
