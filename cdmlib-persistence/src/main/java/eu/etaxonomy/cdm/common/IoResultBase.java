@@ -14,7 +14,10 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import eu.etaxonomy.cdm.strategy.parser.ParserResult;
+
 /**
+ * @see ParserResult
  * @author a.mueller
  * @since 24.03.2017
  *
@@ -123,6 +126,19 @@ public abstract class IoResultBase implements Serializable{
         setExceptionState();
     }
 
+    //******************* MERGE **************************/
+
+    //TODO use ResultBase as common base class for ParseResult and IOResult
+    public void getParserResultMessages(ParserResult<?> parserResult) {
+        parserResult.getWarnings().forEach(w->this.warnings.add(fromParserResult(w)));
+        parserResult.getErrors().forEach(w->this.errors.add(fromParserResult(w)));
+        parserResult.getExceptions().forEach(w->this.exceptions.add(fromParserResult(w)));
+    }
+
+    private IoInfo fromParserResult(ParserResult<?>.ParserInfo parserInfo) {
+        return new IoInfo(parserInfo.getMessage(), parserInfo.getException(), parserInfo.getCodeLocation(), null);
+    }
+    //****************************************************/
 
     /**
      * Computes the location string. If location is not null the location
