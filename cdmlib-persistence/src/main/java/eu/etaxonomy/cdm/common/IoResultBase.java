@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.strategy.parser.ParserResult;
  * @see ParserResult
  * @author a.mueller
  * @since 24.03.2017
- *
  */
 public abstract class IoResultBase implements Serializable{
 
@@ -55,7 +54,6 @@ public abstract class IoResultBase implements Serializable{
         public String getMessage(){
             return message;
         }
-
         public Exception getException(){
             return exception;
         }
@@ -67,10 +65,9 @@ public abstract class IoResultBase implements Serializable{
         }
     }
 
-
-
 // ************* GETTERS / SETTERS / ADDERS ***********************/
 
+    //errors
     public List<IoInfo> getErrors() {return errors;}
     public void setErrors(List<IoInfo> ioInfos) {this.errors = ioInfos;}
     public void addError(String message) {
@@ -92,7 +89,7 @@ public abstract class IoResultBase implements Serializable{
         errors.add(new IoInfo(message, e, makeLocation(e, codeLocation), dataLocation));
     }
 
-
+    //warnings
     public List<IoInfo> getWarnings() {return warnings;}
     public void setWarnings(List<IoInfo> warnings) {this.warnings = warnings;}
     public void addWarning(String message) {
@@ -108,8 +105,7 @@ public abstract class IoResultBase implements Serializable{
         warnings.add(new IoInfo(message, null, codeLocation, dataLocation));
     }
 
-
-
+    //exceptions
     public List<IoInfo> getExceptions() {return exceptions;}
     public void setExceptions(List<IoInfo> exceptions) {this.exceptions = exceptions;}
     public void addException(Exception e) {
@@ -144,9 +140,6 @@ public abstract class IoResultBase implements Serializable{
      * Computes the location string. If location is not null the location
      * parameter is returned. If location is <code>null</code> the stacktrace
      * is examined and tried to retrieve the location from there
-     * @param e
-     * @param location
-     * @return
      */
     private String makeLocation(Throwable e, String location) {
         if (location == null && e != null){
