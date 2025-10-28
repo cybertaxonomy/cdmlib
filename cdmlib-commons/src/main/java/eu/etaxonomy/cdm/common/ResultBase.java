@@ -53,7 +53,10 @@ public abstract class ResultBase<T extends ResultInfoBase> {
         addError(message, null, codeLocation);
     }
     public void addError(String message, Exception e, String codeLocation) {
-        errors.add(newResultInfo(message, e, codeLocation));
+        addError(newResultInfo(message, e, codeLocation));
+    }
+    protected void addError(T error) {
+        errors.add(error);
     }
 
     //warnings
@@ -63,7 +66,10 @@ public abstract class ResultBase<T extends ResultInfoBase> {
         addWarning(message, getLocationByException());
     }
     public void addWarning(String message, String codeLocation) {
-        warnings.add(newResultInfo(message, null, codeLocation));
+        addWarning(newResultInfo(message, null, codeLocation));
+    }
+    protected void addWarning(T warning) {
+        warnings.add(warning);
     }
 
     //exceptions
@@ -76,21 +82,23 @@ public abstract class ResultBase<T extends ResultInfoBase> {
         addException(e, message, null);
     }
     public void addException(Exception e, String message, String codeLocation) {
-        exceptions.add(newResultInfo(message, e, makeLocation(e, codeLocation)));
+        addException(newResultInfo(message, e, makeLocation(e, codeLocation)));
 //        setExceptionState();
+    }
+    protected void addException(T exception) {
+        exceptions.add(exception);
     }
 
     protected abstract T newResultInfo(String message, Exception e, String codeLocation);
 
     //***************** COMMON **************************+
 
-
     /**
      * Computes the location string. If location is not null the location
      * parameter is returned. If location is <code>null</code> the stacktrace
      * is examined and tried to retrieve the location from there
      */
-    private String makeLocation(Throwable e, String location) {
+    protected String makeLocation(Throwable e, String location) {
         if (location == null && e != null){
             StackTraceElement[] stackTrace = e.getStackTrace();
             if (stackTrace != null && stackTrace.length > 0){
