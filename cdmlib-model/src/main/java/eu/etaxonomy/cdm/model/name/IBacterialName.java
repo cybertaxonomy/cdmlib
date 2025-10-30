@@ -50,7 +50,7 @@ public interface IBacterialName extends INonViralName {
      * </ul>
      * IJSB is the acronym for International Journal of Systematic Bacteriology.
      *
-     * @return  the string with the source of the approbation for <i>this</i> bacterial taxon name
+     * @return the string with the source of the approbation for <i>this</i> bacterial taxon name
      */
     public String getNameApprobation();
 

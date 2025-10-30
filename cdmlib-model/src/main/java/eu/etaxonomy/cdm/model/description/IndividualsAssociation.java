@@ -83,12 +83,7 @@ public class IndividualsAssociation extends DescriptionElementBase {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private SpecimenOrObservationBase<?> associatedSpecimenOrObservation;
 
-	/**
-	 * Class constructor: creates a new empty individuals association instance.
-	 */
-	protected IndividualsAssociation(){
-		super(null);
-	}
+	//*********************** FACTORY ***************************/
 
 	/**
 	 * Creates a new empty individuals association instance.
@@ -118,6 +113,15 @@ public class IndividualsAssociation extends DescriptionElementBase {
         return result;
     }
 
+// ************************** CONSTRUCTOR *********************************/
+    /**
+     * Class constructor: creates a new empty individuals association instance.
+     */
+    protected IndividualsAssociation(){
+        super(null);
+    }
+
+// ***************************** GETTER / SETTER **********************/
 
 	/**
 	 * Returns the second {@link SpecimenOrObservationBase specimen or observation}
@@ -145,7 +149,6 @@ public class IndividualsAssociation extends DescriptionElementBase {
 	public Map<Language,LanguageString> getDescription(){
 		return this.description;
 	}
-
 
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}

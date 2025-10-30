@@ -1509,11 +1509,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
     /**
      * Converts a given string into an integer. If this is not possible
      * an error is logged in the import result with record location and attribute name.
-     *
-     * @param state
-     * @param strToConvert
-     * @param recordLocation
-     * @param attributeName
      * @return the converted integer
      */
     protected Integer intFromString(STATE state,
