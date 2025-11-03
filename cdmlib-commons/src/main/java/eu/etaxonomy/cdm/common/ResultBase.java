@@ -24,9 +24,9 @@ public abstract class ResultBase<T extends ResultInfoBase> {
     private List<T> exceptions = new ArrayList<>();
 
     public static abstract class ResultInfoBase{
-        String message;
-        Exception exception;
-        String codeLocation;
+        private final String message;
+        private final Exception exception;
+        private final String codeLocation;
 
         public ResultInfoBase(String msg, Exception e, String codeLocation){
             this.message = msg;
