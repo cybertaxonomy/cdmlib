@@ -66,11 +66,13 @@ public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> 
 
 	@Override
     public List<UuidAndTitleCache<Collection>> getUuidAndTitleCacheByCode(String codePattern){
-        String queryString = "SELECT c.uuid, c.id, c.titleCache, c.code FROM Collection as c WHERE c.code = :code";
+        String queryString = "SELECT c.uuid, c.id, c.titleCache, c.code FROM Collection as c WHERE c.code LIKE :code";
 
 
         Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
-
+        codePattern = codePattern + "%";
+        codePattern = codePattern.replace("*", "%");
+        codePattern = codePattern.replace("?", "_");
         query.setParameter("code", codePattern);
 
         List<Object[]> queryResults = query.list();
