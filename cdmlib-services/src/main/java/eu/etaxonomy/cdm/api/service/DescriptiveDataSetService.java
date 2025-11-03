@@ -742,6 +742,8 @@ public class DescriptiveDataSetService
         newTaxonDescription.setTitleCache(dataSet.getLabel()+": "+newTaxonDescription.generateTitle(), true); //$NON-NLS-2$
         newTaxonDescription.getTypes().add(descriptionType);
         dataSet.addDescription(newTaxonDescription);
+        descriptionService.saveOrUpdate(newTaxonDescription);
+        taxonService.saveOrUpdate(taxonNode.getTaxon());
         saveOrUpdate(dataSet);
         return createTaxonRowWrapper(newTaxonDescription.getUuid(), dataSet.getUuid(), lang);
     }
