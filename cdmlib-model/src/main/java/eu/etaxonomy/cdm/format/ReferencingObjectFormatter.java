@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -174,6 +175,9 @@ public class ReferencingObjectFormatter {
         }else if (element instanceof Registration) {
             Registration registration = (Registration) element;
             resultString = registration.getIdentifier();
+        }else if (element instanceof ExternalLink) {
+            ExternalLink link = (ExternalLink)element;
+            resultString = link.getUri() == null ? "no uri" : link.getUri().toString();
         }else{
             // TODO write return texts for HomotypicalGroup, etc.
             resultString = element.toString();
