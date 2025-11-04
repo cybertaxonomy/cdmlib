@@ -1819,6 +1819,15 @@ public class Taxon
         return result;
     }
 
+    @Transient
+    public Set<TaxonName> getMisappliedNameNames(){
+        Set<TaxonName> names = new HashSet<>();
+        for (Taxon tax: this.getAllMisappliedNames()){
+            names.add(tax.getName());
+        }
+        return names;
+    }
+
 
     /**
      * @see     #getSynonymsGroups()
@@ -1834,6 +1843,15 @@ public class Taxon
         }
         sortBySimpleTitleCacheComparator(result);
         return result;
+    }
+
+    @Transient
+    public Set<TaxonName> getProParteSynonymNames(){
+        Set<TaxonName> names = new HashSet<>();
+        for (Taxon tax: this.getAllProParteSynonyms()){
+            names.add(tax.getName());
+        }
+        return names;
     }
 
 //    /**
