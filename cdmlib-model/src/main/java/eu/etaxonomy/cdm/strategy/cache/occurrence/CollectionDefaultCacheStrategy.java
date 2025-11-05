@@ -47,14 +47,17 @@ public class CollectionDefaultCacheStrategy
 			return null;
 		}else{
 			String result = "";
-			String name = collection.getName();
-			String code = collection.getCode();
+			String name = CdmUtils.NzTrim(collection.getName());
+			String code = CdmUtils.NzTrim(collection.getCode());
+
+			//combine code and name
 			if (name != null) {
 			    name = name.equals(code)? null : name;
 			}
 			result = CdmUtils.concat(" - ", code, name);
-			String town = collection.getTownOrLocation();
 
+			//add townOrLocation
+			String town = CdmUtils.NzTrim(collection.getTownOrLocation());
 			if (isBlank(result)) {
 			    result = town;
 			} else if (isNotBlank(town)

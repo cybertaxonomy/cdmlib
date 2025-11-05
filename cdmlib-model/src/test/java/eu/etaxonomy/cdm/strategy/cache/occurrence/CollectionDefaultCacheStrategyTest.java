@@ -34,7 +34,7 @@ public class CollectionDefaultCacheStrategyTest {
 
         //create data
         Collection collection = Collection.NewInstance("B", "Herbarium berolinense");
-        collection.setTownOrLocation("Berlin");
+        collection.setTownOrLocation("Berlin ");
 
         //default
         Assert.assertEquals ("B - Herbarium berolinense(Berlin)", formatter.getTitleCache(collection));
@@ -58,6 +58,10 @@ public class CollectionDefaultCacheStrategyTest {
 
         //equal code and name
         collection.setCode("Herbarium berolinense");
+        Assert.assertEquals ("Herbarium berolinense", formatter.getTitleCache(collection));
+        collection.setCode(" Herbarium berolinense ");
+        Assert.assertEquals ("Herbarium berolinense", formatter.getTitleCache(collection));
+        collection.setCode("Herbarium berolinense  ");
         Assert.assertEquals ("Herbarium berolinense", formatter.getTitleCache(collection));
 
         //empty

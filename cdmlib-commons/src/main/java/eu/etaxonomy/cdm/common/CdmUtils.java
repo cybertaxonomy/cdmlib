@@ -107,11 +107,9 @@ public class CdmUtils {
     /**
      * Returns the trimmed value string if value is not <code>null</code>.
      * Returns the empty string if value is <code>null</code>.
-     * @param value
-     * @return
      */
     static public String NzTrim(String value){
-        return (value == null ? "" : value);
+        return (value == null ? "" : value.trim());
     }
 
     /**
