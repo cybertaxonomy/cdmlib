@@ -1603,6 +1603,7 @@ public class CdmLightClassificationExport
                     }
                     if (name.getLsid() != null){
                         csvLine = new String[table.getSize()];
+                        csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
                         csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
                         csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = "LSID";
                         csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = name.getLsid().getLsid();
