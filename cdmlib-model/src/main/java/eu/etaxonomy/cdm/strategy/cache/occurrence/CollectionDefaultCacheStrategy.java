@@ -19,10 +19,8 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
- * A default cache strategy for collections.
- * TODO This is a preliminary implementation to have at least one default cache strategy.
- * Maybe it will need improvement later on.
-
+ * A default cache strategy for {@link Collection}s.
+ *
  * @author a.mueller
  * @since 07.04.2010
  */
