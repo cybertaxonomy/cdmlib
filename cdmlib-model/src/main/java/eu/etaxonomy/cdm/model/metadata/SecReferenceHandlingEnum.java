@@ -22,7 +22,8 @@ public enum SecReferenceHandlingEnum implements IKeyLabel {
     AlwaysSelect("AlwaysSelect", "Always select new secundum references"),
     KeepOrSelect("KeepOrSelect", "Keep if all related secs are the same, select otherwise"),
     KeepOrWarn("KeepOrWarn", "Keep if all related secs are the same, warn otherwise"),
-    UseNewParentSec("UseNewParentSec", "Always use new parent sec");
+    UseNewParentSec("UseNewParentSec", "Always use new parent sec"),
+    Keep("Keep", "Keep all secundum references");
 
 
     private String label;

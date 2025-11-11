@@ -16,7 +16,8 @@ public enum SecReferenceHandlingSwapEnum implements IKeyLabel {
     AlwaysDelete("AlwaysDelete", "Always remove secundum references"),
     AlwaysSelect("AlwaysSelect", "Always select new secundum references"),
     KeepOrSelect("KeepOrSelect", "Keep if all related secs are the same, select otherwise"),
-    KeepOrWarn("KeepOrWarn", "Keep if all related secs are the same, warn otherwise");
+    KeepOrWarn("KeepOrWarn", "Keep if all related secs are the same, warn otherwise"),
+    Keep("Keep", "Keep all secundum references");
 
     private String label;
     private String key;
