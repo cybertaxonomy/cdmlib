@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
+import eu.etaxonomy.cdm.model.metadata.PublishEnumForMoving;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 
 /**
@@ -35,7 +36,7 @@ public interface ILongRunningTasksService {
 
     public UUID monitLongRunningTask(CacheUpdaterConfigurator configurator);
 
-    public UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType, SecReferenceHandlingEnum secHandling, UUID secUuid);
+    public UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType, SecReferenceHandlingEnum secHandling, UUID secUuid, PublishEnumForMoving behaviourOfPublishFlag);
 
     /**
      * Monitored invocation of {@link DescriptionAggregationBase#invoke(DescriptionAggregationConfigurationBase, eu.etaxonomy.cdm.api.application.ICdmRepository)}

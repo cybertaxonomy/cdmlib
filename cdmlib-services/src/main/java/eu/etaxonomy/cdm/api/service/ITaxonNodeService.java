@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.metadata.DistributionDescription;
+import eu.etaxonomy.cdm.model.metadata.PublishEnumForMoving;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -170,13 +171,13 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	public int countAllNodesForClassification(Classification classification);
 
     public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid, int movingType,
-            SecReferenceHandlingEnum secHandling, UUID secUuid);
+            SecReferenceHandlingEnum secHandling, UUID secUuid, PublishEnumForMoving publishBehaviour);
 
     public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, int movingType,
-            SecReferenceHandlingEnum secHandling, Reference sec);
+            SecReferenceHandlingEnum secHandling, Reference sec, PublishEnumForMoving behaviourOfPublishFlag);
 
     public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType,
-            SecReferenceHandlingEnum secHandling, UUID secUuid, IProgressMonitor monitor);
+            SecReferenceHandlingEnum secHandling, UUID secUuid, PublishEnumForMoving behaviourOfPublishFlag, IProgressMonitor monitor);
 
     /**
      * deletes the given taxon nodes

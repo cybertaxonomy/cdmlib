@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.metadata.PublishEnumForMoving;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 
 /**
@@ -196,14 +197,14 @@ public class LongRunningTasksService implements ILongRunningTasksService{
     }
 
     @Override
-    public UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType, SecReferenceHandlingEnum secHandling, UUID secUuid) {
+    public UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType, SecReferenceHandlingEnum secHandling, UUID secUuid, PublishEnumForMoving behaviourOfPublishFlag) {
 
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor remotingMonitor) {
                 UpdateResult result;
 
-                result = taxonNodeService.moveTaxonNodes(movingUuids,targetTreeNodeUuid, movingType, secHandling, secUuid, remotingMonitor);
+                result = taxonNodeService.moveTaxonNodes(movingUuids,targetTreeNodeUuid, movingType, secHandling, secUuid, behaviourOfPublishFlag, remotingMonitor);
                 for(Exception e : result.getExceptions()) {
                     remotingMonitor.addReport(e.getMessage());
                 }
