@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Identification;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -73,9 +74,12 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.match.IParsedMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
+import eu.etaxonomy.cdm.strategy.parser.BibliographicAuthorParser;
+import eu.etaxonomy.cdm.strategy.parser.CollectorParser;
 import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
+import eu.etaxonomy.cdm.strategy.parser.ParserResult;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -96,6 +100,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
     private final static String lastAuthorSeparator = " & ";
 
 	protected Map<String, DefinedTerm> kindOfUnitsMap;
+	protected static NonViralNameParserImpl nameParser;
+	protected static BibliographicAuthorParser authorParser;
 
 
 	@Override
@@ -447,7 +453,10 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
      */
     protected TaxonName parseScientificName(String scientificName, STATE state, SpecimenImportReport report, Rank rank) {
 
-        NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
+        if (nameParser == null) {
+            nameParser = NonViralNameParserImpl.NewInstance();
+        }
+
         NameParserResult parseResult;
         boolean problem = false;
 
@@ -456,16 +465,16 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
 
         if (state.getDataHolder().getNomenclatureCode() != null && (state.getDataHolder().getNomenclatureCode().toString().equals("Zoological") || state.getDataHolder().getNomenclatureCode().toString().contains("ICZN"))) {
-            parseResult = parser.parseFullName2(scientificName, NomenclaturalCode.ICZN, rank);
+            parseResult = nameParser.parseFullName2(scientificName, NomenclaturalCode.ICZN, rank);
         }
         else if (state.getDataHolder().getNomenclatureCode() != null && (state.getDataHolder().getNomenclatureCode().toString().equals("Botanical") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN")  || state.getDataHolder().getNomenclatureCode().toString().contains("ICNAFP"))) {
-            parseResult = parser.parseFullName2(scientificName, NomenclaturalCode.ICNAFP, rank);
+            parseResult = nameParser.parseFullName2(scientificName, NomenclaturalCode.ICNAFP, rank);
         }
         else if (state.getDataHolder().getNomenclatureCode() != null && (state.getDataHolder().getNomenclatureCode().toString().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN"))) {
-            parseResult = parser.parseFullName2(scientificName, NomenclaturalCode.ICNP, rank);
+            parseResult = nameParser.parseFullName2(scientificName, NomenclaturalCode.ICNP, rank);
         }
         else if (state.getDataHolder().getNomenclatureCode() != null && (state.getDataHolder().getNomenclatureCode().toString().equals("Cultivar") || state.getDataHolder().getNomenclatureCode().toString().contains("ICNCP"))) {
-            parseResult = parser.parseFullName2(scientificName, NomenclaturalCode.ICNCP, rank);
+            parseResult = nameParser.parseFullName2(scientificName, NomenclaturalCode.ICNCP, rank);
         }else {
             logger.warn("Unsupported nomenclatural code: " + state.getDataHolder().getNomenclatureCode().toString());
             parseResult = new NameParserResult(null);
@@ -1303,7 +1312,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
         determinationEvent.setIdentifiedUnit(state.getDerivedUnitBase());
         if (StringUtils.isNotBlank(identifierStr)) {
-            TeamOrPersonBase<?> identifier = parseAgentString(identifierStr, false);
+            TeamOrPersonBase<?> identifier = parseAgentString(state, identifierStr, false);
             identifier = findMatchingAgentAndFillStore(state, identifier, preferredFlag);
             saveTeamOrPersons(state, false);
             determinationEvent.setActor(identifier);
@@ -1595,74 +1604,96 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         }
     }
 
-    public static TeamOrPersonBase<?> parseAgentString(String collectorStr, boolean isCollector){
-        TeamOrPersonBase<?> author = null;
-        String[] teamMembers = collectorStr.split(authorSeparator);
-
-        if (teamMembers.length>1){
-            String lastMember = teamMembers[teamMembers.length -1];
-            String[] lastMembers = lastMember.split(lastAuthorSeparator);
-            if (lastMembers[0] != lastMember) {
-                teamMembers[teamMembers.length -1] = "";
+    public static TeamOrPersonBase<?> parseAgentString(ImportStateBase state, String collectorStr, boolean isCollector){
+        TeamOrPersonBase<?> teamOrPerson = null;
+        if (isCollector) {
+            CollectorParser parser = CollectorParser.Instance();
+            ParserResult result =parser.parse(collectorStr);
+            if (result.getErrors().isEmpty() && result.getExceptions().isEmpty()) {
+                teamOrPerson = (TeamOrPersonBase)result.getEntity();
             }else {
-                lastMembers = null;
-            }
-            author = Team.NewInstance();
-            for(String member:teamMembers){
-                if (!member.equals("")){
-                    Person teamMember = Person.NewInstance();
-                    if (isCollector) {
-                        createCollector(member, teamMember);
-
-                    }else {
-                        teamMember.setNomenclaturalTitle(member);
-                    }
-                   ((Team)author).addTeamMember(teamMember);
+                if (result.getEntity() != null) {
+                    teamOrPerson = (TeamOrPersonBase)result.getEntity();
+                }
+                if (!result.getErrors().isEmpty()) {
+                    state.getResult().getErrors().addAll(result.getErrors());
+                }
+                if (!result.getExceptions().isEmpty()) {
+                    state.getResult().getExceptions().addAll(result.getExceptions());
                 }
             }
-            if (lastMembers != null && lastMembers.length > 1){
-                for(String member:lastMembers){
-                   Person teamMember = Person.NewInstance();
-                   if (isCollector) {
-                       createCollector(member, teamMember);
-                   }else {
-                       teamMember.setNomenclaturalTitle(member);
-                   }
-
-                   ((Team)author).addTeamMember(teamMember);
-                }
+        }else {
+            if (authorParser == null) {
+                authorParser = BibliographicAuthorParser.Instance();
             }
-        } else {
-            teamMembers = collectorStr.split(lastAuthorSeparator);
-            if (teamMembers.length>1){
-                author = Team.NewInstance();
-                for(String member:teamMembers){
-                  Person teamMember = Person.NewInstance();
-                  if (isCollector) {
-                      createCollector(member, teamMember);
-                  }else {
-                      teamMember.setNomenclaturalTitle(member);
-                  }
-
-                  ((Team)author).addTeamMember(teamMember);
-                }
-            }else{
-                if (isNotBlank(collectorStr)){
-                    author = Person.NewInstance();
-                    if (isCollector) {
-                        createCollector(collectorStr, (Person)author);
-                    }else {
-                        ((Person)author).setNomenclaturalTitle(collectorStr);
-                    }
-
-                }else{
-                    return null;
-                }
-
-            }
+            teamOrPerson = authorParser.parse(collectorStr);
         }
+//        String[] teamMembers = collectorStr.split(authorSeparator);
+//
+//        if (teamMembers.length>1){
+//            String lastMember = teamMembers[teamMembers.length -1];
+//            String[] lastMembers = lastMember.split(lastAuthorSeparator);
+//            if (lastMembers[0] != lastMember) {
+//                teamMembers[teamMembers.length -1] = "";
+//            }else {
+//                lastMembers = null;
+//            }
+//            author = Team.NewInstance();
+//            for(String member:teamMembers){
+//                if (!member.equals("")){
+//                    Person teamMember = Person.NewInstance();
+//                    if (isCollector) {
+//                        createCollector(member, teamMember);
+//
+//                    }else {
+//                        teamMember.setNomenclaturalTitle(member);
+//                    }
+//                   ((Team)author).addTeamMember(teamMember);
+//                }
+//            }
+//            if (lastMembers != null && lastMembers.length > 1){
+//                for(String member:lastMembers){
+//                   Person teamMember = Person.NewInstance();
+//                   if (isCollector) {
+//                       createCollector(member, teamMember);
+//                   }else {
+//                       teamMember.setNomenclaturalTitle(member);
+//                   }
+//
+//                   ((Team)author).addTeamMember(teamMember);
+//                }
+//            }
+//        } else {
+//            teamMembers = collectorStr.split(lastAuthorSeparator);
+//            if (teamMembers.length>1){
+//                author = Team.NewInstance();
+//                for(String member:teamMembers){
+//                  Person teamMember = Person.NewInstance();
+//                  if (isCollector) {
+//                      createCollector(member, teamMember);
+//                  }else {
+//                      teamMember.setNomenclaturalTitle(member);
+//                  }
+//
+//                  ((Team)author).addTeamMember(teamMember);
+//                }
+//            }else{
+//                if (isNotBlank(collectorStr)){
+//                    author = Person.NewInstance();
+//                    if (isCollector) {
+//                        createCollector(collectorStr, (Person)author);
+//                    }else {
+//                        ((Person)author).setNomenclaturalTitle(collectorStr);
+//                    }
+//
+//                }else{
+//                    return null;
+//                }
+//
+//            }
+//        }
 
-        return author;
+        return teamOrPerson;
     }
 
     /**
@@ -1670,6 +1701,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
      * @param collector
      */
     private static void createCollector(String collectorStr, Person collector) {
+
         String[] collectorArray = collectorStr.split(",");
         if (collectorArray.length == 2 ) {
             collector.setFamilyName(collectorArray[0]);
