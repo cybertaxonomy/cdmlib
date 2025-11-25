@@ -60,7 +60,7 @@ public class CollectionDefaultCacheStrategy
 			    result = town;
 			} else if (isNotBlank(town)
 			        && !result.contains(town)){
-			    result += "(" + town+ ")";
+			    result += " (" + town+ ")";
 			}
 			//return
 			return isBlank(result) ? collection.toString() : result;

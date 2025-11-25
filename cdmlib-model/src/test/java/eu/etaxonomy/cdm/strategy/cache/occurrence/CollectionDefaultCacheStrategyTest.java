@@ -37,16 +37,16 @@ public class CollectionDefaultCacheStrategyTest {
         collection.setTownOrLocation("Berlin ");
 
         //default
-        Assert.assertEquals ("B - Herbarium berolinense(Berlin)", formatter.getTitleCache(collection));
+        Assert.assertEquals ("B - Herbarium berolinense (Berlin)", formatter.getTitleCache(collection));
 
         //no code
         collection.setCode(null);
-        Assert.assertEquals ("Herbarium berolinense(Berlin)", formatter.getTitleCache(collection));
+        Assert.assertEquals ("Herbarium berolinense (Berlin)", formatter.getTitleCache(collection));
 
         //no name
         collection.setCode("B");
         collection.setName(null);
-        Assert.assertEquals ("B(Berlin)", formatter.getTitleCache(collection));
+        Assert.assertEquals ("B (Berlin)", formatter.getTitleCache(collection));
 
         //no code & name
         collection.setCode(null);
