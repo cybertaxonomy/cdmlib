@@ -81,10 +81,10 @@ public class DwcaDescriptionExport extends DwcaDataExportBase {
             	    if (feature != null &&
                             ! feature.equals(Feature.IMAGE()) &&
                             ! config.getFeatureExclusions().contains(feature.getUuid()) &&
-                            ! state.recordExists(file,el)){
+                            ! state.recordExists(file, el)){
             	        if (el.isInstanceOf(TextData.class) ){
             	            DwcaDescriptionRecord record = new DwcaDescriptionRecord(metaRecord, config);
-        	                TextData textData = CdmBase.deproxy(el,TextData.class);
+        	                TextData textData = CdmBase.deproxy(el, TextData.class);
         	                handleTextData(state, record, textData, taxon, config);
         	                PrintWriter writer = createPrintWriter(state, DwcaTaxExportFile.DESCRIPTION);
         	                record.write(state, writer);

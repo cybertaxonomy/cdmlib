@@ -344,7 +344,6 @@ public class CdmLightExportTest
     })
     public void testSynSecOutput(){
 
-
       //config + invoke
         CdmLightExportConfigurator config = newConfigurator();
         config.setShowSynSecForHomotypicGroup(true);
