@@ -68,7 +68,5 @@ public class CollectionDefaultCacheStrategyTest {
         collection = Collection.NewInstance();
         Assert.assertEquals ("Collection#0<"+collection.getUuid()+">",
                 formatter.getTitleCache(collection));
-
     }
-
 }
