@@ -640,6 +640,19 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return IdentifiableSource.NewInstance(type, idInSource, idNamespace, reference, microReference, originalInfo, target);
     }
 
+//***************** SUPPLEMENTAL DATA **************************************/
+
+    @Override
+    @Transient
+    public boolean hasSupplementalData() {
+        return super.hasSupplementalData()
+                || !this.credits.isEmpty()
+                || !this.extensions.isEmpty()
+                || !this.identifiers.isEmpty()
+                || !this.links.isEmpty() //does this belong to supplemental data?
+                ;
+    }
+
 //******************************** TO STRING *****************************************************/
 
     @Override

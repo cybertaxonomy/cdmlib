@@ -488,6 +488,15 @@ public abstract class DescriptionElementBase
         return false;
     }
 
+//***************** SUPPLEMENTAL DATA **************************************/
+
+    @Override
+    @Transient
+    public boolean hasSupplementalData() {
+        return super.hasSupplementalData()
+                || !this.sources.isEmpty();
+    }
+
 //************************** CLONE **********************************************************/
 
     /**

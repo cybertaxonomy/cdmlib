@@ -34,4 +34,5 @@ public interface IAnnotatableEntity extends IVersionableEntity {
 	public boolean hasAnyMarkerOf(Set<UUID> uuidMarkerTypes, boolean value);
 	public Boolean markerValue(UUID uuidMarkerType);
 
+	public boolean hasSupplementalData();
 }

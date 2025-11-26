@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -184,6 +185,15 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
 
     protected abstract SOURCE createNewSource(OriginalSourceType type, String idInSource, String idNamespace,
             Reference citation, String microReference, String originalInformation, ICdmTarget target);
+
+//***************** SUPPLEMENTAL DATA **************************************/
+
+    @Override
+    @Transient
+    public boolean hasSupplementalData() {
+        return super.hasSupplementalData()
+                || !this.sources.isEmpty();
+    }
 
 //****************** CLONE ************************************************/
 
