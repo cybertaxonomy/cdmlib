@@ -86,7 +86,7 @@ public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> 
 
 	@Override
     public List<UuidAndTitleCache<Collection>> getUuidAndTitleCache(Integer limit, String pattern){
-        String queryString = "SELECT c.uuid, c.id, c.titleCache, c.code FROM Collection as c WHERE c.titleCache like  :pattern";
+        String queryString = "SELECT c.uuid, c.id, c.titleCache, c.code FROM Collection as c WHERE c.titleCache like  :pattern OR c.name like :pattern OR c.townOrLocation like :pattern";
 
 
         Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
