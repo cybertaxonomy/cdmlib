@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.cdmLight;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -21,11 +22,16 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 
+import eu.etaxonomy.cdm.common.IoResultBase.IoInfo;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.coldp.ColDpExportTable;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportTestBase;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -373,6 +379,60 @@ public class CdmLightExportTest
 
         Assert.assertTrue(line.contains(expectedSynSec));
 
+    }
+
+    @SuppressWarnings("deprecation")
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+    })
+    public void testWithErrors() {
+
+        boolean printReport = false;
+
+        //create data that creates an error
+        Taxon speciesTaxon = (Taxon)this.taxonService.find(speciesTaxonUuid);
+        Set<CommonTaxonName> commonNames = speciesTaxon.getDescriptionItems(Feature.COMMON_NAME(), CommonTaxonName.class);
+        commonNames.iterator().next().setFeature(Feature.DISTRIBUTION());
+        //end create
+
+        CdmLightExportConfigurator config = newConfigurator();
+        ExportResult result = defaultExport.invoke(config);
+        checkAndGetData(result, 0, 1, 0);
+        IoInfo error = result.getErrors().get(0);
+        String message = error.getMessage();
+        Assert.assertEquals("The distribution description for the taxon 9182e136-f2e2-4f9a-9010-3f35908fb5e0 is not of type distribution. Could not be exported. "
+                + "UUID of the description element",
+                message.substring(0, 163));
+        String report = result.createReport().toString();
+        if (printReport) {
+            System.out.println(report);
+        }
+
+        //TODO needs discussion if exports with errors should be "successful"
+        Assert.assertEquals("Export was successfull.", report.substring(1, 24));  //first row is linebreak
+        Assert.assertTrue(report.contains("Errors:"));
+        Assert.assertFalse(report.contains("Exceptions:"));
+
+        //create data that creates an exception
+        Taxon subspeciesTaxon = (Taxon)this.taxonService.find(subspeciesTaxonUuid);
+        Set<Distribution> distributions = subspeciesTaxon.getDescriptionItems(Feature.DISTRIBUTION(), Distribution.class);
+        distributions.iterator().next().setFeature(null);
+        //end create
+
+        result = defaultExport.invoke(config);
+        checkAndGetData(result, 1, 1, 0);
+        IoInfo exception = result.getExceptions().get(0);
+        Assert.assertEquals("An unexpected error occurred when handling description of Taxon: b2c866",
+                exception.getMessage().substring(0, 71));
+        report = result.createReport().toString();
+        Assert.assertTrue(report.contains("Errors:"));
+        Assert.assertTrue(report.contains("Exceptions:"));
+
+        if (printReport) {
+            System.out.println(report);
+        }
     }
 
 
