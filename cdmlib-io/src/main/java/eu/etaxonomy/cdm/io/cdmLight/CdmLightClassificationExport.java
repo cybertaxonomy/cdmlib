@@ -1264,15 +1264,15 @@ public class CdmLightClassificationExport
                         inReference = inReference.getInReference();
                     }
                     if (inReference.getAbbrevTitle() == null) {
-                        csvLine[table.getIndex(CdmLightExportTable.ABBREV_TITLE)] = CdmUtils
-                                .Nz(inReference.getTitle());
+                        csvLine[table.getIndex(CdmLightExportTable.ABBREV_TITLE)] =
+                                CdmUtils.Nz(inReference.getTitle());
                     } else {
-                        csvLine[table.getIndex(CdmLightExportTable.ABBREV_TITLE)] = CdmUtils
-                                .Nz(inReference.getAbbrevTitle());
+                        csvLine[table.getIndex(CdmLightExportTable.ABBREV_TITLE)] =
+                                CdmUtils.Nz(inReference.getAbbrevTitle());
                     }
                     if (inReference.getTitle() == null) {
-                        csvLine[table.getIndex(CdmLightExportTable.FULL_TITLE)] = CdmUtils
-                                .Nz(inReference.getAbbrevTitle()!= null? inReference.getAbbrevTitle(): inReference.getTitleCache());
+                        csvLine[table.getIndex(CdmLightExportTable.FULL_TITLE)] =
+                                CdmUtils.Nz(inReference.getAbbrevTitle()!= null? inReference.getAbbrevTitle(): inReference.getTitleCache());
                     } else {
                         csvLine[table.getIndex(CdmLightExportTable.FULL_TITLE)] = CdmUtils.Nz(inReference.getTitle());
                     }

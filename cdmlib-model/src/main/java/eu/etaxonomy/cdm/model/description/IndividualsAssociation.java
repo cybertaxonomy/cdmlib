@@ -192,7 +192,6 @@ public class IndividualsAssociation extends DescriptionElementBase {
 		this.description.remove(language);
 	}
 
-
 //*********************************** CLONE *****************************************/
 
 	/**
