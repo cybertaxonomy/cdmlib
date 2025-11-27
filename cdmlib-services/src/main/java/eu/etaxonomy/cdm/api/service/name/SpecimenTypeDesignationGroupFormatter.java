@@ -18,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroup.TypeDesignationSetType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -120,19 +119,19 @@ public class SpecimenTypeDesignationGroupFormatter
         return;
     }
 
-    /**
-     * Returns <code>true</code> if the list is not empty and if there is not an
-     * only status being the Null-Status placeholder.
-     */
-    private boolean hasNotNullStatus(List<TypeDesignationStatusBase<?>> statusList) {
-        if (CdmUtils.isNullSafeEmpty(statusList)) {
-            return false;
-        }else if (statusList.size() == 1 && statusList.get(0) == NullTypeDesignationStatus.SINGLETON()) {
-            return false;
-        }else {
-            return true;
-        }
-    }
+//    /**
+//     * Returns <code>true</code> if the list is not empty and if there is not an
+//     * only status being the Null-Status placeholder.
+//     */
+//    private boolean hasNotNullStatus(List<TypeDesignationStatusBase<?>> statusList) {
+//        if (CdmUtils.isNullSafeEmpty(statusList)) {
+//            return false;
+//        }else if (statusList.size() == 1 && statusList.get(0) == NullTypeDesignationStatus.SINGLETON()) {
+//            return false;
+//        }else {
+//            return true;
+//        }
+//    }
 
     /**
      * Checks if the baseType is the same as the (only?) type in the type designation set.
