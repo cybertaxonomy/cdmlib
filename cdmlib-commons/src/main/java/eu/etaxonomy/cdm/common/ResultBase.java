@@ -18,7 +18,10 @@ import eu.etaxonomy.cdm.common.ResultBase.ResultInfoBase;
  * @author muellera
  * @since 27.10.2025
  */
-public abstract class ResultBase<T extends ResultInfoBase> {
+public abstract class ResultBase<T extends ResultInfoBase>
+        implements Serializable {
+
+    private static final long serialVersionUID = -4379089941001777375L;
 
     private List<T> errors = new ArrayList<>();
     private List<T> warnings = new ArrayList<>();

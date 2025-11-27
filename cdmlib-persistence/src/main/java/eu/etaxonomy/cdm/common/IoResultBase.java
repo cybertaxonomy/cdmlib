@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.common;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,12 +21,11 @@ import eu.etaxonomy.cdm.strategy.parser.ParserResult;
  * @since 24.03.2017
  */
 public abstract class IoResultBase
-            extends ResultBase<IoInfo>
-            implements Serializable{
+            extends ResultBase<IoInfo> {
 
     private static final long serialVersionUID = -2077936463767046918L;
 
-    public class IoInfo extends ResultBase.ResultInfoBase implements Serializable{
+    public class IoInfo extends ResultBase.ResultInfoBase{
         private static final long serialVersionUID = -8077358746590123757L;
         String dataLocation;
         private IoInfo(String msg, Exception e){

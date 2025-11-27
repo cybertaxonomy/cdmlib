@@ -15,7 +15,10 @@ import eu.etaxonomy.cdm.common.ResultBase;
  * @author muellera
  * @since 27.10.2025
  */
-public class ParserResult<E extends Object> extends ResultBase<ParserResult<E>.ParserInfo> {
+public class ParserResult<E extends Object>
+            extends ResultBase<ParserResult<E>.ParserInfo>{
+
+    private static final long serialVersionUID = -7559898189711441183L;
 
     //not yet really used
 //    private ParserResultState state;
