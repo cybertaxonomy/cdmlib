@@ -31,6 +31,7 @@ public class ParserResult<E extends Object> extends ResultBase<ParserResult<E>.P
 //    }
 
     public class ParserInfo extends ResultBase.ResultInfoBase{
+        private static final long serialVersionUID = -7429259794408467489L;
 
         public ParserInfo(String msg, Exception e, String codeLocation) {
             super(msg, e, codeLocation);

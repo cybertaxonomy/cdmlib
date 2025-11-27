@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,8 @@ public abstract class ResultBase<T extends ResultInfoBase> {
     private List<T> warnings = new ArrayList<>();
     private List<T> exceptions = new ArrayList<>();
 
-    public static abstract class ResultInfoBase{
+    public static abstract class ResultInfoBase implements Serializable {
+        private static final long serialVersionUID = 7411400737569512750L;
         private final String message;
         private final Exception exception;
         private final String codeLocation;
