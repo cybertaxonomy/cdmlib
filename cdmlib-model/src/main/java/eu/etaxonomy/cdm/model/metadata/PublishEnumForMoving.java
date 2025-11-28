@@ -15,7 +15,7 @@ package eu.etaxonomy.cdm.model.metadata;
 public enum PublishEnumForMoving implements IKeyLabel{
 
     InheritFromParent("InheritFromParent", "Inherit from parent"),
-    KeepOrWarn("KeepOrWarn", "Keep or warn"),
+    WarnOrKeep("WarnOrKeep", "Keep or warn"),
     Keep("Keep", "Keep");
 
     private String label;
