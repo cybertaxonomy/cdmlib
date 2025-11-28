@@ -518,6 +518,10 @@ public class TaxonServiceImpl
             case AlwaysSelect:
                 newSecRef = CdmBase.deproxy(referenceService.load(newSec));
                 break;
+            case Keep:
+                newSecRef = synonym.getSec();
+                newSecRef = CdmBase.deproxy(newSecRef);
+                break;
             default:
                 break;
         }
@@ -2621,6 +2625,7 @@ public class TaxonServiceImpl
         //keep the publish flag
         synonym.setPublish(fromTaxon.isPublish());
         this.saveOrUpdate(toTaxon);
+        this.saveOrUpdate(synonym);
         //TODO: configurator and classification
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteNameIfPossible(false);
