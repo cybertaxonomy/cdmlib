@@ -35,4 +35,12 @@ public interface IAnnotatableEntity extends IVersionableEntity {
 	public Boolean markerValue(UUID uuidMarkerType);
 
 	public boolean hasSupplementalData();
+	/**
+	 * Returns <code>false</code> if the {@link AnnotatableEntity}
+	 * has no supplemental data or has only supplementalData of types
+	 * defined in #exceptFor.
+	 *
+	 * @param exceptFor
+	 */
+	public boolean hasSupplementalData(Set<UUID> exceptFor);
 }

@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -495,6 +496,16 @@ public abstract class DescriptionElementBase
     public boolean hasSupplementalData() {
         return super.hasSupplementalData()
                 || !this.sources.isEmpty();
+    }
+
+    @Override
+    public boolean hasSupplementalData(Set<UUID> exceptFor) {
+        return super.hasSupplementalData(exceptFor)
+           || this.sources.stream().filter(
+                s->s.getType() == null
+                    || ! exceptFor.contains(s.getType().getUuid()))
+                .findAny().isPresent()
+           ;
     }
 
 //************************** CLONE **********************************************************/

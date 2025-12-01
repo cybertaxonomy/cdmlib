@@ -199,6 +199,17 @@ public abstract class AnnotatableEntity
                 && this.markers.isEmpty());
     }
 
+    @Override
+    public boolean hasSupplementalData(Set<UUID> exceptFor) {
+        return this.annotations.stream().filter(
+                a->a.getAnnotationType() == null
+                    || ! exceptFor.contains(a.getAnnotationType().getUuid()))
+                .findAny().isPresent()
+           || this.markers.stream().filter(
+                m->m.getMarkerType() == null
+                    || ! exceptFor.contains(m.getMarkerType().getUuid())).findAny().isPresent();
+    }
+
 //********************** CLONE *****************************************/
 
     @Override

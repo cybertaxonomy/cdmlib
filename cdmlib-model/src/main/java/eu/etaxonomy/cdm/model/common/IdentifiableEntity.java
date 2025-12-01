@@ -654,6 +654,29 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
                 ;
     }
 
+    @Override
+    public boolean hasSupplementalData(Set<UUID> exceptFor) {
+        return super.hasSupplementalData(exceptFor)
+           || !this.credits.isEmpty()  //credits don't have types
+           || this.extensions.stream().filter(
+                   e->e.getType() == null
+                   || ! exceptFor.contains(e.getType().getUuid()))
+               .findAny().isPresent()
+           || this.identifiers.stream().filter(
+                   i->i.getType() == null
+                   || ! exceptFor.contains(i.getType().getUuid()))
+               .findAny().isPresent()
+           || this.rights.stream().filter(
+                   r->r.getType() == null
+                   || ! exceptFor.contains(r.getType().getUuid()))
+               .findAny().isPresent()
+           || this.links.stream().filter(
+                   l->l.getLinkType() == null
+                   || ! exceptFor.contains(l.getLinkType().getUuid()))
+               .findAny().isPresent()
+           ;
+    }
+
 //******************************** TO STRING *****************************************************/
 
     @Override

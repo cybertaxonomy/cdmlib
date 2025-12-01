@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
@@ -193,6 +194,16 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
     public boolean hasSupplementalData() {
         return super.hasSupplementalData()
                 || !this.sources.isEmpty();
+    }
+
+    @Override
+    public boolean hasSupplementalData(Set<UUID> exceptFor) {
+        return super.hasSupplementalData(exceptFor)
+           || this.sources.stream().filter(
+                s->s.getType() == null
+                    || ! exceptFor.contains(s.getType().getUuid()))
+                .findAny().isPresent()
+           ;
     }
 
 //****************** CLONE ************************************************/

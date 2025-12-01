@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.media;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -83,6 +84,14 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
         return super.hasSupplementalData()
               || !this.media.isEmpty()
               ;
+    }
+
+
+    @Override
+    public boolean hasSupplementalData(Set<UUID> exceptFor) {
+        return super.hasSupplementalData(exceptFor)
+                || !this.media.isEmpty() //media has no type therefor no need to check for exceptFor type
+           ;
     }
 
 //******************** CLONE **********************************************/
