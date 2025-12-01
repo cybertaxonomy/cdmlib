@@ -5573,7 +5573,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
     );
 
     create table PUBLIC.TAXONNODE_AUD (
-       ID integer not null,
+        ID integer not null,
         REV integer not null,
         REVTYPE tinyint,
         CREATED timestamp,
