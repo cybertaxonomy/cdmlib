@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  * @since 11.09.2025 (copied from {@link TaxonServiceImplTest})
  */
-public class InferredSynonymsImplTest extends CdmTransactionalIntegrationTest {
+public class InferredSynonymsServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
