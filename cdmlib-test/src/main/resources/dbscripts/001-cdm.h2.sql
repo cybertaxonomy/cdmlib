@@ -5545,7 +5545,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         UUID varchar(36),
         UPDATED timestamp,
         COUNTCHILDREN integer not null,
-        STATUS varchar(10),
+        STATUS varchar(10) NOT NULL,
         TREEINDEX varchar(255),
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,

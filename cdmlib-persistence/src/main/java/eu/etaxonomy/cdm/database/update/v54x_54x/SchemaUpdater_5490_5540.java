@@ -17,7 +17,9 @@ import org.apache.logging.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.NotNullUpdater;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
@@ -60,6 +62,16 @@ public class SchemaUpdater_5490_5540 extends SchemaUpdaterBase {
         String oldName = "institution_id";
         String newName = "registrationCenter_id";
         ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldName, newName, INCLUDE_AUDIT);
+
+        //#10103
+        stepName = "Set 'included' as default status for taxon node status";
+        String sql = "UPDATE TaxonNode SET status = 'INC' WHERE status IS NULL";
+        tableName = "TaxonNode";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
+
+        stepName = "Set TaxonNode.status to NOT NULL";
+        String columnName = "status";
+        NotNullUpdater.NewStringInstance(stepList, stepName, tableName, columnName, !INCLUDE_AUDIT);
 
         return stepList;
     }

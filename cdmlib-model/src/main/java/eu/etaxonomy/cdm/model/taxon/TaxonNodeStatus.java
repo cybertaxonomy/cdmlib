@@ -31,14 +31,12 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  */
 public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
 
-    //TODO maybe we want a status "Included" too, instead of making TaxonNode.status an optional
-    //     attribute (see comments in #10096 attachment)
-    //0  - see #10096
-//    /**
-//     * The placement of the taxon is doubtful or preliminary.
-//     */
-//    @XmlEnumValue("Included")
-//    INCLDUDED(UUID.fromString("7601cc89-8896-4b85-a83e-91700fe45a1d"), "Included (default)","Taxon included in parent taxon (default)", "INC", "", null),
+    //0  - see #10103
+    /**
+     * Placement without doubt.
+     */
+    @XmlEnumValue("Included")
+    INCLDUDED(UUID.fromString("7601cc89-8896-4b85-a83e-91700fe45a1d"), "Included (default)","Taxon included in parent taxon (default)", "INC", "", null),
 
     //1  - see #8281
     /**
