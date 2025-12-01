@@ -728,11 +728,6 @@ public class Reference
         return accessed;
     }
 
-	@Override
-    public void setAccessed(DateTime accessed) {
-        this.accessed = accessed;
-    }
-
 	/**
 	 * Returns the {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author (team)} who created the
 	 * content of <i>this</i> reference.
