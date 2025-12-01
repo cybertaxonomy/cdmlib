@@ -60,6 +60,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
  */
 public class RegistrationWrapperDTO {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     private String summary = "";
@@ -200,7 +201,7 @@ public class RegistrationWrapperDTO {
     }
 
     public String getInstitutionTitleCache(){
-        return reg.getInstitution() != null ? reg.getInstitution().getName() : null;
+        return reg.getRegistrationCenter() != null ? reg.getRegistrationCenter().getName() : null;
     }
 
     public VerbatimTimePeriod getDatePublished() {

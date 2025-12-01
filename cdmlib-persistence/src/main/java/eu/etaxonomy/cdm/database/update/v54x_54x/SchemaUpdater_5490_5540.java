@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -53,6 +54,12 @@ public class SchemaUpdater_5490_5540 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
+        //#10834
+        stepName = "Rename Registration.institution -> registrationCenter";
+        String tableName = "Registration";
+        String oldName = "institution_id";
+        String newName = "registrationCenter_id";
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldName, newName, INCLUDE_AUDIT);
 
         return stepList;
     }

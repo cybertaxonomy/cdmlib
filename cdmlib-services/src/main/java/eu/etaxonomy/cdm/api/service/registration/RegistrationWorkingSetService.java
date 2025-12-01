@@ -93,8 +93,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
     public static final EntityInitStrategy REGISTRATION_DTO_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
                 "blockedBy",
-                // institution
-                "institution",
+                "registrationCenter",
                 }
                 )
             )
@@ -132,8 +131,8 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
           "blockedBy.name.nomenclaturalSource.citation.authorship",
           "blockedBy.name.nomenclaturalSource.citation.inReference",
           "blockedBy.name.rank",
-          // institution
-          "blockedBy.institution",
+          // registrationCenter
+          "blockedBy.registrationCenter",
           }
     );
 

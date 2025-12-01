@@ -942,7 +942,7 @@ public class FullCoverageDataGenerator {
 		registration.setRegistrationDate(DateTime.now());
 		Registration blockingRegistration = Registration.NewInstance();
 		registration.addBlockedBy(blockingRegistration);
-		registration.setInstitution(createNewInstitution(entitiesToSave));
+		registration.setRegistrationCenter(createNewInstitution(entitiesToSave));
 		User submitter = User.NewInstance("submitter", "12345");
 		registration.setSubmitter(submitter);
 		handleAnnotatableEntity(registration);

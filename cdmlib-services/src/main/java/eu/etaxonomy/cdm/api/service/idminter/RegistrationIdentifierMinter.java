@@ -39,9 +39,9 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
     enum RegistrationCenter {
         PHYCOBANK(PHYCOBANK_BERLIN_UUID);
 
-        private UUID institutionUuid;
-        RegistrationCenter(UUID institutionUuid) {
-            this.institutionUuid = institutionUuid;
+        private UUID registrationCenterUuid;
+        RegistrationCenter(UUID registrationCenterUuid) {
+            this.registrationCenterUuid = registrationCenterUuid;
         }
     }
 
@@ -188,7 +188,7 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
 
     public Institution registrationCenter() {
         if (registrationCenterInstitution == null) {
-            registrationCenterInstitution = (Institution)agentService.find(registrationCenter.institutionUuid);
+            registrationCenterInstitution = (Institution)agentService.find(registrationCenter.registrationCenterUuid);
         }
         return registrationCenterInstitution;
     }

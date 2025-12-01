@@ -324,7 +324,7 @@ public class RegistrationServiceImpl
                 reg.setSpecificIdentifier(identifier.getLocalId());
 
                 //registration center /TODO dirty to handle this inside the minter, we need a configurator instead that configures a registration center which includes the minter and the registration center link separately
-                reg.setInstitution(minter.registrationCenter());
+                reg.setRegistrationCenter(minter.registrationCenter());
             }
             Authentication authentication = userHelper.getAuthentication();
             reg.setSubmitter((User)authentication.getPrincipal());
