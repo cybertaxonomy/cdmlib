@@ -4362,7 +4362,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         STATUS varchar(10),
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
-        INSTITUTION_ID integer,
+        REGISTRATIONCENTER_ID integer,
         NAME_ID integer,
         SUBMITTER_ID integer,
         primary key (ID)
@@ -4395,7 +4395,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         STATUS varchar(10),
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
-        INSTITUTION_ID integer,
+        REGISTRATIONCENTER_ID integer,
         NAME_ID integer,
         SUBMITTER_ID integer,
         primary key (ID, REV)
@@ -10724,7 +10724,7 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
 
     alter table PUBLIC.REGISTRATION 
        add constraint FK6qft65ee3gsryatwh859ryv0i 
-       foreign key (INSTITUTION_ID) 
+       foreign key (REGISTRATIONCENTER_ID) 
        references PUBLIC.AGENTBASE;
 
     alter table PUBLIC.REGISTRATION 

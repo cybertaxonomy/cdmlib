@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "specificIdentifier",
     "registrationDate",
     "status",
-    "institution",
+    "registrationCenter",
     "name",
     "typeDesignations",
     "blockedBy",
