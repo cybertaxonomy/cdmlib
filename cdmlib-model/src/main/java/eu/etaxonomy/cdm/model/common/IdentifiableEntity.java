@@ -649,6 +649,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
                 || !this.credits.isEmpty()
                 || !this.extensions.isEmpty()
                 || !this.identifiers.isEmpty()
+                || !this.rights.isEmpty()
                 || !this.links.isEmpty() //does this belong to supplemental data?
                 ;
     }
