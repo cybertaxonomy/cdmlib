@@ -142,9 +142,9 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @NoRecursiveInReference(groups=Level3.class)  //may become Level1 in future  #
 public class Reference
         extends IdentifiableMediaEntity<IReferenceCacheStrategy>
-        implements IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,
-                   IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport,
-                   IThesis,IWebPage, IPersonalCommunication,
+        implements IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection, ICdDvd,
+                   IGeneric, IInProceedings, IProceedings, IPrintSeries, IReport,
+                   IThesis, IWebPage, IPersonalCommunication,
                    IIntextReferenceTarget, IHasLink {
 
     private static final long serialVersionUID = -2034764545042691295L;

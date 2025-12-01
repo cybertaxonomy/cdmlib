@@ -35,8 +35,6 @@ public class OriginalSourceFormatterTest {
     //book // book section
     private static Reference book1;
     private static Team bookTeam1;
-    private static Reference section1;
-    private static Reference database1;
 
     private static OriginalSourceFormatter formatter = OriginalSourceFormatter.INSTANCE;
     private static OriginalSourceFormatter formatterWithBrackets = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS;
