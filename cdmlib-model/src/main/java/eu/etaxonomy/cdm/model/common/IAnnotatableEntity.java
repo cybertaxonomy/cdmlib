@@ -42,5 +42,5 @@ public interface IAnnotatableEntity extends IVersionableEntity {
 	 *
 	 * @param exceptFor
 	 */
-	public boolean hasSupplementalData(Set<UUID> exceptFor);
+	public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources);
 }

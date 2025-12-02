@@ -582,8 +582,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     }
 
     @Override
-    public boolean hasSupplementalData(Set<UUID> exceptFor) {
-        return super.hasSupplementalData(exceptFor)
+    public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
+        return super.hasSupplementalData(exceptFor, ignoreSources)
            || this.extensions.stream().filter(
                    e->e.getType() == null
                    || ! exceptFor.contains(e.getType().getUuid()))

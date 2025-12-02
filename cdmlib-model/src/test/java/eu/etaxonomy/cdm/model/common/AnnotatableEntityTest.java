@@ -54,15 +54,16 @@ public class AnnotatableEntityTest extends EntityTestBase {
     @Test
     public void testHasSupplementalDataUuids() {
 
+        boolean ignoreSources = false;
         Identifier annotatableEntity = Identifier.NewInstance("abc", IdentifierType.IDENTIFIER_NAME_WFO());
         Assert.assertFalse(annotatableEntity.hasSupplementalData());
-        Assert.assertFalse(annotatableEntity.hasSupplementalData(editorialUuids));
+        Assert.assertFalse(annotatableEntity.hasSupplementalData(editorialUuids, ignoreSources));
 
         annotatableEntity.addAnnotation(annotation);
         Assert.assertTrue(annotatableEntity.hasSupplementalData());
-        Assert.assertFalse(annotatableEntity.hasSupplementalData(editorialUuids));
-        Assert.assertTrue(annotatableEntity.hasSupplementalData(new HashSet<>()));
-        Assert.assertTrue(annotatableEntity.hasSupplementalData(completeMarkerUuids));
+        Assert.assertFalse(annotatableEntity.hasSupplementalData(editorialUuids, ignoreSources));
+        Assert.assertTrue(annotatableEntity.hasSupplementalData(new HashSet<>(), ignoreSources));
+        Assert.assertTrue(annotatableEntity.hasSupplementalData(completeMarkerUuids, ignoreSources));
 
         //revert
         annotatableEntity.removeAnnotation(annotation);
@@ -71,8 +72,8 @@ public class AnnotatableEntityTest extends EntityTestBase {
         //test with marker
         annotatableEntity.addMarker(marker);
         Assert.assertTrue(annotatableEntity.hasSupplementalData());
-        Assert.assertFalse(annotatableEntity.hasSupplementalData(completeMarkerUuids));
-        Assert.assertTrue(annotatableEntity.hasSupplementalData(editorialUuids));
+        Assert.assertFalse(annotatableEntity.hasSupplementalData(completeMarkerUuids, ignoreSources));
+        Assert.assertTrue(annotatableEntity.hasSupplementalData(editorialUuids, ignoreSources));
     }
 
 }

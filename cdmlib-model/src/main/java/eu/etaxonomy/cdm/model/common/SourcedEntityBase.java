@@ -197,9 +197,9 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
     }
 
     @Override
-    public boolean hasSupplementalData(Set<UUID> exceptFor) {
-        return super.hasSupplementalData(exceptFor)
-           || this.sources.stream().filter(
+    public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
+        return super.hasSupplementalData(exceptFor, ignoreSources)
+           || !ignoreSources && this.sources.stream().filter(
                 s->s.getType() == null
                     || ! exceptFor.contains(s.getType().getUuid()))
                 .findAny().isPresent()

@@ -440,8 +440,8 @@ public class Media
     }
 
     @Override
-    public boolean hasSupplementalData(Set<UUID> exceptFor) {
-        return super.hasSupplementalData(exceptFor)
+    public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
+        return super.hasSupplementalData(exceptFor, ignoreSources)
            || this.rights.stream().filter(
                    r->r.getType() == null
                    || ! exceptFor.contains(r.getType().getUuid()))

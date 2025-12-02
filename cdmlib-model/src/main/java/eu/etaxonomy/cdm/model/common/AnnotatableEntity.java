@@ -200,7 +200,7 @@ public abstract class AnnotatableEntity
     }
 
     @Override
-    public boolean hasSupplementalData(Set<UUID> exceptFor) {
+    public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
         return this.annotations.stream().filter(
                 a->a.getAnnotationType() == null
                     || ! exceptFor.contains(a.getAnnotationType().getUuid()))

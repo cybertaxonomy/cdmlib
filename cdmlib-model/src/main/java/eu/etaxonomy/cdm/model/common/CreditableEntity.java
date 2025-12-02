@@ -118,8 +118,8 @@ public abstract class CreditableEntity<S extends IIdentifiableEntityCacheStrateg
     }
 
     @Override
-    public boolean hasSupplementalData(Set<UUID> exceptFor) {
-        return super.hasSupplementalData(exceptFor)
+    public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
+        return super.hasSupplementalData(exceptFor, ignoreSources)
            || !this.credits.isEmpty()  //credits don't have types
            ;
     }
