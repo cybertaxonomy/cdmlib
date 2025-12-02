@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.NotNullUpdater;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
@@ -83,6 +84,10 @@ public class SchemaUpdater_5490_5540 extends SchemaUpdaterBase {
         columnName = "allowOverride";
         NotNullUpdater.NewBooleanInstance(stepList, stepName, tableName, columnName, !INCLUDE_AUDIT);
 
+        //#10772
+        stepName = "Remove Collection_Media";
+        tableName = "Collection_Media";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
         return stepList;
     }
