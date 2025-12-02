@@ -363,6 +363,8 @@ public class Reference
    // @CacheUpdate("nameCache")  TODO do we need a cache update here?
     private boolean authorIsEditor = false;
 
+    //NOTE: Reference can't inherit from CreditableEntity as
+    //      it already inherits from IdentifiableMediaEntity
     @XmlElementWrapper(name = "Credits", nillable = true)
     @XmlElement(name = "Credit")
     @OrderColumn(name="sortIndex")
