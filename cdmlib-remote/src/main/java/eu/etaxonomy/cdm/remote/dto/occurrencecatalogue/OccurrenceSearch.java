@@ -10,7 +10,6 @@ import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
 
@@ -154,14 +153,6 @@ public class OccurrenceSearch implements RemoteResponse {
 
     	osr.setPublicationDate(datePublishedString);
 
-    	List<String> rightsTextList = new ArrayList<String>();
-    	Set<Rights> rightsSet = duf.innerDerivedUnit().getRights();
-    	for(Rights rights : rightsSet) {
-    		if(rights.getAbbreviatedText() != null) {
-    			rightsTextList.add(rights.getAbbreviatedText());
-    		}
-    	}
-    	osr.setRights(rightsTextList);
     	response.add(osr);
     }
 
@@ -212,8 +203,6 @@ public class OccurrenceSearch implements RemoteResponse {
         private String barcode;
         private String publicationDate;
 
-
-		private List<String> rights;
         private List<String> sources;
 
         //FIXME: Ignoring the fields below for the moment
@@ -224,9 +213,7 @@ public class OccurrenceSearch implements RemoteResponse {
 
         public OccurrenceSearchResponse() {
         	location = new Location();
-        	rights = new ArrayList<String>();
-        	sources = new ArrayList<String>();
-
+        	sources = new ArrayList<>();
         }
 
         /**
@@ -541,20 +528,6 @@ public class OccurrenceSearch implements RemoteResponse {
 //        public void setCitation(String citation) {
 //            this.citation = citation;
 //        }
-
-        /**
-         * @return the dataResourceRights
-         */
-        public List<String> getRights() {
-            return rights;
-        }
-
-        /**
-         * @param dataResourceRights the dataResourceRights to set
-         */
-        public void setRights(List<String> rights) {
-            this.rights = rights;
-        }
 
         public Location getLocation() {
 			return location;

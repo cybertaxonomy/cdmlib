@@ -291,8 +291,6 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 		// ???
 		record.setLanguage(null);
 
-		record.setRights(taxonBase.getRights());
-
 		//TODO
 		record.setRightsHolder(null);
 		record.setAccessRights(null);

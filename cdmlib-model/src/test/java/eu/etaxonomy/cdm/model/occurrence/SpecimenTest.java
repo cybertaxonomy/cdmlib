@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -49,7 +48,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.permission.User;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -293,7 +291,6 @@ public class SpecimenTest extends EntityTestBase {
 		specimen.addExtension(extension);
 		specimen.addMarker(marker);
 //		specimen.addMedia(media);    #3597
-		specimen.addRights(right);
 		specimen.addSource(source);
 		DefinedTerm destroyed = DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed);
 		specimen.addStatus(OccurrenceStatus.NewInstance(destroyed));
@@ -331,7 +328,7 @@ public class SpecimenTest extends EntityTestBase {
 
 		Annotation clonedAnnotation = specimenClone.getAnnotations().iterator().next();
 		assertFalse(annotation.equals(clonedAnnotation));
-		assertEquals(annotation.getText(), ((LanguageStringBase)specimenClone.getAnnotations().iterator().next()).getText() );
+		assertEquals(annotation.getText(), specimenClone.getAnnotations().iterator().next().getText() );
 		assertNotSame(annotation, specimenClone.getAnnotations().iterator().next() );
 
 		assertEquals(definition, specimenClone.getDefinition().get(Language.DEFAULT()).getText());
@@ -362,11 +359,9 @@ public class SpecimenTest extends EntityTestBase {
 
 //		assertEquals(media, specimenClone.getMedia().iterator().next());  #3597
 //		assertEquals(right, specimenClone.getRights().iterator().next()); #5762
-		assertTrue("Rights must contain 1 rights object", specimenClone.getRights().size() == 1);
-  	    assertTrue("Rights must not be cloned", specimenClone.getRights().iterator().next().equals(right));
 
 		assertFalse(source.equals(specimenClone.getSources().iterator().next()));
-		assertEquals(source.getId(), ((OriginalSourceBase)specimenClone.getSources().iterator().next()).getId());
+		assertEquals(source.getId(), specimenClone.getSources().iterator().next().getId());
 		assertNotSame(source, specimenClone.getSources().iterator().next());
 		assertEquals(1, specimenClone.getSources().size());
 		//test status

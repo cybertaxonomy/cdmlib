@@ -134,7 +134,6 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
         target.setTitleCache(source.getTitleCache(), target.isProtectedTitleCache());
         source.getSources().forEach(s -> target.addSource(s));
         source.getAnnotations().forEach(a -> target.addAnnotation(a));
-        source.getCredits().forEach(c -> target.addCredit(c));
         source.getDerivationEvents().forEach(de -> target.addDerivationEvent(de));
         source.getDerivationEvents().clear();
         source.getDescriptions().forEach(d -> target.addDescription(d));
@@ -143,7 +142,6 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
         source.getExtensions().forEach(e -> target.addExtension(e));
         source.getIdentifiers().forEach(i -> target.addIdentifier(i));
         source.getMarkers().forEach(m -> target.addMarker(m));
-        source.getRights().forEach(r -> target.addRights(r));
         target.addSources(source.getSources());
         // need to clone the SpecimenTypeDesignation, since the SpecimenTypeDesignations are being deleted by the hibernate delete cascade
         newSpecimenTypeDesignation = specimenTypeDesignation.clone();

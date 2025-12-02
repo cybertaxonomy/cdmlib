@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -115,6 +116,9 @@ public class TaxonDescription
     @XmlElement(name = "Rights")
     @ManyToMany(fetch = FetchType.LAZY)  //#5762 M:N now
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @JoinTable(name="DescriptionBase_RightsInfo",
+        joinColumns=@JoinColumn(name="DescriptionBase_id")
+    )
     //TODO
     @Merge(MergeMode.ADD_CLONE)
     @NotNull

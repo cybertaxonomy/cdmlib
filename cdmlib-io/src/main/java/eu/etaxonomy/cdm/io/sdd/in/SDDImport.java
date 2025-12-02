@@ -609,8 +609,9 @@ public class SDDImport
 		}
 
 		if (copyright != null) {
-			sourceReference.addRights(copyright);
-			sec.addRights(copyright);
+		    //rights are not stored in the references anymore #10772
+//			sourceReference.addRights(copyright);
+//			sec.addRights(copyright);
 		}
 
 		// Returns a CdmApplicationController created by the values of this configuration.
@@ -875,10 +876,11 @@ public class SDDImport
 					copyright = Rights.NewInstance(label, iprLanguage);
 				}
 
-				if (copyright != null) {
-					sourceReference.addRights(copyright);
-					sec.addRights(copyright);
-				}
+//				if (copyright != null) {
+//		            //rights are not stored in the references anymore #10772
+//					sourceReference.addRights(copyright);
+//					sec.addRights(copyright);
+//				}
 
 				if ((++j % modCount) == 0){ logger.info("IPRStatements handled: " + j);}
 
