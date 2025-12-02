@@ -89,6 +89,68 @@ public class SchemaUpdater_5490_5540 extends SchemaUpdaterBase {
         tableName = "Collection_Media";
         TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
+        stepName = "Remove AgentBase_Credit";
+        tableName = "AgentBase_Credit";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        stepName = "Remove Collection_Credit";
+        tableName = "Collection_Credit";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        //DescriptiveDataSet_Credit ??
+
+        stepName = "Remove SpecimenOrObservationBase_Credit";
+        tableName = "SpecimenOrObservationBase_Credit";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        stepName = "Remove TaxonName_Credit";
+        tableName = "TaxonName_Credit";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        //Rights
+        stepName = "Remove AgentBase_RightsInfo";
+        tableName = "AgentBase_RightsInfo";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        stepName = "Remove Classification_RightsInfo";
+        tableName = "Classification_RightsInfo";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        stepName = "Remove Collection_RightsInfo";
+        tableName = "Collection_RightsInfo";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        stepName = "Remove DefinedTermBase_RightsInfo";
+        tableName = "DefinedTermBase_RightsInfo";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        //DescriptiveDataSet_RightsInfo ??
+
+        stepName = "Remove PolytomousKey_RightsInfo";
+        tableName = "PolytomousKey_RightsInfo";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        stepName = "Remove Reference_RightsInfo";
+        tableName = "Reference_RightsInfo";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        stepName = "Remove SpecimenOrObservationBase_RightsInfo";
+        tableName = "SpecimenOrObservationBase_RightsInfo";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        stepName = "Remove TaxonBase_RightsInfo";
+        tableName = "TaxonBase_RightsInfo";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        stepName = "Remove TaxonName_RightsInfo";
+        tableName = "TaxonName_RightsInfo";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        stepName = "Remove TermCollection_RightsInfo";
+        tableName = "TermCollection_RightsInfo";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+
         return stepList;
     }
 }
