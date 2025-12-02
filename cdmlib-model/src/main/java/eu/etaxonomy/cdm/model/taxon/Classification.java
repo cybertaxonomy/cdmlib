@@ -45,8 +45,8 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.CreditableEntity;
 import eu.etaxonomy.cdm.model.common.IHasCredits;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
@@ -77,7 +77,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.ClassificationDefaultCacheStrategy;
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.Classification")
 public class Classification
-            extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<Classification>>
+            extends CreditableEntity<IIdentifiableEntityCacheStrategy<Classification>>
             implements ITaxonTreeNode, IHasCredits, IHasLink {
 
     private static final long serialVersionUID = -753804821474209635L;

@@ -82,7 +82,6 @@ import eu.etaxonomy.cdm.validation.Level2;
     "lsid",
     "titleCache",
     "protectedTitleCache",
-    "credits",
     "extensions",
     "identifiers",
     "links"
@@ -125,15 +124,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElement(name = "ProtectedTitleCache")
     protected boolean protectedTitleCache;
 
-    @XmlElementWrapper(name = "Credits", nillable = true)
-    @XmlElement(name = "Credit")
-    @OrderColumn(name="sortIndex")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    //TODO
-    @Merge(MergeMode.ADD_CLONE)
-    @NotNull
-    private List<Credit> credits = new ArrayList<>();
 
     @XmlElementWrapper(name = "Extensions", nillable = true)
     @XmlElement(name = "Extension")
@@ -335,39 +325,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         if(links.contains(link)) {
             links.remove(link);
         }
-    }
-
-//********************** CREDITS **********************************************
-
-    public List<Credit> getCredits() {
-        if(credits == null) {
-            this.credits = new ArrayList<>();
-        }
-        return this.credits;
-    }
-
-    public Credit getCredits(Integer index){
-        return getCredits().get(index);
-    }
-
-    public void addCredit(Credit credit){
-        getCredits().add(credit);
-    }
-
-    public void addCredit(Credit credit, int index){
-        getCredits().add(index, credit);
-    }
-
-    public void removeCredit(Credit credit){
-        getCredits().remove(credit);
-    }
-
-    public void removeCredit(int index){
-        getCredits().remove(index);
-    }
-
-    public boolean replaceCredit(Credit newObject, Credit oldObject){
-        return replaceInList(this.credits, newObject, oldObject);
     }
 
 //************ IDENTIFIERS ********************************************/
@@ -618,7 +575,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Transient
     public boolean hasSupplementalData() {
         return super.hasSupplementalData()
-                || !this.credits.isEmpty()
                 || !this.extensions.isEmpty()
                 || !this.identifiers.isEmpty()
                 || !this.links.isEmpty() //does this belong to supplemental data?
@@ -628,7 +584,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Override
     public boolean hasSupplementalData(Set<UUID> exceptFor) {
         return super.hasSupplementalData(exceptFor)
-           || !this.credits.isEmpty()  //credits don't have types
            || this.extensions.stream().filter(
                    e->e.getType() == null
                    || ! exceptFor.contains(e.getType().getUuid()))
@@ -714,13 +669,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         for (Identifier identifier : getIdentifiers() ){
         	Identifier newIdentifier = identifier.clone();
             result.addIdentifier(newIdentifier);
-        }
-
-        //Credits
-        result.credits = new ArrayList<>();
-        for(Credit credit : getCredits()) {
-            Credit newCredit = credit.clone();
-            result.addCredit(newCredit);
         }
 
         //Links

@@ -37,9 +37,9 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.CreditableEntity;
 import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.IHasLink;
@@ -79,7 +79,7 @@ import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
 //@Indexed(index = "eu.etaxonomy.cdm.model.description.PolytomousKey")
 @Audited
 public class PolytomousKey
-            extends IdentifiableEntity<PolytomousKeyDefaultCacheStrategy>
+            extends CreditableEntity<PolytomousKeyDefaultCacheStrategy>
             implements IIdentificationKey, IIntextReferenceTarget, IHasCredits,
                 IHasLink {
 

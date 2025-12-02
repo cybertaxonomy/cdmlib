@@ -48,8 +48,8 @@ import org.hibernate.search.bridge.builtin.BooleanBridge;
 
 import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
+import eu.etaxonomy.cdm.model.common.CreditableEntity;
 import eu.etaxonomy.cdm.model.common.IPublishable;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -91,7 +91,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     @ClassBridge(impl=GroupByTaxonClassBridge.class)
 })
 public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy>
-        extends IdentifiableEntity<S>
+        extends CreditableEntity<S>
         implements ICdmTarget,IPublishable {
 
     private static final long serialVersionUID = 5504218413819040193L;

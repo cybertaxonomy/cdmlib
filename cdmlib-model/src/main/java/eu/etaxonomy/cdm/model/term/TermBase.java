@@ -44,9 +44,9 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.common.AuthorityType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.CreditableEntity;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.IExternallyManaged;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.strategy.cache.term.TermDefaultCacheStrategy;
 @MappedSuperclass
 @Audited
 public abstract class TermBase
-            extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<TermBase>>
+            extends CreditableEntity<IIdentifiableEntityCacheStrategy<TermBase>>
             implements IHasTermType, IExternallyManaged {
 
     private static final long serialVersionUID = 1471561531632115822L;
