@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,14 +37,20 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.CreditableEntity;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.IHasLink;
+import eu.etaxonomy.cdm.model.media.IHasRights;
+import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.strategy.cache.description.DescriptiveDataSetDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  *
@@ -62,13 +69,15 @@ import eu.etaxonomy.cdm.strategy.cache.description.DescriptiveDataSetDefaultCach
     "taxonSubtreeFilter",
     "geoFilter",
     "minRank",
-    "maxRank"
+    "maxRank",
+    "rights"
 })
 @XmlRootElement(name = "DescriptiveDataSet")
 @Entity
 @Audited
 public class DescriptiveDataSet
-        extends IdentifiableEntity<DescriptiveDataSetDefaultCacheStrategy> {
+        extends CreditableEntity<DescriptiveDataSetDefaultCacheStrategy>
+        implements IHasRights, IHasCredits, IHasLink {
 
     private static final long serialVersionUID = 3256448866757415686L;
     private static final Logger logger = LogManager.getLogger();
@@ -127,6 +136,15 @@ public class DescriptiveDataSet
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     private Rank maxRank;
+
+    @XmlElementWrapper(name = "Rights", nillable = true)
+    @XmlElement(name = "Rights")
+    @ManyToMany(fetch = FetchType.LAZY)  //#5762 M:N now
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    //TODO
+    @Merge(MergeMode.ADD_CLONE)
+    @NotNull
+    private Set<Rights> rights = new HashSet<>();
 
 // ******************* FACTORY *********************************************/
 
@@ -193,6 +211,25 @@ public class DescriptiveDataSet
     }
     public void setMaxRank(Rank maxRank) {
         this.maxRank = maxRank;
+    }
+
+
+//************* RIGHTS *************************************
+
+    @Override
+    public Set<Rights> getRights() {
+        if(rights == null) {
+            this.rights = new HashSet<>();
+        }
+        return this.rights;
+    }
+    @Override
+    public void addRights(Rights right){
+        getRights().add(right);
+    }
+    @Override
+    public void removeRights(Rights right){
+        getRights().remove(right);
     }
 
     //representations
@@ -361,6 +398,26 @@ public class DescriptiveDataSet
 		return result;
 	}
 
+	//***************** SUPPLEMENTAL DATA **************************************/
+
+    @Override
+    @Transient
+    public boolean hasSupplementalData() {
+        return super.hasSupplementalData()
+                || !this.rights.isEmpty()
+                ;
+    }
+
+    @Override
+    public boolean hasSupplementalData(Set<UUID> exceptFor) {
+        return super.hasSupplementalData(exceptFor)
+           || this.rights.stream().filter(
+                   r->r.getType() == null
+                   || ! exceptFor.contains(r.getType().getUuid()))
+               .findAny().isPresent()
+           ;
+    }
+
 	//*********************** CLONE ********************************************************/
 
 	/**
@@ -401,6 +458,12 @@ public class DescriptiveDataSet
             result.geoFilter = new HashSet<>();
             for (NamedArea area : this.geoFilter){
                 result.addGeoFilterArea(area);
+            }
+
+            //Rights  - reusable since #5762
+            result.rights = new HashSet<>();
+            for(Rights right : getRights()) {
+                result.addRights(right);
             }
 
 			return result;
