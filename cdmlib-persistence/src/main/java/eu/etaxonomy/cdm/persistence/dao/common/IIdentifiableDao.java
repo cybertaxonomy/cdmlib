@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -61,17 +60,6 @@ public interface IIdentifiableDao <T extends IdentifiableEntity>
 	 * @return a List of OriginalSource instances
 	 */
 	public List<IdentifiableSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
-	/**
-	 * Return a List of the rights for this identifiable entity
-	 *
-	 * @param identifiableEntity The identifiable entity
-	 * @param pageSize The maximum number of rights returned (can be null for all rights)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
-	 * @return a List of Rights instances
-	 */
-	public List<Rights> getRights(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	// TODO Migrated from IOriginalSourceDao
 	public List<T> findOriginalSourceByIdInSource(String idInSource, String idNamespace);

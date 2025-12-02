@@ -63,6 +63,5 @@ public interface IMediaDao extends IIdentifiableDao<Media> {
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List of Rights instances
 	 */
-	@Override
     public List<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 }
