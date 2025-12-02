@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.strategy.match;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
+import eu.etaxonomy.cdm.model.media.IHasRights;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -34,7 +36,7 @@ public class MatchStrategyFactory {
         try {
             IParsedMatchStrategy parsedPersonMatchStrategy = NewParsedInstance(Person.class);
 
-            addParsedAgentBaseMatchModes(parsedPersonMatchStrategy);
+            addParsedAgentBaseMatchModes(parsedPersonMatchStrategy, Person.class);
 
             //FIXME adapt for inRef authors
             parsedPersonMatchStrategy.setMatchMode("nomenclaturalTitle", MatchMode.EQUAL);
@@ -64,7 +66,7 @@ public class MatchStrategyFactory {
         try {
             IParsedMatchStrategy parsedPersonMatchStrategy = NewParsedInstance(Person.class);
 
-            addParsedAgentBaseMatchModes(parsedPersonMatchStrategy);
+            addParsedAgentBaseMatchModes(parsedPersonMatchStrategy, Person.class);
 
             parsedPersonMatchStrategy.setMatchMode("collectorTitleCache", MatchMode.EQUAL);
 
@@ -88,7 +90,7 @@ public class MatchStrategyFactory {
     public static IParsedMatchStrategy NewParsedTeamInstance(){
         IParsedMatchStrategy parsedTeamMatchStrategy = NewParsedInstance(Team.class);
         try {
-            addParsedAgentBaseMatchModes(parsedTeamMatchStrategy);
+            addParsedAgentBaseMatchModes(parsedTeamMatchStrategy, Team.class);
 
             //match
             parsedTeamMatchStrategy.setMatchMode("teamMembers", MatchMode.MATCH, NewParsedPersonInstance());
@@ -121,7 +123,7 @@ public class MatchStrategyFactory {
     public static IParsedMatchStrategy NewParsedCollectorTeamInstance(){
         IParsedMatchStrategy parsedTeamMatchStrategy = NewParsedInstance(Team.class);
         try {
-            addParsedAgentBaseMatchModes(parsedTeamMatchStrategy);
+            addParsedAgentBaseMatchModes(parsedTeamMatchStrategy, Team.class);
 
             //match
             parsedTeamMatchStrategy.setMatchMode("teamMembers", MatchMode.MATCH, NewParsedCollectorPersonInstance());
@@ -269,7 +271,7 @@ public class MatchStrategyFactory {
 
         //TODO externally managed
 
-        addParsedIdentifiableEntityModes(referenceMatchStrategy);
+        addParsedIdentifiableEntityModes(referenceMatchStrategy, Reference.class);
 
         String[] equalOrNullParams = new String[]{"accessed","doi",
                 "institution","isbn","issn","organization",
@@ -319,7 +321,7 @@ public class MatchStrategyFactory {
 
         //TODO externally managed
 
-        addParsedIdentifiableEntityModes(referenceMatchStrategy);
+        addParsedIdentifiableEntityModes(referenceMatchStrategy, Reference.class);
 
         //here the result differs from addParsedReferenceMatchModes
         String[] equalOrNullParams = new String[]{"accessed","doi",
@@ -341,9 +343,10 @@ public class MatchStrategyFactory {
         }
     }
 
-    private static void addParsedAgentBaseMatchModes(IParsedMatchStrategy matchStrategy) throws MatchException {
+    private static void addParsedAgentBaseMatchModes(IParsedMatchStrategy matchStrategy,
+            Class<?> matchClass) throws MatchException {
 
-        addParsedIdentifiableEntityModes(matchStrategy);
+        addParsedIdentifiableEntityModes(matchStrategy, matchClass);
 
         //TODO contact does not yet work, also not with EQUAL_OR_ONE_NULL, leads to agent.id=? or agent.id is null query
         //better should be even handled with MATCH.Equal_OR_ONE_NULL
@@ -357,7 +360,8 @@ public class MatchStrategyFactory {
         }
     }
 
-    private static void addParsedIdentifiableEntityModes(IParsedMatchStrategy matchStrategy) throws MatchException {
+    private static void addParsedIdentifiableEntityModes(IParsedMatchStrategy matchStrategy,
+            Class<?> matchClass) throws MatchException {
 
         addAnnotatableEntityModes(matchStrategy);
 
@@ -368,9 +372,15 @@ public class MatchStrategyFactory {
         for(String param : equalOrNullParams){
             matchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
         }
-        String[] ignoreCollectionParams = new String[]{"credits","extensions","identifiers","links","rights"};
+        String[] ignoreCollectionParams = new String[]{"extensions","identifiers","links"};
         for(String param : ignoreCollectionParams){
             matchStrategy.setMatchMode(param, MatchMode.IGNORE);
+        }
+        if (IHasCredits.class.isAssignableFrom(matchClass)) {
+            matchStrategy.setMatchMode("credits", MatchMode.IGNORE);
+        }
+        if (IHasRights.class.isAssignableFrom(matchClass)) {
+            matchStrategy.setMatchMode("rights", MatchMode.IGNORE);
         }
     }
 
@@ -448,7 +458,7 @@ public class MatchStrategyFactory {
     public static IParsedMatchStrategy NewParsedOriginalSpellingInstance(){
         try {
             IParsedMatchStrategy originalSpellingMatchStrategy = (IParsedMatchStrategy)NewDefaultInstance(TaxonName.class);
-            addParsedIdentifiableEntityModes(originalSpellingMatchStrategy);
+            addParsedIdentifiableEntityModes(originalSpellingMatchStrategy, TaxonName.class);
 
             //authorshipCache, nameCache, fullTitleCache,
             //protectedFullTitleCache, protectedNameCache, protectedAuthorshipCache,
