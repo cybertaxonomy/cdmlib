@@ -12,6 +12,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -1337,6 +1339,24 @@ public class Reference
         return result;
     }
 
+
+    //***************** SUPPLEMENTAL DATA **************************************/
+
+    @Override
+    @Transient
+    public boolean hasSupplementalData() {
+        return super.hasSupplementalData()
+                || !this.credits.isEmpty()
+                ;
+    }
+
+    @Override
+    public boolean hasSupplementalData(Set<UUID> exceptFor) {
+        return super.hasSupplementalData(exceptFor)
+           || !this.credits.isEmpty()  //credits don't have types
+           ;
+    }
+
 //*********************** CLONE ********************************************************/
 
 	/**
@@ -1352,6 +1372,14 @@ public class Reference
 		try {
 			Reference result = (Reference)super.clone();
 			result.setDatePublished(datePublished != null? (VerbatimTimePeriod)datePublished.clone(): null);
+
+	        //Credits
+	        result.credits = new ArrayList<>();
+	        for(Credit credit : getCredits()) {
+	            Credit newCredit = credit.clone();
+	            result.addCredit(newCredit);
+	        }
+
 			//no changes to: title, authorship, hasProblem, nomenclaturallyRelevant, uri
 			return result;
 		} catch (CloneNotSupportedException e) {
