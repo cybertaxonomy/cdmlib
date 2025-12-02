@@ -73,6 +73,17 @@ public class SchemaUpdater_5490_5540 extends SchemaUpdaterBase {
         String columnName = "status";
         NotNullUpdater.NewStringInstance(stepList, stepName, tableName, columnName, !INCLUDE_AUDIT);
 
+        //#9673
+        stepName = "Set '0' as default value for CdmPreference.allowOverride";
+        sql = "UPDATE CdmPreference SET allowOverride = 0 WHERE allowOverride IS NULL";
+        tableName = "CdmPreference";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
+
+        stepName = "Set CdmPreference.allowOverride to NOT NULL";
+        columnName = "allowOverride";
+        NotNullUpdater.NewBooleanInstance(stepList, stepName, tableName, columnName, !INCLUDE_AUDIT);
+
+
         return stepList;
     }
 }

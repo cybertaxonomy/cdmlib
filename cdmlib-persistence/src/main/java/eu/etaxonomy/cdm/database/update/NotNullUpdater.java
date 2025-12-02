@@ -41,6 +41,11 @@ public class NotNullUpdater
         return new NotNullUpdater(stepList, stepName, tableName, columnName, includeAudTable, Datatype.VARCHAR, size);
     }
 
+    public static NotNullUpdater NewBooleanInstance(List<ISchemaUpdaterStep> stepList, String stepName,
+            String tableName, String columnName, boolean includeAudTable){
+        return new NotNullUpdater(stepList, stepName, tableName, columnName, includeAudTable, Datatype.BIT, null);
+    }
+
  // **************************************** Constructor ***************************************/
 
     protected NotNullUpdater(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName,
