@@ -28,6 +28,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -39,6 +41,8 @@ public class MediaDaoHibernateImplTest extends CdmIntegrationTest {
 
 	@SpringBeanByType
 	private IMediaDao mediaDao;
+
+    private UUID media1Uuid;
 
 	@SpringBeanByType
 	private IDefinedTermDao definedTermDao;
@@ -61,6 +65,8 @@ public class MediaDaoHibernateImplTest extends CdmIntegrationTest {
 
 		taxonomicScope = new HashSet<>();
 		geoScopes = new HashSet<NamedArea>();
+
+		media1Uuid = UUID.fromString("2d357cac-5aba-477e-a8f6-2988f63e8b5b");
 	}
 
 	@Test
@@ -122,6 +128,17 @@ public class MediaDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("The list should contain 1 MediaKey instance",1, keys.size());
 		assertTrue("Media.title should have been initialized",Hibernate.isInitialized(keys.get(0).getTitle()));
 	}
+
+    @Test
+    public void testGetRights() {
+        Media media = mediaDao.findByUuid(media1Uuid);
+        assert media != null : "Media must exist";
+
+        List<Rights> rights = mediaDao.getRights(media, null, null, null);
+
+        assertNotNull("getRights should return a List", rights);
+        assertEquals("getRights should return 2 Rights instances",2,rights.size());
+    }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

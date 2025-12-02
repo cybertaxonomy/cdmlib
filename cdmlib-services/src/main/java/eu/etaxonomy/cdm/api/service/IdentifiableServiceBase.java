@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
@@ -64,19 +63,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
     private static final Logger logger = LogManager.getLogger();
 
     protected static final int UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE = 1000;
-
-	@Override
-	@Transactional(readOnly = true)
-	public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        long numberOfResults = dao.countRights(t);
-
-		List<Rights> results = new ArrayList<>();
-		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getRights(t, pageSize, pageNumber,propertyPaths);
-		}
-
-		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
-	}
 
 	@Override
 	@Transactional(readOnly = true)

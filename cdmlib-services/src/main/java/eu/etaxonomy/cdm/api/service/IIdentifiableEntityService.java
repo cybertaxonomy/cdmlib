@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
@@ -89,18 +88,6 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      * @return a Pager of OriginalSource entities
      */
     public Pager<IdentifiableSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
-    /**
-     * Return a Pager of rights belonging to this object
-     *
-     * @param t The identifiable entity
-     * @param pageSize The maximum number of rights returned (can be null for all rights)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
-     * @return a Pager of Rights entities
-     */
-    public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
 
     /**
      * Returns the titleCache for a given object defined by uuid.

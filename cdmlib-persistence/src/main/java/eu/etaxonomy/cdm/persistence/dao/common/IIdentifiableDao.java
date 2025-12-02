@@ -64,15 +64,6 @@ public interface IIdentifiableDao <T extends IdentifiableEntity>
 	public List<IdentifiableSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
-	 * Return a count of the rights for this identifiable entity
-	 *
-	 * @param identifiableEntity The identifiable entity
-	 * @return a count of Rights instances
-	 */
-    public long countRights(T identifiableEntity);
-
-
-	/**
 	 * Return a List of the rights for this identifiable entity
 	 *
 	 * @param identifiableEntity The identifiable entity

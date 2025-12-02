@@ -53,7 +53,6 @@ public interface IMediaDao extends IIdentifiableDao<Media> {
 	 * @param t The media entity
 	 * @return a count of Rights instances
 	 */
-    @Override
     public long countRights(Media t);
 
 	/**

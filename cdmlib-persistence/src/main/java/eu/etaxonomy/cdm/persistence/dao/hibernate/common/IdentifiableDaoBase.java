@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
@@ -224,15 +223,6 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public long countRights(T identifiableEntity) {
-        checkNotInPriorView("IdentifiableDaoBase.countRights(T identifiableEntity)");
-        Query<Long> query = getSession().createQuery("select count(rights) from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.rights rights where identifiableEntity = :identifiableEntity",
-                Long.class);
-        query.setParameter("identifiableEntity",identifiableEntity);
-        return query.uniqueResult();
-    }
-
-    @Override
     public long countSources(T identifiableEntity) {
         checkNotInPriorView("IdentifiableDaoBase.countSources(T identifiableEntity)");
         Query<Long> query = getSession().createQuery(
@@ -240,18 +230,6 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
                 Long.class);
         query.setParameter("identifiableEntity", identifiableEntity);
         return query.uniqueResult();
-    }
-
-    @Override
-    public List<Rights> getRights(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        checkNotInPriorView("IdentifiableDaoBase.getRights(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
-        Query<Rights> query = getSession().createQuery("select rights from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.rights rights where identifiableEntity = :identifiableEntity",
-                Rights.class);
-        query.setParameter("identifiableEntity", identifiableEntity);
-        addPageSizeAndNumber(query, pageSize, pageNumber);
-        List<Rights> results = query.list();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
     }
 
 //    @Override  //TODO add to interface, maybe add property path

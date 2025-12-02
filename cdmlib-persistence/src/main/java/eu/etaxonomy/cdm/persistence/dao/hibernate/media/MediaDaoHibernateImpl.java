@@ -156,7 +156,6 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 		return results;
 	}
 
-	@Override
     public long countRights(Media media) {
 		checkNotInPriorView("MediaDaoHibernateImpl.countRights(Media t)");
 		Query<Long> query = getSession().createQuery("select count(rights) from Media media join media.rights rights where media = :media", Long.class);
