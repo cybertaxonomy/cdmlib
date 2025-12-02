@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.util.List;
@@ -76,8 +75,6 @@ public interface IIdentifiableDao <T extends IdentifiableEntity>
 
 	// TODO Migrated from IOriginalSourceDao
 	public List<T> findOriginalSourceByIdInSource(String idInSource, String idNamespace);
-
-
 
     /**
      * Returns the titleCache for a given object defined by uuid.

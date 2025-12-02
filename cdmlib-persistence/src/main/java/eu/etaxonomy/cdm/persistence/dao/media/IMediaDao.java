@@ -3,7 +3,6 @@
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
-
 package eu.etaxonomy.cdm.persistence.dao.media;
 
 import java.util.List;
@@ -66,5 +65,4 @@ public interface IMediaDao extends IIdentifiableDao<Media> {
 	 */
 	@Override
     public List<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
 }

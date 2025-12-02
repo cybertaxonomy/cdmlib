@@ -38,7 +38,9 @@ import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
  * @since 08.09.2008
  */
 @Repository
-public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements IMediaDao {
+public class MediaDaoHibernateImpl
+        extends IdentifiableDaoBase<Media>
+        implements IMediaDao {
 
 	protected String getDefaultField() {
 		return "title.text";
@@ -148,7 +150,7 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 	@Override
     public List<Rights> getRights(Media media, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		checkNotInPriorView("MediaDaoHibernateImpl.getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
-		Query<Rights> query = getSession().createQuery("select rights from Media media join media.rights rights where media = :media", Rights.class);
+		Query<Rights> query = getSession().createQuery("SELECT rights FROM Media media JOIN media.rights rights WHERE media = :media", Rights.class);
 		query.setParameter("media",media);
 		addPageSizeAndNumber(query, pageSize, pageNumber);
 		List<Rights> results = query.list();

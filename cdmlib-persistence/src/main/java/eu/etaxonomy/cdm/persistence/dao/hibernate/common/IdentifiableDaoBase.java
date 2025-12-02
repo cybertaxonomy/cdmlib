@@ -66,7 +66,6 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         super(type);
     }
 
-
     @Override
     public long countByTitle(String queryString) {
         return countByTitle(queryString, null);
