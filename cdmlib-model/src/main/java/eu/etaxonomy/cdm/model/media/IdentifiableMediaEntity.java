@@ -87,8 +87,8 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
 
 
     @Override
-    public boolean hasSupplementalData(Set<UUID> exceptFor) {
-        return super.hasSupplementalData(exceptFor)
+    public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
+        return super.hasSupplementalData(exceptFor, ignoreSources)
                 || !this.media.isEmpty() //media has no type therefor no need to check for exceptFor type
            ;
     }
