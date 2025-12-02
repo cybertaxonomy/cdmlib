@@ -724,6 +724,7 @@ public class Reference
 
 
 	@Override
+	@Deprecated
     public DateTime getAccessed() {
         return accessed;
     }
