@@ -773,30 +773,19 @@ public class Reference
     public URI getUri(){
 		return this.uri;
 	}
-	/**
-	 * @see #getUri()
-	 */
 	@Override
     public void setUri(URI uri){
 		this.uri = uri;
 	}
 
-	/**
-	 * @return the referenceAbstract
-	 */
 	@Override
     public String getReferenceAbstract() {
 		return referenceAbstract;
 	}
-
-	/**
-	 * @param referenceAbstract the referenceAbstract to set
-	 */
 	@Override
     public void setReferenceAbstract(String referenceAbstract) {
 		this.referenceAbstract = isBlank(referenceAbstract)? null : referenceAbstract;
 	}
-
 
 	/**
 	 * Returns "true" if the isNomenclaturallyRelevant flag is set. This
@@ -812,8 +801,8 @@ public class Reference
 	 * @deprecated currently not supported and not in use, may be removed in future
 	 */
 	@Deprecated
-    public boolean isNomenclaturallyRelevant(){
-		return this.nomenclaturallyRelevant;
+	public boolean isNomenclaturallyRelevant(){
+	    return this.nomenclaturallyRelevant;
 	}
 
 	/**
@@ -822,7 +811,7 @@ public class Reference
 	 */
 	@Deprecated
 	public void setNomenclaturallyRelevant(boolean nomenclaturallyRelevant){
-		this.nomenclaturallyRelevant = nomenclaturallyRelevant;
+	    this.nomenclaturallyRelevant = nomenclaturallyRelevant;
 	}
 
 
