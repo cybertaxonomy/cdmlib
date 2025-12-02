@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.dto.occurrencecatalogue;
 
 import java.util.ArrayList;
@@ -16,7 +24,6 @@ import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
 /**
  * The class representing the response from the CDM Remote Web Service API to a single UUID search query.
  * All information contained in this class originates from a call to {@link SpecimenOrObservationBase}
- * <P>
  *
  * @author p.kelbert
  * @since march 10 2014
