@@ -56,10 +56,12 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.AuthorityType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
+import eu.etaxonomy.cdm.model.common.CreditableEntity;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.ExternallyManagedImport;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.IIntextReferencable;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -684,6 +686,7 @@ public abstract class Cdm2CdmImportBase
         handleMap(result, Media.class, "title", Language.class, LanguageString.class, state);
         result.setLink(detach(result.getLink(), state));
         handleCollection(result, Media.class, "representations", MediaRepresentation.class, state);
+        handleCollection(result, IdentifiableEntity.class, "rights", Rights.class, state);
         //complete  (mediaCreated is cloned)
         return result;
     }
@@ -1088,6 +1091,7 @@ public abstract class Cdm2CdmImportBase
         setInvisible(taxDescription, "taxon", detach(taxDescription.getTaxon(), state));
         handleCollection(taxDescription, TaxonDescription.class, "geoScopes", NamedArea.class, state);
         handleCollection(taxDescription, TaxonDescription.class, "scopes", DefinedTerm.class, state);
+        handleCollection(result, IdentifiableEntity.class, "rights", Rights.class, state);
         return result;
     }
 
@@ -1179,11 +1183,13 @@ public abstract class Cdm2CdmImportBase
         @SuppressWarnings("unchecked")
         T result = (T) handlePersisted((SourcedEntityBase<?>)identifiableEntity, state);
         //complete
-        handleCollection(result, IdentifiableEntity.class, "credits", Credit.class, state);
         handleCollection(result, IdentifiableEntity.class, "extensions", Extension.class, state);
         handleCollection(result, IdentifiableEntity.class, "identifiers", Identifier.class, state);
-        handleCollection(result, IdentifiableEntity.class, "rights", Rights.class, state);
         handleCollection(result, IdentifiableEntity.class, "links", ExternalLink.class, state);
+        if (result instanceof IHasCredits) {
+            Class<?> creditableClass = result instanceof CreditableEntity ? CreditableEntity.class : result.getClass();
+            handleCollection(result, (Class<IdentifiableEntity>)creditableClass, "credits", Credit.class, state);
+        }
 
         return result;
     }
