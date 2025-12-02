@@ -38,6 +38,7 @@ import org.hibernate.search.SearchFactory;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -233,6 +234,10 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
 //    @Override  //TODO add to interface, maybe add property path
     public List<Credit> getCredits(T identifiableEntity, Integer pageSize, Integer pageNumber) {
+
+        if (! (CdmBase.deproxy(identifiableEntity) instanceof IHasCredits)) {
+            return new ArrayList<>();
+        }
         checkNotInPriorView("IdentifiableDaoBase.getCredits(T identifiableEntity, Integer pageSize, Integer pageNumber)");
         Query<Credit> query = getSession().createQuery("select credits from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.credits credits where identifiableEntity = :identifiableEntity",
                 Credit.class);
