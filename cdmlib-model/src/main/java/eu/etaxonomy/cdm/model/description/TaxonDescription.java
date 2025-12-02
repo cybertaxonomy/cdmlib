@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.description;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,6 +20,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -30,6 +32,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.FieldBridge;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -40,11 +44,14 @@ import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.media.IHasRights;
+import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 
 /**
@@ -63,7 +70,8 @@ import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheS
 @XmlType(name = "TaxonDescription", propOrder = {
     "scopes",
     "geoScopes",
-    "taxon"
+    "taxon",
+    "rights"
 })
 @XmlRootElement(name = "TaxonDescription")
 @Entity
@@ -101,6 +109,16 @@ public class TaxonDescription
     @XmlSchemaType(name="IDREF")
     @FieldBridge(impl=NotNullAwareIdBridge.class)
     private Taxon taxon;
+
+    //#10772
+    @XmlElementWrapper(name = "Rights", nillable = true)
+    @XmlElement(name = "Rights")
+    @ManyToMany(fetch = FetchType.LAZY)  //#5762 M:N now
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    //TODO
+    @Merge(MergeMode.ADD_CLONE)
+    @NotNull
+    private Set<Rights> rights = new HashSet<>();
 
 //*********************** FACTORY *********************************/
 
@@ -158,12 +176,9 @@ public class TaxonDescription
 
 //************************** METHODS **********************************************/
 
-
     public Taxon getTaxon() {
         return taxon;
     }
-
-
     protected void setTaxon(Taxon taxon) {
     	//TODO needs correct bidirectional handling before making it public
     	this.taxon = taxon;
@@ -176,7 +191,6 @@ public class TaxonDescription
     public Set<NamedArea> getGeoScopes(){
         return this.geoScopes;
     }
-
     /**
      * Adds a {@link NamedArea named area} to the set of {@link #getGeoScopes() named areas}
      * delimiting the geospatial area where <i>this</i> taxon description is valid.
@@ -187,7 +201,6 @@ public class TaxonDescription
     public void addGeoScope(NamedArea geoScope){
         this.geoScopes.add(geoScope);
     }
-
     /**
      * Removes one element from the set of {@link #getGeoScopes() named areas} delimiting
      * the geospatial area where <i>this</i> taxon description is valid.
@@ -200,7 +213,6 @@ public class TaxonDescription
         this.geoScopes.remove(geoScope);
     }
 
-
     /**
      * Returns the set of {@link Scope scopes} (this covers mostly terms for {@link TermType#Stage life stage}
      * or {@link TermType#Sex sex} or both)
@@ -210,7 +222,6 @@ public class TaxonDescription
     public Set<DefinedTerm> getScopes(){
         return this.scopes;
     }
-
     /**
      * Adds a {@link Scope scope} (mostly a <code>life stage</code> or <code>sex</code> term)
      * to the set of {@link #getScopes() scopes} restricting the validity of
@@ -222,7 +233,6 @@ public class TaxonDescription
     public void addScope(DefinedTerm scope){
         this.scopes.add(scope);
     }
-
     /**
      * Removes one element from the set of {@link #getScopes() scopes}
      * restricting the validity of <i>this</i> taxon description.
@@ -258,6 +268,43 @@ public class TaxonDescription
         return this.taxon;
     }
 
+    //************* RIGHTS *************************************
+
+    @Override
+    public Set<Rights> getRights() {
+        if(rights == null) {
+            this.rights = new HashSet<>();
+        }
+        return this.rights;
+    }
+    @Override
+    public void addRights(Rights right){
+        getRights().add(right);
+    }
+    @Override
+    public void removeRights(Rights right){
+        getRights().remove(right);
+    }
+
+//***************** SUPPLEMENTAL DATA **************************************/
+
+    @Override
+    @Transient
+    public boolean hasSupplementalData() {
+        return super.hasSupplementalData()
+                || !this.rights.isEmpty()
+                ;
+    }
+
+    @Override
+    public boolean hasSupplementalData(Set<UUID> exceptFor) {
+        return super.hasSupplementalData(exceptFor)
+           || this.rights.stream().filter(
+                   r->r.getType() == null
+                   || ! exceptFor.contains(r.getType().getUuid()))
+               .findAny().isPresent()
+           ;
+    }
 
 //*********************** CLONE ********************************************************/
 
@@ -283,6 +330,12 @@ public class TaxonDescription
         result.geoScopes = new HashSet<>();
         for (NamedArea namedArea : getGeoScopes()){
             result.geoScopes.add(namedArea);
+        }
+
+        //Rights  - reusable since #5762
+        result.rights = new HashSet<>();
+        for(Rights right : getRights()) {
+            result.addRights(right);
         }
 
         //no changes to: taxon

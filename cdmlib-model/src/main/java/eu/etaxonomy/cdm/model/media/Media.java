@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
@@ -58,6 +60,8 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.media.IMediaCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.media.MediaDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
@@ -78,7 +82,8 @@ import eu.etaxonomy.cdm.validation.Level2;
     "description",
     "representations",
     "artist",
-    "link"
+    "link",
+    "rights"
 })
 @XmlRootElement(name = "Media")
 @Entity
@@ -149,6 +154,15 @@ public class Media
     @IndexedEmbedded
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     private ExternalLink link;
+
+    @XmlElementWrapper(name = "Rights", nillable = true)
+    @XmlElement(name = "Rights")
+    @ManyToMany(fetch = FetchType.LAZY)  //#5762 M:N now
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    //TODO
+    @Merge(MergeMode.ADD_CLONE)
+    @NotNull
+    private Set<Rights> rights = new HashSet<>();
 
 //************************* FACTORY METHODS *******************************/
 
@@ -237,6 +251,25 @@ public class Media
     }
     public void setLink(ExternalLink link) {
         this.link = link;
+    }
+
+
+//************* RIGHTS *************************************
+
+    @Override
+    public Set<Rights> getRights() {
+        if(rights == null) {
+            this.rights = new HashSet<>();
+        }
+        return this.rights;
+    }
+    @Override
+    public void addRights(Rights right){
+        getRights().add(right);
+    }
+    @Override
+    public void removeRights(Rights right){
+        getRights().remove(right);
     }
 
 //************************ title / title cache *********************************
@@ -397,6 +430,26 @@ public class Media
         return source;
     }
 
+//***************** SUPPLEMENTAL DATA **************************************/
+
+    @Override
+    @Transient
+    public boolean hasSupplementalData() {
+        return super.hasSupplementalData()
+                || !this.rights.isEmpty()
+                ;
+    }
+
+    @Override
+    public boolean hasSupplementalData(Set<UUID> exceptFor) {
+        return super.hasSupplementalData(exceptFor)
+           || this.rights.stream().filter(
+                   r->r.getType() == null
+                   || ! exceptFor.contains(r.getType().getUuid()))
+               .findAny().isPresent()
+           ;
+    }
+
 //************************* CLONE **************************/
 
     @Override
@@ -416,6 +469,12 @@ public class Media
 
         result.link = this.link != null ? this.link.clone(): null;
 
+        //Rights  - reusable since #5762
+        result.rights = new HashSet<>();
+        for(Rights right : getRights()) {
+            result.addRights(right);
+        }
+
         //no changes to: artist
         return result;
     }
@@ -423,7 +482,4 @@ public class Media
     public int compareTo(Object o) {
         return 0;
     }
-
-
-
 }

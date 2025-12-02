@@ -20,7 +20,6 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
@@ -54,7 +53,6 @@ import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
-import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -87,8 +85,7 @@ import eu.etaxonomy.cdm.validation.Level2;
     "credits",
     "extensions",
     "identifiers",
-    "links",
-    "rights"
+    "links"
 })
 @Audited
 @MappedSuperclass
@@ -127,15 +124,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     //if true titleCache will not be automatically generated/updated
     @XmlElement(name = "ProtectedTitleCache")
     protected boolean protectedTitleCache;
-
-    @XmlElementWrapper(name = "Rights", nillable = true)
-    @XmlElement(name = "Rights")
-    @ManyToMany(fetch = FetchType.LAZY)  //#5762 M:N now
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    //TODO
-    @Merge(MergeMode.ADD_CLONE)
-    @NotNull
-    private Set<Rights> rights = new HashSet<>();
 
     @XmlElementWrapper(name = "Credits", nillable = true)
     @XmlElement(name = "Credit")
@@ -321,22 +309,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     public void setLsid(LSID lsid){
         this.lsid = lsid;
     }
-
-//************* RIGHTS *************************************
-
-    public Set<Rights> getRights() {
-        if(rights == null) {
-            this.rights = new HashSet<>();
-        }
-        return this.rights;
-    }
-    public void addRights(Rights right){
-        getRights().add(right);
-    }
-    public void removeRights(Rights right){
-        getRights().remove(right);
-    }
-
 
 //********************** External Links **********************************************
 
@@ -649,7 +621,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
                 || !this.credits.isEmpty()
                 || !this.extensions.isEmpty()
                 || !this.identifiers.isEmpty()
-                || !this.rights.isEmpty()
                 || !this.links.isEmpty() //does this belong to supplemental data?
                 ;
     }
@@ -665,10 +636,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
            || this.identifiers.stream().filter(
                    i->i.getType() == null
                    || ! exceptFor.contains(i.getType().getUuid()))
-               .findAny().isPresent()
-           || this.rights.stream().filter(
-                   r->r.getType() == null
-                   || ! exceptFor.contains(r.getType().getUuid()))
                .findAny().isPresent()
            || this.links.stream().filter(
                    l->l.getLinkType() == null
@@ -747,12 +714,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         for (Identifier identifier : getIdentifiers() ){
         	Identifier newIdentifier = identifier.clone();
             result.addIdentifier(newIdentifier);
-        }
-
-        //Rights  - reusable since #5762
-        result.rights = new HashSet<>();
-        for(Rights right : getRights()) {
-            result.addRights(right);
         }
 
         //Credits
