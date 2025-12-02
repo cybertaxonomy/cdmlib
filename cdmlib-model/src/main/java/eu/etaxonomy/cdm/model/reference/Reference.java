@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -21,6 +22,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -29,6 +32,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -39,6 +43,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -59,7 +65,9 @@ import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -128,6 +136,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "school",
     "organization",
     "inReference",
+    "credits",
     "accessed",
     "externallyManaged",
 })
@@ -145,7 +154,7 @@ public class Reference
         implements IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection, ICdDvd,
                    IGeneric, IInProceedings, IProceedings, IPrintSeries, IReport,
                    IThesis, IWebPage, IPersonalCommunication,
-                   IIntextReferenceTarget, IHasLink {
+                   IIntextReferenceTarget, IHasLink, IHasCredits {
 
     private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = LogManager.getLogger();
@@ -353,6 +362,16 @@ public class Reference
     @XmlElement(name ="authorIsEditor")
    // @CacheUpdate("nameCache")  TODO do we need a cache update here?
     private boolean authorIsEditor = false;
+
+    @XmlElementWrapper(name = "Credits", nillable = true)
+    @XmlElement(name = "Credit")
+    @OrderColumn(name="sortIndex")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    //TODO
+    @Merge(MergeMode.ADD_CLONE)
+    @NotNull
+    private List<Credit> credits = new ArrayList<>();
 
     private ExternallyManaged externallyManaged;
 
@@ -814,6 +833,45 @@ public class Reference
 	    this.nomenclaturallyRelevant = nomenclaturallyRelevant;
 	}
 
+//********************** CREDITS **********************************************
+
+    @Override
+    public List<Credit> getCredits() {
+        if(credits == null) {
+            this.credits = new ArrayList<>();
+        }
+        return this.credits;
+    }
+
+    @Override
+    public Credit getCredits(Integer index){
+        return getCredits().get(index);
+    }
+
+    @Override
+    public void addCredit(Credit credit){
+        getCredits().add(credit);
+    }
+
+    @Override
+    public void addCredit(Credit credit, int index){
+        getCredits().add(index, credit);
+    }
+
+    @Override
+    public void removeCredit(Credit credit){
+        getCredits().remove(credit);
+    }
+
+    @Override
+    public void removeCredit(int index){
+        getCredits().remove(index);
+    }
+
+    @Override
+    public boolean replaceCredit(Credit newObject, Credit oldObject){
+        return replaceInList(this.credits, newObject, oldObject);
+    }
 
 //****************************************************  /
 

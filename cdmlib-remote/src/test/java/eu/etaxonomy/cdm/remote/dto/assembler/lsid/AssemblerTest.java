@@ -48,6 +48,7 @@ import com.ibm.lsid.MalformedLSIDException;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -187,6 +188,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         bookSection.setReferenceAbstract("referenceAbstract");
         bookSection.setUri(new URI("http://persitent.books.foo/myBookSection"));
         bookSection.setUuid(UUID.randomUUID());
+        bookSection.addCredit(Credit.NewInstance(authorship, null, "Credits to the authorship"));
         bookSection.addSource(IdentifiableSource.NewDataImportInstance("http://persitent.IdentifiableSources.foo/2"));
     }
 

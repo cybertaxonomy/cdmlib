@@ -551,6 +551,15 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		article1.addMarker(marker1);
 		article2.addMarker(marker2);
 
+		Team creditTeam1 = Team.NewInstance();
+		Team creditTeam2 = Team.NewInstance();
+		agentDao.save(creditTeam1);
+		agentDao.save(creditTeam2);
+        Credit credit1 = Credit.NewInstance(creditTeam1, TimePeriod.NewInstance(2002), "credit1");
+		Credit credit2 = Credit.NewInstance(creditTeam2, TimePeriod.NewInstance(2015), "credit2");
+		article1.addCredit(credit1);
+		article2.addCredit(credit2);
+
 		Extension extension1 = Extension.NewInstance();
 		Extension extension2 = Extension.NewInstance();
 
@@ -595,6 +604,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 		//Marker
 		Assert.assertEquals("Marker number should be 2 (1 from each of the merged objects)", 2, article1.getMarkers().size());
+
+		//Credits
+		Assert.assertEquals("Credits number should be 2 (1 from each of the merged objects)", 2, article1.getCredits().size());
 
 		//Extensions
 		Assert.assertEquals("Extensions number should be 2 (1 from each of the merged objects)", 2, article1.getExtensions().size());
