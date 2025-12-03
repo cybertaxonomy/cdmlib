@@ -33,10 +33,10 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
 
     //0  - see #10103
     /**
-     * Placement without doubt.
+     * Placement without doubt (default)
      */
     @XmlEnumValue("Included")
-    INCLDUDED(UUID.fromString("7601cc89-8896-4b85-a83e-91700fe45a1d"), "Included (default)","Taxon included in parent taxon (default)", "INC", "", null),
+    INCLDUDED(UUID.fromString("7601cc89-8896-4b85-a83e-91700fe45a1d"), "Included","Taxon included in parent taxon", "INC", "", null),
 
     //1  - see #8281
     /**
