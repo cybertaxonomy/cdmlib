@@ -1247,6 +1247,17 @@ public class NameServiceImpl
                         name.setOriginalSpelling(duplicate);
                     }
                 }
+                for (HybridRelationship rel : name.getHybridChildRelations()) {
+                    TaxonName parent = rel.getParentName();
+                    if (parent != null && !parent.isPersisted()) {
+                        IMatchStrategy nameMatcher = MatchStrategyFactory.NewParsedHybridParentInstance();
+                        List<TaxonName> matchingNames = commonService.findMatching(parent, nameMatcher);
+                        if(matchingNames.size() >= 1){
+                            TaxonName duplicate = findBestMatching(parent, matchingNames, nameMatcher);
+                            rel.setParentName(duplicate);
+                        }
+                    }
+                }
 
 //              LogUtils.setLevel("org.hibernate.SQL", sqlLogLevel);
             } catch (MatchException e) {

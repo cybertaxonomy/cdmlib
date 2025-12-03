@@ -1091,26 +1091,72 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Assert.assertEquals(3, nameService.count(TaxonName.class));
 
-        String nameToParseStr = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"alpa\"]";
+        String nameToParseStr = "Abies alba Mill., Sp. Pl. 2: 333. 1751 [as \"alpa\"]";
         UpdateResult parsedNameResult = nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true);
 
-        TaxonName parsedName = (TaxonName)parsedNameResult.getCdmEntity();
-        UUID parsedNameUuid = parsedName.getUuid();
-        UUID originalSpellingUuid = parsedName.getOriginalSpelling().getUuid();
-        TaxonName originalSpellingName = parsedName.getOriginalSpelling();
-        save(parsedName.getNomenclaturalReference());
-        agentService.merge(parsedName.getCombinationAuthorship(), true);
+        TaxonName abiesAlbaMill = (TaxonName)parsedNameResult.getCdmEntity();
+        UUID abiesAlbaMillUuid = abiesAlbaMill.getUuid();
+        UUID originalSpellingUuid = abiesAlbaMill.getOriginalSpelling().getUuid();
+        TaxonName originalSpellingName = abiesAlbaMill.getOriginalSpelling();
+        save(abiesAlbaMill.getNomenclaturalReference());
+        agentService.merge(abiesAlbaMill.getCombinationAuthorship(), true);
 //        referenceService.merge(parsedName.getNomenclaturalReference());
         nameService.merge(originalSpellingName, true);
-        nameService.merge(parsedName, true);
-
+        nameService.merge(abiesAlbaMill, true);
         nameService.getSession().flush();
+
+        //parse again the same string and check that e.g. original spelling is deduplicated
         TaxonName parsedName2 = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true).getCdmEntity();
-        UUID parsedNameUuid2 = parsedName2.getUuid();
+        UUID abiesAlbaMill2Uuid = parsedName2.getUuid();
         UUID originalSpelling2Uuid = parsedName2.getOriginalSpelling().getUuid();
         Assert.assertEquals(originalSpellingUuid, originalSpelling2Uuid);
-        Assert.assertNotEquals(parsedNameUuid, parsedNameUuid2);  //currently we do not deduplicate the main name yet
+        Assert.assertNotEquals(abiesAlbaMillUuid, abiesAlbaMill2Uuid);  //currently we do not deduplicate the main name yet
 
+        //try with hybrids
+        nameToParseStr = "Abies alba x Pinus alba";
+        parsedNameResult = nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true);
+        TaxonName hybridFormName = (TaxonName)parsedNameResult.getCdmEntity();
+        Set<HybridRelationship> rels = hybridFormName.getHybridChildRelations();
+        TaxonName abiesAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Abies alba")).findFirst().get().getParentName();
+        TaxonName pinusAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Pinus alba")).findFirst().get().getParentName();
+        UUID abiesAlbaUuid = abiesAlbaParent.getUuid();
+        UUID pinusAlbaUuid = pinusAlbaParent.getUuid();
+        nameService.merge(abiesAlbaParent, true);
+        nameService.merge(pinusAlbaParent, true);
+        nameService.merge(hybridFormName, true);
+        nameService.getSession().flush();
+
+        //... parse again
+        TaxonName hybridFormName2 = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true).getCdmEntity();
+        rels = hybridFormName2.getHybridChildRelations();
+        abiesAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Abies alba")).findFirst().get().getParentName();
+        pinusAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Pinus alba")).findFirst().get().getParentName();
+        Assert.assertEquals(abiesAlbaUuid, abiesAlbaParent.getUuid());
+        Assert.assertEquals(pinusAlbaUuid, pinusAlbaParent.getUuid());
+        Assert.assertNotEquals(hybridFormName.getUuid(), hybridFormName2.getUuid());  //currently we do not deduplicate the main name yet
+        //do not persist to avoid having 2 versions of the hybrid formula name persisted (important for following tests)
+
+        nameToParseStr = "Abies alba x Pinus beta";
+        TaxonName hybridFormName3 = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true).getCdmEntity();
+        rels = hybridFormName3.getHybridChildRelations();
+        abiesAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Abies alba")).findFirst().get().getParentName();
+        TaxonName pinusBetaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Pinus beta")).findFirst().get().getParentName();
+        Assert.assertEquals(abiesAlbaUuid, abiesAlbaParent.getUuid());
+        Assert.assertFalse(pinusAlbaUuid.equals(pinusBetaParent.getUuid()));
+        nameService.merge(pinusBetaParent, true);
+        nameService.merge(hybridFormName3, true);
+        nameService.getSession().flush();
+
+        nameToParseStr = "Abies alba Mill. x Pinus beta";
+        TaxonName hybridFormName4 = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true).getCdmEntity();
+        rels = hybridFormName4.getHybridChildRelations();
+        TaxonName abiesAlbaMillParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Abies alba")).findFirst().get().getParentName();
+        pinusBetaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Pinus beta")).findFirst().get().getParentName();
+        Assert.assertEquals("Abies alba Mill. should match existing name from above original spelling test",
+                abiesAlbaMillUuid, abiesAlbaMillParent.getUuid());
+        Assert.assertFalse(pinusAlbaUuid.equals(pinusBetaParent.getUuid()));
+
+        //parse a name xxx
         nameToParseStr = "Campanula aizoon Boiss. & Spruner in Boissiers, Diagn. Pl. Orient. 4: 34. 1844";
         nameService.parseName(parsedName2, nameToParseStr, null, true, true);
         Set<CdmBase> transientObjects = NonViralNameParserImpl.getTransientEntitiesOfParsedName(parsedName2);

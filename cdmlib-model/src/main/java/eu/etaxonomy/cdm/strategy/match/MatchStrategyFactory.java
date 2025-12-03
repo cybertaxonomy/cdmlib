@@ -518,4 +518,68 @@ public class MatchStrategyFactory {
         }
     }
 
+    //NOTE: at the moment this is an exact copy of NewParsedOriginalSpellingInstance
+    public static IParsedMatchStrategy NewParsedHybridParentInstance(){
+        try {
+            IParsedMatchStrategy hybridSpellingMatchStrategy = (IParsedMatchStrategy)NewDefaultInstance(TaxonName.class);
+            addParsedIdentifiableEntityModes(hybridSpellingMatchStrategy, TaxonName.class);
+
+            //authorshipCache, nameCache, fullTitleCache,
+            //protectedFullTitleCache, protectedNameCache, protectedAuthorshipCache,
+            //nomenclaturalSource,
+            hybridSpellingMatchStrategy.setMatchMode("genusOrUninomial", MatchMode.EQUAL_REQUIRED);
+            hybridSpellingMatchStrategy.setMatchMode("nameType", MatchMode.EQUAL_REQUIRED);
+            hybridSpellingMatchStrategy.setMatchMode("rank", MatchMode.EQUAL_REQUIRED);  //?? MatchMode.MATCH_REQUIRED => not yet implemented as Match class
+
+            //equal
+            String[] equalParams = new String[]{"acronym","anamorphic","appendedPhrase",
+                    "binomHybrid", "monomHybrid","trinomHybrid","hybridFormula",
+                    "breed","cultivarEpithet","infraGenericEpithet","infraSpecificEpithet",
+                    "publicationYear","originalPublicationYear","specificEpithet","subGenusAuthorship"};
+            for(String param : equalParams){
+                hybridSpellingMatchStrategy.setMatchMode(param, MatchMode.EQUAL);
+            }
+
+            //equal or first
+            String[] equalOrNullParams = new String[]{"nameApprobation"};
+            for(String param : equalOrNullParams){
+                hybridSpellingMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
+            }
+
+            //match
+            String[] authorMatchParams = new String[]{"combinationAuthorship","basionymAuthorship","exCombinationAuthorship",
+                    "exBasionymAuthorship","inBasionymAuthorship", "inCombinationAuthorship"};
+            for(String param : authorMatchParams){
+                hybridSpellingMatchStrategy.setMatchMode(param, MatchMode.MATCH, NewParsedTeamOrPersonInstance());
+            }
+
+            //match or first
+            String[] matchOrNullParams = new String[]{"nomenclaturalSource"};
+            for(String param : matchOrNullParams){
+                hybridSpellingMatchStrategy.setMatchMode(param, MatchMode.MATCH_OR_FIRST_NULL);
+            }
+
+            //?? should be MatchMode.EQUAL_OR_FIRST_NULL for Collections
+            String[] ignoreCollectionParams = new String[]{"taxonBases", "typeDesignations", "descriptions", "registrations",
+                    "relationsFromThisName", "relationsToThisName", "hybridChildRelations", "hybridParentRelations",
+                    "status"};
+            for(String param : ignoreCollectionParams){
+                hybridSpellingMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
+            }
+
+            //ignore
+            String[] ignoreParams = new String[]{"homotypicalGroup"   //??
+                    ,"parsingProblem", "problemEnds", "problemStarts"};
+            for(String param : ignoreParams){
+                hybridSpellingMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
+            }
+
+            //TODO caches
+
+            return hybridSpellingMatchStrategy;
+        } catch (MatchException e) {
+            throw new RuntimeException("Exception when creating parsed original spelling match strategy.", e);
+        }
+    }
+
 }
