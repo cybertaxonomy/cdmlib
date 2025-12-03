@@ -107,13 +107,16 @@ public class OrderHint implements Serializable {
 
     public static final OrderHint BY_TREE_INDEX_DESC = new OrderHint("treeIndex", SortOrder.DESCENDING);
 
+    //note: originally used for Phycobank, not needed anymore sind #10848
     public static final OrderHint BY_CODE = new OrderHint("code", SortOrder.ASCENDING);
 
     /**
      * Note: NULL LAST is not always supported.
      */
+    //note: originally used for Phycobank, not needed anymore sind #10848
     public static final OrderHint BY_CODE_NULL_LAST = new OrderHint("code", SortOrder.ASCENDING, NULL_LAST);
 
+    //note: originally used for Phycobank, not needed anymore sind #10848
     public static final OrderHint BY_TOWN_OR_LOCATION = new OrderHint("townOrLocation", SortOrder.ASCENDING);
 
 
