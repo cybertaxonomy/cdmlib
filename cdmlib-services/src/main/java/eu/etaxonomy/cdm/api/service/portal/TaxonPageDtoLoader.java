@@ -373,7 +373,10 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 //status
                 TaxonNodeStatus status = node.getStatus();
                 if (status != null) {
-                    dto.setStatus(status.getLabel(language));
+                    //do not show the default status, if no status note exists
+                    if (status != TaxonNodeStatus.INCLDUDED || !node.getPlacementNote().isEmpty()) {
+                        dto.setStatus(status.getLabel(language));
+                    }
                 }
                 //placementNote
                 dto.setPlacementNote(node.preferredPlacementNote(language));
@@ -476,7 +479,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
         formatter.withAccessionNoType(config.isWithAccessionType());  //remove once this becomes the default
         Set<TypeDesignationBase<?>> designations = homotypicalGroup.getTypeDesignations();
         try {
-            TypeDesignationGroupContainer manager = TypeDesignationGroupContainer.NewDefaultInstance((Set)designations);
+            TypeDesignationGroupContainer manager = TypeDesignationGroupContainer.NewDefaultInstance(designations);
             List<TaggedText> tags = formatter.toTaggedText(manager);
             String label = TaggedTextFormatter.createString(tags);
             hgDto.setTypes(label);
