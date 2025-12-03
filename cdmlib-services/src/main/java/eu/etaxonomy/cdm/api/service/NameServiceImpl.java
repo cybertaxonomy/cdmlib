@@ -1105,13 +1105,11 @@ public class NameServiceImpl
         name.setAsGroupsBasionym();
         result.addUpdatedObject(name);
         return result;
-
     }
 
     @Override
     public List<HashMap<String,String>> getNameRecords(){
 		return dao.getNameRecords();
-
     }
 
     @Override
@@ -1223,25 +1221,19 @@ public class NameServiceImpl
                             name.setCombinationAuthorship(nomRef.getAuthorship());
                         }
                     }
-                    TeamOrPersonBase combinationAuthorship = deduplicateAuthor(name.getCombinationAuthorship());
-
-                    name.setCombinationAuthorship(deduplicateAuthor(name.getCombinationAuthorship()));
-
+                    TeamOrPersonBase<?> combinationAuthorship = deduplicateAuthor(name.getCombinationAuthorship());
+                    name.setCombinationAuthorship(combinationAuthorship);
                 }
                 if (name.getExCombinationAuthorship()!= null && !name.getExCombinationAuthorship().isPersisted()){
-                    TeamOrPersonBase exCombinationAuthorship = deduplicateAuthor(name.getExCombinationAuthorship());
-
+                    TeamOrPersonBase<?> exCombinationAuthorship = deduplicateAuthor(name.getExCombinationAuthorship());
                     name.setExCombinationAuthorship(exCombinationAuthorship);
                 }
                 if (name.getBasionymAuthorship()!= null && !name.getBasionymAuthorship().isPersisted()){
-                    TeamOrPersonBase basionymAuthor = deduplicateAuthor(name.getBasionymAuthorship());
-
+                    TeamOrPersonBase<?> basionymAuthor = deduplicateAuthor(name.getBasionymAuthorship());
                     name.setBasionymAuthorship(basionymAuthor);
-
                 }
                 if (name.getExBasionymAuthorship()!= null && !name.getExBasionymAuthorship().isPersisted()){
-                    TeamOrPersonBase exBasionymAuthor = deduplicateAuthor(name.getExBasionymAuthorship());
-
+                    TeamOrPersonBase<?> exBasionymAuthor = deduplicateAuthor(name.getExBasionymAuthorship());
                     name.setExBasionymAuthorship(exBasionymAuthor);
                 }
 
@@ -1254,8 +1246,8 @@ public class NameServiceImpl
                         TaxonName duplicate = findBestMatching(origName, matchingNames, nameMatcher);
                         name.setOriginalSpelling(duplicate);
                     }
-
                 }
+
 //              LogUtils.setLevel("org.hibernate.SQL", sqlLogLevel);
             } catch (MatchException e) {
                 throw new RuntimeException(e);
