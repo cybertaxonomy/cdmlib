@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
@@ -370,16 +371,19 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 //TODO lang/locale
                 Language language = Language.DEFAULT();
 
+                //placementNote
+                dto.setPlacementNote(node.preferredPlacementNote(language));
+
                 //status
                 TaxonNodeStatus status = node.getStatus();
                 if (status != null) {
+
                     //do not show the default status, if no status note exists
-                    if (status != TaxonNodeStatus.INCLDUDED || !node.getPlacementNote().isEmpty()) {
+                    if (status != TaxonNodeStatus.INCLDUDED || StringUtils.isNotBlank(dto.getPlacementNote())) {
                         dto.setStatus(status.getLabel(language));
                     }
                 }
-                //placementNote
-                dto.setPlacementNote(node.preferredPlacementNote(language));
+
 
                 //agent relations
                 Set<TaxonNodeAgentRelation> agents = node.getAgentRelations();
