@@ -12,7 +12,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 
 /**
  * @author a.mueller
@@ -86,14 +88,43 @@ public class CollectorParserTest {
     }
 
     @Test
-    public void testParseTest() {
+    public void testParseInitialsBehindComma() {
 
-        //default
-//        Team team = (Team)parser.parse("Maldonado, M. M. de L., Velazquez, M J de A & Nanez, J. S.");
+        Person person = (Person)parser.parse("Schweinfurt,C.").getEntity();
+        Assert.assertEquals("Schweinfurt", person.getFamilyName());
+        Assert.assertEquals("C.", person.getInitials());
+
+        Team team = (Team)parser.parse("Contreras,C.L.E., Mariaca, M. R. & P"+UTF8.SMALL_E_ACUTE+"rez-Farrera, M. "+UTF8.CAPITAL_A_ACUTE+".")
+                .getEntity();
+        Assert.assertEquals(3, team.getTeamMembers().size());
+        Assert.assertEquals("Contreras", team.getTeamMembers().get(0).getFamilyName());
+        Assert.assertEquals("C.L.E.", team.getTeamMembers().get(0).getInitials());
+        Assert.assertEquals("Mariaca", team.getTeamMembers().get(1).getFamilyName());
+        Assert.assertEquals("M. R.", team.getTeamMembers().get(1).getInitials());
+        Assert.assertEquals("P"+UTF8.SMALL_E_ACUTE+"rez-Farrera", team.getTeamMembers().get(2).getFamilyName());
+        Assert.assertEquals("M. "+UTF8.CAPITAL_A_ACUTE+".", team.getTeamMembers().get(2).getInitials());
+
+        //FIXME Velazquez, M J de A  is not yet correctly recognized
+        team = (Team)parser.parse("Maldonado, M. M. de L., Velazquez, M J de A & Nanez, J. S.").getEntity();
+//        System.out.println(team.getCollectorTitleCache());
 //        Assert.assertEquals(3, team.getTeamMembers().size());
 //        Assert.assertEquals("Maldonado", team.getTeamMembers().get(0).getFamilyName());
 //        Assert.assertEquals("M. M. de L.", team.getTeamMembers().get(0).getInitials());
 //        Assert.assertEquals("M J de A", team.getTeamMembers().get(1).getInitials());
+
+        //FIXME needs discussion how to handle; the below result is not necessarily the expected one
+        //      A solution could be to not return the parsed result but a protectedCollectorCache
+        //      Team or Person
+        ParserResult<TeamOrPersonBase<?>> parseResult = parser.parse("Miller, John & White, Roger");
+        Assert.assertTrue(!parseResult.getWarnings().isEmpty());
+        team = (Team)parseResult.getEntity();
+
+        Assert.assertEquals(4, team.getTeamMembers().size());
+        Assert.assertEquals("Miller", team.getTeamMembers().get(0).getTitleCache());
+        Assert.assertEquals("John", team.getTeamMembers().get(1).getTitleCache());
+        Assert.assertEquals("White", team.getTeamMembers().get(2).getTitleCache());
+        Assert.assertEquals("Roger", team.getTeamMembers().get(3).getTitleCache());
+
 
     }
 
