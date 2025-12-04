@@ -450,11 +450,8 @@ public class MatchStrategyFactory {
         }
     }
 
-    //  public static IMatchStrategy NewParsedNameInstance(){
-    //      IMatchStrategy result = new DefaultMatchStrategy(TaxonName.class);
-    //      return result;
-    //  }
-
+    //NOTE: at the moment this is an exact copy of NewParsedHybridParentInstance
+    //TODO: discuss if we need 2 different methods, as they seem to follow the same rules
     public static IParsedMatchStrategy NewParsedOriginalSpellingInstance(){
         try {
             IParsedMatchStrategy originalSpellingMatchStrategy = (IParsedMatchStrategy)NewDefaultInstance(TaxonName.class);
@@ -519,6 +516,7 @@ public class MatchStrategyFactory {
     }
 
     //NOTE: at the moment this is an exact copy of NewParsedOriginalSpellingInstance
+    //TODO: discuss if we need 2 different methods, as they seem to follow the same rules
     public static IParsedMatchStrategy NewParsedHybridParentInstance(){
         try {
             IParsedMatchStrategy hybridSpellingMatchStrategy = (IParsedMatchStrategy)NewDefaultInstance(TaxonName.class);
