@@ -1628,89 +1628,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             }
             teamOrPerson = authorParser.parse(collectorStr);
         }
-//        String[] teamMembers = collectorStr.split(authorSeparator);
-//
-//        if (teamMembers.length>1){
-//            String lastMember = teamMembers[teamMembers.length -1];
-//            String[] lastMembers = lastMember.split(lastAuthorSeparator);
-//            if (lastMembers[0] != lastMember) {
-//                teamMembers[teamMembers.length -1] = "";
-//            }else {
-//                lastMembers = null;
-//            }
-//            author = Team.NewInstance();
-//            for(String member:teamMembers){
-//                if (!member.equals("")){
-//                    Person teamMember = Person.NewInstance();
-//                    if (isCollector) {
-//                        createCollector(member, teamMember);
-//
-//                    }else {
-//                        teamMember.setNomenclaturalTitle(member);
-//                    }
-//                   ((Team)author).addTeamMember(teamMember);
-//                }
-//            }
-//            if (lastMembers != null && lastMembers.length > 1){
-//                for(String member:lastMembers){
-//                   Person teamMember = Person.NewInstance();
-//                   if (isCollector) {
-//                       createCollector(member, teamMember);
-//                   }else {
-//                       teamMember.setNomenclaturalTitle(member);
-//                   }
-//
-//                   ((Team)author).addTeamMember(teamMember);
-//                }
-//            }
-//        } else {
-//            teamMembers = collectorStr.split(lastAuthorSeparator);
-//            if (teamMembers.length>1){
-//                author = Team.NewInstance();
-//                for(String member:teamMembers){
-//                  Person teamMember = Person.NewInstance();
-//                  if (isCollector) {
-//                      createCollector(member, teamMember);
-//                  }else {
-//                      teamMember.setNomenclaturalTitle(member);
-//                  }
-//
-//                  ((Team)author).addTeamMember(teamMember);
-//                }
-//            }else{
-//                if (isNotBlank(collectorStr)){
-//                    author = Person.NewInstance();
-//                    if (isCollector) {
-//                        createCollector(collectorStr, (Person)author);
-//                    }else {
-//                        ((Person)author).setNomenclaturalTitle(collectorStr);
-//                    }
-//
-//                }else{
-//                    return null;
-//                }
-//
-//            }
-//        }
-
         return teamOrPerson;
     }
 
-    /**
-     * @param collectorStr
-     * @param collector
-     */
-    private static void createCollector(String collectorStr, Person collector) {
-
-        String[] collectorArray = collectorStr.split(",");
-        if (collectorArray.length == 2 ) {
-            collector.setFamilyName(collectorArray[0]);
-            collector.setInitials(collectorArray[1]);
-            collector.getCollectorTitleCache();
-        }else {
-            collector.setCollectorTitle(collectorStr);
-        }
-    }
 
     /**
      * @param state
