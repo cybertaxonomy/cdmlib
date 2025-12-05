@@ -465,12 +465,4 @@ public interface ICdmEntityDao<T extends CdmBase> {
             List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
 
-    /**
-     * @param transientObject
-     * @param returnTransientEntity
-     * @return
-     * @throws DataAccessException
-     */
-    List<MergeResult<T>> merge(List<T> transientObject, boolean returnTransientEntity) throws DataAccessException;
-
 }

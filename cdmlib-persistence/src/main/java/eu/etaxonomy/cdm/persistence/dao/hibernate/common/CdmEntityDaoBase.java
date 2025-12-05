@@ -280,44 +280,19 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             } else {
                 result = new MergeResult(persistentObject, null);
             }
-
+//            if (transientObject instanceof DescriptionBase) {
+//                logger.info("merged object: "+result.getMergedEntity().getUuid() + " - " + result.getMergedEntity().getUserFriendlyTypeName());
+//                for(Object newEntity : result.getNewEntities()) {
+//                    if (newEntity instanceof CdmBase) {
+//                        logger.info("new object: "+((CdmBase)newEntity).getUuid() + " - " + ((CdmBase)newEntity).getUserFriendlyTypeName());
+//                    }
+//                }
+//            }
             return result;
         } finally {
             PostMergeEntityListener.removeSession(session);
         }
     }
-
-    @Override
-    public List<MergeResult<T>> merge(List<T> transientObjects, boolean returnTransientEntity) throws DataAccessException {
-        Session session = getSession();
-        PostMergeEntityListener.addSession(session);
-        List<MergeResult<T>> results = new ArrayList<>();
-        MergeResult<T> result = null;
-        try {
-            for (T transientObject: transientObjects) {
-                @SuppressWarnings("unchecked")
-                T persistentObject = (T) session.merge(transientObject);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("dao merge end");
-                }
-
-                if (returnTransientEntity) {
-                    if (transientObject != null && persistentObject != null) {
-                        transientObject.setId(persistentObject.getId());
-                    }
-                    result = new MergeResult(transientObject, PostMergeEntityListener.getNewEntities(session));
-                } else {
-                    result = new MergeResult(persistentObject, null);
-                }
-                results.add(result);
-            }
-
-            return results;
-        } finally {
-            PostMergeEntityListener.removeSession(session);
-        }
-    }
-
 
     @Override
     public T merge(T transientObject) throws DataAccessException {

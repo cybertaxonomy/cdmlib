@@ -313,11 +313,10 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Override
     @Transactional(readOnly = false)
     public List<MergeResult<T>> merge(List<T> detachedObjects, boolean returnTransientEntity) {
-        List<MergeResult<T>> mergedObjects = dao.merge(detachedObjects, returnTransientEntity);
-
-//        for(T obj : detachedObjects) {
-//            mergedObjects.add(dao.merge(obj, returnTransientEntity));
-//        }
+        List<MergeResult<T>> mergedObjects = new ArrayList<MergeResult<T>>();
+        for(T obj : detachedObjects) {
+            mergedObjects.add(dao.merge(obj, returnTransientEntity));
+        }
         return mergedObjects;
     }
 
