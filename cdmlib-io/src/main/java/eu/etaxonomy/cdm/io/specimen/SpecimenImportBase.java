@@ -1609,19 +1609,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         if (isCollector) {
             CollectorParser parser = CollectorParser.Instance();
             ParserResult result =parser.parse(collectorStr);
-            if (result.getErrors().isEmpty() && result.getExceptions().isEmpty()) {
-                teamOrPerson = (TeamOrPersonBase)result.getEntity();
-            }else {
-                if (result.getEntity() != null) {
-                    teamOrPerson = (TeamOrPersonBase)result.getEntity();
-                }
-                if (!result.getErrors().isEmpty()) {
-                    state.getResult().getErrors().addAll(result.getErrors());
-                }
-                if (!result.getExceptions().isEmpty()) {
-                    state.getResult().getExceptions().addAll(result.getExceptions());
-                }
-            }
+            state.getResult().addParserResultMessages(result);
+            teamOrPerson = (TeamOrPersonBase)result.getEntity();
         }else {
             if (authorParser == null) {
                 authorParser = BibliographicAuthorParser.Instance();

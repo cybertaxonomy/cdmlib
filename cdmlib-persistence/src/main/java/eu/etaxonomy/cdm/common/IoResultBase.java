@@ -85,7 +85,7 @@ public abstract class IoResultBase
 
     //******************* MERGE **************************/
 
-    public void getParserResultMessages(ParserResult<?> parserResult) {
+    public void addParserResultMessages(ParserResult<?> parserResult) {
         parserResult.getWarnings().forEach(w->addWarning(parserResultToIoResult(w)));
         parserResult.getErrors().forEach(w->addError(parserResultToIoResult(w)));
         parserResult.getExceptions().forEach(w->addException(parserResultToIoResult(w)));
