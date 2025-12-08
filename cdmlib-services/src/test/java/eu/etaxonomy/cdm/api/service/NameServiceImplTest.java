@@ -1089,10 +1089,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="NameServiceImplTest.xml")
     public void testParseName() {
 
+        boolean doDeduplicate = true;
         Assert.assertEquals(3, nameService.count(TaxonName.class));
 
         String nameToParseStr = "Abies alba Mill., Sp. Pl. 2: 333. 1751 [as \"alpa\"]";
-        UpdateResult parsedNameResult = nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true);
+        UpdateResult parsedNameResult = nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), doDeduplicate);
 
         TaxonName abiesAlbaMill = (TaxonName)parsedNameResult.getCdmEntity();
         UUID abiesAlbaMillUuid = abiesAlbaMill.getUuid();
@@ -1106,7 +1107,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameService.getSession().flush();
 
         //parse again the same string and check that e.g. original spelling is deduplicated
-        TaxonName parsedName2 = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true).getCdmEntity();
+        TaxonName parsedName2 = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), doDeduplicate).getCdmEntity();
         UUID abiesAlbaMill2Uuid = parsedName2.getUuid();
         UUID originalSpelling2Uuid = parsedName2.getOriginalSpelling().getUuid();
         Assert.assertEquals(originalSpellingUuid, originalSpelling2Uuid);
@@ -1114,7 +1115,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         //try with hybrids
         nameToParseStr = "Abies alba x Pinus alba";
-        parsedNameResult = nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true);
+        parsedNameResult = nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), doDeduplicate);
         TaxonName hybridFormName = (TaxonName)parsedNameResult.getCdmEntity();
         Set<HybridRelationship> rels = hybridFormName.getHybridChildRelations();
         TaxonName abiesAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Abies alba")).findFirst().get().getParentName();
