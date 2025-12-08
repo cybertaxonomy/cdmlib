@@ -2208,10 +2208,11 @@ public class ColDpClassificationExport
             //issued TODO 2 reference issued formatting
             csvLine[table.getIndex(ColDpExportTable.REF_ISSUED)] = reference.getDatePublishedString();
 
-            //accessed TODO 2 reference accessed also for source and formatting
-            if (reference.getAccessed() != null) {
-                csvLine[table.getIndex(ColDpExportTable.REF_ACCESSED)] = reference.getAccessed().toDate().toString();
-            }
+            //accessed TODO 1 reference accessed also for source and formatting
+            //FIXME reference.getAccessed() not available any more, use source instead if possible
+//            if (reference.getAccessed() != null) {
+//                csvLine[table.getIndex(ColDpExportTable.REF_ACCESSED)] = reference.getAccessed().toDate().toString();
+//            }
 
             if (reference.getInSeries() != null) {
                 Reference series = reference.getInReference();

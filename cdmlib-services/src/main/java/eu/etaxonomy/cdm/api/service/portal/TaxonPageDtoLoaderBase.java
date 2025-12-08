@@ -291,9 +291,6 @@ public abstract class TaxonPageDtoLoaderBase {
         //accessed
         if(!TimePeriod.isBlank(source.getAccessed())) {
             sourceDto.setAccessed(source.getAccessed().toString());
-        }else if (ref != null && ref.getAccessed() != null) {
-            //TODO better formatting
-            sourceDto.setAccessed(ref.getAccessed().toString());
         }
 
         //original info

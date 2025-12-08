@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -40,7 +39,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -54,17 +52,14 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.joda.time.DateTime;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
-import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
-import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Credit;
@@ -139,7 +134,6 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "organization",
     "inReference",
     "credits",
-    "accessed",
     "externallyManaged",
 })
 @XmlRootElement(name = "Reference")
@@ -320,15 +314,6 @@ public class Reference
 	@Embedded
 	@IndexedEmbedded
 	private VerbatimTimePeriod datePublished = VerbatimTimePeriod.NewVerbatimInstance();
-
-    //#5258
-    @XmlElement(name = "Accessed", type= String.class)
-    @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    @Type(type="dateTimeUserType")
-    @Basic(fetch = FetchType.LAZY)
-    @Match(MatchMode.EQUAL)
-    @FieldBridge(impl = DateTimeBridge.class)
-    private DateTime accessed;
 
     @XmlElement(name ="Abstract" )
 	@Column(length=CLOB_LENGTH, name="referenceAbstract")
@@ -744,13 +729,6 @@ public class Reference
 		boolean result = !((this.datePublished == null) || isBlank(datePublished.toString()));
 		return result;
 	}
-
-
-	@Override
-	@Deprecated
-    public DateTime getAccessed() {
-        return accessed;
-    }
 
 	/**
 	 * Returns the {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author (team)} who created the

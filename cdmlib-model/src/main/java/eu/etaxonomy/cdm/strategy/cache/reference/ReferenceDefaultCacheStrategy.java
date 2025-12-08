@@ -13,9 +13,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -163,10 +160,7 @@ public class ReferenceDefaultCacheStrategy
                 }
             }
         }
-        if(reference.getAccessed() != null){
-            //TODO still a bit preliminary, also brackets may change in future
-            result = result + getAccessedPart(reference);
-        }
+
         return result;
     }
 
@@ -207,22 +201,6 @@ public class ReferenceDefaultCacheStrategy
             authorStr += author.isInstanceOf(Team.class) ? " (eds.)" : " (ed.)";
         }
         return authorStr;
-    }
-
-    public String getAccessedPart(Reference reference) {
-        if (reference.getAccessed() == null) {
-            return null;
-        }
-        return " [accessed " + getAccessedString(reference.getAccessed()) +"]";
-    }
-
-    private String getAccessedString(DateTime accessed) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
-        String result = formatter.print(accessed);
-        if (result.endsWith(" 00:00")){
-            result = result.replace(" 00:00", "");
-        }
-        return result;
     }
 
     private String addPages(String result, Reference reference) {
