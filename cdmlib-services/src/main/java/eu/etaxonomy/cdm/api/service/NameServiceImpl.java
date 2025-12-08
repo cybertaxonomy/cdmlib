@@ -1255,7 +1255,11 @@ public class NameServiceImpl
                         name.setOriginalSpelling(duplicate);
                     }
                 }
-                for (HybridRelationship rel : name.getHybridChildRelations()) {
+
+                //hybrid relations
+                Set<HybridRelationship> rels = new HashSet<>(name.getHybridChildRelations());
+
+                for (HybridRelationship rel : rels) {
                     TaxonName parent = rel.getParentName();
                     if (parent != null && !parent.isPersisted()) {
                         IMatchStrategy nameMatcher = MatchStrategyFactory.NewParsedHybridParentInstance();

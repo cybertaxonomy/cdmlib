@@ -1105,6 +1105,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameService.merge(originalSpellingName, true);
         nameService.merge(abiesAlbaMill, true);
         nameService.getSession().flush();
+        commitAndStartNewTransaction();
 
         //parse again the same string and check that e.g. original spelling is deduplicated
         TaxonName parsedName2 = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), doDeduplicate).getCdmEntity();
@@ -1126,15 +1127,33 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameService.merge(pinusAlbaParent, true);
         nameService.merge(hybridFormName, true);
         nameService.getSession().flush();
+        commitAndStartNewTransaction();
 
-        //... parse again
-        TaxonName hybridFormName2 = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true).getCdmEntity();
-        rels = hybridFormName2.getHybridChildRelations();
+
+        //... parse again with the same name
+        boolean makeEmpty = true;
+        nameToParseStr = "Babies balba x Pinus balba";
+
+        TaxonName nameToBeFilled = nameService.find(hybridFormName.getUuid());
+        TaxonName hybridFormName2a = (TaxonName)nameService.parseName(nameToBeFilled,
+                nameToParseStr, Rank.SPECIES(),  makeEmpty, doDeduplicate).getCdmEntity();
+        rels = hybridFormName2a.getHybridChildRelations();
         abiesAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Abies alba")).findFirst().get().getParentName();
         pinusAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Pinus alba")).findFirst().get().getParentName();
         Assert.assertEquals(abiesAlbaUuid, abiesAlbaParent.getUuid());
         Assert.assertEquals(pinusAlbaUuid, pinusAlbaParent.getUuid());
-        Assert.assertNotEquals(hybridFormName.getUuid(), hybridFormName2.getUuid());  //currently we do not deduplicate the main name yet
+        Assert.assertEquals("Name should be the same as we use it as nameToBeFilled", hybridFormName.getUuid(), hybridFormName2a.getUuid());  //currently we do not deduplicate the main name yet
+
+        //... parse again same string with new nameToBeFilled
+        commitAndStartNewTransaction();
+        TaxonName hybridFormName2b = (TaxonName)nameService.parseName(
+                nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(),doDeduplicate).getCdmEntity();
+        rels = hybridFormName2b.getHybridChildRelations();
+        abiesAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Abies alba")).findFirst().get().getParentName();
+        pinusAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Pinus alba")).findFirst().get().getParentName();
+        Assert.assertEquals(abiesAlbaUuid, abiesAlbaParent.getUuid());
+        Assert.assertEquals(pinusAlbaUuid, pinusAlbaParent.getUuid());
+        Assert.assertNotEquals("Name should be not the same", hybridFormName.getUuid(), hybridFormName2b.getUuid());  //currently we do not deduplicate the main name yet
         //do not persist to avoid having 2 versions of the hybrid formula name persisted (important for following tests)
 
         nameToParseStr = "Abies alba x Pinus beta";
@@ -1156,6 +1175,20 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Abies alba Mill. should match existing name from above original spelling test",
                 abiesAlbaMillUuid, abiesAlbaMillParent.getUuid());
         Assert.assertFalse(pinusAlbaUuid.equals(pinusBetaParent.getUuid()));
+
+        //... parse again with the same name but new parse string
+        commitAndStartNewTransaction();
+        nameToBeFilled = nameService.find(hybridFormName.getUuid());
+        nameToParseStr = "Blaba daba x Graba naba";
+        TaxonName hybridFormName5 = (TaxonName)nameService.parseName(nameToBeFilled,
+                nameToParseStr, Rank.SPECIES(),  makeEmpty, doDeduplicate).getCdmEntity();
+        rels = hybridFormName5.getHybridChildRelations();
+        abiesAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Abies alba")).findFirst().get().getParentName();
+        pinusAlbaParent = rels.stream().filter(rel->rel.getParentName().getNameCache().equals("Pinus alba")).findFirst().get().getParentName();
+        Assert.assertEquals(abiesAlbaUuid, abiesAlbaParent.getUuid());
+        Assert.assertEquals(pinusAlbaUuid, pinusAlbaParent.getUuid());
+        Assert.assertEquals("Name should be the same as we use it as nameToBeFilled", hybridFormName.getUuid(), hybridFormName5.getUuid());  //currently we do not deduplicate the main name yet
+
 
         //parse a name xxx
         nameToParseStr = "Campanula aizoon Boiss. & Spruner in Boissiers, Diagn. Pl. Orient. 4: 34. 1844";
