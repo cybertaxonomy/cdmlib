@@ -108,7 +108,6 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.IParsedMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
-import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 @Service
@@ -1178,9 +1177,18 @@ public class NameServiceImpl
     @Transactional(readOnly = false) //as long as the deduplication may lead to a flush which may cause a titleCache update, this happens in  CdmGenericDaoImpl.findMatching()
     public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank,
             boolean doEmpty, boolean doDeduplicate){
+
         UpdateResult result = new UpdateResult();
         NonViralNameParserImpl nonViralNameParser = NonViralNameParserImpl.NewInstance();
-        NameParserResult parserResult = nonViralNameParser.parseReferencedName(nameToBeFilled, stringToBeParsed, preferredRank, doEmpty);
+        if (getSession().contains(nameToBeFilled)) {
+            try {
+                throw new IllegalStateException("Name to be used in parsing must not be attached to the session");
+            } catch (Exception e) {
+                result.addException(e);
+                return result;
+            }
+        }
+        nonViralNameParser.parseReferencedName(nameToBeFilled, stringToBeParsed, preferredRank, doEmpty);
         TaxonName name = nameToBeFilled;
         if(doDeduplicate) {
             try {
