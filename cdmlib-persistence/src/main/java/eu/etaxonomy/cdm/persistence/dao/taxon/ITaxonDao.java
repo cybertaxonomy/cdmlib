@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +21,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -124,7 +126,8 @@ public interface ITaxonDao
      * @return a list of TaxonBase instances
      */
     public <T extends TaxonBase> List<T> findTaxaByName(Class<T> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
-            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+            String infraspecificEpithet, String authorshipCache, Rank rank, EnumSet<NomenclaturalCode> nameType,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Find taxa by searching for Taxa and Synonyms where the

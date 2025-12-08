@@ -6,15 +6,16 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.media;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -72,6 +73,25 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
 	public void removeMedia(Media media) {
 		this.media.remove(media);
 	}
+
+
+//***************** SUPPLEMENTAL DATA **************************************/
+
+    @Override
+    @Transient
+    public boolean hasSupplementalData() {
+        return super.hasSupplementalData()
+              || !this.media.isEmpty()
+              ;
+    }
+
+
+    @Override
+    public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
+        return super.hasSupplementalData(exceptFor, ignoreSources)
+                || !this.media.isEmpty() //media has no type therefor no need to check for exceptFor type
+           ;
+    }
 
 //******************** CLONE **********************************************/
 

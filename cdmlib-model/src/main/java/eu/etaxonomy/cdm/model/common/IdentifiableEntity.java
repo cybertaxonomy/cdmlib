@@ -20,7 +20,6 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
@@ -54,7 +53,6 @@ import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
-import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -84,11 +82,9 @@ import eu.etaxonomy.cdm.validation.Level2;
     "lsid",
     "titleCache",
     "protectedTitleCache",
-    "credits",
     "extensions",
     "identifiers",
-    "links",
-    "rights"
+    "links"
 })
 @Audited
 @MappedSuperclass
@@ -128,24 +124,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElement(name = "ProtectedTitleCache")
     protected boolean protectedTitleCache;
 
-    @XmlElementWrapper(name = "Rights", nillable = true)
-    @XmlElement(name = "Rights")
-    @ManyToMany(fetch = FetchType.LAZY)  //#5762 M:N now
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    //TODO
-    @Merge(MergeMode.ADD_CLONE)
-    @NotNull
-    private Set<Rights> rights = new HashSet<>();
-
-    @XmlElementWrapper(name = "Credits", nillable = true)
-    @XmlElement(name = "Credit")
-    @OrderColumn(name="sortIndex")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    //TODO
-    @Merge(MergeMode.ADD_CLONE)
-    @NotNull
-    private List<Credit> credits = new ArrayList<>();
 
     @XmlElementWrapper(name = "Extensions", nillable = true)
     @XmlElement(name = "Extension")
@@ -322,22 +300,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         this.lsid = lsid;
     }
 
-//************* RIGHTS *************************************
-
-    public Set<Rights> getRights() {
-        if(rights == null) {
-            this.rights = new HashSet<>();
-        }
-        return this.rights;
-    }
-    public void addRights(Rights right){
-        getRights().add(right);
-    }
-    public void removeRights(Rights right){
-        getRights().remove(right);
-    }
-
-
 //********************** External Links **********************************************
 
     public Set<ExternalLink> getLinks(){
@@ -363,39 +325,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         if(links.contains(link)) {
             links.remove(link);
         }
-    }
-
-//********************** CREDITS **********************************************
-
-    public List<Credit> getCredits() {
-        if(credits == null) {
-            this.credits = new ArrayList<>();
-        }
-        return this.credits;
-    }
-
-    public Credit getCredits(Integer index){
-        return getCredits().get(index);
-    }
-
-    public void addCredit(Credit credit){
-        getCredits().add(credit);
-    }
-
-    public void addCredit(Credit credit, int index){
-        getCredits().add(index, credit);
-    }
-
-    public void removeCredit(Credit credit){
-        getCredits().remove(credit);
-    }
-
-    public void removeCredit(int index){
-        getCredits().remove(index);
-    }
-
-    public boolean replaceCredit(Credit newObject, Credit oldObject){
-        return replaceInList(this.credits, newObject, oldObject);
     }
 
 //************ IDENTIFIERS ********************************************/
@@ -640,6 +569,36 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return IdentifiableSource.NewInstance(type, idInSource, idNamespace, reference, microReference, originalInfo, target);
     }
 
+//***************** SUPPLEMENTAL DATA **************************************/
+
+    @Override
+    @Transient
+    public boolean hasSupplementalData() {
+        return super.hasSupplementalData()
+                || !this.extensions.isEmpty()
+                || !this.identifiers.isEmpty()
+                || !this.links.isEmpty() //does this belong to supplemental data?
+                ;
+    }
+
+    @Override
+    public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
+        return super.hasSupplementalData(exceptFor, ignoreSources)
+           || this.extensions.stream().filter(
+                   e->e.getType() == null
+                   || ! exceptFor.contains(e.getType().getUuid()))
+               .findAny().isPresent()
+           || this.identifiers.stream().filter(
+                   i->i.getType() == null
+                   || ! exceptFor.contains(i.getType().getUuid()))
+               .findAny().isPresent()
+           || this.links.stream().filter(
+                   l->l.getLinkType() == null
+                   || ! exceptFor.contains(l.getLinkType().getUuid()))
+               .findAny().isPresent()
+           ;
+    }
+
 //******************************** TO STRING *****************************************************/
 
     @Override
@@ -710,19 +669,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         for (Identifier identifier : getIdentifiers() ){
         	Identifier newIdentifier = identifier.clone();
             result.addIdentifier(newIdentifier);
-        }
-
-        //Rights  - reusable since #5762
-        result.rights = new HashSet<>();
-        for(Rights right : getRights()) {
-            result.addRights(right);
-        }
-
-        //Credits
-        result.credits = new ArrayList<>();
-        for(Credit credit : getCredits()) {
-            Credit newCredit = credit.clone();
-            result.addCredit(newCredit);
         }
 
         //Links

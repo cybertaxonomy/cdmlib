@@ -594,7 +594,8 @@ public class ManifestComposer {
         return html.toString();
     }
 
-    private <T extends Resource<T>> T addAttributionAndLicense(IdentifiableEntity<?> entity, T resource, List<MetadataEntry> metadata, String metadataSource) {
+    private <T extends Resource<T>> T addAttributionAndLicense(Media entity, 
+            T resource, List<MetadataEntry> metadata, String metadataSource) {
 
         List<Language> languages = LocaleContext.getLanguages();
 
@@ -604,16 +605,13 @@ public class ManifestComposer {
         MetadataEntry remove = null;
         String copyRightText = "";
 
-
-            for (MetadataEntry entry: metadata) {
-                if (entry.getLabelString().equalsIgnoreCase("copyright")) {
-                    if (metadataSource.contains("mediaServer") || metadataSource.contains("onlyMediaServer")) {
-                        copyRightText = "© " + entry.getValueString();
-                        rightsTexts.add(copyRightText);
-                    }
-                    remove = entry;
-
-
+        for (MetadataEntry entry: metadata) {
+            if (entry.getLabelString().equalsIgnoreCase("copyright")) {
+                if (metadataSource.contains("mediaServer") || metadataSource.contains("onlyMediaServer")) {
+                    copyRightText = "© " + entry.getValueString();
+                    rightsTexts.add(copyRightText);
+                }
+                remove = entry;
             }
         }
 
@@ -701,7 +699,6 @@ public class ManifestComposer {
 
         if(rightsTexts.size() > 0){
             String joinedRights = rightsTexts.stream().collect(Collectors.joining(", "));
-            resource.addAttribution(joinedRights);
 
             if(metadata != null ){
                 if (remove!= null) {
@@ -712,7 +709,6 @@ public class ManifestComposer {
         }
         if(creditTexts.size() > 0){
             String joinedCredits = creditTexts.stream().collect(Collectors.joining(", "));
-            resource.addAttribution(joinedCredits);
             if(metadata != null){
                 metadata.add(new MetadataEntry(new PropertyValue("Credit"), new PropertyValue(joinedCredits)));
             }
@@ -755,7 +751,7 @@ public class ManifestComposer {
         if(index != null){
             indexPart = "/" + index.toString();
         }
-        return this.iiifIdPrefix + onEntitiyType + "/" + onEntityUuid + "/" + iiifType.getSimpleName().toLowerCase() + indexPart;
+        return this.iiifIdPrefix + onEntitiyType + "/" + onEntityUuid + "/" +
+                iiifType.getSimpleName().toLowerCase() + indexPart;
     }
-
 }

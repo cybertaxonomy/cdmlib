@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -58,6 +59,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -896,61 +898,70 @@ public class TaxonDaoHibernateImpl
 
     @Override
     public <T extends TaxonBase> List<T> findTaxaByName(Class<T> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
-            String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+            String infraSpecificEpithet, String authorship, Rank rank, EnumSet<NomenclaturalCode> nameTypes,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
         checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber, List<String> propertyPaths)");
-        Criteria criteria = getCriteria(clazz);
 
-        criteria.setFetchMode( "name", FetchMode.JOIN );
-        criteria.createAlias("name", "name");
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(clazz);
+        Root<T> root = cq.from(clazz);
+        List<Predicate> predicates = new ArrayList<>();
+        Join<T, TaxonName> nameJoin = root.join("name");
 
+        //genusOrUninomial
         if(genusOrUninomial == null) {
-            criteria.add(Restrictions.isNull("name.genusOrUninomial"));
+            predicates.add(predicateIsNull(cb, nameJoin, "genusOrUninomial"));
         } else if(!genusOrUninomial.equals("*")) {
-            criteria.add(Restrictions.eq("name.genusOrUninomial", genusOrUninomial));
+            predicates.add(predicateEqual(cb, nameJoin, "genusOrUninomial", genusOrUninomial));
         }
 
+        //infrageneric epithet
         if(infraGenericEpithet == null) {
-            criteria.add(Restrictions.isNull("name.infraGenericEpithet"));
+            predicates.add(predicateIsNull(cb, nameJoin, "infraGenericEpithet"));
         } else if(!infraGenericEpithet.equals("*")) {
-            criteria.add(Restrictions.eq("name.infraGenericEpithet", infraGenericEpithet));
+            predicates.add(predicateEqual(cb, nameJoin, "infraGenericEpithet", infraGenericEpithet));
         }
 
+        //specific epithet
         if(specificEpithet == null) {
-            criteria.add(Restrictions.isNull("name.specificEpithet"));
+            predicates.add(predicateIsNull(cb, nameJoin, "specificEpithet"));
         } else if(!specificEpithet.equals("*")) {
-            criteria.add(Restrictions.eq("name.specificEpithet", specificEpithet));
+            predicates.add(predicateEqual(cb, nameJoin, "specificEpithet", specificEpithet));
         }
 
+        //infraspecific epithet
         if(infraSpecificEpithet == null) {
-            criteria.add(Restrictions.isNull("name.infraSpecificEpithet"));
+            predicates.add(predicateIsNull(cb, nameJoin, "infraSpecificEpithet"));
         } else if(!infraSpecificEpithet.equals("*")) {
-            criteria.add(Restrictions.eq("name.infraSpecificEpithet", infraSpecificEpithet));
+            predicates.add(predicateEqual(cb, nameJoin, "infraSpecificEpithet", infraSpecificEpithet));
         }
 
+        //authorshipCache
         if(authorship == null) {
-            criteria.add(Restrictions.eq("name.authorshipCache", ""));
+            predicates.add(predicateIsNull(cb, nameJoin, "authorshipCache"));
         } else if(!authorship.equals("*")) {
-            criteria.add(Restrictions.eq("name.authorshipCache", authorship));
+            predicates.add(predicateEqual(cb, nameJoin, "authorshipCache", authorship));
         }
 
+        //rank
         if(rank != null) {
-            criteria.add(Restrictions.eq("name.rank", rank));
+            predicates.add(predicateEqual(cb, nameJoin, "rank", rank));
         }
 
-        if(pageSize != null) {
-            criteria.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                criteria.setFirstResult(pageNumber * pageSize);
-            } else {
-                criteria.setFirstResult(0);
-            }
+        //nameType / nomenclaturalCode
+        if (nameTypes != null) {
+            predicates.add(predicateIn(nameJoin, "nameType", nameTypes));
         }
 
-        @SuppressWarnings({ "unchecked"})
-        List<T> result = criteria.list();
+        cq.select(root)
+          .where(predicateAnd(cb, predicates));
 
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
-        return result;
+        //paging and result
+        List<T> results = addPageSizeAndNumber(getSession().createQuery(cq), pageSize, pageNumber)
+                .getResultList();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
     }
 
     @Override

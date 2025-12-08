@@ -1227,11 +1227,11 @@ public class NonViralNameParserImpl
 				 secondNameString = secondNameString.trim();
 				 nameToBeFilled.setHybridFormula(true);
 				 NomenclaturalCode code = nameToBeFilled.getNameType();
-				 INonViralName firstName = this.parseFullName(givenNameString, code, rank);
+				 TaxonName firstName = (TaxonName)this.parseFullName(givenNameString, code, rank);
 				 if (secondNameString.matches(abbrevHybridSecondPart)){
 				     secondNameString = extendSecondHybridPart(firstName, secondNameString);
 				 }
-				 INonViralName secondName = this.parseFullName(secondNameString, code, rank);
+				 TaxonName secondName = (TaxonName)this.parseFullName(secondNameString, code, rank);
 				 HybridRelationship firstRel = nameToBeFilled.addHybridParent(firstName, HybridRelationshipType.FIRST_PARENT(), null);
 				 HybridRelationship second = nameToBeFilled.addHybridParent(secondName, HybridRelationshipType.SECOND_PARENT(), null);
 				 checkRelationExist(firstRel, existingRelations, notToBeDeleted);
@@ -1249,7 +1249,7 @@ public class NonViralNameParserImpl
 				 nameToBeFilled.setRank(newRank);
 				 //remove not existing hybrid relation
 				 if (makeEmpty){
-		            Set<HybridRelationship> tmpChildRels = new HashSet<HybridRelationship>();
+		            Set<HybridRelationship> tmpChildRels = new HashSet<>();
 		            tmpChildRels.addAll(nameToBeFilled.getHybridChildRelations());
 		            for (HybridRelationship rel : tmpChildRels){
 		                if (! notToBeDeleted.contains(rel)){
@@ -1322,8 +1322,8 @@ public class NonViralNameParserImpl
     /**
      * Checks if a hybrid relation exists in the Set of existing relations
      * and <BR>
-     *  if it does not adds it to relations not to be deleted <BR>
-     *  if it does adds the existing relations to the relations not to be deleted
+     *  if not adds it to relations not to be deleted <BR>
+     *  if it exists adds the existing relations to the relations not to be deleted
      *
      * @param firstRel
      * @param existingRelations

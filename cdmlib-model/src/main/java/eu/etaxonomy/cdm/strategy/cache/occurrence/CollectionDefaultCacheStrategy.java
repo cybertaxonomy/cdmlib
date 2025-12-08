@@ -19,10 +19,8 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
- * A default cache strategy for collections.
- * TODO This is a preliminary implementation to have at least one default cache strategy.
- * Maybe it will need improvement later on.
-
+ * A default cache strategy for {@link Collection}s.
+ *
  * @author a.mueller
  * @since 07.04.2010
  */
@@ -47,17 +45,25 @@ public class CollectionDefaultCacheStrategy
 			return null;
 		}else{
 			String result = "";
-			result = CdmUtils.concat("", result, collection.getName());
-			//add code if it exists
-			if (isNotBlank(collection.getCode())){
-				if (isNotBlank(result)){
-					result += " (" + collection.getCode() +")";
-				}else{
-					result = collection.getCode();
-				}
+			String name = CdmUtils.NzTrim(collection.getName());
+			String code = CdmUtils.NzTrim(collection.getCode());
+
+			//combine code and name
+			if (name != null) {
+			    name = name.equals(code)? null : name;
+			}
+			result = CdmUtils.concat(" - ", code, name);
+
+			//add townOrLocation
+			String town = CdmUtils.NzTrim(collection.getTownOrLocation());
+			if (isBlank(result)) {
+			    result = town;
+			} else if (isNotBlank(town)
+			        && !result.contains(town)){
+			    result += " (" + town+ ")";
 			}
 			//return
-			return result;
+			return isBlank(result) ? collection.toString() : result;
 		}
 	}
 }

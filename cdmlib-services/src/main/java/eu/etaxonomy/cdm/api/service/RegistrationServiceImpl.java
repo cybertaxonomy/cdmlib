@@ -50,8 +50,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Service
 @Transactional(readOnly = true)
-public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration, IRegistrationDao>
-    implements IRegistrationService {
+public class RegistrationServiceImpl
+        extends AnnotatableServiceBase<Registration, IRegistrationDao>
+        implements IRegistrationService {
 
     @Autowired
     @Override
@@ -188,6 +189,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return map;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Registration save(Registration newInstance) {
         return assureIsPersisted(newInstance);
@@ -314,12 +316,15 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
 
         if(!reg.isPersisted()){
             if(minter != null){
-                Identifier<String> identifiers = minter.mint();
-                if(identifiers.getIdentifier() == null){
+                Identifier<String> identifier = minter.mint();
+                if(identifier.getIdentifier() == null){
                     throw new RuntimeException("RegistrationIdentifierMinter configuration incomplete.");
                 }
-                reg.setIdentifier(identifiers.getIdentifier());
-                reg.setSpecificIdentifier(identifiers.getLocalId());
+                reg.setIdentifier(identifier.getIdentifier());
+                reg.setSpecificIdentifier(identifier.getLocalId());
+
+                //registration center /TODO dirty to handle this inside the minter, we need a configurator instead that configures a registration center which includes the minter and the registration center link separately
+                reg.setRegistrationCenter(minter.registrationCenter());
             }
             Authentication authentication = userHelper.getAuthentication();
             reg.setSubmitter((User)authentication.getPrincipal());

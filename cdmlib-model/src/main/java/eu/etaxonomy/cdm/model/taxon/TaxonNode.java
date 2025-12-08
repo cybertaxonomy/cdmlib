@@ -24,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -160,7 +161,8 @@ public class TaxonNode
         parameters = {@Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus")}
     )
     @Audited
-    private TaxonNodeStatus status;
+    @NotNull
+    private TaxonNodeStatus status = TaxonNodeStatus.INCLDUDED;
 
     @XmlElement(name = "placementNote")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
@@ -319,6 +321,9 @@ public class TaxonNode
         return status;
     }
     public void setStatus(TaxonNodeStatus status) {
+        if (status == null) {
+            status = TaxonNodeStatus.INCLDUDED;
+        }
         this.status = status;
     }
 

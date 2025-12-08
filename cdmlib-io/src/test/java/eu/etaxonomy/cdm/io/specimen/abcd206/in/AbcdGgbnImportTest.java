@@ -641,7 +641,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertTrue("Return value for import.invoke should be true", result);
 
         int count = agentService.count(Team.class);
-        //agentService.find(Team.class, "Sch", MatchMode.B);
+
         assertEquals("There should be only one because the used one is already in the database", 1, count);
         List<Taxon> taxonList = taxonService.list(Taxon.class, null, null, null, null);
 
@@ -650,7 +650,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         List<DerivedUnitDTO> derivedUnitDtos = occurrenceService.findByTitleDerivedUnitDTO(dnaConfig);
 
         assertNotNull(derivedUnitDtos.get(0).getCollectorsString());
-        assertEquals("Collectors String is wrong", derivedUnitDtos.get(0).getCollectorsString(), "Schweinfurt,C. & Meyer,B. Rec.It2993/88");
+        assertEquals("Collectors String is wrong", derivedUnitDtos.get(0).getCollectorsString(), "C. Schweinfurt & B. Meyer Rec.It2993/88");
     }
 
 	@Test //#10570
@@ -699,7 +699,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         dnaConfig.setSignificantIdentifier("B 10 0066577");
         List<DerivedUnitDTO> derivedUnitDtos = occurrenceService.findByTitleDerivedUnitDTO(dnaConfig);
         assertNotNull(derivedUnitDtos.get(0).getCollectorsString());
-        assertEquals("Collectors String is wrong", derivedUnitDtos.get(0).getCollectorsString(), "Schweinfurt,C., Leonard,A. & Meyer,B. Rec.It2993/88");
+        assertEquals("Collectors String is wrong", derivedUnitDtos.get(0).getCollectorsString(), "C. Schweinfurt, A. Leonard & B. Meyer Rec.It2993/88");
 
     }
 

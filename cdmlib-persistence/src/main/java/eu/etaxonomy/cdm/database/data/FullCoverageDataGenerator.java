@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
@@ -80,6 +81,7 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.AudioFile;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.ExternalLinkType;
+import eu.etaxonomy.cdm.model.media.IHasRights;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -209,20 +211,20 @@ public class FullCoverageDataGenerator {
 
     private void buildSupplemental(List<CdmBase> entitiesToSave)  {
 
-		Reference ref = ReferenceFactory.newBook();
+		Media media = Media.NewInstance();
 
 		Annotation annotation = Annotation.NewDefaultLanguageInstance("annotation");
-		ref.addAnnotation(annotation);
+		media.addAnnotation(annotation);
 		handleAnnotatableEntity(annotation);
 
 		Person creditedPerson = createNewPerson("Credited person", entitiesToSave);
 		Credit credit = Credit.NewInstance(creditedPerson, TimePeriodParser.parseString("22.4.2022-12.5.2023"),
 		        "refCredit", "rc", Language.DEFAULT());
-		ref.addCredit(credit);
+		media.addCredit(credit);
 		handleAnnotatableEntity(credit);
 
 		Rights rights = Rights.NewInstance("My rights", Language.GERMAN());
-		ref.addRights(rights);
+		media.addRights(rights);
 		handleAnnotatableEntity(rights);
 
 		//Others
@@ -246,7 +248,7 @@ public class FullCoverageDataGenerator {
 		entitiesToSave.add(user);
 		entitiesToSave.add(group);
 		entitiesToSave.add(authority);
-		entitiesToSave.add(ref);
+		entitiesToSave.add(media);
 	}
 
 	private void buildAgents(List<CdmBase> entitiesToSave) {
@@ -942,7 +944,7 @@ public class FullCoverageDataGenerator {
 		registration.setRegistrationDate(DateTime.now());
 		Registration blockingRegistration = Registration.NewInstance();
 		registration.addBlockedBy(blockingRegistration);
-		registration.setInstitution(createNewInstitution(entitiesToSave));
+		registration.setRegistrationCenter(createNewInstitution(entitiesToSave));
 		User submitter = User.NewInstance("submitter", "12345");
 		registration.setSubmitter(submitter);
 		handleAnnotatableEntity(registration);
@@ -978,9 +980,11 @@ public class FullCoverageDataGenerator {
 	    handleAnnotatableEntity(identifiableEntity);
 
 		//Credits
-		Person creditor = createNewPerson("Creditor", entitiesToSave);
-		Credit credit = Credit.NewInstance(creditor, TimePeriod.NewInstance(DateTime.now(), DateTime.now()), "credit");
-		identifiableEntity.addCredit(credit);
+	    if (identifiableEntity instanceof IHasCredits) {
+	        Person creditor = createNewPerson("Creditor", entitiesToSave);
+	        Credit credit = Credit.NewInstance(creditor, TimePeriod.NewInstance(DateTime.now(), DateTime.now()), "credit");
+	        ((IHasCredits)identifiableEntity).addCredit(credit);
+	    }
 
 		//Extension
 		Extension.NewInstance(identifiableEntity, "extension", ExtensionType.INFORMAL_CATEGORY());
@@ -993,13 +997,15 @@ public class FullCoverageDataGenerator {
         identifiableEntity.addLinkWebsite(URI.create("http://a.bc.de"), "Description", Language.ENGLISH());
 
 		//Rights
-		Rights rights = Rights.NewInstance("right", Language.ENGLISH());
-		rights.setUri(URI.create("http://rights.abc.de"));
-		rights.setAbbreviatedText("abbrev");
-		rights.setType(RightsType.COPYRIGHT());
-		Person owner = createNewPerson("Owner", entitiesToSave);
-        rights.setAgent(owner);
-		identifiableEntity.addRights(rights);
+        if (identifiableEntity instanceof IHasRights) {
+            Rights rights = Rights.NewInstance("right", Language.ENGLISH());
+            rights.setUri(URI.create("http://rights.abc.de"));
+            rights.setAbbreviatedText("abbrev");
+            rights.setType(RightsType.COPYRIGHT());
+            Person owner = createNewPerson("Owner", entitiesToSave);
+            rights.setAgent(owner);
+            ((IHasRights)identifiableEntity).addRights(rights);
+        }
 
 		if (identifiableEntity.isInstanceOf(IdentifiableMediaEntity.class)){
 			Media media = Media.NewInstance(URI.create("http://www.identifiableMedia.de"), 22, "img/jpg", "jpg");

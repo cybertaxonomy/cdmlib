@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -486,6 +487,25 @@ public abstract class DescriptionElementBase
     @XmlTransient
     public boolean isCharacterData() {
         return false;
+    }
+
+//***************** SUPPLEMENTAL DATA **************************************/
+
+    @Override
+    @Transient
+    public boolean hasSupplementalData() {
+        return super.hasSupplementalData()
+                || !this.sources.isEmpty();
+    }
+
+    @Override
+    public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
+        return super.hasSupplementalData(exceptFor, ignoreSources)
+           || !ignoreSources && this.sources.stream().filter(
+                s->s.getType() == null
+                    || ! exceptFor.contains(s.getType().getUuid()))
+                .findAny().isPresent()
+           ;
     }
 
 //************************** CLONE **********************************************************/

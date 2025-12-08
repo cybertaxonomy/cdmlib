@@ -100,8 +100,9 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
             inputStream.close();
 
         } catch (Exception e) {
-            logger.error("Could not read: " + cdmImageInfo.getUri() + ". " + e.getMessage());
-            throw new IOException(e);
+            String newMessage = "Could not read: " + cdmImageInfo.getUri() + ". " + e.getMessage();
+            throw new IOException(newMessage, e);
+
         }
 
         return this;
@@ -114,11 +115,11 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
             InputStream inputStream = UriUtils.getInputStream(cdmImageInfo.getUri());
             mediaData = Imaging.getMetadata(inputStream, null);
         }catch (ImageReadException e) {
-            logger.error("Could not read: " + cdmImageInfo.getUri() + ". " + e.getMessage());
-            //throw new IOException(e);
+            String newMessage = "Could not read: " + cdmImageInfo.getUri() + ". " + e.getMessage();
+            throw new IOException(newMessage, e);
         }catch (IOException e) {
-            logger.error("IOException while reading: " + cdmImageInfo.getUri() + ". " + e.getMessage());
-            throw e;
+            String newMessage = "IOException while reading: " + cdmImageInfo.getUri() + ". " + e.getMessage();
+            throw new IOException(newMessage, e);
         }
 
         if(mediaData != null) {

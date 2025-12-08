@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -882,8 +884,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public void testGetTaxonMatchingUninomial() {
-        List<Taxon> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", "*", "*", "*","*",null,null,null,null);
+    public void testFindTaxaByName_Uninomial() {
+
+        EnumSet<NomenclaturalCode> nameTypes = EnumSet.allOf(NomenclaturalCode.class);
+        List<Taxon> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", "*", "*", "*", "*",
+                null, nameTypes, null, null, null);
 
         assertNotNull("findTaxaByName should return a List", result);
         assertEquals("findTaxaByName should return two Taxa",2,result.size());
@@ -892,31 +897,87 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public void testGetTaxonMatchingSpeciesBinomial() {
-        List<Taxon> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", null, "kindermannii", null,"*",null,null,null,null);
+    public void testFindTaxaByName_SpeciesBinomial_And_authorship() {
+        EnumSet<NomenclaturalCode> nameTypes = null;
+        List<Taxon> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", null, "kindermannii",
+                null, "*", null, nameTypes, null, null, null);
 
         assertNotNull("findTaxaByName should return a List", result);
-        assertEquals("findTaxaByName should return one Taxon",1,result.size());
-        assertEquals("findTaxaByName should return a Taxon with id 8",8,result.get(0).getId());
+        assertEquals("findTaxaByName should return one Taxon", 1, result.size());
+        assertEquals("findTaxaByName should return a Taxon with id 8", 8, result.get(0).getId());
+
+        //with author
+        result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", null, "kindermannii",
+                null, "Lederer, 1853", null, nameTypes, null, null, null);
+        assertEquals("findTaxaByName should return one Taxon", 1, result.size());
+        assertEquals("findTaxaByName should return a Taxon with id 8", 8, result.get(0).getId());
+
+        //with incorrect author
+        result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", null, "kindermannii",
+                null, "No matching author", null, nameTypes, null, null, null);
+        assertTrue("findTaxaByName should return no result", result.isEmpty());
+
+        //with incorrect author
+        result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", null, "kindermannii",
+                null, null, null, nameTypes, null, null, null);
+        assertTrue("findTaxaByName should return no result", result.isEmpty());
+
+        //with asterisk author
+        //TODO asterisk not yet supported
+//        result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", null, "kindermannii",
+//                null, "Ledere*", null, nameTypes, null, null, null);
+//        assertEquals("findTaxaByName should return one Taxon", 1, result.size());
+//        assertEquals("findTaxaByName should return a Taxon with id 8", 8, result.get(0).getId());
+
     }
 
     @Test
     @DataSet
-    public void testGetTaxonMatchingTrinomial() {
-        List<Taxon> result = taxonDao.findTaxaByName(Taxon.class,"Cryptocoryne", null,"purpurea","borneoensis","*",null,null,null,null);
+    public void testFindTaxaByName_Trinomial_And_NomCode() {
+        EnumSet<NomenclaturalCode> nameTypes = EnumSet.allOf(NomenclaturalCode.class);
+        List<Taxon> result = taxonDao.findTaxaByName(Taxon.class, "Cryptocoryne", null, "purpurea", "borneoensis", "*",
+                null, nameTypes, null, null, null);
 
         assertNotNull("findTaxaByName should return a List", result);
-        assertEquals("findTaxaByName should return one Taxon",1,result.size());
-        assertEquals("findTaxaByName should return a Taxon with id 38",38,result.get(0).getId());
+        assertEquals("findTaxaByName should return one Taxon", 1, result.size());
+        assertEquals("findTaxaByName should return a Taxon with id 38", 38, result.get(0).getId());
+
+        //filter on ICZN
+        nameTypes = EnumSet.of(NomenclaturalCode.ICZN);
+        result = taxonDao.findTaxaByName(Taxon.class, "Cryptocoryne", null, "purpurea", "borneoensis", "*",
+                null, nameTypes, null, null, null);
+
+        assertNotNull("findTaxaByName should return a List", result);
+        assertTrue("findTaxaByName should be empty as the only matching name is not a zoological name", result.isEmpty());
+
+        //filter on ICNAFP
+        nameTypes = EnumSet.of(NomenclaturalCode.ICNAFP);
+        result = taxonDao.findTaxaByName(Taxon.class, "Cryptocoryne", null, "purpurea", "borneoensis", "*",
+                null, nameTypes, null, null, null);
+
+        assertNotNull("findTaxaByName should return a List", result);
+        assertEquals("findTaxaByName should return one Taxon", 1, result.size());
+        assertEquals("findTaxaByName should return a Taxon with id 38", 38, result.get(0).getId());
+
+        //filter on ICZN and ICNAFP
+        nameTypes = EnumSet.of(NomenclaturalCode.ICNAFP, NomenclaturalCode.ICZN);
+        result = taxonDao.findTaxaByName(Taxon.class, "Cryptocoryne", null, "purpurea", "borneoensis", "*",
+                null, nameTypes, null, null, null);
+
+        assertNotNull("findTaxaByName should return a List", result);
+        assertEquals("findTaxaByName should return one Taxon", 1, result.size());
+        assertEquals("findTaxaByName should return a Taxon with id 38", 38, result.get(0).getId());
     }
 
     @Test
     @DataSet
-    public void testNegativeMatch() {
-        List<Taxon> result = taxonDao.findTaxaByName(Taxon.class,"Acherontia", null,"atropos","dehli",null,null,null,null,null);
+    public void testFindTaxaByName_NegativeMatch() {
+        EnumSet<NomenclaturalCode> nameTypes = EnumSet.allOf(NomenclaturalCode.class);
+        List<Taxon> result = taxonDao.findTaxaByName(Taxon.class, "Acherontia", null, "atropos", "dehli", null,
+                null, nameTypes, null, null, null);
 
         assertNotNull("findTaxaByName should return a List", result);
-        assertTrue("findTaxaByName should return an empty List",result.isEmpty());
+        assertTrue("findTaxaByName should return an empty List", result.isEmpty());
     }
 
     @Test

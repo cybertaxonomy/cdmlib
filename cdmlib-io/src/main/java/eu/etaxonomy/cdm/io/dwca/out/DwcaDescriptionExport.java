@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
@@ -33,6 +34,7 @@ import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.media.IHasRights;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -81,10 +83,10 @@ public class DwcaDescriptionExport extends DwcaDataExportBase {
             	    if (feature != null &&
                             ! feature.equals(Feature.IMAGE()) &&
                             ! config.getFeatureExclusions().contains(feature.getUuid()) &&
-                            ! state.recordExists(file,el)){
+                            ! state.recordExists(file, el)){
             	        if (el.isInstanceOf(TextData.class) ){
             	            DwcaDescriptionRecord record = new DwcaDescriptionRecord(metaRecord, config);
-        	                TextData textData = CdmBase.deproxy(el,TextData.class);
+        	                TextData textData = CdmBase.deproxy(el, TextData.class);
         	                handleTextData(state, record, textData, taxon, config);
         	                PrintWriter writer = createPrintWriter(state, DwcaTaxExportFile.DESCRIPTION);
         	                record.write(state, writer);
@@ -150,7 +152,10 @@ public class DwcaDescriptionExport extends DwcaDataExportBase {
         record.setContributor(null);
         //TODO missing
         record.setAudience(null);
-        record.setLicense(catData.getInDescription().getRights());
+        DescriptionBase<?> description = CdmBase.deproxy(catData.getInDescription());
+        if (description instanceof IHasRights) {
+            record.setLicense(((IHasRights)description).getRights());
+        }
         //TODO missing
         record.setRightsHolder(null);
     }
@@ -226,7 +231,10 @@ public class DwcaDescriptionExport extends DwcaDataExportBase {
         record.setContributor(null);
         //TODO missing
         record.setAudience(null);
-        record.setLicense(descriptionElement.getInDescription().getRights());
+        DescriptionBase<?> description = CdmBase.deproxy(descriptionElement.getInDescription());
+        if (description instanceof IHasRights) {
+            record.setLicense(((IHasRights)description).getRights());
+        }
         //TODO missing
         record.setRightsHolder(null);
     }

@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.metadata.DistributionDescription;
+import eu.etaxonomy.cdm.model.metadata.PublishEnumForMoving;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -253,6 +254,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		Taxon relatedTaxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
 		t1.addTaxonRelation(relatedTaxon, TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
 		Synonym t1HomotypSynonym = Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null);
+		t1HomotypSynonym.getName().setGenusOrUninomial("Synonym");
+		t1HomotypSynonym.getName().setSpecificEpithet("homotypic");
 
 		t1.addHomotypicSynonym(t1HomotypSynonym);
 		TaxonName nameT1 = t1.getName();
@@ -575,7 +578,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	Assert.assertEquals(allNodes.get(2).getTaxon(), abiesBalsamea );
     	Assert.assertEquals(allNodes.get(1).getTaxon(), abiesAlba );
 
-    	taxonNodeService.moveTaxonNode(balsameaNode.getUuid(), abiesAlbaNode.getUuid(),1, SecReferenceHandlingEnum.KeepOrWarn, null);
+    	taxonNodeService.moveTaxonNode(balsameaNode.getUuid(), abiesAlbaNode.getUuid(),1, SecReferenceHandlingEnum.KeepOrWarn, null, PublishEnumForMoving.Keep);
     	commitAndStartNewTransaction();
 
     	classification = classificationService.load(classification.getUuid());

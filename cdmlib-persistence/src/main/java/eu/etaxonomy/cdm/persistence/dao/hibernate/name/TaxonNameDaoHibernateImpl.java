@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -825,7 +824,8 @@ public class TaxonNameDaoHibernateImpl
 
 
     @Override
-    public IZoologicalName findZoologicalNameByUUID(UUID uuid){
+    public TaxonName findZoologicalNameByUUID(UUID uuid){
+
         Criteria criteria = getSession().createCriteria(type);
         if (uuid != null) {
             criteria.add(Restrictions.eq("uuid", uuid));
@@ -840,8 +840,7 @@ public class TaxonNameDaoHibernateImpl
             defaultBeanInitializer.initializeAll(results, null);
             TaxonName taxonName = results.iterator().next();
             if (taxonName.isZoological()) {
-                IZoologicalName zoologicalName = taxonName;
-                return zoologicalName;
+                return taxonName;
             } else {
                 logger.warn("This UUID (" + uuid + ") does not belong to a ZoologicalName. It belongs to: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
             }
@@ -1136,6 +1135,39 @@ public class TaxonNameDaoHibernateImpl
                 + " WHERE (1=1) ";
         if (pattern != null) {
             hql += " AND genusOrUninomial like :pattern ";
+        }
+        if (maxRank != null) {
+            hql += " AND n.rank.orderIndex >= :maxRankIndex ";
+        }
+        if (minRank != null) {
+            hql += " AND n.rank.orderIndex <= :minRankIndex ";
+        }
+
+        Query<String> query = getSession().createQuery(hql, String.class);
+        if (pattern != null) {
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            query.setParameter("pattern", pattern);
+        }
+        if (maxRank != null) {
+            int maxRankIndex = maxRank.getOrderIndex();
+            query.setParameter("maxRankIndex", maxRankIndex);
+        }
+        if (minRank != null) {
+            int minRankIndex = minRank.getOrderIndex();
+            query.setParameter("minRankIndex", minRankIndex);
+        }
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<String> distinctNameCaches(String pattern, Rank maxRank, Rank minRank){
+        String hql = " SELECT DISTINCT n.nameCache "
+                + " FROM TaxonName n "
+                + " WHERE (1=1) ";
+        if (pattern != null) {
+            hql += " AND nameCache like :pattern ";
         }
         if (maxRank != null) {
             hql += " AND n.rank.orderIndex >= :maxRankIndex ";

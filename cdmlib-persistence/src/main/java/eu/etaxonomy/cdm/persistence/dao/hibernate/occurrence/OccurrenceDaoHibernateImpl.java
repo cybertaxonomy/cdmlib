@@ -874,7 +874,7 @@ public class OccurrenceDaoHibernateImpl
                 if(orderStr.length() > 0){
                     orderStr += ", ";
                 }
-                queryString += "sob." + orderHint.getPropertyName() + " " + orderHint.getSortOrder().toHql();
+                queryString += "sob." + orderHint.toHql();
             }
             queryString += orderStr;
         }

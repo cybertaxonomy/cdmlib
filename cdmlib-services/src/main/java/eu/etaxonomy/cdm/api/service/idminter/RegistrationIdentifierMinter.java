@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.idminter;
 
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +19,9 @@ import org.hibernate.StatelessSession;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.model.agent.Institution;
+
 /**
  * @author a.kohlbecker
  * @since Dec 12, 2017
@@ -26,8 +30,19 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
 
     private static final Logger logger = LogManager.getLogger();
 
+    private static final UUID PHYCOBANK_BERLIN_UUID = UUID.fromString("29065db7-2d4c-4d15-bfe3-da6e89fc91c0");
+
     enum Method {
         naturalNumberIncrement
+    }
+
+    enum RegistrationCenter {
+        PHYCOBANK(PHYCOBANK_BERLIN_UUID);
+
+        private UUID registrationCenterUuid;
+        RegistrationCenter(UUID registrationCenterUuid) {
+            this.registrationCenterUuid = registrationCenterUuid;
+        }
     }
 
     private SessionFactory factory;
@@ -36,6 +51,9 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
     protected void setSessionFactory (SessionFactory  factory){
         this.factory = factory;
     }
+
+    @Autowired
+    private IAgentService agentService;
 
     private Integer minLocalId = 1;
 
@@ -46,6 +64,10 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
     private Method method = Method.naturalNumberIncrement;
 
     private Pattern identifierPattern;
+
+    private RegistrationCenter registrationCenter = RegistrationCenter.PHYCOBANK;  //for now hardcoded, needs adaption if other reg.centers should be supported
+
+    private Institution registrationCenterInstitution;
 
     @Override
     public void setMinLocalId(String min) {
@@ -85,11 +107,11 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
         StatelessSession session = factory.openStatelessSession();
         try{
 
-            String filter = " where cast(reg.specificIdentifier as int) >= " + minLocalId + " AND cast(reg.specificIdentifier as int) <= " + maxLocalId;
+            String filter = " WHERE CAST(reg.specificIdentifier AS int) >= " + minLocalId + " AND CAST(reg.specificIdentifier AS int) <= " + maxLocalId;
             if(identifierFormatString != null){
-                filter += " AND reg.identifier like '" + identifierFormatString.replaceAll("%s", "%") + "'";
+                filter += " AND reg.identifier LIKE '" + identifierFormatString.replaceAll("%s", "%") + "'";
             }
-            String hql = "select max(cast(reg.specificIdentifier as int)) from Registration as reg" + filter;
+            String hql = "SELECT MAX(CAST(reg.specificIdentifier AS int)) FROM Registration AS reg" + filter;
 
             // a query with correlated sub-select should allow to filter out registrations which are not matching the formatString
             // but the hql below is not working as expected:
@@ -126,7 +148,7 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
             Identifier<String> identifier = new Identifier<>();
             identifier.localId = localid.toString();
             if(identifierFormatString != null){
-                identifier.identifier = String.format(identifierFormatString, identifier.localId);
+                identifier.identifier = String.format(identifierFormatString, identifier.getLocalId());
             }else {
                 identifier.identifier = String.format("Missing_identifier_format_" + identifier.getLocalId());
             }
@@ -162,5 +184,12 @@ public class RegistrationIdentifierMinter implements IdentifierMinter<String> {
     }
     public void setIdentifierFormatString(String identifierFormatString) {
         this.identifierFormatString = identifierFormatString;
+    }
+
+    public Institution registrationCenter() {
+        if (registrationCenterInstitution == null) {
+            registrationCenterInstitution = (Institution)agentService.find(registrationCenter.registrationCenterUuid);
+        }
+        return registrationCenterInstitution;
     }
 }

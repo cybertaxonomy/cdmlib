@@ -16,6 +16,7 @@ import java.util.UUID;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -189,6 +190,24 @@ public abstract class AnnotatableEntity
             && this.annotations.isEmpty()
             && this.markers.isEmpty()
            ;
+    }
+
+    @Override
+    @Transient
+    public boolean hasSupplementalData() {
+        return ! (this.annotations.isEmpty()
+                && this.markers.isEmpty());
+    }
+
+    @Override
+    public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
+        return this.annotations.stream().filter(
+                a->a.getAnnotationType() == null
+                    || ! exceptFor.contains(a.getAnnotationType().getUuid()))
+                .findAny().isPresent()
+           || this.markers.stream().filter(
+                m->m.getMarkerType() == null
+                    || ! exceptFor.contains(m.getMarkerType().getUuid())).findAny().isPresent();
     }
 
 //********************** CLONE *****************************************/

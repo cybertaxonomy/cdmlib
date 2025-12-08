@@ -371,6 +371,7 @@ public abstract class DaoBase {
     }
 
     protected List<Order> ordersFrom(CriteriaBuilder builder, Root<?> root, List<OrderHint> orderHints) {
+
         List<Order> orders = new ArrayList<>();
         if (CdmUtils.isNullSafeEmpty(orderHints)) {
             return orders;

@@ -108,7 +108,6 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.IParsedMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
-import eu.etaxonomy.cdm.strategy.parser.NameParserResult;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 @Service
@@ -300,6 +299,9 @@ public class NameServiceImpl
             }
         }else if (typeDesignation != null){
             Set<TaxonName> nameSet = new HashSet<>(typeDesignation.getTypifiedNames());
+            if (nameSet.isEmpty()) {
+                typeDesignationDao.delete(typeDesignation);
+            }
             for (TaxonName singleName : nameSet){
                 singleName = CdmBase.deproxy(singleName);
                 removeSingleDesignation(singleName, typeDesignation);
@@ -1102,13 +1104,11 @@ public class NameServiceImpl
         name.setAsGroupsBasionym();
         result.addUpdatedObject(name);
         return result;
-
     }
 
     @Override
     public List<HashMap<String,String>> getNameRecords(){
 		return dao.getNameRecords();
-
     }
 
     @Override
@@ -1177,9 +1177,18 @@ public class NameServiceImpl
     @Transactional(readOnly = false) //as long as the deduplication may lead to a flush which may cause a titleCache update, this happens in  CdmGenericDaoImpl.findMatching()
     public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank,
             boolean doEmpty, boolean doDeduplicate){
+
         UpdateResult result = new UpdateResult();
         NonViralNameParserImpl nonViralNameParser = NonViralNameParserImpl.NewInstance();
-        NameParserResult parserResult = nonViralNameParser.parseReferencedName(nameToBeFilled, stringToBeParsed, preferredRank, doEmpty);
+        if (getSession().contains(nameToBeFilled)) {
+            try {
+                throw new IllegalStateException("Name to be used in parsing must not be attached to the session");
+            } catch (Exception e) {
+                result.addException(e);
+                return result;
+            }
+        }
+        nonViralNameParser.parseReferencedName(nameToBeFilled, stringToBeParsed, preferredRank, doEmpty);
         TaxonName name = nameToBeFilled;
         if(doDeduplicate) {
             try {
@@ -1220,25 +1229,19 @@ public class NameServiceImpl
                             name.setCombinationAuthorship(nomRef.getAuthorship());
                         }
                     }
-                    TeamOrPersonBase combinationAuthorship = deduplicateAuthor(name.getCombinationAuthorship());
-
-                    name.setCombinationAuthorship(deduplicateAuthor(name.getCombinationAuthorship()));
-
+                    TeamOrPersonBase<?> combinationAuthorship = deduplicateAuthor(name.getCombinationAuthorship());
+                    name.setCombinationAuthorship(combinationAuthorship);
                 }
                 if (name.getExCombinationAuthorship()!= null && !name.getExCombinationAuthorship().isPersisted()){
-                    TeamOrPersonBase exCombinationAuthorship = deduplicateAuthor(name.getExCombinationAuthorship());
-
+                    TeamOrPersonBase<?> exCombinationAuthorship = deduplicateAuthor(name.getExCombinationAuthorship());
                     name.setExCombinationAuthorship(exCombinationAuthorship);
                 }
                 if (name.getBasionymAuthorship()!= null && !name.getBasionymAuthorship().isPersisted()){
-                    TeamOrPersonBase basionymAuthor = deduplicateAuthor(name.getBasionymAuthorship());
-
+                    TeamOrPersonBase<?> basionymAuthor = deduplicateAuthor(name.getBasionymAuthorship());
                     name.setBasionymAuthorship(basionymAuthor);
-
                 }
                 if (name.getExBasionymAuthorship()!= null && !name.getExBasionymAuthorship().isPersisted()){
-                    TeamOrPersonBase exBasionymAuthor = deduplicateAuthor(name.getExBasionymAuthorship());
-
+                    TeamOrPersonBase<?> exBasionymAuthor = deduplicateAuthor(name.getExBasionymAuthorship());
                     name.setExBasionymAuthorship(exBasionymAuthor);
                 }
 
@@ -1251,8 +1254,23 @@ public class NameServiceImpl
                         TaxonName duplicate = findBestMatching(origName, matchingNames, nameMatcher);
                         name.setOriginalSpelling(duplicate);
                     }
-
                 }
+
+                //hybrid relations
+                Set<HybridRelationship> rels = new HashSet<>(name.getHybridChildRelations());
+
+                for (HybridRelationship rel : rels) {
+                    TaxonName parent = rel.getParentName();
+                    if (parent != null && !parent.isPersisted()) {
+                        IMatchStrategy nameMatcher = MatchStrategyFactory.NewParsedHybridParentInstance();
+                        List<TaxonName> matchingNames = commonService.findMatching(parent, nameMatcher);
+                        if(matchingNames.size() >= 1){
+                            TaxonName duplicate = findBestMatching(parent, matchingNames, nameMatcher);
+                            rel.setParentName(duplicate);
+                        }
+                    }
+                }
+
 //              LogUtils.setLevel("org.hibernate.SQL", sqlLogLevel);
             } catch (MatchException e) {
                 throw new RuntimeException(e);

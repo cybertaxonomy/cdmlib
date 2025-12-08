@@ -536,7 +536,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		name2.setNomenclaturalReference(article2);
 
 		Taxon taxon1 = Taxon.NewInstance(name1, article1);
-		Taxon taxon2 = Taxon.NewInstance(name2, article2);
 
 //		Person author = Person.NewInstance();
 //		author.setTitleCache("Author");
@@ -551,12 +550,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 		article1.addMarker(marker1);
 		article2.addMarker(marker2);
-
-		Rights rights1 = Rights.NewInstance();
-		Rights rights2 = Rights.NewInstance();
-
-		article1.addRights(rights1);
-		article2.addRights(rights2);
 
 		Team creditTeam1 = Team.NewInstance();
 		Team creditTeam2 = Team.NewInstance();
@@ -611,9 +604,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 		//Marker
 		Assert.assertEquals("Marker number should be 2 (1 from each of the merged objects)", 2, article1.getMarkers().size());
-
-		//Rights
-		Assert.assertEquals("Rights number should be 2 (1 from each of the merged objects)", 2, article1.getRights().size());
 
 		//Credits
 		Assert.assertEquals("Credits number should be 2 (1 from each of the merged objects)", 2, article1.getCredits().size());

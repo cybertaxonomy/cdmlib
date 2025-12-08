@@ -558,13 +558,17 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             if (state.getDataHolder().gatheringAgentsList.isEmpty()) {
                 String agentsText = state.getDataHolder().gatheringAgentsText;
-                Person person = state.getPersonStoreCollector().get(agentsText);
+                TeamOrPersonBase teamOrPerson = parseAgentString(state, agentsText, true);
+                Person person = null;
+                if (teamOrPerson != null) {
+                    person = state.getPersonStoreCollector().get(teamOrPerson.getCollectorTitleCache());
+                }
                 Team team = null;
-                if (person == null) {
-                    team = state.getTeamStoreCollector().get(agentsText);
+                if (person == null && teamOrPerson != null) {
+                    team = state.getTeamStoreCollector().get(teamOrPerson.getCollectorTitleCache());
                 }
                 if (team == null && person == null && StringUtils.isNotBlank(agentsText)){
-                    TeamOrPersonBase teamOrPerson = parseAgentString(agentsText, true);
+//                    teamOrPerson = parseAgentString(agentsText, true);
                     findMatchingAgentAndFillStore(state, teamOrPerson, true);
 
                 }else {
@@ -577,7 +581,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             } else {
                 Team tempTeam = Team.NewInstance();
                 for (String gatheringAgentString: state.getDataHolder().gatheringAgentsList) {
-                    TeamOrPersonBase teamOrPerson = parseAgentString(gatheringAgentString, true);
+                    TeamOrPersonBase teamOrPerson = parseAgentString(state, gatheringAgentString, true);
                     if (teamOrPerson instanceof Person) {
                         tempTeam.addTeamMember((Person)teamOrPerson);
                     }else {
@@ -588,9 +592,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                 Team team = state.getTeamStoreCollector().get(tempTeam.getCollectorTitleCache());
                 if (team == null){
-                    Person person = state.getPersonStoreCollector().get(state.getDataHolder().gatheringAgentsList.toString());
+                    Person person = state.getPersonStoreCollector().get(tempTeam.getCollectorTitleCache());
                     if (person == null) {
-                        TeamOrPersonBase teamOrPerson = parseAgentString(state.getDataHolder().gatheringAgentsList.toString(), true);
+                        TeamOrPersonBase teamOrPerson = parseAgentString(state, state.getDataHolder().gatheringAgentsList.toString(), true);
                         findMatchingAgentAndFillStore(state, teamOrPerson, true);
                         unitsGatheringEvent.setCollector(teamOrPerson, config);
                     }
@@ -879,7 +883,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             String creators = attributes.get("Creators");
 
             if (creators != null) {
-                TeamOrPersonBase creator = parseAgentString(creators, false);
+                TeamOrPersonBase creator = parseAgentString(state, creators, false);
                 creator = findMatchingAgentAndFillStore(state, creator, false);
                 saveTeamOrPersons(state, false);
                 media.setArtist(creator);
@@ -1305,11 +1309,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (!(state.getDataHolder().gatheringAgentsList.isEmpty())) {
                 TeamOrPersonBase<?> teamOrPerson = null;
                 if (state.getDataHolder().gatheringAgentsList.size() == 1) {
-                    teamOrPerson = parseAgentString(state.getDataHolder().gatheringAgentsList.get(0), true);
+
+                    teamOrPerson = parseAgentString(state, state.getDataHolder().gatheringAgentsList.get(0), true);
                 } else {
                     Team team = Team.NewInstance();
                     for (String collector : state.getDataHolder().gatheringAgentsList) {
-                        teamOrPerson = parseAgentString(collector, true);
+                        teamOrPerson = parseAgentString(state, collector, true);
                         if (teamOrPerson instanceof Person) {
                             team.addTeamMember((Person) teamOrPerson);
                         } else {
@@ -1327,7 +1332,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
             if (!StringUtils.isBlank(state.getDataHolder().gatheringAgentsText)
                     && state.getDataHolder().gatheringAgentsList.isEmpty()) {
-                TeamOrPersonBase<?> teamOrPerson = parseAgentString(state.getDataHolder().gatheringAgentsText, true);
+                TeamOrPersonBase<?> teamOrPerson = parseAgentString(state, state.getDataHolder().gatheringAgentsText, true);
 
                 if (!state.getPersonStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache()) && !state.getTeamStoreCollector().containsKey(teamOrPerson.getCollectorTitleCache())) {
                     findMatchingAgentAndFillStore(state, teamOrPerson, true);

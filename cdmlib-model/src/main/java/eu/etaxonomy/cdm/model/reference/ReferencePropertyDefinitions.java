@@ -90,6 +90,7 @@ public class ReferencePropertyDefinitions {
         put(iBook, "isbn");
 
         iBookSection = merge(iSection);
+        put(iBookSection, "title");
         put(iBookSection, "inReference", "inBook");
 
         iProceedings = merge(iPrintedUnitBase);

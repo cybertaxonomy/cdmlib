@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.model.ICdmUuidCacher;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
@@ -124,7 +125,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 //TODO Comparable implemented only for fixing failing JAXB import, may be removed when this is fixed
 public abstract class DefinedTermBase<T extends DefinedTermBase>
             extends TermBase
-            implements IDefinedTerm<T>, Comparable<T> {
+            implements IDefinedTerm<T>, IHasCredits, Comparable<T> {
 
     private static final long serialVersionUID = 2931811562248571531L;
     private static final Logger logger = LogManager.getLogger();

@@ -120,6 +120,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedKindOfUnitVocabulary = UUID.fromString("e7c5deb2-f485-4a66-9104-0c5398efd481");
 	public static final UUID uuidUserDefinedLanguageVocabulary = UUID.fromString("463a96f1-20ba-4a4c-9133-854c1682bd9b");
 	public static final UUID uuidUserDefinedNomenclaturalStatusTypeVocabulary = UUID.fromString("1a5c7745-5588-4151-bc43-9ca22561977b");
+	public static final UUID uuidUserDefinedDeterminationModifierVocabulary = UUID.fromString("4a47da3d-dbc9-4ad7-b71a-71ec474c8485");
 
 
 	private static final String UuidOnly = "UUIDOnly";
@@ -331,6 +332,33 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		return markerType;
 	}
+
+   protected DefinedTerm getDeterminationModifier(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<DefinedTerm> voc, Language language){
+        if (uuid == null){
+            uuid = UUID.randomUUID();
+        }
+        DefinedTerm determinationModifier = state.getDeterminationModifier(uuid);
+        if (determinationModifier == null){
+            determinationModifier = (DefinedTerm)getTermService().find(uuid);
+            if (determinationModifier == null){
+                determinationModifier = DefinedTerm.NewInstance(TermType.DeterminationModifier, description, label, labelAbbrev);
+                if (language != null){
+                    determinationModifier.getRepresentations().iterator().next().setLanguage(language);
+                }
+                determinationModifier.setUuid(uuid);
+                if (voc == null){
+                    boolean isOrdered = false;
+                    voc = getVocabulary(state, TermType.DeterminationModifier, uuidUserDefinedDeterminationModifierVocabulary,
+                            "User defined vocabulary for determination modifiers", "User Defined Determination Modifiers",
+                            null, null, isOrdered, determinationModifier);
+                }
+                voc.addTerm(determinationModifier);
+                getTermService().save(determinationModifier);
+            }
+            state.putDeterminationModifier(determinationModifier);
+        }
+        return determinationModifier;
+    }
 
 	protected AnnotationType getAnnotationType(STATE state, UUID uuid, String label, String text, String labelAbbrev, UUID vocUuid){
 		if (uuid == null){
@@ -1439,9 +1467,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	/**
 	 * Retrieves an Integer value from a result set. If the value is NULL null is returned.
 	 * ResultSet.getInt() returns 0 therefore we need a special handling for this case.
-	 * @param rs
-	 * @param columnName
-	 * @return
 	 * @throws SQLException
 	 */
 	protected Integer nullSafeInt(ResultSet rs, String columnName) throws SQLException {
@@ -1484,11 +1509,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
     /**
      * Converts a given string into an integer. If this is not possible
      * an error is logged in the import result with record location and attribute name.
-     *
-     * @param state
-     * @param strToConvert
-     * @param recordLocation
-     * @param attributeName
      * @return the converted integer
      */
     protected Integer intFromString(STATE state,
@@ -1496,7 +1516,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             String recordLocation,
             String attributeName) {
 
-        if (strToConvert == null){
+        if (isBlank(strToConvert)){
             return null;
         }
         try {
@@ -1525,7 +1545,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
             String recordLocation,
             String attributeName) {
 
-        if (strToConvert == null){
+        if (isBlank(strToConvert)){
             return null;
         }
         try {

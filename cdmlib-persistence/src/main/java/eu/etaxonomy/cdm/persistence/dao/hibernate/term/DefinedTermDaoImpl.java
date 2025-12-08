@@ -280,7 +280,7 @@ public class DefinedTermDaoImpl
 	@Override
     public Language getLanguageByIso(String iso639) {
 		if (iso639.length() < 2 || iso639.length() > 3) {
-			logger.warn("Invalid length " + iso639.length() + " of ISO code. Length must be 2 or 3.");
+			logger.warn("Invalid length " + iso639.length() + " of requested ISO code. Length must be 2 or 3.");
 			return null;
 		}
 		boolean isIso639_1 = iso639.length() == 2;

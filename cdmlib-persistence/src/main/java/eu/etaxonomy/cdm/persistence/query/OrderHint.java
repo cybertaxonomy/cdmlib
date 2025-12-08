@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
+import org.hibernate.NullPrecedence;
 import org.hibernate.criterion.Order;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -33,6 +34,8 @@ public class OrderHint implements Serializable {
 
     private static final long serialVersionUID = -6638812694578112279L;
     private static final Logger logger = LogManager.getLogger();
+
+    private static boolean NULL_LAST = true;
 
     public enum SortOrder {
 
@@ -53,14 +56,17 @@ public class OrderHint implements Serializable {
             hql = hqlStr;
         }
 
-        public String toHql(){
-            return hql;
+        private String toHql(Boolean nullLast){
+            String nullLastStr = nullLast != null && nullLast? " NULL LAST" : "";
+            return hql + nullLastStr;
         }
 
-        public boolean isAsc(){
+        private boolean isAsc(){
             return this == ASCENDING;
         }
     }
+
+    private Boolean nullLast = null;  //if null values should be sorted to the end
 
     private final String propertyName;
 
@@ -77,6 +83,11 @@ public class OrderHint implements Serializable {
     public static final OrderHint ORDER_BY_USERNAME_DESC = new OrderHint("username", SortOrder.DESCENDING);
 
     public static final OrderHint ORDER_BY_NAME = new OrderHint("name", SortOrder.ASCENDING);
+
+    /**
+     * Note: NULL LAST is not always supported.
+     */
+    public static final OrderHint ORDER_BY_NAME_NULL_LAST = new OrderHint("name", SortOrder.ASCENDING);
 
     public static final OrderHint ORDER_BY_NAME_DESC = new OrderHint("name", SortOrder.DESCENDING);
 
@@ -95,6 +106,19 @@ public class OrderHint implements Serializable {
     public static final OrderHint BY_TREE_INDEX = new OrderHint("treeIndex", SortOrder.ASCENDING);
 
     public static final OrderHint BY_TREE_INDEX_DESC = new OrderHint("treeIndex", SortOrder.DESCENDING);
+
+    //note: originally used for Phycobank, not needed anymore sind #10848
+    public static final OrderHint BY_CODE = new OrderHint("code", SortOrder.ASCENDING);
+
+    /**
+     * Note: NULL LAST is not always supported.
+     */
+    //note: originally used for Phycobank, not needed anymore sind #10848
+    public static final OrderHint BY_CODE_NULL_LAST = new OrderHint("code", SortOrder.ASCENDING, NULL_LAST);
+
+    //note: originally used for Phycobank, not needed anymore sind #10848
+    public static final OrderHint BY_TOWN_OR_LOCATION = new OrderHint("townOrLocation", SortOrder.ASCENDING);
+
 
     public List<OrderHint> asList() {
         return Arrays.asList(new OrderHint[]{this});
@@ -119,6 +143,12 @@ public class OrderHint implements Serializable {
     public OrderHint(String fieldName, SortOrder sortOrder) {
         this.propertyName = fieldName;
         this.sortOrder = sortOrder;
+    }
+
+    public OrderHint(String fieldName, SortOrder sortOrder, boolean nullLast) {
+        this.propertyName = fieldName;
+        this.sortOrder = sortOrder;
+        this.nullLast = nullLast;
     }
 
     /**
@@ -167,19 +197,22 @@ public class OrderHint implements Serializable {
                 }
                 path = path + '.';
             }
-            String propname = assocObjs[assocObjs.length - 1];
-            if(isAscending()){
-                c.addOrder(Order.asc(propname));
-            } else {
-                c.addOrder(Order.desc(propname));
-            }
+            String propName = assocObjs[assocObjs.length - 1];
+            createOrder(c, propName);
         } else {
-            if(isAscending()){
-                criteria.addOrder(Order.asc(getPropertyName()));
-            } else {
-                criteria.addOrder(Order.desc(getPropertyName()));
-            }
+            String propName = getPropertyName();
+            createOrder(criteria, propName);
         }
+    }
+
+    private void createOrder(Criteria criteria, String propName) {
+        //order
+        Order order = isAscending() ? Order.asc(propName) : Order.desc(propName);
+        if (this.nullLast != null) {
+            //with JPA Criteria use criteriaBuilder.coalesce() instead to sort 2 columns where the first may have null values (see #10826, https://thorben-janssen.com/hibernate-tips-order-null-criteriaquery/ )
+            order.nulls(  this.nullLast ? NullPrecedence.LAST : NullPrecedence.FIRST);
+        }
+        criteria.addOrder(order);
     }
 
     /**
@@ -211,7 +244,7 @@ public class OrderHint implements Serializable {
         if(propertyName.equals(LUCENE_SCORE)){
             logger.error("LUCENE_SCORE not allowed in hql query");
         }
-        return propertyName + " " + sortOrder.toHql();
+        return propertyName + " " + sortOrder.toHql(nullLast);
     }
 
     /**

@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.strategy.match;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.IHasCredits;
+import eu.etaxonomy.cdm.model.media.IHasRights;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -34,7 +36,7 @@ public class MatchStrategyFactory {
         try {
             IParsedMatchStrategy parsedPersonMatchStrategy = NewParsedInstance(Person.class);
 
-            addParsedAgentBaseMatchModes(parsedPersonMatchStrategy);
+            addParsedAgentBaseMatchModes(parsedPersonMatchStrategy, Person.class);
 
             //FIXME adapt for inRef authors
             parsedPersonMatchStrategy.setMatchMode("nomenclaturalTitle", MatchMode.EQUAL);
@@ -64,12 +66,12 @@ public class MatchStrategyFactory {
         try {
             IParsedMatchStrategy parsedPersonMatchStrategy = NewParsedInstance(Person.class);
 
-            addParsedAgentBaseMatchModes(parsedPersonMatchStrategy);
+            addParsedAgentBaseMatchModes(parsedPersonMatchStrategy, Person.class);
 
-            parsedPersonMatchStrategy.setMatchMode("collectorTitle", MatchMode.EQUAL);
+            parsedPersonMatchStrategy.setMatchMode("collectorTitleCache", MatchMode.EQUAL);
 
             String[] equalOrFirstNullParams = new String[]{"nomenclaturalTitle", "givenName","initials",
-                    "lifespan","orcid","prefix","suffix", "familyName","wikiDataItemId"};
+                    "lifespan","orcid","prefix","suffix", "familyName","wikiDataItemId", "collectorTitle"};
             for(String param : equalOrFirstNullParams){
                 parsedPersonMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
             }
@@ -88,7 +90,7 @@ public class MatchStrategyFactory {
     public static IParsedMatchStrategy NewParsedTeamInstance(){
         IParsedMatchStrategy parsedTeamMatchStrategy = NewParsedInstance(Team.class);
         try {
-            addParsedAgentBaseMatchModes(parsedTeamMatchStrategy);
+            addParsedAgentBaseMatchModes(parsedTeamMatchStrategy, Team.class);
 
             //match
             parsedTeamMatchStrategy.setMatchMode("teamMembers", MatchMode.MATCH, NewParsedPersonInstance());
@@ -121,7 +123,7 @@ public class MatchStrategyFactory {
     public static IParsedMatchStrategy NewParsedCollectorTeamInstance(){
         IParsedMatchStrategy parsedTeamMatchStrategy = NewParsedInstance(Team.class);
         try {
-            addParsedAgentBaseMatchModes(parsedTeamMatchStrategy);
+            addParsedAgentBaseMatchModes(parsedTeamMatchStrategy, Team.class);
 
             //match
             parsedTeamMatchStrategy.setMatchMode("teamMembers", MatchMode.MATCH, NewParsedCollectorPersonInstance());
@@ -269,7 +271,7 @@ public class MatchStrategyFactory {
 
         //TODO externally managed
 
-        addParsedIdentifiableEntityModes(referenceMatchStrategy);
+        addParsedIdentifiableEntityModes(referenceMatchStrategy, Reference.class);
 
         String[] equalOrNullParams = new String[]{"accessed","doi",
                 "institution","isbn","issn","organization",
@@ -319,7 +321,7 @@ public class MatchStrategyFactory {
 
         //TODO externally managed
 
-        addParsedIdentifiableEntityModes(referenceMatchStrategy);
+        addParsedIdentifiableEntityModes(referenceMatchStrategy, Reference.class);
 
         //here the result differs from addParsedReferenceMatchModes
         String[] equalOrNullParams = new String[]{"accessed","doi",
@@ -341,9 +343,10 @@ public class MatchStrategyFactory {
         }
     }
 
-    private static void addParsedAgentBaseMatchModes(IParsedMatchStrategy matchStrategy) throws MatchException {
+    private static void addParsedAgentBaseMatchModes(IParsedMatchStrategy matchStrategy,
+            Class<?> matchClass) throws MatchException {
 
-        addParsedIdentifiableEntityModes(matchStrategy);
+        addParsedIdentifiableEntityModes(matchStrategy, matchClass);
 
         //TODO contact does not yet work, also not with EQUAL_OR_ONE_NULL, leads to agent.id=? or agent.id is null query
         //better should be even handled with MATCH.Equal_OR_ONE_NULL
@@ -357,7 +360,8 @@ public class MatchStrategyFactory {
         }
     }
 
-    private static void addParsedIdentifiableEntityModes(IParsedMatchStrategy matchStrategy) throws MatchException {
+    private static void addParsedIdentifiableEntityModes(IParsedMatchStrategy matchStrategy,
+            Class<?> matchClass) throws MatchException {
 
         addAnnotatableEntityModes(matchStrategy);
 
@@ -368,9 +372,15 @@ public class MatchStrategyFactory {
         for(String param : equalOrNullParams){
             matchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
         }
-        String[] ignoreCollectionParams = new String[]{"credits","extensions","identifiers","links","rights"};
+        String[] ignoreCollectionParams = new String[]{"extensions","identifiers","links"};
         for(String param : ignoreCollectionParams){
             matchStrategy.setMatchMode(param, MatchMode.IGNORE);
+        }
+        if (IHasCredits.class.isAssignableFrom(matchClass)) {
+            matchStrategy.setMatchMode("credits", MatchMode.IGNORE);
+        }
+        if (IHasRights.class.isAssignableFrom(matchClass)) {
+            matchStrategy.setMatchMode("rights", MatchMode.IGNORE);
         }
     }
 
@@ -440,15 +450,12 @@ public class MatchStrategyFactory {
         }
     }
 
-    //  public static IMatchStrategy NewParsedNameInstance(){
-    //      IMatchStrategy result = new DefaultMatchStrategy(TaxonName.class);
-    //      return result;
-    //  }
-
+    //NOTE: at the moment this is an exact copy of NewParsedHybridParentInstance
+    //TODO: discuss if we need 2 different methods, as they seem to follow the same rules
     public static IParsedMatchStrategy NewParsedOriginalSpellingInstance(){
         try {
             IParsedMatchStrategy originalSpellingMatchStrategy = (IParsedMatchStrategy)NewDefaultInstance(TaxonName.class);
-            addParsedIdentifiableEntityModes(originalSpellingMatchStrategy);
+            addParsedIdentifiableEntityModes(originalSpellingMatchStrategy, TaxonName.class);
 
             //authorshipCache, nameCache, fullTitleCache,
             //protectedFullTitleCache, protectedNameCache, protectedAuthorshipCache,
@@ -503,6 +510,71 @@ public class MatchStrategyFactory {
             //TODO caches
 
             return originalSpellingMatchStrategy;
+        } catch (MatchException e) {
+            throw new RuntimeException("Exception when creating parsed original spelling match strategy.", e);
+        }
+    }
+
+    //NOTE: at the moment this is an exact copy of NewParsedOriginalSpellingInstance
+    //TODO: discuss if we need 2 different methods, as they seem to follow the same rules
+    public static IParsedMatchStrategy NewParsedHybridParentInstance(){
+        try {
+            IParsedMatchStrategy hybridSpellingMatchStrategy = (IParsedMatchStrategy)NewDefaultInstance(TaxonName.class);
+            addParsedIdentifiableEntityModes(hybridSpellingMatchStrategy, TaxonName.class);
+
+            //authorshipCache, nameCache, fullTitleCache,
+            //protectedFullTitleCache, protectedNameCache, protectedAuthorshipCache,
+            //nomenclaturalSource,
+            hybridSpellingMatchStrategy.setMatchMode("genusOrUninomial", MatchMode.EQUAL_REQUIRED);
+            hybridSpellingMatchStrategy.setMatchMode("nameType", MatchMode.EQUAL_REQUIRED);
+            hybridSpellingMatchStrategy.setMatchMode("rank", MatchMode.EQUAL_REQUIRED);  //?? MatchMode.MATCH_REQUIRED => not yet implemented as Match class
+
+            //equal
+            String[] equalParams = new String[]{"acronym","anamorphic","appendedPhrase",
+                    "binomHybrid", "monomHybrid","trinomHybrid","hybridFormula",
+                    "breed","cultivarEpithet","infraGenericEpithet","infraSpecificEpithet",
+                    "publicationYear","originalPublicationYear","specificEpithet","subGenusAuthorship"};
+            for(String param : equalParams){
+                hybridSpellingMatchStrategy.setMatchMode(param, MatchMode.EQUAL);
+            }
+
+            //equal or first
+            String[] equalOrNullParams = new String[]{"nameApprobation"};
+            for(String param : equalOrNullParams){
+                hybridSpellingMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
+            }
+
+            //match
+            String[] authorMatchParams = new String[]{"combinationAuthorship","basionymAuthorship","exCombinationAuthorship",
+                    "exBasionymAuthorship","inBasionymAuthorship", "inCombinationAuthorship"};
+            for(String param : authorMatchParams){
+                hybridSpellingMatchStrategy.setMatchMode(param, MatchMode.MATCH, NewParsedTeamOrPersonInstance());
+            }
+
+            //match or first
+            String[] matchOrNullParams = new String[]{"nomenclaturalSource"};
+            for(String param : matchOrNullParams){
+                hybridSpellingMatchStrategy.setMatchMode(param, MatchMode.MATCH_OR_FIRST_NULL);
+            }
+
+            //?? should be MatchMode.EQUAL_OR_FIRST_NULL for Collections
+            String[] ignoreCollectionParams = new String[]{"taxonBases", "typeDesignations", "descriptions", "registrations",
+                    "relationsFromThisName", "relationsToThisName", "hybridChildRelations", "hybridParentRelations",
+                    "status"};
+            for(String param : ignoreCollectionParams){
+                hybridSpellingMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
+            }
+
+            //ignore
+            String[] ignoreParams = new String[]{"homotypicalGroup"   //??
+                    ,"parsingProblem", "problemEnds", "problemStarts"};
+            for(String param : ignoreParams){
+                hybridSpellingMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
+            }
+
+            //TODO caches
+
+            return hybridSpellingMatchStrategy;
         } catch (MatchException e) {
             throw new RuntimeException("Exception when creating parsed original spelling match strategy.", e);
         }

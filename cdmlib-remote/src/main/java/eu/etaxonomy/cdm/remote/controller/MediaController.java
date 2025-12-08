@@ -97,7 +97,7 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
                     result = cdmImageInfo.getMetaData();
                 }
             } catch (IOException | HttpException e) {
-                logger.info(e.getMessage());
+                logger.error(e.getMessage());
                 if(uri != null) {
                     // may happen when applyFilterPreset == false
                     HttpStatusMessage.create("Reading media file from " + uri.toString() + " failed due to (" + e.getMessage() + ")", 400).send(response);

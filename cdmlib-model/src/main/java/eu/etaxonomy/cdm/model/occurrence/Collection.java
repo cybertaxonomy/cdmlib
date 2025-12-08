@@ -128,9 +128,7 @@ public class Collection
 // ******************** CONSTRUCTOR *************************/
 
     //*packet* private required by bytebuddy
-	Collection() {
-		super();
-	}
+	Collection() {}
 
     @Override
     protected void initDefaultCacheStrategy() {

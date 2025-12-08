@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.metadata.DistributionDescription;
+import eu.etaxonomy.cdm.model.metadata.PublishEnumForMoving;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -81,6 +82,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -342,7 +344,7 @@ public class TaxonNodeServiceImpl
         boolean uuidsEqual = (secNewAccepted != null && secOldAccepted != null && secNewAccepted.equals(secOldAccepted)) || (secNewAccepted == null && secOldAccepted == null);
         Reference newSec = citation;
         //keep when same only warns in ui, the sec still
-        if (secHandling != null &&  secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn) ){
+        if (secHandling != null &&  (secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn) || secHandling.equals(SecReferenceHandlingEnum.Keep))){
             newSec = oldTaxon.getSec();
         }
         if (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.AlwaysDelete)){
@@ -387,7 +389,7 @@ public class TaxonNodeServiceImpl
                     srt = synonym.getType();
                 }
             }
-            if (secHandling != null &&  !secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn)){
+            if (secHandling != null &&  !(secHandling.equals(SecReferenceHandlingEnum.KeepOrWarn)|| secHandling.equals(SecReferenceHandlingEnum.Keep))){
                 synonym.setSec(newSec);
                 sourceDao.saveOrUpdate(synonym.getSecSource());
             }
@@ -517,7 +519,7 @@ public class TaxonNodeServiceImpl
         TaxonNode oldTaxonParentNode = oldTaxonNode.getParent();
         TaxonNode newTaxonNode = dao.load(newAcceptedTaxonNodeUUID);
         Reference citation = referenceDao.load(citationUuid);
-
+        Reference synSec;
         switch (secHandling){
             case AlwaysDelete:
                 citation = null;
@@ -526,8 +528,13 @@ public class TaxonNodeServiceImpl
                 citation = newTaxonNode.getTaxon() != null? newTaxonNode.getTaxon().getSec(): null;
                 break;
             case KeepOrWarn:
-
-                Reference synSec = oldTaxonNode.getTaxon().getSec();
+                synSec = oldTaxonNode.getTaxon().getSec();
+                if (synSec != null ){
+                    citation = CdmBase.deproxy(synSec);
+                }
+                break;
+            case Keep:
+                synSec = oldTaxonNode.getTaxon().getSec();
                 if (synSec != null ){
                     citation = CdmBase.deproxy(synSec);
                 }
@@ -800,20 +807,20 @@ public class TaxonNodeServiceImpl
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, int movingType, SecReferenceHandlingEnum secHandling, UUID secUuid){
+    public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, int movingType, SecReferenceHandlingEnum secHandling, UUID secUuid, PublishEnumForMoving behaviourOfPublishFlag){
         TaxonNode taxonNode = HibernateProxyHelper.deproxy(dao.load(taxonNodeUuid));
     	TaxonNode targetNode = HibernateProxyHelper.deproxy(dao.load(targetNodeUuid));
     	Reference sec = null;
     	if (secUuid != null){
     	    sec = HibernateProxyHelper.deproxy(referenceDao.load(secUuid));
     	}
-    	UpdateResult result = moveTaxonNode(taxonNode, targetNode, movingType, secHandling, sec);
+    	UpdateResult result = moveTaxonNode(taxonNode, targetNode, movingType, secHandling, sec, behaviourOfPublishFlag);
     	return result;
     }
 
     @Override
     @Transactional
-    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, int movingType, SecReferenceHandlingEnum secHandling, Reference sec){
+    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, int movingType, SecReferenceHandlingEnum secHandling, Reference sec, PublishEnumForMoving behaviourOfPublishFlag){
         UpdateResult result = new UpdateResult();
 
         TaxonNode parentParent = HibernateProxyHelper.deproxy(newParent.getParent());
@@ -846,14 +853,27 @@ public class TaxonNodeServiceImpl
         }
 
         taxonNode = newParent.addChildNode(taxonNode, sortIndex, taxonNode.getReference(),  taxonNode.getMicroReference());
+        if (behaviourOfPublishFlag.equals(PublishEnumForMoving.InheritFromParent)) {
+            if (newParent.getTaxon() != null) {
+                boolean parentPublishFlag = newParent.getTaxon().isPublish();
+                taxonNode.getTaxon().setPublish(parentPublishFlag);
+                if (taxonNode.getCountChildren() >0) {
+                    PublishForSubtreeConfigurator config = PublishForSubtreeConfigurator.NewInstance(taxonNode.getUuid(), parentPublishFlag, null);
+                    config.setPublish(parentPublishFlag);
+                    setPublishForSubtree(config);
+                }
+            }
+        }
         result.addUpdatedObject(taxonNode);
 
         return result;
     }
 
+
+
     @Override
     @Transactional
-    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType, SecReferenceHandlingEnum secHandling, UUID secUuid, IProgressMonitor monitor){
+    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType, SecReferenceHandlingEnum secHandling, UUID secUuid, PublishEnumForMoving behaviourOfPublishFlag, IProgressMonitor monitor){
 
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
@@ -873,7 +893,7 @@ public class TaxonNodeServiceImpl
             if (!monitor.isCanceled()){
                 if (!nodes.contains(node.getParent())){
                     result.addUpdatedObject(node.getParent());
-                    result.includeResult(moveTaxonNode(node, targetNode, movingType, secHandling, sec));
+                    result.includeResult(moveTaxonNode(node, targetNode, movingType, secHandling, sec, behaviourOfPublishFlag));
                 }
                 monitor.worked(1);
             }else{
@@ -939,6 +959,9 @@ public class TaxonNodeServiceImpl
             }else{
                 if (taxonDto.getNameUuid() != null){
                     name = nameService.load(taxonDto.getNameUuid());
+                    if (taxonDto.getWfoIdentifierString() != null) {
+                        name.addIdentifier(taxonDto.getWfoIdentifierString(), IdentifierType.IDENTIFIER_NAME_WFO());
+                    }
                     if (name == null){
                         throw new RuntimeException("Taxon name not found for id " + taxonDto.getTaxonUuid());
                     }
@@ -947,6 +970,9 @@ public class TaxonNodeServiceImpl
                             taxonDto.getCode(), taxonDto.getPreferredRank(),  true);
 
                     name = (TaxonName)tmpResult.getCdmEntity();
+                    if (taxonDto.getWfoIdentifierString() != null) {
+                        name.addIdentifier(taxonDto.getWfoIdentifierString(), IdentifierType.IDENTIFIER_NAME_WFO());
+                    }
                     Set<CdmBase> transientObjects = new HashSet<>();
                     transientObjects.addAll(NonViralNameParserImpl.getTransientEntitiesOfParsedName(name));
                     genericDao.saveAll(transientObjects);
@@ -971,6 +997,7 @@ public class TaxonNodeServiceImpl
 
                 taxon = Taxon.NewInstance(name, sec);
                 taxon.setPublish(taxonDto.isPublish());
+
             }
 
             parent = dao.load(parentNodeUuid);

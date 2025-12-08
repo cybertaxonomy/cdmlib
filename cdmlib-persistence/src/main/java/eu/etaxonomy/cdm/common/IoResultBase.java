@@ -8,152 +8,93 @@
 */
 package eu.etaxonomy.cdm.common;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import eu.etaxonomy.cdm.common.IoResultBase.IoInfo;
+import eu.etaxonomy.cdm.strategy.parser.ParserResult;
+
 /**
+ * @see ParserResult
  * @author a.mueller
  * @since 24.03.2017
- *
  */
-public abstract class IoResultBase implements Serializable{
+public abstract class IoResultBase
+            extends ResultBase<IoInfo> {
 
     private static final long serialVersionUID = -2077936463767046918L;
 
-    private List<IoInfo> errors = new ArrayList<>();
-    private List<IoInfo> warnings = new ArrayList<>();
-    private List<IoInfo> exceptions = new ArrayList<>();
-
-    public class IoInfo implements Serializable{
+    public class IoInfo extends ResultBase.ResultInfoBase{
         private static final long serialVersionUID = -8077358746590123757L;
-        String message;
-        Exception exception;
-        String codeLocation;
         String dataLocation;
         private IoInfo(String msg, Exception e){
-            this.message = msg;
-            this.exception = e;
+            super(msg, e, null);
         }
-//        private IoInfo(String msg, Exception e, String location){
-//            this.message = msg;
-//            this.exception = e;
-//            this.codeLocation = location;
-//        }
         private IoInfo(String msg, Exception e, String codeLocation, String dataLocation){
-            this.message = msg;
-            this.exception = e;
-            this.codeLocation = codeLocation;
+            super(msg, e, codeLocation);
             this.dataLocation = dataLocation;
         }
 
-        public String getMessage(){
-            return message;
-        }
-
-        public Exception getException(){
-            return exception;
-        }
-        public String getCodeLocation(){
-            return codeLocation;
-        }
         public String getDataLocation(){
             return dataLocation;
         }
+        public IoInfo setDataLocation(String dataLocation){
+            this.dataLocation = dataLocation;
+            return this;
+        }
     }
-
-
 
 // ************* GETTERS / SETTERS / ADDERS ***********************/
 
-    public List<IoInfo> getErrors() {return errors;}
-    public void setErrors(List<IoInfo> ioInfos) {this.errors = ioInfos;}
-    public void addError(String message) {
-        addError(message, null, getLocationByException());
-    }
-    public void addError(String message, Exception e) {
-        addError(message, e, null, null);
-    }
+    //errors
     public void addError(String message, int location) {
         addError(message, null, getLocationByException(), String.valueOf(location));
     }
-    public void addError(String message, String codeLocation) {
-        addError(message, null, codeLocation, null);
-    }
-    public void addError(String message, Exception e, String codeLocation) {
-        addError(message, e, codeLocation, null);
-    }
-    public void addError(String message, Exception e, String codeLocation, String dataLocation) {
-        errors.add(new IoInfo(message, e, makeLocation(e, codeLocation), dataLocation));
+    public void addError(String message, Exception e, String codeLocation, String dataLocation){
+        addError(newResultInfo(message, e, makeLocation(e, codeLocation), dataLocation));
     }
 
-
-    public List<IoInfo> getWarnings() {return warnings;}
-    public void setWarnings(List<IoInfo> warnings) {this.warnings = warnings;}
-    public void addWarning(String message) {
-        addWarning(message, getLocationByException(), null);
-    }
+    //warnings
     public void addWarning(String message, int location) {
         addWarning(message, null, String.valueOf(location));
     }
-    public void addWarning(String message, String codeLocation) {
-        addWarning(message, codeLocation, null);
-    }
     public void addWarning(String message, String codeLocation, String dataLocation) {
-        warnings.add(new IoInfo(message, null, codeLocation, dataLocation));
+        addWarning(newResultInfo(message, null, codeLocation, dataLocation));
     }
 
-
-
-    public List<IoInfo> getExceptions() {return exceptions;}
-    public void setExceptions(List<IoInfo> exceptions) {this.exceptions = exceptions;}
-    public void addException(Exception e) {
-        addException(e, null, null, null);
-    }
-    public void addException(Exception e, String message) {
-        addException(e, message, null, null);
-    }
+    //exceptions
+    @Override
     public void addException(Exception e, String message, String codeLocation) {
         addException(e, message, codeLocation, null);
     }
     public void addException(Exception e, String message, String codeLocation, String dataLocation) {
-        exceptions.add(new IoInfo(message, e, makeLocation(e, codeLocation), dataLocation));
+        addException(newResultInfo(message, e, makeLocation(e, codeLocation), dataLocation));
         setExceptionState();
     }
 
-
-    /**
-     * Computes the location string. If location is not null the location
-     * parameter is returned. If location is <code>null</code> the stacktrace
-     * is examined and tried to retrieve the location from there
-     * @param e
-     * @param location
-     * @return
-     */
-    private String makeLocation(Throwable e, String location) {
-        if (location == null && e != null){
-            StackTraceElement[] stackTrace = e.getStackTrace();
-            if (stackTrace != null && stackTrace.length > 0){
-                StackTraceElement el = stackTrace[0];
-                location = locByStackTraceElement(el);
-            }
-        }
-        return location;
-    }
-    private String getLocationByException() {
-        try {
-            throw new RuntimeException();
-        } catch (Exception e) {
-            StackTraceElement st = e.getStackTrace()[2];
-            return locByStackTraceElement(st);
-        }
+    //new ResultInfo
+    @Override
+    protected IoInfo newResultInfo(String message, Exception e, String codeLocation) {
+        return new IoInfo(message, e, codeLocation, null);
     }
 
-    private String locByStackTraceElement(StackTraceElement st) {
-        return st.getMethodName() + "(" + st.getClassName()+ ":" + st.getLineNumber() + ")";
+    private IoInfo newResultInfo(String message, Exception e, String codeLocation, String dataLocation) {
+        return newResultInfo(message, e, codeLocation).setDataLocation(dataLocation);
     }
+
+    //******************* MERGE **************************/
+
+    public void addParserResultMessages(ParserResult<?> parserResult) {
+        parserResult.getWarnings().forEach(w->addWarning(parserResultToIoResult(w)));
+        parserResult.getErrors().forEach(w->addError(parserResultToIoResult(w)));
+        parserResult.getExceptions().forEach(w->addException(parserResultToIoResult(w)));
+    }
+
+    private IoInfo parserResultToIoResult(ParserResult<?>.ParserInfo parserInfo) {
+        return new IoInfo(parserInfo.getMessage(), parserInfo.getException(), parserInfo.getCodeLocation(), null);
+    }
+    //****************************************************/
 
     protected abstract void setExceptionState();
 
@@ -171,9 +112,9 @@ public abstract class IoResultBase implements Serializable{
     public StringBuffer createReport() {
         StringBuffer report = new StringBuffer("");
         addShortDescription(report);
-        addErrorReport(report, "Errors", errors);
-        addErrorReport(report, "Exceptions", exceptions);
-        addErrorReport(report, "Warnings", warnings);
+        addErrorReport(report, "Errors", getErrors());
+        addErrorReport(report, "Exceptions", getExceptions());
+        addErrorReport(report, "Warnings", getWarnings());
         return report;
     }
 
@@ -185,12 +126,14 @@ public abstract class IoResultBase implements Serializable{
         if (!list.isEmpty()){
             report.append("\n\n" + label + ":\n" + StringUtils.leftPad("", label.length()+1, "="));
             for (IoInfo ioInfo : list){
-                String codeLocation = ioInfo.codeLocation == null ? "" : ( "[" + ioInfo.codeLocation + "]");
+                String codeLocation = ioInfo.getCodeLocation() == null ? "" : ( "[" + ioInfo.getCodeLocation() + "]");
                 String dataLocation = ioInfo.dataLocation == null ? "" : (ioInfo.dataLocation + ": ");
-                String message = ioInfo.message != null ? (ioInfo.message) : ioInfo.exception != null ? (ioInfo.exception.getMessage()) : "";
+                String message = ioInfo.getMessage() != null ? (ioInfo.getMessage()) :
+                        ioInfo.getException() != null ?
+                        (ioInfo.getException().getMessage()) : "";
 
                 message = StringUtils.isBlank(message)? "no message" : message;
-                Object stacktrace = ioInfo.exception == null? null : ioInfo.exception.getStackTrace();
+                Object stacktrace = ioInfo.getException() == null? null : ioInfo.getException().getStackTrace();
                 String available = (stacktrace != null ? "(stacktrace available)" : "");
                 report.append("\n" + CdmUtils.concat(" ", dataLocation, message, available, codeLocation));
             }

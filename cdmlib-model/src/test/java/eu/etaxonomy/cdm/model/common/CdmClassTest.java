@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.model.common;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -17,10 +16,6 @@ import org.junit.Test;
  * @since 30.04.2020
  */
 public class CdmClassTest {
-
-    @Before
-    public void setUp() throws Exception {
-    }
 
     @Test
     public void testDescribedClasses() {

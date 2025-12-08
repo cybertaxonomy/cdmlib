@@ -11,12 +11,10 @@ package eu.etaxonomy.cdm.model.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -30,6 +28,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  * @author a.babadshanjan
  * @since 02.02.2009
  */
+//NOTE: tests on credits were moved to CreditableEntity, not much remaining here for now.
 public class IdentifiableEntityTest extends EntityTestBase {
 
 	private TaxonName abies;
@@ -100,45 +99,6 @@ public class IdentifiableEntityTest extends EntityTestBase {
 		abiesAlbaxPinusBeta.setHybridFormula(true);
 		abiesAlbaxPinusBeta.addHybridParent(abiesAlba, HybridRelationshipType.FIRST_PARENT(), null);
 		abiesAlbaxPinusBeta.addHybridParent(pinusBeta, HybridRelationshipType.SECOND_PARENT(), null);
-	}
-
-	@Test
-	public void testAddCredit() {
-		assertNotNull("A list should always be returned",abies.getCredits());
-		assertTrue("No credits should exist",abies.getCredits().isEmpty());
-		String text1 = "Credit1";
-		String text2 = "Credit2";
-		String text3 = "Credit0"; //for sorting order
-		Person person = Person.NewTitledInstance("Me");
-		TimePeriod timePeriod = TimePeriod.NewInstance(1925);
-		abies.addCredit(Credit.NewInstance(person, timePeriod, text1));
-		assertEquals("Number of credits should be 1",1,abies.getCredits().size());
-		abies.addCredit(Credit.NewInstance(person, timePeriod, text2));
-		assertEquals("Number of credits should be 2",2,abies.getCredits().size());
-		abies.addCredit(Credit.NewInstance(person, timePeriod, text3));
-		assertEquals("Number of credits should be 3",3,abies.getCredits().size());
-		assertEquals("Credit0 should be last in list", text3, abies.getCredits(2).getText());
-	}
-
-	@Test
-	public void testRemoveCredit() {
-		assertNotNull("A list should always be returned",abies.getCredits());
-		String text1 = "Credit1";
-		String text2 = "Credit2";
-		Person person = Person.NewTitledInstance("Me");
-		Credit credit1 = Credit.NewInstance(person, null, text1);
-		Credit credit2 = Credit.NewInstance(person, null, text2);
-		abies.addCredit(credit1);
-		abies.addCredit(credit2);
-		assertEquals("Number of credits should be 2",2,abies.getCredits().size());
-		abies.removeCredit(credit1);
-		assertNotNull("A list should always be returned",abies.getCredits());
-		assertFalse("The list should not be empty",abies.getCredits().isEmpty());
-		assertEquals("Number of credits should be 1",1,abies.getCredits().size());
-		assertEquals("Remaining credit should be credit2",credit2,abies.getCredits().get(0));
-		abies.removeCredit(credit2);
-		assertNotNull("A list should always be returned",abies.getCredits());
-		assertTrue("No credits should exist",abies.getCredits().isEmpty());
 	}
 
 	@Test

@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -2417,11 +2416,6 @@ public class DerivedUnitFacade {
 	}
 	public void removeIdentifier(Identifier identifier) {
 	    this.baseUnit().removeIdentifier(identifier);
-	}
-
-	@Transient
-	public Set<Rights> getRights() {
-		return baseUnit().getRights();
 	}
 
 	//collection

@@ -59,8 +59,6 @@ public class CdmLightExportResultProcessor {
 
             String[] oldRecord = resultMap.put(id, record);
 
-            String[] newRecord = resultMap.get(id);
-
             if (oldRecord != null){
                 String message = "Output processor already has a record for id " + id + ". This should not happen.";
                 state.getResult().addWarning(message);

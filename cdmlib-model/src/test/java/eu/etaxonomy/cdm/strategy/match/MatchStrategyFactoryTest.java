@@ -19,8 +19,10 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -677,22 +679,33 @@ public class MatchStrategyFactoryTest extends TermTestBase {
     }
 
     /**
-     * Article with {@link #getDefaultFullTeam() full team},
-     * {@link #getDefaultFullJournal() full journal} and date published
+     * Name like {@link #getDefaultParsedName()} with
+     * nom. ref. and additional
+     * name description (etymology).
      */
     private TaxonName getDefaultFullName() {
         TaxonName name = getDefaultParsedName();
         name.setNameApprobation("approbation");
         TaxonNameDescription description = TaxonNameDescription.NewInstance(name);
-        description.addElement(Distribution.NewInstance());
+        TextData etymology = TextData.NewInstance(Feature.ETYMOLOGY());
+        etymology.putText(Language.ENGLISH(), "My etymology");
+        description.addElement(etymology);
+
+        name.setNomenclaturalReference(getDefaultFullArticle());
+        name.setNomenclaturalMicroReference("p. 123");
+
         //TODO continue
         name.updateCaches();
         return name;
     }
 
+    /**
+     * Name "Abies alba Nam. & Nice", with team members having more data
+     * @see #getDefaultFullTeam()
+     */
     private TaxonName getDefaultParsedName() {
         TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-        name.setBasionymAuthorship(getDefaultFullTeam());
+        name.setCombinationAuthorship(getDefaultFullTeam());
         name.setGenusOrUninomial("Abies");
         name.setSpecificEpithet("alba");
         name.updateCaches();
@@ -709,5 +722,25 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         Assert.assertTrue("Only ... should match", matchStrategy.invoke(parsedName, fullName).isSuccessful() );
 
         //TODO
+    }
+
+    @Test
+    //TODO discuss if parsedOriginalSpelling and parsedHybridParent can be merged,
+    //     they probably follow the same rules
+    public void testParsedHybridParent() throws MatchException {
+        IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedHybridParentInstance();
+        Assert.assertNotNull(matchStrategy);
+
+        TaxonName fullName = getDefaultFullName();
+        TaxonName parsedName = getDefaultParsedName();
+        Assert.assertTrue("Only ... should match", matchStrategy.invoke(parsedName, fullName).isSuccessful() );
+
+        parsedName.setCombinationAuthorship(null);
+        Assert.assertFalse("Authors must match exactly", matchStrategy.invoke(parsedName, fullName).isSuccessful() );
+
+        parsedName.setCombinationAuthorship(getDefaultParsedPerson());
+        Assert.assertFalse("Authors must not differ", matchStrategy.invoke(parsedName, fullName).isSuccessful() );
+
+        //TODO testParsedHybridParent tbc, test not yet complete
     }
 }

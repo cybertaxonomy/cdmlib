@@ -71,6 +71,7 @@ public abstract class OccurrenceCacheStrategyBase<T extends SpecimenOrObservatio
         if (specimen == null){
             return null;
         }
+        specimen = CdmBase.deproxy(specimen);  //for lazy loaded MediaSpecimen
         String result = doGetIdentityCache(specimen);
         if (isBlank(result)){
             return getTitleCache(specimen, emptyIfBlank);

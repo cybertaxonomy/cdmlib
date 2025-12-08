@@ -110,7 +110,6 @@ public class DwcaReferenceExport extends DwcaDataExportBase {
 
 		//TODO missing, why ISO639-1 better 639-3
 		record.setLanguage(null);
-		record.setRights(reference.getRights());
 		//TODO
 		record.setTaxonRemarks(null);
 		//TODO

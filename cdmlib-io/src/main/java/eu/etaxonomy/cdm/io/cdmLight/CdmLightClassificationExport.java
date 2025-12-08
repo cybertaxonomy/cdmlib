@@ -1264,15 +1264,15 @@ public class CdmLightClassificationExport
                         inReference = inReference.getInReference();
                     }
                     if (inReference.getAbbrevTitle() == null) {
-                        csvLine[table.getIndex(CdmLightExportTable.ABBREV_TITLE)] = CdmUtils
-                                .Nz(inReference.getTitle());
+                        csvLine[table.getIndex(CdmLightExportTable.ABBREV_TITLE)] =
+                                CdmUtils.Nz(inReference.getTitle());
                     } else {
-                        csvLine[table.getIndex(CdmLightExportTable.ABBREV_TITLE)] = CdmUtils
-                                .Nz(inReference.getAbbrevTitle());
+                        csvLine[table.getIndex(CdmLightExportTable.ABBREV_TITLE)] =
+                                CdmUtils.Nz(inReference.getAbbrevTitle());
                     }
                     if (inReference.getTitle() == null) {
-                        csvLine[table.getIndex(CdmLightExportTable.FULL_TITLE)] = CdmUtils
-                                .Nz(inReference.getAbbrevTitle()!= null? inReference.getAbbrevTitle(): inReference.getTitleCache());
+                        csvLine[table.getIndex(CdmLightExportTable.FULL_TITLE)] =
+                                CdmUtils.Nz(inReference.getAbbrevTitle()!= null? inReference.getAbbrevTitle(): inReference.getTitleCache());
                     } else {
                         csvLine[table.getIndex(CdmLightExportTable.FULL_TITLE)] = CdmUtils.Nz(inReference.getTitle());
                     }
@@ -1593,6 +1593,7 @@ public class CdmLightClassificationExport
                         Set<Identifier> identifiersByType = identifierTypes.get(type);
                         csvLine = new String[table.getSize()];
                         csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
+
                         csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
                         String typeLabel = type == null ? "no type" : type.getLabel();
                         csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = typeLabel;
@@ -1600,7 +1601,14 @@ public class CdmLightClassificationExport
                                 identifiersByType);
                         state.getProcessor().put(table, name.getUuid() + ", " + typeLabel, csvLine);
                     }
-
+                    if (name.getLsid() != null){
+                        csvLine = new String[table.getSize()];
+                        csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
+                        csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
+                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = "LSID";
+                        csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = name.getLsid().getLsid();
+                        state.getProcessor().put(table, cdmBase.getUuid() + "LSID", csvLine);
+                    }
 
 //                    Set<String> IPNIidentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_IPNI());
 //                    Set<String> tropicosIdentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_TROPICOS());
@@ -1680,6 +1688,14 @@ public class CdmLightClassificationExport
                             csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = ref.getDoiString();
                             state.getProcessor().put(table, cdmBase.getUuid() + "DOI", csvLine);
                         }
+                        if (ref.getLsid() != null){
+                            csvLine = new String[table.getSize()];
+                            csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, cdmBase);
+                            csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = tableName;
+                            csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = "LSID";
+                            csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = ref.getLsid().getLsid();
+                            state.getProcessor().put(table, cdmBase.getUuid() + "LSID", csvLine);
+                        }
                     }
 
                     if (identifiableEntity instanceof TeamOrPersonBase){
@@ -1693,6 +1709,14 @@ public class CdmLightClassificationExport
                                 csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = "ORCID";
                                 csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)]=  person.getOrcid().asURI();
                                 state.getProcessor().put(table, cdmBase.getUuid() + "ORCID", csvLine);
+                            }
+                            if (person.getLsid() != null){
+                                csvLine = new String[table.getSize()];
+                                csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, cdmBase);
+                                csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = tableName;
+                                csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = "LSID";
+                                csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)]=  person.getLsid().getLsid();
+                                state.getProcessor().put(table, cdmBase.getUuid() + "LSID", csvLine);
                             }
                             if (person.getWikiDataItemId() != null){
                                 csvLine = new String[table.getSize()];
@@ -1804,6 +1828,7 @@ public class CdmLightClassificationExport
 
                     if (state.getAuthorFromStore(member.getId()) == null) {
                         state.addAuthorToStore(member);
+                        handleIdentifier(state, member);
                         csvLineMember = new String[table.getSize()];
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_ID)] = getId(state, member);
                         csvLineMember[table.getIndex(CdmLightExportTable.ABBREV_AUTHOR)] = member

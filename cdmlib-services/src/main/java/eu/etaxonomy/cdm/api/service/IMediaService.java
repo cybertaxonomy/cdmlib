@@ -52,7 +52,6 @@ public interface IMediaService extends IIdentifiableEntityService<Media> {
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a Pager of Rights entities
 	 */
-    @Override
     public Pager<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**

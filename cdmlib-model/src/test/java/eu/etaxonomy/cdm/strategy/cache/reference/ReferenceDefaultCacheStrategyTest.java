@@ -15,7 +15,6 @@ import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -566,12 +565,10 @@ public class ReferenceDefaultCacheStrategyTest {
         section.setAuthorship(sectionTeam);
 
         section.setInReference(webPage);
-        DateTime webpageAccessed = DateTime.parse("2010-06-30T01:20+02:00");
-        section.setAccessed(webpageAccessed);
 
         Assert.assertEquals("Unexpected title cache.",
                 "Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P. "+UTF8.EN_DASH+" In: "
-                + "My WebPage "+UTF8.EN_DASH+" https://redlist.necca.gov.gr/ [accessed 2010-06-30 01:20]",
+                + "My WebPage "+UTF8.EN_DASH+" https://redlist.necca.gov.gr/",
                 section.getTitleCache());
     }
 
@@ -587,14 +584,12 @@ public class ReferenceDefaultCacheStrategyTest {
         Team sectionTeam = Team.NewTitledInstance("Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P.", null);
         section.setAuthorship(sectionTeam);
         section.setInReference(database);
-        DateTime webpageAccessed = DateTime.parse("2010-06-30T01:20+02:00");
-        section.setAccessed(webpageAccessed);
         section.setDatePublished(TimePeriodParser.parseStringVerbatim("2024"));
         section.setTitle("My record title");
 
         Assert.assertEquals("Unexpected title cache.",
                 "Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P. 2024: My record title. "+UTF8.EN_DASH+" In: "
-                + "My database. Published at https://available.at [accessed 2010-06-30 01:20]",
+                + "My database. Published at https://available.at",
                 section.getTitleCache());
 
         //protected titleCache
@@ -603,7 +598,7 @@ public class ReferenceDefaultCacheStrategyTest {
         section.resetTitleCache();
         Assert.assertEquals("Unexpected title cache.",
                 "Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P. 2024: My record title. "+UTF8.EN_DASH+" In: "
-                + "Other database. Published at https://available.at [accessed 2010-06-30 01:20]",
+                + "Other database. Published at https://available.at",
                 section.getTitleCache());
         //... cleanup
         database.setTitle("My database");
@@ -617,15 +612,12 @@ public class ReferenceDefaultCacheStrategyTest {
         Person inSectionAuthor = Person.NewTitledInstance("Abel, A.");
         inSection.setAuthorship(inSectionAuthor);
         inSection.setInReference(section);
-        DateTime inSectionAccessed = DateTime.parse("2008-04-30T09:10+01:00");
-        inSection.setAccessed(inSectionAccessed);
-        section.setAccessed(null); //TODO handle this
         inSection.setDatePublished(TimePeriodParser.parseStringVerbatim("2023"));
         inSection.setTitle("My section title");
 
         Assert.assertEquals("Unexpected title cache.",
                 "Abel, A. 2023: My section title. "+UTF8.EN_DASH+" In: Kulikovskiy, M., Chudaev, D.A. & Kociolek, J.P., My record title. "
-                + "My database. Published at https://available.at [accessed 2008-04-30 09:10]",
+                + "My database. Published at https://available.at",
                 inSection.getTitleCache());
 
     }
@@ -672,9 +664,8 @@ public class ReferenceDefaultCacheStrategyTest {
         //#10647
         URI uri = URI.create("https://available.at");
         database.setUri(uri);
-        database.setAccessed(DateTime.parse("2010-06-30T01:20+02:00"));
         result = defaultStrategy.getTitleCache(database);
-        assertEquals("Miller 1984: My nice database. "+UTF8.EN_DASH+" Berlin: Springer. Published at https://available.at [accessed 2010-06-30 01:20]", result);
+        assertEquals("Miller 1984: My nice database. "+UTF8.EN_DASH+" Berlin: Springer. Published at https://available.at", result);
     }
 
     @Test
@@ -884,10 +875,9 @@ public class ReferenceDefaultCacheStrategyTest {
 
         webPage1.setTitle("Flora of Israel Online");
         webPage1.setAuthorship(webPageTeam1);
-        webPage1.setAccessed(DateTime.parse("2001-01-05"));
         webPage1.resetTitleCache();
         Assert.assertEquals("Unexpected title cache.",
-                "Authorteam, D.: Flora of Israel Online "+UTF8.EN_DASH+" http://flora.huji.ac.il [accessed 2001-01-05]",
+                "Authorteam, D.: Flora of Israel Online "+UTF8.EN_DASH+" http://flora.huji.ac.il",
                 webPage1.getTitleCache());
     }
 

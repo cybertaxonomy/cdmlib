@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,10 +37,6 @@ public class MarkerTest extends EntityTestBase {
 	private static Marker marker1;
 	private static MarkerType markerType1;
 	private static AnnotatableEntity annotatedObject1;
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
 
 	@Before
 	public void setUp() throws Exception {

@@ -8,15 +8,13 @@
 */
 package eu.etaxonomy.cdm.io.common;
 
-import java.io.Serializable;
-
 import eu.etaxonomy.cdm.common.IoResultBase;
 
 /**
  * @author cmathew
  * @since 31 Jul 2015
  */
-public class ExportResult extends IoResultBase implements Serializable {
+public class ExportResult extends IoResultBase {
 
     private static final long serialVersionUID = 6843406252245776806L;
 
@@ -26,7 +24,6 @@ public class ExportResult extends IoResultBase implements Serializable {
     private ExportDataWrapper<?> data ;
 
     private ExportType exportType;
-
 
 // **************************** FACTORY ****************************************/
 

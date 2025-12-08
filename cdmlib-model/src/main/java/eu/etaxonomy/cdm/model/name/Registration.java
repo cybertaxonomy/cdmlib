@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
     "specificIdentifier",
     "registrationDate",
     "status",
-    "institution",
+    "registrationCenter",
     "name",
     "typeDesignations",
     "blockedBy",
@@ -99,12 +99,12 @@ public class Registration extends AnnotatableEntity {
     @NotNull
     private RegistrationStatus status = RegistrationStatus.PREPARATION;
 
-    @XmlElement(name = "Institution")
+    @XmlElement(name = "RegistrationCenter")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
-    private Institution institution;
+    private Institution registrationCenter;
 
     @XmlElement(name = "Name")
     @XmlIDREF
@@ -212,8 +212,8 @@ public class Registration extends AnnotatableEntity {
     public DateTime getRegistrationDate() {return registrationDate;}
     public void setRegistrationDate(DateTime registrationDate) {this.registrationDate = registrationDate;}
 
-    public Institution getInstitution() {return institution;}
-    public void setInstitution(Institution institution) {this.institution = institution;}
+    public Institution getRegistrationCenter() {return registrationCenter;}
+    public void setRegistrationCenter(Institution registrationCenter) {this.registrationCenter = registrationCenter;}
 
     public TaxonName getName() {return name;}
     public void setName(TaxonName name) {

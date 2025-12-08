@@ -86,6 +86,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public static final UUID uuidLaterIsonym = UUID.fromString("29ab238d-598d-45b9-addd-003cf39ccc3e");
 	public static final UUID uuidNonUnspecific = UUID.fromString("78360e2a-159d-4e2f-893e-8666805840fa");
 
+	//old - only for use in exports, original spellings are handled in NomenclaturalSource.nameUsedInSource now in CDM
+	public static final UUID uuidOriginalSpellingFor = UUID.fromString("264d2be4-e378-4168-9760-a9512ffbddc4");
 
 	public static NameRelationshipType NewInstance(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
 		return new NameRelationshipType(term, label, labelAbbrev, symmetric, transitive);

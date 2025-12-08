@@ -135,6 +135,7 @@ public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
 	//undefined
 	public static final UUID uuidUndefined = UUID.fromString("bdb46487-01f8-451d-bf7b-d3e0fd44938e");
 
+	private static final UUID uuidNoDataAvailable = UUID.fromString("6ac59bda-ed16-4f32-b224-eb96fdbfdcec");
 
 	protected static Map<UUID, PresenceAbsenceTerm> termMap = null;
 
@@ -603,6 +604,13 @@ public class PresenceAbsenceTerm extends DefinedTermBase<PresenceAbsenceTerm> {
 	public static final PresenceAbsenceTerm UNDEFINED(){
 	    return getTermByUuid(uuidUndefined);
 	}
+
+    /**
+     * No data is available for the given taxon in the given area.
+     */
+    public static final PresenceAbsenceTerm NO_DATA_AVAILABLE(){
+        return getTermByUuid(uuidNoDataAvailable);
+    }
 
 
 //******************************** METHODS ****************************/

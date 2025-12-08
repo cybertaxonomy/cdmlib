@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  * @author a.mueller
  * @date 26.07.2022
  */
-//#10057
+//Note: the accessed field will be moved to OriginalSource in future #10057, #10145
 public interface IDynamicReference {
 
     /**
@@ -32,9 +32,10 @@ public interface IDynamicReference {
     //#5258
     public DateTime getAccessed();
 
-    /**
-     * @see #getAccessed()
-     */
-    public void setAccessed(DateTime accessed);
+// removed to start moving accessed from Reference to OriginalSourceBase (#10145)
+//    /**
+//     * @see #getAccessed()
+//     */
+//    public void setAccessed(DateTime accessed);
 
 }

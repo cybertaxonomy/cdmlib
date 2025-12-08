@@ -48,25 +48,25 @@ public class SpecimenTypeParser {
 		}
 
 		SpecimenTypeDesignationStatus status;
-		if (type.equalsIgnoreCase("iso")){
+		if (type.equalsIgnoreCase("iso")|| type.equalsIgnoreCase("IT")){
 			status = SpecimenTypeDesignationStatus.ISOTYPE();
-		}else if (type.equalsIgnoreCase("isolecto")){
+		}else if (type.equalsIgnoreCase("isolecto")|| type.equalsIgnoreCase("ILT")){
 			status = SpecimenTypeDesignationStatus.ISOLECTOTYPE();
-		}else if (type.equalsIgnoreCase("syn")){
+		}else if (type.equalsIgnoreCase("syn")|| type.equalsIgnoreCase("ST")){
 			status = SpecimenTypeDesignationStatus.SYNTYPE();
-		}else if (type.equalsIgnoreCase("holo")){
+		}else if (type.equalsIgnoreCase("holo") || type.equalsIgnoreCase("HT")){
 			status = SpecimenTypeDesignationStatus.HOLOTYPE();
-		}else if (type.equalsIgnoreCase("lecto")){
+		}else if (type.equalsIgnoreCase("lecto")|| type.equalsIgnoreCase("LT")){
 			status = SpecimenTypeDesignationStatus.LECTOTYPE();
-		}else if (type.equalsIgnoreCase("isosyn")){
+		}else if (type.equalsIgnoreCase("isosyn")|| type.equalsIgnoreCase("IST")){
 			status = SpecimenTypeDesignationStatus.ISOSYNTYPE();
-		}else if (type.equalsIgnoreCase("neo")){
+		}else if (type.equalsIgnoreCase("neo")|| type.equalsIgnoreCase("NT")){
 			status = SpecimenTypeDesignationStatus.NEOTYPE();
-		}else if (type.equalsIgnoreCase("isoneo")){
+		}else if (type.equalsIgnoreCase("isoneo")|| type.equalsIgnoreCase("INT")){
 			status = SpecimenTypeDesignationStatus.ISONEOTYPE();
-		}else if (type.equalsIgnoreCase("para")){
+		}else if (type.equalsIgnoreCase("para")|| type.equalsIgnoreCase("PT")){
             status = SpecimenTypeDesignationStatus.PARATYPE();
-		}else if (type.equalsIgnoreCase("isopara")){
+		}else if (type.equalsIgnoreCase("isopara")|| type.equalsIgnoreCase("IPT")){
             status = SpecimenTypeDesignationStatus.ISOPARATYPE();
         }else if (type.equalsIgnoreCase("type")){
 			status = SpecimenTypeDesignationStatus.TYPE();

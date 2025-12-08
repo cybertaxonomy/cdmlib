@@ -1,8 +1,17 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.dto.namecatalogue;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
 
 public class AcceptedNameSearch implements RemoteResponse {
@@ -11,7 +20,7 @@ public class AcceptedNameSearch implements RemoteResponse {
 	private List<AcceptedNameSearch.Response> response;
 
 
-	public AcceptedNameSearch() {		
+	public AcceptedNameSearch() {
 		this.response = new ArrayList<AcceptedNameSearch.Response>();
 	}
 
@@ -25,18 +34,18 @@ public class AcceptedNameSearch implements RemoteResponse {
 	}
 
 	public void addToResponseList(String acceptedName, String authorship, String rank, Map<String, Map> classificationMap) {
-        AcceptedNameSearch.Response res =  new AcceptedNameSearch.Response();            
+        AcceptedNameSearch.Response res =  new AcceptedNameSearch.Response();
         res.setAcceptedName(acceptedName);
         res.setAuthorship(authorship);
         res.setRank(rank);
         res.setClassification(classificationMap);
         response.add(res);
 	}
-	
+
 	public List<AcceptedNameSearch.Response> getResponse() {
 		return response;
 	}
-	
+
     public class Request {
         private String query;
         public Request() {
@@ -51,18 +60,18 @@ public class AcceptedNameSearch implements RemoteResponse {
             return this.query;
         }
     }
-	
+
     public class Response {
-        private String acceptedName;       
-        private String authorship;      
+        private String acceptedName;
+        private String authorship;
         private String rank;
-		private Map<String, Map> classification;	
+		private Map<String, Map> classification;
 
         public Response() {
         	acceptedName = "";
         	authorship = "";
         	rank = "";
-			classification = null;	
+			classification = null;
         }
 
         public void setAcceptedName(String acceptedName) {
@@ -72,11 +81,11 @@ public class AcceptedNameSearch implements RemoteResponse {
         public String getAcceptedName() {
             return this.acceptedName;
         }
-        
+
         public void setAuthorship(String authorship) {
         	this.authorship = authorship;
         }
-        
+
         public String getAuthorship() {
         	return this.authorship;
         }
@@ -84,11 +93,11 @@ public class AcceptedNameSearch implements RemoteResponse {
         public void setRank(String rank) {
         	this.rank = rank;
         }
-        
+
         public String getRank() {
         	return this.rank;
         }
-        
+
         public void setClassification(Map<String, Map> classificationMap) {
         	this.classification = classificationMap;
         }

@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.PreparedStatement;
@@ -20,8 +19,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @since 12.05.2009
  */
 public interface IDbExportMapper<T extends DbExportStateBase<?, TRANSFORM> , TRANSFORM extends IExportTransformer> {
-
-//	public void initialize(PreparedStatement stmt, IndexCounter index);
 
 	public void initialize(PreparedStatement stmt, IndexCounter index, T state, String tableName);
 

@@ -774,7 +774,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
      * test with admin account - should succeed
      */
     @Test
-   public final void testTaxonDeleteAllow_2() {
+    public final void testTaxonDeleteAllow_2() {
 
         SecurityContext context = SecurityContextHolder.getContext();
 

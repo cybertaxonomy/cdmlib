@@ -102,7 +102,6 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	@Override
     public Pager<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         long numberOfResults = dao.countRights(t);
 
@@ -248,7 +247,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 
                 if (description instanceof TaxonDescription){
                     TaxonDescription desc = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
-                    if (mediaConfig.isDeleteFromEveryWhere() ||(desc.getTaxon() == null || (mediaConfig.isDeleteFromDescription() && (deleteFrom instanceof Taxon && ((Taxon)deleteFrom).getId() == desc.getTaxon().getId())))){
+                    if (mediaConfig.isDeleteFromEveryWhere() ||(desc.getTaxon() == null || (mediaConfig.isDeleteFromDescription() && (deleteFrom instanceof Taxon && deleteFrom.getId() == desc.getTaxon().getId())))){
                         continue;
                     } else{
                         message = "The media can't be deleted from the database because it is referenced by a taxon. ("+desc.getTaxon().getTitleCache()+")";
@@ -257,7 +256,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 
                 } else if (description instanceof SpecimenDescription){
                     SpecimenDescription desc = HibernateProxyHelper.deproxy(description, SpecimenDescription.class);
-                    if (mediaConfig.isDeleteFromEveryWhere() || (desc.getDescribedSpecimenOrObservation() == null || (mediaConfig.isDeleteFromDescription() && (deleteFrom instanceof SpecimenOrObservationBase && ((SpecimenOrObservationBase)deleteFrom).getId() == desc.getDescribedSpecimenOrObservation().getId())))){
+                    if (mediaConfig.isDeleteFromEveryWhere() || (desc.getDescribedSpecimenOrObservation() == null || (mediaConfig.isDeleteFromDescription() && (deleteFrom instanceof SpecimenOrObservationBase && deleteFrom.getId() == desc.getDescribedSpecimenOrObservation().getId())))){
                         continue;
                     } else{
                         message = "The media can't be deleted from the database because it is referenced by a specimen or observation. ("+desc.getDescribedSpecimenOrObservation().getTitleCache()+")";
@@ -265,7 +264,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                     }
                 } else if (description instanceof TaxonNameDescription){
                     TaxonNameDescription desc = HibernateProxyHelper.deproxy(description, TaxonNameDescription.class);
-                    if (mediaConfig.isDeleteFromEveryWhere() || (desc.getTaxonName() == null || (mediaConfig.isDeleteFromDescription() && (deleteFrom instanceof TaxonName && ((TaxonName)deleteFrom).getId() == desc.getTaxonName().getId())))){
+                    if (mediaConfig.isDeleteFromEveryWhere() || (desc.getTaxonName() == null || (mediaConfig.isDeleteFromDescription() && (deleteFrom instanceof TaxonName && deleteFrom.getId() == desc.getTaxonName().getId())))){
                         continue;
                     } else{
                         message = "The media can't be deleted from the database because it is referenced by a scientific name. ("+desc.getTaxonName().getTitleCache()+")";

@@ -24,7 +24,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -79,18 +78,6 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
         result = identifiableDao.countByTitle("Lorem", MatchMode.ANYWHERE, null);
         assertNotNull("findByTitle should return an integer",result);
         assertEquals("findByTitle should return 1", 1, result);
-    }
-
-    @Test
-    public void testGetRights() {
-        TaxonBase<?> taxon = identifiableDao.findByUuid(uuid);
-        assert taxon != null : "IdentifiableEntity must exist";
-
-        List<Rights> rights = identifiableDao.getRights(taxon, null, null, null);
-
-        assertNotNull("getRights should return a List",rights);
-        assertFalse("the list should not be empty",rights.isEmpty());
-        assertEquals("getRights should return 2 Rights instances",2,rights.size());
     }
 
     @Test

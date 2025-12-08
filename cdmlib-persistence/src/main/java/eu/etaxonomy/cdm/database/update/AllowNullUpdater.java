@@ -93,6 +93,6 @@ public class AllowNullUpdater
     }
 
     private CharSequence getDefinition(ICdmDataSource datasource) {
-        return datatype.format(datasource,size);
+        return datatype.format(datasource, size);
     }
 }
