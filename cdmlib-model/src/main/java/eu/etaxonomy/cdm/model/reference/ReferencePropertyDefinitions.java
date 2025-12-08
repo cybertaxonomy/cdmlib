@@ -57,7 +57,6 @@ public class ReferencePropertyDefinitions {
         iPublicationBase = merge(iReference);
         put(iPublicationBase, "publisher");
         put(iPublicationBase, "placePublished");
-        //TODO publisher2, placePublished2
 
         // put(iNomenclaturalReference, "year");
         // put(iNomenclaturalReference, "nomenclaturalCitation");

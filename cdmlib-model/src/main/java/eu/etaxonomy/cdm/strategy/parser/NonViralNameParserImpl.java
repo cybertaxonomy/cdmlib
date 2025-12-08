@@ -48,9 +48,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
-import eu.etaxonomy.cdm.strategy.match.MatchException;
-import eu.etaxonomy.cdm.strategy.match.MatchResult;
-import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
 
 /**
  * Parser for {@link TaxonName}s of type NonViralName and below.
@@ -1342,19 +1339,6 @@ public class NonViralNameParserImpl
                 relToKeep = existingRelation;
                 break;
             }
-            MatchResult parentMatchResult;
-            try {
-                parentMatchResult = MatchStrategyFactory.NewParsedHybridParentInstance()
-                        .invoke(existingRelation.getParentName(), newRelation.getParentName());
-                if (parentMatchResult.isSuccessful() ) {
-                    relToKeep = existingRelation;
-                    break;
-                }
-            } catch (MatchException e) {
-                //FIXME add to parse result
-                e.printStackTrace();
-            }
-
         }
         notToBeDeleted.add(relToKeep);
     }

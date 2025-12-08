@@ -152,11 +152,11 @@ public class Point implements Cloneable, Serializable {
         /**
          * Pattern zum parsen von Sexagesimalen Minuten: 65'
          */
-        private static final String MINUTES_REGEX = "(?:([0-9]*)['′])?";
+        private static final String MINUTES_REGEX = "(?:([0-9]*)')?";
         /**
          * Pattern zum parsen von Sexagesimalen Sekunden: 17"
          */
-        private static final String SECONDS_REGEX = "(?:([0-9]*)(?:''|\"|\\″))?";
+        private static final String SECONDS_REGEX = "(?:([0-9]*)(?:''|\"))?";
         /**
          * Himmelsrichtung Längengrad
          */
