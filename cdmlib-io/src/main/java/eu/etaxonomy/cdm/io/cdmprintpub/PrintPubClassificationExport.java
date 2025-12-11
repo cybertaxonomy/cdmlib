@@ -90,7 +90,6 @@ public class PrintPubClassificationExport
             return;
         }
 
-        // FIX: Calculate depth manually since getLevel() is missing
         int level = calculateDepth(node);
 
         // Cap the header level at 6 (Markdown only supports # to ######)
@@ -105,17 +104,14 @@ public class PrintPubClassificationExport
     private void handleTaxon(PrintPubExportState state, Taxon taxon, int headerLevel) {
         state.setCurrentTaxon(taxon);
 
-        // 1. Scientific Name
         TaxonName name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonName.class);
         String title = (name != null) ? name.getTitleCache() : taxon.getTitleCache();
         state.getProcessor().add(taxon, new SectionHeader(title, headerLevel));
 
-        // 2. Synonyms
         if (state.getConfig().isDoSynonyms()) {
             handleSynonyms(state, taxon);
         }
 
-        // 3. Descriptions (Expanded Logic)
         if (state.getConfig().isDoFactualData()) {
             handleDescriptions(state, taxon);
         }
@@ -139,10 +135,6 @@ public class PrintPubClassificationExport
         }
     }
 
-    /**
-     * Enhanced description handling based on CdmLight logic.
-     * Separates elements into categories and handles them specifically.
-     */
     private void handleDescriptions(PrintPubExportState state, Taxon taxon) {
         Set<TaxonDescription> descriptions = taxon.getDescriptions();
 
@@ -204,7 +196,6 @@ public class PrintPubClassificationExport
 
                 list.addItem(name + lang + area);
             } else if (element instanceof TextData) {
-                 // Fallback for TextData masquerading as Common Names
                  TextData td = (TextData) element;
                  String text = td.getText(Language.DEFAULT());
                  if (text != null) {
@@ -246,7 +237,6 @@ public class PrintPubClassificationExport
     }
 
     private void handleSimpleFacts(PrintPubExportState state, List<DescriptionElementBase> elements) {
-        // Fallback languages for TextData
         List<Language> fallbackLanguages = new ArrayList<>();
         fallbackLanguages.add(Language.DEFAULT());
         fallbackLanguages.add(Language.ENGLISH());
@@ -262,12 +252,10 @@ public class PrintPubClassificationExport
                     state.getProcessor().add(new PrintPubParagraphElement("**" + label + "**: " + bestText.getText()));
                 }
             }
-            // Add CategoricalData or QuantitativeData handling here if needed
         }
     }
 
     private void handleSpecimenFacts(PrintPubExportState state, List<DescriptionElementBase> elements) {
-        // Basic implementation for specimens - lists them out
         PrintPubUnorderedListElement list = new PrintPubUnorderedListElement();
 
         for (DescriptionElementBase element : elements) {
@@ -300,10 +288,6 @@ public class PrintPubClassificationExport
                feature.equals(Feature.OCCURRENCE());
     }
 
-    /**
-     * Calculates the depth of the node in the classification tree.
-     * Root = 1, Child = 2, Grandchild = 3, etc.
-     */
     private int calculateDepth(TaxonNode node) {
         int depth = 1;
         TaxonNode parent = node.getParent();

@@ -28,15 +28,9 @@ public class PrintPubExportConfigurator
         implements IFactExportConfigurator {
 
     private static final long serialVersionUID = -5958099339227666207L;
-
-    // Filters
     private boolean doFactualData = true;
     private boolean includeUnpublishedFacts = false;
-
-    // Metadata (Optional, but useful for Documents)
     private String documentTitle = "Taxonomic Export";
-
-    // ************************* FACTORY ******************************/
 
     public static PrintPubExportConfigurator NewInstance(ICdmDataSource source, File destination){
         PrintPubExportConfigurator result = new PrintPubExportConfigurator(null);
@@ -44,8 +38,6 @@ public class PrintPubExportConfigurator
         result.setDestination(destination);
         return result;
     }
-
-    // ************************ CONSTRUCTOR *******************************/
 
     private PrintPubExportConfigurator(IExportTransformer transformer) {
         super(transformer);
@@ -55,8 +47,6 @@ public class PrintPubExportConfigurator
         setUserFriendlyIOName("Print/Publication Export");
     }
 
-    // ************************ IMPLEMENTATION ****************************/
-
     @Override
     public PrintPubExportState getNewState() {
         return new PrintPubExportState(this);
@@ -65,7 +55,6 @@ public class PrintPubExportConfigurator
     @Override
     @SuppressWarnings("unchecked")
     protected void makeIoClassList() {
-        // This tells the "defaultExport" bean: "When you run me, use THIS worker class."
         ioClassList = new Class[] {
             PrintPubClassificationExport.class
         };
