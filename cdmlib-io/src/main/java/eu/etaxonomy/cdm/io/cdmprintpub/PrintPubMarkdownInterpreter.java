@@ -16,8 +16,6 @@ public class PrintPubMarkdownInterpreter implements IPrintPubDocumentInterpreter
 
     @Override
     public void visit(IPrintPubDocumentElement element) {
-        // Since we are using a simple interface with one method, we check types here.
-        // (Alternatively, you could add visit methods for each type to the Interface)
 
         if (element instanceof SectionHeader) {
             SectionHeader h = (SectionHeader) element;
