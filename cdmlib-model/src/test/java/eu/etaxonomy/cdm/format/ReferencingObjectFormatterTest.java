@@ -177,7 +177,7 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
 
         //GatheringEvent
         GatheringEvent gatheringEvent = getGatheringEvent();
-        Assert.assertEquals("Linne, Germany", defaultFormat(gatheringEvent));  //may change in future
+        Assert.assertEquals("Linne, 11 Apr 2011, Germany", defaultFormat(gatheringEvent));  //may change in future
 
         //DerivationEvent #10640
         DerivationEvent derivationEvent = getDerivationEvent();
@@ -203,6 +203,7 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
         GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
         gatheringEvent.setCountry(Country.GERMANY());
         gatheringEvent.setCollector(person1);
+        gatheringEvent.setTimeperiod(TimePeriodParser.parseString("11 Apr 2011"));
         return gatheringEvent;
     }
 
