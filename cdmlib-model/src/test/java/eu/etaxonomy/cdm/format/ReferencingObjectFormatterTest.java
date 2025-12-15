@@ -163,7 +163,7 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
         individualsAssociation.setAssociatedSpecimenOrObservation(getDerivedUnit());
         taxonDescription1.addElement(individualsAssociation);
         //May change to a shorter form in future
-        Assert.assertEquals("Germany, Linne 125 (B: B555) (Abies alba Mill. sec. Linne 1753)", defaultFormat(individualsAssociation));
+        Assert.assertEquals("Germany, 11 Apr 2011, Linne 125 (B: B555) (Abies alba Mill. sec. Linne 1753)", defaultFormat(individualsAssociation));
 
         //TemporalData
         ExtendedTimePeriod period = ExtendedTimePeriod.NewExtendedMonthInstance(5, 6);
