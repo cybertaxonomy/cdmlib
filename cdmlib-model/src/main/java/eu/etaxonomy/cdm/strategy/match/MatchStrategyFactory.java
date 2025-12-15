@@ -273,7 +273,7 @@ public class MatchStrategyFactory {
 
         addParsedIdentifiableEntityModes(referenceMatchStrategy, Reference.class);
 
-        String[] equalOrNullParams = new String[]{"accessed","doi",
+        String[] equalOrNullParams = new String[]{"doi",
                 "institution","isbn","issn","organization",
                 "pages","publisher","placePublished",
                 "referenceAbstract","school","uri"};
@@ -324,7 +324,7 @@ public class MatchStrategyFactory {
         addParsedIdentifiableEntityModes(referenceMatchStrategy, Reference.class);
 
         //here the result differs from addParsedReferenceMatchModes
-        String[] equalOrNullParams = new String[]{"accessed","doi",
+        String[] equalOrNullParams = new String[]{"doi",
                 "institution","isbn","issn","organization",
                 "pages","publisher","placePublished",
                 "referenceAbstract","school","uri"};

@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -42,7 +41,6 @@ import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.IHasLink;
-import eu.etaxonomy.cdm.model.media.IHasRights;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -77,7 +75,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Audited
 public class DescriptiveDataSet
         extends CreditableEntity<DescriptiveDataSetDefaultCacheStrategy>
-        implements IHasRights, IHasCredits, IHasLink {
+        implements IHasCredits, IHasLink {
 
     private static final long serialVersionUID = 3256448866757415686L;
     private static final Logger logger = LogManager.getLogger();
@@ -211,25 +209,6 @@ public class DescriptiveDataSet
     }
     public void setMaxRank(Rank maxRank) {
         this.maxRank = maxRank;
-    }
-
-
-//************* RIGHTS *************************************
-
-    @Override
-    public Set<Rights> getRights() {
-        if(rights == null) {
-            this.rights = new HashSet<>();
-        }
-        return this.rights;
-    }
-    @Override
-    public void addRights(Rights right){
-        getRights().add(right);
-    }
-    @Override
-    public void removeRights(Rights right){
-        getRights().remove(right);
     }
 
     //representations
@@ -398,26 +377,6 @@ public class DescriptiveDataSet
 		return result;
 	}
 
-	//***************** SUPPLEMENTAL DATA **************************************/
-
-    @Override
-    @Transient
-    public boolean hasSupplementalData() {
-        return super.hasSupplementalData()
-                || !this.rights.isEmpty()
-                ;
-    }
-
-    @Override
-    public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
-        return super.hasSupplementalData(exceptFor, ignoreSources)
-           || this.rights.stream().filter(
-                   r->r.getType() == null
-                   || ! exceptFor.contains(r.getType().getUuid()))
-               .findAny().isPresent()
-           ;
-    }
-
 	//*********************** CLONE ********************************************************/
 
 	/**
@@ -458,12 +417,6 @@ public class DescriptiveDataSet
             result.geoFilter = new HashSet<>();
             for (NamedArea area : this.geoFilter){
                 result.addGeoFilterArea(area);
-            }
-
-            //Rights  - reusable since #5762
-            result.rights = new HashSet<>();
-            for(Rights right : getRights()) {
-                result.addRights(right);
             }
 
 			return result;

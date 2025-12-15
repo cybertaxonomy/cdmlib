@@ -202,9 +202,6 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                     && titleExists(sec)){  //maybe we should also test protected caches (but which one, the abbrev cache or the titleCache?
                 secRef = isNotBlank(sec.getAbbrevTitle())? sec.getAbbrevTitle() : sec.getTitle();
                 String year = sourceAccessed == null? null:sourceAccessed.getYear();
-                if (isBlank(year) && sec.getAccessed() != null){
-                    year = String.valueOf(sec.getAccessed().getYear());
-                }
                 if (isBlank(year) && sec.getYear() != null){
                     year = sec.getYear();
                 }

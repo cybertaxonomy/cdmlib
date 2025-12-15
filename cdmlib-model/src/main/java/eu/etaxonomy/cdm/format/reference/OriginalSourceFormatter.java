@@ -165,9 +165,6 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         String result = null;
         if (!isEmpty(accessed)) {
             return timePeriodString(accessed);
-        } else if (reference.getAccessed() != null) {
-            TimePeriod refAccessed = TimePeriod.NewInstance(reference.getAccessed());
-            return timePeriodString(refAccessed);
         }else if (!isEmpty(reference.getDatePublished())) {
             return timePeriodString(reference.getDatePublished()) ;
         }else if (reference.getInReference() != null){
@@ -217,14 +214,6 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
      */
     private String handleCitationDetailInTitleCache(Reference reference, String citationDetail, TimePeriod accessed, String uniqueString) {
         String titleCache = reference.getTitleCache();
-
-        //remove reference.accessed
-        if (reference.cacheStrategy() instanceof ReferenceDefaultCacheStrategy) {
-            String accessedPart = ((ReferenceDefaultCacheStrategy)reference.cacheStrategy()).getAccessedPart(reference);
-            if (isNotBlank(accessedPart) && titleCache.contains(accessedPart)) {
-                titleCache = titleCache.replace(accessedPart, "").trim();
-            }
-        }
 
         //remove date published
         String datePublishedStr = timePeriodString(reference.getDatePublished());

@@ -8,34 +8,17 @@
 */
 package eu.etaxonomy.cdm.model.reference;
 
-import org.joda.time.DateTime;
-
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-
 /**
- * Interface representing dynamic {@link Reference references} which allow
- * an "accessed" field and sources based on these references should also
+ * Interface representing dynamic {@link Reference references}.
+ * {@link OriginalSourceBase sources} based on these references should
  * support {@link OriginalSourceBase#accessed}.
+ *
+ * Note: Originally the dynymic references supported #accessed themselves.
+ *       This was removed in #10145 (in connection with #10057).
  *
  * @author a.mueller
  * @date 26.07.2022
  */
-//Note: the accessed field will be moved to OriginalSource in future #10057, #10145
 public interface IDynamicReference {
-
-    /**
-     * Date (and time) when an {@link IDynamicReference dynamic reference} was accessed.<BR>
-     * Will be changed to {@link TimePeriod} in future.
-     *
-     * @return the accessed date
-     */
-    //#5258
-    public DateTime getAccessed();
-
-// removed to start moving accessed from Reference to OriginalSourceBase (#10145)
-//    /**
-//     * @see #getAccessed()
-//     */
-//    public void setAccessed(DateTime accessed);
 
 }
