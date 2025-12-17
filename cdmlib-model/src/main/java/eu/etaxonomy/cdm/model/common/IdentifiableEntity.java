@@ -583,18 +583,19 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @Override
     public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
+        Set<UUID> exceptForLocal = exceptFor == null ? new HashSet<>() : exceptFor;
         return super.hasSupplementalData(exceptFor, ignoreSources)
            || this.extensions.stream().filter(
                    e->e.getType() == null
-                   || ! exceptFor.contains(e.getType().getUuid()))
+                   || ! exceptForLocal.contains(e.getType().getUuid()))
                .findAny().isPresent()
            || this.identifiers.stream().filter(
                    i->i.getType() == null
-                   || ! exceptFor.contains(i.getType().getUuid()))
+                   || ! exceptForLocal.contains(i.getType().getUuid()))
                .findAny().isPresent()
            || this.links.stream().filter(
                    l->l.getLinkType() == null
-                   || ! exceptFor.contains(l.getLinkType().getUuid()))
+                   || ! exceptForLocal.contains(l.getLinkType().getUuid()))
                .findAny().isPresent()
            ;
     }
