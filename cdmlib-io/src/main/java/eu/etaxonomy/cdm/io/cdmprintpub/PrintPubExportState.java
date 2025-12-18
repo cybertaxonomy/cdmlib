@@ -27,7 +27,7 @@ public class PrintPubExportState extends TaxonTreeExportStateBase<PrintPubExport
 
     private Map<String, Integer> shortCitationCounter = new HashMap<>();
 
-    protected PrintPubExportState(PrintPubExportConfigurator config) {
+    public PrintPubExportState(PrintPubExportConfigurator config) {
         super(config);
         this.result = ExportResult.NewInstance(config.getResultType());
         this.documentModel = new PrintPubDocumentModel();
