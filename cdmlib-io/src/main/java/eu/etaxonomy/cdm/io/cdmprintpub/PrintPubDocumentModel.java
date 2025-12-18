@@ -26,11 +26,11 @@ public class PrintPubDocumentModel {
         void accept(IPrintPubDocumentInterpreter interpreter);
     }
 
-    public static class SectionHeader implements IPrintPubDocumentElement {
+    public static class PrintPubSectionHeader implements IPrintPubDocumentElement {
         private String title;
         private int level; // 1 = H1, 2 = H2
 
-        public SectionHeader(String title, int level) {
+        public PrintPubSectionHeader(String title, int level) {
             this.title = title;
             this.level = level;
         }

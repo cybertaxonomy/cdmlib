@@ -4,7 +4,7 @@ import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.IPrintPubDocumentEl
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubPageBreakElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubParagraphElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubUnorderedListElement;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.SectionHeader;
+import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubSectionHeader;
 
 public class PrintPubMarkdownInterpreter implements IPrintPubDocumentInterpreter {
 
@@ -17,8 +17,8 @@ public class PrintPubMarkdownInterpreter implements IPrintPubDocumentInterpreter
     @Override
     public void visit(IPrintPubDocumentElement element) {
 
-        if (element instanceof SectionHeader) {
-            SectionHeader h = (SectionHeader) element;
+        if (element instanceof PrintPubSectionHeader) {
+            PrintPubSectionHeader h = (PrintPubSectionHeader) element;
             sb.append("\n");
             // Add Markdown headers (#, ##, ###)
             for(int i=0; i<h.getLevel(); i++) {
