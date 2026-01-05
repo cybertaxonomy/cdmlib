@@ -1,9 +1,21 @@
+/**
+* Copyright (C) 2025 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.io.cdmprintpub;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,318 +26,229 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubPageBreakElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubParagraphElement;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubUnorderedListElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubSectionHeader;
+import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubUnorderedListElement;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 @Component
 public class PrintPubClassificationExport
-        extends CdmExportBase<PrintPubExportConfigurator, PrintPubExportState, IExportTransformer, File> {
+		extends CdmExportBase<PrintPubExportConfigurator, PrintPubExportState, IExportTransformer, File> {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private ITaxonNodeService taxonNodeService;
+	@Autowired
+	private ITaxonNodeService taxonNodeService;
 
-    public PrintPubClassificationExport() {
-        this.ioName = this.getClass().getSimpleName();
-    }
+	public PrintPubClassificationExport() {
+		this.ioName = this.getClass().getSimpleName();
+	}
 
-    @Override
-    @Transactional(readOnly = true)
-    protected void doInvoke(PrintPubExportState state) {
-        IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+	private class PrintPubContext {
+		List<TaxonSummaryDTO> taxonList = new ArrayList<>();
+		Map<UUID, Reference> referenceStore = new HashMap<>();
 
-        try {
-            // 1. Create the Title Page / Metadata
-            handleMetaData(state);
+		public void addTaxon(TaxonSummaryDTO dto) {
+			taxonList.add(dto);
+		}
 
-            // 2. Setup the Partitioner
-            // IMPORTANT: Ensure this partitioner is configured to sort by 'treeIndex' 
-            // if you want a valid taxonomic tree order!
-            TaxonNodeOutStreamPartitioner<PrintPubExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(
-                    this, state, state.getConfig().getTaxonNodeFilter(), 100, 
-                    monitor, null);
+		public void addReference(Reference ref) {
+			if (ref != null) {
+				referenceStore.putIfAbsent(ref.getUuid(), ref);
+			}
+		}
 
-            monitor.subTask("Start partitioning and exporting...");
+		public List<Reference> getSortedBibliography() {
+			List<Reference> refs = new ArrayList<>(referenceStore.values());
+			refs.sort(Comparator.comparing(Reference::getTitleCache, Comparator.nullsLast(String::compareTo)));
+			return refs;
+		}
+	}
 
-            // 3. Traverse the tree
-            TaxonNode node = partitioner.next();
-            while (node != null) {
-                // Wrap individual node processing in try-catch to prevent one bad apple 
-                // from killing the whole export
-                try {
-                    handleTaxonNode(state, node);
-                } catch (Exception e) {
-                    String nodeInfo = (node.getUuid() != null) ? node.getUuid().toString() : "unknown";
-                    state.getResult().addWarning("Failed to process node " + nodeInfo + ": " + e.getMessage());
-                    // Log it but continue!
-                    e.printStackTrace(); 
-                }
-                
-                node = partitioner.next();
-            }
+	private static class TaxonSummaryDTO {
+	    UUID uuid;
+	    String titleCache;
+	    int relativeDepth; // Changed from depthLevel to clarify it's relative
+	    List<String> synonyms = new ArrayList<>();
+	    List<String> commonNames = new ArrayList<>();
+	    String distributionString;
+	    List<String> simpleFacts = new ArrayList<>();
+	    String secReferenceCitation;
+	}
 
-        } catch (Exception e) {
-            // Catch major infrastructure errors (DB connection lost, etc.)
-            state.getResult().addException(e, "Critical Error in PrintPub export: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            // 4. Finalize - ALWAYS run this so you get a file, even if incomplete
-            try {
-                state.getProcessor().createFinalResult();
-            } catch (Exception finalE) {
-                state.getResult().addException(finalE, "Error writing final file: " + finalE.getMessage());
-            }
-        }
-    }
+	@Override
+	@Transactional(readOnly = true)
+	protected void doInvoke(PrintPubExportState state) {
+		IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+		PrintPubContext context = new PrintPubContext();
 
-    private void handleMetaData(PrintPubExportState state) {
-        state.getProcessor().add(new PrintPubSectionHeader(state.getConfig().getDocumentTitle(), 1));
-        state.getProcessor().add(new PrintPubParagraphElement("Generated by CDM PrintPub Export"));
-        state.getProcessor().add(new PrintPubPageBreakElement());
-    }
+		try {
+			// Phase 1: Data extraction within the active transaction
+			monitor.subTask("Collecting taxonomic data...");
+			TaxonNodeOutStreamPartitioner<PrintPubExportState> partitioner = TaxonNodeOutStreamPartitioner
+					.NewInstance(this, state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
 
-    private void handleTaxonNode(PrintPubExportState state, TaxonNode node) {
-        if (node == null || node.getTaxon() == null) {
-            return;
-        }
+			Integer referenceDepth = null;
+			
+			TaxonNode node = partitioner.next();
+			while (node != null) {
+	            if (referenceDepth == null) {
+	                referenceDepth = calculateDepth(node);
+	            }
+	            
+	            processNodeIntoContext(state, context, node, referenceDepth);
+	            node = partitioner.next();
+	        }
 
-        int level = calculateDepth(node);
+			// Phase 2: Building the document model from extracted DTOs
+			monitor.subTask("Generating document layout...");
+			generateDocumentLayout(state, context);
 
-        // Cap the header level at 6 (Markdown only supports # to ######)
-        // Level 1 (Root) -> H2
-        // Level 2 -> H3
-        int headerLevel = (level < 1) ? 2 : Math.min(level + 1, 6);
+		} catch (Exception e) {
+			state.getResult().addException(e, "Error during PrintPub export: " + e.getMessage());
+		} finally {
+			state.getProcessor().createFinalResult();
+		}
+	}
 
-        Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon(), Taxon.class);
-        handleTaxon(state, taxon, headerLevel);
-    }
+	private void processNodeIntoContext(PrintPubExportState state, PrintPubContext context, TaxonNode node, int referenceDepth) {
+		if (node == null || node.getTaxon() == null)
+			return;
 
-    private void handleTaxon(PrintPubExportState state, Taxon taxon, int headerLevel) {
-        state.setCurrentTaxon(taxon);
+		Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon(), Taxon.class);
+		TaxonSummaryDTO dto = new TaxonSummaryDTO();
+		dto.uuid = taxon.getUuid();
+		dto.relativeDepth = calculateDepth(node) - referenceDepth;
+		
+		// Extract nomenclature information
+		TaxonName name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonName.class);
+	    dto.titleCache = (name != null) ? name.getTitleCache() : taxon.getTitleCache();
 
-        TaxonName name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonName.class);
-        String title = (name != null) ? name.getTitleCache() : taxon.getTitleCache();
-        state.getProcessor().add(taxon, new PrintPubSectionHeader(title, headerLevel));
+		// Populate synonymy and capture secondary references for the bibliography
+		if (state.getConfig().isDoSynonyms() && taxon.hasSynonyms()) {
+			for (Synonym syn : taxon.getSynonyms()) {
+				syn = CdmBase.deproxy(syn);
+				dto.synonyms
+						.add("= " + ((syn.getName() != null) ? syn.getName().getTitleCache() : syn.getTitleCache()));
+				if (syn.getSec() != null) {
+					context.addReference(HibernateProxyHelper.deproxy(syn.getSec(), Reference.class));
+				}
+			}
+		}
 
-        if (state.getConfig().isDoSynonyms()) {
-            handleSynonyms(state, taxon);
-        }
+		if (state.getConfig().isDoFactualData()) {
+			extractDescriptionData(state, context, taxon, dto);
+		}
 
-        if (state.getConfig().isDoFactualData()) {
-            handleDescriptions(state, taxon);
-        }
-    }
+		// Store taxon citation reference
+		if (taxon.getSec() != null) {
+			Reference ref = HibernateProxyHelper.deproxy(taxon.getSec(), Reference.class);
+			context.addReference(ref);
+			dto.secReferenceCitation = ref.getTitleCache();
+		}
 
-    private void handleSynonyms(PrintPubExportState state, Taxon taxon) {
-        if (!taxon.hasSynonyms()) {
-            return;
-        }
+		context.addTaxon(dto);
+	}
 
-        PrintPubUnorderedListElement list = new PrintPubUnorderedListElement();
-        for (Synonym syn : taxon.getSynonyms()) {
-            syn = CdmBase.deproxy(syn);
-            String synName = syn.getName() != null ? syn.getName().getTitleCache() : syn.getTitleCache();
-            list.addItem("= " + synName);
-        }
+	private void extractDescriptionData(PrintPubExportState state, PrintPubContext context, Taxon taxon,
+			TaxonSummaryDTO dto) {
+		for (TaxonDescription desc : taxon.getDescriptions()) {
+			if (!state.getConfig().isIncludeUnpublishedFacts() && !desc.isPublish())
+				continue;
 
-        if (!list.getItems().isEmpty()) {
-            state.getProcessor().add(new PrintPubParagraphElement("**Synonyms:**"));
-            state.getProcessor().add(list);
-        }
-    }
-    
-    public void setTaxonNodeService(ITaxonNodeService taxonNodeService) {
-        this.taxonNodeService = taxonNodeService;
-    }
+			for (DescriptionElementBase element : desc.getElements()) {
+				element = CdmBase.deproxy(element);
+				Feature feature = element.getFeature();
 
-    private void handleDescriptions(PrintPubExportState state, Taxon taxon) {
-        Set<TaxonDescription> descriptions = taxon.getDescriptions();
+				// Handle common names
+				if (feature.equals(Feature.COMMON_NAME()) && element instanceof CommonTaxonName) {
+					CommonTaxonName ctn = (CommonTaxonName) element;
+					dto.commonNames.add(ctn.getName()
+							+ (ctn.getLanguage() != null ? " [" + ctn.getLanguage().getLabel() + "]" : ""));
+				}
+				// Handle geographic distribution
+				else if (feature.equals(Feature.DISTRIBUTION()) && element instanceof Distribution) {
+					Distribution d = (Distribution) element;
+					if (d.getArea() != null) {
+						dto.distributionString = (dto.distributionString == null) ? d.getArea().getLabel()
+								: dto.distributionString + ", " + d.getArea().getLabel();
+					}
+				}
+				// Handle descriptive text facts
+				else if (element instanceof TextData) {
+					String text = ((TextData) element).getText(Language.DEFAULT());
+					if (text != null)
+						dto.simpleFacts.add("**" + feature.getLabel() + "**: " + text);
+				}
+			}
+		}
+	}
 
-        List<DescriptionElementBase> simpleFacts = new ArrayList<>();
-        List<DescriptionElementBase> distributionFacts = new ArrayList<>();
-        List<DescriptionElementBase> commonNameFacts = new ArrayList<>();
-        List<DescriptionElementBase> specimenFacts = new ArrayList<>();
+	private void generateDocumentLayout(PrintPubExportState state, PrintPubContext context) {
+		// Document header and metadata
+		state.getProcessor().add(new PrintPubSectionHeader(state.getConfig().getDocumentTitle(), 1));
+		state.getProcessor().add(new PrintPubParagraphElement("Total Taxa: " + context.taxonList.size()));
+		state.getProcessor().add(new PrintPubPageBreakElement());
 
-        // 1. Sort elements into buckets
-        for (TaxonDescription desc : descriptions) {
-            if (!state.getConfig().isIncludeUnpublishedFacts() && !desc.isPublish()) {
-                continue;
-            }
+		// Taxonomic treatment blocks
+		for (TaxonSummaryDTO dto : context.taxonList) {
+			int headerLevel = Math.min(dto.relativeDepth + 2, 6);
+			state.getProcessor().add(new PrintPubSectionHeader(dto.titleCache, headerLevel));
+			
+			if (!dto.synonyms.isEmpty()) {
+				PrintPubUnorderedListElement list = new PrintPubUnorderedListElement();
+				dto.synonyms.forEach(list::addItem);
+				state.getProcessor().add(list);
+			}
 
-            for (DescriptionElementBase element : desc.getElements()) {
-                element = CdmBase.deproxy(element);
-                Feature feature = element.getFeature();
+			if (dto.distributionString != null) {
+				state.getProcessor().add(new PrintPubParagraphElement("**Distribution:** " + dto.distributionString));
+			}
 
-                if (feature.equals(Feature.COMMON_NAME())) {
-                    commonNameFacts.add(element);
-                } else if (feature.equals(Feature.DISTRIBUTION())) {
-                    distributionFacts.add(element);
-                } else if (element instanceof IndividualsAssociation || isSpecimenFeature(feature)) {
-                    specimenFacts.add(element);
-                } else {
-                    // Everything else (TextData, CategoricalData, etc.)
-                    simpleFacts.add(element);
-                }
-            }
-        }
+			dto.simpleFacts.forEach(fact -> state.getProcessor().add(new PrintPubParagraphElement(fact)));
+		}
 
-        // 2. Process buckets in a specific order for the document
-        if (!commonNameFacts.isEmpty()) {
-            handleCommonNameFacts(state, commonNameFacts);
-        }
+		// Bibliography section
+		if (!context.referenceStore.isEmpty()) {
+			state.getProcessor().add(new PrintPubPageBreakElement());
+			state.getProcessor().add(new PrintPubSectionHeader("Bibliography", 1));
+			for (Reference ref : context.getSortedBibliography()) {
+				state.getProcessor().add(new PrintPubParagraphElement(ref.getTitleCache()));
+			}
+		}
+	}
 
-        if (!distributionFacts.isEmpty()) {
-            handleDistributionFacts(state, distributionFacts);
-        }
+	private int calculateDepth(TaxonNode node) {
+		int depth = 1;
+		TaxonNode parent = node.getParent();
+		while (parent != null) {
+			depth++;
+			parent = parent.getParent();
+		}
+		return depth;
+	}
 
-        if (!simpleFacts.isEmpty()) {
-            handleSimpleFacts(state, simpleFacts);
-        }
+	@Override
+	protected boolean doCheck(PrintPubExportState state) {
+		return state.getConfig().getDestination() != null;
+	}
 
-        if (!specimenFacts.isEmpty()) {
-            handleSpecimenFacts(state, specimenFacts);
-        }
-    }
-
-    private void handleCommonNameFacts(PrintPubExportState state, List<DescriptionElementBase> elements) {
-        PrintPubUnorderedListElement list = new PrintPubUnorderedListElement();
-
-        for (DescriptionElementBase element : elements) {
-            if (element instanceof CommonTaxonName) {
-                CommonTaxonName commonName = (CommonTaxonName) element;
-                String name = commonName.getName();
-                String lang = (commonName.getLanguage() != null) ? " [" + commonName.getLanguage().getLabel() + "]" : "";
-                String area = (commonName.getArea() != null) ? " (" + commonName.getArea().getLabel() + ")" : "";
-
-                list.addItem(name + lang + area);
-            } else if (element instanceof TextData) {
-                 TextData td = (TextData) element;
-                 String text = td.getText(Language.DEFAULT());
-                 if (text != null) {
-                    list.addItem(text);
-                 }
-            }
-        }
-
-        if (!list.getItems().isEmpty()) {
-            state.getProcessor().add(new PrintPubParagraphElement("**Common Names:**"));
-            state.getProcessor().add(list);
-        }
-    }
-
-    private void handleDistributionFacts(PrintPubExportState state, List<DescriptionElementBase> elements) {
-        StringBuilder distributionText = new StringBuilder();
-        boolean first = true;
-
-        for (DescriptionElementBase element : elements) {
-            if (element instanceof Distribution) {
-                Distribution dist = (Distribution) element;
-                if (dist.getArea() != null) {
-                    if (!first) {
-                        distributionText.append(", ");
-                    }
-                    distributionText.append(dist.getArea().getLabel());
-
-                    if (dist.getStatus() != null) {
-                        distributionText.append(" (").append(dist.getStatus().getLabel()).append(")");
-                    }
-                    first = false;
-                }
-            }
-        }
-
-        if (distributionText.length() > 0) {
-            state.getProcessor().add(new PrintPubParagraphElement("**Distribution:** " + distributionText.toString()));
-        }
-    }
-
-    private void handleSimpleFacts(PrintPubExportState state, List<DescriptionElementBase> elements) {
-        List<Language> fallbackLanguages = new ArrayList<>();
-        fallbackLanguages.add(Language.DEFAULT());
-        fallbackLanguages.add(Language.ENGLISH());
-
-        for (DescriptionElementBase element : elements) {
-            if (element instanceof TextData) {
-                TextData textData = (TextData) element;
-                LanguageString bestText = textData.getPreferredLanguageString(fallbackLanguages);
-
-                if (bestText != null && bestText.getText() != null && !bestText.getText().isEmpty()) {
-                    Feature feature = element.getFeature();
-                    String label = (feature != null) ? feature.getLabel() : "Note";
-                    state.getProcessor().add(new PrintPubParagraphElement("**" + label + "**: " + bestText.getText()));
-                }
-            }
-        }
-    }
-
-    private void handleSpecimenFacts(PrintPubExportState state, List<DescriptionElementBase> elements) {
-        PrintPubUnorderedListElement list = new PrintPubUnorderedListElement();
-
-        for (DescriptionElementBase element : elements) {
-            if (element instanceof IndividualsAssociation) {
-                IndividualsAssociation assoc = (IndividualsAssociation) element;
-                if (assoc.getAssociatedSpecimenOrObservation() != null) {
-                    String title = assoc.getAssociatedSpecimenOrObservation().getTitleCache();
-                    list.addItem(title);
-                }
-            }
-        }
-
-        if (!list.getItems().isEmpty()) {
-            state.getProcessor().add(new PrintPubParagraphElement("**Specimens:**"));
-            state.getProcessor().add(list);
-        }
-    }
-
-    private boolean isSpecimenFeature(Feature feature) {
-        if (feature == null) {
-            return false;
-        }
-        if (feature.isSupportsIndividualAssociation()) {
-            return true;
-        }
-        return feature.equals(Feature.SPECIMEN()) ||
-               feature.equals(Feature.INDIVIDUALS_ASSOCIATION()) ||
-               feature.equals(Feature.MATERIALS_EXAMINED()) ||
-               feature.equals(Feature.OBSERVATION()) ||
-               feature.equals(Feature.OCCURRENCE());
-    }
-
-    private int calculateDepth(TaxonNode node) {
-        int depth = 1;
-        TaxonNode parent = node.getParent();
-        while (parent != null) {
-            depth++;
-            parent = parent.getParent();
-        }
-        return depth;
-    }
-
-    @Override
-    protected boolean doCheck(PrintPubExportState state) {
-        return state.getConfig().getDestination() != null;
-    }
-
-    @Override
-    protected boolean isIgnore(PrintPubExportState state) {
-        return false;
-    }
+	@Override
+	protected boolean isIgnore(PrintPubExportState state) {
+		return false;
+	}
 }
