@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -400,12 +401,12 @@ public class TypeDesignationGroupContainer {
         return null;
     }
 
-    public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType) {
-        return new TypeDesignationGroupContainerFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType).format(this);
+    public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType, List<Language> languages) {
+        return new TypeDesignationGroupContainerFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType, languages).format(this);
     }
 
-    public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType, HTMLTagRules htmlRules) {
-        return new TypeDesignationGroupContainerFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType).format(this, htmlRules);
+    public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType, List<Language> languages, HTMLTagRules htmlRules) {
+        return new TypeDesignationGroupContainerFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType, languages).format(this, htmlRules);
     }
 
 

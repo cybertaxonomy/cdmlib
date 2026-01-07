@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -58,6 +59,7 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
     private static final boolean WITH_TYPE_LABEL = true;
     private static final boolean WITH_PRECEDING_MAIN_TYPE = true;
     private static final boolean WITH_ACCESSION_NO_TYPE = true;
+    private static final List<Language> languages = null;
 
     //variables and setup were copied from TypeDesignationGroupContainerTest
     //not all of them are in use yet
@@ -318,7 +320,7 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
 
         TypeDesignationGroupContainer container = TypeDesignationGroupContainer.NewDefaultInstance(tds);
         TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter(
-                !WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, WITH_ACCESSION_NO_TYPE);
+                !WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, WITH_ACCESSION_NO_TYPE, languages);
         String text = formatter.format(container);
         int holotypeIndex = text.indexOf("holotype");
         Assert.assertTrue("Holotype must be first, isotype second", holotypeIndex>0 && (holotypeIndex < text.indexOf("isotype")) );

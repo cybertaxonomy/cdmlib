@@ -90,14 +90,16 @@ public class TypeDesignationGroupContainerFormatter {
     }
 
     public TypeDesignationGroupContainerFormatter(boolean withCitation, boolean withStartingTypeLabel,
-            boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType) {
+            boolean withNameIfAvailable, boolean withPrecedingMainType, boolean withAccessionNoType,
+            List<Language> languages) {
 
         configuration.setWithCitation(withCitation)
             .setWithStartingTypeLabel(withStartingTypeLabel)
             .setWithNameIfAvailable(withNameIfAvailable)
             .setWithPrecedingMainType(withPrecedingMainType)
             .setWithAccessionNoType(withAccessionNoType)
-            .setIgnoreSyntypesWithLectotype(false);
+            .setIgnoreSyntypesWithLectotype(false)
+            .setLanguages(languages);
     }
 
 // *********************** CONFIGURATION **************************************/
@@ -133,6 +135,11 @@ public class TypeDesignationGroupContainerFormatter {
 
     public TypeDesignationGroupContainerFormatter withSourceTypeFilter(EnumSet<OriginalSourceType> sourceTypes) {
         configuration.setSourceTypeFilter(sourceTypes);
+        return this;
+    }
+
+    public TypeDesignationGroupContainerFormatter withLanguages(List<Language> languages) {
+        configuration.setLanguages(languages);
         return this;
     }
 
