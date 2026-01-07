@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.coldp;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1301,7 +1302,13 @@ public class ColDpClassificationExport
             TypeDesignationGroupContainer typeContainer = new TypeDesignationGroupContainer(specimenTypeDesignations, name, TypeDesignationGroupComparator.ORDER_BY.TYPE_STATUS);
             HTMLTagRules rules = new HTMLTagRules();
             //rules.addRule(TagEnum.name, "i");
-            csvLine[table.getIndex(ColDpExportTable.TYPE_CITATION)] = typeContainer.print(false, false, false, true, false, rules);
+            //TODO language support does not yet exist in ColDP export
+//            Language lang = state.getConfig().getLanguage();
+            Language lang = null;
+            List<Language> languages = lang == null ? null : Arrays.asList(new Language[] {lang});
+
+            csvLine[table.getIndex(ColDpExportTable.TYPE_CITATION)] = typeContainer.print(
+                    false, false, false, true, false, languages, rules);
 
             //TODO 2 type material what is this second type computation? Is it only about sources?
             StringBuilder stringbuilder = new StringBuilder();

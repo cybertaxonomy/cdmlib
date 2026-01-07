@@ -1233,7 +1233,11 @@ public class WordClassificationExport
             HTMLTagRules rules = new HTMLTagRules();
             rules.addRule(TagEnum.name, "i");
 
-            csvLine[table.getIndex(WordClassificationExportTable.TYPE_SPECIMEN)] = manager.print(false, false, false, true, false, rules);
+            Language lang = state.getConfig().getLanguage();
+            List<Language> languages = lang == null ? null : Arrays.asList(new Language[] {lang});
+
+            csvLine[table.getIndex(WordClassificationExportTable.TYPE_SPECIMEN)] = manager.print(
+                    false, false, false, true, false, languages, rules);
 
             StringBuilder stringbuilder = new StringBuilder();
             int i = 1;
