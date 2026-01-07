@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.name;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -170,9 +171,9 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
     public void testTextualTypeDesignation() throws TypeDesignationSetException {
         List<TypeDesignationBase> tdList = new ArrayList<>();
         TextualTypeDesignation ttd = TextualTypeDesignation.NewInstance("My text type designation",
-                null, false, book, DASH_W, DASH_W);
+                Language.ENGLISH(), false, book, DASH_W, DASH_W);
         TextualTypeDesignation ttd2 = TextualTypeDesignation.NewInstance("My second type designation",
-                null, false, book, DASH_W, DASH_W);
+                Language.ENGLISH(), false, book, DASH_W, DASH_W);
         ttd2.setVerbatim(true);
         ttd2.addPrimaryTaxonomicSource(book, "55");
 
@@ -210,6 +211,22 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
         Assert.assertEquals("; ", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
         Assert.assertEquals("My text type designation", tags.get(i++).getText());
+
+        //test i18n text
+        ttd.putText(Language.GERMAN(), "Meine textuelle Typenfestlegung");
+        ttd2.putText(Language.GERMAN(), "Meine zweite Typenfestlegung");
+
+        List<Language> languages = new ArrayList<>();
+        languages.add(Language.ENGLISH());
+        languages.add(Language.GERMAN());
+        formatter.withLanguages(languages);
+        text = formatter.format(container);
+        Assert.assertEquals("Type: \"My second type designation\" [fide Decandolle & al. 1962: 55]; My text type designation", text);
+
+        Collections.reverse(languages);
+        formatter.withLanguages(languages);
+        text = formatter.format(container);
+        Assert.assertEquals("Type: \"Meine zweite Typenfestlegung\" [fide Decandolle & al. 1962: 55]; Meine textuelle Typenfestlegung", text);
     }
 
     @Test
