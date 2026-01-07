@@ -65,7 +65,7 @@ public class TypeDesignationGroupContainerFormatter {
 
     private TypeDesignationGroupFormatterConfiguration configuration = new TypeDesignationGroupFormatterConfiguration();
 
-    private TypeDesignationStatusComparator statusComparator = new TypeDesignationStatusComparator<>();
+    private TypeDesignationStatusComparator<?> statusComparator = new TypeDesignationStatusComparator<>();
 
     public static String entityLabel(VersionableEntity baseEntity,
             TypeDesignationGroupFormatterConfiguration config) {
@@ -103,10 +103,6 @@ public class TypeDesignationGroupContainerFormatter {
     }
 
 // *********************** CONFIGURATION **************************************/
-
-    public TypeDesignationGroupContainerFormatter(TypeDesignationGroupFormatterConfiguration configuration) {
-        this.configuration = configuration;
-    }
 
     public TypeDesignationGroupContainerFormatter withCitation(boolean withCitation) {
         configuration.setWithCitation(withCitation);

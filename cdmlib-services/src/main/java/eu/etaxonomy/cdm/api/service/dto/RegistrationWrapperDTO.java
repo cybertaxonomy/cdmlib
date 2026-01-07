@@ -91,8 +91,6 @@ public class RegistrationWrapperDTO {
 
     private String bibliographicInRefCitationString;
 
-
-
     public RegistrationWrapperDTO(Registration reg) {
 
         this.reg = reg;
