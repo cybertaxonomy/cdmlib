@@ -43,7 +43,7 @@
     <jackson.version>2.13.3</jackson.version>           <!-- checked 2022-05 -->
 	<!-- CAUTION when upgrading, 1.8x requires another log4j binding: https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html -->
     <slf4j.version>1.7.36</slf4j.version>               <!-- checked 2022-06 -->
-	<log4j.version>2.19.0</log4j.version>
+	<log4j.version>2.25.3</log4j.version>
 	<jaxb.version>2.3.3</jaxb.version>                 <!-- checked 2020-08, there is a newer version 3.0.0-MX, not checked if compatible -->
 	<cglib.version>3.3.0</cglib.version>
 	<aspectj.version>1.9.7</aspectj.version>            <!-- checked 2022-05 -->
@@ -1675,19 +1675,19 @@
       
       <!-- ******* DATABASES DRIVER ******* -->
       <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>8.0.29</version>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+        <version>9.5.0</version>
       </dependency>
       <dependency>
         <groupId>org.mariadb.jdbc</groupId>
         <artifactId>mariadb-java-client</artifactId>
-        <version>3.0.6</version>
+        <version>3.5.7</version>
       </dependency>
       <dependency>
          <groupId>org.postgresql</groupId>
          <artifactId>postgresql</artifactId>
-         <version>42.5.1</version>
+         <version>42.7.8</version>
       </dependency>
 	  <dependency>
         <groupId>com.h2database</groupId>
@@ -1698,7 +1698,7 @@
       <dependency>
         <groupId>com.microsoft.sqlserver</groupId>
         <artifactId>mssql-jdbc</artifactId>
-        <version>12.10.0.jre8</version>
+        <version>13.2.0.jre8</version>
         <!-- version>9.4.1.jre8</version -->
       </dependency>
       <dependency>

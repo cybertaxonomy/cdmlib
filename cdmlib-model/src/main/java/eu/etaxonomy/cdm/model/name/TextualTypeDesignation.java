@@ -96,9 +96,11 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
         super();
     }
 
-    protected TextualTypeDesignation(String text, Language language, boolean isVerbatim, Reference citation, String citationMicroReference, String originalInfo) {
+    private TextualTypeDesignation(String text, Language language, boolean isVerbatim, Reference citation, String citationMicroReference, String originalInfo) {
         super(citation, citationMicroReference, originalInfo);
-        language = Language.UNDETERMINED();
+        if (language == null) {
+            language = Language.UNDETERMINED();
+        }
         LanguageString ls = LanguageString.NewInstance(text, language);
         this.putText(ls);
         this.setVerbatim(isVerbatim);

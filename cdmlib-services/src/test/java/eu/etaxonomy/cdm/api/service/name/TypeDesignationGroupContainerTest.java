@@ -63,7 +63,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
     private static final boolean WITH_TYPE_LABEL = true;
     private static final boolean WITH_PRECEDING_MAIN_TYPE = true;
     private static final boolean WITH_ACCESSION_NO_TYPE = true;
-
+    private static final List<Language> languages = null;
 
     private NameTypeDesignation ntd;
     private NameTypeDesignation ntd_LT;
@@ -211,7 +211,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
         //order by base entity
         TypeDesignationGroupComparator.ORDER_BY orderByBaseEntity = TypeDesignationGroupComparator.ORDER_BY.BASE_ENTITY;
         TypeDesignationGroupContainer typeDesignationManager = TypeDesignationGroupContainer.NewInstance(tds, orderByBaseEntity);
-        String result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE);
+        String result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages);
 
         assertNotNull(result);
         assertEquals(
@@ -233,7 +233,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
         //order by type status
         TypeDesignationGroupComparator.ORDER_BY orderByTypeStatus = TypeDesignationGroupComparator.ORDER_BY.TYPE_STATUS;
         typeDesignationManager = TypeDesignationGroupContainer.NewInstance(tds, orderByTypeStatus);
-        result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE);
+        result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages);
         assertEquals(
                 "Prionus L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA; isotypes: BER, KEW);"
                 + " Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (syntype: M);"
@@ -241,7 +241,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
                 , result
                 );
         //same with preceding type
-        result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE);
+        result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages);
         assertEquals(
                 "Prionus L."+DASH_W+"Holotype: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (OHA; isotypes: BER, KEW);"
                 + " Syntype: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (M);"
@@ -265,7 +265,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
         typifiedName.setTitleCache("Prionus L.", true);
 
         TypeDesignationGroupContainer typeDesignationManager = new TypeDesignationGroupContainer(typifiedName);
-        String result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE);
+        String result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages);
         assertEquals(
                 "Prionus L."
                 , result
@@ -276,7 +276,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
 
         assertEquals(
                 "Prionus L."+DASH_W+"Type: Prionus coriatius L."
-                , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
+                , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages)
                 );
 
         typifiedName.addTypeDesignation(std_HT, false);
@@ -284,7 +284,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
 
         assertEquals(
                 "Prionus L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA); Type: Prionus coriatius L."
-                , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
+                , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages)
                 );
 
         DerivedUnit specimen = std_HT.getTypeSpecimen();
@@ -295,7 +295,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
 
         assertEquals(
                 "Prionus L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: My collection); Type: Prionus coriatius L."
-                , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
+                , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages)
                 );
     }
 
@@ -316,7 +316,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
 
             assertEquals("failed after repeating " + i + " times",
                     "Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)"
-                    , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
+                    , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages)
                     );
 
             Media media = ((MediaSpecimen)mtd_HT_published.getTypeSpecimen()).getMediaSpecimen();
@@ -325,7 +325,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
             ref2.setAuthorship(Person.NewInstance(null, "Mueller", "A.", null));
             IdentifiableSource newSource = IdentifiableSource.NewPrimaryMediaSourceInstance(ref2, "tab. 4");
             media.addSource(newSource);
-            String with2Sources = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE);
+            String with2Sources = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages);
             Assert.assertTrue("failed after repeating " + i + " times",
                     //the order of the sources is currently not yet defined (rare case), therefore 2 possibilities
                     with2Sources.equals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] A nice picture in Mueller 2009: tab. 4, Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)")
@@ -341,7 +341,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
 
             assertEquals("failed after repeating " + i + " times",
                     "Holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33"
-                    , typeDesignationManager2.print(WITH_CITATION, WITH_TYPE_LABEL, !WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
+                    , typeDesignationManager2.print(WITH_CITATION, WITH_TYPE_LABEL, !WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages)
                     );
 
             //with empty field unit
@@ -351,7 +351,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
             typeDesignationManager3.addTypeDesigations(mtd_HT_published);
             assertEquals("failed after repeating " + i + " times",
                     "Holotype: [icon] A nice picture in Kohlbecker & Kusber 2008: 33"
-                    , typeDesignationManager3.print(WITH_CITATION, WITH_TYPE_LABEL, !WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
+                    , typeDesignationManager3.print(WITH_CITATION, WITH_TYPE_LABEL, !WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages)
                     );
         }
     }
@@ -370,12 +370,12 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
         typeDesignationManager.addTypeDesigations(protectedDesignation);
 
         assertEquals("Prionus coriatius L."+DASH_W+"Neotype (designated by The book of types: 55): Mexico. Oaxaca: Coixtlahuaca, Tepelmeme Villa de Morelos, aproximadamente 1 km S del Río Santa Lucía, 1285 m, 27 March 1994, U. Guzmán Cruz 1065 (MEXU 280206)"
-                , typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
+                , typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages)
                 );
         protectedDesignation.setTypeStatus(null);
         typeDesignationManager.addTypeDesigations(protectedDesignation);
         assertEquals("Prionus coriatius L."+DASH_W+"Mexico. Oaxaca: Coixtlahuaca, Tepelmeme Villa de Morelos, aproximadamente 1 km S del Río Santa Lucía, 1285 m, 27 March 1994, U. Guzmán Cruz 1065 (MEXU 280206) designated by The book of types: 55"
-                , typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
+                , typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages)
                 );
 
         DerivedUnit withoutFieldUnit = DerivedUnit.NewPreservedSpecimenInstance();
@@ -384,7 +384,7 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
         SpecimenTypeDesignation withoutFieldUnitDesignation = typifiedName.addSpecimenTypeDesignation(withoutFieldUnit, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
         typeDesignationManager.addTypeDesigations(withoutFieldUnitDesignation);
         assertEquals("Prionus coriatius L."+DASH_W+"Mexico. Oaxaca: Coixtlahuaca, Tepelmeme Villa de Morelos, aproximadamente 1 km S del Río Santa Lucía, 1285 m, 27 March 1994, U. Guzmán Cruz 1065 (MEXU 280206) designated by The book of types: 55; holotype: B 280207"
-                , typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE)
+                , typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages)
                 );
     }
 
@@ -399,11 +399,11 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
         typeDesignationManager.addTypeDesigations(std_LT);
         //Note: this is a rare and dirty data only case, a designated by should always go together with a defined type status
         assertEquals("Prionus coriatius L."+DASH_W+"Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (LEC designated by Decandolle & al. 1962)",
-                typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
         assertEquals("Prionus coriatius L."+DASH_W+"Testland, near Bughausen, A.Kohlbecker 81989, 2017 (LEC)",
-                typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
         assertEquals("Testland, near Bughausen, A.Kohlbecker 81989, 2017 (LEC)",
-                typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
 
         //name types
         //TODO how far is this "without status", type has a (lectotype) status
@@ -413,8 +413,8 @@ public class TypeDesignationGroupContainerTest extends TermTestBase{
         typeDesignationManager.addTypeDesigations(ntd_LT);
 //            ntd_LT.addPrimaryTaxonomicSource(inRef, "66");
         assertEquals("Prionus L."+DASH_W+"Lectotype (designated by Decandolle & al. 1962): Prionus arealus L.",
-                typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
         assertEquals("Prionus L."+DASH_W+"Lectotype: Prionus arealus L.",
-                typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
     }
 }
