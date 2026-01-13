@@ -1,15 +1,17 @@
 package eu.etaxonomy.cdm.io.cdmprintpub;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.IPrintPubDocumentElement;
+import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubLabeledTextElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubPageBreakElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubParagraphElement;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubUnorderedListElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubSectionHeader;
+import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubUnorderedListElement;
 
 public class PrintPubMarkdownInterpreter implements IPrintPubDocumentInterpreter {
 
     private StringBuilder sb = new StringBuilder();
 
+    @Override
     public Object getResult() {
         return sb.toString();
     }
@@ -41,6 +43,13 @@ public class PrintPubMarkdownInterpreter implements IPrintPubDocumentInterpreter
 
         } else if (element instanceof PrintPubPageBreakElement) {
             sb.append("\n---\n\n"); // Markdown Horizontal Rule acting as page break
+
+        }
+        else if (element instanceof PrintPubLabeledTextElement) {
+            PrintPubLabeledTextElement labeled = (PrintPubLabeledTextElement) element;
+            // The Interpreter decides that labels are bolded with asterisks
+            sb.append("**").append(labeled.getLabel()).append("**: ")
+              .append(labeled.getText()).append("\n\n");
         }
     }
 }

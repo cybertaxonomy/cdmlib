@@ -39,7 +39,7 @@ public class PrintPubExportConfigurator
         return result;
     }
 
-    private PrintPubExportConfigurator(IExportTransformer transformer) {
+    public PrintPubExportConfigurator(IExportTransformer transformer) {
         super(transformer);
         // Important: We are producing a SINGLE file (MD/PDF), not a Map/Zip of CSVs.
         this.resultType = ExportResultType.BYTE_ARRAY;

@@ -1,11 +1,11 @@
 /**
-* Copyright (C) 2025 EDIT
-* European Distributed Institute of Taxonomy
-* http://www.e-taxonomy.eu
-*
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2025 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 
 package eu.etaxonomy.cdm.io.cdmprintpub;
 
@@ -83,6 +83,25 @@ public class PrintPubDocumentModel {
     }
 
     public static class PrintPubPageBreakElement implements IPrintPubDocumentElement {
+        @Override
+        public void accept(IPrintPubDocumentInterpreter interpreter) {
+            interpreter.visit(this);
+        }
+    }
+
+    // === NEW SEMANTIC ELEMENT ===
+    public static class PrintPubLabeledTextElement implements IPrintPubDocumentElement {
+        private String label;
+        private String text;
+
+        public PrintPubLabeledTextElement(String label, String text) {
+            this.label = label;
+            this.text = text;
+        }
+
+        public String getLabel() { return label; }
+        public String getText() { return text; }
+
         @Override
         public void accept(IPrintPubDocumentInterpreter interpreter) {
             interpreter.visit(this);
