@@ -201,13 +201,14 @@ public abstract class AnnotatableEntity
 
     @Override
     public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
-        return this.annotations.stream().filter(
-                a->a.getAnnotationType() == null
-                    || ! exceptFor.contains(a.getAnnotationType().getUuid()))
+        Set<UUID> exceptForLocal = exceptFor == null ? new HashSet<>() : exceptFor;
+        return this.annotations.stream()
+                .filter(a->a.getAnnotationType() == null
+                    || ! exceptForLocal.contains(a.getAnnotationType().getUuid()))
                 .findAny().isPresent()
            || this.markers.stream().filter(
                 m->m.getMarkerType() == null
-                    || ! exceptFor.contains(m.getMarkerType().getUuid())).findAny().isPresent();
+                    || ! exceptForLocal.contains(m.getMarkerType().getUuid())).findAny().isPresent();
     }
 
 //********************** CLONE *****************************************/

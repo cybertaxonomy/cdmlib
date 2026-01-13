@@ -78,7 +78,7 @@ public class RegistrationDtoLoader {
         default:
             try {
                 TypeDesignationGroupContainer typeDesignationSetContainer = TypeDesignationGroupContainer.NewDefaultInstance(reg.getTypeDesignations());
-                dto.addSummaryTaggedText(new TypeDesignationGroupContainerFormatter(false, true, true, true, false)
+                dto.addSummaryTaggedText(new TypeDesignationGroupContainerFormatter(false, true, true, true, false, null)
                         .toTaggedText(typeDesignationSetContainer));
                 summary = TaggedTextFormatter.createString(dto.getSummaryTaggedText());
                 dto.setSummary(summary);

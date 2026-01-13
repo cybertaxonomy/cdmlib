@@ -302,10 +302,11 @@ public class TaxonDescription
 
     @Override
     public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
+        Set<UUID> exceptForLocal = exceptFor == null ? new HashSet<>() : exceptFor;
         return super.hasSupplementalData(exceptFor, ignoreSources)
            || this.rights.stream().filter(
                    r->r.getType() == null
-                   || ! exceptFor.contains(r.getType().getUuid()))
+                   || ! exceptForLocal.contains(r.getType().getUuid()))
                .findAny().isPresent()
            ;
     }

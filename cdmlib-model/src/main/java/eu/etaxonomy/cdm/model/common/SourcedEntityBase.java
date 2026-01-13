@@ -198,10 +198,11 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
 
     @Override
     public boolean hasSupplementalData(Set<UUID> exceptFor, boolean ignoreSources) {
+        Set<UUID> exceptForLocal = exceptFor == null ? new HashSet<>() : exceptFor;
         return super.hasSupplementalData(exceptFor, ignoreSources)
            || !ignoreSources && this.sources.stream().filter(
                 s->s.getType() == null
-                    || ! exceptFor.contains(s.getType().getUuid()))
+                    || ! exceptForLocal.contains(s.getType().getUuid()))
                 .findAny().isPresent()
            ;
     }

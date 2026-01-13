@@ -1375,8 +1375,11 @@ public class CdmLightClassificationExport
                 boolean withNameIfAvailable = false;
                 boolean withPrecedingMainType = true;
                 boolean withAccessionNoType = state.getConfig().isShowTypeOfDesignationIdentifier();//false;
+                Language lang = state.getConfig().getLanguage();
+                List<Language> languages = lang == null ? null : Arrays.asList(new Language[] {lang});
                 csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = tdContainer.print(
-                        withCitation, withStartingLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType, rules);
+                        withCitation, withStartingLabel, withNameIfAvailable, withPrecedingMainType, withAccessionNoType,
+                        languages, rules);
             }
             StringBuilder stringbuilder = new StringBuilder();
             int i = 1;

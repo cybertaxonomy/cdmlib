@@ -74,6 +74,11 @@ public class AnnotatableEntityTest extends EntityTestBase {
         Assert.assertTrue(annotatableEntity.hasSupplementalData());
         Assert.assertFalse(annotatableEntity.hasSupplementalData(completeMarkerUuids, ignoreSources));
         Assert.assertTrue(annotatableEntity.hasSupplementalData(editorialUuids, ignoreSources));
+
+        //test with missing uuid filter
+        editorialUuids = null;
+        Assert.assertTrue(annotatableEntity.hasSupplementalData(editorialUuids, ignoreSources));
+
     }
 
 }

@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
@@ -50,6 +51,7 @@ public class NameTypeDesignationGroupFormatterTest extends TermTestBase {
     private static final boolean WITH_TYPE_LABEL = true;
     private static final boolean WITH_PRECEDING_MAIN_TYPE = true;
     private static final boolean WITH_ACCESSION_NO_TYPE = true;
+    private static final List<Language> languages = null;
 
     //variables and setup were copied from TypeDesignationGroupContainerTest
     //not all of them are in use yet
@@ -103,7 +105,7 @@ public class NameTypeDesignationGroupFormatterTest extends TermTestBase {
         TypeDesignationGroupContainer manager = TypeDesignationGroupContainer.NewDefaultInstance(tds);
         TypeDesignationGroupContainerFormatter formatter =
                 new TypeDesignationGroupContainerFormatter(WITH_CITATION, WITH_TYPE_LABEL,
-                        WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE);
+                        WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages);
         String text = formatter.format(manager);
         Assert.assertEquals("Prionus L."+DASH_W+"Type: Prionus coriatius L.", text);
 
@@ -155,9 +157,9 @@ public class NameTypeDesignationGroupFormatterTest extends TermTestBase {
         typeDesignationContainer.addTypeDesigations(ntd_LT);
         ntd_LT.addPrimaryTaxonomicSource(inRef, "66");
         assertEquals("Prionus L."+DASH_W+"Lectotype (designated by Decandolle & al. 1962): Prionus arealus L. [fide Miller 1989: 66]",
-                typeDesignationContainer.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationContainer.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
         assertEquals("Prionus L."+DASH_W+"Lectotype: Prionus arealus L.",
-                typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
     }
 
     @Test
@@ -168,11 +170,11 @@ public class NameTypeDesignationGroupFormatterTest extends TermTestBase {
         TypeDesignationGroupContainer typeDesignationContainer = new TypeDesignationGroupContainer(typifiedName);
         typeDesignationContainer.addTypeDesigations(ntd);
         assertEquals("Prionus L."+DASH_W+"Type: Prionus coriatius L.",
-                typeDesignationContainer.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationContainer.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
         assertEquals("Prionus L."+DASH_W+"Type: Prionus coriatius L.",
-                typeDesignationContainer.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationContainer.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
         assertEquals("Prionus L."+DASH_W+"Prionus coriatius L.",
-                typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
 
     }
 }

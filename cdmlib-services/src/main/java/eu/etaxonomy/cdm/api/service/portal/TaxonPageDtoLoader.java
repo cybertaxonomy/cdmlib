@@ -481,6 +481,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
 
         TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter();
         formatter.withAccessionNoType(config.isWithAccessionType());  //remove once this becomes the default
+        formatter.withLanguages(config.getLanguages());
         Set<TypeDesignationBase<?>> designations = homotypicalGroup.getTypeDesignations();
         try {
             TypeDesignationGroupContainer manager = TypeDesignationGroupContainer.NewDefaultInstance(designations);

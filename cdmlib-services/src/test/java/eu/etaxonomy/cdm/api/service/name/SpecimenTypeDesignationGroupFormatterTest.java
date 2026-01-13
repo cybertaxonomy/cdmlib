@@ -70,6 +70,7 @@ public class SpecimenTypeDesignationGroupFormatterTest extends TermTestBase {
     private static final boolean WITH_TYPE_LABEL = true;
     private static final boolean WITH_PRECEDING_MAIN_TYPE = true;
     private static final boolean WITH_ACCESSION_NO_TYPE = true;
+    private static final List<Language> languages = null;
 
     //variables and setup were copied from TypeDesignationGroupContainerTest
     //not all of them are in use yet
@@ -394,11 +395,11 @@ public class SpecimenTypeDesignationGroupFormatterTest extends TermTestBase {
 
         //test
         assertEquals("Prionus coriatius L."+DASH_W+"Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype (designated by Decandolle & al. 1962): LEC [fide Miller 1989: 55])",
-                typeDesignationContainer.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationContainer.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
         assertEquals("Prionus coriatius L."+DASH_W+"Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC)",
-                typeDesignationContainer.print(!WITH_CITATION,!WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationContainer.print(!WITH_CITATION,!WITH_TYPE_LABEL, WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
         assertEquals("Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC)",
-                typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
 
         //10677
         Reference importSource = ReferenceFactory.newDatabase();
@@ -444,6 +445,6 @@ public class SpecimenTypeDesignationGroupFormatterTest extends TermTestBase {
 
         //test
         assertEquals("Lectotype: Germany, near Bughausen, My ecology, My plant description, 1972, A. Collector FN123 (LEC)",
-                typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE));
+                typeDesignationContainer.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, WITH_PRECEDING_MAIN_TYPE, !WITH_ACCESSION_NO_TYPE, languages));
     }
 }
