@@ -50,7 +50,7 @@ public class Source {
 	public final static String DB2 = "DB2";
 	public final static String POSTGRESQL9 = "PostgreSQL9";
 	public final static String MYSQL = "MySQL";
-
+	public final static String MARIADB = "MariaDB";
 
 	//coursor mode
 	public final static String SELECT_DIRECT = "direct";
@@ -65,6 +65,7 @@ public class Source {
     private static String clsDefault = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
     private static String clsPostgreSQL = "org.postgresql.Driver";
     private static String clsMySQL = "com.mysql.cj.jdbc.Driver";
+    private static String clsMariaDB = "org.mariadb.jdbc.Driver";
 
     //url
     private static String urlSQLServer = "jdbc:sqlserver://";
@@ -74,6 +75,7 @@ public class Source {
     private static String urlODBC = "jdbc:odbc:";
     private static String urlPostgreSQL = "jdbc:postgresql://";
     private static String urlMySQL = "jdbc:mysql://";
+    private static String urlMariaDB = "jdbc:mariadb://";
 
 
 /* *************** VARIABLES *******************************/
@@ -374,6 +376,11 @@ public class Source {
                 Class.forName(clsMySQL);
                 server = mServer + ":" + mPort;
                 mUrl = urlMySQL + server+ "/" + mDb + "?useUnicode=true&characterEncoding=utf8" + "&zeroDateTimeBehavior=convertToNull";
+            }
+            else if (mDbms.equalsIgnoreCase(MARIADB)) {
+                Class.forName(clsMariaDB);
+                server = mServer + ":" + mPort;
+                mUrl = urlMariaDB + server+ "/" + mDb + "?useUnicode=true&characterEncoding=utf8" + "&zeroDateTimeBehavior=convertToNull";
             }
 	        else {
 	            throw new RuntimeException("Unsupported Database type");

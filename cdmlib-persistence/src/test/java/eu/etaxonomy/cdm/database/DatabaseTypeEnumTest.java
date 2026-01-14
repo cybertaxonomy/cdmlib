@@ -25,12 +25,14 @@ public class DatabaseTypeEnumTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
-	private static DatabaseTypeEnum dbEnum;
-	private static DatabaseTypeEnum dbEnumSql2005;
+	private static DatabaseTypeEnum dbEnumMySql;
+	private static DatabaseTypeEnum dbEnumMariaDb;
+    private static DatabaseTypeEnum dbEnumSql2005;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		dbEnum = DatabaseTypeEnum.MySQL;
+		dbEnumMySql = DatabaseTypeEnum.MySQL;
+	    dbEnumMariaDb = DatabaseTypeEnum.MariaDB;
 		dbEnumSql2005 = DatabaseTypeEnum.SqlServer2005;
 	}
 
@@ -39,7 +41,7 @@ public class DatabaseTypeEnumTest {
 	 */
 	@Test
 	public void testGetName() {
-		assertEquals("MySQL", DatabaseTypeEnumTest.dbEnum.getName());
+		assertEquals("MySQL", DatabaseTypeEnumTest.dbEnumMySql.getName());
 	}
 
 	/**
@@ -47,7 +49,7 @@ public class DatabaseTypeEnumTest {
 	 */
 	@Test
 	public void testGetDriverClassName() {
-		assertEquals("com.mysql.cj.jdbc.Driver", DatabaseTypeEnumTest.dbEnum.getDriverClassName());
+		assertEquals("com.mysql.cj.jdbc.Driver", DatabaseTypeEnumTest.dbEnumMySql.getDriverClassName());
 	}
 
 	/**
@@ -55,7 +57,7 @@ public class DatabaseTypeEnumTest {
 	 */
 	@Test
 	public void testGetUrl() {
-		assertEquals("jdbc:mysql://", DatabaseTypeEnumTest.dbEnum.getUrl());
+		assertEquals("jdbc:mysql://", DatabaseTypeEnumTest.dbEnumMySql.getUrl());
 	}
 
 	/**
@@ -72,7 +74,7 @@ public class DatabaseTypeEnumTest {
 	@Test
 	public void testGetConnectionStringStringStringInt() {
 		ICdmDataSource cdmDataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test", 1234, null, null);
-		assertEquals("jdbc:mysql://192.168.2.10:1234/cdm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull", DatabaseTypeEnumTest.dbEnum.getConnectionString(cdmDataSource));
+		assertEquals("jdbc:mysql://192.168.2.10:1234/cdm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull", DatabaseTypeEnumTest.dbEnumMySql.getConnectionString(cdmDataSource));
 	}
 
 	/**
@@ -81,7 +83,11 @@ public class DatabaseTypeEnumTest {
 	@Test
 	public void testGetConnectionStringStringString() {
 		ICdmDataSource cdmDataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test", null, null);
-		assertEquals("jdbc:mysql://192.168.2.10:3306/cdm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull", DatabaseTypeEnumTest.dbEnum.getConnectionString(cdmDataSource));
+		assertEquals("jdbc:mysql://192.168.2.10:3306/cdm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull", DatabaseTypeEnumTest.dbEnumMySql.getConnectionString(cdmDataSource));
+
+		ICdmDataSource mariadbDataSource = CdmDataSource.NewMariaDbInstance("192.168.2.10", "cdm_test", null, null);
+        assertEquals("jdbc:mariadb://192.168.2.10:3306/cdm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull", DatabaseTypeEnumTest.dbEnumMariaDb.getConnectionString(mariadbDataSource));
+
 		ICdmDataSource sqlServerDataSource = CdmDataSource.NewSqlServer2005Instance("192.168.2.10", "cdm_test", -1, null, null);
 		assertEquals("jdbc:sqlserver://192.168.2.10:1433;databaseName=cdm_test;SelectMethod=cursor", DatabaseTypeEnumTest.dbEnumSql2005.getConnectionString(sqlServerDataSource));
 	}

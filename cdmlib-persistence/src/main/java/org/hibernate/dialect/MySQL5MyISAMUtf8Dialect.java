@@ -9,8 +9,6 @@
 
 package org.hibernate.dialect;
 
-import java.sql.Types;
-
 import org.hibernate.mapping.Index;
 import org.hibernate.tool.schema.spi.Exporter;
 
@@ -29,7 +27,8 @@ public class MySQL5MyISAMUtf8Dialect extends MySQL5Dialect {
 	public MySQL5MyISAMUtf8Dialect(){
 		super();
 		//see http://dev.mysql.com/doc/refman/5.0/en/numeric-type-overview.html
-		registerColumnType(Types.BOOLEAN, "bit");
+		//not needed anymore, it is added in MySQLDialect in the meanwhile
+		//registerColumnType(Types.BOOLEAN, "bit");
 	}
 
     @Override
