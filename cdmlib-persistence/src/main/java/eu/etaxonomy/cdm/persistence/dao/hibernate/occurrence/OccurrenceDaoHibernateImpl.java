@@ -605,11 +605,17 @@ public class OccurrenceDaoHibernateImpl
 
             shortCache = CdmUtils.concat(" - ", countryString, collectorString, fieldNumber, collectionCode, identifier);
             temp.setAbbrevTitleCache(shortCache);
+            TaxonNode node= null;
+            if (object[11] == null && object.length>12 && object[12] instanceof TaxonNode) {
+                node = (TaxonNode)object[12];
+            }else {
+                node = (TaxonNode)object[11];
+            }
             SpecimenNodeWrapper wrapper = new SpecimenNodeWrapper(temp,
                     (SpecimenOrObservationType)object[8],
-                    new TaxonNodeDto((TaxonNode)object[11]));
+                    new TaxonNodeDto(node));
 
-            if(object.length>12) {
+            if(object.length>12 && object[12] instanceof UUID) {
                 wrapper.setTaxonDescriptionUuid((UUID)object[12]);
             }
             list.add(wrapper);
@@ -665,18 +671,21 @@ public class OccurrenceDaoHibernateImpl
                 + "td.typeSpecimen.recordBasis, "
                 + "collector.collectorTitleCache, "
                 + "country.titleCache, "
-                + "tn "
+                + "tnode, "
+                + "tnode2 "
                 + "FROM SpecimenTypeDesignation AS td "
                 + "LEFT JOIN td.typifiedNames AS tn "
                 + "LEFT JOIN td.typeSpecimen.collection as collection "
                 + "LEFT JOIN tn.taxonBases AS t "
+                + "LEFT JOIN t.acceptedTaxon AS taxon "
                 + "LEFT JOIN td.typeSpecimen.derivedFrom AS derivedFrom "
                 + "LEFT JOIN derivedFrom.originals AS original "
                 + "LEFT JOIN original.gatheringEvent AS gathering "
                 + "LEFT JOIN gathering.actor AS collector "
                 + "LEFT JOIN gathering.country AS country "
-                + "JOIN t.taxonNodes AS tn "
-                + "WHERE tn.uuid in (:taxonNodeUuids) "
+                + "LEFT JOIN t.taxonNodes AS tnode "
+                + "LEFT JOIN taxon.taxonNodes as tnode2 "
+                + "WHERE tnode.uuid in (:taxonNodeUuids) OR tnode2.uuid in (:taxonNodeUuids)"
                 ;
         Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
         return querySpecimen(query, taxonNodeUuids, limit, start);
