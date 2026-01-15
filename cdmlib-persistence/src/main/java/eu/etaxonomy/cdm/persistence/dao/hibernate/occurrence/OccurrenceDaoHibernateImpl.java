@@ -571,8 +571,8 @@ public class OccurrenceDaoHibernateImpl
 
     private List<SpecimenNodeWrapper> querySpecimen(Query<Object[]> query, List<UUID> taxonNodeUuids,
             Integer limit, Integer start){
-        query.setParameterList("taxonNodeUuids", taxonNodeUuids);
 
+        query.setParameterList("taxonNodeUuids", taxonNodeUuids);
         addLimitAndStart(query, limit, start);
 
         List<SpecimenNodeWrapper> list = new ArrayList<>();
@@ -582,7 +582,7 @@ public class OccurrenceDaoHibernateImpl
             if (object[0] == null) {
                 continue;
             }
-            UuidAndTitleCache temp = new UuidAndTitleCache<>(
+            UuidAndTitleCache<SpecimenOrObservationBase> temp = new UuidAndTitleCache<>(
                     (UUID) object[0],
                     (Integer) object[1],
                     (String) object[7]);
