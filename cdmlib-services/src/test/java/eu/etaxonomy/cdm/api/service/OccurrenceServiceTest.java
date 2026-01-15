@@ -1207,19 +1207,21 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest-testAllKindsOfSpecimenAssociations.xml")
     public void testListUuidAndTitleCacheByAssociatedTaxon() {
+
         UUID taxonNodeUuid = UUID.fromString("6b8b6ff9-66e4-4496-8e5a-7d03bdf9a076");
+
         /**
          * Structure is as follows:
          *
-         * Taxon ----IndividualsAssociation---> DnaSample
-         * Taxon ----TypeDesignation---> Fossil
-         * Taxon ----Determination ---> PreservedSpecimenA
+         * Taxon ---> IndividualsAssociation ---> DnaSample
+         * Taxon ---> Name ---> TypeDesignation ---> Fossil
+         * Taxon ---> Determination ---> PreservedSpecimenA
          *
-         * Taxon ---> Taxon Name ----Determination ---> PreservedSpecimenB
+         * Taxon ---> Taxon Name ---> Determination ---> PreservedSpecimenB
          *
-         * Taxon ---> Synonym ---> SynonymName ----Determination---> PreservedSpecimenC
+         * Taxon ---> Synonym ---> SynonymName ---> Determination---> PreservedSpecimenC
          *
-         * Orphan Name (not associated with any taxon) ----Determination ---> PreservedSpecimenD
+         * Orphan Name (not associated with any taxon) ---> Determination ---> PreservedSpecimenD
          */
 
         //UUIDS
@@ -1246,7 +1248,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         Collection<SpecimenNodeWrapper> specimens = occurrenceService
                 .listUuidAndTitleCacheByAssociatedTaxon(Collections.singletonList(taxonNodeUuid), null, null);
         List<UUID> uuidList = specimens.stream().map(specimen ->
-        specimen.getUuidAndTitleCache().getUuid()).collect(Collectors.toList());
+                specimen.getUuidAndTitleCache().getUuid()).collect(Collectors.toList());
         assertTrue(uuidList.contains(derivedUnitDeterminationNameUuid));
         assertTrue(uuidList.contains(derivedUnitDeterminationTaxonUuid));
         assertFalse(uuidList.contains(derivedUnitDeterminationSynonymNameUuid));
@@ -1269,15 +1271,16 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         /**
          * Structure is as follows:
          *
-         * Taxon ----IndividualsAssociation---> DnaSample
-         * Taxon ----TypeDesignation---> Fossil
-         * Taxon ----Determination ---> PreservedSpecimenA
+         * Taxon ---> IndividualsAssociation ---> DnaSample
+         * Taxon ---> Name ---> TypeDesignation ---> Fossil
+
+         * Taxon ---> Determination ---> PreservedSpecimenA
          *
-         * Taxon ---> Taxon Name ----Determination ---> PreservedSpecimenB
+         * Taxon ---> Taxon Name ---> Determination ---> PreservedSpecimenB
          *
-         * Taxon ---> Synonym ---> SynonymName ----Determination---> PreservedSpecimenC
+         * Taxon ---> Synonym ---> SynonymName ---> Determination---> PreservedSpecimenC
          *
-         * Orphan Name (not associated with any taxon) ----Determination ---> PreservedSpecimenD
+         * Orphan Name (not associated with any taxon) ---> Determination ---> PreservedSpecimenD
          */
 
         //UUIDS
@@ -1349,8 +1352,8 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(specimens.contains(derivedUnitDeterminationSynonymName));
         assertTrue(specimens.contains(dnaSampleUuidIndividualsAssociation));
         assertTrue(specimens.contains(fossilTypeDesignation));
-        assertTrue(!specimens.contains(tissueUuidNoAssociation));
-        assertTrue(!specimens.contains(derivedUnitDeterminationOrphanName));
+        assertFalse(specimens.contains(tissueUuidNoAssociation));
+        assertFalse(specimens.contains(derivedUnitDeterminationOrphanName));
         assertEquals("Wrong number of associated specimens", 5, specimens.size());
 
         /*

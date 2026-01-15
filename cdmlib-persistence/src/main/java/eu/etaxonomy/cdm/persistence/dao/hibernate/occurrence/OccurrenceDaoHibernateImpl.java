@@ -659,6 +659,7 @@ public class OccurrenceDaoHibernateImpl
 
     private List<SpecimenNodeWrapper> queryTypeSpecimen(List<UUID> taxonNodeUuids,
             Integer limit, Integer start){
+
         String queryString =  "SELECT "
                 + "td.typeSpecimen.uuid, "
                 + "td.typeSpecimen.id, "
