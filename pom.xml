@@ -413,7 +413,12 @@
           </dependency>
  <dependency>
 <groupId>com.jcraft</groupId>
-<artifactId>jsch-agent-proxy</artifactId>
+<artifactId>jsch-agent-proxy-core</artifactId>
+<version>0.0.9</version>
+</dependency>
+ <dependency>
+<groupId>com.jcraft</groupId>
+<artifactId>jsch-agent-proxy-jsch</artifactId>
 <version>0.0.9</version>
 </dependency>
 <!-- Connector für Unix domain socket (OpenSSH ssh-agent) -->
