@@ -1254,13 +1254,13 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
                 specimen.getUuidAndTitleCache().getUuid()).collect(Collectors.toList());
         assertTrue(uuidList.contains(derivedUnitDeterminationNameUuid));
         assertTrue(uuidList.contains(derivedUnitDeterminationTaxonUuid));
-        assertFalse(uuidList.contains(derivedUnitDeterminationSynonymNameUuid));
+        assertTrue(uuidList.contains(derivedUnitDeterminationSynonymNameUuid));
         assertTrue(uuidList.contains(dnaSampleUuidIndividualsAssociationUuid));
         assertTrue(uuidList.contains(fossilTypeDesignationUuid));
         assertTrue(uuidList.contains(synonmTypeDesignationUuid));
         assertFalse(uuidList.contains(tissueUuidNoAssociationUuid));
         assertFalse(uuidList.contains(derivedUnitDeterminationOrphanNameUuid));
-        assertEquals("Wrong number of associated specimens", 5, specimens.size());
+        assertEquals("Wrong number of associated specimens", 6, specimens.size());
     }
 
     /**
