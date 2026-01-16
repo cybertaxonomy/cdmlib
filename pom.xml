@@ -405,6 +405,24 @@
             <artifactId>jsch</artifactId>
             <version>0.1.55</version>
           </dependency>
+ <dependency>
+<groupId>com.jcraft</groupId>
+<artifactId>jsch-agent-proxy</artifactId>
+<version>0.0.9</version>
+</dependency>
+<!-- Connector für Unix domain socket (OpenSSH ssh-agent) -->
+<dependency>
+<groupId>com.jcraft</groupId>
+<artifactId>jsch-agent-proxy-usocket-jna</artifactId>
+<version>0.0.9</version>
+</dependency>
+<!-- JNA, auf vielen Systemen schon transitiv dabei; hier zur Sicherheit -->
+<dependency>
+<groupId>net.java.dev.jna</groupId>
+<artifactId>jna</artifactId>
+<version>5.13.0</version>
+</dependency>
+          
         </dependencies>
       </plugin>
       <plugin>
