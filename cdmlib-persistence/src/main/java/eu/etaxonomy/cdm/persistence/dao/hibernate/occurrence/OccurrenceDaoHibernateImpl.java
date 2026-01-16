@@ -758,11 +758,8 @@ public class OccurrenceDaoHibernateImpl
             Integer limit, Integer start){
 
         Set<SpecimenNodeWrapper> testSet = new HashSet<>();
-        try {
-            testSet.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start));
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        testSet.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start));
         testSet.addAll(queryTaxonDeterminations(taxonNodeUuids, limit, start));
         testSet.addAll(queryTaxonNameDeterminations(taxonNodeUuids, limit, start));
         testSet.addAll(queryTypeSpecimen(taxonNodeUuids, limit, start));
