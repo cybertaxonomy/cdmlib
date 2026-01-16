@@ -741,13 +741,15 @@ public class OccurrenceDaoHibernateImpl
                 + "LEFT JOIN det.identifiedUnit.collection as collection "
                 + "LEFT JOIN det.taxonName AS n "
                 + "LEFT JOIN n.taxonBases AS t "
+                + "LEFT JOIN t.acceptedTaxon AS taxon "
                 + "LEFT JOIN det.identifiedUnit.derivedFrom AS derivedFrom "
                 + "LEFT JOIN derivedFrom.originals AS original "
                 + "LEFT JOIN original.gatheringEvent AS gathering "
                 + "LEFT JOIN gathering.actor AS collector "
                 + "LEFT JOIN gathering.country AS country "
-                + "JOIN t.taxonNodes AS tn "
-                + "WHERE tn.uuid in (:taxonNodeUuids) "
+                + "LEFT JOIN t.taxonNodes AS tnode "
+                + "LEFT JOIN taxon.taxonNodes as tnode2 "
+                + "WHERE tnode.uuid in (:taxonNodeUuids) OR tnode2.uuid in (:taxonNodeUuids)"
                 ;
         Query<Object[]> query = getSession().createQuery(queryString, Object[].class);
         return querySpecimen(query, taxonNodeUuids, limit, start);
