@@ -178,6 +178,12 @@
     	<id>OSGeo Repository</id>
     	<url>https://repo.osgeo.org/repository/release/</url>
     </repository>
+    <repository>
+        <id>central-https</id>
+        <url>https://repo.maven.apache.org/maven2</url>
+        <releases><enabled>true</enabled></releases>
+        <snapshots><enabled>false</enabled></snapshots>
+    </repository>
   </repositories>
   <!-- **** PLUGINS **** -->
   <build>
