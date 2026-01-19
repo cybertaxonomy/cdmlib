@@ -196,6 +196,19 @@ public class PrintPubDtoMapper {
     }
 
     public int calculateDepth(TaxonNode node) {
+        String treeIndex = node.treeIndex();
+
+        if (treeIndex != null && !treeIndex.isEmpty()) {
+            String[] segments = treeIndex.split("#");
+            int depth = 0;
+            for (String segment : segments) {
+                if (!segment.isEmpty()) {
+                    depth++;
+                }
+            }
+            return depth;
+        }
+
         int depth = 1;
         TaxonNode parent = node.getParent();
         while (parent != null) {
