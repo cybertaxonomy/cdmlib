@@ -381,32 +381,20 @@
           <tagBase>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tags</tagBase>
         </configuration>
       </plugin>
-      <plugin>
-	    <!-- groupId>ch.dvbern.oss.maven.jgitflow</groupId>
-        <artifactId>jgitflow-maven-plugin</artifactId>
-        <version>1.0-m8</version>  -->
-        <groupId>external.atlassian.jgitflow</groupId>
-        <artifactId>jgitflow-maven-plugin</artifactId>
-        <version>1.0-m6</version>
-        <configuration>
-          <pushHotfixes>true</pushHotfixes>
-          <pushReleases>true</pushReleases> 
-          <enableSshAgent>true</enableSshAgent>
-          <allowSnapshots>true</allowSnapshots>
-          <allowUntracked>true</allowUntracked>
-        </configuration>
-        <dependencies>
-          <!-- 
-                upgrading dependency jsch.agent.version of jgit-flow plugin to 0.1.53 
-                in order have ssl key exchange algorithms compatible with openssh 6.7 
-             -->
-          <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jsch</artifactId>
-            <version>0.1.55</version>
-          </dependency>
-        </dependencies>
-      </plugin>
+        <plugin>
+
+    <groupId>com.amashchenko.maven.plugin</groupId>
+    <artifactId>gitflow-maven-plugin</artifactId>
+    <version>1.21.0</version>
+    <configuration>
+        <verbose>true</verbose>
+        <!-- Optional: configure as needed -->
+        <gitFlowConfig>
+            <productionBranch>master</productionBranch>
+            <developmentBranch>develop</developmentBranch>
+        </gitFlowConfig>
+    </configuration>
+   </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
