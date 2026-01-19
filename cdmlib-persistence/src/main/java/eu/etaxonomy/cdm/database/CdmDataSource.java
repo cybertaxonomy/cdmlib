@@ -67,6 +67,14 @@ public class CdmDataSource extends CdmDataSourceBase {
 		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, port, username, password, null, null);
 	}
 
+    static public CdmDataSource  NewMariaDbInstance(String server, String database, String username, String password){
+        return new CdmDataSource(DatabaseTypeEnum.MariaDB, server, database, -1, username, password, null, null);
+    }
+
+    static public CdmDataSource  NewMariaDbInstance(String server, String database, int port, String username, String password){
+        return new CdmDataSource(DatabaseTypeEnum.MariaDB, server, database, port, username, password, null, null);
+    }
+
 	static public CdmDataSource  NewPostgreSQLInstance(String server, String database, int port, String username, String password){
 		return new CdmDataSource(DatabaseTypeEnum.PostgreSQL, server, database, port, username, password, null, null);
 	}

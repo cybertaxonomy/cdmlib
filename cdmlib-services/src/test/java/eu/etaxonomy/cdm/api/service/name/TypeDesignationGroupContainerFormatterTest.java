@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.name;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -20,6 +21,7 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -58,6 +60,7 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
     private static final boolean WITH_TYPE_LABEL = true;
     private static final boolean WITH_PRECEDING_MAIN_TYPE = true;
     private static final boolean WITH_ACCESSION_NO_TYPE = true;
+    private static final List<Language> languages = null;
 
     //variables and setup were copied from TypeDesignationGroupContainerTest
     //not all of them are in use yet
@@ -168,9 +171,9 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
     public void testTextualTypeDesignation() throws TypeDesignationSetException {
         List<TypeDesignationBase> tdList = new ArrayList<>();
         TextualTypeDesignation ttd = TextualTypeDesignation.NewInstance("My text type designation",
-                null, false, book, DASH_W, DASH_W);
+                Language.ENGLISH(), false, book, DASH_W, DASH_W);
         TextualTypeDesignation ttd2 = TextualTypeDesignation.NewInstance("My second type designation",
-                null, false, book, DASH_W, DASH_W);
+                Language.ENGLISH(), false, book, DASH_W, DASH_W);
         ttd2.setVerbatim(true);
         ttd2.addPrimaryTaxonomicSource(book, "55");
 
@@ -208,6 +211,22 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
         Assert.assertEquals("; ", tags.get(i++).getText());
         Assert.assertEquals(TagEnum.typeDesignation, tags.get(i).getType());
         Assert.assertEquals("My text type designation", tags.get(i++).getText());
+
+        //test i18n text
+        ttd.putText(Language.GERMAN(), "Meine textuelle Typenfestlegung");
+        ttd2.putText(Language.GERMAN(), "Meine zweite Typenfestlegung");
+
+        List<Language> languages = new ArrayList<>();
+        languages.add(Language.ENGLISH());
+        languages.add(Language.GERMAN());
+        formatter.withLanguages(languages);
+        text = formatter.format(container);
+        Assert.assertEquals("Type: \"My second type designation\" [fide Decandolle & al. 1962: 55]; My text type designation", text);
+
+        Collections.reverse(languages);
+        formatter.withLanguages(languages);
+        text = formatter.format(container);
+        Assert.assertEquals("Type: \"Meine zweite Typenfestlegung\" [fide Decandolle & al. 1962: 55]; Meine textuelle Typenfestlegung", text);
     }
 
     @Test
@@ -318,7 +337,7 @@ public class TypeDesignationGroupContainerFormatterTest extends TermTestBase{
 
         TypeDesignationGroupContainer container = TypeDesignationGroupContainer.NewDefaultInstance(tds);
         TypeDesignationGroupContainerFormatter formatter = new TypeDesignationGroupContainerFormatter(
-                !WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, WITH_ACCESSION_NO_TYPE);
+                !WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME, !WITH_PRECEDING_MAIN_TYPE, WITH_ACCESSION_NO_TYPE, languages);
         String text = formatter.format(container);
         int holotypeIndex = text.indexOf("holotype");
         Assert.assertTrue("Holotype must be first, isotype second", holotypeIndex>0 && (holotypeIndex < text.indexOf("isotype")) );

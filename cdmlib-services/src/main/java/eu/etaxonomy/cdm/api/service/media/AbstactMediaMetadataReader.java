@@ -62,7 +62,7 @@ public abstract class AbstactMediaMetadataReader {
         if (matcher.matches()) {
             try {
                 DateTime date = DateTime.parse(text);
-                String result = date.year()+ "-" + date.monthOfYear() + "-" + date.dayOfMonth();
+                String result = date.year().get()+ "-" + date.monthOfYear().get() + "-" + date.dayOfMonth().get();
                 return result;
             }catch(Exception e) {
                 if (text.contains("T")) {
