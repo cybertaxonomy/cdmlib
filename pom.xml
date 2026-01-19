@@ -387,10 +387,10 @@
           <tagBase>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tags</tagBase>
         </configuration>
       </plugin>
-      <plugin>
+     <!-- <plugin>
 	    <!-- groupId>ch.dvbern.oss.maven.jgitflow</groupId>
         <artifactId>jgitflow-maven-plugin</artifactId>
-        <version>1.0-m8</version>  -->
+        <version>1.0-m8</version>  
         <groupId>external.atlassian.jgitflow</groupId>
         <artifactId>jgitflow-maven-plugin</artifactId>
         <version>1.0-m6</version>
@@ -405,26 +405,26 @@
           <!-- 
                 upgrading dependency jsch.agent.version of jgit-flow plugin to 0.1.53 
                 in order have ssl key exchange algorithms compatible with openssh 6.7 
-             -->
+            
           <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
             <version>0.1.55</version>
           </dependency>
           
-<!-- temporary, to solve release problem -->          
+<!-- temporary, to solve release problem      
  <dependency>
 <groupId>com.jcraft</groupId>
 <artifactId>jsch-agent-proxy</artifactId>
 <version>0.0.9</version>
 </dependency>
-<!-- Connector für Unix domain socket (OpenSSH ssh-agent)-->
+<!-- Connector für Unix domain socket (OpenSSH ssh-agent)-
 <dependency>
 <groupId>com.jcraft</groupId>
 <artifactId>jsch-agent-proxy-usocket-jna</artifactId>
 <version>0.0.9</version>
 </dependency> 
-<!-- JNA, auf vielen Systemen schon transitiv dabei; hier zur Sicherheit -->
+<!-- JNA, auf vielen Systemen schon transitiv dabei; hier zur Sicherheit 
 <dependency>
 <groupId>net.java.dev.jna</groupId>
 <artifactId>jna</artifactId>
@@ -432,7 +432,19 @@
 </dependency>
           
         </dependencies>
-      </plugin>
+      </plugin>-->
+  <plugin>
+    <groupId>com.amashchenko.maven.plugin</groupId>
+    <artifactId>gitflow-maven-plugin</artifactId>
+    <version>1.21.0</version>
+    <configuration>
+        <!-- Optional: configure as needed -->
+        <gitFlowConfig>
+            <productionBranch>master</productionBranch>
+            <developmentBranch>develop</developmentBranch>
+        </gitFlowConfig>
+    </configuration>
+   </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
