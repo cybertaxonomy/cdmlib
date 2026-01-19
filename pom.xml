@@ -387,52 +387,6 @@
           <tagBase>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tags</tagBase>
         </configuration>
       </plugin>
-     <!-- <plugin>
-	    <!-- groupId>ch.dvbern.oss.maven.jgitflow</groupId>
-        <artifactId>jgitflow-maven-plugin</artifactId>
-        <version>1.0-m8</version>  
-        <groupId>external.atlassian.jgitflow</groupId>
-        <artifactId>jgitflow-maven-plugin</artifactId>
-        <version>1.0-m6</version>
-        <configuration>
-          <pushHotfixes>true</pushHotfixes>
-          <pushReleases>true</pushReleases> 
-          <enableSshAgent>true</enableSshAgent>
-          <allowSnapshots>true</allowSnapshots>
-          <allowUntracked>true</allowUntracked>
-        </configuration>
-        <dependencies>
-          <!-- 
-                upgrading dependency jsch.agent.version of jgit-flow plugin to 0.1.53 
-                in order have ssl key exchange algorithms compatible with openssh 6.7 
-            
-          <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jsch</artifactId>
-            <version>0.1.55</version>
-          </dependency>
-          
-<!-- temporary, to solve release problem      
- <dependency>
-<groupId>com.jcraft</groupId>
-<artifactId>jsch-agent-proxy</artifactId>
-<version>0.0.9</version>
-</dependency>
-<!-- Connector für Unix domain socket (OpenSSH ssh-agent)-
-<dependency>
-<groupId>com.jcraft</groupId>
-<artifactId>jsch-agent-proxy-usocket-jna</artifactId>
-<version>0.0.9</version>
-</dependency> 
-<!-- JNA, auf vielen Systemen schon transitiv dabei; hier zur Sicherheit 
-<dependency>
-<groupId>net.java.dev.jna</groupId>
-<artifactId>jna</artifactId>
-<version>5.13.0</version>
-</dependency>
-          
-        </dependencies>
-      </plugin>-->
   <plugin>
     <groupId>com.amashchenko.maven.plugin</groupId>
     <artifactId>gitflow-maven-plugin</artifactId>
