@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>5.55.0-SNAPSHOT</version>
+  <version>5.55.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>https://cybertaxonomy.org/cdmlib/</url>
@@ -387,19 +387,20 @@
           <tagBase>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tags</tagBase>
         </configuration>
       </plugin>
-  <plugin>
-    <groupId>com.amashchenko.maven.plugin</groupId>
-    <artifactId>gitflow-maven-plugin</artifactId>
-    <version>1.21.0</version>
-    <configuration>
-        <verbose>true</verbose>
-        <!-- Optional: configure as needed -->
-        <gitFlowConfig>
-            <productionBranch>master</productionBranch>
-            <developmentBranch>develop</developmentBranch>
-        </gitFlowConfig>
-    </configuration>
-   </plugin>
+      <plugin>
+         <groupId>com.amashchenko.maven.plugin</groupId>
+         <artifactId>gitflow-maven-plugin</artifactId>
+         <version>1.21.0</version>
+         <configuration>
+            <verbose>true</verbose>
+            <!-- Optional: configure as needed -->
+            <gitFlowConfig>
+                <productionBranch>master</productionBranch>
+                <developmentBranch>develop</developmentBranch>
+            <releaseBranchPrefix>release/</releaseBranchPrefix>
+            </gitFlowConfig>
+         </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
