@@ -89,7 +89,6 @@ public class PrintPubDocumentModel {
         }
     }
 
-    // === NEW SEMANTIC ELEMENT ===
     public static class PrintPubLabeledTextElement implements IPrintPubDocumentElement {
         private String label;
         private String text;

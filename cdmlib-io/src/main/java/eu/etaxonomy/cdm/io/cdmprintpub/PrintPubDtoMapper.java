@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
@@ -52,7 +53,7 @@ public class PrintPubDtoMapper {
         dto.titleCache = (name != null) ? name.getTitleCache() : taxon.getTitleCache();
 
         if (name != null) {
-            extractTypeData(name, dto);
+            extractTypeData(name, dto, state.getConfig());
         }
 
         if (state.getConfig().isDoSynonyms()) {
@@ -63,7 +64,7 @@ public class PrintPubDtoMapper {
             extractDescriptionData(state, context, taxon, dto);
         }
 
-        if (taxon.getSec() != null) {
+        if (state.getConfig().isIncludeTaxonomicConceptReference() && taxon.getSec() != null) {
             Reference ref = HibernateProxyHelper.deproxy(taxon.getSec(), Reference.class);
             context.addReference(ref);
             dto.secReferenceCitation = ref.getTitleCache();
@@ -74,8 +75,11 @@ public class PrintPubDtoMapper {
 
     private void extractSynonymGroups(PrintPubExportState state, PrintPubContext context, Taxon taxon,
             TaxonSummaryDTO dto) {
+
         HomotypicalGroup acceptedGroup = taxon.getHomotypicGroup();
         List<Synonym> homotypicSynonyms = taxon.getSynonymsInGroup(acceptedGroup);
+
+        filterMisapplied(homotypicSynonyms, state.getConfig().isIncludeMisappliedNames());
 
         if (!homotypicSynonyms.isEmpty()) {
             SynonymGroupDTO homotypicGroupDTO = new SynonymGroupDTO();
@@ -89,6 +93,9 @@ public class PrintPubDtoMapper {
         List<HomotypicalGroup> heteroGroups = taxon.getHeterotypicSynonymyGroups();
         for (HomotypicalGroup group : heteroGroups) {
             List<Synonym> groupSynonyms = taxon.getSynonymsInGroup(group);
+
+            filterMisapplied(groupSynonyms, state.getConfig().isIncludeMisappliedNames());
+
             if (!groupSynonyms.isEmpty()) {
                 SynonymGroupDTO heteroGroupDTO = new SynonymGroupDTO();
                 heteroGroupDTO.isHomotypic = false;
@@ -100,6 +107,13 @@ public class PrintPubDtoMapper {
         }
     }
 
+    private void filterMisapplied(List<Synonym> synonyms, boolean includeMisapplied) {
+        if (includeMisapplied) {
+            return;
+        }
+        synonyms.removeIf(syn -> syn.getType() == null);
+     }
+
     private SynonymDTO createSynonymDTO(PrintPubExportState state, PrintPubContext context, Synonym syn) {
         syn = CdmBase.deproxy(syn);
         SynonymDTO synDTO = new SynonymDTO();
@@ -107,7 +121,7 @@ public class PrintPubDtoMapper {
         TaxonName synName = HibernateProxyHelper.deproxy(syn.getName(), TaxonName.class);
         synDTO.titleCache = (synName != null) ? synName.getTitleCache() : syn.getTitleCache();
 
-        if (syn.getSec() != null) {
+        if (state.getConfig().isIncludeSynonymConceptReference() && syn.getSec() != null) {
             Reference ref = HibernateProxyHelper.deproxy(syn.getSec(), Reference.class);
             context.addReference(ref);
             synDTO.secReference = ref.getTitleCache();
@@ -115,7 +129,7 @@ public class PrintPubDtoMapper {
 
         if (synName != null) {
             TaxonSummaryDTO tempDto = new TaxonSummaryDTO();
-            extractTypeData(synName, tempDto);
+            extractTypeData(synName, tempDto, state.getConfig());
             synDTO.typeSpecimenString = tempDto.typeSpecimenString;
             synDTO.typeStatementString = tempDto.typeStatementString;
         }
@@ -123,7 +137,18 @@ public class PrintPubDtoMapper {
         return synDTO;
     }
 
-    private void extractTypeData(TaxonName name, TaxonSummaryDTO dto) {
+    private void extractTypeData(TaxonName name, TaxonSummaryDTO dto, PrintPubExportConfigurator config) {
+
+        Rank rank = name.getRank();
+        boolean isSupraspecific = (rank != null && rank.isHigher(Rank.SPECIES()));
+
+        if (isSupraspecific && !config.isIncludeSupraspecificTypes()) {
+            return;
+        }
+        if (!isSupraspecific && !config.isIncludeSpeciesTypes()) {
+            return;
+        }
+
         Set<TypeDesignationBase> designations = name.getTypeDesignations();
         List<SpecimenTypeDesignation> specimenTypes = new ArrayList<>();
         List<TextualTypeDesignation> textualTypes = new ArrayList<>();
@@ -139,16 +164,29 @@ public class PrintPubDtoMapper {
         if (!specimenTypes.isEmpty()) {
             try {
                 TypeDesignationGroupContainer container = new TypeDesignationGroupContainer(specimenTypes, name, null);
-                dto.typeSpecimenString = new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(true)
+                String types = new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(true)
                         .toTaggedText(container).toString();
+
+                if (isSupraspecific && config.isStartSupraspecificTypesOnNewLine()) {
+                    dto.typeSpecimenString = "\n" + types;
+                } else {
+                    dto.typeSpecimenString = types;
+                }
+
             } catch (Exception e) {
                 dto.typeSpecimenString = "Error retrieving type data: " + e.getMessage();
             }
         }
 
         if (!textualTypes.isEmpty()) {
-            dto.typeStatementString = textualTypes.stream().map(t -> t.getPreferredText(Language.DEFAULT()))
+            String statement = textualTypes.stream().map(t -> t.getPreferredText(Language.DEFAULT()))
                     .collect(Collectors.joining("; "));
+
+            if (isSupraspecific && config.isStartSupraspecificTypesOnNewLine()) {
+                dto.typeStatementString = "\n" + statement;
+            } else {
+                dto.typeStatementString = statement;
+            }
         }
     }
 

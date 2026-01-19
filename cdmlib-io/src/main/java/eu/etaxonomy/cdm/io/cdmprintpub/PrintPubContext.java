@@ -36,7 +36,9 @@ class PrintPubContext {
 		List<Reference> refs = new ArrayList<>(referenceStore.values());
 		refs.sort(Comparator.comparing(Reference::getTitleCache, Comparator.nullsLast(String::compareTo)));
 		return refs;
-	}	static class SynonymGroupDTO {
+	}
+
+	static class SynonymGroupDTO {
 		boolean isHomotypic; // True = '≡', False = '='
 		List<SynonymDTO> synonyms = new ArrayList<>();
 	}
@@ -44,7 +46,7 @@ class PrintPubContext {
 	protected static class SynonymDTO {
 		String titleCache;
 		String secReference;
-		String typeSpecimenString; 
+		String typeSpecimenString;
 		String typeStatementString;
 	}
 
@@ -53,22 +55,19 @@ class PrintPubContext {
 		String text;
 		String citation;
 	}
-	
+
 	public static class TaxonSummaryDTO {
 		UUID uuid;
 		String titleCache;
 		int relativeDepth;
-		
-		// Type Information (Item 2)
+
 		String typeSpecimenString;
 		String typeStatementString;
 
-		// Structured Synonymy (Item 1)
 		List<SynonymGroupDTO> synonymGroups = new ArrayList<>();
 
-		// Facts with Citations (Item 3)
 		List<FactDTO> facts = new ArrayList<>();
-		
+
 		List<String> commonNames = new ArrayList<>();
 		String distributionString;
 		String secReferenceCitation;

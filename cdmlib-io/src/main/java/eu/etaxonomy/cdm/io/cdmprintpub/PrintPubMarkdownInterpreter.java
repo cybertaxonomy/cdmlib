@@ -47,7 +47,6 @@ public class PrintPubMarkdownInterpreter implements IPrintPubDocumentInterpreter
         }
         else if (element instanceof PrintPubLabeledTextElement) {
             PrintPubLabeledTextElement labeled = (PrintPubLabeledTextElement) element;
-            // The Interpreter decides that labels are bolded with asterisks
             sb.append("**").append(labeled.getLabel()).append("**: ")
               .append(labeled.getText()).append("\n\n");
         }
