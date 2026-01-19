@@ -381,8 +381,7 @@
           <tagBase>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tags</tagBase>
         </configuration>
       </plugin>
-        <plugin>
-
+  <plugin>
     <groupId>com.amashchenko.maven.plugin</groupId>
     <artifactId>gitflow-maven-plugin</artifactId>
     <version>1.21.0</version>
@@ -392,6 +391,7 @@
         <gitFlowConfig>
             <productionBranch>master</productionBranch>
             <developmentBranch>develop</developmentBranch>
+            <releaseBranchPrefix>release/</releaseBranchPrefix>
         </gitFlowConfig>
     </configuration>
    </plugin>
