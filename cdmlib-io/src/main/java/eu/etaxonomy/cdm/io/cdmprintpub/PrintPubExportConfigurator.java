@@ -28,9 +28,30 @@ public class PrintPubExportConfigurator
         implements IFactExportConfigurator {
 
     private static final long serialVersionUID = -5958099339227666207L;
+
+    // General
+    private String documentTitle = "Taxonomic Export";
     private boolean doFactualData = true;
     private boolean includeUnpublishedFacts = false;
-    private String documentTitle = "Taxonomic Export";
+
+    // 1. Taxonomic Scope & Concepts
+    private boolean includeMisappliedNames = true;
+    private boolean includeTaxonomicConceptReference = true; // "Secundum" for accepted taxa
+    private boolean includeSynonymConceptReference = false;  // "Secundum" for synonyms
+
+    // 2. Type Information & Formatting
+    private boolean includeSupraspecificTypes = true;
+    private boolean includeSpeciesTypes = true;
+    private boolean startSupraspecificTypesOnNewLine = false;
+
+    // 3. Indices
+    private boolean generateCommonNameIndex = false;
+    private boolean generateScientificNameIndex = true;
+
+    // 4. Appendix: Digital Identifiers
+    private boolean appendIdentifierList = true;
+    private boolean includeWfoId = true;
+    private boolean includeProtologueUris = true;
 
     public static PrintPubExportConfigurator NewInstance(ICdmDataSource source, File destination){
         PrintPubExportConfigurator result = new PrintPubExportConfigurator(null);
@@ -41,7 +62,6 @@ public class PrintPubExportConfigurator
 
     public PrintPubExportConfigurator(IExportTransformer transformer) {
         super(transformer);
-        // Important: We are producing a SINGLE file (MD/PDF), not a Map/Zip of CSVs.
         this.resultType = ExportResultType.BYTE_ARRAY;
         this.setTarget(TARGET.EXPORT_DATA);
         setUserFriendlyIOName("Print/Publication Export");
@@ -68,6 +88,16 @@ public class PrintPubExportConfigurator
         return null;
     }
 
+    // --- Getters and Setters ---
+
+    public String getDocumentTitle() {
+        return documentTitle;
+    }
+
+    public void setDocumentTitle(String documentTitle) {
+        this.documentTitle = documentTitle;
+    }
+
     @Override
     public boolean isDoFactualData() {
         return doFactualData;
@@ -88,11 +118,91 @@ public class PrintPubExportConfigurator
         this.includeUnpublishedFacts = includeUnpublishedFacts;
     }
 
-    public String getDocumentTitle() {
-        return documentTitle;
+    public boolean isIncludeMisappliedNames() {
+        return includeMisappliedNames;
     }
 
-    public void setDocumentTitle(String documentTitle) {
-        this.documentTitle = documentTitle;
+    public void setIncludeMisappliedNames(boolean includeMisappliedNames) {
+        this.includeMisappliedNames = includeMisappliedNames;
+    }
+
+    public boolean isIncludeTaxonomicConceptReference() {
+        return includeTaxonomicConceptReference;
+    }
+
+    public void setIncludeTaxonomicConceptReference(boolean includeTaxonomicConceptReference) {
+        this.includeTaxonomicConceptReference = includeTaxonomicConceptReference;
+    }
+
+    public boolean isIncludeSynonymConceptReference() {
+        return includeSynonymConceptReference;
+    }
+
+    public void setIncludeSynonymConceptReference(boolean includeSynonymConceptReference) {
+        this.includeSynonymConceptReference = includeSynonymConceptReference;
+    }
+
+    public boolean isIncludeSupraspecificTypes() {
+        return includeSupraspecificTypes;
+    }
+
+    public void setIncludeSupraspecificTypes(boolean includeSupraspecificTypes) {
+        this.includeSupraspecificTypes = includeSupraspecificTypes;
+    }
+
+    public boolean isIncludeSpeciesTypes() {
+        return includeSpeciesTypes;
+    }
+
+    public void setIncludeSpeciesTypes(boolean includeSpeciesTypes) {
+        this.includeSpeciesTypes = includeSpeciesTypes;
+    }
+
+    public boolean isStartSupraspecificTypesOnNewLine() {
+        return startSupraspecificTypesOnNewLine;
+    }
+
+    public void setStartSupraspecificTypesOnNewLine(boolean startSupraspecificTypesOnNewLine) {
+        this.startSupraspecificTypesOnNewLine = startSupraspecificTypesOnNewLine;
+    }
+
+    public boolean isGenerateCommonNameIndex() {
+        return generateCommonNameIndex;
+    }
+
+    public void setGenerateCommonNameIndex(boolean generateCommonNameIndex) {
+        this.generateCommonNameIndex = generateCommonNameIndex;
+    }
+
+    public boolean isGenerateScientificNameIndex() {
+        return generateScientificNameIndex;
+    }
+
+    public void setGenerateScientificNameIndex(boolean generateScientificNameIndex) {
+        this.generateScientificNameIndex = generateScientificNameIndex;
+    }
+
+    public boolean isAppendIdentifierList() {
+        return appendIdentifierList;
+    }
+
+    public void setAppendIdentifierList(boolean appendIdentifierList) {
+        this.appendIdentifierList = appendIdentifierList;
+    }
+
+    public boolean isIncludeWfoId() {
+        return includeWfoId;
+    }
+
+    public void setIncludeWfoId(boolean includeWfoId) {
+        this.includeWfoId = includeWfoId;
+    }
+
+    public boolean isIncludeProtologueUris() {
+        return includeProtologueUris;
+    }
+
+    public void setIncludeProtologueUris(boolean includeProtologueUris) {
+        this.includeProtologueUris = includeProtologueUris;
     }
 }

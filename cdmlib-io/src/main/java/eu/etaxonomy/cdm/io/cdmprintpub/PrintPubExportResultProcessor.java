@@ -37,7 +37,7 @@ public class PrintPubExportResultProcessor {
 
     public void add(ICdmBase cdmBase, IPrintPubDocumentElement element) {
         if (state.hasPrinted(cdmBase.getUuid())) {
-            return; // We already printed this object
+            return;
         }
 
         state.markAsPrinted(cdmBase.getUuid());
@@ -51,27 +51,22 @@ public class PrintPubExportResultProcessor {
         }
 
         try {
-            // 1. Render to String
             IPrintPubDocumentInterpreter interpreter = new PrintPubMarkdownInterpreter();
             state.getDocumentModel().render(interpreter);
             String resultOutput = (String) interpreter.getResult();
 
             byte[] data = resultOutput.getBytes(StandardCharsets.UTF_8);
 
-            // 2. Store in Result (In-Memory)
             state.getResult().putExportData("export.md", data);
             state.getResult().setExportType(ExportType.PRINT_PUBLICATION);
 
-            // 3. WRITE TO DISK (The Fix)
             File destinationDir = state.getConfig().getDestination();
 
-            // Ensure destination exists
             if (destinationDir != null) {
                 if (!destinationDir.exists()) {
                     destinationDir.mkdirs();
                 }
 
-                // Create the file object (e.g., "export.md" inside the chosen folder)
                 File outputFile = new File(destinationDir, "export.md");
 
                 try (FileOutputStream fos = new FileOutputStream(outputFile)) {
