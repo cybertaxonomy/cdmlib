@@ -381,20 +381,20 @@
           <tagBase>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tags</tagBase>
         </configuration>
       </plugin>
-  <plugin>
-    <groupId>com.amashchenko.maven.plugin</groupId>
-    <artifactId>gitflow-maven-plugin</artifactId>
-    <version>1.21.0</version>
-    <configuration>
-        <verbose>true</verbose>
-        <!-- Optional: configure as needed -->
-        <gitFlowConfig>
-            <productionBranch>master</productionBranch>
-            <developmentBranch>develop</developmentBranch>
+      <plugin>
+         <groupId>com.amashchenko.maven.plugin</groupId>
+         <artifactId>gitflow-maven-plugin</artifactId>
+         <version>1.21.0</version>
+         <configuration>
+            <verbose>true</verbose>
+            <!-- Optional: configure as needed -->
+            <gitFlowConfig>
+                <productionBranch>master</productionBranch>
+                <developmentBranch>develop</developmentBranch>
             <releaseBranchPrefix>release/</releaseBranchPrefix>
-        </gitFlowConfig>
-    </configuration>
-   </plugin>
+            </gitFlowConfig>
+         </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
