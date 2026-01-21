@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>5.55.0</version>
+  <version>5.56.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>https://cybertaxonomy.org/cdmlib/</url>
@@ -177,12 +177,6 @@
     <repository>
     	<id>OSGeo Repository</id>
     	<url>https://repo.osgeo.org/repository/release/</url>
-    </repository>
-    <repository>
-        <id>central-https</id>
-        <url>https://repo.maven.apache.org/maven2</url>
-        <releases><enabled>true</enabled></releases>
-        <snapshots><enabled>false</enabled></snapshots>
     </repository>
   </repositories>
   <!-- **** PLUGINS **** -->
