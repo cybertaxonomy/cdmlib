@@ -1287,6 +1287,7 @@
       <dependency>
         <groupId>org.odftoolkit</groupId>
         <artifactId>odfdom-java</artifactId>
+        <!-- higher version available, but requires jena updated-->
         <version>0.8.7</version>
       </dependency>
       <dependency>
