@@ -37,9 +37,9 @@
     <hibernate-search.version>5.11.10.Final</hibernate-search.version>
     <lucene.version>5.5.5</lucene.version>
 	<unitils.version>3.4.6</unitils.version>
-    <httpcomponents.version>4.5.13</httpcomponents.version>
+    <httpcomponents.version>4.5.14</httpcomponents.version>
     <doxia.version>1.11.1</doxia.version>                <!-- checked 2021-12 -->
-    <poi.version>5.2.2</poi.version>                    <!-- checked 2022-06 -->
+    <poi.version>5.5.1</poi.version>                    <!-- checked 2022-06 -->
     <jackson.version>2.21.0</jackson.version>           <!-- checked 2022-05 -->
     <jackson.annotations.version>2.21</jackson.annotations.version>
 	<!-- CAUTION when upgrading, 1.8x requires another log4j binding: https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html -->
@@ -678,7 +678,7 @@
              org.unitils:unitils-easymock:3.4.2 and org.glassfish.jaxb:jaxb-jxc:2.2.11 -->
 	    <groupId>org.apache.ant</groupId>
 	    <artifactId>ant</artifactId>
-	    <version>1.10.12</version>
+	    <version>1.10.15</version>
 	  </dependency>
       <!-- ******* hibernate uses slf4j ******* -->
       <dependency>
@@ -922,7 +922,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.12.0</version>
+        <version>3.20.0</version>
       </dependency>
       <dependency>
         <groupId>commons-collections</groupId>
@@ -945,7 +945,7 @@
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
         <!-- Note: version differs from default httpcomponents version -->
-        <version>4.4.15</version>
+        <version>4.4.16</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -955,7 +955,7 @@
       <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-compress</artifactId>
-          <version>1.21</version>
+          <version>1.28.0</version>
       </dependency>
       <dependency>
           <groupId>org.checkerframework</groupId>
@@ -1743,7 +1743,7 @@
         <!-- only needed for PasswordResetService, may be replaced by Thymeleaf, but also needed in TaxEditor cdmlib modul -->
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
-        <version>1.10.0</version>
+        <version>1.15.0</version>
       </dependency>
       <dependency>
         <groupId>org.passay</groupId>
