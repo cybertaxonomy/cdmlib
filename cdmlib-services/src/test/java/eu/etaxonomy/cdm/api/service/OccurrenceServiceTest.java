@@ -1207,19 +1207,22 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest-testAllKindsOfSpecimenAssociations.xml")
     public void testListUuidAndTitleCacheByAssociatedTaxon() {
+
         UUID taxonNodeUuid = UUID.fromString("6b8b6ff9-66e4-4496-8e5a-7d03bdf9a076");
+
         /**
          * Structure is as follows:
          *
-         * Taxon ----IndividualsAssociation---> DnaSample
-         * Taxon ----TypeDesignation---> Fossil
-         * Taxon ----Determination ---> PreservedSpecimenA
+         * Taxon ---> IndividualsAssociation ---> DnaSample
+         * Taxon ---> Name ---> TypeDesignation ---> Fossil
+         * Taxon ---> Synonym -> Name ---> TypeDesignation ---> PreservedSpecimenE
+         * Taxon ---> Determination ---> PreservedSpecimenA
          *
-         * Taxon ---> Taxon Name ----Determination ---> PreservedSpecimenB
+         * Taxon ---> Taxon Name ---> Determination ---> PreservedSpecimenB
          *
-         * Taxon ---> Synonym ---> SynonymName ----Determination---> PreservedSpecimenC
+         * Taxon ---> Synonym ---> SynonymName ---> Determination---> PreservedSpecimenC
          *
-         * Orphan Name (not associated with any taxon) ----Determination ---> PreservedSpecimenD
+         * Orphan Name (not associated with any taxon) ---> Determination ---> PreservedSpecimenD
          */
 
         //UUIDS
@@ -1230,12 +1233,14 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         UUID tissueUuidNoAssociationUuid = UUID.fromString("93e94260-5107-4b2c-9ce4-da9e1a4e7cb9");
         UUID dnaSampleUuidIndividualsAssociationUuid = UUID.fromString("1fb53903-c9b9-4078-8297-5b86aec7fe21");
         UUID fossilTypeDesignationUuid = UUID.fromString("42ec8dcf-a923-4256-bbd5-b0d10f4de5e2");
+        UUID synonmTypeDesignationUuid = UUID.fromString("3017c42a-d6a0-4f57-9d77-8416f8f4c38b");
         UUID taxonUuid = UUID.fromString("07cc47a5-1a63-46a1-8366-0d59d2b90d5b");
 
         /*
          * search for taxon node
          * should retrieve all specimens associated via
          *  - type designations (fossil)
+         *  - type designation for synonym (specimenE)
          *  - individuals associations (dnaSample)
          *  - determinations on
          *   - taxon (specimenA)
@@ -1246,15 +1251,16 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         Collection<SpecimenNodeWrapper> specimens = occurrenceService
                 .listUuidAndTitleCacheByAssociatedTaxon(Collections.singletonList(taxonNodeUuid), null, null);
         List<UUID> uuidList = specimens.stream().map(specimen ->
-        specimen.getUuidAndTitleCache().getUuid()).collect(Collectors.toList());
+                specimen.getUuidAndTitleCache().getUuid()).collect(Collectors.toList());
         assertTrue(uuidList.contains(derivedUnitDeterminationNameUuid));
         assertTrue(uuidList.contains(derivedUnitDeterminationTaxonUuid));
-        assertFalse(uuidList.contains(derivedUnitDeterminationSynonymNameUuid));
+        assertTrue(uuidList.contains(derivedUnitDeterminationSynonymNameUuid));
         assertTrue(uuidList.contains(dnaSampleUuidIndividualsAssociationUuid));
         assertTrue(uuidList.contains(fossilTypeDesignationUuid));
+        assertTrue(uuidList.contains(synonmTypeDesignationUuid));
         assertFalse(uuidList.contains(tissueUuidNoAssociationUuid));
         assertFalse(uuidList.contains(derivedUnitDeterminationOrphanNameUuid));
-        assertEquals("Wrong number of associated specimens", 4, specimens.size());
+        assertEquals("Wrong number of associated specimens", 6, specimens.size());
     }
 
     /**
@@ -1269,15 +1275,16 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         /**
          * Structure is as follows:
          *
-         * Taxon ----IndividualsAssociation---> DnaSample
-         * Taxon ----TypeDesignation---> Fossil
-         * Taxon ----Determination ---> PreservedSpecimenA
+         * Taxon ---> IndividualsAssociation ---> DnaSample
+         * Taxon ---> Name ---> TypeDesignation ---> Fossil
+         * Taxon ---> Synonym -> Name ---> TypeDesignation ---> PreservedSpecimenE
+         * Taxon ---> Determination ---> PreservedSpecimenA
          *
-         * Taxon ---> Taxon Name ----Determination ---> PreservedSpecimenB
+         * Taxon ---> Taxon Name ---> Determination ---> PreservedSpecimenB
          *
-         * Taxon ---> Synonym ---> SynonymName ----Determination---> PreservedSpecimenC
+         * Taxon ---> Synonym ---> SynonymName ---> Determination---> PreservedSpecimenC
          *
-         * Orphan Name (not associated with any taxon) ----Determination ---> PreservedSpecimenD
+         * Orphan Name (not associated with any taxon) ---> Determination ---> PreservedSpecimenD
          */
 
         //UUIDS
@@ -1334,6 +1341,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
          * search for taxon
          * should retrieve all specimens associated via
          *  - type designations (fossil)
+         *  - type designation for synonym (specimenE)
          *  - individuals associations (dnaSample)
          *  - determinations on
          *   - taxon (specimenA)
@@ -1349,9 +1357,9 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(specimens.contains(derivedUnitDeterminationSynonymName));
         assertTrue(specimens.contains(dnaSampleUuidIndividualsAssociation));
         assertTrue(specimens.contains(fossilTypeDesignation));
-        assertTrue(!specimens.contains(tissueUuidNoAssociation));
-        assertTrue(!specimens.contains(derivedUnitDeterminationOrphanName));
-        assertEquals("Wrong number of associated specimens", 5, specimens.size());
+        assertFalse(specimens.contains(tissueUuidNoAssociation));
+        assertFalse(specimens.contains(derivedUnitDeterminationOrphanName));
+        assertEquals("Wrong number of associated specimens", 6, specimens.size());
 
         /*
          * search for taxon name

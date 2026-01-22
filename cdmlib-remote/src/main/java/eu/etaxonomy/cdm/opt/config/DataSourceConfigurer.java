@@ -24,6 +24,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.dialect.H2CorrectedDialect;
+import org.hibernate.dialect.MariaDb11Dialect;
 import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
 import org.hibernate.dialect.PostgreSQL82Dialect;
 import org.springframework.beans.BeansException;
@@ -448,6 +449,10 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
                 // MySQL5MyISAMUtf8Dialect and MySQL5MyISAMUtf8Dialect
                 // see #3371 (switch cdm to MySQL InnoDB)
                 return MySQL5MyISAMUtf8Dialect.class.getName();
+            }
+            if(url.contains(":mariadb:")){
+                // see also comments abover on mysql
+                return MariaDb11Dialect.class.getName();
             }
             if(url.contains(":h2:")){
                 return H2CorrectedDialect.class.getName();

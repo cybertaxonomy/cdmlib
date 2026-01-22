@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.database.types;
 
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
+import org.hibernate.dialect.MariaDb11Dialect;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
@@ -25,7 +25,7 @@ public class MariaDbDatabaseType extends DatabaseTypeBase {
 	protected String typeName = "MariaDB";
 
 	//class
-	protected String classString = "com.mariadb.jdbc.Driver";
+	protected String classString = "org.mariadb.jdbc.Driver";
 
 	//url
     protected String urlString = "jdbc:mariadb://";
@@ -40,7 +40,8 @@ public class MariaDbDatabaseType extends DatabaseTypeBase {
 //    private Dialect hibernateDialect = new MySQL5InnoDBUtf8Dialect();
     //MariaDB specific dialect starts with hibernate 5.2.8 only
 //    https://stackoverflow.com/questions/37066024/what-is-the-mariadb-dialect-class-name-for-hibernate
-    private Dialect hibernateDialect = new MySQL5MyISAMUtf8Dialect();
+//    private Dialect hibernateDialect = new MySQL5MyISAMUtf8Dialect();
+    private Dialect hibernateDialect = new MariaDb11Dialect();
 
     //connection String
 	@Override
