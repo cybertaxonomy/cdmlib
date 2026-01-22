@@ -51,6 +51,7 @@
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
     <dozer.version>6.5.2</dozer.version>                <!-- checked 2021-02 -->
     <jakarta.mail.version>1.6.2</jakarta.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
+    <fop.version>2.11</fop.version>
     <doclint>none</doclint>
   </properties>
   
@@ -1100,7 +1101,7 @@
       <dependency>
         <groupId>org.docx4j</groupId>
         <artifactId>docx4j-JAXB-Internal</artifactId>
-        <version>8.3.7</version>
+        <version>8.3.15</version>
       </dependency>
       <dependency>
         <!-- dependency of guava and docx4j -->
@@ -1120,7 +1121,26 @@
         org.docx4j:docx4j:6.0.1 and org.apache.xmlgraphics:fop:1.1 -->
       	<groupId>org.apache.xmlgraphics</groupId>
       	<artifactId>xmlgraphics-commons</artifactId>
-      	<version>2.11</version>
+      	<version>${fop.version}</version>
+      </dependency>
+      <dependency>
+        <!-- only for version management org.apache.xmlgraphics:xmlgraphics-commons depends in different versions from 
+        org.docx4j:docx4j:6.0.1 and org.apache.xmlgraphics:fop:1.1 -->
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>fop-events</artifactId>
+        <version>${fop.version}</version>
+      </dependency>
+      <dependency>
+        <!-- only for version management -->
+        <groupId>com.thoughtworks.qdox</groupId>
+        <artifactId>qdox</artifactId>
+        <version>1.12.1</version>
+      </dependency>
+      <dependency>
+        <!-- only for version management -->
+        <groupId>org.apache.pdfbox</groupId>
+        <artifactId>fontbox</artifactId>
+        <version>3.0.6</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -1255,7 +1275,7 @@
       <dependency> <!-- required by cdmlib-print -->
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>fop</artifactId>
-        <version>2.11</version>
+        <version>${fop.version}</version>
         <exclusions>
           <exclusion>
             <!-- we use jcl-over-slf4j instead -->
