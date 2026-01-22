@@ -40,7 +40,8 @@
     <httpcomponents.version>4.5.13</httpcomponents.version>
     <doxia.version>1.11.1</doxia.version>                <!-- checked 2021-12 -->
     <poi.version>5.2.2</poi.version>                    <!-- checked 2022-06 -->
-    <jackson.version>2.13.3</jackson.version>           <!-- checked 2022-05 -->
+    <jackson.version>2.21.0</jackson.version>           <!-- checked 2022-05 -->
+    <jackson.annotations.version>2.21</jackson.annotations.version>
 	<!-- CAUTION when upgrading, 1.8x requires another log4j binding: https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html -->
     <slf4j.version>1.7.36</slf4j.version>               <!-- checked 2022-06 -->
 	<log4j.version>2.25.3</log4j.version>
@@ -49,7 +50,7 @@
 	<aspectj.version>1.9.7</aspectj.version>            <!-- checked 2022-05 -->
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
     <dozer.version>6.5.2</dozer.version>                <!-- checked 2021-02 -->
-    <jakarta.mail.version>1.5.6</jakarta.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
+    <jakarta.mail.version>1.6.2</jakarta.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
     <doclint>none</doclint>
   </properties>
   
@@ -1041,7 +1042,7 @@
        <dependency>
         <groupId>de.digitalcollections.iiif</groupId>
         <artifactId>iiif-apis</artifactId>
-        <version>0.3.9</version>
+        <version>0.3.11</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -1105,7 +1106,7 @@
         <!-- dependency of guava and docx4j -->
         <groupId>com.google.errorprone</groupId>
         <artifactId>error_prone_annotations</artifactId>
-        <version>2.14.0</version>
+        <version>2.46.0</version>
       </dependency>
       <dependency>
         <!-- only for version management xalan depends in different versions from 
@@ -1220,11 +1221,6 @@
         <artifactId>wsdl4j</artifactId>
         <version>1.6.3</version>
       </dependency>
-<!--       <dependency> -->
-<!--         <groupId>net.sf.dozer</groupId> -->
-<!--         <artifactId>dozer</artifactId> -->
-<!--         <version>5.5.1</version> -->
-<!--       </dependency> -->
       <dependency>
           <groupId>com.github.dozermapper</groupId>
           <artifactId>dozer-core</artifactId>
@@ -1277,7 +1273,7 @@
           <!-- used in eu.etaxonomy.cdm.io.markup and for swagger -->
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
-          <version>31.1-jre</version>
+          <version>33.5.0-jre</version>
       </dependency>
 	  <dependency>
 	      <groupId>com.google.code.findbugs</groupId>
@@ -1567,7 +1563,7 @@
       <dependency>
         <groupId>com.fasterxml</groupId>
         <artifactId>classmate</artifactId>
-        <version>1.5.1</version>     
+        <version>1.7.3</version>     
         <!-- checked 2020-08 -->
       </dependency>
 	  <dependency>
@@ -1609,7 +1605,7 @@
       <dependency>
         <groupId>com.itextpdf</groupId>
         <artifactId>itextpdf</artifactId>
-        <version>5.5.13.3</version>
+        <version>5.5.13.5</version>
         <scope>compile</scope>
       </dependency>
       <!-- AptView -->
@@ -1652,7 +1648,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>${jackson.version}</version>
+        <version>${jackson.annotations.version}</version>
       </dependency> 
       <!-- END of dependencies for swagger-springmvc, added explicitely -->
       <dependency>
