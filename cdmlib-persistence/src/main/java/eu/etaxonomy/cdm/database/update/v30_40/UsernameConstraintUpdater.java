@@ -149,14 +149,6 @@ public class UsernameConstraintUpdater
 		}
 	}
 
-
-	/**
-	 * @param caseType
-	 * @param type
-	 * @param indexName
-	 * @param updateQuery
-	 * @return
-	 */
 	private String makeRemoveConstraintUpdateQuery(CaseType caseType,
 			DatabaseTypeEnum type, String indexName) {
 		String updateQuery;

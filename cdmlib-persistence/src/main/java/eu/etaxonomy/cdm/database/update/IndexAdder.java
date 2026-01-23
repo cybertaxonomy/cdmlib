@@ -104,10 +104,6 @@ public class IndexAdder extends SchemaUpdaterStepBase {
 		return updateQuery;
 	}
 
-	/**
-     * @param length2
-     * @return
-     */
     private String makeLength() {
         if (length != null){
             return "(" + length + ")";

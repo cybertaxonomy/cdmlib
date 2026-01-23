@@ -88,10 +88,6 @@ public class TableDropper
 
 	/**
 	 * @param tableName cased tableName
-	 * @param datasource
-	 * @param monitor
-	 * @param caseType
-	 * @return
 	 * @throws DatabaseTypeNotSupportedException
 	 */
 	public String getUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {

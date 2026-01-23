@@ -89,7 +89,7 @@ public enum DatabaseTypeEnum {
 
 	protected IDatabaseType dbType;
 
-    public String getName(){
+	public String getName(){
     	return dbType.getName();
     }
 
