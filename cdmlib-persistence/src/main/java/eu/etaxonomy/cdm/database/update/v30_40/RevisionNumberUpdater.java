@@ -49,17 +49,17 @@ public class RevisionNumberUpdater extends SchemaUpdaterStepBase{
 	    String casedAuditTable = caseType.transformTo("AuditEvent");
 
 	    DatabaseTypeEnum databaseType = datasource.getDatabaseType();
-	    if (databaseType == DatabaseTypeEnum.MySQL){
+	    if (databaseType.isMySqlMariaDB()){
 	        sql = "ALTER TABLE "+casedAuditTable+" ALTER revisionnumber DROP DEFAULT";  //needed? There was no default before
 	        datasource.executeUpdate(sql);
 	        sql = "ALTER TABLE "+casedAuditTable+" CHANGE COLUMN revisionnumber revisionnumber INT(11) NOT NULL FIRST";
 	        datasource.executeUpdate(sql);
-	    }else if (databaseType == DatabaseTypeEnum.H2){
+	    }else if (databaseType.isH2()){
 	        sql = "ALTER TABLE "+casedAuditTable+" ALTER COLUMN revisionnumber INT NOT NULL";
 	        datasource.executeUpdate(sql);
-        }else if (databaseType == DatabaseTypeEnum.PostgreSQL){
+        }else if (databaseType.isPostgres()){
 	        //NOTHING TO DO
-        }else if (databaseType == DatabaseTypeEnum.SqlServer2005){
+        }else if (databaseType.isSqlServer()){
             throw new RuntimeException("SQLServer not supported by RevisionNumberUpdater");
 	    }else{
 	        throw new RuntimeException("Database type " + databaseType.toString() + " not supported by RevisionNumberUpdater");

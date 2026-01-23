@@ -356,7 +356,8 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 //			updateQuery = updateQuery.replace("@index", index);
 			updateQuery = updateQuery.replace("@attribute", columnName);
 			updateQuery = updateQuery.replace("@referencedTable", referencedTable);
-			if (datasource.getDatabaseType().equals(DatabaseTypeEnum.MySQL)){
+			DatabaseTypeEnum type = datasource.getDatabaseType();
+			if (type.isMySqlMariaDB()){
 				updateQuery = updateQuery.replace("@constraintName", "CONSTRAINT " + index);
 			}else{
 				updateQuery = updateQuery.replace("@constraintName", "");  //H2 does not support "CONSTRAINT", didn't check for others
@@ -398,40 +399,47 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 	 * Determines if the tables and the database support foreign keys. If determination is not possible true is returned as default.
 	 */
 	private static boolean supportsForeignKeys(ICdmDataSource datasource, IProgressMonitor monitor, String tableName, String referencedTable) {
-		boolean result = true;
-		if (! datasource.getDatabaseType().equals(DatabaseTypeEnum.MySQL)){
-			return true;
-		}else{
-			try {
-				String myIsamTables = "";
-				String format = "SELECT ENGINE FROM information_schema.TABLES where TABLE_SCHEMA = '%s' AND TABLE_NAME = '%s'";
-				String sql = String.format(format, datasource.getDatabase(), tableName);
-				String engine = (String)datasource.getSingleValue(sql);
-				if (engine.equals("MyISAM")){
-					result = false;
-					myIsamTables = CdmUtils.concat(",", myIsamTables, tableName);
-				}
-				sql = String.format(format,  datasource.getDatabase(), referencedTable);
-				engine = (String)datasource.getSingleValue(sql);
-				if (engine.equals("MyISAM")){
-					result = false;
-					myIsamTables = CdmUtils.concat(",", myIsamTables, referencedTable);
-				}
-				if (result == false){
-					String message = "Tables (%s) use MyISAM engine. MyISAM does not support foreign keys.";
-					message = String.format(message, myIsamTables);
-					monitor.warning(message);
-				}
-				return result;
-			} catch (Exception e) {
-				String message = "Problems to determine table engine for MySQL.";
-				monitor.warning(message);
-				return true;  //default
-			}
-		}
+
+		DatabaseTypeEnum type = datasource.getDatabaseType();
+
+	    if (type.isMySqlMariaDB()) {
+            return supportsForeignKeysMySQL(datasource, monitor, tableName, referencedTable);
+	    } else {
+            return true;
+	    }
 	}
 
-	private static boolean isRevAttribute(String attribute) {
+    private static boolean supportsForeignKeysMySQL(ICdmDataSource datasource, IProgressMonitor monitor, String tableName, String referencedTable) {
+        boolean result = true;
+        try {
+            String myIsamTables = "";
+            String format = "SELECT ENGINE FROM information_schema.TABLES where TABLE_SCHEMA = '%s' AND TABLE_NAME = '%s'";
+            String sql = String.format(format, datasource.getDatabase(), tableName);
+            String engine = (String)datasource.getSingleValue(sql);
+            if (engine.equals("MyISAM")){
+                result = false;
+                myIsamTables = CdmUtils.concat(",", myIsamTables, tableName);
+            }
+            sql = String.format(format,  datasource.getDatabase(), referencedTable);
+            engine = (String)datasource.getSingleValue(sql);
+            if (engine.equals("MyISAM")){
+                result = false;
+                myIsamTables = CdmUtils.concat(",", myIsamTables, referencedTable);
+            }
+            if (result == false){
+                String message = "Tables (%s) use MyISAM engine. MyISAM does not support foreign keys.";
+                message = String.format(message, myIsamTables);
+                monitor.warning(message);
+            }
+            return result;
+        } catch (Exception e) {
+            String message = "Problems to determine table engine for MySQL.";
+            monitor.warning(message);
+            return true;  //default
+        }
+    }
+
+    private static boolean isRevAttribute(String attribute) {
 		return "REV".equalsIgnoreCase(attribute);
 	}
 

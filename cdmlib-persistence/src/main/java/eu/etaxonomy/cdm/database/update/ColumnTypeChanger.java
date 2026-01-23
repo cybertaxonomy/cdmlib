@@ -143,14 +143,14 @@ public class ColumnTypeChanger
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		String databaseColumnType = getDatabaseColumnType(datasource, this.newColumnType, newSize, null);
 
-		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
+		if (type.isSqlServer()){
 			//MySQL allows both syntaxes
 			updateQuery = "ALTER TABLE @tableName ALTER COLUMN @columnName @columnType";
-		}else if (type.equals(DatabaseTypeEnum.H2)){
+		}else if (type.isH2()){
 			updateQuery = "ALTER TABLE @tableName ALTER COLUMN @columnName @columnType";
-		}else if (type.equals(DatabaseTypeEnum.PostgreSQL)){
+		}else if (type.isPostgres()){
 			updateQuery = "ALTER TABLE @tableName ALTER COLUMN @columnName TYPE @columnType";
-		}else if (type.equals(DatabaseTypeEnum.MySQL)){
+		}else if (type.isMySqlMariaDB()){
 			updateQuery = "ALTER TABLE @tableName MODIFY COLUMN @columnName @columnType";
 		}else{
 			updateQuery = null;

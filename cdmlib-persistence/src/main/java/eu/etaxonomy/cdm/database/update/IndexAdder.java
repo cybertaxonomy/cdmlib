@@ -91,10 +91,10 @@ public class IndexAdder extends SchemaUpdaterStepBase {
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 //		String indexName = "_UniqueKey";
 		String updateQuery;
-		if (type.equals(DatabaseTypeEnum.MySQL)){
+		if (type.isMySqlMariaDB()){
 			//Maybe MySQL also works with the below syntax. Did not check yet.
 			updateQuery = "ALTER TABLE @@"+ tableName + "@@ ADD INDEX " + constraintName + " ("+columnName+ makeLength()+");";
-		}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.SqlServer2005)){
+		}else if (type.isH2() || type.isPostgres() || type.isSqlServer()){
 			updateQuery = "CREATE INDEX " + constraintName + " ON "+tableName+"(" + columnName + ")";
 		}else{
 			throw new IllegalArgumentException("Datasource type not supported yet: " + type.getName());
@@ -131,31 +131,22 @@ public class IndexAdder extends SchemaUpdaterStepBase {
 		}
 	}
 
-
-	/**
-	 * @param caseType
-	 * @param type
-	 * @param indexName
-	 * @param updateQuery
-	 * @return
-	 */
-	private String makeRemoveConstraintUpdateQuery(CaseType caseType,
-			DatabaseTypeEnum type, String indexName) {
-		String updateQuery;
-		if (type.equals(DatabaseTypeEnum.MySQL)){
-			updateQuery = "ALTER TABLE @@" + tableName + "@@ DROP INDEX @indexName";
-		}else if (type.equals(DatabaseTypeEnum.H2)){
-			updateQuery = "ALTER TABLE @@" + tableName + "@@ DROP CONSTRAINT IF EXISTS @indexName";
-		}else if (type.equals(DatabaseTypeEnum.PostgreSQL)){
-			updateQuery = "ALTER TABLE @@" + tableName + "@@ DROP CONSTRAINT @indexName";
-		}else if (type.equals(DatabaseTypeEnum.SqlServer2005)){
-			//TODO
-			throw new RuntimeException("Remove index not yet supported for SQLServer");
-		}else{
-			throw new IllegalArgumentException("Datasource type not supported: " + type.getName());
-		}
-		updateQuery = updateQuery.replace("@indexName", indexName);
-		updateQuery = caseType.replaceTableNames(updateQuery);
-		return updateQuery;
+    private String makeRemoveConstraintUpdateQuery(CaseType caseType,
+            DatabaseTypeEnum type, String indexName) {
+        String updateQuery;
+        if (type.isMySqlMariaDB()) {
+            updateQuery = "ALTER TABLE @@" + tableName + "@@ DROP INDEX @indexName";
+        } else if (type.isH2()) {
+            updateQuery = "ALTER TABLE @@" + tableName + "@@ DROP CONSTRAINT IF EXISTS @indexName";
+        } else if (type.isPostgres()) {
+            updateQuery = "ALTER TABLE @@" + tableName + "@@ DROP CONSTRAINT @indexName";
+        } else if (type.isSqlServer()) {
+            throw new RuntimeException("Remove index not yet supported for SQLServer");
+        } else {
+            throw new IllegalArgumentException("Datasource type not supported: " + type.getName());
+        }
+        updateQuery = updateQuery.replace("@indexName", indexName);
+        updateQuery = caseType.replaceTableNames(updateQuery);
+        return updateQuery;
 	}
 }

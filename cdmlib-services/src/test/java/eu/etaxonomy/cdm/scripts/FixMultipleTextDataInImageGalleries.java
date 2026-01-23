@@ -57,7 +57,9 @@ public class FixMultipleTextDataInImageGalleries {
 		ICdmDataSource destination;
 		if(dbType.equals(DatabaseTypeEnum.MySQL)){
 			destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
-		} else if(dbType.equals(DatabaseTypeEnum.PostgreSQL)){
+		} else if(dbType.equals(DatabaseTypeEnum.MariaDB)){
+            destination = CdmDataSource.NewMariaDbInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
+        } else if(dbType.equals(DatabaseTypeEnum.PostgreSQL)){
 			destination = CdmDataSource.NewPostgreSQLInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
 		} else {
 			//TODO others

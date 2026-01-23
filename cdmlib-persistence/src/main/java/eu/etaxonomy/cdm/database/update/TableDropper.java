@@ -95,10 +95,10 @@ public class TableDropper
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 
 		updateQuery = "DROP TABLE @ifExists @tableName ";
-		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
+		if (type.isSqlServer()){
 			//MySQL allows both syntaxes
 			updateQuery = " if exists (select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME='@tableName') BEGIN drop table @tableName end ";
-		}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.MySQL)){
+		}else if (type.isH2() || type.isPostgres() || type.isMySqlMariaDB()){
 //			updateQuery = "ALTER TABLE @tableName @addSeparator @columnName @columnType";
 		}else{
 			updateQuery = null;

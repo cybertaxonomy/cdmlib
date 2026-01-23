@@ -65,7 +65,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase {
 
 	private boolean checkExists(ICdmDataSource datasource, CaseType caseType) throws SQLException, DatabaseTypeNotSupportedException {
 		DatabaseTypeEnum type = datasource.getDatabaseType();
-		if (type.equals(DatabaseTypeEnum.MySQL)){
+		if (type.isMySqlMariaDB()){
 			String sql = " SELECT count(*)" +
 			             " FROM information_schema.KEY_COLUMN_USAGE kcu " +
                             " INNER JOIN information_schema.TABLE_CONSTRAINTS tc ON kcu.CONSTRAINT_NAME = tc.CONSTRAINT_NAME " +
@@ -77,10 +77,10 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase {
 			sql = sql.replace("@dbName", datasource.getDatabase());
 			long count = (Long)datasource.getSingleValue(sql);
 			return count > 0;
-		}else if (type.equals(DatabaseTypeEnum.PostgreSQL)){
+		}else if (type.isPostgres()){
             String indexName = getIndexName(datasource, caseType);
             return indexName != null;
-		}else if (type.equals(DatabaseTypeEnum.H2)){
+		}else if (type.isH2()){
 			String indexName = getIndexName(datasource, caseType);
 			return indexName != null;
 		}else{
@@ -100,13 +100,13 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase {
 			//MySQL allows both syntaxes
 //			updateQuery = "ALTER TABLE @tableName ADD @columnName @columnType";
 //		}else
-		if (type.equals(DatabaseTypeEnum.H2)){
+		if (type.isH2()){
 			updateQuery = "ALTER TABLE @tableName DROP CONSTRAINT IF EXISTS @indexName";
-		}else if (type.equals(DatabaseTypeEnum.PostgreSQL)){
+		}else if (type.isPostgres()){
 //			updateQuery = "DROP INDEX IF EXISTS @indexName";  // does not work because index is used in the constraint
 //			updateQuery = "ALTER TABLE @tableName DROP CONSTRAINT IF EXISTS @indexName"; //"if exists" does not work (version 8.4)
 			updateQuery = "ALTER TABLE @tableName DROP CONSTRAINT @indexName";
-		}else if (type.equals(DatabaseTypeEnum.MySQL)){
+		}else if (type.isMySqlMariaDB()){
 			updateQuery = "ALTER TABLE @tableName DROP INDEX @indexName";
 		}else{
 			updateQuery = null;
@@ -124,9 +124,9 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase {
 	private String getIndexName(ICdmDataSource datasource, CaseType caseType) throws DatabaseTypeNotSupportedException, SQLException {
 		String result = this.indexColumn;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
-		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
+		if (type.isSqlServer()){
 			throw new DatabaseTypeNotSupportedException(type.toString());
-		}else if (type.equals(DatabaseTypeEnum.MySQL)){
+		}else if (type.isMySqlMariaDB()){
 		    String sql = "SELECT kcu.CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE kcu " +
 		                    " INNER JOIN information_schema.TABLE_CONSTRAINTS tc ON kcu.CONSTRAINT_NAME = tc.CONSTRAINT_NAME " +
 		                    " AND tc.TABLE_NAME = kcu.TABLE_NAME AND tc.TABLE_SCHEMA = kcu.TABLE_SCHEMA " +
@@ -137,7 +137,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase {
             sql = sql.replace("@dbName", datasource.getDatabase());
             String constraintName = (String)datasource.getSingleValue(sql);
             result = constraintName;
-		}else if (type.equals(DatabaseTypeEnum.H2) ){
+		}else if (type.isH2()){
 //			String sql = "SELECT INDEX_NAME FROM INFORMATION_SCHEMA.INDEXES WHERE TABLE_NAME = @tableName AND INDEX_TYPE_NAME = 'UNIQUE INDEX'";
 			String sql = "SELECT CONSTRAINT_NAME " +
 					" FROM INFORMATION_SCHEMA.CONSTRAINTS "+
@@ -149,7 +149,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase {
 			sql = sql.replace("@dbName", datasource.getDatabase().toUpperCase());
 			String constraintName = (String)datasource.getSingleValue(sql);
 			result = constraintName;
-		}else if (type.equals(DatabaseTypeEnum.PostgreSQL)){
+		}else if (type.isPostgres()){
 		    String sql = " SELECT tc.constraint_name " +
 		            " FROM information_schema.table_constraints tc " +
 		                " LEFT JOIN information_schema.key_column_usage kcu " +

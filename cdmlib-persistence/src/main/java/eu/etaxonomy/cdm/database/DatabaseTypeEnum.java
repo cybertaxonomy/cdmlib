@@ -265,4 +265,21 @@ public enum DatabaseTypeEnum {
         }
         return null;
     }
+
+    public boolean isMySqlMariaDB() {
+        return this == MySQL || this == MariaDB;
+    }
+
+    public boolean isSqlServer() {
+        return this == SqlServer2005 || this == SqlServer2008 || this == SqlServer2012;
+    }
+
+    public boolean isH2() {
+        return this == H2;
+    }
+
+    public boolean isPostgres() {
+        return this == PostgreSQL;
+    }
+
 }

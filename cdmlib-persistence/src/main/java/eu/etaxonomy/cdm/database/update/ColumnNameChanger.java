@@ -73,16 +73,16 @@ public class ColumnNameChanger
 			DatabaseTypeEnum type = datasource.getDatabaseType();
 			String updateQuery;
 
-			if (type.equals(DatabaseTypeEnum.SqlServer2005)){
+			if (type.isSqlServer()){
 			    result.addWarning("SQLServer column name changer syntax not yet tested. Table name: " + this.tableName + "; old column name: " + oldColumnName + "; new column name: " + newColumnName);
                 updateQuery = "EXEC sp_rename '@oldName', '@newName'";
-			}else if (type.equals(DatabaseTypeEnum.H2)){
+			}else if (type.isH2()){
 				updateQuery = "ALTER TABLE @tableName ALTER COLUMN @oldColumnName RENAME TO @newColumnName";
-			}else if ( type.equals(DatabaseTypeEnum.MySQL)){
+			}else if ( type.isMySqlMariaDB()){
 				//FIXME MySQL column name changer
 //			logger.warn("Changing column name not yet supported for MySQL");
 				updateQuery = "ALTER TABLE @tableName CHANGE COLUMN @oldColumnName @newColumnName @definition";
-			}else if ( type.equals(DatabaseTypeEnum.PostgreSQL) ){
+			}else if ( type.isPostgres()){
 				updateQuery = "ALTER TABLE @tableName RENAME COLUMN @oldColumnName TO @newColumnName;";
 			}else{
 				updateQuery = null;

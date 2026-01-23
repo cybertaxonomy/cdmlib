@@ -59,10 +59,10 @@ public class ColumnRemover
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 
 		updateQuery = "ALTER TABLE @tableName DROP COLUMN @columnName";
-		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
+		if (type.isSqlServer()){
 			//MySQL allows both syntaxes
 //			updateQuery = "ALTER TABLE @tableName ADD @columnName @columnType";
-		}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.MySQL)){
+		}else if (type.isH2() || type.isPostgres() || type.isMySqlMariaDB()){
 //			updateQuery = "ALTER TABLE @tableName @addSeparator @columnName @columnType";
 		}else{
 			updateQuery = null;
