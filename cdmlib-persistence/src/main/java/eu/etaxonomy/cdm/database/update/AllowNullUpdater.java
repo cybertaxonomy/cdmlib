@@ -63,7 +63,7 @@ public class AllowNullUpdater
                 monitor.warning(message);
                 result.addWarning(message);
                 updateQuery1 = "ALTER TABLE @tableName ALTER COLUMN @columnName @definition";
-            }else if ( type.isMySqlMariaDB())){
+            }else if ( type.isMySqlMariaDB()){
                 //FIXME MySQL column name changer
                 //logger.warn("Changing column name not yet supported for MySQL");
                 updateQuery1 = "ALTER TABLE @tableName MODIFY @columnName @definition";
