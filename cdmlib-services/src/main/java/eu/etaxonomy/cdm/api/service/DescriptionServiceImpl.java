@@ -1119,6 +1119,20 @@ public class DescriptionServiceImpl
     }
 
     @Override
+    public List<TaxonNodeDto> findTaxonNodesDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid) {
+        //get specimen used in description
+        //get individial associations with this specimen
+        //get taxon node for the classification
+        List<SortableTaxonNodeQueryResult> results = dao.getNodeOfIndividualAssociationForSpecimen(specimenUuid, classificationUuid);
+
+        if (!results.isEmpty()){
+            List<TaxonNodeDto> dtos = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(results);
+            return dtos;
+        }
+        return null;
+    }
+
+    @Override
     public TaxonNodeDto findTaxonNodeDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid) {
         //get specimen used in description
         //get individial associations with this specimen

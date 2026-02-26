@@ -270,8 +270,24 @@ public class DescriptiveDataSetService
         UuidAndTitleCache<SpecimenOrObservationBase> specimen = description.getSpecimenDto();
         //get taxon node
 
+        UUID classificationUuid = null;
+        if (descriptiveDataSet.getSubTreeFilter() != null && !descriptiveDataSet.getSubTreeFilter().isEmpty()) {
+            classificationUuid = descriptiveDataSet.getSubTreeFilter().iterator().next().getClassificationUUID();
+        }
+        List<TaxonNodeDto> nodes = descriptionService.findTaxonNodesDtoForIndividualAssociation(specimen.getUuid(), classificationUuid);
+        Set<TaxonNodeDto> subtreeFilter = descriptiveDataSet.getSubTreeFilter();
+        Set<String> treeIndexSet = new HashSet<>();
+        subtreeFilter.stream().forEach(element -> treeIndexSet.add(element.getTreeIndex()));
 
-        return descriptionService.findTaxonNodeDtoForIndividualAssociation(specimen.getUuid(), descriptiveDataSet.getSubTreeFilter().iterator().next().getClassificationUUID());
+        for (TaxonNodeDto dto: nodes) {
+            for (String treeIndex: treeIndexSet) {
+                if (dto.getTreeIndex().startsWith(treeIndex)) {
+                    return dto;
+                }
+            }
+        }
+        return null;
+
         //NOTE: don't remove cast as it does not compile on some systems
 //        List<DescriptionBaseDto> descDtos = descriptionService.loadDtos(descriptiveDataSet.getDescriptionUuids());
 //        descriptionService.
@@ -453,7 +469,10 @@ public class DescriptiveDataSetService
 
     private SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto description, UUID taxonNodeUuid,
             UUID datasetUuid, Language lang) {
-        TaxonNodeDto taxonNode = taxonNodeService.dto(taxonNodeUuid);
+        TaxonNodeDto taxonNode = null;
+        if (taxonNodeUuid != null) {
+            taxonNode = taxonNodeService.dto(taxonNodeUuid);
+        }
         DescriptiveDataSetBaseDto descriptiveDataSet = getDescriptiveDataSetDtoByUuid(datasetUuid);
 //        UuidAndTitleCache<SpecimenOrObservationBase> specimen = description.getSpecimenDto();
         SpecimenOrObservationBase<?> specimen = occurrenceService.find(description.getSpecimenDto().getUuid());
@@ -462,6 +481,7 @@ public class DescriptiveDataSetService
         if(taxonNode==null){
             taxonNode = findTaxonNodeForDescription(description, descriptiveDataSet);
         }
+
         FieldUnit fieldUnit = null;
         String identifier = null;
         NamedArea country = null;

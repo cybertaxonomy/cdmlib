@@ -321,6 +321,11 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      */
     public TaxonNodeDto findTaxonNodeDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid);
 
+    /**
+     * Find the taxon node for the taxon associated to the specimen in classification with classificationUuid
+     */
+    public List<TaxonNodeDto> findTaxonNodesDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid);
+
     public UpdateResult moveMediaToTaxon(
             Set<UUID> descriptionElementUUIDs,
             String moveMessage,
