@@ -1,11 +1,20 @@
-package eu.etaxonomy.cdm.io.cdmprintpub;
+/**
+ * Copyright (C) 2025 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.IPrintPubDocumentElement;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubLabeledTextElement;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubPageBreakElement;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubParagraphElement;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubSectionHeader;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubUnorderedListElement;
+package eu.etaxonomy.cdm.io.cdmprintpub.render;
+
+import eu.etaxonomy.cdm.io.cdmprintpub.document.IPrintPubDocumentElement;
+import eu.etaxonomy.cdm.io.cdmprintpub.document.PrintPubLabeledTextElement;
+import eu.etaxonomy.cdm.io.cdmprintpub.document.PrintPubPageBreakElement;
+import eu.etaxonomy.cdm.io.cdmprintpub.document.PrintPubParagraphElement;
+import eu.etaxonomy.cdm.io.cdmprintpub.document.PrintPubSectionHeader;
+import eu.etaxonomy.cdm.io.cdmprintpub.document.PrintPubUnorderedListElement;
 
 public class PrintPubMarkdownInterpreter implements IPrintPubDocumentInterpreter {
 

@@ -6,9 +6,9 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.cdmprintpub;
+package eu.etaxonomy.cdm.io.cdmprintpub.render;
 
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.IPrintPubDocumentElement;
+import eu.etaxonomy.cdm.io.cdmprintpub.document.IPrintPubDocumentElement;
 
 /**
  * @author veldmap97

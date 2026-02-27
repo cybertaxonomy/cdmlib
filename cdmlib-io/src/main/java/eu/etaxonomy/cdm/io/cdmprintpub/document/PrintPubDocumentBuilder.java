@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.io.cdmprintpub;
+package eu.etaxonomy.cdm.io.cdmprintpub.document;
 
 import java.util.Comparator;
 import java.util.List;
@@ -6,14 +6,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubContext.FactDTO;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubContext.SynonymDTO;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubContext.SynonymGroupDTO;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubContext.TaxonSummaryDTO;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubLabeledTextElement;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubPageBreakElement;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubParagraphElement;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.PrintPubSectionHeader;
+import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
+import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubContext;
+import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubFactDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubSynonymDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubSynonymGroupDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 @Component
@@ -26,7 +24,7 @@ public class PrintPubDocumentBuilder {
         state.getProcessor().add(new PrintPubPageBreakElement());
 
         // 2. Main Taxon Content
-        for (TaxonSummaryDTO dto : context.taxonList) {
+        for (PrintPubTaxonSummaryDTO dto : context.taxonList) {
             renderTaxon(state, dto);
         }
 
@@ -44,11 +42,11 @@ public class PrintPubDocumentBuilder {
             state.getProcessor().add(new PrintPubPageBreakElement());
             state.getProcessor().add(new PrintPubSectionHeader("Index to Scientific Names", 1));
 
-            List<TaxonSummaryDTO> sortedTaxa = context.taxonList.stream()
+            List<PrintPubTaxonSummaryDTO> sortedTaxa = context.taxonList.stream()
                     .sorted(Comparator.comparing(t -> t.titleCache))
                     .collect(Collectors.toList());
 
-            for (TaxonSummaryDTO dto : sortedTaxa) {
+            for (PrintPubTaxonSummaryDTO dto : sortedTaxa) {
                 // Simple index entry
                 state.getProcessor().add(new PrintPubParagraphElement(dto.titleCache));
             }
@@ -71,7 +69,7 @@ public class PrintPubDocumentBuilder {
             state.getProcessor().add(new PrintPubPageBreakElement());
             state.getProcessor().add(new PrintPubSectionHeader("Appendix: Digital Identifiers", 1));
 
-            for (TaxonSummaryDTO dto : context.taxonList) {
+            for (PrintPubTaxonSummaryDTO dto : context.taxonList) {
                 StringBuilder line = new StringBuilder(dto.titleCache);
 
                 /*// Note: Real implementation needs retrieval of WFO-ID/URI from identifiers/sources
@@ -89,7 +87,7 @@ public class PrintPubDocumentBuilder {
         }
     }
 
-    private void renderTaxon(PrintPubExportState state, TaxonSummaryDTO dto) {
+    private void renderTaxon(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
         int headerLevel = Math.min(dto.relativeDepth + 2, 6);
         state.getProcessor().add(new PrintPubSectionHeader(dto.titleCache, headerLevel));
 
@@ -106,7 +104,7 @@ public class PrintPubDocumentBuilder {
             state.getProcessor().add(new PrintPubLabeledTextElement("Distribution", dto.distributionString));
         }
 
-        for (FactDTO fact : dto.facts) {
+        for (PrintPubFactDTO fact : dto.facts) {
             String textContent = fact.text;
             if (fact.citation != null) {
                 textContent += " [" + fact.citation + "]";
@@ -115,13 +113,13 @@ public class PrintPubDocumentBuilder {
         }
     }
 
-    private void renderSynonyms(PrintPubExportState state, TaxonSummaryDTO dto) {
+    private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
         if (dto.synonymGroups.isEmpty()) {
             return;
         }
-        for (SynonymGroupDTO group : dto.synonymGroups) {
+        for (PrintPubSynonymGroupDTO group : dto.synonymGroups) {
             String prefix = group.isHomotypic ? "≡ " : "= ";
-            for (SynonymDTO syn : group.synonyms) {
+            for (PrintPubSynonymDTO syn : group.synonyms) {
                 String line = prefix + syn.titleCache;
                 if (syn.secReference != null) {
                     line += " sec. " + syn.secReference;
