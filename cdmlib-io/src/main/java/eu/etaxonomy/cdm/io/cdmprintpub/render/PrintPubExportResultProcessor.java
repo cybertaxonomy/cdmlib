@@ -6,13 +6,16 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.cdmprintpub;
+package eu.etaxonomy.cdm.io.cdmprintpub.render;
+
+
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubDocumentModel.IPrintPubDocumentElement;
+import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
+import eu.etaxonomy.cdm.io.cdmprintpub.document.IPrintPubDocumentElement;
 import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 

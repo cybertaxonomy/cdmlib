@@ -1,3 +1,13 @@
+/**
+ * Copyright (C) 2025 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
+
+
 package eu.etaxonomy.cdm.io.cdmprintpub;
 
 import java.io.File;
@@ -7,7 +17,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubContext.TaxonSummaryDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubContext;
+import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubTaxonSummaryDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.document.PrintPubDocumentBuilder;
+import eu.etaxonomy.cdm.io.cdmprintpub.mapper.PrintPubDtoMapper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -72,7 +85,7 @@ public class PrintPubClassificationExport
                     referenceDepth = mapper.calculateDepth(node);
                 }
 
-                TaxonSummaryDTO dto = mapper.mapNodeToDto(node, referenceDepth, state, context);
+                PrintPubTaxonSummaryDTO dto = mapper.mapNodeToDto(node, referenceDepth, state, context);
                 if (dto != null) {
                     context.addTaxon(dto);
                 }
