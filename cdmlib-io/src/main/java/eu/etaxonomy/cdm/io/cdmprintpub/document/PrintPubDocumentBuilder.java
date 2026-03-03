@@ -1,9 +1,5 @@
 package eu.etaxonomy.cdm.io.cdmprintpub.document;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
@@ -12,82 +8,83 @@ import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubFactDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubSynonymDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubSynonymGroupDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubTaxonSummaryDTO;
-import eu.etaxonomy.cdm.model.reference.Reference;
 
-@Component
-public class PrintPubDocumentBuilder {
+/**
+ * Consolidated implementation of the document builder.
+ * Can render taxa in either tree or standard view based on configuration.
+*
+* @author veldmap97
+* @date Feb 17, 2026
+*/
+@Component("printPubDocumentBuilder")
+public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
 
-    public void buildLayout(PrintPubExportState state, PrintPubContext context) {
-        // 1. Document Header
-        state.getProcessor().add(new PrintPubSectionHeader(state.getConfig().getDocumentTitle(), 1));
-        state.getProcessor().add(new PrintPubParagraphElement("Total Taxa: " + context.taxonList.size()));
-        state.getProcessor().add(new PrintPubPageBreakElement());
+    private static final String INDENT_UNIT = "    ";
 
-        // 2. Main Taxon Content
+    @Override
+    protected void buildContent(PrintPubExportState state, PrintPubContext context) {
+        boolean isTreeView = state.getConfig().isDoIndentation();
+
+        if (isTreeView) {
+            state.getConfig().setGenerateScientificNameIndex(false);
+            state.getConfig().setGenerateCommonNameIndex(false);
+            state.getConfig().setAppendIdentifierList(false);
+            context.referenceStore.clear(); // Suppress the Bibliography
+            state.getProcessor().add(new PrintPubSectionHeader("Taxonomic Hierarchy", 1));
+        }
+
         for (PrintPubTaxonSummaryDTO dto : context.taxonList) {
-            renderTaxon(state, dto);
+            renderTaxon(state, dto, isTreeView);
+        }
+    }
+
+    private void renderTaxon(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, boolean isTreeView) {
+        if (isTreeView) {
+            renderTaxonTreeView(state, dto);
+        } else {
+            renderTaxonStandardView(state, dto);
+        }
+    }
+
+    private void renderTaxonTreeView(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
+        StringBuilder indent = new StringBuilder();
+        for (int i = 0; i < dto.relativeDepth; i++) {
+            indent.append(INDENT_UNIT);
+        }
+        String indentStr = indent.toString();
+
+        StringBuilder line = new StringBuilder();
+        line.append(indentStr).append("* **").append(dto.titleCache).append("**");
+
+        if (state.getConfig().isIncludeTaxonomicConceptReference() && dto.secReferenceCitation != null) {
+            String suffix = state.incrementShortCitation(dto.secReferenceCitation);
+            line.append(" sec. ").append(dto.secReferenceCitation).append(suffix);
         }
 
-        // 3. Bibliography
-        if (!context.referenceStore.isEmpty()) {
-            state.getProcessor().add(new PrintPubPageBreakElement());
-            state.getProcessor().add(new PrintPubSectionHeader("Bibliography", 1));
-            for (Reference ref : context.getSortedBibliography()) {
-                state.getProcessor().add(new PrintPubParagraphElement(ref.getTitleCache()));
-            }
-        }
+        state.getProcessor().add(new PrintPubParagraphElement(line.toString()));
 
-        // 4. Index: Scientific Names
-        if (state.getConfig().isGenerateScientificNameIndex()) {
-            state.getProcessor().add(new PrintPubPageBreakElement());
-            state.getProcessor().add(new PrintPubSectionHeader("Index to Scientific Names", 1));
+        if (state.getConfig().isDoSynonyms() && !dto.synonymGroups.isEmpty()) {
+            String synonymIndent = indentStr + INDENT_UNIT;
 
-            List<PrintPubTaxonSummaryDTO> sortedTaxa = context.taxonList.stream()
-                    .sorted(Comparator.comparing(t -> t.titleCache))
-                    .collect(Collectors.toList());
+            for (PrintPubSynonymGroupDTO group : dto.synonymGroups) {
+                String prefix = group.isHomotypic ? "≡ " : "= ";
 
-            for (PrintPubTaxonSummaryDTO dto : sortedTaxa) {
-                // Simple index entry
-                state.getProcessor().add(new PrintPubParagraphElement(dto.titleCache));
-            }
-        }
+                for (PrintPubSynonymDTO syn : group.synonyms) {
+                    StringBuilder synLine = new StringBuilder();
+                    synLine.append(synonymIndent).append("- ").append(prefix).append(syn.titleCache);
 
-        // 5. Index: Common Names
-        if (state.getConfig().isGenerateCommonNameIndex()) {
-            state.getProcessor().add(new PrintPubPageBreakElement());
-            state.getProcessor().add(new PrintPubSectionHeader("Index to Common Names", 1));
+                    if (state.getConfig().isIncludeSynonymConceptReference() && syn.secReference != null) {
+                        String suffix = state.incrementShortCitation(syn.secReference);
+                        synLine.append(" sec. ").append(syn.secReference).append(suffix);
+                    }
 
-            // Extract all common names with reference to Taxon
-            context.taxonList.stream()
-                .flatMap(dto -> dto.commonNames.stream())
-                .sorted()
-                .forEach(commonName -> state.getProcessor().add(new PrintPubParagraphElement(commonName)));
-        }
-
-        // 6. Appendix: Digital Identifiers
-        if (state.getConfig().isAppendIdentifierList()) {
-            state.getProcessor().add(new PrintPubPageBreakElement());
-            state.getProcessor().add(new PrintPubSectionHeader("Appendix: Digital Identifiers", 1));
-
-            for (PrintPubTaxonSummaryDTO dto : context.taxonList) {
-                StringBuilder line = new StringBuilder(dto.titleCache);
-
-                /*// Note: Real implementation needs retrieval of WFO-ID/URI from identifiers/sources
-                if (state.getConfig().isIncludeWfoId()) {
-                    // Placeholder logic - assuming WFO ID might be extracted in mapper in real scenario
-                    // line.append(" [WFO-ID: ...]");
+                    state.getProcessor().add(new PrintPubParagraphElement(synLine.toString()));
                 }
-                if (state.getConfig().isIncludeProtologueUris()) {
-                    // Placeholder logic
-                    // line.append(" [URI: ...]");
-                }*/
-
-                state.getProcessor().add(new PrintPubParagraphElement(line.toString()));
             }
         }
     }
 
-    private void renderTaxon(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
+    private void renderTaxonStandardView(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
         int headerLevel = Math.min(dto.relativeDepth + 2, 6);
         state.getProcessor().add(new PrintPubSectionHeader(dto.titleCache, headerLevel));
 
@@ -98,7 +95,7 @@ public class PrintPubDocumentBuilder {
             state.getProcessor().add(new PrintPubParagraphElement("Type (verbatim): " + dto.typeStatementString));
         }
 
-        renderSynonyms(state, dto);
+        renderSynonyms(state, dto, false); // No indentation for standard view
 
         if (dto.distributionString != null) {
             state.getProcessor().add(new PrintPubLabeledTextElement("Distribution", dto.distributionString));
@@ -113,10 +110,11 @@ public class PrintPubDocumentBuilder {
         }
     }
 
-    private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
+    private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, boolean isTreeView) {
         if (dto.synonymGroups.isEmpty()) {
             return;
         }
+
         for (PrintPubSynonymGroupDTO group : dto.synonymGroups) {
             String prefix = group.isHomotypic ? "≡ " : "= ";
             for (PrintPubSynonymDTO syn : group.synonyms) {
