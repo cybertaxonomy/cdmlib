@@ -1093,25 +1093,6 @@ public class DescriptionServiceImpl
     }
 
     @Override
-    public TaxonNodeDto findTaxonNodeDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid) {
-        //get specimen used in description
-        //get individial associations with this specimen
-        //get taxon node for the classification
-        List<SortableTaxonNodeQueryResult> result = dao.getNodeOfIndividualAssociationForSpecimen(specimenUuid, classificationUuid);
-
-        if (!result.isEmpty()){
-            List<TaxonNodeDto> dtos = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(result);
-            if (dtos.size() == 1){
-                return dtos.get(0);
-            }else{
-                logger.debug("There is more than one taxon associated to the specimen with uuid: " + specimenUuid + " return the first in the list");
-                return dtos.get(0);
-            }
-        }
-        return null;
-    }
-
-    @Override
     @Transactional(readOnly = false)
     public UpdateResult moveDescriptionElementsToDescription(
             Set<UUID> descriptionElementUUIDs,

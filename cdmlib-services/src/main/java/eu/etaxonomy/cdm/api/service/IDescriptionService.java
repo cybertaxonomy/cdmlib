@@ -317,12 +317,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     public List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid);
 
     /**
-     * Find the taxon node for the taxon associated to the specimen in classification with classificationUuid
-     */
-    public TaxonNodeDto findTaxonNodeDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid);
-
-    /**
-     * Find the taxon node for the taxon associated to the specimen in classification with classificationUuid
+     * Find the taxon nodes for the taxa associated with the specimen in classification with classificationUuid
      */
     public List<TaxonNodeDto> findTaxonNodesDtoForIndividualAssociation(UUID specimenUuid, UUID classificationUuid);
 
