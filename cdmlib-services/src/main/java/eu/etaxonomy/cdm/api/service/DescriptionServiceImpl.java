@@ -79,16 +79,12 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
-import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
-import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.CategoricalDataDto;
 import eu.etaxonomy.cdm.persistence.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.DescriptionElementDto;
@@ -116,20 +112,14 @@ public class DescriptionServiceImpl
 
     private static final Logger logger = LogManager.getLogger();
 
-    protected IDescriptionElementDao descriptionElementDao;
-    protected ITermTreeDao featureTreeDao;
-    protected IDescriptiveDataSetDao descriptiveDataSetDao;
-    protected ITermNodeDao termNodeDao;
-    protected ITermVocabularyDao vocabularyDao;
-    protected IDefinedTermDao definedTermDao;
-    protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
-    protected ITaxonDao taxonDao;
-    protected ITaxonNameDao nameDao;
-    protected IOccurrenceDao occurrenceDao;
-    protected ITaxonNodeDao taxonNodeDao;
-    protected IDescriptiveDataSetDao dataSetDao;
-    protected ITermService termService;
-    protected IMediaDao mediaDao;
+    private IDescriptionElementDao descriptionElementDao;
+    private ITermTreeDao featureTreeDao;
+    private IDescriptiveDataSetDao descriptiveDataSetDao;
+    private IDefinedTermDao definedTermDao;
+    private ITaxonDao taxonDao;
+    private ITaxonNameDao nameDao;
+    private IOccurrenceDao occurrenceDao;
+    private IMediaDao mediaDao;
 
     //TODO change to Interface
     private NaturalLanguageGenerator naturalLanguageGenerator;
@@ -145,29 +135,8 @@ public class DescriptionServiceImpl
     }
 
     @Autowired
-    protected void setTermNodeDao(ITermNodeDao featureNodeDao) {
-        this.termNodeDao = featureNodeDao;
-    }
-
-    @Autowired
-    protected void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
-        this.vocabularyDao = vocabularyDao;
-    }
-
-    @Autowired
     protected void setDefinedTermDao(IDefinedTermDao definedTermDao) {
         this.definedTermDao = definedTermDao;
-    }
-
-    @Autowired
-    protected void setTermService(ITermService definedTermService) {
-        this.termService = definedTermService;
-    }
-
-
-    @Autowired
-    protected void statisticalMeasurementValueDao(IStatisticalMeasurementValueDao statisticalMeasurementValueDao) {
-        this.statisticalMeasurementValueDao = statisticalMeasurementValueDao;
     }
 
     @Autowired
@@ -185,15 +154,6 @@ public class DescriptionServiceImpl
         this.taxonDao = taxonDao;
     }
 
-    @Autowired
-    protected void setTaxonNodeDao(ITaxonNodeDao taxonNodeDao) {
-        this.taxonNodeDao = taxonNodeDao;
-    }
-
-    @Autowired
-    protected void setDataSetDao(IDescriptiveDataSetDao dataSetDao) {
-        this.dataSetDao = dataSetDao;
-    }
     @Autowired
     protected void setMediaDao(IMediaDao mediaDao) {
         this.mediaDao = mediaDao;
