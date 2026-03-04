@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationDTOFactory;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.format.description.DefaultCategoricalDescriptionBuilder;
@@ -270,13 +271,15 @@ public class DescriptiveDataSetService
         UuidAndTitleCache<SpecimenOrObservationBase> specimen = description.getSpecimenDto();
         //get taxon node
 
+        Set<TaxonNodeDto> subtreeFilter = descriptiveDataSet.getSubTreeFilter();
+
         UUID classificationUuid = null;
-        if (descriptiveDataSet.getSubTreeFilter() != null && !descriptiveDataSet.getSubTreeFilter().isEmpty()) {
+        if (! CdmUtils.isNullSafeEmpty(subtreeFilter)) {
             classificationUuid = descriptiveDataSet.getSubTreeFilter().iterator().next().getClassificationUUID();
         }
-        List<TaxonNodeDto> nodes = descriptionService.findTaxonNodesDtoForIndividualAssociation(specimen.getUuid(), classificationUuid);
-        Set<TaxonNodeDto> subtreeFilter = descriptiveDataSet.getSubTreeFilter();
+
         Set<String> treeIndexSet = new HashSet<>();
+        List<TaxonNodeDto> nodes = descriptionService.findTaxonNodesDtoForIndividualAssociation(specimen.getUuid(), classificationUuid);
         subtreeFilter.stream().forEach(element -> treeIndexSet.add(element.getTreeIndex()));
 
         for (TaxonNodeDto node: nodes) {
