@@ -279,10 +279,10 @@ public class DescriptiveDataSetService
         Set<String> treeIndexSet = new HashSet<>();
         subtreeFilter.stream().forEach(element -> treeIndexSet.add(element.getTreeIndex()));
 
-        for (TaxonNodeDto dto: nodes) {
+        for (TaxonNodeDto node: nodes) {
             for (String treeIndex: treeIndexSet) {
-                if (dto.getTreeIndex().startsWith(treeIndex)) {
-                    return dto;
+                if (node.getTreeIndex().startsWith(treeIndex)) {
+                    return node;
                 }
             }
         }
