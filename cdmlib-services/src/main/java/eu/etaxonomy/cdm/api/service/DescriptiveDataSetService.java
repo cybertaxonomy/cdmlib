@@ -160,7 +160,7 @@ public class DescriptiveDataSetService
                             )){
                 rowWrapper = createTaxonRowWrapper(descDto, datasetDto.getUuid(), lang);
             }
-            else if (descDto != null &&descDto.getSpecimenDto() != null && (descDto.getTypes() == null ||
+            else if (descDto != null && descDto.getSpecimenDto() != null && (descDto.getTypes() == null ||
                     !descDto.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))){
                 rowWrapper = createSpecimenRowWrapper(descDto, descriptiveDataSetUuid, lang);
             }
@@ -196,7 +196,7 @@ public class DescriptiveDataSetService
 	                    !descDto.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))){
 	                rowWrapper = createSpecimenRowWrapper(descDto, descriptiveDataSetUuid, lang);
 	            }
-	            if(rowWrapper!=null){
+	            if(rowWrapper != null){
 	                wrappers.add(rowWrapper);
 	            }
 	            monitor.worked(1);
@@ -267,10 +267,11 @@ public class DescriptiveDataSetService
         return defaultDescription;
     }
 
-    private TaxonNodeDto findTaxonNodeForDescription(DescriptionBaseDto description, DescriptiveDataSetBaseDto descriptiveDataSet){
-        UuidAndTitleCache<SpecimenOrObservationBase> specimen = description.getSpecimenDto();
-        //get taxon node
+    private TaxonNodeDto findTaxonNodeForDescription(DescriptionBaseDto specimenDescription, DescriptiveDataSetBaseDto descriptiveDataSet){
 
+        UuidAndTitleCache<SpecimenOrObservationBase> specimen = specimenDescription.getSpecimenDto();
+
+        //get taxon node
         Set<TaxonNodeDto> subtreeFilter = descriptiveDataSet.getSubTreeFilter();
 
         UUID classificationUuid = null;
@@ -470,25 +471,26 @@ public class DescriptiveDataSetService
         }
     }
 
-    private SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto description, UUID taxonNodeUuid,
-            UUID datasetUuid, Language lang) {
+    private SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto specimenDescription,
+            UUID taxonNodeUuid, UUID datasetUuid, Language lang) {
+
         TaxonNodeDto taxonNode = null;
         if (taxonNodeUuid != null) {
             taxonNode = taxonNodeService.dto(taxonNodeUuid);
         }
         DescriptiveDataSetBaseDto descriptiveDataSet = getDescriptiveDataSetDtoByUuid(datasetUuid);
 //        UuidAndTitleCache<SpecimenOrObservationBase> specimen = description.getSpecimenDto();
-        SpecimenOrObservationBase<?> specimen = occurrenceService.find(description.getSpecimenDto().getUuid());
+        SpecimenOrObservationBase<?> specimen = occurrenceService.find(specimenDescription.getSpecimenDto().getUuid());
 
         //supplemental information
-        if(taxonNode==null){
-            taxonNode = findTaxonNodeForDescription(description, descriptiveDataSet);
+        if(taxonNode == null){
+            taxonNode = findTaxonNodeForDescription(specimenDescription, descriptiveDataSet);
         }
 
         FieldUnit fieldUnit = null;
         String identifier = null;
         NamedArea country = null;
-        if(taxonNode==null){
+        if(taxonNode == null){
             return null;
         }
         //taxon node was found
@@ -523,9 +525,9 @@ public class DescriptiveDataSetService
 //                use description not specimen for specimenRow
         DescriptionBase<?> specDesc = null;
 
-        for (Object desc: specimen.getDescriptions()) {
-            if (description.getDescriptionUuid().equals(((DescriptionBase<?>)desc).getUuid())) {
-                specDesc = (DescriptionBase<?>)desc;
+        for (SpecimenDescription desc: specimen.getDescriptions()) {
+            if (specimenDescription.getDescriptionUuid().equals(desc.getUuid())) {
+                specDesc = desc;
                 break;
             }
         }
@@ -536,8 +538,8 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto description, UUID descriptiveDataSetUuid, Language lang){
-        return createSpecimenRowWrapper(description, null, descriptiveDataSetUuid, lang);
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto specimenDescription, UUID descriptiveDataSetUuid, Language lang){
+        return createSpecimenRowWrapper(specimenDescription, null, descriptiveDataSetUuid, lang);
 	}
 
     @Override
