@@ -92,7 +92,7 @@ public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
             state.getProcessor().add(new PrintPubParagraphElement(dto.typeSpecimenString));
         }
         if (dto.typeStatementString != null) {
-            state.getProcessor().add(new PrintPubParagraphElement("Type (verbatim): " + dto.typeStatementString));
+            state.getProcessor().add(new PrintPubParagraphElement("Type: " + dto.typeStatementString));
         }
 
         renderSynonyms(state, dto, false); // No indentation for standard view
