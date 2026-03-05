@@ -509,6 +509,26 @@ public class CdmUtils {
     }
 
     /**
+     * Truncates a string that is longer then maxLength by using the first
+     * maxLength - 1 characters and adding an ellipsis character (3 dot character)
+     *
+     * @see UTF8#ELLIPSIS
+     */
+    public static String truncateWithEllipsis(String str, int maxLength){
+        if (str == null){
+            return null;
+        }else if (maxLength < 2){
+            throw new IllegalArgumentException("Max length for truncation must be minimum 2");
+        }else{
+            if (str.length() > maxLength){
+                return str.substring(0, maxLength - 1) + UTF8.ELLIPSIS;
+            }else{
+                return str;
+            }
+        }
+    }
+
+    /**
      * Returns surrounding brackets "(",")". Trim the string if necessary.
      * @param text
      * @return

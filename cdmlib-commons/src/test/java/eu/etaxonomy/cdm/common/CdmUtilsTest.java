@@ -175,7 +175,22 @@ public class CdmUtilsTest {
         Assert.assertEquals("one", mergedMap.get(1));
         Assert.assertEquals("zwei", mergedMap.get(2));
         Assert.assertEquals("drei", mergedMap.get(3));
+    }
 
+    @Test
+    public void testTruncate(){
+        String str = "123456";
+        Assert.assertEquals(str, CdmUtils.truncateWithEllipsis(str, 10));
+        Assert.assertEquals(str, CdmUtils.truncateWithEllipsis(str, 6));
+        Assert.assertEquals("1234"+UTF8.ELLIPSIS, CdmUtils.truncateWithEllipsis(str, 5));
+        Assert.assertEquals("1"+UTF8.ELLIPSIS, CdmUtils.truncateWithEllipsis("123", 2));
+        try {
+            CdmUtils.truncateWithEllipsis("12", 1);
+            Assert.fail("Minimum length must be 2");
+        } catch (Exception e) {
+            //expected
+        }
+        Assert.assertNull(CdmUtils.truncateWithEllipsis(null, 10));
 
     }
 
