@@ -54,7 +54,7 @@ public class PrintPubExportResultProcessor {
         }
 
         try {
-            IPrintPubDocumentInterpreter interpreter = new PrintPubMarkdownInterpreter();
+            IPrintPubDocumentInterpreter interpreter = new PrintPubOdfInterpreter();
             state.getDocumentModel().render(interpreter);
             String resultOutput = (String) interpreter.getResult();
 
