@@ -230,7 +230,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         int maxLength = 800;
     	if (cache != null && cache.length() > maxLength){
             logger.warn("Truncation of cache: " + this.toString() + "/" + cache);
-            cache = cache.substring(0, maxLength - 4) + "...";   //TODO do we need -4 or is -3 enough
+            cache = CdmUtils.truncateWithEllipsis(cache, maxLength);
         }
         return cache;
     }
