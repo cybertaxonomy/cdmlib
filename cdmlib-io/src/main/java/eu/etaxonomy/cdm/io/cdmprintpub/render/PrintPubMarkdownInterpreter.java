@@ -62,4 +62,9 @@ public class PrintPubMarkdownInterpreter implements IPrintPubDocumentInterpreter
     public byte[] getResultBytes() {
         return sb.toString().getBytes(StandardCharsets.UTF_8);
     }
+
+    @Override
+    public String getTimestampedFileName() {
+        return "printpub_" + System.currentTimeMillis() + ".md";
+    }
 }

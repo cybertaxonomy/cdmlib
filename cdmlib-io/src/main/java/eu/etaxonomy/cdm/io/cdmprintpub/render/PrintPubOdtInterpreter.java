@@ -66,4 +66,8 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         }
     }
 
+    @Override
+    public String getTimestampedFileName() {
+        return "printpub_" + System.currentTimeMillis() + ".odt";
+    }
 }
