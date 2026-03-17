@@ -1271,7 +1271,7 @@
       <dependency>
         <groupId>org.odftoolkit</groupId>
         <artifactId>odfdom-java</artifactId>
-        <version>0.8.7</version>
+        <version>0.9.0</version>
       </dependency>
       <dependency>
           <!-- used in eu.etaxonomy.cdm.io.markup and for swagger -->

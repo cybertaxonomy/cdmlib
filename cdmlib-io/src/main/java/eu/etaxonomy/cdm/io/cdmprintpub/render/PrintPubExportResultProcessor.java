@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.io.cdmprintpub.render;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.charset.StandardCharsets;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 import eu.etaxonomy.cdm.io.cdmprintpub.document.IPrintPubDocumentElement;
@@ -54,13 +53,12 @@ public class PrintPubExportResultProcessor {
         }
 
         try {
-            IPrintPubDocumentInterpreter interpreter = new PrintPubOdfInterpreter();
+            IPrintPubDocumentInterpreter interpreter = new PrintPubOdtInterpreter();
             state.getDocumentModel().render(interpreter);
-            String resultOutput = (String) interpreter.getResult();
 
-            byte[] data = resultOutput.getBytes(StandardCharsets.UTF_8);
+            byte[] data = interpreter.getResultBytes();
 
-            state.getResult().putExportData("export.md", data);
+            state.getResult().putExportData("export.odt", data);
             state.getResult().setExportType(ExportType.PRINT_PUBLICATION);
 
             File destinationDir = state.getConfig().getDestination();

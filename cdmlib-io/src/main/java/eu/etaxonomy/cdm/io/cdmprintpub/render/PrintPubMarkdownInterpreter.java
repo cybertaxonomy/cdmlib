@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.cdmprintpub.render;
 
+import java.nio.charset.StandardCharsets;
+
 import eu.etaxonomy.cdm.io.cdmprintpub.document.IPrintPubDocumentElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.document.PrintPubLabeledTextElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.document.PrintPubPageBreakElement;
@@ -19,11 +21,6 @@ import eu.etaxonomy.cdm.io.cdmprintpub.document.PrintPubUnorderedListElement;
 public class PrintPubMarkdownInterpreter implements IPrintPubDocumentInterpreter {
 
     private StringBuilder sb = new StringBuilder();
-
-    @Override
-    public Object getResult() {
-        return sb.toString();
-    }
 
     @Override
     public void visit(IPrintPubDocumentElement element) {
@@ -59,5 +56,10 @@ public class PrintPubMarkdownInterpreter implements IPrintPubDocumentInterpreter
             sb.append("**").append(labeled.getLabel()).append("**: ")
               .append(labeled.getText()).append("\n\n");
         }
+    }
+
+    @Override
+    public byte[] getResultBytes() {
+        return sb.toString().getBytes(StandardCharsets.UTF_8);
     }
 }
