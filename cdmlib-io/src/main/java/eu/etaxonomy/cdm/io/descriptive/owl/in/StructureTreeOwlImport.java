@@ -10,15 +10,14 @@ package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
 import java.util.UUID;
 
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ResIterator;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ResIterator;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;

@@ -10,10 +10,9 @@ package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
 import java.io.File;
 
+import org.apache.jena.rdf.model.Model;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.hp.hpl.jena.rdf.model.Model;
 
 import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;

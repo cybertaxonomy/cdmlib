@@ -23,7 +23,7 @@ import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Text;
 
-import com.hp.hpl.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.Statement;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;

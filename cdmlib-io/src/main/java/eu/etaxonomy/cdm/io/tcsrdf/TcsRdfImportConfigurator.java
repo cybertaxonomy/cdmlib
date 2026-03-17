@@ -13,13 +13,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.XmlHelp;
