@@ -20,4 +20,9 @@ public interface IPrintPubDocumentInterpreter {
     void visit(IPrintPubDocumentElement element);
 
     byte[] getResultBytes();
+
+    /**
+     *
+     */
+    String getTimestampedFileName();
 }

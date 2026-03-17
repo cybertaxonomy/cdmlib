@@ -57,8 +57,9 @@ public class PrintPubExportResultProcessor {
             state.getDocumentModel().render(interpreter);
 
             byte[] data = interpreter.getResultBytes();
+            String fileName = interpreter.getTimestampedFileName();
 
-            state.getResult().putExportData("export.odt", data);
+            state.getResult().putExportData(fileName, data);
             state.getResult().setExportType(ExportType.PRINT_PUBLICATION);
 
             File destinationDir = state.getConfig().getDestination();
@@ -68,7 +69,7 @@ public class PrintPubExportResultProcessor {
                     destinationDir.mkdirs();
                 }
 
-                File outputFile = new File(destinationDir, "export.md");
+                File outputFile = new File(destinationDir, fileName);
 
                 try (FileOutputStream fos = new FileOutputStream(outputFile)) {
                     fos.write(data);
