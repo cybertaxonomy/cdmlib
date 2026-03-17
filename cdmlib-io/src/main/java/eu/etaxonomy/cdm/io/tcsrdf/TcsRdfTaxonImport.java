@@ -21,7 +21,7 @@ import org.jdom.filter.ElementFilter;
 import org.jdom.filter.Filter;
 import org.springframework.stereotype.Component;
 
-import com.hp.hpl.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Model;
 
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
