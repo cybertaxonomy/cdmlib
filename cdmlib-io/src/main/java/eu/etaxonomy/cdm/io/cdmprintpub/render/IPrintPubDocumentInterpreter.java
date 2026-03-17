@@ -19,5 +19,5 @@ public interface IPrintPubDocumentInterpreter {
 
     void visit(IPrintPubDocumentElement element);
 
-    Object getResult();
+    byte[] getResultBytes();
 }
