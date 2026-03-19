@@ -681,6 +681,7 @@ public class TaxonRelationshipType
      * handled as pseudo accepted taxon, e.g. because factual data
      * is attached from an import)
      */
+    //NOTE: currently only used in PESI
     public static Set<UUID> pseudoTaxonUuids() {
         Set<UUID> result = new HashSet<>();
         result.add(uuidHomotypicSynonymTaxonRelationship);
