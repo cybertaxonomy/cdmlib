@@ -62,6 +62,7 @@ public enum PreferencePredicate
     //Taxeditor UI
     ShowMediaView(UUID.fromString("ba7ba1bb-47e3-4b68-bc44-c5ac45775db4"), "Show media view", "views.showMediaView", Boolean.TRUE),
     ShowTaxonNodeWizard(UUID.fromString("af06fbec-635b-4676-8b60-0b98aefda6aa"), "Show TaxonNode wizard", "views.showTaxonNodeWizard", Boolean.TRUE),
+    ShowConfirmationDialogue(UUID.fromString("d670f7e7-4763-4a22-9510-94d84b67dec3"), "Show Confirmation Dialogue when moving Taxon Nodes", "views.showConfirmationDialogue", Boolean.TRUE),
     DisableMultiClassification(UUID.fromString("abdf7e40-afe6-4131-9af3-c6b6779ee6be"), "Disable multi-classification functionality", "menu.disableMultiClassification", Boolean.FALSE),
     ShowChecklistPerspective(UUID.fromString("6058762b-893c-4330-bfe7-45d5717d02b2"), "Show checklist perspective as default", "perspective.checklist", Boolean.FALSE),
 
