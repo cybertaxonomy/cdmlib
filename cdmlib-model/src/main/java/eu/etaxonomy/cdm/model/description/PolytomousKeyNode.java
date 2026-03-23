@@ -825,6 +825,13 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
         return false;
     }
 
+    @Transient
+    @Override
+    //TODO revert to default once PK Node was renamed to Single Access Key Node here, too.
+    public String getUserFriendlyTypeName(){
+        return "Single Access Key Node";
+    }
+
 	// *********************** CLONE ********************************************************/
 
     /**
