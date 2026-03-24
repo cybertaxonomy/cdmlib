@@ -135,6 +135,31 @@ public class CdmUtilsTest {
     }
 
     @Test
+    public void testConcatWithDedup(){
+        String str1 = "Str1";
+        String str2 = "Str2";
+
+        //same as without deduplication
+        Assert.assertEquals("Str1;Str2", CdmUtils.concatWithDedup(";", str1, str2));
+        Assert.assertEquals("Str2", CdmUtils.concatWithDedup(";", null, str2));
+        Assert.assertEquals("Str1", CdmUtils.concatWithDedup(";", str1, null));
+        Assert.assertNull(CdmUtils.concatWithDedup(";", null, null));
+        Assert.assertEquals("Str1;Str2", CdmUtils.concatWithDedup(";", str1, "", str2));
+        Assert.assertEquals("Str1; ;Str2", CdmUtils.concatWithDedup(";", str1, " ", str2));
+
+        //with deduplication
+        String str3 = "Str1";
+        Assert.assertEquals("Str1;Str2", CdmUtils.concatWithDedup(";", str1, str2, str3));
+        Assert.assertEquals("Str2;Str1", CdmUtils.concatWithDedup(";", "", str2, str3));
+
+        str2 = "Str1";
+        Assert.assertEquals("Str1", CdmUtils.concatWithDedup(";", str1, str2, str3));
+
+        str2 = "";
+        Assert.assertEquals("Str1", CdmUtils.concatWithDedup(";", str1, str2, str3));
+    }
+
+    @Test
     public void testMergeMaps(){
         Map<Integer,String> map1 = new HashMap<>();
         Map<Integer,String> map2 = new HashMap<>();
@@ -150,7 +175,22 @@ public class CdmUtilsTest {
         Assert.assertEquals("one", mergedMap.get(1));
         Assert.assertEquals("zwei", mergedMap.get(2));
         Assert.assertEquals("drei", mergedMap.get(3));
+    }
 
+    @Test
+    public void testTruncate(){
+        String str = "123456";
+        Assert.assertEquals(str, CdmUtils.truncateWithEllipsis(str, 10));
+        Assert.assertEquals(str, CdmUtils.truncateWithEllipsis(str, 6));
+        Assert.assertEquals("1234"+UTF8.ELLIPSIS, CdmUtils.truncateWithEllipsis(str, 5));
+        Assert.assertEquals("1"+UTF8.ELLIPSIS, CdmUtils.truncateWithEllipsis("123", 2));
+        try {
+            CdmUtils.truncateWithEllipsis("12", 1);
+            Assert.fail("Minimum length must be 2");
+        } catch (Exception e) {
+            //expected
+        }
+        Assert.assertNull(CdmUtils.truncateWithEllipsis(null, 10));
 
     }
 

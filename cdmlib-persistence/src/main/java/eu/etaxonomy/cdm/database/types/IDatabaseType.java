@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database.types;
 
 import javax.sql.DataSource;
@@ -18,7 +17,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * @author a.mueller
  * @since 17.12.2008
-
  */
 public interface IDatabaseType {
 

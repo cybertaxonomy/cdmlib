@@ -1472,7 +1472,7 @@ public abstract class Cdm2CdmImportBase
         for (S entity : sourceCollection){
             if (filterFunction != null && filterFunction.apply(entity)) {
                 continue;
-            }else if (filterBiFunction != null && filterBiFunction.apply(entity,state)) {
+            }else if (filterBiFunction != null && filterBiFunction.apply(entity, state)) {
                 continue;
             }else {
                 S target = detach(entity, state);

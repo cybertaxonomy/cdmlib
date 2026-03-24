@@ -201,6 +201,12 @@ public class Person
         return result;
     }
 
+    public static Person NewInstance(String nomRefTitle, String collectorTitle, String familyName, String initials, String givenName){
+        Person result = NewInstance(nomRefTitle, familyName, initials, givenName);
+        result.setCollectorTitle(collectorTitle);
+        return result;
+    }
+
 // *********************** CONSTRUCTOR **********************************/
 
 	/**

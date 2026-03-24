@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
@@ -82,7 +81,7 @@ public class SequenceTableCreator extends SchemaUpdaterStepBase {
 	        CaseType caseType, SchemaUpdateResult result2) throws SQLException {
 		String createTableQuery = null;
 		// TODO add create table statements for other supported databases
-		if(datasource.getDatabaseType().equals(DatabaseTypeEnum.MySQL)){
+		if(datasource.getDatabaseType().isMySqlMariaDB()){
 			createTableQuery = "CREATE TABLE `" + TABLE_NAME + "` (" +
 				"  `" + SEGMENT_COLUMN_NAME + "` varchar(255) NOT NULL," +
 				"  `" + VALUE_COLUMN_NAME + "` bigint(20) default NULL," +

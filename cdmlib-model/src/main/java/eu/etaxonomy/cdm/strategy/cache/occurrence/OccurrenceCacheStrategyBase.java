@@ -100,22 +100,6 @@ public abstract class OccurrenceCacheStrategyBase<T extends SpecimenOrObservatio
         }
     }
 
-    protected String truncate(String str, int length){
-        if (str == null){
-            return null;
-        }else{
-            if (str.length() > length){
-                if (length <3){
-                    return str.substring(0, str.length());
-                }else{
-                    return str.substring(0, str.length()-3)+"...";
-                }
-            }else{
-                return str;
-            }
-        }
-    }
-
     protected String addPlantDescription(String result, String sep, SpecimenOrObservationBase<?> occurrence) {
         //plant description
         result = CdmUtils.concat(sep + " ", result, getPlantDescription(occurrence, null));

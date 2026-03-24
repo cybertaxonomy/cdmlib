@@ -95,19 +95,19 @@ public class IndexRenamer extends SchemaUpdaterStepBase {
         DatabaseTypeEnum type = datasource.getDatabaseType();
 //      String indexName = "_UniqueKey";
         String[] updateQueries;
-        if (type.equals(DatabaseTypeEnum.MySQL)){
+        if (type.isMySqlMariaDB()){
             //https://stackoverflow.com/questions/1463363/how-do-i-rename-an-index-in-mysql
             //in future: https://dev.mysql.com/worklog/task/?id=6555
             String format = "ALTER TABLE @@%s@@ DROP INDEX %s, ADD INDEX %s (%s%s)";
             updateQueries = new String[]{String.format(format, tableName, oldIndexName, newIndexName, columnName, length!= null ? "("+length+")": "")};
-        }else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL)){
+        }else if (type.isH2() || type.isPostgres()){
             //http://www.h2database.com/html/grammar.html#alter_index_rename
             //https://www.postgresql.org/docs/9.4/static/sql-alterindex.html (maybe IF EXISTS does not work prior to 9.x)
             String format = "ALTER INDEX %s %s RENAME TO %s";
             updateQueries = new String[]{String.format(format, " IF EXISTS ", oldIndexName, newIndexName),
                     String.format(format, "", oldIndexName, newIndexName)};
 
-        }else if (type.equals(DatabaseTypeEnum.SqlServer2005)){
+        }else if (type.isSqlServer()){
             //TODO Untested !!!!
             //https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-rename-transact-sql
             //https://www.mssqltips.com/sqlservertip/2709/script-to-rename-constraints-and-indexes-to-conform-to-a-sql-server-naming-convention/

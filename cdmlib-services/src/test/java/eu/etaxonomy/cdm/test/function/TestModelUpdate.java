@@ -103,6 +103,8 @@ public class TestModelUpdate {
 
         if (dbType == DatabaseTypeEnum.MySQL){
             return CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+        } else if (dbType == DatabaseTypeEnum.MariaDB){
+            return CdmDataSource.NewMariaDbInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
         }else if (dbType == DatabaseTypeEnum.H2){
             //H2
             String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_" + database;
@@ -175,32 +177,6 @@ public class TestModelUpdate {
 		appCtr.close();
 		System.out.println("\nEnd Datasource");
     }
-
-    @SuppressWarnings("unused")  //enable only if needed
-    private void updateEdaphobasePostgres(){
-       String serverSql = "130.133.70.26";
-       String database = "cdm_edaphobase";
-       int port = 5433;
-       String username = "edaphobase";
-       String password = AccountStore.readOrStorePassword(database, serverSql, username, null);
-
-       ICdmDataSource dataSource = CdmDataSource.NewPostgreSQLInstance(serverSql,
-                database, port, username, password);
-        try {
-            CdmUpdater updater = new CdmUpdater();
-            SchemaUpdateResult result = updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
-            System.out.println(result.createReport());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        //CdmPersistentDataSource.save(dataSource.getName(), dataSource);
-        CdmApplicationController appCtr;
-        appCtr = CdmApplicationController.NewInstance(dataSource,DbSchemaValidation.VALIDATE);
-        appCtr.close();
-        System.out.println("\nEnd Datasource");
-    }
-
 	private void test(){
 		System.out.println("Start TestModelUpdate");
 		testSelectedDb();
@@ -208,7 +184,6 @@ public class TestModelUpdate {
 //		updateAllTestH2();
 
 //		updateRemoteWebappTestH2();
-//		updateEdaphobasePostgres();
 
 		System.out.println("\nEnd Datasource");
 	}

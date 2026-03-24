@@ -220,6 +220,29 @@ public class CdmUtils {
         return concat(separator, strings);
     }
 
+    /**
+     * Concatenates an array of strings using the defined separator. Same as
+     * {@link #concat(CharSequence, String...)} but deduplicates the string array
+     * before concatenation.
+     *
+     * @see #concat(CharSequence, String...)
+     * @see #concat(CharSequence, String, String)
+     * @param strings the strings to concatenate
+     * @param seperator the separator for concatenation
+     * @return String the concatenation result
+     */
+    static public String concatWithDedup(CharSequence separator, String... strings){
+        for (int i = 1; i < strings.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (strings[i] != null && strings[i].equals(strings[j])) {
+                    strings[i] = null;
+                }
+            }
+        }
+        return concat(separator, strings);
+    }
+
+
 	/**
 	 * Returns <code>preferred</code> if not blank, else returns <code>alternative</code>.
 	 * If reverse is <code>true</code> computation is
@@ -483,6 +506,26 @@ public class CdmUtils {
             str += ".";
          }
         return str;
+    }
+
+    /**
+     * Truncates a string that is longer then maxLength by using the first
+     * maxLength - 1 characters and adding an ellipsis character (3 dot character)
+     *
+     * @see UTF8#ELLIPSIS
+     */
+    public static String truncateWithEllipsis(String str, int maxLength){
+        if (str == null){
+            return null;
+        }else if (maxLength < 2){
+            throw new IllegalArgumentException("Max length for truncation must be minimum 2");
+        }else{
+            if (str.length() > maxLength){
+                return str.substring(0, maxLength - 1) + UTF8.ELLIPSIS;
+            }else{
+                return str;
+            }
+        }
     }
 
     /**

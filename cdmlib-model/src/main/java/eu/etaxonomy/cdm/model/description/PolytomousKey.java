@@ -19,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -376,6 +377,13 @@ public class PolytomousKey
      */
     public void setStartNumber(int startNumber) {
         this.startNumber = startNumber;
+    }
+
+    @Transient
+    @Override
+    //TODO revert to default once PK was renamed to Single Access Key here, too.
+    public String getUserFriendlyTypeName(){
+        return "Single Access Key";
     }
 
     // ******************** toString *****************************************/

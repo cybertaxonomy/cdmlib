@@ -79,9 +79,9 @@ public class TreeIndexUpdater
 
 			Long n;
 			do {
-
-				//MySQL
-				if (datasource.getDatabaseType().equals(DatabaseTypeEnum.MySQL)){
+			    DatabaseTypeEnum type = datasource.getDatabaseType();
+				//MySQL, MariaDB
+				if (type.isMySqlMariaDB()){
 					sql = String.format(" UPDATE %s child " +
 							" INNER JOIN %s parent ON child.%s = parent.id " +
 							" SET child.%s = CONCAT( parent.%s, child.id, '%s') " +

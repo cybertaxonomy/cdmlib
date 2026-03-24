@@ -70,18 +70,18 @@ public class TableNameChanger
 		String newName = caseType.transformTo(newNameOrig);
         DatabaseTypeEnum type = datasource.getDatabaseType();
 		String updateQuery;
-		if (type.equals(DatabaseTypeEnum.MySQL)){
-			//MySQL allows both syntaxes
-			updateQuery = "RENAME TABLE @oldName TO @newName";
-		}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.MySQL)){
-			updateQuery = "ALTER TABLE @oldName RENAME TO @newName";
-		}else if (type.equals(DatabaseTypeEnum.SqlServer2005)){
-			updateQuery = "EXEC sp_rename '@oldName', '@newName'";
-		}else{
-			updateQuery = null;
-			String message ="Update step '" + this.getStepName() + "' is not supported by " + type.getName();
-			monitor.warning(message);
-			result.addError(message, getStepName() + ", TableNameChanger.invokeOnTable");
+		if (type.isMySqlMariaDB()) {
+	        //MySQL allows both syntaxes
+            updateQuery = "RENAME TABLE @oldName TO @newName";
+		} else if (type.isH2()) {
+	        updateQuery = "ALTER TABLE @oldName RENAME TO @newName";
+		} else if (type.isSqlServer()) {
+	        updateQuery = "EXEC sp_rename '@oldName', '@newName'";
+		} else {
+            updateQuery = null;
+            String message ="Update step '" + this.getStepName() + "' is not supported by " + type.getName();
+            monitor.warning(message);
+            result.addError(message, getStepName() + ", TableNameChanger.invokeOnTable");
             return;
 		}
 		updateQuery = updateQuery.replace("@oldName", oldName);

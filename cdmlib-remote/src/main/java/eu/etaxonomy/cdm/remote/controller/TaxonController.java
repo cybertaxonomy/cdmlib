@@ -519,6 +519,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         return p;
     }
 
+    //FIXME #10663 still needed? (not linked in Dataportal, introduced with f540b13 on 2017-01-30, but maybe existed elsewhere before)
     @RequestMapping(value = "descriptions/elementsByType/{classSimpleName}", method = RequestMethod.GET)
     public ModelAndView doGetDescriptionElementsByType(
             @PathVariable("uuid") UUID uuid,

@@ -64,7 +64,7 @@ public class DnaSampleDefaultCacheStrategy
         if (isBlank(result)){
             if (!dnaSample.getDefinition().isEmpty()){
                 Language key = dnaSample.getDefinition().keySet().iterator().next();
-                result = truncate(dnaSample.getDefinition().get(key).getText(), 50);
+                result = CdmUtils.truncateWithEllipsis(dnaSample.getDefinition().get(key).getText(), 50);
             }
         }
         if (isBlank(result)){

@@ -163,10 +163,10 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		String databaseColumnType = this.columnType.format(datasource, size, scale);
 
-		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
+		if (type.isSqlServer()){
 			//MySQL allows both syntaxes
 			updateQuery = "ALTER TABLE @tableName ADD @columnName @columnType";
-		}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.MySQL)){
+		}else if (type.isH2() || type.isPostgres() || type.isMySqlMariaDB()){
 			updateQuery = "ALTER TABLE @tableName @addSeparator @columnName @columnType";
 		}else{
 			updateQuery = null;
@@ -193,9 +193,9 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 	 */
 	public static String getAddColumnSeperator(ICdmDataSource datasource) throws DatabaseTypeNotSupportedException {
 		DatabaseTypeEnum type = datasource.getDatabaseType();
-		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
+		if (type.isSqlServer()){
 			return "ADD ";
-		}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.MySQL)){
+		}else if (type.isH2() || type.isPostgres() || type.isMySqlMariaDB()){
 			return "ADD COLUMN ";
 		}else{
 			throw new DatabaseTypeNotSupportedException(datasource.getName());
