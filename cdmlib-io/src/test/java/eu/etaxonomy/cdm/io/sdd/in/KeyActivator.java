@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.io.sdd.ikeyplus.IkeyPlusImportConfigurator;
 public class KeyActivator {
 
     public static void main(String[] args) throws URISyntaxException{
-        CdmDefaultImport<IImportConfigurator> keyImport = new CdmDefaultImport<IImportConfigurator>();
+        CdmDefaultImport<IImportConfigurator> keyImport = new CdmDefaultImport<>();
 
         ICdmDataSource destination = getDestination();
 
