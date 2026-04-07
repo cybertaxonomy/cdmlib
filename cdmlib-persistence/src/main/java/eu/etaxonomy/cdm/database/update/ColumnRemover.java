@@ -80,7 +80,7 @@ public class ColumnRemover
 //		DatabaseTypeEnum type = datasource.getDatabaseType();
 //		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
 //			return "DROP ";
-//		}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.MySQL)){
+//		}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.MySQL) || type.equals(DatabaseTypeEnum.MariaDB)){
 //			return "DROP COLUMN ";
 //		}else{
 //			throw new DatabaseTypeNotSupportedException(datasource.getName());
