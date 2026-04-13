@@ -37,6 +37,10 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
+import eu.etaxonomy.cdm.strategy.cache.TagEnum;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 
 @Component
 public class PrintPubDtoMapper {
@@ -167,13 +171,14 @@ public class PrintPubDtoMapper {
         if (!specimenTypes.isEmpty()) {
             try {
                 TypeDesignationGroupContainer container = new TypeDesignationGroupContainer(specimenTypes, name, null);
-                String types = new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(true)
-                        .toTaggedText(container).toString();
+                List<TaggedText> types = new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(true)
+                        .toTaggedText(container);
+                String formattedTypesString = createTypeDesignationString(types);
 
                 if (isSupraspecific && config.isStartSupraspecificTypesOnNewLine()) {
-                    dto.typeSpecimenString = "\n" + types;
+                    dto.typeSpecimenString = "\n" + formattedTypesString;
                 } else {
-                    dto.typeSpecimenString = types;
+                    dto.typeSpecimenString = formattedTypesString;
                 }
 
             } catch (Exception e) {
@@ -192,6 +197,14 @@ public class PrintPubDtoMapper {
             }
         }
     }
+
+    private String createTypeDesignationString(List<TaggedText> list) {
+        HTMLTagRules rules = new HTMLTagRules();
+        rules.addRule(TagEnum.name, "i");
+        String typeDesignations = TaggedTextFormatter.createString(list, rules);
+        return typeDesignations;
+    }
+
 
     private void extractDescriptionData(PrintPubExportState state, PrintPubContext context, Taxon taxon,
             PrintPubTaxonSummaryDTO dto) {
