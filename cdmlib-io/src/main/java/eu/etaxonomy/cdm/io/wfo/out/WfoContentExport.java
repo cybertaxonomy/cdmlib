@@ -349,6 +349,10 @@ public class WfoContentExport
             } else {
                 //TODO other types or only message?
             }
+
+            //taxon ID
+            csvLine[table.getIndex(WfoContentExportTable.TAXON_ID)] = getWfoId(state, taxon.getName(), true);
+
             csvLine[table.getIndex(WfoContentExportTable.DESC_DESCRIPTION)] = text;
 
             //audience TODO
@@ -406,6 +410,13 @@ public class WfoContentExport
     private void handleMeasurementOrFact(WfoContentExportState state, String string, DescriptionElementBase deb,
             Taxon taxon) {
 
+        WfoContentExportTable table = WfoContentExportTable.MEASUREMENT_OR_FACT;
+
+        String[] csvLine = new String[table.getSize()];
+
+        //taxonID
+        csvLine[table.getIndex(WfoContentExportTable.TAXON_ID)] = getWfoId(state, taxon.getName(), true);
+
     }
 
     private void handleCommonName(WfoContentExportState state, CommonTaxonName commonName, Taxon taxon) {
@@ -415,9 +426,11 @@ public class WfoContentExport
         try {
             if (commonName instanceof CommonTaxonName) {
                 String[] csvLine = new String[table.getSize()];
-//                Distribution distribution = (Distribution) element;
-//                distributions.add(distribution);
 
+                //taxonID
+                csvLine[table.getIndex(WfoContentExportTable.TAXON_ID)] = getWfoId(state, taxon.getName(), true);
+
+                //vernacularName
                 csvLine[table.getIndex(WfoContentExportTable.CN_VERNACULAR_NAME)] = commonName.getName();
 
                 //language
@@ -477,6 +490,7 @@ public class WfoContentExport
 //                    distributions.add(distribution);
                     NamedArea area = CdmBase.deproxy(distribution.getArea());
 
+                    csvLine[table.getIndex(WfoContentExportTable.TAXON_ID)] = getWfoId(state, taxon.getName(), true);
                     csvLine[table.getIndex(WfoContentExportTable.DIST_LOCALITY)] = area.getPreferredLabel(languages);
 
                     //TDWG area
