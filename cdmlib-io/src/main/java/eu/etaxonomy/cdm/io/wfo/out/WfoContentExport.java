@@ -291,9 +291,9 @@ public class WfoContentExport
             e.getValue().forEach(deb->{
                 deb = CdmBase.deproxy(deb);
                 if (Feature.uuidDistribution.equals(feature.getUuid()) && deb.getClass().equals(Distribution.class)) {
-                    handleDistribution(state, (Distribution)e.getValue(), taxon);
+                    handleDistribution(state, (Distribution)deb, taxon);
                 }else if (Feature.uuidCommonName.equals(feature.getUuid()) && deb.getClass().equals(CommonTaxonName.class)){
-                    handleCommonName(state, (CommonTaxonName)e.getValue(), taxon);
+                    handleCommonName(state, (CommonTaxonName)deb, taxon);
                 }else if (Feature.uuidImage.equals(feature.getUuid())) {
                     //TODO 2 handle media
                 }else if (Feature.uuidHabitat.equals(feature.getUuid())) {
@@ -475,7 +475,7 @@ public class WfoContentExport
                     String[] csvLine = new String[table.getSize()];
 //                    Distribution distribution = (Distribution) element;
 //                    distributions.add(distribution);
-                    NamedArea area = distribution.getArea();
+                    NamedArea area = CdmBase.deproxy(distribution.getArea());
 
                     csvLine[table.getIndex(WfoContentExportTable.DIST_LOCALITY)] = area.getPreferredLabel(languages);
 
@@ -486,7 +486,7 @@ public class WfoContentExport
                     }
 
                     //countryCode
-                    if (area.getVocabulary() !=null && area.getVocabulary().getUuid().equals(NamedArea.uuidCountryVocabulary)) {
+                    if (area instanceof Country && area.getVocabulary() !=null && area.getVocabulary().getUuid().equals(NamedArea.uuidCountryVocabulary)) {
                         String countryCode = ((Country)area).getIso3166_A2();
                         csvLine[table.getIndex(WfoContentExportTable.DIST_COUNTRY_CODE)] = countryCode;
                     }
