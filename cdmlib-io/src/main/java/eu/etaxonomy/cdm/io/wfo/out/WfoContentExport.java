@@ -489,6 +489,13 @@ public class WfoContentExport
 //                    Distribution distribution = (Distribution) element;
 //                    distributions.add(distribution);
                     NamedArea area = CdmBase.deproxy(distribution.getArea());
+                    if (area == null) {
+                        state.getResult()
+                            .addWarning("Distribution has no area. Distribution not exported. "
+                                    + "Taxon: " + taxon.getTitleCache() + "(" + taxon.getUuid() + ")."
+                                    + " Fact UUID: " + distribution.getUuid() );
+                        return;
+                    }
 
                     csvLine[table.getIndex(WfoContentExportTable.TAXON_ID)] = getWfoId(state, taxon.getName(), true);
                     csvLine[table.getIndex(WfoContentExportTable.DIST_LOCALITY)] = area.getPreferredLabel(languages);
