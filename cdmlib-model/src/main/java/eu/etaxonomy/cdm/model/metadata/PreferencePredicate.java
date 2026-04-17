@@ -175,6 +175,7 @@ public enum PreferencePredicate
     AvailableLanguages(UUID.fromString("b6851dcb-4138-4a9c-ad56-a3b16f6ee69d"), "Available Languages", "languages.availableLanguages", null),
     MultiLanguageTextEditing(UUID.fromString("373f38ae-981d-492c-a01c-71134034208d"), "Multi Language Text Editing", "languages.multiLanguageTextEditing", Boolean.FALSE),
     TermLanguage(UUID.fromString("e0886e50-957b-4b4d-8677-6394a211afdf"), "Term Language", "languages.termLanguage", Language.ENGLISH()),
+    MultiLanguageDefaultLanguage(UUID.fromString("0140fddf-1591-4e9c-9f30-adc2f32924bf"), "Multi Language Default Language", "languages.multiLanguageTextEditing.default", Language.ENGLISH()),
 
     //Search
     ShowIdInSelectionDialog(UUID.fromString("2b2dbafe-186e-4411-aca0-74348c0946b7"), "Show Id In Selection Dialog", "search.selectionDialog.showId", Boolean.TRUE),
