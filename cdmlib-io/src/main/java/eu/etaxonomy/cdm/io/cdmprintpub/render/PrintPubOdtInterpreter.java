@@ -18,9 +18,7 @@ import org.odftoolkit.odfdom.dom.element.text.TextHElement;
 import org.odftoolkit.odfdom.dom.element.text.TextPElement;
 import org.odftoolkit.odfdom.dom.element.text.TextSpanElement;
 import org.odftoolkit.odfdom.dom.style.OdfStyleFamily;
-import org.odftoolkit.odfdom.dom.style.props.OdfParagraphProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTextProperties;
-import org.odftoolkit.odfdom.incubator.doc.office.OdfOfficeStyles;
 import org.odftoolkit.odfdom.incubator.doc.style.OdfStyle;
 import org.odftoolkit.odfdom.pkg.OdfElement;
 
@@ -45,27 +43,22 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
     }
 
     /**
-     * Creates required styles: PageBreak and Bold. Compatible with ODFDOM 0.9.0
+     * Creates required styles: PageBreak Italic and Bold. Compatible with ODFDOM 0.9.0
      * (incubator API).
      */
     private void ensureStyles() {
-        OdfOfficeStyles styles = document.getOrCreateDocumentStyles();
-
-        // --- PageBreak style ---
-        OdfStyle pageBreakStyle = styles.getStyle("PageBreak", OdfStyleFamily.Paragraph);
-
-        if (pageBreakStyle == null) {
-            pageBreakStyle = styles.newStyle("PageBreak", OdfStyleFamily.Paragraph);
-            pageBreakStyle.setAttributeNS(OdfDocumentNamespace.STYLE.getUri(), "style:parent-style-name", "Standard");
-            pageBreakStyle.setProperty(OdfParagraphProperties.BreakBefore, "page"); // fo:break-before="page"
-        }
 
         // --- Bold character style ---
-        OdfStyle boldStyle = styles.getStyle("Bold", OdfStyleFamily.Text);
-        if (boldStyle == null) {
-            boldStyle = styles.newStyle("Bold", OdfStyleFamily.Text);
-            boldStyle.setProperty(OdfTextProperties.FontWeight, "bold");
-        }
+        OdfStyle boldStyle = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Text);
+
+        boldStyle.setStyleNameAttribute("Bold");
+        boldStyle.setProperty(OdfTextProperties.FontWeight, "bold");
+
+        // --- Italic character style ---
+        OdfStyle italicStyle = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Text);
+
+        italicStyle.setStyleNameAttribute("Italic");
+        italicStyle.setProperty(OdfTextProperties.FontStyle, "italic");
     }
 
     @Override
@@ -102,6 +95,45 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
             TextPElement p = contentDom.newOdfElement(TextPElement.class);
 
             p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PageBreak");
+
+            textRoot.appendChild(p);
+        } else if (element instanceof PrintPubTextRunElement) {
+
+            PrintPubTextRunElement e = (PrintPubTextRunElement) element;
+            TextPElement p = contentDom.newOdfElement(TextPElement.class);
+
+            // label (bold)
+            if (e.getLabel() != null) {
+                TextSpanElement label = contentDom.newOdfElement(TextSpanElement.class);
+                label.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "Bold");
+                label.setTextContent(e.getLabel() + ": ");
+                p.appendChild(label);
+            }
+
+            for (PrintPubTextRunElement.Run run : e.getRuns()) {
+
+                if (run.type == PrintPubTextRunElement.RunType.LINE_BREAK) {
+                    p.appendChild(contentDom
+                            .newOdfElement(org.odftoolkit.odfdom.dom.element.text.TextLineBreakElement.class));
+                    continue;
+                }
+
+                TextSpanElement span = contentDom.newOdfElement(TextSpanElement.class);
+
+                switch (run.type) {
+                case BOLD:
+                    span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "Bold");
+                    break;
+                case ITALIC:
+                    span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "Italic");
+                    break;
+                default:
+                    // TEXT → no style
+                }
+
+                span.setTextContent(run.text);
+                p.appendChild(span);
+            }
 
             textRoot.appendChild(p);
         }

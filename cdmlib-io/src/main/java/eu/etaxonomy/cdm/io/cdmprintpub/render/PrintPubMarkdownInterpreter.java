@@ -56,6 +56,35 @@ public class PrintPubMarkdownInterpreter implements IPrintPubDocumentInterpreter
             sb.append("**").append(labeled.getLabel()).append("**: ")
               .append(labeled.getText()).append("\n\n");
         }
+        else if (element instanceof PrintPubTextRunElement) {
+            PrintPubTextRunElement e = (PrintPubTextRunElement) element;
+
+            if (e.getLabel() != null) {
+                sb.append("**").append(e.getLabel()).append("**: ");
+            }
+
+            for (PrintPubTextRunElement.Run run : e.getRuns()) {
+                switch (run.type) {
+                    case TEXT:
+                        sb.append(run.text);
+                        break;
+                    case BOLD:
+                        sb.append("**").append(run.text).append("**");
+                        break;
+                    case ITALIC:
+                        sb.append("*").append(run.text).append("*");
+                        break;
+                    case LINE_BREAK:
+                        sb.append("\n");
+                        break;
+                default:
+                    sb.append(run.text);
+                    break;
+                }
+            }
+            sb.append("\n\n");
+        }
+
     }
 
     @Override
