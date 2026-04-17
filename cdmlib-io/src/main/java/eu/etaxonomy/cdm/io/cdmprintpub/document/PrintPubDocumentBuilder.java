@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.io.cdmprintpub.document;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
@@ -8,126 +10,153 @@ import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubFactDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubSynonymDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubSynonymGroupDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubTaxonSummaryDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.render.PrintPubTextRunElement;
+import eu.etaxonomy.cdm.io.cdmprintpub.util.PrintPubNonNestedHtmlTokenConverter;
+import eu.etaxonomy.cdm.io.cdmprintpub.util.PrintPubNonNestedHtmlTokenizer;
 
 /**
- * Consolidated implementation of the document builder.
- * Can render taxa in either tree or standard view based on configuration.
-*
-* @author veldmap97
-* @date Feb 17, 2026
-*/
+ *
+ * @author veldmap97
+ * @date Feb 17, 2026
+ */
 @Component("printPubDocumentBuilder")
 public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
 
     private static final String INDENT_UNIT = "    ";
 
+    private enum RenderMode {
+        TREE, STANDARD
+    }
+
     @Override
     protected void buildContent(PrintPubExportState state, PrintPubContext context) {
-        boolean isTreeView = state.getConfig().isDoIndentation();
 
-        if (isTreeView) {
+        RenderMode mode = state.getConfig().isDoIndentation() ? RenderMode.TREE : RenderMode.STANDARD;
+
+        if (mode == RenderMode.TREE) {
             state.getConfig().setGenerateScientificNameIndex(false);
             state.getConfig().setGenerateCommonNameIndex(false);
             state.getConfig().setAppendIdentifierList(false);
-            context.referenceStore.clear(); // Suppress the Bibliography
+            context.referenceStore.clear();
             state.getProcessor().add(new PrintPubSectionHeader("Taxonomic Hierarchy", 1));
         }
 
         for (PrintPubTaxonSummaryDTO dto : context.taxonList) {
-            renderTaxon(state, dto, isTreeView);
+            renderTaxon(state, dto, mode);
         }
     }
 
-    private void renderTaxon(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, boolean isTreeView) {
-        if (isTreeView) {
-            renderTaxonTreeView(state, dto);
+    private void renderTaxon(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, RenderMode mode) {
+        String indent = (mode == RenderMode.TREE)
+                ? indent(dto.relativeDepth)
+                : "";
+
+        renderTaxonHeading(state, dto, mode, indent);
+
+        if (state.getConfig().isDoSynonyms()) {
+            renderSynonyms(state, dto, mode, indent);
+        }
+
+        if (mode == RenderMode.STANDARD) {
+            renderTaxonDetails(state, dto);
+        }
+    }
+
+    private void renderTaxonHeading(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, RenderMode mode,
+            String indent) {
+
+        if (mode == RenderMode.TREE) {
+
+            StringBuilder line = new StringBuilder();
+            line.append(indent).append("* **").append(dto.titleCache).append("**");
+
+            if (state.getConfig().isIncludeTaxonomicConceptReference() && dto.secReferenceCitation != null) {
+
+                String suffix = state.incrementShortCitation(dto.secReferenceCitation);
+                line.append(" sec. ").append(dto.secReferenceCitation).append(suffix);
+            }
+
+            state.getProcessor().add(new PrintPubParagraphElement(line.toString()));
+
         } else {
-            renderTaxonStandardView(state, dto);
+
+            int headerLevel = Math.min(dto.relativeDepth + 2, 6);
+            state.getProcessor().add(new PrintPubSectionHeader(dto.titleCache, headerLevel));
         }
     }
 
-    private void renderTaxonTreeView(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
-        StringBuilder indent = new StringBuilder();
-        for (int i = 0; i < dto.relativeDepth; i++) {
-            indent.append(INDENT_UNIT);
-        }
-        String indentStr = indent.toString();
+    private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, RenderMode mode,
+            String indent) {
 
-        StringBuilder line = new StringBuilder();
-        line.append(indentStr).append("* **").append(dto.titleCache).append("**");
-
-        if (state.getConfig().isIncludeTaxonomicConceptReference() && dto.secReferenceCitation != null) {
-            String suffix = state.incrementShortCitation(dto.secReferenceCitation);
-            line.append(" sec. ").append(dto.secReferenceCitation).append(suffix);
+        if (dto.synonymGroups.isEmpty()) {
+            return;
         }
 
-        state.getProcessor().add(new PrintPubParagraphElement(line.toString()));
+        String baseIndent = (mode == RenderMode.TREE) ? indent + INDENT_UNIT : "";
 
-        if (state.getConfig().isDoSynonyms() && !dto.synonymGroups.isEmpty()) {
-            String synonymIndent = indentStr + INDENT_UNIT;
+        for (PrintPubSynonymGroupDTO group : dto.synonymGroups) {
+            String prefix = group.isHomotypic ? "≡ " : "= ";
 
-            for (PrintPubSynonymGroupDTO group : dto.synonymGroups) {
-                String prefix = group.isHomotypic ? "≡ " : "= ";
+            for (PrintPubSynonymDTO syn : group.synonyms) {
 
-                for (PrintPubSynonymDTO syn : group.synonyms) {
-                    StringBuilder synLine = new StringBuilder();
-                    synLine.append(synonymIndent).append("- ").append(prefix).append(syn.titleCache);
+                StringBuilder line = new StringBuilder();
 
-                    if (state.getConfig().isIncludeSynonymConceptReference() && syn.secReference != null) {
-                        String suffix = state.incrementShortCitation(syn.secReference);
-                        synLine.append(" sec. ").append(syn.secReference).append(suffix);
-                    }
+                if (mode == RenderMode.TREE) {
+                    line.append(baseIndent).append("- ");
+                }
 
-                    state.getProcessor().add(new PrintPubParagraphElement(synLine.toString()));
+                line.append(prefix).append(syn.titleCache);
+
+                if (state.getConfig().isIncludeSynonymConceptReference() && syn.secReference != null) {
+
+                    String suffix = state.incrementShortCitation(syn.secReference);
+                    line.append(" sec. ").append(syn.secReference).append(suffix);
+                }
+
+                state.getProcessor().add(new PrintPubParagraphElement(line.toString()));
+
+                if (mode == RenderMode.STANDARD && syn.typeSpecimenString != null) {
+
+                    state.getProcessor().add(new PrintPubParagraphElement(INDENT_UNIT + syn.typeSpecimenString));
                 }
             }
         }
     }
 
-    private void renderTaxonStandardView(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
-        int headerLevel = Math.min(dto.relativeDepth + 2, 6);
-        state.getProcessor().add(new PrintPubSectionHeader(dto.titleCache, headerLevel));
+    private void renderTaxonDetails(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
 
         if (dto.typeSpecimenString != null) {
-            state.getProcessor().add(new PrintPubParagraphElement(dto.typeSpecimenString));
-        }
-        if (dto.typeStatementString != null) {
-            state.getProcessor().add(new PrintPubParagraphElement("Type: " + dto.typeStatementString));
+            state.getProcessor().add(new PrintPubLabeledTextElement("Types", dto.typeSpecimenString));
         }
 
-        renderSynonyms(state, dto, false); // No indentation for standard view
+        if (dto.typeStatementString != null) {
+            state.getProcessor().add(new PrintPubLabeledTextElement("Types", dto.typeStatementString));
+        }
 
         if (dto.distributionString != null) {
             state.getProcessor().add(new PrintPubLabeledTextElement("Distribution", dto.distributionString));
         }
 
         for (PrintPubFactDTO fact : dto.facts) {
-            String textContent = fact.text;
+
+            List<PrintPubTextRunElement.Run> runs = PrintPubNonNestedHtmlTokenConverter
+                    .toRuns(PrintPubNonNestedHtmlTokenizer.tokenize(fact.text));
+
             if (fact.citation != null) {
-                textContent += " [" + fact.citation + "]";
+                runs.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT,
+                        " [" + fact.citation + "]"));
             }
-            state.getProcessor().add(new PrintPubLabeledTextElement(fact.label, textContent));
+
+            state.getProcessor().add(new PrintPubTextRunElement(fact.label, runs));
         }
     }
 
-    private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, boolean isTreeView) {
-        if (dto.synonymGroups.isEmpty()) {
-            return;
+    private static String indent(int depth) {
+        StringBuilder sb = new StringBuilder(depth * INDENT_UNIT.length());
+        for (int i = 0; i < depth; i++) {
+            sb.append(INDENT_UNIT);
         }
-
-        for (PrintPubSynonymGroupDTO group : dto.synonymGroups) {
-            String prefix = group.isHomotypic ? "≡ " : "= ";
-            for (PrintPubSynonymDTO syn : group.synonyms) {
-                String line = prefix + syn.titleCache;
-                if (syn.secReference != null) {
-                    line += " sec. " + syn.secReference;
-                }
-                state.getProcessor().add(new PrintPubParagraphElement(line));
-
-                if (syn.typeSpecimenString != null) {
-                    state.getProcessor().add(new PrintPubParagraphElement("    " + syn.typeSpecimenString));
-                }
-            }
-        }
+        return sb.toString();
     }
+
 }
