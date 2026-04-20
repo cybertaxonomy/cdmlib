@@ -1,6 +1,10 @@
 package eu.etaxonomy.cdm.io.cdmprintpub.document;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -22,102 +26,94 @@ import eu.etaxonomy.cdm.io.cdmprintpub.util.PrintPubNonNestedHtmlTokenizer;
 @Component("printPubDocumentBuilder")
 public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
 
-    private static final String INDENT_UNIT = "    ";
-
-    private enum RenderMode {
-        TREE, STANDARD
-    }
-
     @Override
     protected void buildContent(PrintPubExportState state, PrintPubContext context) {
-
-        RenderMode mode = state.getConfig().isDoIndentation() ? RenderMode.TREE : RenderMode.STANDARD;
-
-        if (mode == RenderMode.TREE) {
-            state.getConfig().setGenerateScientificNameIndex(false);
-            state.getConfig().setGenerateCommonNameIndex(false);
-            state.getConfig().setAppendIdentifierList(false);
-            context.referenceStore.clear();
-            state.getProcessor().add(new PrintPubSectionHeader("Taxonomic Hierarchy", 1));
-        }
+        state.getConfig().setGenerateScientificNameIndex(false);
+        state.getConfig().setGenerateCommonNameIndex(false);
+        state.getConfig().setAppendIdentifierList(false);
+        context.referenceStore.clear();
+        state.getProcessor().add(new PrintPubSectionHeader("Taxonomic Hierarchy", 1));
 
         for (PrintPubTaxonSummaryDTO dto : context.taxonList) {
-            renderTaxon(state, dto, mode);
+            renderTaxon(state, dto);
         }
     }
 
-    private void renderTaxon(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, RenderMode mode) {
-        String indent = (mode == RenderMode.TREE)
-                ? indent(dto.relativeDepth)
-                : "";
+    private void renderTaxon(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
+        String indent = "   ";
 
-        renderTaxonHeading(state, dto, mode, indent);
+        renderTaxonHeading(state, dto, indent);
+
+        if (dto.typeSpecimenString != null && !dto.typeSpecimenString.trim().isEmpty()) {
+            state.getProcessor().add(new PrintPubParagraphElement(dto.typeSpecimenString));
+        }
+
+        if (dto.typeStatementString != null && !dto.typeStatementString.trim().isEmpty()) {
+            state.getProcessor().add(new PrintPubParagraphElement(dto.typeStatementString));
+        }
 
         if (state.getConfig().isDoSynonyms()) {
-            renderSynonyms(state, dto, mode, indent);
+            renderSynonyms(state, dto, indent);
         }
 
-        if (mode == RenderMode.STANDARD) {
-            renderTaxonDetails(state, dto);
-        }
+        renderTaxonDetails(state, dto);
+
     }
 
-    private void renderTaxonHeading(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, RenderMode mode,
-            String indent) {
+    private void renderTaxonHeading(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, String indent) {
 
-        if (mode == RenderMode.TREE) {
-
-            StringBuilder line = new StringBuilder();
-            line.append(indent).append("* **").append(dto.titleCache).append("**");
-
-            if (state.getConfig().isIncludeTaxonomicConceptReference() && dto.secReferenceCitation != null) {
-
-                String suffix = state.incrementShortCitation(dto.secReferenceCitation);
-                line.append(" sec. ").append(dto.secReferenceCitation).append(suffix);
-            }
-
-            state.getProcessor().add(new PrintPubParagraphElement(line.toString()));
-
-        } else {
-
-            int headerLevel = Math.min(dto.relativeDepth + 2, 6);
-            state.getProcessor().add(new PrintPubSectionHeader(dto.titleCache, headerLevel));
-        }
+        int headerLevel = Math.min(dto.relativeDepth + 2, 6);
+        state.getProcessor().add(new PrintPubSectionHeader(dto.titleCache, headerLevel));
     }
 
-    private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, RenderMode mode,
-            String indent) {
+    private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, String indent) {
 
         if (dto.synonymGroups.isEmpty()) {
             return;
         }
 
-        String baseIndent = (mode == RenderMode.TREE) ? indent + INDENT_UNIT : "";
-
         for (PrintPubSynonymGroupDTO group : dto.synonymGroups) {
-            String prefix = group.isHomotypic ? "≡ " : "= ";
+
+            boolean first = true;
 
             for (PrintPubSynonymDTO syn : group.synonyms) {
 
                 StringBuilder line = new StringBuilder();
 
-                if (mode == RenderMode.TREE) {
-                    line.append(baseIndent).append("- ");
+                boolean doIndent = false;
+
+                // --- choose prefix ---
+                if (first) {
+                    // group header
+                    if (syn.forceDashMarker) {
+                        line.append("- ");
+                    } else if (group.isHomotypic) {
+                        line.append("≡ ");
+                    } else {
+                        line.append("= ");
+                    }
+                    first = false;
+                } else {
+                    // members of the same homotypic group
+                    line.append("- ");
+                    doIndent = true;
                 }
 
-                line.append(prefix).append(syn.titleCache);
+                // --- name ---
+                line.append(syn.titleCache);
 
+                // --- sec. reference ---
                 if (state.getConfig().isIncludeSynonymConceptReference() && syn.secReference != null) {
 
                     String suffix = state.incrementShortCitation(syn.secReference);
                     line.append(" sec. ").append(syn.secReference).append(suffix);
                 }
 
-                state.getProcessor().add(new PrintPubParagraphElement(line.toString()));
+                state.getProcessor().add(new PrintPubParagraphElement(line.toString(), doIndent));
 
-                if (mode == RenderMode.STANDARD && syn.typeSpecimenString != null) {
-
-                    state.getProcessor().add(new PrintPubParagraphElement(INDENT_UNIT + syn.typeSpecimenString));
+                // --- type information ---
+                if (syn.typeSpecimenString != null && !syn.typeSpecimenString.trim().isEmpty()) {
+                    state.getProcessor().add(new PrintPubParagraphElement("\\t " + syn.typeSpecimenString));
                 }
             }
         }
@@ -125,38 +121,48 @@ public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
 
     private void renderTaxonDetails(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
 
-        if (dto.typeSpecimenString != null) {
-            state.getProcessor().add(new PrintPubLabeledTextElement("Types", dto.typeSpecimenString));
-        }
-
-        if (dto.typeStatementString != null) {
-            state.getProcessor().add(new PrintPubLabeledTextElement("Types", dto.typeStatementString));
-        }
-
         if (dto.distributionString != null) {
             state.getProcessor().add(new PrintPubLabeledTextElement("Distribution", dto.distributionString));
         }
 
-        for (PrintPubFactDTO fact : dto.facts) {
+        // Group facts by *normalized* label, sorted by that label
+        Map<String, List<PrintPubFactDTO>> factsByLabel = dto.facts.stream()
+                .collect(Collectors.groupingBy(f -> normalizeFactLabel(f.label),
+                        Collectors.collectingAndThen(Collectors.toList(),
+                                list -> list.stream().sorted(Comparator.comparing(f -> normalizeFactLabel(f.label)))
+                                        .collect(Collectors.toList()))));
 
-            List<PrintPubTextRunElement.Run> runs = PrintPubNonNestedHtmlTokenConverter
-                    .toRuns(PrintPubNonNestedHtmlTokenizer.tokenize(fact.text));
+        // Process groups in sorted order of normalized labels
+        factsByLabel.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(entry -> {
 
-            if (fact.citation != null) {
-                runs.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT,
-                        " [" + fact.citation + "]"));
+            List<PrintPubTextRunElement.Run> combinedRuns = new ArrayList<>();
+            boolean first = true;
+
+            for (PrintPubFactDTO fact : entry.getValue()) {
+
+                if (!first) {
+                    combinedRuns.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT, " "));
+                }
+                first = false;
+
+                combinedRuns.addAll(
+                        PrintPubNonNestedHtmlTokenConverter.toRuns(PrintPubNonNestedHtmlTokenizer.tokenize(fact.text)));
+
+                if (fact.citation != null) {
+                    combinedRuns.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT,
+                            " [" + fact.citation + "]"));
+                }
             }
 
-            state.getProcessor().add(new PrintPubTextRunElement(fact.label, runs));
-        }
+            state.getProcessor().add(new PrintPubTextRunElement(entry.getKey(), combinedRuns));
+        });
     }
 
-    private static String indent(int depth) {
-        StringBuilder sb = new StringBuilder(depth * INDENT_UNIT.length());
-        for (int i = 0; i < depth; i++) {
-            sb.append(INDENT_UNIT);
+    private String normalizeFactLabel(String label) {
+        if (label == null) {
+            return null;
         }
-        return sb.toString();
+        // Remove leading <Category> if present
+        return label.replaceFirst("^<[^>]+>", "").trim();
     }
-
 }

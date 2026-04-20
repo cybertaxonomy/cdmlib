@@ -5,4 +5,6 @@ public class PrintPubSynonymDTO {
     public String secReference;
     public String typeSpecimenString;
     public String typeStatementString;
+
+    public boolean forceDashMarker;
 }

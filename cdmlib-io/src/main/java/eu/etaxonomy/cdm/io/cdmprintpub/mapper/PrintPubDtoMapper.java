@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -122,11 +123,22 @@ public class PrintPubDtoMapper {
     }
 
     private PrintPubSynonymDTO createSynonymDTO(PrintPubExportState state, PrintPubContext context, Synonym syn) {
+
         syn = CdmBase.deproxy(syn);
         PrintPubSynonymDTO synDTO = new PrintPubSynonymDTO();
 
         TaxonName synName = HibernateProxyHelper.deproxy(syn.getName(), TaxonName.class);
         synDTO.titleCache = (synName != null) ? synName.getTitleCache() : syn.getTitleCache();
+
+        if (synName != null) {
+            synDTO.forceDashMarker =
+                synName.getStatus().stream()
+                    .map(NomenclaturalStatus::getType)
+                    .anyMatch(statusType ->
+                           statusType.isInvalidExplicit()
+                        || statusType.isDesignationOnly()
+                    );
+        }
 
         if (state.getConfig().isIncludeSynonymConceptReference() && syn.getSec() != null) {
             Reference ref = HibernateProxyHelper.deproxy(syn.getSec(), Reference.class);
@@ -135,10 +147,10 @@ public class PrintPubDtoMapper {
         }
 
         if (synName != null) {
-            PrintPubTaxonSummaryDTO tempDto = new PrintPubTaxonSummaryDTO();
-            extractTypeData(synName, tempDto, state.getConfig());
-            synDTO.typeSpecimenString = tempDto.typeSpecimenString;
-            synDTO.typeStatementString = tempDto.typeStatementString;
+            PrintPubTaxonSummaryDTO tmp = new PrintPubTaxonSummaryDTO();
+            extractTypeData(synName, tmp, state.getConfig());
+            synDTO.typeSpecimenString = tmp.typeSpecimenString;
+            synDTO.typeStatementString = tmp.typeStatementString;
         }
 
         return synDTO;
@@ -204,7 +216,6 @@ public class PrintPubDtoMapper {
         String typeDesignations = TaggedTextFormatter.createString(list, rules);
         return typeDesignations;
     }
-
 
     private void extractDescriptionData(PrintPubExportState state, PrintPubContext context, Taxon taxon,
             PrintPubTaxonSummaryDTO dto) {

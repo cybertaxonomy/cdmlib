@@ -18,6 +18,7 @@ import org.odftoolkit.odfdom.dom.element.text.TextHElement;
 import org.odftoolkit.odfdom.dom.element.text.TextPElement;
 import org.odftoolkit.odfdom.dom.element.text.TextSpanElement;
 import org.odftoolkit.odfdom.dom.style.OdfStyleFamily;
+import org.odftoolkit.odfdom.dom.style.props.OdfParagraphProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTextProperties;
 import org.odftoolkit.odfdom.incubator.doc.style.OdfStyle;
 import org.odftoolkit.odfdom.pkg.OdfElement;
@@ -43,8 +44,8 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
     }
 
     /**
-     * Creates required styles: PageBreak Italic and Bold. Compatible with ODFDOM 0.9.0
-     * (incubator API).
+     * Creates required styles: PageBreak Italic and Bold. Compatible with ODFDOM
+     * 0.9.0 (incubator API).
      */
     private void ensureStyles() {
 
@@ -59,6 +60,21 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
 
         italicStyle.setStyleNameAttribute("Italic");
         italicStyle.setProperty(OdfTextProperties.FontStyle, "italic");
+
+        // --- Normal paragraph style (NO indentation) ---
+        OdfStyle normalPara = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+        normalPara.setStyleNameAttribute("NormalPara");
+        normalPara.setProperty(org.odftoolkit.odfdom.dom.style.props.OdfParagraphProperties.MarginLeft, "0cm");
+        normalPara.setProperty(org.odftoolkit.odfdom.dom.style.props.OdfParagraphProperties.TextIndent, "0cm");
+
+        // --- Indented paragraph style (child synonyms) ---
+        OdfStyle synonymIndent = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+        synonymIndent.setStyleNameAttribute("SynonymIndent");
+        synonymIndent.setProperty(org.odftoolkit.odfdom.dom.style.props.OdfParagraphProperties.MarginLeft, "0.8cm");
+        synonymIndent.setProperty(
+            OdfParagraphProperties.TextIndent, "0cm"
+        );
+
     }
 
     @Override
@@ -71,13 +87,19 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
             textRoot.appendChild(h);
         } else if (element instanceof PrintPubParagraphElement) {
             PrintPubParagraphElement para = (PrintPubParagraphElement) element;
+
             TextPElement p = contentDom.newOdfElement(TextPElement.class);
+
+            p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name",
+                    para.isIndented() ? "SynonymIndent" : "NormalPara");
+
             p.setTextContent(para.getText());
             textRoot.appendChild(p);
         } else if (element instanceof PrintPubLabeledTextElement) {
             PrintPubLabeledTextElement labeled = (PrintPubLabeledTextElement) element;
 
             TextPElement p = contentDom.newOdfElement(TextPElement.class);
+            p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "NormalPara");
 
             TextSpanElement labelSpan = contentDom.newOdfElement(TextSpanElement.class);
 
@@ -100,7 +122,9 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         } else if (element instanceof PrintPubTextRunElement) {
 
             PrintPubTextRunElement e = (PrintPubTextRunElement) element;
+
             TextPElement p = contentDom.newOdfElement(TextPElement.class);
+            p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "NormalPara");
 
             // label (bold)
             if (e.getLabel() != null) {
