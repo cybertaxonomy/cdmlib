@@ -33,7 +33,6 @@ public class PrintPubExportConfigurator
     private String documentTitle = "Taxonomic Export";
     private boolean doFactualData = true;
     private boolean includeUnpublishedFacts = false;
-    private boolean doIndentation;
 
     // 1. Taxonomic Scope & Concepts
     private boolean includeMisappliedNames = true;
@@ -206,13 +205,5 @@ public class PrintPubExportConfigurator
 
     public void setIncludeProtologueUris(boolean includeProtologueUris) {
         this.includeProtologueUris = includeProtologueUris;
-    }
-
-    public boolean isDoIndentation() {
-        return doIndentation;
-    }
-
-    public void setDoIndentation(boolean doIndentation) {
-        this.doIndentation = doIndentation;
     }
 }
