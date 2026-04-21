@@ -82,6 +82,9 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         if (element instanceof PrintPubSectionHeader) {
             PrintPubSectionHeader header = (PrintPubSectionHeader) element;
             TextHElement h = contentDom.newOdfElement(TextHElement.class);
+
+            h.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "Heading_20_" + header.getLevel());
+
             h.setTextContent(header.getTitle());
             h.setAttribute("text:outline-level", Integer.toString(header.getLevel()));
             textRoot.appendChild(h);
