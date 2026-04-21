@@ -7,7 +7,6 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-
 package eu.etaxonomy.cdm.io.cdmprintpub;
 
 import java.io.File;
@@ -83,6 +82,10 @@ public class PrintPubClassificationExport
 
                 if (referenceDepth == null) {
                     referenceDepth = mapper.calculateDepth(node);
+
+                    if (node.getTaxon() != null && node.getTaxon().getName() != null) {
+                        state.getConfig().setDocumentTitle(node.getTaxon().getName().getTitleCache());
+                    }
                 }
 
                 PrintPubTaxonSummaryDTO dto = mapper.mapNodeToDto(node, referenceDepth, state, context);
