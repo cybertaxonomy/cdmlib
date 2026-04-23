@@ -22,7 +22,7 @@ public class WikiDataItemId implements java.io.Serializable{
     private static final long serialVersionUID = -6255965775873612289L;
 
 
-    public static final String WIKIDATA_ORG = "www.wikidata.org/wiki/";
+    public static final String WIKIDATA_ORG = "www.wikidata.org/entity/";
 
     /**
      * The default public wikidata database
