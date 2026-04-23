@@ -771,7 +771,8 @@ public class Feature extends AvailableForTermBase<Feature> {
 	@Override
 	public Feature readCsvLine(Class<Feature> termClass, List<String> csvLine, TermType termType,
 	        @SuppressWarnings("rawtypes") Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
-		Feature newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
+
+	    Feature newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 
 		String text = csvLine.get(4);
 		if (isNotBlank(text)){
