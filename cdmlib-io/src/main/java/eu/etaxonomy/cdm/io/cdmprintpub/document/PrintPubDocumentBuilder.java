@@ -1,3 +1,12 @@
+/**
+ * Copyright (C) 2026 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
+
 package eu.etaxonomy.cdm.io.cdmprintpub.document;
 
 import java.util.ArrayList;
@@ -17,6 +26,8 @@ import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.render.PrintPubTextRunElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.util.PrintPubNonNestedHtmlTokenConverter;
 import eu.etaxonomy.cdm.io.cdmprintpub.util.PrintPubNonNestedHtmlTokenizer;
+import eu.etaxonomy.cdm.strategy.cache.TagEnum;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  *
@@ -63,7 +74,9 @@ public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
     private void renderTaxonHeading(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, String indent) {
 
         int headerLevel = Math.min(dto.relativeDepth + 2, 6);
-        state.getProcessor().add(new PrintPubSectionHeader(dto.titleCache, headerLevel));
+
+        state.getProcessor().add(new PrintPubTextRunElement(null, runsFromTaggedName(dto.taggedName), headerLevel));
+
     }
 
     private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, String indent) {
@@ -156,6 +169,46 @@ public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
 
             state.getProcessor().add(new PrintPubTextRunElement(entry.getKey(), combinedRuns));
         });
+    }
+
+    private List<PrintPubTextRunElement.Run>
+    runsFromTaggedName(List<TaggedText> taggedName) {
+
+        List<PrintPubTextRunElement.Run> runs = new ArrayList<>();
+        boolean first = true;
+
+        if (taggedName == null) {
+            return runs;
+        }
+
+        for (TaggedText tt : taggedName) {
+
+            String text = tt.getText();
+            if (text == null || text.isEmpty()) {
+                continue;
+            }
+
+            if (!first && needsSpaceBefore(text)) {
+                runs.add(new PrintPubTextRunElement.Run(
+                        PrintPubTextRunElement.RunType.TEXT, " "));
+            }
+            first = false;
+
+            if (tt.getType() == TagEnum.name) {
+                runs.add(new PrintPubTextRunElement.Run(
+                        PrintPubTextRunElement.RunType.ITALIC, text));
+            } else {
+                runs.add(new PrintPubTextRunElement.Run(
+                        PrintPubTextRunElement.RunType.TEXT, text));
+            }
+        }
+        return runs;
+    }
+
+    private boolean needsSpaceBefore(String text) {
+        return !text.startsWith(",")
+            && !text.startsWith(";")
+            && !text.startsWith(")");
     }
 
     private String normalizeFactLabel(String label) {

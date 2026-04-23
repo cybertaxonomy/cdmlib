@@ -1,5 +1,5 @@
 /**
-* Copyright (C) 2025 EDIT
+* Copyright (C) 2026 EDIT
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 *

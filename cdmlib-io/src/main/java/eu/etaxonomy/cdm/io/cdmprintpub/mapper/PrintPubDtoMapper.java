@@ -1,3 +1,12 @@
+/**
+ * Copyright (C) 2026 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
+
 package eu.etaxonomy.cdm.io.cdmprintpub.mapper;
 
 import java.util.ArrayList;
@@ -52,13 +61,21 @@ public class PrintPubDtoMapper {
             return null;
         }
 
-        Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon(), Taxon.class);
+        Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon());
         PrintPubTaxonSummaryDTO dto = new PrintPubTaxonSummaryDTO();
         dto.uuid = taxon.getUuid();
         dto.relativeDepth = calculateDepth(node) - referenceDepth;
 
-        TaxonName name = HibernateProxyHelper.deproxy(taxon.getName(), TaxonName.class);
-        dto.titleCache = (name != null) ? name.getTitleCache() : taxon.getTitleCache();
+
+        TaxonName name = HibernateProxyHelper.deproxy(taxon.getName());
+
+        dto.titleCache = (name != null)
+                ? name.getTitleCache()
+                : taxon.getTitleCache();
+
+        if (name != null) {
+            dto.taggedName = name.getTaggedFullTitle();
+        }
 
         if (name != null) {
             extractTypeData(name, dto, state.getConfig());
@@ -73,7 +90,7 @@ public class PrintPubDtoMapper {
         }
 
         if (state.getConfig().isIncludeTaxonomicConceptReference() && taxon.getSec() != null) {
-            Reference ref = HibernateProxyHelper.deproxy(taxon.getSec(), Reference.class);
+            Reference ref = HibernateProxyHelper.deproxy(taxon.getSec());
             context.addReference(ref);
             dto.secReferenceCitation = ref.getTitleCache();
         }
@@ -127,8 +144,15 @@ public class PrintPubDtoMapper {
         syn = CdmBase.deproxy(syn);
         PrintPubSynonymDTO synDTO = new PrintPubSynonymDTO();
 
-        TaxonName synName = HibernateProxyHelper.deproxy(syn.getName(), TaxonName.class);
-        synDTO.titleCache = (synName != null) ? synName.getTitleCache() : syn.getTitleCache();
+        TaxonName synName = HibernateProxyHelper.deproxy(syn.getName());
+
+        synDTO.titleCache = (synName != null)
+                ? synName.getTitleCache()
+                : syn.getTitleCache();
+
+        if (synName != null) {
+            synDTO.taggedName = synName.getTaggedFullTitle();
+        }
 
         if (synName != null) {
             synDTO.forceDashMarker =
@@ -141,7 +165,7 @@ public class PrintPubDtoMapper {
         }
 
         if (state.getConfig().isIncludeSynonymConceptReference() && syn.getSec() != null) {
-            Reference ref = HibernateProxyHelper.deproxy(syn.getSec(), Reference.class);
+            Reference ref = HibernateProxyHelper.deproxy(syn.getSec());
             context.addReference(ref);
             synDTO.secReference = ref.getTitleCache();
         }
@@ -247,7 +271,7 @@ public class PrintPubDtoMapper {
 
                         for (DescriptionElementSource source : element.getSources()) {
                             if (source.getCitation() != null) {
-                                Reference ref = HibernateProxyHelper.deproxy(source.getCitation(), Reference.class);
+                                Reference ref = HibernateProxyHelper.deproxy(source.getCitation());
                                 context.addReference(ref);
                                 String shortCit = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(ref, null);
                                 fact.citation = (fact.citation == null) ? shortCit : fact.citation + "; " + shortCit;

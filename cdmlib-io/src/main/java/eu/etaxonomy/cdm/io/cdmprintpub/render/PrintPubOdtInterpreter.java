@@ -71,9 +71,7 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         OdfStyle synonymIndent = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
         synonymIndent.setStyleNameAttribute("SynonymIndent");
         synonymIndent.setProperty(org.odftoolkit.odfdom.dom.style.props.OdfParagraphProperties.MarginLeft, "0.8cm");
-        synonymIndent.setProperty(
-            OdfParagraphProperties.TextIndent, "0cm"
-        );
+        synonymIndent.setProperty(OdfParagraphProperties.TextIndent, "0cm");
 
     }
 
@@ -123,47 +121,86 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
 
             textRoot.appendChild(p);
         } else if (element instanceof PrintPubTextRunElement) {
+                PrintPubTextRunElement e = (PrintPubTextRunElement) element;
 
-            PrintPubTextRunElement e = (PrintPubTextRunElement) element;
+                OdfElement container;
 
-            TextPElement p = contentDom.newOdfElement(TextPElement.class);
-            p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "NormalPara");
+                if (e.isHeading()) {
+                    int level = e.getHeadingLevel();
 
-            // label (bold)
-            if (e.getLabel() != null) {
-                TextSpanElement label = contentDom.newOdfElement(TextSpanElement.class);
-                label.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "Bold");
-                label.setTextContent(e.getLabel() + ": ");
-                p.appendChild(label);
-            }
-
-            for (PrintPubTextRunElement.Run run : e.getRuns()) {
-
-                if (run.type == PrintPubTextRunElement.RunType.LINE_BREAK) {
-                    p.appendChild(contentDom
-                            .newOdfElement(org.odftoolkit.odfdom.dom.element.text.TextLineBreakElement.class));
-                    continue;
+                    TextHElement h = contentDom.newOdfElement(TextHElement.class);
+                    h.setAttributeNS(
+                        OdfDocumentNamespace.TEXT.getUri(),
+                        "text:style-name",
+                        "Heading_20_" + level
+                    );
+                    h.setAttribute(
+                        "text:outline-level",
+                        Integer.toString(level)
+                    );
+                    container = h;
+                } else {
+                    TextPElement p = contentDom.newOdfElement(TextPElement.class);
+                    p.setAttributeNS(
+                        OdfDocumentNamespace.TEXT.getUri(),
+                        "text:style-name",
+                        "NormalPara"
+                    );
+                    container = p;
                 }
 
-                TextSpanElement span = contentDom.newOdfElement(TextSpanElement.class);
-
-                switch (run.type) {
-                case BOLD:
-                    span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "Bold");
-                    break;
-                case ITALIC:
-                    span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "Italic");
-                    break;
-                default:
-                    // TEXT → no style
+                // label (bold) — unchanged
+                if (e.getLabel() != null) {
+                    TextSpanElement label = contentDom.newOdfElement(TextSpanElement.class);
+                    label.setAttributeNS(
+                        OdfDocumentNamespace.TEXT.getUri(),
+                        "text:style-name",
+                        "Bold"
+                    );
+                    label.setTextContent(e.getLabel() + ": ");
+                    container.appendChild(label);
                 }
 
-                span.setTextContent(run.text);
-                p.appendChild(span);
+                // runs — unchanged
+                for (PrintPubTextRunElement.Run run : e.getRuns()) {
+
+                    if (run.type == PrintPubTextRunElement.RunType.LINE_BREAK) {
+                        container.appendChild(
+                            contentDom.newOdfElement(
+                                org.odftoolkit.odfdom.dom.element.text.TextLineBreakElement.class
+                            )
+                        );
+                        continue;
+                    }
+
+                    TextSpanElement span = contentDom.newOdfElement(TextSpanElement.class);
+
+                    switch (run.type) {
+                    case BOLD:
+                        span.setAttributeNS(
+                            OdfDocumentNamespace.TEXT.getUri(),
+                            "text:style-name",
+                            "Bold"
+                        );
+                        break;
+                    case ITALIC:
+                        span.setAttributeNS(
+                            OdfDocumentNamespace.TEXT.getUri(),
+                            "text:style-name",
+                            "Italic"
+                        );
+                        break;
+                    default:
+                        // TEXT → no style
+                    }
+
+                    span.setTextContent(run.text);
+                    container.appendChild(span);
+                }
+
+                textRoot.appendChild(container);
             }
 
-            textRoot.appendChild(p);
-        }
 
     }
 
