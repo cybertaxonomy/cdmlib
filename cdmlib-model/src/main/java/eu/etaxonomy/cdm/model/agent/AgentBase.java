@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.strategy.merge.IMergable;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AgentBase", propOrder = {
-        "contact"
 })
 @Entity
 @Audited

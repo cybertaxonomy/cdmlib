@@ -61,7 +61,6 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
         "emailAddresses",
         "urls",
         "phoneNumbers",
-        "faxNumbers",
         "addresses"
 })
 @XmlRootElement(name = "Contact")
@@ -113,7 +112,6 @@ public class Contact implements Serializable, Cloneable {
 	 * @param pobox
 	 * @param region
 	 * @param email
-	 * @param faxNumber
 	 * @param phoneNumber
 	 * @param url
 	 * @param location
@@ -369,7 +367,7 @@ public class Contact implements Serializable, Cloneable {
 			for (Address adr : this.addresses){
 				result.addAddress(adr.clone());
 			}
-			//no changes to emailAdresses, faxnumbers, phonenumbers, urls
+			//no changes to emailAdresses, phonenumbers, urls
 			return result;
 		}catch (CloneNotSupportedException e){
 			logger.warn("Object does not implement cloneable");

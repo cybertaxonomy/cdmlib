@@ -180,58 +180,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         primary key (ID, REV)
     );
 
-    create table PUBLIC.AGENTBASE_CONTACT_EMAILADDRESSES (
-       AGENTBASE_ID integer not null,
-        CONTACT_EMAILADDRESSES_ELEMENT varchar(255)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_EMAILADDRESSES_AUD (
-       REV integer not null,
-        AGENTBASE_ID integer not null,
-        CONTACT_EMAILADDRESSES_ELEMENT varchar(255) not null,
-        REVTYPE tinyint,
-        primary key (REV, AGENTBASE_ID, CONTACT_EMAILADDRESSES_ELEMENT)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_FAXNUMBERS (
-       AGENTBASE_ID integer not null,
-        CONTACT_FAXNUMBERS_ELEMENT varchar(255)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_FAXNUMBERS_AUD (
-       REV integer not null,
-        AGENTBASE_ID integer not null,
-        CONTACT_FAXNUMBERS_ELEMENT varchar(255) not null,
-        REVTYPE tinyint,
-        primary key (REV, AGENTBASE_ID, CONTACT_FAXNUMBERS_ELEMENT)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_PHONENUMBERS (
-       AGENTBASE_ID integer not null,
-        CONTACT_PHONENUMBERS_ELEMENT varchar(255)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_PHONENUMBERS_AUD (
-       REV integer not null,
-        AGENTBASE_ID integer not null,
-        CONTACT_PHONENUMBERS_ELEMENT varchar(255) not null,
-        REVTYPE tinyint,
-        primary key (REV, AGENTBASE_ID, CONTACT_PHONENUMBERS_ELEMENT)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_URLS (
-       AGENTBASE_ID integer not null,
-        CONTACT_URLS_ELEMENT varchar(255)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_URLS_AUD (
-       REV integer not null,
-        AGENTBASE_ID integer not null,
-        CONTACT_URLS_ELEMENT varchar(255) not null,
-        REVTYPE tinyint,
-        primary key (REV, AGENTBASE_ID, CONTACT_URLS_ELEMENT)
-    );
-
     create table PUBLIC.AGENTBASE_CREDIT (
        AGENTBASE_ID integer not null,
         CREDITS_ID integer not null,
@@ -6985,46 +6933,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
 
     alter table PUBLIC.AGENTBASE_AUD 
        add constraint FKgym7blcrrp35xt8k8qv38yfaj 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_EMAILADDRESSES 
-       add constraint FK9dh06kdcj7eled8svb3wb5n1l 
-       foreign key (AGENTBASE_ID) 
-       references PUBLIC.AGENTBASE;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_EMAILADDRESSES_AUD 
-       add constraint FKb6duaqf53qdj42ylb7gjmh368 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_FAXNUMBERS 
-       add constraint FKlhdtkf6picqn8jj287yn1byr4 
-       foreign key (AGENTBASE_ID) 
-       references PUBLIC.AGENTBASE;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_FAXNUMBERS_AUD 
-       add constraint FK34nu6a5fxdq0j37ai3k2ta2kt 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_PHONENUMBERS 
-       add constraint FKkafujnx69xdskrhrdxy6r76gr 
-       foreign key (AGENTBASE_ID) 
-       references PUBLIC.AGENTBASE;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_PHONENUMBERS_AUD 
-       add constraint FKk88m67ah84utcl6l16ty7axpk 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_URLS 
-       add constraint FKfcu7wbui8v00fr88g59boe9o 
-       foreign key (AGENTBASE_ID) 
-       references PUBLIC.AGENTBASE;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_URLS_AUD 
-       add constraint FK2js3r2a2k96bd0pmas609tn1p 
        foreign key (REV) 
        references PUBLIC.AUDITEVENT;
 

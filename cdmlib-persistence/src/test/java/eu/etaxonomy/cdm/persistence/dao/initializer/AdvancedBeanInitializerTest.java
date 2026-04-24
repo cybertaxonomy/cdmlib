@@ -139,7 +139,6 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
             "contact.urls",
             "contact.phoneNumbers",
             "contact.addresses",
-            "contact.faxNumbers",
             "contact.emailAddresses",
         });
         initializer.initialize(person, propPath);
@@ -185,7 +184,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         deacivatedAutoIntitializers = clearAutoinitializers();
         assureSessionClear();
 
-        TaxonName name = nameDao.load(nameUuid, Arrays.asList("nomenclaturalSource.citation.$.*.contact.faxNumbers"));
+        TaxonName name = nameDao.load(nameUuid, Arrays.asList("nomenclaturalSource.citation.$.*.contact"));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference())); // nomenclaturalReference
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship())); // $
         assertFalse("must not be initialized by 'nomenclaturalSource.citation.$'", Hibernate.isInitialized(name.getNomenclaturalReference().getExtensions()));

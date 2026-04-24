@@ -103,9 +103,6 @@
           <agent:PhoneNumbers>
             <agent:PhoneNumber>+44 (0)20 7352 5646</agent:PhoneNumber>
           </agent:PhoneNumbers>
-          <agent:FaxNumbers>
-            <agent:FaxNumber>+44 (0)20 7376 3910</agent:FaxNumber>
-          </agent:FaxNumbers>
           <agent:Addresses>
             <agent:Address id="1" uuid="urn-uuid-63d90ac0-fc4e-11dd-87af-0800200c9a66">
               <agent:Street>66 Hospital Road</agent:Street>
