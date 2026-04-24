@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.occurrence;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,6 +28,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,20 +56,20 @@ import eu.etaxonomy.cdm.model.location.Point;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "GatheringEvent", propOrder = {
-    "locality",
-    "exactLocation",
-    "country",
-    "collectingAreas",
-    "collectingMethod",
-    "absoluteElevation",
-    "absoluteElevationMax",
-    "absoluteElevationText",
-    "distanceToGround",
-    "distanceToGroundMax",
-    "distanceToGroundText",
-    "distanceToWaterSurface",
-    "distanceToWaterSurfaceMax",
-    "distanceToWaterSurfaceText"
+        "locality",
+        "exactLocation",
+        "country",
+        "collectingAreas",
+        "collectingMethod",
+        "absoluteElevation",
+        "absoluteElevationMax",
+        "absoluteElevationText",
+        "distanceToGround",
+        "distanceToGroundMax",
+        "distanceToGroundText",
+        "distanceToWaterSurface",
+        "distanceToWaterSurfaceMax",
+        "distanceToWaterSurfaceText"
 })
 @XmlRootElement(name = "GatheringEvent")
 @Entity

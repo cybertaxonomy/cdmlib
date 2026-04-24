@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.format.taxon;
 
 import java.util.List;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,8 +27,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**

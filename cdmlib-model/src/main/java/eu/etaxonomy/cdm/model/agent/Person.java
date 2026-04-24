@@ -12,7 +12,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,6 +22,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -68,17 +68,17 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Person", propOrder = {
-	    "prefix",
-	    "familyName",
-	    "givenName",
-	    "initials",
-	    "suffix",
-	    "nomenclaturalTitle",
-	    "collectorTitle",
-	    "lifespan",
-	    "orcid",
-	    "wikiDataItemId",
-	    "institutionalMemberships"
+        "prefix",
+        "familyName",
+        "givenName",
+        "initials",
+        "suffix",
+        "nomenclaturalTitle",
+        "collectorTitle",
+        "lifespan",
+        "orcid",
+        "wikiDataItemId",
+        "institutionalMemberships"
 })
 @XmlRootElement(name = "Person")
 @Entity

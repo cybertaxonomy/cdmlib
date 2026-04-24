@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -52,11 +53,11 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MaterialOrMethod", propOrder = {
-	"definedMaterialOrMethod"
+        "definedMaterialOrMethod"
 })
 @XmlRootElement(name = "MaterialOrMethod")
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Audited
 public class MaterialOrMethodEvent extends EventBase {
 

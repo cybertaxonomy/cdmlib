@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.description;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
@@ -25,6 +24,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,10 +47,10 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MultiAccessKey", propOrder = {
-    "coveredTaxa",
-    "taxonomicScope",
-    "geographicalScope",
-    "scopeRestrictions"
+        "coveredTaxa",
+        "taxonomicScope",
+        "geographicalScope",
+        "scopeRestrictions"
 })
 @XmlRootElement(name = "MultiAccessKey")
 @Entity

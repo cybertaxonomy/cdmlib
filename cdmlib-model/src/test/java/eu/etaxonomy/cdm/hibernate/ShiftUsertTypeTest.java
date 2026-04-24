@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.hibernate;
 import java.io.Serializable;
 import java.sql.Types;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

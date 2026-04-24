@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -42,13 +43,13 @@ import eu.etaxonomy.cdm.model.location.Point;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Address", propOrder = {
-    "pobox",
-    "street",
-    "postcode",
-    "locality",
-    "region",
-    "country",
-    "location"
+        "pobox",
+        "street",
+        "postcode",
+        "locality",
+        "region",
+        "country",
+        "location"
 })
 @XmlRootElement(name = "Address")
 @Entity

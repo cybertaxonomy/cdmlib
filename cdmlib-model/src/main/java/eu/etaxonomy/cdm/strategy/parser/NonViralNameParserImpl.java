@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.apache.logging.log4j.LogManager;
@@ -55,8 +56,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  */
 public class NonViralNameParserImpl
-            extends NonViralNameParserImplRegExBase
-            implements INonViralNameParser<INonViralName> {
+        extends NonViralNameParserImplRegExBase
+        implements INonViralNameParser<INonViralName> {
 
     private static final Logger logger = LogManager.getLogger();
 

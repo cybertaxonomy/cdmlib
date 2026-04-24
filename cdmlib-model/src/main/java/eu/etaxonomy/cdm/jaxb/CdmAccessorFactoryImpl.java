@@ -2,8 +2,8 @@ package eu.etaxonomy.cdm.jaxb;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
 import javax.xml.bind.JAXBException;
+
 
 import com.sun.xml.bind.AccessorFactory;
 import com.sun.xml.bind.AccessorFactoryImpl;

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import java.lang.reflect.Method;
 import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
@@ -27,6 +26,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -86,32 +86,32 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonBase", propOrder = {
-    "name",
-    "secSource",
-    "doubtful",
-    "appendedPhrase",
-    "useNameCache",
-    "publish"
+        "name",
+        "secSource",
+        "doubtful",
+        "appendedPhrase",
+        "useNameCache",
+        "publish"
 })
 @Entity
 @Audited
 //@PreFilter("hasPermission(filterObject, 'edit')")
-@Table(name="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnList = "titleCache") })
+@Table(name = "TaxonBase", indexes = {@Index(name = "taxonBaseTitleCacheIndex", columnList = "titleCache")})
 @TaxonNameCannotBeAcceptedAndSynonym(groups = Level3.class)
 @ClassBridges({
-    @ClassBridge(name="classInfo",
-            index = org.hibernate.search.annotations.Index.YES,
-            store = Store.YES,
-            impl = ClassInfoBridge.class),
-    @ClassBridge(name=AcceptedTaxonBridge.ACC_TAXON, // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names, see also ACC_TAXON_BRIDGE_PREFIX
-            index = org.hibernate.search.annotations.Index.YES,
-            store = Store.YES,
-            impl = AcceptedTaxonBridge.class),
-    @ClassBridge(impl = eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde.class)
+        @ClassBridge(name = "classInfo",
+                index = org.hibernate.search.annotations.Index.YES,
+                store = Store.YES,
+                impl = ClassInfoBridge.class),
+        @ClassBridge(name = AcceptedTaxonBridge.ACC_TAXON, // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names, see also ACC_TAXON_BRIDGE_PREFIX
+                index = org.hibernate.search.annotations.Index.YES,
+                store = Store.YES,
+                impl = AcceptedTaxonBridge.class),
+        @ClassBridge(impl = eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde.class)
 })
 public abstract class TaxonBase<S extends ITaxonCacheStrategy>
-           extends CreditableEntity<S>
-           implements  IPublishable, IIntextReferenceTarget{
+        extends CreditableEntity<S>
+        implements  IPublishable, IIntextReferenceTarget{
 
     private static final long serialVersionUID = -3589185949928938529L;
     private static final Logger logger = LogManager.getLogger();

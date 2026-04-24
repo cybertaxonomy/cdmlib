@@ -16,7 +16,6 @@ import java.math.RoundingMode;
 import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -29,6 +28,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -51,14 +51,14 @@ import eu.etaxonomy.cdm.validation.Level2;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Point", propOrder = {
-    "longitude",
-    "latitude",
-    "errorRadius",
-    "referenceSystem"
+        "longitude",
+        "latitude",
+        "errorRadius",
+        "referenceSystem"
 })
 @XmlRootElement(name = "Point")
 @Embeddable
-@Spatial(spatialMode=SpatialMode.RANGE, name="point")
+@Spatial(spatialMode = SpatialMode.RANGE, name = "point")
 public class Point implements Cloneable, Serializable {
 
     private static final long serialVersionUID = 531030660792800636L;

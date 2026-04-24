@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,6 +26,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,18 +65,18 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrateg
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DerivedUnit", propOrder = {
-    "collection",
-    "catalogNumber",
-    "storedUnder",
-    "derivedFrom",
-    "accessionNumber",
-    "collectorsNumber",
-    "barcode",
-	"preservation",
-	"exsiccatum",
-	"originalLabelInfo",
-    "specimenTypeDesignations",
-    "status"
+        "collection",
+        "catalogNumber",
+        "storedUnder",
+        "derivedFrom",
+        "accessionNumber",
+        "collectorsNumber",
+        "barcode",
+        "preservation",
+        "exsiccatum",
+        "originalLabelInfo",
+        "specimenTypeDesignations",
+        "status"
 })
 @XmlRootElement(name = "DerivedUnit")
 @Entity

@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -36,14 +37,14 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Identifier", propOrder = {
-    "identifier",
-    "type"
+        "identifier",
+        "type"
 })
 @Entity
 @Audited
-@Table(name="Identifier", indexes = { @Index(name = "identifierIndex", columnList = "identifier") })
+@Table(name = "Identifier", indexes = {@Index(name = "identifierIndex", columnList = "identifier")})
 public class Identifier
-            extends AnnotatableEntity {
+        extends AnnotatableEntity {
 
     private static final long serialVersionUID = 3337567049024506936L;
 	@SuppressWarnings("unused")

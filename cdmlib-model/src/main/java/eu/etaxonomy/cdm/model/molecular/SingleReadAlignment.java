@@ -4,7 +4,6 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
@@ -16,6 +15,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -29,14 +29,14 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SingleReadAlignment", propOrder = {
-	"consensusAlignment",
-	"singleRead",
-	"shifts",
-	"editedSequence",
-	"reverseComplement",
-	"firstSeqPosition",
-	"leftCutPosition",
-	"rightCutPosition"
+        "consensusAlignment",
+        "singleRead",
+        "shifts",
+        "editedSequence",
+        "reverseComplement",
+        "firstSeqPosition",
+        "leftCutPosition",
+        "rightCutPosition"
 })
 @XmlRootElement(name = "SingleReadAlignment")
 @Entity

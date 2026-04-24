@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -50,7 +51,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlRootElement(name = "SpecimenTypeDesignation")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenTypeDesignation", propOrder = {
-    "typeSpecimen"
+        "typeSpecimen"
 })
 @Entity
 @Audited

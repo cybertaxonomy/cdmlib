@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.model.description;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,6 +27,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,8 +61,8 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 @Audited
 public class StatisticalMeasurementValue
-         extends VersionableEntity
-         implements IModifiable{
+        extends VersionableEntity
+        implements IModifiable{
 
 	private static final long serialVersionUID = -3576311887760351982L;
     private static final Logger logger = LogManager.getLogger();

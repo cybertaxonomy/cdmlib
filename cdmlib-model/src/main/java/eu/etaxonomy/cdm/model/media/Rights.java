@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
@@ -44,10 +45,10 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Rights", propOrder = {
-    "uri",
-    "abbreviatedText",
-    "type",
-    "agent"
+        "uri",
+        "abbreviatedText",
+        "type",
+        "agent"
 })
 @XmlRootElement(name = "Rights")
 @Entity

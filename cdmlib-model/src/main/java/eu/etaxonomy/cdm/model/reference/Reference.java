@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -39,6 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -107,44 +107,44 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Reference", propOrder = {
-	"type",
-	"uri",
-    "abbrevTitleCache",
-    "protectedAbbrevTitleCache",
-	"nomenclaturallyRelevant",
-    "authorship",
-    "authorIsEditor",
-    "referenceAbstract",
-    "title",
-    "abbrevTitle",
-	"volume",
-	"pages",
-	"edition",
-    "isbn",
-    "issn",
-    "doi",
-    "seriesPart",
-    "datePublished",
-    "publisher",
-    "publisher2",
-    "placePublished",
-    "placePublished2",
-    "institution",
-    "school",
-    "organization",
-    "inReference",
-    "credits",
-    "externallyManaged",
+        "type",
+        "uri",
+        "abbrevTitleCache",
+        "protectedAbbrevTitleCache",
+        "nomenclaturallyRelevant",
+        "authorship",
+        "authorIsEditor",
+        "referenceAbstract",
+        "title",
+        "abbrevTitle",
+        "volume",
+        "pages",
+        "edition",
+        "isbn",
+        "issn",
+        "doi",
+        "seriesPart",
+        "datePublished",
+        "publisher",
+        "publisher2",
+        "placePublished",
+        "placePublished2",
+        "institution",
+        "school",
+        "organization",
+        "inReference",
+        "credits",
+        "externallyManaged",
 })
 @XmlRootElement(name = "Reference")
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Audited
-@Table(name="Reference", indexes = { @javax.persistence.Index(name = "referenceTitleCacheIndex", columnList = "titleCache") })
+@Table(name = "Reference", indexes = {@javax.persistence.Index(name = "referenceTitleCacheIndex", columnList = "titleCache")})
 //@InReference(groups=Level3.class)
-@ReferenceCheck(groups=Level2.class)
-@InReference(groups=Level3.class)
-@NoRecursiveInReference(groups=Level3.class)  //may become Level1 in future  #
+@ReferenceCheck(groups = Level2.class)
+@InReference(groups = Level3.class)
+@NoRecursiveInReference(groups = Level3.class)  //may become Level1 in future  #
 public class Reference
         extends IdentifiableMediaEntity<IReferenceCacheStrategy>
         implements IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection, ICdDvd,

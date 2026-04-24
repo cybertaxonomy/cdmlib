@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.description;
 
 import java.util.Set;
 import java.util.UUID;
-
 import javax.xml.bind.annotation.XmlEnumValue;
 
 import eu.etaxonomy.cdm.model.common.Language;

@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
@@ -46,8 +47,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 })
 @Entity
 @Audited
-@Table(name="TermRelation", indexes = { @Index(name = "termNodeTreeIndex", columnList = "treeIndex") })  //was feature NodeTreeIndex before
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Table(name = "TermRelation", indexes = {@Index(name = "termNodeTreeIndex", columnList = "treeIndex")})  //was feature NodeTreeIndex before
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends TermRelationBase, GRAPH extends TermGraphBase>
         extends AnnotatableEntity
         implements IHasTermType {

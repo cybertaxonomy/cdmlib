@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.ref;
 
 import java.util.UUID;
 
+
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;

@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -30,6 +29,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,10 +69,10 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonDescription", propOrder = {
-    "scopes",
-    "geoScopes",
-    "taxon",
-    "rights"
+        "scopes",
+        "geoScopes",
+        "taxon",
+        "rights"
 })
 @XmlRootElement(name = "TaxonDescription")
 @Entity
@@ -81,8 +81,8 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Audited
 @Configurable
 public class TaxonDescription
-            extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonDescription>>
-            implements IHasRights, IHasCredits, IHasLink {
+        extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonDescription>>
+        implements IHasRights, IHasCredits, IHasLink {
 
     private static final long serialVersionUID = 8065879180505546803L;
     @SuppressWarnings("unused")

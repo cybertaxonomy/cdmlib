@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -34,8 +35,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * </ul>
  * A relationship thus is forming a directed graph consisting of two nodes and an edge:
  * <pre>
-     relatedFrom -----[TYPE]----> relatedTo
-   </pre>
+      relatedFrom -----[TYPE]----> relatedTo
+    </pre>
  * Whereas the direction of the relation can be valid for the direct (everted) and also for the inverted {@link Direction} direction.
  * This directional validity is defined by {@link RelationshipTermBase#isSymmetric()}
  *

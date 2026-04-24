@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
@@ -39,6 +38,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -69,8 +69,6 @@ import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
 
-
-
 /**
  * The base class for all CDM domain classes implementing UUIDs and bean property change event firing.
  * It provides a globally unique UUID and keeps track of creation date and person.
@@ -86,8 +84,8 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CdmBase", propOrder = {
-    "created",
-    "createdBy"
+        "created",
+        "createdBy"
 })
 @MappedSuperclass
 public abstract class CdmBase

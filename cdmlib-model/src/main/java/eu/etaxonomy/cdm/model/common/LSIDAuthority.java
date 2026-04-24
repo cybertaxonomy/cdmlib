@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -27,6 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -39,15 +39,15 @@ import eu.etaxonomy.cdm.jaxb.NamespacesAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LSIDAuthority", propOrder = {
-		"authority",
-		"server",
-		"port",
-		"url",
-		"namespaces"
+        "authority",
+        "server",
+        "port",
+        "url",
+        "namespaces"
 })
 @XmlRootElement(name = "LSIDAuthority")
 @Entity
-@TypeDefs(@TypeDef(name="wsdlDefinitionUserType", typeClass=WSDLDefinitionUserType.class))
+@TypeDefs(@TypeDef(name = "wsdlDefinitionUserType", typeClass = WSDLDefinitionUserType.class))
 public class LSIDAuthority extends CdmBase {
 	private static final long serialVersionUID = 9168994979216936689L;
 

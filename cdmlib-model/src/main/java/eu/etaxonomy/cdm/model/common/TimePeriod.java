@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.common;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
-
 import javax.persistence.Embeddable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
@@ -23,6 +22,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,8 +36,6 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.LocalDate;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -52,9 +51,9 @@ import eu.etaxonomy.cdm.jaxb.PartialAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TimePeriod", propOrder = {
-    "start",
-    "end",
-    "freeText"
+        "start",
+        "end",
+        "freeText"
 })
 @XmlRootElement(name = "TimePeriod")
 @Embeddable

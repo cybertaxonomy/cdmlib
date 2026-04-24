@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.media;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -23,6 +22,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,11 +46,11 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaRepresentationPart", propOrder = {
-		"uri",
+        "uri",
         "size",
         "mediaRepresentation",
         "mediaMetaData"
-  })
+})
 @Entity
 @Audited
 public class MediaRepresentationPart extends VersionableEntity {

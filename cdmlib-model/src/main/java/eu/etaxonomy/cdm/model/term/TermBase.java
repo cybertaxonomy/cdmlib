@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
@@ -26,6 +25,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -54,20 +54,20 @@ import eu.etaxonomy.cdm.strategy.cache.term.TermDefaultCacheStrategy;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermBase", propOrder = {
-    "uri",
-    "termType",
-    "representations",
-    "externallyManaged"
+        "uri",
+        "termType",
+        "representations",
+        "externallyManaged"
 })
 @XmlSeeAlso({
-    DefinedTermBase.class,
-    TermVocabulary.class
+        DefinedTermBase.class,
+        TermVocabulary.class
 })
 @MappedSuperclass
 @Audited
 public abstract class TermBase
-            extends CreditableEntity<IIdentifiableEntityCacheStrategy<TermBase>>
-            implements IHasTermType, IExternallyManaged {
+        extends CreditableEntity<IIdentifiableEntityCacheStrategy<TermBase>>
+        implements IHasTermType, IExternallyManaged {
 
     private static final long serialVersionUID = 1471561531632115822L;
     @SuppressWarnings("unused")

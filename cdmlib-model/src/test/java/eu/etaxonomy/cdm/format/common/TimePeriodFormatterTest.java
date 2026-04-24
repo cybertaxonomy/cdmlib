@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.format.common;
 
 import static org.junit.Assert.assertNotNull;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.term;
 import java.beans.Transient;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -25,6 +24,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -48,11 +48,11 @@ import eu.etaxonomy.cdm.model.media.IHasLink;
 })
 @Entity
 @Audited
-@Table(name="TermCollection")
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Table(name = "TermCollection")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class TermCollection<TERM extends DefinedTermBase, REL extends TermRelationBase>
-            extends TermBase
-            implements IHasCredits, IHasLink {
+        extends TermBase
+        implements IHasCredits, IHasLink {
 
     private static final long serialVersionUID = 6102175902060054329L;
 

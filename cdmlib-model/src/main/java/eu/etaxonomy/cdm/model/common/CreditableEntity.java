@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
@@ -24,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,13 +44,13 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CreditableEntity", propOrder = {
-    "credits",
+        "credits",
 })
 @MappedSuperclass
 @Audited
 public abstract class CreditableEntity<S extends IIdentifiableEntityCacheStrategy<?>>
-    extends IdentifiableEntity<S>
-    implements IHasCredits{
+        extends IdentifiableEntity<S>
+        implements IHasCredits{
 
     private static final long serialVersionUID = 3612910783891987069L;
     @SuppressWarnings("unused")

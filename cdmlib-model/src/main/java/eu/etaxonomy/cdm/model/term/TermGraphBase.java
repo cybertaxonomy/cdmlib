@@ -9,11 +9,11 @@
 package eu.etaxonomy.cdm.model.term;
 
 import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,12 +25,12 @@ import org.hibernate.envers.Audited;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermGraph", propOrder = {
-})
+        })
 @Entity
 @Audited
 public abstract class TermGraphBase<TERM extends DefinedTermBase, REL extends TermRelationBase> //<TERM, REL, TermGraphBase>
-            extends TermCollection<TERM, REL>
-            implements ITermGraph<TERM, REL>{
+extends TermCollection<TERM, REL>
+        implements ITermGraph<TERM, REL>{
 
     private static final long serialVersionUID = -704169783744494023L;
     @SuppressWarnings("unused")

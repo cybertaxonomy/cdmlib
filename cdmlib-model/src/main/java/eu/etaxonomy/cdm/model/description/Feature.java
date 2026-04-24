@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -33,6 +32,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -84,29 +84,29 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @since 08-Nov-2007 13:06:24
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(name="Feature", factoryMethod="NewInstance", propOrder = {
-    "kindOf",
-    "generalizationOf",
-    "partOf",
-    "includes",
-    "availableForTaxon",
-    "availableForTaxonName",
-    "availableForOccurrence",
-    "supportsTextData",
-    "supportsQuantitativeData",
-    "supportsDistribution",
-    "supportsIndividualAssociation",
-    "supportsTaxonInteraction",
-    "supportsCommonTaxonName",
-    "supportsCategoricalData",
-    "supportsTemporalData",
-	"recommendedModifierEnumeration",
-	"recommendedStatisticalMeasures",
-	"supportedCategoricalEnumerations",
-	"recommendedMeasurementUnits",
-	"inverseRepresentations",
-	"maxStates",
-	"maxPerDataset"
+@XmlType(name = "Feature", factoryMethod = "NewInstance", propOrder = {
+        "kindOf",
+        "generalizationOf",
+        "partOf",
+        "includes",
+        "availableForTaxon",
+        "availableForTaxonName",
+        "availableForOccurrence",
+        "supportsTextData",
+        "supportsQuantitativeData",
+        "supportsDistribution",
+        "supportsIndividualAssociation",
+        "supportsTaxonInteraction",
+        "supportsCommonTaxonName",
+        "supportsCategoricalData",
+        "supportsTemporalData",
+        "recommendedModifierEnumeration",
+        "recommendedStatisticalMeasures",
+        "supportedCategoricalEnumerations",
+        "recommendedMeasurementUnits",
+        "inverseRepresentations",
+        "maxStates",
+        "maxPerDataset"
 })
 @XmlRootElement(name = "Feature")
 @Entity

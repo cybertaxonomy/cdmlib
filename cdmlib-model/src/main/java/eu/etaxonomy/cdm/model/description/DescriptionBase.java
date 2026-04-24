@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -29,6 +28,7 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -75,20 +75,20 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptionBase", propOrder = {
-    "descriptionSources",
-    "descriptiveDataSets",
-    "descriptionElements",
-    "imageGallery",
-    "isDefault",
-    "publish",
-    "types"
+        "descriptionSources",
+        "descriptiveDataSets",
+        "descriptionElements",
+        "imageGallery",
+        "isDefault",
+        "publish",
+        "types"
 })
 @Entity
 @Audited
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @ClassBridges({
-    @ClassBridge(impl=DescriptionBaseClassBridge.class),
-    @ClassBridge(impl=GroupByTaxonClassBridge.class)
+        @ClassBridge(impl = DescriptionBaseClassBridge.class),
+        @ClassBridge(impl = GroupByTaxonClassBridge.class)
 })
 public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy>
         extends CreditableEntity<S>

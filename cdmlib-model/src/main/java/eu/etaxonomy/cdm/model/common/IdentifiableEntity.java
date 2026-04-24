@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.FetchType;
@@ -33,6 +32,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -79,12 +79,12 @@ import eu.etaxonomy.cdm.validation.Level2;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IdentifiableEntity", propOrder = {
-    "lsid",
-    "titleCache",
-    "protectedTitleCache",
-    "extensions",
-    "identifiers",
-    "links"
+        "lsid",
+        "titleCache",
+        "protectedTitleCache",
+        "extensions",
+        "identifiers",
+        "links"
 })
 @Audited
 @MappedSuperclass
