@@ -1255,7 +1255,6 @@ public abstract class Cdm2CdmImportBase
 
     protected <T extends AgentBase> T handlePersisted(AgentBase agent, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((IdentifiableMediaEntity)agent, state);
-        result.setContact(detach(result.getContact(), state));
         //complete
         return result;
     }

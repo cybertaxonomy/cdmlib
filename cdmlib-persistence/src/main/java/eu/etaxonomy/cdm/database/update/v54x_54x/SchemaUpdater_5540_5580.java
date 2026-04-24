@@ -61,6 +61,23 @@ public class SchemaUpdater_5540_5580 extends SchemaUpdaterBase {
         String columnName = "wikiDataItemId";
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, columnName, 16, INCLUDE_AUDIT);
 
+        //10522 remove AgentBase.contact
+        stepName = "Remove AgentBase_contact_emailAddresses";
+        tableName = "AgentBase_contact_emailAddresses";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        stepName = "Remove AgentBase_contact_faxNumbers";
+        tableName = "AgentBase_contact_faxNumbers";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        stepName = "Remove AgentBase_contact_phoneNumbers";
+        tableName = "AgentBase_contact_phoneNumbers";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        stepName = "Remove AgentBase_contact_urls";
+        tableName = "AgentBase_contact_urls";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
         //10522 Annotations versionable only
         stepName = "Remove Annotation_Annotation";
         tableName = "Annotation_Annotation";

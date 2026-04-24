@@ -15,17 +15,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
-import eu.etaxonomy.cdm.model.location.Country;
-import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -349,11 +344,6 @@ public class DefaultMatchStrategyTest extends TermTestBase {
 
 		Assert.assertTrue("Teams should match", matchStrategy.invoke(team1, team2).isSuccessful());
 		Assert.assertTrue("Teams should match", matchStrategy.invoke(team1, team3).isSuccessful());
-
-		String street1 = "Strasse1";
-		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", URI.create("www.abc.de"), Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
-		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
-		Assert.assertTrue("Contacts should be ignoredin default match strategy", matchStrategy.invoke(team1, team2).isSuccessful());
 
 		team1.setNomenclaturalTitleCache("nomTitle1", true);
 		team2.setNomenclaturalTitleCache("nomTitle2", true);
