@@ -77,16 +77,6 @@
       <artifactId>lucene-sandbox</artifactId>
     </dependency>
     <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <!-- <exclusions> -->
-      <!-- <exclusion> -->
-      <!-- <groupId>xml-apis</groupId> -->
-      <!-- <artifactId>xml-apis</artifactId> -->
-      <!-- </exclusion> -->
-      <!-- </exclusions> -->
-    </dependency>
-    <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>
     </dependency>
