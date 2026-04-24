@@ -63,7 +63,9 @@ public class LSIDAuthorityServiceTest extends CdmIntegrationTest {
 		String resource = "/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAuthorityWSDL-result.wsdl";
 		String result = transformSourceToString((Source) expiringResponse.getValue());
 
-		assertXMLEqual("getAuthorityWSDL should return an xml source equal to the test resource",new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(result));
+		assertXMLEqual("getAuthorityWSDL should return an xml source equal to the test resource",
+		        new InputStreamReader(this.getClass().getResourceAsStream(resource)),
+		        new StringReader(result));
 	}
 
 	/**
