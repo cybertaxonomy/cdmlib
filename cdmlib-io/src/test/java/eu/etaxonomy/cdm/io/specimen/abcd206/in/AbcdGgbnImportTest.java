@@ -294,8 +294,8 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         //dna quality
         DnaQuality dnaQuality = dnaSample.getDnaQuality();
         assertNotNull("Dna quality is null", dnaQuality);
-        assertEquals(new Double("0.77"),dnaQuality.getRatioOfAbsorbance260_230());
-        assertEquals(new Double("1.38"),dnaQuality.getRatioOfAbsorbance260_280());
+        assertEquals(Double.valueOf("0.77"),dnaQuality.getRatioOfAbsorbance260_230());
+        assertEquals(Double.valueOf("1.38"),dnaQuality.getRatioOfAbsorbance260_280());
         assertEquals(new DateTime(2008, 4, 15, 0, 0),dnaQuality.getQualityCheckDate());
 //        assertEquals(MeasurementUnit.NewInstance(, label, labelAbbrev)DateTime(2008, 4, 15, 0, 0),dnaQuality.getQualityCheckDate());
 

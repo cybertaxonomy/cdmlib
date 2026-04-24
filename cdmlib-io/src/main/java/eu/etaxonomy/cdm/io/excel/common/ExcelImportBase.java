@@ -210,7 +210,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 	protected int floatString2IntValue(String value) {
 		int intValue = 0;
 		try {
-			Float fobj = new Float(Float.parseFloat(value));
+			Float fobj = Float.valueOf(Float.parseFloat(value));
 			intValue = fobj.intValue();
 			if (logger.isDebugEnabled()) { logger.debug("Value formatted: " + intValue); }
 		} catch (NumberFormatException ex) {
