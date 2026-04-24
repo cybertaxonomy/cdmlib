@@ -97,6 +97,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
         "idInVocabulary",
         "symbol",
         "symbol2",
+        "wikiDataItemId"
 })
 @XmlRootElement(name = "DefinedTermBase")
 @XmlSeeAlso({
