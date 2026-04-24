@@ -27,8 +27,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
 @Transactional(readOnly = true)
-public class AnnotationService extends AnnotatableServiceBase<Annotation, AnnotationDaoImpl> implements
-		IAnnotationService {
+public class AnnotationService
+        extends VersionableServiceBase<Annotation, AnnotationDaoImpl>
+        implements IAnnotationService {
 
 	@Override
     @Autowired

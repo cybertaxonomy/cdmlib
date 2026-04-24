@@ -28,7 +28,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotationDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Repository
-public class AnnotationDaoImpl extends AnnotatableDaoBaseImpl<Annotation> implements IAnnotationDao {
+public class AnnotationDaoImpl
+        extends VersionableDaoBase<Annotation>
+        implements IAnnotationDao {
 
 	public AnnotationDaoImpl() {
 		super(Annotation.class);

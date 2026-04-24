@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-public interface IAnnotationService extends IAnnotatableService<Annotation> {
+public interface IAnnotationService extends IVersionableService<Annotation> {
 	/**
 	 * return a count of the number of annotations made by this person, optionally filtered by the status of those annotations
 	 *

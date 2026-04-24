@@ -79,7 +79,7 @@ public class SchemaUpdater_5540_5580 extends SchemaUpdaterBase {
         tableName = "AgentBase_contact_urls";
         TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
-        //10522 Annotations versionable only
+        //#10522 Annotations versionable only
         stepName = "Remove Annotation_Annotation";
         tableName = "Annotation_Annotation";
         TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
