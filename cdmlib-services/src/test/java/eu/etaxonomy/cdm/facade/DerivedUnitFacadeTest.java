@@ -187,7 +187,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 		//TODO maybe we should define concrete event types here
         DerivationEventType eventType = DerivationEventType.ACCESSIONING();
         DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance(eventType);
-        DerivationEvent middleDerivationEvent = DerivationEvent.NewInstance(eventType);
         firstDerivationEvent = DerivationEvent.NewInstance(eventType);
 
         collectionSpecimen.setDerivedFrom(lastDerivationEvent);
