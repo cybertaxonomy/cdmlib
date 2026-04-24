@@ -21,7 +21,6 @@ import com.ibm.lsid.MalformedLSIDException;
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Address;
-import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.ORCID;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -266,17 +265,10 @@ public class FullCoverageDataGenerator {
 		handleIdentifiableEntity(person, entitiesToSave);
 
 		//Contact
-		Contact contact = Contact.NewInstance();
-		person.setContact(contact);
 		Point locality = Point.NewInstance(45.12, -38.69, ReferenceSystem.WGS84(), 22);
-		contact.addEmailAddress("a@b.de");
-		contact.addFaxNumber("f:010-123456");
-		contact.addPhoneNumber("p:090-987654");
-		contact.addUrl(URI.create("http://www.abc.de"));
 
 		//Address
 		Address address = Address.NewInstance(Country.GERMANY(), "locality", "pobox", "12345", "region", "street", locality);
-		contact.addAddress(address);
 
 		//Team
 		Team team = Team.NewTitledInstance("Team title", "Team abbrev title");

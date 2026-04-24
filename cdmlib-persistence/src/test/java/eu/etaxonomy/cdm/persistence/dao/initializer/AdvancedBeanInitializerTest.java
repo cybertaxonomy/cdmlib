@@ -13,7 +13,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,17 +34,11 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.agent.Address;
-import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.location.Country;
-import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -200,21 +193,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         assertTrue(Hibernate.isInitialized(team.getTeamMembers())); // *
         Person person1 = HibernateProxyHelper.deproxy(team.getTeamMembers().get(0), Person.class);
         assertEquals(personUuid, person1.getUuid());
-        assertTrue(Hibernate.isInitialized(person1.getContact())); // contact
         assertFalse("must not be initialized by 'nomenclaturalSource.citation.$.*.contact'", Hibernate.isInitialized(person1.getAnnotations()));
-        assertTrue(Hibernate.isInitialized(person1.getContact().getFaxNumbers())); // * // FIXME fails here #7375
-    }
-
-    @DataSet
-    @Test
-    public void testPersonContacts() {
-
-        deacivatedAutoIntitializers = clearAutoinitializers();
-        assureSessionClear();
-
-        Person person1 = (Person) agentDao.load(personUuid, Arrays.asList("contact.faxNumbers"));
-        assertTrue(Hibernate.isInitialized(person1.getContact()));
-        assertTrue(Hibernate.isInitialized(person1.getContact().getFaxNumbers()));
     }
 
     @DataSet
@@ -340,6 +319,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
     @Override
     // @Test
     public void createTestDataSet() throws FileNotFoundException {
+
         // 1. create person and a reference
         Person person1 = Person.NewTitledInstance("A. Adonis");
         Person person2 = Person.NewTitledInstance("B. Belalugosi");
@@ -347,19 +327,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         team.setUuid(teamUuid);
         team.addTeamMember(person1);
         team.addTeamMember(person2);
-        Set<Address> addresses = new HashSet<>();
-        addresses.add(Address.NewInstance(Country.GERMANY(), "locality", "pobox", "postcode", "region", "street", Point.NewInstance(50.02,33.3, ReferenceSystem.GOOGLE_EARTH(), 3)));
-        List<String> emailAddresses = new ArrayList<>();
-        emailAddresses.add("My.email@web.de");
-        List<String> faxNumbers = new ArrayList<>();
-        faxNumbers.add("0049-30-1234545");
-        List<String> phoneNumbers = new ArrayList<>();
-        phoneNumbers.add("0049-30-1234546");
-        List<URI> urls = new ArrayList<>();
-        urls.add(URI.create("http://www.test.de"));
-        Contact contact = Contact.NewInstance(addresses, emailAddresses, faxNumbers, phoneNumbers, urls);
 
-        person1.setContact(contact);
         person1.setUuid(personUuid);
         person1 = agentDao.save(person1);
         person2 = agentDao.save(person2);
@@ -392,9 +360,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
 
         // 3.
         writeDbUnitDataSetFile(new String[] {
-            "ADDRESS", "AGENTBASE","AgentBase_contact_emailaddresses",
-            "AgentBase_contact_faxnumbers","AgentBase_contact_phonenumbers",
-            "AgentBase_contact_urls","AgentBase_Address", "AgentBase_AgentBase",
+            "ADDRESS", "AGENTBASE","AgentBase_Address", "AgentBase_AgentBase",
             "REFERENCE", "TaxonName", "HomotypicalGroup", "TaxonBase",
             "",
             "HIBERNATE_SEQUENCES" // IMPORTANT!!!

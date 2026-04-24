@@ -722,13 +722,12 @@ public abstract class Cdm2CdmImportBase
             return result;
         }
         if (!contact.getAddresses().isEmpty() || !contact.getEmailAddresses().isEmpty()
-               || !contact.getFaxNumbers().isEmpty() ||!contact.getPhoneNumbers().isEmpty()
+               ||!contact.getPhoneNumbers().isEmpty()
                ||!contact.getUrls().isEmpty()){
             logger.warn("Addresses not yet implemented");
         }
         setInvisible(result, "addresses", new HashSet<>());
 //        handleCollection(result, Contact.class, "", Address.class);
-        setInvisible(result, "faxNumbers", new ArrayList<>());
         setInvisible(result, "phoneNumbers", new ArrayList<>());
         setInvisible(result, "emailAddresses", new ArrayList<>());
         setInvisible(result, "urls", new ArrayList<>());
