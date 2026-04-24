@@ -316,7 +316,7 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
             //set the parameters in the LinkedPolytomousKeyodeRowDto and add it to the list
             LinkedPolytomousKeyNodeRowDto keyRow = new LinkedPolytomousKeyNodeRowDto();
             keyRow.setKeyNodeUuid(keyNode.getUuid());
-            keyRow.setEdgeNumber(new Integer(childIndex));
+            keyRow.setEdgeNumber(Integer.valueOf(childIndex));
 
             List<Language> languages = LocaleContext.getLanguages();
 
