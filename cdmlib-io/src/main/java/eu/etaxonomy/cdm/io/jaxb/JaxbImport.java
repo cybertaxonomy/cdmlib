@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -114,7 +114,7 @@ public class JaxbImport
 		List<TermTree> featureTrees;
 		List<TermNode> termNodes;
 		List<Media> media;
-		List<LanguageStringBase> languageData;
+		List<AnnotatableLanguageStringBase> languageData;
 		List<TermVocabulary<?>> termVocabularies;
 		List<HomotypicalGroup> homotypicalGroups;
 

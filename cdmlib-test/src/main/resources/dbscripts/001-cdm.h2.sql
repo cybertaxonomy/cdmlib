@@ -519,20 +519,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         primary key (ID)
     );
 
-    create table PUBLIC.ANNOTATION_ANNOTATION (
-       ANNOTATION_ID integer not null,
-        ANNOTATIONS_ID integer not null,
-        primary key (ANNOTATION_ID, ANNOTATIONS_ID)
-    );
-
-    create table PUBLIC.ANNOTATION_ANNOTATION_AUD (
-       REV integer not null,
-        ANNOTATION_ID integer not null,
-        ANNOTATIONS_ID integer not null,
-        REVTYPE tinyint,
-        primary key (REV, ANNOTATION_ID, ANNOTATIONS_ID)
-    );
-
     create table PUBLIC.ANNOTATION_AUD (
        ID integer not null,
         REV integer not null,
@@ -548,20 +534,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         ANNOTATIONTYPE_ID integer,
         COMMENTATOR_ID integer,
         primary key (ID, REV)
-    );
-
-    create table PUBLIC.ANNOTATION_MARKER (
-       ANNOTATION_ID integer not null,
-        MARKERS_ID integer not null,
-        primary key (ANNOTATION_ID, MARKERS_ID)
-    );
-
-    create table PUBLIC.ANNOTATION_MARKER_AUD (
-       REV integer not null,
-        ANNOTATION_ID integer not null,
-        MARKERS_ID integer not null,
-        REVTYPE tinyint,
-        primary key (REV, ANNOTATION_ID, MARKERS_ID)
     );
 
     create table PUBLIC.AUDITEVENT (
@@ -6261,12 +6233,6 @@ create index PUBLIC.agentTitleCacheIndex on PUBLIC.AGENTBASE (TITLECACHE);
     alter table PUBLIC.ANNOTATION 
        add constraint UK_mu34eryd59s0hn00cu5tx3ron unique (UUID);
 
-    alter table PUBLIC.ANNOTATION_ANNOTATION 
-       add constraint UK_diab6q8r8tc0w6daye8dr6tdi unique (ANNOTATIONS_ID);
-
-    alter table PUBLIC.ANNOTATION_MARKER 
-       add constraint UK_jycj0vang3ijurbbp4toejxnq unique (MARKERS_ID);
-
     alter table PUBLIC.AUTHORITY 
        add constraint UK_8xsrgqm96m9lrarc6oo4og4hp unique (UUID);
 
@@ -7364,38 +7330,8 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
        foreign key (COMMENTATOR_ID) 
        references PUBLIC.AGENTBASE;
 
-    alter table PUBLIC.ANNOTATION_ANNOTATION 
-       add constraint FKmmm2stvvgqwuytfrrf5jyj3td 
-       foreign key (ANNOTATIONS_ID) 
-       references PUBLIC.ANNOTATION;
-
-    alter table PUBLIC.ANNOTATION_ANNOTATION 
-       add constraint FK75ew0i9xcjt1uc5pw7gq6hipa 
-       foreign key (ANNOTATION_ID) 
-       references PUBLIC.ANNOTATION;
-
-    alter table PUBLIC.ANNOTATION_ANNOTATION_AUD 
-       add constraint FKg11kfnkhiednxngs811wtllnn 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
     alter table PUBLIC.ANNOTATION_AUD 
        add constraint FK5389365adrqa3haak3mggfhcu 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.ANNOTATION_MARKER 
-       add constraint FKgvss9aa3158kjrg2kn160sjdf 
-       foreign key (MARKERS_ID) 
-       references PUBLIC.MARKER;
-
-    alter table PUBLIC.ANNOTATION_MARKER 
-       add constraint FKq6nns47wvop7chd6uufmkl6w9 
-       foreign key (ANNOTATION_ID) 
-       references PUBLIC.ANNOTATION;
-
-    alter table PUBLIC.ANNOTATION_MARKER_AUD 
-       add constraint FK678dbuu0lgcvu88xpllq1nug 
        foreign key (REV) 
        references PUBLIC.AUDITEVENT;
 

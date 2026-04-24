@@ -23,11 +23,11 @@ import eu.etaxonomy.cdm.format.occurrences.DistanceStringFormatter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ILanguageString;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -133,8 +133,8 @@ public class ReferencingObjectFormatter {
         }else if (element instanceof Rights) {
             Rights rights = (Rights) element;
             resultString = getCache(rights, defaultLanguage);
-        }else if (element instanceof LanguageStringBase) {
-            resultString = ((LanguageStringBase) element).getText();
+        }else if (element instanceof ILanguageString) {
+            resultString = ((ILanguageString) element).getText();
         }else if (element instanceof DescriptionElementBase) {
             resultString = getCache((DescriptionElementBase) element, defaultLanguage);
         }else if (element instanceof StateData) {

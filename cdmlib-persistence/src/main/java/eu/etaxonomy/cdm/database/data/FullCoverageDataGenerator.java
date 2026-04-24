@@ -215,7 +215,6 @@ public class FullCoverageDataGenerator {
 
 		Annotation annotation = Annotation.NewDefaultLanguageInstance("annotation");
 		media.addAnnotation(annotation);
-		handleAnnotatableEntity(annotation);
 
 		Person creditedPerson = createNewPerson("Credited person", entitiesToSave);
 		Credit credit = Credit.NewInstance(creditedPerson, TimePeriodParser.parseString("22.4.2022-12.5.2023"),

@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.AuthorityType;
@@ -70,7 +71,6 @@ import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -656,7 +656,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected Annotation handlePersistedAnnotation(Annotation annotation, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        Annotation result = handlePersisted((AnnotatableEntity)annotation, state);
+        Annotation result = handlePersisted((VersionableEntity)annotation, state);
         //complete
         result.setAnnotationType(detach(annotation.getAnnotationType(), state));
         result.setCommentator(detach(result.getCommentator(), state));
@@ -1008,7 +1008,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected Representation handlePersistedRepresentation(Representation representation, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        Representation result = (Representation)handlePersisted((LanguageStringBase)representation, state);
+        Representation result = (Representation)handlePersisted((AnnotatableLanguageStringBase)representation, state);
         return result;
     }
 
@@ -1054,14 +1054,14 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected LanguageString handlePersistedLanguageString(LanguageString languageString, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        LanguageString result = handlePersisted((LanguageStringBase)languageString, state);
+        LanguageString result = handlePersisted((AnnotatableLanguageStringBase)languageString, state);
         //complete
         handleCollection(result, LanguageString.class, "intextReferences", IntextReference.class, state);
         return result;
     }
 
     protected Credit handlePersistedCredit(Credit credit, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        Credit result = handlePersisted((LanguageStringBase)credit, state);
+        Credit result = handlePersisted((AnnotatableLanguageStringBase)credit, state);
         //complete
         result.setAgent(detach(credit.getAgent(), state));
         return result;
@@ -1069,7 +1069,7 @@ public abstract class Cdm2CdmImportBase
 
 
     protected Rights handlePersistedRights(Rights rights, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        Rights result = handlePersisted((LanguageStringBase)rights, state);
+        Rights result = handlePersisted((AnnotatableLanguageStringBase)rights, state);
         result.setAgent(detach(rights.getAgent(), state));
         result.setType(detach(rights.getType(), state));
         //complete
@@ -1240,7 +1240,7 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends LanguageStringBase> T handlePersisted(LanguageStringBase lsBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends AnnotatableLanguageStringBase> T handlePersisted(AnnotatableLanguageStringBase lsBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((AnnotatableEntity)lsBase, state);
         //complete
         result.setLanguage(detach(lsBase.getLanguage(), state));

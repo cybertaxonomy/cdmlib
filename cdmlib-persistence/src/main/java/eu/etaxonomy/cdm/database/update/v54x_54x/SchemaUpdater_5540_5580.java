@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
@@ -60,7 +61,14 @@ public class SchemaUpdater_5540_5580 extends SchemaUpdaterBase {
         String columnName = "wikiDataItemId";
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, columnName, 16, INCLUDE_AUDIT);
 
+        //10522 Annotations versionable only
+        stepName = "Remove Annotation_Annotation";
+        tableName = "Annotation_Annotation";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
+        stepName = "Remove Annotation_Marker";
+        tableName = "Annotation_Marker";
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
         return stepList;
     }

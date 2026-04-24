@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -37,20 +36,20 @@ import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 
 /**
  * @author a.mueller
- * @since 23.04.2026
+ * @since 25.04.2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LanguageStringBase", propOrder = {
-        "text",
-        "language"
+    "text",
+    "language"
 })
 @XmlSeeAlso({
-        LanguageString.class
+    LanguageString.class
 })
 @MappedSuperclass
 @Audited
-public abstract class LanguageStringBase
-        extends VersionableEntity
+public abstract class AnnotatableLanguageStringBase
+        extends AnnotatableEntity
         implements ILanguageString {
 
     private static final long serialVersionUID = -1892526642162438277L;
@@ -72,32 +71,37 @@ public abstract class LanguageStringBase
     @IndexedEmbedded(depth=1)
     protected Language language;
 
-    protected LanguageStringBase() {
+    protected AnnotatableLanguageStringBase() {
         super();
     }
 
-    protected LanguageStringBase(String text, Language language) {
+    protected AnnotatableLanguageStringBase(String text, Language language) {
         super();
         this.setLanguage(language);
         this.setText(text);
 
     }
 
+    @Override
     public Language getLanguage(){
         return this.language;
     }
+    @Override
     public void setLanguage(Language language){
         this.language = language;
     }
 
+    @Override
     public String getText(){
         return this.text;
     }
 
+    @Override
     public void setText(String text) {
         this.text = text;
     }
 
+    @Override
     @Transient
     public String getLanguageLabel(){
         if (language != null){
@@ -107,6 +111,7 @@ public abstract class LanguageStringBase
         }
     }
 
+    @Override
     public String getLanguageLabel(Language lang){
         if (language != null){
             return this.language.getRepresentation(lang).getLabel();
@@ -118,8 +123,8 @@ public abstract class LanguageStringBase
 // ****************** CLONE ************************************/
 
     @Override
-    public LanguageStringBase clone() throws CloneNotSupportedException{
-        LanguageStringBase result = (LanguageStringBase) super.clone();
+    public AnnotatableLanguageStringBase clone() throws CloneNotSupportedException{
+        AnnotatableLanguageStringBase result = (AnnotatableLanguageStringBase) super.clone();
         //no changes to text and language
         //result.setText(this.text);
         //result.setLanguage(this.language);
