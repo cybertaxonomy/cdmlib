@@ -283,14 +283,14 @@ public class TaxonDaoHibernateImpl
                 // see FIXME in 'prepareQuery' for more details
                 if (doTaxa || doSynonyms || doCommonNames){
                     if (result[3].equals("synonym")) {
-                        resultObjects.add( new UuidAndTitleCache<>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
+                        resultObjects.add( new UuidAndTitleCache<>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], Boolean.valueOf(result[4].toString()), null));
                     }
                     else {
-                        resultObjects.add( new UuidAndTitleCache<>(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
+                        resultObjects.add( new UuidAndTitleCache<>(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], Boolean.valueOf(result[4].toString()), null));
                     }
 
                 }else if (doSynonyms){
-                    resultObjects.add( new UuidAndTitleCache<>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
+                    resultObjects.add( new UuidAndTitleCache<>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], Boolean.valueOf(result[4].toString()), null));
                 }
             }
         }
@@ -1580,7 +1580,7 @@ public class TaxonDaoHibernateImpl
             Object[] result;
             for(int i = 0; i<resultArray.size();i++){
             	result = resultArray.get(i);
-            	returnResult.add(new UuidAndTitleCache<>(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString()), null));
+            	returnResult.add(new UuidAndTitleCache<>(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], Boolean.valueOf(result[4].toString()), null));
             }
             return returnResult;
         }else{

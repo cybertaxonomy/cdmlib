@@ -210,4 +210,10 @@ public class LocalH2 extends BasicDataSource {
 		return mode;
 	}
 
+    @Override
+    public java.util.logging.Logger getParentLogger() {
+        // TODO java11
+        return null;
+    }
+
 }

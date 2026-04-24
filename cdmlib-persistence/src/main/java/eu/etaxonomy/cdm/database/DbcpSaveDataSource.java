@@ -36,4 +36,10 @@ public class DbcpSaveDataSource extends BasicDataSource {
 		connectionPool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
 		return dataSource;
 	}
+
+    @Override
+    public java.util.logging.Logger getParentLogger() {
+        // TODO java11
+        return null;
+    }
 }

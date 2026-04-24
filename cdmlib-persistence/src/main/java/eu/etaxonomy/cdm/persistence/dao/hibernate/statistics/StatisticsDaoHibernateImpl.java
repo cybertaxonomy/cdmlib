@@ -948,7 +948,7 @@ public class StatisticsDaoHibernateImpl
 
 		// MAYDO catch error if queries deliver wrong type
 		Query<Long> query;
-		Long all = new Long(0);
+		Long all = Long.valueOf(0);
 		Long result;
 
 
