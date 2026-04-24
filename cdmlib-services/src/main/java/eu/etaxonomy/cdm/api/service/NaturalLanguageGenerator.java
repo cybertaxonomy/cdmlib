@@ -304,12 +304,12 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 		floor++; // counter to know the current level in the tree
 
 		if (!parent.isLeaf()){ // if this node is not a leaf, continue recursively (only the leaves of a FeatureTree contain states)
-			levels.add(new Integer(floor)); // the level of the different nodes in the tree are kept, thus it is easier to build a structured text out of the List<TextData>
+			levels.add(Integer.valueOf(floor)); // the level of the different nodes in the tree are kept, thus it is easier to build a structured text out of the List<TextData>
 			Feature feature = parent.getTerm();
 			TextData featureName;
 			if (feature!=null && feature.getLabel()!=null){ // if a node is associated to a feature
 				featureName = categoricalDescriptionBuilder.buildTextDataFeature(feature, languages);
-				levels.add(new Integer(-1)); // it is indicated by a '-1' after its level
+				levels.add(Integer.valueOf(-1)); // it is indicated by a '-1' after its level
 				listTextData.add(featureName); // the TextData representing the name of the feature is concatenated to the list
 			}
             else {
@@ -343,9 +343,9 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 								featureTextData = quantitativeDescriptionBuilder.buildTextDataFeature(feature, languages);
 							}
 							applyNaturalLanguageDescriptionElementProcessors(featureTextData, previousTextData);
-							levels.add(new Integer(0)); // 0 indicates a feature, which is a leaf of the tree
+							levels.add(Integer.valueOf(0)); // 0 indicates a feature, which is a leaf of the tree
 							listTextData.add(featureTextData);
-							levels.add(new Integer(floor)); // this represents the level of the feature and means it is followed by a TextData containing the states of the feature
+							levels.add(Integer.valueOf(floor)); // this represents the level of the feature and means it is followed by a TextData containing the states of the feature
 							listTextData.add(statesTextData);
 						}
 					}

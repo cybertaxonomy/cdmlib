@@ -131,8 +131,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	// --------------------variables for all ------------------
 
-	private Long no_of_all_references = new Long(0);
-	private Long no_of_descriptive_source_references = new Long(0);
+	private Long no_of_all_references = Long.valueOf(0);
+	private Long no_of_descriptive_source_references = Long.valueOf(0);
 
 	// ............................................
 
@@ -143,19 +143,19 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	// int[] anArray = new int[NO_OF_CLASSIFICATIONS];
 	private static List<Long> no_of_all_taxa_c = new ArrayList<Long>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	private static List<Long> no_of_accepted_taxa_c = new ArrayList<Long>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	private static List<Long> no_of_synonyms_c = new ArrayList<Long>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	private static List<Long> no_of_taxon_names_c = new ArrayList<Long>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	private static List<Long> no_of_descriptive_source_references_c = new ArrayList<>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	private static List<Long> no_of_all_references_c = new ArrayList<Long>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	private static List<Long> no_of_nomenclatural_references_c = new ArrayList<>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	// we do not count classifications in classifications
 
 	// ........................... constant map ..........................
