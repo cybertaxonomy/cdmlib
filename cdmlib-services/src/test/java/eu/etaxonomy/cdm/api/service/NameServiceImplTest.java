@@ -432,45 +432,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testDeleteTaxonNameAsStoredUnder() {
-        final String[] tableNames = new String[]{"TaxonName","SpecimenOrObservationBase"};
-
-        TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
-        name1.setTitleCache("Name1", true);
-        DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
-        specimen.setStoredUnder(name1);
-
-        occurrenceDao.save(specimen);
-        UUID uuidName1 = nameService.save(name1).getUuid();
-
-        commitAndStartNewTransaction(tableNames);
-        DeleteResult result = nameService.delete(name1);
-        if (result.isOk()){
-    	   Assert.fail("This should throw an error because name is used for specimen#storedUnder.");
-        }
-        commitAndStartNewTransaction(tableNames);
-
-        name1 = nameService.find(uuidName1);
-        Assert.assertNotNull("Name should still be in database",name1);
-        specimen = (DerivedUnit)occurrenceDao.load(specimen.getUuid());
-        Assert.assertNotNull("Specimen should still be in database",name1);
-        specimen.setStoredUnder(null);
-        occurrenceDao.saveOrUpdate(specimen);
-
-        nameService.delete(name1); //should throw no exception
-        commitAndStartNewTransaction(tableNames);
-
-        name1 = nameService.find(uuidName1);
-        Assert.assertNull("Name should not be in database anymore",name1);
-        specimen = (DerivedUnit)occurrenceDao.load(specimen.getUuid());
-        Assert.assertNotNull("Specimen should still be in database",specimen);
-
-        occurrenceDao.delete(specimen); //this is to better run this test in the test suit
-
-    }
-
-    @Test
     @Ignore //currently does not run in suite
     public void testDeleteTaxonNameInSource() {
         final String[] tableNames = new String[]{"TaxonName","DescriptionBase","TaxonBase","OriginalSourceBase","DescriptionElementBase"};

@@ -191,7 +191,6 @@
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <occurrence:Collection>urn-uuid-3345de2b-02f7-4927-9fe2-4d094449b09c</occurrence:Collection>
             <occurrence:CatalogNumber>K000400332</occurrence:CatalogNumber>
-            <occurrence:StoredUnder>urn-uuid-ff5d2897-51e1-4352-a23d-678b7d9026bf</occurrence:StoredUnder>
         </occurrence:DerivedUnit>
     </Occurrences>
     <References>

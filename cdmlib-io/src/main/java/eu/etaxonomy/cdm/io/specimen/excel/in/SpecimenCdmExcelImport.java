@@ -462,21 +462,6 @@ public class SpecimenCdmExcelImport
 				}
 			}
 
-			if (isFirstDetermination && state.getConfig().isFirstDeterminationIsStoredUnder()){
-				TaxonName name;
-
-				if (!hasCommonTaxonInfo){
-					name = findBestMatchingName(state, determinationLight, agentsToSave);
-				}else{
-					if (commonName == null){
-						commonName = findBestMatchingName(state, commonDetermination, agentsToSave);
-					}
-					name = commonName;
-				}
-				if (name != null){
-					facade.setStoredUnder(name);
-				}
-			}
 			isFirstDetermination = false;
 		}
 	}

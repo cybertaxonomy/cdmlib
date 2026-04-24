@@ -823,10 +823,6 @@ public class FullCoverageDataGenerator {
 		mediaSpecimen.setCatalogNumber("catalogNumber");
 		mediaSpecimen.setAccessionNumber("accessionNumber");
 		mediaSpecimen.setBarcode("barcode");
-		TaxonName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-		storedUnder.setTitleCache("Stored under", true);
-		entitiesToSave.add(storedUnder);
-		mediaSpecimen.setStoredUnder(storedUnder);
 		mediaSpecimen.setExsiccatum("exsiccatum");
 		PreservationMethod preservation = PreservationMethod.NewInstance(null, "My preservation");
 		preservation.setTemperature(22.4);

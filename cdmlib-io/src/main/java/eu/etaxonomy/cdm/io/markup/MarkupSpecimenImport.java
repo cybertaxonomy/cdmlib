@@ -230,7 +230,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
         			    typeSpecimen = facade.innerDerivedUnit();
         			    typeSpecimen.setCollection(collection);
         			}else{
-        			    typeSpecimen = facade.addDuplicate(collection, null, null, null, null);
+        			    typeSpecimen = facade.addDuplicate(collection, null, null, null);
         			}
         			typeSpecimen.setCacheStrategy(DerivedUnitFacadeCacheStrategy.NewInstance());
         			name.addSpecimenTypeDesignation(typeSpecimen, typeStatus,
@@ -394,7 +394,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 						for (String collStr : collectionStrings){
 							Collection collection = getCollection(state, collStr);
 							DerivedUnit unit = isFirst ? facade.innerDerivedUnit()
-									: facade.addDuplicate(collection, null, null, null, null);
+									: facade.addDuplicate(collection, null, null, null);
 							SpecimenTypeDesignation desig = SpecimenTypeDesignation.NewInstance();
 							designations.add(desig);
 							desig.setTypeSpecimen(unit);
@@ -681,7 +681,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 						    String message = "Adding a duplicate to a non derived unit based facade is not possible. Please check why no derived unit exists yet in facade!";
 						    this.fireWarningEvent(message, next, -6);
 						}else{
-						    facade.addDuplicate(collection, null, null, null, null);
+						    facade.addDuplicate(collection, null, null, null);
 						}
 					}
 					//FIXME 9

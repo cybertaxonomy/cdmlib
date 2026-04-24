@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterExcepti
 import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -67,7 +66,6 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrateg
 @XmlType(name = "DerivedUnit", propOrder = {
         "collection",
         "catalogNumber",
-        "storedUnder",
         "derivedFrom",
         "accessionNumber",
         "collectorsNumber",
@@ -126,13 +124,6 @@ public class DerivedUnit
 //	@NullOrNotEmpty
 	@Column(length=255)
 	private String barcode;
-
-	@XmlElement(name = "StoredUnder")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@IndexedEmbedded(includeEmbeddedObjectId=true)
-	private TaxonName storedUnder;
 
 	@XmlElement(name = "DerivedFrom")
 	@XmlIDREF
@@ -311,10 +302,6 @@ public class DerivedUnit
 		return barcode;
 	}
 
-	public void setStoredUnder(TaxonName storedUnder) {
-		this.storedUnder = storedUnder;
-	}
-
 	public String getAccessionNumber() {
 		return accessionNumber;
 	}
@@ -358,10 +345,6 @@ public class DerivedUnit
 	@Deprecated //see #2362
 	public void setCollectorsNumber(String collectorsNumber) {
 		this.collectorsNumber = isBlank(collectorsNumber)? null : collectorsNumber;
-	}
-
-	public TaxonName getStoredUnder() {
-		return storedUnder;
 	}
 
 	public void addSpecimenTypeDesignation(SpecimenTypeDesignation specimenTypeDesignation){
@@ -548,8 +531,6 @@ public class DerivedUnit
 			result.setCollection(this.collection);
 			//derivedFrom
 			result.setDerivedFrom(this.derivedFrom);
-			//storedUnder
-			result.setStoredUnder(this.storedUnder);
 			//preservation
 			result.setPreservation(this.preservation);
 			//status

@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -407,11 +406,6 @@ public class DerivedUnitFacade {
 		for (String facadePath : propertyPaths) {
 			// determinations (DeterminationEvent)
 			if (facadePath.startsWith("determinations")) {
-				facadePath = "" + facadePath; // no change
-				result.add(facadePath);
-			}
-			// storedUnder (TaxonName)
-			else if (facadePath.startsWith("storedUnder")) {
 				facadePath = "" + facadePath; // no change
 				result.add(facadePath);
 			}
@@ -2230,18 +2224,6 @@ public class DerivedUnitFacade {
         baseUnit().setPreferredStableUri(stableUri);
     }
 
-
-	// Stored under name
-	@Transient
-	public TaxonName getStoredUnder() {
-		return ! checkDerivedUnit()? null : derivedUnit.getStoredUnder();
-	}
-
-	public void setStoredUnder(TaxonName storedUnder) {
-		testDerivedUnit();
-		derivedUnit.setStoredUnder(storedUnder);
-	}
-
 	// title cache
 	public String getTitleCache() {
 		SpecimenOrObservationBase<?> titledUnit = baseUnit();
@@ -2489,19 +2471,17 @@ public class DerivedUnitFacade {
 	 * @param collection
 	 * @param catalogNumber
 	 * @param accessionNumber
-	 * @param storedUnder
 	 * @param preservation
 	 * @return
 	 */
 	public DerivedUnit addDuplicate(Collection collection, String catalogNumber,
-			String accessionNumber, TaxonName storedUnder, PreservationMethod preservation){
+			String accessionNumber, PreservationMethod preservation){
 		testDerivedUnit();
 		DerivedUnit duplicate = DerivedUnit.NewPreservedSpecimenInstance();
 		duplicate.setDerivedFrom(getDerivationEvent(CREATE));
 		duplicate.setCollection(collection);
 		duplicate.setCatalogNumber(catalogNumber);
 		duplicate.setAccessionNumber(accessionNumber);
-		duplicate.setStoredUnder(storedUnder);
 		duplicate.setPreservation(preservation);
 		return duplicate;
 	}

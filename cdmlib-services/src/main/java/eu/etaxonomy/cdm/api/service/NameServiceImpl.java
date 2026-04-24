@@ -1015,17 +1015,9 @@ public class NameServiceImpl
         }
         Set<CdmBase> referencingObjects = genericDao.getReferencingObjectsForDeletion(name);
         for (CdmBase referencingObject : referencingObjects){
-            //DerivedUnit?.storedUnder
-            if (referencingObject.isInstanceOf(DerivedUnit.class)){
-                String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
-                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
-                result.addException(new ReferencedObjectUndeletableException(message));
-                result.addRelatedObject(referencingObject);
-                result.setAbort();
-            }
 
             //DescriptionElementSource#nameUsedInSource
-            else if (referencingObject.isInstanceOf(DescriptionElementSource.class) && !referencingObject.isInstanceOf(NomenclaturalSource.class) ){
+            if (referencingObject.isInstanceOf(DescriptionElementSource.class) && !referencingObject.isInstanceOf(NomenclaturalSource.class) ){
                 String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(referencingObject);

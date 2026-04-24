@@ -53,9 +53,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -118,8 +115,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     String accessionNumber = "888462535";
     String catalogNumber = "UU879873590";
-    TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies",
-            null, null, null, null, null, null, null);
     String collectorsNumber = "234589913A34";
     Collection collection = Collection.NewInstance();
     PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
@@ -177,7 +172,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
         specimen.setAccessionNumber(accessionNumber);
         specimen.setCatalogNumber(catalogNumber);
-        specimen.setStoredUnder(taxonName);
         specimen.setCollection(collection);
         specimen.setPreservation(preservationMethod);
         specimen.setOriginalLabelInfo(originalLabelInfo);
@@ -1549,23 +1543,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 newURI, specimenFacade.getPreferredStableUri());
     }
 
-
-
-    /**
-     * Test method for
-     * {@link eu.etaxonomy.cdm.facade.DerivedUnitFacade#getStoredUnder()}.
-     */
-    @Test
-    public void testGetStoredUnder() {
-        assertNotNull("Stored under name must not be null",
-                specimenFacade.getStoredUnder());
-        assertEquals("Stored under name must be same", taxonName,
-                specimenFacade.getStoredUnder());
-        specimenFacade.setStoredUnder(null);
-        assertNull("Stored under name must be null",
-                specimenFacade.getStoredUnder());
-    }
-
 //	/**
 //	 * Test method for
 //	 * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getCollectorsNumber()}
@@ -1692,11 +1669,9 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Collection newCollection = Collection.NewInstance();
         String catalogNumber = "1234890";
         String accessionNumber = "345345";
-        TaxonName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         PreservationMethod method = PreservationMethod.NewInstance();
         DerivedUnit duplicateSpecimen = specimenFacade.addDuplicate(newCollection,
-				catalogNumber, accessionNumber, storedUnder,
-			    method);
+				catalogNumber, accessionNumber, method);
         assertEquals("There should be 2 duplicates now", 2,
                 specimenFacade.getDuplicates().size());
         specimenFacade.removeDuplicate(newSpecimen2);

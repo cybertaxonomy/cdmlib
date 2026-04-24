@@ -4772,7 +4772,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         COLLECTION_ID integer,
         DERIVEDFROM_ID integer,
         PRESERVATION_ID integer,
-        STOREDUNDER_ID integer,
         DNAQUALITY_ID integer,
         GATHERINGEVENT_ID integer,
         PRIMARYCOLLECTOR_ID integer,
@@ -4829,7 +4828,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         COLLECTION_ID integer,
         DERIVEDFROM_ID integer,
         PRESERVATION_ID integer,
-        STOREDUNDER_ID integer,
         DNAQUALITY_ID integer,
         MEDIASPECIMEN_ID integer,
         FIELDNOTES varchar(255),
@@ -11059,11 +11057,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
        add constraint FKylj8khlb1u8nhd1bxs5g0ysl 
        foreign key (PRESERVATION_ID) 
        references PUBLIC.MATERIALORMETHODEVENT;
-
-    alter table PUBLIC.SPECIMENOROBSERVATIONBASE 
-       add constraint FKq9n9aa56bm0b7tck8a9ji4h6p 
-       foreign key (STOREDUNDER_ID) 
-       references PUBLIC.TAXONNAME;
 
     alter table PUBLIC.SPECIMENOROBSERVATIONBASE 
        add constraint FK3fj2x5dmhlpl44gn79km6ujj3 

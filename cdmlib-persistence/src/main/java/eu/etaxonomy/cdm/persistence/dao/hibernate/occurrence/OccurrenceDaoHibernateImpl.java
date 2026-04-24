@@ -256,7 +256,6 @@ public class OccurrenceDaoHibernateImpl
                     Hibernate.initialize(derivedUnit.getCollection().getSuperCollection());
                     Hibernate.initialize(derivedUnit.getCollection().getInstitute());
                 }
-                Hibernate.initialize(derivedUnit.getStoredUnder());
                 SpecimenOrObservationBase<?> original = derivedUnit.getOriginalUnit();
                 if(original != null && original.isInstanceOf(FieldUnit.class)) {
                     FieldUnit fieldUnit = CdmBase.deproxy(original, FieldUnit.class);

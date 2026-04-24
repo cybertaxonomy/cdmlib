@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -86,6 +87,12 @@ public class SchemaUpdater_5540_5580 extends SchemaUpdaterBase {
         stepName = "Remove Annotation_Marker";
         tableName = "Annotation_Marker";
         TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        //#10522 remove storedUnder
+        stepName = "Remove DerivedUnit.storedUnder";
+        tableName = "SpecimenOrObservationBase";
+        columnName = "storedUnder";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT);
 
         return stepList;
     }

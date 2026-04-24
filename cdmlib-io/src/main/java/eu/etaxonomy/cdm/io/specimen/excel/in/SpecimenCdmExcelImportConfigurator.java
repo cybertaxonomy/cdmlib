@@ -53,7 +53,6 @@ public class SpecimenCdmExcelImportConfigurator
 	//if true, determinations are imported also as individualAssociations
 	private boolean makeIndividualAssociations = true;
 	private boolean useMaterialsExaminedForIndividualsAssociations = true;
-	private boolean firstDeterminationIsStoredUnder = false;
 	private boolean determinationsAreDeterminationEvent = true;
 
 	private boolean preferNameCache = true;
@@ -172,14 +171,6 @@ public class SpecimenCdmExcelImportConfigurator
 
 	public boolean isMakeIndividualAssociations() {
 		return makeIndividualAssociations;
-	}
-
-	public boolean isFirstDeterminationIsStoredUnder() {
-		return firstDeterminationIsStoredUnder ;
-	}
-
-	public void setFirstDeterminationIsStoredUnder(boolean firstDeterminationIsStoredUnder) {
-		this.firstDeterminationIsStoredUnder = firstDeterminationIsStoredUnder;
 	}
 
 	public boolean isDeterminationsAreDeterminationEvent() {
