@@ -170,7 +170,6 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {
 
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);
-		specimen.setStoredUnder(taxonName);
 		specimen.setCollection(collection);
 		specimen.setPreservation(preservationMethod);
 		specimen.setExsiccatum(exsiccatum);
