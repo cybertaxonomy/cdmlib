@@ -14,7 +14,6 @@ import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotationDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -37,7 +35,7 @@ public class AnnotationDaoImpl
 	}
 
 	@Override
-	public long count(Person commentator, MarkerType markerType) {
+	public long count(Person commentator) {
 
 	    checkNotInPriorView("AnnotationDaoImpl.count(Person commentator, MarkerType status)");
 
@@ -51,12 +49,6 @@ public class AnnotationDaoImpl
 	        predicates.add(cb.equal(root.get("commentator"), commentator));
 	    }
 
-	    // Add marker type Filter
-	    if (markerType != null) {
-	        Join<Annotation, ?> markersJoin = root.join("markers");
-	        predicates.add(cb.equal(markersJoin.get("markerType"), markerType));
-	    }
-
 	    cq.select(cb.countDistinct(root.get("id")))
 	      .where(predicateAnd(cb, predicates));
 
@@ -64,7 +56,7 @@ public class AnnotationDaoImpl
 	}
 
 	@Override
-    public List<Annotation> list(Person commentator, MarkerType markerType, Integer pageSize,
+    public List<Annotation> list(Person commentator, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
 	    checkNotInPriorView("AnnotationDaoImpl.list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber)");
@@ -80,12 +72,6 @@ public class AnnotationDaoImpl
 //          root.join("commentator", JoinType.LEFT);  //not needed as long as we do not order on any commentator attributes like commentator.titleCache
         }
 
-        // Add marker type Filter
-        if (markerType != null) {
-            Join<Annotation, ?> markersJoin = root.join("markers");
-            predicates.add(cb.equal(markersJoin.get("markerType"), markerType));
-        }
-
         cq.select(root)
           .where(predicateAnd(cb, predicates))
           .orderBy(ordersFrom(cb, root, orderHints));
@@ -98,7 +84,7 @@ public class AnnotationDaoImpl
 	}
 
 	@Override
-    public long count(User creator, MarkerType markerType) {
+    public long count(User creator) {
 
 	    checkNotInPriorView("AnnotationDaoImpl.count(User creator, MarkerType statu)");
 
@@ -112,12 +98,6 @@ public class AnnotationDaoImpl
             predicates.add(cb.equal(root.get("createdBy"), creator));
         }
 
-        // Add marker type Filter
-        if (markerType != null) {
-            Join<Annotation, ?> markersJoin = root.join("markers");
-            predicates.add(cb.equal(markersJoin.get("markerType"), markerType));
-        }
-
         cq.select(cb.countDistinct(root.get("id")));
 
         if (!predicates.isEmpty()) {
@@ -128,7 +108,7 @@ public class AnnotationDaoImpl
 	}
 
 	@Override
-    public List<Annotation> list(User creator, MarkerType markerType, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
+    public List<Annotation> list(User creator, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
 
 	    checkNotInPriorView("AnnotationDaoImpl.list(User creator, MarkerType status,	Integer pageSize, Integer pageNumber)");
 
@@ -140,12 +120,6 @@ public class AnnotationDaoImpl
 
         if (creator != null) {
             predicates.add(cb.equal(root.get("createdBy"), creator));
-        }
-
-        // Add marker type Filter
-        if (markerType != null) {
-            Join<Annotation, ?> markersJoin = root.join("markers");
-            predicates.add(cb.equal(markersJoin.get("markerType"), markerType));
         }
 
         cq.select(root);

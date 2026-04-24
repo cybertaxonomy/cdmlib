@@ -6,12 +6,4 @@
     <ANNOTATION ID="3" CREATED="2008-12-10 09:56:09.0" UUID="16a7ab58-3f63-4454-a648-4ef5ce05062e" TEXT="Etiam mauris. Proin ullamcorper ullamcorper ante. Sed vitae sem a dui mattis varius. "/>
     <ANNOTATION ID="4" CREATED="2008-12-10 09:56:10.0" UUID="bdbf3f43-6b56-4589-96a0-f77e0c706d00" TEXT="Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos."/>
     <ANNOTATION ID="5" CREATED="2008-12-10 09:56:11.0" UUID="76ff6174-a650-4cd8-88a0-cc140a1cbff2" TEXT="Cras aliquam, erat sed tempus vehicula, ante sem convallis eros, in faucibus eros quam eu diam. "/>
-    <ANNOTATION_ANNOTATION ANNOTATION_ID="1" ANNOTATIONS_ID="2"/>
-    <ANNOTATION_ANNOTATION ANNOTATION_ID="1" ANNOTATIONS_ID="3"/>
-    <ANNOTATION_ANNOTATION ANNOTATION_ID="1" ANNOTATIONS_ID="4"/>
-    <ANNOTATION_ANNOTATION ANNOTATION_ID="1" ANNOTATIONS_ID="5"/>
-    <ANNOTATION_MARKER ANNOTATION_ID="2" MARKERS_ID="1"/>
-    <ANNOTATION_MARKER ANNOTATION_ID="3" MARKERS_ID="2"/>
-    <MARKER ID="1" CREATED="2008-12-10 09:56:07.0" UUID="4a3e2cf8-64d4-4b61-8579-364780afb7cb" FLAG="true" MARKERTYPE_ID="893"/>
-    <MARKER ID="2" CREATED="2008-12-10 09:56:07.0" UUID="564c04a5-ecb8-49df-a578-1671a68a5d30" FLAG="true" MARKERTYPE_ID="893"/>
 </dataset>

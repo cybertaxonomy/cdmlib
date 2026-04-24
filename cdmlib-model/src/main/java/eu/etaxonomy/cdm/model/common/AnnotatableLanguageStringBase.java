@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
  * @since 25.04.2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "LanguageStringBase", propOrder = {
+@XmlType(name = "AnnotatableLanguageStringBase", propOrder = {
     "text",
     "language"
 })
