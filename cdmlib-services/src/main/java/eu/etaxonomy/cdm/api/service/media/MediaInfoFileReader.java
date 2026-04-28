@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.imaging.ImageInfo;
-import org.apache.commons.imaging.ImageReadException;
+import org.apache.commons.imaging.ImagingException;
 import org.apache.commons.imaging.Imaging;
 import org.apache.commons.imaging.common.GenericImageMetadata.GenericImageMetadataItem;
 import org.apache.commons.imaging.common.ImageMetadata;
@@ -114,7 +114,7 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
         try {
             InputStream inputStream = UriUtils.getInputStream(cdmImageInfo.getUri());
             mediaData = Imaging.getMetadata(inputStream, null);
-        }catch (ImageReadException e) {
+        }catch (ImagingException e) {
             String newMessage = "Could not read: " + cdmImageInfo.getUri() + ". " + e.getMessage();
             throw new IOException(newMessage, e);
         }catch (IOException e) {
