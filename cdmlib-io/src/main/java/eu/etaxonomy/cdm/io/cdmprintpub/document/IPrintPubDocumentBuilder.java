@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.io.cdmprintpub.document;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubContext;
 
 /**
  * Interface for building the layout of a Print/Publication document.
@@ -18,5 +17,5 @@ import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubContext;
  * @date Feb 13, 2026
  */
 public interface IPrintPubDocumentBuilder {
-    void buildLayout(PrintPubExportState state, PrintPubContext context);
+    void buildLayout(PrintPubExportState state);
 }

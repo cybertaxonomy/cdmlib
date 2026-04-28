@@ -22,11 +22,10 @@ import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportConfigurator;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubContext;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubFactDTO;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubSynonymDTO;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubSynonymGroupDTO;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubTaxonSummaryDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubFactDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubSynonymDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubSynonymGroupDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -55,8 +54,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 @Component
 public class PrintPubDtoMapper {
 
-    public PrintPubTaxonSummaryDTO mapNodeToDto(TaxonNode node, int referenceDepth, PrintPubExportState state,
-            PrintPubContext context) {
+    public PrintPubTaxonSummaryDTO mapNodeToDto(TaxonNode node, int referenceDepth, PrintPubExportState state) {
         if (node == null || node.getTaxon() == null) {
             return null;
         }
@@ -82,23 +80,23 @@ public class PrintPubDtoMapper {
         }
 
         if (state.getConfig().isDoSynonyms()) {
-            extractSynonymGroups(state, context, taxon, dto);
+            extractSynonymGroups(state, taxon, dto);
         }
 
         if (state.getConfig().isDoFactualData()) {
-            extractDescriptionData(state, context, taxon, dto);
+            extractDescriptionData(state, taxon, dto);
         }
 
         if (state.getConfig().isIncludeTaxonomicConceptReference() && taxon.getSec() != null) {
             Reference ref = HibernateProxyHelper.deproxy(taxon.getSec());
-            context.addReference(ref);
+            state.addReference(ref);
             dto.secReferenceCitation = ref.getTitleCache();
         }
 
         return dto;
     }
 
-    private void extractSynonymGroups(PrintPubExportState state, PrintPubContext context, Taxon taxon,
+    private void extractSynonymGroups(PrintPubExportState state, Taxon taxon,
             PrintPubTaxonSummaryDTO dto) {
 
         HomotypicalGroup acceptedGroup = taxon.getHomotypicGroup();
@@ -110,7 +108,7 @@ public class PrintPubDtoMapper {
             PrintPubSynonymGroupDTO homotypicGroupDTO = new PrintPubSynonymGroupDTO();
             homotypicGroupDTO.isHomotypic = true;
             for (Synonym syn : homotypicSynonyms) {
-                homotypicGroupDTO.synonyms.add(createSynonymDTO(state, context, syn));
+                homotypicGroupDTO.synonyms.add(createSynonymDTO(state, syn));
             }
             dto.synonymGroups.add(homotypicGroupDTO);
         }
@@ -125,7 +123,7 @@ public class PrintPubDtoMapper {
                 PrintPubSynonymGroupDTO heteroGroupDTO = new PrintPubSynonymGroupDTO();
                 heteroGroupDTO.isHomotypic = false;
                 for (Synonym syn : groupSynonyms) {
-                    heteroGroupDTO.synonyms.add(createSynonymDTO(state, context, syn));
+                    heteroGroupDTO.synonyms.add(createSynonymDTO(state, syn));
                 }
                 dto.synonymGroups.add(heteroGroupDTO);
             }
@@ -139,7 +137,7 @@ public class PrintPubDtoMapper {
         synonyms.removeIf(syn -> syn.getType() == null);
     }
 
-    private PrintPubSynonymDTO createSynonymDTO(PrintPubExportState state, PrintPubContext context, Synonym syn) {
+    private PrintPubSynonymDTO createSynonymDTO(PrintPubExportState state, Synonym syn) {
 
         syn = CdmBase.deproxy(syn);
         PrintPubSynonymDTO synDTO = new PrintPubSynonymDTO();
@@ -166,7 +164,7 @@ public class PrintPubDtoMapper {
 
         if (state.getConfig().isIncludeSynonymConceptReference() && syn.getSec() != null) {
             Reference ref = HibernateProxyHelper.deproxy(syn.getSec());
-            context.addReference(ref);
+            state.addReference(ref);
             synDTO.secReference = ref.getTitleCache();
         }
 
@@ -241,7 +239,7 @@ public class PrintPubDtoMapper {
         return typeDesignations;
     }
 
-    private void extractDescriptionData(PrintPubExportState state, PrintPubContext context, Taxon taxon,
+    private void extractDescriptionData(PrintPubExportState state, Taxon taxon,
             PrintPubTaxonSummaryDTO dto) {
         for (TaxonDescription desc : taxon.getDescriptions()) {
             if (!state.getConfig().isIncludeUnpublishedFacts() && !desc.isPublish()) {
@@ -272,7 +270,7 @@ public class PrintPubDtoMapper {
                         for (DescriptionElementSource source : element.getSources()) {
                             if (source.getCitation() != null) {
                                 Reference ref = HibernateProxyHelper.deproxy(source.getCitation());
-                                context.addReference(ref);
+                                state.addReference(ref);
                                 String shortCit = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(ref, null);
                                 fact.citation = (fact.citation == null) ? shortCit : fact.citation + "; " + shortCit;
                             }

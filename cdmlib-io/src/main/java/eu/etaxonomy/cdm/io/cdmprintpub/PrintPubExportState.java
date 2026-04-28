@@ -1,98 +1,186 @@
 /**
-* Copyright (C) 2026 EDIT
-* European Distributed Institute of Taxonomy
-* http://www.e-taxonomy.eu
-*
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2026 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.io.cdmprintpub;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.document.PrintPubDocumentModel;
 import eu.etaxonomy.cdm.io.cdmprintpub.render.PrintPubExportResultProcessor;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportStateBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
+ * Central export state for Print/Pub classification exports.
+ *
+ * <p>
+ * This class is the single source of truth during export execution: it holds
+ * lifecycle state, collected export output (taxa, references), and rendering
+ * coordination helpers.
+ * </p>
+ *
  * @author veldmap97
  * @date Dec 2, 2025
  */
 public class PrintPubExportState extends TaxonTreeExportStateBase<PrintPubExportConfigurator, PrintPubExportState> {
 
-    private PrintPubDocumentModel documentModel;
+	// ======================
+	// Collected export output (formerly PrintPubContext)
+	// ======================
 
-    private PrintPubExportResultProcessor processor;
-    private ExportResult result;
+	private final List<PrintPubTaxonSummaryDTO> taxonList = new ArrayList<>();
+	private final Map<UUID, Reference> referenceStore = new HashMap<>();
 
-    private TaxonBase<?> currentTaxon;
+	// ======================
+	// Export lifecycle
+	// ======================
 
-    private Set<String> printedElementIds = new HashSet<>();
+	private final PrintPubDocumentModel documentModel;
+	private final PrintPubExportResultProcessor processor;
+	private ExportResult result;
 
-    private Map<String, Integer> shortCitationCounter = new HashMap<>();
+	private TaxonBase<?> currentTaxon;
 
-    public PrintPubExportState(PrintPubExportConfigurator config) {
-        super(config);
-        this.result = ExportResult.NewInstance(config.getResultType());
-        this.documentModel = new PrintPubDocumentModel();
-        this.processor = new PrintPubExportResultProcessor(this);
-    }
+	// ======================
+	// Rendering / bookkeeping helpers
+	// ======================
 
-    @Override
-    public ExportResult getResult() {
-        return result;
-    }
+	private final Set<String> printedElementIds = new HashSet<>();
+	private final Map<String, Integer> shortCitationCounter = new HashMap<>();
 
-    @Override
-    public void setResult(ExportResult result) {
-        this.result = result;
-    }
+	// ======================
+	// Constructor
+	// ======================
 
-    public PrintPubDocumentModel getDocumentModel() {
-        return documentModel;
-    }
+	public PrintPubExportState(PrintPubExportConfigurator config) {
+		super(config);
+		this.result = ExportResult.NewInstance(config.getResultType());
+		this.documentModel = new PrintPubDocumentModel();
+		this.processor = new PrintPubExportResultProcessor(this);
+	}
 
-    public PrintPubExportResultProcessor getProcessor() {
-        return processor;
-    }
+	// ======================
+	// ExportResult handling
+	// ======================
 
-    public TaxonBase<?> getCurrentTaxon() {
-        return currentTaxon;
-    }
+	@Override
+	public ExportResult getResult() {
+		return result;
+	}
 
-    public void setCurrentTaxon(TaxonBase<?> currentTaxon) {
-        this.currentTaxon = currentTaxon;
-    }
+	@Override
+	public void setResult(ExportResult result) {
+		this.result = result;
+	}
 
-    public boolean hasPrinted(UUID uuid) {
-        return printedElementIds.contains(uuid.toString());
-    }
+	// ======================
+	// Document / processor access
+	// ======================
 
-    public void markAsPrinted(UUID uuid) {
-        printedElementIds.add(uuid.toString());
-    }
+	public PrintPubDocumentModel getDocumentModel() {
+		return documentModel;
+	}
 
+	public PrintPubExportResultProcessor getProcessor() {
+		return processor;
+	}
 
-    public String incrementShortCitation(String shortCitation) {
-        Integer counter = shortCitationCounter.getOrDefault(shortCitation, 0);
-        shortCitationCounter.put(shortCitation, counter + 1);
-        return counterToString(counter);
-    }
+	// ======================
+	// Taxon traversal context
+	// ======================
 
-    private String counterToString(Integer counter) {
-        if (counter == 0) {
-            return "";
-        }
-        int finalCounter = 'a' + counter - 1;
-        if (finalCounter >= 'j') {
-            finalCounter++;
-        }
-        return Character.toString((char) (finalCounter));
-    }
+	public TaxonBase<?> getCurrentTaxon() {
+		return currentTaxon;
+	}
+
+	public void setCurrentTaxon(TaxonBase<?> currentTaxon) {
+		this.currentTaxon = currentTaxon;
+	}
+
+	// ======================
+	// Collected taxa
+	// ======================
+
+	public void addTaxon(PrintPubTaxonSummaryDTO dto) {
+		if (dto != null) {
+			taxonList.add(dto);
+		}
+	}
+
+	public List<PrintPubTaxonSummaryDTO> getTaxa() {
+		return taxonList;
+	}
+
+	// ======================
+	// Bibliographic references
+	// ======================
+
+	public void addReference(Reference ref) {
+		if (ref != null) {
+			referenceStore.putIfAbsent(ref.getUuid(), ref);
+		}
+	}
+
+	public List<Reference> getSortedBibliography() {
+		List<Reference> refs = new ArrayList<>(referenceStore.values());
+		refs.sort(Comparator.comparing(Reference::getTitleCache, Comparator.nullsLast(String::compareTo)));
+		return refs;
+	}
+
+	// ======================
+	// Rendering helpers
+	// ======================
+
+	public boolean hasPrinted(UUID uuid) {
+		return printedElementIds.contains(uuid.toString());
+	}
+
+	public void markAsPrinted(UUID uuid) {
+		printedElementIds.add(uuid.toString());
+	}
+
+	// ======================
+	// Short citation disambiguation
+	// ======================
+
+	public String incrementShortCitation(String shortCitation) {
+		Integer counter = shortCitationCounter.getOrDefault(shortCitation, 0);
+		shortCitationCounter.put(shortCitation, counter + 1);
+		return counterToString(counter);
+	}
+
+	// ======================
+	// Additional Methods
+	// ======================
+
+	private String counterToString(Integer counter) {
+		if (counter == 0) {
+			return "";
+		}
+		int finalCounter = 'a' + counter - 1;
+		if (finalCounter >= 'j') { // skip 'j'
+			finalCounter++;
+		}
+		return Character.toString((char) finalCounter);
+	}
+
+	public void clearCollectedReferences() {
+		referenceStore.clear();
+	}
+
 }
