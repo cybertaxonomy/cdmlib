@@ -348,7 +348,7 @@ public abstract class TaxonPageDtoLoaderBase {
                 hgDto.getSynSecSources() == null?
                         Optional.empty()
                         : hgDto.getSynSecSources().getItems().stream().filter(s->sourceMatches(s, newSource)).findFirst();
-        if (matching.isEmpty()){
+        if (!matching.isPresent()){
             hgDto.addSynSecSource(newSource);
         }else{
             mergeSource(matching.get(), newSource);

@@ -64,7 +64,7 @@ public class PasswordResetTokenStoreTest extends CdmTransactionalIntegrationTest
         String token = passwordResetTokenStore.create(USER_EMAIL, testUser).getToken();
         assertFalse(passwordResetTokenStore.isEligibleToken(token));
         Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findRequest(token);
-        assertTrue(resetRequest.isEmpty());
+        assertTrue(!resetRequest.isPresent());
     }
 
     @Test
@@ -72,7 +72,7 @@ public class PasswordResetTokenStoreTest extends CdmTransactionalIntegrationTest
         String unknownToken = "un-known-token";
         assertFalse(passwordResetTokenStore.isEligibleToken(unknownToken));
         Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findRequest(unknownToken);
-        assertTrue(resetRequest.isEmpty());
+        assertTrue(!resetRequest.isPresent());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class PasswordResetTokenStoreTest extends CdmTransactionalIntegrationTest
         String nullToken = null;
         assertFalse(passwordResetTokenStore.isEligibleToken(nullToken));
         Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findRequest(nullToken);
-        assertTrue(resetRequest.isEmpty());
+        assertTrue(!resetRequest.isPresent());
     }
 
 

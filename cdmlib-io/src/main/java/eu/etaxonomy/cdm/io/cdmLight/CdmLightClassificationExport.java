@@ -2309,7 +2309,7 @@ public class CdmLightClassificationExport
         }
 
         Optional<SecundumSource> match = synSecSources.stream().filter(s->sourceMatches(s, newSource)).findFirst();
-        if (match.isEmpty()){
+        if (!match.isPresent()){
             synSecSources.add(newSource);
         }
     }

@@ -566,7 +566,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		// create configurator needed to call
 		// StatisticsService.getCountStatistics:
 		List<StatisticsConfigurator> configuratorList = createConfiguratorList(
-				(String[]) PARTS.toArray(String[]::new), TYPES);
+				(String[]) PARTS.toArray(new String[0]), TYPES);
 
 		// run method of StatisticsService
 		List<Statistics> statisticsList = service.getCountStatistics(configuratorList);

@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.UUID;
@@ -79,7 +80,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
           boolean omitTermLoading = true;
 
           String tmpDirLocation = System.getProperty("java.io.tmpdir");
-          Path path = Path.of(tmpDirLocation, "testVoc");
+          Path path = Paths.get(tmpDirLocation, "testVoc");
 
           ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("testVoc", "sa", "", path.toString());
           otherRepository = CdmApplicationController.NewInstance(dataSource,
