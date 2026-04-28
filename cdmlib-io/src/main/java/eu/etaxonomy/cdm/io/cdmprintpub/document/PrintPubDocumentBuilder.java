@@ -18,11 +18,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubContext;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubFactDTO;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubSynonymDTO;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubSynonymGroupDTO;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubTaxonSummaryDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubFactDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubSynonymDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubSynonymGroupDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.render.PrintPubTextRunElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.util.PrintPubNonNestedHtmlTokenConverter;
 import eu.etaxonomy.cdm.io.cdmprintpub.util.PrintPubNonNestedHtmlTokenizer;
@@ -38,14 +37,14 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
 
     @Override
-    protected void buildContent(PrintPubExportState state, PrintPubContext context) {
+    protected void buildContent(PrintPubExportState state) {
         state.getConfig().setGenerateScientificNameIndex(false);
         state.getConfig().setGenerateCommonNameIndex(false);
         state.getConfig().setAppendIdentifierList(false);
-        context.referenceStore.clear();
+        state.clearCollectedReferences();
         state.getProcessor().add(new PrintPubSectionHeader("Taxonomic Hierarchy", 1));
 
-        for (PrintPubTaxonSummaryDTO dto : context.taxonList) {
+        for (PrintPubTaxonSummaryDTO dto : state.getTaxa()) {
             renderTaxon(state, dto);
         }
     }

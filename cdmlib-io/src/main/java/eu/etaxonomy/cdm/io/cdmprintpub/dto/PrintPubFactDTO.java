@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.io.cdmprintpub.context;
+package eu.etaxonomy.cdm.io.cdmprintpub.dto;
 
 public class PrintPubFactDTO {
     public String label;

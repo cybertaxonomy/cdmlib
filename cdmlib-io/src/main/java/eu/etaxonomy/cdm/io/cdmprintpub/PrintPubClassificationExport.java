@@ -16,9 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubContext;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.document.PrintPubDocumentBuilder;
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.mapper.PrintPubDtoMapper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
@@ -44,8 +43,7 @@ public class PrintPubClassificationExport
     @Transactional(readOnly = true)
     protected void doInvoke(PrintPubExportState state) {
         IProgressMonitor monitor = state.getConfig().getProgressMonitor();
-        PrintPubContext context = new PrintPubContext();
-
+        
         try {
 
             monitor.beginTask("Exporting Classification to Print/Pub", IProgressMonitor.UNKNOWN);
@@ -88,9 +86,9 @@ public class PrintPubClassificationExport
                     }
                 }
 
-                PrintPubTaxonSummaryDTO dto = mapper.mapNodeToDto(node, referenceDepth, state, context);
+                PrintPubTaxonSummaryDTO dto = mapper.mapNodeToDto(node, referenceDepth, state);
                 if (dto != null) {
-                    context.addTaxon(dto);
+                    state.addTaxon(dto);
                 }
 
                 node = partitioner.next();
@@ -101,7 +99,7 @@ public class PrintPubClassificationExport
             }
 
             monitor.subTask("Generating document layout (PDF/HTML)...");
-            builder.buildLayout(state, context);
+            builder.buildLayout(state);
 
             monitor.worked(10);
         } catch (Exception e) {

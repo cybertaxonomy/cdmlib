@@ -1,11 +1,11 @@
 /**
-* Copyright (C) 2025 EDIT
-* European Distributed Institute of Taxonomy
-* http://www.e-taxonomy.eu
-*
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2025 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.io.cdmprintpub.document;
 
 import java.util.Comparator;
@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubContext;
-import eu.etaxonomy.cdm.io.cdmprintpub.context.PrintPubTaxonSummaryDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * Base implementation of the document builder using the Template Method pattern.
- * Enforces a standard document structure: Header -> Body (Abstract) -> Bibliography -> Indices.
+ * Enforces a standard document structure:
+ * Header -> Content -> Bibliography -> Indices -> Appendix.
  *
  * @author veldmap97
  * @date Feb 13, 2026
@@ -27,88 +27,111 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public abstract class AbstractPrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
 
     /**
-     * The Template Method. It is final to prevent subclasses from changing the
-     * overall document flow (Header -> Content -> Biblio -> Indices).
+     * The Template Method.
+     * Final to enforce the canonical document flow.
      */
-	@Override
-    public final void buildLayout(PrintPubExportState state, PrintPubContext context) {
-        buildHeader(state, context);
+    @Override
+    public final void buildLayout(PrintPubExportState state) {
 
-        // Hook for subclasses to implement the specific layout logic
-        buildContent(state, context);
+        buildHeader(state);
 
-        // FIX: Check if references exist instead of calling undefined config method
-        if (!context.referenceStore.isEmpty()) {
-             buildBibliography(state, context);
+        buildContent(state);
+
+        if (!state.getSortedBibliography().isEmpty()) {
+            buildBibliography(state);
         }
 
-        buildIndices(state, context);
+        buildIndices(state);
 
         if (state.getConfig().isAppendIdentifierList()) {
-            buildAppendix(state, context);
+            buildAppendix(state);
         }
     }
 
     /**
-     * Abstract method that subclasses must implement to render the main taxonomic content.
+     * Subclasses render the main taxonomic content here.
      */
-    protected abstract void buildContent(PrintPubExportState state, PrintPubContext context);
+    protected abstract void buildContent(PrintPubExportState state);
 
-    // --- Shared Implementations ---
+    // ======================
+    // Shared building blocks
+    // ======================
 
-    protected void buildHeader(PrintPubExportState state, PrintPubContext context) {
-        state.getProcessor().add(new PrintPubSectionHeader(state.getConfig().getDocumentTitle(), 1));
-        state.getProcessor().add(new PrintPubParagraphElement("Total Taxa: " + context.taxonList.size()));
+    protected void buildHeader(PrintPubExportState state) {
+        state.getProcessor().add(
+                new PrintPubSectionHeader(state.getConfig().getDocumentTitle(), 1)
+        );
+        state.getProcessor().add(
+                new PrintPubParagraphElement("Total Taxa: " + state.getTaxa().size())
+        );
         state.getProcessor().add(new PrintPubPageBreakElement());
     }
 
-    protected void buildBibliography(PrintPubExportState state, PrintPubContext context) {
-        if (context.referenceStore.isEmpty()) {
+    protected void buildBibliography(PrintPubExportState state) {
+        List<Reference> bibliography = state.getSortedBibliography();
+        if (bibliography.isEmpty()) {
             return;
         }
 
         state.getProcessor().add(new PrintPubPageBreakElement());
         state.getProcessor().add(new PrintPubSectionHeader("Bibliography", 1));
 
-        for (Reference ref : context.getSortedBibliography()) {
-            state.getProcessor().add(new PrintPubParagraphElement(ref.getTitleCache()));
+        for (Reference ref : bibliography) {
+            state.getProcessor().add(
+                    new PrintPubParagraphElement(ref.getTitleCache())
+            );
         }
     }
 
-    protected void buildIndices(PrintPubExportState state, PrintPubContext context) {
-        // Index: Scientific Names
+    protected void buildIndices(PrintPubExportState state) {
+
+        // ---- Scientific name index ----
         if (state.getConfig().isGenerateScientificNameIndex()) {
             state.getProcessor().add(new PrintPubPageBreakElement());
-            state.getProcessor().add(new PrintPubSectionHeader("Index to Scientific Names", 1));
+            state.getProcessor().add(
+                    new PrintPubSectionHeader("Index to Scientific Names", 1)
+            );
 
-            List<PrintPubTaxonSummaryDTO> sortedTaxa = context.taxonList.stream()
-                    .sorted(Comparator.comparing(t -> t.titleCache))
-                    .collect(Collectors.toList());
+            List<PrintPubTaxonSummaryDTO> sortedTaxa =
+                    state.getTaxa().stream()
+                            .sorted(Comparator.comparing(t -> t.titleCache))
+                            .collect(Collectors.toList());
 
             for (PrintPubTaxonSummaryDTO dto : sortedTaxa) {
-                state.getProcessor().add(new PrintPubParagraphElement(dto.titleCache));
+                state.getProcessor().add(
+                        new PrintPubParagraphElement(dto.titleCache)
+                );
             }
         }
 
-        // Index: Common Names
+        // ---- Common name index ----
         if (state.getConfig().isGenerateCommonNameIndex()) {
             state.getProcessor().add(new PrintPubPageBreakElement());
-            state.getProcessor().add(new PrintPubSectionHeader("Index to Common Names", 1));
+            state.getProcessor().add(
+                    new PrintPubSectionHeader("Index to Common Names", 1)
+            );
 
-            context.taxonList.stream()
-                .flatMap(dto -> dto.commonNames.stream())
-                .sorted()
-                .forEach(commonName -> state.getProcessor().add(new PrintPubParagraphElement(commonName)));
+            state.getTaxa().stream()
+                    .flatMap(dto -> dto.commonNames.stream())
+                    .sorted()
+                    .forEach(commonName ->
+                            state.getProcessor().add(
+                                    new PrintPubParagraphElement(commonName)
+                            )
+                    );
         }
     }
 
-    protected void buildAppendix(PrintPubExportState state, PrintPubContext context) {
+    protected void buildAppendix(PrintPubExportState state) {
         state.getProcessor().add(new PrintPubPageBreakElement());
-        state.getProcessor().add(new PrintPubSectionHeader("Appendix: Digital Identifiers", 1));
+        state.getProcessor().add(
+                new PrintPubSectionHeader("Appendix: Digital Identifiers", 1)
+        );
 
-        for (PrintPubTaxonSummaryDTO dto : context.taxonList) {
-            // Basic implementation; subclasses can override if they need specific formatting
-            state.getProcessor().add(new PrintPubParagraphElement(dto.titleCache + " [" + dto.uuid + "]"));
+        for (PrintPubTaxonSummaryDTO dto : state.getTaxa()) {
+            state.getProcessor().add(
+                    new PrintPubParagraphElement(dto.titleCache + " [" + dto.uuid + "]")
+            );
         }
     }
 }
