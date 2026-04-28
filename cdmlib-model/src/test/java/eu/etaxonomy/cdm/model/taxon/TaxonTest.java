@@ -8,10 +8,13 @@
 */
 package eu.etaxonomy.cdm.model.taxon;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,7 +58,7 @@ public class TaxonTest extends EntityTestBase {
 
 	@Before
 	public void setUp() throws Exception {
-		Person linne =new Person("Carl", "Linné", "L.");
+		Person linne = Person.NewInstance("L.", "Linné", null, "Carl");
 		sec= ReferenceFactory.newBook();
 		sec.setAuthorship(linne);
 		sec.setTitleCache("Schönes saftiges Allgäu", true);

@@ -30,11 +30,6 @@ public class CharacterNodeDto extends TermNodeDto {
 
     private static final long serialVersionUID = 7635704848569122836L;
 
-    /**
-     * @param termDto
-     * @param parent
-     * @param position
-     */
     public CharacterNodeDto(CharacterDto characterDto, TermNodeDto parent, int position, TermTreeDto treeDto, UUID uuid, int id, String treeIndex, String path) {
         super(characterDto, parent, position, treeDto, uuid, id, treeIndex, path);
     }
@@ -47,7 +42,7 @@ public class CharacterNodeDto extends TermNodeDto {
             dto.setParentUuid(child.getParent().getUuid());
         }
 
-        List<TermNodeDto> children = new ArrayList();
+        List<TermNodeDto> children = new ArrayList<>();
         for (Object o: child.getChildNodes()){
             if (o instanceof TermNode){
                 TermNode childNode = (TermNode)o;

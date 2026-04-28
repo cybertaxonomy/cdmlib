@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 /**
  * @author a.mueller
- *
  */
 public interface IOrderedTermVocabularyDao extends ICdmEntityDao<OrderedTermVocabulary<DefinedTermBase<?>>> {
 

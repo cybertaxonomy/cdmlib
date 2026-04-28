@@ -48,11 +48,6 @@ public class LSIDAuthorityServiceTest extends CdmIntegrationTest {
 	public void setUp() throws Exception {
 		unknownLsid = new LSID("fred.org", "dagg", "1", null);
 		knownLsid = new LSID("example.org", "taxonconcepts", "1", null);
-		//commented when removing xercesImpl from cdmlib-service dependencies.
-		//Looks like only "ignoreWhitespace" is needed for this test.
-//		XMLUnit.setControlParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-//	    XMLUnit.setTestParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-//	    XMLUnit.setSAXParserFactory("org.apache.xerces.jaxp.SAXParserFactoryImpl");
 	    XMLUnit.setIgnoreWhitespace(true);
 	    ((LsidRegistryImpl)lsidRegistry).init();
 	}

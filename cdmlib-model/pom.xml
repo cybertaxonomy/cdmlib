@@ -118,6 +118,7 @@
   		</plugins>
       </pluginManagement>
   </build>
+  
   <dependencies>
     <dependency>
       <groupId>eu.etaxonomy</groupId>

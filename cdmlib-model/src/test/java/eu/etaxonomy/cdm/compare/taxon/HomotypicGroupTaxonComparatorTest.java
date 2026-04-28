@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-
 import org.apache.commons.collections4.comparators.ReverseComparator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

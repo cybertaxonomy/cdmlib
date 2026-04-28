@@ -11,7 +11,7 @@
     xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://etaxonomy.eu/cdm/model/1.0
-                             ../../../../../../classes/schema/cdm/cdm.xsd">
+                             ../../../../../../../main/resources/schema/cdm/cdm.xsd">
     <Terms>
         <common:Language id="0" uuid="urn-uuid-e9f8cdb7-6819-44e8-95d3-e2d0690c3523" iso639_1="en" iso639_2="eng">
             <common:Representations>

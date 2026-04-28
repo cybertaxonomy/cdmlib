@@ -55,10 +55,7 @@ public class UnitsGatheringArea {
 
     private final ArrayList<DefinedTermBase> areas = new ArrayList<>();
 
-    private boolean useTDWGarea = false;
-
     private TermVocabulary<NamedArea> continentVocabulary = null;
-    private TermVocabulary<Country> countryVocabulary = null;
     private TermVocabulary<NamedArea> specimenImportAreaVocabulary = null;
 
     private DefinedTermBase<?> wbc;
@@ -74,7 +71,6 @@ public class UnitsGatheringArea {
     }
 
     /*
-     * Constructor
      * Set a list of NamedAreas
      */
     public void setAreas(Map<String, String> namedAreaList, ImportConfiguratorBase<?, ?> config, ITermService termService, IVocabularyService vocabularyService){
@@ -85,7 +81,7 @@ public class UnitsGatheringArea {
     /*
      * Return the current list of NamedAreas
      */
-    public ArrayList<DefinedTermBase> getAreas(){
+    public List<DefinedTermBase> getAreas(){
         return this.areas;
     }
 
@@ -100,7 +96,7 @@ public class UnitsGatheringArea {
             logger.info(termService.list(NamedArea.class, 0, 0, null, null));
         }
 
-        HashSet<UUID> areaSet = new HashSet<>();
+        Set<UUID> areaUuidSet = new HashSet<>();
 
         HashMap<String, UUID> matchingTermsToUuid = new HashMap<>();
         for (java.util.Map.Entry<String, String> entry : namedAreaList.entrySet()){
@@ -152,7 +148,7 @@ public class UnitsGatheringArea {
                     createNamedArea(config, termService, vocabularyService, namedAreaStr, namedAreaClass);
                 }
             } else {
-                areaSet.add(areaUUID);
+                areaUuidSet.add(areaUUID);
                 addNamedAreaDecision(namedAreaStr,areaUUID, config);
             }
 
@@ -167,8 +163,8 @@ public class UnitsGatheringArea {
 //                addNamedAreaDecision(areaStr,ar.getUuid(), config);
 //            }
 //        }
-        if (!areaSet.isEmpty()){
-            List<DefinedTermBase> ldtb = termService.find(areaSet);
+        if (!areaUuidSet.isEmpty()){
+            List<DefinedTermBase> ldtb = termService.find(areaUuidSet);
             if (!ldtb.isEmpty()) {
                 this.areas.addAll(ldtb);
             }
@@ -361,10 +357,6 @@ public class UnitsGatheringArea {
             areaUUID = ((TaxonXImportConfigurator) config).getNamedAreaDecision(fullName);
         }
         return areaUUID;
-    }
-
-    public void useTDWGareas(boolean useTDWGarea) {
-        this.useTDWGarea=useTDWGarea;
     }
 
     public DefinedTermBase<?> getCountry() {

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.term;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlElement;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;

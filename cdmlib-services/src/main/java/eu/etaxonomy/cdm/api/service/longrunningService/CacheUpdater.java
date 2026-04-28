@@ -197,7 +197,7 @@ public class CacheUpdater implements Serializable {
 			    result.includeResult(occurrenceService.updateCaches((Class) clazz, null, null, subMonitor));
 
 			}
-//			//Sequence  //currently not identifiable and therefore has not caches
+//			//Sequence  //currently not identifiable and therefore has no caches
 //			else if (Sequence.class.isAssignableFrom(clazz)){
 //				//TODO misuse TaxonService for sequence update, use sequence service when it exists
 //				getTaxonService().updateTitleCache((Class) clazz, null, null, null);
@@ -218,11 +218,10 @@ public class CacheUpdater implements Serializable {
 
 			//unknown class
 			else {
-				String warning = "Unknown identifable entity subclass + " + clazz.getName();
+				String warning = "Unknown identifiable entity subclass + " + clazz.getName();
 				logger.error(warning);
 				result.setAbort();
 				result.addException(new Exception(warning));
-
 			}
 			return result;
 		} catch (Exception e) {

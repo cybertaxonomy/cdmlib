@@ -116,7 +116,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
                 .fromString("35cfb0b3-588d-4eee-9db6-ac9caa44e39a"));
         DerivedUnit specimenB = (DerivedUnit) occurrenceService.load(UUID
                 .fromString("09496534-efd0-44c8-b1ce-01a34a8a0229"));
-        DerivedUnit dnaSample = (DnaSample) occurrenceService.load(UUID
+        DnaSample dnaSample = (DnaSample) occurrenceService.load(UUID
                 .fromString("5995f852-0e78-405c-b849-d923bd6781d9"));
         occurrenceService.saveOrUpdate(specimenA);
         occurrenceService.saveOrUpdate(specimenB);

@@ -102,6 +102,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+    @Override
     public Pager<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         long numberOfResults = dao.countRights(t);
 

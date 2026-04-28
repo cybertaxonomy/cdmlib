@@ -212,6 +212,4 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
     }
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
-
 }

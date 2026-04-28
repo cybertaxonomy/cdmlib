@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -58,7 +57,8 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.MediaSpecimenDefaultCacheStrat
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
-public class MediaSpecimen extends DerivedUnit {
+public class MediaSpecimen
+        extends DerivedUnit {
 
 	private static final long serialVersionUID = -5717424451590705378L;
 	@SuppressWarnings("unused")

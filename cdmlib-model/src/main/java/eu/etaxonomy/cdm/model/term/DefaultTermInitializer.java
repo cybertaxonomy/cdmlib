@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,7 +46,7 @@ public class DefaultTermInitializer implements ITermInitializer {
 		for(VocabularyEnum vocabularyEnum : VocabularyEnum.values()) {
 //			Class<? extends DefinedTermBase<?>> clazz = vocabularyEnum.getClazz();
 			TermVocabulary<?> voc  = termLoader.loadTerms(vocabularyEnum, terms);
-			setDefinedTerms(vocabularyEnum.getClazz(),voc);
+			setDefinedTerms(vocabularyEnum.getClazz(), voc);
 		}
 	}
 

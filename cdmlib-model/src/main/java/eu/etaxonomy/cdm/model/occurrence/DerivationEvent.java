@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -24,7 +25,6 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -223,7 +223,7 @@ public class DerivationEvent extends EventBase {
 			//type
 			result.setType(this.getType());
 			//derivates
-			result.derivatives = new HashSet<DerivedUnit>();
+			result.derivatives = new HashSet<>();
 			for(DerivedUnit derivative : this.derivatives) {
 				result.addDerivative(derivative);
 			}

@@ -1890,7 +1890,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         createTestDataSet();
 
     	TaxonDescription description = save(TaxonDescription.NewInstance(taxWithoutSyn));
-    	SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>> specimen = FieldUnit.NewInstance();
+    	FieldUnit specimen = FieldUnit.NewInstance();
     	UUID uuid = occurenceService.saveOrUpdate(specimen);
     	DescriptionElementBase element = IndividualsAssociation.NewInstance(specimen);
     	description.addElement(element);
@@ -1920,7 +1920,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         createTestDataSet();
 
         TaxonDescription description = TaxonDescription.NewInstance(taxWithoutSyn);
-        SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>> specimen = FieldUnit.NewInstance();
+        FieldUnit specimen = FieldUnit.NewInstance();
         UUID uuid = occurenceService.saveOrUpdate(specimen);
         DescriptionElementBase element = IndividualsAssociation.NewInstance(specimen);
         description.addElement(element);
