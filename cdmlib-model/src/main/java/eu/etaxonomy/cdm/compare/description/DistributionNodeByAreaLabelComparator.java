@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.compare.description;
 import java.util.Comparator;
 import java.util.Set;
 
+
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.TreeNode;

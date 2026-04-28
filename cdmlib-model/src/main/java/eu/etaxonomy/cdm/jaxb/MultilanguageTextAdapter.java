@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.jaxb;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import eu.etaxonomy.cdm.model.common.Language;

@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -681,6 +681,7 @@ public class TaxonRelationshipType
      * handled as pseudo accepted taxon, e.g. because factual data
      * is attached from an import)
      */
+    //NOTE: currently only used in PESI
     public static Set<UUID> pseudoTaxonUuids() {
         Set<UUID> result = new HashSet<>();
         result.add(uuidHomotypicSynonymTaxonRelationship);

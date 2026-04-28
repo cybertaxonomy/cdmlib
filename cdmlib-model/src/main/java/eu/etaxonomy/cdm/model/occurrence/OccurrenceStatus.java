@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -37,8 +38,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OccurrenceStatus", propOrder = {
-    "unit",
-    "type"
+        "unit",
+        "type"
 })
 @Entity
 @Audited

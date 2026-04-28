@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationDTOFactory;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.format.description.DefaultCategoricalDescriptionBuilder;
@@ -159,7 +160,7 @@ public class DescriptiveDataSetService
                             )){
                 rowWrapper = createTaxonRowWrapper(descDto, datasetDto.getUuid(), lang);
             }
-            else if (descDto != null &&descDto.getSpecimenDto() != null && (descDto.getTypes() == null ||
+            else if (descDto != null && descDto.getSpecimenDto() != null && (descDto.getTypes() == null ||
                     !descDto.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))){
                 rowWrapper = createSpecimenRowWrapper(descDto, descriptiveDataSetUuid, lang);
             }
@@ -195,7 +196,7 @@ public class DescriptiveDataSetService
 	                    !descDto.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))){
 	                rowWrapper = createSpecimenRowWrapper(descDto, descriptiveDataSetUuid, lang);
 	            }
-	            if(rowWrapper!=null){
+	            if(rowWrapper != null){
 	                wrappers.add(rowWrapper);
 	            }
 	            monitor.worked(1);
@@ -266,12 +267,31 @@ public class DescriptiveDataSetService
         return defaultDescription;
     }
 
-    private TaxonNodeDto findTaxonNodeForDescription(DescriptionBaseDto description, DescriptiveDataSetBaseDto descriptiveDataSet){
-        UuidAndTitleCache<SpecimenOrObservationBase> specimen = description.getSpecimenDto();
+    private TaxonNodeDto findTaxonNodeForDescription(DescriptionBaseDto specimenDescription, DescriptiveDataSetBaseDto descriptiveDataSet){
+
+        UuidAndTitleCache<SpecimenOrObservationBase> specimen = specimenDescription.getSpecimenDto();
+
         //get taxon node
+        Set<TaxonNodeDto> subtreeFilter = descriptiveDataSet.getSubTreeFilter();
 
+        UUID classificationUuid = null;
+        if (! CdmUtils.isNullSafeEmpty(subtreeFilter)) {
+            classificationUuid = descriptiveDataSet.getSubTreeFilter().iterator().next().getClassificationUUID();
+        }
 
-        return descriptionService.findTaxonNodeDtoForIndividualAssociation(specimen.getUuid(), descriptiveDataSet.getSubTreeFilter().iterator().next().getClassificationUUID());
+        Set<String> treeIndexSet = new HashSet<>();
+        List<TaxonNodeDto> nodes = descriptionService.findTaxonNodesDtoForIndividualAssociation(specimen.getUuid(), classificationUuid);
+        subtreeFilter.stream().forEach(element -> treeIndexSet.add(element.getTreeIndex()));
+
+        for (TaxonNodeDto node: nodes) {
+            for (String treeIndex: treeIndexSet) {
+                if (node.getTreeIndex().startsWith(treeIndex)) {
+                    return node;
+                }
+            }
+        }
+        return null;
+
         //NOTE: don't remove cast as it does not compile on some systems
 //        List<DescriptionBaseDto> descDtos = descriptionService.loadDtos(descriptiveDataSet.getDescriptionUuids());
 //        descriptionService.
@@ -451,21 +471,26 @@ public class DescriptiveDataSetService
         }
     }
 
-    private SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto description, UUID taxonNodeUuid,
-            UUID datasetUuid, Language lang) {
-        TaxonNodeDto taxonNode = taxonNodeService.dto(taxonNodeUuid);
+    private SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto specimenDescription,
+            UUID taxonNodeUuid, UUID datasetUuid, Language lang) {
+
+        TaxonNodeDto taxonNode = null;
+        if (taxonNodeUuid != null) {
+            taxonNode = taxonNodeService.dto(taxonNodeUuid);
+        }
         DescriptiveDataSetBaseDto descriptiveDataSet = getDescriptiveDataSetDtoByUuid(datasetUuid);
 //        UuidAndTitleCache<SpecimenOrObservationBase> specimen = description.getSpecimenDto();
-        SpecimenOrObservationBase<?> specimen = occurrenceService.find(description.getSpecimenDto().getUuid());
+        SpecimenOrObservationBase<?> specimen = occurrenceService.find(specimenDescription.getSpecimenDto().getUuid());
 
         //supplemental information
-        if(taxonNode==null){
-            taxonNode = findTaxonNodeForDescription(description, descriptiveDataSet);
+        if(taxonNode == null){
+            taxonNode = findTaxonNodeForDescription(specimenDescription, descriptiveDataSet);
         }
+
         FieldUnit fieldUnit = null;
         String identifier = null;
         NamedArea country = null;
-        if(taxonNode==null){
+        if(taxonNode == null){
             return null;
         }
         //taxon node was found
@@ -500,9 +525,9 @@ public class DescriptiveDataSetService
 //                use description not specimen for specimenRow
         DescriptionBase<?> specDesc = null;
 
-        for (Object desc: specimen.getDescriptions()) {
-            if (description.getDescriptionUuid().equals(((DescriptionBase<?>)desc).getUuid())) {
-                specDesc = (DescriptionBase<?>)desc;
+        for (SpecimenDescription desc: specimen.getDescriptions()) {
+            if (specimenDescription.getDescriptionUuid().equals(desc.getUuid())) {
+                specDesc = desc;
                 break;
             }
         }
@@ -513,8 +538,8 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto description, UUID descriptiveDataSetUuid, Language lang){
-        return createSpecimenRowWrapper(description, null, descriptiveDataSetUuid, lang);
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(DescriptionBaseDto specimenDescription, UUID descriptiveDataSetUuid, Language lang){
+        return createSpecimenRowWrapper(specimenDescription, null, descriptiveDataSetUuid, lang);
 	}
 
     @Override

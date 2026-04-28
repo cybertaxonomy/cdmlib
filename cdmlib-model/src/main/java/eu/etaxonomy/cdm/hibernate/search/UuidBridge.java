@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.hibernate.search;
 
 import java.util.UUID;
 
+
 import org.hibernate.search.bridge.StringBridge;
 
 /**

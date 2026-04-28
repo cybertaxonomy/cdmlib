@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.compare.taxon;
 
 import java.util.StringTokenizer;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
@@ -57,8 +58,8 @@ import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGro
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Synonym", propOrder = {
-    "acceptedTaxon",
-    "type",
+        "acceptedTaxon",
+        "type",
 })
 @XmlRootElement(name = "Synonym")
 @Entity

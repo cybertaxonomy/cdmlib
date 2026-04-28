@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -31,8 +32,8 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonomicOperation", propOrder = {
-    "type",
-    "timePeriod"
+        "type",
+        "timePeriod"
 })
 @XmlRootElement(name = "TaxonomicOperation")
 @Entity

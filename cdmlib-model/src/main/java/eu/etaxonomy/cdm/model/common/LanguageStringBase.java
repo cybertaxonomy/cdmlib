@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -40,11 +41,11 @@ import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LanguageStringBase", propOrder = {
-    "text",
-    "language"
+        "text",
+        "language"
 })
 @XmlSeeAlso({
-    LanguageString.class
+        LanguageString.class
 })
 @MappedSuperclass
 @Audited

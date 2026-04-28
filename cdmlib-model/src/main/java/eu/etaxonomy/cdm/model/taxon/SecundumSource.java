@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.beans.PropertyChangeListener;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
@@ -17,6 +16,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.hibernate.envers.Audited;
 
@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * @since 15.03.2021
  */
 @XmlType(name = "SecundumSource", propOrder = {
-    })
+        })
 @Entity
 @Audited
 public class SecundumSource extends NamedSourceBase {

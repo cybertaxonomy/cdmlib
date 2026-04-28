@@ -1115,7 +1115,7 @@ public abstract class Cdm2CdmImportBase
 
     protected <T extends VersionableEntity> T handlePersisted(VersionableEntity entity, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         @SuppressWarnings("unchecked")
-        T result = (T)handlePersistedCdmBase((CdmBase)entity, state);
+        T result = (T)handlePersistedCdmBase(entity, state);
         //complete
         result.setUpdatedBy(makeCreatedUpdatedBy(entity.getUpdatedBy(), state, true));
         result.setUpdated(makeCreatedUpdatedWhen(entity.getUpdated(), state, false));
@@ -1472,7 +1472,7 @@ public abstract class Cdm2CdmImportBase
         for (S entity : sourceCollection){
             if (filterFunction != null && filterFunction.apply(entity)) {
                 continue;
-            }else if (filterBiFunction != null && filterBiFunction.apply(entity,state)) {
+            }else if (filterBiFunction != null && filterBiFunction.apply(entity, state)) {
                 continue;
             }else {
                 S target = detach(entity, state);

@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
@@ -28,6 +27,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
  * The class for information on how to approach a {@link Person person} or an {@link Institution institution}.
  * It includes telecommunication data and an electronic as well as
  * multiple postal addresses.
-* <P>
+ * <P>
  * This class corresponds to: <ul>
  * <li> ContactDetails according to the TDWG ontology
  * <li> Contact (partially) according to the ABCD schema
@@ -58,11 +58,11 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Contact", propOrder = {
-    "emailAddresses",
-    "urls",
-    "phoneNumbers",
-    "faxNumbers",
-    "addresses"
+        "emailAddresses",
+        "urls",
+        "phoneNumbers",
+        "faxNumbers",
+        "addresses"
 })
 @XmlRootElement(name = "Contact")
 @Embeddable

@@ -10,8 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.taxon;
 
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
-
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -51,7 +50,7 @@ public class ClassificationDefaultCacheStrategy
             }
             if (isBlank(result) && !classification.getDescription().isEmpty()){
                 //TODO get preferred/default representation
-                result = StringUtils.truncate(classification.getDescription().values().iterator().next().getText(), 100);
+                result = CdmUtils.truncateWithEllipsis(classification.getDescription().values().iterator().next().getText(), 100);
             }
             if (isBlank(result) && classification.getReference() != null){
                 result = classification.getReference().getTitleCache();

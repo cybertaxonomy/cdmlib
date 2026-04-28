@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -22,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -58,8 +58,8 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NameRelationshipType", propOrder = {
-    "nomenclaturalStanding",
-    "nomenclaturalStandingInverse"}
+        "nomenclaturalStanding",
+        "nomenclaturalStandingInverse"}
 )
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search

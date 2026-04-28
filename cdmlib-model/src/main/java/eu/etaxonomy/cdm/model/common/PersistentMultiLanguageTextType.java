@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.Iterator;
 import java.util.Map;
 
+
 import org.hibernate.HibernateException;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;

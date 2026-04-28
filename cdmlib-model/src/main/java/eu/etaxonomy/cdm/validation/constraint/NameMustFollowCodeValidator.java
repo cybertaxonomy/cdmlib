@@ -9,9 +9,9 @@
 package eu.etaxonomy.cdm.validation.constraint;
 
 import java.util.Collection;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
 
 import org.apache.commons.lang3.StringUtils;
 

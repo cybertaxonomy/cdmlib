@@ -51,7 +51,8 @@ public enum UTF8 {
 	ACUTE_ACCENT("\u00B4"),     //´ Acute Accent, looks a bit similar to the single quotation mark
 	BLACK_CIRCLE("\u25CF"),       //Black circle, symbol for endemic
 	DEGREE_SIGN("\u00B0"),      //°
-	NARROW_NO_BREAK("\u202F")   //narrow space that does not break, as used after the hybrid sign
+	NARROW_NO_BREAK("\u202F"),   //narrow space that does not break, as used after the hybrid sign
+	ELLIPSIS("\u2026")
 	;
 
 	private String value;

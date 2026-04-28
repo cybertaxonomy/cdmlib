@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.hibernate.search;
 import java.util.Collection;
 import java.util.Map;
 
+
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 import java.util.List;
 import java.util.UUID;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +23,7 @@ import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 public class ZooNameNoMarkerCacheStrategy
-                extends TaxonNameDefaultCacheStrategy {
+        extends TaxonNameDefaultCacheStrategy {
 
     private static final long serialVersionUID = 2821727191810867550L;
     @SuppressWarnings("unused")

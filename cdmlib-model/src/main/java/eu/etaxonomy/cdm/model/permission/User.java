@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.permission;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -53,18 +53,18 @@ import eu.etaxonomy.cdm.validation.annotation.ValidPassword;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "User", propOrder = {
-    "username",
-    "password",
-    "salt",
-    "emailAddress",
-    "grantedAuthorities",
-    "authorities",
-    "groups",
-    "enabled",
-    "accountNonExpired",
-    "credentialsNonExpired",
-    "accountNonLocked",
-    "person"
+        "username",
+        "password",
+        "salt",
+        "emailAddress",
+        "grantedAuthorities",
+        "authorities",
+        "groups",
+        "enabled",
+        "accountNonExpired",
+        "credentialsNonExpired",
+        "accountNonLocked",
+        "person"
 })
 @XmlRootElement(name = "User")
 @Entity

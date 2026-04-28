@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.validation;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -25,6 +24,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,9 +59,9 @@ import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 // @formatter:off
-@XmlType(name = "EntityValidation", propOrder = { "ValidatedEntityId", "ValidatedEntityUuid", "ValidatedEntityClass",
+@XmlType(name = "EntityValidation", propOrder = {"ValidatedEntityId", "ValidatedEntityUuid", "ValidatedEntityClass",
         "ValidationCount", "Updated", "UserFriendlyDescription", "UserFriendlyTypeName", "CrudEventType",
-        "ConstraintViolations" })
+        "ConstraintViolations"})
 // @formatter:on
 @XmlRootElement(name = "EntityValidation")
 @Entity

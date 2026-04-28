@@ -12,7 +12,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -26,6 +25,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,10 +61,10 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Team", propOrder = {
-	"protectedNomenclaturalTitleCache",
-	"protectedCollectorTitleCache",
-    "teamMembers",
-    "hasMoreMembers"
+        "protectedNomenclaturalTitleCache",
+        "protectedCollectorTitleCache",
+        "teamMembers",
+        "hasMoreMembers"
 })
 @XmlRootElement(name = "Team")
 @Entity

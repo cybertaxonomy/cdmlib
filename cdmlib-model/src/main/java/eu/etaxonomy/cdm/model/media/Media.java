@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -37,6 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -77,20 +77,20 @@ import eu.etaxonomy.cdm.validation.Level2;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Media", propOrder = {
-    "title",
-    "mediaCreated",
-    "description",
-    "representations",
-    "artist",
-    "link",
-    "rights"
+        "title",
+        "mediaCreated",
+        "description",
+        "representations",
+        "artist",
+        "link",
+        "rights"
 })
 @XmlRootElement(name = "Media")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed
 @Audited
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Media
         extends CreditableEntity<IMediaCacheStrategy>
         implements IMultiLanguageTextHolder, IIntextReferenceTarget,

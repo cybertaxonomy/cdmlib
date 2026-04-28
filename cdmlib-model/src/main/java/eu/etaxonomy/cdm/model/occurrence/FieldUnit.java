@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,6 +22,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,10 +50,10 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.FieldUnitDefaultCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FieldUnit", propOrder = {
-    "fieldNumber",
-    "primaryCollector",
-    "fieldNotes",
-    "gatheringEvent"
+        "fieldNumber",
+        "primaryCollector",
+        "fieldNotes",
+        "gatheringEvent"
 })
 @XmlRootElement(name = "FieldUnit")
 @Entity

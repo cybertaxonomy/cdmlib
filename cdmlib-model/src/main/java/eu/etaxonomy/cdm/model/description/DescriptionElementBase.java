@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -36,6 +35,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,18 +83,18 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptionElementBase", propOrder = {
-    "feature",
-    "inDescription",
-    "timeperiod",
-    "modifiers",
-    "modifyingText",
-    "media",
-    "sources",
-    "sortIndex"
+        "feature",
+        "inDescription",
+        "timeperiod",
+        "modifiers",
+        "modifyingText",
+        "media",
+        "sources",
+        "sortIndex"
 })
 @Entity
 @Audited
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class DescriptionElementBase
         extends AnnotatableEntity
         implements ISourceable<DescriptionElementSource>,

@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -48,18 +49,18 @@ import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMus
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NameRelationship", propOrder = {
-	"relatedFrom",
-	"relatedTo",
-	"type",
-    "ruleConsidered"
+        "relatedFrom",
+        "relatedTo",
+        "type",
+        "ruleConsidered"
 })
 @Entity
 @Audited
 @NamesWithHomotypicRelationshipsMustBelongToSameGroup(groups = Level3.class)
 @BasionymsMustShareEpithetsAndAuthors(groups = Level3.class)
 public class NameRelationship
-            extends RelationshipBase<TaxonName, TaxonName, NameRelationshipType>
-            implements IRuleConsidered{
+        extends RelationshipBase<TaxonName, TaxonName, NameRelationshipType>
+        implements IRuleConsidered{
 
 	private static final long serialVersionUID = -615987333520172043L;
     private static final Logger logger = LogManager.getLogger();

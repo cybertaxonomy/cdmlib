@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+
 import eu.etaxonomy.cdm.model.common.LSID;
 
 

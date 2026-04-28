@@ -66,19 +66,17 @@ public class NameMatchingDaoHibernateImpl
 
         StringBuilder hql = new StringBuilder();
 
-        hql.append("select new eu.etaxonomy.cdm.persistence.dto.NameMatchingParts(n.id, n.uuid, n.titleCache, n.authorshipCache, "
-              + "n.genusOrUninomial, n.infraGenericEpithet, n.specificEpithet, n.infraSpecificEpithet, n.nameCache, n.rank, "
-              + "combinationAuthorship.nomenclaturalTitleCache, exCombinationAuthorship.nomenclaturalTitleCache, "
-              + "basionymAuthorship.nomenclaturalTitleCache, exBasionymAuthorship.nomenclaturalTitleCache )");
-        hql.append(" from TaxonName n");
-        hql.append(" LEFT JOIN n.combinationAuthorship AS combinationAuthorship");
-        hql.append(" LEFT JOIN n.exCombinationAuthorship AS exCombinationAuthorship");
-        hql.append(" LEFT JOIN n.basionymAuthorship AS basionymAuthorship");
-        hql.append(" LEFT JOIN n.exBasionymAuthorship AS exBasionymAuthorship");
-        hql.append(" where 1 = 1");
-        hql.append(" and n."+column+ " in (");
-        hql.append(":" + values);
-        hql.append(") ");
+        hql.append("SELECT new eu.etaxonomy.cdm.persistence.dto.NameMatchingParts(n.id, n.uuid, n.titleCache, n.authorshipCache, "
+                      + "n.genusOrUninomial, n.infraGenericEpithet, n.specificEpithet, n.infraSpecificEpithet, n.nameCache, n.rank, "
+                      + "combinationAuthorship.nomenclaturalTitleCache, exCombinationAuthorship.nomenclaturalTitleCache, "
+                      + "basionymAuthorship.nomenclaturalTitleCache, exBasionymAuthorship.nomenclaturalTitleCache )");
+        hql.append(" FROM TaxonName n");
+        hql.append("   LEFT JOIN n.combinationAuthorship AS combinationAuthorship");
+        hql.append("   LEFT JOIN n.exCombinationAuthorship AS exCombinationAuthorship");
+        hql.append("   LEFT JOIN n.basionymAuthorship AS basionymAuthorship");
+        hql.append("   LEFT JOIN n.exBasionymAuthorship AS exBasionymAuthorship");
+        hql.append(" WHERE 1 = 1");
+        hql.append("   AND n."+column+ " IN (:" + values + ")");
         return hql;
   }
 }

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.permission;
 import java.util.EnumSet;
 import java.util.UUID;
 
+
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -43,13 +44,13 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaMetaData", propOrder = {
-    "mediaRepresentation",
-    "key",
-    "value"
- })
+        "mediaRepresentation",
+        "key",
+        "value"
+})
 @Entity
 @Audited  //necessary because otherwise mapping from MediaRepresentationPart to MediaMetaData is not possible
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class MediaMetaData extends CdmBase {
 
     private static final long serialVersionUID = -2523716526037575324L;

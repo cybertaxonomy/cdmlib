@@ -12,12 +12,12 @@ package eu.etaxonomy.cdm.model.name;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * this standard list by creating new instances of additional hybrid
  * relationship types if needed. Hybrid relationship types are neither symmetric
  * nor transitive.
-
+ 
  * <P>
  * This class corresponds partially to: <ul>
  * <li> TaxonRelationshipTerm according to the TDWG ontology

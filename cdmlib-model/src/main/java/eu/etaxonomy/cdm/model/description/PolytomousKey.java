@@ -12,13 +12,13 @@ package eu.etaxonomy.cdm.model.description;
 import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -79,8 +80,8 @@ import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
 //@Indexed(index = "eu.etaxonomy.cdm.model.description.PolytomousKey")
 @Audited
 public class PolytomousKey
-            extends CreditableEntity<PolytomousKeyDefaultCacheStrategy>
-            implements IIdentificationKey, IIntextReferenceTarget, IHasCredits,
+        extends CreditableEntity<PolytomousKeyDefaultCacheStrategy>
+        implements IIdentificationKey, IIntextReferenceTarget, IHasCredits,
                 IHasLink {
 
     private static final long serialVersionUID = -3368243754557343942L;
@@ -376,6 +377,13 @@ public class PolytomousKey
      */
     public void setStartNumber(int startNumber) {
         this.startNumber = startNumber;
+    }
+
+    @Transient
+    @Override
+    //TODO revert to default once PK was renamed to Single Access Key here, too.
+    public String getUserFriendlyTypeName(){
+        return "Single Access Key";
     }
 
     // ******************** toString *****************************************/

@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -26,6 +25,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,8 +52,8 @@ import eu.etaxonomy.cdm.model.common.Language;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermVocabulary", propOrder = {
-    "termSourceUri",
-    "terms"
+        "termSourceUri",
+        "terms"
 })
 @XmlRootElement(name = "TermVocabulary")
 @Entity
