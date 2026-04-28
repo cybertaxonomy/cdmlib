@@ -1040,6 +1040,7 @@
 		
       <!-- TODO xerces xmlParserAPIs duplicates many classes from jre and 
         xml-apis. It is a dependency that comes with xom:xom -->
+
       <dependency>
         <groupId>org.apache.jena</groupId>
         <artifactId>jena-core</artifactId>
@@ -1347,7 +1348,6 @@
         <artifactId>odfdom-java</artifactId>
         <!-- higher version available, but requires jena updated-->
         <version>0.13.0</version>
-       <!-- <version>0.13.0</version>-->
       </dependency>
       <dependency>
           <!-- used in eu.etaxonomy.cdm.io.markup and for swagger -->

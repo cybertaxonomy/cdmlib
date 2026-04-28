@@ -13,6 +13,25 @@
   <build>
     <plugins>
         <plugin>
+          <groupId>org.openrewrite.maven</groupId>
+          <artifactId>rewrite-maven-plugin</artifactId>
+          <version>6.37.0</version>
+          <configuration>
+            <activeRecipes>
+             <!-- <recipe>org.openrewrite.java.OrderImports</recipe> -->
+              <recipe>org.openrewrite.java.migrate.Java8toJava11</recipe>
+            </activeRecipes>
+          </configuration>
+          <dependencies>
+          <dependency>
+              <groupId>org.openrewrite.recipe</groupId>
+              <artifactId>rewrite-migrate-java</artifactId>
+              <version>3.33.0</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+    
+        <plugin>
           <groupId>dev.aspectj</groupId>
           <artifactId>aspectj-maven-plugin</artifactId>
           <version>1.13.1</version>
