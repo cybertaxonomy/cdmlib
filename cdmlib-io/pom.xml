@@ -47,20 +47,47 @@
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
     </dependency>
+    
+    <!-- JAXB API -->
+    <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-oxm</artifactId>
     </dependency>
+    <!--identificationKeyAPI-->
     <dependency>
       <groupId>identificationKeyAPI</groupId>
       <artifactId>identificationKeyAPI</artifactId>
-<!--       <exclusions> -->
-<!--         <exclusion> -->
-<!--           <groupId>xml-apis</groupId> -->
-<!--           <artifactId>xml-apis</artifactId> -->
-<!--         </exclusion> -->
-<!--       </exclusions> -->
+      <exclusions>
+         <exclusion>
+         <!-- will be added below with runtime scope as some 
+              old Xerces classes like SAXParser are explicitly used in identificationKeyAPI -->  
+           <groupId>xerces</groupId>
+           <artifactId>xercesImpl</artifactId>
+         </exclusion>
+       </exclusions>
     </dependency>
+    <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <scope>runtime</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    
+    
     <dependency>
  		<groupId>org.apache.jena</groupId>
  		<artifactId>jena-tdb</artifactId>

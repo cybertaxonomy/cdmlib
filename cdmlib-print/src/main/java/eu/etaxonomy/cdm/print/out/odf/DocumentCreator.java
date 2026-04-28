@@ -14,6 +14,8 @@ import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.output.DOMOutputter;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.odftoolkit.odfdom.dom.OdfContentDom;
+import org.odftoolkit.odfdom.dom.OdfStylesDom;
 import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
 import org.odftoolkit.odfdom.incubator.doc.office.OdfOfficeAutomaticStyles;
 import org.odftoolkit.odfdom.pkg.OdfFileDom;
@@ -53,14 +55,14 @@ public class DocumentCreator {
 
 			Node firstChild = output.getFirstChild();
 
-			org.w3c.dom.Document officeDocument = ((Node)officeText).getOwnerDocument();
+			org.w3c.dom.Document officeDocument = officeText.getOwnerDocument();
 
 
 			Node node = officeDocument.importNode(firstChild, true);
 			NodeList childNodes = node.getChildNodes();
 
 			for (int i = 0; i < childNodes.getLength(); i++){
-			    ((Node)officeText).appendChild(childNodes.item(i));
+			    officeText.appendChild(childNodes.item(i));
 			}
 
 			return outputDocument;
@@ -77,7 +79,11 @@ public class DocumentCreator {
 
 			officeText = outputDocument.getContentRoot();
 
-			contentAutoStyles = contentDom.getOrCreateAutomaticStyles();
+			if (contentDom instanceof OdfContentDom) {
+			    contentAutoStyles = ((OdfContentDom) contentDom).getOrCreateAutomaticStyles();
+			} else {
+			    contentAutoStyles = ((OdfStylesDom) contentDom).getOrCreateAutomaticStyles();
+			}
 
 			return true;
 		} catch (Exception e) {
@@ -93,10 +99,10 @@ public class DocumentCreator {
 	 */
 	void cleanOutDocument() {
 
-		Node childNode = ((Node)officeText).getFirstChild();
+		Node childNode = officeText.getFirstChild();
 		while (childNode != null) {
 			officeText.removeChild(childNode);
-			childNode = ((Node)officeText).getFirstChild();
+			childNode = officeText.getFirstChild();
 		}
 	}
 }

@@ -164,6 +164,17 @@
       <!-- for xml serialization (net.sf.json.xml.XMLSerializer) -->
       <groupId>xom</groupId>
       <artifactId>xom</artifactId>
+      <exclusions>
+        <!-- xml-api and xerces already exist in java-jre -->
+        <exclusion>
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>xerces</groupId>
+          <artifactId>xercesImpl</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- swagger -->

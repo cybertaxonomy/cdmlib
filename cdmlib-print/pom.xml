@@ -38,6 +38,12 @@
     <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
       <artifactId>fop</artifactId>
+      <exclusions>
+          <exclusion>
+              <groupId>xml-apis</groupId>
+              <artifactId>xml-apis</artifactId>
+          </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -47,6 +53,9 @@
     <dependency>
       <groupId>org.odftoolkit</groupId>
       <artifactId>odfdom-java</artifactId>
+      <!-- Xerces can't be exclued here as DocumentCreator uses OfficeTextElement
+           which inherits from Xerces NodeImpl via ElementNSImpl. Needed at compile
+           time -->
     </dependency>
     <dependency>
       <groupId>net.sf.saxon</groupId>
