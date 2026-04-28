@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
@@ -50,13 +51,13 @@ import eu.etaxonomy.cdm.model.term.OrderedTerm;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DnaQuality", propOrder = {
-	"purificationMethod",
-	"ratioOfAbsorbance260_230",
-    "ratioOfAbsorbance260_280",
-    "concentration",
-    "concentrationUnit",
-    "qualityTerm",
-    "qualityCheckDate"
+        "purificationMethod",
+        "ratioOfAbsorbance260_230",
+        "ratioOfAbsorbance260_280",
+        "concentration",
+        "concentrationUnit",
+        "qualityTerm",
+        "qualityCheckDate"
 })
 @XmlRootElement(name = "DnaQuality")
 @Entity

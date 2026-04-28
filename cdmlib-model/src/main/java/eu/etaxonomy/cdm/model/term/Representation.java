@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,9 +34,9 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Representation", propOrder = {
-    "label",
-    "plural",
-    "abbreviatedLabel"
+        "label",
+        "plural",
+        "abbreviatedLabel"
 })
 @XmlRootElement(name = "Representation")
 @Entity

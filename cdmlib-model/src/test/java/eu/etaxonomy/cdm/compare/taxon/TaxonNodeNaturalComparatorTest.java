@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.compare.taxon;
 import java.util.ArrayList;
 import java.util.Collections;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;

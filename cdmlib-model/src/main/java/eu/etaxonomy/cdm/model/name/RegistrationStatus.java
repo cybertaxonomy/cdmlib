@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.Set;
 import java.util.UUID;
-
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 

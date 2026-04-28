@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -48,10 +49,10 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonRelationship", propOrder = {
-    "relatedFrom",
-    "relatedTo",
-    "type",
-    "operation"
+        "relatedFrom",
+        "relatedTo",
+        "type",
+        "operation"
 })
 @XmlRootElement(name = "TaxonRelationship")
 @Entity

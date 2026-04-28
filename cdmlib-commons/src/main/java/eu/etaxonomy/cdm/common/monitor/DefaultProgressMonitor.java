@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.common.monitor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

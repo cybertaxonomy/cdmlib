@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.validation.constraint;
 
 import java.util.UUID;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.rights;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+
 import org.junit.Before;
 import org.junit.Test;
 

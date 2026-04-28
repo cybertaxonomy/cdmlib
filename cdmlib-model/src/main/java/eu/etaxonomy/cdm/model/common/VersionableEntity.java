@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.persistence.Basic;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -23,6 +22,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,10 +57,10 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "VersionableEntity", propOrder = {
-    "updated",
-    "updatedBy"
+        "updated",
+        "updatedBy"
 })
-@XmlJavaTypeAdapter(value=DateTimeAdapter.class,type=DateTime.class)
+@XmlJavaTypeAdapter(value = DateTimeAdapter.class, type = DateTime.class)
 @MappedSuperclass
 @Audited
 public abstract class VersionableEntity

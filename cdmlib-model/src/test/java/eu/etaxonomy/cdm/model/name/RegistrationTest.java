@@ -8,9 +8,8 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
 
 import org.joda.time.DateTime;
 import org.junit.Assert;

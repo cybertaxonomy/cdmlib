@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -31,8 +30,8 @@ import eu.etaxonomy.cdm.model.term.TermBase;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MultilanguageTextHelper", propOrder = {
-    "language",
-    "languageString"
+        "language",
+        "languageString"
 })
 @XmlRootElement(name = "MultilanguageTextHelper")
 public class MultilanguageTextHelper {

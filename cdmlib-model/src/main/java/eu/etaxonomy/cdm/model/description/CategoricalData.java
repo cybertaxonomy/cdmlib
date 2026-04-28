@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,6 +25,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,9 +61,9 @@ import eu.etaxonomy.cdm.validation.Level2;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CategoricalData", propOrder = {
-    "orderRelevant",
-    "stateData",
-    "noDataStatus"
+        "orderRelevant",
+        "stateData",
+        "noDataStatus"
 })
 @XmlRootElement(name = "CategoricalData")
 @Entity

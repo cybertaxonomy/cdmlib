@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,7 +26,7 @@ import org.springframework.security.core.GrantedAuthority;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "GrantedAuthority", propOrder = { "authority" })
+@XmlType(name = "GrantedAuthority", propOrder = {"authority"})
 @XmlRootElement(name = "Group")
 @Entity
 public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {

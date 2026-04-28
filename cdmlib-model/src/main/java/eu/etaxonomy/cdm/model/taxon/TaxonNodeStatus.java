@@ -10,8 +10,8 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.Set;
 import java.util.UUID;
-
 import javax.xml.bind.annotation.XmlEnumValue;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

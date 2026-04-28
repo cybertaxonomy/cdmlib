@@ -25,23 +25,23 @@ public class WikiDataItemIdTest {
     public void testValidParser() {
         String validWikiDataItemId = "12345";
         WikiDataItemId wikiDataItemId = WikiDataItemId.fromString(validWikiDataItemId);
-        Assert.assertEquals("http://www.wikidata.org/wiki/Q12345", wikiDataItemId.asURI());
+        Assert.assertEquals("http://www.wikidata.org/entity/Q12345", wikiDataItemId.asURI());
 
         validWikiDataItemId = "97399423534634";
         wikiDataItemId = WikiDataItemId.fromString(validWikiDataItemId);
-        Assert.assertEquals("http://www.wikidata.org/wiki/Q97399423534634", wikiDataItemId.asURI());
+        Assert.assertEquals("http://www.wikidata.org/entity/Q97399423534634", wikiDataItemId.asURI());
 
         validWikiDataItemId = "Q12345";
         wikiDataItemId = WikiDataItemId.fromString(validWikiDataItemId);
-        Assert.assertEquals("http://www.wikidata.org/wiki/Q12345", wikiDataItemId.asURI());
+        Assert.assertEquals("http://www.wikidata.org/entity/Q12345", wikiDataItemId.asURI());
 
-        validWikiDataItemId = "https://www.wikidata.org/wiki/Q12345";
+        validWikiDataItemId = "https://www.wikidata.org/entity/Q12345";
         wikiDataItemId = WikiDataItemId.fromString(validWikiDataItemId);
-        Assert.assertEquals("http://www.wikidata.org/wiki/Q12345", wikiDataItemId.asURI());
+        Assert.assertEquals("http://www.wikidata.org/entity/Q12345", wikiDataItemId.asURI());
 
-        validWikiDataItemId = "http://www.wikidata.org/wiki/Q12345";
+        validWikiDataItemId = "http://www.wikidata.org/entity/Q12345";
         wikiDataItemId = WikiDataItemId.fromString(validWikiDataItemId);
-        Assert.assertEquals("http://www.wikidata.org/wiki/Q12345", wikiDataItemId.asURI());
+        Assert.assertEquals("http://www.wikidata.org/entity/Q12345", wikiDataItemId.asURI());
     }
 
     @Test
@@ -56,7 +56,7 @@ public class WikiDataItemIdTest {
     public void testEquals() {
         String validWikiDataItemId = "Q12345";
         WikiDataItemId wikiDataItemId1 = WikiDataItemId.fromString(validWikiDataItemId);
-        validWikiDataItemId = "https://www.wikidata.org/wiki/Q12345";
+        validWikiDataItemId = "https://www.wikidata.org/entity/Q12345";
         WikiDataItemId wikiDataItemId2 = WikiDataItemId.fromString(validWikiDataItemId);
         Assert.assertEquals("WikiIDs must be equal. Checksum should not make it different", wikiDataItemId1, wikiDataItemId2);
         validWikiDataItemId = "Q12346";

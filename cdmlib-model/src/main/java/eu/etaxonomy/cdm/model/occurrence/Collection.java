@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,12 +51,12 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Collection", propOrder = {
-	"name",
-    "code",
-    "codeStandard",
-    "townOrLocation",
-    "institute",
-    "superCollection"
+        "name",
+        "code",
+        "codeStandard",
+        "townOrLocation",
+        "institute",
+        "superCollection"
 })
 @XmlRootElement(name = "Collection")
 @Entity
@@ -63,7 +64,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy
 //@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.Collection")
 @Audited
 @Configurable
-@Table(name="Collection", indexes = { @javax.persistence.Index(name = "collectionTitleCacheIndex", columnList = "titleCache") })
+@Table(name = "Collection", indexes = {@javax.persistence.Index(name = "collectionTitleCacheIndex", columnList = "titleCache")})
 public class Collection
         extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<Collection>>
         implements IHasLink {

@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.format;
 
 import java.math.BigDecimal;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

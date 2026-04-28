@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -28,7 +29,7 @@ import eu.etaxonomy.cdm.common.URI;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MovieFile", propOrder = {
-    "duration"
+        "duration"
 })
 @XmlRootElement(name = "MovieFile")
 @Entity

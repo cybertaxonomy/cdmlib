@@ -63,18 +63,18 @@ public class NotNullUpdater
             DatabaseTypeEnum type = datasource.getDatabaseType();
             String updateQuery1;
 
-            if (type.equals(DatabaseTypeEnum.SqlServer2005)){
+            if (type.isSqlServer()){
                 String message = "SQLServer column name changer syntax not yet tested. Table name: " + this.tableName + "; column name: " + columnName;
                 monitor.warning(message);
                 result.addWarning(message);
                 updateQuery1 = "ALTER TABLE @tableName ALTER COLUMN @columnName @definition NOT NULL";
-            }else if ( type.equals(DatabaseTypeEnum.MySQL)){
+            }else if ( type.isMySqlMariaDB()){
                 //FIXME MySQL column name changer
                 //logger.warn("Changing column name not yet supported for MySQL");
                 updateQuery1 = "ALTER TABLE @tableName MODIFY @columnName @definition NOT NULL";
-            }else if (type.equals(DatabaseTypeEnum.H2)){
+            }else if (type.isH2()){
                 updateQuery1 = "ALTER TABLE @tableName ALTER COLUMN @columnName SET NOT NULL";
-            }else if ( type.equals(DatabaseTypeEnum.PostgreSQL) ){
+            }else if ( type.isPostgres()){
                 updateQuery1 = "ALTER TABLE @tableName ALTER COLUMN @columnName SET NOT NULL";
             }else{
                 String message = "Update step '" + this.getStepName() + "' is not supported by " + type.getName();

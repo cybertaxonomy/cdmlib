@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,6 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -76,27 +76,27 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonNode", propOrder = {
-    "classification",
-    "taxon",
-    "parent",
-    "treeIndex",
-    "childNodes",
-    "countChildren",
-    "agentRelations",
-    "synonymToBeUsed",
-    "status",
-    "placementNote"
+        "classification",
+        "taxon",
+        "parent",
+        "treeIndex",
+        "childNodes",
+        "countChildren",
+        "agentRelations",
+        "synonymToBeUsed",
+        "status",
+        "placementNote"
 })
 @XmlRootElement(name = "TaxonNode")
 @Entity
 @Audited
-@Table(name="TaxonNode", indexes = { @javax.persistence.Index(name = "taxonNodeTreeIndex", columnList = "treeIndex") })
+@Table(name = "TaxonNode", indexes = {@javax.persistence.Index(name = "taxonNodeTreeIndex", columnList = "treeIndex")})
 @ChildTaxaMustBeLowerRankThanParent(groups = Level3.class)
 @ChildTaxaMustNotSkipRanks(groups = Level3.class)
 @ChildTaxaMustDeriveNameFromParent(groups = Level3.class)
 public class TaxonNode
-            extends SingleSourcedEntityBase
-            implements ITaxonTreeNode, ITreeNode<TaxonNode>{
+        extends SingleSourcedEntityBase
+        implements ITaxonTreeNode, ITreeNode<TaxonNode>{
 
     private static final long serialVersionUID = -4743289894926587693L;
     private static final Logger logger = LogManager.getLogger();

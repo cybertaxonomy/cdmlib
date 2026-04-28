@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.compare.occurrence;
 
 import java.util.Comparator;
 
+
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.compare.common.TimePeriodComparator;

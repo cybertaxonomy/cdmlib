@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.xml.bind.annotation.XmlEnum;
 
 import eu.etaxonomy.cdm.model.common.Language;

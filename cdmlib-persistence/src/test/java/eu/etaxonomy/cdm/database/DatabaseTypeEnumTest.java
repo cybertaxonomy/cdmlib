@@ -132,5 +132,9 @@ public class DatabaseTypeEnumTest {
         assertEquals(DatabaseTypeEnum.MySQL, type);
         String dbName = type.getDatabaseType().getDatabaseNameByConnectionString(connectionString);
         assertEquals("cdm_test", dbName);
+
+        connectionString = "jdbc:mariadb://192.168.2.10:3306/cdm_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull";
+        type = DatabaseTypeEnum.byConnectionString(connectionString);
+        assertEquals(DatabaseTypeEnum.MariaDB, type);
     }
 }

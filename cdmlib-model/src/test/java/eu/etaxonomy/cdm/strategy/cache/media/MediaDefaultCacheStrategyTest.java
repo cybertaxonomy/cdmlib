@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.media;
 
 import java.net.URISyntaxException;
 
+
 import org.junit.Assert;
 import org.junit.Test;
 

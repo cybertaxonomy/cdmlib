@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.validation;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
-
 import javax.validation.ConstraintViolation;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;

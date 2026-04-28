@@ -54,13 +54,13 @@ public enum Datatype {
         //CLOB
         if (this == CLOB){
             //TODO use hibernate dialects
-            if (dbType.equals(DatabaseTypeEnum.MySQL)){
+            if (dbType.isMySqlMariaDB()){
                 result = "longtext";
-            }else if (dbType.equals(DatabaseTypeEnum.H2)){
+            }else if (dbType.isH2()){
                 result = "CLOB";  //or NVARCHAR
-            }else if (dbType.equals(DatabaseTypeEnum.PostgreSQL)){
+            }else if (dbType.isPostgres()){
                 result = "text";
-            }else if (dbType.equals(DatabaseTypeEnum.SqlServer2005)){
+            }else if (dbType.isSqlServer()){
                 result = "NVARCHAR(MAX)";
             }
         }else if (this == VARCHAR){

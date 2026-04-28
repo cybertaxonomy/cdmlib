@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -22,7 +23,7 @@ public class WikiDataItemId implements java.io.Serializable{
     private static final long serialVersionUID = -6255965775873612289L;
 
 
-    public static final String WIKIDATA_ORG = "www.wikidata.org/wiki/";
+    public static final String WIKIDATA_ORG = "www.wikidata.org/entity/";
 
     /**
      * The default public wikidata database
@@ -76,10 +77,18 @@ public class WikiDataItemId implements java.io.Serializable{
             throw new IllegalArgumentException("Wikidata item ID string must not be null or blank");
         }
         wikiDataItemId = wikiDataItemId.trim();
+
+        //replace https by http
         if (wikiDataItemId.startsWith("https:") ){
-            //TODO
             wikiDataItemId = wikiDataItemId.replaceFirst("https:", "http:").trim();
         }
+
+        if (wikiDataItemId.contains("/wiki/") ){
+            //the correct identifier is http://www.wikidata.org/entity/
+            //not www.wikidata.org/wiki/ (the later is only the human readable resolving
+            wikiDataItemId = wikiDataItemId.replace("/wiki/", "/entity/").trim();
+        }
+
 
         //replace URI prefix
         if (wikiDataItemId.startsWith(HTTP_WIKIDATA_ORG)){

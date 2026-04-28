@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.metadata;
 
 import static org.junit.Assert.*;
 
+
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubjectEnum;

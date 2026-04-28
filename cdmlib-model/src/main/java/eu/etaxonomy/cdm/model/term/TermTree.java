@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
@@ -24,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermTree", propOrder = {
-    "root",
+        "root",
 })
 @XmlRootElement(name = "TermTree")
 @Entity
@@ -66,8 +66,8 @@ import eu.etaxonomy.cdm.model.description.Feature;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.TermTree")
 @Audited
 public class TermTree <T extends DefinedTermBase>
-            extends TermGraphBase<T, TermNode>
-            implements ITermTree<T, TermNode> {
+        extends TermGraphBase<T, TermNode>
+        implements ITermTree<T, TermNode> {
 
 	private static final long serialVersionUID = -6713834139003172735L;
 	private static final Logger logger = LogManager.getLogger();

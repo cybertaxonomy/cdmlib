@@ -66,19 +66,18 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 		//TODO use
 //		type.getHibernateDialect().toBooleanValueString(bool);
 		int intValue = value == true? 1 : 0;
-		if (type.equals(DatabaseTypeEnum.MySQL)){
-			result = "b'"+intValue+"'";
-		}else if (type.equals(DatabaseTypeEnum.PostgreSQL)){
-			result = "'"+intValue+"'";
-		}else if (type.equals(DatabaseTypeEnum.H2)){
-			result = value == true ? "TRUE" : "FALSE";
-		}else if (type.equals(DatabaseTypeEnum.SqlServer2005)){
-			logger.warn("SQLServer boolean not tested yet");
-			result = "b'"+intValue+"'";
-		}else{
-			throw new RuntimeException("Database type not supported for boolean" + type.getName());
+		if (type.isMySqlMariaDB()){
+		    return "b'"+intValue+"'";
+		} else if (type.isH2()) {
+		    return value == true ? "TRUE" : "FALSE";
+		} else if (type.isPostgres()) {
+		    return "'"+intValue+"'";
+		} else if (type.isSqlServer()) {
+	        logger.warn("SQLServer boolean not tested yet");
+            return "b'"+intValue+"'";
+		} else {
+	        throw new RuntimeException("Database type not supported for boolean" + type.getName());
 		}
-		return result;
 	}
 
 	protected Integer getEnglishLanguageId(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {

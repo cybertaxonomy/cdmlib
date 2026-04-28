@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -51,7 +52,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.MediaSpecimenDefaultCacheStrat
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaSpecimen", propOrder = {
-    "mediaSpecimen"
+        "mediaSpecimen"
 })
 @XmlRootElement(name = "MediaSpecimen")
 @Entity

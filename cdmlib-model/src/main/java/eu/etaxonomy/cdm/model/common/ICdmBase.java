@@ -9,10 +9,10 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.UUID;
-
 import javax.persistence.Transient;
 import javax.validation.GroupSequence;
 import javax.validation.groups.Default;
+
 
 import org.joda.time.DateTime;
 

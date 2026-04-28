@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.molecular;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -25,6 +24,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,9 +50,9 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DnaSampleDefaultCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DnaSample", propOrder = {
-    "sequences",
-    "amplificationResults",
-    "dnaQuality"
+        "sequences",
+        "amplificationResults",
+        "dnaQuality"
 })
 @XmlRootElement(name = "DnaSample")
 @Entity

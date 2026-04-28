@@ -8,14 +8,12 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 import org.junit.Assert;
 import org.junit.Before;

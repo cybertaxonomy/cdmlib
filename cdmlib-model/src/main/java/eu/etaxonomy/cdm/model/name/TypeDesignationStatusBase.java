@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -46,8 +47,8 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TypeDesignationStatusBase")
 @XmlSeeAlso({
-	NameTypeDesignationStatus.class,
-	SpecimenTypeDesignationStatus.class
+        NameTypeDesignationStatus.class,
+        SpecimenTypeDesignationStatus.class
 })
 @Entity
 @Audited

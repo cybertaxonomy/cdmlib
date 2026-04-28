@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -38,7 +39,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * @since 04.05.2017
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name="Feature", factoryMethod="NewInstance", propOrder = {
+@XmlType(name = "Feature", factoryMethod = "NewInstance", propOrder = {
         "structure",
         "structureModifier",
         "property",

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.media;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
@@ -23,6 +22,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IdentifiableMediaEntity", propOrder = {
-    "media"
+        "media"
 })
 @MappedSuperclass
 @Audited

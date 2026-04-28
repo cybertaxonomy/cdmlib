@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.occurrence;
 
 import java.util.UUID;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -64,7 +65,7 @@ public class DnaSampleDefaultCacheStrategy
         if (isBlank(result)){
             if (!dnaSample.getDefinition().isEmpty()){
                 Language key = dnaSample.getDefinition().keySet().iterator().next();
-                result = truncate(dnaSample.getDefinition().get(key).getText(), 50);
+                result = CdmUtils.truncateWithEllipsis(dnaSample.getDefinition().get(key).getText(), 50);
             }
         }
         if (isBlank(result)){

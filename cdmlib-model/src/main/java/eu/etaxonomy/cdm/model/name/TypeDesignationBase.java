@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -28,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -63,22 +63,22 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
  */
 @XmlRootElement(name = "TypeDesignationBase")
 @XmlType(name = "TypeDesignationBase", propOrder = {
-    "typeStatus",
-    "notDesignated",
-    "typifiedNames",
-    "designationSource",
-    "registrations",
+        "typeStatus",
+        "notDesignated",
+        "typifiedNames",
+        "designationSource",
+        "registrations",
 })
 @XmlSeeAlso({
-    NameTypeDesignation.class,
-    SpecimenTypeDesignation.class,
-    TextualTypeDesignation.class
+        NameTypeDesignation.class,
+        SpecimenTypeDesignation.class,
+        TextualTypeDesignation.class
 })
 @Entity
 @Audited
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@ValidTypeDesignation(groups=Level2.class)
-@ValidLectotypeSource(groups=Level2.class)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@ValidTypeDesignation(groups = Level2.class)
+@ValidLectotypeSource(groups = Level2.class)
 public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>>
         extends SourcedEntityBase<IdentifiableSource>
         implements ITypeDesignation {

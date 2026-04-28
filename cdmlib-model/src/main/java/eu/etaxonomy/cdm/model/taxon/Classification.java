@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -34,6 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,20 +65,20 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.ClassificationDefaultCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Classification", propOrder = {
-    "name",
-    "description",
-    "rootNode",
-    "source",
-    "timeperiod",
-    "geoScopes"
+        "name",
+        "description",
+        "rootNode",
+        "source",
+        "timeperiod",
+        "geoScopes"
 })
 @XmlRootElement(name = "Classification")
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.Classification")
 public class Classification
-            extends CreditableEntity<IIdentifiableEntityCacheStrategy<Classification>>
-            implements ITaxonTreeNode, IHasCredits, IHasLink {
+        extends CreditableEntity<IIdentifiableEntityCacheStrategy<Classification>>
+        implements ITaxonTreeNode, IHasCredits, IHasLink {
 
     private static final long serialVersionUID = -753804821474209635L;
     private static final Logger logger = LogManager.getLogger();

@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -32,8 +33,8 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ImageFile", propOrder = {
-    "height",
-    "width"
+        "height",
+        "width"
 })
 @XmlRootElement(name = "ImageFile")
 @Entity

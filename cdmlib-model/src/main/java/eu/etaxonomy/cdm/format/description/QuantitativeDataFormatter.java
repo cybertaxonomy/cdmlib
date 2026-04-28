@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -30,7 +31,7 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
  * @since 12.03.2020
  */
 public class QuantitativeDataFormatter
-            extends DesciptionElementFormatterBase<QuantitativeData> {
+        extends DesciptionElementFormatterBase<QuantitativeData> {
 
     static final String sepDash = UTF8.EN_DASH.toString();
     static final String minSep = UTF8.NARROW_NO_BREAK + sepDash;
