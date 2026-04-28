@@ -119,7 +119,7 @@ public class ReferencingObjectFormatter {
                 sourceObjectTitle = sourcedName == null ? "Source orphaned, not attached to a name" :
                     "for " + sourcedName.getTitleCache();
             }else if (originalSource instanceof SecundumSource){
-                TaxonBase<?> sourcedTaxon = ((SecundumSource)originalSource).getSourcedTaxon();
+                TaxonBase sourcedTaxon = ((SecundumSource)originalSource).getSourcedTaxon();
                 sourceObjectTitle = sourcedTaxon == null ? "Source orphaned, not attached to a taxon" :
                     "for " + sourcedTaxon.getTitleCache();
             }else if (originalSource instanceof DescriptionElementSource){
@@ -366,7 +366,7 @@ public class ReferencingObjectFormatter {
         //taxon
         String taxonStr = null;
         TaxonName taxonName = detEvent.getTaxonName();
-        TaxonBase<?> taxon = detEvent.getTaxon();
+        TaxonBase taxon = detEvent.getTaxon();
         if (taxonName != null){
             taxonStr = taxonName.getTitleCache();
         }

@@ -26,7 +26,7 @@ public class TaxonAlternativeSpellingSuggestionParser
     public TaxonAlternativeSpellingSuggestionParser() {
 		super(TaxonBase.class);
 		@SuppressWarnings("unchecked")
-        Class<? extends TaxonBase<?>> indexedClasses[] = new Class[2];
+        Class<? extends TaxonBase> indexedClasses[] = new Class[2];
 		indexedClasses[0] = Taxon.class;
 		indexedClasses[1] = Synonym.class;
 		super.setIndexedClasses(indexedClasses);

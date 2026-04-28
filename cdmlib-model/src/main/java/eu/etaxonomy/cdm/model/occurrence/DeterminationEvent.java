@@ -75,7 +75,7 @@ public class DeterminationEvent extends EventBase {
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded(includeEmbeddedObjectId=true)
-    private TaxonBase<?> taxon;
+    private TaxonBase taxon;
 
 //	#4518
 	@XmlElement(name = "TaxonName")

@@ -294,8 +294,8 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 		botName2.setCombinationAuthorship(team2);
 
 		//taxa
-		TaxonBase<?> taxon1= Taxon.NewInstance(botName1, book1);
-		TaxonBase<?> taxon2= Taxon.NewInstance(botName2, book2);
+		TaxonBase taxon1= Taxon.NewInstance(botName1, book1);
+		TaxonBase taxon2= Taxon.NewInstance(botName2, book2);
 
 		try {
 			botNameMergeStrategy.setMergeMode("combinationAuthorship", MergeMode.SECOND);

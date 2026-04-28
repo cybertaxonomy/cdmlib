@@ -802,7 +802,7 @@ public class TaxonNameDaoHibernateImpl
         UUID homotypicalGroupUUID = persistentObject.getHomotypicalGroup().getUuid();
 
 
-        for (TaxonBase<?> taxonBase: taxonBases){
+        for (TaxonBase taxonBase: taxonBases){
             taxonDao.delete(taxonBase);
         }
         HomotypicalGroup homotypicalGroup = homotypicalGroupDao.load(homotypicalGroupUUID);
@@ -906,7 +906,7 @@ public class TaxonNameDaoHibernateImpl
 		for(Object object : hqlResult){
 			Object[] row = (Object[])object;
 			nameRecord = new HashMap<>();
-			TaxonBase<?> taxonBase = (TaxonBase<?>)row[0];
+			TaxonBase taxonBase = (TaxonBase)row[0];
 			Taxon accTaxon = null;
 			if (taxonBase instanceof Taxon){
 			    accTaxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);

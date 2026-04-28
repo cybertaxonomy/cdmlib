@@ -342,7 +342,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
         @SuppressWarnings("rawtypes")
         Iterator<TaxonBase> taxa= taxonBases.iterator();
-        TaxonBase<?> taxon = taxa.next();
+        TaxonBase taxon = taxa.next();
         UUID taxonUuid = taxon.getUuid();
 
         acherontiaLachesis = taxonNameDao.findByUuid(cryptoCoryneGriffithiIiUuid);

@@ -412,7 +412,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         }
         TaxonName nameBase =nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",nameBase);
-        TaxonBase<?> taxonBase = taxonService.find(taxon.getUuid());
+        TaxonBase taxonBase = taxonService.find(taxon.getUuid());
         Assert.assertNotNull("Taxon should still be in database",taxonBase);
         taxon = (Taxon)taxonBase;
         taxon.setName(basionym);

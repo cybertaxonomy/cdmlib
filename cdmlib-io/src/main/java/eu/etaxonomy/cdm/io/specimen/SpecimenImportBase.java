@@ -382,7 +382,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         for (TaxonName name : names) {
             if(!name.getTaxonBases().isEmpty()){
                 Set<TaxonBase> taxa = name.getTaxonBases();
-                for (TaxonBase<?> taxonBase:taxa){
+                for (TaxonBase taxonBase:taxa){
                     Taxon acceptedTaxon = null;
                     if (taxonBase instanceof Synonym) {
                         Synonym syn = (Synonym)taxonBase;
@@ -1157,7 +1157,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        else{
 	            @SuppressWarnings("rawtypes")
                 Set<TaxonBase> taxonAndSynonyms = taxonName.getTaxonBases();
-	            for (TaxonBase<?> taxonBase : taxonAndSynonyms) {
+	            for (TaxonBase taxonBase : taxonAndSynonyms) {
 	                if(taxonBase.isInstanceOf(Synonym.class)){
 	                    Synonym synonym = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
 	                    Taxon acceptedTaxonOfSynonym = synonym.getAcceptedTaxon();

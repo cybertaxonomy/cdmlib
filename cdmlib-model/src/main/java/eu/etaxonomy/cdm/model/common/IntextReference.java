@@ -256,7 +256,7 @@ public class IntextReference extends CdmLinkBase {
         if (target instanceof TaxonName){
             this.taxonName = (TaxonName)target;
         }else if (target instanceof TaxonBase){
-            this.taxon = (TaxonBase<?>)target;
+            this.taxon = (TaxonBase)target;
         }else if (target instanceof SpecimenOrObservationBase){
             this.occurrence = (SpecimenOrObservationBase<?>)target;
         }else if (target instanceof AgentBase){

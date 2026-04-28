@@ -106,7 +106,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
     }
 
     private void handleAccepted(STATE state, TaxonName name) {
-        TaxonBase<?> cdmTaxon = getCdmTaxon(state, name, TAXON_ID, Taxon.class);
+        TaxonBase cdmTaxon = getCdmTaxon(state, name, TAXON_ID, Taxon.class);
 
         Reference sec = this.getTransactionalSourceReference(state);
         if (cdmTaxon == null){
@@ -116,7 +116,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         }else if (cdmTaxon.isInstanceOf(Taxon.class)){
             Taxon taxon = CdmBase.deproxy(cdmTaxon, Taxon.class);
             TaxonName parentName = getName(state, PARENT_NAME_USAGE_ID);
-            TaxonBase<?> parentBase = getCdmTaxon(state, parentName, PARENT_NAME_USAGE_ID, Taxon.class);
+            TaxonBase parentBase = getCdmTaxon(state, parentName, PARENT_NAME_USAGE_ID, Taxon.class);
             TaxonNode newNode;
             if (parentBase == null){
                 //parent does not exist
@@ -164,7 +164,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
                 try {
                     basionym = getName(state, ORIGINAL_NAME_USAGE_ID);
                     name.addBasionym(basionym, sec, null, null, null);
-                    TaxonBase<?> basionymTaxon = getCdmTaxon(state, basionym, ORIGINAL_NAME_USAGE_ID, Synonym.class);
+                    TaxonBase basionymTaxon = getCdmTaxon(state, basionym, ORIGINAL_NAME_USAGE_ID, Synonym.class);
                     if (basionymTaxon.isInstanceOf(Synonym.class)){
                         Synonym basioSynonym = CdmBase.deproxy(basionymTaxon, Synonym.class);
                         if (basioSynonym.getAcceptedTaxon() != null){
@@ -242,7 +242,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
     }
 
     private void handleSynonym(STATE state, TaxonName name) {
-        TaxonBase<?> cdmTaxon = getCdmTaxon(state, name, TAXON_ID, Synonym.class);
+        TaxonBase cdmTaxon = getCdmTaxon(state, name, TAXON_ID, Synonym.class);
 
         if (cdmTaxon == null){
             String message = "Synonym does not exist. This should not happen.";
@@ -253,7 +253,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
 
             if (syn.getAcceptedTaxon()== null){
                  //TODO is this correct? might be WFO taxon
-                TaxonBase<?> existingAccepted = getCdmTaxon(state, accName, ACCEPTED_NAME_USAGE_ID, Taxon.class);
+                TaxonBase existingAccepted = getCdmTaxon(state, accName, ACCEPTED_NAME_USAGE_ID, Taxon.class);
                 Taxon taxon;
                 if (existingAccepted == null){
                     String message = "Accepted taxon does not exist. Can't add synonym to accepted";
@@ -284,7 +284,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
                     TaxonName basionym = getName(state, ORIGINAL_NAME_USAGE_ID);
                     name.addBasionym(basionym, getTransactionalSourceReference(state), null, null, null);
 
-                    TaxonBase<?> basionymTaxon = getCdmTaxon(state, basionym, ORIGINAL_NAME_USAGE_ID, TaxonBase.class);
+                    TaxonBase basionymTaxon = getCdmTaxon(state, basionym, ORIGINAL_NAME_USAGE_ID, TaxonBase.class);
                     if (basionymTaxon.isInstanceOf(Taxon.class)){
                         Taxon basioTaxon = CdmBase.deproxy(basionymTaxon, Taxon.class);
                         if (syn.getAcceptedTaxon().equals(basioTaxon)){
@@ -309,7 +309,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         }
     }
 
-    private TaxonBase<?> getCdmTaxon(STATE state, TaxonName name, String fieldName,
+    private TaxonBase getCdmTaxon(STATE state, TaxonName name, String fieldName,
             Class<? extends TaxonBase> expectedClass) {
 
         Map<String, String> record = state.getCurrentRecord();
@@ -322,8 +322,8 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
         }else if (cdmTaxa.size()==1){
             return cdmTaxa.iterator().next();
         }else{
-            Set<TaxonBase<?>> cdmTaxa2 = new HashSet<>();
-            for (TaxonBase<?> x : cdmTaxa){
+            Set<TaxonBase> cdmTaxa2 = new HashSet<>();
+            for (TaxonBase x : cdmTaxa){
                 if (x.isInstanceOf(expectedClass)){
                     cdmTaxa2.add(x);
                 }
@@ -340,7 +340,7 @@ public class WfoAccessClassificationImport<STATE extends WfoAccessImportState>
     }
 
     private void handleDoubtful(STATE state, TaxonName name) {
-        TaxonBase<?> cdmTaxon = getCdmTaxon(state, name, TAXON_ID, Taxon.class);
+        TaxonBase cdmTaxon = getCdmTaxon(state, name, TAXON_ID, Taxon.class);
 
         Reference sec = getTransactionalSourceReference(state);
 //        Map<String, String> record = state.getCurrentRecord();

@@ -125,7 +125,7 @@ public class TaxonDaoHibernateImpl
 
     @Override
     public TaxonBase load(UUID uuid, boolean includeUnpublished, List<String> propertyPaths){
-        TaxonBase<?> result = super.load(uuid, includeUnpublished, propertyPaths);
+        TaxonBase result = super.load(uuid, includeUnpublished, propertyPaths);
         return result; //(result == null || (!result.isPublish() && !includeUnpublished))? null : result;
     }
 
@@ -707,7 +707,7 @@ public class TaxonDaoHibernateImpl
         List<? extends TaxonBase> results = crit.list();
         if (results.size() == 1) {
             defaultBeanInitializer.initializeAll(results, propertyPaths);
-            TaxonBase<?> taxon = results.iterator().next();
+            TaxonBase taxon = results.iterator().next();
             return taxon;
         } else if (results.size() > 1) {
             logger.error("Multiple results for UUID: " + uuid);
@@ -1179,7 +1179,7 @@ public class TaxonDaoHibernateImpl
     public void rebuildIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
-        for(TaxonBase<?> taxonBase : list(null,null)) { // re-index all taxon base
+        for(TaxonBase taxonBase : list(null,null)) { // re-index all taxon base
             Hibernate.initialize(taxonBase.getName());
             fullTextSession.index(taxonBase);
         }
@@ -1257,7 +1257,7 @@ public class TaxonDaoHibernateImpl
 
     @Override
     public TaxonBase find(LSID lsid) {
-        TaxonBase<?> taxonBase = super.find(lsid);
+        TaxonBase taxonBase = super.find(lsid);
         if(taxonBase != null) {
             List<String> propertyPaths = new ArrayList<>();
             propertyPaths.add("createdBy");

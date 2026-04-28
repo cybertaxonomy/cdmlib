@@ -423,7 +423,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected Taxon handlePersistedTaxon(Taxon taxon, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        Taxon result = handlePersisted((TaxonBase<?>)taxon, state);
+        Taxon result = handlePersisted((TaxonBase)taxon, state);
         //complete
         BiFunction<Synonym,Cdm2CdmImportState,Boolean> filterFunction = state.getConfig().getSynonymFilter();
         handleCollection(result, Taxon.class, "synonyms", Synonym.class, filterFunction, state);

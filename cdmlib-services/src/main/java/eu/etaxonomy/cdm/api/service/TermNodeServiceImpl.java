@@ -442,9 +442,8 @@ public class TermNodeServiceImpl
 //                        node.getOnlyApplicableIf().addAll(dto.getOnlyApplicableIf());
 //                    }
 
-                    Character character = null;
                     CharacterDto characterDto = (CharacterDto) dto.getTerm();
-                    character = HibernateProxyHelper.deproxy(node.getTerm(), Character.class);
+                    Character character = HibernateProxyHelper.deproxy(node.getTerm(), Character.class);
                     if (characterDto.getRatioTo() != null){
                         TermNode ratioToStructure = this.load(characterDto.getRatioTo().getUuid());
                         character.setRatioToStructure(ratioToStructure);

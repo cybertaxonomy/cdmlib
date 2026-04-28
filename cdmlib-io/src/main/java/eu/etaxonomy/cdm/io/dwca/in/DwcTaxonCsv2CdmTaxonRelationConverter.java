@@ -75,7 +75,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 		String sourceReferecenDetail = null;
 
 		String id = csvRecord.get(ID);
-		TaxonBase<?> taxonBase = getTaxonBase(id, item, null, state);
+		TaxonBase taxonBase = getTaxonBase(id, item, null, state);
 		if (taxonBase == null){
 			String warning = "Taxon not available for id '%s'.";
 			warning = String.format(warning, id);
@@ -169,7 +169,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 	}
 
 	private void handleParentNameUsage(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state,
-	        TaxonBase<?> taxonBase, String id, List<MappedCdmBase<? extends CdmBase>> resultList) {
+	        TaxonBase taxonBase, String id, List<MappedCdmBase<? extends CdmBase>> resultList) {
 
 	    if (exists(TermUri.DWC_PARENT_NAME_USAGE_ID, item) || exists(TermUri.DWC_PARENT_NAME_USAGE, item)){
 			String parentId = item.get(TermUri.DWC_PARENT_NAME_USAGE_ID);
@@ -253,7 +253,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 		return resultSet.iterator().next();
 	}
 
-	private void handleAcceptedNameUsage(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state, TaxonBase<?> taxonBase, String id) {
+	private void handleAcceptedNameUsage(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state, TaxonBase taxonBase, String id) {
 		if (acceptedNameUsageExists(item)){
 			String accId = item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID);
 			handleAcceptedNameUsageParam(item, state, taxonBase, id, accId);
@@ -263,7 +263,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 	}
 
 	private void handleAcceptedNameUsageParam(StreamItem item,
-	        DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state, TaxonBase<?> taxonBase, String id, String accId) {
+	        DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state, TaxonBase taxonBase, String id, String accId) {
 		if (id.equals(accId)){
 			//mapping to itself needs no further handling
 		}else{

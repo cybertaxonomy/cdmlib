@@ -243,7 +243,7 @@ public class DataSet implements IExportData {
       @XmlElement(name = "Taxon", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = Taxon.class),
       @XmlElement(name = "Synonym", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = Synonym.class)
     })
-    protected List<TaxonBase<?>> taxonBases = new ArrayList<>();
+    protected List<TaxonBase> taxonBases = new ArrayList<>();
 
     @XmlElementWrapper(name = "Media")
     @XmlElements({
@@ -363,13 +363,13 @@ public class DataSet implements IExportData {
     	this.polytomousKeys = value;
     }
 
-    public void addTaxonBases(Collection<TaxonBase<?>> value) {
+    public void addTaxonBases(Collection<TaxonBase> value) {
     	this.taxonBases.addAll(value);
     }
-    public List<TaxonBase<?>> getTaxonBases() {
+    public List<TaxonBase> getTaxonBases() {
     	return taxonBases;
     }
-    public void setTaxonBases(List<TaxonBase<?>> value) {
+    public void setTaxonBases(List<TaxonBase> value) {
         this.taxonBases = value;
     }
     public void addTaxonBase(TaxonBase value) {

@@ -636,7 +636,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
                 if (list.get(i) instanceof TaxonName) {
                     nameCache = ((TaxonName)list.get(i)).getNameCache();
                 } else if (list.get(i) instanceof TaxonBase) {
-                    TaxonName taxonName = ((TaxonBase<?>) list.get(i)).getName();
+                    TaxonName taxonName = ((TaxonBase) list.get(i)).getName();
                     nameCache = taxonName.getNameCache();
                 } else {
                 }

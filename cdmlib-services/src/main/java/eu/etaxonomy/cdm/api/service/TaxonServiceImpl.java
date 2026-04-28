@@ -1471,7 +1471,7 @@ public class TaxonServiceImpl
             boolean bestCandidateMatchesSecUuid = false;
             boolean bestCandidateIsInClassification = false;
             int countEqualCandidates = 0;
-            for(TaxonBase<?> taxonBaseCandidate : taxonList){
+            for(TaxonBase taxonBaseCandidate : taxonList){
                 if(taxonBaseCandidate instanceof Taxon){
                     Taxon newCanditate = CdmBase.deproxy(taxonBaseCandidate, Taxon.class);
                     boolean newCandidateMatchesSecUuid = isMatchesSecUuid(newCanditate, config);
@@ -2639,7 +2639,7 @@ public class TaxonServiceImpl
     @Override
     public DeleteResult isDeletable(UUID taxonBaseUuid, DeleteConfiguratorBase config){
         DeleteResult result = new DeleteResult();
-        TaxonBase<?> taxonBase = load(taxonBaseUuid);
+        TaxonBase taxonBase = load(taxonBaseUuid);
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(taxonBase);
         if (taxonBase instanceof Taxon){
             TaxonDeletionConfigurator taxonConfig = (TaxonDeletionConfigurator) config;
@@ -2757,7 +2757,7 @@ public class TaxonServiceImpl
         //preliminary implementation
 
         Set<Taxon> taxa = new HashSet<>();
-        TaxonBase<?> taxonBase = find(taxonUuid);
+        TaxonBase taxonBase = find(taxonUuid);
         if (taxonBase == null){
             return new IncludedTaxaDTO();
         }else if (taxonBase.isInstanceOf(Taxon.class)){
@@ -2988,7 +2988,7 @@ public class TaxonServiceImpl
 	@Transactional(readOnly = false)
 	public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid,
 			UUID acceptedTaxonUuid, boolean setNameInSource, boolean newUuidForAcceptedTaxon, SecReferenceHandlingSwapEnum secHandling, UUID newSecAcc, UUID newSecSyn) {
-		TaxonBase<?> base = this.load(synonymUUid);
+		TaxonBase base = this.load(synonymUUid);
 		Synonym syn = HibernateProxyHelper.deproxy(base, Synonym.class);
 		base = this.load(acceptedTaxonUuid);
 		Taxon taxon = HibernateProxyHelper.deproxy(base, Taxon.class);
@@ -3006,7 +3006,7 @@ public class TaxonServiceImpl
             boolean includeUnpublished,
             Integer pageSize, Integer pageNumber) {
 
-        TaxonBase<?> taxonBase = dao.load(taxonUuid);
+        TaxonBase taxonBase = dao.load(taxonUuid);
         if (taxonBase == null || !taxonBase.isInstanceOf(TaxonBase.class)){
             //TODO handle
             throw new RuntimeException("Taxon for uuid " + taxonUuid + " not found");

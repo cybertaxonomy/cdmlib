@@ -236,7 +236,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         expectedTaxon.getName().setTitleCache("Newby admin", true);
         UUID uuid = taxonService.save(expectedTaxon).getUuid();
         commitAndStartNewTransaction(null);
-        TaxonBase<?> actualTaxon = taxonService.load(uuid);
+        TaxonBase actualTaxon = taxonService.load(uuid);
         assertEquals(expectedTaxon, actualTaxon);
 
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
@@ -275,7 +275,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         TaxonName n_acherontia_thetis = taxon.getName();
 
         Reference sec = ReferenceFactory.newGeneric();
@@ -414,7 +414,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         taxon.getName().getNomenclaturalReference().setTitleCache("Mobydick", true);
         Exception exception = null;
         try {
@@ -555,7 +555,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context.setAuthentication(authentication);
         RuntimeException securityException= null;
 
-        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
@@ -591,7 +591,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         context.setAuthentication(authentication);
 
-        TaxonBase<?>  taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        TaxonBase  taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
@@ -624,7 +624,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         context.setAuthentication(authentication);
 
-        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
 
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
@@ -760,7 +760,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context.setAuthentication(authentication);
         RuntimeException securityException= null;
 
-        TaxonBase<?> taxon = taxonService.load(UUID_LACTUCA);
+        TaxonBase taxon = taxonService.load(UUID_LACTUCA);
         taxonService.delete(taxon);
         commitAndStartNewTransaction(null);
 

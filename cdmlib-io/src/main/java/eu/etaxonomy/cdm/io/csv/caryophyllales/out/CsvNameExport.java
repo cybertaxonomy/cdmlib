@@ -662,7 +662,7 @@ public class CsvNameExport extends CsvNameExportBase {
         for (List<Synonym> list: heterotypicSynonymsList.values()){
             Collections.sort(list, new HomotypicGroupTaxonComparator(null));
             first = true;
-            for (TaxonBase<?> synonym : list){
+            for (TaxonBase synonym : list){
                 NomenclaturalStatus status = null;
                 if (!synonym.getName().getStatus().isEmpty()){
                     status = CdmBase.deproxy(synonym.getName().getStatus().iterator().next());
@@ -690,7 +690,7 @@ public class CsvNameExport extends CsvNameExportBase {
         first = true;
         Collections.sort(homotypicSynonymsList, new HomotypicGroupTaxonComparator(null)  );
         NomenclaturalStatus status = null;
-        for (TaxonBase<?> synonym : homotypicSynonymsList){
+        for (TaxonBase synonym : homotypicSynonymsList){
 
             if (!synonym.getName().getStatus().isEmpty()){
                 status = CdmBase.deproxy(synonym.getName().getStatus().iterator().next());

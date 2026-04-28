@@ -107,8 +107,8 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
 			}
 		}
 
-		TaxonBase<?> fromObject = (TaxonBase<?>)getRelatedObject(rs, fromAttribute);
-		TaxonBase<?> toObject = (TaxonBase<?>)getRelatedObject(rs, toAttribute);
+		TaxonBase fromObject = (TaxonBase)getRelatedObject(rs, fromAttribute);
+		TaxonBase toObject = (TaxonBase)getRelatedObject(rs, toAttribute);
 		String fromId = rs.getObject(fromAttribute)== null ? null: String.valueOf(rs.getObject(fromAttribute));
 		String toId = rs.getObject(toAttribute) == null? null : String.valueOf(rs.getObject(toAttribute));
 
@@ -207,7 +207,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
 	/**
 	 * Checks if cdmBase is of type Taxon
 	 */
-	private Taxon checkTaxonType(TaxonBase<?> taxonBase, String typeString, String id) {
+	private Taxon checkTaxonType(TaxonBase taxonBase, String typeString, String id) {
 		if (! taxonBase.isInstanceOf(Taxon.class)){
 			String warning = typeString + " (" + id + ") is not of type Taxon but of type " + taxonBase.getClass().getSimpleName();
 			logger.warn(warning);
@@ -219,7 +219,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
 	/**
 	 * Checks if cdmBase is of type Synonym
 	 */
-	private TaxonBase<?> checkSynonymType(CdmBase cdmBase, String id, TaxonRelationshipType taxonRelType) {
+	private TaxonBase checkSynonymType(CdmBase cdmBase, String id, TaxonRelationshipType taxonRelType) {
 		if (! cdmBase.isInstanceOf(Synonym.class)){
 			String warning = "Synonym (" + id + ") is not of type Synonym but of type " + cdmBase.getClass().getSimpleName();
 			if (taxonRelType == null){

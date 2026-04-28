@@ -403,7 +403,7 @@ public class SpecimenCdmExcelImport
 
 		boolean hasCommonTaxonInfo = (commonDetermination == null) ? false : commonDetermination.hasTaxonInformation();
 		if (hasCommonTaxonInfo && commonDetermination != null){
-			TaxonBase<?> taxonBase = null;
+			TaxonBase taxonBase = null;
 			if (StringUtils.isNotBlank(commonDetermination.taxonUuid)){
 				UUID taxonUuid = UUID.fromString(commonDetermination.taxonUuid);
 				taxonBase = getTaxonService().find(taxonUuid);

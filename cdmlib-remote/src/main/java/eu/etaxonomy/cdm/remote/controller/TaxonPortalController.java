@@ -898,7 +898,7 @@ public class TaxonPortalController extends TaxonController{
         logger.info("doGetNameRelations()" + request.getRequestURI());
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        TaxonBase<?> taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, (List<String>)null);
+        TaxonBase taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, (List<String>)null);
         taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
 
         List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedTo, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths());
@@ -929,7 +929,7 @@ public class TaxonPortalController extends TaxonController{
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        TaxonBase<?> taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY.getPropertyPaths());
+        TaxonBase taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY.getPropertyPaths());
         taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
 
         List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths());

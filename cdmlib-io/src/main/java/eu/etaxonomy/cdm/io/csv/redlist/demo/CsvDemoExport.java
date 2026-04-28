@@ -279,7 +279,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	 *
 	 * @param record the concrete information record
 	 */
-	private void handleTaxonBase(CsvDemoRecord record, TaxonBase<?> taxonBase,
+	private void handleTaxonBase(CsvDemoRecord record, TaxonBase taxonBase,
 			INonViralName name, Classification classification,
 			CsvDemoExportConfigurator config, TaxonNode node) {
 

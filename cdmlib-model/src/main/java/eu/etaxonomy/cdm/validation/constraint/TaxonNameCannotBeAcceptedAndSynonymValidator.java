@@ -16,19 +16,20 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.hibernate.Hibernate;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym;
 
-public class TaxonNameCannotBeAcceptedAndSynonymValidator implements
-		ConstraintValidator<TaxonNameCannotBeAcceptedAndSynonym, TaxonBase<?>> {
+public class TaxonNameCannotBeAcceptedAndSynonymValidator
+        implements ConstraintValidator<TaxonNameCannotBeAcceptedAndSynonym, TaxonBase> {
 
     @Override
     public void initialize(TaxonNameCannotBeAcceptedAndSynonym taxonNameCannotBeAcceptedAndSynonym) { }
 
     @Override
-    public boolean isValid(TaxonBase<?> taxon, ConstraintValidatorContext constraintContext) {
+    public boolean isValid(TaxonBase taxon, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
 		if (taxon.getName() != null ) {
             if(Hibernate.isInitialized(taxon.getName()) && Hibernate.isInitialized(taxon.getName().getTaxonBases())) {
@@ -40,8 +41,8 @@ public class TaxonNameCannotBeAcceptedAndSynonymValidator implements
     						//TODO check if this does not exclude validator from checking things correctly
     					    if(Hibernate.isInitialized(t1.getSec()) && Hibernate.isInitialized(t2.getSec())) { // Check that the sec property is initialized
     							if(t1.getSec() != null &&   t1.getSec().equals(t2.getSec())) { // only compare concepts belonging to the same source
-    								TaxonBase<?> taxonBase1 = TaxonBase.deproxy(t1, TaxonBase.class);
-    								TaxonBase<?> taxonBase2 = TaxonBase.deproxy(t2, TaxonBase.class);
+    								TaxonBase taxonBase1 = CdmBase.deproxy(t1);
+    								TaxonBase taxonBase2 = CdmBase.deproxy(t2);
 
     								if(taxonBase1.isInstanceOf(Taxon.class) && taxonBase2.isInstanceOf(Taxon.class)) {
     									valid = false;

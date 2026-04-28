@@ -1935,7 +1935,7 @@ public class CdmLightClassificationExport
                 // citations) + status + some name relations (e.g. “non”)
                 // TODO: nameRelations, which and how to display
                 Set<TaxonBase> taxonBases = name.getTaxonBases();
-                TaxonBase<?> taxonBase;
+                TaxonBase taxonBase;
 
 
                 String sec = "";
@@ -2109,7 +2109,7 @@ public class CdmLightClassificationExport
                      }
                 }else{
                     //there are names used more than once?
-                    for (TaxonBase<?> tb: taxonBases){
+                    for (TaxonBase tb: taxonBases){
                         if (tb.getSec() != null){
                             handleReference(state, tb.getSec());
                             if (tb instanceof Synonym && state.getConfig().isShowSynSecForHomotypicGroup()) {

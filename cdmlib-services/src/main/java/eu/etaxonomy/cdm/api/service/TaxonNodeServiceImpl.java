@@ -219,7 +219,7 @@ public class TaxonNodeServiceImpl
     }
 
     @Override
-    public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase<?> taxonBase) {
+    public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase taxonBase) {
         return dao.getParentTaxonNodeDtoForRank(classification, rank, taxonBase);
     }
 

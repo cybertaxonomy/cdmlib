@@ -84,7 +84,7 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 
 	protected Taxon getAcceptedTaxon(ResultSet rs) throws SQLException {
 		String taxonFk = getForeignKey(rs, dbTaxonFkAttribute);
-		TaxonBase<?> taxonBase = (TaxonBase<?>)getRelatedObject(taxonNamespace, taxonFk);
+		TaxonBase taxonBase = (TaxonBase)getRelatedObject(taxonNamespace, taxonFk);
 		Taxon taxon = null;
 		if (taxonBase == null){
 			logger.warn("TaxonBase not found: " + taxonFk);

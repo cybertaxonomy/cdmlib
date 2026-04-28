@@ -263,7 +263,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
 	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name);
 
-	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase<?> taxonBase);
+	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase taxonBase);
 
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
             Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode, DistributionDescription descHandling);

@@ -2790,7 +2790,7 @@ public class TaxonName
     @Transient
     public Set<Taxon> getTaxa(){
         Set<Taxon> result = new HashSet<>();
-        for (TaxonBase<?> taxonBase : this.taxonBases){
+        for (TaxonBase taxonBase : this.taxonBases){
             if (taxonBase instanceof Taxon){
                 result.add((Taxon)taxonBase);
             }
@@ -2811,7 +2811,7 @@ public class TaxonName
     @Transient
     public Set<Synonym> getSynonyms() {
         Set<Synonym> result = new HashSet<>();
-        for (TaxonBase<?> taxonBase : this.taxonBases){
+        for (TaxonBase taxonBase : this.taxonBases){
             if (taxonBase instanceof Synonym){
                 result.add((Synonym)taxonBase);
             }

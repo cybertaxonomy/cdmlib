@@ -578,7 +578,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
 
     private void makeTaxon(STATE state, TaxonName name) {
         Map<String, String> record = state.getCurrentRecord();
-        TaxonBase<?> cdmTaxon = getCdmTaxon(state, name, TAXON_ID);
+        TaxonBase cdmTaxon = getCdmTaxon(state, name, TAXON_ID);
         TaxStatus status =  TaxStatus.from(record.get(TAXONOMIC_STATUS));
         if (status == TaxStatus.ACC){
             handleAccepted(state, name, cdmTaxon);
@@ -594,7 +594,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
      * @param name
      * @param cdmTaxon
      */
-    private void handleAccepted(STATE state, TaxonName name, TaxonBase<?> cdmTaxon) {
+    private void handleAccepted(STATE state, TaxonName name, TaxonBase cdmTaxon) {
         Reference sec = this.getTransactionalSourceReference(state);
         if (cdmTaxon == null){
             Taxon newTaxon = Taxon.NewInstance(name, sec);
@@ -606,7 +606,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
         }
     }
 
-    private void handleDoubtful(STATE state, TaxonName name, TaxonBase<?> cdmTaxon) {
+    private void handleDoubtful(STATE state, TaxonName name, TaxonBase cdmTaxon) {
         //TODO this is probably not needed anymore
         Map<String, String> record = state.getCurrentRecord();
         String origName = record.get(ORIGINAL_NAME_USAGE_ID);
@@ -628,7 +628,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
     }
 
 
-    private TaxonBase<?> getCdmTaxon(STATE state, TaxonName name, String fieldName) {
+    private TaxonBase getCdmTaxon(STATE state, TaxonName name, String fieldName) {
         Map<String, String> record = state.getCurrentRecord();
         String taxonId = record.get(fieldName);
 
@@ -651,7 +651,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
      * @param name
      * @param cdmTaxon
      */
-    private void handleSynonym(STATE state, TaxonName name, TaxonBase<?> cdmTaxon) {
+    private void handleSynonym(STATE state, TaxonName name, TaxonBase cdmTaxon) {
         Reference sec = this.getTransactionalSourceReference(state);
         if (cdmTaxon == null){
             Synonym syn = Synonym.NewInstance(name, sec);

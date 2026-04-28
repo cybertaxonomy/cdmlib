@@ -1152,7 +1152,7 @@ public class NameServiceImpl
     public List<UuidAndTitleCache> getUuidAndTitleCacheOfSynonymy(Integer limit, UUID taxonUuid) {
         List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("synonyms.name.*");
-        TaxonBase<?> taxonBase = taxonService.load(taxonUuid, propertyPaths);
+        TaxonBase taxonBase = taxonService.load(taxonUuid, propertyPaths);
         if (taxonBase instanceof Taxon){
             Taxon taxon = (Taxon)taxonBase;
             Set<TaxonName> names = taxon.getSynonymNames();

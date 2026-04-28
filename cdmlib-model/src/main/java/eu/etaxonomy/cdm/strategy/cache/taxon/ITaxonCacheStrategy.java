@@ -23,7 +23,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  *
  * @param <T> The concrete TaxonName class this strategy applies for
  */
-public interface ITaxonCacheStrategy<T extends TaxonBase> extends IIdentifiableEntityCacheStrategy<T> {
+public interface ITaxonCacheStrategy
+        extends IIdentifiableEntityCacheStrategy<TaxonBase> {
 
     /**
      * Returns a list of name typified tokens that together make up the name (including authorship etc.).
@@ -37,7 +38,7 @@ public interface ITaxonCacheStrategy<T extends TaxonBase> extends IIdentifiableE
      * @param taxonName
      * @return the tagged list, <code>null</code> if taxonName is <code>null</code>
      */
-    public List<TaggedText> getTaggedTitle(T taxonBase);
+    public List<TaggedText> getTaggedTitle(TaxonBase taxonBase);
 
 
 	/**
@@ -46,6 +47,6 @@ public interface ITaxonCacheStrategy<T extends TaxonBase> extends IIdentifiableE
 	 * @param htmlTagRules
 	 * @return
 	 */
-	public String getTitleCache(T taxonBase, HTMLTagRules htmlTagRules);
+	public String getTitleCache(TaxonBase taxonBase, HTMLTagRules htmlTagRules);
 
 }

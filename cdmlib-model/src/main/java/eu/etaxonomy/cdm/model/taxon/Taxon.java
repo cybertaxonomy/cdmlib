@@ -109,7 +109,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
     @ClassBridge(impl = TaxonRelationshipClassBridge.class)
 })
 public class Taxon
-            extends TaxonBase<ITaxonCacheStrategy<Taxon>>
+            extends TaxonBase
             implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, ICdmTarget,
                        IHasCredits, IHasLink {
 

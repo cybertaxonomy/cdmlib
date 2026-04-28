@@ -109,8 +109,8 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
                 impl = AcceptedTaxonBridge.class),
         @ClassBridge(impl = eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde.class)
 })
-public abstract class TaxonBase<S extends ITaxonCacheStrategy>
-        extends CreditableEntity<S>
+public abstract class TaxonBase
+        extends CreditableEntity<ITaxonCacheStrategy>
         implements  IPublishable, IIntextReferenceTarget{
 
     private static final long serialVersionUID = -3589185949928938529L;
@@ -468,10 +468,10 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
      * @see java.lang.Object#clone()
      */
     @Override
-    public TaxonBase<S> clone() {
-        TaxonBase<S> result;
+    public TaxonBase clone() {
+        TaxonBase result;
         try {
-            result = (TaxonBase<S>)super.clone();
+            result = (TaxonBase)super.clone();
             if (this.getSecSource() != null){
                 result.setSecSource(this.getSecSource().clone());
                 result.getSecSource().setSourcedTaxon(result);

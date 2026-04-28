@@ -1369,7 +1369,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param taxonBase
 	 * @return
 	 */
-	protected Taxon getAcceptedTaxon(TaxonBase<?> taxonBase) {
+	protected Taxon getAcceptedTaxon(TaxonBase taxonBase) {
 		if (taxonBase == null){
 			return null;
 		}else if(taxonBase.isInstanceOf(Taxon.class)){

@@ -194,8 +194,8 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
                 .filter(r->r.isPublished()).findAny().isPresent();
     }
 
-    private List<TaggedText> getTaggedTaxon(TaxonBase<?> taxon, TaxonPageDtoConfiguration config) {
-        TaxonBaseDefaultCacheStrategy<TaxonBase<?>> formatter = new TaxonBaseDefaultCacheStrategy<>();
+    private List<TaggedText> getTaggedTaxon(TaxonBase taxon, TaxonPageDtoConfiguration config) {
+        TaxonBaseDefaultCacheStrategy formatter = new TaxonBaseDefaultCacheStrategy();
         List<TaggedText> tags = formatter.getTaggedTitle(taxon);
         return tags;
     }

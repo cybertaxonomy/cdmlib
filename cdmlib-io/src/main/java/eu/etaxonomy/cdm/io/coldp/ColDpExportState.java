@@ -38,7 +38,7 @@ public class ColDpExportState
 
     private ColDpExportResultProcessor processor = new ColDpExportResultProcessor(this);
 
-    private TaxonBase<?> actualTaxonBase;
+    private TaxonBase actualTaxonBase;
 
     private ArrayList<UUID> homotypicalGroupStore = new ArrayList<>();
     private Map<Integer, TeamOrPersonBase<?>> authorStore = new HashMap<>();
@@ -77,11 +77,11 @@ public class ColDpExportState
         return processor;
     }
 
-    protected void setActualTaxonBase(TaxonBase<?> actualTaxonBase){
+    protected void setActualTaxonBase(TaxonBase actualTaxonBase){
         this.actualTaxonBase = actualTaxonBase;
     }
 
-    protected TaxonBase<?> getActualTaxonBase() {
+    protected TaxonBase getActualTaxonBase() {
         return actualTaxonBase;
     }
 

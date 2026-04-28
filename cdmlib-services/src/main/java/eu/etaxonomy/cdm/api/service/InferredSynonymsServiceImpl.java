@@ -500,7 +500,7 @@ public class InferredSynonymsServiceImpl
     /**
      * Returns the idInSource for a given {@link TaxonBase}.
      */
-    private String getIdInSource(TaxonBase<?> taxonBase) {
+    private String getIdInSource(TaxonBase taxonBase) {
         String idInSource = "";
         Set<IdentifiableSource> sources = taxonBase.getSources();
 

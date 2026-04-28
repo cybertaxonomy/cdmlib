@@ -889,7 +889,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         //check association (IndividualsAssociations + TypeDesignations) specimen -> taxon (name)
 
         //unassociated specimen
-        java.util.Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(
+        java.util.Collection<TaxonBase> associatedTaxa = occurrenceService.listAssociatedTaxa(
                 unassociatedSpecimen, includeUnpublished, null, null, null, null);
         assertNotNull(associatedTaxa);
         assertTrue(associatedTaxa.isEmpty());

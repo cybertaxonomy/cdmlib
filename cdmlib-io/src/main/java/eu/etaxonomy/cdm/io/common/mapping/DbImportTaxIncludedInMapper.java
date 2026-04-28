@@ -107,9 +107,9 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
 			}
 		}
 
-		TaxonBase<?> fromObject = (TaxonBase<?>)getRelatedObject(rs, fromAttribute, fromNamespace);
-		TaxonBase<?> toObject = (TaxonBase<?>)getRelatedObject(rs, toAttribute, toNamespace);
-		TaxonBase<?> alternativeToObject = (TaxonBase<?>)getRelatedObject(rs, alternativeAttribute, alternativeNamespace);
+		TaxonBase fromObject = (TaxonBase)getRelatedObject(rs, fromAttribute, fromNamespace);
+		TaxonBase toObject = (TaxonBase)getRelatedObject(rs, toAttribute, toNamespace);
+		TaxonBase alternativeToObject = (TaxonBase)getRelatedObject(rs, alternativeAttribute, alternativeNamespace);
 
 		String fromId = String.valueOf(rs.getObject(fromAttribute));
 		String toId = rs.getObject(toAttribute) == null ? null : String.valueOf(rs.getObject(toAttribute));
@@ -228,7 +228,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImpor
 	/**
 	 * Checks if cdmBase is of type Taxon
 	 */
-	private Taxon checkTaxonType(TaxonBase<?> taxonBase, String typeString, String id) throws IllegalArgumentException{
+	private Taxon checkTaxonType(TaxonBase taxonBase, String typeString, String id) throws IllegalArgumentException{
 		if (! taxonBase.isInstanceOf(Taxon.class)){
 			String warning = typeString + " (" + id + ") is not of type Taxon but of type " + taxonBase.getClass().getSimpleName();
 			logger.warn(warning);

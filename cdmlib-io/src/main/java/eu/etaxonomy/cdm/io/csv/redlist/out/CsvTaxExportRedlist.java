@@ -233,7 +233,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 * @param record the concrete information record
 	 * @param taxonBase {@link Taxon}
 	 */
-	private void handleTaxonBase(CsvTaxRecordRedlist record,TaxonBase<?> taxonBase,
+	private void handleTaxonBase(CsvTaxRecordRedlist record,TaxonBase taxonBase,
 			INonViralName name, Taxon acceptedTaxon, Classification classification,
 			TaxonRelationshipType relType, boolean isProParte, boolean isPartial,
 			CsvTaxExportConfiguratorRedlist config) {

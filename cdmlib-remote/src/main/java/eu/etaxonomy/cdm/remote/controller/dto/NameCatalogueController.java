@@ -803,7 +803,7 @@ public class NameCatalogueController
             logger.info("doGetTaxonInformation()" + request.getRequestURI() + " for taxon uuid \""
                     + taxonUuid);
             // find name by uuid
-            TaxonBase<?> tb = taxonService.findTaxonByUuid(UUID.fromString(taxonUuid),
+            TaxonBase tb = taxonService.findTaxonByUuid(UUID.fromString(taxonUuid),
                     TAXON_INFORMATION_INIT_STRATEGY);
 
             // if search is successful then get related information, else return error

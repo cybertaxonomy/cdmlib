@@ -659,7 +659,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
     @Override
     public List<TaxonNodeDto> getParentTaxonNodeDtoForRank(
-            Classification classification, Rank rank, TaxonBase<?> taxonBase) {
+            Classification classification, Rank rank, TaxonBase taxonBase) {
 
         Taxon taxon = null;
         if (taxonBase instanceof Taxon) {
@@ -707,7 +707,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
     	Set<TaxonBase> taxa = name.getTaxonBases();
     	List<TaxonNodeDto> result = new ArrayList<>();
-    	for (TaxonBase<?> taxonBase:taxa) {
+    	for (TaxonBase taxonBase:taxa) {
     	    List<TaxonNodeDto> tmpList = getParentTaxonNodeDtoForRank(classification, rank, taxonBase);
     	    for (TaxonNodeDto tmpDto : tmpList){
     	        boolean exists = false; //an equal method does not yet exist for TaxonNodeDto therefore this workaround
@@ -791,7 +791,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         return setSecundum(newSec, emptyDetail, queryStr, monitor);
     }
 
-    private <T extends TaxonBase<?>> Set<CdmBase> setSecundum(Reference newSec, boolean emptyDetail, String queryStr, IProgressMonitor monitor) {
+    private <T extends TaxonBase> Set<CdmBase> setSecundum(Reference newSec, boolean emptyDetail, String queryStr, IProgressMonitor monitor) {
         Set<CdmBase> result = new HashSet<>();
         Query<Integer> query = getSession().createQuery(queryStr, Integer.class);
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
@@ -975,7 +975,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         return setPublish(publish, queryStr, relationTypes, monitor);
     }
 
-    private <T extends TaxonBase<?>> Set<T> setPublish(boolean publish, String queryStr, Set<UUID> relTypeUuids, IProgressMonitor monitor) {
+    private <T extends TaxonBase> Set<T> setPublish(boolean publish, String queryStr, Set<UUID> relTypeUuids, IProgressMonitor monitor) {
         Set<T> result = new HashSet<>();
         Query<Integer> query = getSession().createQuery(queryStr, Integer.class);
         query.setParameter("publish", publish);
