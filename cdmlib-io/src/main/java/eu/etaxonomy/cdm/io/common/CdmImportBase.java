@@ -476,7 +476,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
             if (namedArea == null) {
     			if (vocabularyPreference == null){
-    				vocabularyPreference =  new ArrayList<>();
+    				vocabularyPreference = new ArrayList<>();
     			}
     			if (vocabularyPreference.isEmpty()){  //add TDWG vocabulary if preferences are empty
     				vocabularyPreference.add(Country.GERMANY().getVocabulary());

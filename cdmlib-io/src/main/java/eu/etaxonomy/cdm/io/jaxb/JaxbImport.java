@@ -115,7 +115,7 @@ public class JaxbImport
 		List<TermNode> termNodes;
 		List<Media> media;
 		List<LanguageStringBase> languageData;
-		List<TermVocabulary<DefinedTermBase>> termVocabularies;
+		List<TermVocabulary<?>> termVocabularies;
 		List<HomotypicalGroup> homotypicalGroups;
 
 		TransactionStatus txStatus = startTransaction();
@@ -356,7 +356,7 @@ public class JaxbImport
 	}
 
 	private boolean saveTermVocabularies(
-			List<TermVocabulary<DefinedTermBase>> termVocabularies) {
+			List<TermVocabulary<?>> termVocabularies) {
 
 		boolean success = true;
 		logger.info("Term vocabularies: " + termVocabularies.size());

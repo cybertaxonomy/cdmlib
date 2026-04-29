@@ -34,14 +34,14 @@ public class FeatureTest {
 	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
 	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-			TermTree<DefinedTermBase> termTree = dataSet.getTermTrees().get(0);
+			TermTree<?> termTree = dataSet.getTermTrees().get(0);
 			DefinedTermBase term = dataSet.getTerms().get(1);
 
 			assertNotNull("TermTree must not be null", termTree);
 			assertNotNull("Term must not be null", term);
 
 			assertNotNull("TermTree.root must not be null", termTree.getRoot());
-			TermNode<DefinedTermBase> root = termTree.getRoot();
+			TermNode<?> root = termTree.getRoot();
 			assertNotNull("TermNode.term must not be null", root.getTerm());
 			assertEquals("TermNode.feature must equal Feature", term, root.getTerm());
 

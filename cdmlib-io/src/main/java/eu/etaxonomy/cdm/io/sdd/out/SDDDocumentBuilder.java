@@ -118,7 +118,6 @@ public class SDDDocumentBuilder {
 	private int textcharactersCount = 0;
 	private int mediasCount = 0;
 	private int statesCount = 0;
-	private final int featureNodesCount = 0;
 	private int chartreeCount = 0;
 	private int charnodeCount = 0;
 	private int taxonNodesCount = 0;
@@ -428,7 +427,7 @@ public class SDDDocumentBuilder {
 		}
 
 		if (tb instanceof DefinedTermBase) {
-			DefinedTermBase dtb = (DefinedTermBase) tb;
+			DefinedTermBase<?> dtb = (DefinedTermBase<?>) tb;
 			Set<Media> rm = dtb.getMedia();
 
 			if (rm != null && rm.size() > 0) {
@@ -470,7 +469,7 @@ public class SDDDocumentBuilder {
 		}
 
 		if (ie instanceof DefinedTermBase) {
-			DefinedTermBase dtb = (DefinedTermBase) ie;
+			DefinedTermBase<?> dtb = (DefinedTermBase<?>) ie;
 			Set<Media> rm = dtb.getMedia();
 
 			if (rm != null && rm.size() > 0) {
@@ -485,7 +484,7 @@ public class SDDDocumentBuilder {
 			}
 		}
 		if (ie instanceof IdentifiableMediaEntity) {
-			IdentifiableMediaEntity ime = (IdentifiableMediaEntity) ie;
+			IdentifiableMediaEntity<?> ime = (IdentifiableMediaEntity<?>) ie;
 			Set<Media> medias = ime.getMedia();
 			if (medias != null) {
 				ElementImpl elLinks = new ElementImpl(document, "Links");
@@ -511,7 +510,6 @@ public class SDDDocumentBuilder {
 				element.appendChild(elLinks);
 			}
 		}
-
 	}
 
 	/**
@@ -532,7 +530,7 @@ public class SDDDocumentBuilder {
 		ElementImpl revisionData = new ElementImpl(document, REVISION_DATA);
 
 		// authors
-		TeamOrPersonBase authors = database.getAuthorship();
+		TeamOrPersonBase<?> authors = database.getAuthorship();
 		// TeamOrPersonBase editors = database.getUpdatedBy();
 
 		if ((authors != null)) { // || (editors != null)) {
@@ -710,7 +708,7 @@ public class SDDDocumentBuilder {
 								charactersCount);
 						buildRepresentation(elCategoricalCharacter, character);
 
-						Set<TermCollection<? extends DefinedTermBase,?>> enumerations = character
+						Set<TermCollection<?,?>> enumerations = character
 								.getSupportedCategoricalEnumerations();
 						if (enumerations != null) {
 							if (enumerations.size() > 0) {
@@ -1228,7 +1226,7 @@ public class SDDDocumentBuilder {
 			ElementImpl elCharNode = new ElementImpl(document, NODE);
 			charnodeCount = buildReference(parent, featuretrees, ID,
 					elCharNode, "cn", charnodeCount);
-			TermNode grandparent = parent.getParent();
+			TermNode<Feature> grandparent = parent.getParent();
 			if ((grandparent != null) && (!isRoot)) {
 				ElementImpl elParent = new ElementImpl(document, PARENT);
 				charnodeCount = buildReference(grandparent, featuretrees, REF,
@@ -1243,7 +1241,7 @@ public class SDDDocumentBuilder {
 			elCharNode.appendChild(elDescriptiveConcept);
 			element.appendChild(elCharNode);
 			for (Iterator<TermNode<Feature>> ifn = children.iterator(); ifn.hasNext();) {
-				TermNode fn = ifn.next();
+				TermNode<Feature> fn = ifn.next();
 				buildBranches(fn, element, false);
 			}
 		} else {
@@ -1374,7 +1372,7 @@ public class SDDDocumentBuilder {
 			element.setAttribute(refOrId, (String) references.get(ve));
 		} else {
 			if (ve instanceof IdentifiableEntity) {
-				IdentifiableEntity<?> ie = (IdentifiableEntity) ve;
+				IdentifiableEntity<?> ie = (IdentifiableEntity<?>) ve;
 				if (ie.getSources().size() > 0) {
 					IdentifiableSource os = (IdentifiableSource) ie
 							.getSources().toArray()[0];
@@ -1459,7 +1457,6 @@ public class SDDDocumentBuilder {
 							elGeographicAreas.appendChild(elGeographicArea);
 						}
 					}
-
 				}
 			}
 			dataset.appendChild(elGeographicAreas);

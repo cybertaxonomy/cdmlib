@@ -40,7 +40,8 @@ public class DefaultTermInitializer implements ITermInitializer {
 	}
 
 	protected void doInitialize(){
-		Map<UUID,DefinedTermBase> terms = new HashMap<>();
+
+	    Map<UUID,DefinedTermBase> terms = new HashMap<>();
 
 //		for(Class<? extends DefinedTermBase<?>> clazz : classesToInitialize) {
 		for(VocabularyEnum vocabularyEnum : VocabularyEnum.values()) {
@@ -55,7 +56,7 @@ public class DefaultTermInitializer implements ITermInitializer {
 		newInstance.setDefaultTerms(vocabulary);
 	}
 
-	private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass) {
+	private <T extends DefinedTermBase<T>> T getInstance(Class<? extends DefinedTermBase<?>> termClass) {
 		try {
 			Constructor<T> c = ((Class<T>)termClass).getDeclaredConstructor();
 			c.setAccessible(true);

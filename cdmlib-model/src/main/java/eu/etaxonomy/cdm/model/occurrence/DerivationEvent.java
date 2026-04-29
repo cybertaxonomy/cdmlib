@@ -102,7 +102,7 @@ public class DerivationEvent extends EventBase {
 	/**
 	 * Factory method
 	 */
-	public static DerivationEvent NewSimpleInstance(SpecimenOrObservationBase original,
+	public static DerivationEvent NewSimpleInstance(SpecimenOrObservationBase<?> original,
 	        DerivedUnit derivative, DerivationEventType type){
 		DerivationEvent result = NewInstance(type);
 		result.addOriginal(original);

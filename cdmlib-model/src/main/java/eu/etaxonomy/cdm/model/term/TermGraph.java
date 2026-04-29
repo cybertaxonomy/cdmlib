@@ -35,7 +35,7 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "TermTree")
 @Entity
 @Audited
-public class TermGraph <T extends DefinedTermBase>
+public class TermGraph<T extends DefinedTermBase>
         extends TermGraphBase<T, TermRelation<T>> {
 
 	private static final long serialVersionUID = -6713834139003172735L;

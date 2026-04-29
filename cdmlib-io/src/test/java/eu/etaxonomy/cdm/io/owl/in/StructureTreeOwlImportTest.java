@@ -182,15 +182,14 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         this.endTransaction();
 
         String treeLabel = "properties 1.0";
-        List<TermTree> trees = termTreeServcie.listByTitle(TermTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
+        List<TermTree<?>> trees = (List)termTreeServcie.listByTitle(TermTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
         List<String> nodeProperties = new ArrayList<>();
         nodeProperties.add("term");
-        TermTree tree = termTreeServcie.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
+        TermTree<?> tree = termTreeServcie.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
         assertNotNull("featureTree should not be null", tree);
 
         assertEquals("Tree has wrong term type", TermType.Property, tree.getTermType());
         assertEquals("Wrong number of distinct features", 12, tree.getDistinctTerms().size());
-        List rootChildren = tree.getRootChildren();
 
         String vocLabel = "Plant Glossary Properties";
         List<TermVocabulary> vocs = vocabularyService.findByTitle(TermVocabulary.class, vocLabel, MatchMode.EXACT, null, null, null, null, Arrays.asList("terms")).getRecords();

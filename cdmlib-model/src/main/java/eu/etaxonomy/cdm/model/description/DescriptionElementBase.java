@@ -60,6 +60,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
@@ -459,7 +460,7 @@ public abstract class DescriptionElementBase
     protected Map<TermVocabulary, List<DefinedTerm>> makeModifierMap(){
         Map<TermVocabulary, List<DefinedTerm>> result = new HashMap<>();
         for (DefinedTerm modifier : getModifiers()){
-            TermVocabulary<DefinedTerm> voc = modifier.getVocabulary();
+            TermVocabulary<?> voc = modifier.getVocabulary();
             if (result.get(voc) == null){
                 result.put(voc, new ArrayList<>());
             }
@@ -468,7 +469,7 @@ public abstract class DescriptionElementBase
         return result;
     }
 
-    public List<DefinedTerm> getModifiers(TermVocabulary voc){
+    public List<DefinedTerm> getModifiers(TermVocabulary<DefinedTerm> voc){
         List<DefinedTerm> result = makeModifierMap().get(voc);
         if (result == null){
             result = new ArrayList<>();

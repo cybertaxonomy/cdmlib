@@ -123,7 +123,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @ClassBridge(impl = DefinedTermBaseClassBridge.class)
 //TODO Comparable implemented only for fixing failing JAXB import, may be removed when this is fixed
-public abstract class DefinedTermBase<T extends DefinedTermBase>
+public abstract class DefinedTermBase<T extends DefinedTermBase<T>>
         extends TermBase
         implements IDefinedTerm<T>, IHasCredits, Comparable<T> {
 
@@ -245,7 +245,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
           if (this instanceof HibernateProxy) {
               HibernateProxy proxy = (HibernateProxy) this;
               LazyInitializer li = proxy.getHibernateLazyInitializer();
-              return (T)((T)li.getImplementation()).getKindOf();
+              return ((T)li.getImplementation()).getKindOf();
           } else {
               return DefinedTermBase.deproxy(this.kindOf);
           }
@@ -264,7 +264,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
       }
       public void addGeneralizationOf(T generalization) {
           checkTermType(generalization);
-          generalization.setKindOf(this);
+          generalization.setKindOf((T)this);
           this.generalizationOf.add(generalization);
       }
       public void removeGeneralization(T generalization) {
@@ -279,7 +279,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
           if (this instanceof HibernateProxy) {
               HibernateProxy proxy = (HibernateProxy) this;
               LazyInitializer li = proxy.getHibernateLazyInitializer();
-              return (T)((T)li.getImplementation()).getPartOf();
+              return ((T)li.getImplementation()).getPartOf();
           } else {
               return DefinedTermBase.deproxy(this.partOf);
           }
@@ -324,7 +324,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
      */
     public void addIncludes(T includes) {
         checkTermType(includes);
-        includes.setPartOf(this);
+        includes.setPartOf((T)this);
         this.includes.add(includes);
     }
 

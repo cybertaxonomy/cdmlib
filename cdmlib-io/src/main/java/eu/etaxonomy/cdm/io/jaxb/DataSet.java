@@ -164,7 +164,7 @@ public class DataSet implements IExportData {
         @XmlElement(name = "OrderedTermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = OrderedTermVocabulary.class)
     })
 
-    protected List<TermVocabulary<DefinedTermBase>> termVocabularies = new ArrayList<>();
+    protected List<TermVocabulary<?>> termVocabularies = new ArrayList<>();
 
 
     @XmlElementWrapper(name = "Agents")
@@ -290,10 +290,10 @@ public class DataSet implements IExportData {
         this.terms = value;
     }
 
-    public List<TermVocabulary<DefinedTermBase>> getTermVocabularies() {
+    public List<TermVocabulary<?>> getTermVocabularies() {
         return termVocabularies;
     }
-    public void setTermVocabularies(List<TermVocabulary<DefinedTermBase>> value) {
+    public void setTermVocabularies(List<TermVocabulary<?>> value) {
         this.termVocabularies = value;
     }
 

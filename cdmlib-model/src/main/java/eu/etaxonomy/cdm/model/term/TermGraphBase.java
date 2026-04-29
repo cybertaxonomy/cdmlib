@@ -29,7 +29,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 public abstract class TermGraphBase<TERM extends DefinedTermBase, REL extends TermRelationBase> //<TERM, REL, TermGraphBase>
-extends TermCollection<TERM, REL>
+        extends TermCollection<TERM, REL>
         implements ITermGraph<TERM, REL>{
 
     private static final long serialVersionUID = -704169783744494023L;

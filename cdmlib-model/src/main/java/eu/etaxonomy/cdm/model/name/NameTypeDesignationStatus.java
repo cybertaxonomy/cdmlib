@@ -217,5 +217,4 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 			return false;
 		}
 	}
-
 }

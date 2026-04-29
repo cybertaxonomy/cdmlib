@@ -114,8 +114,9 @@ public enum VocabularyEnum {
 	/**
 	 * @return the Class of a specific term vocabulary
 	 */
-	public Class<? extends DefinedTermBase<?>> getClazz(){
-		return clazz;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    public <T extends DefinedTermBase<T>> Class<T> getClazz(){
+		return (Class)clazz;  //for field clazz it is impossible to use generics in Java
 	}
 
 	public static VocabularyEnum getVocabularyEnumByUuid(UUID uuid){
