@@ -90,7 +90,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
         @ClassBridge(impl = DescriptionBaseClassBridge.class),
         @ClassBridge(impl = GroupByTaxonClassBridge.class)
 })
-public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy>
+public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy<?>>
         extends CreditableEntity<S>
         implements ICdmTarget,IPublishable {
 
