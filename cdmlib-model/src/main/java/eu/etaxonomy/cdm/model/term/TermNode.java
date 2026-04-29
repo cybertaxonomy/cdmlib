@@ -73,7 +73,7 @@ import eu.etaxonomy.cdm.model.description.State;
 @Entity
 @Audited
 public class TermNode<T extends DefinedTermBase>
-        extends TermRelationBase<T, TermNode<T>, TermTree>
+        extends TermRelationBase<T, TermNode<T>, TermTree<T>>
         implements ITreeNode<TermNode<T>> {
 
     private static final Logger logger = LogManager.getLogger();
