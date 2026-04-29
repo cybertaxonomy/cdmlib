@@ -154,7 +154,8 @@ public class StateData
     /**
      * Returns the {@link State state term} used in <i>this</i> state data.
      */
-    public DefinedTermBase<?> getState(){
+    //Note: returning DefinedTermBase<?> creates problems in TaxEditor
+    public DefinedTermBase getState(){
         return this.state;
     }
     /**
