@@ -78,7 +78,7 @@ public class CharacterDto extends FeatureDto {
        }
 
        Set<TermCollectionDto> supportedCategoricalDtos = new HashSet<>();
-       for (TermCollection<? extends DefinedTermBase,?> catVoc: character.getSupportedCategoricalEnumerations()){
+       for (TermCollection<?,?> catVoc: character.getSupportedCategoricalEnumerations()){
            supportedCategoricalDtos.add(TermCollectionDto.fromCdmBase(catVoc));
        }
 
