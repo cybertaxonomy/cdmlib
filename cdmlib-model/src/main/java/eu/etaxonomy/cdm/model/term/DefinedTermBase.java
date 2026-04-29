@@ -123,6 +123,9 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @ClassBridge(impl = DefinedTermBaseClassBridge.class)
 //TODO Comparable implemented only for fixing failing JAXB import, may be removed when this is fixed
+//Note: generics T behind DefinedTermBase is problematic as it does not allow to subclass a non-abstract
+//      without generics. E.g. Character extends Feature . If Feature does not use generics, Character
+//      is not fully recognized as valid generic in e.g. TermNode<Character>
 public abstract class DefinedTermBase<T extends DefinedTermBase<T>>
         extends TermBase
         implements IDefinedTerm<T>, IHasCredits, Comparable<T> {

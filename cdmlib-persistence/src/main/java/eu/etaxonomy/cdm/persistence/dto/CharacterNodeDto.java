@@ -34,9 +34,13 @@ public class CharacterNodeDto extends TermNodeDto {
         super(characterDto, parent, position, treeDto, uuid, id, treeIndex, path);
     }
 
-    public static CharacterNodeDto fromTermNode(TermNode<Character> child, TermTreeDto treeDto) {
+    public static CharacterNodeDto fromTermNode(TermNode child, TermTreeDto treeDto) {
         Assert.notNull(child, "Node should not be null");
-        CharacterNodeDto dto = new CharacterNodeDto(child.getTerm() != null?CharacterDto.fromCharacter(child.getTerm()): null, null, child.getParent() != null?child.getParent().getIndex(child): 0, treeDto, child.getUuid(), child.getId(), child.treeIndex(), child.getPath());
+
+        CharacterNodeDto dto = new CharacterNodeDto(child.getTerm() != null ? CharacterDto.fromCharacter((Character)child.getTerm()): null,
+                null,
+                child.getParent() != null ? child.getParent().getIndex(child): 0,
+                treeDto, child.getUuid(), child.getId(), child.treeIndex(), child.getPath());
 
         if (child.getParent() != null){
             dto.setParentUuid(child.getParent().getUuid());
