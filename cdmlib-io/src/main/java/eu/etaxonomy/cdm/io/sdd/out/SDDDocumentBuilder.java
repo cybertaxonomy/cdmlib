@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,18 +23,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.xerces.dom.DocumentImpl;
-import org.apache.xerces.dom.ElementImpl;
-import org.apache.xerces.impl.xpath.regex.ParseException;
-import org.apache.xml.serialize.DOMSerializer;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.util.ResourceUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -90,10 +97,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
  */
 public class SDDDocumentBuilder {
 
-	private final DocumentImpl document;
-	private XMLSerializer xmlserializer;
-	private Writer writer;
-	private DOMSerializer domi;
+	private final Document document;
 	private SDDDataSet cdmSource;
 
 	private final Map<Person, String> agents = new HashMap<>();
@@ -190,12 +194,13 @@ public class SDDDocumentBuilder {
 
 	private static final Logger logger = LogManager.getLogger();
 
-	public SDDDocumentBuilder() {
-		document = new DocumentImpl();
+	public SDDDocumentBuilder() throws ParserConfigurationException {
+	    DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		document = builder.newDocument();
 	}
 
 	public void marshal(SDDDataSet cdmSource, File sddDestination)
-			throws IOException {
+			throws IOException, TransformerException {
 
 		this.cdmSource = cdmSource;
 		logger.info("Start marshalling");
@@ -203,14 +208,14 @@ public class SDDDocumentBuilder {
 	}
 
 	public void marshal(SDDDataSet cdmSource, String sddDestinationFileName)
-			throws IOException {
+			throws IOException, TransformerException {
 
 		this.cdmSource = cdmSource;
 		logger.info("Start marshalling");
 		writeCDMtoSDD(ResourceUtils.getFile(sddDestinationFileName));
 	}
 
-    public void marshal(SDDDataSet dataSet, OutputStream stream) throws IOException {
+    public void marshal(SDDDataSet dataSet, OutputStream stream) throws TransformerException {
         this.cdmSource = dataSet;
         logger.info("Start marshalling");
         try {
@@ -219,16 +224,16 @@ public class SDDDocumentBuilder {
             e.printStackTrace();
         }
 
-        OutputFormat format = new OutputFormat(document, "UTF-8", true);
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Transformer transformer = factory.newTransformer();
 
-        writer = new OutputStreamWriter(stream, "UTF-8");
+        // Formatting
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
-        xmlserializer = new XMLSerializer(writer, format);
-        domi = xmlserializer.asDOMSerializer(); // As a DOM Serializer
-
-        domi.serialize(document.getDocumentElement());
-
-        writer.close();
+        transformer.transform(new DOMSource(document), new StreamResult(stream));
     }
 
 	/**
@@ -236,8 +241,9 @@ public class SDDDocumentBuilder {
 	 *
 	 * @param base
 	 * @throws IOException
+	 * @throws TransformerException
 	 */
-	public void writeCDMtoSDD(File sddDestination) throws IOException {
+	public void writeCDMtoSDD(File sddDestination) throws IOException, TransformerException {
 
 		try {
 			buildDocument();
@@ -245,18 +251,36 @@ public class SDDDocumentBuilder {
 			e.printStackTrace();
 		}
 
-		OutputFormat format = new OutputFormat(document, "UTF-8", true);
-
 		FileOutputStream fos = new FileOutputStream(sddDestination);
+		Writer writer = new OutputStreamWriter(fos, "UTF-8");
 
-		writer = new OutputStreamWriter(fos, "UTF-8");
+		try {
+		    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+		    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		    transformer.setOutputProperty(OutputKeys.INDENT, "yes");  // = pretty print (true)
+		    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
-		xmlserializer = new XMLSerializer(writer, format);
-		domi = xmlserializer.asDOMSerializer(); // As a DOM Serializer
+		    transformer.transform(
+		        new DOMSource(document.getDocumentElement()),
+		        new StreamResult(writer)
+		    );
+		}finally {
+		    writer.close();
+		}
 
-		domi.serialize(document.getDocumentElement());
-
-		writer.close();
+//
+//
+//		OutputFormat format = new OutputFormat(document, "UTF-8", true);
+//
+//
+//		writer = new OutputStreamWriter(fos, "UTF-8");
+//
+//		xmlserializer = new XMLSerializer(writer, format);
+//		domi = xmlserializer.asDOMSerializer(); // As a DOM Serializer
+//
+//		domi.serialize(document.getDocumentElement());
+//
+//		writer.close();
 	}
 
 	// #############
@@ -273,7 +297,7 @@ public class SDDDocumentBuilder {
 	public void buildDocument() throws ParseException {
 
 		// create <Datasets> = root node
-		ElementImpl baselement = new ElementImpl(document, DATASETS);
+		Element baselement = document.createElement(DATASETS);
 		baselement.setAttribute("xmlns:xsi",
 				"http://www.w3.org/2001/XMLSchema-instance");
 		baselement.setAttribute("xmlns", "http://rs.tdwg.org/UBIF/2006/");
@@ -302,11 +326,10 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds TechnicalMetadata associated with the SDD file
 	 */
-	public void buildTechnicalMetadata(ElementImpl baselement)
+	public void buildTechnicalMetadata(Element baselement)
 			throws ParseException {
 		// create TechnicalMetadata
-		ElementImpl technicalMetadata = new ElementImpl(document,
-				TECHNICAL_METADATA);
+		Element technicalMetadata = document.createElement(TECHNICAL_METADATA);
 		// select different databases associated to different descriptions TODO
 		List<Reference> references = cdmSource.getReferences();
 		Iterator<Reference> iterator = references.iterator();
@@ -322,7 +345,7 @@ public class SDDDocumentBuilder {
 		String date = dt.toString().substring(0, 19);
 		technicalMetadata.setAttribute("created", date);
 
-		ElementImpl generator = new ElementImpl(document, GENERATOR);
+		Element generator = document.createElement(GENERATOR);
 		generator.setAttribute("name", "EDIT CDM");
 		generator.setAttribute("version", "v1");
 		generator
@@ -335,10 +358,10 @@ public class SDDDocumentBuilder {
 	}
 
 	// Builds the information associated with a dataset
-	public void buildDataset(ElementImpl baselement, IDatabase reference)
+	public void buildDataset(Element baselement, IDatabase reference)
 			throws ParseException {
 		// create Dataset and language
-		ElementImpl dataset = new ElementImpl(document, DATASET);
+		Element dataset = document.createElement(DATASET);
 		// no default language associated with a dataset in the CDM
 		dataset.setAttribute("xml:lang", Language.DEFAULT().getIso639_1());
 		baselement.appendChild(dataset);
@@ -360,11 +383,10 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds a Representation element using a Reference
 	 */
-	public void buildRepresentation(ElementImpl element, IDatabase reference)
-			throws ParseException {
+	public void buildRepresentation(Element element, IDatabase reference){
 
 		// create <Representation> element
-		ElementImpl representation = new ElementImpl(document, REPRESENTATION);
+		Element representation = document.createElement(REPRESENTATION);
 		element.appendChild(representation);
 		buildLabel(representation, reference.getTitleCache());
 
@@ -377,7 +399,7 @@ public class SDDDocumentBuilder {
 		}
 
 		if (detailText != null && !detailText.equals("")) {
-			ElementImpl detail = new ElementImpl(document, DETAIL);
+			Element detail = document.createElement(DETAIL);
 			detail.appendChild(document.createTextNode(detailText));
 			representation.appendChild(detail);
 		}
@@ -385,10 +407,10 @@ public class SDDDocumentBuilder {
 		Set<Media> rm = ((Reference) reference).getMedia();
 
 		if (rm != null && rm.size() > 0) {
-			ElementImpl mediaObject;
+			Element mediaObject;
 
 			for (int i = 0; i < rm.size(); i++) {
-				mediaObject = new ElementImpl(document, MEDIA_OBJECT);
+				mediaObject = document.createElement(MEDIA_OBJECT);
 				mediasCount = buildReference((Media) rm.toArray()[i], medias,
 						REF, mediaObject, "m", mediasCount);
 				representation.appendChild(mediaObject);
@@ -400,11 +422,10 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds a Representation element using a Feature
 	 */
-	public void buildRepresentation(ElementImpl element, TermBase tb)
-			throws ParseException {
+	public void buildRepresentation(Element element, TermBase tb){
 
 		// create <Representation> element
-		ElementImpl representation = new ElementImpl(document, REPRESENTATION);
+		Element representation = document.createElement(REPRESENTATION);
 		element.appendChild(representation);
 
 		Set<Representation> representations = tb.getRepresentations();
@@ -417,7 +438,7 @@ public class SDDDocumentBuilder {
 
 				if (detailText != null && !detailText.equals("")) {
 					if (!detailText.equals(label)) {
-						ElementImpl detail = new ElementImpl(document, DETAIL);
+					    Element detail = document.createElement(DETAIL);
 						detail.appendChild(document.createTextNode(detailText));
 						representation.appendChild(detail);
 					}
@@ -431,10 +452,10 @@ public class SDDDocumentBuilder {
 			Set<Media> rm = dtb.getMedia();
 
 			if (rm != null && rm.size() > 0) {
-				ElementImpl mediaObject;
+				Element mediaObject;
 
 				for (int i = 0; i < rm.size(); i++) {
-					mediaObject = new ElementImpl(document, MEDIA_OBJECT);
+					mediaObject = document.createElement(MEDIA_OBJECT);
 					mediasCount = buildReference((Media) rm.toArray()[i],
 							medias, REF, mediaObject, "m", mediasCount);
 					representation.appendChild(mediaObject);
@@ -446,11 +467,10 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds a Representation element using an IdentifiableEntity
 	 */
-	public void buildRepresentation(ElementImpl element, IdentifiableEntity ie)
-			throws ParseException {
+	private void buildRepresentation(Element element, IdentifiableEntity<?> ie){
 
 		// create <Representation> element
-		ElementImpl representation = new ElementImpl(document, REPRESENTATION);
+		Element representation = document.createElement(REPRESENTATION);
 		element.appendChild(representation);
 		buildLabel(representation, ie.getTitleCache());
 
@@ -463,7 +483,7 @@ public class SDDDocumentBuilder {
 		}
 
 		if (detailText != null && !detailText.equals("")) {
-			ElementImpl detail = new ElementImpl(document, DETAIL);
+			Element detail = document.createElement(DETAIL);
 			detail.appendChild(document.createTextNode(detailText));
 			representation.appendChild(detail);
 		}
@@ -473,10 +493,10 @@ public class SDDDocumentBuilder {
 			Set<Media> rm = dtb.getMedia();
 
 			if (rm != null && rm.size() > 0) {
-				ElementImpl mediaObject;
+				Element mediaObject;
 
 				for (int i = 0; i < rm.size(); i++) {
-					mediaObject = new ElementImpl(document, MEDIA_OBJECT);
+					mediaObject = document.createElement(MEDIA_OBJECT);
 					mediasCount = buildReference((Media) rm.toArray()[i],
 							medias, REF, mediaObject, "m", mediasCount);
 					representation.appendChild(mediaObject);
@@ -487,7 +507,7 @@ public class SDDDocumentBuilder {
 			IdentifiableMediaEntity<?> ime = (IdentifiableMediaEntity<?>) ie;
 			Set<Media> medias = ime.getMedia();
 			if (medias != null) {
-				ElementImpl elLinks = new ElementImpl(document, "Links");
+				Element elLinks = document.createElement("Links");
 				for (Iterator<Media> m = medias.iterator(); m.hasNext();) {
 					Media media = m.next();
 					Set<MediaRepresentation> smr = media.getRepresentations();
@@ -499,8 +519,7 @@ public class SDDDocumentBuilder {
 						for (Iterator<MediaRepresentationPart> mrp = lmrp
 								.iterator(); mrp.hasNext();) {
 							MediaRepresentationPart mediareppart = mrp.next();
-							ElementImpl elLink = new ElementImpl(document,
-									"Link");
+							Element elLink = document.createElement("Link");
 							elLink.setAttribute("href", mediareppart.getUri()
 									.toString());
 							elLinks.appendChild(elLink);
@@ -515,7 +534,7 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds RevisionData associated with the Dataset
 	 */
-	public void buildRevisionData(ElementImpl dataset, IDatabase database)
+	public void buildRevisionData(Element dataset, IDatabase database)
 			throws ParseException {
 
 		// <RevisionData>
@@ -527,17 +546,15 @@ public class SDDDocumentBuilder {
 		// <DateModified>2006-04-08T00:00:00</DateModified>
 		// </RevisionData>
 
-		ElementImpl revisionData = new ElementImpl(document, REVISION_DATA);
+		Element revisionData = document.createElement(REVISION_DATA);
 
 		// authors
 		TeamOrPersonBase<?> authors = database.getAuthorship();
 		// TeamOrPersonBase editors = database.getUpdatedBy();
 
 		if ((authors != null)) { // || (editors != null)) {
-			ElementImpl creators = new ElementImpl(document, CREATORS);
-			if (authors != null) {
-				buildRefAgent(creators, authors, "aut");
-			}
+			Element creators = document.createElement(CREATORS);
+			buildRefAgent(creators, authors, "aut");
 			// if (editors != null) {
 			// buildRefAgent(creators, editors, "edt");
 			// }
@@ -552,13 +569,12 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds ModifiedDate associated with RevisionData
 	 */
-	public void buildDateModified(ElementImpl revisionData, IDatabase database)
-			throws ParseException {
+	public void buildDateModified(Element revisionData, IDatabase database) {
 
 		// <DateModified>2006-04-08T00:00:00</DateModified>
 
 		if (((Reference) database).getUpdated() != null) {
-			ElementImpl dateModified = new ElementImpl(document, DATE_MODIFIED);
+			Element dateModified = document.createElement(DATE_MODIFIED);
 
 			DateTime c = ((Reference) database).getUpdated();
 			DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
@@ -576,8 +592,8 @@ public class SDDDocumentBuilder {
 	 * @param base
 	 * @param element
 	 */
-	public void buildLabel(ElementImpl element, String text) {
-		ElementImpl label = new ElementImpl(document, LABEL);
+	public void buildLabel(Element element, String text) {
+		Element label = document.createElement(LABEL);
 		label.appendChild(document.createTextNode(text));
 		element.appendChild(label);
 	}
@@ -589,7 +605,7 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds TaxonNames associated with the Dataset
 	 */
-	public void buildTaxonNames(ElementImpl dataset) throws ParseException {
+	public void buildTaxonNames(Element dataset) throws ParseException {
 
 		// <TaxonNames>
 		// <TaxonName id="t1" uri="urn:lsid:authority:namespace:my-own-id">
@@ -600,10 +616,10 @@ public class SDDDocumentBuilder {
 		// </TaxonNames>
 
 		if (cdmSource.getTaxonomicNames() != null) {
-			ElementImpl elTaxonNames = new ElementImpl(document, TAXON_NAMES);
+			Element elTaxonNames = document.createElement(TAXON_NAMES);
 
 			for (int i = 0; i < cdmSource.getTaxonomicNames().size(); i++) {
-				ElementImpl elTaxonName = new ElementImpl(document, TAXON_NAME);
+				Element elTaxonName = document.createElement(TAXON_NAME);
 				TaxonName tnb = cdmSource.getTaxonomicNames().get(i);
 
 				taxonNamesCount = buildReference(tnb, taxonNames, ID,
@@ -619,18 +635,16 @@ public class SDDDocumentBuilder {
 
 	}
 
-	public void buildDescriptiveConcepts(ElementImpl dataset)
+	public void buildDescriptiveConcepts(Element dataset)
 			throws ParseException {
 
 		if (cdmSource.getFeatureData() != null) {
-			ElementImpl elFeatures = new ElementImpl(document,
-					DESCRIPTIVE_CONCEPTS);
+			Element elFeatures = document.createElement(DESCRIPTIVE_CONCEPTS);
 			int f = cdmSource.getTerms().size();
 			for (int i = 0; i < f; i++) {
 				DefinedTermBase<?> dtb = cdmSource.getTerms().get(i);
 				if (dtb instanceof Feature) {
-					ElementImpl elFeat = new ElementImpl(document,
-							DESCRIPTIVE_CONCEPT);
+					Element elFeat = document.createElement(DESCRIPTIVE_CONCEPT);
 					Feature feature = (Feature) dtb;
 					if (feature.getMarkers() != null) {
 						Set<Marker> markers = feature.getMarkers();
@@ -646,8 +660,7 @@ public class SDDDocumentBuilder {
 								if (!feature
 										.getRecommendedModifierEnumeration()
 										.isEmpty()) {
-									ElementImpl elModifiers = new ElementImpl(
-											document, "Modifiers");
+									Element elModifiers = document.createElement("Modifiers");
 									for (Iterator<TermCollection<DefinedTerm,?>> menum = feature
 											.getRecommendedModifierEnumeration()
 											.iterator(); menum.hasNext();) {
@@ -655,8 +668,7 @@ public class SDDDocumentBuilder {
 										Set<DefinedTerm> sm = termVoc.getDistinctTerms();
 										for (Iterator<DefinedTerm> modif = sm.iterator(); modif.hasNext();) {
 											DefinedTerm modifier = modif.next();
-											ElementImpl elModifier = new ElementImpl(
-													document, "Modifier");
+											Element elModifier = document.createElement("Modifier");
 											modifiersCount = buildReference(
 													modifier, modifiers, ID,
 													elModifier, "mod",
@@ -681,18 +693,18 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds Characters associated with the Dataset
 	 */
-	public void buildCharacters(ElementImpl dataset) throws ParseException {
+	public void buildCharacters(Element dataset) throws ParseException {
 
 		if (cdmSource.getTerms() != null) {
-			ElementImpl elCharacters = new ElementImpl(document, CHARACTERS);
+			Element elCharacters = document.createElement(CHARACTERS);
 
 			int f = cdmSource.getTerms().size();
 			for (int i = 0; i < f; i++) {
 				if (cdmSource.getTerms().get(i) instanceof Feature) {
 					Feature character = (Feature) cdmSource.getTerms().get(i);
 					if (character.isSupportsQuantitativeData()) {
-						ElementImpl elQuantitativeCharacter = new ElementImpl(
-								document, QUANTITATIVE_CHARACTER);
+						Element elQuantitativeCharacter = document.createElement(
+						        QUANTITATIVE_CHARACTER);
 						charactersCount = buildReference(character, characters,
 								ID, elQuantitativeCharacter, "c",
 								charactersCount);
@@ -701,8 +713,8 @@ public class SDDDocumentBuilder {
 					}
 
 					if (character.isSupportsCategoricalData()) {
-						ElementImpl elCategoricalCharacter = new ElementImpl(
-								document, CATEGORICAL_CHARACTER);
+						Element elCategoricalCharacter = document.createElement(
+						        CATEGORICAL_CHARACTER);
 						charactersCount = buildReference(character, characters,
 								ID, elCategoricalCharacter, "c",
 								charactersCount);
@@ -712,13 +724,12 @@ public class SDDDocumentBuilder {
 								.getSupportedCategoricalEnumerations();
 						if (enumerations != null) {
 							if (enumerations.size() > 0) {
-								ElementImpl elStates = new ElementImpl(
-										document, STATES);
-								TermCollection<? extends DefinedTermBase,?> tv = enumerations.iterator().next();
-								Set<? extends DefinedTermBase> stateList = tv.getDistinctTerms();
+								Element elStates = document.createElement(STATES);
+								TermCollection<?,?> tv = enumerations.iterator().next();
+								Set<?> stateList = tv.getDistinctTerms();
 								for (int j = 0; j < stateList.size(); j++) {
-									ElementImpl elStateDefinition = new ElementImpl(
-											document, STATE_DEFINITION);
+									Element elStateDefinition = document.createElement(
+									        STATE_DEFINITION);
 									State state = (State) stateList.toArray()[j];
 									statesCount = buildReference(state, states,
 											ID, elStateDefinition, "s",
@@ -734,7 +745,7 @@ public class SDDDocumentBuilder {
 						}
 					}
 					if (character.isSupportsTextData()) {
-						ElementImpl elTextCharacter = new ElementImpl(document,
+						Element elTextCharacter = document.createElement(
 								TEXT_CHARACTER);
 						textcharactersCount = buildReference(character,
 								characters, ID, elTextCharacter, TEXT,
@@ -750,11 +761,11 @@ public class SDDDocumentBuilder {
 
 	}
 
-	public void buildCodedDescriptions(ElementImpl dataset)
+	public void buildCodedDescriptions(Element dataset)
 			throws ParseException {
 
 		if (cdmSource.getTaxa() != null) {
-			ElementImpl elCodedDescriptions = new ElementImpl(document,
+			Element elCodedDescriptions = document.createElement(
 					CODED_DESCRIPTIONS);
 
 			for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa()
@@ -764,7 +775,7 @@ public class SDDDocumentBuilder {
 				for (Iterator<TaxonDescription> td = descriptions.iterator(); td
 						.hasNext();) {
 					TaxonDescription taxonDescription = td.next();
-					ElementImpl elCodedDescription = new ElementImpl(document,
+					Element elCodedDescription = document.createElement(
 							CODED_DESCRIPTION);
 					codedDescriptionsCount = buildReference(taxonDescription,
 							codedDescriptions, ID, elCodedDescription, "D",
@@ -784,7 +795,7 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds Scope associated with a CodedDescription
 	 */
-	public void buildScope(ElementImpl element,
+	public void buildScope(Element element,
 			TaxonDescription taxonDescription) throws ParseException {
 
 		// <Scope>
@@ -792,7 +803,7 @@ public class SDDDocumentBuilder {
 		// <Citation ref="p1" location="p. 30"/>
 		// </Scope>
 
-		ElementImpl scope = new ElementImpl(document, SCOPE);
+		Element scope = document.createElement(SCOPE);
 
 		Taxon taxon = taxonDescription.getTaxon();
 		if (taxon != null) {
@@ -800,7 +811,7 @@ public class SDDDocumentBuilder {
 			if (taxonName != null) {
 				String ref = taxonNames.get(taxonName);
 				if (!ref.equals("")) {
-					ElementImpl taxonNameEl = new ElementImpl(document,
+					Element taxonNameEl = document.createElement(
 							TAXON_NAME);
 					taxonNameEl.setAttribute(REF, ref);
 					scope.appendChild(taxonNameEl);
@@ -816,7 +827,7 @@ public class SDDDocumentBuilder {
 			Reference descriptionSource = rb.next();
 			if (descriptionSource.getType().equals(ReferenceType.Article)) {
 
-				ElementImpl citation = new ElementImpl(document, CITATION);
+				Element citation = document.createElement(CITATION);
 				articlesCount = buildReference(descriptionSource, articles,
 						REF, citation, "p", articlesCount);
 
@@ -842,7 +853,7 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds SummaryData associated with a CodedDescription
 	 */
-	public void buildSummaryData(ElementImpl element,
+	public void buildSummaryData(Element element,
 			TaxonDescription taxonDescription) throws ParseException {
 
 		// <SummaryData>
@@ -851,7 +862,7 @@ public class SDDDocumentBuilder {
 		// <State ref="s4"/>
 		// </Categorical>
 
-		ElementImpl summaryData = new ElementImpl(document, SUMMARY_DATA);
+		Element summaryData = document.createElement(SUMMARY_DATA);
 		Set<DescriptionElementBase> elements = taxonDescription.getElements();
 		for (Iterator<DescriptionElementBase> deb = elements.iterator(); deb
 				.hasNext();) {
@@ -875,7 +886,7 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds Categorical associated with a SummaryData
 	 */
-	public void buildCategorical(ElementImpl element,
+	public void buildCategorical(Element element,
 			CategoricalData categoricalData) throws ParseException {
 
 		// <SummaryData>
@@ -884,7 +895,7 @@ public class SDDDocumentBuilder {
 		// <State ref="s4"/>
 		// </Categorical>
 
-		ElementImpl categorical = new ElementImpl(document, CATEGORICAL);
+		Element categorical = document.createElement(CATEGORICAL);
 		Feature feature = categoricalData.getFeature();
 		buildReference(feature, characters, REF, categorical, "c",
 				charactersCount);
@@ -900,7 +911,7 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds State associated with a Categorical
 	 */
-	public void buildState(ElementImpl element, DefinedTermBase<?> s) throws ParseException {
+	public void buildState(Element element, DefinedTermBase<?> s) throws ParseException {
 
 		// <SummaryData>
 		// <Categorical ref="c4">
@@ -908,7 +919,7 @@ public class SDDDocumentBuilder {
 		// <State ref="s4"/>
 		// </Categorical>
 
-		ElementImpl state = new ElementImpl(document, STATE);
+		Element state = document.createElement(STATE);
 		buildReference(s, states, REF, state, "s", statesCount);
 		element.appendChild(state);
 	}
@@ -916,7 +927,7 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds Quantitative associated with a SummaryData
 	 */
-	public void buildQuantitative(ElementImpl element,
+	public void buildQuantitative(Element element,
 			QuantitativeData quantitativeData) throws ParseException {
 
 		// <Quantitative ref="c2">
@@ -927,7 +938,7 @@ public class SDDDocumentBuilder {
 		// <Measure type="N" value="20"/>
 		// </Quantitative>
 
-		ElementImpl quantitative = new ElementImpl(document, QUANTITATIVE);
+		Element quantitative = document.createElement(QUANTITATIVE);
 		Feature feature = quantitativeData.getFeature();
 		buildReference(feature, characters, REF, quantitative, "c",
 				charactersCount);
@@ -944,8 +955,8 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds Measure associated with a Quantitative
 	 */
-	public void buildMeasure(ElementImpl element,
-			StatisticalMeasurementValue statisticalValue) throws ParseException {
+	public void buildMeasure(Element element,
+			StatisticalMeasurementValue statisticalValue) {
 
 		// <Quantitative ref="c2">
 		// <Measure type="Min" value="2.3"></Measure>
@@ -955,7 +966,7 @@ public class SDDDocumentBuilder {
 		// <Measure type="N" value="20"/>
 		// </Quantitative>
 
-		ElementImpl measure = new ElementImpl(document, MEASURE);
+		Element measure = document.createElement(MEASURE);
 		StatisticalMeasure type = statisticalValue.getType();
 		String label = type.getLabel();
 		if (label.equals("Average")) {
@@ -975,14 +986,14 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds TextChar associated with a SummaryData
 	 */
-	public void buildTextChar(ElementImpl element, TextData textData)
+	public void buildTextChar(Element element, TextData textData)
 			throws ParseException {
 
 		// <TextChar ref="c3">
 		// <Content>Free form text</Content>
 		// </TextChar>
 
-		ElementImpl textChar = new ElementImpl(document, TEXT_CHAR);
+		Element textChar = document.createElement(TEXT_CHAR);
 		Feature feature = textData.getFeature();
 		buildReference(feature, characters, REF, textChar, "c", charactersCount);
 		Map<Language, LanguageString> multilanguageText = textData
@@ -997,14 +1008,13 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds Content associated with a TextChar
 	 */
-	public void buildContent(ElementImpl element, LanguageString languageString)
-			throws ParseException {
+	public void buildContent(Element element, LanguageString languageString){
 
 		// <TextChar ref="c3">
 		// <Content>Free form text</Content>
 		// </TextChar>
 
-		ElementImpl content = new ElementImpl(document, CONTENT);
+		Element content = document.createElement(CONTENT);
 		Language language = languageString.getLanguage();
 		String text = languageString.getText();
 		if (!language.getIso639_1().equals(defaultLanguage.getIso639_1())) {
@@ -1017,11 +1027,11 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds an element Agent referring to Agent defined later in the SDD file
 	 */
-	public void buildRefAgent(ElementImpl element, TeamOrPersonBase ag,
+	private void buildRefAgent(Element element, TeamOrPersonBase<?> ag,
 			String role) throws ParseException {
 		if (ag instanceof Person) {
 			Person p = (Person) ag;
-			ElementImpl agent = new ElementImpl(document, AGENT);
+			Element agent = document.createElement(AGENT);
 			if (ag.getMarkers() != null) {
 				Set<Marker> markers = ag.getMarkers();
 				for (Iterator<Marker> m = markers.iterator(); m.hasNext();) {
@@ -1042,7 +1052,7 @@ public class SDDDocumentBuilder {
 			Team team = (Team) ag;
 			for (int i = 0; i < team.getTeamMembers().size(); i++) {
 				Person author = team.getTeamMembers().get(i);
-				ElementImpl agent = new ElementImpl(document, AGENT);
+				Element agent = document.createElement(AGENT);
 				if (author.getMarkers() != null) {
 					Set<Marker> markers = author.getMarkers();
 					if (!markers.isEmpty()) {
@@ -1097,14 +1107,14 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds Agents associated with the Dataset
 	 */
-	public void buildAgents(ElementImpl dataset) throws ParseException {
+	public void buildAgents(Element dataset) {
 
 		if (cdmSource.getAgents() != null) {
-			ElementImpl elAgents = new ElementImpl(document, AGENTS);
+			Element elAgents = document.createElement(AGENTS);
 
 			for (int i = 0; i < cdmSource.getAgents().size(); i++) {
-				ElementImpl elAgent = new ElementImpl(document, AGENT);
-				AgentBase personagent = cdmSource.getAgents().get(i);
+				Element elAgent = document.createElement(AGENT);
+				AgentBase<?> personagent = cdmSource.getAgents().get(i);
 				if (personagent instanceof Person) {
 					if (personagent.getMarkers() != null) {
 						Set<Marker> markers = personagent.getMarkers();
@@ -1129,22 +1139,22 @@ public class SDDDocumentBuilder {
 		}
 	}
 
-	public void buildCharacterTrees(ElementImpl dataset) throws ParseException {
+	public void buildCharacterTrees(Element dataset) throws ParseException {
 
 		if (cdmSource.getFeatureData() != null) {
-			ElementImpl elChartrees = new ElementImpl(document, CHARACTER_TREES);
+			Element elChartrees = document.createElement(CHARACTER_TREES);
 
 			for (int i = 0; i < cdmSource.getFeatureData().size(); i++) {
 				VersionableEntity featu = cdmSource.getFeatureData().get(i);
 				if (featu instanceof TermTree) {
-					TermTree ft = (TermTree) featu;
-					ElementImpl elChartree = new ElementImpl(document,
+					TermTree ft = (TermTree<?>) featu;
+					Element elChartree = document.createElement(
 							CHARACTER_TREE);
 					chartreeCount = buildReference(featu, featuretrees, ID,
 							elChartree, "ct", chartreeCount);
 					buildRepresentation(elChartree, ft);
 					elChartrees.appendChild(elChartree);
-					ElementImpl elNodes = new ElementImpl(document, NODES);
+					Element elNodes = document.createElement(NODES);
 					elChartree.appendChild(elNodes);
 					List<TermNode> roots = ft.getRootChildren();
 					for (Iterator<TermNode> fn = roots.iterator(); fn
@@ -1158,12 +1168,12 @@ public class SDDDocumentBuilder {
 		}
 	}
 
-	public void buildClassifications(ElementImpl dataset) throws ParseException {
+	public void buildClassifications(Element dataset) throws ParseException {
 
 		if (cdmSource.getTaxa() != null) {
-			ElementImpl elTaxonHierarchies = new ElementImpl(document,
+			Element elTaxonHierarchies = document.createElement(
 					"TaxonHierarchies");
-			ElementImpl elTaxonHierarchy = new ElementImpl(document,
+			Element elTaxonHierarchy = document.createElement(
 					"TaxonHierarchy");
 			for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa()
 					.iterator(); tb.hasNext();) {
@@ -1173,10 +1183,10 @@ public class SDDDocumentBuilder {
 							.iterator(); tn.hasNext();) {
 						TaxonNode taxonnode = tn.next();
 						if (taxonnode.isTopmostNode()) {
-							ElementImpl elNode = new ElementImpl(document, "Node");
+							Element elNode = document.createElement("Node");
 							taxonNodesCount = buildReference(taxonnode,
 									taxonNodes, ID, elNode, "tn", taxonNodesCount);
-							ElementImpl elTaxonName = new ElementImpl(document, TAXON_NAME);
+							Element elTaxonName = document.createElement(TAXON_NAME);
 							taxonNamesCount = buildReference(taxonnode.getTaxon().getName(),
 									taxonNames, REF, elTaxonName, "t", taxonNamesCount);
 							elNode.appendChild(elTaxonName);
@@ -1194,13 +1204,13 @@ public class SDDDocumentBuilder {
 	}
 
 	private void buildTaxonBranches(List<TaxonNode> children, TaxonNode parent,
-			ElementImpl elTaxonHierarchy) {
+			Element elTaxonHierarchy) throws ParseException {
 		if (children != null) {
 			for (Iterator<TaxonNode> tn = children.iterator(); tn.hasNext();) {
 				TaxonNode taxonnode = tn.next();
-				ElementImpl elNode = new ElementImpl(document, "Node");
-				ElementImpl elParent = new ElementImpl(document, PARENT);
-				ElementImpl elTaxonName = new ElementImpl(document, TAXON_NAME);
+				Element elNode = document.createElement("Node");
+				Element elParent = document.createElement(PARENT);
+				Element elTaxonName = document.createElement(TAXON_NAME);
 				if (taxonnode.hasChildNodes()) {
 					buildTaxonBranches(taxonnode.getChildNodes(), taxonnode,
 							elTaxonHierarchy);
@@ -1219,21 +1229,22 @@ public class SDDDocumentBuilder {
 		}
 	}
 
-	public void buildBranches(TermNode<Feature> parent, ElementImpl element,
-			boolean isRoot) {
-		List<TermNode<Feature>> children = parent.getChildNodes();
+	public void buildBranches(TermNode<Feature> parent, Element element,
+			boolean isRoot) throws ParseException {
+
+	    List<TermNode<Feature>> children = parent.getChildNodes();
 		if (!parent.isLeaf()) {
-			ElementImpl elCharNode = new ElementImpl(document, NODE);
+			Element elCharNode = document.createElement(NODE);
 			charnodeCount = buildReference(parent, featuretrees, ID,
 					elCharNode, "cn", charnodeCount);
 			TermNode<Feature> grandparent = parent.getParent();
 			if ((grandparent != null) && (!isRoot)) {
-				ElementImpl elParent = new ElementImpl(document, PARENT);
+				Element elParent = document.createElement(PARENT);
 				charnodeCount = buildReference(grandparent, featuretrees, REF,
 						elParent, "cn", charnodeCount);
 				elCharNode.appendChild(elParent);
 			}
-			ElementImpl elDescriptiveConcept = new ElementImpl(document,
+			Element elDescriptiveConcept = document.createElement(
 					DESCRIPTIVE_CONCEPT);
 			Feature fref = parent.getTerm();
 			descriptiveConceptCount = buildReference(fref, descriptiveConcepts,
@@ -1245,24 +1256,24 @@ public class SDDDocumentBuilder {
 				buildBranches(fn, element, false);
 			}
 		} else {
-			ElementImpl elCharNode = new ElementImpl(document, CHAR_NODE);
-			ElementImpl elParent = new ElementImpl(document, PARENT);
-			TermNode grandparent = parent.getParent();
+			Element elCharNode = document.createElement(CHAR_NODE);
+			Element elParent = document.createElement(PARENT);
+			TermNode<?> grandparent = parent.getParent();
 			charnodeCount = buildReference(grandparent, featuretrees, REF,
 					elParent, "cn", charnodeCount);
 			charnodeCount = buildReference(parent, featuretrees, ID,
 					elCharNode, "cn", charnodeCount);
-			ElementImpl elCharacter = new ElementImpl(document, CHARACTER);
+			Element elCharacter = document.createElement(CHARACTER);
 			Feature fref = parent.getTerm();
 			boolean dependencies = false;
-			ElementImpl elDependecyRules = new ElementImpl(document,
+			Element elDependecyRules = document.createElement(
 					"DependecyRules");
 			if (parent.getInapplicableIf() != null) {
 				Set<FeatureState> innaplicableIf = parent.getInapplicableIf();
-				ElementImpl elInnaplicableIf = new ElementImpl(document, "InapplicableIf");
+				Element elInnaplicableIf = document.createElement("InapplicableIf");
 				for (FeatureState featureState : innaplicableIf) {
 				    DefinedTermBase<?> state = featureState.getState();
-					ElementImpl elState = new ElementImpl(document, STATE);
+					Element elState = document.createElement(STATE);
 					buildReference(CdmBase.deproxy(state, DefinedTermBase.class), states, REF, elState, "State",
 							statesCount);
 					elInnaplicableIf.appendChild(elState);
@@ -1272,10 +1283,10 @@ public class SDDDocumentBuilder {
 			}
 			if (parent.getOnlyApplicableIf() != null) {
 				Set<FeatureState> onlyApplicableIf = parent.getOnlyApplicableIf();
-				ElementImpl elOnlyApplicableIf = new ElementImpl(document,
+				Element elOnlyApplicableIf = document.createElement(
 						"OnlyApplicableIf");
 				for (FeatureState featureState : onlyApplicableIf) {
-					ElementImpl elState = new ElementImpl(document, STATE);
+					Element elState = document.createElement(STATE);
 					DefinedTermBase<?> state = featureState.getState();
                     buildReference(CdmBase.deproxy(state, DefinedTermBase.class), states, REF, elState, "State",
 							statesCount);
@@ -1295,14 +1306,14 @@ public class SDDDocumentBuilder {
 		}
 	}
 
-	public void buildMediaObjects(ElementImpl dataset) throws ParseException {
+	public void buildMediaObjects(Element dataset) throws ParseException {
 
 		if (cdmSource.getMedia() != null) {
-			ElementImpl elMediaObjects = new ElementImpl(document,
+			Element elMediaObjects = document.createElement(
 					MEDIA_OBJECTS);
 
 			for (int i = 0; i < cdmSource.getMedia().size(); i++) {
-				ElementImpl elMediaObject = new ElementImpl(document,
+				Element elMediaObject = document.createElement(
 						MEDIA_OBJECT);
 				Media mediobj = (Media) cdmSource.getMedia().get(i);
 				mediasCount = buildReference(mediobj, medias, ID,
@@ -1312,7 +1323,7 @@ public class SDDDocumentBuilder {
 				for (Iterator<MediaRepresentation> mr = smr.iterator(); mr
 						.hasNext();) {
 					MediaRepresentation mediarep = mr.next();
-					ElementImpl elType = new ElementImpl(document, "Type");
+					Element elType = document.createElement("Type");
 					elType.appendChild(document.createTextNode(mediarep
 							.getMimeType()));
 					elMediaObject.appendChild(elType);
@@ -1320,7 +1331,7 @@ public class SDDDocumentBuilder {
 					for (Iterator<MediaRepresentationPart> mrp = lmrp
 							.iterator(); mrp.hasNext();) {
 						MediaRepresentationPart mediareppart = mrp.next();
-						ElementImpl elSource = new ElementImpl(document,
+						Element elSource = document.createElement(
 								"Source");
 						elSource.setAttribute("href", mediareppart.getUri()
 								.toString());
@@ -1333,13 +1344,13 @@ public class SDDDocumentBuilder {
 		}
 	}
 
-	public void buildPublications(ElementImpl dataset) throws ParseException {
+	public void buildPublications(Element dataset) throws ParseException {
 
 		if (cdmSource.getReferences() != null) {
-			ElementImpl elPublications = new ElementImpl(document, PUBLICATIONS);
+			Element elPublications = document.createElement(PUBLICATIONS);
 			boolean editorial = false;
 			for (int i = 0; i < cdmSource.getReferences().size(); i++) {
-				ElementImpl elPublication = new ElementImpl(document,
+				Element elPublication = document.createElement(
 						"Publication");
 				Reference publication = cdmSource.getReferences().get(i);
 				Set<Annotation> annotations = publication.getAnnotations();
@@ -1366,9 +1377,9 @@ public class SDDDocumentBuilder {
 	}
 
 	public int buildReference(VersionableEntity ve, Map references,
-			String refOrId, ElementImpl element, String prefix, int count)
-			throws ParseException {
-		if (references.containsKey(ve)) {
+			String refOrId, Element element, String prefix, int count) {
+
+	    if (references.containsKey(ve)) {
 			element.setAttribute(refOrId, (String) references.get(ve));
 		} else {
 			if (ve instanceof IdentifiableEntity) {
@@ -1435,9 +1446,9 @@ public class SDDDocumentBuilder {
 		return count;
 	}
 
-	public void buildGeographicAreas(ElementImpl dataset) {
+	public void buildGeographicAreas(Element dataset) throws ParseException {
 		if (cdmSource.getTerms() != null) {
-			ElementImpl elGeographicAreas = new ElementImpl(document,
+			Element elGeographicAreas = document.createElement(
 					"GeographicAreas");
 
 			int f = cdmSource.getTerms().size();
@@ -1449,8 +1460,8 @@ public class SDDDocumentBuilder {
 						Marker marker = mark.next();
 						if (marker.getMarkerType().getLabel()
 								.equals("SDDGeographicArea")) {
-							ElementImpl elGeographicArea = new ElementImpl(
-									document, "GeographicArea");
+							Element elGeographicArea = document.createElement(
+							        "GeographicArea");
 							namedAreasCount = buildReference(na, namedAreas,
 									ID, elGeographicArea, "a", namedAreasCount);
 							buildRepresentation(elGeographicArea, na);
@@ -1463,13 +1474,13 @@ public class SDDDocumentBuilder {
 		}
 	}
 
-	public void buildSpecimens(ElementImpl dataset) throws ParseException {
+	public void buildSpecimens(Element dataset) throws ParseException {
 
 		if (cdmSource.getOccurrences() != null) {
-			ElementImpl elSpecimens = new ElementImpl(document, "Specimens");
+			Element elSpecimens = document.createElement("Specimens");
 
 			for (int i = 0; i < cdmSource.getOccurrences().size(); i++) {
-				ElementImpl elSpecimen = new ElementImpl(document, "Specimen");
+				Element elSpecimen = document.createElement("Specimen");
 				SpecimenOrObservationBase<?> sob = cdmSource.getOccurrences().get(i);
 				if (sob.getRecordBasis().isPreservedSpecimen()) {
 					specimenCount = buildReference(sob, specimens, ID, elSpecimen, "s", specimenCount);
