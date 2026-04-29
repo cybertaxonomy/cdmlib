@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 @Entity
 @Audited
-public abstract class AvailableForIdentifiableBase<T extends DefinedTermBase>
+public abstract class AvailableForIdentifiableBase<T extends DefinedTermBase<T>>
         extends AvailableForTermBase<T>{
 
     private static final long serialVersionUID = -8671887501681406910L;

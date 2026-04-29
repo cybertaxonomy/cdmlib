@@ -30,7 +30,7 @@ public abstract class DescriptionBaseDefaultCacheStrategy<T extends DescriptionB
 	@Override
     public String getTitleCache(T description) {
 		String title;
-		IdentifiableEntity entity = getDescriptionEntity(description);
+		IdentifiableEntity<?> entity = getDescriptionEntity(description);
 		if (entity == null){
 			title = getFirstPart(description);
 			title = title.replace(FOR, "");

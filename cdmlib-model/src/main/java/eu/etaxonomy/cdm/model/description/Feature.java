@@ -138,10 +138,9 @@ public class Feature extends AvailableForTermBase<Feature> {
 	private final Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<>();
 
 	/* for M:M see #4843 */
-	@SuppressWarnings("rawtypes")
     @ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
-	private final Set<TermCollection<? extends DefinedTermBase,?>> supportedCategoricalEnumerations = new HashSet<>();
+	private final Set<TermCollection<?,?>> supportedCategoricalEnumerations = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_MeasurementUnit")
@@ -627,7 +626,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	@XmlElement(name = "SupportedCategoricalEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	public Set<TermCollection<? extends DefinedTermBase,?>> getSupportedCategoricalEnumerations() {
+	public Set<TermCollection<?,?>> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
 	}
 
@@ -640,7 +639,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * @see #getSupportedCategoricalEnumerations()
 	 */
 	public void addSupportedCategoricalEnumeration(
-	        TermCollection<? extends DefinedTermBase,?> supportedCategoricalEnumeration) {
+	        TermCollection<?,?> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.add(supportedCategoricalEnumeration);
 	}
 	/**
@@ -652,7 +651,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * @see   #addSupportedCategoricalEnumeration(TermCollection)
 	 */
 	public void removeSupportedCategoricalEnumeration(
-			TermCollection<? extends DefinedTermBase,?> supportedCategoricalEnumeration) {
+			TermCollection<?,?> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
 	}
 

@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.TermTree")
 @Audited
-public class TermTree <T extends DefinedTermBase>
+public class TermTree<T extends DefinedTermBase>
         extends TermGraphBase<T, TermNode>
         implements ITermTree<T, TermNode> {
 
