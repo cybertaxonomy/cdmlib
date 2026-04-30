@@ -883,8 +883,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
     /**
      * Look if the Institution does already exist
-     * @param institutionCode: a string with the institutioncode
-     * @param config : the configurator
+     * @param institutionCode: a string with the institution code
+     * @param state : the state
      * @return the Institution (existing or new)
      */
     protected Institution getInstitution(String institutionCode, STATE state) {
@@ -899,7 +899,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             institutions = getAgentService().searchInstitutionByCode(institutionCode);
 
         } catch (Exception e) {
-            institutions = new ArrayList<Institution>();
+            institutions = new ArrayList<>();
+            e.printStackTrace();
             logger.warn(e);
         }
         if (institutions.size() > 0 && config.isReuseExistingMetaData()) {

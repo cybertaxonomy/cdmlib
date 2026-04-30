@@ -113,7 +113,8 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 	 * Factory method. Using default language.
 	 */
 	public static Annotation NewDefaultLanguageInstance(String text){
-		return new Annotation(text, Language.DEFAULT());
+		Annotation a = new Annotation(text, Language.DEFAULT());
+		return a;
 	}
 
 // *********** CONSTRUCTOR **************************************/

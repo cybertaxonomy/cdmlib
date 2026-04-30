@@ -165,11 +165,15 @@ public class UnitsGatheringEvent {
     }
 
     public void setNotes(String gatheringNotes){
-        this.gatheringEvent.addAnnotation(Annotation.NewDefaultLanguageInstance(gatheringNotes));
+        if (gatheringNotes != null) {
+            this.gatheringEvent.addAnnotation(Annotation.NewDefaultLanguageInstance(gatheringNotes));
+        }
     }
 
     public void setDate(String date){
+        if (date != null) {
             this.gatheringEvent.setTimeperiod(TimePeriodParser.parseString(date));
+        }
     }
 
     public void setElevation(String elevationText, String elevationMin, String elevationMax, String elevationUnit){
