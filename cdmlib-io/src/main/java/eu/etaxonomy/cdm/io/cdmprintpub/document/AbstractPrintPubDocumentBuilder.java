@@ -14,124 +14,93 @@ import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.element.PrintPubPageBreakElement;
+import eu.etaxonomy.cdm.io.cdmprintpub.element.PrintPubParagraphElement;
+import eu.etaxonomy.cdm.io.cdmprintpub.element.PrintPubSectionHeaderElement;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
- * Base implementation of the document builder using the Template Method pattern.
- * Enforces a standard document structure:
- * Header -> Content -> Bibliography -> Indices -> Appendix.
+ * Abstract base class for building Print/Publication documents.
  *
- * @author veldmap97
- * @date Feb 13, 2026
+ * Implements the template method pattern and enforces a canonical document
+ * structure consisting of header, content, bibliography, indices, and appendix.
+ * Subclasses are responsible only for rendering the main taxonomic content.
  */
 public abstract class AbstractPrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
+	@Override
+	public final void buildLayout(PrintPubExportState state) {
 
-    /**
-     * The Template Method.
-     * Final to enforce the canonical document flow.
-     */
-    @Override
-    public final void buildLayout(PrintPubExportState state) {
+		buildHeader(state);
 
-        buildHeader(state);
+		buildContent(state);
 
-        buildContent(state);
+		if (!state.getSortedBibliography().isEmpty()) {
+			buildBibliography(state);
+		}
 
-        if (!state.getSortedBibliography().isEmpty()) {
-            buildBibliography(state);
-        }
+		buildIndices(state);
 
-        buildIndices(state);
+		if (state.getConfig().isAppendIdentifierList()) {
+			buildAppendix(state);
+		}
+	}
 
-        if (state.getConfig().isAppendIdentifierList()) {
-            buildAppendix(state);
-        }
-    }
+	protected abstract void buildContent(PrintPubExportState state);
 
-    /**
-     * Subclasses render the main taxonomic content here.
-     */
-    protected abstract void buildContent(PrintPubExportState state);
+	// ======================
+	// Shared building blocks
+	// ======================
+	protected void buildHeader(PrintPubExportState state) {
+		state.getProcessor().add(new PrintPubSectionHeaderElement(state.getConfig().getDocumentTitle(), 1));
+		state.getProcessor().add(new PrintPubParagraphElement("Total Taxa: " + state.getTaxa().size()));
+		state.getProcessor().add(new PrintPubPageBreakElement());
+	}
 
-    // ======================
-    // Shared building blocks
-    // ======================
+	protected void buildBibliography(PrintPubExportState state) {
+		List<Reference> bibliography = state.getSortedBibliography();
+		if (bibliography.isEmpty()) {
+			return;
+		}
 
-    protected void buildHeader(PrintPubExportState state) {
-        state.getProcessor().add(
-                new PrintPubSectionHeader(state.getConfig().getDocumentTitle(), 1)
-        );
-        state.getProcessor().add(
-                new PrintPubParagraphElement("Total Taxa: " + state.getTaxa().size())
-        );
-        state.getProcessor().add(new PrintPubPageBreakElement());
-    }
+		state.getProcessor().add(new PrintPubPageBreakElement());
+		state.getProcessor().add(new PrintPubSectionHeaderElement("Bibliography", 1));
 
-    protected void buildBibliography(PrintPubExportState state) {
-        List<Reference> bibliography = state.getSortedBibliography();
-        if (bibliography.isEmpty()) {
-            return;
-        }
+		for (Reference ref : bibliography) {
+			state.getProcessor().add(new PrintPubParagraphElement(ref.getTitleCache()));
+		}
+	}
 
-        state.getProcessor().add(new PrintPubPageBreakElement());
-        state.getProcessor().add(new PrintPubSectionHeader("Bibliography", 1));
+	protected void buildIndices(PrintPubExportState state) {
 
-        for (Reference ref : bibliography) {
-            state.getProcessor().add(
-                    new PrintPubParagraphElement(ref.getTitleCache())
-            );
-        }
-    }
+		// ---- Scientific name index ----
+		if (state.getConfig().isGenerateScientificNameIndex()) {
+			state.getProcessor().add(new PrintPubPageBreakElement());
+			state.getProcessor().add(new PrintPubSectionHeaderElement("Index to Scientific Names", 1));
 
-    protected void buildIndices(PrintPubExportState state) {
+			List<PrintPubTaxonSummaryDTO> sortedTaxa = state.getTaxa().stream()
+					.sorted(Comparator.comparing(t -> t.titleCache)).collect(Collectors.toList());
 
-        // ---- Scientific name index ----
-        if (state.getConfig().isGenerateScientificNameIndex()) {
-            state.getProcessor().add(new PrintPubPageBreakElement());
-            state.getProcessor().add(
-                    new PrintPubSectionHeader("Index to Scientific Names", 1)
-            );
+			for (PrintPubTaxonSummaryDTO dto : sortedTaxa) {
+				state.getProcessor().add(new PrintPubParagraphElement(dto.titleCache));
+			}
+		}
 
-            List<PrintPubTaxonSummaryDTO> sortedTaxa =
-                    state.getTaxa().stream()
-                            .sorted(Comparator.comparing(t -> t.titleCache))
-                            .collect(Collectors.toList());
+		// ---- Common name index ----
+		if (state.getConfig().isGenerateCommonNameIndex()) {
+			state.getProcessor().add(new PrintPubPageBreakElement());
+			state.getProcessor().add(new PrintPubSectionHeaderElement("Index to Common Names", 1));
 
-            for (PrintPubTaxonSummaryDTO dto : sortedTaxa) {
-                state.getProcessor().add(
-                        new PrintPubParagraphElement(dto.titleCache)
-                );
-            }
-        }
+			state.getTaxa().stream().flatMap(dto -> dto.commonNames.stream()).sorted()
+					.forEach(commonName -> state.getProcessor().add(new PrintPubParagraphElement(commonName)));
+		}
+	}
 
-        // ---- Common name index ----
-        if (state.getConfig().isGenerateCommonNameIndex()) {
-            state.getProcessor().add(new PrintPubPageBreakElement());
-            state.getProcessor().add(
-                    new PrintPubSectionHeader("Index to Common Names", 1)
-            );
+	protected void buildAppendix(PrintPubExportState state) {
+		state.getProcessor().add(new PrintPubPageBreakElement());
+		state.getProcessor().add(new PrintPubSectionHeaderElement("Appendix: Digital Identifiers", 1));
 
-            state.getTaxa().stream()
-                    .flatMap(dto -> dto.commonNames.stream())
-                    .sorted()
-                    .forEach(commonName ->
-                            state.getProcessor().add(
-                                    new PrintPubParagraphElement(commonName)
-                            )
-                    );
-        }
-    }
-
-    protected void buildAppendix(PrintPubExportState state) {
-        state.getProcessor().add(new PrintPubPageBreakElement());
-        state.getProcessor().add(
-                new PrintPubSectionHeader("Appendix: Digital Identifiers", 1)
-        );
-
-        for (PrintPubTaxonSummaryDTO dto : state.getTaxa()) {
-            state.getProcessor().add(
-                    new PrintPubParagraphElement(dto.titleCache + " [" + dto.uuid + "]")
-            );
-        }
-    }
+		for (PrintPubTaxonSummaryDTO dto : state.getTaxa()) {
+			state.getProcessor().add(new PrintPubParagraphElement(dto.titleCache + " [" + dto.uuid + "]"));
+		}
+	}
 }

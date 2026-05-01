@@ -24,100 +24,110 @@ import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
+/**
+ * Entry point for the Print Publication export.
+ *
+ * Streams {@link eu.etaxonomy.cdm.model.taxon.TaxonNode} objects from the
+ * classification tree, maps them into DTOs, and accumulates them in the export
+ * state. Manages progress reporting, cancellation handling, and the main taxon
+ * traversal loop. Triggers document layout creation via the document builder
+ * and final result generation.
+ */
+
 @Component
 public class PrintPubClassificationExport
-        extends CdmExportBase<PrintPubExportConfigurator, PrintPubExportState, IExportTransformer, File> {
+		extends CdmExportBase<PrintPubExportConfigurator, PrintPubExportState, IExportTransformer, File> {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Autowired
-    private PrintPubDtoMapper mapper;
-    @Autowired
-    private PrintPubDocumentBuilder builder;
+	@Autowired
+	private PrintPubDtoMapper mapper;
+	@Autowired
+	private PrintPubDocumentBuilder builder;
 
-    public PrintPubClassificationExport() {
-        this.ioName = this.getClass().getSimpleName();
-    }
+	public PrintPubClassificationExport() {
+		this.ioName = this.getClass().getSimpleName();
+	}
 
-    @Override
-    @Transactional(readOnly = true)
-    protected void doInvoke(PrintPubExportState state) {
-        IProgressMonitor monitor = state.getConfig().getProgressMonitor();
-        
-        try {
+	@Override
+	@Transactional(readOnly = true)
+	protected void doInvoke(PrintPubExportState state) {
+		IProgressMonitor monitor = state.getConfig().getProgressMonitor();
 
-            monitor.beginTask("Exporting Classification to Print/Pub", IProgressMonitor.UNKNOWN);
+		try {
 
-            if (monitor.isCanceled()) {
-                return;
-            }
+			monitor.beginTask("Exporting Classification to Print/Pub", IProgressMonitor.UNKNOWN);
 
-            monitor.subTask("Initializing data stream...");
+			if (monitor.isCanceled()) {
+				return;
+			}
 
-            TaxonNodeOutStreamPartitioner<PrintPubExportState> partitioner = TaxonNodeOutStreamPartitioner
-                    .NewInstance(this, state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
+			monitor.subTask("Initializing data stream...");
 
-            Integer referenceDepth = null;
-            TaxonNode node = partitioner.next();
+			TaxonNodeOutStreamPartitioner<PrintPubExportState> partitioner = TaxonNodeOutStreamPartitioner
+					.NewInstance(this, state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
 
-            int nodesProcessed = 0;
+			Integer referenceDepth = null;
+			TaxonNode node = partitioner.next();
 
-            while (node != null) {
+			int nodesProcessed = 0;
 
-                if (monitor.isCanceled()) {
-                    return;
-                }
+			while (node != null) {
 
-                nodesProcessed++;
-                if (nodesProcessed % 10 == 0) {
-                    String nodeLabel = (node.getTaxon() != null && node.getTaxon().getName() != null)
-                            ? node.getTaxon().getName().getTitleCache()
-                            : "Node ID: " + node.getId();
-                    monitor.subTask("Processing: " + nodeLabel);
-                }
+				if (monitor.isCanceled()) {
+					return;
+				}
 
-                monitor.worked(1);
+				nodesProcessed++;
+				if (nodesProcessed % 10 == 0) {
+					String nodeLabel = (node.getTaxon() != null && node.getTaxon().getName() != null)
+							? node.getTaxon().getName().getTitleCache()
+							: "Node ID: " + node.getId();
+					monitor.subTask("Processing: " + nodeLabel);
+				}
 
-                if (referenceDepth == null) {
-                    referenceDepth = mapper.calculateDepth(node);
+				monitor.worked(1);
 
-                    if (node.getTaxon() != null && node.getTaxon().getName() != null) {
-                        state.getConfig().setDocumentTitle(node.getTaxon().getName().getTitleCache());
-                    }
-                }
+				if (referenceDepth == null) {
+					referenceDepth = mapper.calculateDepth(node);
 
-                PrintPubTaxonSummaryDTO dto = mapper.mapNodeToDto(node, referenceDepth, state);
-                if (dto != null) {
-                    state.addTaxon(dto);
-                }
+					if (node.getTaxon() != null && node.getTaxon().getName() != null) {
+						state.getConfig().setDocumentTitle(node.getTaxon().getName().getTitleCache());
+					}
+				}
 
-                node = partitioner.next();
-            }
+				PrintPubTaxonSummaryDTO dto = mapper.mapNodeToDto(node, referenceDepth, state);
+				if (dto != null) {
+					state.addTaxon(dto);
+				}
 
-            if (monitor.isCanceled()) {
-                return;
-            }
+				node = partitioner.next();
+			}
 
-            monitor.subTask("Generating document layout (PDF/HTML)...");
-            builder.buildLayout(state);
+			if (monitor.isCanceled()) {
+				return;
+			}
 
-            monitor.worked(10);
-        } catch (Exception e) {
-            state.getResult().addException(e, "Error during PrintPub export: " + e.getMessage());
-            monitor.warning("Export failed: " + e.getMessage(), e);
-        } finally {
-            monitor.done();
-            state.getProcessor().createFinalResult();
-        }
-    }
+			monitor.subTask("Generating document layout (PDF/HTML)...");
+			builder.buildLayout(state);
 
-    @Override
-    protected boolean doCheck(PrintPubExportState state) {
-        return state.getConfig().getDestination() != null;
-    }
+			monitor.worked(10);
+		} catch (Exception e) {
+			state.getResult().addException(e, "Error during PrintPub export: " + e.getMessage());
+			monitor.warning("Export failed: " + e.getMessage(), e);
+		} finally {
+			monitor.done();
+			state.getProcessor().createFinalResult();
+		}
+	}
 
-    @Override
-    protected boolean isIgnore(PrintPubExportState state) {
-        return false;
-    }
+	@Override
+	protected boolean doCheck(PrintPubExportState state) {
+		return state.getConfig().getDestination() != null;
+	}
+
+	@Override
+	protected boolean isIgnore(PrintPubExportState state) {
+		return false;
+	}
 }

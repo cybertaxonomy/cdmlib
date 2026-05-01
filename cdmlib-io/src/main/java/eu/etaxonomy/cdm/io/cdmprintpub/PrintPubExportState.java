@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
-import eu.etaxonomy.cdm.io.cdmprintpub.document.PrintPubDocumentModel;
+import eu.etaxonomy.cdm.io.cdmprintpub.model.PrintPubDocumentModel;
 import eu.etaxonomy.cdm.io.cdmprintpub.render.PrintPubExportResultProcessor;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportStateBase;
@@ -26,16 +26,11 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
- * Central export state for Print/Pub classification exports.
+ * Central state container for the Print/Publication export.
  *
- * <p>
- * This class is the single source of truth during export execution: it holds
- * lifecycle state, collected export output (taxa, references), and rendering
- * coordination helpers.
- * </p>
- *
- * @author veldmap97
- * @date Dec 2, 2025
+ * Collects taxon DTOs, bibliographic references, rendering metadata, and the
+ * evolving document model during export execution. Also coordinates
+ * deduplication, citation disambiguation, and export result creation.
  */
 public class PrintPubExportState extends TaxonTreeExportStateBase<PrintPubExportConfigurator, PrintPubExportState> {
 
