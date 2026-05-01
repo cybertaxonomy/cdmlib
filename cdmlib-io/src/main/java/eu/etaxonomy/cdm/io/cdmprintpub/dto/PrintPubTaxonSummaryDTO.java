@@ -15,6 +15,11 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
+
+/**
+ * Primary data transfer object for rendering a taxon.
+ */
+
 public class PrintPubTaxonSummaryDTO {
     public UUID uuid;
     public String titleCache;

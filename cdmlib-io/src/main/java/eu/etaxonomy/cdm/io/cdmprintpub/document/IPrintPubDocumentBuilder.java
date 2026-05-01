@@ -11,11 +11,12 @@ package eu.etaxonomy.cdm.io.cdmprintpub.document;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 
 /**
- * Interface for building the layout of a Print/Publication document.
+ * Interface for Print/Publication document layout builders.
  *
- * @author veldmap97
- * @date Feb 13, 2026
+ * Implementations transform data stored in the export state into a structured
+ * document model, independent of the final output format.
  */
+
 public interface IPrintPubDocumentBuilder {
-    void buildLayout(PrintPubExportState state);
+	void buildLayout(PrintPubExportState state);
 }

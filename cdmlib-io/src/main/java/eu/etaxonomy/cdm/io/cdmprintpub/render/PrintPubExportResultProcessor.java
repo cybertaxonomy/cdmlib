@@ -8,13 +8,11 @@
 */
 package eu.etaxonomy.cdm.io.cdmprintpub.render;
 
-
-
 import java.io.File;
 import java.io.FileOutputStream;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
-import eu.etaxonomy.cdm.io.cdmprintpub.document.IPrintPubDocumentElement;
+import eu.etaxonomy.cdm.io.cdmprintpub.element.IPrintPubDocumentElement;
 import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
@@ -27,59 +25,59 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
  */
 public class PrintPubExportResultProcessor {
 
-    private PrintPubExportState state;
+	private PrintPubExportState state;
 
-    public PrintPubExportResultProcessor(PrintPubExportState state) {
-        this.state = state;
-    }
+	public PrintPubExportResultProcessor(PrintPubExportState state) {
+		this.state = state;
+	}
 
-    public void add(IPrintPubDocumentElement element) {
-        state.getDocumentModel().add(element);
-    }
+	public void add(IPrintPubDocumentElement element) {
+		state.getDocumentModel().add(element);
+	}
 
-    public void add(ICdmBase cdmBase, IPrintPubDocumentElement element) {
-        if (state.hasPrinted(cdmBase.getUuid())) {
-            return;
-        }
+	public void add(ICdmBase cdmBase, IPrintPubDocumentElement element) {
+		if (state.hasPrinted(cdmBase.getUuid())) {
+			return;
+		}
 
-        state.markAsPrinted(cdmBase.getUuid());
-        state.getDocumentModel().add(element);
-    }
+		state.markAsPrinted(cdmBase.getUuid());
+		state.getDocumentModel().add(element);
+	}
 
-    public void createFinalResult() {
-        if (state.getDocumentModel().isEmpty()) {
-            state.getResult().addWarning("Document Model is empty. No data exported.");
-            return;
-        }
+	public void createFinalResult() {
+		if (state.getDocumentModel().isEmpty()) {
+			state.getResult().addWarning("Document Model is empty. No data exported.");
+			return;
+		}
 
-        try {
-            IPrintPubDocumentInterpreter interpreter = new PrintPubOdtInterpreter();
-            state.getDocumentModel().render(interpreter);
+		try {
+			IPrintPubDocumentInterpreter interpreter = new PrintPubOdtInterpreter();
+			state.getDocumentModel().render(interpreter);
 
-            byte[] data = interpreter.getResultBytes();
-            String fileName = interpreter.getTimestampedFileName();
+			byte[] data = interpreter.getResultBytes();
+			String fileName = interpreter.getTimestampedFileName();
 
-            state.getResult().putExportData(fileName, data);
-            state.getResult().setExportType(ExportType.PRINT_PUBLICATION);
+			state.getResult().putExportData(fileName, data);
+			state.getResult().setExportType(ExportType.PRINT_PUBLICATION);
 
-            File destinationDir = state.getConfig().getDestination();
+			File destinationDir = state.getConfig().getDestination();
 
-            if (destinationDir != null) {
-                if (!destinationDir.exists()) {
-                    destinationDir.mkdirs();
-                }
+			if (destinationDir != null) {
+				if (!destinationDir.exists()) {
+					destinationDir.mkdirs();
+				}
 
-                File outputFile = new File(destinationDir, fileName);
+				File outputFile = new File(destinationDir, fileName);
 
-                try (FileOutputStream fos = new FileOutputStream(outputFile)) {
-                    fos.write(data);
-                }
-            } else {
-                state.getResult().addError("No destination directory configured. File could not be written.");
-            }
+				try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+					fos.write(data);
+				}
+			} else {
+				state.getResult().addError("No destination directory configured. File could not be written.");
+			}
 
-        } catch (Exception e) {
-            state.getResult().addException(e, "Error rendering/writing document: " + e.getMessage());
-        }
-    }
+		} catch (Exception e) {
+			state.getResult().addException(e, "Error rendering/writing document: " + e.getMessage());
+		}
+	}
 }

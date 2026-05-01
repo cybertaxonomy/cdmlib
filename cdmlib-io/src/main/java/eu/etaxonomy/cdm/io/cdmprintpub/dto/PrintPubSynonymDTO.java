@@ -13,6 +13,11 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
+
+/**
+ * Data transfer object representing a single taxonomic synonym.
+ */
+
 public class PrintPubSynonymDTO {
     public String titleCache;
     public List<TaggedText> taggedName;
