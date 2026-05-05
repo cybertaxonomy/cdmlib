@@ -27,8 +27,8 @@ import io.swagger.annotations.Api;
  */
 @Controller
 @Api("classification")
-@RequestMapping(value = {"/classification", "/classification.*"})
-public class ClassificationListController 
+@RequestMapping(value = {"/classification"})
+public class ClassificationListController
 		extends AbstractIdentifiableListController<Classification,IClassificationService> {
 
     @SuppressWarnings("unused")
