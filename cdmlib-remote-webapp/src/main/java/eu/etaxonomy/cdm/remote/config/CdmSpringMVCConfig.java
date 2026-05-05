@@ -148,8 +148,9 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer
-            .favorPathExtension(true)
-            .favorParameter(false)
+            .favorPathExtension(true)   //TODO remove after adapting dataportal code #10216
+            .favorParameter(true)
+            .ignoreAcceptHeader(false)  //should be default anyway
             .defaultContentType(MediaType.APPLICATION_JSON)
             .mediaType("xml", MediaType.APPLICATION_XML)
             .mediaType("dc", MediaType.APPLICATION_XML)
