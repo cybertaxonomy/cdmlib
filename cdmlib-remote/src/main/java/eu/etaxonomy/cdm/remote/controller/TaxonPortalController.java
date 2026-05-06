@@ -1036,7 +1036,7 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
             @RequestParam(value = "taxOccRelFilter", required = false) String taxOccRelFilter,
             @RequestParam(value = "includeOriginals", required = false) Boolean  includeOriginals,
-            @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
+            @RequestParam(value = "includeTaxonNameDescriptions", required = false, defaultValue = "false") Boolean  includeTaxonNameDescriptions,
             @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
             @RequestParam(value = "height", required = false) Integer height,
             @RequestParam(value = "size", required = false) Integer size,
