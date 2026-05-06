@@ -1033,7 +1033,7 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
             @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
             @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
-            @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
+            @RequestParam(value = "includeOccurrences", required = false, defaultValue = "false") Boolean  includeOccurrences,
             @RequestParam(value = "taxOccRelFilter", required = false) String taxOccRelFilter,
             @RequestParam(value = "includeOriginals", required = false, defaultValue = "false") Boolean  includeOriginals,
             @RequestParam(value = "includeTaxonNameDescriptions", required = false, defaultValue = "false") Boolean  includeTaxonNameDescriptions,
