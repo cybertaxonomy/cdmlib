@@ -52,7 +52,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Service
 @Transactional(readOnly = true)
 // NOTE: no type level @PreAuthorize annotation for this class!
-public class UserService extends ServiceBase<User,IUserDao> implements IUserService {
+public class UserService
+        extends ServiceBase<User,IUserDao>
+        implements IUserService {
 
     private IGrantedAuthorityDao grantedAuthorityDao;
 
@@ -232,7 +234,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
                 throw new UsernameNotFoundException(username);
             }
             return user;
-        } catch(NonUniqueResultException nure) {
+        } catch(NonUniqueResultException exception) {
             throw new IncorrectResultSizeDataAccessException("More than one user found with name '" + username + "'", 1);
         }
     }
@@ -330,4 +332,5 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     public Map<UUID, User> saveOrUpdate(Collection<User> transientInstances) {
         return super.saveOrUpdate(transientInstances);
     }
+
 }

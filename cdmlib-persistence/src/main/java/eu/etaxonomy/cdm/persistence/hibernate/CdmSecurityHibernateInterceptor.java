@@ -62,24 +62,24 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
     /**
      * The exculdeMap must map every property to the CdmBase type !!!
      */
-    public static final Map<Class<? extends CdmBase>, Set<String>> exculdeMap = new HashMap<>();
+    private static final Map<Class<? extends CdmBase>, Set<String>> baseExcludeMap = new HashMap<>();
 
     static{
 //        disabled since no longer needed, see https://dev.e-taxonomy.eu/redmine/issues/4111#comment:8
 //        exculdeMap.put(TaxonName.class, new HashSet<>());
 
-        Set<String> defaultExculdes = new HashSet<>();
-        defaultExculdes.add("createdBy");  //created by is changed by CdmPreDataChangeListener after save. This is handled as a change and therefore throws a security exception during first insert if only CREATE rights exist
-        defaultExculdes.add("created");  // same behavior was not yet observed for "created", but to be on the save side we also exclude "created"
-        defaultExculdes.add("updatedBy");
-        defaultExculdes.add("updated");
+        Set<String> defaultExcludes = new HashSet<>();
+        defaultExcludes.add("createdBy");  //created by is changed by CdmPreDataChangeListener after save. This is handled as a change and therefore throws a security exception during first insert if only CREATE rights exist
+        defaultExcludes.add("created");  // same behavior was not yet observed for "created", but to be on the save side we also exclude "created"
+        defaultExcludes.add("updatedBy");
+        defaultExcludes.add("updated");
 
         for ( CdmBaseType type: CdmBaseType.values()){
-            exculdeMap.put(type.getBaseClass(), new HashSet<>());
-            exculdeMap.get(type.getBaseClass()).addAll(defaultExculdes);
+            baseExcludeMap.put(type.getBaseClass(), new HashSet<>());
+            baseExcludeMap.get(type.getBaseClass()).addAll(defaultExcludes);
         }
-        exculdeMap.put(CdmBase.class, new HashSet<>());
-        exculdeMap.get(CdmBase.class).addAll(defaultExculdes);
+        baseExcludeMap.put(CdmBase.class, new HashSet<>());
+        baseExcludeMap.get(CdmBase.class).addAll(defaultExcludes);
 
 
         /*
@@ -119,7 +119,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
             return onSave(cdmEntity, id, currentState, propertyNames, null);
         }
 
-        Set<String> excludes = exculdeMap.get(baseType(cdmEntity));
+        Set<String> excludes = baseExcludeMap.get(baseType(cdmEntity));
         excludes.addAll(unprotectedCacheFields(currentState, previousState, propertyNames));
         if (isModified(currentState, previousState, propertyNames, excludes)) {
             // evaluate throws EvaluationFailedException

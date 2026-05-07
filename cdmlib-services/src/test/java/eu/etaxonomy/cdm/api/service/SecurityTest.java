@@ -365,7 +365,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
     @Test
     public final void testUpdateReferenceAllow() throws CdmAuthorityParsingException {
 
-
         authentication = authenticationManager.authenticate(tokenForUserManager);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
@@ -408,7 +407,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
     }
 
     @Test
-    public final void testUpateReferenceDeny() {
+    public final void testUpdateReferenceDeny() {
 
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
         SecurityContext context = SecurityContextHolder.getContext();

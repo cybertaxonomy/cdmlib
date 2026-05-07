@@ -29,8 +29,6 @@ public interface IUserService extends IService<User>, UserDetailsManager {
 
     public UUID saveGrantedAuthority(GrantedAuthority grantedAuthority);
 
-
-
     /**
      * Return a List of users matching the given query string, optionally filtered by class, optionally with a particular MatchMode
      *
@@ -47,7 +45,6 @@ public interface IUserService extends IService<User>, UserDetailsManager {
      * @return a list of instances of type User matching the queryString
      *
      * @see {@link IIdentifiableEntityService#listByTitle(Class, String, MatchMode, List, Integer, Integer, List, List)}
-     *
      */
     public List<User> listByUsername(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
@@ -59,8 +56,5 @@ public interface IUserService extends IService<User>, UserDetailsManager {
      * @param newPassword
      *  the new password to be encoded and set for the <code>user</code>
      */
-    void encodeUserPassword(User user, String newPassword);
-
-
-
+    public void encodeUserPassword(User user, String newPassword);
 }

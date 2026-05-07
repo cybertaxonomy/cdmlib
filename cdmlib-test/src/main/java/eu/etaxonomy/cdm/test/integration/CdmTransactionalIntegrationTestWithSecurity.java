@@ -23,7 +23,7 @@ public abstract class CdmTransactionalIntegrationTestWithSecurity extends CdmTra
     }
 
     /**
-     * find in the nested <code>exception</code> the exception of type <code>clazz</code>
+     * Find in the nested <code>exception</code> the exception of type <code>clazz</code>
      * or returns <code>null</code> if no such exception is found.
      *
      * @param clazz

@@ -695,7 +695,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     private Criteria criterionForType(Class<? extends T> clazz) {
-        return  getSession().createCriteria(entityType(clazz));
+        return getSession().createCriteria(entityType(clazz));
     }
 
     protected Class<? extends T> entityType(Class<? extends T> clazz){
