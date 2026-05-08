@@ -23,7 +23,8 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-public interface IUserService extends IService<User>, UserDetailsManager {
+public interface IUserService
+        extends IService<User>, UserDetailsManager {
 
     public void changePasswordForUser(String username, String password) throws UsernameNotFoundException, DataAccessException;
 
