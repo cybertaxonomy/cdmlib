@@ -28,7 +28,6 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -672,5 +671,15 @@ public class CdmUtils {
                     .replaceAll("[^\\p{ASCII}]", "")
                     ;
         return nomalizedText;
+    }
+
+    //sometimes useful for testing
+    public static void sleep(int seconds) {
+        try {
+            System.out.println("sleep");
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            //NOP
+        }
     }
 }
