@@ -15,6 +15,7 @@ import java.util.UUID;
 import org.hibernate.criterion.Criterion;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
 
@@ -24,7 +25,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IUserService
-        extends IService<User>, UserDetailsManager {
+        extends IService<User>, UserDetailsManager, UserDetailsPasswordService {
 
     public void changePasswordForUser(String username, String password) throws UsernameNotFoundException, DataAccessException;
 

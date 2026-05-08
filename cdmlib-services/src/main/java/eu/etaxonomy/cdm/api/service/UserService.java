@@ -25,8 +25,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.SaltSource;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +32,7 @@ import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.cache.NullUserCache;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -58,9 +57,7 @@ public class UserService
 
     private IGrantedAuthorityDao grantedAuthorityDao;
 
-    private SaltSource saltSource; // = new ReflectionSaltSource();
-
-    private PasswordEncoder passwordEncoder; // = new Md5PasswordEncoder();
+    private PasswordEncoder passwordEncoder;
 
     private AuthenticationManager authenticationManager;
 
@@ -75,11 +72,6 @@ public class UserService
     @Autowired(required = false)
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
-    }
-
-    @Autowired(required = false)
-    public void setSaltSource(SaltSource saltSource) {
-        this.saltSource = saltSource;
     }
 
     @Autowired(required= false)
@@ -140,7 +132,7 @@ public class UserService
     }
 
     /**
-     * Make new password salt, encode and set it for the passed user
+     * Encode password and set it for the passed user
      *
      * @param user
      *  The user to set the new password for.
@@ -149,8 +141,7 @@ public class UserService
      */
     @Override
     public void encodeUserPassword(User user, String newPassword) {
-        Object salt = this.saltSource.getSalt(user);
-        String password = passwordEncoder.encodePassword(newPassword, salt);
+        String password = passwordEncoder.encode(newPassword);
         user.setPassword(password);
     }
 
@@ -173,6 +164,19 @@ public class UserService
         } catch(NonUniqueResultException nure) {
             throw new IncorrectResultSizeDataAccessException("More than one user found with name '" + username + "'", 1);
         }
+    }
+
+    @Override
+    public UserDetails updatePassword(UserDetails userDetails, String newEncodedPassword) {
+
+        // write new encoded password to DB
+        dao.updatePassword(userDetails.getUsername(), newEncodedPassword);
+
+        // Return UserDetails object with new password
+        return org.springframework.security.core.userdetails.User
+            .withUserDetails(userDetails)
+            .password(newEncodedPassword)
+            .build();
     }
 
     @Override

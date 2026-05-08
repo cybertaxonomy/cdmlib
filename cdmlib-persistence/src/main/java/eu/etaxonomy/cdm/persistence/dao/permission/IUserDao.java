@@ -80,5 +80,10 @@ public interface IUserDao extends ICdmEntityDao<User> {
      */
     boolean emailAddressExists(String emailAddress);
 
+    /**
+     * Write encoded password to database.
+     */
+    public void updatePassword(String username, String newEncodedPassword);
+
 
 }

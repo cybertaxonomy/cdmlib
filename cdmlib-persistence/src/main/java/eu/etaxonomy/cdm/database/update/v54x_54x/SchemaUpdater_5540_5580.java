@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
+import eu.etaxonomy.cdm.database.update.ColumnValueUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -93,6 +94,13 @@ public class SchemaUpdater_5540_5580 extends SchemaUpdaterBase {
         tableName = "SpecimenOrObservationBase";
         columnName = "storedUnder";
         ColumnRemover.NewInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT);
+
+        //#10217, #10216 indicate old passwords
+        stepName = "Indicate old passwords";
+        tableName = "UserAccount";
+        columnName = "password";
+        ColumnValueUpdater.NewPrefixAdderInstance(stepList, stepName, tableName, columnName, "{md5}", "password NOT LIKE '{%}%'", !INCLUDE_AUDIT);
+
 
         return stepList;
     }

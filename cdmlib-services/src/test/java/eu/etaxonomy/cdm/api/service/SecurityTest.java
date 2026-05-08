@@ -30,12 +30,11 @@ import org.junit.Test;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.SaltSource;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.unitils.database.annotations.TestDataSource;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBean;
@@ -98,9 +97,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
     private AuthenticationManager authenticationManager;
 
     @SpringBeanByType
-    private SaltSource saltSource;
-
-    @SpringBeanByType
     private PasswordEncoder passwordEncoder;
 
     @SpringBean("cdmPermissionEvaluator")
@@ -120,8 +116,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         String password = PASSWORD_ADMIN;
         User user = User.NewInstance("userManager", "");
 
-        Object salt = this.saltSource.getSalt(user);
-        String passwordEncrypted = passwordEncoder.encodePassword(password, salt);
+       String passwordEncrypted = passwordEncoder.encode(password);
         logger.info("encrypted password: " + passwordEncrypted );
     }
 
@@ -414,7 +409,9 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context.setAuthentication(authentication);
 
         TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        taxon.getName().getNomenclaturalReference().setTitleCache("Mobydick", true);
+        Reference nomRef = taxon.getName().getNomenclaturalReference();
+        UUID refUuid = nomRef.getUuid();
+        nomRef.setTitleCache("Mobydick", true);
         Exception exception = null;
         try {
             taxonService.saveOrUpdate(taxon);
@@ -431,7 +428,9 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNotNull("must fail here!", exception);
+        Assert.assertNotNull("Updating reference should not be allowed, only CREATE and READ! An exception should be thrown", exception);
+        Reference updatedRef = referenceService.find(refUuid);
+        Assert.assertEquals("TitleCache should still be the old titleCache", "Lorem ipsum", updatedRef.getTitleCache());
     }
 
     @Test
@@ -757,13 +756,14 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         authentication = authenticationManager.authenticate(tokenForAdmin);
         context.setAuthentication(authentication);
-        RuntimeException securityException= null;
 
         TaxonBase taxon = taxonService.load(UUID_LACTUCA);
-        taxonService.delete(taxon);
-        commitAndStartNewTransaction(null);
-
-        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        try {
+            taxonService.delete(taxon);
+            commitAndStartNewTransaction(null);
+        } catch (Exception e) {
+            Assert.fail("Evaluation must not fail since the user is permitted, CAUSE :" + e.getMessage());
+        }
         // reload taxon
         taxon = taxonService.load(UUID_LACTUCA);
         Assert.assertNull("The taxon must be deleted", taxon);
@@ -1201,13 +1201,35 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
+    @Test
+    @DataSet
+    public void testUpgradeMd5Password(){
 
+        int partEditorId = 5;
+        User partEditor = userService.find(partEditorId);
+        Assert.assertEquals("{md5}41af8a6dac9f86b1081aa5840df75a53", partEditor.getPassword());
+
+        Authentication auth = authenticationManager.authenticate(tokenForPartEditor);
+        Assert.assertTrue(auth.isAuthenticated());
+
+        partEditor = userService.find(partEditorId);
+        //not necessarily required, may also become false in future
+        Assert.assertEquals("Password not yet changed in old session", "{md5}41af8a6dac9f86b1081aa5840df75a53", partEditor.getPassword());
+        testIsMd5Password(partEditor, true);
+
+        //new session
+        commitAndStartNewTransaction();
+        partEditor = userService.find(partEditorId);
+        testIsMd5Password(partEditor, false);
+        auth = authenticationManager.authenticate(tokenForPartEditor);
+        Assert.assertTrue(auth.isAuthenticated());
     }
+
+    private void testIsMd5Password(User partEditor, boolean expectedValue) {
+        Assert.assertEquals(expectedValue, partEditor.getPassword().startsWith("{md5}"));
+    }
+
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

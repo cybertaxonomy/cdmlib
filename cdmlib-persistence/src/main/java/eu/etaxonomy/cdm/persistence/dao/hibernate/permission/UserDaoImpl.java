@@ -87,4 +87,12 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
         return user;
     }
 
+    @Override
+    public void updatePassword(String username, String newEncodedPassword) {
+
+        getSession().createQuery("UPDATE User u SET u.password = :password WHERE u.username = :username")
+            .setParameter("password", newEncodedPassword)
+            .setParameter("username", username)
+            .executeUpdate();
+    }
 }
