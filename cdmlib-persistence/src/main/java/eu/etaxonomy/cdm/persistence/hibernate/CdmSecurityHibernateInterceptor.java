@@ -74,7 +74,6 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         defaultExcludes.add("updated");
 
         for ( CdmBaseType type: CdmBaseType.values()){
-            //TODO java11 use Set.of(..) after migration
             baseExcludeMap.put(type.getBaseClass(), Collections.unmodifiableSet(defaultExcludes));
         }
         baseExcludeMap.put(CdmBase.class, Collections.unmodifiableSet(defaultExcludes));
