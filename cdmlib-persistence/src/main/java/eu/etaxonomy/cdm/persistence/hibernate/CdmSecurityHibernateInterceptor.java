@@ -12,6 +12,7 @@ import java.beans.Introspector;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -75,11 +76,10 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         defaultExcludes.add("updated");
 
         for ( CdmBaseType type: CdmBaseType.values()){
-            baseExcludeMap.put(type.getBaseClass(), new HashSet<>());
-            baseExcludeMap.get(type.getBaseClass()).addAll(defaultExcludes);
+            //TODO java11 use Set.of(..) after migration
+            baseExcludeMap.put(type.getBaseClass(), Collections.unmodifiableSet(defaultExcludes));
         }
-        baseExcludeMap.put(CdmBase.class, new HashSet<>());
-        baseExcludeMap.get(CdmBase.class).addAll(defaultExcludes);
+        baseExcludeMap.put(CdmBase.class, Collections.unmodifiableSet(defaultExcludes));
 
 
         /*
@@ -119,7 +119,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
             return onSave(cdmEntity, id, currentState, propertyNames, null);
         }
 
-        Set<String> excludes = baseExcludeMap.get(baseType(cdmEntity));
+        Set<String> excludes = new HashSet<>(baseExcludeMap.get(baseType(cdmEntity)));
         excludes.addAll(unprotectedCacheFields(currentState, previousState, propertyNames));
         if (isModified(currentState, previousState, propertyNames, excludes)) {
             // evaluate throws EvaluationFailedException
