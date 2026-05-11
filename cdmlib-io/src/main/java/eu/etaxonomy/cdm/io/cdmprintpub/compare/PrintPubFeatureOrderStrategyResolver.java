@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.io.cdmprintpub.order;
+package eu.etaxonomy.cdm.io.cdmprintpub.compare;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
