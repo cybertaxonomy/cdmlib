@@ -149,6 +149,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "infraGenericEpithet",
     "specificEpithet",
     "infraSpecificEpithet",
+    "isAutonym",
     "combinationAuthorship",
     "exCombinationAuthorship",
     "basionymAuthorship",
@@ -408,7 +409,6 @@ public class TaxonName
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
         parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.name.IsAutonym")}
     )
-    @NotNull
     private IsAutonym isAutonym;
 
     @XmlElement(name = "CombinationAuthorship")
