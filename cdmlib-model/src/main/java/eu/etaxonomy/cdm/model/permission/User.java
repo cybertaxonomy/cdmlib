@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.permission;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,7 +30,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -95,15 +95,6 @@ public class User extends CdmBase implements UserDetails {
     @NotAudited
     @ValidPassword(groups=Level2.class)
     protected String password;
-
-    /**
-     * The salt for password hashing.
-     * @see https://dev.e-taxonomy.eu/redmine/issues/7210
-     * @see https://code-bude.net/2015/03/30/grundlagen-sicheres-passwort-hashing-mit-salts/
-     */
-    @XmlElement(name = "Salt")
-    @NotAudited
-    protected String salt;
 
     @XmlElement(name = "EmailAddress")
     protected String emailAddress;

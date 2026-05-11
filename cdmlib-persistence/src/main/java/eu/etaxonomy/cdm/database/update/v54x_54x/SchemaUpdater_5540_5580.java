@@ -101,6 +101,11 @@ public class SchemaUpdater_5540_5580 extends SchemaUpdaterBase {
         columnName = "password";
         ColumnValueUpdater.NewPrefixAdderInstance(stepList, stepName, tableName, columnName, "{md5}", "password NOT LIKE '{%}%'", !INCLUDE_AUDIT);
 
+        //#10217, revert #7210
+        stepName = "Remove User.salt";
+        tableName = "UserAccount";
+        columnName = "salt";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, columnName, !INCLUDE_AUDIT);
 
         return stepList;
     }
