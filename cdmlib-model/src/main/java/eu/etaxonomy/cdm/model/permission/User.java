@@ -55,7 +55,6 @@ import eu.etaxonomy.cdm.validation.annotation.ValidPassword;
 @XmlType(name = "User", propOrder = {
         "username",
         "password",
-        "salt",
         "emailAddress",
         "grantedAuthorities",
         "authorities",
@@ -89,7 +88,7 @@ public class User extends CdmBase implements UserDetails {
     protected String username;
 
     /**
-     * a salted, MD5 encoded hash of the plain text password
+     * a bcrypted hash of the plain text password
      */
     @XmlElement(name = "Password")
     @NotAudited

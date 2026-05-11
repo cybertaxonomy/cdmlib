@@ -6087,7 +6087,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         EMAILADDRESS varchar(255),
         ENABLED boolean not null,
         PASSWORD varchar(255),
-        SALT varchar(255),
         USERNAME varchar(255),
         CREATEDBY_ID integer,
         PERSON_ID integer,
