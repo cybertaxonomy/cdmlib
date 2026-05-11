@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.io.cdmprintpub.document.PrintPubDocumentBuilder;
+import eu.etaxonomy.cdm.io.cdmprintpub.documentBuilder.PrintPubDocumentBuilder;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.mapper.PrintPubDtoMapper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;

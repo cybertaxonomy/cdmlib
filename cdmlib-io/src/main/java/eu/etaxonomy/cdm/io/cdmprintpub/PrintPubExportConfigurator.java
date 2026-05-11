@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.cdmprintpub;
 
 import java.io.File;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
@@ -25,183 +26,221 @@ import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
  * downstream mappers and builders.
  */
 public class PrintPubExportConfigurator
-		extends TaxonTreeExportConfiguratorBase<PrintPubExportState, PrintPubExportConfigurator>
-		implements IFactExportConfigurator {
+        extends TaxonTreeExportConfiguratorBase<PrintPubExportState, PrintPubExportConfigurator>
+        implements IFactExportConfigurator {
 
-	private static final long serialVersionUID = -5958099339227666207L;
+    private static final long serialVersionUID = -5958099339227666207L;
 
-	// General
-	private String documentTitle = "Taxonomic Export";
-	private boolean doFactualData = true;
-	private boolean includeUnpublishedFacts = false;
+    // General
+    private String documentTitle = "Taxonomic Export";
+    private boolean doFactualData = true;
+    private boolean includeUnpublishedFacts = false;
 
-	// 1. Taxonomic Scope & Concepts
-	private boolean includeMisappliedNames = true;
-	private boolean includeTaxonomicConceptReference = true; // "Secundum" for accepted taxa
-	private boolean includeSynonymConceptReference = false; // "Secundum" for synonyms
+    // 1. Taxonomic Scope & Concepts
+    private boolean includeMisappliedNames = true;
+    private boolean includeTaxonomicConceptReference = true; // "Secundum" for accepted taxa
+    private boolean includeSynonymConceptReference = false; // "Secundum" for synonyms
 
-	// 2. Type Information & Formatting
-	private boolean includeSupraspecificTypes = true;
-	private boolean includeSpeciesTypes = true;
-	private boolean startSupraspecificTypesOnNewLine = false;
+    // 2. Type Information & Formatting
+    private boolean includeSupraspecificTypes = true;
+    private boolean includeSpeciesTypes = true;
+    private boolean startSupraspecificTypesOnNewLine = false;
 
-	// 3. Indices
-	private boolean generateCommonNameIndex = false;
-	private boolean generateScientificNameIndex = true;
+    // 3. Indices
+    private boolean generateCommonNameIndex = false;
+    private boolean generateScientificNameIndex = true;
 
-	// 4. Appendix: Digital Identifiers
-	private boolean appendIdentifierList = true;
-	private boolean includeWfoId = true;
-	private boolean includeProtologueUris = true;
+    // 4. Appendix: Digital Identifiers
+    private boolean appendIdentifierList = true;
+    private boolean includeWfoId = true;
+    private boolean includeProtologueUris = true;
 
-	public static PrintPubExportConfigurator NewInstance(ICdmDataSource source, File destination) {
-		PrintPubExportConfigurator result = new PrintPubExportConfigurator(null);
-		result.setSource(source);
-		result.setDestination(destination);
-		return result;
-	}
+    // 5. Fact sorting
+    private UUID featureTreeUuid;
 
-	public PrintPubExportConfigurator(IExportTransformer transformer) {
-		super(transformer);
-		this.resultType = ExportResultType.BYTE_ARRAY;
-		this.setTarget(TARGET.EXPORT_DATA);
-		setUserFriendlyIOName("Print/Publication Export");
-	}
+    public enum FeatureSortMode {
+        FEATURE_TREE, ALPHABETICAL
+    }
 
-	@Override
-	public PrintPubExportState getNewState() {
-		return new PrintPubExportState(this);
-	}
+    public enum FactSortMode {
+        PORTAL_LIKE, ALPHABETICAL
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	protected void makeIoClassList() {
-		ioClassList = new Class[] { PrintPubClassificationExport.class };
-	}
+    private FeatureSortMode featureSortMode = FeatureSortMode.FEATURE_TREE;
+    private FactSortMode factSortMode = FactSortMode.PORTAL_LIKE;
 
-	@Override
-	public String getDestinationNameString() {
-		if (this.getDestination() != null) {
-			return this.getDestination().getName();
-		}
-		return null;
-	}
+    public static PrintPubExportConfigurator NewInstance(ICdmDataSource source, File destination) {
+        PrintPubExportConfigurator result = new PrintPubExportConfigurator(null);
+        result.setSource(source);
+        result.setDestination(destination);
+        return result;
+    }
 
-	// --- Getters and Setters ---
+    public PrintPubExportConfigurator(IExportTransformer transformer) {
+        super(transformer);
+        this.resultType = ExportResultType.BYTE_ARRAY;
+        this.setTarget(TARGET.EXPORT_DATA);
+        setUserFriendlyIOName("Print/Publication Export");
+    }
 
-	public String getDocumentTitle() {
-		return documentTitle;
-	}
+    @Override
+    public PrintPubExportState getNewState() {
+        return new PrintPubExportState(this);
+    }
 
-	public void setDocumentTitle(String documentTitle) {
-		this.documentTitle = documentTitle;
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void makeIoClassList() {
+        ioClassList = new Class[] { PrintPubClassificationExport.class };
+    }
 
-	@Override
-	public boolean isDoFactualData() {
-		return doFactualData;
-	}
+    @Override
+    public String getDestinationNameString() {
+        if (this.getDestination() != null) {
+            return this.getDestination().getName();
+        }
+        return null;
+    }
 
-	@Override
-	public void setDoFactualData(boolean doFactualData) {
-		this.doFactualData = doFactualData;
-	}
+    // --- Getters and Setters ---
 
-	@Override
-	public boolean isIncludeUnpublishedFacts() {
-		return includeUnpublishedFacts;
-	}
+    public String getDocumentTitle() {
+        return documentTitle;
+    }
 
-	@Override
-	public void setIncludeUnpublishedFacts(boolean includeUnpublishedFacts) {
-		this.includeUnpublishedFacts = includeUnpublishedFacts;
-	}
+    public void setDocumentTitle(String documentTitle) {
+        this.documentTitle = documentTitle;
+    }
 
-	public boolean isIncludeMisappliedNames() {
-		return includeMisappliedNames;
-	}
+    @Override
+    public boolean isDoFactualData() {
+        return doFactualData;
+    }
 
-	public void setIncludeMisappliedNames(boolean includeMisappliedNames) {
-		this.includeMisappliedNames = includeMisappliedNames;
-	}
+    @Override
+    public void setDoFactualData(boolean doFactualData) {
+        this.doFactualData = doFactualData;
+    }
 
-	public boolean isIncludeTaxonomicConceptReference() {
-		return includeTaxonomicConceptReference;
-	}
+    @Override
+    public boolean isIncludeUnpublishedFacts() {
+        return includeUnpublishedFacts;
+    }
 
-	public void setIncludeTaxonomicConceptReference(boolean includeTaxonomicConceptReference) {
-		this.includeTaxonomicConceptReference = includeTaxonomicConceptReference;
-	}
+    @Override
+    public void setIncludeUnpublishedFacts(boolean includeUnpublishedFacts) {
+        this.includeUnpublishedFacts = includeUnpublishedFacts;
+    }
 
-	public boolean isIncludeSynonymConceptReference() {
-		return includeSynonymConceptReference;
-	}
+    public boolean isIncludeMisappliedNames() {
+        return includeMisappliedNames;
+    }
 
-	public void setIncludeSynonymConceptReference(boolean includeSynonymConceptReference) {
-		this.includeSynonymConceptReference = includeSynonymConceptReference;
-	}
+    public void setIncludeMisappliedNames(boolean includeMisappliedNames) {
+        this.includeMisappliedNames = includeMisappliedNames;
+    }
 
-	public boolean isIncludeSupraspecificTypes() {
-		return includeSupraspecificTypes;
-	}
+    public boolean isIncludeTaxonomicConceptReference() {
+        return includeTaxonomicConceptReference;
+    }
 
-	public void setIncludeSupraspecificTypes(boolean includeSupraspecificTypes) {
-		this.includeSupraspecificTypes = includeSupraspecificTypes;
-	}
+    public void setIncludeTaxonomicConceptReference(boolean includeTaxonomicConceptReference) {
+        this.includeTaxonomicConceptReference = includeTaxonomicConceptReference;
+    }
 
-	public boolean isIncludeSpeciesTypes() {
-		return includeSpeciesTypes;
-	}
+    public boolean isIncludeSynonymConceptReference() {
+        return includeSynonymConceptReference;
+    }
 
-	public void setIncludeSpeciesTypes(boolean includeSpeciesTypes) {
-		this.includeSpeciesTypes = includeSpeciesTypes;
-	}
+    public void setIncludeSynonymConceptReference(boolean includeSynonymConceptReference) {
+        this.includeSynonymConceptReference = includeSynonymConceptReference;
+    }
 
-	public boolean isStartSupraspecificTypesOnNewLine() {
-		return startSupraspecificTypesOnNewLine;
-	}
+    public boolean isIncludeSupraspecificTypes() {
+        return includeSupraspecificTypes;
+    }
 
-	public void setStartSupraspecificTypesOnNewLine(boolean startSupraspecificTypesOnNewLine) {
-		this.startSupraspecificTypesOnNewLine = startSupraspecificTypesOnNewLine;
-	}
+    public void setIncludeSupraspecificTypes(boolean includeSupraspecificTypes) {
+        this.includeSupraspecificTypes = includeSupraspecificTypes;
+    }
 
-	public boolean isGenerateCommonNameIndex() {
-		return generateCommonNameIndex;
-	}
+    public boolean isIncludeSpeciesTypes() {
+        return includeSpeciesTypes;
+    }
 
-	public void setGenerateCommonNameIndex(boolean generateCommonNameIndex) {
-		this.generateCommonNameIndex = generateCommonNameIndex;
-	}
+    public void setIncludeSpeciesTypes(boolean includeSpeciesTypes) {
+        this.includeSpeciesTypes = includeSpeciesTypes;
+    }
 
-	public boolean isGenerateScientificNameIndex() {
-		return generateScientificNameIndex;
-	}
+    public boolean isStartSupraspecificTypesOnNewLine() {
+        return startSupraspecificTypesOnNewLine;
+    }
 
-	public void setGenerateScientificNameIndex(boolean generateScientificNameIndex) {
-		this.generateScientificNameIndex = generateScientificNameIndex;
-	}
+    public void setStartSupraspecificTypesOnNewLine(boolean startSupraspecificTypesOnNewLine) {
+        this.startSupraspecificTypesOnNewLine = startSupraspecificTypesOnNewLine;
+    }
 
-	public boolean isAppendIdentifierList() {
-		return appendIdentifierList;
-	}
+    public boolean isGenerateCommonNameIndex() {
+        return generateCommonNameIndex;
+    }
 
-	public void setAppendIdentifierList(boolean appendIdentifierList) {
-		this.appendIdentifierList = appendIdentifierList;
-	}
+    public void setGenerateCommonNameIndex(boolean generateCommonNameIndex) {
+        this.generateCommonNameIndex = generateCommonNameIndex;
+    }
 
-	public boolean isIncludeWfoId() {
-		return includeWfoId;
-	}
+    public boolean isGenerateScientificNameIndex() {
+        return generateScientificNameIndex;
+    }
 
-	public void setIncludeWfoId(boolean includeWfoId) {
-		this.includeWfoId = includeWfoId;
-	}
+    public void setGenerateScientificNameIndex(boolean generateScientificNameIndex) {
+        this.generateScientificNameIndex = generateScientificNameIndex;
+    }
 
-	public boolean isIncludeProtologueUris() {
-		return includeProtologueUris;
-	}
+    public boolean isAppendIdentifierList() {
+        return appendIdentifierList;
+    }
 
-	public void setIncludeProtologueUris(boolean includeProtologueUris) {
-		this.includeProtologueUris = includeProtologueUris;
-	}
+    public void setAppendIdentifierList(boolean appendIdentifierList) {
+        this.appendIdentifierList = appendIdentifierList;
+    }
+
+    public boolean isIncludeWfoId() {
+        return includeWfoId;
+    }
+
+    public void setIncludeWfoId(boolean includeWfoId) {
+        this.includeWfoId = includeWfoId;
+    }
+
+    public boolean isIncludeProtologueUris() {
+        return includeProtologueUris;
+    }
+
+    public void setIncludeProtologueUris(boolean includeProtologueUris) {
+        this.includeProtologueUris = includeProtologueUris;
+    }
+
+    public UUID getFeatureTreeUuid() {
+        return featureTreeUuid;
+    }
+
+    public void setFeatureTreeUuid(UUID featureTreeUuid) {
+        this.featureTreeUuid = featureTreeUuid;
+    }
+
+    public FeatureSortMode getFeatureSortMode() {
+        return featureSortMode;
+    }
+
+    public void setFeatureSortMode(FeatureSortMode featureSortMode) {
+        this.featureSortMode = featureSortMode;
+    }
+
+    public FactSortMode getFactSortMode() {
+        return factSortMode;
+    }
+
+    public void setFactSortMode(FactSortMode factSortMode) {
+        this.factSortMode = factSortMode;
+    }
 }

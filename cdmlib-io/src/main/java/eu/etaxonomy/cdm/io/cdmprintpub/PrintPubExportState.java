@@ -41,6 +41,13 @@ public class PrintPubExportState extends TaxonTreeExportStateBase<PrintPubExport
 	private final List<PrintPubTaxonSummaryDTO> taxonList = new ArrayList<>();
 	private final Map<UUID, Reference> referenceStore = new HashMap<>();
 
+
+	// ======================
+    // Sorting
+    // ======================
+
+	private transient Map<UUID, Integer> featureOrderIndex;
+
 	// ======================
 	// Export lifecycle
 	// ======================
@@ -106,6 +113,19 @@ public class PrintPubExportState extends TaxonTreeExportStateBase<PrintPubExport
 	public void setCurrentTaxon(TaxonBase<?> currentTaxon) {
 		this.currentTaxon = currentTaxon;
 	}
+
+    // ======================
+    // Sorting
+    // ======================
+
+    public Map<UUID, Integer> getFeatureOrderIndex() {
+        return featureOrderIndex;
+    }
+
+    public void setFeatureOrderIndex(Map<UUID, Integer> featureOrderIndex) {
+        this.featureOrderIndex = featureOrderIndex;
+    }
+
 
 	// ======================
 	// Collected taxa
