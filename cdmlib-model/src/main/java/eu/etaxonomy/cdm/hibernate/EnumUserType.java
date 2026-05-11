@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Properties;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -34,6 +33,7 @@ import eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus;
 import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
+import eu.etaxonomy.cdm.model.name.IsAutonym;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCodeEdition;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStanding;
@@ -189,6 +189,9 @@ public class EnumUserType<E extends Enum<E>>
         //NoDescriptiveDataStatus
         }else if (clazz.equals(NoDescriptiveDataStatus.class)){
             return NoDescriptiveDataStatus.getByKey(val);
+          //IsAutonym
+        }else if (clazz.equals(IsAutonym.class)){
+            return IsAutonym.getByKey(val);
         }else{
         	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
         }

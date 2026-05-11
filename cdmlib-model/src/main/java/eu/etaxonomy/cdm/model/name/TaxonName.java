@@ -403,6 +403,14 @@ public class TaxonName
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String infraSpecificEpithet;
 
+    @XmlAttribute(name ="isAutonym")
+    @Column(name="isAutonym", length=10)
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.name.IsAutonym")}
+    )
+    @NotNull
+    private IsAutonym isAutonym;
+
     @XmlElement(name = "CombinationAuthorship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")

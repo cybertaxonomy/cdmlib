@@ -107,6 +107,20 @@ public class SchemaUpdater_5540_5580 extends SchemaUpdaterBase {
         columnName = "salt";
         ColumnRemover.NewInstance(stepList, stepName, tableName, columnName, !INCLUDE_AUDIT);
 
+        //#10924
+        stepName = "Add autonym to TaxonName";
+        tableName = "TaxonName";
+        String newColumnName = "isAutonym";
+        int length = 10;
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+
+        //#10924
+        stepName = "Set isAutonym to indetermined";
+        tableName = "TaxonName";
+        columnName = "isAutonym";
+        String where = "nymeType = 'ICNAFP'";
+        ColumnValueUpdater.NewStringInstance(stepList, stepName, tableName, newColumnName, "I", where, INCLUDE_AUDIT);
+
         return stepList;
     }
 }
