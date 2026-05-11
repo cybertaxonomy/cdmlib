@@ -89,8 +89,8 @@ public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
 
         int headerLevel = Math.min(dto.relativeDepth + 2, 6);
 
-        state.getProcessor().add(new PrintPubTextRunElement(null, runsFromTaggedName(dto.taggedName), headerLevel));
-
+        state.getProcessor().add(new PrintPubTextRunElement(null, runsFromTaggedName(dto.taggedName),
+                PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME));
     }
 
     private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, String indent) {
@@ -161,10 +161,8 @@ public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
         IPrintPubFactOrderStrategy factOrder = factOrderResolver.resolve(state);
 
         // Group facts by featureUuid + normalized label
-        Map<PrintPubFeatureKey, List<PrintPubFactDTO>> groups = dto.facts.stream()
-                .collect(Collectors.groupingBy(f ->
-                        new PrintPubFeatureKey(f.featureUuid, normalizeFactLabel(f.label))
-                ));
+        Map<PrintPubFeatureKey, List<PrintPubFactDTO>> groups = dto.facts.stream().collect(
+                Collectors.groupingBy(f -> new PrintPubFeatureKey(f.featureUuid, normalizeFactLabel(f.label))));
 
         // Sort the feature keys using chosen feature ordering
         List<PrintPubFeatureKey> keys = new ArrayList<>(groups.keySet());
@@ -193,15 +191,11 @@ public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
                 first = false;
 
                 combinedRuns.addAll(
-                    PrintPubNonNestedHtmlTokenConverter.toRuns(
-                        PrintPubNonNestedHtmlTokenizer.tokenize(fact.text)
-                    )
-                );
+                        PrintPubNonNestedHtmlTokenConverter.toRuns(PrintPubNonNestedHtmlTokenizer.tokenize(fact.text)));
 
                 if (fact.citation != null) {
-                    combinedRuns.add(new PrintPubTextRunElement.Run(
-                        PrintPubTextRunElement.RunType.TEXT, " [" + fact.citation + "]"
-                    ));
+                    combinedRuns.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT,
+                            " [" + fact.citation + "]"));
                 }
             }
 
