@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update.v54x_54x;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -78,7 +79,7 @@ public class SchemaUpdater_5401_5430 extends SchemaUpdaterBase {
         sql = "     SELECT count(*) as n "
                 + " FROM DescriptionElementBase deb INNER JOIN DefinedTermBase dtb ON deb.feature_id = dtb.id "
                 + " WHERE dtb.uuid = 'dd653d48-355c-4aec-a4e7-724f6eb29f8d' ";
-        String uuidTerm = "dd653d48-355c-4aec-a4e7-724f6eb29f8d";
+        UUID uuidTerm = UUID.fromString("dd653d48-355c-4aec-a4e7-724f6eb29f8d");
         SingleTermRemover.NewInstance(stepList, stepName, uuidTerm, sql);
 
         return stepList;

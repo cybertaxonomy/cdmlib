@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update.v500_535;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,14 +54,14 @@ public class SchemaUpdater_5185_5186 extends SchemaUpdaterBase {
 
 		//#9322 remove Invalid Designation taxon relationship
         String stepName = "remove invalid designation taxon relationship type";
-        String uuidTerm = "605b1d01-f2b1-4544-b2e0-6f08def3d6ed";
+        UUID uuidTerm = UUID.fromString("605b1d01-f2b1-4544-b2e0-6f08def3d6ed");
         String checkUsedQueries = "SELECT count(*) FROM @@TaxonRelationship@@ tr "
                 + " INNER JOIN @@DefinedTermBase@@ trType ON trType.id = tr.type_id "
                 + " WHERE trType.uuid = '605b1d01-f2b1-4544-b2e0-6f08def3d6ed'";
         SingleTermRemover.NewInstance(stepList, stepName, uuidTerm, checkUsedQueries);
 
         stepName = "remove invalid designation taxon relationship type";
-        uuidTerm = "605b1d01-f2b1-4544-b2e0-6f08def3d6ed";
+        uuidTerm = UUID.fromString("605b1d01-f2b1-4544-b2e0-6f08def3d6ed");
         checkUsedQueries = "SELECT count(*) FROM @@TaxonRelationship_AUD@@ tr "
                 + " INNER JOIN @@DefinedTermBase_AUD@@ trType ON trType.id = tr.type_id "
                 + " WHERE trType.uuid = '605b1d01-f2b1-4544-b2e0-6f08def3d6ed'";
