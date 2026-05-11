@@ -1,5 +1,5 @@
 
-package eu.etaxonomy.cdm.io.cdmprintpub.order;
+package eu.etaxonomy.cdm.io.cdmprintpub.compare;
 
 import java.util.Comparator;
 
