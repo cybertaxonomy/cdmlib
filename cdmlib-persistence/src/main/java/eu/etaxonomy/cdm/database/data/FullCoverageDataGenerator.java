@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.hibernate.Session;
 import org.joda.time.DateTime;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.ibm.lsid.MalformedLSIDException;
 
@@ -175,6 +176,8 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 public class FullCoverageDataGenerator {
 
+    private BCryptPasswordEncoder passwordEncoder  = new BCryptPasswordEncoder();
+
 	public void fillWithData(Session session){
 
 	    List<CdmBase> entitiesToSave = new ArrayList<>();
@@ -234,7 +237,7 @@ public class FullCoverageDataGenerator {
 			e.printStackTrace();
 		}
 
-		User user = User.NewInstance("myUser", "12345");
+		User user = User.NewInstance("myUser", passwordEncoder.encode("12345"));
 		Group group = Group.NewInstance("MyGroup");
 		group.addMember(user);
 		CdmAuthority authority = CdmAuthority.NewInstance(PermissionClass.TAXONNAME,
@@ -242,6 +245,7 @@ public class FullCoverageDataGenerator {
 		group.addAuthority(authority);
 		Role role = Role.NewInstance("my role");
 		user.addAuthority(role);
+
 
 		entitiesToSave.add(user);
 		entitiesToSave.add(group);
@@ -933,7 +937,7 @@ public class FullCoverageDataGenerator {
 		Registration blockingRegistration = Registration.NewInstance();
 		registration.addBlockedBy(blockingRegistration);
 		registration.setRegistrationCenter(createNewInstitution(entitiesToSave));
-		User submitter = User.NewInstance("submitter", "12345");
+		User submitter = User.NewInstance("submitter", passwordEncoder.encode("12345"));
 		registration.setSubmitter(submitter);
 		handleAnnotatableEntity(registration);
 

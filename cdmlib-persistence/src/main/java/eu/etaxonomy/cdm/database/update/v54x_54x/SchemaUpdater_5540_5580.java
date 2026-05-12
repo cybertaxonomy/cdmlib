@@ -98,8 +98,8 @@ public class SchemaUpdater_5540_5580 extends SchemaUpdaterBase {
         columnName = "storedUnder";
         ColumnRemover.NewInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT);
 
-        //#10217, #10216 indicate old passwords
-        stepName = "Indicate old passwords";
+        //#10217, #10216 mark old passwords
+        stepName = "Mark old passwords";
         tableName = "UserAccount";
         columnName = "password";
         ColumnValueUpdater.NewPrefixAdderInstance(stepList, stepName, tableName, columnName, "{md5}", "password NOT LIKE '{%}%'", !INCLUDE_AUDIT);

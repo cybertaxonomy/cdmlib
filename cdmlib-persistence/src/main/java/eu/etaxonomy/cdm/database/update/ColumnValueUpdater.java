@@ -79,12 +79,12 @@ public class ColumnValueUpdater
                         columnName, value, where);
 
             } else {
-                String value = "'" + prefixToAdd +"' || " + columnName ;
+//                String value = "'" + prefixToAdd +"' || " + columnName ;
                 updateQuery = "UPDATE %s "
-                        + " SET %s = %s || password "
+                        + " SET %s = CONCAT('%s', %s )"
                         + " WHERE %s ";
                 updateQuery = String.format(updateQuery, caseType.transformTo(tableName),
-                        columnName, value, where);
+                        columnName, prefixToAdd, columnName, where);
             }
 
             datasource.executeUpdate(updateQuery);
