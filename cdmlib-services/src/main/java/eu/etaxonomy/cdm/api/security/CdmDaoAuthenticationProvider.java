@@ -40,12 +40,12 @@ public class CdmDaoAuthenticationProvider extends DaoAuthenticationProvider {
         String storedPassword = userDetails.getPassword();
 
         if (storedPassword == null || !storedPassword.startsWith("{md5}")) {
-
+            logger.warn("No md5 pwd");
             //no md5
             super.additionalAuthenticationChecks(userDetails, authentication);
             return;
         }else {
-
+            logger.warn("Update MD5 encoded pwd: " + storedPassword);
             // Legacy MD5-validation
             if (authentication.getCredentials() == null) {
                 this.logger.debug("Failed to authenticate since no credentials provided");
