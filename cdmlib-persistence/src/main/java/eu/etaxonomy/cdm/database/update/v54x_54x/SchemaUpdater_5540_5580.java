@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update.v54x_54x;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,6 +21,8 @@ import eu.etaxonomy.cdm.database.update.ColumnValueUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SingleTermRemover;
 import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
@@ -120,6 +123,28 @@ public class SchemaUpdater_5540_5580 extends SchemaUpdaterBase {
         columnName = "isAutonym";
         String where = "nymeType = 'ICNAFP'";
         ColumnValueUpdater.NewStringInstance(stepList, stepName, tableName, newColumnName, "I", where, INCLUDE_AUDIT);
+
+        //#10877 remove 'Protologue' name feature
+        stepName = "remove 'Protologue' name feature";
+        UUID uuidProtologue = UUID.fromString("71b356c5-1e3f-4f5d-9b0f-c2cf8ae7779f");
+        where = "id NOT IN (SELECT feature_id FROM DescriptionElementBase)";
+        SingleTermRemover.NewInstance(stepList, stepName, uuidProtologue, where);
+
+        //#10877 remove 'protologue' from CdmPreference values
+        stepName = "remove 'protologue' from CdmPreference values";
+        String sql = "UPDATE CdmPreference "
+                + " SET value = REPLACE(value, ';71b356c5-1e3f-4f5d-9b0f-c2cf8ae7779f', '')"
+                + " WHERE value like '%71b356c5-1e3f-4f5d-9b0f-c2cf8ae7779f%' ";
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, sql);
+
+        sql = "UPDATE CdmPreference "
+                + " SET value = REPLACE(value, '71b356c5-1e3f-4f5d-9b0f-c2cf8ae7779f;', '')"
+                + " WHERE value like '%71b356c5-1e3f-4f5d-9b0f-c2cf8ae7779f%' ";
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, sql);
+
+        sql = "DELETE FROM CdmPreference "
+                + " WHERE value = '71b356c5-1e3f-4f5d-9b0f-c2cf8ae7779f' ";
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, sql);
 
         return stepList;
     }
