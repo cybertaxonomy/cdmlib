@@ -127,7 +127,9 @@ public class SchemaUpdater_5540_5580 extends SchemaUpdaterBase {
         //#10877 remove 'Protologue' name feature
         stepName = "remove 'Protologue' name feature";
         UUID uuidProtologue = UUID.fromString("71b356c5-1e3f-4f5d-9b0f-c2cf8ae7779f");
-        where = "id NOT IN (SELECT feature_id FROM DescriptionElementBase)";
+        where =   " SELECT count(*) "
+                + " FROM DescriptionElementBase deb INNER JOIN DefinedTermBase f ON deb.feature_id = f.id "
+                + " WHERE f.uuid = '"+uuidProtologue+"'";
         SingleTermRemover.NewInstance(stepList, stepName, uuidProtologue, where);
 
         //#10877 remove 'protologue' from CdmPreference values
