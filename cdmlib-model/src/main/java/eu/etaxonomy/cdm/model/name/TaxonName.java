@@ -77,6 +77,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.common.TriState;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
@@ -149,7 +150,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "infraGenericEpithet",
     "specificEpithet",
     "infraSpecificEpithet",
-    "isAutonym",
+    "autonymFlag",
     "combinationAuthorship",
     "exCombinationAuthorship",
     "basionymAuthorship",
@@ -404,12 +405,12 @@ public class TaxonName
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String infraSpecificEpithet;
 
-    @XmlAttribute(name ="isAutonym")
-    @Column(name="isAutonym", length=10)
+    @XmlAttribute(name ="autonymFlag")
+    @Column(name="autonymFlag", length=10)
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.name.IsAutonym")}
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.common.TriState")}
     )
-    private IsAutonym isAutonym;
+    private TriState autonymFlag = TriState.INDETERMINATE;
 
     @XmlElement(name = "CombinationAuthorship")
     @XmlIDREF
@@ -894,6 +895,16 @@ public class TaxonName
     @Override
     public void setInfraSpecificEpithet(String infraSpecificEpithet){
         this.infraSpecificEpithet = isBlank(infraSpecificEpithet)?null : infraSpecificEpithet;
+    }
+
+    @Override
+    public Boolean getAutonymFlag() {
+        return autonymFlag.toBoolean();
+    }
+
+    @Override
+    public void setAutonymFlag(Boolean autonymFlag) {
+        this.autonymFlag = TriState.fromBoolean(autonymFlag);
     }
 
     /**
@@ -1421,11 +1432,19 @@ public class TaxonName
     @Transient
     public boolean isAutonym(boolean forAllCodes){
         if (forAllCodes || isBotanical()){
-            if (this.getRank() != null && this.getSpecificEpithet() != null && this.getInfraSpecificEpithet() != null &&
-                this.isInfraSpecific() && this.getSpecificEpithet().trim().equals(this.getInfraSpecificEpithet().trim())){
-                return true;
-            }else if (this.getRank() != null && this.getGenusOrUninomial() != null && this.getInfraGenericEpithet() != null &&
+            if (getRank() == null) {
+                return false;
+            }else if (isInfraSpecific() && getSpecificEpithet() != null && getInfraSpecificEpithet() != null) {
+                //infraspecific
+                if (getSpecificEpithet().trim().equals(getInfraSpecificEpithet().trim())
+                        && !(isPossiblePseudoAutonym())){
+                    return true;
+                } else {
+                    return false;
+                }
+            }else if (this.getGenusOrUninomial() != null && this.getInfraGenericEpithet() != null &&
                     this.isInfraGeneric() && this.getGenusOrUninomial().trim().equals(this.getInfraGenericEpithet().trim())){
+                //infrageneric
                 return true;
             }else{
                 return false;
@@ -1433,6 +1452,10 @@ public class TaxonName
         }else{
             return false;
         }
+    }
+
+    private boolean isPossiblePseudoAutonym() {
+        return this.isSubSubSpecific() && this.autonymFlag == TriState.UNSELECTED;
     }
 
     @Override
@@ -3189,17 +3212,7 @@ public class TaxonName
         }
         return getRank().isSpecies();
     }
-    /**
-     * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of <i>this</i>
-     * taxon name is lower than the species rank (true) or not (false).
-     * Infraspecific non viral names are trinomials.
-     * Returns false if rank is null.
-     *
-     * @see  #isSupraGeneric()
-     * @see  #isGenus()
-     * @see  #isInfraGeneric()
-     * @see  #isSpecies()
-     */
+
     @Override
     @Transient
     public boolean isInfraSpecific() {
@@ -3207,6 +3220,15 @@ public class TaxonName
             return false;
         }
         return getRank().isInfraSpecific();
+    }
+
+    @Override
+    @Transient
+    public boolean isSubSubSpecific() {
+        if (rank == null){
+            return false;
+        }
+        return getRank().isSubSubSpecific();
     }
 
     /**

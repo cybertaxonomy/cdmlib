@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -19,7 +20,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -596,6 +596,17 @@ public class Rank extends DefinedTermBase<Rank> {
     @Transient
     public boolean isInfraSpecific(){
         return this.rankClass.equals(RankClass.Infraspecific); // (this.isLower(Rank.SPECIES()));
+    }
+
+    /**
+     * <code>true</code> if rank is infraspecific ({@link #isInfraSpecific()}) and below
+     * rank of subspecies ({@link Rank#SUBSPECIES()}). This is a special class of ranks
+     * relevant for pseudo autonmys (names that look like autonyms but are not).
+     * They exist only for names of a rank below subspecies (at least in botany).
+     */
+    @Transient
+    public boolean isSubSubSpecific(){
+        return isInfraSpecific() && this.isLower(SUBSPECIES());
     }
 
     @Transient

@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.name;
+package eu.etaxonomy.cdm.model.common;
 
 import java.util.Set;
 import java.util.UUID;
@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  * @author muellera
  * @since 11.05.2026
  */
-public enum IsAutonym implements IEnumTerm<IsAutonym> {
+public enum TriState implements IEnumTerm<TriState> {
 
     @XmlEnumValue("INDETERMINATE")
     INDETERMINATE(UUID.fromString("bf33c5a0-1dbb-454a-ba05-e3c69c622e2e"), "Indeterminate", "I"),
@@ -44,17 +44,25 @@ public enum IsAutonym implements IEnumTerm<IsAutonym> {
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    private IsAutonym(UUID uuid, String defaultString, String key){
+    private TriState(UUID uuid, String defaultString, String key){
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, null);
+    }
+
+    public Boolean toBoolean() {
+        return this == INDETERMINATE ? null : this == SELECTED ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    public static TriState fromBoolean(Boolean bool) {
+        return bool == null ? INDETERMINATE : Boolean.TRUE.equals(bool) ? SELECTED : UNSELECTED;
     }
 
 // *************************** DELEGATE **************************************/
 
-    private static EnumeratedTermVoc<IsAutonym> delegateVoc;
-    private IEnumTerm<IsAutonym> delegateVocTerm;
+    private static EnumeratedTermVoc<TriState> delegateVoc;
+    private IEnumTerm<TriState> delegateVocTerm;
 
     static {
-        delegateVoc = EnumeratedTermVoc.getVoc(IsAutonym.class);
+        delegateVoc = EnumeratedTermVoc.getVoc(TriState.class);
     }
 
     @Override
@@ -70,18 +78,18 @@ public enum IsAutonym implements IEnumTerm<IsAutonym> {
     public UUID getUuid() {return delegateVocTerm.getUuid();}
 
     @Override
-    public IsAutonym getKindOf() {return delegateVocTerm.getKindOf();}
+    public TriState getKindOf() {return delegateVocTerm.getKindOf();}
 
     @Override
-    public Set<IsAutonym> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+    public Set<TriState> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
 
     @Override
-    public boolean isKindOf(IsAutonym ancestor) {return delegateVocTerm.isKindOf(ancestor); }
+    public boolean isKindOf(TriState ancestor) {return delegateVocTerm.isKindOf(ancestor); }
 
     @Override
-    public Set<IsAutonym> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
+    public Set<TriState> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
 
-    public static IsAutonym getByKey(String key){return delegateVoc.getByKey(key);}
-    public static IsAutonym getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
+    public static TriState getByKey(String key){return delegateVoc.getByKey(key);}
+    public static TriState getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
 }

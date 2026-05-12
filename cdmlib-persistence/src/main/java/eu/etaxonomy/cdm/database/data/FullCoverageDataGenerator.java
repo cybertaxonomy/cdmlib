@@ -872,7 +872,8 @@ public class FullCoverageDataGenerator {
 		botName.setGenusOrUninomial("Genus");
 		botName.setInfraGenericEpithet("InfraGeneric");
 		botName.setSpecificEpithet("specificEpithet");
-		botName.setInfraSpecificEpithet("infraSpecificEpithet");
+		botName.setInfraSpecificEpithet("specificEpithet");
+		botName.setAutonymFlag(true);
 		Person combinationAuthorship = createNewPerson("comb author", entitiesToSave);
 		botName.setCombinationAuthorship(combinationAuthorship);
 		Person exCombinationAuthorship = createNewPerson("excomb author", entitiesToSave);
