@@ -95,7 +95,7 @@ public class SchemaUpdater_5540_5580 extends SchemaUpdaterBase {
         //#10522 remove storedUnder
         stepName = "Remove DerivedUnit.storedUnder";
         tableName = "SpecimenOrObservationBase";
-        columnName = "storedUnder";
+        columnName = "storedUnder_id";
         ColumnRemover.NewInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT);
 
         //#10217, #10216 mark old passwords
