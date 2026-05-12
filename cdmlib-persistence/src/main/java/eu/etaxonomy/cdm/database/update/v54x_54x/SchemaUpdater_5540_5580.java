@@ -117,8 +117,8 @@ public class SchemaUpdater_5540_5580 extends SchemaUpdaterBase {
         int length = 10;
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
 
-        //#10924 set default for is autonym
-        stepName = "Set isAutonym to indetermined";
+        //#10924 set default for autonym flag
+        stepName = "Set autonym flag to indetermined";
         tableName = "TaxonName";
         columnName = "autonymFlag";
         String where = null;
