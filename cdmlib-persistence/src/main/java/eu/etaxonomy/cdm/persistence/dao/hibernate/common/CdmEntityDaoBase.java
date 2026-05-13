@@ -666,32 +666,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
 
         return (Long) criteria.uniqueResult();
-
-    }
-
-    private Criteria prepareList(Class<? extends T> clazz, Collection<?> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            String propertyName) {
-
-        if (clazz == null){
-            clazz = type;
-        }
-        Criteria criteria = getSession().createCriteria(clazz);
-        criteria.add(Restrictions.in(propertyName, uuids));
-
-        if (pageSize != null) {
-            criteria.setMaxResults(pageSize);
-            if (pageNumber != null) {
-                criteria.setFirstResult(pageNumber * pageSize);
-            } else {
-                criteria.setFirstResult(0);
-            }
-        }
-
-        if (orderHints == null) {
-            orderHints = OrderHint.defaultOrderHintsFor(type);
-        }
-        addOrder(criteria, orderHints);
-        return criteria;
     }
 
     private Criteria criterionForType(Class<? extends T> clazz) {
@@ -911,6 +885,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public long count(T example, Set<String> includeProperties) {
+
         Criteria criteria = getSession().createCriteria(example.getClass());
         addExample(criteria, example, includeProperties);
 
@@ -934,18 +909,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                         } else {
                             criteria.add(Restrictions.isNull(property));
                         }
-                    } catch (SecurityException se) {
+                    } catch (SecurityException | HibernateException | IllegalArgumentException | IllegalAccessException e) {
                         throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property,
-                                se);
-                    } catch (HibernateException he) {
-                        throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property,
-                                he);
-                    } catch (IllegalArgumentException iae) {
-                        throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property,
-                                iae);
-                    } catch (IllegalAccessException ie) {
-                        throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property,
-                                ie);
+                                e);
                     }
                 }
             }

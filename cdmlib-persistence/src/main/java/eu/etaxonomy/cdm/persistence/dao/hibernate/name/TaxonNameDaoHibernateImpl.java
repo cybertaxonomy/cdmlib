@@ -771,7 +771,7 @@ public class TaxonNameDaoHibernateImpl
                 Integer id = (Integer) objectArray[1];
                 String titleCache = (String) objectArray[2];
 
-                list.add(new UuidAndTitleCache(type, uuid, id, titleCache));
+                list.add(new UuidAndTitleCache<>(type, uuid, id, titleCache));
             }
 
             return list;
@@ -795,7 +795,6 @@ public class TaxonNameDaoHibernateImpl
 
     @Override
     public UUID delete (TaxonName persistentObject){
-        @SuppressWarnings("rawtypes")
         Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
 
         getSession().saveOrUpdate(persistentObject);
