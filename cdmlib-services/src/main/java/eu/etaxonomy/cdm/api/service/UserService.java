@@ -167,8 +167,9 @@ public class UserService
     }
 
     @Override
+    @Transactional(readOnly=false)
     public UserDetails updatePassword(UserDetails userDetails, String newEncodedPassword) {
-
+        System.out.println("Updating password for user: " + userDetails.getUsername());
         // write new encoded password to DB
         dao.updatePassword(userDetails.getUsername(), newEncodedPassword);
 

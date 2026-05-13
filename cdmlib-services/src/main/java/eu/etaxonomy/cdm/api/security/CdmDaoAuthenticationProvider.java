@@ -37,19 +37,13 @@ public class CdmDaoAuthenticationProvider extends DaoAuthenticationProvider {
             UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
 
-        logger.error("Start CdmDaoAuthenticationProvider.additionalAuthenticationChecks");
-        System.out.println("Start CdmDaoAuthenticationProvider.additionalAuthenticationChecks");
         String storedPassword = userDetails.getPassword();
 
         if (storedPassword == null || !storedPassword.startsWith("{md5}")) {
-            logger.error("No md5 pwd: " +  storedPassword);
-            System.out.println("No md5 pwd: " +  storedPassword);
             //no md5
             super.additionalAuthenticationChecks(userDetails, authentication);
             return;
         }else {
-            logger.error("Update MD5 encoded pwd: " + storedPassword);
-            System.out.println("Update MD5 encoded pwd: " + storedPassword);
             // Legacy MD5-validation
             if (authentication.getCredentials() == null) {
                 this.logger.debug("Failed to authenticate since no credentials provided");
