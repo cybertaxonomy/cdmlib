@@ -926,17 +926,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
      * {@link #list(Class, String, Object, MatchMode, Integer, Integer, List, List)
      * here due to different default behavior of the <code>matchmode</code>
      * parameter.
-     *
-     * @param clazz
-     * @param param
-     * @param queryString
-     * @param matchmode
-     * @param criterion
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return
      */
     @Override
     public <S extends T> List<S> findByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode,

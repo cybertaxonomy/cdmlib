@@ -250,7 +250,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
         }
         repo().commitTransaction(txStatus);
         return newAuthorityAdded ? authority : null;
-
     }
 
     @Override
