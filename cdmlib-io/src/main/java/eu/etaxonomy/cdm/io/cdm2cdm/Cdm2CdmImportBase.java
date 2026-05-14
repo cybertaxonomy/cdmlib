@@ -155,7 +155,6 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermRelationBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * Base class for migrating data from one CDM instance to another.
@@ -1037,7 +1036,7 @@ public abstract class Cdm2CdmImportBase
         User result = (User)handlePersistedCdmBase(user, state);
         if (result.getUsername().equals("admin")){
             //TODO why only admin, is this not a problem for all duplicated usernames? Was this a preliminary decision?
-            result = getUserService().listByUsername("admin", MatchMode.EXACT, null, null, null, null, null).iterator().next();
+            result = getUserService().loadUserByUsernameAsUser("admin");
             state.putPermanent(user.getUuid(), result);
             cache(result, state); //necessary?
             state.addToSave(result);

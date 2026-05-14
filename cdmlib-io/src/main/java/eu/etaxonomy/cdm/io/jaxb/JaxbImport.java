@@ -137,11 +137,11 @@ public class JaxbImport
 				logger.info("Users: " + (users = dataSet.getUsers()).size());
 				for (User user : users) {
 
-					List<User> usersList = getUserService().listByUsername(user.getUsername(),null, null, null, null, null, null);
-					if (usersList.isEmpty()){
+					User existingUser = getUserService().loadUserByUsernameAsUser(user.getUsername());
+					if (existingUser == null){
 						getUserService().save(user);
 					}else{
-//						User existingUser = usersList.get(0);
+//						User existingUser = user;
 //						user.setId(existingUser.getId());
 //						getUserService().merge(user);
 						//merging does not yet work because of #4102

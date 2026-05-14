@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.permission.IGrantedAuthorityDao;
@@ -242,6 +243,12 @@ public class UserService
         } catch(NonUniqueResultException exception) {
             throw new IncorrectResultSizeDataAccessException("More than one user found with name '" + username + "'", 1);
         }
+    }
+
+    @Override
+    public User loadUserByUsernameAsUser(String username)
+            throws UsernameNotFoundException, DataAccessException {
+        return CdmBase.deproxy(loadUserByUsername(username), User.class);
     }
 
     @Override

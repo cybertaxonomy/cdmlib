@@ -137,6 +137,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
     @Test
     @DataSet
+    @Deprecated //soon to be removed when listByUsername will be removed
     public void testListByUsernameAllow(){
 
         authentication = authenticationManager.authenticate(tokenForTaxonomist);
@@ -145,6 +146,18 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         List<User> userList = userService.listByUsername("Editor", MatchMode.ANYWHERE, null, null, 0, null, null);
         Assert.assertTrue("The user list must have elements", userList.size() > 0 );
+    }
+
+    @Test
+    @DataSet
+    public void testLoadUserByUsernameAllow(){
+
+        authentication = authenticationManager.authenticate(tokenForTaxonomist);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        User user = userService.loadUserByUsernameAsUser("taxonEditor");
+        Assert.assertNotNull("The user list must have elements", user );
     }
 
     @Test

@@ -59,4 +59,11 @@ public interface IUserService
      *  the new password to be encoded and set for the <code>user</code>
      */
     public void encodeUserPassword(User user, String newPassword);
+
+    /**
+     * Loads the user by username. Same as {@link #loadUserByUsername(String)},
+     * but returns the full User object instead of a Spring Security UserDetails object.
+     */
+    public User loadUserByUsernameAsUser(String username)
+            throws UsernameNotFoundException, DataAccessException;
 }
