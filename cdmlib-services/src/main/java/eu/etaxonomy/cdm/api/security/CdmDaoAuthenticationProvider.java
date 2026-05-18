@@ -73,4 +73,12 @@ public class CdmDaoAuthenticationProvider extends DaoAuthenticationProvider {
             return;
         }
     }
+
+    @Override
+    public void setUserDetailsPasswordService(UserDetailsPasswordService userDetailsPasswordService) {
+        this.passwordService = userDetailsPasswordService;
+        super.setUserDetailsPasswordService(userDetailsPasswordService);
+    }
+
+
 }
