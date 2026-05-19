@@ -32,7 +32,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Service
 @Transactional(readOnly = true)
-public class PrimerServiceImpl extends AnnotatableServiceBase<Primer, IPrimerDao> implements IPrimerService{
+public class PrimerServiceImpl
+        extends AnnotatableServiceBase<Primer, IPrimerDao>
+        implements IPrimerService{
 
     @Override
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache() {

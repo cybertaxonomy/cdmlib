@@ -499,10 +499,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return result;
     }
 
-    /**
-     * @param restrictions
-     * @param criteria
-     */
     private void addRestrictions(List<Restriction<?>> restrictions, DetachedCriteria criteria) {
 
         if(restrictions == null || restrictions.isEmpty()){
@@ -511,8 +507,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
         List<CriterionWithOperator> perProperty = new ArrayList<>(restrictions.size());
         Map<String, String> aliases = new HashMap<>();
-
-
 
         for(Restriction<?> restriction : restrictions){
             Collection<? extends Object> values = restriction.getValues();
@@ -547,8 +541,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                 // ---
                 Criterion[] predicates = new Criterion[values.size()];
                 int i = 0;
-                for(Object v : values){
-                    Criterion criterion = createRestriction(propertyName, v, restriction.getMatchMode());
+                for(Object value : values){
+                    Criterion criterion = createRestriction(propertyName, value, restriction.getMatchMode());
                     if(restriction.isNot()){
                         if(props.length > 1){
                             criterion = Restrictions.or(Restrictions.not(criterion), Restrictions.isNull(propertyName));
@@ -558,7 +552,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                     }
                     predicates[i++] = criterion;
                     if(logger.isDebugEnabled()){
-                        logger.debug("addRestrictions() predicate with " + propertyName + " " + (restriction.getMatchMode() == null ? "=" : restriction.getMatchMode().name()) + " " + v.toString());
+                        logger.debug("addRestrictions() predicate with " + propertyName + " " + (restriction.getMatchMode() == null ? "=" : restriction.getMatchMode().name()) + " " + value.toString());
                     }
                 }
                 if(restriction.getOperator() == Operator.AND_NOT){
@@ -1133,7 +1127,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         Criterion criterion;
 
         public CriterionWithOperator(Operator operator, Criterion criterion) {
-            super();
             this.operator = operator;
             this.criterion = criterion;
         }

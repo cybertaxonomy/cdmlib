@@ -879,7 +879,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, null, null, null, null, null);
         assertEquals(3l, result.getCount().longValue());
 
-        restrictions = Arrays.asList(new Restriction<UUID>("typeDesignations.uuid", null, UUID.fromString("9bbda70b-7272-4e65-a807-852a3f2eba63")));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.uuid", null, UUID.fromString("9bbda70b-7272-4e65-a807-852a3f2eba63")));
         result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
         assertEquals(1l, result.getCount().longValue());
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
@@ -929,7 +929,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         List<Restriction<?>> restrictions;
         Pager<TaxonName> result;
 
-        restrictions = Arrays.asList(new Restriction<UUID>("typeDesignations.uuid", null, UUID.fromString("9bbda70b-7272-4e65-a807-852a3f2eba63"), UUID.fromString("1357c307-00c3-499c-8e20-0849d4706125")));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.uuid", null,
+                UUID.fromString("9bbda70b-7272-4e65-a807-852a3f2eba63"), UUID.fromString("1357c307-00c3-499c-8e20-0849d4706125")));
         result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
         assertEquals(2l, result.getCount().longValue());
 
@@ -943,7 +944,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public void testFindByTitleTitleWithRestrictionsLogicalOperators(){
 
-        // The following typedesigbnations per name are assumed:
+        // The following type designations per name are assumed:
         // Name1 -> SpecimenTypeDesignation -> Specimen1
         //       -> SpecimenTypeDesignation -> Specimen2
         // Name2 -> SpecimenTypeDesignation -> Specimen2
@@ -955,24 +956,24 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 //      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
 
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.AND, null, "Name1"));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeName.titleCache", Operator.AND, null, "Name1"));
         result = nameService.findByTitleWithRestrictions(null, "Name3", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(1l, result.getCount().longValue());
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.AND_NOT, null, "Name1"));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeName.titleCache", Operator.AND_NOT, null, "Name1"));
         result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
         assertEquals(2l, result.getCount().longValue());
 
-        restrictions = Arrays.asList(new Restriction<String>("titleCache", Operator.AND_NOT, null, "Name1", "Name2"));
+        restrictions = Arrays.asList(new Restriction<>("titleCache", Operator.AND_NOT, null, "Name1", "Name2"));
         result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
         assertEquals(1l, result.getCount().longValue());
         assertEquals("Name3", result.getRecords().get(0).getTitleCache());
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.OR, null, "Name1"));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeName.titleCache", Operator.OR, null, "Name1"));
         result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(2l, result.getCount().longValue());
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.OR_NOT, null, "Name1"));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeName.titleCache", Operator.OR_NOT, null, "Name1"));
         result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(2l, result.getCount().longValue());
     }

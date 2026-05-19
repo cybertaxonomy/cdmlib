@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.persistence.query;
 
@@ -23,7 +23,7 @@ public class Grouping {
 	private String propertyName;
 	protected String name;
 	private SortOrder order;
-	
+
 	public Grouping(String propertyPath, String name,  String associatedObjectAlias, SortOrder order) {
         int pos;
         if((pos = propertyPath.indexOf('.', 0)) >= 0){
@@ -36,7 +36,7 @@ public class Grouping {
         this.order = order;
         this.associatedObjectAlias = associatedObjectAlias;
 	}
-	
+
 	protected void setPropertyName(String propertyName) {
 		this.propertyName = propertyName;
 	}
@@ -48,7 +48,7 @@ public class Grouping {
 	public String getAssociatedObj() {
 		return associatedObject;
 	}
-	
+
 	public String getAssociatedObjectAlias() {
 		return associatedObjectAlias;
 	}
@@ -56,7 +56,7 @@ public class Grouping {
 	public String getName() {
 		return name;
 	}
-	
+
 	protected SortOrder getOrder() {
 		return order;
 	}
@@ -78,5 +78,4 @@ public class Grouping {
 			projectionList.add(Property.forName(propertyName).group(),name);
 		}
 	}
-
 }

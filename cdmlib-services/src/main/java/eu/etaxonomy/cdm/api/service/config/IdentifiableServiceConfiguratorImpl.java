@@ -139,9 +139,11 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
 		this.propertyPaths = propertyPaths;
 	}
 
+    @Override
     public boolean isIncludeUnpublished() {
         return includeUnpublished;
     }
+    @Override
     public void setIncludeUnpublished(boolean includeUnpublished) {
         this.includeUnpublished = includeUnpublished;
     }

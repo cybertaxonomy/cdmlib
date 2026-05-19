@@ -31,7 +31,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @since 11.03.2014
  */
 @Repository
-public class AmplificationDaoHibernateImpl extends AnnotatableDaoBaseImpl<Amplification> implements IAmplificationDao{
+public class AmplificationDaoHibernateImpl
+        extends AnnotatableDaoBaseImpl<Amplification>
+        implements IAmplificationDao{
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();

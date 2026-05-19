@@ -157,7 +157,6 @@ public class ReferenceServiceImpl
             Integer limit) {
 
         long numberOfResults = dao.countByIdentifier(Reference.class, identifier, identifierType, matchmode);
-        long numberOfResultsTitle = dao.countByTitle(identifier);
         List<Object[]> daoResults = new ArrayList<>();
         List<UuidAndTitleCache<Reference>> daoResultsTitle = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
@@ -168,7 +167,7 @@ public class ReferenceServiceImpl
 
         List<IdentifiedEntityDTO<Reference>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
-            result.add(new IdentifiedEntityDTO<Reference>((IdentifierType)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
+            result.add(new IdentifiedEntityDTO<>((IdentifierType)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
 
         }
         for (UuidAndTitleCache<Reference> uuidAndTitleCache: daoResultsTitle){
@@ -206,6 +205,6 @@ public class ReferenceServiceImpl
 
     @Override
     public List<Reference> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<Reference> config){
-        return dao.findByTitleAndAbbrevTitle(config.getClazz(),config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
+        return dao.findByTitleAndAbbrevTitle(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
     }
 }

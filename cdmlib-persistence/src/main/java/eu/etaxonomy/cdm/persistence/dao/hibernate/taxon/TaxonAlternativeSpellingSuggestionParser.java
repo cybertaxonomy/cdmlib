@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionP
 public class TaxonAlternativeSpellingSuggestionParser
         extends AlternativeSpellingSuggestionParser<TaxonBase> {
 
-	@SuppressWarnings("deprecation")
     public TaxonAlternativeSpellingSuggestionParser() {
 		super(TaxonBase.class);
 		@SuppressWarnings("unchecked")

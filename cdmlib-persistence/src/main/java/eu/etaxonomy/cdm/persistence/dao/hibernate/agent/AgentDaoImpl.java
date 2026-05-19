@@ -39,7 +39,9 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Repository
-public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAgentDao{
+public class AgentDaoImpl
+        extends IdentifiableDaoBase<AgentBase>
+        implements IAgentDao{
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
