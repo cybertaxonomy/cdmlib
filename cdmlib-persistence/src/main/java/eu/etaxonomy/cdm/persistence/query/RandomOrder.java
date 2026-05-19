@@ -9,7 +9,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.internal.util.StringHelper;
 
-import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
+import eu.etaxonomy.cdm.persistence.common.OperationNotSupportedInPriorViewException;
 
 
 public class RandomOrder extends OrderHint {

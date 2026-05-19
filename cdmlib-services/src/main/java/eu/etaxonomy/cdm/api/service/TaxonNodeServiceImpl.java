@@ -84,7 +84,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
@@ -96,6 +95,7 @@ import eu.etaxonomy.cdm.persistence.dto.HomotypicGroupDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.Restriction;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**

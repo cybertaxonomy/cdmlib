@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.persistence.view;
+package eu.etaxonomy.cdm.persistence.dao.view;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +15,7 @@ import java.util.UUID;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
+import eu.etaxonomy.cdm.persistence.query.AuditEventSort;
 
 
 public interface IAuditEventDao {

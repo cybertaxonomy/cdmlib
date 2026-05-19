@@ -19,8 +19,8 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
-import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
+import eu.etaxonomy.cdm.persistence.query.AuditEventSort;
 
 public abstract class VersionableServiceBase<T extends VersionableEntity, DAO extends IVersionableDao<T>>
         extends ServiceBase<T,DAO>

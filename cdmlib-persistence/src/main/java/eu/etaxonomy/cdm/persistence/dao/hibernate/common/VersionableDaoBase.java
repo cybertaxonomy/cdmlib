@@ -26,12 +26,12 @@ import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.model.view.AuditEventRecordImpl;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContext;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
-import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
+import eu.etaxonomy.cdm.persistence.common.OperationNotSupportedInPriorViewException;
 import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
-import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.query.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.Restriction;
 
 public abstract class VersionableDaoBase<T extends VersionableEntity>
         extends CdmEntityDaoBase<T>

@@ -20,8 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
-import eu.etaxonomy.cdm.persistence.view.IAuditEventDao;
+import eu.etaxonomy.cdm.persistence.dao.view.IAuditEventDao;
+import eu.etaxonomy.cdm.persistence.query.AuditEventSort;
 
 @Service
 @Transactional(readOnly = true)

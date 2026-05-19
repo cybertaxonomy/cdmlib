@@ -14,9 +14,9 @@ import java.util.List;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.Restriction;
 
 /**
  * @author a.babadshanjan

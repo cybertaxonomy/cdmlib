@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.Restriction;
 
 public interface IIdentifiableDao <T extends IdentifiableEntity>
         extends IAnnotatableDao<T>, ITitledDao<T>, ISearchableDao<T>{

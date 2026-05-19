@@ -59,8 +59,6 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
@@ -68,6 +66,8 @@ import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFac
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.Restriction;
+import eu.etaxonomy.cdm.persistence.query.Restriction.Operator;
 
 /**
  * Hibernate implementation for {@link ICdmEntityDao}.

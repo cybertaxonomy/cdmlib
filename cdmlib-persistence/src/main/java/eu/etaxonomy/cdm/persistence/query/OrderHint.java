@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.permission.User;
-import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
+import eu.etaxonomy.cdm.persistence.common.OperationNotSupportedInPriorViewException;
 
 public class OrderHint implements Serializable {
 

@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
+import eu.etaxonomy.cdm.persistence.common.OperationNotSupportedInPriorViewException;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 
