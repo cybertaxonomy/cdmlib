@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
@@ -68,10 +69,19 @@ public class CdmDaoAuthenticationProvider extends DaoAuthenticationProvider {
             if (passwordService != null) {
                 String newEncodedPassword = getPasswordEncoder().encode(presentedPassword);
                 passwordService.updatePassword(userDetails, newEncodedPassword);
+                userDetails = retrieveUser(userDetails.getUsername(), authentication);
             }
 
             return;
         }
+    }
+
+    @Override
+    protected Authentication createSuccessAuthentication(Object principal, Authentication authentication,
+            UserDetails user) {
+        user = retrieveUser(user.getUsername(), (UsernamePasswordAuthenticationToken) authentication);
+
+        return super.createSuccessAuthentication(principal, authentication, user);
     }
 
     @Override
