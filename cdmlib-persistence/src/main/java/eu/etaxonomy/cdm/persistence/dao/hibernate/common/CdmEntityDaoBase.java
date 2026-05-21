@@ -994,7 +994,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
      * Creates a criteria query for the CDM <code>type</code> either for counting or listing matching entities.
      * <p>
      * The set of matching entities can be restricted by passing a list of {@link Restriction} objects.
-     * Restrictions can logically combined:
+     * Restrictions can logically be combined:
      <pre>
        Arrays.asList(
            new Restriction<String>("titleCache", MatchMode.ANYWHERE, "foo"),

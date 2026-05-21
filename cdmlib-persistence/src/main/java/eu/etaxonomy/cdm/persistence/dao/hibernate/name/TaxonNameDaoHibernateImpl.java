@@ -634,7 +634,6 @@ public class TaxonNameDaoHibernateImpl
     @Override
     public <S extends TaxonName> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
             Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        // TODO Auto-generated method stub
         return list(type, restrictions, limit, start, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
     }
 
