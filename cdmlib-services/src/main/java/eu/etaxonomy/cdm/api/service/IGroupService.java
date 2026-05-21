@@ -44,7 +44,14 @@ public interface IGroupService extends IService<Group>, GroupManager{
      *
      * @see {@link IIdentifiableEntityService#listByTitle(Class, String, MatchMode, List, Integer, Integer, List, List)}
      */
-    public List<Group> listByName(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<Group> listByName(String queryString, MatchMode matchmode, List<Criterion> criteria,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Returns the group with the given group name or <code>null</code> if such a group
+     * does not exist.
+     */
+    public Group loadByName(String name);
 
     public UUID saveGroup(Group group);
 
@@ -53,12 +60,6 @@ public interface IGroupService extends IService<Group>, GroupManager{
      * @param username
      */
     public boolean groupExists(String groupName);
-
-    /**
-     * Returns the group with the given group name or <code>null</code> if such a user
-     * does not exist.
-     */
-    public Group findGroup(String groupName);
 
     /**
      * @param groupUUID

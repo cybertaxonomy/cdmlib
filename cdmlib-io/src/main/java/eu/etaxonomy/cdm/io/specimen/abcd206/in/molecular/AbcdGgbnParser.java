@@ -222,7 +222,8 @@ public class AbcdGgbnParser {
                 }
             }
             //check if amplification already exists (can only be checked after all fields are initialized because comparison is done on the label cache))
-            List<Amplification> matchingAmplifications = cdmAppController.getAmplificationService().findByLabelCache(amplification.getLabelCache(), MatchMode.EXACT, null, null, null, null, null).getRecords();
+            List<Amplification> matchingAmplifications = cdmAppController.getAmplificationService()
+                    .findByLabelCache(amplification.getLabelCache(), MatchMode.EXACT, null, null, null, null, null).getRecords();
             if(matchingAmplifications.size()==1){
                 amplification = matchingAmplifications.iterator().next();
             }
@@ -338,7 +339,8 @@ public class AbcdGgbnParser {
                     //primer name
                     String primerName = AbcdParseUtility.parseFirstTextContent(sequencingPrimer.getElementsByTagName(prefix+"primerName"));
                     //check if primer already exists
-                    List<Primer> matchingPrimers = cdmAppController.getPrimerService().findByLabel(primerName, MatchMode.EXACT, null, null, null, null, null).getRecords();
+                    List<Primer> matchingPrimers = cdmAppController.getPrimerService().findByLabel(
+                            primerName, MatchMode.EXACT, null, null, null, null, null).getRecords();
                     Primer primer = null;
                     if(matchingPrimers.size()==1){
                         primer = matchingPrimers.iterator().next();

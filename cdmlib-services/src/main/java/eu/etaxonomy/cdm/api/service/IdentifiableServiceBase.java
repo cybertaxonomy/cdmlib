@@ -197,18 +197,6 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		 return new DefaultPagerImpl<>(pageNumber, numberOfResults , pageSize, results);
 	}
 
-    @Transactional(readOnly = true)
-    @Override
-    public <S extends T> List<S> listByReferenceTitle(Class<S> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-         long numberOfResults = dao.countByReferenceTitle(clazz, queryString, matchmode, criteria);
-
-         List<S> results = new ArrayList<>();
-         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-             results = dao.findByReferenceTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
-         }
-         return results;
-    }
-
 	@Transactional(readOnly = true)
 	@Override
 	public <S extends T> List<S> listByReferenceTitleWithRestrictions(Class<S> clazz, String queryString,MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {

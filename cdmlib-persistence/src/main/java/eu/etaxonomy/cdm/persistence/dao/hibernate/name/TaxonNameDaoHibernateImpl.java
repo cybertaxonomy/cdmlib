@@ -595,7 +595,6 @@ public class TaxonNameDaoHibernateImpl
         @SuppressWarnings("unchecked")
         List<TaxonName> results = crit.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
-
         return results;
     }
 
@@ -664,7 +663,6 @@ public class TaxonNameDaoHibernateImpl
         return results;
     }
 
-
     @Override
     public TaxonName findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths) {
 
@@ -698,7 +696,6 @@ public class TaxonNameDaoHibernateImpl
         return null;
     }
 
-
     @Override
     public <S extends TaxonName> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
             Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -709,6 +706,7 @@ public class TaxonNameDaoHibernateImpl
     @Override
     public <S extends TaxonName> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
             Integer start, List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished) {
+
         Criteria criteria = createCriteria(type, restrictions, false);
 
         if(!includePublished){
@@ -748,7 +746,6 @@ public class TaxonNameDaoHibernateImpl
         List<TaxonName> results = findByName(
                 includeAuthors,queryString, matchmode, null, null, criteria, null);
         return results.size();
-
     }
 
     @Override

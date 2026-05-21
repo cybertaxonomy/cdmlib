@@ -283,6 +283,7 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> clazz, TaxonName determinedAs,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
         Criteria criteria = getCriteria(clazz);
 
         criteria.createCriteria("determinations").add(Restrictions.eq("taxonName", determinedAs));
@@ -428,10 +429,11 @@ public class OccurrenceDaoHibernateImpl
         Set<UUID> associationUuids = new HashSet<>();
         //taxon associations
         if(associatedTaxon!=null){
+            @SuppressWarnings("rawtypes")
             List<UuidAndTitleCache<SpecimenOrObservationBase>> associatedTaxaList = listUuidAndTitleCacheByAssociatedTaxon(
                     clazz, associatedTaxon, includeUnpublished, taxonOccurrenceRelTypes,
                     limit, start, orderHints);
-            if(associatedTaxaList!=null){
+            if(associatedTaxaList != null){
                 for (UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache : associatedTaxaList) {
                     associationUuids.add(uuidAndTitleCache.getUuid());
                 }
@@ -439,6 +441,7 @@ public class OccurrenceDaoHibernateImpl
         }
         //taxon name associations
         else if(associatedTaxonName!=null){
+            @SuppressWarnings("rawtypes")
             List<? extends SpecimenOrObservationBase> associatedTaxaList = listByAssociatedTaxonName(clazz, associatedTaxonName, limit, start, orderHints, propertyPaths);
             if(associatedTaxaList!=null){
                 for (SpecimenOrObservationBase<?> specimenOrObservationBase : associatedTaxaList) {

@@ -219,24 +219,6 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity>
      * @param clazz filter by class - can be null to include all instances of type T
      * @param queryString the query string to filter by
      * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-     * @param criteria additional criteria to filter by
-     * @param pageSize The maximum number of objects returned (can be null for all objects)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
-     * @param orderHints
-     *            Supports path like <code>orderHints.propertyNames</code> which
-     *            include *-to-one properties like createdBy.username or
-     *            authorTeam.persistentTitleCache
-     * @return a list of instances of type T matching the queryString
-     */
-    public <S extends T> List<S> listByReferenceTitle(Class<S> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-    /**
-     * Return a List of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
-     *
-     * @param clazz filter by class - can be null to include all instances of type T
-     * @param queryString the query string to filter by
-     * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
      * @param restrictions a <code>List</code> of additional {@link Restriction}s to filter by
      * @param pageSize The maximum number of objects returned (can be null for all objects)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)

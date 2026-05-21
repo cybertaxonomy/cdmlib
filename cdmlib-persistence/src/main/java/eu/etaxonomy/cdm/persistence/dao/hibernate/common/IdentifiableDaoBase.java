@@ -69,17 +69,6 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
     @Override
     public long countByTitle(String queryString) {
-        return countByTitle(queryString, null);
-    }
-
-    /**
-     * FIXME Candidate for removal. Method not in use.
-     * @deprecated method not in production use. Will maybe be removed.
-     */
-    @Deprecated
-    @Override
-    public long countByTitle(String queryString, CdmBase sessionObject) {
-
         Session session = getSession();
         checkNotInPriorView("IdentifiableDaoBase.countByTitle(String queryString, CdmBase sessionObject)");
 
@@ -95,18 +84,6 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
     @Override
     public List<T> findByTitle(String queryString) {
-        return findByTitle(queryString, null);
-    }
-
-
-    /**
-     * FIXME Candidate for removal. Method not in use.
-     * @deprecated method not in production use. Will maybe be removed.
-     */
-    @Override
-    @Deprecated
-    public List<T> findByTitle(String queryString, CdmBase sessionObject) {
-
         Session session = getSession();
         checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, CdmBase sessionObject)");
 

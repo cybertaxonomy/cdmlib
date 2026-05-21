@@ -111,7 +111,6 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
         this.criteria = criteria;
     }
 
-
     @Override
     public List<Restriction<?>> getRestrictions() {
         return restrictions;

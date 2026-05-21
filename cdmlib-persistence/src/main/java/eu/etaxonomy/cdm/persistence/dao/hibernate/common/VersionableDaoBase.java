@@ -318,7 +318,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity>
 			query.add(AuditEntity.revisionNumber().lt(to.getRevisionNumber()));
 		}
 
-		addCriteria(query,criteria);
+		addCriteria(query, criteria);
 
 		query.addProjection(AuditEntity.revisionNumber().count());
 
@@ -357,7 +357,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity>
   		    query.addOrder(AuditEntity.revisionNumber().asc());
      	}
 
-		addCriteria(query,criteria);
+		addCriteria(query, criteria);
 
 		if(pageSize != null) {
 		    query.setMaxResults(pageSize);

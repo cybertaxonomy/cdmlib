@@ -44,7 +44,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Service
 @Transactional(readOnly = true)
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IGroupService {
+public class GroupServiceImpl
+        extends ServiceBase<Group,IGroupDao>
+        implements IGroupService {
 
     private IUserDao userDao;
 
@@ -73,13 +75,6 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         Assert.hasText(groupName, "Parameter 'groupName' must not be empty.");
         Group group = dao.findGroupByName(groupName);
         return group != null;
-    }
-
-    @Override
-    public Group findGroup(String groupName) {
-        Assert.hasText(groupName, "Parameter 'groupname' must not be empty.");
-        Group group = dao.findGroupByName(groupName);
-        return group;
     }
 
     @Override
@@ -209,6 +204,13 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
                 results = dao.findByName(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
          }
          return results;
+    }
+
+    @Override
+    public Group loadByName(String groupName){
+        Assert.hasText(groupName, "Parameter 'groupname' must not be empty.");
+        Group group = dao.findGroupByName(groupName);
+        return group;
     }
 
     @Override

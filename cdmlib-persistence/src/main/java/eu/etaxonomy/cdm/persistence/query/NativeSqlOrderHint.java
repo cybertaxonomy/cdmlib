@@ -13,31 +13,34 @@ import eu.etaxonomy.cdm.persistence.common.OperationNotSupportedInPriorViewExcep
 
 
 public class NativeSqlOrderHint extends OrderHint {
-	private final static String PROPERTY_NAME = "uselessAnyways";
-	private String nativeSQL;
+
+    private static final long serialVersionUID = 5209803557532593413L;
+    private final static String PROPERTY_NAME = "uselessAnyways";
+
+    private String nativeSQL;
 
 	public NativeSqlOrderHint(String nativeSQL, SortOrder sortOrder) {
 		super(NativeSqlOrderHint.PROPERTY_NAME,sortOrder);
 		this.nativeSQL = nativeSQL;
     }
-	
+
 	@Override
 	public void add(Criteria criteria, Map<String, Criteria> criteriaMap) {
 		criteria.addOrder(new NativeSqlHibernateOrder(this.getSortOrder().equals(SortOrder.ASCENDING) ? true : false,nativeSQL));
 	}
-    
+
 	public class NativeSqlHibernateOrder extends Order {
 		private static final long serialVersionUID = 6439553377404790090L;
-		
+
 		private String nativeSQL;
 		private Boolean ascending;
 
 		protected NativeSqlHibernateOrder(Boolean ascending, String nativeSQL) {
 			super(NativeSqlOrderHint.PROPERTY_NAME, ascending);
-			this.nativeSQL = nativeSQL; 
+			this.nativeSQL = nativeSQL;
 			this.ascending = ascending;
 		}
-		
+
 
 		@Override
 		public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
@@ -47,7 +50,7 @@ public class NativeSqlOrderHint extends OrderHint {
 //		    fragment.append(")");
 		    fragment.append(ascending ? " asc" : " desc");
 		    return StringHelper.replace(fragment.toString(), "{alias}", criteriaQuery.getSQLAlias(criteria));
-		} 
+		}
 	}
 	@Override
 	public void add(AuditQuery query) {

@@ -222,53 +222,15 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	public List<TaxonName> searchNames(String queryString,
 			Integer pageSize, Integer pageNumber);
 
-
-
-	/**
-	 * Returns a count of TaxonName instances which nameCache matches the
-	 * String queryString
-	 *
-	 * @param queryString
-	 * @return a count of TaxonName instances
-	 */
-	public long countNames(String queryString);
-
-	/**
-	 * @param queryString
-	 * @param matchmode
-	 * @param pageSize
-	 * @param pageNumber
-	 * @param criteria
-	 * @param propertyPaths TODO
-	 * @return
-	 */
 	public List<TaxonName> findByName(boolean doIncludeAuthors,
 	        String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
 
-	/**
-	 * @param queryString
-	 * @param matchmode
-	 * @param pageSize
-	 * @param pageNumber
-	 * @param criteria
-	 * @param propertyPaths TODO
-	 * @return
-	 */
 	public List<TaxonName> findByFullTitle(String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
 
-	/**
-     * @param queryString
-     * @param matchmode
-     * @param pageSize
-     * @param pageNumber
-     * @param criteria
-     * @param propertyPaths TODO
-     * @return
-     */
     public List<TaxonName> findByTitle(String queryString,
             MatchMode matchmode, Integer pageSize, Integer pageNumber,
             List<Criterion> criteria, List<String> propertyPaths);
@@ -297,17 +259,6 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 
 	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern);
 
-	/**
-	 * @param clazz
-	 * @param queryString
-	 * @param matchmode
-	 * @param pageSize
-	 * @param pageNumber
-	 * @param criteria
-	 * @param orderHints
-	 * @param propertyPaths TODO
-	 * @return
-	 */
 	public List<TaxonName> findByName(Class<TaxonName> clazz, String queryString,
 	        MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber,
 	        List<OrderHint> orderHints,	List<String> propertyPaths);

@@ -268,7 +268,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      *      can be supplied per property, that is the values per property are combined with OR. The per property
      *      restrictions are combined with AND. </br>
      *      <b>NOTE:</b> For non string type properties you must use
-     *      {@link MatchMode#EXACT}. If set <code>null</code> {@link MatchMode#EXACT} will be used
+     *      {@link MatchMode#EXACT}. If matchMode is <code>null</code> {@link MatchMode#EXACT} will be used
      *      as default.
      * @param criteria
      *       The list of criterion objects representing the restriction to be applied.

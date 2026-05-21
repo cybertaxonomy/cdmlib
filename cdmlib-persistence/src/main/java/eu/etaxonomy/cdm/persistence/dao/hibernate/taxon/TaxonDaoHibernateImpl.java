@@ -676,7 +676,6 @@ public class TaxonDaoHibernateImpl
         boolean doCount = false;
         Query<TaxonBase> query = prepareTaxaByName(doTaxa, doSynonyms, false, false, includeUnpublished, "titleCache", queryString, classification, subtree, matchMode, namedAreas, order, pageSize, pageNumber, doCount, TaxonBase.class);
         if (query != null){
-            @SuppressWarnings({ "unchecked", "rawtypes" })
             List<TaxonBase> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -768,7 +767,6 @@ public class TaxonDaoHibernateImpl
         crit.setProjection(Projections.rowCount());
         return (Long)crit.uniqueResult();
     }
-
 
     @Override
     public long countSynonyms(boolean onlyAttachedToTaxon) {

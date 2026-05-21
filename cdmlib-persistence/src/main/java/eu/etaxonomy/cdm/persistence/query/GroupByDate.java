@@ -143,11 +143,11 @@ public class GroupByDate extends Grouping {
 	}
 
 	public  Order asc(String propertyName, String function) {
-		return new GroupByDateOrder(propertyName,function, true);
+		return new GroupByDateOrder(propertyName, function, true);
 	}
 
 	public  Order desc(String propertyName, String function) {
-		return new GroupByDateOrder(propertyName,function, false);
+		return new GroupByDateOrder(propertyName, function, false);
 	}
 
 	public class GroupByDateOrder extends Order {
@@ -164,7 +164,7 @@ public class GroupByDate extends Grouping {
 		}
 
 		@Override
-		public String 	toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) {
+		public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) {
 			StringBuffer stringBuffer = new StringBuffer();
 			stringBuffer.append(function);
 			stringBuffer.append("(this_.");

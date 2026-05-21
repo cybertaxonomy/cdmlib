@@ -767,10 +767,6 @@ public interface ITaxonService
     /**
      * Returns the TaxonBase with the given UUID
      * using the given match mode and initialization strategy
-     *
-     * @param uuid
-     * @param propertyPaths
-     * @return
      */
     public TaxonBase findTaxonByUuid(UUID uuid, List<String> propertyPaths);
 

@@ -84,6 +84,4 @@ public interface IUserDao extends ICdmEntityDao<User> {
      * Write encoded password to database.
      */
     public void updatePassword(String username, String newEncodedPassword);
-
-
 }

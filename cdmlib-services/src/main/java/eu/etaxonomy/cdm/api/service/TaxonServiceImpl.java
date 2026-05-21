@@ -1190,7 +1190,7 @@ public class TaxonServiceImpl
 
     @Override
     public TaxonBase findTaxonByUuid(UUID uuid, List<String> propertyPaths){
-        return this.dao.findByUuid(uuid, null ,propertyPaths);
+        return this.dao.findByUuid(uuid, null, propertyPaths);
     }
 
     @Override

@@ -137,7 +137,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
     @Test
     @DataSet
-    @Deprecated //soon to be removed when listByUsername will be removed
     public void testListByUsernameAllow(){
 
         authentication = authenticationManager.authenticate(tokenForTaxonomist);

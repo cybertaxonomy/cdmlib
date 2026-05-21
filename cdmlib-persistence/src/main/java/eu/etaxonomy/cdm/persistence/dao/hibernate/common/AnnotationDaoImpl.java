@@ -101,7 +101,7 @@ public class AnnotationDaoImpl
         cq.select(cb.countDistinct(root.get("id")));
 
         if (!predicates.isEmpty()) {
-            cq.where(cb.and(predicates.toArray(new Predicate[0])));
+            cq.where(predicateAnd(cb, predicates));
         }
 
         return getSession().createQuery(cq).getSingleResult();

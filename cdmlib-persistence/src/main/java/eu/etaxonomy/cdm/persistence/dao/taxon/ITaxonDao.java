@@ -167,22 +167,11 @@ public interface ITaxonDao
 
     /**
      * Returns a list of Taxon entities corresponding to the given uuid list.
-     * @param uuids
-     * @param criteria
-     * @param propertyPaths
-     * @return
      */
     public List<? extends TaxonBase> findByUuids(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths);
 
     /**
-     * @param queryString
-     * @param classification
-     * @param matchMode
-     * @param namedAreas
-     * @param pageSize
-     * @param pageNumber
-     * @param propertyPaths
-     * @return A List matching Taxa
+     * @return A list of matching taxa
      */
     public List<Taxon> getTaxaByCommonName(String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
@@ -191,14 +180,10 @@ public interface ITaxonDao
     /**
      * Counts the number of synonyms
      * @param onlyAttachedToTaxon if <code>true</code> only those synonyms being attached to
-     * an accepted taxon are counted
+     *                            an accepted taxon are counted
      * @return the number of synonyms
      */
     public long countSynonyms(boolean onlyAttachedToTaxon);
-
-    public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted);
-
-    public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria);
 
     /**
      * Returns a count of the TaxonRelationships (of where relationship.type ==
@@ -216,6 +201,7 @@ public interface ITaxonDao
      */
     public long countTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
             boolean includeUnpublished, Direction direction);
+
     public long countTaxonRelationships(Taxon taxon, Set<TaxonRelationshipType> types,
             boolean includeUnpublished, Direction direction);
 

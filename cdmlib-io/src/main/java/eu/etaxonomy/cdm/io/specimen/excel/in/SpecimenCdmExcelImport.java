@@ -671,7 +671,8 @@ public class SpecimenCdmExcelImport
 		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
 
 		//TODO
-		List<TaxonName> matchingNames = getNameService().findByName(null, titleCache, MatchMode.EXACT, null, null, null, null, null).getRecords();
+		List<TaxonName> matchingNames = getNameService().findByName(null, titleCache, MatchMode.EXACT,
+		        null, null, null, null, null).getRecords();
 		if (matchingNames.size() > 0){
 			return matchingNames.get(0);
 		} else if (matchingNames.size() > 0){
