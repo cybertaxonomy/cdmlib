@@ -266,16 +266,6 @@ public interface ITaxonDao
      */
     public List<Synonym> getSynonyms(Taxon taxon, SynonymType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
-    /**
-     * Returns a count of the synonyms (where relationship.type == type,
-     * if this argument is supplied) which do have an accepted taxon.
-     *
-     * @param synonym The synonym that is relatedFrom
-     * @param type The type of Synonym (can be null)
-     * @return the number of Synonym instances
-     */
-    public long countSynonyms(Synonym synonym, SynonymType type);
-
     public long countTaxaByCommonName(String searchString,
             Classification classification, MatchMode matchMode,
             Set<NamedArea> namedAreas);
