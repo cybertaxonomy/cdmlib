@@ -14,9 +14,9 @@ import java.util.UUID;
 import org.hibernate.criterion.Criterion;
 import org.springframework.security.provisioning.GroupManager;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**

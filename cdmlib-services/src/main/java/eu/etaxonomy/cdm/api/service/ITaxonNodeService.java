@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
 
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
@@ -48,7 +49,6 @@ import eu.etaxonomy.cdm.persistence.dto.HomotypicGroupDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.persistence.query.Restriction;
 
 /**
  * @author n.hoffmann

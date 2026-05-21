@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.remote.editor;
 
 import java.beans.PropertyEditorSupport;
 
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 
 public class MatchModePropertyEditor extends PropertyEditorSupport {
 

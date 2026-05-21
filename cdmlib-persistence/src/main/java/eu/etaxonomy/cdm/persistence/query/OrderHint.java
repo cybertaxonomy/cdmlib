@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.persistence.query;
+package eu.etaxonomy.cdm.api.filter;
 
 import java.io.Serializable;
 import java.util.Arrays;

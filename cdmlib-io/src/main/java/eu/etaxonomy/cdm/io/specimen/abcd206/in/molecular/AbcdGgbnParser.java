@@ -18,6 +18,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
@@ -40,7 +41,6 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.OrderedTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author pplitzner

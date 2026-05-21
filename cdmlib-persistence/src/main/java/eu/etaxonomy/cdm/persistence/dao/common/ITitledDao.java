@@ -12,8 +12,8 @@ import java.util.List;
 
 import org.hibernate.criterion.Criterion;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author muellera

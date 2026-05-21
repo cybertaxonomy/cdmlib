@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
@@ -34,7 +35,6 @@ import eu.etaxonomy.cdm.persistence.dao.permission.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.permission.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
