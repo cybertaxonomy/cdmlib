@@ -618,6 +618,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                 logger.debug("createRestriction() " + propertyName + " is null ");
             }
             restriction = Restrictions.isNull(propertyName);
+        } else if (value instanceof EnumSet<?>) {
+            //in EnumSet restriction
+            if (logger.isDebugEnabled()) {
+                logger.debug("createRestriction() " + propertyName + " IN " + value.toString());
+            }
+            restriction = Restrictions.in(propertyName, (EnumSet<?>)value);
         } else if (matchMode == null || !(value instanceof String)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("createRestriction() " + propertyName + " = " + value.toString());
