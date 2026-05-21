@@ -129,9 +129,9 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public <S extends TaxonBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return list(type, restrictions, limit, start, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
+    public <S extends TaxonBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer pageSize,
+            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return list(type, restrictions, pageSize, pageNumber, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
     }
 
 

@@ -601,7 +601,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
                 MatchMode.BEGINNING, null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("1 misapplied name, no pro parte synonym should be returned.", 1, taxa.size());
         assertTrue("Pro parte should exist", existsInCollection(taxa, aus));
-
     }
 
     @Test

@@ -23,8 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.filter.Restriction;
+import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -175,9 +175,9 @@ public class TermTreeServiceImpl
     }
 
     @Override
-    public List<TermTree> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints,
+    public List<TermTree> list(TermType termType, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
-        return dao.list(null, buildTermTypeFilterRestrictions(termType), limit, start, orderHints, propertyPaths);
+        return dao.list(null, buildTermTypeFilterRestrictions(termType), pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override

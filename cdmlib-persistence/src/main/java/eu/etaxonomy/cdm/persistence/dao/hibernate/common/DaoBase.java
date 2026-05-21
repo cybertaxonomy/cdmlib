@@ -37,7 +37,6 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -225,14 +224,6 @@ public abstract class DaoBase {
                 query.setFirstResult(0);
             }
             query.setMaxResults(limit);
-        }
-    }
-
-    protected void addCriteria(Criteria criteria, List<Criterion> criterion) {
-        if(criterion != null) {
-            for(Criterion c : criterion) {
-                criteria.add(c);
-            }
         }
     }
 

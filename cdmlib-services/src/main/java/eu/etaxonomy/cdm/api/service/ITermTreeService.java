@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface ITermTreeService extends IIdentifiableEntityService<TermTree> {
 
-    public List<TermTree> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<TermTree> list(TermType termType, Integer pageSize, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     public Pager<TermTree> page(TermType termType, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
 
