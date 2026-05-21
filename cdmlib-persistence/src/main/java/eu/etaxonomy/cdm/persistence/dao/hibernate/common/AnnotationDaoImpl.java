@@ -98,11 +98,8 @@ public class AnnotationDaoImpl
             predicates.add(cb.equal(root.get("createdBy"), creator));
         }
 
-        cq.select(cb.countDistinct(root.get("id")));
-
-        if (!predicates.isEmpty()) {
-            cq.where(predicateAnd(cb, predicates));
-        }
+        cq.select(cb.countDistinct(root))
+           .where(predicateAnd(cb, predicates));
 
         return getSession().createQuery(cq).getSingleResult();
 	}

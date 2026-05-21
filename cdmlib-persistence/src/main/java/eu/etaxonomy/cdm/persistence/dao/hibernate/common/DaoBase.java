@@ -531,9 +531,13 @@ public abstract class DaoBase {
 
     /**
      * Creates a predicate which is an AND-predicate for all predicates
-     * in the list.
+     * in the list. If the list is <code>null</code> or empty, a predicate is returned
+     * which is always true.
      */
     protected Predicate predicateAnd(CriteriaBuilder cb, List<Predicate> predicates) {
+        if (CdmUtils.isNullSafeEmpty(predicates)) {
+            return cb.conjunction(); // always true predicate
+        }
         return cb.and(predicates.toArray(new Predicate[0]));
     }
 
