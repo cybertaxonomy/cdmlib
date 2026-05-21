@@ -10,8 +10,7 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.util.List;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -26,8 +25,8 @@ public interface ITitledDao<T extends CdmBase> {
 
 	public long countByTitle(String queryString);
 
-	public long countByTitle(String queryString, MatchMode matchMode, List<Criterion> criteria);
+	public long countByTitle(String queryString, MatchMode matchMode, List<EntityFilter<T>> filter);
 
-	public List<T> findByTitle(String queryString, MatchMode matchMode, int page, int pagesize, List<Criterion> criteria);
+	public List<T> findByTitle(String queryString, MatchMode matchMode, List<EntityFilter<T>> filter, int page, int pagesize);
 
 }

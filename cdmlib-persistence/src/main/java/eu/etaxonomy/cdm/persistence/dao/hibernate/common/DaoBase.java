@@ -42,6 +42,7 @@ import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -516,6 +517,7 @@ public abstract class DaoBase {
     protected <T extends CdmBase> Predicate predicateUuid(CriteriaBuilder builder,
             Path<T> path, UUID uuid) {
 
+        //see also CdmBaseFilter.getUuidPredicate()
         return builder.equal(path.get("uuid"), uuid);
     }
 
@@ -543,6 +545,38 @@ public abstract class DaoBase {
     protected Predicate predicateAnd(CriteriaBuilder cb, List<Predicate> predicates) {
         return cb.and(predicates.toArray(new Predicate[0]));
     }
+
+    protected <T> Predicate predicateFromFilter(List<EntityFilter<T>> filter,
+            CriteriaBuilder cb, Path<T> path) {
+        if (CdmUtils.isNullSafeEmpty(filter)) {
+            return null;
+        }
+        return filter.stream()
+            .map(f->f.toPredicate(path, cb))
+            .reduce(cb::and)
+            .orElse(null);
+    }
+
+    /**
+     * Creates a predicate that combines the given first predicate with
+     * the filter predicates.
+     */
+    protected <T> Predicate addPredicateFromFilter(Predicate firstPredicate, List<EntityFilter<T>> filter, CriteriaBuilder cb,
+            Path<T> root) {
+
+        Predicate filterPredicate = predicateFromFilter(filter, cb, root);
+        if (firstPredicate == null) {
+            if (filterPredicate == null) {
+                return cb.conjunction();  //always true predicate
+            }
+            return filterPredicate;
+        } else if (filterPredicate == null){
+            return firstPredicate;
+        } else {
+            return cb.and(firstPredicate, filterPredicate);
+        }
+    }
+
 
     /**
      * Shortcut to get a {@link CriteriaBuilder} from the current session.

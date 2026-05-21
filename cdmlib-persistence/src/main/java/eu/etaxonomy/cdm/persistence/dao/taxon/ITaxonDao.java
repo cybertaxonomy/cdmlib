@@ -15,8 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -157,18 +156,18 @@ public interface ITaxonDao
      *
      * @param uuid
      * 			The uuid of the taxon requested
-     * @param criteria
-     * 			Custom criteria to be added to the default list of applied criteria.
+     * @param filter
+     * 			Custom filter to be added to the default list of applied criteria.
      * @param propertyPaths
      *
      * @return
      */
-    public TaxonBase findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths);
+    public TaxonBase findByUuid(UUID uuid, List<EntityFilter<TaxonBase>> filter, List<String> propertyPaths);
 
     /**
      * Returns a list of Taxon entities corresponding to the given uuid list.
      */
-    public List<? extends TaxonBase> findByUuids(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths);
+    public List<? extends TaxonBase> findByUuids(List<UUID> uuids, List<EntityFilter<TaxonBase>> filter, List<String> propertyPaths);
 
     /**
      * @return A list of matching taxa

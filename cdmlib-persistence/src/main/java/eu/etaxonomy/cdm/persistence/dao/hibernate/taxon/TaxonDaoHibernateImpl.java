@@ -38,8 +38,6 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -54,6 +52,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -685,60 +684,43 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public TaxonBase findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths) {
+    public TaxonBase findByUuid(UUID uuid, List<EntityFilter<TaxonBase>> filter, List<String> propertyPaths) {
 
-        Criteria crit = getSession().createCriteria(type);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TaxonBase> cq = cb.createQuery(type);
+        Root<TaxonBase> root = cq.from(type);
 
-        if (uuid != null) {
-            crit.add(Restrictions.eq("uuid", uuid));
-        } else {
-            logger.warn("UUID is NULL");
-            return null;
-        }
-        if(criteria != null){
-            for (Criterion criterion : criteria) {
-                crit.add(criterion);
-            }
-        }
-        crit.addOrder(Order.asc("uuid"));
+        Predicate uuidPredicate = predicateUuid(cb, root, uuid);
+        Predicate predicate = addPredicateFromFilter(uuidPredicate, filter, cb, root);
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        List<? extends TaxonBase> results = crit.list();
-        if (results.size() == 1) {
-            defaultBeanInitializer.initializeAll(results, propertyPaths);
-            TaxonBase taxon = results.iterator().next();
-            return taxon;
-        } else if (results.size() > 1) {
-            logger.error("Multiple results for UUID: " + uuid);
-        } else if (results.size() == 0) {
-            logger.info("No results for UUID: " + uuid);
-        }
+        cq.select(root)
+          .distinct(true)
+          .where(predicate);
 
-        return null;
+        TaxonBase result = getSession().createQuery(cq).getSingleResult();
+        defaultBeanInitializer.initialize(result, propertyPaths);
+
+        return result;
     }
 
     @Override
-    public List<? extends TaxonBase> findByUuids(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths) {
+    public List<? extends TaxonBase> findByUuids(List<UUID> uuids, List<EntityFilter<TaxonBase>> filter, List<String> propertyPaths) {
 
-        Criteria crit = getSession().createCriteria(type);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TaxonBase> cq = cb.createQuery(type);
+        Root<TaxonBase> root = cq.from(type);
 
-        if (uuids != null) {
-            crit.add(Restrictions.in("uuid", uuids));
-        } else {
-            logger.warn("List<UUID> uuids is NULL");
-            return null;
-        }
-        if(criteria != null){
-            for (Criterion criterion : criteria) {
-                crit.add(criterion);
-            }
-        }
-        crit.addOrder(Order.asc("uuid"));
+        Predicate uuidsPredicate = predicateIn(root, "uuid", uuids);
+        Predicate predicate = addPredicateFromFilter(uuidsPredicate, filter, cb, root);
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        List<? extends TaxonBase> results = crit.list();
+        cq.select(root)
+          .distinct(true)  //TODO needed?
+          .where(predicate)
+          .orderBy(cb.asc(root.get("uuid")));
 
+        List<TaxonBase> results = getSession().createQuery(cq).getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
+
         return results;
     }
 

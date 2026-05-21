@@ -15,8 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -202,9 +201,9 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 *
 	 * @param queryString
 	 * @param matchMode
-	 * @param criteria
+	 * @param filter
 	 */
-	public long countNames(String queryString, MatchMode matchMode, List<Criterion> criteria);
+	public long countNames(String queryString, MatchMode matchMode, List<EntityFilter<TaxonName>> filter);
 
 	/**
 	 * Returns a List of TaxonName instances which nameCache matches the
@@ -223,54 +222,52 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 			Integer pageSize, Integer pageNumber);
 
 	public List<TaxonName> findByName(boolean doIncludeAuthors,
-	        String queryString,
-			MatchMode matchmode, Integer pageSize, Integer pageNumber,
-			List<Criterion> criteria, List<String> propertyPaths);
+	        String queryString, MatchMode matchmode,
+	        List<EntityFilter<TaxonName>> filter,
+	        Integer pageSize, Integer pageNumber,
+			List<String> propertyPaths);
 
 	public List<TaxonName> findByFullTitle(String queryString,
-			MatchMode matchmode, Integer pageSize, Integer pageNumber,
-			List<Criterion> criteria, List<String> propertyPaths);
+			MatchMode matchmode, List<EntityFilter<TaxonName>> filter,
+			Integer pageSize, Integer pageNumber,
+			List<String> propertyPaths);
 
     public List<TaxonName> findByTitle(String queryString,
-            MatchMode matchmode, Integer pageSize, Integer pageNumber,
-            List<Criterion> criteria, List<String> propertyPaths);
+            MatchMode matchmode, List<EntityFilter<TaxonName>> filter,
+            Integer pageSize, Integer pageNumber,
+            List<String> propertyPaths);
 
 	/**
 	 * Returns a taxon name corresponding to the given uuid
 	 *
 	 * @param uuid
 	 * 			The uuid of the taxon name requested
-	 * @param criteria
-	 * 			Custom criteria to be added to the default list of applied criteria.
+	 * @param filter
+	 *          An additional filter. Can be null or empty if no additional filtering is needed.
 	 * @param propertyPaths
 	 *
 	 * @return
 	 */
-	public TaxonName findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths);
+	public TaxonName findByUuid(UUID uuid, List<EntityFilter<TaxonName>> filter, List<String> propertyPaths);
 
 	/**
 	 * @param queryString
 	 * @param matchmode
-	 * @param criteria
+	 * @param filter
 	 * @return
 	 */
 	public Integer countByName(String queryString,
-			MatchMode matchmode, List<Criterion> criteria);
+			MatchMode matchmode, List<EntityFilter<TaxonName>> filter);
 
 	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern);
 
 	public List<TaxonName> findByName(Class<TaxonName> clazz, String queryString,
-	        MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber,
+	        MatchMode matchmode, List<EntityFilter<TaxonName>> filter,
+	        Integer pageSize, Integer pageNumber,
 	        List<OrderHint> orderHints,	List<String> propertyPaths);
 
-	/**
-	 * @param clazz
-	 * @param queryString
-	 * @param matchmode
-	 * @param criteria
-	 * @return
-	 */
-	public long countByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public long countByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
+	        List<EntityFilter<TaxonName>> filter);
 
 	public TaxonName findZoologicalNameByUUID(UUID uuid);
 
@@ -341,7 +338,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     public long countByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
-            List<Criterion> criteria);
+            List<EntityFilter<TaxonName>> filter);
 
     /**
      * Returns a list of distinct {@link String}s containing all values for TaxonName.genusOrUninomial

@@ -15,10 +15,10 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
@@ -56,14 +56,14 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoBaseImpl<Primer> imple
     }
 
     @Override
-    public long countByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria) {
-        return countByParam(Primer.class, "label", queryString, matchmode, criteria);
+    public long countByTitle(String queryString, MatchMode matchmode, List<EntityFilter<Primer>> filter) {
+        return countByParam(Primer.class, "label", queryString, matchmode, filter);
     }
 
     @Override
-    public List<Primer> findByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria,
+    public List<Primer> findByTitle(String queryString, MatchMode matchmode, List<EntityFilter<Primer>> filter,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return findByParam(Primer.class, "label", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+        return findByParam(Primer.class, "label", queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override

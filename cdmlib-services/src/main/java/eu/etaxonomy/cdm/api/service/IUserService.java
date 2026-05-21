@@ -11,13 +11,13 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -35,10 +35,10 @@ public interface IUserService
      *
      * @param queryString the query string to filter by
      * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-     * @param criteria additional criteria to filter by
      * @param pageSize The maximum number of objects returned (can be null for all objects)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
+     * @param filter a filter defining predicates
      * @param orderHints
      *            Supports path like <code>orderHints.propertyNames</code> which
      *            include *-to-one properties like createdBy.username or
@@ -47,7 +47,8 @@ public interface IUserService
      *
      * @see {@link IIdentifiableEntityService#listByTitle(Class, String, MatchMode, List, Integer, Integer, List, List)}
      */
-    public List<User> listByUsername(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<User> listByUsername(String queryString, MatchMode matchmode, List<EntityFilter<User>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Make new password salt, encode and set it

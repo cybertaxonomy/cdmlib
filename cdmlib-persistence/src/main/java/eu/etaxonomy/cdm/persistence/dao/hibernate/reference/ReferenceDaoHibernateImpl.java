@@ -23,13 +23,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.query.Query;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -414,11 +414,12 @@ public class ReferenceDaoHibernateImpl
     }
 
     @Override
-    public List<Reference> findByTitleAndAbbrevTitle(Class clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public List<Reference> findByTitleAndAbbrevTitle(String queryString, MatchMode matchmode, List<EntityFilter<Reference>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Set<String> params = new HashSet<>();
         params.add("titleCache");
         params.add("abbrevTitleCache");
-
-        return findByParam(clazz, params, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+        Class<Reference> clazz = this.type;
+        return findByParam(clazz, params, queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
     }
 }

@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.hibernate.NonUniqueResultException;
-import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
@@ -37,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
@@ -279,12 +279,13 @@ public class UserService
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> listByUsername(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-         long numberOfResults = dao.countByUsername(queryString, matchmode, criteria);
+    public List<User> listByUsername(String queryString, MatchMode matchmode, List<EntityFilter<User>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+         long numberOfResults = dao.countByUsername(queryString, matchmode, filter);
 
          List<User> results = new ArrayList<>();
          if(numberOfResults > 0) {
-                results = dao.findByUsername(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+                results = dao.findByUsername(queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
          }
          return results;
     }

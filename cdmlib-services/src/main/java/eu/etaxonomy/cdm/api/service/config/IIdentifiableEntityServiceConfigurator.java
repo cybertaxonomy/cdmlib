@@ -11,8 +11,7 @@ package eu.etaxonomy.cdm.api.service.config;
 import java.io.Serializable;
 import java.util.List;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
@@ -48,8 +47,8 @@ public interface IIdentifiableEntityServiceConfigurator<T extends IIdentifiableE
 	public Integer getPageNumber();
 	public void setPageNumber(Integer pageNumber);
 
-	public List<Criterion> getCriteria();
-    public void setCriteria(List<Criterion> criteria);
+	public List<EntityFilter<T>> getEntityFilters();
+    public void setEntityFilter(List<EntityFilter<T>> entityFilters);
 
 	public List<Restriction<?>> getRestrictions();
 	public void setRestrictions(List<Restriction<?>> restrictions);

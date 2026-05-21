@@ -30,11 +30,11 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
-import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
@@ -910,27 +910,28 @@ public class NameServiceImpl
     }
 
     @Override
-    public Pager<TaxonName> findByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria,
-            Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
-         Long numberOfResults = dao.countByName(clazz, queryString, matchmode, criteria);
+    public Pager<TaxonName> findByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
+            List<EntityFilter<TaxonName>> filter, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-         List<TaxonName> results = new ArrayList<>();
-         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-                results = dao.findByName(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
-         }
+        Long numberOfResults = dao.countByName(clazz, queryString, matchmode, filter);
 
-         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
+        List<TaxonName> results = new ArrayList<>();
+        if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+               results = dao.findByName(clazz, queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
+        }
+
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
-    public List<TaxonName> findByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria,
-            Integer pageSize,Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public List<TaxonName> findByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
+            List<EntityFilter<TaxonName>> filter, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-         Long numberOfResults = dao.countByFullTitle(clazz, queryString, matchmode, criteria);
+         Long numberOfResults = dao.countByFullTitle(clazz, queryString, matchmode, filter);
 
          List<TaxonName> results = new ArrayList<>();
          if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-                results = dao.findByFullTitle(queryString, matchmode, pageSize, pageNumber, criteria, propertyPaths);
+                results = dao.findByFullTitle(queryString, matchmode, filter, pageSize, pageNumber, propertyPaths);
          }
 
          return results;

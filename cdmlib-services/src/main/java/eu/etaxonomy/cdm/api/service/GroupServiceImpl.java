@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.ObjectDeletedException;
-import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -196,12 +196,14 @@ public class GroupServiceImpl
 
     @Override
     @Transactional(readOnly = true)
-    public List<Group> listByName(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-         long numberOfResults = dao.countByName(queryString, matchmode, criteria);
+    public List<Group> listByName(String queryString,MatchMode matchmode, List<EntityFilter<Group>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        long numberOfResults = dao.countByName(queryString, matchmode, filter);
 
          List<Group> results = new ArrayList<>();
          if(numberOfResults > 0) {
-                results = dao.findByName(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+                results = dao.findByName(queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
          }
          return results;
     }

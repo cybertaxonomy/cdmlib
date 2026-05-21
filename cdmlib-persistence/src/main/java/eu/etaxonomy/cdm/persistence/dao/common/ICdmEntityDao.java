@@ -16,9 +16,9 @@ import java.util.UUID;
 
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.springframework.dao.DataAccessException;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -270,8 +270,6 @@ public interface ICdmEntityDao<T extends CdmBase> {
      *      <b>NOTE:</b> For non string type properties you must use
      *      {@link MatchMode#EXACT}. If matchMode is <code>null</code> {@link MatchMode#EXACT} will be used
      *      as default.
-     * @param criteria
-     *       The list of criterion objects representing the restriction to be applied.
      *
      * @return
      */
@@ -457,13 +455,14 @@ public interface ICdmEntityDao<T extends CdmBase> {
 
     public long countByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions);
 
-    public long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion);
+    public <S extends T> long countByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<EntityFilter<S>> filter);
 
-    public <S extends T> List<S> findByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber,
+    public <S extends T> List<S> findByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<EntityFilter<S>> entityFilters,
+            Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
     public <S extends T> List<S> findByParam(Class<S> clazz, Set<String> params, String queryString, MatchMode matchmode,
-            List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<EntityFilter<S>> entityFilters, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
 
 }

@@ -15,10 +15,10 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
@@ -66,13 +66,13 @@ public class AmplificationDaoHibernateImpl
     }
 
     @Override
-    public long countByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria) {
-        return countByParam(Amplification.class, "labelCache", queryString, matchmode, criteria);
+    public long countByTitle(String queryString, MatchMode matchmode, List<EntityFilter<Amplification>> filter) {
+        return countByParam(Amplification.class, "labelCache", queryString, matchmode, filter);
     }
 
     @Override
-    public List<Amplification> findByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria,
+    public List<Amplification> findByTitle(String queryString, MatchMode matchmode, List<EntityFilter<Amplification>> filter,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return findByParam(Amplification.class, "labelCache", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+        return findByParam(Amplification.class, "labelCache", queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
     }
 }

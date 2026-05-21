@@ -36,6 +36,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.common.SetMap;
@@ -149,9 +150,11 @@ public class DefinedTermDaoImpl
 	}
 
 	@Override
-    public List<DefinedTermBase> findByTitle(String queryString, MatchMode matchMode, int page, int pagesize, List<Criterion> criteria) {
-		//FIXME is query parameterized?
-		checkNotInPriorView("DefinedTermDaoImpl.findByTitle(String queryString, ITitledDao.MATCH_MODE matchMode, int page, int pagesize, List<Criterion> criteria)");
+    public List<DefinedTermBase> findByTitle(String queryString, MatchMode matchMode, List<EntityFilter<DefinedTermBase>> filter,
+            int page, int pagesize) {
+
+	    //FIXME is query parameterized?
+		checkNotInPriorView("DefinedTermDaoImpl.findByTitle(String queryString, ITitledDao.MATCH_MODE matchMode, List<EntityFilter<DefinedTermBase>> filter, int page, int pagesize)");
 		Criteria crit = getSession().createCriteria(type);
 		crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
 		crit.setMaxResults(pagesize);

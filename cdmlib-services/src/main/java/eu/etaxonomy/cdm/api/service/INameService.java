@@ -18,8 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
@@ -499,7 +498,7 @@ public interface INameService
 	 * @return a paged list of instances of type T matching the queryString
 	 */
     public Pager<TaxonName> findByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
-            List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+            List<EntityFilter<TaxonName>> filter, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns a homotypical group with the given UUID or null if not homotypical group exists with that UUID
@@ -547,7 +546,7 @@ public interface INameService
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 
     public List<TaxonName> findByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
-            List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<EntityFilter<TaxonName>> filter, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
 
 

@@ -15,11 +15,11 @@ import static org.junit.Assert.assertNotNull;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import org.hibernate.criterion.Criterion;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.persistence.dao.permission.IGroupDao;
@@ -44,12 +44,12 @@ public class GroupDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	public void findByName(){
 		String queryString = "Admins";
 		MatchMode matchmode = MatchMode.ANYWHERE;
-		List<Criterion> criteria = null;
+		List<EntityFilter<Group>> filter = null;
 		Integer pageSize = null;
 		Integer pageNumber = null;
 		List<OrderHint> orderHints = null;
 		List<String> propertyPaths = null;
-		List<Group> list = groupDao.findByName(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+		List<Group> list = groupDao.findByName(queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
 
 		assertNotNull("A list should be returned", list);
 		assertEquals("2 groups should be returned", 2, list.size());

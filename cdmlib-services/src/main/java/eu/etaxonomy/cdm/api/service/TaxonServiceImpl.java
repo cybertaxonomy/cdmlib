@@ -35,12 +35,12 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.grouping.TopGroups;
 import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.util.BytesRef;
-import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.dto.TaxonFindDto;
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
@@ -1027,7 +1027,7 @@ public class TaxonServiceImpl
 
             List<TaxonName> names =
                 nameDao.findByName(configurator.isDoIncludeAuthors(), configurator.getTitleSearchStringSqlized(), configurator.getMatchMode(),
-                        configurator.getPageSize(), configurator.getPageNumber(), null, configurator.getTaxonNamePropertyPath());
+                        null, configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonNamePropertyPath());
             if (logger.isDebugEnabled()) { logger.debug(names.size() + " matching name(s) found"); }
             if (names.size() > 0) {
                 for (TaxonName taxonName : names) {
@@ -1739,19 +1739,21 @@ public class TaxonServiceImpl
 
     @Transactional(readOnly = true)
     @Override
-    public <S extends TaxonBase> Pager<S> findByTitle(Class<S> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
+    public <S extends TaxonBase> Pager<S> findByTitle(Class<S> clazz, String queryString, MatchMode matchmode, List<EntityFilter<S>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, filter);
         //check whether there are doubtful taxa matching
-        long numberOfResults_doubtful = dao.countByTitle(clazz, "?".concat(queryString), matchmode, criteria);
+        long numberOfResults_doubtful = dao.countByTitle(clazz, "?".concat(queryString), matchmode, filter);
         List<S> results = new ArrayList<>();
         if(numberOfResults > 0 || numberOfResults_doubtful > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
                if (numberOfResults > 0){
-                   results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+                   results = dao.findByTitle(clazz, queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
                }else{
                    results = new ArrayList<>();
                }
                if (numberOfResults_doubtful > 0){
-                   results.addAll(dao.findByTitle(clazz, "?".concat(queryString), matchmode,  criteria, pageSize, pageNumber, orderHints, propertyPaths));
+                   results.addAll(dao.findByTitle(clazz, "?".concat(queryString), matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths));
                }
         }
         Collections.sort(results, new TaxonComparator());

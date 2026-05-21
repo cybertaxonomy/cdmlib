@@ -34,7 +34,6 @@ import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Example.PropertySelector;
 import org.hibernate.criterion.LogicalExpression;
@@ -53,6 +52,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.util.ReflectionUtils;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.filter.Restriction.Operator;
@@ -923,91 +923,65 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
      */
     @Override
     public <S extends T> List<S> findByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode,
-            List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<EntityFilter<S>> entityFilters, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
+
         Set<String> stringSet = new HashSet<>();
         stringSet.add(param);
         return this.findByParam(clazz, stringSet, queryString, matchmode,
-                criterion, pageSize, pageNumber, orderHints,
+                entityFilters, pageSize, pageNumber, orderHints,
                 propertyPaths);
     }
 
     @Override
     public <S extends T> List<S> findByParam(Class<S> clazz, Set<String> params, String queryString, MatchMode matchmode,
-            List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<EntityFilter<S>> filter, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
 
-        Criteria criteria = criterionForType(clazz);
+        clazz = clazz == null ? (Class<S>)type : clazz;
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<S> cq = cb.createQuery(clazz);
+        Root<S> root = cq.from(clazz);
 
+        Predicate predicate = null;
         if (queryString != null) {
-            Set<Criterion> criterions = new HashSet<>();
-            for (String param: params){
-                Criterion crit;
-                if (matchmode == null) {
-                     crit = Restrictions.ilike(param, queryString);
-                } else if (matchmode == MatchMode.BEGINNING) {
-                     crit = Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.START);
-                } else if (matchmode == MatchMode.END) {
-                    crit = Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.END);
-                } else if (matchmode == MatchMode.EXACT) {
-                    crit = Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.EXACT);
-                } else {
-                    crit = Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.ANYWHERE);
-                }
-                criterions.add(crit);
-            }
-            if (criterions.size()>1){
-                Iterator<Criterion> critIterator = criterions.iterator();
-                Disjunction disjunction = Restrictions.disjunction();
-                while (critIterator.hasNext()){
-                    disjunction.add(critIterator.next());
-                }
-                criteria.add(disjunction);
-            }else{
-                if (!criterions.isEmpty()){
-                    criteria.add(criterions.iterator().next());
-                }
+            for (String param : params){
+                Predicate paramPredicate = predicateForMatchMode(param, queryString, matchmode, cb, root, true);
+                //OR
+                predicate = predicate == null ? paramPredicate :  cb.or(predicate, paramPredicate);
             }
         }
+        predicate = addPredicateFromFilter(predicate, filter, cb, root);
 
-        addCriteria(criteria, criterion);
+        cq.select(root)
+          .where(predicate)
+          .orderBy(ordersFrom(cb, root, orderHints));
 
-        addPageSizeAndNumber(criteria, pageSize, pageNumber);
-        addOrder(criteria, orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
-        return result;
+        List<S> results = addPageSizeAndNumber(
+               getSession().createQuery(cq), pageSize, pageNumber)
+              .getResultList();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
     }
 
     @Override
-    public long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
-            List<Criterion> criterion) {
+    public <S extends T> long countByParam(Class<S> clazz, String param, String queryString,
+            MatchMode matchmode, List<EntityFilter<S>> filter) {
 
-        Criteria criteria = null;
-
-        criteria = criterionForType(clazz);
-
+        clazz = clazz == null ? (Class<S>)type : clazz;
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<S> root = cq.from(clazz);
+        Predicate predicate = null;
         if (queryString != null) {
-            if (matchmode == null) {
-                criteria.add(Restrictions.ilike(param, queryString));
-            } else if (matchmode == MatchMode.BEGINNING) {
-                criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.START));
-            } else if (matchmode == MatchMode.END) {
-                criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.END));
-            } else if (matchmode == MatchMode.EXACT) {
-                criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.EXACT));
-            } else {
-                criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.ANYWHERE));
-            }
+            predicate = predicateForMatchMode(param, queryString, matchmode, cb, root, true);
         }
+        predicate = addPredicateFromFilter(predicate, filter, cb, root);
 
-        addCriteria(criteria, criterion);
+        cq.select(cb.countDistinct(root.get("id")))
+          .where(predicate);
 
-        criteria.setProjection(Projections.rowCount());
-
-        return (Long) criteria.uniqueResult();
+        return getSession().createQuery(cq).getSingleResult();
     }
 
     /**
@@ -1083,6 +1057,40 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         Criteria criteria = createCriteria(clazz, allRestrictions, true);
 
         return (Long) criteria.uniqueResult();
+    }
+
+
+    protected <S extends T> Predicate predicateForMatchMode(String param,
+            String queryString, MatchMode matchMode,
+            CriteriaBuilder cb, Root<S> root, boolean ignoreCase) {
+
+        Predicate result;
+        if (ignoreCase) {
+            String lowerQueryString = queryString == null ? "" : queryString.toLowerCase();
+            if (matchMode == null) {
+                result = cb.like(cb.lower(root.get(param)), lowerQueryString);
+            } else if (matchMode == MatchMode.EXACT) {
+                result = cb.equal(cb.lower(root.get(param)), lowerQueryString);
+            } else if (matchMode == MatchMode.BEGINNING || matchMode == MatchMode.END
+                    || matchMode == MatchMode.ANYWHERE || matchMode == MatchMode.LIKE) {
+                result = cb.like(cb.lower(root.get(param)), matchMode.queryStringFrom(lowerQueryString));
+            } else {
+                throw new RuntimeException("Unsupported MatchMode: " + matchMode.name());
+            }
+        }else {
+            String lowerQueryString = queryString == null ? "" : queryString;
+            if (matchMode == null) {
+                result = cb.like(root.get(param), lowerQueryString);
+            } else if (matchMode == MatchMode.EXACT) {
+                result = cb.equal(root.get(param), lowerQueryString);
+            } else if (matchMode == MatchMode.BEGINNING || matchMode == MatchMode.END
+                    || matchMode == MatchMode.ANYWHERE || matchMode == MatchMode.LIKE) {
+                result = cb.like(root.get(param), matchMode.queryStringFrom(lowerQueryString));
+            } else {
+                throw new RuntimeException("Unsupported MatchMode: " + matchMode.name());
+            }
+        }
+        return result;
     }
 
     @Override

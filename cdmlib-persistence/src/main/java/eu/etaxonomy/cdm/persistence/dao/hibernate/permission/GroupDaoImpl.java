@@ -12,10 +12,10 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.permission;
 import java.util.List;
 
 import org.hibernate.Hibernate;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
@@ -63,12 +63,13 @@ public class GroupDaoImpl extends CdmEntityDaoBase<Group> implements IGroupDao {
 	}
 
 	@Override
-    public long countByName(String queryString,	MatchMode matchmode, List<Criterion> criterion) {
-		return countByParam(type, "name",queryString,matchmode,criterion);
+    public long countByName(String queryString, MatchMode matchmode, List<EntityFilter<Group>> filter) {
+		return countByParam(type, "name", queryString, matchmode, filter);
 	}
 
 	@Override
-    public List<Group> findByName(String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		return findByParam(type, "name", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+    public List<Group> findByName(String queryString, MatchMode matchmode, List<EntityFilter<Group>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		return findByParam(type, "name", queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
 	}
 }

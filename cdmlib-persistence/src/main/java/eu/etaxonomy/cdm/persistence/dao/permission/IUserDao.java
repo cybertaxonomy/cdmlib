@@ -11,8 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.permission;
 
 import java.util.List;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
@@ -44,7 +43,7 @@ public interface IUserDao extends ICdmEntityDao<User> {
      * @par@Override
     am queryString the query string to filter by
      * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-     * @param criteria extra restrictions to apply
+     * @param filter optional filters to apply to the query (can be null or empty)
      * @param pageSize The maximum number of rights returned (can be null for all rights)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
@@ -55,7 +54,8 @@ public interface IUserDao extends ICdmEntityDao<User> {
      * @return a List of instances of User matching the queryString
      * @see {@link IIdentifiableDao#findByTitle(Class, String, MatchMode, List, Integer, Integer, List, List)}
      */
-    public List<User> findByUsername(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<User> findByUsername(String queryString, MatchMode matchmode, List<EntityFilter<User>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Return a count of users matching the given query string in the username, optionally filtered by class, optionally with a particular MatchMode
@@ -63,12 +63,11 @@ public interface IUserDao extends ICdmEntityDao<User> {
      * @param clazz filter by class - can be null to include all instances of type T
      * @param queryString the query string to filter by
      * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-     * @param criteria extra restrictions to apply
      * @return a count of instances of type User matching the queryString
      *
      * @see {@link IIdentifiableDao#countByTitle(Class, String, MatchMode, List)}
      */
-    public long countByUsername(String queryString, MatchMode matchmode, List<Criterion> criteria);
+    public long countByUsername(String queryString, MatchMode matchmode, List<EntityFilter<User>> filter);
 
     /**
      * Checks if the <code>username</code> exists in the database.

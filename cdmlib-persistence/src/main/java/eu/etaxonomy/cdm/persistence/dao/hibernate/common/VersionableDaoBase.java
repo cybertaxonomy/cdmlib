@@ -15,11 +15,11 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.envers.query.criteria.AuditCriterion;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -78,9 +78,9 @@ public abstract class VersionableDaoBase<T extends VersionableEntity>
 	}
 
     @Override
-    public <S extends T> List<S> findByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <S extends T> List<S> findByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<EntityFilter<S>> filter, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
     	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-    	return super.findByParam(clazz, param, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+    	return super.findByParam(clazz, param, queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
@@ -386,9 +386,9 @@ public abstract class VersionableDaoBase<T extends VersionableEntity>
 	}
 
 	@Override
-	public long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
+	public <S extends T> long countByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<EntityFilter<S>> filter) {
     	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-    	return super.countByParam(clazz, param, queryString, matchmode, criterion);
+    	return super.countByParam(clazz, param, queryString, matchmode, filter);
 	}
 
 	@Override
