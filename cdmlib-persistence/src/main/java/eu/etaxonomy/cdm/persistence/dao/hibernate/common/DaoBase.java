@@ -451,6 +451,18 @@ public abstract class DaoBase {
         return builder.equal(path.get(field), str);
     }
 
+    /**
+     * Returns a {@link Predicate} that compares a string and returns always true
+     * if the string is null.
+     */
+    protected <T extends CdmBase> Predicate predicateStrIfNotNull(CriteriaBuilder builder,
+            Path<T> path, String field, String str) {
+        if (str == null){
+            return builder.conjunction();  //always true predicate
+        }
+        return builder.equal(path.get(field), str);
+    }
+
     protected <T extends CdmBase> Predicate predicateLike(CriteriaBuilder builder,
             Path<T> path, String field, String pattern) {
 
@@ -466,6 +478,14 @@ public abstract class DaoBase {
     protected <T extends CdmBase> Predicate predicateEqual(CriteriaBuilder builder,
             Path<T> path, String field, Object obj) {
 
+        return builder.equal(path.get(field), obj);
+    }
+
+    protected <T extends CdmBase> Predicate predicateEqualIfNotNull(CriteriaBuilder builder,
+            Path<T> path, String field, Object obj) {
+        if (obj == null){
+            return builder.conjunction();  //always true predicate
+        }
         return builder.equal(path.get(field), obj);
     }
 

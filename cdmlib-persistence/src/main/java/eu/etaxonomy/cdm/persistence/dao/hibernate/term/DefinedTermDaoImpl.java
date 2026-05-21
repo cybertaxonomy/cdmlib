@@ -348,19 +348,18 @@ public class DefinedTermDaoImpl
     public long count(NamedAreaLevel level, NamedAreaType type) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Criteria criteria = getCriteria(NamedArea.class);
 
-		    if(level != null) {
-			    criteria.add(Restrictions.eq("level",level));
-		    }
+	        CriteriaBuilder cb = getCriteriaBuilder();
+	        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+	        Root<NamedArea> root = cq.from(NamedArea.class);
 
-		    if(type != null) {
-			    criteria.add(Restrictions.eq("type", type));
-		    }
+	        List<Predicate> predicates = namedAreaLevelAndTypePredicate(level, type, cb, root);
 
-		    criteria.setProjection(Projections.rowCount());
+	        cq.select(cb.countDistinct(root))
+	          .where(predicateAnd(cb, predicates));
 
-	        return (Long)criteria.uniqueResult();
+	        return getSession().createQuery(cq).getSingleResult();
+
 		} else {
 			AuditQuery query = makeAuditQuery(NamedArea.class, auditEvent);
 
@@ -413,18 +412,23 @@ public class DefinedTermDaoImpl
 
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if (auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Criteria criteria = getCriteria(NamedArea.class);
 
-			if (level != null) {
-				criteria.add(Restrictions.eq("level", level));
-			}
-			if (type != null) {
-				criteria.add(Restrictions.eq("type", type));
-			}
-			addOrder(criteria,orderHints);
-			addPageSizeAndNumber(criteria, pageSize, pageNumber);
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<NamedArea> cq = cb.createQuery(NamedArea.class);
+            Root<NamedArea> root = cq.from(NamedArea.class);
 
-			result = deduplicateResult(criteria.list());
+            List<Predicate> predicates = namedAreaLevelAndTypePredicate(level, type, cb, root);
+
+            cq.select(root)
+              .distinct(true)
+              .where(predicateAnd(cb, predicates))
+              .orderBy(ordersFrom(cb, root, orderHints));
+
+            List<NamedArea> results = addPageSizeAndNumber(
+                    getSession().createQuery(cq), pageSize, pageNumber)
+                   .getResultList();
+           defaultBeanInitializer.initializeAll(results, propertyPaths);
+           return deduplicateResult(results);
 
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NamedArea.class,
@@ -442,6 +446,15 @@ public class DefinedTermDaoImpl
 
 		return result;
 	}
+
+    private List<Predicate> namedAreaLevelAndTypePredicate(NamedAreaLevel level, NamedAreaType type, CriteriaBuilder cb,
+            Root<NamedArea> root) {
+        List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(predicateEqualIfNotNull(cb, root, "level", level));
+        predicates.add(predicateEqualIfNotNull(cb, root, "type", type));
+        return predicates;
+    }
 
 
 	@Override

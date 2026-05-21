@@ -752,14 +752,18 @@ public class TaxonDaoHibernateImpl
     public long countSynonyms(Taxon taxon, SynonymType type) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getCriteria(Synonym.class);
 
-            criteria.add(Restrictions.eq("acceptedTaxon", taxon));
-            if(type != null) {
-                criteria.add(Restrictions.eq("type", type));
-            }
-            criteria.setProjection(Projections.rowCount());
-            return (Long)criteria.uniqueResult();
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+            Root<Synonym> root = cq.from(Synonym.class);
+
+            List<Predicate> predicates = getSynonymsPredicates(taxon, type, cb, root);
+
+            cq.select(cb.count(root))
+              .where(predicateAnd(cb, predicates));
+
+            return getSession().createQuery(cq).getSingleResult();
+
         } else {
             AuditQuery query = makeAuditQuery(Synonym.class, auditEvent);
             query.add(AuditEntity.relatedId("acceptedTaxon").eq(taxon.getId()));
@@ -773,30 +777,12 @@ public class TaxonDaoHibernateImpl
         }
     }
 
-    @Override
-    public long countSynonyms(Synonym synonym, SynonymType type) {
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getCriteria(Synonym.class);
-
-            criteria.add(Restrictions.isNotNull("acceptedTaxon"));
-            if(type != null) {
-                criteria.add(Restrictions.eq("type", type));
-            }
-
-            criteria.setProjection(Projections.rowCount());
-            return (Long)criteria.uniqueResult();
-        } else {
-            AuditQuery query = makeAuditQuery(Synonym.class,auditEvent);
-            query.add(new NotNullAuditExpression(null, new EntityPropertyName("acceptedTaxon")));
-            query.addProjection(AuditEntity.id().count());
-
-            if(type != null) {
-                query.add(AuditEntity.property("type").eq(type));
-            }
-
-            return (Long)query.getSingleResult();
-        }
+    private List<Predicate> getSynonymsPredicates(Taxon taxon, SynonymType type, CriteriaBuilder cb,
+            Root<Synonym> root) {
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(predicateEqual(cb, root, "acceptedTaxon", taxon));
+        predicates.add(predicateEqualIfNotNull(cb, root, "type", type));
+        return predicates;
     }
 
     @Override
@@ -1081,29 +1067,23 @@ public class TaxonDaoHibernateImpl
     public List<Synonym> getSynonyms(Taxon taxon, SynonymType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(Synonym.class);
 
-            criteria.add(Restrictions.eq("acceptedTaxon", taxon));
-            if(type != null) {
-                criteria.add(Restrictions.eq("type", type));
-            }
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<Synonym> cq = cb.createQuery(Synonym.class);
+            Root<Synonym> root = cq.from(Synonym.class);
 
-            addOrder(criteria,orderHints);
+            List<Predicate> predicates = getSynonymsPredicates(taxon, type, cb, root);
 
-            if(pageSize != null) {
-                criteria.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    criteria.setFirstResult(pageNumber * pageSize);
-                } else {
-                    criteria.setFirstResult(0);
-                }
-            }
+            cq.select(root)
+              .where(predicateAnd(cb, predicates))
+              .orderBy(ordersFrom(cb, root, orderHints));
 
-            @SuppressWarnings("unchecked")
-            List<Synonym> result = criteria.list();
-            defaultBeanInitializer.initializeAll(result, propertyPaths);
+            List<Synonym> results = addPageSizeAndNumber(
+                    getSession().createQuery(cq), pageSize, pageNumber)
+                   .getResultList();
+            defaultBeanInitializer.initializeAll(results, propertyPaths);
+            return results;
 
-            return result;
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Synonym.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId("acceptedTaxon").eq(taxon.getId()));
@@ -1793,21 +1773,27 @@ public class TaxonDaoHibernateImpl
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Criteria criteria = getCriteria(TaxonRelationship.class);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TaxonRelationship> cq = cb.createQuery(TaxonRelationship.class);
+        Root<TaxonRelationship> root = cq.from(TaxonRelationship.class);
+
+        List<Predicate> predicates = new ArrayList<>();
         if (types != null) {
-            if (types.isEmpty()){
+            if (types.isEmpty()) {
                 return new ArrayList<>();
-            }else{
-                criteria.add(Restrictions.in("type", types) );
+            } else {
+                predicates.add(predicateIn(root, "type", types));
             }
         }
-        addOrder(criteria,orderHints);
-        addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
-        @SuppressWarnings("unchecked")
-        List<TaxonRelationship> results = criteria.list();
+        cq.select(root)
+          .where(predicateAnd(cb, predicates))
+          .orderBy(ordersFrom(cb, root, orderHints));
+
+        List<TaxonRelationship> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
-
         return results;
     }
 
