@@ -11,7 +11,6 @@ import org.hibernate.internal.util.StringHelper;
 
 import eu.etaxonomy.cdm.persistence.common.OperationNotSupportedInPriorViewException;
 
-
 public class NativeSqlOrderHint extends OrderHint {
 
     private static final long serialVersionUID = 5209803557532593413L;
@@ -40,7 +39,6 @@ public class NativeSqlOrderHint extends OrderHint {
 			this.nativeSQL = nativeSQL;
 			this.ascending = ascending;
 		}
-
 
 		@Override
 		public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
