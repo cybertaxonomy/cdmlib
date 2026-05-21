@@ -98,17 +98,6 @@ public interface IDefinedTermDao
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @return a List of named areas
 	 */
-	public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber);
-
-	/**
-	 * @param level
-	 * @param type
-	 * @param pageSize
-	 * @param pageNumber
-	 * @param orderHints
-	 * @param propertyPaths
-	 * @return
-	 */
 	public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,  List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**

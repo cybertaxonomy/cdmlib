@@ -25,7 +25,7 @@ public class GroupByDate extends Grouping {
 
 	private Resolution resolution;
 
-	public GroupByDate(String propertyPath,String name, SortOrder order,Resolution resolution) {
+	public GroupByDate(String propertyPath, String name, SortOrder order, Resolution resolution) {
 		super(propertyPath, name, null, order);
 		this.resolution = resolution;
 	}
@@ -177,8 +177,5 @@ public class GroupByDate extends Grouping {
 
 			return stringBuffer.toString();
 		}
-
-
-
 	}
 }

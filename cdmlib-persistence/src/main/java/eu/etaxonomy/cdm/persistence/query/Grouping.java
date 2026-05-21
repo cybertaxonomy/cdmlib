@@ -16,6 +16,7 @@ import org.hibernate.criterion.Property;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 public class Grouping {
+
 	private String associatedObject;
 	private String associatedObjectAlias;
 	private String propertyName;
@@ -71,9 +72,9 @@ public class Grouping {
 
 	public void addProjection(ProjectionList projectionList) {
 		if(associatedObjectAlias != null) {
-		    projectionList.add(Property.forName(associatedObjectAlias + "." + propertyName).group(),name);
+		    projectionList.add(Property.forName(associatedObjectAlias + "." + propertyName).group(), name);
 		} else {
-			projectionList.add(Property.forName(propertyName).group(),name);
+			projectionList.add(Property.forName(propertyName).group(), name);
 		}
 	}
 }

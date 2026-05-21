@@ -406,42 +406,6 @@ public class DefinedTermDaoImpl
 	}
 
 	@Override
-    public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber) {
-		AuditEvent auditEvent = getAuditEventFromContext();
-		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getCriteria(NamedArea.class);
-
-		    if(level != null) {
-			    criteria.add(Restrictions.eq("level",level));
-		    }
-
-		    if(type != null) {
-			    criteria.add(Restrictions.eq("type", type));
-		    }
-
-		    addPageSizeAndNumber(criteria, pageSize, pageNumber);
-
-	        @SuppressWarnings("unchecked")
-	        List<NamedArea> result = deduplicateResult(criteria.list());
-	        return result;
-		} else {
-            AuditQuery query = makeAuditQuery(NamedArea.class, auditEvent);
-
-			if(level != null) {
-				query.add(AuditEntity.relatedId("level").eq(level.getId()));
-		    }
-
-		    if(type != null) {
-		    	query.add(AuditEntity.relatedId("type").eq(type.getId()));
-		    }
-
-		    @SuppressWarnings("unchecked")
-            List<NamedArea> result = deduplicateResult(query.getResultList());
-		    return result;
-		}
-	}
-
-	@Override
     public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,
 			List<OrderHint> orderHints, List<String> propertyPaths) {
 

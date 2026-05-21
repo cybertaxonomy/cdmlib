@@ -1102,6 +1102,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     @Override
     public <S extends T> List<S> list(S example, Set<String> includeProperties, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
+
         Criteria criteria = getSession().createCriteria(example.getClass());
         addExample(criteria, example, includeProperties);
 

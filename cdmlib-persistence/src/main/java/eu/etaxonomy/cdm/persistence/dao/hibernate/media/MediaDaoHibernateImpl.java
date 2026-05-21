@@ -60,7 +60,6 @@ public class MediaDaoHibernateImpl
 	    AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 
-
 		    Criteria criteria = getCriteria(MediaKey.class);
 
 			if(!CdmUtils.isNullSafeEmpty(taxonomicScope)) {
@@ -158,6 +157,7 @@ public class MediaDaoHibernateImpl
 		return results;
 	}
 
+    @Override
     public long countRights(Media media) {
 		checkNotInPriorView("MediaDaoHibernateImpl.countRights(Media t)");
 		Query<Long> query = getSession().createQuery("select count(rights) from Media media join media.rights rights where media = :media", Long.class);

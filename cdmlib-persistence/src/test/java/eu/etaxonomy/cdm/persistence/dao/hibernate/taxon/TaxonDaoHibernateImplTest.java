@@ -1230,7 +1230,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public void testGroupTaxa() {
         List<Grouping> groups = new ArrayList<>();
-        groups.add(new GroupByCount("count",SortOrder.DESCENDING));
+        groups.add(new GroupByCount("count", SortOrder.DESCENDING));
         groups.add(new Grouping("name.genusOrUninomial", "genus", "n", SortOrder.ASCENDING));
         List<Object[]> results = taxonDao.group(null, null, null, groups,null);
         if(logger.isTraceEnabled()){

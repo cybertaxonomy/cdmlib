@@ -296,7 +296,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     public void testCountNames() {
         long count = taxonNameDao.countNames("Atropos", null, null, null, Rank.GENUS());
 
-        assertEquals("countNames should return 3",3,count);
+        assertEquals("countNames should return 3", 3, count);
     }
 
     @Test
