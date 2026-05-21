@@ -23,4 +23,5 @@ import javax.persistence.criteria.Predicate;
 public interface EntityFilter<T> {
 
     public Predicate toPredicate(Path<T> path, CriteriaBuilder cb);
+
 }

@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.filter;
 
+import java.util.EnumSet;
+
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
@@ -15,12 +17,14 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
 /**
+ * Factory methods for {@link EntityFilter}s related to {@link Reference}.
+ *
  * @author muellera
  * @since 19.05.2026
  */
 public class ReferenceFilters {
 
-    public static EntityFilter<Reference> isNotOfType(ReferenceType types) {
+    public static EntityFilter<Reference> isNotOfType(EnumSet<ReferenceType> types) {
         return (root, cb) -> types == null ? null :  cb.not(root.get("type").in(types));
     }
 

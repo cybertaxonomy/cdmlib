@@ -15,6 +15,8 @@ import javax.persistence.criteria.Predicate;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
+ * Factory methods for {@link EntityFilter}s related to {@link IdentifiableEntity}.
+ *
  * @author muellera
  * @since 20.05.2026
  */

@@ -53,6 +53,9 @@ public class Restriction<T extends Object> {
     public Restriction(String propertyName, MatchMode matchMode, List<T> values) {
         this(propertyName, Operator.AND, matchMode, values);
     }
+    public Restriction(String propertyName, MatchMode matchMode, T[] values) {
+        this(propertyName, Operator.AND, matchMode, Arrays.asList(values));
+    }
     public Restriction(String propertyName, MatchMode matchMode, EnumSet includedIn) {
         this(propertyName, Operator.AND, matchMode, (Collection)Arrays.asList(includedIn));
     }
