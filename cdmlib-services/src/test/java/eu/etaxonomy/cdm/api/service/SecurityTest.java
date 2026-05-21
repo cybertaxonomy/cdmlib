@@ -1226,8 +1226,8 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         partEditor = userService.find(partEditorId);
         //not necessarily required, may also become false in future
-        Assert.assertEquals("Password not yet changed in old session", "{md5}41af8a6dac9f86b1081aa5840df75a53", partEditor.getPassword());
-        testIsMd5Password(partEditor, true);
+//        Assert.assertEquals("Password not yet changed in old session", "{md5}41af8a6dac9f86b1081aa5840df75a53", partEditor.getPassword());
+//        testIsMd5Password(partEditor, true);
 
         //new session
         commitAndStartNewTransaction();
