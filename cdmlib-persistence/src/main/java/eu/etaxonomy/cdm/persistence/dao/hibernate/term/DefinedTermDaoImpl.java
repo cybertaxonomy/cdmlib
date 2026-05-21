@@ -19,14 +19,18 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -39,6 +43,7 @@ import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -72,6 +77,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
@@ -690,52 +696,64 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern,
-            MatchMode matchmode, TermSearchField abbrevType){
+    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs,
+            Integer pageNumber, Integer pageSize, String pattern, MatchMode matchmode,
+            TermSearchField searchField){
 
         clazz = clazz == null ? (Class)type : clazz;
-        abbrevType = abbrevType == null ? TermSearchField.NoAbbrev : abbrevType;
+        searchField = searchField == null ? TermSearchField.NoAbbrev : searchField;
 
-        Criteria crit = getSession().createCriteria(clazz, "term");
-        if (!StringUtils.isBlank(pattern)){
-            crit.createAlias("term.representations", "reps");
-            Disjunction or = Restrictions.disjunction();
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<S> cq = cb.createQuery(clazz);
+        Root<S> root = cq.from(clazz);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        //pattern
+        if (StringUtils.isNotBlank(pattern)){
+            Join<S,?> representations = root.join("representations", JoinType.LEFT);
+            Predicate predicate;
             if (matchmode == MatchMode.EXACT) {
-                or.add(Restrictions.eq(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
-                if (abbrevType == TermSearchField.NoAbbrev) {
-                    or.add(Restrictions.eq("reps.label", matchmode.queryStringFrom(pattern)));
+                predicate = cb.equal(root.get(searchField.getKey()), matchmode.queryStringFrom(pattern));
+                //if search field is not an abbreviated field, search also on representation label (beside titleCache)
+                if (searchField == TermSearchField.NoAbbrev) {
+                    predicate = cb.or(predicate, cb.equal(representations.get("label"), matchmode.queryStringFrom(pattern)));
                 }
             } else {
-                or.add(Restrictions.like(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
-                if (abbrevType == TermSearchField.NoAbbrev) {
-                    or.add(Restrictions.like("reps.label", matchmode.queryStringFrom(pattern)));
+                predicate = cb.like(root.get(searchField.getKey()), matchmode.queryStringFrom(pattern));
+                //if search field is not an abbreviated field, search also on representation label (beside titleCache)
+                if (searchField == TermSearchField.NoAbbrev) {
+                    predicate = cb.or(predicate,
+                            cb.like(representations.get("label"), matchmode.queryStringFrom(pattern)));
                 }
             }
-            crit.add(or);
-        }
-        if (limit != null && limit >= 0) {
-            crit.setMaxResults(limit);
+            predicates.add(predicate);
         }
 
-        if (vocs != null &&!vocs.isEmpty()){
-            crit.createAlias("term.vocabulary", "voc");
-            Disjunction or = Restrictions.disjunction();
-            for (TermVocabulary<?> voc: vocs){
-                Criterion criterion = Restrictions.eq("voc.id", voc.getId());
-                or.add(criterion);
+        //voc
+        if (!CdmUtils.isNullSafeEmpty(vocs)){
+            Join<Object, Object> vocabulary = root.join("vocabulary", JoinType.INNER);
+            List<Predicate> vocPredicates = new ArrayList<>();
+            for (TermVocabulary<?> voc : vocs) {
+                vocPredicates.add(cb.equal(vocabulary.get("id"), voc.getId()));
             }
-            crit.add(or);
+            if (!vocPredicates.isEmpty()) {
+                predicates.add(cb.or(vocPredicates.toArray(new Predicate[0])));
+            }
         }
 
-        crit.addOrder(Order.asc(abbrevType.getKey()));
-        if (limit == null){
-            limit = 1;
-        }
-//        int firstItem = (pageNumber - 1) * limit;
+        cq.select(root)
+          .distinct(true)
+          .where(predicates.toArray(new Predicate[0]))
+          .orderBy(cb.asc(root.get(searchField.getKey())));
 
-        crit.setFirstResult(0);
-        @SuppressWarnings("unchecked")
-        List<S> results = deduplicateResult(crit.list());
+        List<S> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
+        //TODO still needed after using distinct in query?
+        results = DaoBase.deduplicateResult(results);
+
+//      defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
 
