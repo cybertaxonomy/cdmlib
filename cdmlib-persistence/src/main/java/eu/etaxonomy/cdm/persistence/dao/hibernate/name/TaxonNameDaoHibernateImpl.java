@@ -114,19 +114,6 @@ public class TaxonNameDaoHibernateImpl
     }
 
     @Override
-    public long countNames(String queryString) {
-        checkNotInPriorView("TaxonNameDaoHibernateImpl.countNames(String queryString)");
-        Criteria criteria = getCriteria(null);
-
-        if (queryString != null) {
-            criteria.add(Restrictions.ilike("nameCache", queryString));
-        }
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-
-        return (Long)criteria.uniqueResult();
-    }
-
-    @Override
     public long countNames(String queryString, MatchMode matchMode, List<Criterion> criteria) {
 
         Criteria crit = getCriteria(type);

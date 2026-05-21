@@ -743,32 +743,6 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted) {
-        checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted)");
-
-        Criteria crit = getCriteria(type);
-        crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
-        crit.setProjection(Projections.rowCount());
-        return (Long)crit.uniqueResult();
-    }
-
-
-    @Override
-    public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
-        checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria)");
-
-        Criteria crit = getCriteria(type);
-        crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
-        if(criteria != null){
-            for (Criterion criterion : criteria) {
-                crit.add(criterion);
-            }
-        }
-        crit.setProjection(Projections.rowCount());
-        return (Long)crit.uniqueResult();
-    }
-
-    @Override
     public long countSynonyms(boolean onlyAttachedToTaxon) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
