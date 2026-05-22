@@ -402,6 +402,8 @@ public class OccurrenceDaoHibernateImpl
 //            // Lass alle Objekte durch, deren ID NICHT in der Liste der "falschen Bücher" auftaucht
 //            Predicate excludeWrongBooks = cb.not(root.get("id").in(subquery));
 
+            //the case is covered by AbcdGgbnImportTest so it is save to test different solutions
+
 //            Predicate isDerivedUnit = cb.not(root.type().in(DerivedUnit.class, MediaSpecimen.class, DnaSample.class));
             Predicate isDerivedUnit = cb.equal(root.type(), DerivedUnit.class);
             Predicate isMediaSpecimen = cb.equal(root.type(), MediaSpecimen.class);

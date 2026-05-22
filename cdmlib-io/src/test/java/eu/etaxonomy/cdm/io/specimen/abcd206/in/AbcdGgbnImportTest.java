@@ -442,9 +442,8 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
      * Tests import of DNA unit which is associated to a specimen being its sibling
      * by having the same field unit
 	 */
-	@Test
+    @Test
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-//	@Ignore
 	public void testImportAssociatedSpecimenSamePopulation() {
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sibling_association.xml";
@@ -453,7 +452,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null, false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
@@ -476,7 +475,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    assertEquals(DerivedUnit.class, derivedUnitSpecimen.getClass());
 	    DerivedUnit specimen = (DerivedUnit) derivedUnitSpecimen;
 	    assertEquals("Herbarium Berolinense", specimen.getCollection().getCode());
-	    assertTrue(SpecimenOrObservationType.DnaSample!=specimen.getRecordBasis());
+	    assertTrue(SpecimenOrObservationType.DnaSample != specimen.getRecordBasis());
 
 	    //dna sample
 	    FindOccurrencesConfigurator dnaConfig = new FindOccurrencesConfigurator();

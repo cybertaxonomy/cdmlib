@@ -292,7 +292,7 @@ public class DerivedUnit
 	}
 
 	public void setCatalogNumber(String catalogNumber) {
-		this.catalogNumber = isBlank(catalogNumber)?null:catalogNumber;
+		this.catalogNumber = isBlank(catalogNumber) ? null: catalogNumber;
 	}
 
 	public void setBarcode(String barcode) {

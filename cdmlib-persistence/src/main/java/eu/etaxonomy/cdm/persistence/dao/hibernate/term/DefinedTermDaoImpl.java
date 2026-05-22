@@ -190,12 +190,12 @@ public class DefinedTermDaoImpl
 
 	@Override
     public <T extends DefinedTermBase> List<T> getDefinedTermByRepresentationText(String text, Class<T> clazz ) {
-		return getDefinedTermByRepresentationText(text,clazz,null,null);
+		return getDefinedTermByRepresentationText(text, clazz, null, null);
 	}
 
 	@Override
-    public <T extends DefinedTermBase> List<T> getDefinedTermByRepresentationText(String text, Class<T> clazz, Integer pageSize,Integer  pageNumber) {
-		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationText(String text, Class<T> clazz, Integer pageSize,Integer  pageNumber)");
+    public <T extends DefinedTermBase> List<T> getDefinedTermByRepresentationText(String text, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationText(String text, Class<T> clazz, Integer pageSize, Integer pageNumber)");
 
 		Criteria criteria = getCriteria(clazz);
 

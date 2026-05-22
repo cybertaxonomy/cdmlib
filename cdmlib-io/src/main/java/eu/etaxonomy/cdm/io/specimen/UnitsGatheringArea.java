@@ -60,10 +60,6 @@ public class UnitsGatheringArea {
 
     private DefinedTermBase<?> wbc;
 
-    public UnitsGatheringArea(){
-        //
-    }
-
     public void setParams(String isoCountry, String country, ImportConfiguratorBase<?, ?> config,
             ITermService termService, IVocabularyService vocService){
 
@@ -77,10 +73,6 @@ public class UnitsGatheringArea {
         this.setAreaNames(namedAreaList, config, termService, vocabularyService);
     }
 
-
-    /*
-     * Return the current list of NamedAreas
-     */
     public List<DefinedTermBase> getAreas(){
         return this.areas;
     }
@@ -271,15 +263,14 @@ public class UnitsGatheringArea {
         if (wbc == null){
             if (!StringUtils.isEmpty(fullName)){
 
-
-                //                logger.info("matchingterms: "+matchingTerms.keySet().toString());
+                //logger.info("matching terms: "+matchingTerms.keySet().toString());
                 UUID areaUUID = null;
                 //TODO Critical, should be a country decision
                 areaUUID = getNamedAreaDecision(fullName,config);
 
                 if (areaUUID == null){
-                	List<UUID> countryUuids = new ArrayList<UUID>();
-                	HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
+                	List<UUID> countryUuids = new ArrayList<>();
+                	HashMap<String,UUID> matchingTerms = new HashMap<>();
                 	Pager<Country> countryList;
                 	try {
                 		countryList = termService.findByRepresentationText(fullName, Country.class, 100, 0);
