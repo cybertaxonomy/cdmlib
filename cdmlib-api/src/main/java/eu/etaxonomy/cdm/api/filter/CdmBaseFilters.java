@@ -48,5 +48,4 @@ public final class CdmBaseFilters {
             return result;
         };
     }
-
 }

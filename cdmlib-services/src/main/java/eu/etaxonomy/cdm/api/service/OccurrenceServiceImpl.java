@@ -174,24 +174,6 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public long countDeterminations(SpecimenOrObservationBase occurence, TaxonBase taxonbase) {
-        return dao.countDeterminations(occurence, taxonbase);
-    }
-
-    @Override
-    public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase,
-            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        long numberOfResults = dao.countDeterminations(occurrence, taxonBase);
-
-        List<DeterminationEvent> results = new ArrayList<>();
-        if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = dao.getDeterminations(occurrence, taxonBase, pageSize, pageNumber, propertyPaths);
-        }
-
-        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
-    }
-
-    @Override
     public Pager<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         long numberOfResults = dao.countMedia(occurence);
 

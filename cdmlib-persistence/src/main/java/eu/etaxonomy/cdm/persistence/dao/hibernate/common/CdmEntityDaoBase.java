@@ -1004,11 +1004,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
      * The first Restriction in the example above by default has the <code>Operator.AND</code> which will be
      * ignored since this is the first restriction. The <code>Operator</code> of further restrictions in the
      * list are used to combine with the previous restriction.
-     *
-     * @param type
-     * @param restrictions
-     * @param doCount
-     * @return
      */
     protected Criteria createCriteria(Class<? extends T> type, List<Restriction<?>> restrictions, boolean doCount) {
 
@@ -1065,7 +1060,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return (Long) criteria.uniqueResult();
     }
 
-
+    //TODO: there is a very similar implementation somewhere else
     protected <S extends T> Predicate predicateForMatchMode(String param,
             String queryString, MatchMode matchMode,
             CriteriaBuilder cb, Root<S> root, boolean ignoreCase) {

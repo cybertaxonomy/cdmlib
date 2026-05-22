@@ -87,6 +87,7 @@ public class OccurrenceDaoHibernateImpl
     @Autowired
     private IHomotypicalGroupDao homotypicalGroupDao;
 
+    @SuppressWarnings({ "unchecked"})
     public OccurrenceDaoHibernateImpl() {
         super(SpecimenOrObservationBase.class);
         indexedClasses = new Class[7];
@@ -96,7 +97,7 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public long countDerivationEvents(SpecimenOrObservationBase occurence) {
+    public long countDerivationEvents(@SuppressWarnings("rawtypes")SpecimenOrObservationBase occurence) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.countDerivationEvents(SpecimenOrObservationBase occurence)");
         Query<Long> query = getSession().createQuery("select count(distinct derivationEvent) from DerivationEvent derivationEvent join derivationEvent.originals occurence where occurence = :occurence", Long.class);
         query.setParameter("occurence", occurence);
@@ -105,43 +106,12 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public long countDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase) {
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getCriteria(DeterminationEvent.class);
-            if(occurrence != null) {
-                criteria.add(Restrictions.eq("identifiedUnit",occurrence));
-            }
-
-            if(taxonBase != null) {
-                criteria.add(Restrictions.eq("taxon",taxonBase));
-            }
-
-            criteria.setProjection(Projections.rowCount());
-            return (Long)criteria.uniqueResult();
-        } else {
-            AuditQuery query = makeAuditQuery(DeterminationEvent.class,auditEvent);
-
-            if(occurrence != null) {
-                query.add(AuditEntity.relatedId("identifiedUnit").eq(occurrence.getId()));
-            }
-
-            if(taxonBase != null) {
-                query.add(AuditEntity.relatedId("taxon").eq(taxonBase.getId()));
-            }
-            query.addProjection(AuditEntity.id().count());
-
-            return (Long)query.getSingleResult();
-        }
-    }
-
-    @Override
-    public long countMedia(SpecimenOrObservationBase occurence) {
+    public long countMedia(@SuppressWarnings("rawtypes")SpecimenOrObservationBase occurence) {
         return this.getMediaIds(occurence).size();
     }
 
     @Override
-    public List<Media> getMedia(SpecimenOrObservationBase occurence,
+    public List<Media> getMedia(@SuppressWarnings("rawtypes")SpecimenOrObservationBase occurence,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
         List<Integer> ids = this.getMediaIds(occurence);
@@ -158,7 +128,7 @@ public class OccurrenceDaoHibernateImpl
         return results;
     }
 
-    private List<Integer> getMediaIds(SpecimenOrObservationBase occurence) {
+    private List<Integer> getMediaIds(@SuppressWarnings("rawtypes")SpecimenOrObservationBase occurence) {
         Query query = getSession().createQuery(
                 "   SELECT DISTINCT m.id "
                 + " FROM SpecimenOrObservationBase occ JOIN occ.descriptions d "
@@ -187,7 +157,9 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+    public List<DerivationEvent> getDerivationEvents(@SuppressWarnings("rawtypes")SpecimenOrObservationBase occurence,
+            Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+
         checkNotInPriorView("OccurrenceDaoHibernateImpl.getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber)");
         Query<DerivationEvent> query = getSession().createQuery("SELECT DISTINCT derivationEvent FROM DerivationEvent derivationEvent JOIN derivationEvent.originals occurence WHERE occurence = :occurence", DerivationEvent.class);
         query.setParameter("occurence", occurence);
@@ -197,45 +169,6 @@ public class OccurrenceDaoHibernateImpl
         List<DerivationEvent> result = query.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
-    }
-
-    @Override
-    public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence,
-            TaxonBase taxonBase, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(DeterminationEvent.class);
-            if(occurrence != null) {
-                criteria.add(Restrictions.eq("identifiedUnit",occurrence));
-            }
-
-            if(taxonBase != null) {
-                criteria.add(Restrictions.eq("taxon", taxonBase));
-            }
-
-            addPageSizeAndNumber(criteria, pageSize, pageNumber);
-
-            @SuppressWarnings("unchecked")
-            List<DeterminationEvent> result = criteria.list();
-            defaultBeanInitializer.initializeAll(result, propertyPaths);
-            return result;
-        } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DeterminationEvent.class,auditEvent.getRevisionNumber());
-            if(occurrence != null) {
-                query.add(AuditEntity.relatedId("identifiedUnit").eq(occurrence.getId()));
-            }
-
-            if(taxonBase != null) {
-                query.add(AuditEntity.relatedId("taxon").eq(taxonBase.getId()));
-            }
-            addPageSizeAndNumber(query, pageSize, pageNumber);
-
-            @SuppressWarnings("unchecked")
-            List<DeterminationEvent> result = query.getResultList();
-            defaultBeanInitializer.initializeAll(result, propertyPaths);
-            return result;
-        }
     }
 
     @Override
@@ -280,6 +213,7 @@ public class OccurrenceDaoHibernateImpl
         return (Long)criteria.uniqueResult();
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> clazz, TaxonName determinedAs,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -297,6 +231,7 @@ public class OccurrenceDaoHibernateImpl
         return results;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public long count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonBase determinedAs) {
 
@@ -308,6 +243,7 @@ public class OccurrenceDaoHibernateImpl
     }
 
 
+    @SuppressWarnings("rawtypes")
     @Override
     public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> clazz, TaxonBase determinedAs,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -379,7 +315,8 @@ public class OccurrenceDaoHibernateImpl
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
             TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
             EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
-            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+            Integer limit, Integer start, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
 
         Criteria criteria = null;
 
@@ -464,7 +401,6 @@ public class OccurrenceDaoHibernateImpl
         }
         return criteria;
     }
-
 
     @Override
     public <T extends SpecimenOrObservationBase> long countOccurrences(Class<T> clazz, String queryString,

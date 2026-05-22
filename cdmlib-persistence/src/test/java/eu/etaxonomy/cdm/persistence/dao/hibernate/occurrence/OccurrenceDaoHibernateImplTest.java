@@ -318,6 +318,23 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
 	private Taxon createListByAssociationTestData(){
 
+//	    -Abies alba
+//	        |- Pinus alba (homotypic synonym)
+//            |- Abies pinus (heterotypic synonym)
+//            |  |
+//            |  Pinus pinus (heterotypic synonym, homotypic group with Abies pinus)
+//
+//      -FieldUnit 1
+//	        |- Specimen Individual Association
+//	    ...
+//
+//	    -- DU Specimen Determination determined as Abies alba
+//	    -- FU FieldUnit 3 determined as Abies pinus as current determination
+//      -- Specimen Individual Association associated (ind. ass.) to Abies alba
+//      -- ...
+//	    Types:
+//	    ...
+
 	    try {
 
     	    //sec (not relevant here)

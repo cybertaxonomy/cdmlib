@@ -63,5 +63,4 @@ public class IdentifiableEntityFilters {
         }
         return result;
     }
-
 }
