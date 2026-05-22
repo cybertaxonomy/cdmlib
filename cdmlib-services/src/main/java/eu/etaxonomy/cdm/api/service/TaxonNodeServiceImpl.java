@@ -632,9 +632,9 @@ public class TaxonNodeServiceImpl
 	            		    taxonService.saveOrUpdate(taxon);
 	            		    saveOrUpdate(taxonNode);
 
-			            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
-			            	configNew.setClassificationUuid(classification.getUuid());
-			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, classification.getUuid());
+//			            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
+//			            	configNew.setClassificationUuid(classification.getUuid());
+			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), config, classification.getUuid());
 			            	if (!resultTaxon.isOk()){
                                 result.addExceptions(resultTaxon.getExceptions());
                                 result.setStatus(resultTaxon.getStatus());
@@ -651,10 +651,10 @@ public class TaxonNodeServiceImpl
 	            	if (taxon != null){
 	            		taxon.removeTaxonNode(taxonNode);
 	            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
-			            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
+			            	//TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
 			            	saveOrUpdate(taxonNode);
 			            	taxonService.saveOrUpdate(taxon);
-			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, classification.getUuid());
+			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), config, classification.getUuid());
 
                             if (!resultTaxon.isOk()){
                                 result.addExceptions(resultTaxon.getExceptions());
