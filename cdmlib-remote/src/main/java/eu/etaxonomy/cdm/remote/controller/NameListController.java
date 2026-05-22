@@ -87,7 +87,7 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
         pagerParameters.normalizeAndValidate(response);
 
-        return service.findByTitleWithRestrictions(TaxonName.class, query, matchMode, null, pageSize, pageIndex, null, getInitializationStrategy());
+        return service.findByTitle(TaxonName.class, query, matchMode, null, pageSize, pageIndex, null, getInitializationStrategy());
     }
 
     @RequestMapping(

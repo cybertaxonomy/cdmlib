@@ -145,7 +145,7 @@ public class TermTreeListController extends AbstractIdentifiableListController<T
 
         matchMode = matchMode != null ? matchMode : MatchMode.BEGINNING;
 
-        return service.findByTitleWithRestrictions(null, query, matchMode, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, initializationStrategy);
+        return service.findByTitle(null, query, matchMode, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, initializationStrategy);
 
     }
 
