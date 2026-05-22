@@ -309,7 +309,7 @@ public class OccurrenceDaoHibernateImpl
         Root<T> root = cq.from(clazz);
 
         List<String> propertyPaths = null;
-        Predicate predicate = createFindOccurrenceIDsPredicate(cb, root, clazz, queryString, matchmode,
+        Predicate predicate = createFindOccurrencesPredicate(cb, root, clazz, queryString, matchmode,
                 significantIdentifier, recordBasis, associatedTaxon, associatedTaxonName, includeUnpublished,
                 taxonOccurrenceRelTypes, pageSize, start, orderHints, propertyPaths );
 
@@ -347,7 +347,7 @@ public class OccurrenceDaoHibernateImpl
         CriteriaQuery<T> cq = cb.createQuery(clazz);
         Root<T> root = cq.from(clazz);
 
-        Predicate predicate = createFindOccurrenceIDsPredicate(cb, root, clazz, queryString, matchmode,
+        Predicate predicate = createFindOccurrencesPredicate(cb, root, clazz, queryString, matchmode,
                 significantIdentifier, recordBasis, associatedTaxon, associatedTaxonName, includeUnpublished,
                 taxonOccurrenceRelTypes, pageSize, start, orderHints, propertyPaths);
 
@@ -363,7 +363,7 @@ public class OccurrenceDaoHibernateImpl
         return deduplicateResult(results);
     }
 
-    private <T extends SpecimenOrObservationBase> Predicate createFindOccurrenceIDsPredicate(
+    private <T extends SpecimenOrObservationBase> Predicate createFindOccurrencesPredicate(
             CriteriaBuilder cb, Root<T> root,
             Class<T> clazz, String queryString, MatchMode matchmode,
             String significantIdentifier, SpecimenOrObservationType recordBasis,
@@ -444,7 +444,7 @@ public class OccurrenceDaoHibernateImpl
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<T> root = cq.from(clazz);
 
-        Predicate predicate = createFindOccurrenceIDsPredicate(
+        Predicate predicate = createFindOccurrencesPredicate(
                 cb, root,
                 clazz, queryString, matchmode,
                 significantIdentifier, recordBasis,

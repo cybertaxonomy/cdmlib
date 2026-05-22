@@ -1482,14 +1482,14 @@ public class OccurrenceServiceImpl
             FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
             List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
             Taxon taxon = null;
-            if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
+            if(occurrenceConfig.getAssociatedTaxonUuid() != null){
                 TaxonBase taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
                 if(taxonBase.isInstanceOf(Taxon.class)){
                     taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
                 }
             }
             TaxonName taxonName = null;
-            if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
+            if(occurrenceConfig.getAssociatedTaxonNameUuid() != null){
                 taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
             }
             List<? extends SpecimenOrObservationBase> foundOccurrences = dao.findOccurrences(
@@ -1502,7 +1502,7 @@ public class OccurrenceServiceImpl
             occurrences.addAll(foundOccurrences);
             occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
 
-            long count = Integer.valueOf(occurrences.size()).longValue();
+            long count = Long.valueOf(occurrences.size());
             return new DefaultPagerImpl<>(config.getPageNumber(), count, config.getPageSize(), (List<S>)occurrences);
         }
         return super.findByTitle(config);
@@ -1511,8 +1511,9 @@ public class OccurrenceServiceImpl
     private List<SpecimenOrObservationBase> filterOccurencesByAssignmentAndHierarchy(
             FindOccurrencesConfigurator occurrenceConfig, List<SpecimenOrObservationBase> occurrences, Taxon taxon,
             TaxonName taxonName) {
+
         //filter out (un-)assigned specimens
-        if(taxon==null && taxonName==null){
+        if(taxon == null && taxonName == null){
             AssignmentStatus assignmentStatus = occurrenceConfig.getAssignmentStatus();
             List<SpecimenOrObservationBase> specimenWithAssociations = new ArrayList<>();
             if(!assignmentStatus.equals(AssignmentStatus.ALL_SPECIMENS)){
