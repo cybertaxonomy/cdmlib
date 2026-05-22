@@ -383,18 +383,57 @@ public class OccurrenceDaoHibernateImpl
         //significant identifier
         if (significantIdentifier != null && !FieldUnit.class.isAssignableFrom(clazz)) {
             //only if clazz is derived unit or specimenOrObservation
-            //if clazz is derived unit or subclass we could neglect the isNotDerivedUnit predicate, but if clazz is SpecimenOrObservation we need to exclude derived units (and subclasse), because they do not have the fields we want to search for
+            //if clazz is derived unit or subclass we could neglect the isNotDerivedUnit predicate, but if clazz is SpecimenOrObservation we need to exclude derived units (and subclass), because they do not have the fields we want to search for
 
             //FIXME after upgrading to Hibernate 6 use cb.isInstanceOf(rootClass)
-            Predicate isNotDerivedUnit = cb.not(root.type().in(DerivedUnit.class, MediaSpecimen.class, DnaSample.class));
+            //also .treat() does not work correctly in hibernate 5 (it is handled as a filter on the exact class, not as cast only,
+            //as a fast workaround we implemented the below for each subclass
+            //An alternative would be to use a subquery
+            //Something like
+         // 1. Die Unterabfrage erstellen (sucht direkt auf der Klasse Book)
+//            Subquery<Long> subquery = query.subquery(Long.class);
+//            Root<Book> subRoot = subquery.from(Book.class);
+//
+//            // Wir wählen die IDs aller Bücher aus, die NICHT der gesuchten ISBN entsprechen
+//            subquery.select(subRoot.get("id"))
+//                    .where(cb.notEqual(subRoot.get("isbn"), "123-456"));
+//
+//            // 2. Die Hauptabfrage filtern:
+//            // Lass alle Objekte durch, deren ID NICHT in der Liste der "falschen Bücher" auftaucht
+//            Predicate excludeWrongBooks = cb.not(root.get("id").in(subquery));
+
+//            Predicate isDerivedUnit = cb.not(root.type().in(DerivedUnit.class, MediaSpecimen.class, DnaSample.class));
+            Predicate isDerivedUnit = cb.equal(root.type(), DerivedUnit.class);
+            Predicate isMediaSpecimen = cb.equal(root.type(), MediaSpecimen.class);
+            Predicate isDnaSample = cb.equal(root.type(), DnaSample.class);
+
             Root<DerivedUnit> duRoot = cb.treat((Root)root, DerivedUnit.class);
+            Root<MediaSpecimen> msRoot = cb.treat((Root)root, MediaSpecimen.class);
+            Root<DnaSample> dnaRoot = cb.treat((Root)root, DnaSample.class);
             predicates.add(
                 cb.or(
-                    isNotDerivedUnit,
-                    predicateILike(cb, duRoot, "accessionNumber", significantIdentifier),
-                    predicateILike(cb, duRoot, "catalogNumber", significantIdentifier),
-                    predicateILike(cb, duRoot, "barcode", significantIdentifier)
-                )
+                    cb.and(
+                        isDerivedUnit, cb.or(
+                            predicateILike(cb, duRoot, "accessionNumber", significantIdentifier),
+                            predicateILike(cb, duRoot, "catalogNumber", significantIdentifier),
+                            predicateILike(cb, duRoot, "barcode", significantIdentifier)
+                        )
+                    ),
+                    cb.and(
+                            isMediaSpecimen, cb.or(
+                                predicateILike(cb, msRoot, "accessionNumber", significantIdentifier),
+                                predicateILike(cb, msRoot, "catalogNumber", significantIdentifier),
+                                predicateILike(cb, msRoot, "barcode", significantIdentifier)
+                            )
+                        ),
+                    cb.and(
+                            isDnaSample, cb.or(
+                                predicateILike(cb, dnaRoot, "accessionNumber", significantIdentifier),
+                                predicateILike(cb, dnaRoot, "catalogNumber", significantIdentifier),
+                                predicateILike(cb, dnaRoot, "barcode", significantIdentifier)
+                            )
+                        )
+                    )
             );
         }
 
