@@ -26,7 +26,4 @@ public interface ITitledDao<T extends CdmBase> {
 	public long countByTitle(String queryString);
 
 	public long countByTitle(String queryString, MatchMode matchMode, List<EntityFilter<T>> filter);
-
-	public List<T> findByTitle(String queryString, MatchMode matchMode, List<EntityFilter<T>> filter, int page, int pagesize);
-
 }

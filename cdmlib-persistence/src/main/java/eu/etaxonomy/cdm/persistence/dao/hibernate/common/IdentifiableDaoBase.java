@@ -164,31 +164,6 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public List<T> findByTitle(String queryString, MatchMode matchMode, List<EntityFilter<T>> filter, int pageNumber, int pageSize) {
-        checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<Criterion> criteria)");
-
-        CriteriaBuilder cb = getCriteriaBuilder();
-        CriteriaQuery<T> cq = cb.createQuery(type);
-        Root<T> root = cq.from(type);
-
-        Predicate titleCachePredicate = IdentifiableEntityFilters.titleCacheFilter(type,
-                queryString, matchMode, false).toPredicate(root, cb);
-
-        Predicate predicate = addPredicateFromFilter(titleCachePredicate, filter, cb, root);
-
-        cq.select(root)
-          .where(predicate)
-          .orderBy(cb.asc(root.get("titleCache")));
-
-        List<String> propertyPaths = null;
-        List<T> results = addPageSizeAndNumber(
-                getSession().createQuery(cq), pageSize, pageNumber)
-               .getResultList();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
-    }
-
-    @Override
     public long countSources(T identifiableEntity) {
         checkNotInPriorView("IdentifiableDaoBase.countSources(T identifiableEntity)");
         Query<Long> query = getSession().createQuery(
