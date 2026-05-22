@@ -381,12 +381,19 @@ public class OccurrenceDaoHibernateImpl
                 queryString, matchmode, ignoreCase).toPredicate(root, cb));
 
         //significant identifier
-        if (significantIdentifier != null) {
+        if (significantIdentifier != null && !FieldUnit.class.isAssignableFrom(clazz)) {
+            //only if clazz is derived unit or specimenOrObservation
+            //if clazz is derived unit or subclass we could neglect the isNotDerivedUnit predicate, but if clazz is SpecimenOrObservation we need to exclude derived units (and subclasse), because they do not have the fields we want to search for
+
+            //FIXME after upgrading to Hibernate 6 use cb.isInstanceOf(rootClass)
+            Predicate isNotDerivedUnit = cb.not(root.type().in(DerivedUnit.class, MediaSpecimen.class, DnaSample.class));
+            Root<DerivedUnit> duRoot = cb.treat((Root)root, DerivedUnit.class);
             predicates.add(
                 cb.or(
-                    predicateILike(cb, root, "accessionNumber", significantIdentifier),
-                    predicateILike(cb, root, "catalogNumber", significantIdentifier),
-                    predicateILike(cb, root, "barcode", significantIdentifier)
+                    isNotDerivedUnit,
+                    predicateILike(cb, duRoot, "accessionNumber", significantIdentifier),
+                    predicateILike(cb, duRoot, "catalogNumber", significantIdentifier),
+                    predicateILike(cb, duRoot, "barcode", significantIdentifier)
                 )
             );
         }
