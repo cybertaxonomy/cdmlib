@@ -351,6 +351,22 @@ public abstract class DaoBase {
         return query;
     }
 
+    /**
+     * like {@link #addPageSizeAndNumber(TypedQuery, Integer, Integer)}
+     * but here start is the absolute value, not the page number.
+     */
+    protected <T> TypedQuery<T> addPageSizeAndStart(TypedQuery<T> query, Integer pageSize, Integer start) {
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+        }
+        return query;
+    }
+
     protected <T> CriteriaQuery<?> order(CriteriaBuilder builder, CriteriaQuery<T> query,
             Root<?> root, List<OrderHint> orderHints){
         if (CdmUtils.isNullSafeEmpty(orderHints)) {

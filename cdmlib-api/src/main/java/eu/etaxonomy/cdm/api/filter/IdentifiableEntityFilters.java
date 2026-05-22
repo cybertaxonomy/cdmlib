@@ -22,12 +22,14 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  */
 public class IdentifiableEntityFilters {
 
+    public static final String TITLE_CACHE = "titleCache";
+
     public static <T extends IdentifiableEntity<?>> EntityFilter<T> titleCacheFilter(
             @SuppressWarnings("unused") Class<T> type,
             String queryString,
             MatchMode matchMode, boolean ignoreCase) {
         return (root, cb) -> {
-            return predicateForMatchMode("titleCache", queryString, matchMode, cb, root, ignoreCase);
+            return predicateForMatchMode(TITLE_CACHE, queryString, matchMode, cb, root, ignoreCase);
         };
     }
 

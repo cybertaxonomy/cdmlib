@@ -23,15 +23,19 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public final class CdmBaseFilters {
 
+    public static final String UUID = "uuid";
+    public static final String ID = "id";
+
+
     public static <T extends CdmBase> EntityFilter<T> uuidFilter(UUID uuid, @SuppressWarnings("unused") Class<T> clazzForCasting) {
-        return (root, cb) -> uuid == null ? null :  cb.equal(root.get("uuid"), uuid);
+        return (root, cb) -> uuid == null ? null :  cb.equal(root.get(UUID), uuid);
     }
 
     /**
      * Filter for a given set of UUIDs. If the set is null, no filter is applied.
      */
     public static <T extends CdmBase> EntityFilter<T> uuidsFilter(final Set<UUID> uuids, @SuppressWarnings("unused") Class<T> clazzForCasting) {
-        return (root, cb) -> uuids == null ? null :  root.get("uuid").in(uuids);
+        return (root, cb) -> uuids == null ? null :  root.get(UUID).in(uuids);
     }
 
     //TODO move to a more generic filter class

@@ -1173,4 +1173,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     protected AuditReader getAuditReader() {
         return AuditReaderFactory.get(getSession());
     }
+
+    /**
+     * Returns clazz, or if clazz is <code>null</code> the base type of this DAO.
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected <S extends T> Class<S> nullSafeClass(Class<S> clazz) {
+        return clazz = (clazz == null) ? (Class)type : clazz;
+    }
 }
