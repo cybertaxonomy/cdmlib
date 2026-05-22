@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.converter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -57,9 +56,9 @@ public class RestrictionConverter implements Converter<String, Restriction<?>>  
             return restriction ;
         } catch (JsonParseException | JsonMappingException e) {
             throw new IllegalArgumentException("Json for 'restriction' could not be parsed or mapped correctly", e);
-        }catch (IOException e) {
+        }catch (Exception e) {
             // TODO more specific unchecked exception type?
-            throw new RuntimeException(e);
+            throw new RuntimeException("Unexpected exception when parsing 'restriction'", e);
         }
     }
 }
