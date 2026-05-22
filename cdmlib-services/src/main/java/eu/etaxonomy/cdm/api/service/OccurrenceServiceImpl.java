@@ -1494,7 +1494,7 @@ public class OccurrenceServiceImpl
             }
             List<? extends SpecimenOrObservationBase> foundOccurrences = dao.findOccurrences(
                     occurrenceConfig.getClazz(),
-                    occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
+                    occurrenceConfig.getTitleSearchStringSqlized(), occurrenceConfig.getSignificantIdentifier(),
                     occurrenceConfig.getSpecimenType(), taxon, taxonName,
                     occurrenceConfig.getMatchMode(), occurrenceConfig.isIncludeUnpublished(),
                     taxonOccurrenceRelTypes,

@@ -37,6 +37,9 @@ public class IdentifiableEntityFilters {
             String queryString, MatchMode matchMode,
             CriteriaBuilder cb, Path<S> root, boolean ignoreCase) {
 
+        if (queryString == null) {
+            return cb.conjunction();  //always true, so that this filter does not influence the result
+        }
         Predicate result;
         if (ignoreCase) {
             String lowerQueryString = queryString == null ? "" : queryString.toLowerCase();
