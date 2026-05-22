@@ -40,7 +40,7 @@ public class Restriction<T extends Object> {
     private Collection<T> values = null;
 
     @SuppressWarnings("unused")
-    public Restriction(){} //required for deserialization in RestrictionConverter
+    private Restriction(){} //required for deserialization in RestrictionConverter
 
     /**
      * @param propertyName
