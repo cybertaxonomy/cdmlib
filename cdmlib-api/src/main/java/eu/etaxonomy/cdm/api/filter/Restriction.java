@@ -39,6 +39,8 @@ public class Restriction<T extends Object> {
 
     private Collection<T> values = null;
 
+    @SuppressWarnings("unused")
+    private Restriction(){} //required for deserialization in RestrictionConverter
 
     /**
      * @param propertyName
