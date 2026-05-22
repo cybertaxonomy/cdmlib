@@ -115,13 +115,6 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
 
     /**
      * This method can be overwritten by subclasses, for example to apply additional filtering like for the publish flag.
-     *
-     * @param type
-     * @param initStrategy
-     * @param orderBy
-     * @param pagerParameters
-     * @param restrictions
-     * @return
      */
     protected Pager<T> pageByRestrictions(Class<T> type, List<String> initStrategy, OrderHintPreset orderBy,
             PagerParameters pagerParameters, ArrayList<Restriction<?>> restrictions) {
