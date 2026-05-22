@@ -632,8 +632,6 @@ public class TaxonNodeServiceImpl
 	            		    taxonService.saveOrUpdate(taxon);
 	            		    saveOrUpdate(taxonNode);
 
-//			            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
-//			            	configNew.setClassificationUuid(classification.getUuid());
 			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), config, classification.getUuid());
 			            	if (!resultTaxon.isOk()){
                                 result.addExceptions(resultTaxon.getExceptions());
@@ -651,7 +649,6 @@ public class TaxonNodeServiceImpl
 	            	if (taxon != null){
 	            		taxon.removeTaxonNode(taxonNode);
 	            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
-			            	//TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
 			            	saveOrUpdate(taxonNode);
 			            	taxonService.saveOrUpdate(taxon);
 			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), config, classification.getUuid());
@@ -674,14 +671,7 @@ public class TaxonNodeServiceImpl
 
 	        }
         }
-        /*if (classification != null){
-            result.addUpdatedObject(classification);
-        	DeleteResult resultClassification = classService.delete(classification);
-        	 if (!resultClassification.isOk()){
-                 result.addExceptions(resultClassification.getExceptions());
-                 result.setStatus(resultClassification.getStatus());
-             }
-        }*/
+
         return result;
     }
 
@@ -919,7 +909,6 @@ public class TaxonNodeServiceImpl
         }
 
         monitor.done();
-//        ((RemotingProgressMonitor)monitor).setResult(result);
         return result;
     }
 
