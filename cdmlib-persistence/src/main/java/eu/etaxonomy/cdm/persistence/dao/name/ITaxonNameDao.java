@@ -9,8 +9,8 @@
 package eu.etaxonomy.cdm.persistence.dao.name;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -205,22 +205,6 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 */
 	public long countNames(String queryString, MatchMode matchMode, List<EntityFilter<TaxonName>> filter);
 
-	/**
-	 * Returns a List of TaxonName instances which nameCache matches the
-	 * query string
-	 *
-	 * @param queryString
-	 * @param pageSize
-	 *            The maximum number of names returned (can be null for all
-	 *            names)
-	 * @param pageNumber
-	 *            The offset (in pageSize chunks) from the start of the result
-	 *            set (0 - based)
-	 * @return a List of TaxonName instances
-	 */
-	public List<TaxonName> searchNames(String queryString,
-			Integer pageSize, Integer pageNumber);
-
 	public List<TaxonName> findByName(boolean doIncludeAuthors,
 	        String queryString, MatchMode matchmode,
 	        List<EntityFilter<TaxonName>> filter,
@@ -269,9 +253,8 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	public long countByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
 	        List<EntityFilter<TaxonName>> filter);
 
-	public TaxonName findZoologicalNameByUUID(UUID uuid);
-
-	List<HashMap<String, String>> getNameRecords();
+	@Deprecated //only used by csv export, use property path method instead
+    public List<Map<String, String>> getNameRecords();
 
 	/**
 	 * Supports using wildcards in the query parameters.
@@ -353,7 +336,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
      */
     public List<String> distinctGenusOrUninomial(String pattern, Rank maxRank, Rank minRank);
 
-    public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer limit, Integer start);
+    public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer pageSize, Integer pageNumber);
 
     public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse();
 

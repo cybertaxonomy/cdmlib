@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -508,25 +507,13 @@ public interface INameService
      */
     public HomotypicalGroup findHomotypicalGroup(UUID uuid);
 
-    /**
-     * @param uuid
-     * @return
-     */
     public List<TaggedText> getTaggedName(UUID uuid);
 
-    /**
-     * @param nameUuid
-     * @return
-     */
     public UpdateResult setAsGroupsBasionym(UUID nameUuid);
 
-	public List<HashMap<String, String>> getNameRecords();
+    @Deprecated //only used by csv export, use property path method instead
+	public List<Map<String, String>> getNameRecords();
 
-    /**
-     * @param name
-     * @param config
-     * @return
-     */
     public DeleteResult delete(TaxonName name, NameDeletionConfigurator config);
 
     public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse();
@@ -534,9 +521,6 @@ public interface INameService
     /**
      * Provides a collection of the TypeDesignationStatusBase terms which are in use.
      * Terms having the same label are merged into one filter item.
-     *
-     * @param preferredLanguage
-     * @return
      */
     public Collection<TypeDesignationStatusFilter> getTypeDesignationStatusFilterTerms(List<Language> preferredLanguages);
 

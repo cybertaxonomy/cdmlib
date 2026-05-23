@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -386,36 +387,8 @@ public class TaxonNameDaoHibernateImpl
         return query;
     }
 
-    public List<TaxonName> searchNames(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
-
-        checkNotInPriorView("TaxonNameDaoHibernateImpl.searchNames(String queryString, Integer pageSize, Integer pageNumber)");
-        Criteria criteria = getSession().createCriteria(TaxonName.class);
-
-        if (queryString != null) {
-            criteria.add(Restrictions.ilike("nameCache", queryString));
-        }
-        if(pageSize != null) {
-            criteria.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                criteria.setFirstResult(pageNumber * pageSize);
-            } else {
-                criteria.setFirstResult(0);
-            }
-        }
-        @SuppressWarnings("unchecked")
-        List<TaxonName> results = criteria.list();
-        return results;
-    }
-
-
     @Override
-    public List<TaxonName> searchNames(String queryString, Integer pageSize, Integer pageNumber) {
-        return searchNames(queryString, MatchMode.BEGINNING, pageSize, pageNumber);
-    }
-
-
-    @Override
-    public List<TaxonName> searchNames(String genusOrUninomial,String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,
+    public List<TaxonName> searchNames(String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -719,38 +692,9 @@ public class TaxonNameDaoHibernateImpl
         return persistentObject.getUuid();
     }
 
-
+    @Deprecated //only used by csv export, use property path method instead
     @Override
-    public TaxonName findZoologicalNameByUUID(UUID uuid){
-
-        Criteria criteria = getSession().createCriteria(type);
-        if (uuid != null) {
-            criteria.add(Restrictions.eq("uuid", uuid));
-        } else {
-            logger.warn("UUID is NULL");
-            return null;
-        }
-
-        @SuppressWarnings("unchecked")
-        List<TaxonName> results = criteria.list();
-        if (results.size() == 1) {
-            defaultBeanInitializer.initializeAll(results, null);
-            TaxonName taxonName = results.iterator().next();
-            if (taxonName.isZoological()) {
-                return taxonName;
-            } else {
-                logger.warn("This UUID (" + uuid + ") does not belong to a ZoologicalName. It belongs to: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-            }
-        } else if (results.size() > 1) {
-            logger.error("Multiple results for UUID: " + uuid);
-        } else if (results.size() == 0) {
-            logger.info("No results for UUID: " + uuid);
-        }
-        return null;
-    }
-
-    @Override
-    public List<HashMap<String,String>> getNameRecords(){
+    public List<Map<String,String>> getNameRecords(){
     	String sql= "SELECT"
     			+ "  (SELECT famName.namecache FROM TaxonNode famNode"
     			+ "  LEFT OUTER JOIN TaxonBase famTax ON famNode.taxon_id = famTax.id"
@@ -797,7 +741,7 @@ public class TaxonNameDaoHibernateImpl
     	Query hqlQuery = getSession().createQuery(hqlQueryStringFrom);
     	List<?> hqlResult = hqlQuery.list();
 
-		List<HashMap<String,String>> nameRecords = new ArrayList<>();
+		List<Map<String,String>> nameRecords = new ArrayList<>();
 		HashMap<String,String> nameRecord = new HashMap<>();
 		TaxonNode familyNode = null;
 		for(Object object : hqlResult){
@@ -921,20 +865,25 @@ public class TaxonNameDaoHibernateImpl
 
     @Override
     public long countNameRelationships(Set<NameRelationshipType> types) {
-        Criteria criteria = getSession().createCriteria(NameRelationship.class);
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<NameRelationship> root = cq.from(NameRelationship.class);
+
+        List<Predicate> predicates = new ArrayList<>();
 
         if (types != null) {
             if (types.isEmpty()){
                 return 0l;
             }else{
-                criteria.add(Restrictions.in("type", types) );
+                predicates.add(predicateIn(root, "type", types));
             }
         }
-        //count
-        criteria.setProjection(Projections.rowCount());
-        long result = (Long)criteria.uniqueResult();
 
-        return result;
+        cq.select(cb.countDistinct(root))
+          .where(predicateAnd(cb, predicates));
+
+        return getSession().createQuery(cq).getSingleResult();
     }
 
     @Override
@@ -968,20 +917,25 @@ public class TaxonNameDaoHibernateImpl
 
     @Override
     public long countHybridRelationships(Set<HybridRelationshipType> types) {
-        Criteria criteria = getSession().createCriteria(HybridRelationship.class);
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<HybridRelationship> root = cq.from(HybridRelationship.class);
+
+        List<Predicate> predicates = new ArrayList<>();
 
         if (types != null) {
             if (types.isEmpty()){
                 return 0l;
             }else{
-                criteria.add(Restrictions.in("type", types) );
+                predicates.add(predicateIn(root, "type", types));
             }
         }
-        //count
-        criteria.setProjection(Projections.rowCount());
-        long result = (Long)criteria.uniqueResult();
 
-        return result;
+        cq.select(cb.countDistinct(root))
+          .where(predicateAnd(cb, predicates));
+
+        return getSession().createQuery(cq).getSingleResult();
     }
 
     @Override
@@ -1015,18 +969,19 @@ public class TaxonNameDaoHibernateImpl
 
     //TODO limit start
     @Override
-    public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer limit, Integer start) {
+    public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer pageSize, Integer pageNumber) {
 
-        Criteria crit = getSession().createCriteria(TypeDesignationBase.class);
-        if(limit != null){
-            crit.setMaxResults(limit);
-        }
-        if(start != null){
-            crit.setFirstResult(start);
-        }
-        @SuppressWarnings("unchecked")
-        List<TypeDesignationBase<?>> results = crit.list();
-        return results;
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TypeDesignationBase> cq = cb.createQuery(TypeDesignationBase.class);
+        Root<TypeDesignationBase> root = cq.from(TypeDesignationBase.class);
+
+        cq.select(root)
+          .distinct(true);
+
+        List<TypeDesignationBase<?>> results = (List)addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
+        return deduplicateResult(results);
     }
 
     @Override

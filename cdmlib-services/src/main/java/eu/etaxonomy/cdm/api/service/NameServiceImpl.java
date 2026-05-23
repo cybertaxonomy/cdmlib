@@ -1100,7 +1100,8 @@ public class NameServiceImpl
     }
 
     @Override
-    public List<HashMap<String,String>> getNameRecords(){
+    @Deprecated //only used by csv export, use property path method instead
+    public List<Map<String,String>> getNameRecords(){
 		return dao.getNameRecords();
     }
 
