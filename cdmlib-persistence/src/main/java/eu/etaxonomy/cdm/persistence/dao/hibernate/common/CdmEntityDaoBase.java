@@ -1221,6 +1221,10 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return findByFilter(clazz, filter, null, propertyPaths);
     }
 
+    /**
+     * Returns a single result matching the given filter or <code>null</code> if no such result exists.
+     * If more than one result matches the filter, only the first one is returned.
+     */
     protected <S extends T> S findByFilter(Class<S> clazz, EntityFilter<S> filter,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
@@ -1236,7 +1240,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
           .orderBy(ordersFrom(cb, root, orderHints));
 
         S result = getSession().createQuery(cq)
-               .getSingleResult();
+               .getResultStream().findFirst().orElse(null);
        defaultBeanInitializer.initialize(result, propertyPaths);
        return result;
     }
