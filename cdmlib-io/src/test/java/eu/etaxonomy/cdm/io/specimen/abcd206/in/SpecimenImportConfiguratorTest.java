@@ -103,12 +103,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/AbcdImportTestCalvumPart1.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-        try {
-            configurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
+        configurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
         assertNotNull("Configurator could not be created", configurator);
 
         //test2
@@ -116,7 +111,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		URL url2 = this.getClass().getResource(inputFile2);
 		assertNotNull("URL for the test file '" + inputFile2 + "' does not exist", url2);
 		try {
-			configurator2 = Abcd206ImportConfigurator.NewInstance(new URI(url2), null,false);
+			configurator2 = Abcd206ImportConfigurator.NewInstance(new URI(url2), null, false);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			Assert.fail();
@@ -156,7 +151,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         assertEquals("Number of institutions is incorrect", 1, agentService.count(Institution.class));
     }
 
-
 	@Test
 	@DataSet(value="SpecimenImportConfiguratorTest.doInvoke2.xml",  loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public void testDoInvoke2() {
@@ -190,18 +184,13 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	@Test
     @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testImportSubspecies() {
-        String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/camapanula_abietina_subspecies.xml";
+
+	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/camapanula_abietina_subspecies.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 
         Abcd206ImportConfigurator importConfigurator = null;
-        try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-        assertNotNull("Configurator could not be created", importConfigurator);
+        importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
@@ -221,15 +210,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_variety.xml";
 	    URL url = this.getClass().getResource(inputFile);
 	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
-	    Abcd206ImportConfigurator importConfigurator = null;
-	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-	    } catch (URISyntaxException e) {
-	        e.printStackTrace();
-	        Assert.fail();
-	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
+	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
@@ -258,16 +239,8 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/MultipleIdentificationsPreferredFlag.xml";
 	    URL url = this.getClass().getResource(inputFile);
 	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
-	    Abcd206ImportConfigurator importConfigurator = null;
-	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-	        importConfigurator.setAddDeterminations(true);
-	    } catch (URISyntaxException e) {
-	        e.printStackTrace();
-	        Assert.fail();
-	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
+	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
+	    importConfigurator.setAddDeterminations(true);
 
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
@@ -293,7 +266,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	            assertEquals(nonPreferredNameCache,determinationEvent.getTaxonName().getNameCache());
 	        }
 	    }
-
 	}
 
 	@Test
@@ -302,15 +274,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/C_drabifolia_major.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
-        Abcd206ImportConfigurator importConfigurator = null;
-        try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-        assertNotNull("Configurator could not be created", importConfigurator);
+        Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
@@ -323,14 +287,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    URL url = this.getClass().getResource(inputFile);
 	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 
-	    Abcd206ImportConfigurator importConfigurator = null;
-	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-	    } catch (URISyntaxException e) {
-	        e.printStackTrace();
-	        Assert.fail();
-	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
+	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
 	    importConfigurator.setMapUnitIdToBarcode(true);
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
@@ -347,15 +304,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
 	    URL url = this.getClass().getResource(inputFile);
 	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
-	    Abcd206ImportConfigurator importConfigurator = null;
-	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-	    } catch (URISyntaxException e) {
-	        e.printStackTrace();
-	        Assert.fail();
-	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
+	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
 	    importConfigurator.setMapUnitIdToAccessionNumber(true);
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
@@ -372,17 +321,9 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
 	    URL url = this.getClass().getResource(inputFile);
 	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
-	    Abcd206ImportConfigurator importConfigurator = null;
-	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-	    } catch (URISyntaxException e) {
-	        e.printStackTrace();
-	        Assert.fail();
-	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
-
+	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 	    importConfigurator.setMapUnitIdToCatalogNumber(true);
+
 	    boolean result = defaultImport.invoke(importConfigurator).isSuccess();
 	    assertTrue("Return value for import.invoke should be true", result);
 	    List<DerivedUnit> list = occurrenceService.list(DerivedUnit.class, null, null, null, null);
@@ -418,21 +359,13 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 //            e.printStackTrace();
 //        }
 
-
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
-        Abcd206ImportConfigurator importConfigurator = null;
-        try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-            importConfigurator.setDnaSoure(null);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-        assertNotNull("Configurator could not be created", importConfigurator);
+        Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
+        importConfigurator.setDnaSoure(null);
         importConfigurator.setIgnoreImportOfExistingSpecimen(true);
+
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of derived units is incorrect", 1, occurrenceService.count(DerivedUnit.class));
@@ -441,7 +374,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
         DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
         assertTrue(derivedUnits.contains(derivedUnit));
-
     }
 
 	@Test
@@ -452,18 +384,10 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
-        Abcd206ImportConfigurator importConfigurator = null;
-        try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-            importConfigurator.setDnaSoure(URI.create("https://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank"));
-
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-        assertNotNull("Configurator could not be created", importConfigurator);
+        Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
+        importConfigurator.setDnaSoure(URI.create("https://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank"));
         importConfigurator.setIgnoreImportOfExistingSpecimen(true);
+
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of derived units is incorrect", 2, occurrenceService.count(DerivedUnit.class));
@@ -472,7 +396,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
         DerivedUnit derivedUnit = (DerivedUnit) occurrenceService.load(derivedUnit1Uuid);
         assertTrue(derivedUnits.contains(derivedUnit));
-
     }
 
 	/**
@@ -491,16 +414,8 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577_two_units_almost_same.xml";
 	    URL url = this.getClass().getResource(inputFile);
 	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
-	    Abcd206ImportConfigurator importConfigurator = null;
-	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-	        importConfigurator.setDnaSoure(null);
-	    } catch (URISyntaxException e) {
-	        e.printStackTrace();
-	        Assert.fail();
-	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
+	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
+	    importConfigurator.setDnaSoure(null);
 
 	    //test initial state
 	    Taxon taxon = (Taxon) taxonService.load(taxonUUID);
@@ -536,9 +451,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         }
 	    assertEquals(1, classification.getAllNodes().size());
 	    assertEquals(2, defaultClassification.getAllNodes().size());
-
 	}
-
 
     /**
      * Test should NOT create new taxa of the same name but have different authors.
@@ -605,15 +518,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577.xml";
 	    URL url = this.getClass().getResource(inputFile);
 	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
-	    Abcd206ImportConfigurator importConfigurator = null;
-	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-	    } catch (URISyntaxException e) {
-	        e.printStackTrace();
-	        Assert.fail();
-	    }
-	    assertNotNull("Configurator could not be created", importConfigurator);
+	    Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
 	    //test initial state
 	    Taxon taxon = (Taxon) taxonService.load(taxonUUID);
@@ -632,8 +537,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	    assertEquals(1, classificationService.count(Classification.class));
 	    assertEquals(1, classification.getAllNodes().size());//taxon node
 	    assertEquals(2, taxonNodeService.count(TaxonNode.class));//root node + Taxon node = 2 nodes
-
-
 	}
 
     /**
@@ -655,22 +558,13 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_barbata.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
-        Abcd206ImportConfigurator importConfigurator = null;
-        try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-        assertNotNull("Configurator could not be created", importConfigurator);
+        Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
         //test initial state
         Classification classification = classificationService.load(classificationUUID);
         assertNotNull(classification);
         assertEquals(0, classification.getAllNodes().size());
         assertEquals(1, classificationService.count(Classification.class));
-
 
         importConfigurator.setIgnoreAuthorship(true);
         importConfigurator.setClassificationUuid(classificationUUID);
@@ -693,7 +587,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         }
 
         assertEquals(3, defaultClassification.getAllNodes().size());
-
 	}
 
     /**
@@ -709,15 +602,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_americana.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-
-        Abcd206ImportConfigurator importConfigurator = null;
-        try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-        assertNotNull("Configurator could not be created", importConfigurator);
+        Abcd206ImportConfigurator importConfigurator = Abcd206ImportConfigurator.NewInstance(URI.create(url.toString()), null, false);
 
         boolean result = defaultImport.invoke(importConfigurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
@@ -756,7 +641,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
         setComplete();
         endTransaction();
-
 
         try {
             writeDbUnitDataSetFile(new String[] {

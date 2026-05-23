@@ -1244,6 +1244,4 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
        defaultBeanInitializer.initialize(result, propertyPaths);
        return result;
     }
-
-
 }
