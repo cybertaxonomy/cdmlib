@@ -29,7 +29,6 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
@@ -125,43 +124,15 @@ public class DefinedTermDaoImpl
 		indexedClasses[24] = TaxonRelationshipType.class;
 	}
 
-	/**
-	 * Searches by Label
-	 */
 	@Override
-    public List<DefinedTermBase> findByLabel(String queryString) {
-		return findByLabel(queryString, null);
-	}
-
-	/**
-	 * Searches by Label
-	 */
-	@Override
-    public List<DefinedTermBase> findByLabel(String queryString, CdmBase sessionObject) {
-		checkNotInPriorView("DefinedTermDaoImpl.findByTitle(String queryString, CdmBase sessionObject)");
-		Session session = getSession();
-		if ( sessionObject != null ) {//attache the object to the session, TODO needed?
-			session.update(sessionObject);
-		}
-		Query<DefinedTermBase> query = session.createQuery("SELECT term "
-		        + " FROM DefinedTermBase term JOIN FETCH term.representations representation "
-		        + " WHERE representation.label = :label",
-		        DefinedTermBase.class);
-		query.setParameter("label", queryString);
-		@SuppressWarnings("rawtypes")
-		List<DefinedTermBase> result = deduplicateResult(query.list());
-		return result;
-	}
-
-	@Override
-    public Country getCountryByIso(String iso3166) {
+    public Country findCountryByIso(String iso3166) {
 		// If iso639 = "" query returns non-unique result. We prevent this here:
 		if (StringUtils.isBlank(iso3166) || iso3166.length()<2 || iso3166.length()>3) { return null; }
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query<Country> query = getSession().createQuery("FROM Country WHERE iso3166_A2 = :isoCode OR idInVocabulary = :isoCode", Country.class);
-		    query.setParameter("isoCode", iso3166);
-		    return query.uniqueResult();
+		    EntityFilter<Country> filter = DefinedTermFilters.countryByIsoFilter(iso3166);
+            return findByFilter(Country.class, filter, null);
+
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Country.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("iso3166_A2").eq(iso3166));
@@ -171,7 +142,7 @@ public class DefinedTermDaoImpl
 	}
 
 	@Override
-    public <T extends DefinedTermBase<T>> List<T> listDefinedTermsByRepresentationText(String text, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+    public <T extends DefinedTermBase<T>> List<T> listByRepresentationText(String text, Class<T> clazz, Integer pageSize, Integer pageNumber) {
 		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationText(String text, Class<T> clazz, Integer pageSize, Integer pageNumber)");
 
 		CriteriaBuilder cb = getCriteriaBuilder();
@@ -191,44 +162,26 @@ public class DefinedTermDaoImpl
 	}
 
 	@Override
-    public <T extends DefinedTermBase<T>> long countDefinedTermsByRepresentationText(String text, Class<T> clazz) {
+    public <T extends DefinedTermBase<T>> long countByRepresentationText(String text, Class<T> clazz) {
 
 	    checkNotInPriorView("DefinedTermDaoImpl.countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz)");
 
-	    CriteriaBuilder cb = getCriteriaBuilder();
-	    CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<T> root = cq.from(clazz);
-
-	    Predicate predicate = DefinedTermFilters.representationTextFilter(text, clazz).toPredicate(root, cb);
-
-	    cq.select(cb.countDistinct(root))
-	      .where(predicate);
-
-	    return getSession().createQuery(cq).getSingleResult();
+	    return countByFilter(clazz,
+                DefinedTermFilters.representationTextFilter(text, clazz));
 	}
 
     @Override
-    public <T extends DefinedTermBase> List<T> findDefinedTermByIdInVocabulary(String idInVocabulary, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+    public <T extends DefinedTermBase> List<T> listByIdInVocabulary(String idInVocabulary,
+            UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+
         checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByIdInVocabulary(String idInVocabulary, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber)");
 
-        CriteriaBuilder cb = getCriteriaBuilder();
-        CriteriaQuery<T> cq = cb.createQuery(clazz);
-        Root<T> root = cq.from(clazz);
-
-        Predicate predicate = DefinedTermFilters.idInVocabularyFilter(idInVocabulary, vocUuid, clazz).toPredicate(root, cb);
-
-        cq.select(root)
-          .distinct(true)
-          .where(predicate);
-
-        List<T> results = addPageSizeAndNumber(
-                getSession().createQuery(cq), pageSize, pageNumber)
-               .getResultList();
-        return deduplicateResult(results);
+        EntityFilter<T> filter = DefinedTermFilters.idInVocabularyFilter(idInVocabulary, vocUuid, clazz);
+        return this.listByFilter(clazz, filter, pageSize, pageNumber, null, null);
    }
 
 	@Override
-	public <T extends DefinedTermBase> List<UUID> getUuidByIdInVocabulary(String idInVoc, UUID vocUuid, Class<T> clazz) {
+	public <T extends DefinedTermBase> List<UUID> listUuidsByIdInVocabulary(String idInVoc, UUID vocUuid, Class<T> clazz) {
 		checkNotInPriorView("DefinedTermDaoImpl.getUuidByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber)");
 
 //		Criteria criteria = getCriteria(clazz);
@@ -251,7 +204,7 @@ public class DefinedTermDaoImpl
 	}
 
     @Override
-	public <T extends DefinedTermBase> List<T> listDefinedTermByRepresentationAbbrev(String text, Class<T> clazz, Integer pageSize,Integer pageNumber) {
+	public <T extends DefinedTermBase> List<T> listByRepresentationAbbrev(String text, Class<T> clazz, Integer pageSize,Integer pageNumber) {
 		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationAbbrev(String abbrev, Class<T> clazz, Integer pageSize,Integer pageNumber)");
 
         CriteriaBuilder cb = getCriteriaBuilder();
@@ -271,28 +224,15 @@ public class DefinedTermDaoImpl
 	}
 
 	@Override
-	public <T extends DefinedTermBase<T>> long countDefinedTermByRepresentationAbbrev(String text, Class<T> clazz) {
+	public <T extends DefinedTermBase<T>> long countByRepresentationAbbrev(String text, Class<T> clazz) {
 	    checkNotInPriorView("DefinedTermDaoImpl.countDefinedTermByRepresentationAbbrev(String abbrev, Class<? extends DefinedTermBase> clazz)");
 
-	    EntityFilter<T> filter = DefinedTermFilters.representationAbbreviationFilter(text, clazz);
-
-        return countByPredicate(clazz, filter);
+        return countByFilter(clazz,
+                DefinedTermFilters.representationAbbreviationFilter(text, clazz));
 	}
 
-    protected <T extends DefinedTermBase<T>> long countByPredicate(Class<T> clazz, EntityFilter<T> filter) {
-
-        CriteriaBuilder cb = getCriteriaBuilder();
-        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<T> root = cq.from(clazz);
-
-        cq.select(cb.countDistinct(root))
-          .where(filter.toPredicate(root, cb));
-
-        return getSession().createQuery(cq).getSingleResult();
-    }
-
 	@Override
-    public Language getLanguageByIso(String iso639) {
+    public Language findLanguageByIso(String iso639) {
 		if (iso639.length() < 2 || iso639.length() > 3) {
 			logger.warn("Invalid length " + iso639.length() + " of requested ISO code. Length must be 2 or 3.");
 			return null;
@@ -331,20 +271,20 @@ public class DefinedTermDaoImpl
 	 *  are unique, use from Language where iso639_1 in (:isoCode) or iso639_2 in (:isoCode)
 	 */
 	@Override
-    public List<Language> getLanguagesByIso(List<String> iso639List) {
+    public List<Language> listLanguagesByIso(List<String> iso639List) {
 		List<Language> languages = new ArrayList<>(iso639List.size());
 		for (String iso639 : iso639List) {
-			languages.add(getLanguageByIso(iso639));
+			languages.add(findLanguageByIso(iso639));
 		}
 		return languages;
 	}
 
 	@Override
-    public List<Language> getLanguagesByLocale(Enumeration<Locale> locales) {
+    public List<Language> listLanguagesByLocale(Enumeration<Locale> locales) {
 		List<Language> languages = new ArrayList<>();
 		while(locales.hasMoreElements()) {
 			Locale locale = locales.nextElement();
-			languages.add(getLanguageByIso(locale.getLanguage()));
+			languages.add(findLanguageByIso(locale.getLanguage()));
 		}
 		return languages;
 	}
@@ -354,16 +294,8 @@ public class DefinedTermDaoImpl
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 
-	        CriteriaBuilder cb = getCriteriaBuilder();
-	        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-	        Root<NamedArea> root = cq.from(NamedArea.class);
-
-	        List<Predicate> predicates = namedAreaLevelAndTypePredicate(level, type, cb, root);
-
-	        cq.select(cb.countDistinct(root))
-	          .where(predicateAnd(cb, predicates));
-
-	        return getSession().createQuery(cq).getSingleResult();
+		    return countByFilter(NamedArea.class,
+		            DefinedTermFilters.namedAreaLevelAndTypeFilter(level, type));
 
 		} else {
 			AuditQuery query = makeAuditQuery(NamedArea.class, auditEvent);
@@ -393,7 +325,7 @@ public class DefinedTermDaoImpl
 	}
 
 	@Override
-    public List<Media> getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber) {
+    public List<Media> listMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber) {
 		checkNotInPriorView("DefinedTermDaoImpl.getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber)");
 		Query<Media> query = getSession().createQuery(
 		           "SELECT media "
@@ -413,28 +345,11 @@ public class DefinedTermDaoImpl
     public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,
 			List<OrderHint> orderHints, List<String> propertyPaths) {
 
-	    List<NamedArea> result;
-
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if (auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 
-            CriteriaBuilder cb = getCriteriaBuilder();
-            CriteriaQuery<NamedArea> cq = cb.createQuery(NamedArea.class);
-            Root<NamedArea> root = cq.from(NamedArea.class);
-
-            List<Predicate> predicates = namedAreaLevelAndTypePredicate(level, type, cb, root);
-
-            cq.select(root)
-              .distinct(true)
-              .where(predicateAnd(cb, predicates))
-              .orderBy(ordersFrom(cb, root, orderHints));
-
-            List<NamedArea> results = addPageSizeAndNumber(
-                    getSession().createQuery(cq), pageSize, pageNumber)
-                   .getResultList();
-           defaultBeanInitializer.initializeAll(results, propertyPaths);
-           return deduplicateResult(results);
-
+            return listByFilter(NamedArea.class, DefinedTermFilters.namedAreaLevelAndTypeFilter(level, type), pageSize,
+                    pageNumber, orderHints, propertyPaths);
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NamedArea.class,
 				auditEvent.getRevisionNumber());
@@ -444,40 +359,9 @@ public class DefinedTermDaoImpl
 			if (type != null) {
 				query.add(AuditEntity.relatedId("type").eq(type.getId()));
 			}
-			result = deduplicateResult(query.getResultList());
-		}
-
-		defaultBeanInitializer.initializeAll(result, propertyPaths);
-
-		return result;
-	}
-
-    private List<Predicate> namedAreaLevelAndTypePredicate(NamedAreaLevel level, NamedAreaType type, CriteriaBuilder cb,
-            Root<NamedArea> root) {
-        List<Predicate> predicates = new ArrayList<>();
-
-        predicates.add(predicateEqualIfNotNull(cb, root, "level", level));
-        predicates.add(predicateEqualIfNotNull(cb, root, "type", type));
-        return predicates;
-    }
-
-
-	@Override
-    public <T extends DefinedTermBase> long countGeneralizationOf(T kindOf) {
-		AuditEvent auditEvent = getAuditEventFromContext();
-		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query<Long> query = getSession().createQuery(
-		            "   SELECT count(term) "
-		            + " FROM DefinedTermBase term "
-		            + " WHERE term.kindOf = :kindOf",
-		            Long.class);
-		    query.setParameter("kindOf", kindOf);
-		    return query.uniqueResult();
-		} else {
-            AuditQuery query = makeAuditQuery(DefinedTermBase.class,auditEvent);
-			query.add(AuditEntity.relatedId("kindOf").eq(kindOf.getId()));
-		    query.addProjection(AuditEntity.id().count());
-		    return (Long)query.getSingleResult();
+			List<NamedArea> result = deduplicateResult(query.getResultList());
+			defaultBeanInitializer.initializeAll(result, propertyPaths);
+			return result;
 		}
 	}
 
@@ -508,28 +392,7 @@ public class DefinedTermDaoImpl
 	}
 
 	@Override
-    public <T extends DefinedTermBase> List<T> getGeneralizationOf(T kindOf, Integer pageSize, Integer pageNumber) {
-		AuditEvent auditEvent = getAuditEventFromContext();
-		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Query<DefinedTermBase> query = getSession().createQuery("SELECT term FROM DefinedTermBase term WHERE term.kindOf = :kindOf", DefinedTermBase.class);
-		    query.setParameter("kindOf", kindOf);
-
-		    addPageSizeAndNumber(query, pageSize, pageNumber);
-            return (List)deduplicateResult(query.list());
-		} else {
-			 AuditQuery query = makeAuditQuery(DefinedTermBase.class, auditEvent);
-			 query.add(AuditEntity.relatedId("kindOf").eq(kindOf.getId()));
-
-			 addPageSizeAndNumber(query, pageSize, pageNumber);
-
-             @SuppressWarnings("unchecked")
-             List<T> result = deduplicateResult(query.getResultList());
-             return result;
-		}
-	}
-
-	@Override
-    public <T extends DefinedTermBase> List<T> getIncludes(Collection<T> partOf,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public <T extends DefinedTermBase> List<T> listIncludes(Collection<T> partOf, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		if (partOf == null || partOf.isEmpty()){
 			return new ArrayList<>();
 		}
@@ -560,7 +423,11 @@ public class DefinedTermDaoImpl
 	@Override
     public <T extends DefinedTermBase> long countPartOf(Set<T> definedTerms) {
 		checkNotInPriorView("DefinedTermDaoImpl.countPartOf(Set<T> definedTerms)");
-		Query<Long> query = getSession().createQuery("SELECT count(DISTINCT definedTerm) FROM DefinedTermBase definedTerm JOIN definedTerm.includes included WHERE included in (:definedTerms)", Long.class);
+		Query<Long> query = getSession().createQuery(
+		          " SELECT count(DISTINCT definedTerm) "
+		        + " FROM DefinedTermBase definedTerm "
+		        + "     JOIN definedTerm.includes included "
+		        + " WHERE included in (:definedTerms)", Long.class);
 		query.setParameterList("definedTerms", definedTerms);
 		return query.uniqueResult();
 	}
@@ -568,7 +435,7 @@ public class DefinedTermDaoImpl
 	//preliminary until term structure has been finalized
 	//areaTree already added but not in use yet
     @Override
-    public List<NamedAreaDto> getPartOfNamedAreas(Set<UUID> areaUuids, SetMap<NamedArea,NamedArea> parentAreaMap) {
+    public List<NamedAreaDto> listPartOfNamedAreasAsDto(Set<UUID> areaUuids, SetMap<NamedArea,NamedArea> parentAreaMap) {
 
         Query<NamedArea> query = getSession().createQuery("SELECT DISTINCT definedTerm "
                 + " FROM NamedArea definedTerm "
@@ -600,7 +467,7 @@ public class DefinedTermDaoImpl
     }
 
    @Override
-    public <T extends DefinedTermBase> List<T> getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public <T extends DefinedTermBase> List<T> listPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
 	    checkNotInPriorView("DefinedTermDaoImpl.getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber)");
 		@SuppressWarnings("unchecked")
@@ -630,20 +497,6 @@ public class DefinedTermDaoImpl
 		    defaultBeanInitializer.initializeAll(results, propertyPaths);
 		}
 		return results;
-	}
-
-	@Override
-    public DefinedTermBase findByUri(URI uri) {
-		AuditEvent auditEvent = getAuditEventFromContext();
-		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Query<DefinedTermBase> query = getSession().createQuery("select term from DefinedTermBase term where term.uri = :uri", DefinedTermBase.class);
-		    query.setParameter("uri", uri);
-		    return query.uniqueResult();
-		} else {
-			AuditQuery query = makeAuditQuery(DefinedTermBase.class, auditEvent);
-			query.add(AuditEntity.property("uri").eq(uri));
-		    return (DefinedTermBase<?>)query.getSingleResult();
-		}
 	}
 
 	@Override
@@ -742,7 +595,7 @@ public class DefinedTermDaoImpl
 
 
     @Override
-    public Collection<TermDto> getIncludesAsDto(
+    public Collection<TermDto> listIncludesAsDto(
             TermDto parentTerm) {
         String queryString;
         if (parentTerm.getTermType().equals(TermType.NamedArea)){
@@ -762,7 +615,7 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public Collection<TermDto> getKindOfsAsDto(TermDto parentTerm) {
+    public Collection<TermDto> listKindOfsAsDto(TermDto parentTerm) {
 
         String queryString;
         if (parentTerm.getTermType().equals(TermType.NamedArea)){
@@ -781,7 +634,7 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public Collection<TermDto> findByTitleAsDtoWithVocDto(String title, TermType termType) {
+    public Collection<TermDto> listByTitleAsDtoWithVocDto(String title, TermType termType) {
 
         //terms
         String termQueryString = TermDto.getTermDtoSelect()
@@ -838,7 +691,7 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public Collection<TermDto> findByTypeAsDto(TermType termType) {
+    public Collection<TermDto> listByTypeAsDto(TermType termType) {
         if (termType == null){
             return null;
         }
@@ -854,7 +707,7 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType) {
+    public Collection<TermDto> listByUriAsDto(URI uri, String termLabel, TermType termType) {
         String queryString = TermDto.getTermDtoSelect()
                 + " where a.uri like :uri "
                 + (termType!=null?" and a.termType = :termType ":"")
@@ -876,7 +729,7 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public  Map<UUID, List<TermDto>> getSupportedStatesForFeature(Set<UUID> featureUuids){
+    public  Map<UUID, List<TermDto>> mapSupportedStatesForFeature(Set<UUID> featureUuids){
         Map<UUID, List<TermDto>> map = new HashMap<>();
         for (UUID featureUuid: featureUuids){
             List<TermDto> list = new ArrayList<>();
@@ -921,7 +774,7 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public  Map<UUID, List<TermDto>> getRecommendedModifiersForFeature(Set<UUID> featureUuids){
+    public  Map<UUID, List<TermDto>> mapRecommendedModifiersByFeature(Set<UUID> featureUuids){
         Map<UUID, List<TermDto>> map = new HashMap<>();
         for (UUID featureUuid: featureUuids){
             List<TermDto> list = new ArrayList<>();
@@ -966,7 +819,7 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList, Language lang) {
+    public Collection<TermDto> listByUUIDsAsDto(List<UUID> uuidList, Language lang) {
         List<TermDto> list = new ArrayList<>();
         if (uuidList == null || uuidList.isEmpty()){
             return null;
@@ -984,7 +837,7 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList) {
+    public Collection<TermDto> listFeaturesByUUIDsAsDto(List<UUID> uuidList) {
         List<TermDto> list = new ArrayList<>();
         if (uuidList == null || uuidList.isEmpty()){
             return null;
@@ -1003,7 +856,7 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public Collection<TermDto> findFeatureByTitleAsDto(String pattern) {
+    public Collection<TermDto> listFeaturesByTitleAsDto(String pattern) {
         String queryString = FeatureDto.getTermDtoSelect()
                 + " where a.titleCache like :title "
                 +  " and a.termType = :termType ";
@@ -1019,7 +872,7 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public TermDto getTermDto(UUID uuid) {
+    public TermDto findTermDto(UUID uuid) {
         String queryString = TermDto.getTermDtoSelect()
                 + " where a.uuid = :uuid ";
 
@@ -1079,11 +932,11 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public Map<UUID, TermDto> findFeatureByUUIDsAsDtos(List<UUID> uuidList){
+    public Map<UUID, TermDto> mapFeatureByUUIDsAsDtos(List<UUID> uuidList){
         if (uuidList == null || uuidList.isEmpty()){
             return null;
         }
-        Collection<TermDto> col = this.findFeatureByUUIDsAsDto(uuidList);
+        Collection<TermDto> col = this.listFeaturesByUUIDsAsDto(uuidList);
         Map<UUID, TermDto> result = new HashMap<>();
         if (col != null){
             for (TermDto dto: col){

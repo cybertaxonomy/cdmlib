@@ -295,7 +295,7 @@ public class DistributionTreeDtoLoader {
 
       List<NamedAreaDto> parentAreas = null;
       if(!childAreas.isEmpty()) {
-          parentAreas = termDao.getPartOfNamedAreas(childAreas, parentAreaMap);
+          parentAreas = termDao.listPartOfNamedAreasAsDto(childAreas, parentAreaMap);
           childAreas.clear();
 //          cdhildAreas.addAll(parentAreas);
       }

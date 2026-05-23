@@ -688,7 +688,7 @@ public class DescriptionDaoImpl
             for (CategoricalDataDto catDto: listCategorical){
                 featureUuids.add(catDto.getFeatureUuid());
             }
-            Map<UUID, TermDto> featureDtos = termDao.findFeatureByUUIDsAsDtos(featureUuids);
+            Map<UUID, TermDto> featureDtos = termDao.mapFeatureByUUIDsAsDtos(featureUuids);
             for (CategoricalDataDto catDto: listCategorical){
                 FeatureDto featuredto = (FeatureDto)featureDtos.get(catDto.getFeatureUuid());
                 catDto.setFeatureDto(featuredto);
@@ -732,7 +732,7 @@ public class DescriptionDaoImpl
             for (CategoricalDataDto catDto: listCategorical){
                 featureUuids.add(catDto.getFeatureUuid());
             }
-            Map<UUID, TermDto> featureDtos = termDao.findFeatureByUUIDsAsDtos(featureUuids);
+            Map<UUID, TermDto> featureDtos = termDao.mapFeatureByUUIDsAsDtos(featureUuids);
             for (CategoricalDataDto catDto: listCategorical){
                 FeatureDto featuredto = (FeatureDto)featureDtos.get(catDto.getFeatureUuid());
                 catDto.setFeatureDto(featuredto);

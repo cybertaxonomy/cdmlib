@@ -102,34 +102,34 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	@Test
 	public void testGetLanguageByIso2() {
-		Language lang = dao.getLanguageByIso("arm");
+		Language lang = dao.findLanguageByIso("arm");
 		assertNotNull(lang);
 		assertEquals("getLanguageByIso should return the correct Language instance",lang.getUuid(), armUuid);
 	}
 
 	@Test
 	public void testGetLanguageByIso1() {
-		Language lang = dao.getLanguageByIso("hy");
+		Language lang = dao.findLanguageByIso("hy");
 		assertNotNull(lang);
 		assertEquals("getLanguageByIso should return the correct Language instance",lang.getUuid(), armUuid);
 	}
 
 	@Test
 	public void testGetLanguageByMalformedIso1() {
-		Language lang = dao.getLanguageByIso("a");
+		Language lang = dao.findLanguageByIso("a");
 		assertNull("getLanguageByIso should return null for this malformed Iso \'a\'",lang);
 	}
 
 	@Test
 	public void testGetLanguageByMalformedIso2() {
-		Language lang = dao.getLanguageByIso("abcd");
+		Language lang = dao.findLanguageByIso("abcd");
 		assertNull("getLanguageByIso should return null for this malformed Iso \'abcd\'",lang);
 	}
 
 	@Test
 	public void testGetDefinedTermByIdInVocabulary(){
 		UUID tdwgVocUuid = NamedArea.uuidTdwgAreaVocabulary;
-		List<NamedArea> list = dao.findDefinedTermByIdInVocabulary("GER", tdwgVocUuid, NamedArea.class, null, null);
+		List<NamedArea> list = dao.listByIdInVocabulary("GER", tdwgVocUuid, NamedArea.class, null, null);
 		assertNotNull("Method should return a result", list);
 		assertEquals("Method should return exactly 1 area", 1, list.size());
 		NamedArea area = list.get(0);
@@ -146,7 +146,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 		List<String> propertyPaths = new ArrayList<String>();
 		propertyPaths.add("level");
 
-		List<NamedArea> includes = dao.getIncludes(namedAreas, null, null,propertyPaths);
+		List<NamedArea> includes = dao.listIncludes(namedAreas, null, null, propertyPaths);
 
 		assertNotNull("getIncludes should return a List",includes);
 		assertFalse("The list should not be empty",includes.isEmpty());
@@ -179,7 +179,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 		List<String> propertyPaths = new ArrayList<String>();
 		propertyPaths.add("level");
 
-		List<NamedArea> partOf = dao.getPartOf(namedAreas, null, null, propertyPaths);
+		List<NamedArea> partOf = dao.listPartOf(namedAreas, null, null, propertyPaths);
 
 		assertNotNull("getPartOf should return a List",partOf);
 		assertFalse("The list should not be empty",partOf.isEmpty());
