@@ -10,8 +10,8 @@ package eu.etaxonomy.cdm.api.filter;
 
 
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  * Workaround for Specification pattern that comes with Spring Data which is not yet available.
@@ -22,6 +22,9 @@ import javax.persistence.criteria.Predicate;
 @FunctionalInterface
 public interface EntityFilter<T> {
 
-    public Predicate toPredicate(Path<T> path, CriteriaBuilder cb);
+    //Note: Root may be changed to From or Path in the future if needed
+    //      But Path requires a second interface because at least for joins
+    //      we need From and not Path (e.g. in DefinedTermBaseFilter)
+    public Predicate toPredicate(Root<T> path, CriteriaBuilder cb);
 
 }

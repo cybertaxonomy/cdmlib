@@ -578,7 +578,7 @@ public abstract class DaoBase {
     }
 
     protected <T> Predicate predicateFromFilter(List<EntityFilter<T>> filter,
-            CriteriaBuilder cb, Path<T> path) {
+            CriteriaBuilder cb, Root<T> path) {
         if (CdmUtils.isNullSafeEmpty(filter)) {
             return null;
         }
@@ -593,7 +593,7 @@ public abstract class DaoBase {
      * the filter predicates.
      */
     protected <T> Predicate addPredicateFromFilter(Predicate firstPredicate, List<EntityFilter<T>> filter, CriteriaBuilder cb,
-            Path<T> root) {
+            Root<T> root) {
 
         Predicate filterPredicate = predicateFromFilter(filter, cb, root);
         if (firstPredicate == null) {

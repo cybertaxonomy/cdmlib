@@ -127,8 +127,10 @@ public class TermServiceImpl
 	}
 
 	@Override
-    public <TERM extends DefinedTermBase> TERM findByIdInVocabulary(String id, UUID vocabularyUuid, Class<TERM> clazz) throws IllegalArgumentException {
-        List<TERM> list = dao.getDefinedTermByIdInVocabulary(id, vocabularyUuid, clazz, null, null);
+    public <TERM extends DefinedTermBase> TERM findByIdInVocabulary(String id, UUID vocabularyUuid, Class<TERM> clazz)
+            throws IllegalArgumentException {
+
+	    List<TERM> list = dao.findDefinedTermByIdInVocabulary(id, vocabularyUuid, clazz, null, null);
 		if (list.isEmpty()){
 			return null;
 		}else if (list.size() == 1){
@@ -157,15 +159,7 @@ public class TermServiceImpl
 		if (StringUtils.isBlank(tdwgAbbreviation)){ //TDWG areas should always have a label
 			return null;
 		}
-		List<NamedArea> list = dao.getDefinedTermByIdInVocabulary(tdwgAbbreviation, NamedArea.uuidTdwgAreaVocabulary, NamedArea.class, null, null);
-		if (list.isEmpty()){
-			return null;
-		}else if (list.size() == 1){
-			return list.get(0);
-		}else{
-			String message = "There is more then 1 (%d) TDWG area with the same abbreviated label. This is forbidden. Check the state of your database.";
-			throw new IllegalStateException(String.format(message, list.size()));
-		}
+		return findByIdInVocabulary(tdwgAbbreviation, NamedArea.uuidTdwgAreaVocabulary, NamedArea.class);
 	}
 
 	@Override
@@ -248,7 +242,7 @@ public class TermServiceImpl
 
 		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getDefinedTermByRepresentationAbbrev(abbrev, clazz, pageSize, pageNumber);
+			results = dao.listDefinedTermByRepresentationAbbrev(abbrev, clazz, pageSize, pageNumber);
 		}
 
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);

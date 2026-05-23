@@ -129,7 +129,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	public void testGetDefinedTermByIdInVocabulary(){
 		UUID tdwgVocUuid = NamedArea.uuidTdwgAreaVocabulary;
-		List<NamedArea> list = dao.getDefinedTermByIdInVocabulary("GER", tdwgVocUuid, NamedArea.class, null, null);
+		List<NamedArea> list = dao.findDefinedTermByIdInVocabulary("GER", tdwgVocUuid, NamedArea.class, null, null);
 		assertNotNull("Method should return a result", list);
 		assertEquals("Method should return exactly 1 area", 1, list.size());
 		NamedArea area = list.get(0);

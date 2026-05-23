@@ -29,10 +29,7 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
@@ -40,6 +37,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
+import eu.etaxonomy.cdm.api.filter.DefinedTermFilters;
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -172,47 +171,60 @@ public class DefinedTermDaoImpl
 	}
 
 	@Override
-    public <T extends DefinedTermBase> List<T> listDefinedTermsByRepresentationText(String text, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+    public <T extends DefinedTermBase<T>> List<T> listDefinedTermsByRepresentationText(String text, Class<T> clazz, Integer pageSize, Integer pageNumber) {
 		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationText(String text, Class<T> clazz, Integer pageSize, Integer pageNumber)");
 
-		Criteria criteria = getCriteria(clazz);
+		CriteriaBuilder cb = getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(clazz);
+		Root<T> root = cq.from(clazz);
 
-		criteria.createAlias("representations", "r").add(Restrictions.like("r.text", text));
+		Predicate predicate = DefinedTermFilters.representationTextFilter(text, clazz).toPredicate(root, cb);
 
-		addPageSizeAndNumber(criteria, pageSize, pageNumber);
+		cq.select(root)
+		  .distinct(true)
+		  .where(predicate);
 
-		@SuppressWarnings("unchecked")
-        List<T> result = deduplicateResult(criteria.list());
-		return result;
+		List<T> results = addPageSizeAndNumber(
+		        getSession().createQuery(cq), pageSize, pageNumber)
+		       .getResultList();
+		return deduplicateResult(results);
 	}
 
 	@Override
-    public long countDefinedTermsByRepresentationText(String text, Class<? extends DefinedTermBase> clazz) {
+    public <T extends DefinedTermBase<T>> long countDefinedTermsByRepresentationText(String text, Class<T> clazz) {
+
 	    checkNotInPriorView("DefinedTermDaoImpl.countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz)");
-		Criteria criteria = getCriteria(clazz);
 
-		criteria.createAlias("representations", "r").add(Restrictions.like("r.text", text));
+	    CriteriaBuilder cb = getCriteriaBuilder();
+	    CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<T> root = cq.from(clazz);
 
-		criteria.setProjection(Projections.rowCount());
+	    Predicate predicate = DefinedTermFilters.representationTextFilter(text, clazz).toPredicate(root, cb);
 
-		return (Long)criteria.uniqueResult();
+	    cq.select(cb.countDistinct(root))
+	      .where(predicate);
+
+	    return getSession().createQuery(cq).getSingleResult();
 	}
 
     @Override
-    public <T extends DefinedTermBase> List<T> getDefinedTermByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber) {
-        checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber)");
+    public <T extends DefinedTermBase> List<T> findDefinedTermByIdInVocabulary(String idInVocabulary, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+        checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByIdInVocabulary(String idInVocabulary, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber)");
 
-        Criteria criteria = getCriteria(clazz);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(clazz);
+        Root<T> root = cq.from(clazz);
 
-        criteria.createAlias("vocabulary", "voc")
-            .add(Restrictions.like("voc.uuid", vocUuid))
-            .add(Restrictions.like("idInVocabulary", label, org.hibernate.criterion.MatchMode.EXACT));
+        Predicate predicate = DefinedTermFilters.idInVocabularyFilter(idInVocabulary, vocUuid, clazz).toPredicate(root, cb);
 
-        addPageSizeAndNumber(criteria, pageSize, pageNumber);
+        cq.select(root)
+          .distinct(true)
+          .where(predicate);
 
-        @SuppressWarnings("unchecked")
-        List<T> result = deduplicateResult(criteria.list());
-        return result;
+        List<T> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
+        return deduplicateResult(results);
    }
 
 	@Override
@@ -239,30 +251,45 @@ public class DefinedTermDaoImpl
 	}
 
     @Override
-	public <T extends DefinedTermBase> List<T> getDefinedTermByRepresentationAbbrev(String text, Class<T> clazz, Integer pageSize,Integer  pageNumber) {
-		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationAbbrev(String abbrev, Class<T> clazz, Integer pageSize,Integer  pageNumber)");
+	public <T extends DefinedTermBase> List<T> listDefinedTermByRepresentationAbbrev(String text, Class<T> clazz, Integer pageSize,Integer pageNumber) {
+		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationAbbrev(String abbrev, Class<T> clazz, Integer pageSize,Integer pageNumber)");
 
-		Criteria criteria = getCriteria(clazz);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(clazz);
+        Root<T> root = cq.from(clazz);
 
-		criteria.createAlias("representations", "r").add(Restrictions.like("r.abbreviatedLabel", text));
+        Predicate predicate = DefinedTermFilters.representationAbbreviationFilter(text, clazz).toPredicate(root, cb);
 
-		addPageSizeAndNumber(criteria, pageSize, pageNumber);
+        cq.select(root)
+          .distinct(true)
+          .where(predicate);
 
-		@SuppressWarnings("unchecked")
-		List<T> result = deduplicateResult(criteria.list());
-		return result;
+        List<T> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
+        return deduplicateResult(results);
 	}
 
 	@Override
-	public long countDefinedTermByRepresentationAbbrev(String text, Class<? extends DefinedTermBase> clazz) {
+	public <T extends DefinedTermBase<T>> long countDefinedTermByRepresentationAbbrev(String text, Class<T> clazz) {
 	    checkNotInPriorView("DefinedTermDaoImpl.countDefinedTermByRepresentationAbbrev(String abbrev, Class<? extends DefinedTermBase> clazz)");
-		Criteria criteria = getCriteria(clazz);
 
-		criteria.createAlias("representations", "r").add(Restrictions.like("r.abbreviatedLabel", text));
-		criteria.setProjection(Projections.rowCount());
+	    EntityFilter<T> filter = DefinedTermFilters.representationAbbreviationFilter(text, clazz);
 
-        return (Long)criteria.uniqueResult();
+        return countByPredicate(clazz, filter);
 	}
+
+    protected <T extends DefinedTermBase<T>> long countByPredicate(Class<T> clazz, EntityFilter<T> filter) {
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<T> root = cq.from(clazz);
+
+        cq.select(cb.countDistinct(root))
+          .where(filter.toPredicate(root, cb));
+
+        return getSession().createQuery(cq).getSingleResult();
+    }
 
 	@Override
     public Language getLanguageByIso(String iso639) {
@@ -622,6 +649,7 @@ public class DefinedTermDaoImpl
 	@Override
 	public <T extends DefinedTermBase> List<T> listByTermType(TermType termType, Integer limit, Integer start,
 	        List<OrderHint> orderHints, List<String> propertyPaths) {
+
 	    @SuppressWarnings("unchecked")
         Query<T> query = getSession().createQuery("SELECT term FROM DefinedTermBase term WHERE term.termType = :termType");
 	    query.setParameter("termType", termType);

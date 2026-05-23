@@ -60,13 +60,13 @@ public interface IDefinedTermDao
      */
 	public Country getCountryByIso(String iso639);
 
-	public <TYPE extends DefinedTermBase> List<TYPE> listDefinedTermsByRepresentationText(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
+	public <TYPE extends DefinedTermBase<TYPE>> List<TYPE> listDefinedTermsByRepresentationText(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
 
-	public long countDefinedTermsByRepresentationText(String text, Class<? extends DefinedTermBase> clazz);
+	public <TYPE extends DefinedTermBase<TYPE>> long countDefinedTermsByRepresentationText(String text, Class<TYPE> clazz);
 
-	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationAbbrev(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
+	public <TYPE extends DefinedTermBase> List<TYPE> listDefinedTermByRepresentationAbbrev(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
 
-	public long countDefinedTermByRepresentationAbbrev(String text, Class<? extends DefinedTermBase> clazz);
+	public <TYPE extends DefinedTermBase<TYPE>> long countDefinedTermByRepresentationAbbrev(String text, Class<TYPE> clazz);
 
     /**
      * Returns a List of Media that represent a given DefinedTerm instance
@@ -196,7 +196,8 @@ public interface IDefinedTermDao
 	/**
 	 * Returns a term or a list of terms depending of the label/id used in its vocabulary.
 	 */
-	public <TERM extends DefinedTermBase> List<TERM> getDefinedTermByIdInVocabulary(String idInVoc, UUID vocUuid, Class<TERM> clazz, Integer pageSize, Integer pageNumber);
+	public <TERM extends DefinedTermBase> List<TERM> findDefinedTermByIdInVocabulary(
+	        String idInVoc, UUID vocUuid, Class<TERM> clazz, Integer pageSize, Integer pageNumber);
 
 	public <TERM extends DefinedTermBase> List<UUID> getUuidByIdInVocabulary(String idInVoc, UUID vocUuid, Class<TERM> clazz);
 
