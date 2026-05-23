@@ -28,6 +28,7 @@ public class DefinedTermFilters extends CdmFiltersBase {
     public static final String ID_IN_VOC = "idInVocabulary";
     public static final String ABBREV_LABEL = "abbreviatedLabel";
     public static final String REPRESENTATIONS = "representations";
+    public static final String VOCABULARY = "vocabulary";
     public static final String ISO_3166_A2 = "iso3166_A2";
 
 
@@ -47,17 +48,7 @@ public class DefinedTermFilters extends CdmFiltersBase {
             String idInVoc, UUID vocabularyUuid, @SuppressWarnings("unused") Class<T> clazzForCasting) {
         return (root, cb) ->
                 cb.and(
-                    cb.equal(root.join(REPRESENTATIONS)
-                            .get(CdmBaseFilters.UUID), vocabularyUuid),
-                    cb.equal(root.get(ID_IN_VOC), idInVoc)
-                );
-    }
-
-    public static <T extends DefinedTermBase<T>> EntityFilter<T> namedAreaLevelAndTypeFilter(
-            String idInVoc, UUID vocabularyUuid, @SuppressWarnings("unused") Class<T> clazzForCasting) {
-        return (root, cb) ->
-                cb.and(
-                    cb.equal(root.join(REPRESENTATIONS)
+                    cb.equal(root.join(VOCABULARY)
                             .get(CdmBaseFilters.UUID), vocabularyUuid),
                     cb.equal(root.get(ID_IN_VOC), idInVoc)
                 );
