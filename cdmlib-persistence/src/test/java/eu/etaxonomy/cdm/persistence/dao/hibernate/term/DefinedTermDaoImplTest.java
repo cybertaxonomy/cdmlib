@@ -101,33 +101,33 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	public void testGetLanguageByIso2() {
+	public void testFindLanguageByIso2() {
 		Language lang = dao.findLanguageByIso("arm");
 		assertNotNull(lang);
 		assertEquals("getLanguageByIso should return the correct Language instance",lang.getUuid(), armUuid);
 	}
 
 	@Test
-	public void testGetLanguageByIso1() {
+	public void testFindLanguageByIso1() {
 		Language lang = dao.findLanguageByIso("hy");
 		assertNotNull(lang);
 		assertEquals("getLanguageByIso should return the correct Language instance",lang.getUuid(), armUuid);
 	}
 
 	@Test
-	public void testGetLanguageByMalformedIso1() {
+	public void testFindLanguageByMalformedIso1() {
 		Language lang = dao.findLanguageByIso("a");
 		assertNull("getLanguageByIso should return null for this malformed Iso \'a\'",lang);
 	}
 
 	@Test
-	public void testGetLanguageByMalformedIso2() {
+	public void testFindLanguageByMalformedIso2() {
 		Language lang = dao.findLanguageByIso("abcd");
 		assertNull("getLanguageByIso should return null for this malformed Iso \'abcd\'",lang);
 	}
 
 	@Test
-	public void testGetDefinedTermByIdInVocabulary(){
+	public void testListByIdInVocabulary(){
 		UUID tdwgVocUuid = NamedArea.uuidTdwgAreaVocabulary;
 		List<NamedArea> list = dao.listByIdInVocabulary("GER", tdwgVocUuid, NamedArea.class, null, null);
 		assertNotNull("Method should return a result", list);
@@ -138,7 +138,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	public void testGetIncludes() {
+	public void testListIncludes() {
 		NamedArea northernEurope = (NamedArea)dao.findByUuid(northernEuropeUuid);
 		assert northernEurope != null : "NamedArea must exist";
 		namedAreas.add(northernEurope);
@@ -165,7 +165,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	public void testGetPartOf() {
+	public void testListPartOf() {
 	    NamedArea northernEurope = (NamedArea)dao.findByUuid(northernEuropeUuid);
 		NamedArea middleEurope = (NamedArea)dao.findByUuid(middleEuropeUuid);
 		NamedArea westTropicalAfrica = (NamedArea)dao.findByUuid(westTropicalAfricaUuid);

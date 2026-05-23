@@ -11,7 +11,6 @@ import org.hibernate.internal.util.StringHelper;
 
 import eu.etaxonomy.cdm.persistence.common.OperationNotSupportedInPriorViewException;
 
-
 public class RandomOrder extends OrderHint {
 
     private static final long serialVersionUID = 9013839425292632385L;

@@ -600,7 +600,6 @@ public class TaxonNameDaoHibernateImpl
         return count(type, restrictions, INCLUDE_UNPUBLISHED);
     }
 
-
     @Override
     public long count(Class<? extends TaxonName> type, List<Restriction<?>> restrictions, boolean includePublished) {
 

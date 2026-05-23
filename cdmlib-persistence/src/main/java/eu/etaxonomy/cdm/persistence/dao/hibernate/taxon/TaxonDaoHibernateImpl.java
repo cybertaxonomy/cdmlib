@@ -136,7 +136,7 @@ public class TaxonDaoHibernateImpl
 
 
     @Override
-    public <S extends TaxonBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
+    public <S extends TaxonBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished) {
 
         Criteria criteria = createCriteria(type, restrictions, false);
@@ -145,7 +145,7 @@ public class TaxonDaoHibernateImpl
             criteria.add(Restrictions.eq("publish", true));
         }
 
-        addLimitAndStart(criteria, limit, start);
+        addPageSizeAndNumber(criteria, pageSize, pageNumber);
         addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")
@@ -788,6 +788,7 @@ public class TaxonDaoHibernateImpl
     @Override
     public long countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
             String infraSpecificEpithet, String authorshipCache, Rank rank) {
+
         checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, String authorshipCache, Rank rank)");
         Criteria criteria = null;
 
