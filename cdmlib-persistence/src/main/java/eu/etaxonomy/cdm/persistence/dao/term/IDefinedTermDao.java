@@ -60,11 +60,9 @@ public interface IDefinedTermDao
      */
 	public Country getCountryByIso(String iso639);
 
-	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationText(String text, Class<TYPE> clazz );
+	public <TYPE extends DefinedTermBase> List<TYPE> listDefinedTermsByRepresentationText(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
 
-	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationText(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
-
-	public long countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz);
+	public long countDefinedTermsByRepresentationText(String text, Class<? extends DefinedTermBase> clazz);
 
 	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationAbbrev(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
 
@@ -197,12 +195,6 @@ public interface IDefinedTermDao
 
 	/**
 	 * Returns a term or a list of terms depending of the label/id used in its vocabulary.
-	 * @param idInVoc
-	 * @param vocUuid
-	 * @param clazz
-	 * @param pageSize
-	 * @param pageNumber
-	 * @return
 	 */
 	public <TERM extends DefinedTermBase> List<TERM> getDefinedTermByIdInVocabulary(String idInVoc, UUID vocUuid, Class<TERM> clazz, Integer pageSize, Integer pageNumber);
 

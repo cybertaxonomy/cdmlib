@@ -113,6 +113,9 @@ public class TermTreeServiceImpl
 
         if(nodePaths==null){
             nodePaths = new ArrayList<>();
+        } else {
+            //to avoid immutable lists
+            nodePaths = new ArrayList<>(nodePaths);
         }
 
         if(!nodePaths.contains("children")) {

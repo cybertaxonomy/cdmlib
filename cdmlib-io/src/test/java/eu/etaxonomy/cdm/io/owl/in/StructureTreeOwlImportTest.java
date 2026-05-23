@@ -85,40 +85,37 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
         URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/owl/in/test_structures.owl");
         URI uri = URI.fromUrl(url);
         assertNotNull(url);
-        StructureTreeOwlImportConfigurator configurator = StructureTreeOwlImportConfigurator.NewInstance(uri);
+        StructureTreeOwlImportConfigurator importConfig = StructureTreeOwlImportConfigurator.NewInstance(uri);
 
-        boolean result = defaultImport.invoke(configurator).isSuccess();
+        boolean result = defaultImport.invoke(importConfig).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
         this.setComplete();
         this.endTransaction();
 
         String treeLabel = "test_structures";
         List<TermTree> trees = termTreeServcie.listByTitle(TermTree.class, treeLabel, MatchMode.EXACT, null, null, null, null, null);
-        List<String> nodeProperties = new ArrayList<>();
-        nodeProperties.add("term");
-        nodeProperties.add("term.media");
+        List<String> nodePath = Arrays.asList(new String[] {"term", "term.media"});
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        TermTree<Feature> tree = (TermTree)termTreeServcie.loadWithNodes(trees.iterator().next().getUuid(), null, nodeProperties);
+        TermTree<Feature> tree = (TermTree)termTreeServcie.loadWithNodes(trees.get(0).getUuid(), null, nodePath);
         assertNotNull("featureTree should not be null", tree);
 
         assertEquals("Tree has wrong term type", TermType.Structure, tree.getTermType());
         assertEquals("Wrong number of distinct features", 4, tree.getDistinctTerms().size());
         List<TermNode<Feature>> rootChildren = tree.getRootChildren();
         assertEquals("Wrong number of root children", 1, rootChildren.size());
-        Object entirePlant = rootChildren.iterator().next();
-        assertTrue("Root is no feature node", entirePlant instanceof TermNode);
+        TermNode<Feature> entirePlant = rootChildren.iterator().next();
         assertEquals("Root node has wrong term type", TermType.Structure, ((TermNode<?>)entirePlant).getTermType());
-        @SuppressWarnings("unchecked")
-        TermNode<DefinedTerm> entirePlantNode = (TermNode<DefinedTerm>) entirePlant;
+
+        TermNode<DefinedTerm> entirePlantNode = (TermNode) entirePlant;
         List<TermNode<DefinedTerm>> childNodes = entirePlantNode.getChildNodes();
         assertEquals("Wrong number of children", 2, childNodes.size());
 
         String inflorescenceLabel = "inflorescence";
         String inflorescenceDescription = " the part of the plant that bears the flowers, including all its bracts  branches and flowers  but excluding unmodified leaves               ";
-        List<DefinedTerm> records = termService.findByRepresentationText(inflorescenceDescription, DefinedTerm.class, null, null).getRecords();
+        List<DefinedTerm> records = termService.listByTitle(DefinedTerm.class, inflorescenceLabel, MatchMode.EXACT, null, null, null, null, Arrays.asList("representations", "media"));
         assertEquals("wrong number of terms found for \"inflorescence\"", 1, records.size());
         DefinedTerm inflorescence = records.iterator().next();
-        assertEquals(inflorescenceLabel, inflorescence.getLabel(Language.ENGLISH()));
+        assertEquals(inflorescenceDescription, inflorescence.getDescription(Language.ENGLISH()));
 
         for (TermNode<DefinedTerm> termNode : childNodes) {
             assertTrue("Child node not found. Found node with term: "+termNode.getTerm().getLabel(),

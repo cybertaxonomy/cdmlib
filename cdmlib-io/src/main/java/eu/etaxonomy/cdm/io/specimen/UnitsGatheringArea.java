@@ -188,7 +188,6 @@ public class UnitsGatheringArea {
                 }
             }
 
-
             ar.setTitleCache(namedAreaStr, true);
             if (specimenImportAreaVocabulary == null){
                 specimenImportAreaVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
@@ -210,7 +209,7 @@ public class UnitsGatheringArea {
         }
     }
 
-    private UUID askForArea(String namedAreaStr, HashMap<String, UUID> matchingTerms, String areaType){
+    private UUID askForArea(String namedAreaStr, Map<String, UUID> matchingTerms, String areaType){
 //        matchingTerms.put("Nothing matches, create a new area",null);
 
         //FIXME names with same label will not make it to the map
@@ -218,9 +217,9 @@ public class UnitsGatheringArea {
         JScrollPane scrollPane = new JScrollPane(textArea);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        scrollPane.setPreferredSize( new Dimension( 700, 50 ) );
+        scrollPane.setPreferredSize( new Dimension(700, 50 ) );
         String s=null;
-        List<String> list = new ArrayList<String>(matchingTerms.keySet());
+        List<String> list = new ArrayList<>(matchingTerms.keySet());
         list.add("Nothing matches, create a new area");
 
         if (list.size() <= 1){
@@ -252,7 +251,6 @@ public class UnitsGatheringArea {
     public void setCountry(String iso, String fullName, ImportConfiguratorBase<?, ?> config,
             ITermService termService, IVocabularyService vocService){
 
-
         if (!StringUtils.isEmpty(iso)){
         	try {
         		wbc = termService.getCountryByIso(iso);
@@ -261,22 +259,16 @@ public class UnitsGatheringArea {
         	}
         }
         if (wbc == null){
-            if (!StringUtils.isEmpty(fullName)){
+            if (StringUtils.isNotEmpty(fullName)){
 
-                //logger.info("matching terms: "+matchingTerms.keySet().toString());
-                UUID areaUUID = null;
                 //TODO Critical, should be a country decision
-                areaUUID = getNamedAreaDecision(fullName,config);
+                UUID areaUUID = getNamedAreaDecision(fullName,config);
 
                 if (areaUUID == null){
                 	List<UUID> countryUuids = new ArrayList<>();
-                	HashMap<String,UUID> matchingTerms = new HashMap<>();
-                	Pager<Country> countryList;
-                	try {
-                		countryList = termService.findByRepresentationText(fullName, Country.class, 100, 0);
-                	}catch(NullPointerException e) {
-                		countryList = null;
-                	}
+                	Map<String,UUID> matchingTerms = new HashMap<>();
+                	Pager<Country> countryList = termService.findByRepresentationText(fullName, Country.class, 100, 0);
+
                 	if (countryList != null) {
 	                	for (NamedArea na:countryList.getRecords()){
 		                   	if (na.getTitleCache().equalsIgnoreCase(fullName)) {
@@ -288,9 +280,9 @@ public class UnitsGatheringArea {
 		                }
                 	}
                 	if (countryUuids.isEmpty()){
-                		List<NamedArea> namedAreaList = termService.list(NamedArea.class,0,0,null,null);
+                		List<NamedArea> namedAreaList = termService.list(NamedArea.class, 0, 0, null, null);
 
-                		for (NamedArea na:namedAreaList){
+                		for (NamedArea na: namedAreaList){
                 			if (! na.getClass().isAssignableFrom(Country.class) && na.getTitleCache().toLowerCase().indexOf(fullName.toLowerCase()) != -1) {
                 				matchingTerms.put(na.getTitleCache()+" ("+na.getType().getLabel() + ")",na.getUuid());
                 			}
@@ -306,8 +298,8 @@ public class UnitsGatheringArea {
                     		logger.warn("Non interaction not yet implemented correctly");
                     	}
                 	}
-
                 }
+
                 if (areaUUID == null){
                     createNamedArea(config, termService, vocService, fullName, "country");
                     NamedArea ar = NamedArea.NewInstance(fullName, fullName, null);

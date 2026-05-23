@@ -226,6 +226,8 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	vocStates.addTerm(State.NewInstance("green", "green", "gn"));
     	vocabularyService.save(vocStates);
     	Pager<DefinedTermBase> term = termService.findByRepresentationText("green", DefinedTermBase.class, null, null);
+
+//    	Pager<DefinedTermBase> term = termService.findByTitle(null, "green", null, null, null, null, null, null);
     	if (term.getCount() != 0){
     		DeleteResult result = termService.delete(term.getRecords().get(0));
     		assertTrue(result.isOk());

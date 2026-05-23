@@ -229,13 +229,14 @@ public class TermServiceImpl
 		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	//TODO do we really need this. The representation text is the description of the term, not the label
 	@Override
 	public <T extends DefinedTermBase> Pager<T> findByRepresentationText(String label, Class<T> clazz, Integer pageSize, Integer pageNumber) {
-        long numberOfResults = dao.countDefinedTermByRepresentationText(label,clazz);
+        long numberOfResults = dao.countDefinedTermsByRepresentationText(label,clazz);
 
 		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getDefinedTermByRepresentationText(label, clazz, pageSize, pageNumber);
+			results = dao.listDefinedTermsByRepresentationText(label, clazz, pageSize, pageNumber);
 		}
 
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);

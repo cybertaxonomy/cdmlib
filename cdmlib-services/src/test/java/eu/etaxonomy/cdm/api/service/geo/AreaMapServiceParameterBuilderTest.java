@@ -97,8 +97,6 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.uuidIntroduced, Color.BLACK);
         List<Language> languages = new ArrayList<>();
 
-        boolean subAreaPreference = false;
-        boolean statusOrderPreference = false;
         TermTree<NamedArea> areaTree = null;
         TermTree<PresenceAbsenceTerm> statusTree = null;
         Set<MarkerType> fallbackAreaMarkerTypes = null;
