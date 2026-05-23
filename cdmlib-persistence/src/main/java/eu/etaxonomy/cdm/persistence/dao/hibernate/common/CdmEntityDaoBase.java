@@ -1181,4 +1181,65 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     protected <S extends T> Class<S> nullSafeClass(Class<S> clazz) {
         return clazz = (clazz == null) ? (Class)type : clazz;
     }
+
+    protected <S extends T> long countByFilter(Class<S> clazz, EntityFilter<S> filter) {
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<S> root = cq.from(clazz);
+
+        cq.select(cb.countDistinct(root))
+          .where(filter.toPredicate(root, cb));
+
+        return getSession().createQuery(cq).getSingleResult();
+    }
+
+    protected <S extends T> List<S> listByFilter(Class<S> clazz, EntityFilter<S> filter,
+            Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<S> cq = cb.createQuery(clazz);
+        Root<S> root = cq.from(clazz);
+
+        filter.toPredicate(root, cb);
+
+        cq.select(root)
+          .distinct(true)
+          .where(filter.toPredicate(root, cb))
+          .orderBy(ordersFrom(cb, root, orderHints));
+
+        List<S> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return deduplicateResult(results);
+    }
+
+    protected <S extends T> S findByFilter(Class<S> clazz, EntityFilter<S> filter,
+            List<String> propertyPaths) {
+        return findByFilter(clazz, filter, null, propertyPaths);
+    }
+
+    protected <S extends T> S findByFilter(Class<S> clazz, EntityFilter<S> filter,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<S> cq = cb.createQuery(clazz);
+        Root<S> root = cq.from(clazz);
+
+        filter.toPredicate(root, cb);
+
+        cq.select(root)
+          .distinct(true)
+          .where(filter.toPredicate(root, cb))
+          .orderBy(ordersFrom(cb, root, orderHints));
+
+        S result = getSession().createQuery(cq)
+               .getSingleResult();
+       defaultBeanInitializer.initialize(result, propertyPaths);
+       return result;
+    }
+
+
 }
