@@ -1682,9 +1682,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         referenceService.save(sec);
 
         for (int i = numberOfNew; i < numberOfNew; i++) {
-            RandomStringUtils.randomAlphabetic(10);
-            String radomName = RandomStringUtils.randomAlphabetic(5) + " " + RandomStringUtils.randomAlphabetic(10);
-            String radomCommonName = RandomStringUtils.randomAlphabetic(10);
+            RandomStringUtils.insecure().nextAlphabetic(10);
+            String radomName = RandomStringUtils.insecure().nextAlphabetic(5) + " " + RandomStringUtils.insecure().nextAlphabetic(10);
+            String radomCommonName = RandomStringUtils.insecure().nextAlphabetic(10);
 
             IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             name.setNameCache(radomName, true);

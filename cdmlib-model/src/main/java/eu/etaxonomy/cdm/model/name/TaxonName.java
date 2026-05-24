@@ -2436,7 +2436,6 @@ public class TaxonName
      * @param  typeDesignation  the type designation which should be deleted
      */
     @Override
-    @SuppressWarnings("deprecation")
     public void removeTypeDesignation(TypeDesignationBase<?> typeDesignation) {
         this.typeDesignations.remove(typeDesignation);
         typeDesignation.removeTypifiedName(this);

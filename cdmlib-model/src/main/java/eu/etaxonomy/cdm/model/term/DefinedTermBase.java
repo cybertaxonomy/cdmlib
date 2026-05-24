@@ -229,7 +229,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase<T>>
 
     //for hibernate use only, *packet* private required by bytebuddy
     //2022-06-17: currently still needed protected as TaxEditor.TaxonRelationshipTypeInverseContainer inherits from DefinedTermBase
-    @Deprecated
     protected DefinedTermBase(){}
 
     protected DefinedTermBase(TermType type) {

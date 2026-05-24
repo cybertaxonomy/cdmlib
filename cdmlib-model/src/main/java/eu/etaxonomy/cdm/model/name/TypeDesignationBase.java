@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -27,7 +28,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
-
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -325,17 +325,15 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     }
 
     /**
-     * @deprecated for bidirectional use only
+     * NOTE: for bidirectional use only
      */
-    @Deprecated
-    protected void addTypifiedName(TaxonName taxonName){
+    void addTypifiedName(TaxonName taxonName){
         this.typifiedNames.add(taxonName);
     }
 
     /**
-     * @deprecated for bidirectional use only
+     * Note: For bidirectional use only
      */
-    @Deprecated
     protected void removeTypifiedName(TaxonName taxonName){
         this.typifiedNames.remove(taxonName);
         if (taxonName.getTypeDesignations().contains(this)){

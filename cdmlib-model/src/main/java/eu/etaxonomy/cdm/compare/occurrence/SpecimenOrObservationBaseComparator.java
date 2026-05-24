@@ -10,8 +10,7 @@ package eu.etaxonomy.cdm.compare.occurrence;
 
 import java.util.Comparator;
 
-
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import eu.etaxonomy.cdm.compare.common.TimePeriodComparator;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -47,7 +46,7 @@ public class SpecimenOrObservationBaseComparator implements Comparator<SpecimenO
         if(o1 instanceof DerivedUnit && o2 instanceof DerivedUnit) {
             SpecimenOrObservationBase<?> du1 = o1;
             SpecimenOrObservationBase<?> du2 = o2;
-            return StringUtils.compare(du1.getTitleCache(), du2.getTitleCache());
+            return Strings.CI.compare(du1.getTitleCache(), du2.getTitleCache());
         }
         if(o1 instanceof FieldUnit && o2 instanceof DerivedUnit) {
             return -1;

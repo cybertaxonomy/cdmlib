@@ -6,21 +6,21 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.service.pager.impl;
 
 import java.util.List;
 
+//TODO not used
 public class StringLabelPagerImpl<T> extends DefaultPagerImpl<T> {
 
     private static final long serialVersionUID = -6353299287388177858L;
 
     public StringLabelPagerImpl(Integer currentIndex, Integer count,Integer pageSize, List<T> records) {
-		super(currentIndex, count, pageSize, records);
+		super(currentIndex, Long.valueOf(count), pageSize, records);
 	}
 
-	public StringLabelPagerImpl(Integer currentIndex, Integer count,Integer pageSize, List<T> records,String suggestion) {
-		super(currentIndex, count, pageSize, records, suggestion);
+	public StringLabelPagerImpl(Integer currentIndex, Integer count,Integer pageSize, List<T> records, String suggestion) {
+		super(currentIndex, Long.valueOf(count), pageSize, records, suggestion);
 	}
 
 	@Override
@@ -33,5 +33,4 @@ public class StringLabelPagerImpl<T> extends DefaultPagerImpl<T> {
 
         return super.createLabel(s1, s2);
     }
-
 }

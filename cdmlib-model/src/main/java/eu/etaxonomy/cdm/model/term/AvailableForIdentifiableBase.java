@@ -38,8 +38,7 @@ public abstract class AvailableForIdentifiableBase<T extends DefinedTermBase<T>>
     private static final Logger logger = LogManager.getLogger();
 
     //for hibernate use only, *packet* private required by bytebuddy
-    @Deprecated
-    AvailableForIdentifiableBase() {}
+    public AvailableForIdentifiableBase(){}
 
     @Deprecated
     protected AvailableForIdentifiableBase(TermType type) {

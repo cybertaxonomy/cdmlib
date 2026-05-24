@@ -46,7 +46,6 @@ public abstract class AvailableForTermBase<T extends DefinedTermBase<T>>
     private EnumSet<CdmClass> availableFor = EnumSet.noneOf(CdmClass.class);
 
     //for hibernate use only, *packet* private required by bytebuddy
-    @Deprecated
     AvailableForTermBase() {}
 
     @Deprecated

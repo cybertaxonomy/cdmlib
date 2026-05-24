@@ -52,6 +52,19 @@ public class DefaultPagerImpl<T> extends AbstractPagerImpl<T> {
      * @param pageSize The size of pages (can be null if all results should be returned if available)
      * @param records A list of objects in this page (can be empty if there were no results)
      * @param suggestion a suggested query that would improve the search (only applicable for free-text / lucene queries)
+     */
+    public DefaultPagerImpl(Integer currentIndex, Long count, Integer pageSize,  List<T> records, String suggestion) {
+        super(currentIndex, count, pageSize, records, suggestion);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param currentIndex the page of this result set (0-based), can be null
+     * @param count the total number of results available for this query
+     * @param pageSize The size of pages (can be null if all results should be returned if available)
+     * @param records A list of objects in this page (can be empty if there were no results)
+     * @param suggestion a suggested query that would improve the search (only applicable for free-text / lucene queries)
      *
      * @deprecated This constructor only supports total result counts to {@link Integer#MAX_VALUE} u
      * use {@link DefaultPagerImpl(Integer currentIndex, Integer count, Integer pageSize, List<T> records, String suggestion)}

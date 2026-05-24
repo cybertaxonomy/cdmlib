@@ -706,9 +706,10 @@ public class NameServiceImpl
 
         fltq.addTerms(name, "nameCache", accuracy, 3);
 
-         BooleanQuery finalQuery = new BooleanQuery(false);
-
-         finalQuery.add(fltq, Occur.MUST);
+        BooleanQuery finalQuery = new BooleanQuery.Builder()
+                .setDisableCoord(false)
+                .add(fltq, Occur.MUST)
+                .build();
 
         luceneSearch.setQuery(finalQuery);
 
