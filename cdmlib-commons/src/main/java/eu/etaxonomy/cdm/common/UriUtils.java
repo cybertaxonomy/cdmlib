@@ -215,6 +215,7 @@ public class UriUtils {
      */
     public static HttpResponse getResponseByType(URI uri, Map<String, String> requestHeaders, HttpMethod httpMethod, HttpEntity entity) throws IOException, ClientProtocolException {
         // Create an instance of HttpClient.
+        //NOTE: deprecated Methode besser unter Java 11 zu ersetzen, oder durch httpclient 5
         HttpClient client = new DefaultHttpClient();
 
         try {
