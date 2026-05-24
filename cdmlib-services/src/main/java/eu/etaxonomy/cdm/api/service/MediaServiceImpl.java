@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -408,13 +408,13 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 
     private boolean equalsIgnoreBlank(String a, String b){
         if (a.contains(" ")) {
-           a = StringUtils.replace(a," ", "");
+           a = Strings.CS.replace(a," ", "");
            if (a.equalsIgnoreCase(b)) {
                return true;
            }
         }
         if (b.contains(" ")) {
-            b = StringUtils.replace(b," ", "");
+            b = Strings.CS.replace(b," ", "");
             if (a.equalsIgnoreCase(b)) {
                 return true;
             }

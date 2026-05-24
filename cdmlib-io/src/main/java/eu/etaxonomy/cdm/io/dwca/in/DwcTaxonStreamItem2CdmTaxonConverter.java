@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -758,9 +759,9 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	    String langItem = item.get(TermUri.DC_LANGUAGE);
 		Language language = null;
 
-		if(StringUtils.equalsIgnoreCase(langItem, "de")){
+		if(Strings.CI.equals(langItem, "de")){
 			language = Language.GERMAN();
-		}else if(StringUtils.equalsIgnoreCase(langItem, "en")){
+		}else if(Strings.CI.equals(langItem, "en")){
 			language = Language.ENGLISH();
 		}else{
 			language = Language.DEFAULT();

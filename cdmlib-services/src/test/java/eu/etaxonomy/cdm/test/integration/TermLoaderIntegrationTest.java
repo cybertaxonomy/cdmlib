@@ -17,7 +17,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -31,20 +30,12 @@ public class TermLoaderIntegrationTest extends CdmIntegrationTest {
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-	private UUID taxonomicallyIncludedInUuid;
+	private UUID misappliedNameFroUuid = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
 
-    @Before
-	public void setUp() {
-    	taxonomicallyIncludedInUuid = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
-    }
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.ConceptRelationshipType#TAXONOMICALLY_INCLUDED_IN()}.
-	 */
 	@Test
 	public final void testTermsAreLoaded() {
-		assertNotNull("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have been initialized",TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN());
-		assertEquals("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have a uuid of " + taxonomicallyIncludedInUuid.toString(),taxonomicallyIncludedInUuid, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN().getUuid());
+		assertNotNull("TaxonRelationshipType.IS_MISAPPLIED_NAME_FOR should have been initialized", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
+		assertEquals("TaxonRelationshipType.IS_MISAPPLIED_NAME_FOR should have a uuid of " + misappliedNameFroUuid, misappliedNameFroUuid, TaxonRelationshipType.uuidMisappliedNameFor);
 	}
 
 	@Test

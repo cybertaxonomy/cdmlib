@@ -63,7 +63,6 @@ public class SecundumSource extends NamedSourceBase {
 //*********************** CONSTRUCTOR ******************************/
 
     //*packet* private required by bytebuddy
-    @SuppressWarnings("deprecation")
     SecundumSource(){
         setType(OriginalSourceType.PrimaryTaxonomicSource);
         initListener();

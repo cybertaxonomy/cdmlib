@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -282,8 +282,8 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 		}
 		descriptionStringBuilder.append(secondSeparator);
 		String returnString = descriptionStringBuilder.toString();
-		returnString = StringUtils.replace(returnString, "  ", " ");
-		returnString = StringUtils.removeStart(returnString, secondSeparator + " ");
+		returnString = Strings.CS.replace(returnString, "  ", " ");
+		returnString = Strings.CS.removeStart(returnString, secondSeparator + " ");
 		return TextData.NewInstance(returnString,Language.DEFAULT(),TextFormat.NewInstance("", "Text", ""));
 	}
 

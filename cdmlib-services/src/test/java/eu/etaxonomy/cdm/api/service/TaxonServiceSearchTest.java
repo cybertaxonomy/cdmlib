@@ -241,7 +241,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      * @throws IOException
      * @throws LuceneParseException
      */
-    @SuppressWarnings("rawtypes")
     @Test
     @DataSet
     public final void testFindByDescriptionElementFullText_TooManyClauses() throws IOException, LuceneParseException {
@@ -252,7 +251,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         TaxonDescription description = (TaxonDescription) descriptionService.find(DESC_ABIES_ALBA_UUID);
         Set<String> uniqueRandomStrs = new HashSet<>(1024);
         while(uniqueRandomStrs.size() < 1024){
-            uniqueRandomStrs.add(RandomStringUtils.random(10, true, false));
+            uniqueRandomStrs.add(RandomStringUtils.insecure().next(10, true, false));
         }
         for(String rndStr: uniqueRandomStrs){
             description.addElement(CommonTaxonName.NewInstance("Rot" + rndStr, Language.DEFAULT()));
@@ -284,7 +283,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Set<String> uniqueRandomStrs = new HashSet<>(1024);
         int numOfItems = 100;
         while(uniqueRandomStrs.size() < numOfItems){
-            uniqueRandomStrs.add(RandomStringUtils.random(5, true, false));
+            uniqueRandomStrs.add(RandomStringUtils.insecure().next(5, true, false));
         }
 
         for(String rndStr: uniqueRandomStrs){
@@ -415,7 +414,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Set<String> uniqueRandomStrs = new HashSet<>(1024);
         int numOfItems = 100;
         while(uniqueRandomStrs.size() < numOfItems){
-            uniqueRandomStrs.add(RandomStringUtils.random(5, true, false));
+            uniqueRandomStrs.add(RandomStringUtils.insecure().next(5, true, false));
         }
         for(String rndStr: uniqueRandomStrs){
             description.addElement(CommonTaxonName.NewInstance("Rot" + rndStr, Language.DEFAULT()));
