@@ -34,9 +34,9 @@ public class ChildTaxaMustBeLowerRankThanParentValidator implements
                     constraintContext.disableDefaultConstraintViolation();
                     constraintContext.buildConstraintViolationWithTemplate(
                             "{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent.message}")
-                    .addNode("fromTaxon")
-                    .addNode("name")
-                    .addNode("rank")
+                    .addPropertyNode("fromTaxon")
+                    .addPropertyNode("name")
+                    .addPropertyNode("rank")
                     .addConstraintViolation();
                 }
             }

@@ -44,12 +44,17 @@ public class ChildTaxaMustDeriveNameFromParentValidator implements
                 if(childName.isSpecies() || childName.isInfraSpecific()) {
                     if(! CdmUtils.nullSafeEqual(parentName.getGenusOrUninomial(), childName.getGenusOrUninomial())) {
                         valid = false;
-                        constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent.message}").addNode("fromTaxon").addNode("name").addNode("genusOrUninomial").addConstraintViolation();
+                        constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent.message}")
+                        .addPropertyNode("fromTaxon")
+                        .addPropertyNode("name")
+                        .addPropertyNode("genusOrUninomial")
+                        .addConstraintViolation();
                     }
                     if(parentName.isSpecies() || parentName.isInfraSpecific()) {
                         if(! CdmUtils.nullSafeEqual(parentName.getSpecificEpithet(), childName.getSpecificEpithet())) {
                             valid = false;
-                            constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent.message}").addNode("fromTaxon").addNode("name").addNode("specificEpithet").addConstraintViolation();
+                            constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent.message}")
+                                .addPropertyNode("fromTaxon").addPropertyNode("name").addPropertyNode("specificEpithet").addConstraintViolation();
                         }
                     }
                     if (! valid){

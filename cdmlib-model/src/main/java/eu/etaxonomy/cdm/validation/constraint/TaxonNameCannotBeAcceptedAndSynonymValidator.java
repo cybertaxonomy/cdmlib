@@ -46,11 +46,13 @@ public class TaxonNameCannotBeAcceptedAndSynonymValidator
 
     								if(taxonBase1.isInstanceOf(Taxon.class) && taxonBase2.isInstanceOf(Taxon.class)) {
     									valid = false;
-    									constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym.twoAcceptedTaxaNotAllowed.message}").addNode("name").addConstraintViolation();
+    									constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym.twoAcceptedTaxaNotAllowed.message}")
+    									.addPropertyNode("name").addConstraintViolation();
     								}else if((taxonBase1.isInstanceOf(Taxon.class) && taxonBase2.isInstanceOf(Synonym.class)
     								        || (taxonBase1.isInstanceOf(Synonym.class) && taxonBase2.isInstanceOf(Taxon.class)))) {
     									valid = false;
-    									constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym.synonymAndTaxonNotAllowed.message}").addNode("name").addConstraintViolation();
+    									constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym.synonymAndTaxonNotAllowed.message}")
+    									.addPropertyNode("name").addConstraintViolation();
     								}
     							}
     						}
