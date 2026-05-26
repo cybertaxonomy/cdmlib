@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 public class DefinedTermFilters extends CdmFiltersBase {
 
     public static final String TEXT = "text";
+    public static final String LABEL = "label";
     public static final String ID_IN_VOC = "idInVocabulary";
     public static final String ABBREV_LABEL = "abbreviatedLabel";
     public static final String REPRESENTATIONS = "representations";
@@ -36,6 +37,12 @@ public class DefinedTermFilters extends CdmFiltersBase {
             String text, @SuppressWarnings("unused") Class<T> clazzForCasting) {
         return (root, cb) -> cb.equal(root.join("representations")
                 .get(TEXT), text);
+    }
+
+    public static <T extends DefinedTermBase<T>> EntityFilter<T> representationLabelFilter(
+            String label, @SuppressWarnings("unused") Class<T> clazzForCasting) {
+        return (root, cb) -> cb.equal(root.join("representations")
+                .get(LABEL), label);
     }
 
     public static <T extends DefinedTermBase<T>> EntityFilter<T> representationAbbreviationFilter(

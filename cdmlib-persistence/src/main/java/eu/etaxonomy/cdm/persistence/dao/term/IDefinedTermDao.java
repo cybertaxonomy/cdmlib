@@ -59,9 +59,9 @@ public interface IDefinedTermDao
      */
 	public Country findCountryByIso(String iso639);
 
-	public <TYPE extends DefinedTermBase<TYPE>> List<TYPE> listByRepresentationText(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
+	public <TYPE extends DefinedTermBase<TYPE>> List<TYPE> listByRepresentationLabel(String label, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
 
-	public <TYPE extends DefinedTermBase<TYPE>> long countByRepresentationText(String text, Class<TYPE> clazz);
+	public <TYPE extends DefinedTermBase<TYPE>> long countByRepresentationLabel(String label, Class<TYPE> clazz);
 
 	public <TYPE extends DefinedTermBase> List<TYPE> listByRepresentationAbbrev(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
 
@@ -222,5 +222,7 @@ public interface IDefinedTermDao
     public Map<UUID, List<TermDto>> mapRecommendedModifiersByFeature(Set<UUID> featureUuids);//, Language lang);
 
     public Map<UUID, TermDto> mapFeatureByUUIDsAsDtos(List<UUID> uuidList);
+
+
 
 }

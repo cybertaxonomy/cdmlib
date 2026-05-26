@@ -103,7 +103,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a Pager of DefinedTerms
      */
-    public <T extends DefinedTermBase> Pager<T> findByRepresentationText(String label, Class<T> clazz,  Integer pageSize, Integer pageNumber);
+    public <T extends DefinedTermBase> Pager<T> findByRepresentationLabel(String label, Class<T> clazz,  Integer pageSize, Integer pageNumber);
 
     /**
      * Return a paged list of terms which have representations that match the supplied string in the abbreviated label

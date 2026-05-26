@@ -142,14 +142,14 @@ public class DefinedTermDaoImpl
 	}
 
 	@Override
-    public <T extends DefinedTermBase<T>> List<T> listByRepresentationText(String text, Class<T> clazz, Integer pageSize, Integer pageNumber) {
-		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationText(String text, Class<T> clazz, Integer pageSize, Integer pageNumber)");
+    public <T extends DefinedTermBase<T>> List<T> listByRepresentationLabel(String label, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationLabel(String label, Class<T> clazz, Integer pageSize, Integer pageNumber)");
 
 		CriteriaBuilder cb = getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(clazz);
 		Root<T> root = cq.from(clazz);
 
-		Predicate predicate = DefinedTermFilters.representationTextFilter(text, clazz).toPredicate(root, cb);
+		Predicate predicate = DefinedTermFilters.representationLabelFilter(label, clazz).toPredicate(root, cb);
 
 		cq.select(root)
 		  .distinct(true)
@@ -162,7 +162,7 @@ public class DefinedTermDaoImpl
 	}
 
 	@Override
-    public <T extends DefinedTermBase<T>> long countByRepresentationText(String text, Class<T> clazz) {
+    public <T extends DefinedTermBase<T>> long countByRepresentationLabel(String text, Class<T> clazz) {
 
 	    checkNotInPriorView("DefinedTermDaoImpl.countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz)");
 

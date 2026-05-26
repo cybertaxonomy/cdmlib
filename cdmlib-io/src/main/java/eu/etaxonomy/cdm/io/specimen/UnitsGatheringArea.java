@@ -267,7 +267,7 @@ public class UnitsGatheringArea {
                 if (areaUUID == null){
                 	List<UUID> countryUuids = new ArrayList<>();
                 	Map<String,UUID> matchingTerms = new HashMap<>();
-                	Pager<Country> countryList = termService.findByRepresentationText(fullName, Country.class, 100, 0);
+                	Pager<Country> countryList = termService.findByRepresentationLabel(fullName, Country.class, 100, 0);
 
                 	if (countryList != null) {
 	                	for (NamedArea na:countryList.getRecords()){
