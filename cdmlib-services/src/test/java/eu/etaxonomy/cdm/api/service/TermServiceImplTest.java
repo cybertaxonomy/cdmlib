@@ -193,7 +193,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	        State.class, "Test States", null, null, null);
     	vocStates.addTerm(State.NewInstance("green", "green", "gn"));
     	vocabularyService.save(vocStates);
-    	Pager<DefinedTermBase> term = termService.findByRepresentationText("green", DefinedTermBase.class, null, null);
+    	Pager<DefinedTermBase> term = termService.findByRepresentationLabel("green", DefinedTermBase.class, null, null);
 //    	Maybe better use:
 //    	Pager<DefinedTermBase> term = termService.findByTitle(null, "green", null, null, null, null, null, null);
     	if (term.getCount() != 0){
