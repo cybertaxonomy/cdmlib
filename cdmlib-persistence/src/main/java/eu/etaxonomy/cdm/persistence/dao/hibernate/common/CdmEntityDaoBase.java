@@ -760,8 +760,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     public List<Object[]> group(Class<? extends T> clazz, Integer limit, Integer start, List<Grouping> groups,
             List<String> propertyPaths) {
 
-        Criteria criteria = null;
-        criteria = criterionForType(clazz);
+        Criteria criteria = criterionForType(clazz);
 
         addGroups(criteria, groups);
 
@@ -772,12 +771,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = criteria.list();
-
-        if (propertyPaths != null && !propertyPaths.isEmpty()) {
-            for (Object[] objects : result) {
-                defaultBeanInitializer.initialize(objects[0], propertyPaths);
-            }
-        }
+        defaultBeanInitializer.initializeAll(result, propertyPaths);
 
         return result;
     }
