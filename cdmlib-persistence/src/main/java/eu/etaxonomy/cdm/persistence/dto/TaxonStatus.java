@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
+//see #6065
 public enum TaxonStatus{
     Accepted,
     SynonymObjective,
