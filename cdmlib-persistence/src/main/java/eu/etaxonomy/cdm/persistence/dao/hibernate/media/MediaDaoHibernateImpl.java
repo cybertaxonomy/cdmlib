@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.criteria.CollectionJoin;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -97,7 +97,7 @@ public class MediaDaoHibernateImpl
                 .map(Taxon::getId)
                 .collect(Collectors.toSet());
             //TODO unclear if generics for path are correct, but seems to be irrelevant here
-            CollectionJoin<MediaKey, Taxon> path = root.joinCollection("taxonomicScope", JoinType.INNER);
+            Join<MediaKey, Taxon> path = root.join("taxonomicScope", JoinType.INNER);
             Predicate predicate = predicateIn(path, "id", taxonomicScopeIds);
             predicates.add(predicate);
         }
@@ -108,7 +108,7 @@ public class MediaDaoHibernateImpl
                 .map(NamedArea::getId)
                 .collect(Collectors.toSet());
             //TODO unclear if generics for path are correct, but seems to be irrelevant here
-            CollectionJoin<MediaKey, Taxon> path = root.joinCollection("geographicalScope", JoinType.INNER);
+            Join<MediaKey, Taxon> path = root.join("geographicalScope", JoinType.INNER);
             Predicate predicate = predicateIn(path, "id", geoScopeIds);
             predicates.add(predicate);
         }
