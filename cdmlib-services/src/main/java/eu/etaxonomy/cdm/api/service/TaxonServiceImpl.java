@@ -1232,6 +1232,10 @@ public class TaxonServiceImpl
                         //TODO which value
                         boolean newHomotypicGroupIfNeeded = true;
                         SynonymDeletionConfigurator synConfig = new SynonymDeletionConfigurator();
+
+                        synConfig.setDeleteNameIfPossible(config.isDeleteNameIfPossible());
+                        synConfig.setNameDeletionConfig(config.getNameDeletionConfig());
+
                         result.includeResult(deleteSynonym(synonym, synConfig));
                     }
                 }
