@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -22,9 +23,11 @@ import java.util.UUID;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
@@ -56,6 +59,7 @@ import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.filter.Restriction.Operator;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -77,6 +81,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         implements ICdmEntityDao<T> {
 
     private static final Logger logger = LogManager.getLogger();
+
+    //prepare for using hibernate 6 predicates in withRestrictions
+    boolean withPredicate = false;
 
     @Autowired
     private ICdmGenericDao genericDao;
@@ -485,21 +492,184 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public <S extends T> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
+    public <S extends T> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Criteria criteria = createCriteria(type, restrictions, false);
+        if (withPredicate) {
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<S> cq = cb.createQuery(type);
+            Root<S> root = cq.from(type);
 
-        addLimitAndStart(criteria, limit, start);
-        addOrder(criteria, orderHints);
+            Predicate predicate = predicateFromRestrictions(cb, root, restrictions);
 
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
+            cq.select(root)
+              .distinct(true)
+              .where(predicate)
+              .orderBy(ordersFrom(cb, root, orderHints));
+
+            List<S> results = addPageSizeAndNumber(
+                    getSession().createQuery(cq), pageSize, pageNumber)
+                   .getResultList();
+            defaultBeanInitializer.initializeAll(results, propertyPaths);
+            return deduplicateResult(results);
+        }else {
+            Criteria criteria = createCriteria(type, restrictions, false);
+
+            addLimitAndStart(criteria, pageSize, pageNumber);
+            addOrder(criteria, orderHints);
+
+            @SuppressWarnings("unchecked")
+            List<S> result = criteria.list();
+            defaultBeanInitializer.initializeAll(result, propertyPaths);
+            return result;
+        }
+    }
+
+    //TODO change root to path or from if necessary
+    private <S extends T> Predicate predicateFromRestrictions(CriteriaBuilder cb,
+            Root<S> root, List<Restriction<?>> restrictions) {
+
+        if(restrictions == null || restrictions.isEmpty()){
+            return cb.conjunction();
+        }
+
+        Predicate finalPredicate = cb.conjunction();
+        for(Restriction<?> restriction : restrictions){
+            Predicate restrictionPredicate;
+
+            String propertyPath = restriction.getPropertyName();
+            Collection<? extends Object> values = restriction.getValues();
+
+            if (CdmUtils.isNullSafeEmpty(values) ||
+                    StringUtils.isBlank(propertyPath)  ){
+                restrictionPredicate = cb.conjunction();  //always true
+            }else {
+
+                restrictionPredicate = cb.disjunction();
+                javax.persistence.criteria.JoinType joinType = LEFTOUTER_OPS.contains(restriction.getOperator()) ? javax.persistence.criteria.JoinType.LEFT : javax.persistence.criteria.JoinType.INNER;
+
+                // ---
+
+                List<String> props = Arrays.asList(propertyPath.split("\\."));
+
+                List<String> notLastProps = props.subList(0, props.size()-1);
+                String lastProp = props.get(props.size() - 1);
+
+                From<?,?> path = root;
+                for (String notLastProp : notLastProps) {
+                    Class<?> t = path.getJavaType();
+
+                    path = path.join(notLastProp);
+                }
+
+                for (Object value : values) {
+                    Predicate valuePredicate = createPredicate(cb, path, lastProp, value, restriction.getMatchMode());
+                    restrictionPredicate = cb.or(restrictionPredicate, valuePredicate);
+                }
+
+//                Predicate valuePredicate = predicateForMatchMode(lastProp,
+//                        (String)values.iterator().next(), restriction.getMatchMode(), cb, path, ignoreCase);
+
+//                String propertyName;
+//                if(props.length == 1){
+//                    // direct property of the base type of the criteria
+//                    propertyName = propertyPath;
+//                } else {
+//                    // create aliases if the propertyName is a dot separated property path
+//                    String aĺiasKey = jointype.name() + "_";
+//                    String aliasedProperty = null;
+//                    String alias = "";
+//                    for(int p = 0; p < props.length -1; p++){
+//                        aĺiasKey = aĺiasKey + (aĺiasKey.isEmpty() ? "" : ".") + props[p];
+//                        aliasedProperty = alias + (alias.isEmpty() ? "" : ".") + props[p];
+////                        if(!aliases.containsKey(aliasedProperty)){
+////                            alias = alias + (alias.isEmpty() ? "" : "_" ) + props[p];
+////                            aliases.put(aĺiasKey, alias);
+////                            criteria.createAlias(aliasedProperty, alias, jointype);
+////                            if(logger.isDebugEnabled()){
+////                                logger.debug("addRestrictions() alias created with aliasKey " + aĺiasKey + " => " + aliasedProperty + " as " + alias);
+////                            }
+////                        }
+//                    }
+//                    propertyName = alias + "." + props[props.length -1];
+//                }
+            }
+            if (restriction.getOperator() == Restriction.Operator.OR) {
+                finalPredicate = cb.and(finalPredicate, restrictionPredicate);
+            }else {
+                finalPredicate = cb.and(finalPredicate, restrictionPredicate);
+            }
+        }
+        return finalPredicate;
+    }
+
+    private Predicate createPredicate(CriteriaBuilder cb, From<?, ?> path,
+            String propertyName, Object value, MatchMode matchMode) {
+
+        Predicate predicate;
+        if (value == null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("createPredicate() " + propertyName + " is null ");
+            }
+            predicate = predicateIsNull(cb, path, propertyName);
+        } else if (value instanceof EnumSet<?>) {
+            //in EnumSet restriction
+            if (logger.isDebugEnabled()) {
+                logger.debug("createRestriction() " + propertyName + " IN " + value.toString());
+            }
+
+            predicate = predicateIn(path, propertyName, (EnumSet<?>)value);
+        } else if (matchMode == null || !(value instanceof String)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("createRestriction() " + propertyName + " = " + value.toString());
+            }
+            predicate = predicateEqual(cb, path, propertyName, value);
+        } else {
+            String queryString = (String) value;
+            if (logger.isDebugEnabled()) {
+                logger.debug("createRestriction() " + propertyName + " " + matchMode.getMatchOperator() + " "
+                        + matchMode.queryStringFrom(queryString));
+            }
+            boolean ignoreCase = true;
+            predicate = predicateForMatchMode(propertyName, queryString, matchMode, cb, path, ignoreCase);
+        }
+        return predicate;
+    }
+
+
+    private List<Restriction<?>> addRestriction(List<Restriction<?>> restrictions, Restriction<?> restriction, boolean atStart) {
+        List<Restriction<?>> result = new ArrayList<>();
+        if (restrictions == null) {
+            restrictions = new ArrayList<>();
+        }
+        if (atStart) {
+            result.add(restriction);
+            result.addAll(restrictions);
+        } else {
+            result.addAll(restrictions);
+            result.add(restriction);
+        }
         return result;
     }
 
-    private void addRestrictions(List<Restriction<?>> restrictions, DetachedCriteria criteria) {
+    protected List<Restriction<?>> addPublishOnlyRestriction(List<Restriction<?>> restrictions, boolean includeUnpublished,
+            String path) {
+        if(!includeUnpublished){
+            final String publishField = path == null ? "publish" : path +".publish" ;
+            boolean publish = true;
+            Restriction<?> restriction = new Restriction<>(publishField, null, publish);
+            restrictions = addRestriction(restrictions, restriction, false);
+        }
+        return restrictions;
+    }
+
+    protected List<Restriction<?>> addStringRestriction(List<Restriction<?>> restrictions, String param, String queryString, MatchMode matchMode) {
+        Restriction<?> restriction = new Restriction<>(param, matchMode, queryString);
+        restrictions = addRestriction(restrictions, restriction, true);
+        return restrictions;
+    }
+
+    private <S extends T> void addRestrictions(List<Restriction<?>> restrictions, DetachedCriteria criteria) {
 
         if(restrictions == null || restrictions.isEmpty()){
             return ;
@@ -584,9 +754,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                             throw new RuntimeException("Unsupported Operator");
                     }
                 }
-
             }
-
 
             criteria.add(logicalExpression);
 //            if(firstOperator == Operator.OR){
@@ -659,24 +827,39 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public long count(Class<? extends T> type, List<Restriction<?>> restrictions) {
+    public <S extends T> long count(Class<S> clazz, List<Restriction<?>> restrictions) {
 
-        Criteria criteria = createCriteria(type, restrictions, false);
+        if (withPredicate) {
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+            Root<S> root = cq.from(entityType(clazz));
 
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+            Predicate predicate = predicateFromRestrictions(cb, root, restrictions);
 
-        return (Long) criteria.uniqueResult();
+            cq.select(cb.countDistinct(root))
+              .where(predicate);
+
+            return getSession().createQuery(cq).getSingleResult();
+        }else {
+
+            Criteria criteria = createCriteria(clazz, restrictions, false);
+
+            criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+
+            return (Long) criteria.uniqueResult();
+        }
     }
 
     private Criteria criterionForType(Class<? extends T> clazz) {
         return getSession().createCriteria(entityType(clazz));
     }
 
-    protected Class<? extends T> entityType(Class<? extends T> clazz){
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected <S extends T> Class<S> entityType(Class<S> clazz){
         if (clazz != null) {
             return clazz;
         } else {
-            return type;
+            return (Class)type;
         }
     }
 
@@ -999,7 +1182,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
      * ignored since this is the first restriction. The <code>Operator</code> of further restrictions in the
      * list are used to combine with the previous restriction.
      */
-    protected Criteria createCriteria(Class<? extends T> type, List<Restriction<?>> restrictions, boolean doCount) {
+    protected <S extends T> Criteria createCriteria(Class<S> type, List<Restriction<?>> restrictions, boolean doCount) {
 
         DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(entityType(type));
         idsOnlyCriteria.setProjection(Projections.distinct(Projections.id()));
@@ -1023,41 +1206,22 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        List<Restriction<?>> allRestrictions = new ArrayList<>();
-        allRestrictions.add(new Restriction<>(param, matchmode, queryString));
-        if(restrictions != null){
-            allRestrictions.addAll(restrictions);
-        }
-        Criteria criteria = createCriteria(clazz, allRestrictions, false);
-
-        addPageSizeAndNumber(criteria, pageSize, pageNumber);
-
-        addOrder(criteria, orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
-        return result;
+        restrictions = addStringRestriction(restrictions, param, queryString, matchmode);
+        return this.list(clazz, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
     public long countByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString,
             MatchMode matchmode, List<Restriction<?>> restrictions) {
 
-        List<Restriction<?>> allRestrictions = new ArrayList<>();
-        allRestrictions.add(new Restriction<>(param, matchmode, queryString));
-        if(restrictions != null){
-            allRestrictions.addAll(restrictions);
-        }
-        Criteria criteria = createCriteria(clazz, allRestrictions, true);
-
-        return (Long) criteria.uniqueResult();
+        restrictions = addStringRestriction(restrictions, param, queryString, matchmode);
+        return count(clazz, restrictions);
     }
 
     //TODO: there is a very similar implementation somewhere else
     protected <S extends T> Predicate predicateForMatchMode(String param,
             String queryString, MatchMode matchMode,
-            CriteriaBuilder cb, Root<S> root, boolean ignoreCase) {
+            CriteriaBuilder cb, From<?,?> root, boolean ignoreCase) {
 
         Predicate result;
         if (ignoreCase) {

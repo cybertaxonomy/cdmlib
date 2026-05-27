@@ -273,7 +273,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      *
      * @return
      */
-    public long count(Class<? extends T> type, List<Restriction<?>> restrictions);
+    public <S extends T> long count(Class<S> type, List<Restriction<?>> restrictions);
 
     /**
      * Returns a sublist of CdmBase instances of type <TYPE> stored in the database.

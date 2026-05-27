@@ -24,6 +24,7 @@ import java.util.UUID;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -442,7 +443,7 @@ public abstract class DaoBase {
      * @return the predicate
      */
     protected <T extends CdmBase> Predicate predicateStrOrNull(CriteriaBuilder builder,
-            Path<T> path, String field, String str) {
+            From<T,?> path, String field, String str) {
 
         if (str == null){
             return predicateIsNull(builder, path, field);
@@ -462,7 +463,7 @@ public abstract class DaoBase {
      * @return the predicate
      */
     protected <T extends CdmBase> Predicate predicateStrNotNull(CriteriaBuilder builder,
-            Path<T> path, String field, String str) {
+            From<T,?> path, String field, String str) {
 
         return builder.equal(path.get(field), str);
     }
@@ -492,7 +493,7 @@ public abstract class DaoBase {
     }
 
     protected <T extends CdmBase> Predicate predicateEqual(CriteriaBuilder builder,
-            Path<T> path, String field, Object obj) {
+            From<?,?> path, String field, Object obj) {
 
         return builder.equal(path.get(field), obj);
     }
@@ -511,7 +512,7 @@ public abstract class DaoBase {
         return builder.equal(builder.size(path.get(field)), num);
     }
 
-    protected <T extends CdmBase> Predicate predicateIn(Path<T> root, String fieldName, Collection<?> collection) {
+    protected <T extends CdmBase> Predicate predicateIn(From<?,?> root, String fieldName, Collection<?> collection) {
         return root.get(fieldName).in(collection);
     }
 
@@ -524,7 +525,7 @@ public abstract class DaoBase {
      * @return the predicate
      */
     protected <T extends CdmBase> Predicate predicateIsNull(CriteriaBuilder builder,
-            Path<T> path, String field) {
+            From<?,?> path, String field) {
 
         Predicate result = builder.isNull(path.get(field));
         result.alias(field+"_isNull");

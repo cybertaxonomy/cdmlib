@@ -90,15 +90,9 @@ public class Restriction<T extends Object> {
     public String getPropertyName() {
         return propertyName;
     }
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
-    }
 
     public MatchMode getMatchMode() {
         return matchMode;
-    }
-    public void setMatchMode(MatchMode matchMode) {
-        this.matchMode = matchMode;
     }
 
     /**
@@ -113,15 +107,9 @@ public class Restriction<T extends Object> {
     public void setValues(Collection<T> values) {
         this.values = values;
     }
-    public void addValue(T value){
-        getValues().add(value);
-    }
 
     public Operator getOperator() {
         return operator;
-    }
-    public void setOperator(Operator operator) {
-        this.operator = operator;
     }
 
     public boolean isNot() {

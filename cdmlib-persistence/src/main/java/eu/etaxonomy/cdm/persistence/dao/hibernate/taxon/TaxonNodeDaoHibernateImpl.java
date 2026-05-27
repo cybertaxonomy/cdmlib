@@ -476,7 +476,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
     }
 
     @Override
-    public long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions) {
+    public <S extends TaxonNode> long count(Class<S> type, List<Restriction<?>> restrictions) {
         return count(type, restrictions, INCLUDE_UNPUBLISHED);
     }
 

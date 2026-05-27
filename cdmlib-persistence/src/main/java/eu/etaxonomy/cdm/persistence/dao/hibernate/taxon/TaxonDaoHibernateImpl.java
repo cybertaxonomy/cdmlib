@@ -137,37 +137,17 @@ public class TaxonDaoHibernateImpl
 
     @Override
     public <S extends TaxonBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
-            List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished) {
+            List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnPublished) {
 
-        Criteria criteria = createCriteria(type, restrictions, false);
-
-        if(!includePublished){
-            criteria.add(Restrictions.eq("publish", true));
-        }
-
-        addPageSizeAndNumber(criteria, pageSize, pageNumber);
-        addOrder(criteria, orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
-        return result;
+        restrictions = addPublishOnlyRestriction(restrictions, includeUnPublished, null);
+        return super.list(type, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
-    public long count(Class<? extends TaxonBase> type, List<Restriction<?>> restrictions) {
-        return count(type, restrictions, INCLUDE_UNPUBLISHED);
-    }
+    public long count(Class<? extends TaxonBase> type, List<Restriction<?>> restrictions, boolean includeUnpublished) {
 
-    @Override
-    public long count(Class<? extends TaxonBase> type, List<Restriction<?>> restrictions, boolean includePublished) {
-
-        Criteria criteria = createCriteria(type, restrictions, false);
-        if(!includePublished){
-            criteria.add(Restrictions.eq("publish", true));
-        }
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return (Long) criteria.uniqueResult();
+        restrictions = addPublishOnlyRestriction(restrictions, includeUnpublished, null);
+        return super.count(type, restrictions);
     }
 
     @Override

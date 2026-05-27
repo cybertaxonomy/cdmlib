@@ -27,7 +27,6 @@ import javax.validation.constraints.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -596,19 +595,17 @@ public class TaxonNameDaoHibernateImpl
     }
 
     @Override
-    public long count(Class<? extends TaxonName> type, List<Restriction<?>> restrictions) {
+    public <S extends TaxonName> long count(Class<S> type, List<Restriction<?>> restrictions) {
         return count(type, restrictions, INCLUDE_UNPUBLISHED);
     }
 
     @Override
-    public long count(Class<? extends TaxonName> type, List<Restriction<?>> restrictions, boolean includePublished) {
+    public long count(Class<? extends TaxonName> type, List<Restriction<?>> restrictions, boolean includeUnpublished) {
 
-        Criteria criteria = createCriteria(type, restrictions, false);
-        if(!includePublished){
-            criteria.add(Restrictions.eq("taxonBases.publish", true));
-        }
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return (Long) criteria.uniqueResult();
+        String path = "taxonBases";
+        restrictions = addPublishOnlyRestriction(restrictions, includeUnpublished, path);
+        return super.count(null, restrictions);
+
     }
 
     @Override

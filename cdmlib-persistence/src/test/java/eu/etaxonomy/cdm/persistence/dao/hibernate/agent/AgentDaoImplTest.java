@@ -246,8 +246,8 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
         Assert.assertEquals("list() empty value lists should be ignored", 5, personResults.size());
 
-        givenNameExact.addValue("Ben");
         restrictions.clear();
+        givenNameExact = new Restriction<>("givenName", MatchMode.EXACT, "Ben");
         restrictions.add(givenNameExact);
         personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
         Assert.assertEquals("list() should return 1 AgentBase entity having the givenname 'Ben'", 1 ,personResults.size());
@@ -267,8 +267,8 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 
         Assert.assertEquals("count() empty value lists should be ignored", 5, agentDao.count(Person.class, restrictions));
 
-        givenNameExact.addValue("Ben");
         restrictions.clear();
+        givenNameExact = new Restriction<>("givenName", MatchMode.EXACT, "Ben");
         restrictions.add(givenNameExact);
         Assert.assertEquals("count() should return 1 Persons entity having the given name 'Ben'", 1 , agentDao.count(Person.class, restrictions));
     }
