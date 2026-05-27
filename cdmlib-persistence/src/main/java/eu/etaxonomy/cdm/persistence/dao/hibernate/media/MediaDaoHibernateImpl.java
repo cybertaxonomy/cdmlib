@@ -96,7 +96,6 @@ public class MediaDaoHibernateImpl
             Set<Integer> taxonomicScopeIds = taxonomicScope.stream()
                 .map(Taxon::getId)
                 .collect(Collectors.toSet());
-            //TODO unclear if generics for path are correct, but seems to be irrelevant here
             Join<MediaKey, Taxon> path = root.join("taxonomicScope", JoinType.INNER);
             Predicate predicate = predicateIn(path, "id", taxonomicScopeIds);
             predicates.add(predicate);
@@ -107,7 +106,6 @@ public class MediaDaoHibernateImpl
             Set<Integer> geoScopeIds = geoScope.stream()
                 .map(NamedArea::getId)
                 .collect(Collectors.toSet());
-            //TODO unclear if generics for path are correct, but seems to be irrelevant here
             Join<MediaKey, Taxon> path = root.join("geographicalScope", JoinType.INNER);
             Predicate predicate = predicateIn(path, "id", geoScopeIds);
             predicates.add(predicate);
