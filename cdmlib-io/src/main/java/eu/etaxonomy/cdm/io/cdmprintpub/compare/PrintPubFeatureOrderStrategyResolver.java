@@ -17,7 +17,6 @@ public class PrintPubFeatureOrderStrategyResolver {
 
     public IPrintPubFeatureOrderStrategy resolve(PrintPubExportState state) {
 
-        // Defensive defaults
         if (state == null || state.getConfig() == null) {
             return alphabeticalFeatureOrderStrategy;
         }
@@ -33,7 +32,7 @@ public class PrintPubFeatureOrderStrategyResolver {
 
             case FEATURE_TREE:
             default:
-                if (state.getConfig().getFeatureTreeUuid() == null) {
+                if (state.getFeatureOrderIndex() == null || state.getFeatureOrderIndex().isEmpty()) {
                     return alphabeticalFeatureOrderStrategy;
                 }
                 return featureTreeOrderStrategy;
