@@ -1252,6 +1252,8 @@ public class TaxonServiceImpl
                 TaxonDeletionConfigurator configRelTaxon = new TaxonDeletionConfigurator();
                 configRelTaxon.setDeleteTaxonNodes(false);
                 configRelTaxon.setDeleteConceptRelationships(true);
+                configRelTaxon.setDeleteNameIfPossible(config.isDeleteNameIfPossible());
+                configRelTaxon.setNameDeletionConfig(config.getNameDeletionConfig());
 
                 for (TaxonRelationship taxRel: taxon.getTaxonRelations()){
                     if (config.isDeleteMisappliedNames()
