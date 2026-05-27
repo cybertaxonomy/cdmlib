@@ -10,7 +10,12 @@
 package eu.etaxonomy.cdm.io.cdmprintpub;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,101 +38,183 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * traversal loop. Triggers document layout creation via the document builder
  * and final result generation.
  */
-
 @Component
 public class PrintPubClassificationExport
-		extends CdmExportBase<PrintPubExportConfigurator, PrintPubExportState, IExportTransformer, File> {
+        extends CdmExportBase<PrintPubExportConfigurator, PrintPubExportState, IExportTransformer, File> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    private static final Logger logger = LogManager.getLogger();
 
-	@Autowired
-	private PrintPubDtoMapper mapper;
-	@Autowired
-	private PrintPubDocumentBuilder builder;
+    @Autowired
+    private PrintPubDtoMapper mapper;
 
-	public PrintPubClassificationExport() {
-		this.ioName = this.getClass().getSimpleName();
-	}
+    @Autowired
+    private PrintPubDocumentBuilder builder;
 
-	@Override
-	@Transactional(readOnly = true)
-	protected void doInvoke(PrintPubExportState state) {
-		IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+    @Autowired
+    private PrintPubFeatureOrderIndexService featureOrderIndexService;
 
-		try {
+    public PrintPubClassificationExport() {
+        this.ioName = this.getClass().getSimpleName();
+    }
 
-			monitor.beginTask("Exporting Classification to Print/Pub", IProgressMonitor.UNKNOWN);
+    @Override
+    @Transactional(readOnly = true)
+    protected void doInvoke(PrintPubExportState state) {
+        IProgressMonitor monitor = state.getConfig().getProgressMonitor();
 
-			if (monitor.isCanceled()) {
-				return;
-			}
+        try {
+            monitor.beginTask("Exporting Classification to Print/Pub", IProgressMonitor.UNKNOWN);
 
-			monitor.subTask("Initializing data stream...");
+            if (monitor.isCanceled()) {
+                logger.info("PrintPub export cancelled before initialization");
+                return;
+            }
 
-			TaxonNodeOutStreamPartitioner<PrintPubExportState> partitioner = TaxonNodeOutStreamPartitioner
-					.NewInstance(this, state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
+            // --------------------------------------------------
+            // Initialize feature ordering
+            // --------------------------------------------------
+            initializeFeatureOrdering(state, monitor);
 
-			Integer referenceDepth = null;
-			TaxonNode node = partitioner.next();
+            if (monitor.isCanceled()) {
+                logger.info("PrintPub export cancelled after feature ordering initialization");
+                return;
+            }
 
-			int nodesProcessed = 0;
+            // --------------------------------------------------
+            // Main taxon stream
+            // --------------------------------------------------
+            monitor.subTask("Initializing data stream...");
 
-			while (node != null) {
+            TaxonNodeOutStreamPartitioner<PrintPubExportState> partitioner =
+                    TaxonNodeOutStreamPartitioner.NewInstance(
+                            this,
+                            state,
+                            state.getConfig().getTaxonNodeFilter(),
+                            100,
+                            monitor,
+                            null
+                    );
 
-				if (monitor.isCanceled()) {
-					return;
-				}
+            Integer referenceDepth = null;
+            TaxonNode node = partitioner.next();
+            int nodesProcessed = 0;
 
-				nodesProcessed++;
-				if (nodesProcessed % 10 == 0) {
-					String nodeLabel = (node.getTaxon() != null && node.getTaxon().getName() != null)
-							? node.getTaxon().getName().getTitleCache()
-							: "Node ID: " + node.getId();
-					monitor.subTask("Processing: " + nodeLabel);
-				}
+            while (node != null) {
 
-				monitor.worked(1);
+                if (monitor.isCanceled()) {
+                    logger.info("PrintPub export cancelled during taxon processing after {} nodes", nodesProcessed);
+                    return;
+                }
 
-				if (referenceDepth == null) {
-					referenceDepth = mapper.calculateDepth(node);
+                nodesProcessed++;
 
-					if (node.getTaxon() != null && node.getTaxon().getName() != null) {
-						state.getConfig().setDocumentTitle(node.getTaxon().getName().getTitleCache());
-					}
-				}
+                if (nodesProcessed % 10 == 0) {
+                    String nodeLabel = (node.getTaxon() != null && node.getTaxon().getName() != null)
+                            ? node.getTaxon().getName().getTitleCache()
+                            : "Node ID: " + node.getId();
 
-				PrintPubTaxonSummaryDTO dto = mapper.mapNodeToDto(node, referenceDepth, state);
-				if (dto != null) {
-					state.addTaxon(dto);
-				}
+                    monitor.subTask("Processing: " + nodeLabel);
+                }
 
-				node = partitioner.next();
-			}
+                monitor.worked(1);
 
-			if (monitor.isCanceled()) {
-				return;
-			}
+                if (referenceDepth == null) {
+                    referenceDepth = mapper.calculateDepth(node);
 
-			monitor.subTask("Generating document layout (PDF/HTML)...");
-			builder.buildLayout(state);
+                    if (node.getTaxon() != null && node.getTaxon().getName() != null) {
+                        state.getConfig().setDocumentTitle(node.getTaxon().getName().getTitleCache());
+                    }
+                }
 
-			monitor.worked(10);
-		} catch (Exception e) {
-			state.getResult().addException(e, "Error during PrintPub export: " + e.getMessage());
-			monitor.warning("Export failed: " + e.getMessage(), e);
-		} finally {
-			monitor.done();
-			state.getProcessor().createFinalResult();
-		}
-	}
+                PrintPubTaxonSummaryDTO dto = mapper.mapNodeToDto(node, referenceDepth, state);
+                if (dto != null) {
+                    state.addTaxon(dto);
+                }
 
-	@Override
-	protected boolean doCheck(PrintPubExportState state) {
-		return state.getConfig().getDestination() != null;
-	}
+                node = partitioner.next();
+            }
 
-	@Override
-	protected boolean isIgnore(PrintPubExportState state) {
-		return false;
-	}
+            logger.info("Processed {} taxon nodes for PrintPub export", nodesProcessed);
+
+            if (monitor.isCanceled()) {
+                logger.info("PrintPub export cancelled before document layout generation");
+                return;
+            }
+
+            // --------------------------------------------------
+            // Build layout
+            // --------------------------------------------------
+            monitor.subTask("Generating document layout (PDF/HTML)...");
+            builder.buildLayout(state);
+            monitor.worked(10);
+
+            logger.info("PrintPub document layout generated successfully");
+
+        } catch (Exception e) {
+            state.getResult().addException(e, "Error during PrintPub export: " + e.getMessage());
+            monitor.warning("Export failed: " + e.getMessage(), e);
+            logger.error("PrintPub export failed", e);
+
+        } finally {
+            monitor.done();
+            state.getProcessor().createFinalResult();
+        }
+    }
+
+    private void initializeFeatureOrdering(PrintPubExportState state, IProgressMonitor monitor) {
+        UUID featureTreeUuid = state.getConfig().getFeatureTreeUuid();
+
+        if (featureTreeUuid == null) {
+            state.setFeatureOrderIndex(new HashMap<UUID, Integer>());
+            logger.info("No feature tree configured; using alphabetical feature ordering");
+            return;
+        }
+
+        try {
+            monitor.subTask("Initializing feature ordering...");
+
+            Map<UUID, Integer> featureIndex =
+                    featureOrderIndexService.buildFeatureOrderIndex(featureTreeUuid);
+
+            state.setFeatureOrderIndex(featureIndex);
+
+            logger.info(
+                    "Feature ordering initialized from tree {} with {} indexed features",
+                    featureTreeUuid,
+                    featureIndex.size()
+            );
+
+            if (featureIndex.isEmpty()) {
+                logger.warn(
+                        "Feature tree {} produced an empty feature order index; alphabetical fallback will be used",
+                        featureTreeUuid
+                );
+            }
+
+        } catch (Exception e) {
+            state.setFeatureOrderIndex(new HashMap<UUID, Integer>());
+
+            monitor.warning(
+                    "Could not initialize feature ordering; falling back to alphabetical order: " + e.getMessage(),
+                    e
+            );
+
+            logger.warn(
+                    "Could not initialize feature ordering for tree {}; using alphabetical fallback",
+                    featureTreeUuid,
+                    e
+            );
+        }
+    }
+
+    @Override
+    protected boolean doCheck(PrintPubExportState state) {
+        return state.getConfig().getDestination() != null;
+    }
+
+    @Override
+    protected boolean isIgnore(PrintPubExportState state) {
+        return false;
+    }
 }
