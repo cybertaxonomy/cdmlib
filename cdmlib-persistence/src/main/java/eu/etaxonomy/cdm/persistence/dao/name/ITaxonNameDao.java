@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -186,11 +185,6 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * Returns a count of TaxonName instances that match the properties
 	 * passed
 	 *
-	 * @param uninomial
-	 * @param infraGenericEpithet
-	 * @param specificEpithet
-	 * @param infraspecificEpithet
-	 * @param rank
 	 * @return a count of TaxonName instances
 	 */
 	public long countNames(String uninomial, String infraGenericEpithet,
@@ -198,10 +192,6 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 
 	/**
 	 * Returns a count of TaxonName instances that match the properties passed
-	 *
-	 * @param queryString
-	 * @param matchMode
-	 * @param filter
 	 */
 	public long countNames(String queryString, MatchMode matchMode, List<EntityFilter<TaxonName>> filter);
 
@@ -234,16 +224,8 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 */
 	public TaxonName findByUuid(UUID uuid, List<EntityFilter<TaxonName>> filter, List<String> propertyPaths);
 
-	/**
-	 * @param queryString
-	 * @param matchmode
-	 * @param filter
-	 * @return
-	 */
 	public Integer countByName(String queryString,
 			MatchMode matchmode, List<EntityFilter<TaxonName>> filter);
-
-	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern);
 
 	public List<TaxonName> findByName(Class<TaxonName> clazz, String queryString,
 	        MatchMode matchmode, List<EntityFilter<TaxonName>> filter,

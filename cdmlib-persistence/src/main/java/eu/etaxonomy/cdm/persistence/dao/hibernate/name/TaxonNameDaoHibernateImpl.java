@@ -60,7 +60,6 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -73,6 +72,7 @@ public class TaxonNameDaoHibernateImpl
         extends IdentifiableDaoBase<TaxonName>
         implements ITaxonNameDao {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     @Autowired
@@ -614,32 +614,6 @@ public class TaxonNameDaoHibernateImpl
         List<TaxonName> results = findByName(
                 includeAuthors, queryString, matchmode, filter, null, null, null);
         return results.size();
-    }
-
-    @Override
-    public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern) {
-        String queryString = "SELECT uuid, id, fullTitleCache FROM TaxonName LIMIT " + limit;
-
-        List<Object[]> result = getSession().createNativeQuery(queryString, Object[].class).list();
-
-        if(result.size() == 0){
-            return null;
-        }else{
-            List<UuidAndTitleCache> list = new ArrayList<>(result.size());
-
-            for (Object object : result){
-
-                Object[] objectArray = (Object[]) object;
-
-                UUID uuid = UUID.fromString((String) objectArray[0]);
-                Integer id = (Integer) objectArray[1];
-                String titleCache = (String) objectArray[2];
-
-                list.add(new UuidAndTitleCache<>(type, uuid, id, titleCache));
-            }
-
-            return list;
-        }
     }
 
     @Override

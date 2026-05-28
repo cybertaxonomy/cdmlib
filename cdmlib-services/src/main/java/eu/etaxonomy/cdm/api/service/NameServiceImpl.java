@@ -906,11 +906,6 @@ public class NameServiceImpl
     }
 
     @Override
-    public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern) {
-        return dao.getUuidAndTitleCacheOfNames(limit, pattern);
-    }
-
-    @Override
     public Pager<TaxonName> findByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
             List<EntityFilter<TaxonName>> filter, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 

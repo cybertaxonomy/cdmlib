@@ -465,14 +465,6 @@ public interface INameService
     public Pager<TaxonName> search(Class<? extends TaxonName> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
-	 * Returns a map that holds uuid, titleCache pairs of all names in the current database
-	 *
-	 * @return
-	 * 			a <code>Map</code> containing uuid and titleCache of names
-	 */
-	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern);
-
-	/**
      * Returns a list of names belonging to the synonymy of the taxon
      * @param limit
      * @param taxonUuid
