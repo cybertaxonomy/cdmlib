@@ -28,10 +28,7 @@ import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -504,22 +501,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
     }
 
     @Override
-    public <S extends TaxonNode> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished) {
+    public <S extends TaxonNode> List<S> list(Class<S> clazz, List<Restriction<?>> restrictions, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished) {
 
-        Criteria criteria = createCriteria(type, restrictions, false);
-
-        if(!includePublished){
-            criteria.add(Restrictions.eq("taxon.publish", true));
-        }
-
-        addLimitAndStart(criteria, limit, start);
-        addOrder(criteria, orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
-        return result;
+        String path = "taxon";
+        restrictions = addPublishOnlyRestriction(restrictions, includeUnpublished, path);
+        return super.list(clazz, restrictions, limit, start, orderHints, propertyPaths);
     }
 
     @Override
@@ -529,14 +516,11 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
 
     @Override
-    public long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions, boolean includePublished) {
+    public long count(Class<? extends TaxonNode> clazz, List<Restriction<?>> restrictions, boolean includeUnpublished) {
 
-        Criteria criteria = createCriteria(type, restrictions, false);
-        if(!includePublished){
-            criteria.add(Restrictions.eq("taxon.publish", true));
-        }
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return (Long) criteria.uniqueResult();
+        String path = "taxon";
+        restrictions = addPublishOnlyRestriction(restrictions, includeUnpublished, path);
+        return super.count(clazz, restrictions);
     }
 
     @Override

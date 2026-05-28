@@ -26,8 +26,6 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
@@ -576,22 +574,12 @@ public class TaxonNameDaoHibernateImpl
     }
 
     @Override
-    public <S extends TaxonName> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished) {
+    public <S extends TaxonName> List<S> list(Class<S> clazz, List<Restriction<?>> restrictions, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished) {
 
-        Criteria criteria = createCriteria(type, restrictions, false);
-
-        if(!includePublished){
-            criteria.add(Restrictions.eq("taxonBases.publish", true));
-        }
-
-        addLimitAndStart(criteria, limit, start);
-        addOrder(criteria, orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
-        return result;
+        String path = "taxonBases";
+        restrictions = addPublishOnlyRestriction(restrictions, includeUnpublished, path);
+        return super.list(clazz, restrictions, limit, start, orderHints, propertyPaths);
     }
 
     @Override
@@ -600,11 +588,11 @@ public class TaxonNameDaoHibernateImpl
     }
 
     @Override
-    public long count(Class<? extends TaxonName> type, List<Restriction<?>> restrictions, boolean includeUnpublished) {
+    public long count(Class<? extends TaxonName> clazz, List<Restriction<?>> restrictions, boolean includeUnpublished) {
 
         String path = "taxonBases";
         restrictions = addPublishOnlyRestriction(restrictions, includeUnpublished, path);
-        return super.count(null, restrictions);
+        return super.count(clazz, restrictions);
 
     }
 
