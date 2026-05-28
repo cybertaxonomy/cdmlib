@@ -935,8 +935,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public List<T> list(Integer limit, Integer start) {
-        return list(limit, start, null);
+    public List<T> list(Integer pageSize, Integer pageNumber) {
+        return list(pageSize, pageNumber, null);
     }
 
     @Override
@@ -1015,17 +1015,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints) {
-        return list(limit, start, orderHints, null);
+    public List<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints) {
+        return list(pageSize, pageNumber, orderHints, null);
     }
 
     @Override
-    public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public List<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = getSession().createCriteria(type);
-        if (limit != null) {
-            criteria.setFirstResult(start);
-            criteria.setMaxResults(limit);
-        }
+        addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
         addOrder(criteria, orderHints);
         @SuppressWarnings("unchecked")

@@ -163,12 +163,12 @@ public abstract class VersionableDaoBase<T extends VersionableEntity>
 	}
 
 	@Override
-	public List<T> list(Integer limit, Integer start) {
+	public List<T> list(Integer pageSize, Integer pageNumber) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			return super.list(limit, start);
+			return super.list(pageSize, pageNumber);
 		} else {
-			return this.list(null, limit, start);
+			return this.list(null, pageSize, pageNumber);
 		}
 	}
 

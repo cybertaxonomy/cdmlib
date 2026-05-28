@@ -1262,7 +1262,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new NativeSqlOrderHint("case when {alias}.titleCache like 'C%' then 0 else 1 end",SortOrder.ASCENDING));
 
-        @SuppressWarnings("rawtypes")
         List<TaxonBase> results = taxonDao.list(null, null, orderHints);
         if(logger.isTraceEnabled()){
             System.out.println("native SQL order");

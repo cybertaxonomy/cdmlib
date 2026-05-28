@@ -502,8 +502,8 @@ public class NameServiceImpl
      * new name getNomenclaturalStatus
      */
     @Override
-    public List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start){
-        return nomStatusDao.list(limit, start);
+    public List<NomenclaturalStatus> getAllNomenclaturalStatus(int pageSize, int pageNumber){
+        return nomStatusDao.list(pageSize, pageNumber);
     }
 
     @Override
@@ -548,8 +548,8 @@ public class NameServiceImpl
      * homotypicalGroupService.list
      */
     @Override
-    public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start){
-        return homotypicalGroupDao.list(limit, start);
+    public List<HomotypicalGroup> getAllHomotypicalGroups(int pageSize, int pageNumber){
+        return homotypicalGroupDao.list(pageSize, pageNumber);
     }
 
 

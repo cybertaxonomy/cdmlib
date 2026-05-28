@@ -915,14 +915,14 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public List<DefinedTermBase> list(Integer limit, Integer start, List<OrderHint> orderHints) {
-        return DefinedTermDaoImpl.deduplicateResult(super.list(limit, start, orderHints));
+    public List<DefinedTermBase> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints) {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(pageSize, pageNumber, orderHints));
     }
 
     @Override
-    public List<DefinedTermBase> list(Integer limit, Integer start, List<OrderHint> orderHints,
+    public List<DefinedTermBase> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
-        return DefinedTermDaoImpl.deduplicateResult(super.list(limit, start, orderHints, propertyPaths));
+        return DefinedTermDaoImpl.deduplicateResult(super.list(pageSize, pageNumber, orderHints, propertyPaths));
     }
 
     @Override

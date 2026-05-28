@@ -545,19 +545,19 @@ public class TermVocabularyDaoImpl
     }
 
     @Override
-    public List<TermVocabulary> list(Integer limit, Integer start, List<OrderHint> orderHints) {
-        return CdmEntityDaoBase.deduplicateResult(super.list(limit, start, orderHints));
+    public List<TermVocabulary> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints) {
+        return CdmEntityDaoBase.deduplicateResult(super.list(pageSize, pageNumber, orderHints));
     }
 
     @Override
-    public List<TermVocabulary> list(Integer limit, Integer start, List<OrderHint> orderHints,
+    public List<TermVocabulary> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
-        return CdmEntityDaoBase.deduplicateResult(super.list(limit, start, orderHints, propertyPaths));
+        return CdmEntityDaoBase.deduplicateResult(super.list(pageSize, pageNumber, orderHints, propertyPaths));
     }
 
     @Override
-    public <S extends TermVocabulary> List<S> list(Class<S> type, Integer limit, Integer start,
+    public <S extends TermVocabulary> List<S> list(Class<S> type, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints) {
-        return CdmEntityDaoBase.deduplicateResult(super.list(type, limit, start, orderHints));
+        return CdmEntityDaoBase.deduplicateResult(super.list(type, pageSize, pageNumber, orderHints));
     }
 }

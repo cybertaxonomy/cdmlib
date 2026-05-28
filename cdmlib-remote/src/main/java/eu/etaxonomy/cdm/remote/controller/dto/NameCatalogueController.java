@@ -1455,10 +1455,10 @@ public class NameCatalogueController
         return builder.toString();
     }
 
-    private List<Classification> getClassificationList(int limit) {
+    private List<Classification> getClassificationList(int pageSize) {
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
-        List<Classification> clist = classificationService.listClassifications(limit, 0, orderHints, VOC_CLASSIFICATION_INIT_STRATEGY);
+        List<Classification> clist = classificationService.listClassifications(pageSize, 0, orderHints, VOC_CLASSIFICATION_INIT_STRATEGY);
         return clist;
     }
 

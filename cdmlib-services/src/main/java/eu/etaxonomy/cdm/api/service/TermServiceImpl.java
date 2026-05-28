@@ -232,13 +232,13 @@ public class TermServiceImpl
 	}
 
 	@Override
-	public List<LanguageString> getAllLanguageStrings(int limit, int start) {
-		return languageStringDao.list(limit, start);
+	public List<LanguageString> getAllLanguageStrings(int pageSize, int pageNumber) {
+		return languageStringDao.list(pageSize, pageNumber);
 	}
 
 	@Override
-	public List<Representation> getAllRepresentations(int limit, int start) {
-		return representationDao.list(limit,start);
+	public List<Representation> getAllRepresentations(int pageSize, int pageNumber) {
+		return representationDao.list(pageSize, pageNumber);
 	}
 
 	@Override
