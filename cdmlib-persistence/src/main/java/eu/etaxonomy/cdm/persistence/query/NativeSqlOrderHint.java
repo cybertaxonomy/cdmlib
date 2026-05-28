@@ -19,13 +19,13 @@ public class NativeSqlOrderHint extends OrderHint {
     private String nativeSQL;
 
 	public NativeSqlOrderHint(String nativeSQL, SortOrder sortOrder) {
-		super(NativeSqlOrderHint.PROPERTY_NAME,sortOrder);
+		super(NativeSqlOrderHint.PROPERTY_NAME, sortOrder);
 		this.nativeSQL = nativeSQL;
     }
 
 	@Override
 	public void add(Criteria criteria, Map<String, Criteria> criteriaMap) {
-		criteria.addOrder(new NativeSqlHibernateOrder(this.getSortOrder().equals(SortOrder.ASCENDING) ? true : false,nativeSQL));
+		criteria.addOrder(new NativeSqlHibernateOrder(this.getSortOrder().equals(SortOrder.ASCENDING) ? true : false, nativeSQL));
 	}
 
 	public class NativeSqlHibernateOrder extends Order {

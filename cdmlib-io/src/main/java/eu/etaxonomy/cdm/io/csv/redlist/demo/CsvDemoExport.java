@@ -172,13 +172,14 @@ public class CsvDemoExport extends CsvDemoBase {
 	    int totalWork = 0;
 	    int work = 0;
 	    int pageSize = 500;
+	    //FIXME this was an absolute number before, not a page number. So currently it will not work correctly
 	    int pageNumber = 0;
 
 	    //TODO: Questionable if this information is really necessary, with respect to memory usage
 	    Classification classification = null;
 	    for(Classification c : classificationSet){
 	    	classification = c;
-	    	totalWork = getTaxonNodeService().countAllNodesForClassification(c);
+	    	totalWork = (int)getTaxonNodeService().countAllNodesForClassification(c);
 
 	    	if(progressMonitor != null) {
 	    		progressMonitor.beginTask("", totalWork);

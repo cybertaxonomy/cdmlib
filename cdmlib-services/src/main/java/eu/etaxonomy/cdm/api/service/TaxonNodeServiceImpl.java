@@ -786,12 +786,12 @@ public class TaxonNodeServiceImpl
 
 
     @Override
-    public List<TaxonNode> listAllNodesForClassification(Classification classification, Integer start, Integer end) {
+    public List<TaxonNode> listAllNodesForClassification(Classification classification, Integer pageSize, Integer pageNumber) {
         return dao.getTaxonOfAcceptedTaxaByClassification(classification, pageSize, pageNumber);
     }
 
     @Override
-    public int countAllNodesForClassification(Classification classification) {
+    public long countAllNodesForClassification(Classification classification) {
         return dao.countTaxonOfAcceptedTaxaByClassification(classification);
     }
 

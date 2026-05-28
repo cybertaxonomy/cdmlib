@@ -168,7 +168,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @param classification - according to the given classification the TaxonNodes are filtered.
 	 * @return the count result
 	 */
-	public int countAllNodesForClassification(Classification classification);
+	public long countAllNodesForClassification(Classification classification);
 
     public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid, int movingType,
             SecReferenceHandlingEnum secHandling, UUID secUuid, PublishEnumForMoving publishBehaviour);

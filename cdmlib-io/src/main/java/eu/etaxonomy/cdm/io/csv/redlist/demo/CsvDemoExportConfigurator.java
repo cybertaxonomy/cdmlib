@@ -86,7 +86,7 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 
     private Integer pageNumber;
 
-    private int taxonNodeListSize;
+    private long taxonNodeListSize;
 
 
 	//TODO
@@ -517,11 +517,11 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
     }
 
 
-    public int getTaxonNodeListSize() {
+    public long getTaxonNodeListSize() {
         return taxonNodeListSize;
     }
 
-    public void setTaxonNodeListSize(int size) {
+    public void setTaxonNodeListSize(long size) {
         this.taxonNodeListSize = size;
 
     }
