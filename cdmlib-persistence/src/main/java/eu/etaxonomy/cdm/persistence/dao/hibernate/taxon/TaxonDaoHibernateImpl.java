@@ -1737,7 +1737,7 @@ public class TaxonDaoHibernateImpl
 
         CriteriaBuilder cb = getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<TaxonRelationshipType> root = cq.from(TaxonRelationshipType.class);
+        Root<TaxonRelationship> root = cq.from(TaxonRelationship.class);
 
         List<Predicate> predicates = new ArrayList<>();
         if (types != null) {
