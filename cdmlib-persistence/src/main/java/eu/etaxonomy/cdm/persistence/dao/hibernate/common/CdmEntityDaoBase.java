@@ -1017,15 +1017,19 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public List<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Criteria criteria = getSession().createCriteria(type);
-        addPageSizeAndNumber(criteria, pageSize, pageNumber);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(type);
+        Root<T> root = cq.from(type);
 
-        addOrder(criteria, orderHints);
-        @SuppressWarnings("unchecked")
-        List<T> results = criteria.list();
+        cq.select(root)
+          .distinct(true)
+          .orderBy(ordersFrom(cb, root, orderHints));
 
+        List<T> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
+        return deduplicateResult(results);
     }
 
     public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints) {
