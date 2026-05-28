@@ -33,6 +33,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -153,7 +154,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
                 + "    AND nodes.classification_id = " + classificationId +
                   " ORDER BY taxa.titleCache " + limit;
 
-        List<TaxonNode> result  = getSession().createNativeQuery(queryString, TaxonNode.class).addEntity(TaxonNode.class).list();
+        NativeQuery<TaxonNode> q = getSession().createNativeQuery(queryString, TaxonNode.class);
+        List<TaxonNode> result  = q
+                .addEntity(TaxonNode.class).list();
+        //for some reason the short version does not work:
+//        List<TaxonNode> result = getSession().createNativeQuery(queryString, TaxonNode.class)
+//                .addEntity(TaxonNode.class).list();
 
         return result;
 	}
