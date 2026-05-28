@@ -850,10 +850,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         }
     }
 
-    private Criteria criterionForType(Class<? extends T> clazz) {
-        return getSession().createCriteria(entityType(clazz));
-    }
-
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <S extends T> Class<S> entityType(Class<S> clazz){
         if (clazz != null) {
@@ -943,7 +939,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     public List<Object[]> group(Class<? extends T> clazz, Integer limit, Integer start, List<Grouping> groups,
             List<String> propertyPaths) {
 
-        Criteria criteria = criterionForType(clazz);
+        Criteria criteria = getCriteria(clazz);
 
         addGroups(criteria, groups);
 
@@ -1179,14 +1175,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
      * ignored since this is the first restriction. The <code>Operator</code> of further restrictions in the
      * list are used to combine with the previous restriction.
      */
-    protected <S extends T> Criteria createCriteria(Class<S> type, List<Restriction<?>> restrictions, boolean doCount) {
+    protected <S extends T> Criteria createCriteria(Class<S> clazz, List<Restriction<?>> restrictions, boolean doCount) {
 
-        DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(entityType(type));
+        DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(entityType(clazz));
         idsOnlyCriteria.setProjection(Projections.distinct(Projections.id()));
 
         addRestrictions(restrictions, idsOnlyCriteria);
 
-        Criteria criteria = criterionForType(type);
+        Criteria criteria = getCriteria(clazz);
         criteria.add(Subqueries.propertyIn("id", idsOnlyCriteria));
 
         if(doCount){
