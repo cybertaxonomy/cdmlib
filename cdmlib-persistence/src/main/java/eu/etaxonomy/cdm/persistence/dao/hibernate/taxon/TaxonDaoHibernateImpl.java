@@ -1733,20 +1733,25 @@ public class TaxonDaoHibernateImpl
 
     @Override
     public long countTaxonRelationships(Set<TaxonRelationshipType> types) {
-        Criteria criteria = getSession().createCriteria(TaxonRelationship.class);
 
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<TaxonRelationshipType> root = cq.from(TaxonRelationshipType.class);
+
+        List<Predicate> predicates = new ArrayList<>();
         if (types != null) {
-            if (types.isEmpty()){
+            if (types.isEmpty()) {
                 return 0l;
-            }else{
-                criteria.add(Restrictions.in("type", types) );
+            } else {
+                predicates.add(predicateIn(root, "type", types));
             }
         }
-        //count
-        criteria.setProjection(Projections.rowCount());
-        long result = (Long)criteria.uniqueResult();
 
-        return result;
+        cq.select(cb.countDistinct(root))
+          .where(predicateAnd(cb, predicates));
+
+        return getSession().createQuery(cq).getSingleResult();
     }
 
     @Override
