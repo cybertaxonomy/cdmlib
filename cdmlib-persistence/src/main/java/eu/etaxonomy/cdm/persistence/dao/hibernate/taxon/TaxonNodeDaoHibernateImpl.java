@@ -152,8 +152,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
                 + " WHERE taxa.DTYPE = 'Taxon' "
                 + "    AND nodes.classification_id = " + classificationId +
                   " ORDER BY taxa.titleCache " + limit;
-        @SuppressWarnings("unchecked")
-        List<TaxonNode> result  = getSession().createSQLQuery(queryString).addEntity(TaxonNode.class).list();
+
+        List<TaxonNode> result  = getSession().createNativeQuery(queryString, TaxonNode.class).addEntity(TaxonNode.class).list();
 
         return result;
 	}
@@ -167,8 +167,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
                 + " FROM TaxonNode AS nodes "
                 + "   LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id "
                 + " WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
-         @SuppressWarnings("unchecked")
-         List<BigInteger> result = getSession().createSQLQuery(queryString).list();
+         List<BigInteger> result = getSession().createNativeQuery(queryString, BigInteger.class).list();
          return result.get(0).intValue ();
     }
 
@@ -628,7 +627,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             query.setParameter("maxOrderIndex", maxRankOrderIndex);
         }
 
-        @SuppressWarnings("unchecked")
         List<Object[]> list = query.list();
         for (Object[] o : list){
             result.put(TreeIndex.NewInstance((String)o[0]), (Integer)o[1]);

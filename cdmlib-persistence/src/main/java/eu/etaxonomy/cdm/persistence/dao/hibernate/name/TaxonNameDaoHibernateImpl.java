@@ -19,8 +19,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
 
@@ -621,8 +619,7 @@ public class TaxonNameDaoHibernateImpl
     public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern) {
         String queryString = "SELECT uuid, id, fullTitleCache FROM TaxonName LIMIT " + limit;
 
-        @SuppressWarnings("unchecked")
-        List<Object[]> result = getSession().createSQLQuery(queryString).list();
+        List<Object[]> result = getSession().createNativeQuery(queryString, Object[].class).list();
 
         if(result.size() == 0){
             return null;
