@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,7 +32,6 @@ import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -68,6 +66,7 @@ import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeWithoutSecQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 /**
  * @author a.mueller
@@ -140,41 +139,84 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 	}
 
 	@Override
-	public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, Integer start, Integer end) {
-		int classificationId = classification.getId();
-		String limit = "";
-		if(start !=null && end != null){
-		    limit = "LIMIT "+start+"," +end;
-		}
-		//FIXME write test
-        String queryString = "SELECT DISTINCT nodes.*,taxa.titleCache "
-                + " FROM TaxonNode AS nodes "
-                + "    LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id "
-                + " WHERE taxa.DTYPE = 'Taxon' "
-                + "    AND nodes.classification_id = " + classificationId +
-                  " ORDER BY taxa.titleCache " + limit;
+	public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, Integer pageSize, Integer pageNumber) {
 
-        NativeQuery<TaxonNode> q = getSession().createNativeQuery(queryString, TaxonNode.class);
-        List<TaxonNode> result  = q
-                .addEntity(TaxonNode.class).list();
-        //for some reason the short version does not work:
-//        List<TaxonNode> result = getSession().createNativeQuery(queryString, TaxonNode.class)
-//                .addEntity(TaxonNode.class).list();
+	    CriteriaBuilder cb = getCriteriaBuilder();
+	    CriteriaQuery<TaxonNode> cq = cb.createQuery(TaxonNode.class);
+	    Root<TaxonNode> root = cq.from(TaxonNode.class);
 
-        return result;
+	    Predicate predicate = predicateNodesForClassification(cb, root, classification);
+
+	    List<OrderHint> orderHints = new ArrayList<>();
+	    orderHints.add(new OrderHint("id", SortOrder.ASCENDING));
+	    cq.select(root)
+	      .distinct(true)
+	      .where(predicate)
+	      .orderBy(ordersFrom(cb, root, orderHints));
+
+	    List<TaxonNode> results = addPageSizeAndNumber(
+	            getSession().createQuery(cq), pageSize, pageNumber)
+	           .getResultList();
+//	    defaultBeanInitializer.initializeAll(results, propertyPaths);
+	    return deduplicateResult(results);
+
+//	    int classificationId = classification.getId();
+//		String limit = "";
+////		if(start !=null && end != null){
+////		    limit = "LIMIT "+start+"," +end;
+////		}
+//
+//        String queryString = "SELECT DISTINCT nodes.*, taxa.titleCache "  //
+//                + " FROM TaxonNode AS nodes "
+//                + "    LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id "
+//                + " WHERE taxa.DTYPE = 'Taxon' "
+//                + "    AND nodes.classification_id = " + classificationId +
+//                  " ORDER BY taxa.titleCache " + limit;
+//
+//        NativeQuery<TaxonNode> q = getSession().createNativeQuery(queryString, TaxonNode.class);
+//        List result  = q
+//                .addEntity(TaxonNode.class)
+//                .list();
+//        //for some reason the short version does not work:
+////        List<TaxonNode> result = getSession().createNativeQuery(queryString, TaxonNode.class)
+////                .addEntity(TaxonNode.class).list();
+//
+//        return result;
 	}
 
     @Override
-    public int countTaxonOfAcceptedTaxaByClassification(Classification classification){
-        int classificationId = classification.getId();
-        //FIXME write test
-        String queryString = ""
-                + " SELECT DISTINCT COUNT('nodes.*') "
-                + " FROM TaxonNode AS nodes "
-                + "   LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id "
-                + " WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
-         List<BigInteger> result = getSession().createNativeQuery(queryString, BigInteger.class).list();
-         return result.get(0).intValue ();
+    public long countTaxonOfAcceptedTaxaByClassification(Classification classification){
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<TaxonNode> root = cq.from(TaxonNode.class);
+
+        Predicate predicate = predicateNodesForClassification(cb, root, classification);
+
+        cq.select(cb.countDistinct(root))
+          .where(predicate);
+
+        return getSession().createQuery(cq).getSingleResult();
+
+//        int classificationId = classification.getId();
+//        //FIXME write test
+//        String queryString = ""
+//                + " SELECT DISTINCT COUNT('nodes.*') "
+//                + " FROM TaxonNode AS nodes "
+//                + "   LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id "
+//                + " WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
+//         List<BigInteger> result = getSession().createNativeQuery(queryString, BigInteger.class).list();
+//         return result.get(0).intValue ();
+    }
+
+    private Predicate predicateNodesForClassification(CriteriaBuilder cb, Root<TaxonNode> root,
+            Classification classification) {
+
+        Predicate result = cb.and(
+                cb.equal(root.get("classification"), classification),
+                cb.isNotNull(root.get("taxon"))
+                );
+        return result;
     }
 
     @Override

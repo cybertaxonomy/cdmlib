@@ -40,7 +40,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
 
     public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, Integer start, Integer end);
 
-    public int countTaxonOfAcceptedTaxaByClassification(Classification classification);
+    public long countTaxonOfAcceptedTaxaByClassification(Classification classification);
 
     /**
      * Lists all direct child nodes of the given {@link UuidAndTitleCache} which
