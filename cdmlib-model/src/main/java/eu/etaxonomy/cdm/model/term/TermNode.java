@@ -63,18 +63,18 @@ import eu.etaxonomy.cdm.model.description.State;
 @SuppressWarnings("serial")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermNode", propOrder = {
-		"parent",
-		"treeIndex",
-		"children",
-		"onlyApplicableIf",
-		"inapplicableIf"
+        "parent",
+        "treeIndex",
+        "children",
+        "onlyApplicableIf",
+        "inapplicableIf"
 })
 @XmlRootElement(name = "TermNode")
 @Entity
 @Audited
-public class TermNode <T extends DefinedTermBase>
-            extends TermRelationBase<T, TermNode<T>, TermTree>
-            implements ITreeNode<TermNode<T>> {
+public class TermNode<T extends DefinedTermBase>
+        extends TermRelationBase<T, TermNode<T>, TermTree<T>>
+        implements ITreeNode<TermNode<T>> {
 
     private static final Logger logger = LogManager.getLogger();
 

@@ -56,7 +56,7 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 
 	private static final Logger logger = LogManager.getLogger();
 
-	private TaxonBase<?> cdmBase;
+	private TaxonBase cdmBase;
 
 	@SpringBeanByType
 	private ITaxonNameDao cdmEntityDaoBase;

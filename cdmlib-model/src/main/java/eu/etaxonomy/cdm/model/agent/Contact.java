@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
@@ -28,6 +27,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
  * The class for information on how to approach a {@link Person person} or an {@link Institution institution}.
  * It includes telecommunication data and an electronic as well as
  * multiple postal addresses.
-* <P>
+ * <P>
  * This class corresponds to: <ul>
  * <li> ContactDetails according to the TDWG ontology
  * <li> Contact (partially) according to the ABCD schema
@@ -58,11 +58,10 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Contact", propOrder = {
-    "emailAddresses",
-    "urls",
-    "phoneNumbers",
-    "faxNumbers",
-    "addresses"
+        "emailAddresses",
+        "urls",
+        "phoneNumbers",
+        "addresses"
 })
 @XmlRootElement(name = "Contact")
 @Embeddable
@@ -94,12 +93,6 @@ public class Contact implements Serializable, Cloneable {
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	private List<String> phoneNumbers = new ArrayList<>();
 
-	@XmlElementWrapper(name = "FaxNumbers", nillable = true)
-	@XmlElement(name = "FaxNumber")
-	@ElementCollection(fetch = FetchType.LAZY)
-    @Column(name = "contact_faxnumbers_element")
-	private List<String> faxNumbers = new ArrayList<>();
-
     @XmlElementWrapper(name = "Addresses", nillable = true)
     @XmlElement(name = "Address")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
@@ -119,7 +112,6 @@ public class Contact implements Serializable, Cloneable {
 	 * @param pobox
 	 * @param region
 	 * @param email
-	 * @param faxNumber
 	 * @param phoneNumber
 	 * @param url
 	 * @param location
@@ -127,7 +119,8 @@ public class Contact implements Serializable, Cloneable {
 	 */
 	public static Contact NewInstance(String street, String postcode, String locality,
 			Country country, String pobox, String region,
-			String email, String faxNumber, String phoneNumber, URI url, Point location) {
+			String email, String phoneNumber, URI url, Point location) {
+
 		Contact result = new Contact();
 		if (country != null || StringUtils.isNotBlank(locality) || StringUtils.isNotBlank(pobox) || StringUtils.isNotBlank(postcode) ||
 				StringUtils.isNotBlank(region) || StringUtils.isNotBlank(street) ){
@@ -136,9 +129,6 @@ public class Contact implements Serializable, Cloneable {
 		}
 		if (email != null){
 			result.addEmailAddress(email);
-		}
-		if (faxNumber != null){
-			result.addFaxNumber(faxNumber);
 		}
 		if (phoneNumber != null){
 			result.addPhoneNumber(phoneNumber);
@@ -151,16 +141,13 @@ public class Contact implements Serializable, Cloneable {
 
 
 	public static Contact NewInstance(Set<Address> addresses, List<String> emailAddresses,
-			List<String> faxNumbers, List<String> phoneNumbers, List<URI> urls) {
+			List<String> phoneNumbers, List<URI> urls) {
 		Contact result = new Contact();
 		if (addresses != null){
 			result.addresses = addresses;
 		}
 		if (emailAddresses != null){
 			result.emailAddresses = emailAddresses;
-		}
-		if (faxNumbers != null){
-			result.faxNumbers = faxNumbers;
 		}
 		if (phoneNumbers != null){
 			result.phoneNumbers = phoneNumbers;
@@ -183,7 +170,6 @@ public class Contact implements Serializable, Cloneable {
 	public void merge(Contact contact2) throws MergeException{
 		if (contact2 != null){
 			mergeList(this.getEmailAddresses(), contact2.getEmailAddresses());
-			mergeList(this.getFaxNumbers(), contact2.getFaxNumbers());
 			mergeList(this.getPhoneNumbers(), contact2.getPhoneNumbers());
 			mergeList(this.getUrls(), contact2.getUrls());
 			for (Address address : contact2.getAddresses()){
@@ -212,7 +198,7 @@ public class Contact implements Serializable, Cloneable {
      */
     @Transient
     public boolean isEmpty(){
-        if (isEmpty(emailAddresses) && isEmpty(faxNumbers) && isEmpty(phoneNumbers)
+        if (isEmpty(emailAddresses) && isEmpty(phoneNumbers)
                 && isEmpty(urls) && isEmpty(addresses)){
             return true;
         }else{
@@ -364,34 +350,6 @@ public class Contact implements Serializable, Cloneable {
 		getPhoneNumbers().remove(phoneNumber);
 	}
 
-	/**
-	 * Returns the list of strings representing the telefax numbers
-	 * included in <i>this</i> contact.
-	 */
-	public List<String> getFaxNumbers(){
-		if(this.faxNumbers == null) {
-			this.faxNumbers = new ArrayList<>();
-		}
-		return this.faxNumbers;
-	}
-
-	/**
-	 * @see  #getFaxNumbers()
-	 */
-	public void addFaxNumber(String faxNumber){
-		getFaxNumbers().add(faxNumber);
-	}
-
-	/**
-	 * Removes one element from the list of telefax numbers of <i>this</i> contact.
-	 *
-	 * @param  faxNumber  the telefax number of <i>this</i> contact which should be deleted
-	 * @see     		#getFaxNumber()
-	 */
-	public void removeFaxNumber(String faxNumber){
-		getFaxNumbers().remove(faxNumber);
-	}
-
 //*********************** CLONE ********************************************************/
 
 	/**
@@ -409,7 +367,7 @@ public class Contact implements Serializable, Cloneable {
 			for (Address adr : this.addresses){
 				result.addAddress(adr.clone());
 			}
-			//no changes to emailAdresses, faxnumbers, phonenumbers, urls
+			//no changes to emailAdresses, phonenumbers, urls
 			return result;
 		}catch (CloneNotSupportedException e){
 			logger.warn("Object does not implement cloneable");

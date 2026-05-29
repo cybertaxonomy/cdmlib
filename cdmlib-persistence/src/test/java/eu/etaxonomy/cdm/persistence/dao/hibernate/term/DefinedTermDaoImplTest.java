@@ -31,6 +31,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -44,7 +45,6 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -86,7 +86,7 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	public void findByTitle() throws Exception {
+	public void testFindByTitle() throws Exception {
 		List<DefinedTermBase> terms = dao.findByTitle("Diagnosis");
 		assertNotNull("findByTitle should return a List", terms);
 		assertEquals("findByTitle should return one term ",terms.size(),1);
@@ -94,42 +94,42 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	@Test
-	public void getTermByUUID() {
+	public void testFindByUuid() {
 		DefinedTermBase<?> term = dao.findByUuid(uuid);
 		assertNotNull("findByUuid should return a term",term);
 		assertEquals("findByUuid should return Feature.UNKNOWN",Feature.UNKNOWN(),term);
 	}
 
 	@Test
-	public void getLanguageByIso2() {
-		Language lang = dao.getLanguageByIso("arm");
+	public void testFindLanguageByIso2() {
+		Language lang = dao.findLanguageByIso("arm");
 		assertNotNull(lang);
 		assertEquals("getLanguageByIso should return the correct Language instance",lang.getUuid(), armUuid);
 	}
 
 	@Test
-	public void getLanguageByIso1() {
-		Language lang = dao.getLanguageByIso("hy");
+	public void testFindLanguageByIso1() {
+		Language lang = dao.findLanguageByIso("hy");
 		assertNotNull(lang);
 		assertEquals("getLanguageByIso should return the correct Language instance",lang.getUuid(), armUuid);
 	}
 
 	@Test
-	public void getLanguageByMalformedIso1() {
-		Language lang = dao.getLanguageByIso("a");
+	public void testFindLanguageByMalformedIso1() {
+		Language lang = dao.findLanguageByIso("a");
 		assertNull("getLanguageByIso should return null for this malformed Iso \'a\'",lang);
 	}
 
 	@Test
-	public void getLanguageByMalformedIso2() {
-		Language lang = dao.getLanguageByIso("abcd");
+	public void testFindLanguageByMalformedIso2() {
+		Language lang = dao.findLanguageByIso("abcd");
 		assertNull("getLanguageByIso should return null for this malformed Iso \'abcd\'",lang);
 	}
 
 	@Test
-	public void getDefinedTermByIdInVocabulary(){
+	public void testListByIdInVocabulary(){
 		UUID tdwgVocUuid = NamedArea.uuidTdwgAreaVocabulary;
-		List<NamedArea> list = dao.getDefinedTermByIdInVocabulary("GER", tdwgVocUuid, NamedArea.class, null, null);
+		List<NamedArea> list = dao.listByIdInVocabulary("GER", tdwgVocUuid, NamedArea.class, null, null);
 		assertNotNull("Method should return a result", list);
 		assertEquals("Method should return exactly 1 area", 1, list.size());
 		NamedArea area = list.get(0);
@@ -137,138 +137,138 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
 		assertEquals(tdwgVocUuid, area.getVocabulary().getUuid());
 	}
 
-	 @Test
-	 public void testGetIncludes() {
-		    NamedArea northernEurope = (NamedArea)dao.findByUuid(northernEuropeUuid);
-		    assert northernEurope != null : "NamedArea must exist";
-		    namedAreas.add(northernEurope);
+	@Test
+	public void testListIncludes() {
+		NamedArea northernEurope = (NamedArea)dao.findByUuid(northernEuropeUuid);
+		assert northernEurope != null : "NamedArea must exist";
+		namedAreas.add(northernEurope);
 
-		    List<String> propertyPaths = new ArrayList<String>();
-		    propertyPaths.add("level");
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("level");
 
-		    List<NamedArea> includes = dao.getIncludes(namedAreas, null, null,propertyPaths);
+		List<NamedArea> includes = dao.listIncludes(namedAreas, null, null, propertyPaths);
 
-		    assertNotNull("getIncludes should return a List",includes);
-		    assertFalse("The list should not be empty",includes.isEmpty());
-		    assertEquals("getIncludes should return 9 NamedArea entities",9,includes.size());
-		    assertTrue("NamedArea.level should be initialized",Hibernate.isInitialized(includes.get(0).getLevel()));
-	 }
+		assertNotNull("getIncludes should return a List",includes);
+		assertFalse("The list should not be empty",includes.isEmpty());
+		assertEquals("getIncludes should return 9 NamedArea entities",9,includes.size());
+		assertTrue("NamedArea.level should be initialized",Hibernate.isInitialized(includes.get(0).getLevel()));
+	}
 
-	 @Test
-	 public void countIncludes() {
-		 NamedArea northernEurope = (NamedArea)dao.findByUuid(northernEuropeUuid);
-		 assert northernEurope != null : "NamedArea must exist";
-		 namedAreas.add(northernEurope);
+	@Test
+	public void testCountIncludes() {
+	    NamedArea northernEurope = (NamedArea)dao.findByUuid(northernEuropeUuid);
+		assert northernEurope != null : "NamedArea must exist";
+		namedAreas.add(northernEurope);
 
-		 long numberOfIncludes = dao.countIncludes(namedAreas);
-		 assertEquals("countIncludes should return 9",9, numberOfIncludes);
-	 }
+		long numberOfIncludes = dao.countIncludes(namedAreas);
+		assertEquals("countIncludes should return 9",9, numberOfIncludes);
+	}
 
-	 @Test
-	 public void testGetPartOf() {
-		    NamedArea northernEurope = (NamedArea)dao.findByUuid(northernEuropeUuid);
-		    NamedArea middleEurope = (NamedArea)dao.findByUuid(middleEuropeUuid);
-		    NamedArea westTropicalAfrica = (NamedArea)dao.findByUuid(westTropicalAfricaUuid);
-		    assert northernEurope != null : "NamedArea must exist";
-		    assert middleEurope != null : "NamedArea must exist";
-		    assert westTropicalAfrica != null : "NamedArea must exist";
-		    namedAreas.add(northernEurope);
-		    namedAreas.add(middleEurope);
-		    namedAreas.add(westTropicalAfrica);
+	@Test
+	public void testListPartOf() {
+	    NamedArea northernEurope = (NamedArea)dao.findByUuid(northernEuropeUuid);
+		NamedArea middleEurope = (NamedArea)dao.findByUuid(middleEuropeUuid);
+		NamedArea westTropicalAfrica = (NamedArea)dao.findByUuid(westTropicalAfricaUuid);
+		assert northernEurope != null : "NamedArea must exist";
+		assert middleEurope != null : "NamedArea must exist";
+		assert westTropicalAfrica != null : "NamedArea must exist";
+		namedAreas.add(northernEurope);
+		namedAreas.add(middleEurope);
+		namedAreas.add(westTropicalAfrica);
 
-		    List<String> propertyPaths = new ArrayList<String>();
-		    propertyPaths.add("level");
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("level");
 
-		    List<NamedArea> partOf = dao.getPartOf(namedAreas, null, null, propertyPaths);
+		List<NamedArea> partOf = dao.listPartOf(namedAreas, null, null, propertyPaths);
 
-		    assertNotNull("getPartOf should return a List",partOf);
-		    assertFalse("The list should not be empty",partOf.isEmpty());
-		    assertEquals("getPartOf should return 2 NamedArea entities",2,partOf.size());
-		    assertTrue("NamedArea.level should be initialized",Hibernate.isInitialized(partOf.get(0).getLevel()));
-	 }
+		assertNotNull("getPartOf should return a List",partOf);
+		assertFalse("The list should not be empty",partOf.isEmpty());
+		assertEquals("getPartOf should return 2 NamedArea entities",2,partOf.size());
+		assertTrue("NamedArea.level should be initialized",Hibernate.isInitialized(partOf.get(0).getLevel()));
+	}
 
-	 @Test
-	 public void countPartOf() {
-		 NamedArea northernEurope = (NamedArea)dao.findByUuid(northernEuropeUuid);
-		 NamedArea middleEurope = (NamedArea)dao.findByUuid(middleEuropeUuid);
-		 NamedArea westTropicalAfrica = (NamedArea)dao.findByUuid(westTropicalAfricaUuid);
-		 assert northernEurope != null : "NamedArea must exist";
-		 assert middleEurope != null : "NamedArea must exist";
-		 assert westTropicalAfrica != null : "NamedArea must exist";
+	@Test
+	public void testCountPartOf() {
+		NamedArea northernEurope = (NamedArea)dao.findByUuid(northernEuropeUuid);
+		NamedArea middleEurope = (NamedArea)dao.findByUuid(middleEuropeUuid);
+		NamedArea westTropicalAfrica = (NamedArea)dao.findByUuid(westTropicalAfricaUuid);
+		assert northernEurope != null : "NamedArea must exist";
+		assert middleEurope != null : "NamedArea must exist";
+		assert westTropicalAfrica != null : "NamedArea must exist";
 
-		 namedAreas.add(northernEurope);
-		 namedAreas.add(middleEurope);
-		 namedAreas.add(westTropicalAfrica);
+		namedAreas.add(northernEurope);
+		namedAreas.add(middleEurope);
+		namedAreas.add(westTropicalAfrica);
 
-		 long numberOfPartOf = dao.countPartOf(namedAreas);
-		 assertEquals("countPartOf should return 2",2,numberOfPartOf);
-	 }
+		long numberOfPartOf = dao.countPartOf(namedAreas);
+		assertEquals("countPartOf should return 2",2,numberOfPartOf);
+	}
 
-	 @Test
-	 // NOTE: if this test is failing see
-	 //       http://dev.e-taxonomy.eu/trac/changeset/13291/trunk/cdmlib/cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd
-	 public void testListInitialization() {
-		 AuditEventContextHolder.getContext().setAuditEvent(auditEvent);
-		 List<OrderHint> orderHints = new ArrayList<>();
-		 orderHints.add(new OrderHint("titleCache",SortOrder.ASCENDING));
+	@Test
+	// NOTE: if this test is failing see
+	//       http://dev.e-taxonomy.eu/trac/changeset/13291/trunk/cdmlib/cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd
+	public void testListInitialization() {
+	    AuditEventContextHolder.getContext().setAuditEvent(auditEvent);
+	    List<OrderHint> orderHints = new ArrayList<>();
+		orderHints.add(new OrderHint("titleCache",SortOrder.ASCENDING));
 
-		 List<String> propertyPaths = new ArrayList<String>();
-		 propertyPaths.add("representations");
-		 propertyPaths.add("representations.language");
-		 List<ExtensionType> extensionTypes = dao.list(ExtensionType.class,null, null, orderHints, propertyPaths);
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("representations");
+		propertyPaths.add("representations.language");
+		List<ExtensionType> extensionTypes = dao.list(ExtensionType.class,null, null, orderHints, propertyPaths);
 
 
-		 assertTrue(Hibernate.isInitialized(extensionTypes.get(0).getRepresentations()));
-		 Set<Representation> representations = extensionTypes.get(0).getRepresentations();
-		 //TODO currently the representations list is empty, is this wanted? If not,
-		 //we should first check, if the list is not empty and then iterate.
-		 //Why is it empty? Does ExtensionType not have representations?
-		 for(Representation representation : representations) {
-			 assertTrue(Hibernate.isInitialized(representation.getLanguage()));
-		 }
-	 }
+		assertTrue(Hibernate.isInitialized(extensionTypes.get(0).getRepresentations()));
+		Set<Representation> representations = extensionTypes.get(0).getRepresentations();
+		//TODO currently the representations list is empty, is this wanted? If not,
+		//we should first check, if the list is not empty and then iterate.
+		//Why is it empty? Does ExtensionType not have representations?
+		for(Representation representation : representations) {
+		    assertTrue(Hibernate.isInitialized(representation.getLanguage()));
+		}
+	}
 
-	 @Test
-	 public void testTitleCacheCreation() {
+	@Test
+	public void testTitleCacheCreation() {
 
-	     //prepare
-	     @SuppressWarnings("unchecked")
-	     TermVocabulary<DefinedTerm> newVoc = TermVocabulary.NewInstance(TermType.Modifier);
-	     UUID vocUuid = UUID.fromString("6ced4c45-9c1b-4053-9dc3-6b8c51d286ed");
-	     newVoc.setUuid(vocUuid);
-	     UUID termUuid = UUID.fromString("2ab69720-c06c-4cfc-8928-d2ae6f1e4a48");
-	     DefinedTerm newModifier = DefinedTerm.NewModifierInstance("Test Modifier Description", "English Modifier", "TM");
-	     Representation englishRepresentation = newModifier.getRepresentations().iterator().next();
-	     newModifier.setUuid(termUuid);
-	     newVoc.addTerm(newModifier);
-	     vocabularyDao.save(newVoc);
+	    //prepare
+	    @SuppressWarnings("unchecked")
+	    TermVocabulary<DefinedTerm> newVoc = TermVocabulary.NewInstance(TermType.Modifier);
+	    UUID vocUuid = UUID.fromString("6ced4c45-9c1b-4053-9dc3-6b8c51d286ed");
+	    newVoc.setUuid(vocUuid);
+	    UUID termUuid = UUID.fromString("2ab69720-c06c-4cfc-8928-d2ae6f1e4a48");
+	    DefinedTerm newModifier = DefinedTerm.NewModifierInstance("Test Modifier Description", "English Modifier", "TM");
+	    Representation englishRepresentation = newModifier.getRepresentations().iterator().next();
+	    newModifier.setUuid(termUuid);
+	    newVoc.addTerm(newModifier);
+	    vocabularyDao.save(newVoc);
 
-         //only English
-	     newModifier.setProtectedTitleCache(false);
-	     newModifier.setProtectedTitleCache(true);
-         Assert.assertEquals("English Label should be the title cache", "English Modifier", newModifier.getTitleCache());
+        //only English
+	    newModifier.setProtectedTitleCache(false);
+	    newModifier.setProtectedTitleCache(true);
+        Assert.assertEquals("English Label should be the title cache", "English Modifier", newModifier.getTitleCache());
 
-         //Change English label
-         newModifier.setProtectedTitleCache(false);
-         newModifier.setLabel("New English label");
-         dao.saveOrUpdate(newModifier);
-         newModifier.setProtectedTitleCache(true);
-         Assert.assertEquals("English (default language) label should still be the title cache", "New English label", newModifier.getTitleCache());
+        //Change English label
+        newModifier.setProtectedTitleCache(false);
+        newModifier.setLabel("New English label");
+        dao.saveOrUpdate(newModifier);
+        newModifier.setProtectedTitleCache(true);
+        Assert.assertEquals("English (default language) label should still be the title cache", "New English label", newModifier.getTitleCache());
 
-         //Add German
-         newModifier.setProtectedTitleCache(false);
-         Representation newRepresentation = Representation.NewInstance("Beschreibung", "Deutscher Modifier", "Abk.", Language.GERMAN());
-         newModifier.addRepresentation(newRepresentation);
-         dao.saveOrUpdate(newModifier);
-         newModifier.setProtectedTitleCache(true);
-         Assert.assertEquals("English (default language) label should still be the title cache", "New English label", newModifier.getTitleCache());
+        //Add German
+        newModifier.setProtectedTitleCache(false);
+        Representation newRepresentation = Representation.NewInstance("Beschreibung", "Deutscher Modifier", "Abk.", Language.GERMAN());
+        newModifier.addRepresentation(newRepresentation);
+        dao.saveOrUpdate(newModifier);
+        newModifier.setProtectedTitleCache(true);
+        Assert.assertEquals("English (default language) label should still be the title cache", "New English label", newModifier.getTitleCache());
 
-         //Remove English
-         newModifier.setProtectedTitleCache(false);
-         newModifier.removeRepresentation(englishRepresentation);
-         dao.saveOrUpdate(newModifier);
-         newVoc.setProtectedTitleCache(true);
-         Assert.assertEquals("German Label should be the new title cache again as English representation is not there anymore", "Deutscher Modifier", newModifier.getTitleCache());
+        //Remove English
+        newModifier.setProtectedTitleCache(false);
+        newModifier.removeRepresentation(englishRepresentation);
+        dao.saveOrUpdate(newModifier);
+        newVoc.setProtectedTitleCache(true);
+        Assert.assertEquals("German Label should be the new title cache again as English representation is not there anymore", "Deutscher Modifier", newModifier.getTitleCache());
     }
 
 	@Test

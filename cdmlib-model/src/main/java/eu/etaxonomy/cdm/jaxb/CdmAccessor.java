@@ -1,13 +1,12 @@
 package eu.etaxonomy.cdm.jaxb;
 
+import com.sun.xml.bind.api.AccessorException;
+import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
+import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
-
-import com.sun.xml.bind.api.AccessorException;
-import com.sun.xml.bind.v2.runtime.JAXBContextImpl;
-import com.sun.xml.bind.v2.runtime.reflect.Accessor;
 
 public class CdmAccessor<BeanT,ValueT> extends Accessor<BeanT,ValueT> {
 

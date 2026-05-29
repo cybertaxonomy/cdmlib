@@ -26,10 +26,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -78,7 +76,6 @@ import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.AudioFile;
 import eu.etaxonomy.cdm.model.media.ImageFile;
@@ -689,21 +686,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		Person person3 = Person.NewTitledInstance("person3");
 
 		team1.setNomenclaturalTitleCache("T.1", true);
-		String street1 = "Strasse1";
-		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", URI.create("www.abc.de"), Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
-		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
-		String street3 = "Street3";
-		team2.addAddress(street3, null, null, null, null, null, Point.NewInstance(1.1, 2.2, null, 4));
-		String emailAddress1 = "Email1";
-		team1.addEmailAddress(emailAddress1);
 
 		team2.addTeamMember(person1);
 		team2.addTeamMember(person2);
 		String emailAddress2 = "Email2";
-		team2.addEmailAddress(emailAddress2);
 
 		team3.addTeamMember(person3);
-		team3.addEmailAddress("emailAddress3");
 
 		book1.setAuthorship(team2);
 		book2.setAuthorship(team3);
@@ -722,32 +710,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		Assert.assertEquals("Team2 must have 3 persons as members.",3, team2.getTeamMembers().size());
 		Assert.assertTrue("Team2 must have person3 as new member.", team2.getTeamMembers().contains(person3));
 		Assert.assertSame("Team2 must have person3 as third member.",person3, team2.getTeamMembers().get(2));
-
-		//Contact
-		cdmGenericDao.merge(team2, team1, null);
-		Contact team2Contact = team2.getContact();
-		Assert.assertNotNull("team2Contact must not be null", team2Contact);
-		Assert.assertNotNull("Addresses must not be null", team2Contact.getAddresses());
-		Assert.assertEquals("Number of addresses must be 3", 3, team2Contact.getAddresses().size());
-		Assert.assertEquals("Number of email addresses must be 4", 4, team2Contact.getEmailAddresses().size());
-
-		boolean street1Exists = false;
-		boolean street3Exists = false;
-		boolean country1Exists = false;
-		for  (Address address : team2Contact.getAddresses()){
-			if (street1.equals(address.getStreet())){
-				street1Exists = true;
-			}
-			if (street3.equals(address.getStreet())){
-				street3Exists = true;
-			}
-			if (Country.ARGENTINAARGENTINEREPUBLIC() == address.getCountry()){
-				country1Exists = true;
-			}
-		}
-		Assert.assertTrue("Street1 must be one of the streets in team2's addresses", street1Exists);
-		Assert.assertTrue("Street3 must be one of the streets in team2's addressesss", street3Exists);
-		Assert.assertTrue("Argentina must be one of the countries in team2's addresses", country1Exists);
 
 		//Person
 		Institution institution1 = Institution.NewInstance();
@@ -920,19 +882,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		Person person2 = Person.NewTitledInstance("person2");
 
 		team1.setNomenclaturalTitleCache("T.1", true);
-		String street1 = "Strasse1";
-		person1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", URI.create("www.abc.de"), Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
-		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
-		String street3 = "Street3";
-		team2.addAddress(street3, null, null, null, null, null, Point.NewInstance(1.1, 2.2, null, 4));
-		String emailAddress1 = "Email1";
-		team1.addEmailAddress(emailAddress1);
 
 		//FIXME
 //		team2.addTeamMember(person1);
 		team2.addTeamMember(person2);
-		String emailAddress2 = "Email2";
-		team2.addEmailAddress(emailAddress2);
 
 		agentDao.save(team1);
 		agentDao.save(team2);

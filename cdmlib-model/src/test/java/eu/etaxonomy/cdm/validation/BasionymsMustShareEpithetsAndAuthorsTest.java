@@ -9,8 +9,8 @@
 package eu.etaxonomy.cdm.validation;
 
 import java.util.Set;
-
 import javax.validation.ConstraintViolation;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

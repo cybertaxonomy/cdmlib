@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlRootElement(name = "SpecimenTypeDesignation")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenTypeDesignation", propOrder = {
-    "typeSpecimen"
+        "typeSpecimen"
 })
 @Entity
 @Audited

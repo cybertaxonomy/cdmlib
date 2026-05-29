@@ -11,13 +11,12 @@ package eu.etaxonomy.cdm.persistence.dao.permission;
 
 import java.util.List;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IGroupDao extends ICdmEntityDao<Group> {
@@ -33,7 +32,7 @@ public interface IGroupDao extends ICdmEntityDao<Group> {
 	 *
 	 * @param queryString the query string to filter by
 	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-	 * @param criteria extra restrictions to apply
+	 * @param filter optional list of filters to be applied in addition to the query string
 	 * @param pageSize The maximum number of rights returned (can be null for all rights)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
@@ -46,7 +45,8 @@ public interface IGroupDao extends ICdmEntityDao<Group> {
 	 *
 	 * @see {@link IIdentifiableDao#findByTitle(Class, String, MatchMode, List, Integer, Integer, List, List)}
 	 */
-	public List<Group> findByName(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<Group> findByName(String queryString, MatchMode matchmode, List<EntityFilter<Group>> filter,
+	        Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Return a count of groups matching the given query string in the name, optionally filtered by class, optionally with a particular MatchMode
@@ -54,11 +54,11 @@ public interface IGroupDao extends ICdmEntityDao<Group> {
 	 * @param clazz filter by class - can be null to include all instances of type T
 	 * @param queryString the query string to filter by
 	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-	 * @param criteria extra restrictions to apply
+	 * @param filter optional list of filters to be applied in addition to the query string
 	 * @return a count of instances of type Group matching the queryString
 	 *
 	 * @see {@link IIdentifiableDao#countByTitle(Class, String, MatchMode, List)}
 	 */
-	public long countByName(String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public long countByName(String queryString, MatchMode matchmode, List<EntityFilter<Group>> filter);
 
 }

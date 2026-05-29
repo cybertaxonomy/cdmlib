@@ -31,12 +31,12 @@ import org.hibernate.envers.Audited;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermTree", propOrder = {
 
-})
+        })
 @XmlRootElement(name = "TermTree")
 @Entity
 @Audited
-public class TermGraph <T extends DefinedTermBase>
-            extends TermGraphBase<T, TermRelation<T>> {
+public class TermGraph<T extends DefinedTermBase>
+        extends TermGraphBase<T, TermRelation<T>> {
 
 	private static final long serialVersionUID = -6713834139003172735L;
 	private static final Logger logger = LogManager.getLogger();

@@ -37,8 +37,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OccurrenceStatus", propOrder = {
-    "unit",
-    "type"
+        "unit",
+        "type"
 })
 @Entity
 @Audited

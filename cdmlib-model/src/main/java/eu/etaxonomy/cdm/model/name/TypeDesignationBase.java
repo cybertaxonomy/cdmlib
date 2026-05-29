@@ -63,22 +63,22 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
  */
 @XmlRootElement(name = "TypeDesignationBase")
 @XmlType(name = "TypeDesignationBase", propOrder = {
-    "typeStatus",
-    "notDesignated",
-    "typifiedNames",
-    "designationSource",
-    "registrations",
+        "typeStatus",
+        "notDesignated",
+        "typifiedNames",
+        "designationSource",
+        "registrations",
 })
 @XmlSeeAlso({
-    NameTypeDesignation.class,
-    SpecimenTypeDesignation.class,
-    TextualTypeDesignation.class
+        NameTypeDesignation.class,
+        SpecimenTypeDesignation.class,
+        TextualTypeDesignation.class
 })
 @Entity
 @Audited
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@ValidTypeDesignation(groups=Level2.class)
-@ValidLectotypeSource(groups=Level2.class)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@ValidTypeDesignation(groups = Level2.class)
+@ValidLectotypeSource(groups = Level2.class)
 public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>>
         extends SourcedEntityBase<IdentifiableSource>
         implements ITypeDesignation {
@@ -325,17 +325,15 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     }
 
     /**
-     * @deprecated for bidirectional use only
+     * NOTE: for bidirectional use only
      */
-    @Deprecated
-    protected void addTypifiedName(TaxonName taxonName){
+    void addTypifiedName(TaxonName taxonName){
         this.typifiedNames.add(taxonName);
     }
 
     /**
-     * @deprecated for bidirectional use only
+     * Note: For bidirectional use only
      */
-    @Deprecated
     protected void removeTypifiedName(TaxonName taxonName){
         this.typifiedNames.remove(taxonName);
         if (taxonName.getTypeDesignations().contains(this)){

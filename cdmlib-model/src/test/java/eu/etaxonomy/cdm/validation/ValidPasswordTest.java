@@ -51,10 +51,12 @@ public class ValidPasswordTest  extends ValidationTestBase {
         user = User.NewInstance("testuser", valid);
 
         Set<ConstraintViolation<User>> constraintViolations  = validator.validate(user, Level2.class);
-        assertTrue("There should not be a constraint violation as the 'valid' password fullfils all requirements",constraintViolations.isEmpty());
+        assertTrue("There should not be a constraint violation as the 'valid' password fullfils all requirements",
+                constraintViolations.isEmpty());
 
         user.setPassword(StringUtils.leftPad(valid, 256, 'a'));
-        assertTrue("There should not be a constraint violation as up to 256 characters are allowed",constraintViolations.isEmpty());
+        assertTrue("There should not be a constraint violation as up to 256 characters are allowed",
+                constraintViolations.isEmpty());
 
     }
 

@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -36,7 +35,6 @@ public class SimpleSpecimen {
 	private DerivationEvent derivationEvent;
 	private DerivedUnit specimen;
 	private Collection collection;
-	private TaxonName storedUnderName;
 	private String titleCache;
 
 
@@ -83,13 +81,6 @@ public class SimpleSpecimen {
 	}
 	public void setCollection(Collection collection) {
 		this.collection = collection;
-	}
-
-	public TaxonName getStoredUnderName() {
-		return storedUnderName;
-	}
-	public void setStoredUnderName(TaxonName storedUnderName) {
-		this.storedUnderName = storedUnderName;
 	}
 
 	public AgentBase getCollector() {

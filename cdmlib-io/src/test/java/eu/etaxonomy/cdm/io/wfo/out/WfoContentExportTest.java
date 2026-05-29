@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.io.out.TaxonTreeExportTestBase;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
- * Test class for COL-DP export.
+ * Test class for WFO Content export.
  * Note: this test was originally copied from CDM-light export test.
  *
  * @author a.mueller

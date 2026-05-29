@@ -30,13 +30,13 @@ import org.hibernate.query.Query;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -545,19 +545,19 @@ public class TermVocabularyDaoImpl
     }
 
     @Override
-    public List<TermVocabulary> list(Integer limit, Integer start, List<OrderHint> orderHints) {
-        return CdmEntityDaoBase.deduplicateResult(super.list(limit, start, orderHints));
+    public List<TermVocabulary> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints) {
+        return CdmEntityDaoBase.deduplicateResult(super.list(pageSize, pageNumber, orderHints));
     }
 
     @Override
-    public List<TermVocabulary> list(Integer limit, Integer start, List<OrderHint> orderHints,
+    public List<TermVocabulary> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
-        return CdmEntityDaoBase.deduplicateResult(super.list(limit, start, orderHints, propertyPaths));
+        return CdmEntityDaoBase.deduplicateResult(super.list(pageSize, pageNumber, orderHints, propertyPaths));
     }
 
     @Override
-    public <S extends TermVocabulary> List<S> list(Class<S> type, Integer limit, Integer start,
+    public <S extends TermVocabulary> List<S> list(Class<S> type, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints) {
-        return CdmEntityDaoBase.deduplicateResult(super.list(type, limit, start, orderHints));
+        return CdmEntityDaoBase.deduplicateResult(super.list(type, pageSize, pageNumber, orderHints));
     }
 }

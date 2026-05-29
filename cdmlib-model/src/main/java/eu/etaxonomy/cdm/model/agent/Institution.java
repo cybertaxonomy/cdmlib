@@ -53,10 +53,10 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Institution", propOrder = {
-	"code",
-	"name",
-	"types",
-	"isPartOf"
+        "code",
+        "name",
+        "types",
+        "isPartOf"
 })
 @XmlRootElement(name = "Institution")
 @Entity

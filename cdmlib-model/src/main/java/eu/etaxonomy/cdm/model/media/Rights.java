@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase;
 
 /**
  * Typically, rights information includes a statement about various property
@@ -44,16 +45,16 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Rights", propOrder = {
-    "uri",
-    "abbreviatedText",
-    "type",
-    "agent"
+        "uri",
+        "abbreviatedText",
+        "type",
+        "agent"
 })
 @XmlRootElement(name = "Rights")
 @Entity
 @Audited
 @Table(name = "RightsInfo")  //to avoid conflicts with reserved database words
-public class Rights extends LanguageStringBase {
+public class Rights extends AnnotatableLanguageStringBase {
 
 	private static final long serialVersionUID = 4920749849951432284L;
 	@SuppressWarnings("unused")

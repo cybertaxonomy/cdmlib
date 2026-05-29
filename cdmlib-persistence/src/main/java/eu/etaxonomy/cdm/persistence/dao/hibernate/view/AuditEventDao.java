@@ -20,9 +20,9 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
-import eu.etaxonomy.cdm.persistence.view.IAuditEventDao;
+import eu.etaxonomy.cdm.persistence.dao.view.IAuditEventDao;
+import eu.etaxonomy.cdm.persistence.query.AuditEventSort;
 
 @Repository
 public class AuditEventDao extends DaoBase implements IAuditEventDao {

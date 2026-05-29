@@ -54,20 +54,20 @@ import eu.etaxonomy.cdm.strategy.cache.term.TermDefaultCacheStrategy;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermBase", propOrder = {
-    "uri",
-    "termType",
-    "representations",
-    "externallyManaged"
+        "uri",
+        "termType",
+        "representations",
+        "externallyManaged"
 })
 @XmlSeeAlso({
-    DefinedTermBase.class,
-    TermVocabulary.class
+        DefinedTermBase.class,
+        TermVocabulary.class
 })
 @MappedSuperclass
 @Audited
 public abstract class TermBase
-            extends CreditableEntity<IIdentifiableEntityCacheStrategy<TermBase>>
-            implements IHasTermType, IExternallyManaged {
+        extends CreditableEntity<IIdentifiableEntityCacheStrategy<TermBase>>
+        implements IHasTermType, IExternallyManaged {
 
     private static final long serialVersionUID = 1471561531632115822L;
     @SuppressWarnings("unused")

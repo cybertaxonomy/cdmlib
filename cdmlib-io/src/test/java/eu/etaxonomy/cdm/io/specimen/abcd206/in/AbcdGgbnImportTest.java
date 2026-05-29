@@ -31,6 +31,7 @@ import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.dto.DerivedUnitDTO;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
@@ -66,7 +67,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -294,8 +294,8 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         //dna quality
         DnaQuality dnaQuality = dnaSample.getDnaQuality();
         assertNotNull("Dna quality is null", dnaQuality);
-        assertEquals(new Double("0.77"),dnaQuality.getRatioOfAbsorbance260_230());
-        assertEquals(new Double("1.38"),dnaQuality.getRatioOfAbsorbance260_280());
+        assertEquals(Double.valueOf("0.77"),dnaQuality.getRatioOfAbsorbance260_230());
+        assertEquals(Double.valueOf("1.38"),dnaQuality.getRatioOfAbsorbance260_280());
         assertEquals(new DateTime(2008, 4, 15, 0, 0),dnaQuality.getQualityCheckDate());
 //        assertEquals(MeasurementUnit.NewInstance(, label, labelAbbrev)DateTime(2008, 4, 15, 0, 0),dnaQuality.getQualityCheckDate());
 
@@ -442,9 +442,8 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
      * Tests import of DNA unit which is associated to a specimen being its sibling
      * by having the same field unit
 	 */
-	@Test
+    @Test
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-//	@Ignore
 	public void testImportAssociatedSpecimenSamePopulation() {
 
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sibling_association.xml";
@@ -453,7 +452,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null, false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
@@ -476,7 +475,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    assertEquals(DerivedUnit.class, derivedUnitSpecimen.getClass());
 	    DerivedUnit specimen = (DerivedUnit) derivedUnitSpecimen;
 	    assertEquals("Herbarium Berolinense", specimen.getCollection().getCode());
-	    assertTrue(SpecimenOrObservationType.DnaSample!=specimen.getRecordBasis());
+	    assertTrue(SpecimenOrObservationType.DnaSample != specimen.getRecordBasis());
 
 	    //dna sample
 	    FindOccurrencesConfigurator dnaConfig = new FindOccurrencesConfigurator();

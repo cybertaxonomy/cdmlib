@@ -476,7 +476,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
             if (namedArea == null) {
     			if (vocabularyPreference == null){
-    				vocabularyPreference =  new ArrayList<>();
+    				vocabularyPreference = new ArrayList<>();
     			}
     			if (vocabularyPreference.isEmpty()){  //add TDWG vocabulary if preferences are empty
     				vocabularyPreference.add(Country.GERMANY().getVocabulary());
@@ -1369,7 +1369,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param taxonBase
 	 * @return
 	 */
-	protected Taxon getAcceptedTaxon(TaxonBase<?> taxonBase) {
+	protected Taxon getAcceptedTaxon(TaxonBase taxonBase) {
 		if (taxonBase == null){
 			return null;
 		}else if(taxonBase.isInstanceOf(Taxon.class)){

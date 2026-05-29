@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 @XmlType(name = "Credit")
 @Entity
 @Audited
-public class Credit extends LanguageStringBase {
+public class Credit extends AnnotatableLanguageStringBase {
 
 	private static final long serialVersionUID = 5763391127298427701L;
 	@SuppressWarnings("unused")

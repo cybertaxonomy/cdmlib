@@ -13,8 +13,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -192,7 +192,7 @@ public class OwlExportUtil {
             Resource statisticalMeasureResource = createTermResource(statisticalMeasure, true, repo, state);
             termResource.addProperty(OwlUtil.propFeatureHasRecommendedStatisticalMeasure, statisticalMeasureResource);
         }
-        Set<TermCollection<? extends DefinedTermBase,?>> supportedCategoricalEnumerations = feature.getSupportedCategoricalEnumerations();
+        Set<TermCollection<?,?>> supportedCategoricalEnumerations = feature.getSupportedCategoricalEnumerations();
         for (TermCollection<?,?> stateVocabulary : supportedCategoricalEnumerations) {
             Resource supportedCategoricalEnumerationResource = createVocabularyResource(stateVocabulary, repo, state);
             termResource.addProperty(OwlUtil.propFeatureHasSupportedCategoricalEnumeration, supportedCategoricalEnumerationResource);

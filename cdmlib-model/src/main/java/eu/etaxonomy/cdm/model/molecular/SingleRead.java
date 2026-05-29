@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -52,12 +53,12 @@ import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SingleRead", propOrder = {
-	"amplificationResult",
-	"sequence",
-	"primer",
-	"direction",
-	"pherogram",
-	"materialOrMethod"
+        "amplificationResult",
+        "sequence",
+        "primer",
+        "direction",
+        "pherogram",
+        "materialOrMethod"
 })
 @XmlRootElement(name = "SingleRead")
 @Entity

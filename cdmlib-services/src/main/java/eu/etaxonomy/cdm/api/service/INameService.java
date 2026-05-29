@@ -11,15 +11,15 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.TypeDesignationStatusFilter;
@@ -46,12 +46,10 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -467,14 +465,6 @@ public interface INameService
     public Pager<TaxonName> search(Class<? extends TaxonName> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
-	 * Returns a map that holds uuid, titleCache pairs of all names in the current database
-	 *
-	 * @return
-	 * 			a <code>Map</code> containing uuid and titleCache of names
-	 */
-	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern);
-
-	/**
      * Returns a list of names belonging to the synonymy of the taxon
      * @param limit
      * @param taxonUuid
@@ -499,7 +489,7 @@ public interface INameService
 	 * @return a paged list of instances of type T matching the queryString
 	 */
     public Pager<TaxonName> findByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
-            List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+            List<EntityFilter<TaxonName>> filter, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns a homotypical group with the given UUID or null if not homotypical group exists with that UUID
@@ -509,25 +499,13 @@ public interface INameService
      */
     public HomotypicalGroup findHomotypicalGroup(UUID uuid);
 
-    /**
-     * @param uuid
-     * @return
-     */
     public List<TaggedText> getTaggedName(UUID uuid);
 
-    /**
-     * @param nameUuid
-     * @return
-     */
     public UpdateResult setAsGroupsBasionym(UUID nameUuid);
 
-	public List<HashMap<String, String>> getNameRecords();
+    @Deprecated //only used by csv export, use property path method instead
+	public List<Map<String, String>> getNameRecords();
 
-    /**
-     * @param name
-     * @param config
-     * @return
-     */
     public DeleteResult delete(TaxonName name, NameDeletionConfigurator config);
 
     public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse();
@@ -535,9 +513,6 @@ public interface INameService
     /**
      * Provides a collection of the TypeDesignationStatusBase terms which are in use.
      * Terms having the same label are merged into one filter item.
-     *
-     * @param preferredLanguage
-     * @return
      */
     public Collection<TypeDesignationStatusFilter> getTypeDesignationStatusFilterTerms(List<Language> preferredLanguages);
 
@@ -547,7 +522,7 @@ public interface INameService
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 
     public List<TaxonName> findByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
-            List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<EntityFilter<TaxonName>> filter, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
 
 

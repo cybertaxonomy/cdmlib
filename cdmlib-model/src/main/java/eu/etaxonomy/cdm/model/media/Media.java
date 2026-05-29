@@ -77,20 +77,20 @@ import eu.etaxonomy.cdm.validation.Level2;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Media", propOrder = {
-    "title",
-    "mediaCreated",
-    "description",
-    "representations",
-    "artist",
-    "link",
-    "rights"
+        "title",
+        "mediaCreated",
+        "description",
+        "representations",
+        "artist",
+        "link",
+        "rights"
 })
 @XmlRootElement(name = "Media")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed
 @Audited
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Media
         extends CreditableEntity<IMediaCacheStrategy>
         implements IMultiLanguageTextHolder, IIntextReferenceTarget,

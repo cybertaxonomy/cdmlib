@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,19 +35,26 @@ public class SingleTermRemover
     @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
+
+ // *************************** VARIABLES *****************************************/
+
+     private UUID uuidTerm ;
+     private List<String> checkUsedQueries = new ArrayList<>();
+     private boolean isAudit = false;
+
 // **************************** FACTORY METHODS ********************************/
 
 	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName,
-	        String uuidTerm, List<String> checkUsedQueries){
+	        UUID uuidTerm, List<String> checkUsedQueries){
 		return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries, false);
 	}
 
 	/**
 	 * @param firstCheckUsedQuery The first query to check if this term is used. Must return a single int value > 0
-	 * if this term is used at the given place.
+	 *                            if this term is used at the given place.
 	 */
 	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName,
-	        String uuidTerm, String firstCheckUsedQuery){
+	        UUID uuidTerm, String firstCheckUsedQuery){
 		List<String> checkUsedQueries = new ArrayList<>();
         if (firstCheckUsedQuery != null) {
             checkUsedQueries.add(firstCheckUsedQuery);
@@ -55,11 +63,13 @@ public class SingleTermRemover
 	}
 
 	/**
+     * Removes the term from the current tables as well as the audit tables.
+     *
      * @param firstCheckUsedQuery The first query to check if this term is used. Must return a single int value > 0
-     * if this term is used at the given place.
+     *                            if this term is used at the given place.
      */
     public static final SingleTermRemover NewAudInstance(List<ISchemaUpdaterStep> stepList, String stepName,
-            String uuidTerm, String firstCheckUsedQuery){
+            UUID uuidTerm, String firstCheckUsedQuery){
         List<String> checkUsedQueries = new ArrayList<>();
         if (firstCheckUsedQuery != null) {
             checkUsedQueries.add(firstCheckUsedQuery);
@@ -67,15 +77,9 @@ public class SingleTermRemover
         return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries, true);
     }
 
-// *************************** VARIABLES *****************************************/
-
-    private String uuidTerm ;
-    private List<String> checkUsedQueries = new ArrayList<>();
-    private boolean isAudit = false;
-
 // ***************************** CONSTRUCTOR ***************************************/
 
-	private SingleTermRemover(List<ISchemaUpdaterStep> stepList, String stepName, String uuidTerm,
+	private SingleTermRemover(List<ISchemaUpdaterStep> stepList, String stepName, UUID uuidTerm,
 	        List<String> checkUsedQueries, boolean isAudit) {
 		super(stepList, stepName);
 		this.uuidTerm = uuidTerm;

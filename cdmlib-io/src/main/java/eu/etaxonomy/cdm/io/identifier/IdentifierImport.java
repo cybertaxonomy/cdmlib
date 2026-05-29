@@ -139,6 +139,7 @@ public class IdentifierImport
             String message = String.format(
                     "Entity for uuid %s could not be found in line %d. Skipped", uuid.toString(), i);
             logger.warn(message);
+            this.rollbackTransaction(tx);
             return null;
         }
 
@@ -147,7 +148,7 @@ public class IdentifierImport
             String message = String.format(
                     "Record in line %d has no identifier value information. Skipped.", i);
             logger.warn(message);
-            this.commitTransaction(tx);
+            this.rollbackTransaction(tx);
             return null;
         }
 
@@ -182,7 +183,7 @@ public class IdentifierImport
             String message = String.format(
                     "Record in line %d has empty identifier value information. Skipped.", i);
             logger.debug(message);
-            this.commitTransaction(tx);
+            this.rollbackTransaction(tx);
             return null;
         }
 
@@ -194,7 +195,7 @@ public class IdentifierImport
                 String message = String.format(
                         "More than 1 instance for uuid '%s' ("+entity.getTitleCache()+") found in line %d. Updating not possible without deleting previous value as 'update existing' was selected. Record in line was neglected.", uuidStr, i);
                 logger.warn(message);
-                this.commitTransaction(tx);
+                this.rollbackTransaction(tx);
                 return null;
             }
             Set<Identifier> existingIdentifiers = entity.getIdentifiers(idType.getUuid());
@@ -204,7 +205,7 @@ public class IdentifierImport
                     String message = String.format(
                             "Existing identifier in line %d differs: " + identifier.getIdentifier() + "(existing)<->" + value   + "(import). Line not imported.", i);
                     logger.warn(message);
-                    this.commitTransaction(tx);
+                    this.rollbackTransaction(tx);
                     return null;
                 }
             }else{
@@ -217,7 +218,7 @@ public class IdentifierImport
                 String message = String.format(
                         "More than 1 instance for uuid '%s' ("+entity.getTitleCache()+") found in line %d. Updating not possible without deleting previous value as 'update existing' was selected. Record in line was neglected.", uuidStr, i);
                 logger.warn(message);
-                this.commitTransaction(tx);
+                this.rollbackTransaction(tx);
                 return null;
             }else{
                 Set<Identifier> existingIdentifiers = entity.getIdentifiers(idType.getUuid());

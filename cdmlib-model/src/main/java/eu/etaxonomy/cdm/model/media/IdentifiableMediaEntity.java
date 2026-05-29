@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IdentifiableMediaEntity", propOrder = {
-    "media"
+        "media"
 })
 @MappedSuperclass
 @Audited

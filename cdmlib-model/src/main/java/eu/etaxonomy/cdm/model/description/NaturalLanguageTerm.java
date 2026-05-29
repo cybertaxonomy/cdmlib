@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(name="NaturalLanguageTerm")
+@XmlType(name = "NaturalLanguageTerm")
 @XmlRootElement(name = "NaturalLanguageTerm")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search

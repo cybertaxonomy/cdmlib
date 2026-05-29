@@ -64,12 +64,12 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "StateData", propOrder = {
-    "categoricalData",
-    "state",
-    "count",
-    "usePlural",
-    "modifiers",
-    "modifyingText"
+        "categoricalData",
+        "state",
+        "count",
+        "usePlural",
+        "modifiers",
+        "modifyingText"
 })
 @XmlRootElement(name = "StateData")
 @Entity
@@ -154,7 +154,8 @@ public class StateData
     /**
      * Returns the {@link State state term} used in <i>this</i> state data.
      */
-    public DefinedTermBase<?> getState(){
+    //Note: returning DefinedTermBase<?> creates problems in TaxEditor
+    public DefinedTermBase getState(){
         return this.state;
     }
     /**
@@ -197,7 +198,7 @@ public class StateData
     }
     //for bidirectional use only
     @Deprecated
-    protected void setCategoricalData(CategoricalData categoricalData) {
+    void setCategoricalData(CategoricalData categoricalData) {
         this.categoricalData = categoricalData;
     }
 

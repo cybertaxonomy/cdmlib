@@ -25,12 +25,12 @@ import org.hibernate.envers.Audited;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermGraph", propOrder = {
-})
+        })
 @Entity
 @Audited
 public abstract class TermGraphBase<TERM extends DefinedTermBase, REL extends TermRelationBase> //<TERM, REL, TermGraphBase>
-            extends TermCollection<TERM, REL>
-            implements ITermGraph<TERM, REL>{
+        extends TermCollection<TERM, REL>
+        implements ITermGraph<TERM, REL>{
 
     private static final long serialVersionUID = -704169783744494023L;
     @SuppressWarnings("unused")
@@ -61,6 +61,7 @@ public abstract class TermGraphBase<TERM extends DefinedTermBase, REL extends Te
         super.termRelations(termRelations);
     }
 
+    @Override
     public abstract Set<TERM> getDistinctTerms();
 
     @Override

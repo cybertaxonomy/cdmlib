@@ -52,8 +52,8 @@ import eu.etaxonomy.cdm.model.common.Language;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermVocabulary", propOrder = {
-    "termSourceUri",
-    "terms"
+        "termSourceUri",
+        "terms"
 })
 @XmlRootElement(name = "TermVocabulary")
 @Entity

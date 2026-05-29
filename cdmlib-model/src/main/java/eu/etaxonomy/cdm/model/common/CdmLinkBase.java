@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -37,8 +38,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 })
 @Entity
 @Audited
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(name="CdmLink")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "CdmLink")
 public abstract class CdmLinkBase extends VersionableEntity {
 
     private static final long serialVersionUID = -1418100748281536524L;
@@ -47,7 +48,7 @@ public abstract class CdmLinkBase extends VersionableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    protected TaxonBase<?> taxon;
+    protected TaxonBase taxon;
 
 // ************************* CLONE *******************/
 

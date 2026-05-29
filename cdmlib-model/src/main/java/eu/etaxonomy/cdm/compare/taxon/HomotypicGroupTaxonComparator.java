@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,7 +47,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
     private static final long serialVersionUID = -5088210641256430878L;
     private static final Logger logger = LogManager.getLogger();
 
-    private final TaxonBase<?> firstTaxonInGroup;
+    private final TaxonBase firstTaxonInGroup;
     private final TaxonName firstNameInGroup;
 
     public HomotypicGroupTaxonComparator(@SuppressWarnings("rawtypes") TaxonBase firstTaxonInGroup) {
@@ -84,7 +85,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         return compareNames(name1, name2, taxonBase1, taxonBase2);
     }
 
-    public int compareNames(TaxonName name1,  TaxonName name2, TaxonBase<?> taxonBase1, TaxonBase<?> taxonBase2) {
+    public int compareNames(TaxonName name1,  TaxonName name2, TaxonBase taxonBase1, TaxonBase taxonBase2) {
         if (logger.isDebugEnabled()){logger.debug(name1.getTitleCache() +" : "+ name2.getTitleCache());}
         if (name1 == null && taxonBase1 == null ||
                 name2 == null && taxonBase2 == null){
@@ -150,7 +151,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         }
     }
 
-    private boolean isFirstInGroup(TaxonBase<?> taxonBase, TaxonName name) {
+    private boolean isFirstInGroup(TaxonBase taxonBase, TaxonName name) {
         if (taxonBase != null){
             return taxonBase.equals(firstTaxonInGroup);
         }else{

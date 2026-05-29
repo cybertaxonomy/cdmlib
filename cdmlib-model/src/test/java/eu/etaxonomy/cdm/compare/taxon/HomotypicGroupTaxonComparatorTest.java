@@ -62,7 +62,7 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
     private TaxonName botName4;
     private TaxonName botName5;
 
-    private List<TaxonBase<?>> list;
+    private List<TaxonBase> list;
 
     private Taxon taxon1;
     private Synonym synonym2;
@@ -476,7 +476,7 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         Assert.assertEquals("Hybrid should come after non-hybrid", botName3, list.get(0).getName());
         Assert.assertEquals("Hybrid should come after non-hybrid", botName2, list.get(1).getName());
 
-        ReverseComparator<TaxonBase<?>> reverseComparator = new ReverseComparator<>(comparator);
+        ReverseComparator<TaxonBase> reverseComparator = new ReverseComparator<>(comparator);
         Collections.sort(list, reverseComparator);
         Assert.assertEquals("Hybrid should come before non-hybrid in reverse order", botName2, list.get(0).getName());
         Assert.assertEquals("Hybrid should come before non-hybrid in reverse order", botName3, list.get(1).getName());

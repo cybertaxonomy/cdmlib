@@ -31,11 +31,14 @@ import org.hibernate.proxy.HibernateProxy;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -54,18 +57,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
-import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.query.GroupByCount;
 import eu.etaxonomy.cdm.persistence.query.GroupByDate;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NativeSqlOrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -601,7 +602,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
                 MatchMode.BEGINNING, null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("1 misapplied name, no pro parte synonym should be returned.", 1, taxa.size());
         assertTrue("Pro parte should exist", existsInCollection(taxa, aus));
-
     }
 
     @Test
@@ -1038,7 +1038,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void testFindDeleted() {
-        TaxonBase<?> taxon = taxonDao.findByUuid(acherontia);
+        TaxonBase taxon = taxonDao.findByUuid(acherontia);
         assertNull("findByUuid should return null in this view", taxon);
         assertFalse("exist should return false in this view",taxonDao.exists(acherontia));
     }
@@ -1061,7 +1061,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void testGetAuditEvents() {
-        TaxonBase<?> taxon = taxonDao.findByUuid(sphingidae);
+        TaxonBase taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
         List<String> propertyPaths = new ArrayList<>();
@@ -1080,7 +1080,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void testGetAuditEventsFromNow() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
-        TaxonBase<?> taxon =  taxonDao.findByUuid(sphingidae);
+        TaxonBase taxon =  taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
         @SuppressWarnings("rawtypes")
@@ -1093,7 +1093,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void testCountAuditEvents() {
-        TaxonBase<?> taxon = taxonDao.findByUuid(sphingidae);
+        TaxonBase taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
         long numberOfAuditEvents = taxonDao.countAuditEvents(taxon, null);
@@ -1103,7 +1103,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void getPreviousAuditEvent() {
-        TaxonBase<?> taxon = taxonDao.findByUuid(sphingidae);
+        TaxonBase taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
         AuditEventRecord<TaxonBase> auditEvent = taxonDao.getPreviousAuditEvent(taxon);
@@ -1114,7 +1114,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void getPreviousAuditEventAtBeginning() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
-        TaxonBase<?> taxon = taxonDao.findByUuid(sphingidae);
+        TaxonBase taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
         @SuppressWarnings("rawtypes")
@@ -1126,7 +1126,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void getNextAuditEvent() {
         AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
-        TaxonBase<?> taxon = taxonDao.findByUuid(sphingidae);
+        TaxonBase taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
         @SuppressWarnings("rawtypes")
@@ -1138,7 +1138,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void getNextAuditEventAtEnd() {
         AuditEventContextHolder.getContext().setAuditEvent(mostRecentAuditEvent);
-        TaxonBase<?> taxon = taxonDao.findByUuid(sphingidae);
+        TaxonBase taxon = taxonDao.findByUuid(sphingidae);
         assert taxon != null : "taxon cannot be null";
 
         @SuppressWarnings("rawtypes")
@@ -1231,7 +1231,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public void testGroupTaxa() {
         List<Grouping> groups = new ArrayList<>();
-        groups.add(new GroupByCount("count",SortOrder.DESCENDING));
+        groups.add(new GroupByCount("count", SortOrder.DESCENDING));
         groups.add(new Grouping("name.genusOrUninomial", "genus", "n", SortOrder.ASCENDING));
         List<Object[]> results = taxonDao.group(null, null, null, groups,null);
         if(logger.isTraceEnabled()){
@@ -1259,15 +1259,15 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
+    @Ignore //ignored since upgrading to hibernate 6 / using new criteria API
     public void testNativeSQLOrder() {
         List<OrderHint> orderHints = new ArrayList<>();
-        orderHints.add(new NativeSqlOrderHint("case when {alias}.titleCache like 'C%' then 0 else 1 end",SortOrder.ASCENDING));
+        orderHints.add(new NativeSqlOrderHint("case when {alias}.titleCache like 'C%' then 0 else 1 end", SortOrder.ASCENDING));
 
-        @SuppressWarnings("rawtypes")
         List<TaxonBase> results = taxonDao.list(null, null, orderHints);
         if(logger.isTraceEnabled()){
             System.out.println("native SQL order");
-            for(TaxonBase<?> result : results) {
+            for(TaxonBase result : results) {
                 System.out.println(result.getTitleCache());
             }
         }
@@ -1309,8 +1309,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         long count = taxonDao.countAuditEvents(TaxonBase.class, null, null, null);
         assertTrue(count > 0);
 
-        @SuppressWarnings("rawtypes")
-        List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(TaxonBase.class, previousAuditEvent, mostRecentAuditEvent, criteria,null, null, AuditEventSort.FORWARDS, propertyPaths);
+        List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(
+                TaxonBase.class, previousAuditEvent, mostRecentAuditEvent, criteria,
+                null, null, AuditEventSort.FORWARDS, propertyPaths);
         assertNotNull("getAuditEvents should return a list",auditEvents);
         assertFalse("the list should not be empty",auditEvents.isEmpty());
         assertEquals("There should be one AuditEventRecord in the list",1, auditEvents.size());

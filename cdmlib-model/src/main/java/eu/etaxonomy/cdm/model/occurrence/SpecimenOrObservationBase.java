@@ -92,29 +92,29 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenOrObservationBase", propOrder = {
-    "recordBasis",
-    "identityCache",
-    "protectedIdentityCache",
-    "publish",
-    "preferredStableUri",
-    "sex",
-    "lifeStage",
-    "kindOfUnit",
-    "individualCount",
-    "definition",
-    "descriptions",
-    "determinations",
-    "derivationEvents"
+        "recordBasis",
+        "identityCache",
+        "protectedIdentityCache",
+        "publish",
+        "preferredStableUri",
+        "sex",
+        "lifeStage",
+        "kindOfUnit",
+        "individualCount",
+        "definition",
+        "descriptions",
+        "determinations",
+        "derivationEvents"
 })
 @XmlRootElement(name = "SpecimenOrObservationBase")
 @Entity
 @Audited
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(name="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnList = "titleCache"),
-        @Index(name = "specimenOrObservationBaseIdentityCacheIndex", columnList = "identityCache") })
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "SpecimenOrObservationBase", indexes = {@Index(name = "specimenOrObservationBaseTitleCacheIndex", columnList = "titleCache"),
+        @Index(name = "specimenOrObservationBaseIdentityCacheIndex", columnList = "identityCache")})
 public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy<?>>
-                extends IdentifiableEntity<S>
-                implements IMultiLanguageTextHolder, IIntextReferenceTarget, IDescribable<SpecimenDescription>, IPublishable  {
+        extends IdentifiableEntity<S>
+        implements IMultiLanguageTextHolder, IIntextReferenceTarget, IDescribable<SpecimenDescription>, IPublishable  {
 
     private static final long serialVersionUID = 6932680139334408031L;
     private static final Logger logger = LogManager.getLogger();

@@ -38,7 +38,7 @@ public class WfoBackboneExportState
 
     private WfoBackboneExportResultProcessor processor = new WfoBackboneExportResultProcessor(this);
 
-    private TaxonBase<?> currentTaxonBase;
+    private TaxonBase currentTaxonBase;
 
     private ArrayList<UUID> homotypicalGroupStore = new ArrayList<>();
 
@@ -82,10 +82,10 @@ public class WfoBackboneExportState
     }
 
     //current taxon
-    protected void setCurrentTaxonBase(TaxonBase<?> currentTaxonBase){
+    protected void setCurrentTaxonBase(TaxonBase currentTaxonBase){
         this.currentTaxonBase = currentTaxonBase;
     }
-    protected TaxonBase<?> getCurrentTaxonBase() {
+    protected TaxonBase getCurrentTaxonBase() {
         return currentTaxonBase;
     }
 
@@ -165,10 +165,10 @@ public class WfoBackboneExportState
         return taxonNodeToWfoMap.get(node.getUuid());
     }
 
-    public void putTaxonWfoId(TaxonBase<?> taxon, String wfoId) {
+    public void putTaxonWfoId(TaxonBase taxon, String wfoId) {
         taxonToWfoMap.put(taxon.getUuid(), wfoId);
     }
-    public String getTaxonWfoId(TaxonBase<?> taxon) {
+    public String getTaxonWfoId(TaxonBase taxon) {
         return taxonToWfoMap.get(taxon.getUuid());
     }
 

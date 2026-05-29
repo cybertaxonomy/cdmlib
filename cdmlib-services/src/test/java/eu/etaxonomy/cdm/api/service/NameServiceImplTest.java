@@ -34,6 +34,9 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
+import eu.etaxonomy.cdm.api.filter.Restriction.Operator;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorFactory;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
@@ -67,13 +70,10 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -412,7 +412,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         }
         TaxonName nameBase =nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",nameBase);
-        TaxonBase<?> taxonBase = taxonService.find(taxon.getUuid());
+        TaxonBase taxonBase = taxonService.find(taxon.getUuid());
         Assert.assertNotNull("Taxon should still be in database",taxonBase);
         taxon = (Taxon)taxonBase;
         taxon.setName(basionym);
@@ -429,45 +429,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNull("Name should still be in database",name1);
         taxon = (Taxon)taxonService.find(taxon.getUuid());
         Assert.assertNotNull("Taxon should still be in database",taxon);
-    }
-
-    @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testDeleteTaxonNameAsStoredUnder() {
-        final String[] tableNames = new String[]{"TaxonName","SpecimenOrObservationBase"};
-
-        TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
-        name1.setTitleCache("Name1", true);
-        DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
-        specimen.setStoredUnder(name1);
-
-        occurrenceDao.save(specimen);
-        UUID uuidName1 = nameService.save(name1).getUuid();
-
-        commitAndStartNewTransaction(tableNames);
-        DeleteResult result = nameService.delete(name1);
-        if (result.isOk()){
-    	   Assert.fail("This should throw an error because name is used for specimen#storedUnder.");
-        }
-        commitAndStartNewTransaction(tableNames);
-
-        name1 = nameService.find(uuidName1);
-        Assert.assertNotNull("Name should still be in database",name1);
-        specimen = (DerivedUnit)occurrenceDao.load(specimen.getUuid());
-        Assert.assertNotNull("Specimen should still be in database",name1);
-        specimen.setStoredUnder(null);
-        occurrenceDao.saveOrUpdate(specimen);
-
-        nameService.delete(name1); //should throw no exception
-        commitAndStartNewTransaction(tableNames);
-
-        name1 = nameService.find(uuidName1);
-        Assert.assertNull("Name should not be in database anymore",name1);
-        specimen = (DerivedUnit)occurrenceDao.load(specimen.getUuid());
-        Assert.assertNotNull("Specimen should still be in database",specimen);
-
-        occurrenceDao.delete(specimen); //this is to better run this test in the test suit
-
     }
 
     @Test
@@ -908,51 +869,56 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 //      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
 
 
-        List<Restriction<?>> restrictions;
+        List<Restriction<?>> restrictions = null;
         Pager<TaxonName> result;
 
-        result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, null, null, null, null, null);
-        assertEquals(1l, result.getCount().longValue());
+        long zero = 0l;
+        long one = 1l;
+        long two = 2l;
+        long three = 3l;
+
+        result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
+        assertEquals(one, result.getCount().longValue());
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
 
-        result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, null, null, null, null, null);
-        assertEquals(3l, result.getCount().longValue());
-
-        restrictions = Arrays.asList(new Restriction<UUID>("typeDesignations.uuid", null, UUID.fromString("9bbda70b-7272-4e65-a807-852a3f2eba63")));
         result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
-        assertEquals(1l, result.getCount().longValue());
+        assertEquals(three, result.getCount().longValue());
+
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.uuid", null, UUID.fromString("9bbda70b-7272-4e65-a807-852a3f2eba63")));
+        result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
+        assertEquals(one, result.getCount().longValue());
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
 
         result = nameService.findByTitleWithRestrictions(null, "me1", MatchMode.END, restrictions, null, null, null, null);
-        assertEquals(1l, result.getCount().longValue());
+        assertEquals(one, result.getCount().longValue());
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
 
         result = nameService.findByTitleWithRestrictions(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
-        assertEquals(0l, result.getCount().longValue());
+        assertEquals(zero, result.getCount().longValue());
 
         // LogUtils.setLevel("eu.etaxonomy.cdm.persistence.dao.hibernate.common", Level.DEBUG);
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", MatchMode.EXACT, "Specimen2"));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeSpecimen.titleCache", MatchMode.EXACT, "Specimen2"));
         result = nameService.findByTitleWithRestrictions(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
-        assertEquals(1l, result.getCount().longValue());
+        assertEquals(one, result.getCount().longValue());
         assertEquals("Name2", result.getRecords().iterator().next().getTitleCache());
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", MatchMode.EXACT, "Specimen1"));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeSpecimen.titleCache", MatchMode.EXACT, "Specimen1"));
         result = nameService.findByTitleWithRestrictions(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
-        assertEquals(0l, result.getCount().longValue());
+        assertEquals(zero, result.getCount().longValue());
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", Restriction.Operator.OR, MatchMode.EXACT, "Specimen1"));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeSpecimen.titleCache", Restriction.Operator.OR, MatchMode.EXACT, "Specimen1"));
         result = nameService.findByTitleWithRestrictions(null, "Name2", MatchMode.EXACT, restrictions, null, null, null, null);
-        assertEquals(2l, result.getCount().longValue());
+        assertEquals(two, result.getCount().longValue());
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", MatchMode.BEGINNING, "Specimen"));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeSpecimen.titleCache", MatchMode.BEGINNING, "Specimen"));
         result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals("names with multiple matching typeSpecimens must be deduplicated", 1l, result.getCount().longValue());
         assertEquals("Name1", result.getRecords().iterator().next().getTitleCache());
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", MatchMode.BEGINNING, "Specimen"));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeSpecimen.titleCache", MatchMode.BEGINNING, "Specimen"));
         result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
-        assertEquals(2l, result.getCount().longValue());
+        assertEquals(two, result.getCount().longValue());
     }
 
     @Test
@@ -968,7 +934,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         List<Restriction<?>> restrictions;
         Pager<TaxonName> result;
 
-        restrictions = Arrays.asList(new Restriction<UUID>("typeDesignations.uuid", null, UUID.fromString("9bbda70b-7272-4e65-a807-852a3f2eba63"), UUID.fromString("1357c307-00c3-499c-8e20-0849d4706125")));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.uuid", null,
+                UUID.fromString("9bbda70b-7272-4e65-a807-852a3f2eba63"), UUID.fromString("1357c307-00c3-499c-8e20-0849d4706125")));
         result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
         assertEquals(2l, result.getCount().longValue());
 
@@ -982,7 +949,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public void testFindByTitleTitleWithRestrictionsLogicalOperators(){
 
-        // The following typedesigbnations per name are assumed:
+        // The following type designations per name are assumed:
         // Name1 -> SpecimenTypeDesignation -> Specimen1
         //       -> SpecimenTypeDesignation -> Specimen2
         // Name2 -> SpecimenTypeDesignation -> Specimen2
@@ -994,24 +961,24 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 //      LogUtils.setLevel("org.hibernate.SQL", Level.TRACE);
 
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.AND, null, "Name1"));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeName.titleCache", Operator.AND, null, "Name1"));
         result = nameService.findByTitleWithRestrictions(null, "Name3", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(1l, result.getCount().longValue());
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.AND_NOT, null, "Name1"));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeName.titleCache", Operator.AND_NOT, null, "Name1"));
         result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
         assertEquals(2l, result.getCount().longValue());
 
-        restrictions = Arrays.asList(new Restriction<String>("titleCache", Operator.AND_NOT, null, "Name1", "Name2"));
+        restrictions = Arrays.asList(new Restriction<>("titleCache", Operator.AND_NOT, null, "Name1", "Name2"));
         result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
         assertEquals(1l, result.getCount().longValue());
         assertEquals("Name3", result.getRecords().get(0).getTitleCache());
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.OR, null, "Name1"));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeName.titleCache", Operator.OR, null, "Name1"));
         result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(2l, result.getCount().longValue());
 
-        restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.OR_NOT, null, "Name1"));
+        restrictions = Arrays.asList(new Restriction<>("typeDesignations.typeName.titleCache", Operator.OR_NOT, null, "Name1"));
         result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(2l, result.getCount().longValue());
     }

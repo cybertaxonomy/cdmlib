@@ -598,6 +598,17 @@ public class Rank extends DefinedTermBase<Rank> {
         return this.rankClass.equals(RankClass.Infraspecific); // (this.isLower(Rank.SPECIES()));
     }
 
+    /**
+     * <code>true</code> if rank is infraspecific ({@link #isInfraSpecific()}) and below
+     * rank of subspecies ({@link Rank#SUBSPECIES()}). This is a special class of ranks
+     * relevant for pseudo autonmys (names that look like autonyms but are not).
+     * They exist only for names of a rank below subspecies (at least in botany).
+     */
+    @Transient
+    public boolean isSubSubSpecific(){
+        return isInfraSpecific() && this.isLower(SUBSPECIES());
+    }
+
     @Transient
     public boolean isCultivar(){
         //TODO handle correctly as rankClass?

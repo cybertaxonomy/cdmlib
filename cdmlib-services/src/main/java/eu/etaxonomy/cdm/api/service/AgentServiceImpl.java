@@ -69,7 +69,9 @@ public class AgentServiceImpl
 
 	@Override
 	@Transactional(readOnly = false)
-    public UpdateResult updateCaches(Class<? extends AgentBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<AgentBase> cacheStrategy, IProgressMonitor monitor) {
+    public UpdateResult updateCaches(Class<? extends AgentBase> clazz, Integer stepSize,
+            IIdentifiableEntityCacheStrategy<AgentBase> cacheStrategy, IProgressMonitor monitor) {
+
 		if (clazz == null){
 			clazz = AgentBase.class;
 		}
@@ -235,6 +237,7 @@ public class AgentServiceImpl
 
     @Override
     public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<T> config){
-        return dao.findByTitleAndAbbrevTitle(config.getClazz(),config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
+        return dao.findByTitleAndAbbrevTitle(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(),
+                config.getEntityFilters(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
     }
 }

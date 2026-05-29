@@ -55,7 +55,7 @@ public class CdmUpdaterTest {
 	}
 
 	private static ICdmDataSource cdm_test_algaterra(){
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MariaDB;
 		String cdmServer = "160.45.63.201";
 		String cdmDB = "cdm_edit_algaterra";
 		String cdmUserName = "edit";

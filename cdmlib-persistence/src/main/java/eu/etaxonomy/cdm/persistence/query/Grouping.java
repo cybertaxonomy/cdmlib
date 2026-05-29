@@ -5,10 +5,8 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
-
+*/
 package eu.etaxonomy.cdm.persistence.query;
-
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -18,12 +16,13 @@ import org.hibernate.criterion.Property;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 public class Grouping {
+
 	private String associatedObject;
 	private String associatedObjectAlias;
 	private String propertyName;
 	protected String name;
 	private SortOrder order;
-	
+
 	public Grouping(String propertyPath, String name,  String associatedObjectAlias, SortOrder order) {
         int pos;
         if((pos = propertyPath.indexOf('.', 0)) >= 0){
@@ -36,7 +35,7 @@ public class Grouping {
         this.order = order;
         this.associatedObjectAlias = associatedObjectAlias;
 	}
-	
+
 	protected void setPropertyName(String propertyName) {
 		this.propertyName = propertyName;
 	}
@@ -48,7 +47,7 @@ public class Grouping {
 	public String getAssociatedObj() {
 		return associatedObject;
 	}
-	
+
 	public String getAssociatedObjectAlias() {
 		return associatedObjectAlias;
 	}
@@ -56,7 +55,7 @@ public class Grouping {
 	public String getName() {
 		return name;
 	}
-	
+
 	protected SortOrder getOrder() {
 		return order;
 	}
@@ -73,10 +72,9 @@ public class Grouping {
 
 	public void addProjection(ProjectionList projectionList) {
 		if(associatedObjectAlias != null) {
-		    projectionList.add(Property.forName(associatedObjectAlias + "." + propertyName).group(),name);
+		    projectionList.add(Property.forName(associatedObjectAlias + "." + propertyName).group(), name);
 		} else {
-			projectionList.add(Property.forName(propertyName).group(),name);
+			projectionList.add(Property.forName(propertyName).group(), name);
 		}
 	}
-
 }

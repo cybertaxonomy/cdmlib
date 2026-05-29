@@ -30,8 +30,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.common.CdmPreferenceCache;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmPreferenceCache;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
 

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IStatisticsService;
 import eu.etaxonomy.cdm.api.service.statistics.Statistics;
@@ -33,7 +34,6 @@ import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import io.swagger.annotations.Api;
 
 /**
@@ -121,7 +121,7 @@ public class StatisticsController {
         if (classificationName != null) {
             for (String string : classificationName) {
                     List <Classification> classifications = classificationService
-                            .listByTitleWithRestrictions(Classification.class, string,
+                            .listByTitle(Classification.class, string,
                                     MatchMode.EXACT, null, null, null, null, null);
                     classificationFilters.addAll(classifications);
 

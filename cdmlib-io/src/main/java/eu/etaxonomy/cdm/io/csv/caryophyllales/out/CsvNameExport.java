@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -62,7 +64,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author k.luther
@@ -77,10 +78,10 @@ public class CsvNameExport extends CsvNameExportBase {
     @Autowired
     private IDistributionService distributionService;
 
-    private HashMap<UUID, HashMap<String,String>> familyMap = new HashMap<>();
-    private HashMap<UUID, HashMap<String,String>> genusMap = new HashMap<>();
+    private Map<UUID, Map<String,String>> familyMap = new HashMap<>();
+    private Map<UUID, Map<String,String>> genusMap = new HashMap<>();
 
-    private List<HashMap<String,String>> nameRecords = new ArrayList<>();
+    private List<Map<String,String>> nameRecords = new ArrayList<>();
 
     public CsvNameExport() {
         super();
@@ -110,7 +111,7 @@ public class CsvNameExport extends CsvNameExportBase {
                 break;
             }
 
-            List<HashMap<String, String>> result;
+            List<Map<String, String>> result;
             if (config.getRank() == null){
                 config.setRank(Rank.GENUS());
             }
@@ -123,7 +124,7 @@ public class CsvNameExport extends CsvNameExportBase {
             CsvRecord nameRecord;
             int count = 0;
             boolean isFirst = true;
-            for (HashMap<String,String> record:result){
+            for (Map<String,String> record: result){
                 if (count > 0){
                     isFirst = false;
                 }
@@ -172,7 +173,7 @@ public class CsvNameExport extends CsvNameExportBase {
     }
 
 
-    public List<HashMap<String,String>> getRecordsForPrintPub(CsvNameExportState state){
+    public List<Map<String,String>> getRecordsForPrintPub(CsvNameExportState state){
 //        List<String> propertyPaths = new ArrayList<String>();
 //        propertyPaths.add("childNodes");
 //        txStatus = startTransaction();
@@ -216,7 +217,7 @@ public class CsvNameExport extends CsvNameExportBase {
 //            List<HashMap<String,String>> nameRecords = new ArrayList<>();
             TaxonNode node = partitioner.next();
             while (node != null){
-              HashMap<String, String> nameRecord = createNewRecord(node, state);
+              Map<String, String> nameRecord = createNewRecord(node, state);
               if (nameRecord != null){
                   nameRecords.add(nameRecord);
               }
@@ -662,7 +663,7 @@ public class CsvNameExport extends CsvNameExportBase {
         for (List<Synonym> list: heterotypicSynonymsList.values()){
             Collections.sort(list, new HomotypicGroupTaxonComparator(null));
             first = true;
-            for (TaxonBase<?> synonym : list){
+            for (TaxonBase synonym : list){
                 NomenclaturalStatus status = null;
                 if (!synonym.getName().getStatus().isEmpty()){
                     status = CdmBase.deproxy(synonym.getName().getStatus().iterator().next());
@@ -690,7 +691,7 @@ public class CsvNameExport extends CsvNameExportBase {
         first = true;
         Collections.sort(homotypicSynonymsList, new HomotypicGroupTaxonComparator(null)  );
         NomenclaturalStatus status = null;
-        for (TaxonBase<?> synonym : homotypicSynonymsList){
+        for (TaxonBase synonym : homotypicSynonymsList){
 
             if (!synonym.getName().getStatus().isEmpty()){
                 status = CdmBase.deproxy(synonym.getName().getStatus().iterator().next());

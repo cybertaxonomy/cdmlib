@@ -24,7 +24,6 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailPreparationException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,10 +102,10 @@ public class PasswordResetService extends AccountSelfManagementService implement
            Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findRequest(token);
            if (resetRequest.isPresent()) {
                try {
-                   UserDetails user = userService.loadUserByUsername(resetRequest.get().getUserName());
+                   User user = userService.loadUserByUsernameAsUser(resetRequest.get().getUserName());
                    Assert.isAssignable(user.getClass(), User.class);
-                   userService.encodeUserPassword((User)user, newPassword);
-                   userDao.saveOrUpdate((User)user);
+                   userService.encodeUserPassword(user, newPassword);
+                   userDao.saveOrUpdate(user);
                    passwordResetTokenStore.remove(token);
                    sendEmail(resetRequest.get().getUserEmail(), resetRequest.get().getUserName(),
                            UserAccountEmailTemplates.RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE,

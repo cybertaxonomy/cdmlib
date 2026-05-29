@@ -80,7 +80,7 @@ public class NameMatchingController {
 
         logger.info("doGetNameMatching()" + request.getRequestURI());
 
-        NameMatchingResult result = nameMatchingService.findMatchingNames(scientificName, compareAuthor, excludeBasionymAuthors, excludeExAuthors, new Double (maxDistance));
+        NameMatchingResult result = nameMatchingService.findMatchingNames(scientificName, compareAuthor, excludeBasionymAuthors, excludeExAuthors, Double.valueOf(maxDistance));
         RequestedParam requestedParam = new RequestedParam(scientificName, compareAuthor, maxDistance, excludeBasionymAuthors, excludeExAuthors);
         NameMatchingOutputObject outputObject = NameMatchingAdapter.invoke(result, requestedParam);
 
@@ -126,7 +126,7 @@ public class NameMatchingController {
         String namesString = new String (bytes, StandardCharsets.UTF_8);
         List <String> namesList = Arrays.asList(namesString.split("\\r?\\n"));
         Map<String, NameMatchingResult> result = nameMatchingService.compareTaxonListName(namesList, compareAuthor, excludeBasionymAuthors,
-                excludeExAuthors, new Double (maxDistance));
+                excludeExAuthors, Double.valueOf(maxDistance));
         RequestedParam requestedParam = new RequestedParam(namesList, compareAuthor, maxDistance, excludeBasionymAuthors, excludeExAuthors);
         NameMatchingOutputList outputObjectList = NameMatchingAdapter.invokeList(result, requestedParam);
 

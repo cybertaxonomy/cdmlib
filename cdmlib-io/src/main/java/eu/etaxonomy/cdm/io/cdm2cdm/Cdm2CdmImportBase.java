@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.AuthorityType;
@@ -70,7 +71,6 @@ import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -155,7 +155,6 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermRelationBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * Base class for migrating data from one CDM instance to another.
@@ -423,7 +422,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected Taxon handlePersistedTaxon(Taxon taxon, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        Taxon result = handlePersisted((TaxonBase<?>)taxon, state);
+        Taxon result = handlePersisted((TaxonBase)taxon, state);
         //complete
         BiFunction<Synonym,Cdm2CdmImportState,Boolean> filterFunction = state.getConfig().getSynonymFilter();
         handleCollection(result, Taxon.class, "synonyms", Synonym.class, filterFunction, state);
@@ -656,7 +655,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected Annotation handlePersistedAnnotation(Annotation annotation, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        Annotation result = handlePersisted((AnnotatableEntity)annotation, state);
+        Annotation result = handlePersisted((VersionableEntity)annotation, state);
         //complete
         result.setAnnotationType(detach(annotation.getAnnotationType(), state));
         result.setCommentator(detach(result.getCommentator(), state));
@@ -722,13 +721,12 @@ public abstract class Cdm2CdmImportBase
             return result;
         }
         if (!contact.getAddresses().isEmpty() || !contact.getEmailAddresses().isEmpty()
-               || !contact.getFaxNumbers().isEmpty() ||!contact.getPhoneNumbers().isEmpty()
+               ||!contact.getPhoneNumbers().isEmpty()
                ||!contact.getUrls().isEmpty()){
             logger.warn("Addresses not yet implemented");
         }
         setInvisible(result, "addresses", new HashSet<>());
 //        handleCollection(result, Contact.class, "", Address.class);
-        setInvisible(result, "faxNumbers", new ArrayList<>());
         setInvisible(result, "phoneNumbers", new ArrayList<>());
         setInvisible(result, "emailAddresses", new ArrayList<>());
         setInvisible(result, "urls", new ArrayList<>());
@@ -1008,7 +1006,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected Representation handlePersistedRepresentation(Representation representation, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        Representation result = (Representation)handlePersisted((LanguageStringBase)representation, state);
+        Representation result = (Representation)handlePersisted((AnnotatableLanguageStringBase)representation, state);
         return result;
     }
 
@@ -1038,7 +1036,7 @@ public abstract class Cdm2CdmImportBase
         User result = (User)handlePersistedCdmBase(user, state);
         if (result.getUsername().equals("admin")){
             //TODO why only admin, is this not a problem for all duplicated usernames? Was this a preliminary decision?
-            result = getUserService().listByUsername("admin", MatchMode.EXACT, null, null, null, null, null).iterator().next();
+            result = getUserService().loadUserByUsernameAsUser("admin");
             state.putPermanent(user.getUuid(), result);
             cache(result, state); //necessary?
             state.addToSave(result);
@@ -1054,14 +1052,14 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected LanguageString handlePersistedLanguageString(LanguageString languageString, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        LanguageString result = handlePersisted((LanguageStringBase)languageString, state);
+        LanguageString result = handlePersisted((AnnotatableLanguageStringBase)languageString, state);
         //complete
         handleCollection(result, LanguageString.class, "intextReferences", IntextReference.class, state);
         return result;
     }
 
     protected Credit handlePersistedCredit(Credit credit, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        Credit result = handlePersisted((LanguageStringBase)credit, state);
+        Credit result = handlePersisted((AnnotatableLanguageStringBase)credit, state);
         //complete
         result.setAgent(detach(credit.getAgent(), state));
         return result;
@@ -1069,7 +1067,7 @@ public abstract class Cdm2CdmImportBase
 
 
     protected Rights handlePersistedRights(Rights rights, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        Rights result = handlePersisted((LanguageStringBase)rights, state);
+        Rights result = handlePersisted((AnnotatableLanguageStringBase)rights, state);
         result.setAgent(detach(rights.getAgent(), state));
         result.setType(detach(rights.getType(), state));
         //complete
@@ -1115,7 +1113,7 @@ public abstract class Cdm2CdmImportBase
 
     protected <T extends VersionableEntity> T handlePersisted(VersionableEntity entity, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         @SuppressWarnings("unchecked")
-        T result = (T)handlePersistedCdmBase((CdmBase)entity, state);
+        T result = (T)handlePersistedCdmBase(entity, state);
         //complete
         result.setUpdatedBy(makeCreatedUpdatedBy(entity.getUpdatedBy(), state, true));
         result.setUpdated(makeCreatedUpdatedWhen(entity.getUpdated(), state, false));
@@ -1240,7 +1238,7 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends LanguageStringBase> T handlePersisted(LanguageStringBase lsBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends AnnotatableLanguageStringBase> T handlePersisted(AnnotatableLanguageStringBase lsBase, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((AnnotatableEntity)lsBase, state);
         //complete
         result.setLanguage(detach(lsBase.getLanguage(), state));
@@ -1255,7 +1253,6 @@ public abstract class Cdm2CdmImportBase
 
     protected <T extends AgentBase> T handlePersisted(AgentBase agent, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((IdentifiableMediaEntity)agent, state);
-        result.setContact(detach(result.getContact(), state));
         //complete
         return result;
     }

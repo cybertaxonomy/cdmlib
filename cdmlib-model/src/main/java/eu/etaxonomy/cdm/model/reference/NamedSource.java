@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -20,7 +21,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  * @since 17.03.2021
  */
 @XmlType(name = "NamedSource", propOrder = {
-})
+        })
 @Entity
 @Audited
 public class NamedSource extends NamedSourceBase {

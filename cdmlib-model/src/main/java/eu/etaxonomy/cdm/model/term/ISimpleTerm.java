@@ -5,7 +5,6 @@ package eu.etaxonomy.cdm.model.term;
 
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.Transient;
 
 /**

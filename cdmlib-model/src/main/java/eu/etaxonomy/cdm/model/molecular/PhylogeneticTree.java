@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.molecular;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -25,6 +24,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.media.Media;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PhylogeneticTree", propOrder = {
-	"usedSequences"
+        "usedSequences"
 })
 @XmlRootElement(name = "PhylogeneticTree")
 @Entity

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.common.media;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import eu.etaxonomy.cdm.common.URI;
 
 /**
@@ -18,7 +19,7 @@ import eu.etaxonomy.cdm.common.URI;
  * @author a.mueller
  * @since 27.11.2009
  */
-public  class CdmImageInfo extends MediaInfo {
+public class CdmImageInfo extends MediaInfo {
 
 	private int width;
 	private int height;

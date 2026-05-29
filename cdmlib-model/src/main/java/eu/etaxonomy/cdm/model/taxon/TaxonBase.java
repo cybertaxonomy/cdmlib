@@ -86,32 +86,32 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonBase", propOrder = {
-    "name",
-    "secSource",
-    "doubtful",
-    "appendedPhrase",
-    "useNameCache",
-    "publish"
+        "name",
+        "secSource",
+        "doubtful",
+        "appendedPhrase",
+        "useNameCache",
+        "publish"
 })
 @Entity
 @Audited
 //@PreFilter("hasPermission(filterObject, 'edit')")
-@Table(name="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnList = "titleCache") })
+@Table(name = "TaxonBase", indexes = {@Index(name = "taxonBaseTitleCacheIndex", columnList = "titleCache")})
 @TaxonNameCannotBeAcceptedAndSynonym(groups = Level3.class)
 @ClassBridges({
-    @ClassBridge(name="classInfo",
-            index = org.hibernate.search.annotations.Index.YES,
-            store = Store.YES,
-            impl = ClassInfoBridge.class),
-    @ClassBridge(name=AcceptedTaxonBridge.ACC_TAXON, // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names, see also ACC_TAXON_BRIDGE_PREFIX
-            index = org.hibernate.search.annotations.Index.YES,
-            store = Store.YES,
-            impl = AcceptedTaxonBridge.class),
-    @ClassBridge(impl = eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde.class)
+        @ClassBridge(name = "classInfo",
+                index = org.hibernate.search.annotations.Index.YES,
+                store = Store.YES,
+                impl = ClassInfoBridge.class),
+        @ClassBridge(name = AcceptedTaxonBridge.ACC_TAXON, // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names, see also ACC_TAXON_BRIDGE_PREFIX
+                index = org.hibernate.search.annotations.Index.YES,
+                store = Store.YES,
+                impl = AcceptedTaxonBridge.class),
+        @ClassBridge(impl = eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde.class)
 })
-public abstract class TaxonBase<S extends ITaxonCacheStrategy>
-           extends CreditableEntity<S>
-           implements  IPublishable, IIntextReferenceTarget{
+public abstract class TaxonBase
+        extends CreditableEntity<ITaxonCacheStrategy>
+        implements  IPublishable, IIntextReferenceTarget{
 
     private static final long serialVersionUID = -3589185949928938529L;
     private static final Logger logger = LogManager.getLogger();
@@ -468,10 +468,10 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
      * @see java.lang.Object#clone()
      */
     @Override
-    public TaxonBase<S> clone() {
-        TaxonBase<S> result;
+    public TaxonBase clone() {
+        TaxonBase result;
         try {
-            result = (TaxonBase<S>)super.clone();
+            result = (TaxonBase)super.clone();
             if (this.getSecSource() != null){
                 result.setSecSource(this.getSecSource().clone());
                 result.getSecSource().setSourcedTaxon(result);

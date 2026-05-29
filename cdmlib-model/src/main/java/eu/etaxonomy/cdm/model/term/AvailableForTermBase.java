@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  */
 @Entity
 @Audited
-public abstract class AvailableForTermBase<T extends DefinedTermBase>
+public abstract class AvailableForTermBase<T extends DefinedTermBase<T>>
         extends DefinedTermBase<T>{
 
     private static final long serialVersionUID = 7991846649037898325L;
@@ -46,7 +46,6 @@ public abstract class AvailableForTermBase<T extends DefinedTermBase>
     private EnumSet<CdmClass> availableFor = EnumSet.noneOf(CdmClass.class);
 
     //for hibernate use only, *packet* private required by bytebuddy
-    @Deprecated
     AvailableForTermBase() {}
 
     @Deprecated

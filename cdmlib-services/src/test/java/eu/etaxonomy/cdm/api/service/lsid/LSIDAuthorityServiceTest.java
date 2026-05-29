@@ -48,9 +48,6 @@ public class LSIDAuthorityServiceTest extends CdmIntegrationTest {
 	public void setUp() throws Exception {
 		unknownLsid = new LSID("fred.org", "dagg", "1", null);
 		knownLsid = new LSID("example.org", "taxonconcepts", "1", null);
-		XMLUnit.setControlParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-	    XMLUnit.setTestParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-	    XMLUnit.setSAXParserFactory("org.apache.xerces.jaxp.SAXParserFactoryImpl");
 	    XMLUnit.setIgnoreWhitespace(true);
 	    ((LsidRegistryImpl)lsidRegistry).init();
 	}
@@ -66,7 +63,9 @@ public class LSIDAuthorityServiceTest extends CdmIntegrationTest {
 		String resource = "/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAuthorityWSDL-result.wsdl";
 		String result = transformSourceToString((Source) expiringResponse.getValue());
 
-		assertXMLEqual("getAuthorityWSDL should return an xml source equal to the test resource",new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(result));
+		assertXMLEqual("getAuthorityWSDL should return an xml source equal to the test resource",
+		        new InputStreamReader(this.getClass().getResourceAsStream(resource)),
+		        new StringReader(result));
 	}
 
 	/**

@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
-import com.hp.hpl.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Model;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;

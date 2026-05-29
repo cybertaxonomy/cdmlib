@@ -12,15 +12,14 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ResIterator;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ResIterator;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -40,11 +39,11 @@ public class TermVocabularyOwlImport
 
     private static final long serialVersionUID = -3659780404413458511L;
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     @Override
     protected boolean doCheck(StructureTreeOwlImportState state) {
-        logger.warn("Checking not yet implemented for " + this.getClass().getSimpleName());
         return true;
     }
 

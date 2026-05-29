@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -21,6 +20,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -28,7 +28,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 /**
- * This class is an instantiable class for the base class {@link LanguageStringBase}.
+ * This class is an instantiable class for the base class {@link AnnotatableLanguageStringBase}.
  * No further functionality is added.
  *
  * @author m.doering
@@ -42,7 +42,7 @@ import org.hibernate.envers.Audited;
 //@Indexed(index = "eu.etaxonomy.cdm.model.common.LanguageString")
 @Audited
 public class LanguageString
-        extends LanguageStringBase
+        extends AnnotatableLanguageStringBase
         implements IIntextReferencable {
 
 	private static final long serialVersionUID = -1502298496073201104L;

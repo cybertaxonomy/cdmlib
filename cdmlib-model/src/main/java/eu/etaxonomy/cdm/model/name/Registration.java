@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,6 +26,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,15 +54,15 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Registration", propOrder = {
-    "identifier",
-    "specificIdentifier",
-    "registrationDate",
-    "status",
-    "registrationCenter",
-    "name",
-    "typeDesignations",
-    "blockedBy",
-    "submitter"
+        "identifier",
+        "specificIdentifier",
+        "registrationDate",
+        "status",
+        "registrationCenter",
+        "name",
+        "typeDesignations",
+        "blockedBy",
+        "submitter"
 })
 @Entity
 @Audited

@@ -50,10 +50,10 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.FieldUnitDefaultCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FieldUnit", propOrder = {
-    "fieldNumber",
-    "primaryCollector",
-    "fieldNotes",
-    "gatheringEvent"
+        "fieldNumber",
+        "primaryCollector",
+        "fieldNotes",
+        "gatheringEvent"
 })
 @XmlRootElement(name = "FieldUnit")
 @Entity

@@ -61,14 +61,14 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptiveDataSet", propOrder = {
-    "representations",
-    "descriptiveSystem",
-    "descriptions",
-    "taxonSubtreeFilter",
-    "geoFilter",
-    "minRank",
-    "maxRank",
-    "rights"
+        "representations",
+        "descriptiveSystem",
+        "descriptions",
+        "taxonSubtreeFilter",
+        "geoFilter",
+        "minRank",
+        "maxRank",
+        "rights"
 })
 @XmlRootElement(name = "DescriptiveDataSet")
 @Entity

@@ -34,8 +34,8 @@ public class HomotypicGroupComparator implements
 
     @Override
 	public int compare(HomotypicalGroup group1, HomotypicalGroup group2) {
-		TaxonBase<?> firstTypified1 = null;
-		TaxonBase<?> firstTypified2 = null;
+		TaxonBase firstTypified1 = null;
+		TaxonBase firstTypified2 = null;
 		if (group1.equals(group2)){
 		    return 0;
 		}

@@ -71,7 +71,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		String sourceReferecenDetail = null;
 
 		String id = getSourceId(item);
-		TaxonBase<?> taxon = getTaxonBase(id, item, TaxonBase.class, state);
+		TaxonBase taxon = getTaxonBase(id, item, TaxonBase.class, state);
 		if (isNotBlank(id) && taxon == null){
 			String message = "Taxon for id %s could not be found";
 			message = String.format(message, id);
@@ -112,7 +112,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		return new ListReader<>(resultList);
 	}
 
-	private void handleType(Reference reference, String strType, TaxonBase<?> taxon,
+	private void handleType(Reference reference, String strType, TaxonBase taxon,
 	        List<MappedCdmBase<? extends CdmBase>> resultList, StreamItem item) {
 
 	    // TODO handleType not yet implemented

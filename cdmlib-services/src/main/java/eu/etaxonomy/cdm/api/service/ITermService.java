@@ -40,11 +40,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface ITermService extends IIdentifiableEntityService<DefinedTermBase> {
 
-    /**
-     * Returns a term according to it's uri
-     */
-    public DefinedTermBase getByUri(URI uri);
-
     public UUID saveLanguageData(LanguageString languageData);
 
     public List<LanguageString> getAllLanguageStrings(int limit, int start);
@@ -79,16 +74,6 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
     public Pager<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,  List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
-     * Return a paged list of terms which are specializations of a given definedTerm
-     *
-     * @param definedTerm The term which is a generalization of the terms returned
-     * @param pageSize The maximum number of terms returned (can be null for all specializations)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @return a Pager of DefinedTerms
-     */
-    public <T extends DefinedTermBase> Pager<T> getGeneralizationOf(T definedTerm, Integer pageSize, Integer pageNumber);
-
-    /**
      * Return a paged list of distinct terms which include the terms supplied
      *
      * @param definedTerms the set of terms which are part of the terms of interest
@@ -118,7 +103,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a Pager of DefinedTerms
      */
-    public <T extends DefinedTermBase> Pager<T> findByRepresentationText(String label, Class<T> clazz,  Integer pageSize, Integer pageNumber);
+    public <T extends DefinedTermBase> Pager<T> findByRepresentationLabel(String label, Class<T> clazz,  Integer pageSize, Integer pageNumber);
 
     /**
      * Return a paged list of terms which have representations that match the supplied string in the abbreviated label

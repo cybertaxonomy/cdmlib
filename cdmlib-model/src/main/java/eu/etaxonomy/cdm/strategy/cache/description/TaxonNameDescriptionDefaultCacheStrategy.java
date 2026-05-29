@@ -16,9 +16,9 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 /**
  * @author k.luther
  * @since 27 Feb 2019
- *
  */
-public class TaxonNameDescriptionDefaultCacheStrategy extends DescriptionBaseDefaultCacheStrategy<TaxonNameDescription> {
+public class TaxonNameDescriptionDefaultCacheStrategy
+        extends DescriptionBaseDefaultCacheStrategy<TaxonNameDescription> {
 
     private static final long serialVersionUID = -5395563265358892266L;
     final static UUID uuid = UUID.fromString("8fa98b76-f52a-4f5d-aaaf-77addda5f9df");

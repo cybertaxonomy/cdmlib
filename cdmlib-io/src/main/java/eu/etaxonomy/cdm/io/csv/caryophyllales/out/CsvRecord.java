@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.io.csv.caryophyllales.out;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author k.luther
@@ -10,10 +11,10 @@ import java.util.Iterator;
  */
 public class CsvRecord {
 
-    private HashMap<String,String> record;
+    private Map<String,String> record;
 	private boolean isFirst;
 
-    public CsvRecord(HashMap<String, String> record, boolean isFirst) {
+    public CsvRecord(Map<String, String> record, boolean isFirst) {
 		this.record = record;
 		this.isFirst = isFirst;
     }
@@ -52,7 +53,7 @@ public class CsvRecord {
     	}
     }
 
-    public HashMap<String,String> getRecord() {
+    public Map<String,String> getRecord() {
     	return record;
     }
     public void setRecord(HashMap<String,String> record) {

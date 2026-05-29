@@ -189,7 +189,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 					sec = unknownSec(referenceMap);
 				}
 
-				TaxonBase<?> taxonBase;
+				TaxonBase taxonBase;
 				if (synonymIdSet.contains(strId)){
 					taxonBase = Synonym.NewInstance(taxonName, sec);
 				}else{
@@ -331,33 +331,33 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase {
 		return result;
 	}
 
-	private void makeTaxonRelationships(TaxonBase<?> name, Element elTaxonRelationships, ResultWrapper<Boolean> success){
+	private void makeTaxonRelationships(TaxonBase name, Element elTaxonRelationships, ResultWrapper<Boolean> success){
 		//TaxonRelationships are handled in TcsXmlTaxonRelationsImport
 		return;
 	}
 
-	private void makeSpecimenCircumscription(TaxonBase<?> name, Element elSpecimenCircumscription, ResultWrapper<Boolean> success){
+	private void makeSpecimenCircumscription(TaxonBase name, Element elSpecimenCircumscription, ResultWrapper<Boolean> success){
 		if (elSpecimenCircumscription != null){
 			logger.warn("makeProviderLink not yet implemented");
 			success.setValue(false);
 		}
 	}
 
-	private void makeCharacterCircumscription(TaxonBase<?> name, Element elCharacterCircumscription, ResultWrapper<Boolean> success){
+	private void makeCharacterCircumscription(TaxonBase name, Element elCharacterCircumscription, ResultWrapper<Boolean> success){
 		if (elCharacterCircumscription != null){
 			logger.warn("makeProviderLink not yet implemented");
 			success.setValue(false);
 		}
 	}
 
-	private void makeProviderLink(TaxonBase<?> name, Element elProviderLink, ResultWrapper<Boolean> success){
+	private void makeProviderLink(TaxonBase name, Element elProviderLink, ResultWrapper<Boolean> success){
 		if (elProviderLink != null){
 			logger.warn("makeProviderLink not yet implemented");
 			success.setValue(false);
 		}
 	}
 
-	private void makeProviderSpecificData(TaxonBase<?> name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
+	private void makeProviderSpecificData(TaxonBase name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
 		if (elProviderSpecificData != null){
 			logger.warn("makeProviderLink not yet implemented");
 			success.setValue(false);

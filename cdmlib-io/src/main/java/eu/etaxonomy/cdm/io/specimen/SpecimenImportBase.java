@@ -22,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
@@ -70,7 +71,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.match.IParsedMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
@@ -382,7 +382,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
         for (TaxonName name : names) {
             if(!name.getTaxonBases().isEmpty()){
                 Set<TaxonBase> taxa = name.getTaxonBases();
-                for (TaxonBase<?> taxonBase:taxa){
+                for (TaxonBase taxonBase:taxa){
                     Taxon acceptedTaxon = null;
                     if (taxonBase instanceof Synonym) {
                         Synonym syn = (Synonym)taxonBase;
@@ -883,8 +883,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
     /**
      * Look if the Institution does already exist
-     * @param institutionCode: a string with the institutioncode
-     * @param config : the configurator
+     * @param institutionCode: a string with the institution code
+     * @param state : the state
      * @return the Institution (existing or new)
      */
     protected Institution getInstitution(String institutionCode, STATE state) {
@@ -899,7 +899,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             institutions = getAgentService().searchInstitutionByCode(institutionCode);
 
         } catch (Exception e) {
-            institutions = new ArrayList<Institution>();
+            institutions = new ArrayList<>();
+            e.printStackTrace();
             logger.warn(e);
         }
         if (institutions.size() > 0 && config.isReuseExistingMetaData()) {
@@ -1157,7 +1158,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        else{
 	            @SuppressWarnings("rawtypes")
                 Set<TaxonBase> taxonAndSynonyms = taxonName.getTaxonBases();
-	            for (TaxonBase<?> taxonBase : taxonAndSynonyms) {
+	            for (TaxonBase taxonBase : taxonAndSynonyms) {
 	                if(taxonBase.isInstanceOf(Synonym.class)){
 	                    Synonym synonym = HibernateProxyHelper.deproxy(taxonBase, Synonym.class);
 	                    Taxon acceptedTaxonOfSynonym = synonym.getAcceptedTaxon();

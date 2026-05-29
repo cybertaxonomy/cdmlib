@@ -102,8 +102,6 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 
 			// validate namespace
 
-//			System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
-//		             "net.sf.saxon.om.DocumentBuilderFactoryImpl");
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
 			factory.setNamespaceAware(true);
@@ -120,7 +118,7 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 			StringWriter xmlAsWriter = new StringWriter();
 			StreamResult domResult = new StreamResult(xmlAsWriter);
 			TransformerFactory.newInstance().newTransformer()
-			.transform(domSource, domResult);
+			    .transform(domSource, domResult);
 			StringReader xmlReader = new StringReader(xmlAsWriter.toString());
 			StreamSource inputSource = new StreamSource(xmlReader);
 

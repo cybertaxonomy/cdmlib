@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.common.monitor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -142,7 +144,7 @@ public class DefaultProgressMonitor implements IProgressMonitor {
             return null;
         }
         double percentage = this.workDone * 100 / this.totalWork ;
-        BigDecimal result = new BigDecimal(percentage).setScale( scale, BigDecimal.ROUND_HALF_UP );
+        BigDecimal result = new BigDecimal(percentage).setScale(scale, RoundingMode.HALF_UP);
         return result;
     }
 

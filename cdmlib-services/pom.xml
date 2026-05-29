@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.57.0</version>
+    <version>5.58.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -77,18 +77,13 @@
       <artifactId>lucene-sandbox</artifactId>
     </dependency>
     <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <!-- <exclusions> -->
-      <!-- <exclusion> -->
-      <!-- <groupId>xml-apis</groupId> -->
-      <!-- <artifactId>xml-apis</artifactId> -->
-      <!-- </exclusion> -->
-      <!-- </exclusions> -->
-    </dependency>
-    <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <!-- needed for JavaMailSender -->
     <dependency>

@@ -11,15 +11,15 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.permission;
 import java.util.List;
 
 import org.hibernate.Hibernate;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Repository
@@ -66,13 +66,14 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
     }
 
     @Override
-    public long countByUsername(String queryString, MatchMode matchmode, List<Criterion> criterion) {
-        return countByParam(type, "username",queryString,matchmode,criterion);
+    public long countByUsername(String queryString, MatchMode matchmode, List<EntityFilter<User>> filter) {
+        return countByParam(type, "username", queryString, matchmode, filter);
     }
 
     @Override
-    public List<User> findByUsername(String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return findByParam(type, "username", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+    public List<User> findByUsername(String queryString, MatchMode matchmode, List<EntityFilter<User>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return findByParam(type, "username", queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     public User initializeUser(User user) {
@@ -87,4 +88,12 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
         return user;
     }
 
+    @Override
+    public void updatePassword(String username, String newEncodedPassword) {
+
+        getSession().createQuery("UPDATE User u SET u.password = :password WHERE u.username = :username")
+            .setParameter("password", newEncodedPassword)
+            .setParameter("username", username)
+            .executeUpdate();
+    }
 }

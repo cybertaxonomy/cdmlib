@@ -1918,7 +1918,7 @@ public class ColDpClassificationExport
 //                // citations) + status + some name relations (e.g. “non”)
 //                // TODO 3 commented code - can this be deleted?  -- : nameRelations, which and how to display
 //                Set<TaxonBase> taxonBases = name.getTaxonBases();
-//                TaxonBase<?> taxonBase;
+//                TaxonBase taxonBase;
 //
 //                String sec = "";
 //                String nameString = name.getFullTitleCache();
@@ -2086,7 +2086,7 @@ public class ColDpClassificationExport
 //                     }
 //                }else{
 //                    //there are names used more than once?
-//                    for (TaxonBase<?> tb: taxonBases){
+//                    for (TaxonBase tb: taxonBases){
 //                        if (tb.getSec() != null){
 //                            sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(tb.getSecSource());
 //                        }

@@ -15,22 +15,22 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.envers.query.criteria.AuditCriterion;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.model.view.AuditEventRecordImpl;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContext;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
-import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
+import eu.etaxonomy.cdm.persistence.common.OperationNotSupportedInPriorViewException;
 import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
-import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class VersionableDaoBase<T extends VersionableEntity>
@@ -78,9 +78,9 @@ public abstract class VersionableDaoBase<T extends VersionableEntity>
 	}
 
     @Override
-    public <S extends T> List<S> findByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <S extends T> List<S> findByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<EntityFilter<S>> filter, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
     	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-    	return super.findByParam(clazz, param, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+    	return super.findByParam(clazz, param, queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
@@ -163,12 +163,12 @@ public abstract class VersionableDaoBase<T extends VersionableEntity>
 	}
 
 	@Override
-	public List<T> list(Integer limit, Integer start) {
+	public List<T> list(Integer pageSize, Integer pageNumber) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			return super.list(limit, start);
+			return super.list(pageSize, pageNumber);
 		} else {
-			return this.list(null, limit, start);
+			return this.list(null, pageSize, pageNumber);
 		}
 	}
 
@@ -318,7 +318,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity>
 			query.add(AuditEntity.revisionNumber().lt(to.getRevisionNumber()));
 		}
 
-		addCriteria(query,criteria);
+		addCriteria(query, criteria);
 
 		query.addProjection(AuditEntity.revisionNumber().count());
 
@@ -357,7 +357,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity>
   		    query.addOrder(AuditEntity.revisionNumber().asc());
      	}
 
-		addCriteria(query,criteria);
+		addCriteria(query, criteria);
 
 		if(pageSize != null) {
 		    query.setMaxResults(pageSize);
@@ -386,9 +386,9 @@ public abstract class VersionableDaoBase<T extends VersionableEntity>
 	}
 
 	@Override
-	public long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
+	public <S extends T> long countByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<EntityFilter<S>> filter) {
     	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-    	return super.countByParam(clazz, param, queryString, matchmode, criterion);
+    	return super.countByParam(clazz, param, queryString, matchmode, filter);
 	}
 
 	@Override

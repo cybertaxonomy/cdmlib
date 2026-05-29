@@ -51,13 +51,14 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.MediaSpecimenDefaultCacheStrat
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaSpecimen", propOrder = {
-    "mediaSpecimen"
+        "mediaSpecimen"
 })
 @XmlRootElement(name = "MediaSpecimen")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
-public class MediaSpecimen extends DerivedUnit {
+public class MediaSpecimen
+        extends DerivedUnit {
 
 	private static final long serialVersionUID = -5717424451590705378L;
 	@SuppressWarnings("unused")

@@ -107,44 +107,44 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Reference", propOrder = {
-	"type",
-	"uri",
-    "abbrevTitleCache",
-    "protectedAbbrevTitleCache",
-	"nomenclaturallyRelevant",
-    "authorship",
-    "authorIsEditor",
-    "referenceAbstract",
-    "title",
-    "abbrevTitle",
-	"volume",
-	"pages",
-	"edition",
-    "isbn",
-    "issn",
-    "doi",
-    "seriesPart",
-    "datePublished",
-    "publisher",
-    "publisher2",
-    "placePublished",
-    "placePublished2",
-    "institution",
-    "school",
-    "organization",
-    "inReference",
-    "credits",
-    "externallyManaged",
+        "type",
+        "uri",
+        "abbrevTitleCache",
+        "protectedAbbrevTitleCache",
+        "nomenclaturallyRelevant",
+        "authorship",
+        "authorIsEditor",
+        "referenceAbstract",
+        "title",
+        "abbrevTitle",
+        "volume",
+        "pages",
+        "edition",
+        "isbn",
+        "issn",
+        "doi",
+        "seriesPart",
+        "datePublished",
+        "publisher",
+        "publisher2",
+        "placePublished",
+        "placePublished2",
+        "institution",
+        "school",
+        "organization",
+        "inReference",
+        "credits",
+        "externallyManaged",
 })
 @XmlRootElement(name = "Reference")
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Audited
-@Table(name="Reference", indexes = { @javax.persistence.Index(name = "referenceTitleCacheIndex", columnList = "titleCache") })
+@Table(name = "Reference", indexes = {@javax.persistence.Index(name = "referenceTitleCacheIndex", columnList = "titleCache")})
 //@InReference(groups=Level3.class)
-@ReferenceCheck(groups=Level2.class)
-@InReference(groups=Level3.class)
-@NoRecursiveInReference(groups=Level3.class)  //may become Level1 in future  #
+@ReferenceCheck(groups = Level2.class)
+@InReference(groups = Level3.class)
+@NoRecursiveInReference(groups = Level3.class)  //may become Level1 in future  #
 public class Reference
         extends IdentifiableMediaEntity<IReferenceCacheStrategy>
         implements IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection, ICdDvd,

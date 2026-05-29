@@ -273,6 +273,13 @@ public interface INonViralName extends ITaxonNameBase{
      */
     public String getInfraSpecificEpithet();
 
+    /**
+     * @return the tri state if this name is an autonym or not in case the rank is
+     *         below subgenus and the specific epithet is the same as the infraspecific
+     *         epithet. If value is "indetermined" it is handled same as "selected".
+     *         Only explicit setting to unselected makes such a name not an autonym.
+     */
+    public Boolean getAutonymFlag();
 
     /**
      * Defines the last part of the name.
@@ -570,6 +577,11 @@ public interface INonViralName extends ITaxonNameBase{
     * @see  #getInfraSpecificEpithet()
     */
    public void setInfraSpecificEpithet(String infraSpecificEpithet);
+
+   /**
+    * @see #getAutonymFlag()
+    */
+   public void setAutonymFlag(Boolean autonymFlag);
 
    /**
     * @see  #isMonomHybrid()

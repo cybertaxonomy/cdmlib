@@ -22,13 +22,15 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.LockOptions;
 import org.hibernate.ObjectDeletedException;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -39,11 +41,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T>>
@@ -392,12 +392,12 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     @Override
     @Transactional(readOnly = true)
     public <S extends T> Pager<S> page(Class<S> clazz, String param, String queryString, MatchMode matchmode,
-            List<Criterion> criteria, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths){
+            List<EntityFilter<S>> filter, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths){
 
         List<S> records;
-        long resultSize = dao.countByParam(clazz, param, queryString, matchmode, criteria);
+        long resultSize = dao.countByParam(clazz, param, queryString, matchmode, filter);
         if(AbstractPagerImpl.hasResultsInRange(resultSize, pageIndex, pageSize)){
-            records = dao.findByParam(clazz, param, queryString, matchmode, criteria, pageSize, pageIndex, orderHints, propertyPaths);
+            records = dao.findByParam(clazz, param, queryString, matchmode, filter, pageSize, pageIndex, orderHints, propertyPaths);
         } else {
             records = new ArrayList<>();
         }

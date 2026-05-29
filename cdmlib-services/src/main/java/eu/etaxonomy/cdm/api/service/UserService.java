@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.hibernate.NonUniqueResultException;
-import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
@@ -25,8 +24,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.SaltSource;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,15 +31,18 @@ import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.cache.NullUserCache;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.permission.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -52,13 +52,13 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Service
 @Transactional(readOnly = true)
 // NOTE: no type level @PreAuthorize annotation for this class!
-public class UserService extends ServiceBase<User,IUserDao> implements IUserService {
+public class UserService
+        extends ServiceBase<User,IUserDao>
+        implements IUserService {
 
     private IGrantedAuthorityDao grantedAuthorityDao;
 
-    private SaltSource saltSource; // = new ReflectionSaltSource();
-
-    private PasswordEncoder passwordEncoder; // = new Md5PasswordEncoder();
+    private PasswordEncoder passwordEncoder;
 
     private AuthenticationManager authenticationManager;
 
@@ -73,11 +73,6 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @Autowired(required = false)
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
-    }
-
-    @Autowired(required = false)
-    public void setSaltSource(SaltSource saltSource) {
-        this.saltSource = saltSource;
     }
 
     @Autowired(required= false)
@@ -138,7 +133,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     }
 
     /**
-     * Make new password salt, encode and set it for the passed user
+     * Encode password and set it for the passed user
      *
      * @param user
      *  The user to set the new password for.
@@ -147,8 +142,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
      */
     @Override
     public void encodeUserPassword(User user, String newPassword) {
-        Object salt = this.saltSource.getSalt(user);
-        String password = passwordEncoder.encodePassword(newPassword, salt);
+        String password = passwordEncoder.encode(newPassword);
         user.setPassword(password);
     }
 
@@ -171,6 +165,20 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         } catch(NonUniqueResultException nure) {
             throw new IncorrectResultSizeDataAccessException("More than one user found with name '" + username + "'", 1);
         }
+    }
+
+    @Override
+    @Transactional(readOnly=false)
+    public UserDetails updatePassword(UserDetails userDetails, String newEncodedPassword) {
+        System.out.println("Updating password for user: " + userDetails.getUsername());
+        // write new encoded password to DB
+        dao.updatePassword(userDetails.getUsername(), newEncodedPassword);
+
+        // Return UserDetails object with new password
+        return org.springframework.security.core.userdetails.User
+            .withUserDetails(userDetails)
+            .password(newEncodedPassword)
+            .build();
     }
 
     @Override
@@ -232,9 +240,15 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
                 throw new UsernameNotFoundException(username);
             }
             return user;
-        } catch(NonUniqueResultException nure) {
+        } catch(NonUniqueResultException exception) {
             throw new IncorrectResultSizeDataAccessException("More than one user found with name '" + username + "'", 1);
         }
+    }
+
+    @Override
+    public User loadUserByUsernameAsUser(String username)
+            throws UsernameNotFoundException, DataAccessException {
+        return CdmBase.deproxy(loadUserByUsername(username), User.class);
     }
 
     @Override
@@ -265,12 +279,13 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> listByUsername(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-         long numberOfResults = dao.countByUsername(queryString, matchmode, criteria);
+    public List<User> listByUsername(String queryString, MatchMode matchmode, List<EntityFilter<User>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+         long numberOfResults = dao.countByUsername(queryString, matchmode, filter);
 
          List<User> results = new ArrayList<>();
          if(numberOfResults > 0) {
-                results = dao.findByUsername(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+                results = dao.findByUsername(queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
          }
          return results;
     }
@@ -330,4 +345,5 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     public Map<UUID, User> saveOrUpdate(Collection<User> transientInstances) {
         return super.saveOrUpdate(transientInstances);
     }
+
 }

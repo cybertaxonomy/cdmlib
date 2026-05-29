@@ -50,9 +50,9 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DnaSampleDefaultCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DnaSample", propOrder = {
-    "sequences",
-    "amplificationResults",
-    "dnaQuality"
+        "sequences",
+        "amplificationResults",
+        "dnaQuality"
 })
 @XmlRootElement(name = "DnaSample")
 @Entity

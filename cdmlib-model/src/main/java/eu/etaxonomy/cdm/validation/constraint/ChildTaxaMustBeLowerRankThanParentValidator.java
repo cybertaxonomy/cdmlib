@@ -32,7 +32,12 @@ public class ChildTaxaMustBeLowerRankThanParentValidator implements
                 if(parentRank.equals(childRank) || parentRank.isLower(childRank)) {
                     valid = false;
                     constraintContext.disableDefaultConstraintViolation();
-                    constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();
+                    constraintContext.buildConstraintViolationWithTemplate(
+                            "{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent.message}")
+                    .addPropertyNode("fromTaxon")
+                    .addPropertyNode("name")
+                    .addPropertyNode("rank")
+                    .addConstraintViolation();
                 }
             }
         } catch (Exception e) {

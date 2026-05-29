@@ -204,7 +204,7 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         sec.setAbbrevTitle("MLW");
         sec.setUri(URI.create("https://abc.de"));
         sec.setDatePublished(TimePeriodParser.parseStringVerbatim("2 Jan 1982"));
-        TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+        TaxonBase taxonBase = Taxon.NewInstance(name, sec);
         Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 1982", taxonBase.getTitleCache());
 
         sec.setDatePublished(null);
@@ -236,7 +236,7 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
     public void testMisapplication(){
         //assert default (taxon without relation)
         Taxon man = Taxon.NewInstance(name, sec);
-        ITaxonCacheStrategy<Taxon> cacheStrategy = man.cacheStrategy();
+        ITaxonCacheStrategy cacheStrategy = man.cacheStrategy();
         assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
 
         //make it a MAN only

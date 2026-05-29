@@ -240,9 +240,9 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 			for (int taxonCounter = 1; taxonCounter <= taxaInClass; taxonCounter++) {
 
 				// create a String for the Name
-				RandomStringUtils.randomAlphabetic(10);
-				String randomName = RandomStringUtils.randomAlphabetic(5) + " "
-						+ RandomStringUtils.randomAlphabetic(10);
+				RandomStringUtils.insecure().nextAlphabetic(10);
+				String randomName = RandomStringUtils.insecure().nextAlphabetic(5) + " "
+						+ RandomStringUtils.insecure().nextAlphabetic(10);
 
 				// create a name for the taxon
 				IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -352,8 +352,8 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 				// now if there are any left, we create a synonym for the taxon
 				if (synonymCounter < noOfSynonyms) {
 					synonymFlag = true;
-					randomName = RandomStringUtils.randomAlphabetic(5) + " "
-							+ RandomStringUtils.randomAlphabetic(10);
+					randomName = RandomStringUtils.insecure().nextAlphabetic(5) + " "
+							+ RandomStringUtils.insecure().nextAlphabetic(10);
 					// name for synonym
 					name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 					name.setNameCache(randomName, true);

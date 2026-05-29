@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.ext.occurrence.gbif.GbifQueryServiceWrapper;
 import eu.etaxonomy.cdm.ext.occurrence.gbif.GbifResponse;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
@@ -41,7 +42,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author k.luther

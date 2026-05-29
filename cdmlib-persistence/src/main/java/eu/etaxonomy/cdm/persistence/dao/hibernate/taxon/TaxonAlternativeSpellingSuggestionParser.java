@@ -22,11 +22,10 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionP
 public class TaxonAlternativeSpellingSuggestionParser
         extends AlternativeSpellingSuggestionParser<TaxonBase> {
 
-	@SuppressWarnings("deprecation")
     public TaxonAlternativeSpellingSuggestionParser() {
 		super(TaxonBase.class);
 		@SuppressWarnings("unchecked")
-        Class<? extends TaxonBase<?>> indexedClasses[] = new Class[2];
+        Class<? extends TaxonBase> indexedClasses[] = new Class[2];
 		indexedClasses[0] = Taxon.class;
 		indexedClasses[1] = Synonym.class;
 		super.setIndexedClasses(indexedClasses);

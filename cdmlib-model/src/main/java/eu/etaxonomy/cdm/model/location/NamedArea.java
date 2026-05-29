@@ -58,27 +58,27 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "NamedArea", propOrder = {
-    "kindOf",
-    "generalizationOf",
-    "partOf",
-    "includes",
-    "validPeriod",
-    "shape",
-    "pointApproximation",
-    "countries",
-    "type",
-    "level"
+        "kindOf",
+        "generalizationOf",
+        "partOf",
+        "includes",
+        "validPeriod",
+        "shape",
+        "pointApproximation",
+        "countries",
+        "type",
+        "level"
 })
 @XmlRootElement(name = "NamedArea")
 @XmlSeeAlso({
-    Country.class
+        Country.class
 })
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-@ClassBridge(impl=DefinedTermBaseClassBridge.class, params={
-    @Parameter(name="includeParentTerms", value="true")
+@ClassBridge(impl = DefinedTermBaseClassBridge.class, params = {
+        @Parameter(name = "includeParentTerms", value = "true")
 })
 public class NamedArea extends DefinedTermBase<NamedArea> {
 

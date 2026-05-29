@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -24,6 +23,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,12 +46,12 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DeterminationEvent", propOrder = {
-    "identifiedUnit",
-    "taxon",
-    "taxonName",
-    "modifier",
-    "preferredFlag",
-    "references"
+        "identifiedUnit",
+        "taxon",
+        "taxonName",
+        "modifier",
+        "preferredFlag",
+        "references"
 })
 @XmlRootElement(name = "DeterminationEvent")
 @Entity
@@ -75,7 +75,7 @@ public class DeterminationEvent extends EventBase {
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded(includeEmbeddedObjectId=true)
-    private TaxonBase<?> taxon;
+    private TaxonBase taxon;
 
 //	#4518
 	@XmlElement(name = "TaxonName")

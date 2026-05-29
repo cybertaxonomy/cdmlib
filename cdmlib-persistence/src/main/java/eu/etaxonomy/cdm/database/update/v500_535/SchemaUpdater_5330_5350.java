@@ -91,8 +91,8 @@ public class SchemaUpdater_5330_5350 extends SchemaUpdaterBase {
         map.put(UUID.fromString("089c1926-eb36-47e7-a2d1-fd5f3918713d"), "INE");
         map.put(UUID.fromString("7c45871f-6dc5-40e7-9f26-228318d0f63a"), "POT");
         for (UUID uuid : map.keySet()) {
-            SingleTermRemover.NewInstance(stepList, stepName, uuid.toString(), (String)null);
-            SingleTermRemover.NewAudInstance(stepList, stepName, uuid.toString(), null);
+            SingleTermRemover.NewInstance(stepList, stepName, uuid, (String)null);
+            SingleTermRemover.NewAudInstance(stepList, stepName, uuid, null);
         }
         UUID vocUuid = UUID.fromString("48917fde-d083-4659-b07d-413db843bd50");
         VocabularyRemover.NewInstance(stepList, stepName, vocUuid.toString(), null);

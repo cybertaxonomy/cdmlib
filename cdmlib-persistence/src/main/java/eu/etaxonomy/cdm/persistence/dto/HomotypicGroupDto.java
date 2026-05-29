@@ -36,8 +36,8 @@ public class HomotypicGroupDto extends UuidAndTitleCache<HomotypicalGroup> {
     public HomotypicGroupDto(HomotypicalGroup group, UUID nodeUuid) {
         super(group.getUuid(), group.getId(), group.getUserFriendlyDescription());
         for (TaxonName name: group.getTypifiedNames()){
-            TaxonBase<?> tbInHomotypicGroup = null;
-            for (TaxonBase<?> tb:name.getTaxonBases()){
+            TaxonBase tbInHomotypicGroup = null;
+            for (TaxonBase tb:name.getTaxonBases()){
                 if (tb instanceof Taxon){
                     for (TaxonNode node: ((Taxon)tb).getTaxonNodes()){
                         if (node.getUuid().equals(nodeUuid)){

@@ -62,7 +62,7 @@ public abstract class CsvExportBaseRedlist
 	 * @param record
 	 * @param area
 	 */
-	protected void handleArea(ICsvAreaRecord record, NamedArea area, TaxonBase<?> taxon, boolean required) {
+	protected void handleArea(ICsvAreaRecord record, NamedArea area, TaxonBase taxon, boolean required) {
 		if (area != null){
 			record.setLocationId(area);
 			record.setLocality(area.getLabel());
@@ -78,7 +78,7 @@ public abstract class CsvExportBaseRedlist
 		}
 	}
 
-	protected String getTaxonLogString(TaxonBase<?> taxon) {
+	protected String getTaxonLogString(TaxonBase taxon) {
 		return taxon.getTitleCache() + "(" + taxon.getId() + ")";
 	}
 

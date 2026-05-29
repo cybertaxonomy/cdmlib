@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.common;
 import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
-
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 

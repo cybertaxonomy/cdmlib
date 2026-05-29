@@ -75,22 +75,22 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptionBase", propOrder = {
-    "descriptionSources",
-    "descriptiveDataSets",
-    "descriptionElements",
-    "imageGallery",
-    "isDefault",
-    "publish",
-    "types"
+        "descriptionSources",
+        "descriptiveDataSets",
+        "descriptionElements",
+        "imageGallery",
+        "isDefault",
+        "publish",
+        "types"
 })
 @Entity
 @Audited
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @ClassBridges({
-    @ClassBridge(impl=DescriptionBaseClassBridge.class),
-    @ClassBridge(impl=GroupByTaxonClassBridge.class)
+        @ClassBridge(impl = DescriptionBaseClassBridge.class),
+        @ClassBridge(impl = GroupByTaxonClassBridge.class)
 })
-public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy>
+public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy<?>>
         extends CreditableEntity<S>
         implements ICdmTarget,IPublishable {
 

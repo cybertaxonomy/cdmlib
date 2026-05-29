@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
-import com.hp.hpl.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Model;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;

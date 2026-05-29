@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
@@ -46,10 +47,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CommonTaxonName", propOrder = {
-    "name",
-    "transliteration",
-    "language",
-    "area"
+        "name",
+        "transliteration",
+        "language",
+        "area"
 })
 @XmlRootElement(name = "CommonTaxonName")
 @Entity

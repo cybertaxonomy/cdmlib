@@ -44,13 +44,13 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CreditableEntity", propOrder = {
-    "credits",
+        "credits",
 })
 @MappedSuperclass
 @Audited
 public abstract class CreditableEntity<S extends IIdentifiableEntityCacheStrategy<?>>
-    extends IdentifiableEntity<S>
-    implements IHasCredits{
+        extends IdentifiableEntity<S>
+        implements IHasCredits{
 
     private static final long serialVersionUID = 3612910783891987069L;
     @SuppressWarnings("unused")

@@ -87,7 +87,7 @@ public class OrderedTermTest extends EntityTestBase {
 
 	@Test
 	public final void testDecreaseVoc() {
-		OrderedTermVocabulary<DefinedTermBase<?>> voc = OrderedTermVocabulary.NewInstance(TermType.Unknown);
+		OrderedTermVocabulary<?> voc = OrderedTermVocabulary.NewInstance(TermType.Unknown);
 		int before = otb1.orderIndex;
 		otb1.decreaseIndex(voc);
 		int after = otb1.orderIndex;
@@ -96,7 +96,7 @@ public class OrderedTermTest extends EntityTestBase {
 
 	@Test
 	public final void testIncrementVoc() {
-		OrderedTermVocabulary<DefinedTermBase<?>> voc = OrderedTermVocabulary.NewInstance(TermType.Unknown);
+		OrderedTermVocabulary<?> voc = OrderedTermVocabulary.NewInstance(TermType.Unknown);
 		assertFalse(voc.indexChangeAllowed(otb1));
 		int before = otb1.orderIndex;
 		otb1.incrementIndex(voc);

@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 @Audited
 public class OrderedTermVocabulary<T extends DefinedTermBase>
         extends TermVocabulary<T>
-        implements ITermGraph<T, TermNode>    {
+        implements ITermGraph<T,TermNode>    {
 
 	private static final long serialVersionUID = 7871741306306371242L;
 	@SuppressWarnings("unused")

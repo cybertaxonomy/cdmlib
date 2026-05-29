@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.model.name;
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
@@ -19,6 +18,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,8 +31,8 @@ import org.hibernate.envers.Audited;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RuleConsidered", propOrder = {
-    "text",
-    "codeEdition",
+        "text",
+        "codeEdition",
 })
 @XmlRootElement(name = "RuleConsidered")
 @Embeddable

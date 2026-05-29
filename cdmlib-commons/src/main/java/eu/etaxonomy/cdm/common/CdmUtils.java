@@ -672,4 +672,14 @@ public class CdmUtils {
                     ;
         return nomalizedText;
     }
+
+    //sometimes useful for testing
+    public static void sleep(int seconds) {
+        try {
+            System.out.println("sleep");
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            //NOP
+        }
+    }
 }

@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.io.Serializable;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -22,6 +21,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
@@ -43,11 +43,11 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ExternallyManaged", propOrder = {
-    "lastRetrieved",
-    "externalId",
-    "externalLink",
-    "authorityType",
-    "importMethod"
+        "lastRetrieved",
+        "externalId",
+        "externalLink",
+        "authorityType",
+        "importMethod"
 })
 @XmlRootElement(name = "ExternallyManaged")
 @Embeddable

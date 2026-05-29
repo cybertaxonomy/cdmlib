@@ -11,14 +11,13 @@ package eu.etaxonomy.cdm.api.service.molecular;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.IAnnotatableService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -40,7 +39,7 @@ public interface IAmplificationService extends IAnnotatableService<Amplification
     *
     * @param queryString the query string to filter by
     * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-    * @param criteria extra restrictions to apply
+    * @param filter a List of {@link EntityFilter}s to apply to the query (can be null)
     * @param pageSize The maximum number of rights returned (can be null for all rights)
     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
@@ -50,6 +49,6 @@ public interface IAmplificationService extends IAnnotatableService<Amplification
     *            authorTeam.persistentTitleCache
     * @return a List of instances of type T matching the queryString
     */
-    Pager<Amplification> findByLabelCache(String queryString, MatchMode matchmode, List<Criterion> criteria,
+    Pager<Amplification> findByLabelCache(String queryString, MatchMode matchmode, List<EntityFilter<Amplification>> filter,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 }

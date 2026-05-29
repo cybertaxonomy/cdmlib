@@ -79,12 +79,12 @@ import eu.etaxonomy.cdm.validation.Level2;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IdentifiableEntity", propOrder = {
-    "lsid",
-    "titleCache",
-    "protectedTitleCache",
-    "extensions",
-    "identifiers",
-    "links"
+        "lsid",
+        "titleCache",
+        "protectedTitleCache",
+        "extensions",
+        "identifiers",
+        "links"
 })
 @Audited
 @MappedSuperclass

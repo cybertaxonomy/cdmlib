@@ -25,14 +25,11 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -71,7 +68,6 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Person person = Person.NewTitledInstance(fullAuthor);
     	person.setNomenclaturalTitle(nomTitle);
     	Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
-    	person.setContact(getContact());
     	TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
     	person.addAnnotation(annotation);
     	service.save(person);
@@ -91,7 +87,6 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 	    Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitleCache());
 	    Assert.assertTrue("Members must be empty", team.getTeamMembers().isEmpty());
 	    Assert.assertEquals("Annotations should be moved", 1, team.getAnnotations().size());
-	    Assert.assertNotNull("Contact must be copied too", team.getContact());
 	    Assert.assertEquals("Team must be combination author now", team, name.getCombinationAuthorship());
 
 	    //test un-protected titleCache
@@ -137,12 +132,6 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         }
     }
 
-    private Contact getContact(){
-    	URI uri = URI.create("a");
-    	Contact contact = Contact.NewInstance("My street", "12345", null, null, null, "region", "a@bc.de", "030-445566", "030-12345", uri, Point.NewInstance(2d, 5d, null, null));
-    	return contact;
-    }
-
     @Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
@@ -157,7 +146,6 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Team team = Team.NewTitledInstance(fullAuthor, nomTitle, collectorTitle);
     	Annotation annotation = Annotation.NewDefaultLanguageInstance("Meine annotation");
     	team.addAnnotation(annotation);
-    	team.setContact(getContact());
     	TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
     	name.setCombinationAuthorship(team);
 
@@ -180,7 +168,6 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Assert.assertEquals("Collector title must be equal to protected team collector title cache", collectorTitle, person.getCollectorTitle());
 
     	Assert.assertEquals("Annotations should be moved", 1, person.getAnnotations().size());
-    	Assert.assertNotNull("Contact must be copied too", person.getContact());
     	Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorship());
 
     	//no protected nom. and collector cache
@@ -215,7 +202,6 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	team.addAnnotation(annotation);
     	Annotation annotation2 = Annotation.NewDefaultLanguageInstance("Meine annotation2");
     	team.addAnnotation(annotation2);
-    	team.setContact(getContact());
     	TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
     	name.setCombinationAuthorship(team);
     	Person member = Person.NewTitledInstance("Member person");

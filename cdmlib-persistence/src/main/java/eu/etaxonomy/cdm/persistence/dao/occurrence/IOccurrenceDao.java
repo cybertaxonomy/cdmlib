@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.springframework.dao.DataAccessException;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
@@ -37,7 +38,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -52,6 +52,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @param determinedAs the taxon name that these specimens are determined to belong to
      * @return
      */
+    @SuppressWarnings("rawtypes")
     public long count(Class<? extends SpecimenOrObservationBase> clazz,TaxonName determinedAs);
 
     /**
@@ -68,6 +69,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @return
      * @throws DataAccessException
      */
+    @SuppressWarnings("rawtypes")
     public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonName determinedAs,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
@@ -77,7 +79,8 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param determinedAs the taxon concept that these specimens are determined to belong to
 	 * @return
 	 */
-	public long count(Class<? extends SpecimenOrObservationBase> clazz,TaxonBase determinedAs);
+	@SuppressWarnings("rawtypes")
+    public long count(Class<? extends SpecimenOrObservationBase> clazz,TaxonBase determinedAs);
 
 	/**
 	 * Returns a sublist of SpecimenOrObservationBase instances stored in the database. A maximum
@@ -93,7 +96,8 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @return
 	 * @throws DataAccessException
 	 */
-	public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs,
+	@SuppressWarnings("rawtypes")
+    public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> type, TaxonBase determinedAs,
 	        Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
@@ -128,6 +132,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      * @param propertyPaths
      * @return a list of specimens that match the given parameters
      */
+    @SuppressWarnings("rawtypes")
     public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs,
             TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
@@ -137,19 +142,8 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 
     /**
      * @see IOccurrenceDao#findOccurrences(Class, String, String, SpecimenOrObservationType, Taxon, TaxonName, MatchMode, Integer, Integer, List, List)
-     * @param clazz
-     * @param queryString
-     * @param significantIdentifier
-     * @param type
-     * @param determinedAs
-     * @param associatedTaxonName
-     * @param matchmode
-     * @param limit
-     * @param start
-     * @param orderHints
-     * @param propertyPaths
-     * @return
      */
+    @SuppressWarnings("rawtypes")
     public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> findOccurrencesUuidAndTitleCache(
             Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType type, Taxon determinedAs,
@@ -188,6 +182,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      *            authorTeam.persistentTitleCache
      * @return the number of found specimens
      */
+    @SuppressWarnings("rawtypes")
     public <T extends SpecimenOrObservationBase> long countOccurrences(Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
             TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
@@ -201,7 +196,8 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param occurence the occurence associated with these media
      * @return a count of media instances
      */
-	public long countMedia(SpecimenOrObservationBase occurence);
+	@SuppressWarnings("rawtypes")
+    public long countMedia(SpecimenOrObservationBase occurence);
 
     /**
      * Returns a List of Media that are associated with a given occurence
@@ -212,28 +208,8 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of media instances
      */
-	public List<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
-	/**
-     * Returns a count of determinations that have been made for a given occurence and for a given taxon concept
-     *
-	 * @param occurence the occurence associated with these determinations (can be null for all occurrences)
-	 * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
-     * @return a count of determination events
-     */
-    public long countDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase);
-
-    /**
-     * Returns a List of determinations that have been made for a given occurence and for a given taxon concept
-     *
-	 * @param occurence the occurence associated with these determinations (can be null for all occurrences)
-	 * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
-	 * @param pageSize The maximum number of determinations returned (can be null for all related determinations)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
-     * @return a List of determination instances
-     */
-	public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	@SuppressWarnings("rawtypes")
+    public List<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
      * Returns a count of derivation events that have involved creating new DerivedUnits from this occurence
@@ -241,6 +217,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param occurence the occurence that was a source of these derivation events
      * @return a count of derivation events
      */
+    @SuppressWarnings("rawtypes")
     public long countDerivationEvents(SpecimenOrObservationBase occurence);
 
     /**
@@ -252,7 +229,8 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of derivation events
      */
-	public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	@SuppressWarnings("rawtypes")
+    public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Retrieves the {@link UUID} and the string representation (title cache) of all
@@ -280,7 +258,8 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param propertyPaths
 	 * @return
 	 */
-	public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxonName(Class<T> type,
+	@SuppressWarnings("rawtypes")
+    public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxonName(Class<T> type,
             TaxonName associatedTaxonName, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
@@ -292,14 +271,17 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * <li>A {@link Taxon} or a {@link TaxonName} may be referenced by the {@link DeterminationEvent} of the {@link SpecimenOrObservationBase}</li>
 	 * </ul>
 	 */
-	public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Taxon associatedTaxon,
+	@SuppressWarnings("rawtypes")
+    public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Taxon associatedTaxon,
 	        boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * @see IOccurrenceDao#listByAssociatedTaxon(Class, Taxon, Integer, Integer, List, List)
 	 */
-	public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(
+	@SuppressWarnings("rawtypes")
+    public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>>
+	                listUuidAndTitleCacheByAssociatedTaxon(
 	        Class<T> type, Taxon associatedTaxon, boolean includeUnpublished,
 	        EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
 	        Integer limit, Integer start, List<OrderHint> orderHints);
@@ -379,60 +361,41 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 
     /**
      * Retrieves all {@link SpecimenOrObservationBase}s that have the given {@link SpecimenOrObservationType}.
-     * @param type
-     * @param limit
-     * @param start
-     * @param orderHints
-     * @param propertyPaths
      * @return collection of specimen with the given type
      */
+    @SuppressWarnings("rawtypes")
     public Collection<SpecimenOrObservationBase> listBySpecimenOrObservationType(SpecimenOrObservationType type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      *
      * Returns all {@link FieldUnit}s that are referencing this {@link GatheringEvent}
      * @param gatheringEventUuid the {@link UUID} of the gathering event
-     * @param limit
-     * @param start
-     * @param orderHints
-     * @param propertyPaths
      * @return a list of field units referencing the gathering event
      */
     public List<FieldUnit> findFieldUnitsForGatheringEvent(UUID gatheringEventUuid, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
-    *
-    * Returns count of derivedUnits that has a sequence with the accession number and is determined to a taxon
-    * @param accessionNumber
-    * @param propertyPaths
-    * @return a derived unit
-    */
-   public long countByGeneticAccessionNumber(String accessionNumberString);
-
-   /**
-   *
-   * Returns {@link DerivedUnit} that has the accession number and is determined to a taxon
-   * @param accessionNumber
-   * @param propertyPaths
-   * @return a derived unit
-   */
-  public DnaSample findByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths);
-
-    /**
-     * @param derivedUnitUuid
-     * @return
+     *
+     * Returns count of derivedUnits that has a sequence with the accession number and is determined to a taxon
+     * @param accessionNumber
+     * @param propertyPaths
+     * @return a derived unit
      */
+    public long countByGeneticAccessionNumber(String accessionNumberString);
+
+     /**
+     *
+     * Returns {@link DerivedUnit} that has the accession number and is determined to a taxon
+     * @param accessionNumber
+     * @param propertyPaths
+     * @return a derived unit
+     */
+    public DnaSample findByGeneticAccessionNumber(String accessionNumberString, List<String> propertyPaths);
+
+    @SuppressWarnings("rawtypes")
     public List<SpecimenOrObservationBase> findOriginalsForDerivedUnit(UUID derivedUnitUuid, List<String> propertyPaths);
 
-    /**
-     * @param fieldUnitUuids
-     * @return
-     */
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);
 
-    /**
-     * @param derivedUnitUuid
-     * @return
-     */
-    String findMostSignificantIdentifier(UUID derivedUnitUuid);
+    public String findMostSignificantIdentifier(UUID derivedUnitUuid);
 }

@@ -75,18 +75,15 @@
 
       <programlisting>&lt;security:authentication-manager alias="authenticationManager"/&gt;
    
-&lt;bean id="daoAuthenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider"&gt;
+&lt;bean id="daoAuthenticationProvider" class="eu.etaxonomy.cdm.api.security.CdmDaoAuthenticationProvider"&gt;
   &lt;security:custom-authentication-provider/&gt;
   &lt;property name="userDetailsService" ref="userService"/&gt;
-  &lt;property name="saltSource" ref="saltSource"/&gt;
   &lt;property name="passwordEncoder" ref="passwordEncoder"/&gt;
+  &lt;property name="userDetailsPasswordService" ref="userService"/&gt;
 &lt;/bean&gt;
     
-&lt;bean id="passwordEncoder" class="org.springframework.security.providers.encoding.Md5PasswordEncoder"/&gt;
-    
-&lt;bean id="saltSource" class="org.springframework.security.providers.dao.salt.ReflectionSaltSource"&gt;
-  &lt;property name="userPropertyToUse" value="getUsername"/&gt;
-&lt;/bean&gt;</programlisting>
+&lt;bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/&gt;
+</programlisting>
 
       <para>In the case of web applications, application developers will
       probably want to authenticate users transparently, using the servlet

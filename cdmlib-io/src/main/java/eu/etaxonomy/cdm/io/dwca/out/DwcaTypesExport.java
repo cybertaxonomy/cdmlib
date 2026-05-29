@@ -114,7 +114,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
     }
 
 	private Set<TypeDesignationBase> handleTypeName(DwcaTaxExportState state,
-	        DwcaTaxExportFile file, TaxonBase<?> taxonBase,
+	        DwcaTaxExportFile file, TaxonBase taxonBase,
 	        INonViralName nvn, DwcaMetaDataRecord metaRecord)
 	        throws FileNotFoundException, UnsupportedEncodingException, IOException {
 
@@ -133,7 +133,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 	}
 
     private boolean handleType(DwcaTaxExportState state, DwcaTypesRecord record,
-            TypeDesignationBase<?> designation, TaxonBase<?> taxonBase,
+            TypeDesignationBase<?> designation, TaxonBase taxonBase,
             DwcaTaxExportConfigurator config) {
 
         designation = CdmBase.deproxy(designation);
@@ -147,7 +147,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
     }
 
 	private boolean handleTextualType(DwcaTaxExportState state, DwcaTypesRecord record,
-	            TextualTypeDesignation designation, TaxonBase<?> taxonBase,
+	            TextualTypeDesignation designation, TaxonBase taxonBase,
 	            DwcaTaxExportConfigurator config) {
 
         if (designation == null){
@@ -170,7 +170,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
     }
 
 	private boolean handleSpecimen(DwcaTaxExportState state, DwcaTypesRecord record, IndividualsAssociation individualsAssociation,
-	        TypeDesignationBase<?> designation, TaxonBase<?> taxonBase, DwcaTaxExportConfigurator config) {
+	        TypeDesignationBase<?> designation, TaxonBase taxonBase, DwcaTaxExportConfigurator config) {
 
 	    TypeDesignationStatusBase<?> status = null;
 		DerivedUnitFacade facade = null;
@@ -277,7 +277,7 @@ public class DwcaTypesExport extends DwcaDataExportBase {
 		}
 	}
 
-	private DerivedUnitFacade getFacadeFromAssociation(DwcaTaxExportState state, IndividualsAssociation individualsAssociation, TaxonBase<?> taxonBase) {
+	private DerivedUnitFacade getFacadeFromAssociation(DwcaTaxExportState state, IndividualsAssociation individualsAssociation, TaxonBase taxonBase) {
 		SpecimenOrObservationBase<?> specimen = individualsAssociation.getAssociatedSpecimenOrObservation();
 		DerivedUnitFacade facade;
 		if (specimen == null){

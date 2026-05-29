@@ -8,18 +8,13 @@
 */
 package eu.etaxonomy.cdm.model.occurrence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,10 +38,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -243,7 +235,6 @@ public class SpecimenTest extends EntityTestBase {
 		PreservationMethod preservation = PreservationMethod.NewInstance();
 		boolean protectedTitleCache = true;
 		DefinedTerm sex = DefinedTerm.SEX_FEMALE();
-		TaxonName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		String titleCache = "title";
 		DateTime updated = DateTime.now();
 		Person updatedByPerson = Person.NewTitledInstance("updatedPerson");
@@ -277,7 +268,6 @@ public class SpecimenTest extends EntityTestBase {
 		specimen.setPreservation(preservation);
 		specimen.setProtectedTitleCache(protectedTitleCache);
 		specimen.setSex(sex);
-		specimen.setStoredUnder(storedUnder);
 		specimen.setTitleCache(titleCache, protectedTitleCache);
 		specimen.setUpdated(updated);
 		specimen.setUpdatedBy(updatedBy);
@@ -322,7 +312,6 @@ public class SpecimenTest extends EntityTestBase {
 		assertEquals(lsid, specimenClone.getLsid());
 		assertEquals(preservation, specimenClone.getPreservation());
 		assertEquals(protectedTitleCache, specimenClone.isProtectedTitleCache());
-		assertEquals(storedUnder, specimenClone.getStoredUnder());
 		assertEquals(sex, specimenClone.getSex());
 		assertEquals(titleCache, specimenClone.getTitleCache());
 

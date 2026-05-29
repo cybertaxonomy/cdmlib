@@ -14,10 +14,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStreamReader;
-import eu.etaxonomy.cdm.common.URI;
 
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -62,7 +62,6 @@ public class SpecimenTest {
 			assertEquals("Specimen.collection must equal Collection",collection, specimen.getCollection());
 			assertEquals("Collection.institute must equal Institution",institution,collection.getInstitute());
 
-			assertEquals("TaxonName must equal Specimen.storedUnder",name,specimen.getStoredUnder());
 			assertEquals("Sex must equal Specimen.sex",sex,specimen.getSex());
 
 			assertNotNull("Specimen.determinations must not be null",specimen.getDeterminations());

@@ -53,18 +53,17 @@ import eu.etaxonomy.cdm.validation.annotation.ValidPassword;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "User", propOrder = {
-    "username",
-    "password",
-    "salt",
-    "emailAddress",
-    "grantedAuthorities",
-    "authorities",
-    "groups",
-    "enabled",
-    "accountNonExpired",
-    "credentialsNonExpired",
-    "accountNonLocked",
-    "person"
+        "username",
+        "password",
+        "emailAddress",
+        "grantedAuthorities",
+        "authorities",
+        "groups",
+        "enabled",
+        "accountNonExpired",
+        "credentialsNonExpired",
+        "accountNonLocked",
+        "person"
 })
 @XmlRootElement(name = "User")
 @Entity
@@ -89,21 +88,12 @@ public class User extends CdmBase implements UserDetails {
     protected String username;
 
     /**
-     * a salted, MD5 encoded hash of the plain text password
+     * a bcrypted hash of the plain text password
      */
     @XmlElement(name = "Password")
     @NotAudited
     @ValidPassword(groups=Level2.class)
     protected String password;
-
-    /**
-     * The salt for password hashing.
-     * @see https://dev.e-taxonomy.eu/redmine/issues/7210
-     * @see https://code-bude.net/2015/03/30/grundlagen-sicheres-passwort-hashing-mit-salts/
-     */
-    @XmlElement(name = "Salt")
-    @NotAudited
-    protected String salt;
 
     @XmlElement(name = "EmailAddress")
     protected String emailAddress;

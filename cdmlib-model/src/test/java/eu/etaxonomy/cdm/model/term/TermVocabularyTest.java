@@ -33,12 +33,12 @@ public class TermVocabularyTest extends EntityTestBase {
 	@SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-	private DefinedTermBase<?> dtb1;
-	private DefinedTermBase<?> dtb2;
-	private DefinedTermBase<?> dtb3;
-	private DefinedTermBase<?> dtbFree;
-	private TermVocabulary<DefinedTermBase<?>> voc1;
-	private TermVocabulary<DefinedTermBase<?>> voc2;
+	private DefinedTerm dtb1;
+	private DefinedTerm dtb2;
+	private DefinedTerm dtb3;
+	private DefinedTerm dtbFree;
+	private TermVocabulary<DefinedTerm> voc1;
+	private TermVocabulary<DefinedTerm> voc2;
 
 
 	@BeforeClass
@@ -90,7 +90,7 @@ public class TermVocabularyTest extends EntityTestBase {
 	@Test
     public final void testTermIdInVocabularyComparator() {
         assertNotNull(voc1);
-        Set<DefinedTermBase<?>> terms = voc1.getTerms();
+        Set<DefinedTerm> terms = voc1.getTerms();
         TermIdInVocabularyComparator<DefinedTermBase<?>> comparator = new TermIdInVocabularyComparator<>();
         int res = comparator.compare(dtb1, dtb2);
         int res2 = comparator.compare(dtb2, dtb1);

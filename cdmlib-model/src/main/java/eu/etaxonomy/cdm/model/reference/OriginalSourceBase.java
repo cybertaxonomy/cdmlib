@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -59,21 +59,21 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OriginalSource", propOrder = {
-    "type",
-	"idInSource",
-    "idNamespace",
-    "citation",
-    "citationMicroReference",
-    "accessed",
-    "originalInfo",
-    "cdmSource",
-    "links"
+        "type",
+        "idInSource",
+        "idNamespace",
+        "citation",
+        "citationMicroReference",
+        "accessed",
+        "originalInfo",
+        "cdmSource",
+        "links"
 })
 @XmlRootElement(name = "OriginalSource")
 @Entity
 @Audited
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(name="OriginalSourceBase")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "OriginalSourceBase")
 public abstract class OriginalSourceBase
         extends AnnotatableEntity
         implements IOriginalSource, IIntextReferenceTarget {
@@ -349,13 +349,13 @@ public abstract class OriginalSourceBase
         }
 
         if(thisCitationId != otherCitationId
-                || !StringUtils.equals(this.getCitationMicroReference(), other.getCitationMicroReference())
-                || !StringUtils.equals(this.getOriginalInfo(), other.getOriginalInfo())
+                || !Strings.CS.equals(this.getCitationMicroReference(), other.getCitationMicroReference())
+                || !Strings.CS.equals(this.getOriginalInfo(), other.getOriginalInfo())
                         ){
             return false;
         }
 
-        if(!StringUtils.equals(this.getIdInSource(), other.getIdInSource())
+        if(!Strings.CS.equals(this.getIdInSource(), other.getIdInSource())
                 || !CdmUtils.nullSafeEqual(this.getIdNamespace(), other.getIdNamespace())
                 || !CdmUtils.nullSafeEqual(this.getType(), other.getType())
                 || !TimePeriod.equalsNullAndEmptySafe(accessed, other.getAccessed())

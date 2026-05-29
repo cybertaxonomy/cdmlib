@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.name;
 
 import java.util.Set;
-
 import javax.persistence.Transient;
 
 /**

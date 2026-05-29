@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -43,17 +44,17 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IntextReference", propOrder = {
-    "taxonName",
-    "occurrence",
-    "agent",
-    "reference",
-    "source",
-    "media",
-    "key",
-    "languageString",
-    "annotation",
-    "startPos",
-    "endPos"
+        "taxonName",
+        "occurrence",
+        "agent",
+        "reference",
+        "source",
+        "media",
+        "key",
+        "languageString",
+        "annotation",
+        "startPos",
+        "endPos"
 })
 @Entity
 @Audited
@@ -255,7 +256,7 @@ public class IntextReference extends CdmLinkBase {
         if (target instanceof TaxonName){
             this.taxonName = (TaxonName)target;
         }else if (target instanceof TaxonBase){
-            this.taxon = (TaxonBase<?>)target;
+            this.taxon = (TaxonBase)target;
         }else if (target instanceof SpecimenOrObservationBase){
             this.occurrence = (SpecimenOrObservationBase<?>)target;
         }else if (target instanceof AgentBase){

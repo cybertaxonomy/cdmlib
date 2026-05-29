@@ -50,7 +50,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     private static final Logger logger = LogManager.getLogger();
 
     private UUID uuid;
-    private TaxonBase<?> cdmBase;
+    private TaxonBase cdmBase;
 
     @SpringBeanByType
     private ITaxonDao cdmEntityDaoBase;
@@ -98,7 +98,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     @DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet
     public void testSaveOrUpdate() {
-        TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+        TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         cdmBase.setDoubtful(true);
         cdmEntityDaoBase.saveOrUpdate(cdmBase);
         commit();
@@ -110,7 +110,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     public void testSaveOrUpdateWithAuthentication() {
 
         setAuthentication(taxonEditorToken);
-        TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+        TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         cdmBase.setDoubtful(true);
         cdmEntityDaoBase.saveOrUpdate(cdmBase);
         commit();
@@ -210,7 +210,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     @DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet
     public void testUpdate() {
-        TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+        TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         cdmBase.setDoubtful(true);
         cdmEntityDaoBase.update(cdmBase);
         commit();
@@ -222,7 +222,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     public void testUpdateWithAuthentication() {
 
         setAuthentication(taxonEditorToken);
-        TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+        TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         cdmBase.setDoubtful(true);
         RuntimeException securityException = null;
         try {
@@ -307,7 +307,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     @DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet
     public void testDelete() {
-        TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+        TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
         assertNotNull(cdmBase);
         cdmEntityDaoBase.delete(cdmBase);
     }

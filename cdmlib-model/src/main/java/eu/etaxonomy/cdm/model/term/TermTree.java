@@ -58,16 +58,16 @@ import eu.etaxonomy.cdm.model.description.Feature;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermTree", propOrder = {
-    "root",
+        "root",
 })
 @XmlRootElement(name = "TermTree")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.TermTree")
 @Audited
-public class TermTree <T extends DefinedTermBase>
-            extends TermGraphBase<T, TermNode>
-            implements ITermTree<T, TermNode> {
+public class TermTree<T extends DefinedTermBase>
+        extends TermGraphBase<T, TermNode>
+        implements ITermTree<T, TermNode> {
 
 	private static final long serialVersionUID = -6713834139003172735L;
 	private static final Logger logger = LogManager.getLogger();

@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -58,7 +59,7 @@ public class KmlJaxbMarshallerTest {
 		String kml = sw.toString();
 		if(logger.isDebugEnabled()) {
 			logger.debug("kml:\n" + kml);
-			FileUtils.write(new File("KmlJaxbMarshallerTest.kml"), kml);
+			FileUtils.write(new File("KmlJaxbMarshallerTest.kml"), kml, Charset.defaultCharset());
 		}
 		assertTrue(kml.contains("<kml:Document>"));
 		assertTrue(kml.contains("<kml:Point>"));

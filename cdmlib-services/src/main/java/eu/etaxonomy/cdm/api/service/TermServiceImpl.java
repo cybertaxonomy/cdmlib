@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.compare.UuidAndTitleCacheComparator;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.TermDeletionConfigurator;
@@ -61,7 +62,6 @@ import eu.etaxonomy.cdm.persistence.dao.term.IRepresentationDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermCollectionDao;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -107,13 +107,8 @@ public class TermServiceImpl
 	}
 
 	@Override
-	public DefinedTermBase getByUri(URI uri) {
-		return dao.findByUri(uri);
-	}
-
-	@Override
 	public Language getLanguageByIso(String iso639) {
-	    return dao.getLanguageByIso(iso639);
+	    return dao.findLanguageByIso(iso639);
 	}
 
 	@Override
@@ -123,12 +118,14 @@ public class TermServiceImpl
 
 	@Override
 	public List<Language> getLanguagesByLocale(Enumeration<Locale> locales){
-		return dao.getLanguagesByLocale(locales);
+		return dao.listLanguagesByLocale(locales);
 	}
 
 	@Override
-    public <TERM extends DefinedTermBase> TERM findByIdInVocabulary(String id, UUID vocabularyUuid, Class<TERM> clazz) throws IllegalArgumentException {
-        List<TERM> list = dao.getDefinedTermByIdInVocabulary(id, vocabularyUuid, clazz, null, null);
+    public <TERM extends DefinedTermBase> TERM findByIdInVocabulary(String id, UUID vocabularyUuid, Class<TERM> clazz)
+            throws IllegalArgumentException {
+
+	    List<TERM> list = dao.listByIdInVocabulary(id, vocabularyUuid, clazz, null, null);
 		if (list.isEmpty()){
 			return null;
 		}else if (list.size() == 1){
@@ -141,7 +138,7 @@ public class TermServiceImpl
 
     @Override
     public UUID findUuidByIdInVocabulary(String id, UUID vocabularyUuid,  Class<? extends DefinedTermBase<?>> clazz) throws IllegalArgumentException {
-        List<UUID> list = dao.getUuidByIdInVocabulary(id, vocabularyUuid, clazz);
+        List<UUID> list = dao.listUuidsByIdInVocabulary(id, vocabularyUuid, clazz);
         if (list.isEmpty()){
             return null;
         }else if (list.size() == 1){
@@ -157,27 +154,7 @@ public class TermServiceImpl
 		if (StringUtils.isBlank(tdwgAbbreviation)){ //TDWG areas should always have a label
 			return null;
 		}
-		List<NamedArea> list = dao.getDefinedTermByIdInVocabulary(tdwgAbbreviation, NamedArea.uuidTdwgAreaVocabulary, NamedArea.class, null, null);
-		if (list.isEmpty()){
-			return null;
-		}else if (list.size() == 1){
-			return list.get(0);
-		}else{
-			String message = "There is more then 1 (%d) TDWG area with the same abbreviated label. This is forbidden. Check the state of your database.";
-			throw new IllegalStateException(String.format(message, list.size()));
-		}
-	}
-
-	@Override
-	public <T extends DefinedTermBase> Pager<T> getGeneralizationOf(T definedTerm, Integer pageSize, Integer pageNumber) {
-        long numberOfResults = dao.countGeneralizationOf(definedTerm);
-
-		List<T> results = new ArrayList<>();
-		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getGeneralizationOf(definedTerm, pageSize, pageNumber);
-		}
-
-		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
+		return findByIdInVocabulary(tdwgAbbreviation, NamedArea.uuidTdwgAreaVocabulary, NamedArea.class);
 	}
 
 	@Override
@@ -186,7 +163,7 @@ public class TermServiceImpl
 
 		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getIncludes(definedTerms, pageSize, pageNumber,propertyPaths);
+			results = dao.listIncludes(definedTerms, pageSize, pageNumber,propertyPaths);
 		}
 
 		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
@@ -198,7 +175,7 @@ public class TermServiceImpl
 
 		List<Media> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getMedia(definedTerm, pageSize, pageNumber);
+			results = dao.listMedia(definedTerm, pageSize, pageNumber);
 		}
 
 		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
@@ -210,7 +187,7 @@ public class TermServiceImpl
 
 		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getPartOf(definedTerms, pageSize, pageNumber, propertyPaths);
+			results = dao.listPartOf(definedTerms, pageSize, pageNumber, propertyPaths);
 		}
 
 		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
@@ -229,13 +206,14 @@ public class TermServiceImpl
 		return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	//TODO do we really need this. The representation text is the description of the term, not the label
 	@Override
-	public <T extends DefinedTermBase> Pager<T> findByRepresentationText(String label, Class<T> clazz, Integer pageSize, Integer pageNumber) {
-        long numberOfResults = dao.countDefinedTermByRepresentationText(label,clazz);
+	public <T extends DefinedTermBase> Pager<T> findByRepresentationLabel(String label, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+        long numberOfResults = dao.countByRepresentationLabel(label,clazz);
 
 		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getDefinedTermByRepresentationText(label, clazz, pageSize, pageNumber);
+			results = dao.listByRepresentationLabel(label, clazz, pageSize, pageNumber);
 		}
 
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
@@ -243,24 +221,24 @@ public class TermServiceImpl
 
 	@Override
 	public <T extends DefinedTermBase> Pager<T> findByRepresentationAbbreviation(String abbrev, Class<T> clazz, Integer pageSize, Integer pageNumber) {
-        long numberOfResults = dao.countDefinedTermByRepresentationAbbrev(abbrev,clazz);
+        long numberOfResults = dao.countByRepresentationAbbrev(abbrev,clazz);
 
 		List<T> results = new ArrayList<>();
 		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getDefinedTermByRepresentationAbbrev(abbrev, clazz, pageSize, pageNumber);
+			results = dao.listByRepresentationAbbrev(abbrev, clazz, pageSize, pageNumber);
 		}
 
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Override
-	public List<LanguageString> getAllLanguageStrings(int limit, int start) {
-		return languageStringDao.list(limit, start);
+	public List<LanguageString> getAllLanguageStrings(int pageSize, int pageNumber) {
+		return languageStringDao.list(pageSize, pageNumber);
 	}
 
 	@Override
-	public List<Representation> getAllRepresentations(int limit, int start) {
-		return representationDao.list(limit,start);
+	public List<Representation> getAllRepresentations(int pageSize, int pageNumber) {
+		return representationDao.list(pageSize, pageNumber);
 	}
 
 	@Override
@@ -548,13 +526,13 @@ public class TermServiceImpl
     @Override
     public Collection<TermDto> getIncludesAsDto(
             TermDto parentTerm) {
-        return dao.getIncludesAsDto(parentTerm);
+        return dao.listIncludesAsDto(parentTerm);
     }
 
     @Override
     public Collection<TermDto> getKindOfsAsDto(
             TermDto parentTerm) {
-        return dao.getKindOfsAsDto(parentTerm);
+        return dao.listKindOfsAsDto(parentTerm);
     }
 
     @Transactional(readOnly = false)
@@ -654,27 +632,27 @@ public class TermServiceImpl
 
     @Override
     public Collection<TermDto> findByTitleAsDtoWithVocDto(String title, TermType termType){
-        return dao.findByTitleAsDtoWithVocDto(title, termType);
+        return dao.listByTitleAsDtoWithVocDto(title, termType);
     }
 
     @Override
     public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType){
-        return dao.findByUriAsDto(uri, termLabel, termType);
+        return dao.listByUriAsDto(uri, termLabel, termType);
     }
 
     @Override
     public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList, Language lang){
-        return dao.findByUUIDsAsDto(uuidList, lang);
+        return dao.listByUUIDsAsDto(uuidList, lang);
     }
 
     @Override
     public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList){
-        return dao.findFeatureByUUIDsAsDto(uuidList);
+        return dao.listFeaturesByUUIDsAsDto(uuidList);
     }
 
     @Override
     public Collection<TermDto> findByTypeAsDto(TermType termType){
-        return dao.findByTypeAsDto(termType);
+        return dao.listByTypeAsDto(termType);
     }
 
     @Override
@@ -682,7 +660,7 @@ public class TermServiceImpl
         if (uuidList == null || uuidList.isEmpty()){
             return null;
         }
-        Collection<TermDto> col = dao.findFeatureByUUIDsAsDto(uuidList);
+        Collection<TermDto> col = dao.listFeaturesByUUIDsAsDto(uuidList);
         Map<UUID, TermDto> result = new HashMap<>();
         if (col != null){
             for (TermDto dto: col){
@@ -695,12 +673,12 @@ public class TermServiceImpl
 
     @Override
     public Collection<TermDto> findFeatureByTitleAsDto(String title){
-        return dao.findFeatureByTitleAsDto(title);
+        return dao.listFeaturesByTitleAsDto(title);
     }
 
     @Override
     public Country getCountryByIso(String iso639) {
-        return this.dao.getCountryByIso(iso639);
+        return this.dao.findCountryByIso(iso639);
     }
 
     @Override

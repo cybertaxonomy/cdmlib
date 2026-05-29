@@ -11,12 +11,12 @@ package eu.etaxonomy.cdm.model.view;
 
 import java.io.Serializable;
 import java.util.UUID;
-
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
 
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.RevisionEntity;

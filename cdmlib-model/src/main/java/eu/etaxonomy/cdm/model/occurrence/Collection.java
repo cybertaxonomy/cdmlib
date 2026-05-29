@@ -50,12 +50,12 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Collection", propOrder = {
-	"name",
-    "code",
-    "codeStandard",
-    "townOrLocation",
-    "institute",
-    "superCollection"
+        "name",
+        "code",
+        "codeStandard",
+        "townOrLocation",
+        "institute",
+        "superCollection"
 })
 @XmlRootElement(name = "Collection")
 @Entity
@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy
 //@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.Collection")
 @Audited
 @Configurable
-@Table(name="Collection", indexes = { @javax.persistence.Index(name = "collectionTitleCacheIndex", columnList = "titleCache") })
+@Table(name = "Collection", indexes = {@javax.persistence.Index(name = "collectionTitleCacheIndex", columnList = "titleCache")})
 public class Collection
         extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<Collection>>
         implements IHasLink {

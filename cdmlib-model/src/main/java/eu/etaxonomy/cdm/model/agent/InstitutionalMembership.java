@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -40,11 +41,11 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "InstitutionalMembership", propOrder = {
-    "period",
-    "department",
-    "role",
-    "institute",
-    "person"
+        "period",
+        "department",
+        "role",
+        "institute",
+        "person"
 })
 @XmlRootElement(name = "InstitutionalMembership")
 @Entity

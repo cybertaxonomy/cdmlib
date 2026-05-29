@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +26,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 
-	public class PropertyChangeTest implements PropertyChangeListener {
+public class PropertyChangeTest implements PropertyChangeListener {
 		private static final Logger logger = LogManager.getLogger();
 		private Object lastPropValue;
 

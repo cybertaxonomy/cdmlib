@@ -68,17 +68,17 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Person", propOrder = {
-	    "prefix",
-	    "familyName",
-	    "givenName",
-	    "initials",
-	    "suffix",
-	    "nomenclaturalTitle",
-	    "collectorTitle",
-	    "lifespan",
-	    "orcid",
-	    "wikiDataItemId",
-	    "institutionalMemberships"
+        "prefix",
+        "familyName",
+        "givenName",
+        "initials",
+        "suffix",
+        "nomenclaturalTitle",
+        "collectorTitle",
+        "lifespan",
+        "orcid",
+        "wikiDataItemId",
+        "institutionalMemberships"
 })
 @XmlRootElement(name = "Person")
 @Entity
@@ -214,29 +214,7 @@ public class Person
 	 *
 	 * @see #Person(String, String, String)
 	 */
-	protected Person() {
-		super();
-	}
-
-	/**
-	 * Class constructor using a "forenames" string (including initials),
-	 * a surname (family name) and an abbreviated name as used in nomenclature.
-	 * For the abbreviated name the inherited attribute {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle}
-	 * is used.
-	 *
-	 * @param  givenname     		the given name
-	 * @param  familyname      		the hereditary name
-	 * @param  nomenclaturalTitel 	the abbreviated name
-	 * @see                  		#Person()
-	 * @see                  		#NewInstance()
-	 */
-	public Person(String givenname, String familyname, String nomenclaturalTitel) {
-		this.setGivenName(givenname);
-		this.setFamilyName(familyname);
-		logger.debug("before - Set nomenclatural Title");
-		this.setNomenclaturalTitle(nomenclaturalTitel);
-		logger.debug("after - Set nomenclatural Title");
-	}
+	protected Person() {}
 
     @Override
     protected void initDefaultCacheStrategy() {

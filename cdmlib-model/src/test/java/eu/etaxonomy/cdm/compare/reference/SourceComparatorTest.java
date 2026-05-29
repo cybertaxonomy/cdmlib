@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.compare.reference;
 
 import java.util.UUID;
 
+
 import org.junit.Assert;
 import org.junit.Test;
 

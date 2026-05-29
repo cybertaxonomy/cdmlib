@@ -58,7 +58,7 @@ public class TaxonTest extends EntityTestBase {
 
 	@Before
 	public void setUp() throws Exception {
-		Person linne =new Person("Carl", "Linné", "L.");
+		Person linne = Person.NewInstance("L.", "Linné", null, "Carl");
 		sec= ReferenceFactory.newBook();
 		sec.setAuthorship(linne);
 		sec.setTitleCache("Schönes saftiges Allgäu", true);

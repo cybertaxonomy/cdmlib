@@ -35,14 +35,14 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TeamOrPersonBase", propOrder = {
-    "nomenclaturalTitleCache",
-    "collectorTitleCache"
+        "nomenclaturalTitleCache",
+        "collectorTitleCache"
 })
 @Entity
 @Audited
 public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
-            extends AgentBase<INomenclaturalAuthorCacheStrategy<T>>
-            implements INomenclaturalAuthor {
+        extends AgentBase<INomenclaturalAuthorCacheStrategy<T>>
+        implements INomenclaturalAuthor {
 
     private static final long serialVersionUID = 5216821307314001961L;
 

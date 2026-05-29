@@ -825,7 +825,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNull(taxonService.find(2).getSec());
         Assert.assertNull(taxonService.find(3).getSec());
         Assert.assertNull(taxonService.find(4).getSec());
-        TaxonBase<?> taxon5 = taxonService.find(5);
+        TaxonBase taxon5 = taxonService.find(5);
         Assert.assertNotNull(taxon5.getSec());
         Assert.assertNotEquals(newSec, taxon5.getSec());
         Assert.assertNotNull(taxon5.getSecMicroReference());
@@ -856,7 +856,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNull(taxonService.find(2).getSec());
         Assert.assertNull(taxonService.find(3).getSec());
         Assert.assertNull(taxonService.find(4).getSec());
-        TaxonBase<?> taxon5 = taxonService.find(5);
+        TaxonBase taxon5 = taxonService.find(5);
         Assert.assertNotNull(taxon5.getSec());
         Assert.assertNotEquals(newSec, taxon5.getSec());
         Assert.assertNotNull(taxon5.getSecMicroReference());

@@ -69,7 +69,7 @@ public class LsidRegistryImpl implements LSIDRegistry {
 			for(String namespace : lsidAuthority.getNamespaces().keySet()) {
 				Class<? extends IIdentifiableEntity> clazz = lsidAuthority.getNamespaces().get(namespace);
 				boolean foundDao = false;
-				for(IIdentifiableDao identifiableDao : identifiableDaos) {
+				for(IIdentifiableDao<?> identifiableDao : identifiableDaos) {
 					if(clazz.equals(identifiableDao.getType())) {
 						foundDao = true;
 						registry.put(lsidAuthority.getAuthority() + ":" + namespace, identifiableDao);

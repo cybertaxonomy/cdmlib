@@ -22,12 +22,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
@@ -35,6 +30,10 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.IdentifiableEntityFilters;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
@@ -47,10 +46,8 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
@@ -69,17 +66,6 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
     @Override
     public long countByTitle(String queryString) {
-        return countByTitle(queryString, null);
-    }
-
-    /**
-     * FIXME Candidate for removal. Method not in use.
-     * @deprecated method not in production use. Will maybe be removed.
-     */
-    @Deprecated
-    @Override
-    public long countByTitle(String queryString, CdmBase sessionObject) {
-
         Session session = getSession();
         checkNotInPriorView("IdentifiableDaoBase.countByTitle(String queryString, CdmBase sessionObject)");
 
@@ -95,18 +81,6 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
     @Override
     public List<T> findByTitle(String queryString) {
-        return findByTitle(queryString, null);
-    }
-
-
-    /**
-     * FIXME Candidate for removal. Method not in use.
-     * @deprecated method not in production use. Will maybe be removed.
-     */
-    @Override
-    @Deprecated
-    public List<T> findByTitle(String queryString, CdmBase sessionObject) {
-
         Session session = getSession();
         checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, CdmBase sessionObject)");
 
@@ -174,13 +148,9 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public <S extends T> List<S> findByTitle(Class<S> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return findByParam(clazz, "titleCache", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
-    }
-
-    @Override
-    public <S extends T> List<S> findByReferenceTitle(Class<S> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return findByParam(clazz, "title", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+    public <S extends T> List<S> findByTitle(Class<S> clazz, String queryString, MatchMode matchmode, List<EntityFilter<S>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return findByParam(clazz, "titleCache", queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
@@ -191,35 +161,6 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     @Override
     public <S extends T> List<S> findByReferenceTitleWithRestrictions(Class<S> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         return findByParamWithRestrictions(clazz, "title", queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
-    }
-
-    @Override
-    public List<T> findByTitle(String queryString, MatchMode matchmode, int page, int pagesize, List<Criterion> criteria) {
-        checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<Criterion> criteria)");
-
-        Criteria crit = getSession().createCriteria(type);
-        if (matchmode == MatchMode.EXACT) {
-            crit.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(queryString)));
-        } else {
-//			crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
-            crit.add(Restrictions.like("titleCache", matchmode.queryStringFrom(queryString)));
-        }
-        if (pagesize >= 0) {
-            crit.setMaxResults(pagesize);
-        }
-        if(criteria != null){
-            for (Criterion criterion : criteria) {
-                crit.add(criterion);
-            }
-        }
-        crit.addOrder(Order.asc("titleCache"));
-        int firstItem = (page - 1) * pagesize;
-        crit.setFirstResult(firstItem);
-        @SuppressWarnings("unchecked")
-        List<T> results = crit.list();
-        List<String> propertyPaths = null;
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
     }
 
     @Override
@@ -350,13 +291,13 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public long countByTitle(Class<? extends T> clazz, String queryString,  MatchMode matchmode, List<Criterion> criterion) {
-        return countByParam(clazz, "titleCache", queryString, matchmode, criterion);
+    public <S extends T> long countByTitle(Class<S> clazz, String queryString, MatchMode matchmode, List<EntityFilter<S>> filter) {
+        return countByParam(clazz, "titleCache", queryString, matchmode, filter);
     }
 
     @Override
-    public long countByReferenceTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion) {
-        return countByParam(clazz, "title", queryString, matchmode, criterion);
+    public <S extends T> long countByReferenceTitle(Class<S> clazz, String queryString, MatchMode matchmode, List<EntityFilter<S>> filter) {
+        return countByParam(clazz, "title", queryString, matchmode, filter);
     }
 
     @Override
@@ -466,27 +407,24 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         throw new UnsupportedOperationException("suggestQuery is not supported for objects of class " + type.getName());
     }
 
-
     @Override
-    public long countByTitle(String queryString, MatchMode matchMode, List<Criterion> criteria) {
-        checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<Criterion> criteria)");
-        Criteria crit = getCriteria(type);
-        if (matchMode == MatchMode.EXACT) {
-            crit.add(Restrictions.eq("titleCache", matchMode.queryStringFrom(queryString)));
-        } else {
-//			crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
-            crit.add(Restrictions.like("titleCache", matchMode.queryStringFrom(queryString)));
-        }
+    public long countByTitle(String queryString, MatchMode matchMode, List<EntityFilter<T>> filter) {
 
-        if(criteria != null){
-            for (Criterion criterion : criteria) {
-                crit.add(criterion);
-            }
-        }
-        crit.setProjection(Projections.rowCount());
+        checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<EntityFilter<T>> filter)");
 
-        long result = (Long)crit.uniqueResult();
-        return result;
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<T> root = cq.from(type);
+
+        boolean ignoreCase = false;
+        Predicate titleCachePredicate = IdentifiableEntityFilters.titleCacheFilter(type,
+                queryString, matchMode, ignoreCase).toPredicate(root, cb);
+        Predicate predicate = addPredicateFromFilter(titleCachePredicate, filter, cb, root);
+
+        cq.select(cb.countDistinct(root.get("id")))
+          .where(predicate);
+
+        return getSession().createQuery(cq).getSingleResult();
     }
 
 

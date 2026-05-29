@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.molecular;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,17 +69,17 @@ import eu.etaxonomy.cdm.model.term.TermType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Sequence", propOrder = {
-    "dnaSample",
-	"consensusSequence",
-	"isBarcode",
-    "barcodeSequencePart",
-    "dnaMarker",
-    "geneticAccessionNumber",
-    "boldProcessId",
-    "haplotype",
-    "contigFile",
-    "singleReadAlignments",
-    "citations"
+        "dnaSample",
+        "consensusSequence",
+        "isBarcode",
+        "barcodeSequencePart",
+        "dnaMarker",
+        "geneticAccessionNumber",
+        "boldProcessId",
+        "haplotype",
+        "contigFile",
+        "singleReadAlignments",
+        "citations"
 })
 @XmlRootElement(name = "Sequencing")
 @Entity
@@ -87,7 +87,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @Configurable
 //@Table(name="Sequence", indexes = { @Index(name = "sequenceTitleCacheIndex", columnList = "titleCache") })
 public class Sequence
-               extends AnnotatableEntity {
+        extends AnnotatableEntity {
 
 	private static final long serialVersionUID = 8298983152731241775L;
     private static final Logger logger = LogManager.getLogger();

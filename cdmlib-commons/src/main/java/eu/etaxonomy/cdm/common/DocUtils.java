@@ -45,6 +45,7 @@ public class DocUtils {
         //SinkFactory sinkFactory = (SinkFactory) container.lookup( SinkFactory.ROLE, "html" ); // Plexus lookup
 
         SinkFactory sinkFactory = new XhtmlSinkFactory();
+//        SinkFactory sinkFactory = new Xhtml5SinkFactory();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Sink sink;

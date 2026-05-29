@@ -48,11 +48,11 @@ import eu.etaxonomy.cdm.model.media.IHasLink;
 })
 @Entity
 @Audited
-@Table(name="TermCollection")
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Table(name = "TermCollection")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class TermCollection<TERM extends DefinedTermBase, REL extends TermRelationBase>
-            extends TermBase
-            implements IHasCredits, IHasLink {
+        extends TermBase
+        implements IHasCredits, IHasLink {
 
     private static final long serialVersionUID = 6102175902060054329L;
 

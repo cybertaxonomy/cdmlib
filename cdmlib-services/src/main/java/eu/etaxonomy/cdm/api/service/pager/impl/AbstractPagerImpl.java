@@ -196,7 +196,7 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 	protected abstract String createLabel(String startLabel, String endLabel);
 
 	protected String getLabel(Integer i) {
-		Integer label = new Integer(i + 1);
+		Integer label = Integer.valueOf(i + 1);
 		return label.toString();
 	}
 
@@ -352,7 +352,7 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
      */
     @Deprecated
     public static Integer[] limitStartforRange(Integer numberOfResults, Integer pageIndex, Integer pageSize) {
-        if(hasResultsInRange(new Long(numberOfResults), pageIndex, pageSize)){
+        if(hasResultsInRange(Long.valueOf(numberOfResults), pageIndex, pageSize)){
             return  new Integer[]{PagerUtils.limitFor(pageSize), PagerUtils.startFor(pageSize, pageIndex)};
         }
         return null;

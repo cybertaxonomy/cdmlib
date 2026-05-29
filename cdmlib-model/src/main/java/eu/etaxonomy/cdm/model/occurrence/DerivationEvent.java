@@ -42,10 +42,10 @@ import eu.etaxonomy.cdm.model.common.EventBase;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DerivationEvent", propOrder = {
-    "originals",
-    "derivatives",
-    "institution",
-    "type"
+        "originals",
+        "derivatives",
+        "institution",
+        "type"
 })
 @XmlRootElement(name = "DerivationEvent")
 @Entity
@@ -102,7 +102,7 @@ public class DerivationEvent extends EventBase {
 	/**
 	 * Factory method
 	 */
-	public static DerivationEvent NewSimpleInstance(SpecimenOrObservationBase original,
+	public static DerivationEvent NewSimpleInstance(SpecimenOrObservationBase<?> original,
 	        DerivedUnit derivative, DerivationEventType type){
 		DerivationEvent result = NewInstance(type);
 		result.addOriginal(original);
@@ -223,7 +223,7 @@ public class DerivationEvent extends EventBase {
 			//type
 			result.setType(this.getType());
 			//derivates
-			result.derivatives = new HashSet<DerivedUnit>();
+			result.derivatives = new HashSet<>();
 			for(DerivedUnit derivative : this.derivatives) {
 				result.addDerivative(derivative);
 			}

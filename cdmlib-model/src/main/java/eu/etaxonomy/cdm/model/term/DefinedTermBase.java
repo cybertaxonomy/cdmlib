@@ -40,16 +40,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.hibernate.search.annotations.ClassBridge;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
+import eu.etaxonomy.cdm.hibernate.search.WikiDataItemIdBridge;
 import eu.etaxonomy.cdm.model.ICdmUuidCacher;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -58,6 +62,7 @@ import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.WikiDataItemId;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -86,46 +91,50 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DefinedTermBase", propOrder = {
-    "media",
-    "vocabulary",
-    "orderIndex",
-    "idInVocabulary",
-    "symbol",
-    "symbol2",
+        "media",
+        "vocabulary",
+        "orderIndex",
+        "idInVocabulary",
+        "symbol",
+        "symbol2",
+        "wikiDataItemId"
 })
 @XmlRootElement(name = "DefinedTermBase")
 @XmlSeeAlso({
-    AnnotationType.class,
-    DerivationEventType.class,
-    DefinedTerm.class,
-    ExtensionType.class,
-    Feature.class,
-    Language.class,
-    MarkerType.class,
-    MeasurementUnit.class,
-    NamedAreaType.class,
-    NomenclaturalCode.class,
-    PreservationMethod.class,
-    ReferenceSystem.class,
-    RightsType.class,
-    StatisticalMeasure.class,
-    TextFormat.class,
-    RelationshipTermBase.class,
-    PresenceAbsenceTerm.class,
-    State.class,
-    NamedArea.class,
-    NamedAreaLevel.class,
-    NomenclaturalStatusType.class,
-    Rank.class
+        AnnotationType.class,
+        DerivationEventType.class,
+        DefinedTerm.class,
+        ExtensionType.class,
+        Feature.class,
+        Language.class,
+        MarkerType.class,
+        MeasurementUnit.class,
+        NamedAreaType.class,
+        NomenclaturalCode.class,
+        PreservationMethod.class,
+        ReferenceSystem.class,
+        RightsType.class,
+        StatisticalMeasure.class,
+        TextFormat.class,
+        RelationshipTermBase.class,
+        PresenceAbsenceTerm.class,
+        State.class,
+        NamedArea.class,
+        NamedAreaLevel.class,
+        NomenclaturalStatusType.class,
+        Rank.class
 })
 @Entity
 @Audited
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@ClassBridge(impl=DefinedTermBaseClassBridge.class)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@ClassBridge(impl = DefinedTermBaseClassBridge.class)
 //TODO Comparable implemented only for fixing failing JAXB import, may be removed when this is fixed
-public abstract class DefinedTermBase<T extends DefinedTermBase>
-            extends TermBase
-            implements IDefinedTerm<T>, IHasCredits, Comparable<T> {
+//Note: generics T behind DefinedTermBase is problematic as it does not allow to subclass a non-abstract
+//      without generics. E.g. Character extends Feature . If Feature does not use generics, Character
+//      is not fully recognized as valid generic in e.g. TermNode<Character>
+public abstract class DefinedTermBase<T extends DefinedTermBase<T>>
+        extends TermBase
+        implements IDefinedTerm<T>, IHasCredits, Comparable<T> {
 
     private static final long serialVersionUID = 2931811562248571531L;
     private static final Logger logger = LogManager.getLogger();
@@ -209,12 +218,17 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     //empty string is explicitly allowed and should be distinguished from NULL!
     private String symbol2;
 
+    @XmlElement(name = "WikiDataId")
+    @Field
+    @FieldBridge(impl = WikiDataItemIdBridge.class)
+    @Type(type="wikiDataItemIdUserType")
+    @Column(length=16)
+    private WikiDataItemId wikiDataItemId;
 
 //***************************** CONSTRUCTOR *******************************************/
 
     //for hibernate use only, *packet* private required by bytebuddy
     //2022-06-17: currently still needed protected as TaxEditor.TaxonRelationshipTypeInverseContainer inherits from DefinedTermBase
-    @Deprecated
     protected DefinedTermBase(){}
 
     protected DefinedTermBase(TermType type) {
@@ -245,7 +259,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
           if (this instanceof HibernateProxy) {
               HibernateProxy proxy = (HibernateProxy) this;
               LazyInitializer li = proxy.getHibernateLazyInitializer();
-              return (T)((T)li.getImplementation()).getKindOf();
+              return ((T)li.getImplementation()).getKindOf();
           } else {
               return DefinedTermBase.deproxy(this.kindOf);
           }
@@ -264,7 +278,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
       }
       public void addGeneralizationOf(T generalization) {
           checkTermType(generalization);
-          generalization.setKindOf(this);
+          generalization.setKindOf((T)this);
           this.generalizationOf.add(generalization);
       }
       public void removeGeneralization(T generalization) {
@@ -279,7 +293,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
           if (this instanceof HibernateProxy) {
               HibernateProxy proxy = (HibernateProxy) this;
               LazyInitializer li = proxy.getHibernateLazyInitializer();
-              return (T)((T)li.getImplementation()).getPartOf();
+              return ((T)li.getImplementation()).getPartOf();
           } else {
               return DefinedTermBase.deproxy(this.partOf);
           }
@@ -324,7 +338,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
      */
     public void addIncludes(T includes) {
         checkTermType(includes);
-        includes.setPartOf(this);
+        includes.setPartOf((T)this);
         this.includes.add(includes);
     }
 
@@ -370,6 +384,13 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     }
     public void setSymbol2(String symbol2) {
         this.symbol2 = symbol2;
+    }
+
+    public WikiDataItemId getWikiDataItemId() {
+        return wikiDataItemId;
+    }
+    public void setWikiDataItemId(WikiDataItemId wikiDataItemId) {
+        this.wikiDataItemId = wikiDataItemId;
     }
 
 //************************** ordered **********************************/
@@ -589,8 +610,14 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
     protected static <TERM extends DefinedTermBase> TERM readCsvLine(TERM newInstance, List<String> csvLine, Language lang, boolean abbrevAsId) {
         newInstance.setUuid(UUID.fromString(csvLine.get(0)));
-        String uriStr = CdmUtils.Ne(csvLine.get(1));
-        newInstance.setUri(uriStr == null? null: URI.create(uriStr));
+        String idStr = CdmUtils.Ne(csvLine.get(1));
+        if (idStr != null) {
+            if (WikiDataItemId.isWikiDataId(idStr)) {
+                newInstance.setWikiDataItemId(WikiDataItemId.fromString(idStr));
+            }else {
+                newInstance.setUri(idStr == null? null: URI.create(idStr));
+            }
+        }
         String label = csvLine.get(2).trim();
         String description = CdmUtils.Ne(csvLine.get(3).trim());
         String abbreviatedLabel = CdmUtils.Ne(csvLine.get(4).trim());

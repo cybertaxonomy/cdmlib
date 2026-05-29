@@ -38,8 +38,6 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -54,6 +52,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -75,14 +76,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResultComparator;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
@@ -125,50 +124,30 @@ public class TaxonDaoHibernateImpl
 
     @Override
     public TaxonBase load(UUID uuid, boolean includeUnpublished, List<String> propertyPaths){
-        TaxonBase<?> result = super.load(uuid, includeUnpublished, propertyPaths);
+        TaxonBase result = super.load(uuid, includeUnpublished, propertyPaths);
         return result; //(result == null || (!result.isPublish() && !includeUnpublished))? null : result;
     }
 
     @Override
-    public <S extends TaxonBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return list(type, restrictions, limit, start, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
+    public <S extends TaxonBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer pageSize,
+            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return list(type, restrictions, pageSize, pageNumber, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
     }
 
 
     @Override
-    public <S extends TaxonBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
-            List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished) {
+    public <S extends TaxonBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnPublished) {
 
-        Criteria criteria = createCriteria(type, restrictions, false);
-
-        if(!includePublished){
-            criteria.add(Restrictions.eq("publish", true));
-        }
-
-        addLimitAndStart(criteria, limit, start);
-        addOrder(criteria, orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
-        return result;
+        restrictions = addPublishOnlyRestriction(restrictions, includeUnPublished, null);
+        return super.list(type, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
-    public long count(Class<? extends TaxonBase> type, List<Restriction<?>> restrictions) {
-        return count(type, restrictions, INCLUDE_UNPUBLISHED);
-    }
+    public long count(Class<? extends TaxonBase> type, List<Restriction<?>> restrictions, boolean includeUnpublished) {
 
-    @Override
-    public long count(Class<? extends TaxonBase> type, List<Restriction<?>> restrictions, boolean includePublished) {
-
-        Criteria criteria = createCriteria(type, restrictions, false);
-        if(!includePublished){
-            criteria.add(Restrictions.eq("publish", true));
-        }
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return (Long) criteria.uniqueResult();
+        restrictions = addPublishOnlyRestriction(restrictions, includeUnpublished, null);
+        return super.count(type, restrictions);
     }
 
     @Override
@@ -283,14 +262,14 @@ public class TaxonDaoHibernateImpl
                 // see FIXME in 'prepareQuery' for more details
                 if (doTaxa || doSynonyms || doCommonNames){
                     if (result[3].equals("synonym")) {
-                        resultObjects.add( new UuidAndTitleCache<>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
+                        resultObjects.add( new UuidAndTitleCache<>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], Boolean.valueOf(result[4].toString()), null));
                     }
                     else {
-                        resultObjects.add( new UuidAndTitleCache<>(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
+                        resultObjects.add( new UuidAndTitleCache<>(Taxon.class, (UUID) result[0], (Integer) result[1], (String)result[2], Boolean.valueOf(result[4].toString()), null));
                     }
 
                 }else if (doSynonyms){
-                    resultObjects.add( new UuidAndTitleCache<>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], new Boolean(result[4].toString()), null));
+                    resultObjects.add( new UuidAndTitleCache<>(Synonym.class, (UUID) result[0], (Integer) result[1], (String)result[2], Boolean.valueOf(result[4].toString()), null));
                 }
             }
         }
@@ -676,7 +655,6 @@ public class TaxonDaoHibernateImpl
         boolean doCount = false;
         Query<TaxonBase> query = prepareTaxaByName(doTaxa, doSynonyms, false, false, includeUnpublished, "titleCache", queryString, classification, subtree, matchMode, namedAreas, order, pageSize, pageNumber, doCount, TaxonBase.class);
         if (query != null){
-            @SuppressWarnings({ "unchecked", "rawtypes" })
             List<TaxonBase> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
@@ -686,89 +664,45 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public TaxonBase findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths) {
+    public TaxonBase findByUuid(UUID uuid, List<EntityFilter<TaxonBase>> filter, List<String> propertyPaths) {
 
-        Criteria crit = getSession().createCriteria(type);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TaxonBase> cq = cb.createQuery(type);
+        Root<TaxonBase> root = cq.from(type);
 
-        if (uuid != null) {
-            crit.add(Restrictions.eq("uuid", uuid));
-        } else {
-            logger.warn("UUID is NULL");
-            return null;
-        }
-        if(criteria != null){
-            for (Criterion criterion : criteria) {
-                crit.add(criterion);
-            }
-        }
-        crit.addOrder(Order.asc("uuid"));
+        Predicate uuidPredicate = predicateUuid(cb, root, uuid);
+        Predicate predicate = addPredicateFromFilter(uuidPredicate, filter, cb, root);
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        List<? extends TaxonBase> results = crit.list();
-        if (results.size() == 1) {
-            defaultBeanInitializer.initializeAll(results, propertyPaths);
-            TaxonBase<?> taxon = results.iterator().next();
-            return taxon;
-        } else if (results.size() > 1) {
-            logger.error("Multiple results for UUID: " + uuid);
-        } else if (results.size() == 0) {
-            logger.info("No results for UUID: " + uuid);
-        }
+        cq.select(root)
+          .distinct(true)
+          .where(predicate);
 
-        return null;
+        TaxonBase result = getSession().createQuery(cq).getSingleResult();
+        defaultBeanInitializer.initialize(result, propertyPaths);
+
+        return result;
     }
 
     @Override
-    public List<? extends TaxonBase> findByUuids(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths) {
+    public List<? extends TaxonBase> findByUuids(List<UUID> uuids, List<EntityFilter<TaxonBase>> filter, List<String> propertyPaths) {
 
-        Criteria crit = getSession().createCriteria(type);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TaxonBase> cq = cb.createQuery(type);
+        Root<TaxonBase> root = cq.from(type);
 
-        if (uuids != null) {
-            crit.add(Restrictions.in("uuid", uuids));
-        } else {
-            logger.warn("List<UUID> uuids is NULL");
-            return null;
-        }
-        if(criteria != null){
-            for (Criterion criterion : criteria) {
-                crit.add(criterion);
-            }
-        }
-        crit.addOrder(Order.asc("uuid"));
+        Predicate uuidsPredicate = predicateIn(root, "uuid", uuids);
+        Predicate predicate = addPredicateFromFilter(uuidsPredicate, filter, cb, root);
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        List<? extends TaxonBase> results = crit.list();
+        cq.select(root)
+          .distinct(true)  //TODO needed?
+          .where(predicate)
+          .orderBy(cb.asc(root.get("uuid")));
 
+        List<TaxonBase> results = getSession().createQuery(cq).getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
+
         return results;
     }
-
-    @Override
-    public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted) {
-        checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted)");
-
-        Criteria crit = getCriteria(type);
-        crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
-        crit.setProjection(Projections.rowCount());
-        return (Long)crit.uniqueResult();
-    }
-
-
-    @Override
-    public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
-        checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria)");
-
-        Criteria crit = getCriteria(type);
-        crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
-        if(criteria != null){
-            for (Criterion criterion : criteria) {
-                crit.add(criterion);
-            }
-        }
-        crit.setProjection(Projections.rowCount());
-        return (Long)crit.uniqueResult();
-    }
-
 
     @Override
     public long countSynonyms(boolean onlyAttachedToTaxon) {
@@ -798,14 +732,18 @@ public class TaxonDaoHibernateImpl
     public long countSynonyms(Taxon taxon, SynonymType type) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getCriteria(Synonym.class);
 
-            criteria.add(Restrictions.eq("acceptedTaxon", taxon));
-            if(type != null) {
-                criteria.add(Restrictions.eq("type", type));
-            }
-            criteria.setProjection(Projections.rowCount());
-            return (Long)criteria.uniqueResult();
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+            Root<Synonym> root = cq.from(Synonym.class);
+
+            List<Predicate> predicates = getSynonymsPredicates(taxon, type, cb, root);
+
+            cq.select(cb.count(root))
+              .where(predicateAnd(cb, predicates));
+
+            return getSession().createQuery(cq).getSingleResult();
+
         } else {
             AuditQuery query = makeAuditQuery(Synonym.class, auditEvent);
             query.add(AuditEntity.relatedId("acceptedTaxon").eq(taxon.getId()));
@@ -819,35 +757,18 @@ public class TaxonDaoHibernateImpl
         }
     }
 
-    @Override
-    public long countSynonyms(Synonym synonym, SynonymType type) {
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getCriteria(Synonym.class);
-
-            criteria.add(Restrictions.isNotNull("acceptedTaxon"));
-            if(type != null) {
-                criteria.add(Restrictions.eq("type", type));
-            }
-
-            criteria.setProjection(Projections.rowCount());
-            return (Long)criteria.uniqueResult();
-        } else {
-            AuditQuery query = makeAuditQuery(Synonym.class,auditEvent);
-            query.add(new NotNullAuditExpression(null, new EntityPropertyName("acceptedTaxon")));
-            query.addProjection(AuditEntity.id().count());
-
-            if(type != null) {
-                query.add(AuditEntity.property("type").eq(type));
-            }
-
-            return (Long)query.getSingleResult();
-        }
+    private List<Predicate> getSynonymsPredicates(Taxon taxon, SynonymType type, CriteriaBuilder cb,
+            Root<Synonym> root) {
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(predicateEqual(cb, root, "acceptedTaxon", taxon));
+        predicates.add(predicateEqualIfNotNull(cb, root, "type", type));
+        return predicates;
     }
 
     @Override
     public long countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
             String infraSpecificEpithet, String authorshipCache, Rank rank) {
+
         checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, String authorshipCache, Rank rank)");
         Criteria criteria = null;
 
@@ -1127,29 +1048,23 @@ public class TaxonDaoHibernateImpl
     public List<Synonym> getSynonyms(Taxon taxon, SynonymType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(Synonym.class);
 
-            criteria.add(Restrictions.eq("acceptedTaxon", taxon));
-            if(type != null) {
-                criteria.add(Restrictions.eq("type", type));
-            }
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<Synonym> cq = cb.createQuery(Synonym.class);
+            Root<Synonym> root = cq.from(Synonym.class);
 
-            addOrder(criteria,orderHints);
+            List<Predicate> predicates = getSynonymsPredicates(taxon, type, cb, root);
 
-            if(pageSize != null) {
-                criteria.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    criteria.setFirstResult(pageNumber * pageSize);
-                } else {
-                    criteria.setFirstResult(0);
-                }
-            }
+            cq.select(root)
+              .where(predicateAnd(cb, predicates))
+              .orderBy(ordersFrom(cb, root, orderHints));
 
-            @SuppressWarnings("unchecked")
-            List<Synonym> result = criteria.list();
-            defaultBeanInitializer.initializeAll(result, propertyPaths);
+            List<Synonym> results = addPageSizeAndNumber(
+                    getSession().createQuery(cq), pageSize, pageNumber)
+                   .getResultList();
+            defaultBeanInitializer.initializeAll(results, propertyPaths);
+            return results;
 
-            return result;
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Synonym.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId("acceptedTaxon").eq(taxon.getId()));
@@ -1179,7 +1094,7 @@ public class TaxonDaoHibernateImpl
     public void rebuildIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
-        for(TaxonBase<?> taxonBase : list(null,null)) { // re-index all taxon base
+        for(TaxonBase taxonBase : list(null,null)) { // re-index all taxon base
             Hibernate.initialize(taxonBase.getName());
             fullTextSession.index(taxonBase);
         }
@@ -1257,7 +1172,7 @@ public class TaxonDaoHibernateImpl
 
     @Override
     public TaxonBase find(LSID lsid) {
-        TaxonBase<?> taxonBase = super.find(lsid);
+        TaxonBase taxonBase = super.find(lsid);
         if(taxonBase != null) {
             List<String> propertyPaths = new ArrayList<>();
             propertyPaths.add("createdBy");
@@ -1580,7 +1495,7 @@ public class TaxonDaoHibernateImpl
             Object[] result;
             for(int i = 0; i<resultArray.size();i++){
             	result = resultArray.get(i);
-            	returnResult.add(new UuidAndTitleCache<>(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString()), null));
+            	returnResult.add(new UuidAndTitleCache<>(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], Boolean.valueOf(result[4].toString()), null));
             }
             return returnResult;
         }else{
@@ -1818,20 +1733,25 @@ public class TaxonDaoHibernateImpl
 
     @Override
     public long countTaxonRelationships(Set<TaxonRelationshipType> types) {
-        Criteria criteria = getSession().createCriteria(TaxonRelationship.class);
 
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<TaxonRelationship> root = cq.from(TaxonRelationship.class);
+
+        List<Predicate> predicates = new ArrayList<>();
         if (types != null) {
-            if (types.isEmpty()){
+            if (types.isEmpty()) {
                 return 0l;
-            }else{
-                criteria.add(Restrictions.in("type", types) );
+            } else {
+                predicates.add(predicateIn(root, "type", types));
             }
         }
-        //count
-        criteria.setProjection(Projections.rowCount());
-        long result = (Long)criteria.uniqueResult();
 
-        return result;
+        cq.select(cb.countDistinct(root))
+          .where(predicateAnd(cb, predicates));
+
+        return getSession().createQuery(cq).getSingleResult();
     }
 
     @Override
@@ -1839,21 +1759,27 @@ public class TaxonDaoHibernateImpl
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Criteria criteria = getCriteria(TaxonRelationship.class);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TaxonRelationship> cq = cb.createQuery(TaxonRelationship.class);
+        Root<TaxonRelationship> root = cq.from(TaxonRelationship.class);
+
+        List<Predicate> predicates = new ArrayList<>();
         if (types != null) {
-            if (types.isEmpty()){
+            if (types.isEmpty()) {
                 return new ArrayList<>();
-            }else{
-                criteria.add(Restrictions.in("type", types) );
+            } else {
+                predicates.add(predicateIn(root, "type", types));
             }
         }
-        addOrder(criteria,orderHints);
-        addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
-        @SuppressWarnings("unchecked")
-        List<TaxonRelationship> results = criteria.list();
+        cq.select(root)
+          .where(predicateAnd(cb, predicates))
+          .orderBy(ordersFrom(cb, root, orderHints));
+
+        List<TaxonRelationship> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
-
         return results;
     }
 

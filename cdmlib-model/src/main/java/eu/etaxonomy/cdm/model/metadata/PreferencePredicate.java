@@ -62,7 +62,7 @@ public enum PreferencePredicate
     //Taxeditor UI
     ShowMediaView(UUID.fromString("ba7ba1bb-47e3-4b68-bc44-c5ac45775db4"), "Show media view", "views.showMediaView", Boolean.TRUE),
     ShowTaxonNodeWizard(UUID.fromString("af06fbec-635b-4676-8b60-0b98aefda6aa"), "Show TaxonNode wizard", "views.showTaxonNodeWizard", Boolean.TRUE),
-    ShowConfirmationDialogue(UUID.fromString("d670f7e7-4763-4a22-9510-94d84b67dec3"), "Show Confirmation Dialogue when moving Taxon Nodes", "views.showConfirmationDialogue", Boolean.TRUE),
+    ShowConfirmationDialogue(UUID.fromString("d670f7e7-4763-4a22-9510-94d84b67dec3"), "Show confirmation dialogue when moving taxa", "views.showConfirmationDialogue", Boolean.TRUE),
     DisableMultiClassification(UUID.fromString("abdf7e40-afe6-4131-9af3-c6b6779ee6be"), "Disable multi-classification functionality", "menu.disableMultiClassification", Boolean.FALSE),
     ShowChecklistPerspective(UUID.fromString("6058762b-893c-4330-bfe7-45d5717d02b2"), "Show checklist perspective as default", "perspective.checklist", Boolean.FALSE),
 
@@ -175,6 +175,7 @@ public enum PreferencePredicate
     AvailableLanguages(UUID.fromString("b6851dcb-4138-4a9c-ad56-a3b16f6ee69d"), "Available Languages", "languages.availableLanguages", null),
     MultiLanguageTextEditing(UUID.fromString("373f38ae-981d-492c-a01c-71134034208d"), "Multi Language Text Editing", "languages.multiLanguageTextEditing", Boolean.FALSE),
     TermLanguage(UUID.fromString("e0886e50-957b-4b4d-8677-6394a211afdf"), "Term Language", "languages.termLanguage", Language.ENGLISH()),
+    MultiLanguageDefaultLanguage(UUID.fromString("0140fddf-1591-4e9c-9f30-adc2f32924bf"), "Multi Language Default Language", "languages.multiLanguageTextEditing.default", Language.ENGLISH()),
 
     //Search
     ShowIdInSelectionDialog(UUID.fromString("2b2dbafe-186e-4411-aca0-74348c0946b7"), "Show Id In Selection Dialog", "search.selectionDialog.showId", Boolean.TRUE),

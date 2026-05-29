@@ -9,14 +9,15 @@
 package eu.etaxonomy.cdm.persistence.dao.name;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.INonViralName;
@@ -28,11 +29,8 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -187,11 +185,6 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * Returns a count of TaxonName instances that match the properties
 	 * passed
 	 *
-	 * @param uninomial
-	 * @param infraGenericEpithet
-	 * @param specificEpithet
-	 * @param infraspecificEpithet
-	 * @param rank
 	 * @return a count of TaxonName instances
 	 */
 	public long countNames(String uninomial, String infraGenericEpithet,
@@ -199,131 +192,51 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 
 	/**
 	 * Returns a count of TaxonName instances that match the properties passed
-	 *
-	 * @param queryString
-	 * @param matchMode
-	 * @param criteria
 	 */
-	public long countNames(String queryString, MatchMode matchMode, List<Criterion> criteria);
+	public long countNames(String queryString, MatchMode matchMode, List<EntityFilter<TaxonName>> filter);
 
-	/**
-	 * Returns a List of TaxonName instances which nameCache matches the
-	 * query string
-	 *
-	 * @param queryString
-	 * @param pageSize
-	 *            The maximum number of names returned (can be null for all
-	 *            names)
-	 * @param pageNumber
-	 *            The offset (in pageSize chunks) from the start of the result
-	 *            set (0 - based)
-	 * @return a List of TaxonName instances
-	 */
-	public List<TaxonName> searchNames(String queryString,
-			Integer pageSize, Integer pageNumber);
-
-
-
-	/**
-	 * Returns a count of TaxonName instances which nameCache matches the
-	 * String queryString
-	 *
-	 * @param queryString
-	 * @return a count of TaxonName instances
-	 */
-	public long countNames(String queryString);
-
-	/**
-	 * @param queryString
-	 * @param matchmode
-	 * @param pageSize
-	 * @param pageNumber
-	 * @param criteria
-	 * @param propertyPaths TODO
-	 * @return
-	 */
 	public List<TaxonName> findByName(boolean doIncludeAuthors,
-	        String queryString,
-			MatchMode matchmode, Integer pageSize, Integer pageNumber,
-			List<Criterion> criteria, List<String> propertyPaths);
+	        String queryString, MatchMode matchmode,
+	        List<EntityFilter<TaxonName>> filter,
+	        Integer pageSize, Integer pageNumber,
+			List<String> propertyPaths);
 
-	/**
-	 * @param queryString
-	 * @param matchmode
-	 * @param pageSize
-	 * @param pageNumber
-	 * @param criteria
-	 * @param propertyPaths TODO
-	 * @return
-	 */
 	public List<TaxonName> findByFullTitle(String queryString,
-			MatchMode matchmode, Integer pageSize, Integer pageNumber,
-			List<Criterion> criteria, List<String> propertyPaths);
+			MatchMode matchmode, List<EntityFilter<TaxonName>> filter,
+			Integer pageSize, Integer pageNumber,
+			List<String> propertyPaths);
 
-	/**
-     * @param queryString
-     * @param matchmode
-     * @param pageSize
-     * @param pageNumber
-     * @param criteria
-     * @param propertyPaths TODO
-     * @return
-     */
     public List<TaxonName> findByTitle(String queryString,
-            MatchMode matchmode, Integer pageSize, Integer pageNumber,
-            List<Criterion> criteria, List<String> propertyPaths);
+            MatchMode matchmode, List<EntityFilter<TaxonName>> filter,
+            Integer pageSize, Integer pageNumber,
+            List<String> propertyPaths);
 
 	/**
 	 * Returns a taxon name corresponding to the given uuid
 	 *
 	 * @param uuid
 	 * 			The uuid of the taxon name requested
-	 * @param criteria
-	 * 			Custom criteria to be added to the default list of applied criteria.
+	 * @param filter
+	 *          An additional filter. Can be null or empty if no additional filtering is needed.
 	 * @param propertyPaths
 	 *
 	 * @return
 	 */
-	public TaxonName findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths);
+	public TaxonName findByUuid(UUID uuid, List<EntityFilter<TaxonName>> filter, List<String> propertyPaths);
 
-	/**
-	 * @param queryString
-	 * @param matchmode
-	 * @param criteria
-	 * @return
-	 */
 	public Integer countByName(String queryString,
-			MatchMode matchmode, List<Criterion> criteria);
+			MatchMode matchmode, List<EntityFilter<TaxonName>> filter);
 
-	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern);
-
-	/**
-	 * @param clazz
-	 * @param queryString
-	 * @param matchmode
-	 * @param pageSize
-	 * @param pageNumber
-	 * @param criteria
-	 * @param orderHints
-	 * @param propertyPaths TODO
-	 * @return
-	 */
 	public List<TaxonName> findByName(Class<TaxonName> clazz, String queryString,
-	        MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber,
+	        MatchMode matchmode, List<EntityFilter<TaxonName>> filter,
+	        Integer pageSize, Integer pageNumber,
 	        List<OrderHint> orderHints,	List<String> propertyPaths);
 
-	/**
-	 * @param clazz
-	 * @param queryString
-	 * @param matchmode
-	 * @param criteria
-	 * @return
-	 */
-	public long countByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public long countByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
+	        List<EntityFilter<TaxonName>> filter);
 
-	public TaxonName findZoologicalNameByUUID(UUID uuid);
-
-	List<HashMap<String, String>> getNameRecords();
+	@Deprecated //only used by csv export, use property path method instead
+    public List<Map<String, String>> getNameRecords();
 
 	/**
 	 * Supports using wildcards in the query parameters.
@@ -390,7 +303,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     public long countByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
-            List<Criterion> criteria);
+            List<EntityFilter<TaxonName>> filter);
 
     /**
      * Returns a list of distinct {@link String}s containing all values for TaxonName.genusOrUninomial
@@ -405,7 +318,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
      */
     public List<String> distinctGenusOrUninomial(String pattern, Rank maxRank, Rank minRank);
 
-    public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer limit, Integer start);
+    public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer pageSize, Integer pageNumber);
 
     public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse();
 

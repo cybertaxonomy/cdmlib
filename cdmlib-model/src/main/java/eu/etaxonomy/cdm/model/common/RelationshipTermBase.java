@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,6 +29,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
+
+import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -39,7 +40,6 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
-import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -53,22 +53,22 @@ import eu.etaxonomy.cdm.model.term.TermType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RelationshipTermBase", propOrder = {
-    "symmetric",
-    "transitive",
-    "inverseRepresentations",
-    "inverseSymbol"
+        "symmetric",
+        "transitive",
+        "inverseRepresentations",
+        "inverseSymbol"
 })
 @XmlSeeAlso({
-	HybridRelationshipType.class,
-	NameRelationshipType.class,
-	SynonymType.class,
-	TaxonRelationshipType.class
+        HybridRelationshipType.class,
+        NameRelationshipType.class,
+        SynonymType.class,
+        TaxonRelationshipType.class
 })
 @Entity
 @Audited
 public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
-          extends DefinedTermBase<T>
-          implements IRelationshipType {
+        extends DefinedTermBase<T>
+        implements IRelationshipType {
 
 	private static final long serialVersionUID = 5497187985269083971L;
 	@SuppressWarnings("unused")

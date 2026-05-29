@@ -1394,7 +1394,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String tableName = "DefinedTermBase";
 
 		//NOT ANSI  - works with MySQL http://stackoverflow.com/questions/1293330/how-can-i-do-an-update-statement-with-join-in-sql
-//		String queryVocUuid = " UPDATE @@DefinedTermBase@@ dtb INNER JOIN @@TermVocabulary@@ voc ON voc.id = dtb.vocabulary_id"
+//		String queryVocuuid = UUID.fromString(" UPDATE @@DefinedTermBase@@ dtb INNER JOIN @@TermVocabulary@@ voc ON voc.id = dtb.vocabulary_id"
 //				+ " SET dtb.idInVocabulary = (SELECT abbreviatedlabel "
 //				+ " FROM @@DefinedTermBase_Representation@@ MN "
 //				+ " INNER JOIN @@Representation@@ r ON r.id = MN.representations_id "
@@ -1428,28 +1428,28 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		// Undefined Languages => all
 		stepName = "Update idInVocabulary for undefined languages";
-		String uuid = "7fd1e6d0-2e76-4dfa-bad9-2673dd042c28";
+		UUID uuid = UUID.fromString("7fd1e6d0-2e76-4dfa-bad9-2673dd042c28");
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// Waterbody & Country => all
 		stepName = "Update idInVocabulary for WaterbodyOrCountries";
-		uuid = "006b1870-7347-4624-990f-e5ed78484a1a";
+		uuid = UUID.fromString("006b1870-7347-4624-990f-e5ed78484a1a");
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// TdwgAreas => all
 		stepName = "Update idInVocabulary for TDWG areas";
-		uuid = NamedArea.uuidTdwgAreaVocabulary.toString();
+		uuid = NamedArea.uuidTdwgAreaVocabulary;
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// Rank => some
 		stepName = "Update idInVocabulary for ranks";
-		uuid = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
+		uuid = UUID.fromString("ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b");
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
@@ -1484,7 +1484,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		// SpecimenTypeDesignationStatus => all
 		stepName = "Update idInVocabulary for SpecimenTypeDesignationStatus";
-		uuid = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
+		uuid = UUID.fromString("ab177bd7-d3c8-4e58-a388-226fff6ba3c2");
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
@@ -1497,14 +1497,14 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		// NameTypeDesignationStatus => all
 		stepName = "Update idInVocabulary for NameTypeDesignationStatus";
-		uuid = "ab60e738-4d09-4c24-a1b3-9466b01f9f55";
+		uuid = UUID.fromString("ab60e738-4d09-4c24-a1b3-9466b01f9f55");
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// NomenclaturalStatusType => all, abbrevs.
 		stepName = "Update idInVocabulary for NomenclaturalStatusType";
-		uuid = "bb28cdca-2f8a-4f11-9c21-517e9ae87f1f";
+		uuid = UUID.fromString("bb28cdca-2f8a-4f11-9c21-517e9ae87f1f");
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
@@ -1512,7 +1512,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// TaxonRelationshipType, all but 2 (Invalid Designation for, Misapplied
 		// Name for)
 		stepName = "Update idInVocabulary for TaxonRelationshipType";
-		uuid = "15db0cf7-7afc-4a86-a7d4-221c73b0c9ac";
+		uuid = UUID.fromString("15db0cf7-7afc-4a86-a7d4-221c73b0c9ac");
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
@@ -1531,42 +1531,42 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		// PresenceTerm => all
 		stepName = "Update idInVocabulary for PresenceTerm";
-		uuid = "adbbbe15-c4d3-47b7-80a8-c7d104e53a05";
+		uuid = UUID.fromString("adbbbe15-c4d3-47b7-80a8-c7d104e53a05");
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// AbsenceTerm => all
 		stepName = "Update idInVocabulary for AbsenceTerm";
-		uuid = "5cd438c8-a8a1-4958-842e-169e83e2ceee";
+		uuid = UUID.fromString("5cd438c8-a8a1-4958-842e-169e83e2ceee");
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// Sex => all
 		stepName = "Update idInVocabulary for Sex";
-		uuid = "9718b7dd-8bc0-4cad-be57-3c54d4d432fe";
+		uuid = UUID.fromString("9718b7dd-8bc0-4cad-be57-3c54d4d432fe");
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// ExtensionType => all
 		stepName = "Update idInVocabulary for ExtensionType";
-		uuid = "117cc307-5bd4-4b10-9b2f-2e14051b3b20";
+		uuid = UUID.fromString("117cc307-5bd4-4b10-9b2f-2e14051b3b20");
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// ReferenceSystem => all
 		stepName = "Update idInVocabulary for ReferenceSystem";
-		uuid = "ec6376e5-0c9c-4f5c-848b-b288e6c17a86";
+		uuid = UUID.fromString("ec6376e5-0c9c-4f5c-848b-b288e6c17a86");
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
 
 		// DeterminationModifier => all
 		stepName = "Update idInVocabulary for DeterminationModifier";
-		uuid = "fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77";
+		uuid = UUID.fromString("fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77");
 		SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName,
 				String.format(queryVocUuid, uuid))
 				.setDefaultAuditing(tableName);
@@ -1609,35 +1609,35 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		// Remove state dummy
 		stepName = "Remove state dummy if possible";
-		uuid = "881b9c80-626d-47a6-b308-a63ee5f4178f";
+		uuid = UUID.fromString("881b9c80-626d-47a6-b308-a63ee5f4178f");
 		String checkUsed = " SELECT count(*) as n FROM @@StateData@@ sd "
 				+ " WHERE sd.state_id = %d ";
 		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove institution type dummy
 		stepName = "Remove institution type dummy term";
-		uuid = "bea94a6c-472b-421c-abc1-52f797c51dbf";
+		uuid = UUID.fromString("bea94a6c-472b-421c-abc1-52f797c51dbf");
 		checkUsed = " SELECT count(*) as n FROM @@AgentBase_DefinedTermBase@@ MN "
 				+ " WHERE MN.types_id = %d ";
 		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove measurement unit dummy
 		stepName = "Remove measurement unit dummy term";
-		uuid = "e19dd590-5be8-4c93-978f-b78554116289";
+		uuid = UUID.fromString("e19dd590-5be8-4c93-978f-b78554116289");
 		checkUsed = " SELECT count(*) as n FROM @@DescriptionElementBase@@ deb "
 				+ " WHERE deb.unit_id = %d ";
 		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove scope dummy
 		stepName = "Remove scope dummy term";
-		uuid = "2ace7f1f-4ce6-47e1-8a65-e3f6b724876c";
+		uuid = UUID.fromString("2ace7f1f-4ce6-47e1-8a65-e3f6b724876c");
 		checkUsed = " SELECT count(*) as n FROM @@DescriptionBase_Scope@@ MN "
 				+ " WHERE MN.scopes_id = %d ";
 		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove stage dummy
 		stepName = "Remove stage dummy term";
-		uuid = "48f8e8a7-a2ac-4974-9ce8-6944afc5095e";
+		uuid = UUID.fromString("48f8e8a7-a2ac-4974-9ce8-6944afc5095e");
 		checkUsed = " SELECT count(*) as n FROM @@DescriptionBase_Scope@@ MN "
 				+ " WHERE MN.scopes_id = %d ";
 		String checkUsed2 = " SELECT count(*) as n FROM @@SpecimenOrObservationBase@@ osb "
@@ -1647,14 +1647,14 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		// Remove text format dummy
 		stepName = "Remove text format dummy if possible";
-		uuid = "5d095782-d99c-46bc-a158-edb2e47c9b63";
+		uuid = UUID.fromString("5d095782-d99c-46bc-a158-edb2e47c9b63");
 		checkUsed = " SELECT count(*) as n FROM @@DescriptionElementBase@@ deb "
 				+ " WHERE deb.format_id = %d ";
 		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);
 
 		// Remove modifier dummy
 		stepName = "Remove modifier dummy if possible";
-		uuid = "efc38dad-205c-4028-ad9d-ae509a14b37a";
+		uuid = UUID.fromString("efc38dad-205c-4028-ad9d-ae509a14b37a");
 		checkUsed = " SELECT count(*) as n FROM @@DescriptionElementBase_Modifier@@ MN "
 				+ " WHERE MN.modifiers_id = %d ";
 		checkUsed2 = " SELECT count(*) as n FROM @@StateData_DefinedTermBase@@ MN "
@@ -1666,7 +1666,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		// Remove text preservation method dummy
 		stepName = "Remove preservation method dummy if possible";
-		uuid = "3edc2633-365b-4a9b-bc3a-f3f85f59dbdf";
+		uuid = UUID.fromString("3edc2633-365b-4a9b-bc3a-f3f85f59dbdf");
 		checkUsed = " SELECT count(*) as n FROM @@SpecimenOrObservationBase@@ osb "
 				+ " WHERE osb.preservation_id =  %d ";
 		SingleTermRemover.NewInstance(stepList, stepName, uuid, checkUsed);

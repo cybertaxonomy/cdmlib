@@ -168,7 +168,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     }
 
     @RequestMapping(params="subtree", method = RequestMethod.GET)
-    public TaxonBase<?> doGet(@PathVariable("uuid") UUID uuid,
+    public TaxonBase doGet(@PathVariable("uuid") UUID uuid,
             @RequestParam(value = "subtree", required = true) UUID subtreeUuid,  //if subtree does not exist the base class method is used, therefore required
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -179,7 +179,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         //TODO do we want to allow Synonyms at all? Maybe needs initialization
         EntityInitStrategy initStrategy = new EntityInitStrategy(getInitializationStrategy());
         initStrategy.extend(null, getTaxonNodeInitStrategy(), false);
-        TaxonBase<?> taxonBase = getCdmBaseInstance(uuid, response, initStrategy.getPropertyPaths());
+        TaxonBase taxonBase = getCdmBaseInstance(uuid, response, initStrategy.getPropertyPaths());
         //TODO we should move subtree check down to service or persistence
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, nodeService, response);
         taxonBase = checkExistsSubtreeAndAccess(taxonBase, subtree, NO_UNPUBLISHED, response);
@@ -198,7 +198,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
      * @return
      * @throws IOException
      */
-    protected <S extends TaxonBase<?>> S checkExistsSubtreeAndAccess(S taxonBase,
+    protected <S extends TaxonBase> S checkExistsSubtreeAndAccess(S taxonBase,
             TaxonNode subtree, boolean includeUnpublished,
             HttpServletResponse response) throws IOException {
         taxonBase = checkExistsAndAccess(taxonBase, NO_UNPUBLISHED, response);
@@ -269,7 +269,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        TaxonBase<?> taxonBase = service.load(uuid);
+        TaxonBase taxonBase = service.load(uuid);
         taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
 
         return service.listClassifications(taxonBase, null, null, getInitializationStrategy());
@@ -377,7 +377,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         boolean includeUnpublished = NO_UNPUBLISHED;
         EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
-        TaxonBase<?> tb = service.load(uuid);
+        TaxonBase tb = service.load(uuid);
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
         if(tb instanceof Taxon){
@@ -405,7 +405,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         boolean includeUnpublished = NO_UNPUBLISHED;
         EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = TaxonOccurrenceRelationType.All();
 
-        TaxonBase<?> taxonBase = service.load(uuid);
+        TaxonBase taxonBase = service.load(uuid);
         taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
 
         List<OrderHint> orderHints = new ArrayList<>();
@@ -433,7 +433,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
         ModelAndView mv = new ModelAndView();
 
-        TaxonBase<?> tb = service.load(uuid, NO_UNPUBLISHED, Arrays.asList(new String[] {"name"}));
+        TaxonBase tb = service.load(uuid, NO_UNPUBLISHED, Arrays.asList(new String[] {"name"}));
         mv.addObject(nameService.getTaggedName(tb.getName().getUuid()));
         return mv;
     }
@@ -596,7 +596,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        TaxonBase<?> taxonBase = service.load(taxonUuid);
+        TaxonBase taxonBase = service.load(taxonUuid);
         checkExistsAccessType(taxonBase, includeUnpublished, Taxon.class, response);
 
         Set<TaxonRelationshipType> directTypes = getTermsByUuidSet(TaxonRelationshipType.class, directTypeUuids);

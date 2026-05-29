@@ -826,6 +826,25 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     	Assert.assertEquals("<b><i>Abies alba</i> L.</b>", strategy.getTitleCache(speciesName, rules));
     }
 
+    @Test //#10924
+    public void testAutonymForVariety(){
+        IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
+        name.setGenusOrUninomial("Euphorbia");
+        name.setSpecificEpithet("atropurpurea");
+        name.setInfraSpecificEpithet("atropurpurea");
+        Team combTeam = Team.NewTitledInstance("Combauthor", "Combauthor");
+        name.setCombinationAuthorship(combTeam);
+        Assert.assertEquals("", "Euphorbia atropurpurea Combauthor var. atropurpurea", name.getTitleCache());
+
+        name.setAutonymFlag(false);
+        Assert.assertEquals("", "Euphorbia atropurpurea var. atropurpurea Combauthor", name.getTitleCache());
+
+        name.setRank(Rank.SUBSPECIES());
+        Assert.assertEquals("The autonym flag is valid only for names below rank subspecies",
+                "Euphorbia atropurpurea Combauthor subsp. atropurpurea", name.getTitleCache());
+
+    }
+
     @Test //#2888
     public void testAutonymWithExAuthor(){
     	IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.FORM());
