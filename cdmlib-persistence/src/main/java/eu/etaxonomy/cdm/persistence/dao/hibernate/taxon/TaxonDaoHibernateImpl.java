@@ -34,12 +34,9 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.envers.query.criteria.internal.NotNullAuditExpression;
@@ -767,54 +764,21 @@ public class TaxonDaoHibernateImpl
 
     @Override
     public long countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
-            String infraSpecificEpithet, String authorshipCache, Rank rank) {
+            String infraSpecificEpithet, String authorshipCache, Rank rank, EnumSet<NomenclaturalCode> nameTypes) {
 
         checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, String authorshipCache, Rank rank)");
-        Criteria criteria = null;
 
-        criteria = getCriteria(clazz);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<TaxonBase> root = cq.from(TaxonBase.class);
 
-        criteria.setFetchMode( "name", FetchMode.JOIN );
-        criteria.createAlias("name", "name");
+        List<Predicate> predicates = getTaxaByNamePredicates(genusOrUninomial, infraGenericEpithet,
+                specificEpithet, infraSpecificEpithet, authorshipCache, rank, nameTypes, cb, root);
 
-        if(genusOrUninomial == null) {
-            criteria.add(Restrictions.isNull("name.genusOrUninomial"));
-        } else if(!genusOrUninomial.equals("*")) {
-            criteria.add(Restrictions.eq("name.genusOrUninomial", genusOrUninomial));
-        }
+        cq.select(cb.countDistinct(root))
+          .where(predicateAnd(cb, predicates));
 
-        if(infraGenericEpithet == null) {
-            criteria.add(Restrictions.isNull("name.infraGenericEpithet"));
-        } else if(!infraGenericEpithet.equals("*")) {
-            criteria.add(Restrictions.eq("name.infraGenericEpithet", infraGenericEpithet));
-        }
-
-        if(specificEpithet == null) {
-            criteria.add(Restrictions.isNull("name.specificEpithet"));
-        } else if(!specificEpithet.equals("*")) {
-            criteria.add(Restrictions.eq("name.specificEpithet", specificEpithet));
-
-        }
-
-        if(infraSpecificEpithet == null) {
-            criteria.add(Restrictions.isNull("name.infraSpecificEpithet"));
-        } else if(!infraSpecificEpithet.equals("*")) {
-            criteria.add(Restrictions.eq("name.infraSpecificEpithet", infraSpecificEpithet));
-        }
-
-        if(authorshipCache == null) {
-            criteria.add(Restrictions.eq("name.authorshipCache", ""));
-        } else if(!authorshipCache.equals("*")) {
-            criteria.add(Restrictions.eq("name.authorshipCache", authorshipCache));
-        }
-
-        if(rank != null) {
-            criteria.add(Restrictions.eq("name.rank", rank));
-        }
-
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-
-        return (Long)criteria.uniqueResult();
+        return getSession().createQuery(cq).getSingleResult();
     }
 
     @Override
@@ -827,6 +791,22 @@ public class TaxonDaoHibernateImpl
         CriteriaBuilder cb = getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(clazz);
         Root<T> root = cq.from(clazz);
+        List<Predicate> predicates = getTaxaByNamePredicates(genusOrUninomial, infraGenericEpithet,
+                specificEpithet, infraSpecificEpithet, authorship, rank, nameTypes, cb, root);
+
+        cq.select(root)
+          .where(predicateAnd(cb, predicates));
+
+        //paging and result
+        List<T> results = addPageSizeAndNumber(getSession().createQuery(cq), pageSize, pageNumber)
+                .getResultList();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
+    }
+
+    private <T extends TaxonBase> List<Predicate> getTaxaByNamePredicates(String genusOrUninomial,
+            String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String authorship,
+            Rank rank, EnumSet<NomenclaturalCode> nameTypes, CriteriaBuilder cb, Root<T> root) {
         List<Predicate> predicates = new ArrayList<>();
         Join<T, TaxonName> nameJoin = root.join("name");
 
@@ -874,15 +854,7 @@ public class TaxonDaoHibernateImpl
         if (nameTypes != null) {
             predicates.add(predicateIn(nameJoin, "nameType", nameTypes));
         }
-
-        cq.select(root)
-          .where(predicateAnd(cb, predicates));
-
-        //paging and result
-        List<T> results = addPageSizeAndNumber(getSession().createQuery(cq), pageSize, pageNumber)
-                .getResultList();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
+        return predicates;
     }
 
     @Override
