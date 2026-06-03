@@ -57,7 +57,7 @@ public class RestrictionTest extends CdmTransactionalIntegrationTest {
                 null, null);
         assertEquals("countMembers should return 2", 2, references.size());
 
-        restrictions.add(new Restriction<>("type", Operator.AND, EnumSet.of(ReferenceType.Section, ReferenceType.Journal)));
+        restrictions.add(new Restriction<>("type", Operator.AND, null, EnumSet.of(ReferenceType.Section, ReferenceType.Journal)));
         references = referenceDao.findByTitleWithRestrictions(
                 Reference.class, "My Reference", MatchMode.BEGINNING,
                 restrictions,
