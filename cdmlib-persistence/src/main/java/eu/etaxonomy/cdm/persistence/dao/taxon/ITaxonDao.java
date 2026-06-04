@@ -100,7 +100,7 @@ public interface ITaxonDao
      * @return a count of TaxonBase instances
      */
     public long countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet,
-            String infraspecificEpithet, String authorshipCache, Rank rank);
+            String infraspecificEpithet, String authorshipCache, Rank rank, EnumSet<NomenclaturalCode> nameTypes);
 
     /**
      * Returns a list of TaxonBase instances where the

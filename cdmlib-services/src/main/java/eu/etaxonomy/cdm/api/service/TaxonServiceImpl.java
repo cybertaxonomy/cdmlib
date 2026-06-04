@@ -661,7 +661,7 @@ public class TaxonServiceImpl
             String authorshipCache, Rank rank, EnumSet<NomenclaturalCode> nameTypes,
             Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
 
-        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorshipCache, rank);
+        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorshipCache, rank, nameTypes);
 
         List<T> results = new ArrayList<>();
         if(numberOfResults > 0) {

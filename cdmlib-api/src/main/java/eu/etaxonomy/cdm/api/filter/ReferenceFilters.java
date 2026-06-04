@@ -37,29 +37,33 @@ public class ReferenceFilters {
     }
 
     //required by phycobank
-    public static EntityFilter<Reference> isPublishedUnitOrSectionOfPubishedUnit(NamedSourceBase publishedUnit){
+    /**
+     * Reduces the returned references to the citation of this source and sections of this citation.
+     */
+    public static EntityFilter<Reference> publishedUnitOrSectionOfPubishedUnit(NamedSourceBase sourceOfPublishedUnit){
         return (root, cb) -> {
-            if (publishedUnit == null || publishedUnit.getCitation() == null) {
+            if (sourceOfPublishedUnit == null || sourceOfPublishedUnit.getCitation() == null) {
                 return null;
             }
             return cb.or(
-                    cb.and(cb.equal(root.get("inReference").get("citation"), publishedUnit.getCitation()),
+                    cb.and(cb.equal(root.get("inReference"), sourceOfPublishedUnit.getCitation()),
                             cb.equal(root.get("type"), ReferenceType.Section)),
-                    cb.equal(root.get("id"), publishedUnit.getCitation().getId()));
+                    cb.equal(root.get("id"), sourceOfPublishedUnit.getCitation().getId()));
         };
     }
 
-    public static EntityFilter<Reference> isPublishedUnitOrSectionOfPubishedUnit(Reference publishedUnit){
+    /**
+     * Reduces the returned references to the published unit and sections of the published unit.
+     */
+    public static EntityFilter<Reference> publishedUnitOrSectionOfPubishedUnit(Reference publishedUnit){
         return (root, cb) -> {
             if (publishedUnit == null) {
                 return null;
             }
             return cb.or(
-                    cb.and(cb.equal(root.get("inReference"), publishedUnit.getCitation()),
+                    cb.and(cb.equal(root.get("inReference"), publishedUnit),
                             cb.equal(root.get("type"), ReferenceType.Section)),
                     cb.equal(root.get("id"), publishedUnit.getId()));
         };
     }
-
-
 }

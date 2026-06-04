@@ -4,7 +4,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>5.58.0</version>
+    <version>5.59.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>cdmlib-remote-webapp</artifactId>
