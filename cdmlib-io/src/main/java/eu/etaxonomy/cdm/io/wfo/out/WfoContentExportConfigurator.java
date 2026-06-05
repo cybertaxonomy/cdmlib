@@ -9,13 +9,12 @@
 package eu.etaxonomy.cdm.io.wfo.out;
 
 import java.io.File;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * Configurator for WFO Content export.
@@ -39,7 +38,7 @@ public class WfoContentExportConfigurator
 
     private boolean normalizeAuthorsToIpniStandard = true;
 
-    private TermTree<Feature> featureTree = null;
+    private UUID featureTreeUuid = null;
 
     private static final WfoContentExportTransformer transformer = new WfoContentExportTransformer();
 
@@ -144,11 +143,11 @@ public class WfoContentExportConfigurator
         this.normalizeAuthorsToIpniStandard = normalizeAuthorsToIpniStandard;
     }
 
-    public TermTree<Feature> getFeatureTree() {
-        return featureTree;
+    public UUID getFeatureTree() {
+        return featureTreeUuid;
     }
 
-    public void setFeatureTree(TermTree<Feature> featureTree) {
-        this.featureTree = featureTree;
+    public void setFeatureTree(UUID featureTreeUuid) {
+        this.featureTreeUuid = featureTreeUuid;
     }
 }
