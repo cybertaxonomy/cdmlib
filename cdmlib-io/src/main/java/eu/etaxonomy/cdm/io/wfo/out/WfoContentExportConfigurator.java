@@ -14,6 +14,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * Configurator for WFO Content export.
@@ -36,6 +38,8 @@ public class WfoContentExportConfigurator
     private String familyStr = null;
 
     private boolean normalizeAuthorsToIpniStandard = true;
+
+    private TermTree<Feature> featureTree = null;
 
     private static final WfoContentExportTransformer transformer = new WfoContentExportTransformer();
 
@@ -138,5 +142,13 @@ public class WfoContentExportConfigurator
     }
     public void setNormalizeAuthorsToIpniStandard(boolean normalizeAuthorsToIpniStandard) {
         this.normalizeAuthorsToIpniStandard = normalizeAuthorsToIpniStandard;
+    }
+
+    public TermTree<Feature> getFeatureTree() {
+        return featureTree;
+    }
+
+    public void setFeatureTree(TermTree<Feature> featureTree) {
+        this.featureTree = featureTree;
     }
 }
