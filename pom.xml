@@ -1725,7 +1725,7 @@
 	  <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>1.4.200</version>
+        <version>1.4.196</version>
  <!-- last working with java8, but requires hibernate 5.6.5+ -->       
  <!--  <version>2.1.214</version> -->
       </dependency>
