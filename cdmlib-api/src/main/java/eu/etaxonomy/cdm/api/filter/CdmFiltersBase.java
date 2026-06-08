@@ -22,8 +22,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class CdmFiltersBase {
 
+    /**
+     * Tests if the object is equal or null. If the object is null, no filter is applied (always true predicate).
+     */
     protected static <T extends CdmBase> Predicate predicateEqualIfNotNull(CriteriaBuilder builder,
             Path<T> path, String field, Object obj) {
+
         if (obj == null){
             return builder.conjunction();  //always true predicate
         }

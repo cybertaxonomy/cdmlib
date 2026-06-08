@@ -240,7 +240,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
         List<Person>  personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
         Assert.assertEquals("list() should return 5 Persons entities", 5, personResults.size());
 
-        Restriction<String> givenNameExact = new Restriction<>("givenName", MatchMode.EXACT, new ArrayList<>());
+        Restriction<String> givenNameExact = new Restriction<>("givenName", MatchMode.EXACT);
         restrictions.add(givenNameExact);
 
         personResults = agentDao.list(Person.class, restrictions, (Integer)null, (Integer)null, null, null);
@@ -262,7 +262,7 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 
         Assert.assertEquals("count() should return 5 Persons entities", 5, agentDao.count(Person.class, restrictions));
 
-        Restriction<String> givenNameExact = new Restriction<>("givenName", MatchMode.EXACT, new ArrayList<>());
+        Restriction<String> givenNameExact = new Restriction<>("givenName", MatchMode.EXACT);
         restrictions.add(givenNameExact);
 
         Assert.assertEquals("count() empty value lists should be ignored", 5, agentDao.count(Person.class, restrictions));

@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.wfo.out;
 
 import java.io.File;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
@@ -36,6 +37,8 @@ public class WfoContentExportConfigurator
     private String familyStr = null;
 
     private boolean normalizeAuthorsToIpniStandard = true;
+
+    private UUID featureTreeUuid = null;
 
     private static final WfoContentExportTransformer transformer = new WfoContentExportTransformer();
 
@@ -138,5 +141,13 @@ public class WfoContentExportConfigurator
     }
     public void setNormalizeAuthorsToIpniStandard(boolean normalizeAuthorsToIpniStandard) {
         this.normalizeAuthorsToIpniStandard = normalizeAuthorsToIpniStandard;
+    }
+
+    public UUID getFeatureTree() {
+        return featureTreeUuid;
+    }
+
+    public void setFeatureTree(UUID featureTreeUuid) {
+        this.featureTreeUuid = featureTreeUuid;
     }
 }

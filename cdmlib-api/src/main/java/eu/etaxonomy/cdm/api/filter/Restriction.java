@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.List;
 
 /**
  * See <code>NameServiceImplTest.testFindByTitle()</code> for usage examples.
@@ -46,41 +45,41 @@ public class Restriction<T extends Object> {
      * @param propertyName
      * @param matchMode is only applied if the <code>value</code> is a <code>String</code> object
      */
-    public Restriction (String propertyName, MatchMode matchMode, T value) {
+    public Restriction (String propertyName, MatchMode matchMode, T... value) {
         this(propertyName, Operator.AND, matchMode, value);
     }
-    public Restriction(String propertyName, MatchMode matchMode, T value1, T value2) {
-        this(propertyName, Operator.AND, matchMode, value1, value2);
-    }
-    public Restriction(String propertyName, MatchMode matchMode, List<T> values) {
-        this(propertyName, Operator.AND, matchMode, values);
-    }
-    public Restriction(String propertyName, MatchMode matchMode, T[] values) {
-        this(propertyName, Operator.AND, matchMode, Arrays.asList(values));
-    }
+//    public Restriction(String propertyName, MatchMode matchMode, T value1, T value2) {
+//        this(propertyName, Operator.AND, matchMode, value1, value2);
+//    }
+//    public Restriction(String propertyName, MatchMode matchMode, List<T> values) {
+//        this(propertyName, Operator.AND, matchMode, values);
+//    }
+//    public Restriction(String propertyName, MatchMode matchMode, T[] values) {
+//        this(propertyName, Operator.AND, matchMode, Arrays.asList(values));
+//    }
     public Restriction(String propertyName, MatchMode matchMode, EnumSet includedIn) {
-        this(propertyName, Operator.AND, matchMode, (Collection)Arrays.asList(includedIn));
+        this(propertyName, Operator.AND, matchMode, (T)includedIn);
     }
+//
+//    //with operator
+//    public Restriction(String propertyName, Operator operator, MatchMode matchMode, T... value) {
+//        this(propertyName, operator, matchMode, Arrays.asList(value));
+//    }
+//
+//    public Restriction(String propertyName, Operator operator, MatchMode matchMode, T value1, T value2) {
+//        this(propertyName, operator, matchMode, Arrays.asList(value1, value2));
+//    }
+//
+//    public Restriction(String propertyName, Operator operator, EnumSet includedIn) {
+//        this(propertyName, operator, null, (Collection)Arrays.asList(includedIn));
+//    }
 
-    //with operator
-    public Restriction(String propertyName, Operator operator, MatchMode matchMode, T value) {
-        this(propertyName, operator, matchMode, Arrays.asList(value));
-    }
-
-    public Restriction(String propertyName, Operator operator, MatchMode matchMode, T value1, T value2) {
-        this(propertyName, operator, matchMode, Arrays.asList(value1, value2));
-    }
-
-    public Restriction(String propertyName, Operator operator, EnumSet includedIn) {
-        this(propertyName, operator, null, (Collection)Arrays.asList(includedIn));
-    }
-
-    public Restriction(String propertyName, Operator operator, MatchMode matchMode, Collection<T> values ) {
+    public Restriction(String propertyName, Operator operator, MatchMode matchMode, T... values ) {
         this.propertyName = propertyName;
         this.operator = operator;
-        if(!values.isEmpty()){
-            this.setValues(values);
-            T next = values.iterator().next();
+        if(values.length > 0){
+            this.setValues(Arrays.asList(values));
+            T next = values[0];
             if(next != null && next instanceof String){
                 this.matchMode = matchMode;
             }
