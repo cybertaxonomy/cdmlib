@@ -18,7 +18,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom.Attribute;
@@ -301,8 +300,8 @@ public class XmlHelp {
 	}
 
 	/**
-	 * Gets the child element and tests if there is no other child element exists having the same name.
-	 * The result is returned as a pair of thd child element and a boolean value that indicates if the
+	 * Gets the child element and tests if no other child element exists having the same name.
+	 * The result is returned as a pair of the child element and a boolean value that indicates if the
 	 * elements cardinality was correct. <BR>
 	 * If there is more then one child element with the child element name
 	 * or if there is no such element and obligatory is <code>true</code> the second part of the result is <code>false</code>
@@ -315,7 +314,7 @@ public class XmlHelp {
 	 * @return
 	 */
 	static public DoubleResult<Element, Boolean> getSingleChildElement(Element parentElement, String childName, Namespace nsChild, boolean obligatory){
-		DoubleResult<Element, Boolean> result = new DoubleResult<Element, Boolean>();
+		DoubleResult<Element, Boolean> result = new DoubleResult<>();
 		result.setSecondResult(false);
 
 		if (parentElement == null){
