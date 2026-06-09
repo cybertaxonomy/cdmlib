@@ -94,7 +94,7 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         taxonName.setStyleNameAttribute("PrintPubTaxonName");
 
         // slightly larger than body
-        taxonName.setProperty(OdfTextProperties.FontSize, "13pt");
+        taxonName.setProperty(OdfTextProperties.FontSize, "16pt");
 
         // optional visual tuning
         taxonName.setProperty(OdfParagraphProperties.MarginTop, "0.3cm");
