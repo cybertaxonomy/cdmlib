@@ -81,7 +81,7 @@ public class DocumentCreator {
 
 			if (contentDom instanceof OdfContentDom) {
 			    contentAutoStyles = ((OdfContentDom) contentDom).getOrCreateAutomaticStyles();
-			} else {
+			} else if (contentDom instanceof OdfStylesDom) {
 			    contentAutoStyles = ((OdfStylesDom) contentDom).getOrCreateAutomaticStyles();
 			}
 
