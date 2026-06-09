@@ -3,6 +3,7 @@
 .classpath
 .project
 .settings
+.factorypath
 hibernate.log
 PUBLIC.xsd
 dataset.xsd
