@@ -13,26 +13,28 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.persistence.Tuple;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.CdmBaseFilters;
+import eu.etaxonomy.cdm.api.filter.IdentifiableEntityFilters;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -51,11 +53,9 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
@@ -64,7 +64,6 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -87,6 +86,7 @@ public class OccurrenceDaoHibernateImpl
     @Autowired
     private IHomotypicalGroupDao homotypicalGroupDao;
 
+    @SuppressWarnings({ "unchecked"})
     public OccurrenceDaoHibernateImpl() {
         super(SpecimenOrObservationBase.class);
         indexedClasses = new Class[7];
@@ -96,7 +96,7 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public long countDerivationEvents(SpecimenOrObservationBase occurence) {
+    public long countDerivationEvents(@SuppressWarnings("rawtypes")SpecimenOrObservationBase occurence) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.countDerivationEvents(SpecimenOrObservationBase occurence)");
         Query<Long> query = getSession().createQuery("select count(distinct derivationEvent) from DerivationEvent derivationEvent join derivationEvent.originals occurence where occurence = :occurence", Long.class);
         query.setParameter("occurence", occurence);
@@ -105,43 +105,12 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public long countDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase) {
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getCriteria(DeterminationEvent.class);
-            if(occurrence != null) {
-                criteria.add(Restrictions.eq("identifiedUnit",occurrence));
-            }
-
-            if(taxonBase != null) {
-                criteria.add(Restrictions.eq("taxon",taxonBase));
-            }
-
-            criteria.setProjection(Projections.rowCount());
-            return (Long)criteria.uniqueResult();
-        } else {
-            AuditQuery query = makeAuditQuery(DeterminationEvent.class,auditEvent);
-
-            if(occurrence != null) {
-                query.add(AuditEntity.relatedId("identifiedUnit").eq(occurrence.getId()));
-            }
-
-            if(taxonBase != null) {
-                query.add(AuditEntity.relatedId("taxon").eq(taxonBase.getId()));
-            }
-            query.addProjection(AuditEntity.id().count());
-
-            return (Long)query.getSingleResult();
-        }
-    }
-
-    @Override
-    public long countMedia(SpecimenOrObservationBase occurence) {
+    public long countMedia(@SuppressWarnings("rawtypes")SpecimenOrObservationBase occurence) {
         return this.getMediaIds(occurence).size();
     }
 
     @Override
-    public List<Media> getMedia(SpecimenOrObservationBase occurence,
+    public List<Media> getMedia(@SuppressWarnings("rawtypes")SpecimenOrObservationBase occurence,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
         List<Integer> ids = this.getMediaIds(occurence);
@@ -158,7 +127,7 @@ public class OccurrenceDaoHibernateImpl
         return results;
     }
 
-    private List<Integer> getMediaIds(SpecimenOrObservationBase occurence) {
+    private List<Integer> getMediaIds(@SuppressWarnings("rawtypes")SpecimenOrObservationBase occurence) {
         Query query = getSession().createQuery(
                 "   SELECT DISTINCT m.id "
                 + " FROM SpecimenOrObservationBase occ JOIN occ.descriptions d "
@@ -187,7 +156,9 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+    public List<DerivationEvent> getDerivationEvents(@SuppressWarnings("rawtypes")SpecimenOrObservationBase occurence,
+            Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+
         checkNotInPriorView("OccurrenceDaoHibernateImpl.getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber)");
         Query<DerivationEvent> query = getSession().createQuery("SELECT DISTINCT derivationEvent FROM DerivationEvent derivationEvent JOIN derivationEvent.originals occurence WHERE occurence = :occurence", DerivationEvent.class);
         query.setParameter("occurence", occurence);
@@ -197,45 +168,6 @@ public class OccurrenceDaoHibernateImpl
         List<DerivationEvent> result = query.list();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
-    }
-
-    @Override
-    public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence,
-            TaxonBase taxonBase, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-
-        AuditEvent auditEvent = getAuditEventFromContext();
-        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(DeterminationEvent.class);
-            if(occurrence != null) {
-                criteria.add(Restrictions.eq("identifiedUnit",occurrence));
-            }
-
-            if(taxonBase != null) {
-                criteria.add(Restrictions.eq("taxon", taxonBase));
-            }
-
-            addPageSizeAndNumber(criteria, pageSize, pageNumber);
-
-            @SuppressWarnings("unchecked")
-            List<DeterminationEvent> result = criteria.list();
-            defaultBeanInitializer.initializeAll(result, propertyPaths);
-            return result;
-        } else {
-            AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DeterminationEvent.class,auditEvent.getRevisionNumber());
-            if(occurrence != null) {
-                query.add(AuditEntity.relatedId("identifiedUnit").eq(occurrence.getId()));
-            }
-
-            if(taxonBase != null) {
-                query.add(AuditEntity.relatedId("taxon").eq(taxonBase.getId()));
-            }
-            addPageSizeAndNumber(query, pageSize, pageNumber);
-
-            @SuppressWarnings("unchecked")
-            List<DeterminationEvent> result = query.getResultList();
-            defaultBeanInitializer.initializeAll(result, propertyPaths);
-            return result;
-        }
     }
 
     @Override
@@ -256,7 +188,6 @@ public class OccurrenceDaoHibernateImpl
                     Hibernate.initialize(derivedUnit.getCollection().getSuperCollection());
                     Hibernate.initialize(derivedUnit.getCollection().getInstitute());
                 }
-                Hibernate.initialize(derivedUnit.getStoredUnder());
                 SpecimenOrObservationBase<?> original = derivedUnit.getOriginalUnit();
                 if(original != null && original.isInstanceOf(FieldUnit.class)) {
                     FieldUnit fieldUnit = CdmBase.deproxy(original, FieldUnit.class);
@@ -272,197 +203,283 @@ public class OccurrenceDaoHibernateImpl
     }
 
     @Override
-    public long count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonName determinedAs) {
+    public long count(@SuppressWarnings("rawtypes") Class<? extends SpecimenOrObservationBase> clazz, TaxonName determinedAs) {
 
-        Criteria criteria = getCriteria(clazz);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        @SuppressWarnings("rawtypes")
+        Root<SpecimenOrObservationBase> root = cq.from(SpecimenOrObservationBase.class);
 
-        criteria.createCriteria("determinations").add(Restrictions.eq("taxonName", determinedAs));
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return (Long)criteria.uniqueResult();
+        Predicate predicate = determinedAsTaxonPredicate(determinedAs, cb, root);
+
+        cq.select(cb.countDistinct(root))
+          .where(predicate);
+
+        return getSession().createQuery(cq).getSingleResult();
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> clazz, TaxonName determinedAs,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Criteria criteria = getCriteria(clazz);
 
-        criteria.createCriteria("determinations").add(Restrictions.eq("taxonName", determinedAs));
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<SpecimenOrObservationBase> cq = cb.createQuery(SpecimenOrObservationBase.class);
+        Root<SpecimenOrObservationBase> root = cq.from(SpecimenOrObservationBase.class);
 
-        addPageSizeAndNumber(criteria, pageSize, pageNumber);
-        addOrder(criteria,orderHints);
+        Predicate predicate = determinedAsTaxonPredicate(determinedAs, cb, root);
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        List<SpecimenOrObservationBase> results = criteria.list();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
+        cq.select(root)
+          .distinct(true)
+          .where(predicate)
+          .orderBy(ordersFrom(cb, root, orderHints));
+
+        List<SpecimenOrObservationBase> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
+       defaultBeanInitializer.initializeAll(results, propertyPaths);
+       return deduplicateResult(results);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public long count(Class<? extends SpecimenOrObservationBase> clazz,	TaxonBase determinedAs) {
 
-        Criteria criteria = getCriteria(clazz);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<SpecimenOrObservationBase> root = cq.from(SpecimenOrObservationBase.class);
 
-        criteria.createCriteria("determinations").add(Restrictions.eq("taxon", determinedAs));
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return (Long)criteria.uniqueResult();
+        Predicate predicate = determinedAsTaxonPredicate(determinedAs, cb, root);
+
+        cq.select(cb.countDistinct(root))
+          .where(predicate);
+
+        return getSession().createQuery(cq).getSingleResult();
     }
 
 
+    @SuppressWarnings("rawtypes")
     @Override
     public List<SpecimenOrObservationBase> list(Class<? extends SpecimenOrObservationBase> clazz, TaxonBase determinedAs,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Criteria criteria = getCriteria(clazz);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<SpecimenOrObservationBase> cq = cb.createQuery(SpecimenOrObservationBase.class);
+        Root<SpecimenOrObservationBase> root = cq.from(SpecimenOrObservationBase.class);
 
-        criteria.createCriteria("determinations").add(Restrictions.eq("taxon", determinedAs));
+        Predicate predicate = determinedAsTaxonPredicate(determinedAs, cb, root);
 
-        addPageSizeAndNumber(criteria, pageSize, pageNumber);
-        addOrder(criteria,orderHints);
+        cq.select(root)
+          .distinct(true)
+          .where(predicate)
+          .orderBy(ordersFrom(cb, root, orderHints));
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        List<SpecimenOrObservationBase> results = criteria.list();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
+        List<SpecimenOrObservationBase> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
+       defaultBeanInitializer.initializeAll(results, propertyPaths);
+       return deduplicateResult(results);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private Predicate determinedAsTaxonPredicate(TaxonBase determinedAs, CriteriaBuilder cb,
+            Root<SpecimenOrObservationBase> root) {
+        return cb.equal(root.join("determinations").get("taxon"), determinedAs);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private Predicate determinedAsTaxonPredicate(TaxonName determinedAs, CriteriaBuilder cb,
+            Root<SpecimenOrObservationBase> root) {
+        return cb.equal(root.join("determinations").get("taxonName"), determinedAs);
     }
 
     @Override
-    public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> findOccurrencesUuidAndTitleCache(
-            Class<T> clazz, String queryString, String significantIdentifier, SpecimenOrObservationType recordBasis,
-            Taxon associatedTaxon, TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
+    public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>>
+        findOccurrencesUuidAndTitleCache(
+            Class<T> clazz, String queryString,
+            String significantIdentifier, SpecimenOrObservationType recordBasis,
+            Taxon associatedTaxon, TaxonName associatedTaxonName,
+            MatchMode matchmode, boolean includeUnpublished,
             EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
-            Integer limit, Integer start, List<OrderHint> orderHints) {
+            Integer pageSize, Integer start, List<OrderHint> orderHints) {
 
-        Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
-                associatedTaxon, associatedTaxonName, matchmode, includeUnpublished,
-                taxonOccurrenceRelTypes,
-                limit, start, orderHints, null);
-        if(criteria!=null){
-            ProjectionList projectionList = Projections.projectionList();
-            projectionList.add(Projections.property("uuid"));
-            projectionList.add(Projections.property("id"));
-            projectionList.add(Projections.property("titleCache"));
-            criteria.setProjection(projectionList);
+        clazz = nullSafeClass(clazz);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Tuple> cq = cb.createTupleQuery();
+        Root<T> root = cq.from(clazz);
 
-            @SuppressWarnings("unchecked")
-            List<Object[]> result = criteria.list();
-            List<UuidAndTitleCache<SpecimenOrObservationBase>> uuidAndTitleCacheList = new ArrayList<>();
-            for(Object[] object : result){
-                uuidAndTitleCacheList.add(new UuidAndTitleCache<>((UUID) object[0],(Integer) object[1], (String) object[2]));
-            }
-            return uuidAndTitleCacheList;
-        }else{
-            return Collections.emptyList();
-        }
+        List<String> propertyPaths = null;
+        Predicate predicate = createFindOccurrencesPredicate(cb, root, clazz, queryString, matchmode,
+                significantIdentifier, recordBasis, associatedTaxon, associatedTaxonName, includeUnpublished,
+                taxonOccurrenceRelTypes, pageSize, start, orderHints, propertyPaths );
+
+        final String UUID = CdmBaseFilters.UUID;
+        final String ID = CdmBaseFilters.ID;
+        final String TITLE_CACHE = IdentifiableEntityFilters.TITLE_CACHE;
+
+        cq.multiselect(root.get(UUID), root.get(ID), root.get(TITLE_CACHE))
+          .distinct(true)
+          .where(predicate)
+          .orderBy(ordersFrom(cb, root, orderHints));
+
+        List<Tuple> tuples = addPageSizeAndStart(
+                getSession().createQuery(cq), pageSize, start)
+               .getResultList();
+
+        @SuppressWarnings("rawtypes")
+        List<UuidAndTitleCache<SpecimenOrObservationBase>> result = tuples.stream()
+                .map(tuple -> new UuidAndTitleCache<SpecimenOrObservationBase>(tuple.get(UUID,
+                        UUID.class), tuple.get(ID, Integer.class), tuple.get(TITLE_CACHE, String.class)))
+                .collect(Collectors.toList());
+
+        return result;
     }
 
     @Override
-    public <T extends SpecimenOrObservationBase> List<T> findOccurrences(Class<T> clazz, String queryString,
+    public <T extends SpecimenOrObservationBase> List<T> findOccurrences(
+            Class<T> clazz, String queryString,
             String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonName associatedTaxonName,
             MatchMode matchmode, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
-            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+            Integer pageSize, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
-                associatedTaxon, associatedTaxonName, matchmode, includeUnpublished,
-                taxonOccurrenceRelTypes,
-                limit, start, orderHints, propertyPaths);
-        if(criteria!=null){
-            @SuppressWarnings("unchecked")
-            List<T> results = criteria.list();
-            defaultBeanInitializer.initializeAll(results, propertyPaths);
-            return results;
-        }else{
-            return Collections.emptyList();
-        }
+        clazz = nullSafeClass(clazz);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(clazz);
+        Root<T> root = cq.from(clazz);
+
+        Predicate predicate = createFindOccurrencesPredicate(cb, root, clazz, queryString, matchmode,
+                significantIdentifier, recordBasis, associatedTaxon, associatedTaxonName, includeUnpublished,
+                taxonOccurrenceRelTypes, pageSize, start, orderHints, propertyPaths);
+
+        cq.select(root)
+          .distinct(true)
+          .where(predicate)
+          .orderBy(ordersFrom(cb, root, orderHints));
+
+        List<T> results = addPageSizeAndStart(
+                getSession().createQuery(cq), pageSize, start)
+               .getResultList();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return deduplicateResult(results);
     }
 
-    private <T extends SpecimenOrObservationBase> Criteria createFindOccurrenceCriteria(Class<T> clazz, String queryString,
-            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
-            TaxonName associatedTaxonName, MatchMode matchmode, boolean includeUnpublished,
+    private <T extends SpecimenOrObservationBase> Predicate createFindOccurrencesPredicate(
+            CriteriaBuilder cb, Root<T> root,
+            Class<T> clazz, String queryString, MatchMode matchmode,
+            String significantIdentifier, SpecimenOrObservationType recordBasis,
+            Taxon associatedTaxon, TaxonName associatedTaxonName,
+            boolean includeUnpublished,
             EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
-            Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+            Integer limit, Integer start, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
 
-        Criteria criteria = null;
+        List<Predicate> predicates = new ArrayList<>();
 
-        if(clazz == null) {
-            criteria = getSession().createCriteria(type);
-        } else {
-            criteria = getSession().createCriteria(clazz);
-        }
-
-        //queryString
-        if (queryString != null) {
-            if(matchmode == null) {
-                matchmode = MatchMode.ANYWHERE;
-                criteria.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
-            } else if(matchmode == MatchMode.BEGINNING) {
-                criteria.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString), org.hibernate.criterion.MatchMode.START));
-            } else if(matchmode == MatchMode.END) {
-                criteria.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString), org.hibernate.criterion.MatchMode.END));
-            } else if(matchmode == MatchMode.EXACT) {
-                criteria.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString), org.hibernate.criterion.MatchMode.EXACT));
-            } else {
-                criteria.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString), org.hibernate.criterion.MatchMode.ANYWHERE));
-            }
-        }
+        //specimen titleCache
+        boolean ignoreCase = true;
+        predicates.add(IdentifiableEntityFilters.titleCacheFilter(clazz,
+                queryString, matchmode, ignoreCase).toPredicate(root, cb));
 
         //significant identifier
-        if (significantIdentifier != null) {
-            criteria.add(Restrictions.or(Restrictions.ilike("accessionNumber", significantIdentifier),
-                    Restrictions.ilike("catalogNumber", significantIdentifier), Restrictions.ilike("barcode", significantIdentifier)));
+        if (significantIdentifier != null && !FieldUnit.class.isAssignableFrom(clazz)) {
+            //only if clazz is derived unit or specimenOrObservation
+            //if clazz is derived unit or subclass we could neglect the isNotDerivedUnit predicate, but if clazz is SpecimenOrObservation we need to exclude derived units (and subclass), because they do not have the fields we want to search for
+
+            //FIXME after upgrading to Hibernate 6 use cb.isInstanceOf(rootClass)
+            //also .treat() does not work correctly in hibernate 5 (it is handled as a filter on the exact class, not as cast only,
+            //as a fast workaround we implemented the below for each subclass
+            //An alternative would be to use a subquery
+            //Something like
+         // 1. Die Unterabfrage erstellen (sucht direkt auf der Klasse Book)
+//            Subquery<Long> subquery = query.subquery(Long.class);
+//            Root<Book> subRoot = subquery.from(Book.class);
+//
+//            // Wir wählen die IDs aller Bücher aus, die NICHT der gesuchten ISBN entsprechen
+//            subquery.select(subRoot.get("id"))
+//                    .where(cb.notEqual(subRoot.get("isbn"), "123-456"));
+//
+//            // 2. Die Hauptabfrage filtern:
+//            // Lass alle Objekte durch, deren ID NICHT in der Liste der "falschen Bücher" auftaucht
+//            Predicate excludeWrongBooks = cb.not(root.get("id").in(subquery));
+
+            //the case is covered by AbcdGgbnImportTest so it is save to test different solutions
+
+//            Predicate isDerivedUnit = cb.not(root.type().in(DerivedUnit.class, MediaSpecimen.class, DnaSample.class));
+            Predicate isDerivedUnit = cb.equal(root.type(), DerivedUnit.class);
+            Predicate isMediaSpecimen = cb.equal(root.type(), MediaSpecimen.class);
+            Predicate isDnaSample = cb.equal(root.type(), DnaSample.class);
+
+            Root<DerivedUnit> duRoot = cb.treat((Root)root, DerivedUnit.class);
+            Root<MediaSpecimen> msRoot = cb.treat((Root)root, MediaSpecimen.class);
+            Root<DnaSample> dnaRoot = cb.treat((Root)root, DnaSample.class);
+            predicates.add(
+                cb.or(
+                    cb.and(
+                        isDerivedUnit, cb.or(
+                            predicateILike(cb, duRoot, "accessionNumber", significantIdentifier),
+                            predicateILike(cb, duRoot, "catalogNumber", significantIdentifier),
+                            predicateILike(cb, duRoot, "barcode", significantIdentifier)
+                        )
+                    ),
+                    cb.and(
+                            isMediaSpecimen, cb.or(
+                                predicateILike(cb, msRoot, "accessionNumber", significantIdentifier),
+                                predicateILike(cb, msRoot, "catalogNumber", significantIdentifier),
+                                predicateILike(cb, msRoot, "barcode", significantIdentifier)
+                            )
+                        ),
+                    cb.and(
+                            isDnaSample, cb.or(
+                                predicateILike(cb, dnaRoot, "accessionNumber", significantIdentifier),
+                                predicateILike(cb, dnaRoot, "catalogNumber", significantIdentifier),
+                                predicateILike(cb, dnaRoot, "barcode", significantIdentifier)
+                            )
+                        )
+                    )
+            );
         }
 
         //recordBasis/SpecimenOrObservationType
-        Set<SpecimenOrObservationType> typeAndSubtypes = new HashSet<>();
-        if(recordBasis==null){
-            //add all types
-            SpecimenOrObservationType[] values = SpecimenOrObservationType.values();
-            for (SpecimenOrObservationType specimenOrObservationType : values) {
-                typeAndSubtypes.add(specimenOrObservationType);
-            }
-        }
-        else{
-            typeAndSubtypes = recordBasis.getGeneralizationOf(true);
+        if(recordBasis != null){
+            Set<SpecimenOrObservationType> typeAndSubtypes = recordBasis.getGeneralizationOf(true);
             typeAndSubtypes.add(recordBasis);
+            predicates.add(root.get("recordBasis").in(typeAndSubtypes));
         }
-        criteria.add(Restrictions.in("recordBasis", typeAndSubtypes));
 
         Set<UUID> associationUuids = new HashSet<>();
         //taxon associations
-        if(associatedTaxon!=null){
-            List<UuidAndTitleCache<SpecimenOrObservationBase>> associatedTaxaList = listUuidAndTitleCacheByAssociatedTaxon(
-                    clazz, associatedTaxon, includeUnpublished, taxonOccurrenceRelTypes,
-                    limit, start, orderHints);
-            if(associatedTaxaList!=null){
-                for (UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache : associatedTaxaList) {
-                    associationUuids.add(uuidAndTitleCache.getUuid());
+        if(associatedTaxon != null || associatedTaxonName != null){
+            if(associatedTaxon != null){
+                @SuppressWarnings("rawtypes")
+                List<UuidAndTitleCache<SpecimenOrObservationBase>> associatedTaxaList =
+                    listUuidAndTitleCacheByAssociatedTaxon(
+                        clazz, associatedTaxon, includeUnpublished, taxonOccurrenceRelTypes,
+                        limit, start, orderHints);
+                if(associatedTaxaList != null){
+                    for (UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache : associatedTaxaList) {
+                        associationUuids.add(uuidAndTitleCache.getUuid());
+                    }
                 }
             }
-        }
-        //taxon name associations
-        else if(associatedTaxonName!=null){
-            List<? extends SpecimenOrObservationBase> associatedTaxaList = listByAssociatedTaxonName(clazz, associatedTaxonName, limit, start, orderHints, propertyPaths);
-            if(associatedTaxaList!=null){
-                for (SpecimenOrObservationBase<?> specimenOrObservationBase : associatedTaxaList) {
-                    associationUuids.add(specimenOrObservationBase.getUuid());
+            //taxon name associations
+            else {
+                @SuppressWarnings("rawtypes")
+                List<? extends SpecimenOrObservationBase> associatedTaxaList = listByAssociatedTaxonName(clazz, associatedTaxonName, limit, start, orderHints, propertyPaths);
+                if(associatedTaxaList != null){
+                    for (SpecimenOrObservationBase<?> specimenOrObservationBase : associatedTaxaList) {
+                        associationUuids.add(specimenOrObservationBase.getUuid());
+                    }
                 }
             }
-        }
-        if(associatedTaxon!=null || associatedTaxonName!=null){
             if(!associationUuids.isEmpty()){
-                criteria.add(Restrictions.in("uuid", associationUuids));
+                predicates.add(predicateIn(root, "uuid", associationUuids));
             }
             else{
-                return null;
+                return cb.disjunction();  //always false predicate
             }
         }
-        addLimitAndStart(criteria, limit, start);
-
-        if(orderHints!=null){
-            addOrder(criteria, orderHints);
-        }
-        return criteria;
+        return predicateAnd(cb, predicates);
     }
-
 
     @Override
     public <T extends SpecimenOrObservationBase> long countOccurrences(Class<T> clazz, String queryString,
@@ -470,16 +487,23 @@ public class OccurrenceDaoHibernateImpl
             MatchMode matchmode, boolean includeUnpublished, EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Criteria criteria = createFindOccurrenceCriteria(clazz, queryString, significantIdentifier, recordBasis,
-                associatedTaxon, associatedTaxonName, matchmode, includeUnpublished, taxonOccurrenceRelTypes,
+        clazz = nullSafeClass(clazz);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<T> root = cq.from(clazz);
+
+        Predicate predicate = createFindOccurrencesPredicate(
+                cb, root,
+                clazz, queryString, matchmode,
+                significantIdentifier, recordBasis,
+                associatedTaxon, associatedTaxonName,
+                includeUnpublished, taxonOccurrenceRelTypes,
                 limit, start, orderHints, propertyPaths);
 
-        if(criteria!=null){
-            criteria.setProjection(Projections.rowCount());
-            return (Long)criteria.uniqueResult();
-        }else{
-            return 0;
-        }
+        cq.select(cb.countDistinct(root))
+          .where(predicate);
+
+        return getSession().createQuery(cq).getSingleResult();
     }
 
     @Override
@@ -921,49 +945,42 @@ public class OccurrenceDaoHibernateImpl
     /**
      * Computes the IDs of the specimen associated with a taxon via determinations
      */
-    private List<Integer> addAssociatedDeterminations(Class<? extends SpecimenOrObservationBase> clazz,
+    private <S extends SpecimenOrObservationBase> List<Integer> addAssociatedDeterminations(
+            Class<S> clazz,
             Taxon associatedTaxon, boolean currentOnly) {
 
-        Criteria criteria = null;
-        if(clazz == null) {
-            criteria = getSession().createCriteria(type, "specimen");
-        } else {
-            criteria = getSession().createCriteria(clazz, "specimen");
-        }
+        clazz = nullSafeClass(clazz);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Integer> cq = cb.createQuery(Integer.class);
+        Root<S> root = cq.from(clazz);
 
-        Criteria determinationsCriteria = criteria.createCriteria("determinations");
+        List<Predicate> predicates = new ArrayList<>();
+        Join<S, DeterminationEvent> determinations = root.join("determinations");
         if (currentOnly) {
-            determinationsCriteria.add(Restrictions.eq("preferredFlag", Boolean.TRUE));
+            predicates.add(predicateBoolean(cb, determinations, "preferredFlag", Boolean.TRUE));
         }
 
-        Disjunction determinationOr = Restrictions.disjunction();
+        //determined as taxon or taxon name/ synonym or synonym name
+        List<Predicate> orPredicates = new ArrayList<>();
+        orPredicates.add(cb.equal(determinations.get("taxon"), associatedTaxon)); //taxon
+        orPredicates.add(cb.and(cb.isNull(determinations.get("taxon")),          //taxon name
+                                cb.equal(determinations.get("taxonName"), associatedTaxon.getName())));
+        associatedTaxon.getSynonyms().forEach(
+                synonym -> orPredicates.add(cb.equal(determinations.get("taxon"), synonym))); //synonyms
+        associatedTaxon.getSynonymNames().forEach(
+                synonymName -> orPredicates.add(
+                        cb.and(cb.isNull(determinations.get("taxon")), // synonym names
+                               cb.equal(determinations.get("taxonName"), synonymName))));
 
-        //taxon
-        determinationOr.add(Restrictions.eq("taxon", associatedTaxon));
-        //synonyms
-        for (Synonym synonym : associatedTaxon.getSynonyms()) {
-            determinationOr.add(Restrictions.eq("taxon", synonym));
-        }
+        predicates.add(cb.or(orPredicates.toArray(new Predicate[orPredicates.size()])));
 
-        //determinations via names, to be used only if determination taxon
-        //... accepted name
-        determinationOr.add(Restrictions.and(
-                Restrictions.eq("taxonName", associatedTaxon.getName()),
-                Restrictions.isNull("taxon")));
-        //... synonyms
-        for (TaxonName synonymName : associatedTaxon.getSynonymNames()) {
-            determinationOr.add(Restrictions.and(
-                    Restrictions.eq("taxonName", synonymName),
-                    Restrictions.isNull("taxon")));
-        }
+        cq.select(root.get("id"))
+          .distinct(true)
+          .where(predicateAnd(cb, predicates));
 
-        determinationsCriteria.add(determinationOr);
-
-        criteria.setProjection(Projections.property("id"));
-
-        @SuppressWarnings("unchecked")
-        List<Integer> detResults = criteria.list();
-        return detResults;
+        List<Integer> results = getSession().createQuery(cq)
+               .getResultList();
+        return results;
     }
 
     @Override

@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * this standard list by creating new instances of additional hybrid
  * relationship types if needed. Hybrid relationship types are neither symmetric
  * nor transitive.
- 
+
  * <P>
  * This class corresponds partially to: <ul>
  * <li> TaxonRelationshipTerm according to the TDWG ontology

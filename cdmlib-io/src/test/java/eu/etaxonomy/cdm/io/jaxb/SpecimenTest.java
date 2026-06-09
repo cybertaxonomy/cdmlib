@@ -62,7 +62,6 @@ public class SpecimenTest {
 			assertEquals("Specimen.collection must equal Collection",collection, specimen.getCollection());
 			assertEquals("Collection.institute must equal Institution",institution,collection.getInstitute());
 
-			assertEquals("TaxonName must equal Specimen.storedUnder",name,specimen.getStoredUnder());
 			assertEquals("Sex must equal Specimen.sex",sex,specimen.getSex());
 
 			assertNotNull("Specimen.determinations must not be null",specimen.getDeterminations());

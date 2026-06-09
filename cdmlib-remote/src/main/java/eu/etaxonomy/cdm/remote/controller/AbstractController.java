@@ -172,7 +172,7 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
     //Maybe better use a method like BaseController.getCdmBaseInstance(class, ...)
     protected Taxon getAcceptedTaxonOrError(UUID taxonUuid, ITaxonService taxonService,
             HttpServletResponse response) throws IOException {
-        TaxonBase<?> taxon = null;
+        TaxonBase taxon = null;
         if (taxonUuid != null){
             taxon = taxonService.find(taxonUuid);
             if(taxon == null) {

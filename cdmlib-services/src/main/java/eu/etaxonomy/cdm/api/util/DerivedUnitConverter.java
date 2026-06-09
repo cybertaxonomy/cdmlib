@@ -107,6 +107,7 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
     }
 
     private void copyPropertiesTo(TARGET target) {
+
         target.setAccessionNumber(source.getAccessionNumber());
         target.setBarcode(source.getBarcode());
         target.setCatalogNumber(source.getCatalogNumber());
@@ -130,7 +131,6 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
         target.setProtectedTitleCache(source.isProtectedTitleCache());
         // n.setRecordBasis(source.getRecordBasis()); // not to copy, this it is set for the new instance explicitly
         target.setSex(source.getSex());
-        target.setStoredUnder(source.getStoredUnder());
         target.setTitleCache(source.getTitleCache(), target.isProtectedTitleCache());
         source.getSources().forEach(s -> target.addSource(s));
         source.getAnnotations().forEach(a -> target.addAnnotation(a));

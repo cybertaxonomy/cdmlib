@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 public class TestingTermInitializerTest_TODO extends CdmIntegrationTest {
 
-    private final UUID taxonomicallyIncludedInUuid = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
+    private final UUID misappliedNameForUuid = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
 
     @Before
     public void setUp() {}
@@ -67,8 +67,8 @@ public class TestingTermInitializerTest_TODO extends CdmIntegrationTest {
      */
     @Test
     public final void testTermsAreLoaded() {
-        assertNotNull("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have been initialized",TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN());
-        assertEquals("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have a uuid of " + taxonomicallyIncludedInUuid.toString(),taxonomicallyIncludedInUuid, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN().getUuid());
+        assertNotNull("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have been initialized", TaxonRelationshipType.MISAPPLIED_NAME_FOR());
+        assertEquals("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have a uuid of " + misappliedNameForUuid.toString(), misappliedNameForUuid, TaxonRelationshipType.uuidMisappliedNameFor);
         assertNotNull("SynonymType.INFERREDEPITHET should be loaded" + SynonymType.INFERRED_EPITHET_OF);
     }
 

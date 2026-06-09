@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -51,7 +52,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -636,7 +636,7 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
                 if (list.get(i) instanceof TaxonName) {
                     nameCache = ((TaxonName)list.get(i)).getNameCache();
                 } else if (list.get(i) instanceof TaxonBase) {
-                    TaxonName taxonName = ((TaxonBase<?>) list.get(i)).getName();
+                    TaxonName taxonName = ((TaxonBase) list.get(i)).getName();
                     nameCache = taxonName.getNameCache();
                 } else {
                 }

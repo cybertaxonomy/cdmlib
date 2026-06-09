@@ -3,9 +3,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:context="http://www.springframework.org/schema/context"
   xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+    https://www.springframework.org/schema/beans/spring-beans-4.3.xsd
     http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+    https://www.springframework.org/schema/context/spring-context-4.3.xsd">
 
 <!--     <context:property-override location="classpath:override.properties"/> -->
 
@@ -21,13 +21,9 @@
     <import resource="classpath:/eu/etaxonomy/cdm/services_base_test.xml"/>
 
     <!-- security  -->
-    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
-    <bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
-        <property name="userPropertyToUse" value="getUsername"/>
-    </bean>
-    <bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+    <bean id="daoAuthenticationProvider" class="eu.etaxonomy.cdm.api.security.CdmDaoAuthenticationProvider">
         <property name="userDetailsService" ref="userService"/>
-        <property name="saltSource" ref="saltSource"/>
         <property name="passwordEncoder" ref="passwordEncoder"/>
     </bean>
     <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">

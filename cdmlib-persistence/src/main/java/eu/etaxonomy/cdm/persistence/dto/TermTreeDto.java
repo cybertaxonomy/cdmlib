@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AuthorityType;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
-import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -177,7 +176,7 @@ public class TermTreeDto extends TermCollectionDto {
 
 
             if (termTreeDto.getTermType().equals(TermType.Character)){
-                termTreeDto.setRoot(CharacterNodeDto.fromTermNode((TermNode<Character>) elements[9], termTreeDto));
+                termTreeDto.setRoot(CharacterNodeDto.fromTermNode((TermNode) elements[9], termTreeDto));
             }else {
                 termTreeDto.setRoot(TermNodeDto.fromNode((TermNode)elements[9], termTreeDto));
             }

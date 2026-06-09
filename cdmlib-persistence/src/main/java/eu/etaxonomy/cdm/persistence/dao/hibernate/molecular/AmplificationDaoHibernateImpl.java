@@ -15,15 +15,15 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IAmplificationDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -31,7 +31,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @since 11.03.2014
  */
 @Repository
-public class AmplificationDaoHibernateImpl extends AnnotatableDaoBaseImpl<Amplification> implements IAmplificationDao{
+public class AmplificationDaoHibernateImpl
+        extends AnnotatableDaoBaseImpl<Amplification>
+        implements IAmplificationDao{
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
@@ -64,13 +66,13 @@ public class AmplificationDaoHibernateImpl extends AnnotatableDaoBaseImpl<Amplif
     }
 
     @Override
-    public long countByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria) {
-        return countByParam(Amplification.class, "labelCache", queryString, matchmode, criteria);
+    public long countByTitle(String queryString, MatchMode matchmode, List<EntityFilter<Amplification>> filter) {
+        return countByParam(Amplification.class, "labelCache", queryString, matchmode, filter);
     }
 
     @Override
-    public List<Amplification> findByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria,
+    public List<Amplification> findByTitle(String queryString, MatchMode matchmode, List<EntityFilter<Amplification>> filter,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return findByParam(Amplification.class, "labelCache", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+        return findByParam(Amplification.class, "labelCache", queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
     }
 }

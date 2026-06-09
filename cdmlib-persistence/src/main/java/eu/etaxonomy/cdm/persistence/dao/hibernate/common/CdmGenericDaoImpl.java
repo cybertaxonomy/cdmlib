@@ -879,7 +879,7 @@ public class CdmGenericDaoImpl
 		return noMatch;
 	}
 
-	private void matchComponentType(CriteriaBuilder cb, List<Predicate> andPredicates, Path<CdmBase> root,
+	private void matchComponentType(CriteriaBuilder cb, List<Predicate> andPredicates, From<CdmBase,?> root,
 			FieldMatcher fieldMatcher, String propertyName, Object value,
 			List<MatchMode> matchModes) throws MatchException, IllegalAccessException {
 

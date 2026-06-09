@@ -17,19 +17,19 @@ import java.util.UUID;
 
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.event.spi.MergeEvent;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -474,7 +474,7 @@ public interface IService<T extends ICdmBase>{
      */
     public MergeResult<T> merge(T newInstance, boolean returnTransientEntity);
 
-    public <S extends T> Pager<S> page(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> Pager<S> page(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<EntityFilter<S>> filter, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints, List<String> propertyPaths);
 
     public <S extends T> Pager<S> pageByParamWithRestrictions(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex, List<OrderHint> orderHints,
             List<String> propertyPaths);

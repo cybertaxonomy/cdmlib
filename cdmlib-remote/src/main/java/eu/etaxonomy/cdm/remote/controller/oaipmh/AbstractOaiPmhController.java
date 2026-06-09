@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
-import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
+import eu.etaxonomy.cdm.persistence.query.AuditEventSort;
 import eu.etaxonomy.cdm.remote.controller.BadResumptionTokenException;
 import eu.etaxonomy.cdm.remote.controller.IdDoesNotExistException;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.DeletedRecord;

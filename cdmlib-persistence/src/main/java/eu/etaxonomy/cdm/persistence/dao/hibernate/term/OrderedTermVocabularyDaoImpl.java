@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.IOrderedTermVocabularyDao;
@@ -24,7 +23,7 @@ import eu.etaxonomy.cdm.persistence.dao.term.IOrderedTermVocabularyDao;
  */
 @Repository
 public class OrderedTermVocabularyDaoImpl
-        extends CdmEntityDaoBase<OrderedTermVocabulary<DefinedTermBase<?>>>
+        extends CdmEntityDaoBase<OrderedTermVocabulary<?>>
         implements IOrderedTermVocabularyDao {
 
 	public OrderedTermVocabularyDaoImpl() {

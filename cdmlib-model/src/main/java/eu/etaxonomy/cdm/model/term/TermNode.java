@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,7 +32,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -72,8 +72,8 @@ import eu.etaxonomy.cdm.model.description.State;
 @XmlRootElement(name = "TermNode")
 @Entity
 @Audited
-public class TermNode <T extends DefinedTermBase>
-        extends TermRelationBase<T, TermNode<T>, TermTree>
+public class TermNode<T extends DefinedTermBase>
+        extends TermRelationBase<T, TermNode<T>, TermTree<T>>
         implements ITreeNode<TermNode<T>> {
 
     private static final Logger logger = LogManager.getLogger();

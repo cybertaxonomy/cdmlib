@@ -36,7 +36,8 @@ public class NamesWithHomotypicRelationshipsMustBelongToSameGroupValidator imple
 		   if (nameRelationship.getFromName() != null && nameRelationship.getToName() != null){
 		       if(!nameRelationship.getFromName().getHomotypicalGroup().equals(nameRelationship.getToName().getHomotypicalGroup())) {
 		           valid = false;
-		           constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup.message}").addNode("fromName").addNode("homotypicalGroup").addConstraintViolation();
+		           constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup.message}")
+		           .addPropertyNode("fromName").addPropertyNode("homotypicalGroup").addConstraintViolation();
                    //remove duplicate violation as it does not give more information
 //		           constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup.message}").addNode("toName").addNode("homotypicalGroup").addConstraintViolation();
 		       }

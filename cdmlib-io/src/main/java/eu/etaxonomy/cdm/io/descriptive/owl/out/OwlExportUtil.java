@@ -192,7 +192,7 @@ public class OwlExportUtil {
             Resource statisticalMeasureResource = createTermResource(statisticalMeasure, true, repo, state);
             termResource.addProperty(OwlUtil.propFeatureHasRecommendedStatisticalMeasure, statisticalMeasureResource);
         }
-        Set<TermCollection<? extends DefinedTermBase,?>> supportedCategoricalEnumerations = feature.getSupportedCategoricalEnumerations();
+        Set<TermCollection<?,?>> supportedCategoricalEnumerations = feature.getSupportedCategoricalEnumerations();
         for (TermCollection<?,?> stateVocabulary : supportedCategoricalEnumerations) {
             Resource supportedCategoricalEnumerationResource = createVocabularyResource(stateVocabulary, repo, state);
             termResource.addProperty(OwlUtil.propFeatureHasSupportedCategoricalEnumeration, supportedCategoricalEnumerationResource);

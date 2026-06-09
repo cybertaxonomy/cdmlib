@@ -24,13 +24,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.dto.TypeDesignationStatusFilter;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import io.swagger.annotations.Api;
 
@@ -87,7 +87,7 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
         pagerParameters.normalizeAndValidate(response);
 
-        return service.findByTitleWithRestrictions(TaxonName.class, query, matchMode, null, pageSize, pageIndex, null, getInitializationStrategy());
+        return service.findByTitle(TaxonName.class, query, matchMode, null, pageSize, pageIndex, null, getInitializationStrategy());
     }
 
     @RequestMapping(

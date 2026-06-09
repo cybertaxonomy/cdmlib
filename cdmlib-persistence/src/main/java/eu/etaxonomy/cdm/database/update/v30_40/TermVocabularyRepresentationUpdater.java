@@ -69,7 +69,8 @@ public class TermVocabularyRepresentationUpdater
 				//read vocabulary from terms files
 				String filename = vocabularyEnum.name()+".csv";
 				CSVReader reader = new CSVReader(CdmUtils.getUtf8ResourceReader("terms/" + filename));
-				String [] nextLine = reader.readNext();
+				String[] nextLine = reader.readNext();
+				reader.close();
 				TermVocabulary<?> voc = TermVocabulary.NewInstance(TermType.Unknown);
 				voc.readCsvLine(arrayedLine(nextLine));
 

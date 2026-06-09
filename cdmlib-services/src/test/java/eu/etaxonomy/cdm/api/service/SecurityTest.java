@@ -30,17 +30,17 @@ import org.junit.Test;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.SaltSource;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.unitils.database.annotations.TestDataSource;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -65,7 +65,6 @@ import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.permission.CdmAuthorityParsingException;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.permission.PermissionDeniedException;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
@@ -98,9 +97,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
     private AuthenticationManager authenticationManager;
 
     @SpringBeanByType
-    private SaltSource saltSource;
-
-    @SpringBeanByType
     private PasswordEncoder passwordEncoder;
 
     @SpringBean("cdmPermissionEvaluator")
@@ -120,8 +116,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         String password = PASSWORD_ADMIN;
         User user = User.NewInstance("userManager", "");
 
-        Object salt = this.saltSource.getSalt(user);
-        String passwordEncrypted = passwordEncoder.encodePassword(password, salt);
+       String passwordEncrypted = passwordEncoder.encode(password);
         logger.info("encrypted password: " + passwordEncrypted );
     }
 
@@ -150,6 +145,18 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         List<User> userList = userService.listByUsername("Editor", MatchMode.ANYWHERE, null, null, 0, null, null);
         Assert.assertTrue("The user list must have elements", userList.size() > 0 );
+    }
+
+    @Test
+    @DataSet
+    public void testLoadUserByUsernameAllow(){
+
+        authentication = authenticationManager.authenticate(tokenForTaxonomist);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        User user = userService.loadUserByUsernameAsUser("taxonEditor");
+        Assert.assertNotNull("The user list must have elements", user );
     }
 
     @Test
@@ -236,7 +243,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         expectedTaxon.getName().setTitleCache("Newby admin", true);
         UUID uuid = taxonService.save(expectedTaxon).getUuid();
         commitAndStartNewTransaction(null);
-        TaxonBase<?> actualTaxon = taxonService.load(uuid);
+        TaxonBase actualTaxon = taxonService.load(uuid);
         assertEquals(expectedTaxon, actualTaxon);
 
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
@@ -275,7 +282,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         TaxonName n_acherontia_thetis = taxon.getName();
 
         Reference sec = ReferenceFactory.newGeneric();
@@ -365,7 +372,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
     @Test
     public final void testUpdateReferenceAllow() throws CdmAuthorityParsingException {
 
-
         authentication = authenticationManager.authenticate(tokenForUserManager);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
@@ -408,14 +414,16 @@ public class SecurityTest extends AbstractSecurityTestBase{
     }
 
     @Test
-    public final void testUpateReferenceDeny() {
+    public final void testUpdateReferenceDeny() {
 
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        taxon.getName().getNomenclaturalReference().setTitleCache("Mobydick", true);
+        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        Reference nomRef = taxon.getName().getNomenclaturalReference();
+        UUID refUuid = nomRef.getUuid();
+        nomRef.setTitleCache("Mobydick", true);
         Exception exception = null;
         try {
             taxonService.saveOrUpdate(taxon);
@@ -432,7 +440,9 @@ public class SecurityTest extends AbstractSecurityTestBase{
             endTransaction();
             startNewTransaction();
         }
-        Assert.assertNotNull("must fail here!", exception);
+        Assert.assertNotNull("Updating reference should not be allowed, only CREATE and READ! An exception should be thrown", exception);
+        Reference updatedRef = referenceService.find(refUuid);
+        Assert.assertEquals("TitleCache should still be the old titleCache", "Lorem ipsum", updatedRef.getTitleCache());
     }
 
     @Test
@@ -555,7 +565,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context.setAuthentication(authentication);
         RuntimeException securityException= null;
 
-        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
@@ -591,7 +601,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         context.setAuthentication(authentication);
 
-        TaxonBase<?>  taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        TaxonBase  taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
@@ -624,7 +634,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         context.setAuthentication(authentication);
 
-        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
 
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
@@ -758,13 +768,14 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         authentication = authenticationManager.authenticate(tokenForAdmin);
         context.setAuthentication(authentication);
-        RuntimeException securityException= null;
 
-        TaxonBase<?> taxon = taxonService.load(UUID_LACTUCA);
-        taxonService.delete(taxon);
-        commitAndStartNewTransaction(null);
-
-        Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        TaxonBase taxon = taxonService.load(UUID_LACTUCA);
+        try {
+            taxonService.delete(taxon);
+            commitAndStartNewTransaction(null);
+        } catch (Exception e) {
+            Assert.fail("Evaluation must not fail since the user is permitted, CAUSE :" + e.getMessage());
+        }
         // reload taxon
         taxon = taxonService.load(UUID_LACTUCA);
         Assert.assertNull("The taxon must be deleted", taxon);
@@ -1202,13 +1213,35 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
+    @Test
+    @DataSet
+    public void testUpgradeMd5Password(){
 
+        int partEditorId = 5;
+        User partEditor = userService.find(partEditorId);
+        Assert.assertEquals("{md5}41af8a6dac9f86b1081aa5840df75a53", partEditor.getPassword());
+
+        Authentication auth = authenticationManager.authenticate(tokenForPartEditor);
+        Assert.assertTrue(auth.isAuthenticated());
+
+        partEditor = userService.find(partEditorId);
+        //not necessarily required, may also become false in future
+//        Assert.assertEquals("Password not yet changed in old session", "{md5}41af8a6dac9f86b1081aa5840df75a53", partEditor.getPassword());
+//        testIsMd5Password(partEditor, true);
+
+        //new session
+        commitAndStartNewTransaction();
+        partEditor = userService.find(partEditorId);
+        testIsMd5Password(partEditor, false);
+        auth = authenticationManager.authenticate(tokenForPartEditor);
+        Assert.assertTrue(auth.isAuthenticated());
     }
+
+    private void testIsMd5Password(User partEditor, boolean expectedValue) {
+        Assert.assertEquals(expectedValue, partEditor.getPassword().startsWith("{md5}"));
+    }
+
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionInfoConfiguration;
 import eu.etaxonomy.cdm.api.dto.portal.config.DistributionOrder;
 import eu.etaxonomy.cdm.api.dto.portal.config.TaxonPageDtoConfiguration;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -80,7 +81,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
 import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
@@ -898,7 +898,7 @@ public class TaxonPortalController extends TaxonController{
         logger.info("doGetNameRelations()" + request.getRequestURI());
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        TaxonBase<?> taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, (List<String>)null);
+        TaxonBase taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, (List<String>)null);
         taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
 
         List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedTo, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths());
@@ -929,7 +929,7 @@ public class TaxonPortalController extends TaxonController{
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        TaxonBase<?> taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY.getPropertyPaths());
+        TaxonBase taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY.getPropertyPaths());
         taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
 
         List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths());
@@ -1033,10 +1033,10 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
             @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
             @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
-            @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
+            @RequestParam(value = "includeOccurrences", required = false, defaultValue = "false") Boolean  includeOccurrences,
             @RequestParam(value = "taxOccRelFilter", required = false) String taxOccRelFilter,
-            @RequestParam(value = "includeOriginals", required = false) Boolean  includeOriginals,
-            @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
+            @RequestParam(value = "includeOriginals", required = false, defaultValue = "false") Boolean  includeOriginals,
+            @RequestParam(value = "includeTaxonNameDescriptions", required = false, defaultValue = "false") Boolean  includeTaxonNameDescriptions,
             @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
             @RequestParam(value = "height", required = false) Integer height,
             @RequestParam(value = "size", required = false) Integer size,
@@ -1118,8 +1118,8 @@ public class TaxonPortalController extends TaxonController{
             @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
             @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
             @RequestParam(value = "includeTaxonDescriptions", required = true) Boolean  includeTaxonDescriptions,
-            @RequestParam(value = "includeOccurrences", required = true) Boolean  includeOccurrences,
-            @RequestParam(value = "includeTaxonNameDescriptions", required = true) Boolean  includeTaxonNameDescriptions,
+            @RequestParam(value = "includeOccurrences", required = false, defaultValue = "false") Boolean  includeOccurrences,
+            @RequestParam(value = "includeTaxonNameDescriptions", required = false, defaultValue = "false") Boolean  includeTaxonNameDescriptions,
             @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
             @RequestParam(value = "height", required = false) Integer height,
             @RequestParam(value = "size", required = false) Integer size,

@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
@@ -176,7 +175,7 @@ public class DbImportAnnotationMapper
 			UUID uuidAnnotationTypeVocabulary = UUID.fromString("ca04609b-1ba0-4d31-9c2e-aa8eb2f4e62d");
 			IVocabularyService vocService = currentImport.getVocabularyService();
 			@SuppressWarnings("unchecked")
-            TermVocabulary<DefinedTermBase<?>> voc = vocService.find(uuidAnnotationTypeVocabulary);
+            TermVocabulary<AnnotationType> voc = vocService.find(uuidAnnotationTypeVocabulary);
 			if (voc != null){
 				voc.addTerm(annotationType);
 			}else{

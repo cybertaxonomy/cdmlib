@@ -1871,7 +1871,7 @@ public class WordClassificationExport
                 // citations) + status + some name relations (e.g. “non”)
                 // TODO: nameRelations, which and how to display
                 Set<TaxonBase> taxonBases = name.getTaxonBases();
-                TaxonBase<?> taxonBase;
+                TaxonBase taxonBase;
 
                 String sec = "";
                 String nameString = name.getFullTitleCache();
@@ -2019,7 +2019,7 @@ public class WordClassificationExport
                      }
                 }else{
                     //there are names used more than once?
-                    for (TaxonBase<?> tb: taxonBases){
+                    for (TaxonBase tb: taxonBases){
                         if (tb.getSec() != null){
                             sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(tb.getSecSource());
                         }

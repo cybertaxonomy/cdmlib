@@ -71,6 +71,8 @@ public class WikiDataItemId implements java.io.Serializable{
 // ********************************************* PARSER *******************************/
 
     private static Pattern wikidataItemIdPattern = Pattern.compile("^Q?[1-9][0-9]*$");
+    private static Pattern wikidataPropertyIdPattern = Pattern.compile("^P[1-9][0-9]*$");
+
 
     private void parseWikiDataItemIdString(String wikiDataItemId){
         if (StringUtils.isBlank(wikiDataItemId)){
@@ -117,6 +119,14 @@ public class WikiDataItemId implements java.io.Serializable{
         return HTTP_WIKIDATA_ORG + makeWikidataId();
     }
 
+    public static boolean isWikiDataId(String id) {
+        if (id == null) {
+            return false;
+        }else {
+            return wikidataItemIdPattern.matcher(id).matches()
+                    || wikidataPropertyIdPattern.matcher(id).matches();
+        }
+    }
 
 //************************************************* toString/equals /hashCode *********************/
 

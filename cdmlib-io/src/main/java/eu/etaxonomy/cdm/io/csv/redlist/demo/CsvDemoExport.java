@@ -167,19 +167,19 @@ public class CsvDemoExport extends CsvDemoBase {
 	private void performCSVExport(CsvDemoExportState state, CsvDemoExportConfigurator config,
 	        TransactionStatus txStatus, Set<Classification> classificationSet, IProgressMonitor progressMonitor,
 	        PrintWriter writer) {
+
 	    //obtain chuncks of taxonNodes
 	    int totalWork = 0;
 	    int work = 0;
-	    int limit = 500;
-	    int end = 500;
-	    int start = 0;
+	    int pageSize = 500;
+	    //FIXME this was an absolute number before, not a page number. So currently it will not work correctly
+	    int pageNumber = 0;
 
 	    //TODO: Questionable if this information is really necessary, with respect to memory usage
 	    Classification classification = null;
 	    for(Classification c : classificationSet){
 	    	classification = c;
-	    	totalWork = getTaxonNodeService().countAllNodesForClassification(c);
-
+	    	totalWork = (int)getTaxonNodeService().countAllNodesForClassification(c);
 
 	    	if(progressMonitor != null) {
 	    		progressMonitor.beginTask("", totalWork);
@@ -192,16 +192,14 @@ public class CsvDemoExport extends CsvDemoBase {
 	    		//geographical Filter
 	    		//	     List<TaxonNode> taxonNodes =  handleGeographicalFilter(state, classificationSet, config, limit, start);
 
-	    		result = getTaxonNodeService().listAllNodesForClassification(classification, start, limit);
+	    		result = getTaxonNodeService().listAllNodesForClassification(classification, pageSize, pageNumber);
 
 	    		logger.info(result.size());
-
 
 	    		for (TaxonNode node : result){
 	    			Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 	    			CsvDemoRecord record = assembleRecord(state);
 	    			INonViralName name = taxon.getName();
-	    			//	                Classification classification = node.getClassification();
 	    			config.setClassificationTitleCache(classification.getTitleCache());
 	    			if (! this.recordExists(taxon)){
 
@@ -227,17 +225,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	    			txStatus = startTransaction(true);
 	    		}
 	    		//get next 1000 results
-	    		if(result.size()%limit == 0){
-	    			//increase only once to avoid same row
-	    			if(i==0){
-	    				start++;
-	    			}
-	    			start = start + limit;
-	    			end = end + limit;
-	    			result = null;
-	    		}else{
-	    			break;
-	    		}
+	    		pageNumber++;
 	    	}
 	    }
 	}
@@ -279,7 +267,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	 *
 	 * @param record the concrete information record
 	 */
-	private void handleTaxonBase(CsvDemoRecord record, TaxonBase<?> taxonBase,
+	private void handleTaxonBase(CsvDemoRecord record, TaxonBase taxonBase,
 			INonViralName name, Classification classification,
 			CsvDemoExportConfigurator config, TaxonNode node) {
 

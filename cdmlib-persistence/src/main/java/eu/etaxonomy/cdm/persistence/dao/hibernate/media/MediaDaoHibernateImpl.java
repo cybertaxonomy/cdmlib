@@ -6,14 +6,19 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.media;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Hibernate;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
@@ -29,7 +34,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
+import eu.etaxonomy.cdm.persistence.common.OperationNotSupportedInPriorViewException;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 
@@ -55,35 +60,24 @@ public class MediaDaoHibernateImpl
 	}
 
 	@Override
-    public long countMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes) {
+    public long countMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScope) {
 
 	    AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 
+		    CriteriaBuilder cb = getCriteriaBuilder();
+		    CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		    Root<MediaKey> root = cq.from(MediaKey.class);
 
-		    Criteria criteria = getCriteria(MediaKey.class);
+		    List<Predicate> predicates = getMediaKeyPredicates(taxonomicScope, geoScope, root);
 
-			if(!CdmUtils.isNullSafeEmpty(taxonomicScope)) {
-				Set<Integer> taxonomicScopeIds = new HashSet<>();
-				for(Taxon n : taxonomicScope) {
-					taxonomicScopeIds.add(n.getId());
-				}
-				criteria.createCriteria("taxonomicScope").add(Restrictions.in("id", taxonomicScopeIds));
-			}
+		    cq.select(cb.countDistinct(root))
+		      .where(predicateAnd(cb, predicates));
 
-			if(!CdmUtils.isNullSafeEmpty(geoScopes)) {
-				Set<Integer> geoScopeIds = new HashSet<>();
-				for(NamedArea n : geoScopes) {
-					geoScopeIds.add(n.getId());
-				}
-				criteria.createCriteria("geographicalScope").add(Restrictions.in("id", geoScopeIds));
-			}
+		    return getSession().createQuery(cq).getSingleResult();
 
-			criteria.setProjection(Projections.countDistinct("id"));
-
-			return (Long)criteria.uniqueResult();
 		} else {
-			if((taxonomicScope == null || taxonomicScope.isEmpty()) && (geoScopes == null || geoScopes.isEmpty())) {
+			if((taxonomicScope == null || taxonomicScope.isEmpty()) && (geoScope == null || geoScope.isEmpty())) {
 				AuditQuery query = makeAuditQuery(MediaKey.class,auditEvent);
 				query.addProjection(AuditEntity.id().countDistinct());
 				return (Long)query.getSingleResult();
@@ -93,46 +87,54 @@ public class MediaDaoHibernateImpl
 		}
 	}
 
+    private List<Predicate> getMediaKeyPredicates(Set<Taxon> taxonomicScope, Set<NamedArea> geoScope,
+            Root<MediaKey> root) {
+        List<Predicate> predicates = new ArrayList<>();
+
+        //taxonomic scope
+        if(!CdmUtils.isNullSafeEmpty(taxonomicScope)) {
+            Set<Integer> taxonomicScopeIds = taxonomicScope.stream()
+                .map(Taxon::getId)
+                .collect(Collectors.toSet());
+            Join<MediaKey, Taxon> path = root.join("taxonomicScope", JoinType.INNER);
+            Predicate predicate = predicateIn(path, "id", taxonomicScopeIds);
+            predicates.add(predicate);
+        }
+
+          //taxonomic scope
+        if(!CdmUtils.isNullSafeEmpty(geoScope)) {
+            Set<Integer> geoScopeIds = geoScope.stream()
+                .map(NamedArea::getId)
+                .collect(Collectors.toSet());
+            Join<MediaKey, Taxon> path = root.join("geographicalScope", JoinType.INNER);
+            Predicate predicate = predicateIn(path, "id", geoScopeIds);
+            predicates.add(predicate);
+        }
+        return predicates;
+    }
+
 	@Override
-    public List<MediaKey> getMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public List<MediaKey> getMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
 	    AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Criteria inner = getSession().createCriteria(MediaKey.class);
+		    CriteriaBuilder cb = getCriteriaBuilder();
+		    CriteriaQuery<MediaKey> cq = cb.createQuery(MediaKey.class);
+		    Root<MediaKey> root = cq.from(MediaKey.class);
 
-			if(taxonomicScope != null && !taxonomicScope.isEmpty()) {
-				Set<Integer> taxonomicScopeIds = new HashSet<Integer>();
-				for(Taxon n : taxonomicScope) {
-					taxonomicScopeIds.add(n.getId());
-				}
-				inner.createCriteria("taxonomicScope").add(Restrictions.in("id", taxonomicScopeIds));
-			}
+		    List<Predicate> predicates = getMediaKeyPredicates(taxonomicScope, geoScopes, root);
 
-			if(geoScopes != null && !geoScopes.isEmpty()) {
-				Set<Integer> geoScopeIds = new HashSet<Integer>();
-				for(NamedArea n : geoScopes) {
-					geoScopeIds.add(n.getId());
-				}
-				inner.createCriteria("geographicalScope").add(Restrictions.in("id", geoScopeIds));
-			}
+		    cq.select(root)
+		      .distinct(true)
+		      .where(predicateAnd(cb, predicates))
+		      .orderBy(ordersFrom(cb, root, null));
 
-			inner.setProjection(Projections.distinct(Projections.id()));
-
-			Criteria criteria = getSession().createCriteria(MediaKey.class);
-			criteria.add(Restrictions.in("id", inner.list()));
-
-			if(pageSize != null) {
-				criteria.setMaxResults(pageSize);
-				if(pageNumber != null) {
-					criteria.setFirstResult(pageNumber * pageSize);
-				}
-			}
-
-			List<MediaKey> results = criteria.list();
-
-			defaultBeanInitializer.initializeAll(results, propertyPaths);
-
-			return results;
+		    List<MediaKey> results = addPageSizeAndNumber(
+		            getSession().createQuery(cq), pageSize, pageNumber)
+		           .getResultList();
+		    defaultBeanInitializer.initializeAll(results, propertyPaths);
+		    return deduplicateResult(results);
 		} else {
 			if((taxonomicScope == null || taxonomicScope.isEmpty()) && (geoScopes == null || geoScopes.isEmpty())) {
 				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(MediaKey.class,auditEvent.getRevisionNumber());
@@ -158,6 +160,7 @@ public class MediaDaoHibernateImpl
 		return results;
 	}
 
+    @Override
     public long countRights(Media media) {
 		checkNotInPriorView("MediaDaoHibernateImpl.countRights(Media t)");
 		Query<Long> query = getSession().createQuery("select count(rights) from Media media join media.rights rights where media = :media", Long.class);

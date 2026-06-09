@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,15 +28,13 @@ import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -55,7 +52,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -67,6 +63,7 @@ import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeWithoutSecQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 /**
  * @author a.mueller
@@ -139,37 +136,84 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 	}
 
 	@Override
-	public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, Integer start, Integer end) {
-		int classificationId = classification.getId();
-		String limit = "";
-		if(start !=null && end != null){
-		    limit = "LIMIT "+start+"," +end;
-		}
-		//FIXME write test
-        String queryString = "SELECT DISTINCT nodes.*,taxa.titleCache "
-                + " FROM TaxonNode AS nodes "
-                + "    LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id "
-                + " WHERE taxa.DTYPE = 'Taxon' "
-                + "    AND nodes.classification_id = " + classificationId +
-                  " ORDER BY taxa.titleCache " + limit;
-        @SuppressWarnings("unchecked")
-        List<TaxonNode> result  = getSession().createSQLQuery(queryString).addEntity(TaxonNode.class).list();
+	public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, Integer pageSize, Integer pageNumber) {
 
-        return result;
+	    CriteriaBuilder cb = getCriteriaBuilder();
+	    CriteriaQuery<TaxonNode> cq = cb.createQuery(TaxonNode.class);
+	    Root<TaxonNode> root = cq.from(TaxonNode.class);
+
+	    Predicate predicate = predicateNodesForClassification(cb, root, classification);
+
+	    List<OrderHint> orderHints = new ArrayList<>();
+	    orderHints.add(new OrderHint("id", SortOrder.ASCENDING));
+	    cq.select(root)
+	      .distinct(true)
+	      .where(predicate)
+	      .orderBy(ordersFrom(cb, root, orderHints));
+
+	    List<TaxonNode> results = addPageSizeAndNumber(
+	            getSession().createQuery(cq), pageSize, pageNumber)
+	           .getResultList();
+//	    defaultBeanInitializer.initializeAll(results, propertyPaths);
+	    return deduplicateResult(results);
+
+//	    int classificationId = classification.getId();
+//		String limit = "";
+////		if(start !=null && end != null){
+////		    limit = "LIMIT "+start+"," +end;
+////		}
+//
+//        String queryString = "SELECT DISTINCT nodes.*, taxa.titleCache "  //
+//                + " FROM TaxonNode AS nodes "
+//                + "    LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id "
+//                + " WHERE taxa.DTYPE = 'Taxon' "
+//                + "    AND nodes.classification_id = " + classificationId +
+//                  " ORDER BY taxa.titleCache " + limit;
+//
+//        NativeQuery<TaxonNode> q = getSession().createNativeQuery(queryString, TaxonNode.class);
+//        List result  = q
+//                .addEntity(TaxonNode.class)
+//                .list();
+//        //for some reason the short version does not work:
+////        List<TaxonNode> result = getSession().createNativeQuery(queryString, TaxonNode.class)
+////                .addEntity(TaxonNode.class).list();
+//
+//        return result;
 	}
 
     @Override
-    public int countTaxonOfAcceptedTaxaByClassification(Classification classification){
-        int classificationId = classification.getId();
-        //FIXME write test
-        String queryString = ""
-                + " SELECT DISTINCT COUNT('nodes.*') "
-                + " FROM TaxonNode AS nodes "
-                + "   LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id "
-                + " WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
-         @SuppressWarnings("unchecked")
-         List<BigInteger> result = getSession().createSQLQuery(queryString).list();
-         return result.get(0).intValue ();
+    public long countTaxonOfAcceptedTaxaByClassification(Classification classification){
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<TaxonNode> root = cq.from(TaxonNode.class);
+
+        Predicate predicate = predicateNodesForClassification(cb, root, classification);
+
+        cq.select(cb.countDistinct(root))
+          .where(predicate);
+
+        return getSession().createQuery(cq).getSingleResult();
+
+//        int classificationId = classification.getId();
+//        //FIXME write test
+//        String queryString = ""
+//                + " SELECT DISTINCT COUNT('nodes.*') "
+//                + " FROM TaxonNode AS nodes "
+//                + "   LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id "
+//                + " WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
+//         List<BigInteger> result = getSession().createNativeQuery(queryString, BigInteger.class).list();
+//         return result.get(0).intValue ();
+    }
+
+    private Predicate predicateNodesForClassification(CriteriaBuilder cb, Root<TaxonNode> root,
+            Classification classification) {
+
+        Predicate result = cb.and(
+                cb.equal(root.get("classification"), classification),
+                cb.isNotNull(root.get("taxon"))
+                );
+        return result;
     }
 
     @Override
@@ -457,39 +501,26 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
     }
 
     @Override
-    public <S extends TaxonNode> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished) {
+    public <S extends TaxonNode> List<S> list(Class<S> clazz, List<Restriction<?>> restrictions, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished) {
 
-        Criteria criteria = createCriteria(type, restrictions, false);
-
-        if(!includePublished){
-            criteria.add(Restrictions.eq("taxon.publish", true));
-        }
-
-        addLimitAndStart(criteria, limit, start);
-        addOrder(criteria, orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
-        return result;
+        String path = "taxon";
+        restrictions = addPublishOnlyRestriction(restrictions, includeUnpublished, path);
+        return super.list(clazz, restrictions, limit, start, orderHints, propertyPaths);
     }
 
     @Override
-    public long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions) {
+    public <S extends TaxonNode> long count(Class<S> type, List<Restriction<?>> restrictions) {
         return count(type, restrictions, INCLUDE_UNPUBLISHED);
     }
 
 
     @Override
-    public long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions, boolean includePublished) {
+    public long count(Class<? extends TaxonNode> clazz, List<Restriction<?>> restrictions, boolean includeUnpublished) {
 
-        Criteria criteria = createCriteria(type, restrictions, false);
-        if(!includePublished){
-            criteria.add(Restrictions.eq("taxon.publish", true));
-        }
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return (Long) criteria.uniqueResult();
+        String path = "taxon";
+        restrictions = addPublishOnlyRestriction(restrictions, includeUnpublished, path);
+        return super.count(clazz, restrictions);
     }
 
     @Override
@@ -628,7 +659,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             query.setParameter("maxOrderIndex", maxRankOrderIndex);
         }
 
-        @SuppressWarnings("unchecked")
         List<Object[]> list = query.list();
         for (Object[] o : list){
             result.put(TreeIndex.NewInstance((String)o[0]), (Integer)o[1]);
@@ -659,7 +689,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
     @Override
     public List<TaxonNodeDto> getParentTaxonNodeDtoForRank(
-            Classification classification, Rank rank, TaxonBase<?> taxonBase) {
+            Classification classification, Rank rank, TaxonBase taxonBase) {
 
         Taxon taxon = null;
         if (taxonBase instanceof Taxon) {
@@ -707,7 +737,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
     	Set<TaxonBase> taxa = name.getTaxonBases();
     	List<TaxonNodeDto> result = new ArrayList<>();
-    	for (TaxonBase<?> taxonBase:taxa) {
+    	for (TaxonBase taxonBase:taxa) {
     	    List<TaxonNodeDto> tmpList = getParentTaxonNodeDtoForRank(classification, rank, taxonBase);
     	    for (TaxonNodeDto tmpDto : tmpList){
     	        boolean exists = false; //an equal method does not yet exist for TaxonNodeDto therefore this workaround
@@ -791,7 +821,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         return setSecundum(newSec, emptyDetail, queryStr, monitor);
     }
 
-    private <T extends TaxonBase<?>> Set<CdmBase> setSecundum(Reference newSec, boolean emptyDetail, String queryStr, IProgressMonitor monitor) {
+    private <T extends TaxonBase> Set<CdmBase> setSecundum(Reference newSec, boolean emptyDetail, String queryStr, IProgressMonitor monitor) {
         Set<CdmBase> result = new HashSet<>();
         Query<Integer> query = getSession().createQuery(queryStr, Integer.class);
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
@@ -975,7 +1005,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         return setPublish(publish, queryStr, relationTypes, monitor);
     }
 
-    private <T extends TaxonBase<?>> Set<T> setPublish(boolean publish, String queryStr, Set<UUID> relTypeUuids, IProgressMonitor monitor) {
+    private <T extends TaxonBase> Set<T> setPublish(boolean publish, String queryStr, Set<UUID> relTypeUuids, IProgressMonitor monitor) {
         Set<T> result = new HashSet<>();
         Query<Integer> query = getSession().createQuery(queryStr, Integer.class);
         query.setParameter("publish", publish);

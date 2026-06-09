@@ -822,7 +822,7 @@ public class ClassificationServiceImpl
 
         TaxonInContextDTO result = new TaxonInContextDTO();
 
-        TaxonBase<?> taxonBase = taxonDao.load(taxonBaseUuid);
+        TaxonBase taxonBase = taxonDao.load(taxonBaseUuid);
         if (taxonBase == null){
             throw new EntityNotFoundException("Taxon with uuid " + taxonBaseUuid + " not found in datasource");
         }

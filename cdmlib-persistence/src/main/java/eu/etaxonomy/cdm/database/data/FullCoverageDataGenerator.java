@@ -15,13 +15,13 @@ import java.util.UUID;
 
 import org.hibernate.Session;
 import org.joda.time.DateTime;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Address;
-import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.ORCID;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -176,6 +176,8 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 public class FullCoverageDataGenerator {
 
+    private BCryptPasswordEncoder passwordEncoder  = new BCryptPasswordEncoder();
+
 	public void fillWithData(Session session){
 
 	    List<CdmBase> entitiesToSave = new ArrayList<>();
@@ -215,7 +217,6 @@ public class FullCoverageDataGenerator {
 
 		Annotation annotation = Annotation.NewDefaultLanguageInstance("annotation");
 		media.addAnnotation(annotation);
-		handleAnnotatableEntity(annotation);
 
 		Person creditedPerson = createNewPerson("Credited person", entitiesToSave);
 		Credit credit = Credit.NewInstance(creditedPerson, TimePeriodParser.parseString("22.4.2022-12.5.2023"),
@@ -236,7 +237,7 @@ public class FullCoverageDataGenerator {
 			e.printStackTrace();
 		}
 
-		User user = User.NewInstance("myUser", "12345");
+		User user = User.NewInstance("myUser", passwordEncoder.encode("12345"));
 		Group group = Group.NewInstance("MyGroup");
 		group.addMember(user);
 		CdmAuthority authority = CdmAuthority.NewInstance(PermissionClass.TAXONNAME,
@@ -244,6 +245,7 @@ public class FullCoverageDataGenerator {
 		group.addAuthority(authority);
 		Role role = Role.NewInstance("my role");
 		user.addAuthority(role);
+
 
 		entitiesToSave.add(user);
 		entitiesToSave.add(group);
@@ -267,17 +269,10 @@ public class FullCoverageDataGenerator {
 		handleIdentifiableEntity(person, entitiesToSave);
 
 		//Contact
-		Contact contact = Contact.NewInstance();
-		person.setContact(contact);
 		Point locality = Point.NewInstance(45.12, -38.69, ReferenceSystem.WGS84(), 22);
-		contact.addEmailAddress("a@b.de");
-		contact.addFaxNumber("f:010-123456");
-		contact.addPhoneNumber("p:090-987654");
-		contact.addUrl(URI.create("http://www.abc.de"));
 
 		//Address
 		Address address = Address.NewInstance(Country.GERMANY(), "locality", "pobox", "12345", "region", "street", locality);
-		contact.addAddress(address);
 
 		//Team
 		Team team = Team.NewTitledInstance("Team title", "Team abbrev title");
@@ -824,10 +819,6 @@ public class FullCoverageDataGenerator {
 		mediaSpecimen.setCatalogNumber("catalogNumber");
 		mediaSpecimen.setAccessionNumber("accessionNumber");
 		mediaSpecimen.setBarcode("barcode");
-		TaxonName storedUnder = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-		storedUnder.setTitleCache("Stored under", true);
-		entitiesToSave.add(storedUnder);
-		mediaSpecimen.setStoredUnder(storedUnder);
 		mediaSpecimen.setExsiccatum("exsiccatum");
 		PreservationMethod preservation = PreservationMethod.NewInstance(null, "My preservation");
 		preservation.setTemperature(22.4);
@@ -885,7 +876,8 @@ public class FullCoverageDataGenerator {
 		botName.setGenusOrUninomial("Genus");
 		botName.setInfraGenericEpithet("InfraGeneric");
 		botName.setSpecificEpithet("specificEpithet");
-		botName.setInfraSpecificEpithet("infraSpecificEpithet");
+		botName.setInfraSpecificEpithet("specificEpithet");
+		botName.setAutonymFlag(true);
 		Person combinationAuthorship = createNewPerson("comb author", entitiesToSave);
 		botName.setCombinationAuthorship(combinationAuthorship);
 		Person exCombinationAuthorship = createNewPerson("excomb author", entitiesToSave);
@@ -945,7 +937,7 @@ public class FullCoverageDataGenerator {
 		Registration blockingRegistration = Registration.NewInstance();
 		registration.addBlockedBy(blockingRegistration);
 		registration.setRegistrationCenter(createNewInstitution(entitiesToSave));
-		User submitter = User.NewInstance("submitter", "12345");
+		User submitter = User.NewInstance("submitter", passwordEncoder.encode("12345"));
 		registration.setSubmitter(submitter);
 		handleAnnotatableEntity(registration);
 

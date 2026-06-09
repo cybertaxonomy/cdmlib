@@ -12,7 +12,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -47,53 +46,91 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 @Deprecated
 public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {
 
-	DerivedUnit specimen;
-	DerivationEvent derivationEvent;
-	FieldUnit fieldUnit;
-	GatheringEvent gatheringEvent;
-	Integer absoluteElevation = 40;
-	Integer absoluteElevationError = 2;
-	Team collector = Team.NewInstance();
-	String collectingMethod = "Collection Method";
-	Double distanceToGround = 22.0;
-	Double distanceToSurface = 50.0;
-	ReferenceSystem referenceSystem = ReferenceSystem.WGS84();
-	Point exactLocation = Point.NewInstance(12.3, 10.567, referenceSystem, 22);
-	String gatheringEventDescription = "A nice gathering description";
-	TimePeriod gatheringPeriod = TimePeriodParser.parseString("03.05.2005");
-	String ecology = "sand dunes";
-	String plantDescription = "flowers blue";
+	@Deprecated
+    DerivedUnit specimen;
+	@Deprecated
+    DerivationEvent derivationEvent;
+	@Deprecated
+    FieldUnit fieldUnit;
+	@Deprecated
+    GatheringEvent gatheringEvent;
+	@Deprecated
+    Integer absoluteElevation = 40;
+	@Deprecated
+    Integer absoluteElevationError = 2;
+	@Deprecated
+    Team collector = Team.NewInstance();
+	@Deprecated
+    String collectingMethod = "Collection Method";
+	@Deprecated
+    Double distanceToGround = 22.0;
+	@Deprecated
+    Double distanceToSurface = 50.0;
+	@Deprecated
+    ReferenceSystem referenceSystem = ReferenceSystem.WGS84();
+	@Deprecated
+    Point exactLocation = Point.NewInstance(12.3, 10.567, referenceSystem, 22);
+	@Deprecated
+    String gatheringEventDescription = "A nice gathering description";
+	@Deprecated
+    TimePeriod gatheringPeriod = TimePeriodParser.parseString("03.05.2005");
+	@Deprecated
+    String ecology = "sand dunes";
+	@Deprecated
+    String plantDescription = "flowers blue";
 
-	String fieldNumber = "5678";
-	String fieldNotes = "such a beautiful specimen";
-	Person primaryCollector;
+	@Deprecated
+    String fieldNumber = "5678";
+	@Deprecated
+    String fieldNotes = "such a beautiful specimen";
+	@Deprecated
+    Person primaryCollector;
 
-	String individualCount = "1";
-	DefinedTerm lifeStage = DefinedTerm.NewStageInstance("A wonderful stage", "stage", "st");
-	DefinedTerm sex = DefinedTerm.NewSexInstance("FemaleMale", "FM", "FM");
-	LanguageString locality = LanguageString.NewInstance("Berlin-Dahlem, E side of Englerallee", Language.DEFAULT());
-	NamedArea country = Country.GERMANY();
+	@Deprecated
+    String individualCount = "1";
+	@Deprecated
+    DefinedTerm lifeStage = DefinedTerm.NewStageInstance("A wonderful stage", "stage", "st");
+	@Deprecated
+    DefinedTerm sex = DefinedTerm.NewSexInstance("FemaleMale", "FM", "FM");
+	@Deprecated
+    LanguageString locality = LanguageString.NewInstance("Berlin-Dahlem, E side of Englerallee", Language.DEFAULT());
+	@Deprecated
+    NamedArea country = Country.GERMANY();
 
-	String exsiccatum = "Greuter, Pl. Dahlem. 456";
-	String accessionNumber = "8909756";
-	String catalogNumber = "UU879873590";
-	TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
-	String collectorsNumber = "234589913A34";
-	Collection collection = Collection.NewInstance();
+	@Deprecated
+    String exsiccatum = "Greuter, Pl. Dahlem. 456";
+	@Deprecated
+    String accessionNumber = "8909756";
+	@Deprecated
+    String catalogNumber = "UU879873590";
+	@Deprecated
+    TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
+	@Deprecated
+    String collectorsNumber = "234589913A34";
+	@Deprecated
+    Collection collection = Collection.NewInstance();
 
-	PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
+	@Deprecated
+    PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
 
-	DerivedUnitFacade specimenFacade;
+	@Deprecated
+    DerivedUnitFacade specimenFacade;
 
-	DerivedUnit collectionSpecimen;
-	GatheringEvent existingGatheringEvent;
-	DerivationEvent firstDerivationEvent;
-	FieldUnit firstFieldObject;
-	Media media1 = Media.NewInstance();
+	@Deprecated
+    DerivedUnit collectionSpecimen;
+	@Deprecated
+    GatheringEvent existingGatheringEvent;
+	@Deprecated
+    DerivationEvent firstDerivationEvent;
+	@Deprecated
+    FieldUnit firstFieldObject;
+	@Deprecated
+    Media media1 = Media.NewInstance();
 
 //****************************** SET UP *****************************************/
 
-	@Before
+	@Deprecated
+    @Before
 	public void setUp() throws Exception {
 		specimen = DerivedUnit.NewPreservedSpecimenInstance();
 
@@ -133,7 +170,6 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {
 
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);
-		specimen.setStoredUnder(taxonName);
 		specimen.setCollection(collection);
 		specimen.setPreservation(preservationMethod);
 		specimen.setExsiccatum(exsiccatum);
@@ -157,7 +193,8 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {
 		firstFieldObject.setGatheringEvent(existingGatheringEvent);
 	}
 
-	@Test
+	@Deprecated
+    @Test
 	public void testGetTitleCache() {
 		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; flowers blue";
 		specimenFacade.setEcology(ecology);

@@ -136,7 +136,6 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
         TaxonNode taxNode3 = taxonNodeDao.load(uuid3, TAXONNODE_INIT_STRATEGY);
 
-        @SuppressWarnings("rawtypes")
         List<TaxonBase> taxa = taxonDao.list(10, 0);
         assertEquals("there should be 7 taxa", 7, taxa.size());
         taxNode3 = CdmBase.deproxy(taxNode3);
@@ -266,8 +265,8 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertNotNull("findByUuid should return a taxon tree", classification);
         assertNotNull("classification should have a name",classification.getName());
         assertEquals("classification should have a name which is 'Name'",classification.getName().getText(),"Name");
-        TaxonNode taxNode = taxonNodeDao.load(uuid1,TAXONNODE_INIT_STRATEGY);
-        TaxonNode taxNode2 = taxonNodeDao.load(uuid2,TAXONNODE_INIT_STRATEGY);
+        TaxonNode taxNode = taxonNodeDao.load(uuid1, TAXONNODE_INIT_STRATEGY);
+        TaxonNode taxNode2 = taxonNodeDao.load(uuid2, TAXONNODE_INIT_STRATEGY);
 
         TaxonNode taxNode3 = taxonNodeDao.load(uuid3, TAXONNODE_INIT_STRATEGY);
         Taxon taxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null);
@@ -282,17 +281,17 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         child = taxNode3.addChildTaxon(taxon2, null, null);
         taxonNodeDao.saveOrUpdate(child);
 
-        List<TaxonNode> taxas = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, null, null);
-        assertEquals("there should be 7 taxa left", 7, taxas.size());
+        List<TaxonNode> taxa = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, null, null);
+        assertEquals("there should be 7 taxa left", 7, taxa.size());
         commitAndStartNewTransaction(null);
 
-        taxas = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, 0, 10);
-        logger.info(taxas.size());
-        assertEquals("there should be 7 taxa left", 7, taxas.size());
+        taxa = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, 10, 0);
+        logger.info(taxa.size());
+        assertEquals("there should be 7 taxa left", 7, taxa.size());
 
-        int countTaxa = taxonNodeDao.countTaxonOfAcceptedTaxaByClassification(classification);
+        long countTaxa = taxonNodeDao.countTaxonOfAcceptedTaxaByClassification(classification);
         logger.info(countTaxa);
-        assertEquals("there should be 7 taxa left", 7, countTaxa);
+        assertEquals("there should be 7 taxa left", 7l, countTaxa);
     }
 
     @Test

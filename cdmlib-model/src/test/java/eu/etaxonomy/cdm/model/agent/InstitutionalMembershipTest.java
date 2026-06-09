@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.agent;
 
 import java.util.GregorianCalendar;
 
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +28,7 @@ public class InstitutionalMembershipTest {
 
 		mship = InstitutionalMembership.NewInstance();
 
-		mship.setPerson(new Person("Steve", "Miller", "Mil."));
+		mship.setPerson(Person.NewInstance("Mil.", "Miller", null, "Steve"));
 		GregorianCalendar joined = new GregorianCalendar(1967, 4, 23);
 		GregorianCalendar resigned = new GregorianCalendar(1999, 0, 10);
 		mship.setPeriod(TimePeriod.NewInstance(joined, resigned));

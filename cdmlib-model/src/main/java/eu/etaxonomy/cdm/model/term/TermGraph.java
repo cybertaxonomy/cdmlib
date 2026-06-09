@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.term;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -18,7 +19,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +35,7 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "TermTree")
 @Entity
 @Audited
-public class TermGraph <T extends DefinedTermBase>
+public class TermGraph<T extends DefinedTermBase>
         extends TermGraphBase<T, TermRelation<T>> {
 
 	private static final long serialVersionUID = -6713834139003172735L;

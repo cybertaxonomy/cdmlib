@@ -11,12 +11,12 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
 import org.springframework.security.provisioning.GroupManager;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -32,7 +32,7 @@ public interface IGroupService extends IService<Group>, GroupManager{
      *
      * @param queryString the query string to filter by
      * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-     * @param criteria additional criteria to filter by
+     * @param filter additional filters to apply to the query (can be null)
      * @param pageSize The maximum number of objects returned (can be null for all objects)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
@@ -44,7 +44,14 @@ public interface IGroupService extends IService<Group>, GroupManager{
      *
      * @see {@link IIdentifiableEntityService#listByTitle(Class, String, MatchMode, List, Integer, Integer, List, List)}
      */
-    public List<Group> listByName(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<Group> listByName(String queryString, MatchMode matchmode, List<EntityFilter<Group>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Returns the group with the given group name or <code>null</code> if such a group
+     * does not exist.
+     */
+    public Group loadByName(String name);
 
     public UUID saveGroup(Group group);
 
@@ -53,12 +60,6 @@ public interface IGroupService extends IService<Group>, GroupManager{
      * @param username
      */
     public boolean groupExists(String groupName);
-
-    /**
-     * Returns the group with the given group name or <code>null</code> if such a user
-     * does not exist.
-     */
-    public Group findGroup(String groupName);
 
     /**
      * @param groupUUID

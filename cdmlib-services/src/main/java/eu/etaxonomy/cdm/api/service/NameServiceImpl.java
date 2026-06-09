@@ -30,11 +30,13 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
-import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.TypeDesignationStatusFilter;
@@ -89,7 +91,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
@@ -99,7 +100,6 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -502,8 +502,8 @@ public class NameServiceImpl
      * new name getNomenclaturalStatus
      */
     @Override
-    public List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start){
-        return nomStatusDao.list(limit, start);
+    public List<NomenclaturalStatus> getAllNomenclaturalStatus(int pageSize, int pageNumber){
+        return nomStatusDao.list(pageSize, pageNumber);
     }
 
     @Override
@@ -548,8 +548,8 @@ public class NameServiceImpl
      * homotypicalGroupService.list
      */
     @Override
-    public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start){
-        return homotypicalGroupDao.list(limit, start);
+    public List<HomotypicalGroup> getAllHomotypicalGroups(int pageSize, int pageNumber){
+        return homotypicalGroupDao.list(pageSize, pageNumber);
     }
 
 
@@ -706,9 +706,10 @@ public class NameServiceImpl
 
         fltq.addTerms(name, "nameCache", accuracy, 3);
 
-         BooleanQuery finalQuery = new BooleanQuery(false);
-
-         finalQuery.add(fltq, Occur.MUST);
+        BooleanQuery finalQuery = new BooleanQuery.Builder()
+                .setDisableCoord(false)
+                .add(fltq, Occur.MUST)
+                .build();
 
         luceneSearch.setQuery(finalQuery);
 
@@ -892,7 +893,7 @@ public class NameServiceImpl
      * rename search
      */
     @Override
-    public Pager<TaxonName> searchNames(String uninomial,String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints,
+    public Pager<TaxonName> searchNames(String uninomial, String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
         long numberOfResults = dao.countNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank);
 
@@ -905,32 +906,28 @@ public class NameServiceImpl
     }
 
     @Override
-    public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern) {
-        return dao.getUuidAndTitleCacheOfNames(limit, pattern);
+    public Pager<TaxonName> findByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
+            List<EntityFilter<TaxonName>> filter, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Long numberOfResults = dao.countByName(clazz, queryString, matchmode, filter);
+
+        List<TaxonName> results = new ArrayList<>();
+        if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+               results = dao.findByName(clazz, queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
+        }
+
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
-    public Pager<TaxonName> findByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria,
-            Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
-         Long numberOfResults = dao.countByName(clazz, queryString, matchmode, criteria);
+    public List<TaxonName> findByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
+            List<EntityFilter<TaxonName>> filter, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+         Long numberOfResults = dao.countByFullTitle(clazz, queryString, matchmode, filter);
 
          List<TaxonName> results = new ArrayList<>();
          if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-                results = dao.findByName(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
-         }
-
-         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
-    }
-
-    @Override
-    public List<TaxonName> findByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria,
-            Integer pageSize,Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-
-         Long numberOfResults = dao.countByFullTitle(clazz, queryString, matchmode, criteria);
-
-         List<TaxonName> results = new ArrayList<>();
-         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-                results = dao.findByFullTitle(queryString, matchmode, pageSize, pageNumber, criteria, propertyPaths);
+                results = dao.findByFullTitle(queryString, matchmode, filter, pageSize, pageNumber, propertyPaths);
          }
 
          return results;
@@ -1015,17 +1012,9 @@ public class NameServiceImpl
         }
         Set<CdmBase> referencingObjects = genericDao.getReferencingObjectsForDeletion(name);
         for (CdmBase referencingObject : referencingObjects){
-            //DerivedUnit?.storedUnder
-            if (referencingObject.isInstanceOf(DerivedUnit.class)){
-                String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
-                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
-                result.addException(new ReferencedObjectUndeletableException(message));
-                result.addRelatedObject(referencingObject);
-                result.setAbort();
-            }
 
             //DescriptionElementSource#nameUsedInSource
-            else if (referencingObject.isInstanceOf(DescriptionElementSource.class) && !referencingObject.isInstanceOf(NomenclaturalSource.class) ){
+            if (referencingObject.isInstanceOf(DescriptionElementSource.class) && !referencingObject.isInstanceOf(NomenclaturalSource.class) ){
                 String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(referencingObject);
@@ -1107,7 +1096,8 @@ public class NameServiceImpl
     }
 
     @Override
-    public List<HashMap<String,String>> getNameRecords(){
+    @Deprecated //only used by csv export, use property path method instead
+    public List<Map<String,String>> getNameRecords(){
 		return dao.getNameRecords();
     }
 
@@ -1152,7 +1142,7 @@ public class NameServiceImpl
     public List<UuidAndTitleCache> getUuidAndTitleCacheOfSynonymy(Integer limit, UUID taxonUuid) {
         List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("synonyms.name.*");
-        TaxonBase<?> taxonBase = taxonService.load(taxonUuid, propertyPaths);
+        TaxonBase taxonBase = taxonService.load(taxonUuid, propertyPaths);
         if (taxonBase instanceof Taxon){
             Taxon taxon = (Taxon)taxonBase;
             Set<TaxonName> names = taxon.getSynonymNames();

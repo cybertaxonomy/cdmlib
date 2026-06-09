@@ -33,11 +33,11 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
 /**
  *
  * The upmost interface for taxon names.
- * <P>
+ * <p/>
  * This class corresponds partially to: <ul>
- * <li> TaxonName according to the TDWG ontology
- * <li> ScientificName and CanonicalName according to the TCS
- * <li> ScientificName according to the ABCD schema
+ * <li> TaxonName according to the TDWG ontology</li>
+ * <li> ScientificName and CanonicalName according to the TCS</li>
+ * <li> ScientificName according to the ABCD schema</li>
  * </ul>
  *
  * ITaxonNameBase and it's extensions should only be used for type safety

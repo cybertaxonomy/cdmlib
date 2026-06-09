@@ -13,7 +13,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
@@ -49,7 +48,7 @@ public class TaxonComparatorTest extends TermTestBase {
     @Test
     public void testCompare() {
 
-        List<TaxonBase<?>> list = createTestData();
+        List<TaxonBase> list = createTestData();
         Collections.sort(list, new TaxonComparator());
 
         //Order should be
@@ -69,7 +68,7 @@ public class TaxonComparatorTest extends TermTestBase {
         Assert.assertEquals(getYear(list.get(4)), "");
     }
 
-    private List<TaxonBase<?>> createTestData() {
+    private List<TaxonBase> createTestData() {
         Reference sec = ReferenceFactory.newBook();
 
         Reference ref1 = ReferenceFactory.newArticle();
@@ -116,7 +115,7 @@ public class TaxonComparatorTest extends TermTestBase {
        // botName3.setNomenclaturalReference(ref3);
         zooName1.setPublicationYear(1823);
 
-        List<TaxonBase<?>> list = new ArrayList<TaxonBase<?>>();
+        List<TaxonBase> list = new ArrayList<>();
 
         Taxon taxon1 = Taxon.NewInstance(botName1, sec);
         Taxon taxon2 = Taxon.NewInstance(botName2, sec);
@@ -139,12 +138,12 @@ public class TaxonComparatorTest extends TermTestBase {
     }
 
     private List<TaxonNode> createTestDataWithTaxonNodes(){
-        List<TaxonBase<?>> taxa = createTestData();
+        List<TaxonBase> taxa = createTestData();
         List<TaxonNode> result = new ArrayList<>();
         TaxonNode node;
         Classification classification = Classification.NewInstance("TestClassification");
         int index = 0;
-        for (TaxonBase<?> taxon: taxa){
+        for (TaxonBase taxon: taxa){
             if (taxon instanceof Taxon){
                 node = classification.addChildTaxon((Taxon)taxon, null, null);
                 node.setId(++index);
@@ -154,7 +153,7 @@ public class TaxonComparatorTest extends TermTestBase {
         return result;
     }
 
-    private String getYear(TaxonBase<?> taxon) {
+    private String getYear(TaxonBase taxon) {
         String year = "";
         TaxonName tn = taxon.getName();
         if (tn.isZoological()){

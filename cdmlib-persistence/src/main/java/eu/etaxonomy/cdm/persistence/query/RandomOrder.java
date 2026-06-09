@@ -9,8 +9,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.internal.util.StringHelper;
 
-import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
-
+import eu.etaxonomy.cdm.persistence.common.OperationNotSupportedInPriorViewException;
 
 public class RandomOrder extends OrderHint {
 
@@ -27,13 +26,12 @@ public class RandomOrder extends OrderHint {
 	}
 
 	public class RandomHibernateOrder extends Order {
-		private static final long serialVersionUID = 8231534219451938847L;
 
+		private static final long serialVersionUID = 8231534219451938847L;
 
 		protected RandomHibernateOrder() {
 			super(RandomOrder.PROPERTY_NAME, true);
 		}
-
 
 		@Override
 		public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery)

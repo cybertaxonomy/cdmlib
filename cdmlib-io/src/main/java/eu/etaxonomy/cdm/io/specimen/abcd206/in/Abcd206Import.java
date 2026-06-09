@@ -622,7 +622,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             unitsGatheringArea.setAreas(state.getDataHolder().getNamedAreaList(), (state.getConfig()),
                     cdmAppController.getTermService(), cdmAppController.getVocabularyService());
 
-            ArrayList<DefinedTermBase> nas = unitsGatheringArea.getAreas();
+            List<DefinedTermBase> nas = unitsGatheringArea.getAreas();
             for (DefinedTermBase namedArea : nas) {
                 unitsGatheringEvent.addArea(namedArea);
             }

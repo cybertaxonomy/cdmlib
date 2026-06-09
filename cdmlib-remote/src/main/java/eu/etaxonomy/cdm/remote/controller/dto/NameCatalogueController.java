@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -64,7 +65,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
@@ -803,7 +803,7 @@ public class NameCatalogueController
             logger.info("doGetTaxonInformation()" + request.getRequestURI() + " for taxon uuid \""
                     + taxonUuid);
             // find name by uuid
-            TaxonBase<?> tb = taxonService.findTaxonByUuid(UUID.fromString(taxonUuid),
+            TaxonBase tb = taxonService.findTaxonByUuid(UUID.fromString(taxonUuid),
                     TAXON_INFORMATION_INIT_STRATEGY);
 
             // if search is successful then get related information, else return error
@@ -1455,10 +1455,10 @@ public class NameCatalogueController
         return builder.toString();
     }
 
-    private List<Classification> getClassificationList(int limit) {
+    private List<Classification> getClassificationList(int pageSize) {
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
-        List<Classification> clist = classificationService.listClassifications(limit, 0, orderHints, VOC_CLASSIFICATION_INIT_STRATEGY);
+        List<Classification> clist = classificationService.listClassifications(pageSize, 0, orderHints, VOC_CLASSIFICATION_INIT_STRATEGY);
         return clist;
     }
 

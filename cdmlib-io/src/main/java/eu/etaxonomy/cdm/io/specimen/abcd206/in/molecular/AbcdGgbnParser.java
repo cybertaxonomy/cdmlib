@@ -18,6 +18,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportState;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.AbcdParseUtility;
@@ -37,11 +38,9 @@ import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author pplitzner
@@ -183,8 +182,8 @@ public class AbcdGgbnParser {
                         }
                         else{
                             dnaMarker = DefinedTerm.NewDnaMarkerInstance(amplificationMarker, amplificationMarker, amplificationMarker);
-                            List<TermVocabulary<DefinedTermBase>> vocs = cdmAppController.getVocabularyService().findByTermType(TermType.DnaMarker, null);
-                            TermVocabulary<DefinedTermBase> voc = null;
+                            List<TermVocabulary<DefinedTerm>> vocs = (List)cdmAppController.getVocabularyService().findByTermType(TermType.DnaMarker, null);
+                            TermVocabulary<DefinedTerm> voc = null;
 
                             if (vocs == null || vocs.size() == 0 ){
                                 voc = TermVocabulary.NewInstance(TermType.DnaMarker);
@@ -223,7 +222,8 @@ public class AbcdGgbnParser {
                 }
             }
             //check if amplification already exists (can only be checked after all fields are initialized because comparison is done on the label cache))
-            List<Amplification> matchingAmplifications = cdmAppController.getAmplificationService().findByLabelCache(amplification.getLabelCache(), MatchMode.EXACT, null, null, null, null, null).getRecords();
+            List<Amplification> matchingAmplifications = cdmAppController.getAmplificationService()
+                    .findByLabelCache(amplification.getLabelCache(), MatchMode.EXACT, null, null, null, null, null).getRecords();
             if(matchingAmplifications.size()==1){
                 amplification = matchingAmplifications.iterator().next();
             }
@@ -339,7 +339,8 @@ public class AbcdGgbnParser {
                     //primer name
                     String primerName = AbcdParseUtility.parseFirstTextContent(sequencingPrimer.getElementsByTagName(prefix+"primerName"));
                     //check if primer already exists
-                    List<Primer> matchingPrimers = cdmAppController.getPrimerService().findByLabel(primerName, MatchMode.EXACT, null, null, null, null, null).getRecords();
+                    List<Primer> matchingPrimers = cdmAppController.getPrimerService().findByLabel(
+                            primerName, MatchMode.EXACT, null, null, null, null, null).getRecords();
                     Primer primer = null;
                     if(matchingPrimers.size()==1){
                         primer = matchingPrimers.iterator().next();

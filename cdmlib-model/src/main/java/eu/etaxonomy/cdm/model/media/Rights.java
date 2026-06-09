@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase;
 
 /**
  * Typically, rights information includes a statement about various property
@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 @Entity
 @Audited
 @Table(name = "RightsInfo")  //to avoid conflicts with reserved database words
-public class Rights extends LanguageStringBase {
+public class Rights extends AnnotatableLanguageStringBase {
 
 	private static final long serialVersionUID = 4920749849951432284L;
 	@SuppressWarnings("unused")

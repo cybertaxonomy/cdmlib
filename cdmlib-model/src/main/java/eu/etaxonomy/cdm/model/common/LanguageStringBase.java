@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 
 /**
  * @author a.mueller
- * @since 25.04.2008
+ * @since 23.04.2026
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LanguageStringBase", propOrder = {
@@ -49,7 +49,9 @@ import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 })
 @MappedSuperclass
 @Audited
-public abstract class LanguageStringBase extends AnnotatableEntity{
+public abstract class LanguageStringBase
+        extends VersionableEntity
+        implements ILanguageString {
 
     private static final long serialVersionUID = -1892526642162438277L;
     @SuppressWarnings("unused")

@@ -162,26 +162,6 @@ public interface IOccurrenceService
     public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
-     * Returns a count of determinations that have been made for a given occurence and for a given taxon concept
-     *
-     * @param occurence the occurence associated with these determinations (can be null for all occurrences)
-     * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
-     * @return a count of determination events
-     */
-    public long countDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase);
-
-    /**
-     * Returns a List of determinations that have been made for a given occurence
-     *
-     * @param occurence the occurence associated with these determinations (can be null for all occurrences)
-     * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
-     * @param pageSize The maximum number of determinations returned (can be null for all related determinations)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @return a Pager of determination instances
-     */
-    public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, TaxonBase taxonBase, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
-    /**
      * Returns a list of derivation events that have involved creating new DerivedUnits from this occurence
      *
      * @param occurence the occurence that was a source of these derivation events
@@ -433,13 +413,13 @@ public interface IOccurrenceService
      * @param propertyPaths
      * @return a collection of associated taxa
      */
-    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+    public Collection<TaxonBase> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Retrieves all associated taxa for the given specimen (via type designations, determination, individuals associations)
      */
-    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+    public Collection<TaxonBase> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -451,7 +431,7 @@ public interface IOccurrenceService
      * @param propertyPaths
      * @return collection of all taxa the given specimen is determined as
      */
-    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+    public Collection<TaxonBase> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -475,7 +455,7 @@ public interface IOccurrenceService
      * @param propertyPaths
      * @return a collection of all taxa where the given specimen is the type specimen
      */
-    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, boolean includeUnpublished,
+    public Collection<TaxonBase> listTypeDesignationTaxa(DerivedUnit specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**

@@ -25,12 +25,12 @@ public class CdmSecurityHibernateInterceptorTest extends Assert {
     public void testUnprotectedCacheFields_unprotected() {
         CdmSecurityHibernateInterceptor interceptor = new CdmSecurityHibernateInterceptor();
         Object[] previousState = new Object[]{
-                new Boolean(false),
+                Boolean.valueOf(false),
                 ""
 
         };
         Object[] currentState = new Object[]{
-                new Boolean(false),
+                Boolean.valueOf(false),
                 null
 
         };
@@ -49,12 +49,12 @@ public class CdmSecurityHibernateInterceptorTest extends Assert {
     public void testUnprotectedCacheFields_protected() {
         CdmSecurityHibernateInterceptor interceptor = new CdmSecurityHibernateInterceptor();
         Object[] previousState = new Object[]{
-                new Boolean(true),
+                Boolean.valueOf(true),
                 ""
 
         };
         Object[] currentState = new Object[]{
-                new Boolean(true),
+                Boolean.valueOf(true),
                 null
 
         };
@@ -71,12 +71,12 @@ public class CdmSecurityHibernateInterceptorTest extends Assert {
     public void testUnprotectedCacheFields_currentStateDifferent() {
         CdmSecurityHibernateInterceptor interceptor = new CdmSecurityHibernateInterceptor();
         Object[] previousState = new Object[]{
-                new Boolean(false),
+                Boolean.valueOf(false),
                 ""
 
         };
         Object[] currentState = new Object[]{
-                new Boolean(true),
+                Boolean.valueOf(true),
                 null
 
         };

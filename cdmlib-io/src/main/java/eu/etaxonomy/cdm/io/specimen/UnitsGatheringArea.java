@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -41,7 +42,6 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author p.kelbert
@@ -55,17 +55,10 @@ public class UnitsGatheringArea {
 
     private final ArrayList<DefinedTermBase> areas = new ArrayList<>();
 
-    private boolean useTDWGarea = false;
-
     private TermVocabulary<NamedArea> continentVocabulary = null;
-    private TermVocabulary<Country> countryVocabulary = null;
     private TermVocabulary<NamedArea> specimenImportAreaVocabulary = null;
 
     private DefinedTermBase<?> wbc;
-
-    public UnitsGatheringArea(){
-        //
-    }
 
     public void setParams(String isoCountry, String country, ImportConfiguratorBase<?, ?> config,
             ITermService termService, IVocabularyService vocService){
@@ -74,18 +67,13 @@ public class UnitsGatheringArea {
     }
 
     /*
-     * Constructor
      * Set a list of NamedAreas
      */
     public void setAreas(Map<String, String> namedAreaList, ImportConfiguratorBase<?, ?> config, ITermService termService, IVocabularyService vocabularyService){
         this.setAreaNames(namedAreaList, config, termService, vocabularyService);
     }
 
-
-    /*
-     * Return the current list of NamedAreas
-     */
-    public ArrayList<DefinedTermBase> getAreas(){
+    public List<DefinedTermBase> getAreas(){
         return this.areas;
     }
 
@@ -100,7 +88,7 @@ public class UnitsGatheringArea {
             logger.info(termService.list(NamedArea.class, 0, 0, null, null));
         }
 
-        HashSet<UUID> areaSet = new HashSet<>();
+        Set<UUID> areaUuidSet = new HashSet<>();
 
         HashMap<String, UUID> matchingTermsToUuid = new HashMap<>();
         for (java.util.Map.Entry<String, String> entry : namedAreaList.entrySet()){
@@ -152,7 +140,7 @@ public class UnitsGatheringArea {
                     createNamedArea(config, termService, vocabularyService, namedAreaStr, namedAreaClass);
                 }
             } else {
-                areaSet.add(areaUUID);
+                areaUuidSet.add(areaUUID);
                 addNamedAreaDecision(namedAreaStr,areaUUID, config);
             }
 
@@ -167,8 +155,8 @@ public class UnitsGatheringArea {
 //                addNamedAreaDecision(areaStr,ar.getUuid(), config);
 //            }
 //        }
-        if (!areaSet.isEmpty()){
-            List<DefinedTermBase> ldtb = termService.find(areaSet);
+        if (!areaUuidSet.isEmpty()){
+            List<DefinedTermBase> ldtb = termService.find(areaUuidSet);
             if (!ldtb.isEmpty()) {
                 this.areas.addAll(ldtb);
             }
@@ -200,7 +188,6 @@ public class UnitsGatheringArea {
                 }
             }
 
-
             ar.setTitleCache(namedAreaStr, true);
             if (specimenImportAreaVocabulary == null){
                 specimenImportAreaVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
@@ -222,7 +209,7 @@ public class UnitsGatheringArea {
         }
     }
 
-    private UUID askForArea(String namedAreaStr, HashMap<String, UUID> matchingTerms, String areaType){
+    private UUID askForArea(String namedAreaStr, Map<String, UUID> matchingTerms, String areaType){
 //        matchingTerms.put("Nothing matches, create a new area",null);
 
         //FIXME names with same label will not make it to the map
@@ -230,9 +217,9 @@ public class UnitsGatheringArea {
         JScrollPane scrollPane = new JScrollPane(textArea);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        scrollPane.setPreferredSize( new Dimension( 700, 50 ) );
+        scrollPane.setPreferredSize( new Dimension(700, 50 ) );
         String s=null;
-        List<String> list = new ArrayList<String>(matchingTerms.keySet());
+        List<String> list = new ArrayList<>(matchingTerms.keySet());
         list.add("Nothing matches, create a new area");
 
         if (list.size() <= 1){
@@ -264,7 +251,6 @@ public class UnitsGatheringArea {
     public void setCountry(String iso, String fullName, ImportConfiguratorBase<?, ?> config,
             ITermService termService, IVocabularyService vocService){
 
-
         if (!StringUtils.isEmpty(iso)){
         	try {
         		wbc = termService.getCountryByIso(iso);
@@ -273,23 +259,16 @@ public class UnitsGatheringArea {
         	}
         }
         if (wbc == null){
-            if (!StringUtils.isEmpty(fullName)){
+            if (StringUtils.isNotEmpty(fullName)){
 
-
-                //                logger.info("matchingterms: "+matchingTerms.keySet().toString());
-                UUID areaUUID = null;
                 //TODO Critical, should be a country decision
-                areaUUID = getNamedAreaDecision(fullName,config);
+                UUID areaUUID = getNamedAreaDecision(fullName,config);
 
                 if (areaUUID == null){
-                	List<UUID> countryUuids = new ArrayList<UUID>();
-                	HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
-                	Pager<Country> countryList;
-                	try {
-                		countryList = termService.findByRepresentationText(fullName, Country.class, 100, 0);
-                	}catch(NullPointerException e) {
-                		countryList = null;
-                	}
+                	List<UUID> countryUuids = new ArrayList<>();
+                	Map<String,UUID> matchingTerms = new HashMap<>();
+                	Pager<Country> countryList = termService.findByRepresentationLabel(fullName, Country.class, 100, 0);
+
                 	if (countryList != null) {
 	                	for (NamedArea na:countryList.getRecords()){
 		                   	if (na.getTitleCache().equalsIgnoreCase(fullName)) {
@@ -301,9 +280,9 @@ public class UnitsGatheringArea {
 		                }
                 	}
                 	if (countryUuids.isEmpty()){
-                		List<NamedArea> namedAreaList = termService.list(NamedArea.class,0,0,null,null);
+                		List<NamedArea> namedAreaList = termService.list(NamedArea.class, 0, 0, null, null);
 
-                		for (NamedArea na:namedAreaList){
+                		for (NamedArea na: namedAreaList){
                 			if (! na.getClass().isAssignableFrom(Country.class) && na.getTitleCache().toLowerCase().indexOf(fullName.toLowerCase()) != -1) {
                 				matchingTerms.put(na.getTitleCache()+" ("+na.getType().getLabel() + ")",na.getUuid());
                 			}
@@ -319,8 +298,8 @@ public class UnitsGatheringArea {
                     		logger.warn("Non interaction not yet implemented correctly");
                     	}
                 	}
-
                 }
+
                 if (areaUUID == null){
                     createNamedArea(config, termService, vocService, fullName, "country");
                     NamedArea ar = NamedArea.NewInstance(fullName, fullName, null);
@@ -361,10 +340,6 @@ public class UnitsGatheringArea {
             areaUUID = ((TaxonXImportConfigurator) config).getNamedAreaDecision(fullName);
         }
         return areaUUID;
-    }
-
-    public void useTDWGareas(boolean useTDWGarea) {
-        this.useTDWGarea=useTDWGarea;
     }
 
     public DefinedTermBase<?> getCountry() {

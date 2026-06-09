@@ -38,7 +38,8 @@ public class BasionymsMustShareEpithetsAndAuthorsValidator implements
 				//compare author teams
 				if(fromName.getCombinationAuthorship() == null || !fromName.getCombinationAuthorship().equals(toName.getBasionymAuthorship())) {
 					valid = false;
-					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentAuthors.message}").addNode("fromName").addNode("basionymAuthorship").addConstraintViolation();
+					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentAuthors.message}")
+					    .addPropertyNode("fromName").addPropertyNode("basionymAuthorship").addConstraintViolation();
 					//remove duplicate violation as it does not give more information
 //					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentAuthors.message}").addNode("toName").addNode("basionymAuthorship").addConstraintViolation();
 				}
@@ -48,7 +49,8 @@ public class BasionymsMustShareEpithetsAndAuthorsValidator implements
 				String toNameLastEpithet = toName.getInfraSpecificEpithet() != null ? toName.getInfraSpecificEpithet() : toName.getSpecificEpithet();
 				if( fromNameLastEpithet != null && ! fromNameLastEpithet.equals(toNameLastEpithet)) {
 					valid = false;
-					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentEpithets.message}").addNode("fromName").addNode("nameCache").addConstraintViolation();
+					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentEpithets.message}")
+					    .addPropertyNode("fromName").addPropertyNode("nameCache").addConstraintViolation();
 	                //remove duplicate violation as it does not give more information
 //					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentEpithets.message}").addNode("toName").addNode("nameCache").addConstraintViolation();
 				}
@@ -58,16 +60,20 @@ public class BasionymsMustShareEpithetsAndAuthorsValidator implements
 				if(fromName.isZoological() && toName.isZoological()) {
 					if(fromName.getNomenclaturalReference() != null && !fromName.getNomenclaturalReference().equals(toName.getNomenclaturalReference())) {
 						valid = false;
-						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}").addNode("fromName").addNode("nomenclaturalReference").addConstraintViolation();
+						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}")
+						    .addPropertyNode("fromName").addPropertyNode("nomenclaturalReference").addConstraintViolation();
 		                //remove duplicate violation as it does not give more information
-						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}").addNode("toName").addNode("nomenclaturalReference").addConstraintViolation();
+						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}")
+						    .addPropertyNode("toName").addPropertyNode("nomenclaturalReference").addConstraintViolation();
 					}
 
 					if(fromName.getNomenclaturalMicroReference() != null && !fromName.getNomenclaturalMicroReference().equals(toName.getNomenclaturalMicroReference())) {
 						valid = false;
-						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}").addNode("fromName").addNode("nomenclaturalMicroReference").addConstraintViolation();
+						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}")
+						    .addPropertyNode("fromName").addPropertyNode("nomenclaturalMicroReference").addConstraintViolation();
 		                //remove duplicate violation as it does not give more information
-						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}").addNode("toName").addNode("nomenclaturalMicroReference").addConstraintViolation();
+						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors.differentNomenclaturalReference.message}")
+						    .addPropertyNode("toName").addPropertyNode("nomenclaturalMicroReference").addConstraintViolation();
 					}
 				}
 			}

@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
+import eu.etaxonomy.cdm.persistence.common.OperationNotSupportedInPriorViewException;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
@@ -688,7 +688,7 @@ public class DescriptionDaoImpl
             for (CategoricalDataDto catDto: listCategorical){
                 featureUuids.add(catDto.getFeatureUuid());
             }
-            Map<UUID, TermDto> featureDtos = termDao.findFeatureByUUIDsAsDtos(featureUuids);
+            Map<UUID, TermDto> featureDtos = termDao.mapFeatureByUUIDsAsDtos(featureUuids);
             for (CategoricalDataDto catDto: listCategorical){
                 FeatureDto featuredto = (FeatureDto)featureDtos.get(catDto.getFeatureUuid());
                 catDto.setFeatureDto(featuredto);
@@ -732,7 +732,7 @@ public class DescriptionDaoImpl
             for (CategoricalDataDto catDto: listCategorical){
                 featureUuids.add(catDto.getFeatureUuid());
             }
-            Map<UUID, TermDto> featureDtos = termDao.findFeatureByUUIDsAsDtos(featureUuids);
+            Map<UUID, TermDto> featureDtos = termDao.mapFeatureByUUIDsAsDtos(featureUuids);
             for (CategoricalDataDto catDto: listCategorical){
                 FeatureDto featuredto = (FeatureDto)featureDtos.get(catDto.getFeatureUuid());
                 catDto.setFeatureDto(featuredto);

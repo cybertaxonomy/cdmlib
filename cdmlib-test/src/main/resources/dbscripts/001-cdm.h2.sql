@@ -180,58 +180,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         primary key (ID, REV)
     );
 
-    create table PUBLIC.AGENTBASE_CONTACT_EMAILADDRESSES (
-       AGENTBASE_ID integer not null,
-        CONTACT_EMAILADDRESSES_ELEMENT varchar(255)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_EMAILADDRESSES_AUD (
-       REV integer not null,
-        AGENTBASE_ID integer not null,
-        CONTACT_EMAILADDRESSES_ELEMENT varchar(255) not null,
-        REVTYPE tinyint,
-        primary key (REV, AGENTBASE_ID, CONTACT_EMAILADDRESSES_ELEMENT)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_FAXNUMBERS (
-       AGENTBASE_ID integer not null,
-        CONTACT_FAXNUMBERS_ELEMENT varchar(255)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_FAXNUMBERS_AUD (
-       REV integer not null,
-        AGENTBASE_ID integer not null,
-        CONTACT_FAXNUMBERS_ELEMENT varchar(255) not null,
-        REVTYPE tinyint,
-        primary key (REV, AGENTBASE_ID, CONTACT_FAXNUMBERS_ELEMENT)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_PHONENUMBERS (
-       AGENTBASE_ID integer not null,
-        CONTACT_PHONENUMBERS_ELEMENT varchar(255)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_PHONENUMBERS_AUD (
-       REV integer not null,
-        AGENTBASE_ID integer not null,
-        CONTACT_PHONENUMBERS_ELEMENT varchar(255) not null,
-        REVTYPE tinyint,
-        primary key (REV, AGENTBASE_ID, CONTACT_PHONENUMBERS_ELEMENT)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_URLS (
-       AGENTBASE_ID integer not null,
-        CONTACT_URLS_ELEMENT varchar(255)
-    );
-
-    create table PUBLIC.AGENTBASE_CONTACT_URLS_AUD (
-       REV integer not null,
-        AGENTBASE_ID integer not null,
-        CONTACT_URLS_ELEMENT varchar(255) not null,
-        REVTYPE tinyint,
-        primary key (REV, AGENTBASE_ID, CONTACT_URLS_ELEMENT)
-    );
-
     create table PUBLIC.AGENTBASE_CREDIT (
        AGENTBASE_ID integer not null,
         CREDITS_ID integer not null,
@@ -519,20 +467,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         primary key (ID)
     );
 
-    create table PUBLIC.ANNOTATION_ANNOTATION (
-       ANNOTATION_ID integer not null,
-        ANNOTATIONS_ID integer not null,
-        primary key (ANNOTATION_ID, ANNOTATIONS_ID)
-    );
-
-    create table PUBLIC.ANNOTATION_ANNOTATION_AUD (
-       REV integer not null,
-        ANNOTATION_ID integer not null,
-        ANNOTATIONS_ID integer not null,
-        REVTYPE tinyint,
-        primary key (REV, ANNOTATION_ID, ANNOTATIONS_ID)
-    );
-
     create table PUBLIC.ANNOTATION_AUD (
        ID integer not null,
         REV integer not null,
@@ -548,20 +482,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         ANNOTATIONTYPE_ID integer,
         COMMENTATOR_ID integer,
         primary key (ID, REV)
-    );
-
-    create table PUBLIC.ANNOTATION_MARKER (
-       ANNOTATION_ID integer not null,
-        MARKERS_ID integer not null,
-        primary key (ANNOTATION_ID, MARKERS_ID)
-    );
-
-    create table PUBLIC.ANNOTATION_MARKER_AUD (
-       REV integer not null,
-        ANNOTATION_ID integer not null,
-        MARKERS_ID integer not null,
-        REVTYPE tinyint,
-        primary key (REV, ANNOTATION_ID, MARKERS_ID)
     );
 
     create table PUBLIC.AUDITEVENT (
@@ -1105,6 +1025,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         TITLECACHE varchar(800),
         TERMTYPE varchar(255),
         URI clob,
+        WIKIDATAITEMID varchar(16),
         AUTHORITYTYPE varchar(10),
         EXTERNALID varchar(255),
         EXTERNALLINK clob,
@@ -1184,6 +1105,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         TITLECACHE varchar(800),
         TERMTYPE varchar(255),
         URI clob,
+        WIKIDATAITEMID varchar(16),
         AUTHORITYTYPE varchar(10),
         EXTERNALID varchar(255),
         EXTERNALLINK clob,
@@ -4798,7 +4720,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         COLLECTION_ID integer,
         DERIVEDFROM_ID integer,
         PRESERVATION_ID integer,
-        STOREDUNDER_ID integer,
         DNAQUALITY_ID integer,
         GATHERINGEVENT_ID integer,
         PRIMARYCOLLECTOR_ID integer,
@@ -4855,7 +4776,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         COLLECTION_ID integer,
         DERIVEDFROM_ID integer,
         PRESERVATION_ID integer,
-        STOREDUNDER_ID integer,
         DNAQUALITY_ID integer,
         MEDIASPECIMEN_ID integer,
         FIELDNOTES varchar(255),
@@ -5326,6 +5246,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         HYBRIDFORMULA boolean not null,
         INFRAGENERICEPITHET varchar(255),
         INFRASPECIFICEPITHET varchar(255),
+        AUTONYMFLAG varchar(10),
         MONOMHYBRID boolean not null,
         NAMEAPPROBATION varchar(255),
         NAMECACHE varchar(255),
@@ -5395,6 +5316,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         HYBRIDFORMULA boolean,
         INFRAGENERICEPITHET varchar(255),
         INFRASPECIFICEPITHET varchar(255),
+        AUTONYMFLAG varchar(10),
         MONOMHYBRID boolean,
         NAMEAPPROBATION varchar(255),
         NAMECACHE varchar(255),
@@ -6165,7 +6087,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         EMAILADDRESS varchar(255),
         ENABLED boolean not null,
         PASSWORD varchar(255),
-        SALT varchar(255),
         USERNAME varchar(255),
         CREATEDBY_ID integer,
         PERSON_ID integer,
@@ -6258,12 +6179,6 @@ create index PUBLIC.agentTitleCacheIndex on PUBLIC.AGENTBASE (TITLECACHE);
 
     alter table PUBLIC.ANNOTATION 
        add constraint UK_mu34eryd59s0hn00cu5tx3ron unique (UUID);
-
-    alter table PUBLIC.ANNOTATION_ANNOTATION 
-       add constraint UK_diab6q8r8tc0w6daye8dr6tdi unique (ANNOTATIONS_ID);
-
-    alter table PUBLIC.ANNOTATION_MARKER 
-       add constraint UK_jycj0vang3ijurbbp4toejxnq unique (MARKERS_ID);
 
     alter table PUBLIC.AUTHORITY 
        add constraint UK_8xsrgqm96m9lrarc6oo4og4hp unique (UUID);
@@ -7022,46 +6937,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
        foreign key (REV) 
        references PUBLIC.AUDITEVENT;
 
-    alter table PUBLIC.AGENTBASE_CONTACT_EMAILADDRESSES 
-       add constraint FK9dh06kdcj7eled8svb3wb5n1l 
-       foreign key (AGENTBASE_ID) 
-       references PUBLIC.AGENTBASE;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_EMAILADDRESSES_AUD 
-       add constraint FKb6duaqf53qdj42ylb7gjmh368 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_FAXNUMBERS 
-       add constraint FKlhdtkf6picqn8jj287yn1byr4 
-       foreign key (AGENTBASE_ID) 
-       references PUBLIC.AGENTBASE;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_FAXNUMBERS_AUD 
-       add constraint FK34nu6a5fxdq0j37ai3k2ta2kt 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_PHONENUMBERS 
-       add constraint FKkafujnx69xdskrhrdxy6r76gr 
-       foreign key (AGENTBASE_ID) 
-       references PUBLIC.AGENTBASE;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_PHONENUMBERS_AUD 
-       add constraint FKk88m67ah84utcl6l16ty7axpk 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_URLS 
-       add constraint FKfcu7wbui8v00fr88g59boe9o 
-       foreign key (AGENTBASE_ID) 
-       references PUBLIC.AGENTBASE;
-
-    alter table PUBLIC.AGENTBASE_CONTACT_URLS_AUD 
-       add constraint FK2js3r2a2k96bd0pmas609tn1p 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
     alter table PUBLIC.AGENTBASE_CREDIT 
        add constraint FK4jqjvouwnpubyyg5986gmtier 
        foreign key (CREDITS_ID) 
@@ -7362,38 +7237,8 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
        foreign key (COMMENTATOR_ID) 
        references PUBLIC.AGENTBASE;
 
-    alter table PUBLIC.ANNOTATION_ANNOTATION 
-       add constraint FKmmm2stvvgqwuytfrrf5jyj3td 
-       foreign key (ANNOTATIONS_ID) 
-       references PUBLIC.ANNOTATION;
-
-    alter table PUBLIC.ANNOTATION_ANNOTATION 
-       add constraint FK75ew0i9xcjt1uc5pw7gq6hipa 
-       foreign key (ANNOTATION_ID) 
-       references PUBLIC.ANNOTATION;
-
-    alter table PUBLIC.ANNOTATION_ANNOTATION_AUD 
-       add constraint FKg11kfnkhiednxngs811wtllnn 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
     alter table PUBLIC.ANNOTATION_AUD 
        add constraint FK5389365adrqa3haak3mggfhcu 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.ANNOTATION_MARKER 
-       add constraint FKgvss9aa3158kjrg2kn160sjdf 
-       foreign key (MARKERS_ID) 
-       references PUBLIC.MARKER;
-
-    alter table PUBLIC.ANNOTATION_MARKER 
-       add constraint FKq6nns47wvop7chd6uufmkl6w9 
-       foreign key (ANNOTATION_ID) 
-       references PUBLIC.ANNOTATION;
-
-    alter table PUBLIC.ANNOTATION_MARKER_AUD 
-       add constraint FK678dbuu0lgcvu88xpllq1nug 
        foreign key (REV) 
        references PUBLIC.AUDITEVENT;
 
@@ -11121,11 +10966,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
        add constraint FKylj8khlb1u8nhd1bxs5g0ysl 
        foreign key (PRESERVATION_ID) 
        references PUBLIC.MATERIALORMETHODEVENT;
-
-    alter table PUBLIC.SPECIMENOROBSERVATIONBASE 
-       add constraint FKq9n9aa56bm0b7tck8a9ji4h6p 
-       foreign key (STOREDUNDER_ID) 
-       references PUBLIC.TAXONNAME;
 
     alter table PUBLIC.SPECIMENOROBSERVATIONBASE 
        add constraint FK3fj2x5dmhlpl44gn79km6ujj3 

@@ -24,6 +24,7 @@ import java.util.UUID;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -37,11 +38,11 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -227,14 +228,6 @@ public abstract class DaoBase {
         }
     }
 
-    protected void addCriteria(Criteria criteria, List<Criterion> criterion) {
-        if(criterion != null) {
-            for(Criterion c : criterion) {
-                criteria.add(c);
-            }
-        }
-    }
-
     protected void addOrder(Criteria criteria, List<OrderHint> orderHints) {
 
         if(orderHints != null){
@@ -359,6 +352,22 @@ public abstract class DaoBase {
         return query;
     }
 
+    /**
+     * like {@link #addPageSizeAndNumber(TypedQuery, Integer, Integer)}
+     * but here start is the absolute value, not the page number.
+     */
+    protected <T> TypedQuery<T> addPageSizeAndStart(TypedQuery<T> query, Integer pageSize, Integer start) {
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(start != null) {
+                query.setFirstResult(start);
+            } else {
+                query.setFirstResult(0);
+            }
+        }
+        return query;
+    }
+
     protected <T> CriteriaQuery<?> order(CriteriaBuilder builder, CriteriaQuery<T> query,
             Root<?> root, List<OrderHint> orderHints){
         if (CdmUtils.isNullSafeEmpty(orderHints)) {
@@ -434,7 +443,7 @@ public abstract class DaoBase {
      * @return the predicate
      */
     protected <T extends CdmBase> Predicate predicateStrOrNull(CriteriaBuilder builder,
-            Path<T> path, String field, String str) {
+            From<T,?> path, String field, String str) {
 
         if (str == null){
             return predicateIsNull(builder, path, field);
@@ -454,8 +463,20 @@ public abstract class DaoBase {
      * @return the predicate
      */
     protected <T extends CdmBase> Predicate predicateStrNotNull(CriteriaBuilder builder,
-            Path<T> path, String field, String str) {
+            From<T,?> path, String field, String str) {
 
+        return builder.equal(path.get(field), str);
+    }
+
+    /**
+     * Returns a {@link Predicate} that compares a string and returns always true
+     * if the string is null.
+     */
+    protected <T extends CdmBase> Predicate predicateStrIfNotNull(CriteriaBuilder builder,
+            Path<T> path, String field, String str) {
+        if (str == null){
+            return builder.conjunction();  //always true predicate
+        }
         return builder.equal(path.get(field), str);
     }
 
@@ -472,8 +493,16 @@ public abstract class DaoBase {
     }
 
     protected <T extends CdmBase> Predicate predicateEqual(CriteriaBuilder builder,
-            Path<T> path, String field, Object obj) {
+            From<?,?> path, String field, Object obj) {
 
+        return builder.equal(path.get(field), obj);
+    }
+
+    protected <T extends CdmBase> Predicate predicateEqualIfNotNull(CriteriaBuilder builder,
+            Path<T> path, String field, Object obj) {
+        if (obj == null){
+            return builder.conjunction();  //always true predicate
+        }
         return builder.equal(path.get(field), obj);
     }
 
@@ -483,7 +512,7 @@ public abstract class DaoBase {
         return builder.equal(builder.size(path.get(field)), num);
     }
 
-    protected <T extends CdmBase> Predicate predicateIn(Path<T> root, String fieldName, Collection<?> collection) {
+    protected <T extends CdmBase> Predicate predicateIn(From<?,?> root, String fieldName, Collection<?> collection) {
         return root.get(fieldName).in(collection);
     }
 
@@ -496,7 +525,7 @@ public abstract class DaoBase {
      * @return the predicate
      */
     protected <T extends CdmBase> Predicate predicateIsNull(CriteriaBuilder builder,
-            Path<T> path, String field) {
+            From<?,?> path, String field) {
 
         Predicate result = builder.isNull(path.get(field));
         result.alias(field+"_isNull");
@@ -516,6 +545,7 @@ public abstract class DaoBase {
     protected <T extends CdmBase> Predicate predicateUuid(CriteriaBuilder builder,
             Path<T> path, UUID uuid) {
 
+        //see also CdmBaseFilter.getUuidPredicate()
         return builder.equal(path.get("uuid"), uuid);
     }
 
@@ -538,11 +568,47 @@ public abstract class DaoBase {
 
     /**
      * Creates a predicate which is an AND-predicate for all predicates
-     * in the list.
+     * in the list. If the list is <code>null</code> or empty, a predicate is returned
+     * which is always true.
      */
     protected Predicate predicateAnd(CriteriaBuilder cb, List<Predicate> predicates) {
+        if (CdmUtils.isNullSafeEmpty(predicates)) {
+            return cb.conjunction(); // always true predicate
+        }
         return cb.and(predicates.toArray(new Predicate[0]));
     }
+
+    protected <T> Predicate predicateFromFilter(List<EntityFilter<T>> filter,
+            CriteriaBuilder cb, Root<T> path) {
+        if (CdmUtils.isNullSafeEmpty(filter)) {
+            return null;
+        }
+        return filter.stream()
+            .map(f->f.toPredicate(path, cb))
+            .reduce(cb::and)
+            .orElse(null);
+    }
+
+    /**
+     * Creates a predicate that combines the given first predicate with
+     * the filter predicates.
+     */
+    protected <T> Predicate addPredicateFromFilter(Predicate firstPredicate, List<EntityFilter<T>> filter, CriteriaBuilder cb,
+            Root<T> root) {
+
+        Predicate filterPredicate = predicateFromFilter(filter, cb, root);
+        if (firstPredicate == null) {
+            if (filterPredicate == null) {
+                return cb.conjunction();  //always true predicate
+            }
+            return filterPredicate;
+        } else if (filterPredicate == null){
+            return firstPredicate;
+        } else {
+            return cb.and(firstPredicate, filterPredicate);
+        }
+    }
+
 
     /**
      * Shortcut to get a {@link CriteriaBuilder} from the current session.

@@ -23,8 +23,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.model.agent.Address;
-import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -412,51 +410,51 @@ public class DwcaEmlExport extends DwcaExportBase {
 		text = member.getInstitute()== null? null: member.getInstitute().getTitleCache();
 		writeTextElement(writer, elementName, text);
 
-
-		if (member.getPerson() != null && member.getPerson().getContact()!= null){
-			Contact contact = member.getPerson().getContact();
-
-			if (contact.getAddresses().size() > 0){
-				writer.writeStartElement("address");
-
-				//TODO empty
-				Address address = contact.getAddresses().iterator().next();
-
-				elementName = "deliveryPoint";
-				text = address.getStreet();
-				writeTextElement(writer, elementName, text);
-
-				elementName = "city";
-				text = address.getLocality();
-				writeTextElement(writer, elementName, text);
-
-				elementName = "administrativeArea";
-				text = address.getRegion();
-				writeTextElement(writer, elementName, text);
-
-				elementName = "postalCode";
-				text = address.getPostcode();
-				writeTextElement(writer, elementName, text);
-
-				elementName = "country";
-				text = address.getCountry()== null? null: address.getCountry().getLabel();
-				writeTextElement(writer, elementName, text);
-
-				writer.writeEndElement();   //address
-			}
-
-			elementName = "phone";
-			text = firstOfList(contact.getPhoneNumbers());
-			writeTextElement(writer, elementName, text);
-
-			elementName = "electronicMailAddress";
-			text = firstOfList(contact.getEmailAddresses());
-			writeTextElement(writer, elementName, text);
-
-			elementName = "onlineUrl";
-			text = firstOfList(contact.getPhoneNumbers());
-			writeTextElement(writer, elementName, text);
-		}
+//removed since #10522  Person.Contact not longer supported
+//		if (member.getPerson() != null && member.getPerson().getContact()!= null){
+//			Contact contact = member.getPerson().getContact();
+//
+//			if (contact.getAddresses().size() > 0){
+//				writer.writeStartElement("address");
+//
+//				//TODO empty
+//				Address address = contact.getAddresses().iterator().next();
+//
+//				elementName = "deliveryPoint";
+//				text = address.getStreet();
+//				writeTextElement(writer, elementName, text);
+//
+//				elementName = "city";
+//				text = address.getLocality();
+//				writeTextElement(writer, elementName, text);
+//
+//				elementName = "administrativeArea";
+//				text = address.getRegion();
+//				writeTextElement(writer, elementName, text);
+//
+//				elementName = "postalCode";
+//				text = address.getPostcode();
+//				writeTextElement(writer, elementName, text);
+//
+//				elementName = "country";
+//				text = address.getCountry()== null? null: address.getCountry().getLabel();
+//				writeTextElement(writer, elementName, text);
+//
+//				writer.writeEndElement();   //address
+//			}
+//
+//			elementName = "phone";
+//			text = firstOfList(contact.getPhoneNumbers());
+//			writeTextElement(writer, elementName, text);
+//
+//			elementName = "electronicMailAddress";
+//			text = firstOfList(contact.getEmailAddresses());
+//			writeTextElement(writer, elementName, text);
+//
+//			elementName = "onlineUrl";
+//			text = firstOfList(contact.getPhoneNumbers());
+//			writeTextElement(writer, elementName, text);
+//		}
 	}
 
 	private String firstOfList(List<String> list) {

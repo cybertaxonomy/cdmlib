@@ -17,9 +17,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IDefinedTermDao
@@ -45,11 +44,11 @@ public interface IDefinedTermDao
 	 * @return the Language or null
 	 */
 	//TODO refactor typo:
-	public Language getLanguageByIso(String iso639);
+	public Language findLanguageByIso(String iso639);
 
-	public List<Language> getLanguagesByIso(List<String> iso639List);
+	public List<Language> listLanguagesByIso(List<String> iso639List);
 
-	public List<Language> getLanguagesByLocale(Enumeration<Locale> locales);
+	public List<Language> listLanguagesByLocale(Enumeration<Locale> locales);
 
 	 /**
      * Returns the country with the isoCode iso639, works only with string length 2 or 3
@@ -58,17 +57,15 @@ public interface IDefinedTermDao
      *
      * @return country with isoCode iso639
      */
-	public Country getCountryByIso(String iso639);
+	public Country findCountryByIso(String iso639);
 
-	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationText(String text, Class<TYPE> clazz );
+	public <TYPE extends DefinedTermBase<TYPE>> List<TYPE> listByRepresentationLabel(String label, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
 
-	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationText(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
+	public <TYPE extends DefinedTermBase<TYPE>> long countByRepresentationLabel(String label, Class<TYPE> clazz);
 
-	public long countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz);
+	public <TYPE extends DefinedTermBase> List<TYPE> listByRepresentationAbbrev(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
 
-	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationAbbrev(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
-
-	public long countDefinedTermByRepresentationAbbrev(String text, Class<? extends DefinedTermBase> clazz);
+	public <TYPE extends DefinedTermBase<TYPE>> long countByRepresentationAbbrev(String text, Class<TYPE> clazz);
 
     /**
      * Returns a List of Media that represent a given DefinedTerm instance
@@ -78,7 +75,7 @@ public interface IDefinedTermDao
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a List of media instances
      */
-	public List<Media> getMedia(DefinedTermBase definedTerm, Integer pageSize, Integer pageNumber);
+	public List<Media> listMedia(DefinedTermBase definedTerm, Integer pageSize, Integer pageNumber);
 
 	/**
 	 * Returns a count of the Media that represent a given
@@ -98,17 +95,6 @@ public interface IDefinedTermDao
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @return a List of named areas
 	 */
-	public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber);
-
-	/**
-	 * @param level
-	 * @param type
-	 * @param pageSize
-	 * @param pageNumber
-	 * @param orderHints
-	 * @param propertyPaths
-	 * @return
-	 */
 	public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,  List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
@@ -121,24 +107,6 @@ public interface IDefinedTermDao
 	public long count(NamedAreaLevel level, NamedAreaType type);
 
 	/**
-	 * Return a list of terms which are specializations of a given definedTerm
-	 *
-	 * @param definedTerm The term which is a generalization of the terms returned
-	 * @param pageSize The maximum number of terms returned (can be null for all specializations)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @return a List of DefinedTerms
-	 */
-	public <T extends DefinedTermBase> List<T> getGeneralizationOf(T definedTerm, Integer pageSize, Integer pageNumber);
-
-	/**
-	 * Return a count of terms which are specializations of a given definedTerm
-	 *
-	 * @param definedTerm The term which is a generalization of the terms returned
-	 * @return a count of DefinedTerms
-	 */
-	public <T extends DefinedTermBase> long countGeneralizationOf(T definedTerm);
-
-	/**
 	 * Return a List of distinct terms which include the terms supplied
 	 *
 	 * @param definedTerms the set of terms which are part of the terms of interest
@@ -147,10 +115,10 @@ public interface IDefinedTermDao
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List of DefinedTerms
 	 */
-	public <T extends DefinedTermBase> List<T> getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	public <T extends DefinedTermBase> List<T> listPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
-	//see getPartOf above  //TODO can be removed
-	public List<NamedAreaDto> getPartOfNamedAreas(Set<UUID> areaUuids, SetMap<NamedArea, NamedArea> parentAreaMap);
+	//see listPartOf above
+	public List<NamedAreaDto> listPartOfNamedAreasAsDto(Set<UUID> areaUuids, SetMap<NamedArea, NamedArea> parentAreaMap);
 
 	/**
 	 * Return a count of distinct terms which include the terms supplied
@@ -169,7 +137,8 @@ public interface IDefinedTermDao
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List of DefinedTerms
 	 */
-	public <T extends DefinedTermBase> List<T> getIncludes(Collection<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	public <T extends DefinedTermBase> List<T> listIncludes(Collection<T> definedTerms,
+	        Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
 	 * Return a count of terms which are part of the terms supplied
@@ -179,27 +148,10 @@ public interface IDefinedTermDao
 	 */
 	public <T extends DefinedTermBase> long countIncludes(Collection<T> definedTerms);
 
-	public DefinedTermBase findByUri(URI uri);
-
-
-    /**
-     * Searches by representation label
-     */
-	public List<DefinedTermBase> findByLabel(String queryString);
-
-	/**
-     * Searches by representation label
-     */
-    public List<DefinedTermBase> findByLabel(String queryString, CdmBase sessionObject);
-
-
 	/**
 	 * Retrieves all {@link DefinedTermBase}s with the given {@link TermType}
+	 *
 	 * @param termType the term type to filter the terms
-	 * @param limit
-	 * @param start
-	 * @param orderHints
-	 * @param propertyPaths
 	 * @return a list containing the terms
 	 */
 	public <T extends DefinedTermBase> List<T> listByTermType(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
@@ -208,16 +160,11 @@ public interface IDefinedTermDao
 
 	/**
 	 * Returns a term or a list of terms depending of the label/id used in its vocabulary.
-	 * @param idInVoc
-	 * @param vocUuid
-	 * @param clazz
-	 * @param pageSize
-	 * @param pageNumber
-	 * @return
 	 */
-	public <TERM extends DefinedTermBase> List<TERM> getDefinedTermByIdInVocabulary(String idInVoc, UUID vocUuid, Class<TERM> clazz, Integer pageSize, Integer pageNumber);
+	public <TERM extends DefinedTermBase> List<TERM> listByIdInVocabulary(
+	        String idInVoc, UUID vocUuid, Class<TERM> clazz, Integer pageSize, Integer pageNumber);
 
-	public <TERM extends DefinedTermBase> List<UUID> getUuidByIdInVocabulary(String idInVoc, UUID vocUuid, Class<TERM> clazz);
+	public <TERM extends DefinedTermBase> List<UUID> listUuidsByIdInVocabulary(String idInVoc, UUID vocUuid, Class<TERM> clazz);
 
     public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, TermSearchField type);
 
@@ -226,16 +173,16 @@ public interface IDefinedTermDao
      * @param parentTerm the parent term
      * @return a collection of included terms
      */
-    public Collection<TermDto> getIncludesAsDto(TermDto parentTerm);
+    public Collection<TermDto> listIncludesAsDto(TermDto parentTerm);
 
     /**
      * Returns all terms that the given term is a generalization of resp. that are a kind of the given term
      * @param parentTerm the parent term
      * @return a collection of included terms
      */
-    public Collection<TermDto> getKindOfsAsDto(TermDto parentTerm);
+    public Collection<TermDto> listKindOfsAsDto(TermDto parentTerm);
 
-    public TermDto getTermDto(UUID uuid);
+    public TermDto findTermDto(UUID uuid);
 
 
     /**
@@ -244,7 +191,7 @@ public interface IDefinedTermDao
      * @param termType the termType that the terms have to match
      * @return a collection of matching term DTOs
      */
-    public Collection<TermDto> findByTitleAsDtoWithVocDto(String title, TermType termType);
+    public Collection<TermDto> listByTitleAsDtoWithVocDto(String title, TermType termType);
 
     /**
      * Returns a collection of {@link TermDto}s that match the given search parameters.
@@ -253,27 +200,29 @@ public interface IDefinedTermDao
      * @param termType the termType that the terms have to match
      * @return a collection of matching term DTOs
      */
-    public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType);
+    public Collection<TermDto> listByUriAsDto(URI uri, String termLabel, TermType termType);
 
     /**
      * Returns all states for all supportedCategoricalEnumeration of the categorical features
      * @param set of featureUuids the feature which has to support categorical data
      * @return map of lists of all supported states
      */
-    public Map<UUID, List<TermDto>> getSupportedStatesForFeature(Set<UUID> featureUuids);
+    public Map<UUID, List<TermDto>> mapSupportedStatesForFeature(Set<UUID> featureUuids);
 
-    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList, Language lang);
+    public Collection<TermDto> listByUUIDsAsDto(List<UUID> uuidList, Language lang);
 
-    public Collection<TermDto> findByTypeAsDto(TermType termType);
+    public Collection<TermDto> listByTypeAsDto(TermType termType);
 
-    public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList);
+    public Collection<TermDto> listFeaturesByUUIDsAsDto(List<UUID> uuidList);
 
-    public Collection<TermDto> findFeatureByTitleAsDto(String pattern);
+    public Collection<TermDto> listFeaturesByTitleAsDto(String pattern);
 
     public TermDto findByUUIDAsDto(UUID uuid);
 
-    public Map<UUID, List<TermDto>> getRecommendedModifiersForFeature(Set<UUID> featureUuids);//, Language lang);
+    public Map<UUID, List<TermDto>> mapRecommendedModifiersByFeature(Set<UUID> featureUuids);//, Language lang);
 
-    public Map<UUID, TermDto> findFeatureByUUIDsAsDtos(List<UUID> uuidList);
+    public Map<UUID, TermDto> mapFeatureByUUIDsAsDtos(List<UUID> uuidList);
+
+
 
 }

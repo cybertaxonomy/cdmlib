@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -22,9 +23,11 @@ import java.util.UUID;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
@@ -34,7 +37,6 @@ import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Example.PropertySelector;
 import org.hibernate.criterion.LogicalExpression;
@@ -53,20 +55,22 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.util.ReflectionUtils;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
+import eu.etaxonomy.cdm.api.filter.Restriction.Operator;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction.Operator;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFactory;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -77,6 +81,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         implements ICdmEntityDao<T> {
 
     private static final Logger logger = LogManager.getLogger();
+
+    //prepare for using hibernate 6 predicates in withRestrictions
+    boolean withPredicate = false;
 
     @Autowired
     private ICdmGenericDao genericDao;
@@ -485,25 +492,184 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public <S extends T> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
+    public <S extends T> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Criteria criteria = createCriteria(type, restrictions, false);
+        if (withPredicate) {
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<S> cq = cb.createQuery(type);
+            Root<S> root = cq.from(type);
 
-        addLimitAndStart(criteria, limit, start);
-        addOrder(criteria, orderHints);
+            Predicate predicate = predicateFromRestrictions(cb, root, restrictions);
 
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
+            cq.select(root)
+              .distinct(true)
+              .where(predicate)
+              .orderBy(ordersFrom(cb, root, orderHints));
+
+            List<S> results = addPageSizeAndNumber(
+                    getSession().createQuery(cq), pageSize, pageNumber)
+                   .getResultList();
+            defaultBeanInitializer.initializeAll(results, propertyPaths);
+            return deduplicateResult(results);
+        }else {
+            Criteria criteria = createCriteria(type, restrictions, false);
+
+            addLimitAndStart(criteria, pageSize, pageNumber);
+            addOrder(criteria, orderHints);
+
+            @SuppressWarnings("unchecked")
+            List<S> result = criteria.list();
+            defaultBeanInitializer.initializeAll(result, propertyPaths);
+            return result;
+        }
+    }
+
+    //TODO change root to path or from if necessary
+    private <S extends T> Predicate predicateFromRestrictions(CriteriaBuilder cb,
+            Root<S> root, List<Restriction<?>> restrictions) {
+
+        if(restrictions == null || restrictions.isEmpty()){
+            return cb.conjunction();
+        }
+
+        Predicate finalPredicate = cb.conjunction();
+        for(Restriction<?> restriction : restrictions){
+            Predicate restrictionPredicate;
+
+            String propertyPath = restriction.getPropertyName();
+            Collection<? extends Object> values = restriction.getValues();
+
+            if (CdmUtils.isNullSafeEmpty(values) ||
+                    StringUtils.isBlank(propertyPath)  ){
+                restrictionPredicate = cb.conjunction();  //always true
+            }else {
+
+                restrictionPredicate = cb.disjunction();
+                javax.persistence.criteria.JoinType joinType = LEFTOUTER_OPS.contains(restriction.getOperator()) ? javax.persistence.criteria.JoinType.LEFT : javax.persistence.criteria.JoinType.INNER;
+
+                // ---
+
+                List<String> props = Arrays.asList(propertyPath.split("\\."));
+
+                List<String> notLastProps = props.subList(0, props.size()-1);
+                String lastProp = props.get(props.size() - 1);
+
+                From<?,?> path = root;
+                for (String notLastProp : notLastProps) {
+                    Class<?> t = path.getJavaType();
+
+                    path = path.join(notLastProp);
+                }
+
+                for (Object value : values) {
+                    Predicate valuePredicate = createPredicate(cb, path, lastProp, value, restriction.getMatchMode());
+                    restrictionPredicate = cb.or(restrictionPredicate, valuePredicate);
+                }
+
+//                Predicate valuePredicate = predicateForMatchMode(lastProp,
+//                        (String)values.iterator().next(), restriction.getMatchMode(), cb, path, ignoreCase);
+
+//                String propertyName;
+//                if(props.length == 1){
+//                    // direct property of the base type of the criteria
+//                    propertyName = propertyPath;
+//                } else {
+//                    // create aliases if the propertyName is a dot separated property path
+//                    String aĺiasKey = jointype.name() + "_";
+//                    String aliasedProperty = null;
+//                    String alias = "";
+//                    for(int p = 0; p < props.length -1; p++){
+//                        aĺiasKey = aĺiasKey + (aĺiasKey.isEmpty() ? "" : ".") + props[p];
+//                        aliasedProperty = alias + (alias.isEmpty() ? "" : ".") + props[p];
+////                        if(!aliases.containsKey(aliasedProperty)){
+////                            alias = alias + (alias.isEmpty() ? "" : "_" ) + props[p];
+////                            aliases.put(aĺiasKey, alias);
+////                            criteria.createAlias(aliasedProperty, alias, jointype);
+////                            if(logger.isDebugEnabled()){
+////                                logger.debug("addRestrictions() alias created with aliasKey " + aĺiasKey + " => " + aliasedProperty + " as " + alias);
+////                            }
+////                        }
+//                    }
+//                    propertyName = alias + "." + props[props.length -1];
+//                }
+            }
+            if (restriction.getOperator() == Restriction.Operator.OR) {
+                finalPredicate = cb.and(finalPredicate, restrictionPredicate);
+            }else {
+                finalPredicate = cb.and(finalPredicate, restrictionPredicate);
+            }
+        }
+        return finalPredicate;
+    }
+
+    private Predicate createPredicate(CriteriaBuilder cb, From<?, ?> path,
+            String propertyName, Object value, MatchMode matchMode) {
+
+        Predicate predicate;
+        if (value == null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("createPredicate() " + propertyName + " is null ");
+            }
+            predicate = predicateIsNull(cb, path, propertyName);
+        } else if (value instanceof EnumSet<?>) {
+            //in EnumSet restriction
+            if (logger.isDebugEnabled()) {
+                logger.debug("createRestriction() " + propertyName + " IN " + value.toString());
+            }
+
+            predicate = predicateIn(path, propertyName, (EnumSet<?>)value);
+        } else if (matchMode == null || !(value instanceof String)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("createRestriction() " + propertyName + " = " + value.toString());
+            }
+            predicate = predicateEqual(cb, path, propertyName, value);
+        } else {
+            String queryString = (String) value;
+            if (logger.isDebugEnabled()) {
+                logger.debug("createRestriction() " + propertyName + " " + matchMode.getMatchOperator() + " "
+                        + matchMode.queryStringFrom(queryString));
+            }
+            boolean ignoreCase = true;
+            predicate = predicateForMatchMode(propertyName, queryString, matchMode, cb, path, ignoreCase);
+        }
+        return predicate;
+    }
+
+
+    private List<Restriction<?>> addRestriction(List<Restriction<?>> restrictions, Restriction<?> restriction, boolean atStart) {
+        List<Restriction<?>> result = new ArrayList<>();
+        if (restrictions == null) {
+            restrictions = new ArrayList<>();
+        }
+        if (atStart) {
+            result.add(restriction);
+            result.addAll(restrictions);
+        } else {
+            result.addAll(restrictions);
+            result.add(restriction);
+        }
         return result;
     }
 
-    /**
-     * @param restrictions
-     * @param criteria
-     */
-    private void addRestrictions(List<Restriction<?>> restrictions, DetachedCriteria criteria) {
+    protected List<Restriction<?>> addPublishOnlyRestriction(List<Restriction<?>> restrictions, boolean includeUnpublished,
+            String path) {
+        if(!includeUnpublished){
+            final String publishField = path == null ? "publish" : path +".publish" ;
+            boolean publish = true;
+            Restriction<?> restriction = new Restriction<>(publishField, null, publish);
+            restrictions = addRestriction(restrictions, restriction, false);
+        }
+        return restrictions;
+    }
+
+    protected List<Restriction<?>> addStringRestriction(List<Restriction<?>> restrictions, String param, String queryString, MatchMode matchMode) {
+        Restriction<?> restriction = new Restriction<>(param, matchMode, queryString);
+        restrictions = addRestriction(restrictions, restriction, true);
+        return restrictions;
+    }
+
+    private <S extends T> void addRestrictions(List<Restriction<?>> restrictions, DetachedCriteria criteria) {
 
         if(restrictions == null || restrictions.isEmpty()){
             return ;
@@ -511,8 +677,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
         List<CriterionWithOperator> perProperty = new ArrayList<>(restrictions.size());
         Map<String, String> aliases = new HashMap<>();
-
-
 
         for(Restriction<?> restriction : restrictions){
             Collection<? extends Object> values = restriction.getValues();
@@ -547,8 +711,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                 // ---
                 Criterion[] predicates = new Criterion[values.size()];
                 int i = 0;
-                for(Object v : values){
-                    Criterion criterion = createRestriction(propertyName, v, restriction.getMatchMode());
+                for(Object value : values){
+                    Criterion criterion = createRestriction(propertyName, value, restriction.getMatchMode());
                     if(restriction.isNot()){
                         if(props.length > 1){
                             criterion = Restrictions.or(Restrictions.not(criterion), Restrictions.isNull(propertyName));
@@ -558,7 +722,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                     }
                     predicates[i++] = criterion;
                     if(logger.isDebugEnabled()){
-                        logger.debug("addRestrictions() predicate with " + propertyName + " " + (restriction.getMatchMode() == null ? "=" : restriction.getMatchMode().name()) + " " + v.toString());
+                        logger.debug("addRestrictions() predicate with " + propertyName + " " + (restriction.getMatchMode() == null ? "=" : restriction.getMatchMode().name()) + " " + value.toString());
                     }
                 }
                 if(restriction.getOperator() == Operator.AND_NOT){
@@ -590,9 +754,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                             throw new RuntimeException("Unsupported Operator");
                     }
                 }
-
             }
-
 
             criteria.add(logicalExpression);
 //            if(firstOperator == Operator.OR){
@@ -624,6 +786,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                 logger.debug("createRestriction() " + propertyName + " is null ");
             }
             restriction = Restrictions.isNull(propertyName);
+        } else if (value instanceof EnumSet<?>) {
+            //in EnumSet restriction
+            if (logger.isDebugEnabled()) {
+                logger.debug("createRestriction() " + propertyName + " IN " + value.toString());
+            }
+            restriction = Restrictions.in(propertyName, (EnumSet<?>)value);
         } else if (matchMode == null || !(value instanceof String)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("createRestriction() " + propertyName + " = " + value.toString());
@@ -659,50 +827,35 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public long count(Class<? extends T> type, List<Restriction<?>> restrictions) {
+    public <S extends T> long count(Class<S> clazz, List<Restriction<?>> restrictions) {
 
-        Criteria criteria = createCriteria(type, restrictions, false);
+        if (withPredicate) {
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+            Root<S> root = cq.from(entityType(clazz));
 
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+            Predicate predicate = predicateFromRestrictions(cb, root, restrictions);
 
-        return (Long) criteria.uniqueResult();
+            cq.select(cb.countDistinct(root))
+              .where(predicate);
 
+            return getSession().createQuery(cq).getSingleResult();
+        }else {
+
+            Criteria criteria = createCriteria(clazz, restrictions, false);
+
+            criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+
+            return (Long) criteria.uniqueResult();
+        }
     }
 
-    private Criteria prepareList(Class<? extends T> clazz, Collection<?> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            String propertyName) {
-
-        if (clazz == null){
-            clazz = type;
-        }
-        Criteria criteria = getSession().createCriteria(clazz);
-        criteria.add(Restrictions.in(propertyName, uuids));
-
-        if (pageSize != null) {
-            criteria.setMaxResults(pageSize);
-            if (pageNumber != null) {
-                criteria.setFirstResult(pageNumber * pageSize);
-            } else {
-                criteria.setFirstResult(0);
-            }
-        }
-
-        if (orderHints == null) {
-            orderHints = OrderHint.defaultOrderHintsFor(type);
-        }
-        addOrder(criteria, orderHints);
-        return criteria;
-    }
-
-    private Criteria criterionForType(Class<? extends T> clazz) {
-        return  getSession().createCriteria(entityType(clazz));
-    }
-
-    protected Class<? extends T> entityType(Class<? extends T> clazz){
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected <S extends T> Class<S> entityType(Class<S> clazz){
         if (clazz != null) {
             return clazz;
         } else {
-            return type;
+            return (Class)type;
         }
     }
 
@@ -778,16 +931,15 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public List<T> list(Integer limit, Integer start) {
-        return list(limit, start, null);
+    public List<T> list(Integer pageSize, Integer pageNumber) {
+        return list(pageSize, pageNumber, null);
     }
 
     @Override
     public List<Object[]> group(Class<? extends T> clazz, Integer limit, Integer start, List<Grouping> groups,
             List<String> propertyPaths) {
 
-        Criteria criteria = null;
-        criteria = criterionForType(clazz);
+        Criteria criteria = getCriteria(clazz);
 
         addGroups(criteria, groups);
 
@@ -798,12 +950,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = criteria.list();
-
-        if (propertyPaths != null && !propertyPaths.isEmpty()) {
-            for (Object[] objects : result) {
-                defaultBeanInitializer.initialize(objects[0], propertyPaths);
-            }
-        }
+        defaultBeanInitializer.initializeAll(result, propertyPaths);
 
         return result;
     }
@@ -864,24 +1011,25 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints) {
-        return list(limit, start, orderHints, null);
+    public List<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints) {
+        return list(pageSize, pageNumber, orderHints, null);
     }
 
     @Override
-    public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Criteria criteria = getSession().createCriteria(type);
-        if (limit != null) {
-            criteria.setFirstResult(start);
-            criteria.setMaxResults(limit);
-        }
+    public List<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<T> cq = cb.createQuery(type);
+        Root<T> root = cq.from(type);
 
-        addOrder(criteria, orderHints);
-        @SuppressWarnings("unchecked")
-        List<T> results = criteria.list();
+        cq.select(root)
+          .distinct(true)
+          .orderBy(ordersFrom(cb, root, orderHints));
 
+        List<T> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
+        return deduplicateResult(results);
     }
 
     public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints) {
@@ -911,6 +1059,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public long count(T example, Set<String> includeProperties) {
+
         Criteria criteria = getSession().createCriteria(example.getClass());
         addExample(criteria, example, includeProperties);
 
@@ -934,18 +1083,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                         } else {
                             criteria.add(Restrictions.isNull(property));
                         }
-                    } catch (SecurityException se) {
+                    } catch (SecurityException | HibernateException | IllegalArgumentException | IllegalAccessException e) {
                         throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property,
-                                se);
-                    } catch (HibernateException he) {
-                        throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property,
-                                he);
-                    } catch (IllegalArgumentException iae) {
-                        throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property,
-                                iae);
-                    } catch (IllegalAccessException ie) {
-                        throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property,
-                                ie);
+                                e);
                     }
                 }
             }
@@ -960,112 +1100,75 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
      * {@link #list(Class, String, Object, MatchMode, Integer, Integer, List, List)
      * here due to different default behavior of the <code>matchmode</code>
      * parameter.
-     *
-     * @param clazz
-     * @param param
-     * @param queryString
-     * @param matchmode
-     * @param criterion
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return
      */
     @Override
     public <S extends T> List<S> findByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode,
-            List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<EntityFilter<S>> entityFilters, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
+
         Set<String> stringSet = new HashSet<>();
         stringSet.add(param);
         return this.findByParam(clazz, stringSet, queryString, matchmode,
-                criterion, pageSize, pageNumber, orderHints,
+                entityFilters, pageSize, pageNumber, orderHints,
                 propertyPaths);
     }
 
     @Override
     public <S extends T> List<S> findByParam(Class<S> clazz, Set<String> params, String queryString, MatchMode matchmode,
-            List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<EntityFilter<S>> filter, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
 
-        Criteria criteria = criterionForType(clazz);
+        clazz = clazz == null ? (Class<S>)type : clazz;
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<S> cq = cb.createQuery(clazz);
+        Root<S> root = cq.from(clazz);
 
+        Predicate predicate = null;
         if (queryString != null) {
-            Set<Criterion> criterions = new HashSet<>();
-            for (String param: params){
-                Criterion crit;
-                if (matchmode == null) {
-                     crit = Restrictions.ilike(param, queryString);
-                } else if (matchmode == MatchMode.BEGINNING) {
-                     crit = Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.START);
-                } else if (matchmode == MatchMode.END) {
-                    crit = Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.END);
-                } else if (matchmode == MatchMode.EXACT) {
-                    crit = Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.EXACT);
-                } else {
-                    crit = Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.ANYWHERE);
-                }
-                criterions.add(crit);
-            }
-            if (criterions.size()>1){
-                Iterator<Criterion> critIterator = criterions.iterator();
-                Disjunction disjunction = Restrictions.disjunction();
-                while (critIterator.hasNext()){
-                    disjunction.add(critIterator.next());
-                }
-                criteria.add(disjunction);
-            }else{
-                if (!criterions.isEmpty()){
-                    criteria.add(criterions.iterator().next());
-                }
+            for (String param : params){
+                Predicate paramPredicate = predicateForMatchMode(param, queryString, matchmode, cb, root, true);
+                //OR
+                predicate = predicate == null ? paramPredicate :  cb.or(predicate, paramPredicate);
             }
         }
+        predicate = addPredicateFromFilter(predicate, filter, cb, root);
 
-        addCriteria(criteria, criterion);
+        cq.select(root)
+          .where(predicate)
+          .orderBy(ordersFrom(cb, root, orderHints));
 
-        addPageSizeAndNumber(criteria, pageSize, pageNumber);
-        addOrder(criteria, orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
-        return result;
+        List<S> results = addPageSizeAndNumber(
+               getSession().createQuery(cq), pageSize, pageNumber)
+              .getResultList();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
     }
 
     @Override
-    public long countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode,
-            List<Criterion> criterion) {
+    public <S extends T> long countByParam(Class<S> clazz, String param, String queryString,
+            MatchMode matchmode, List<EntityFilter<S>> filter) {
 
-        Criteria criteria = null;
-
-        criteria = criterionForType(clazz);
-
+        clazz = clazz == null ? (Class<S>)type : clazz;
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<S> root = cq.from(clazz);
+        Predicate predicate = null;
         if (queryString != null) {
-            if (matchmode == null) {
-                criteria.add(Restrictions.ilike(param, queryString));
-            } else if (matchmode == MatchMode.BEGINNING) {
-                criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.START));
-            } else if (matchmode == MatchMode.END) {
-                criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.END));
-            } else if (matchmode == MatchMode.EXACT) {
-                criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.EXACT));
-            } else {
-                criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.ANYWHERE));
-            }
+            predicate = predicateForMatchMode(param, queryString, matchmode, cb, root, true);
         }
+        predicate = addPredicateFromFilter(predicate, filter, cb, root);
 
-        addCriteria(criteria, criterion);
+        cq.select(cb.countDistinct(root.get("id")))
+          .where(predicate);
 
-        criteria.setProjection(Projections.rowCount());
-
-        return (Long) criteria.uniqueResult();
+        return getSession().createQuery(cq).getSingleResult();
     }
 
     /**
      * Creates a criteria query for the CDM <code>type</code> either for counting or listing matching entities.
      * <p>
      * The set of matching entities can be restricted by passing a list of {@link Restriction} objects.
-     * Restrictions can logically combined:
+     * Restrictions can logically be combined:
      <pre>
        Arrays.asList(
            new Restriction<String>("titleCache", MatchMode.ANYWHERE, "foo"),
@@ -1075,20 +1178,15 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
      * The first Restriction in the example above by default has the <code>Operator.AND</code> which will be
      * ignored since this is the first restriction. The <code>Operator</code> of further restrictions in the
      * list are used to combine with the previous restriction.
-     *
-     * @param type
-     * @param restrictions
-     * @param doCount
-     * @return
      */
-    protected Criteria createCriteria(Class<? extends T> type, List<Restriction<?>> restrictions, boolean doCount) {
+    protected <S extends T> Criteria createCriteria(Class<S> clazz, List<Restriction<?>> restrictions, boolean doCount) {
 
-        DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(entityType(type));
+        DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(entityType(clazz));
         idsOnlyCriteria.setProjection(Projections.distinct(Projections.id()));
 
         addRestrictions(restrictions, idsOnlyCriteria);
 
-        Criteria criteria = criterionForType(type);
+        Criteria criteria = getCriteria(clazz);
         criteria.add(Subqueries.propertyIn("id", idsOnlyCriteria));
 
         if(doCount){
@@ -1105,40 +1203,56 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        List<Restriction<?>> allRestrictions = new ArrayList<>();
-        allRestrictions.add(new Restriction<>(param, matchmode, queryString));
-        if(restrictions != null){
-            allRestrictions.addAll(restrictions);
-        }
-        Criteria criteria = createCriteria(clazz, allRestrictions, false);
-
-        addPageSizeAndNumber(criteria, pageSize, pageNumber);
-
-        addOrder(criteria, orderHints);
-
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
-        return result;
+        restrictions = addStringRestriction(restrictions, param, queryString, matchmode);
+        return this.list(clazz, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
     public long countByParamWithRestrictions(Class<? extends T> clazz, String param, String queryString,
             MatchMode matchmode, List<Restriction<?>> restrictions) {
 
-        List<Restriction<?>> allRestrictions = new ArrayList<>();
-        allRestrictions.add(new Restriction<>(param, matchmode, queryString));
-        if(restrictions != null){
-            allRestrictions.addAll(restrictions);
-        }
-        Criteria criteria = createCriteria(clazz, allRestrictions, true);
+        restrictions = addStringRestriction(restrictions, param, queryString, matchmode);
+        return count(clazz, restrictions);
+    }
 
-        return (Long) criteria.uniqueResult();
+    //TODO: there is a very similar implementation somewhere else
+    protected <S extends T> Predicate predicateForMatchMode(String param,
+            String queryString, MatchMode matchMode,
+            CriteriaBuilder cb, From<?,?> root, boolean ignoreCase) {
+
+        Predicate result;
+        if (ignoreCase) {
+            String lowerQueryString = queryString == null ? "" : queryString.toLowerCase();
+            if (matchMode == null) {
+                result = cb.like(cb.lower(root.get(param)), lowerQueryString);
+            } else if (matchMode == MatchMode.EXACT) {
+                result = cb.equal(cb.lower(root.get(param)), lowerQueryString);
+            } else if (matchMode == MatchMode.BEGINNING || matchMode == MatchMode.END
+                    || matchMode == MatchMode.ANYWHERE || matchMode == MatchMode.LIKE) {
+                result = cb.like(cb.lower(root.get(param)), matchMode.queryStringFrom(lowerQueryString));
+            } else {
+                throw new RuntimeException("Unsupported MatchMode: " + matchMode.name());
+            }
+        }else {
+            String lowerQueryString = queryString == null ? "" : queryString;
+            if (matchMode == null) {
+                result = cb.like(root.get(param), lowerQueryString);
+            } else if (matchMode == MatchMode.EXACT) {
+                result = cb.equal(root.get(param), lowerQueryString);
+            } else if (matchMode == MatchMode.BEGINNING || matchMode == MatchMode.END
+                    || matchMode == MatchMode.ANYWHERE || matchMode == MatchMode.LIKE) {
+                result = cb.like(root.get(param), matchMode.queryStringFrom(lowerQueryString));
+            } else {
+                throw new RuntimeException("Unsupported MatchMode: " + matchMode.name());
+            }
+        }
+        return result;
     }
 
     @Override
     public <S extends T> List<S> list(S example, Set<String> includeProperties, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
+
         Criteria criteria = getSession().createCriteria(example.getClass());
         addExample(criteria, example, includeProperties);
 
@@ -1178,7 +1292,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         Criterion criterion;
 
         public CriterionWithOperator(Operator operator, Criterion criterion) {
-            super();
             this.operator = operator;
             this.criterion = criterion;
         }
@@ -1214,5 +1327,76 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     protected AuditReader getAuditReader() {
         return AuditReaderFactory.get(getSession());
+    }
+
+    /**
+     * Returns clazz, or if clazz is <code>null</code> the base type of this DAO.
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected <S extends T> Class<S> nullSafeClass(Class<S> clazz) {
+        return clazz = (clazz == null) ? (Class)type : clazz;
+    }
+
+    protected <S extends T> long countByFilter(Class<S> clazz, EntityFilter<S> filter) {
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<S> root = cq.from(clazz);
+
+        cq.select(cb.countDistinct(root))
+          .where(filter.toPredicate(root, cb));
+
+        return getSession().createQuery(cq).getSingleResult();
+    }
+
+    protected <S extends T> List<S> listByFilter(Class<S> clazz, EntityFilter<S> filter,
+            Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<S> cq = cb.createQuery(clazz);
+        Root<S> root = cq.from(clazz);
+
+        filter.toPredicate(root, cb);
+
+        cq.select(root)
+          .distinct(true)
+          .where(filter.toPredicate(root, cb))
+          .orderBy(ordersFrom(cb, root, orderHints));
+
+        List<S> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return deduplicateResult(results);
+    }
+
+    protected <S extends T> S findByFilter(Class<S> clazz, EntityFilter<S> filter,
+            List<String> propertyPaths) {
+        return findByFilter(clazz, filter, null, propertyPaths);
+    }
+
+    /**
+     * Returns a single result matching the given filter or <code>null</code> if no such result exists.
+     * If more than one result matches the filter, only the first one is returned.
+     */
+    protected <S extends T> S findByFilter(Class<S> clazz, EntityFilter<S> filter,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<S> cq = cb.createQuery(clazz);
+        Root<S> root = cq.from(clazz);
+
+        filter.toPredicate(root, cb);
+
+        cq.select(root)
+          .distinct(true)
+          .where(filter.toPredicate(root, cb))
+          .orderBy(ordersFrom(cb, root, orderHints));
+
+        S result = getSession().createQuery(cq)
+               .getResultStream().findFirst().orElse(null);
+       defaultBeanInitializer.initialize(result, propertyPaths);
+       return result;
     }
 }

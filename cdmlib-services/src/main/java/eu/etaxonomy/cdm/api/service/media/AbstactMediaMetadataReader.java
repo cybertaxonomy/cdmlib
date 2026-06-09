@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.http.HttpException;
 import org.joda.time.DateTime;
 
@@ -128,7 +129,7 @@ public abstract class AbstactMediaMetadataReader {
             String[] splittedKey = StringUtils.splitByCharacterTypeCamelCase(text);
 
             text = CdmUtils.concat(" ", splittedKey);
-            text = StringUtils.replace(text, "  ", " ");
+            text = Strings.CS.replace(text, "  ", " ");
         }
         return text;
     }

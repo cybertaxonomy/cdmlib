@@ -74,7 +74,7 @@ public class TermNodeDto extends CdmBaseDto implements IAnnotatableDto{
             if (o instanceof TermNode){
                 TermNode<?> child = (TermNode<?>)o;
                 if(child.getTerm() != null && child.getTerm().getTermType().equals(TermType.Character)){
-                    children.add(CharacterNodeDto.fromTermNode((TermNode)child, treeDto));
+                    children.add(CharacterNodeDto.fromTermNode(child, treeDto));
                 }else{
                     children.add(TermNodeDto.fromNode(child, treeDto));
                 }

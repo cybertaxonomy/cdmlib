@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -32,7 +33,6 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -138,10 +138,9 @@ public class Feature extends AvailableForTermBase<Feature> {
 	private final Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<>();
 
 	/* for M:M see #4843 */
-	@SuppressWarnings("rawtypes")
     @ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
-	private final Set<TermCollection<? extends DefinedTermBase,?>> supportedCategoricalEnumerations = new HashSet<>();
+	private final Set<TermCollection<?,?>> supportedCategoricalEnumerations = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_MeasurementUnit")
@@ -200,7 +199,6 @@ public class Feature extends AvailableForTermBase<Feature> {
     private static final UUID uuidObservation = UUID.fromString("f59e747d-0b4f-4bf7-b69a-cbd50bc78595");
     private static final UUID uuidOccurrence = UUID.fromString("5deff505-1a32-4817-9a74-50e6936fd630");
     private static final UUID uuidPathogenAgent = UUID.fromString("002d05f2-fd72-49f1-ba4d-196cf09240b5");
-    private static final UUID uuidProtologue = UUID.fromString("71b356c5-1e3f-4f5d-9b0f-c2cf8ae7779f");
     private static final UUID uuidPhenology = UUID.fromString("a7786d3e-7c58-4141-8416-346d4c80c4a2");
     public static final UUID uuidSpecimen = UUID.fromString("8200e050-d5fd-4cac-8a76-4b47afb13809");
     public static final UUID uuidStatus = UUID.fromString("86d40635-2a63-4ad6-be75-9faa4a6a57fb");
@@ -627,7 +625,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	@XmlElement(name = "SupportedCategoricalEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	public Set<TermCollection<? extends DefinedTermBase,?>> getSupportedCategoricalEnumerations() {
+	public Set<TermCollection<?,?>> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
 	}
 
@@ -640,7 +638,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * @see #getSupportedCategoricalEnumerations()
 	 */
 	public void addSupportedCategoricalEnumeration(
-	        TermCollection<? extends DefinedTermBase,?> supportedCategoricalEnumeration) {
+	        TermCollection<?,?> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.add(supportedCategoricalEnumeration);
 	}
 	/**
@@ -652,7 +650,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 * @see   #addSupportedCategoricalEnumeration(TermCollection)
 	 */
 	public void removeSupportedCategoricalEnumeration(
-			TermCollection<? extends DefinedTermBase,?> supportedCategoricalEnumeration) {
+			TermCollection<?,?> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
 	}
 
@@ -999,18 +997,6 @@ public class Feature extends AvailableForTermBase<Feature> {
 	 */
 	public static final Feature INTRODUCTION(){
 		return getTermByUuid(uuidIntroduction);
-	}
-
-	/**
-	 * Returns the "protologue" feature. This feature can only be described
-	 * with {@link TextData text data} reproducing the content of the protologue
-	 * (or some information about it) of the taxon name. This feature applies only to
-	 * {@link TaxonNameDescription taxon name descriptions}.
-	 *
-	 * @see	#isSupportsTextData()
-	 */
-	public static final Feature PROTOLOGUE(){
-		return getTermByUuid(uuidProtologue);
 	}
 
 	/**

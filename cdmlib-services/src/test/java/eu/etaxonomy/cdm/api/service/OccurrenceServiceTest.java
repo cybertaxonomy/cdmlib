@@ -116,7 +116,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
                 .fromString("35cfb0b3-588d-4eee-9db6-ac9caa44e39a"));
         DerivedUnit specimenB = (DerivedUnit) occurrenceService.load(UUID
                 .fromString("09496534-efd0-44c8-b1ce-01a34a8a0229"));
-        DerivedUnit dnaSample = (DnaSample) occurrenceService.load(UUID
+        DnaSample dnaSample = (DnaSample) occurrenceService.load(UUID
                 .fromString("5995f852-0e78-405c-b849-d923bd6781d9"));
         occurrenceService.saveOrUpdate(specimenA);
         occurrenceService.saveOrUpdate(specimenB);
@@ -889,7 +889,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         //check association (IndividualsAssociations + TypeDesignations) specimen -> taxon (name)
 
         //unassociated specimen
-        java.util.Collection<TaxonBase<?>> associatedTaxa = occurrenceService.listAssociatedTaxa(
+        java.util.Collection<TaxonBase> associatedTaxa = occurrenceService.listAssociatedTaxa(
                 unassociatedSpecimen, includeUnpublished, null, null, null, null);
         assertNotNull(associatedTaxa);
         assertTrue(associatedTaxa.isEmpty());
@@ -1606,28 +1606,28 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
       //DERIVATIVES
       //determination: taxon
       DerivedUnit derivedUnitDeterminationTaxon = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-      derivedUnitDeterminationTaxon.setTitleCache("Derived Unit determined as taxon");
+      derivedUnitDeterminationTaxon.setTitleCache("Derived Unit determined as taxon", true);
       //determination: taxon name
       DerivedUnit derivedUnitDeterminationName = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-      derivedUnitDeterminationName.setTitleCache("Derived Unit determined as name");
+      derivedUnitDeterminationName.setTitleCache("Derived Unit determined as name", true);
       //determination: synonym
       DerivedUnit derivedUnitDeterminationSynonym = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-      derivedUnitDeterminationSynonym.setTitleCache("Derived Unit determined as synonym");
+      derivedUnitDeterminationSynonym.setTitleCache("Derived Unit determined as synonym", true);
       //determination: synonym name
       DerivedUnit derivedUnitDeterminationSynonymName = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-      derivedUnitDeterminationSynonymName.setTitleCache("Derived Unit determined as synonym name");
+      derivedUnitDeterminationSynonymName.setTitleCache("Derived Unit determined as synonym name", true);
       //determination: orphan name
       DerivedUnit derivedUnitDeterminationOrphanName = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-      derivedUnitDeterminationOrphanName.setTitleCache("Derived Unit determined as orphan name");
+      derivedUnitDeterminationOrphanName.setTitleCache("Derived Unit determined as orphan name", true);
       //no association
       DerivedUnit tissueUuidNoAssociation = DerivedUnit.NewInstance(SpecimenOrObservationType.TissueSample);
-      tissueUuidNoAssociation.setTitleCache("tissue sample no association");
+      tissueUuidNoAssociation.setTitleCache("tissue sample no association", true);
       //individuals association with taxon
       DerivedUnit dnaSampleUuidIndividualsAssociation = DerivedUnit.NewInstance(SpecimenOrObservationType.DnaSample);
-      dnaSampleUuidIndividualsAssociation.setTitleCache("dna associated via IndividualsAssociation");
+      dnaSampleUuidIndividualsAssociation.setTitleCache("dna associated via IndividualsAssociation", true);
       //type specimen of taxon
       DerivedUnit fossilTypeDesignation = DerivedUnit.NewInstance(SpecimenOrObservationType.Fossil);
-      fossilTypeDesignation.setTitleCache("Fossil with type designation");
+      fossilTypeDesignation.setTitleCache("Fossil with type designation", true);
 
       derivedUnitDeterminationTaxon.setUuid(derivedUnitDeterminationTaxonUuid);
       derivedUnitDeterminationName.setUuid(derivedUnitDeterminationNameUuid);

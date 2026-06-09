@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -35,7 +36,7 @@ public class DeltaTextDataProcessor implements INaturalLanguageTextDataProcessor
 
 			LanguageString tmpMultilangText = previousMultiLanguageText.get(language);
 			if( tmpMultilangText != null){
-				text = StringUtils.remove(text, tmpMultilangText.getText());
+				text = Strings.CS.remove(text, tmpMultilangText.getText());
 			}
 
 			if (doItBetter) { //TODO remove the text between brackets

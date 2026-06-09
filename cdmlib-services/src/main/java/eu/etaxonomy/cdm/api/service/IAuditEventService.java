@@ -15,7 +15,7 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
+import eu.etaxonomy.cdm.persistence.query.AuditEventSort;
 
 public interface IAuditEventService {
 	

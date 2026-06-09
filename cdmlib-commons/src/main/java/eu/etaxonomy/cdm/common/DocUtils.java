@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
-
 import org.apache.maven.doxia.module.apt.AptParser;
 import org.apache.maven.doxia.module.xhtml.XhtmlSinkFactory;
 import org.apache.maven.doxia.parser.ParseException;
@@ -46,6 +45,7 @@ public class DocUtils {
         //SinkFactory sinkFactory = (SinkFactory) container.lookup( SinkFactory.ROLE, "html" ); // Plexus lookup
 
         SinkFactory sinkFactory = new XhtmlSinkFactory();
+//        SinkFactory sinkFactory = new Xhtml5SinkFactory();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Sink sink;

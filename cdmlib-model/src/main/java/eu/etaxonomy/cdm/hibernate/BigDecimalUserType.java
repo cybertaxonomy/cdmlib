@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -79,7 +80,7 @@ public class BigDecimalUserType implements UserType {
 		if (bigDecimal == null) {
 			return null;
 		}
-		return bigDecimal.setScale(rs.getInt(names[1]), BigDecimal.ROUND_HALF_UP);
+		return bigDecimal.setScale(rs.getInt(names[1]), RoundingMode.HALF_UP);
 	}
 
 	@Override

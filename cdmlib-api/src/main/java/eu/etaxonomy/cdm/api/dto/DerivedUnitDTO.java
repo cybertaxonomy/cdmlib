@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
@@ -31,7 +30,6 @@ public class DerivedUnitDTO
     private static final long serialVersionUID = 2345864166579381295L;
 
     private String accessionNumber;
-    private TypedEntityReference<TaxonName> storedUnder;
     private String originalLabelInfo;
     private String exsiccatum;
     private CollectionDTO collection;
@@ -99,13 +97,6 @@ public class DerivedUnitDTO
     }
     public void setMostSignificantIdentifier(String mostSignificantIdentifier) {
         this.mostSignificantIdentifier = mostSignificantIdentifier;
-    }
-
-    public TypedEntityReference<TaxonName> getStoredUnder() {
-        return storedUnder;
-    }
-    public void setStoredUnder(TypedEntityReference<TaxonName> storedUnder) {
-        this.storedUnder = storedUnder;
     }
 
     public String getOriginalLabelInfo() {

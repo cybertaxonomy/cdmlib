@@ -35,12 +35,14 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.grouping.TopGroups;
 import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.util.BytesRef;
-import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.dto.TaxonFindDto;
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
@@ -124,7 +126,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
@@ -134,7 +135,6 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -661,7 +661,7 @@ public class TaxonServiceImpl
             String authorshipCache, Rank rank, EnumSet<NomenclaturalCode> nameTypes,
             Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
 
-        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorshipCache, rank);
+        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorshipCache, rank, nameTypes);
 
         List<T> results = new ArrayList<>();
         if(numberOfResults > 0) {
@@ -1027,7 +1027,7 @@ public class TaxonServiceImpl
 
             List<TaxonName> names =
                 nameDao.findByName(configurator.isDoIncludeAuthors(), configurator.getTitleSearchStringSqlized(), configurator.getMatchMode(),
-                        configurator.getPageSize(), configurator.getPageNumber(), null, configurator.getTaxonNamePropertyPath());
+                        null, configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonNamePropertyPath());
             if (logger.isDebugEnabled()) { logger.debug(names.size() + " matching name(s) found"); }
             if (names.size() > 0) {
                 for (TaxonName taxonName : names) {
@@ -1190,7 +1190,7 @@ public class TaxonServiceImpl
 
     @Override
     public TaxonBase findTaxonByUuid(UUID uuid, List<String> propertyPaths){
-        return this.dao.findByUuid(uuid, null ,propertyPaths);
+        return this.dao.findByUuid(uuid, null, propertyPaths);
     }
 
     @Override
@@ -1232,6 +1232,10 @@ public class TaxonServiceImpl
                         //TODO which value
                         boolean newHomotypicGroupIfNeeded = true;
                         SynonymDeletionConfigurator synConfig = new SynonymDeletionConfigurator();
+
+                        synConfig.setDeleteNameIfPossible(config.isDeleteNameIfPossible());
+                        synConfig.setNameDeletionConfig(config.getNameDeletionConfig());
+
                         result.includeResult(deleteSynonym(synonym, synConfig));
                     }
                 }
@@ -1248,6 +1252,8 @@ public class TaxonServiceImpl
                 TaxonDeletionConfigurator configRelTaxon = new TaxonDeletionConfigurator();
                 configRelTaxon.setDeleteTaxonNodes(false);
                 configRelTaxon.setDeleteConceptRelationships(true);
+                configRelTaxon.setDeleteNameIfPossible(config.isDeleteNameIfPossible());
+                configRelTaxon.setNameDeletionConfig(config.getNameDeletionConfig());
 
                 for (TaxonRelationship taxRel: taxon.getTaxonRelations()){
                     if (config.isDeleteMisappliedNames()
@@ -1471,7 +1477,7 @@ public class TaxonServiceImpl
             boolean bestCandidateMatchesSecUuid = false;
             boolean bestCandidateIsInClassification = false;
             int countEqualCandidates = 0;
-            for(TaxonBase<?> taxonBaseCandidate : taxonList){
+            for(TaxonBase taxonBaseCandidate : taxonList){
                 if(taxonBaseCandidate instanceof Taxon){
                     Taxon newCanditate = CdmBase.deproxy(taxonBaseCandidate, Taxon.class);
                     boolean newCandidateMatchesSecUuid = isMatchesSecUuid(newCanditate, config);
@@ -1739,19 +1745,21 @@ public class TaxonServiceImpl
 
     @Transactional(readOnly = true)
     @Override
-    public <S extends TaxonBase> Pager<S> findByTitle(Class<S> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
+    public <S extends TaxonBase> Pager<S> findByTitle(Class<S> clazz, String queryString, MatchMode matchmode, List<EntityFilter<S>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, filter);
         //check whether there are doubtful taxa matching
-        long numberOfResults_doubtful = dao.countByTitle(clazz, "?".concat(queryString), matchmode, criteria);
+        long numberOfResults_doubtful = dao.countByTitle(clazz, "?".concat(queryString), matchmode, filter);
         List<S> results = new ArrayList<>();
         if(numberOfResults > 0 || numberOfResults_doubtful > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
                if (numberOfResults > 0){
-                   results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+                   results = dao.findByTitle(clazz, queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
                }else{
                    results = new ArrayList<>();
                }
                if (numberOfResults_doubtful > 0){
-                   results.addAll(dao.findByTitle(clazz, "?".concat(queryString), matchmode,  criteria, pageSize, pageNumber, orderHints, propertyPaths));
+                   results.addAll(dao.findByTitle(clazz, "?".concat(queryString), matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths));
                }
         }
         Collections.sort(results, new TaxonComparator());
@@ -2639,7 +2647,7 @@ public class TaxonServiceImpl
     @Override
     public DeleteResult isDeletable(UUID taxonBaseUuid, DeleteConfiguratorBase config){
         DeleteResult result = new DeleteResult();
-        TaxonBase<?> taxonBase = load(taxonBaseUuid);
+        TaxonBase taxonBase = load(taxonBaseUuid);
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(taxonBase);
         if (taxonBase instanceof Taxon){
             TaxonDeletionConfigurator taxonConfig = (TaxonDeletionConfigurator) config;
@@ -2757,7 +2765,7 @@ public class TaxonServiceImpl
         //preliminary implementation
 
         Set<Taxon> taxa = new HashSet<>();
-        TaxonBase<?> taxonBase = find(taxonUuid);
+        TaxonBase taxonBase = find(taxonUuid);
         if (taxonBase == null){
             return new IncludedTaxaDTO();
         }else if (taxonBase.isInstanceOf(Taxon.class)){
@@ -2988,7 +2996,7 @@ public class TaxonServiceImpl
 	@Transactional(readOnly = false)
 	public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid,
 			UUID acceptedTaxonUuid, boolean setNameInSource, boolean newUuidForAcceptedTaxon, SecReferenceHandlingSwapEnum secHandling, UUID newSecAcc, UUID newSecSyn) {
-		TaxonBase<?> base = this.load(synonymUUid);
+		TaxonBase base = this.load(synonymUUid);
 		Synonym syn = HibernateProxyHelper.deproxy(base, Synonym.class);
 		base = this.load(acceptedTaxonUuid);
 		Taxon taxon = HibernateProxyHelper.deproxy(base, Taxon.class);
@@ -3006,7 +3014,7 @@ public class TaxonServiceImpl
             boolean includeUnpublished,
             Integer pageSize, Integer pageNumber) {
 
-        TaxonBase<?> taxonBase = dao.load(taxonUuid);
+        TaxonBase taxonBase = dao.load(taxonUuid);
         if (taxonBase == null || !taxonBase.isInstanceOf(TaxonBase.class)){
             //TODO handle
             throw new RuntimeException("Taxon for uuid " + taxonUuid + " not found");

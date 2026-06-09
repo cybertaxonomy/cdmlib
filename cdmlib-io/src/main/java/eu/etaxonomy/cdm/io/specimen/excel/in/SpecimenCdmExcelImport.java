@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
@@ -62,7 +63,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
@@ -403,7 +403,7 @@ public class SpecimenCdmExcelImport
 
 		boolean hasCommonTaxonInfo = (commonDetermination == null) ? false : commonDetermination.hasTaxonInformation();
 		if (hasCommonTaxonInfo && commonDetermination != null){
-			TaxonBase<?> taxonBase = null;
+			TaxonBase taxonBase = null;
 			if (StringUtils.isNotBlank(commonDetermination.taxonUuid)){
 				UUID taxonUuid = UUID.fromString(commonDetermination.taxonUuid);
 				taxonBase = getTaxonService().find(taxonUuid);
@@ -462,21 +462,6 @@ public class SpecimenCdmExcelImport
 				}
 			}
 
-			if (isFirstDetermination && state.getConfig().isFirstDeterminationIsStoredUnder()){
-				TaxonName name;
-
-				if (!hasCommonTaxonInfo){
-					name = findBestMatchingName(state, determinationLight, agentsToSave);
-				}else{
-					if (commonName == null){
-						commonName = findBestMatchingName(state, commonDetermination, agentsToSave);
-					}
-					name = commonName;
-				}
-				if (name != null){
-					facade.setStoredUnder(name);
-				}
-			}
 			isFirstDetermination = false;
 		}
 	}
@@ -686,7 +671,8 @@ public class SpecimenCdmExcelImport
 		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
 
 		//TODO
-		List<TaxonName> matchingNames = getNameService().findByName(null, titleCache, MatchMode.EXACT, null, null, null, null, null).getRecords();
+		List<TaxonName> matchingNames = getNameService().findByName(null, titleCache, MatchMode.EXACT,
+		        null, null, null, null, null).getRecords();
 		if (matchingNames.size() > 0){
 			return matchingNames.get(0);
 		} else if (matchingNames.size() > 0){

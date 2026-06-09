@@ -11,11 +11,12 @@ package eu.etaxonomy.cdm.api.service.molecular;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
@@ -23,7 +24,6 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.molecular.Primer;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IPrimerDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -32,7 +32,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 @Service
 @Transactional(readOnly = true)
-public class PrimerServiceImpl extends AnnotatableServiceBase<Primer, IPrimerDao> implements IPrimerService{
+public class PrimerServiceImpl
+        extends AnnotatableServiceBase<Primer, IPrimerDao>
+        implements IPrimerService{
 
     @Override
     public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache() {
@@ -49,12 +51,13 @@ public class PrimerServiceImpl extends AnnotatableServiceBase<Primer, IPrimerDao
     }
 
     @Override
-    public Pager<Primer> findByLabel(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        long numberOfResults = dao.countByTitle(queryString, matchmode, criteria);
+    public Pager<Primer> findByLabel(String queryString, MatchMode matchmode, List<EntityFilter<Primer>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+        long numberOfResults = dao.countByTitle(queryString, matchmode, filter);
 
         List<Primer> results = new ArrayList<Primer>();
         if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) {
-               results = dao.findByTitle(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+               results = dao.findByTitle(queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
         }
 
          return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);

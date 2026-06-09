@@ -133,7 +133,7 @@ public class CsvExportController extends AbstractController{
 			config.setTaxonNameTitle(taxonName);
 
 			List<TaxonBase> taxaByName = taxonService.findTaxaByName(config);
-			for (TaxonBase<?> taxonBase : taxaByName) {
+			for (TaxonBase taxonBase : taxaByName) {
 			    if(taxonBase.isInstanceOf(Taxon.class)){
 			        TaxonNode taxonNode = classification.getNode(HibernateProxyHelper.deproxy(
 			                taxonService.load(taxonBase.getUuid(),TAXON_WITH_NODES_INIT_STRATEGY), Taxon.class));

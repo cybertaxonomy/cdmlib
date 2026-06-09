@@ -26,10 +26,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -215,6 +215,7 @@ public class UriUtils {
      */
     public static HttpResponse getResponseByType(URI uri, Map<String, String> requestHeaders, HttpMethod httpMethod, HttpEntity entity) throws IOException, ClientProtocolException {
         // Create an instance of HttpClient.
+        //NOTE: deprecated Methode besser unter Java 11 zu ersetzen, oder durch httpclient 5
         HttpClient client = new DefaultHttpClient();
 
         try {

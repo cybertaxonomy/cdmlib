@@ -425,7 +425,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                     }
                     else{
                         c = getTaxonService().searchByName(scientificName, INCLUDE_UNPUBLISHED, ref);
-                        for (TaxonBase<?> b : c) {
+                        for (TaxonBase b : c) {
                             taxon = (Taxon) b;
                         }
                     }
@@ -632,7 +632,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                     longitude, latitude, gatheringAgent, gatheringTeam,config);
             // country
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
-            unitsGatheringArea.useTDWGareas(this.useTDWGarea);
             //            unitsGatheringArea.setConfig(config, getOccurrenceService(),getTermService());
             unitsGatheringArea.setParams(isocountry, country, config, getTermService(), getVocabularyService());
             DefinedTermBase areaCountry =unitsGatheringArea.getCountry();

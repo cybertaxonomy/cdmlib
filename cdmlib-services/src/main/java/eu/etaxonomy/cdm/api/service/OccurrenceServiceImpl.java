@@ -174,24 +174,6 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public long countDeterminations(SpecimenOrObservationBase occurence, TaxonBase taxonbase) {
-        return dao.countDeterminations(occurence, taxonbase);
-    }
-
-    @Override
-    public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase,
-            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        long numberOfResults = dao.countDeterminations(occurrence, taxonBase);
-
-        List<DeterminationEvent> results = new ArrayList<>();
-        if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = dao.getDeterminations(occurrence, taxonBase, pageSize, pageNumber, propertyPaths);
-        }
-
-        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
-    }
-
-    @Override
     public Pager<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         long numberOfResults = dao.countMedia(occurence);
 
@@ -1267,10 +1249,10 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public Collection<TaxonBase<?>> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+    public Collection<TaxonBase> listAssociatedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
+        Collection<TaxonBase> associatedTaxa = new HashSet<>();
 
         //individuals associations
         associatedTaxa.addAll(listIndividualsAssociationTaxa(specimen, includeUnpublished, limit, start, orderHints, propertyPaths));
@@ -1286,10 +1268,10 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public Collection<TaxonBase<?>> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+    public Collection<TaxonBase> listDeterminedTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
+        Collection<TaxonBase> associatedTaxa = new HashSet<>();
         for (DeterminationEvent determinationEvent : listDeterminationEvents(specimen, limit, start, orderHints, propertyPaths)) {
             if(determinationEvent.getIdentifiedUnit().equals(specimen)){
                 if(determinationEvent.getTaxon()!=null){
@@ -1307,9 +1289,9 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public Collection<TaxonBase<?>> listTypeDesignationTaxa(DerivedUnit specimen, boolean includeUnpublished,
+    public Collection<TaxonBase> listTypeDesignationTaxa(DerivedUnit specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
+        Collection<TaxonBase> associatedTaxa = new HashSet<>();
         for (SpecimenTypeDesignation typeDesignation : listTypeDesignations(specimen, limit, start, orderHints, propertyPaths)) {
             if(typeDesignation.getTypeSpecimen().equals(specimen)){
                 Set<TaxonName> typifiedNames = typeDesignation.getTypifiedNames();
@@ -1325,9 +1307,9 @@ public class OccurrenceServiceImpl
     }
 
     @Override
-    public Collection<TaxonBase<?>> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
+    public Collection<TaxonBase> listIndividualsAssociationTaxa(SpecimenOrObservationBase<?> specimen, boolean includeUnpublished,
             Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Collection<TaxonBase<?>> associatedTaxa = new HashSet<>();
+        Collection<TaxonBase> associatedTaxa = new HashSet<>();
         for (IndividualsAssociation individualsAssociation : listIndividualsAssociations(specimen, null, null, null, null)) {
             if(individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)){
                 TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
@@ -1389,7 +1371,7 @@ public class OccurrenceServiceImpl
             Taxon taxon = null;
             EnumSet<TaxonOccurrenceRelationType> taxonOccurrenceRelTypes = ((FindOccurrencesConfigurator) config).getTaxonOccurrenceRelTypes();
             if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
-                TaxonBase<?> taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
+                TaxonBase taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
                 if(taxonBase != null && taxonBase.isInstanceOf(Taxon.class)){
                     taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
                 }
@@ -1440,7 +1422,7 @@ public class OccurrenceServiceImpl
         List<UuidAndTitleCache<SpecimenOrObservationBase>> occurrences = new ArrayList<>();
         Taxon taxon = null;
         if(config.getAssociatedTaxonUuid()!=null){
-            TaxonBase<?> taxonBase = taxonService.load(config.getAssociatedTaxonUuid());
+            TaxonBase taxonBase = taxonService.load(config.getAssociatedTaxonUuid());
             if(taxonBase != null && taxonBase.isInstanceOf(Taxon.class)){
                 taxon = CdmBase.deproxy(taxonBase, Taxon.class);
             }
@@ -1466,7 +1448,7 @@ public class OccurrenceServiceImpl
 
         Taxon taxon = null;
         if(config.getAssociatedTaxonUuid()!=null){
-            TaxonBase<?> taxonBase = taxonService.load(config.getAssociatedTaxonUuid());
+            TaxonBase taxonBase = taxonService.load(config.getAssociatedTaxonUuid());
             if(taxonBase != null && taxonBase.isInstanceOf(Taxon.class)){
                 taxon = CdmBase.deproxy(taxonBase, Taxon.class);
             }
@@ -1500,19 +1482,19 @@ public class OccurrenceServiceImpl
             FindOccurrencesConfigurator occurrenceConfig = (FindOccurrencesConfigurator) config;
             List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
             Taxon taxon = null;
-            if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
-                TaxonBase<?> taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
+            if(occurrenceConfig.getAssociatedTaxonUuid() != null){
+                TaxonBase taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
                 if(taxonBase.isInstanceOf(Taxon.class)){
                     taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
                 }
             }
             TaxonName taxonName = null;
-            if(occurrenceConfig.getAssociatedTaxonNameUuid()!=null){
+            if(occurrenceConfig.getAssociatedTaxonNameUuid() != null){
                 taxonName = nameService.load(occurrenceConfig.getAssociatedTaxonNameUuid());
             }
             List<? extends SpecimenOrObservationBase> foundOccurrences = dao.findOccurrences(
                     occurrenceConfig.getClazz(),
-                    occurrenceConfig.getTitleSearchString(), occurrenceConfig.getSignificantIdentifier(),
+                    occurrenceConfig.getTitleSearchStringSqlized(), occurrenceConfig.getSignificantIdentifier(),
                     occurrenceConfig.getSpecimenType(), taxon, taxonName,
                     occurrenceConfig.getMatchMode(), occurrenceConfig.isIncludeUnpublished(),
                     taxonOccurrenceRelTypes,
@@ -1520,7 +1502,7 @@ public class OccurrenceServiceImpl
             occurrences.addAll(foundOccurrences);
             occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
 
-            long count = Integer.valueOf(occurrences.size()).longValue();
+            long count = Long.valueOf(occurrences.size());
             return new DefaultPagerImpl<>(config.getPageNumber(), count, config.getPageSize(), (List<S>)occurrences);
         }
         return super.findByTitle(config);
@@ -1529,14 +1511,15 @@ public class OccurrenceServiceImpl
     private List<SpecimenOrObservationBase> filterOccurencesByAssignmentAndHierarchy(
             FindOccurrencesConfigurator occurrenceConfig, List<SpecimenOrObservationBase> occurrences, Taxon taxon,
             TaxonName taxonName) {
+
         //filter out (un-)assigned specimens
-        if(taxon==null && taxonName==null){
+        if(taxon == null && taxonName == null){
             AssignmentStatus assignmentStatus = occurrenceConfig.getAssignmentStatus();
             List<SpecimenOrObservationBase> specimenWithAssociations = new ArrayList<>();
             if(!assignmentStatus.equals(AssignmentStatus.ALL_SPECIMENS)){
                 for (SpecimenOrObservationBase<?> specimenOrObservationBase : occurrences) {
                     boolean includeUnpublished = true;  //TODO not sure if this is correct, maybe we have to propagate publish flag to higher methods.
-                    Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase,
+                    Collection<TaxonBase> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase,
                             includeUnpublished, null, null, null, null);
                     if(!associatedTaxa.isEmpty()){
                         specimenWithAssociations.add(specimenOrObservationBase);

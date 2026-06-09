@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.support.DefaultTransactionStatus;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
@@ -40,7 +41,6 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -210,7 +210,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 	protected int floatString2IntValue(String value) {
 		int intValue = 0;
 		try {
-			Float fobj = new Float(Float.parseFloat(value));
+			Float fobj = Float.valueOf(Float.parseFloat(value));
 			intValue = fobj.intValue();
 			if (logger.isDebugEnabled()) { logger.debug("Value formatted: " + intValue); }
 		} catch (NumberFormatException ex) {
@@ -270,7 +270,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
      * @param line the row, for debug information
      * @return the taxon to load
      */
-    protected <T extends TaxonBase<?>> T getTaxonByCdmId(STATE state, String colTaxonUuid,
+    protected <T extends TaxonBase> T getTaxonByCdmId(STATE state, String colTaxonUuid,
             String colNameCache, String colNameTitleCache, String colTaxonTitleCache,
             Class<T> clazz, String line) {
 
@@ -285,7 +285,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
                 state.getResult().addError("Taxon uuid has incorrect format. Taxon could not be loaded. Data not imported.", null, line);
                 return null;
             }
-            TaxonBase<?> result = getTaxonService().find(uuidTaxon);
+            TaxonBase result = getTaxonService().find(uuidTaxon);
             //TODO load only objects of correct class
             if (result != null && clazz != null && !result.isInstanceOf(clazz)){
                 result = null;
@@ -404,7 +404,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
      * @see #getTaxonByCdmId(ExcelImportState, String, String, String, String, Class, String)
      */
     protected void verifyName(STATE state, String colNameCache, String colNameTitleCache, String colTaxonTitleCache,
-            String line, Map<String, String> record, TaxonBase<?> result) {
+            String line, Map<String, String> record, TaxonBase result) {
         //nameCache
         String strExpectedNameCache = record.get(colNameCache);
         String nameCache = result.getName() == null ? null : result.getName().getNameCache();

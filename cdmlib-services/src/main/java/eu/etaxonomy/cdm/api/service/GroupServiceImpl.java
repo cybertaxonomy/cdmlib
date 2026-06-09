@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.ObjectDeletedException;
-import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
@@ -34,7 +35,6 @@ import eu.etaxonomy.cdm.persistence.dao.permission.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.permission.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -44,7 +44,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Service
 @Transactional(readOnly = true)
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IGroupService {
+public class GroupServiceImpl
+        extends ServiceBase<Group,IGroupDao>
+        implements IGroupService {
 
     private IUserDao userDao;
 
@@ -73,13 +75,6 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         Assert.hasText(groupName, "Parameter 'groupName' must not be empty.");
         Group group = dao.findGroupByName(groupName);
         return group != null;
-    }
-
-    @Override
-    public Group findGroup(String groupName) {
-        Assert.hasText(groupName, "Parameter 'groupname' must not be empty.");
-        Group group = dao.findGroupByName(groupName);
-        return group;
     }
 
     @Override
@@ -201,14 +196,23 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
 
     @Override
     @Transactional(readOnly = true)
-    public List<Group> listByName(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-         long numberOfResults = dao.countByName(queryString, matchmode, criteria);
+    public List<Group> listByName(String queryString,MatchMode matchmode, List<EntityFilter<Group>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        long numberOfResults = dao.countByName(queryString, matchmode, filter);
 
          List<Group> results = new ArrayList<>();
          if(numberOfResults > 0) {
-                results = dao.findByName(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+                results = dao.findByName(queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
          }
          return results;
+    }
+
+    @Override
+    public Group loadByName(String groupName){
+        Assert.hasText(groupName, "Parameter 'groupname' must not be empty.");
+        Group group = dao.findGroupByName(groupName);
+        return group;
     }
 
     @Override

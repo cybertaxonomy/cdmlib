@@ -132,7 +132,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
             IProgressMonitor parentMonitor, Integer parentTicks){
 
 	    TaxonNodeOutStreamPartitioner<ST> taxonNodePartitioner
-		        = new TaxonNodeOutStreamPartitioner(repository, state, filter, partitionSize,
+		        = new TaxonNodeOutStreamPartitioner<>(repository, state, filter, partitionSize,
 		                parentMonitor, parentTicks, null);
 		return taxonNodePartitioner;
 	}
@@ -143,7 +143,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
             IProgressMonitor parentMonitor, Integer parentTicks, List<String> propertyPath){
 
         TaxonNodeOutStreamPartitioner<ST> taxonNodePartitioner
-                = new TaxonNodeOutStreamPartitioner(repository, state, filter, partitionSize,
+                = new TaxonNodeOutStreamPartitioner<>(repository, state, filter, partitionSize,
                         parentMonitor, parentTicks, propertyPath);
         return taxonNodePartitioner;
     }

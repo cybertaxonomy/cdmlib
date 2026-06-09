@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Address;
-import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -92,7 +91,6 @@ public class EndnoteRecordsImport
 		Map<String, Reference> map_webPage = new HashMap<>();
 		Map<String, Reference> map_generic = new HashMap<>();
 		Map<String, Reference> map_printSeries = new HashMap<>();
-		Map<String, Reference> map_personalCommunication = new HashMap<>();
 
 		IReferenceService referenceService = getReferenceService();
 
@@ -471,11 +469,8 @@ public class EndnoteRecordsImport
 				String strSize_address = elStyle_address.getAttributeValue("size");
 				String address_style = elStyle_address.getTextNormalize();
 
-				Contact contact =  new Contact();
 				Address address = Address.NewInstance();
 				reference.setAuthorship(authorship);
-				authorship.setContact(contact);
-				contact.addAddress(address);
 				address.setLocality(address_style);
 			}
 

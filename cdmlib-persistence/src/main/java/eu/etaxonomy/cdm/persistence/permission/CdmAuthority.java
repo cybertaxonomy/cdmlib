@@ -90,7 +90,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         	this.operation = operation;
         }
         if(targetDomainObject.getUuid() == null){
-            throw new NullPointerException("UUID of targetDomainObject is null. CDM entities need to be saved prior using this function");
+            throw new NullPointerException("UUID of targetDomainObject is null. CDM entities need to be saved prior to using this function");
         }
         this.targetUuid = targetDomainObject.getUuid();
     }

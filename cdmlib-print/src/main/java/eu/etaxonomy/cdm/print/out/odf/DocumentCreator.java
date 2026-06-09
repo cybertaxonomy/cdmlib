@@ -49,19 +49,18 @@ public class DocumentCreator {
 			stylesFactory = new StylesFactory(outputDocument);
 
 			DOMOutputter domOutputter = new DOMOutputter();
-			org.w3c.dom.Document output;
-			output = domOutputter.output(document);
+			org.w3c.dom.Document output = domOutputter.output(document);
 
 			Node firstChild = output.getFirstChild();
 
-			org.w3c.dom.Document officeDocument = officeText.getOwnerDocument();
+			org.w3c.dom.Document officeDocument = ((Node)officeText).getOwnerDocument();
 
 
 			Node node = officeDocument.importNode(firstChild, true);
 			NodeList childNodes = node.getChildNodes();
 
 			for (int i = 0; i < childNodes.getLength(); i++){
-				officeText.appendChild(childNodes.item(i));
+			    ((Node)officeText).appendChild(childNodes.item(i));
 			}
 
 			return outputDocument;
@@ -93,12 +92,11 @@ public class DocumentCreator {
 	 * text document, a <text:p>. Clean out all the old stuff.
 	 */
 	void cleanOutDocument() {
-		Node childNode;
 
-		childNode = officeText.getFirstChild();
+		Node childNode = ((Node)officeText).getFirstChild();
 		while (childNode != null) {
 			officeText.removeChild(childNode);
-			childNode = officeText.getFirstChild();
+			childNode = ((Node)officeText).getFirstChild();
 		}
 	}
 }

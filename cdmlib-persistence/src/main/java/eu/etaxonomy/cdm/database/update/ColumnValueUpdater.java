@@ -30,27 +30,34 @@ public class ColumnValueUpdater
     private final String columnName;
     private final String newValueStr;
     private final Integer newValueInt;
+    private final String prefixToAdd;
     private final String where;
 
     public static ColumnValueUpdater NewIntegerInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName,
             String columnName, Integer newValue, String where, boolean includeAudTable){
-        return new ColumnValueUpdater(stepList, stepName, tableName, columnName, null, newValue, where, includeAudTable);
+        return new ColumnValueUpdater(stepList, stepName, tableName, columnName, null, newValue, null, where, includeAudTable);
     }
 
     public static ColumnValueUpdater NewStringInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName,
             String columnName, String newValue, String where, boolean includeAudTable){
-        return new ColumnValueUpdater(stepList, stepName, tableName, columnName, newValue, null, where, includeAudTable);
+        return new ColumnValueUpdater(stepList, stepName, tableName, columnName, newValue, null, null, where, includeAudTable);
+    }
+
+    public static ColumnValueUpdater NewPrefixAdderInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName,
+            String columnName, String prefixToAdd, String where, boolean includeAudTable){
+        return new ColumnValueUpdater(stepList, stepName, tableName, columnName, null, null, prefixToAdd, where, includeAudTable);
     }
 
 
 // **************************************** Constructor ***************************************/
 
     protected ColumnValueUpdater(List<ISchemaUpdaterStep> stepList, String stepName, String tableName,
-            String columnName, String newValueStr, Integer newValueInt, String where, boolean includeAudTable) {
+            String columnName, String newValueStr, Integer newValueInt, String prefixToAdd, String where, boolean includeAudTable) {
         super(stepList, stepName, tableName, includeAudTable);
         this.columnName = columnName;
         this.newValueStr = newValueStr;
         this.newValueInt = newValueInt;
+        this.prefixToAdd = prefixToAdd;
         this.where = isBlank(where)? " (1=1) " : where;
     }
 
@@ -58,15 +65,27 @@ public class ColumnValueUpdater
     protected void invokeOnTable(String tableName, ICdmDataSource datasource,
             IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
         try {
-            String value = (newValueStr == null && newValueInt == null) ?
-                    " = NULL " : newValueInt != null ? String.valueOf(newValueInt) :
-                        "'"+newValueStr+"'";
 
-            String updateQuery = "UPDATE %s "
-                    + " SET %s = %s "
-                    + " WHERE %s ";
-            updateQuery = String.format(updateQuery, caseType.transformTo(tableName),
-                    columnName, value, where);
+            String updateQuery;
+            if (prefixToAdd == null) {
+                String value = (newValueStr == null && newValueInt == null) ?
+                        " = NULL " : newValueInt != null ? String.valueOf(newValueInt) :
+                            "'"+newValueStr+"'";
+
+                updateQuery = "UPDATE %s "
+                        + " SET %s = %s "
+                        + " WHERE %s ";
+                updateQuery = String.format(updateQuery, caseType.transformTo(tableName),
+                        columnName, value, where);
+
+            } else {
+//                String value = "'" + prefixToAdd +"' || " + columnName ;
+                updateQuery = "UPDATE %s "
+                        + " SET %s = CONCAT('%s', %s )"
+                        + " WHERE %s ";
+                updateQuery = String.format(updateQuery, caseType.transformTo(tableName),
+                        columnName, prefixToAdd, columnName, where);
+            }
 
             datasource.executeUpdate(updateQuery);
 

@@ -318,7 +318,7 @@ public class WfoBackboneExport
     }
 
     private void handleTaxonBase(WfoBackboneExportState state, WfoBackboneExportTable table, String[] csvLine,
-            TaxonBase<?> taxonBase) {
+            TaxonBase taxonBase) {
 
         //secundum reference
         Reference secRef = taxonBase.getSec();
@@ -401,7 +401,7 @@ public class WfoBackboneExport
     }
 
     //TODO 4 is remark handling correct?
-    private String getRemarks(WfoBackboneExportState state, TaxonBase<?> taxonBase, TaxonName name) {
+    private String getRemarks(WfoBackboneExportState state, TaxonBase taxonBase, TaxonName name) {
 
         String remarks = null;
 

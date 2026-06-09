@@ -85,7 +85,6 @@ import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -172,7 +171,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testGetTaxonByUuid() {
         Taxon expectedTaxon = Taxon.NewInstance(null, null);
         UUID uuid = service.save(expectedTaxon).getUuid();
-        TaxonBase<?> actualTaxon = service.find(uuid);
+        TaxonBase actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
     }
 
@@ -208,7 +207,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testSaveTaxon() {
         Taxon expectedTaxon = Taxon.NewInstance(null, null);
         UUID uuid = service.save(expectedTaxon).getUuid();
-        TaxonBase<?> actualTaxon = service.find(uuid);
+        TaxonBase actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
     }
 
@@ -216,7 +215,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testSaveOrUpdateTaxon() {
         Taxon expectedTaxon = Taxon.NewInstance(null, null);
         UUID uuid = service.save(expectedTaxon).getUuid();
-        TaxonBase<?> actualTaxon = service.find(uuid);
+        TaxonBase actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
 
         actualTaxon.setName(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()));
@@ -248,7 +247,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         misappliedName = (Taxon) service.find(misappliedNameUuid);
         expectedTaxon.addMisappliedName(misappliedName, null, null);
         UUID uuid = service.save(expectedTaxon).getUuid();
-        TaxonBase<?> actualTaxon = service.find(uuid);
+        TaxonBase actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
         misappliedName.setSec(save(ReferenceFactory.newArticle()));
 
@@ -287,7 +286,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         List<TaxonBase> synList = service.findTaxaByName(configurator);
 
         if (synList.size() > 0){
-            TaxonBase<?> syn = synList.get(0);
+            TaxonBase syn = synList.get(0);
             assertTrue(tax.getSynonyms().contains(syn));
         }else{
             Assert.fail("There should be a synonym with name Test3");
@@ -313,7 +312,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         List<TaxonBase> synList = service.findTaxaByName(configurator);
 
         if (synList.size() > 0){
-            TaxonBase<?> syn = synList.get(0);
+            TaxonBase syn = synList.get(0);
             assertTrue(tax.getSynonyms().contains(syn));
         }else{
             Assert.fail("There should be a synonym with name Test3");
@@ -334,7 +333,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
         taxWithSyn = null;
         //test flush (resave deleted object)
-        TaxonBase<?> syn = service.find(uuidSyn);
+        TaxonBase syn = service.find(uuidSyn);
         taxWithSyn = (Taxon)service.find(uuidTaxWithSyn);
         Taxon taxNew = (Taxon)service.find(result.getCdmEntity().getUuid());
         assertNull(syn);
@@ -357,7 +356,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
         taxWithSyn = null;
         //test flush (resave deleted object)
-        TaxonBase<?> syn = service.find(SYNONYM2_UUID);
+        TaxonBase syn = service.find(SYNONYM2_UUID);
         taxWithSyn = (Taxon)service.find(SPECIES2_UUID);
         TaxonNode taxNodeNew = nodeService.find(result.getCdmEntity().getUuid());
         Taxon taxNew = taxNodeNew.getTaxon();
@@ -373,7 +372,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon genus = getTestTaxon();
         TaxonNode node = genus.getTaxonNodes().iterator().next();
         UpdateResult result = new UpdateResult();
-        TaxonBase<?> syn = service.find(SYNONYM2_UUID);
+        TaxonBase syn = service.find(SYNONYM2_UUID);
         Reference sec = save(ReferenceFactory.newBook());
         sec.setTitleCache("Flora Cuba", true);
         syn.setSec(sec);
@@ -404,7 +403,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonNode node = genus.getTaxonNodes().iterator().next();
 
         UpdateResult result = new UpdateResult();
-        TaxonBase<?> syn = service.find(SYNONYM2_UUID);
+        TaxonBase syn = service.find(SYNONYM2_UUID);
         Reference sec = save(ReferenceFactory.newBook());
         sec.setTitleCache("Flora Cuba", true);
         Reference newSec = ReferenceFactory.newBook();
@@ -447,7 +446,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         tax2WithSyn = null;
 
         //test flush (resave deleted object)
-        TaxonBase<?> syn = service.find(uuidSyn);
+        TaxonBase syn = service.find(uuidSyn);
         taxWithSyn = (Taxon)service.find(uuidTaxWithSyn);
         Taxon taxNew = (Taxon)service.find(result.getCdmEntity().getUuid());
         assertNull(syn);
@@ -1890,7 +1889,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         createTestDataSet();
 
     	TaxonDescription description = save(TaxonDescription.NewInstance(taxWithoutSyn));
-    	SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>> specimen = FieldUnit.NewInstance();
+    	FieldUnit specimen = FieldUnit.NewInstance();
     	UUID uuid = occurenceService.saveOrUpdate(specimen);
     	DescriptionElementBase element = IndividualsAssociation.NewInstance(specimen);
     	description.addElement(element);
@@ -1920,7 +1919,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         createTestDataSet();
 
         TaxonDescription description = TaxonDescription.NewInstance(taxWithoutSyn);
-        SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>> specimen = FieldUnit.NewInstance();
+        FieldUnit specimen = FieldUnit.NewInstance();
         UUID uuid = occurenceService.saveOrUpdate(specimen);
         DescriptionElementBase element = IndividualsAssociation.NewInstance(specimen);
         description.addElement(element);

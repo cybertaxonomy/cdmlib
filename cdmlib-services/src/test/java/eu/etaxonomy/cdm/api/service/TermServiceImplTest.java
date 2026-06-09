@@ -34,7 +34,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.TermServiceImpl.TermMovePosition;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -83,37 +82,6 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     private ITaxonService taxonService;
 
 /* ************************* TESTS *************************************************/
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#getTermByUri(java.lang.String)}.
-     */
-    @Ignore //second part of test throws unexpected exception & also first part fails since language(406)
-    //is also not found here, for an explanation see comment below
-    @Test
-    /* @DataSet
-     * WARNING:
-     *    the dataset contains records for DEFINEDTERMBASE,DEFINEDTERMBASE_REPRESENTATION and REPRESENTAION
-     *    and thus will cause unitils to empty the according tables, thus all terms etc will be deleted for the
-     *    following tests, thus it might be a good idea moving this test to the end
-     */
-    public void testGetTermByUri() {
-        String uriStr = "http://any.uri.com";
-        URI uri = URI.create(uriStr);
-        DefinedTermBase<?> term = termService.getByUri(uri);
-        assertNotNull(term);
-        //for testing only
-//		TermVocabulary<?> voc = term.getVocabulary();
-//		service.saveOrUpdate(term);
-//		List<MarkerType> list = service.listByTermClass(MarkerType.class, null, null, null, null);
-
-        //NULL
-        //FIXME throws object not found exception. Wants to load term.voc(11).representation(496).language(124) which does not exist
-        //I do not understand where the vocabulary data comes from (checked persistence TermsDataSet-with_auditing_info.xml) but somehow this does not apply
-        String uriNotExistStr = "http://www.notExisting.com";
-        URI uriNotExist = URI.create(uriNotExistStr);
-        DefinedTermBase<?> termNotExist = termService.getByUri(uriNotExist);
-        assertNull(termNotExist);
-    }
 
     @Test
     /* @DataSet
@@ -225,7 +193,9 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	        State.class, "Test States", null, null, null);
     	vocStates.addTerm(State.NewInstance("green", "green", "gn"));
     	vocabularyService.save(vocStates);
-    	Pager<DefinedTermBase> term = termService.findByRepresentationText("green", DefinedTermBase.class, null, null);
+    	Pager<DefinedTermBase> term = termService.findByRepresentationLabel("green", DefinedTermBase.class, null, null);
+//    	Maybe better use:
+//    	Pager<DefinedTermBase> term = termService.findByTitle(null, "green", null, null, null, null, null, null);
     	if (term.getCount() != 0){
     		DeleteResult result = termService.delete(term.getRecords().get(0));
     		assertTrue(result.isOk());

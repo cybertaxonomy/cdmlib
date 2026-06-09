@@ -12,6 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,7 +23,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -214,29 +214,7 @@ public class Person
 	 *
 	 * @see #Person(String, String, String)
 	 */
-	protected Person() {
-		super();
-	}
-
-	/**
-	 * Class constructor using a "forenames" string (including initials),
-	 * a surname (family name) and an abbreviated name as used in nomenclature.
-	 * For the abbreviated name the inherited attribute {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle}
-	 * is used.
-	 *
-	 * @param  givenname     		the given name
-	 * @param  familyname      		the hereditary name
-	 * @param  nomenclaturalTitel 	the abbreviated name
-	 * @see                  		#Person()
-	 * @see                  		#NewInstance()
-	 */
-	public Person(String givenname, String familyname, String nomenclaturalTitel) {
-		this.setGivenName(givenname);
-		this.setFamilyName(familyname);
-		logger.debug("before - Set nomenclatural Title");
-		this.setNomenclaturalTitle(nomenclaturalTitel);
-		logger.debug("after - Set nomenclatural Title");
-	}
+	protected Person() {}
 
     @Override
     protected void initDefaultCacheStrategy() {

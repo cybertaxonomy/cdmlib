@@ -331,8 +331,8 @@ public class DescriptiveDataSetDao
         Set<UUID> descriptionUuids = new HashSet<>(descriptionUuidList);
         dto.setDescriptionUuids(descriptionUuids);
 
-        TermDto minRank = termDao.getTermDto(minRankUuid);
-        TermDto maxRank = termDao.getTermDto(maxRankUuid);
+        TermDto minRank = termDao.findTermDto(minRankUuid);
+        TermDto maxRank = termDao.findTermDto(maxRankUuid);
         dto.setMaxRank(maxRank);
         dto.setMinRank(minRank);
         return dto;
@@ -376,8 +376,8 @@ public class DescriptiveDataSetDao
         Set<UUID> descriptionUuids = new HashSet<>(descriptionUuidList);
         dto.setDescriptionUuids(descriptionUuids);
 
-        TermDto minRank = termDao.getTermDto(minRankUuid);
-        TermDto maxRank = termDao.getTermDto(maxRankUuid);
+        TermDto minRank = termDao.findTermDto(minRankUuid);
+        TermDto maxRank = termDao.findTermDto(maxRankUuid);
         dto.setMaxRank(maxRank);
         dto.setMinRank(minRank);
         return dto;

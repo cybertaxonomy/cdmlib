@@ -75,7 +75,7 @@ public class FeatureDto extends TermDto {
         TermVocabulary<?> vocabulary = HibernateProxyHelper.deproxy(term.getVocabulary());
         UUID vocUuid =  vocabulary != null? vocabulary.getUuid(): null;
         Set<TermCollectionDto> supportedCategoricalEnumerations = new HashSet<>();
-        for (TermCollection<? extends DefinedTermBase,?> stateVoc:term.getSupportedCategoricalEnumerations()){
+        for (TermCollection<?,?> stateVoc:term.getSupportedCategoricalEnumerations()){
             supportedCategoricalEnumerations.add(TermCollectionDto.fromCdmBase(stateVoc));
         }
 
@@ -118,7 +118,7 @@ public class FeatureDto extends TermDto {
         if (term.getSupportedCategoricalEnumerations() != null && !term.getSupportedCategoricalEnumerations().isEmpty()){
             result.supportedCategoricalEnumerations = new HashSet<>();
         }
-        for (TermCollection<? extends DefinedTermBase,?> voc: term.getSupportedCategoricalEnumerations()){
+        for (TermCollection<?,?> voc: term.getSupportedCategoricalEnumerations()){
             result.supportedCategoricalEnumerations.add(new TermVocabularyDto(voc.getUuid(), voc.getRepresentations(), voc.getTermType(), voc.getTitleCache(), voc.isAllowDuplicates(), voc.isOrderRelevant(), voc.isFlat()));
         }
 

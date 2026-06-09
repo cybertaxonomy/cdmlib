@@ -27,7 +27,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmRepository;
@@ -217,11 +216,10 @@ public class CdmUserHelper implements UserHelper, Serializable {
     public CdmAuthority createAuthorityFor(String username, CdmBase cdmEntity, EnumSet<CRUD> crud, String property) {
 
         TransactionStatus txStatus = repo().startTransaction();
-        UserDetails userDetails = repo().getUserService().loadUserByUsername(username);
+        User user = repo().getUserService().loadUserByUsernameAsUser(username);
         boolean newAuthorityAdded = false;
         CdmAuthority authority = null;
-        User user = (User)userDetails;
-        if(userDetails != null){
+        if(user != null){
             try{
                 // flush all pending transactions before changing the authentication,
                 // see https://dev.e-taxonomy.eu/redmine/issues/8066 for discussion
@@ -252,7 +250,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
         }
         repo().commitTransaction(txStatus);
         return newAuthorityAdded ? authority : null;
-
     }
 
     @Override
@@ -281,9 +278,8 @@ public class CdmUserHelper implements UserHelper, Serializable {
     public void removeAuthorityForUser(String username, CdmAuthority cdmAuthority) {
 
         TransactionStatus txStatus = repo().startTransaction();
-        UserDetails userDetails = repo().getUserService().loadUserByUsername(username);
-        User user = (User)userDetails;
-        if(userDetails != null){
+        User user = repo().getUserService().loadUserByUsernameAsUser(username);
+        if(user != null){
             try {
                 getRunAsAutheticator().runAsAuthentication(Role.ROLE_USER_MANAGER);
                 user.getGrantedAuthorities().remove(cdmAuthority);

@@ -123,7 +123,4 @@ public class ValidPasswordValidator implements ConstraintValidator<ValidPassword
             return validator;
         }
     }
-
-
-
 }

@@ -78,15 +78,16 @@ public class Cdm2CdmVocabularyImport
         return 100;
     }
 
-    private void doSingleVocabulary(Cdm2CdmImportState state, UUID vocUuid) {
+    private <T extends DefinedTermBase> void doSingleVocabulary(Cdm2CdmImportState state, UUID vocUuid) {
+
         ICdmApplication source = sourceRepo(state);
         TransactionStatus otherTx = source.startTransaction(true);
-        TermVocabulary<DefinedTermBase> otherVoc = source.getVocabularyService().find(vocUuid);
-        TermVocabulary<DefinedTermBase> thisVoc = null;
+        TermVocabulary<T> otherVoc = source.getVocabularyService().find(vocUuid);
+        TermVocabulary<T> thisVoc = null;
         try {
             thisVoc = detach(otherVoc, state);
             if (thisVoc != otherVoc && state.getConfig().isAddMissingTerms()){ //voc already existed
-                for (DefinedTermBase<?> otherTerm: otherVoc.getTerms()){
+                for (T otherTerm: otherVoc.getTerms()){
                     doSingleTerm(state, otherTerm, thisVoc);
                 }
             }
@@ -107,8 +108,8 @@ public class Cdm2CdmVocabularyImport
         }
     }
 
-    private void doSingleTerm(Cdm2CdmImportState state, DefinedTermBase<?> otherTerm, TermVocabulary<DefinedTermBase> thisVoc) {
-        DefinedTermBase<?> thisTerm = null;
+    private <T extends DefinedTermBase> void doSingleTerm(Cdm2CdmImportState state, T otherTerm, TermVocabulary<T> thisVoc) {
+        T thisTerm = null;
         if (logger.isInfoEnabled()){logger.info(otherTerm.getTitleCache());}
         try {
             if (!thisVoc.getTerms().contains(otherTerm)){
@@ -122,16 +123,17 @@ public class Cdm2CdmVocabularyImport
         }
     }
 
-    private void doSingleGraph(Cdm2CdmImportState state, UUID graphUuid) {
+    private <T extends DefinedTermBase> void doSingleGraph(Cdm2CdmImportState state, UUID graphUuid) {
+
         ICdmApplication source = sourceRepo(state);
         TransactionStatus otherTx = source.startTransaction(true);
-        TermTree<DefinedTermBase> otherGraph = source.getTermTreeService().find(graphUuid);
-        TermTree<DefinedTermBase> thisGraph = null;
+        TermTree<T> otherGraph = source.getTermTreeService().find(graphUuid);
+        TermTree<T> thisGraph = null;
         try {
             thisGraph = detach(otherGraph, state);
             if (thisGraph != otherGraph
                     && state.getConfig().isAddMissingTerms()){ //graph already existed
-                for (TermNode<DefinedTermBase> node: otherGraph.getRootChildren()){
+                for (TermNode<T> node: otherGraph.getRootChildren()){
                     doSingleNode(state, node, thisGraph.getRoot());
                 }
             }
@@ -152,10 +154,10 @@ public class Cdm2CdmVocabularyImport
         }
     }
 
-    private void doSingleNode(Cdm2CdmImportState state, TermNode<DefinedTermBase> otherNode,
-            TermNode<DefinedTermBase> thisParent) {
+    private <T extends DefinedTermBase> void doSingleNode(Cdm2CdmImportState state, TermNode<T> otherNode,
+            TermNode<T> thisParent) {
 
-        TermNode<DefinedTermBase> thisNode = null;
+        TermNode<T> thisNode = null;
         try {
             if (!thisParent.getChildNodes().contains(otherNode)){
                 thisNode = this.detach(otherNode, state);
@@ -167,7 +169,7 @@ public class Cdm2CdmVocabularyImport
             }else {
                 thisNode = thisParent.getChildNodes().stream().filter(n->n.equals(otherNode)) .findFirst().get();
             }
-            for (TermNode<DefinedTermBase> otherChild : otherNode.getChildNodes()) {
+            for (TermNode<T> otherChild : otherNode.getChildNodes()) {
                 doSingleNode(state, otherChild, thisNode);
             }
         } catch (Exception e) {

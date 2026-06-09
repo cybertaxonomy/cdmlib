@@ -40,7 +40,7 @@ public class TestBigDecimal {
 
 
     public static void main2(String[] args) {
-        BigDecimal a = new BigDecimal(new Float(2.600f).toString());
+        BigDecimal a = new BigDecimal(Float.valueOf(2.600f).toString());
         System.out.println(a.toString());
         System.out.println(a.toPlainString());
         System.out.println(a.toEngineeringString());

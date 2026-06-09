@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -74,7 +75,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -241,7 +241,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      * @throws IOException
      * @throws LuceneParseException
      */
-    @SuppressWarnings("rawtypes")
     @Test
     @DataSet
     public final void testFindByDescriptionElementFullText_TooManyClauses() throws IOException, LuceneParseException {
@@ -252,7 +251,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         TaxonDescription description = (TaxonDescription) descriptionService.find(DESC_ABIES_ALBA_UUID);
         Set<String> uniqueRandomStrs = new HashSet<>(1024);
         while(uniqueRandomStrs.size() < 1024){
-            uniqueRandomStrs.add(RandomStringUtils.random(10, true, false));
+            uniqueRandomStrs.add(RandomStringUtils.insecure().next(10, true, false));
         }
         for(String rndStr: uniqueRandomStrs){
             description.addElement(CommonTaxonName.NewInstance("Rot" + rndStr, Language.DEFAULT()));
@@ -284,7 +283,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Set<String> uniqueRandomStrs = new HashSet<>(1024);
         int numOfItems = 100;
         while(uniqueRandomStrs.size() < numOfItems){
-            uniqueRandomStrs.add(RandomStringUtils.random(5, true, false));
+            uniqueRandomStrs.add(RandomStringUtils.insecure().next(5, true, false));
         }
 
         for(String rndStr: uniqueRandomStrs){
@@ -415,7 +414,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Set<String> uniqueRandomStrs = new HashSet<>(1024);
         int numOfItems = 100;
         while(uniqueRandomStrs.size() < numOfItems){
-            uniqueRandomStrs.add(RandomStringUtils.random(5, true, false));
+            uniqueRandomStrs.add(RandomStringUtils.insecure().next(5, true, false));
         }
         for(String rndStr: uniqueRandomStrs){
             description.addElement(CommonTaxonName.NewInstance("Rot" + rndStr, Language.DEFAULT()));
@@ -882,13 +881,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findTaxaAndNamesByFullText(
                 taxaAndSynonyms, "Abies", classification, subtree, null, null, null, true, null, null, null, null);
         Assert.assertEquals("doTaxa & doSynonyms & unpublished", 8, pager.getCount().intValue());
-        TaxonBase<?> result3 = pager.getRecords().get(3).getEntity();
+        TaxonBase result3 = pager.getRecords().get(3).getEntity();
 
         //test paging
         pager = taxonService.findTaxaAndNamesByFullText(
                 taxaAndSynonyms, "Abies", classification, subtree, null, null, null, true, 2, 1, null, null);
         Assert.assertEquals("doTaxa & doSynonyms & unpublished & second page & page size 2", 2, pager.getRecords().size());
-        TaxonBase<?> result1 = pager.getRecords().get(1).getEntity();
+        TaxonBase result1 = pager.getRecords().get(1).getEntity();
         Assert.assertEquals("Second result in second page with size=2 must be the same as 4th result in full result", result3, result1);
 
         EnumSet<TaxaAndNamesSearchMode> taxaOnly = EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.includeUnpublished);
@@ -1682,9 +1681,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         referenceService.save(sec);
 
         for (int i = numberOfNew; i < numberOfNew; i++) {
-            RandomStringUtils.randomAlphabetic(10);
-            String radomName = RandomStringUtils.randomAlphabetic(5) + " " + RandomStringUtils.randomAlphabetic(10);
-            String radomCommonName = RandomStringUtils.randomAlphabetic(10);
+            RandomStringUtils.insecure().nextAlphabetic(10);
+            String radomName = RandomStringUtils.insecure().nextAlphabetic(5) + " " + RandomStringUtils.insecure().nextAlphabetic(10);
+            String radomCommonName = RandomStringUtils.insecure().nextAlphabetic(10);
 
             IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             name.setNameCache(radomName, true);

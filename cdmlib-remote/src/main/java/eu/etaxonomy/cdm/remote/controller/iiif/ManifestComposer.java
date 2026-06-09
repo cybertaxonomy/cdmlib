@@ -594,7 +594,7 @@ public class ManifestComposer {
         return html.toString();
     }
 
-    private <T extends Resource<T>> T addAttributionAndLicense(Media entity, 
+    private <T extends Resource<T>> T addAttributionAndLicense(Media entity,
             T resource, List<MetadataEntry> metadata, String metadataSource) {
 
         List<Language> languages = LocaleContext.getLanguages();

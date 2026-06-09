@@ -16,6 +16,7 @@ import org.hibernate.envers.query.criteria.AuditCriterion;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
+import eu.etaxonomy.cdm.persistence.query.AuditEventSort;
 
 public interface IVersionableDao<T extends VersionableEntity> extends ICdmEntityDao<T> {
 

@@ -357,18 +357,18 @@ public class NameMatchingServiceImpl
         if (combinationAuthor != null) {
             combinationAuthor = combinationAuthor.replace("&", "");
             combinationAuthor = combinationAuthor.replace(" ", "");
-            lengthCombinationAuthor = new Double (combinationAuthor.length());
+            lengthCombinationAuthor = Double.valueOf(combinationAuthor.length());
         }
         if (exCombinationAuthor != null) {
-            lengthExCombinationAuthor = new Double (exCombinationAuthor.length());
+            lengthExCombinationAuthor = Double.valueOf(exCombinationAuthor.length());
         }
         if (basionymAuthor != null) {
             basionymAuthor = basionymAuthor.replace("&", "");
             basionymAuthor = basionymAuthor.replace(" ", "");
-            lengthBasionymAuthor =  new Double (basionymAuthor.length());
+            lengthBasionymAuthor = Double.valueOf(basionymAuthor.length());
         }
         if (exBasionymAuthor != null) {
-            lengthExBasionymAuthor = new Double (exBasionymAuthor.length());
+            lengthExBasionymAuthor = Double.valueOf(exBasionymAuthor.length());
         }
         if (excludeBasionymAuthors) {
             if (excludeExAuthors) {
@@ -396,16 +396,16 @@ public class NameMatchingServiceImpl
         Double lenghtFullInputName;
 
         if (genus != null) {
-            lengthGenus = new Double (genus.length());
+            lengthGenus = Double.valueOf(genus.length());
         }
         if (infraGeneric != null) {
-            lengthInfraGeneric = new Double (infraGeneric.length());
+            lengthInfraGeneric = Double.valueOf(infraGeneric.length());
         }
         if (specificEpithet != null) {
-            lengthSpecificEpithet= new Double (specificEpithet.length());
+            lengthSpecificEpithet= Double.valueOf(specificEpithet.length());
         }
         if (infraSpecific != null) {
-            lengthInfraSpecific = new Double (infraSpecific.length());
+            lengthInfraSpecific = Double.valueOf(infraSpecific.length());
         }
         lenghtFullInputName = lengthGenus + lengthInfraGeneric + lengthSpecificEpithet + lengthInfraSpecific;
 
@@ -624,7 +624,7 @@ public class NameMatchingServiceImpl
 
         for (SingleNameMatchingResult singleResult : resultInput){
             String authorCacheDB = singleResult.getAuthorshipCache();
-            Double distanceAuthorComparison = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(
+            Double distanceAuthorComparison = Double.valueOf(NameMatchingUtils.modifiedDamerauLevenshteinDistance(
                     authorshipCacheQuery, authorCacheDB));
             distanceAuthorComparison = (distanceAuthorComparison/3)+singleResult.getDistance();
             if (distanceAuthorComparison == 0) {
@@ -641,7 +641,7 @@ public class NameMatchingServiceImpl
                     if (combinationAuthorshipResult == null) {
                         combinationAuthorshipResult = "";
                     }
-                    Double distanceCombinationAuthor = new Double(NameMatchingUtils.modifiedDamerauLevenshteinDistance(
+                    Double distanceCombinationAuthor = Double.valueOf(NameMatchingUtils.modifiedDamerauLevenshteinDistance(
                             combinationAuthor, combinationAuthorshipResult));
                     singleResult.setDistance((distanceCombinationAuthor / 3) + singleResult.getDistance());
                     if (singleResult.getDistance() <= maxDistance) {
@@ -658,7 +658,7 @@ public class NameMatchingServiceImpl
                     if (combinationAuthorshipResult == null) {
                         combinationAuthorshipResult = "";
                     }
-                    Double distanceCombinationAuthor = new Double(NameMatchingUtils.modifiedDamerauLevenshteinDistance(
+                    Double distanceCombinationAuthor = Double.valueOf(NameMatchingUtils.modifiedDamerauLevenshteinDistance(
                             combinationAuthor, combinationAuthorshipResult));
                     singleResult.setDistance((distanceCombinationAuthor / 3) + singleResult.getDistance());
                     if (singleResult.getDistance() <= maxDistance) {
@@ -673,7 +673,7 @@ public class NameMatchingServiceImpl
                 String combinationAuthorDB = singleResult.getCombinationAuthorship();
                 String combinedAuthorCacheDB = exCombinationAuthorDB  + " ex " +  combinationAuthorDB;
                 String combinedAuthorCacheQuery = exCombinationAuthor + " ex " + combinationAuthor;
-                Double distanceAuthorComparison = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(combinedAuthorCacheDB, combinedAuthorCacheQuery));
+                Double distanceAuthorComparison = Double.valueOf(NameMatchingUtils.modifiedDamerauLevenshteinDistance(combinedAuthorCacheDB, combinedAuthorCacheQuery));
                 singleResult.setDistance((distanceAuthorComparison/3) + singleResult.getDistance());
             }
             for (SingleNameMatchingResult singleResult : resultInput){
@@ -686,7 +686,7 @@ public class NameMatchingServiceImpl
         if (excludeBasionymAuthors == false) {
             if (excludeExAuthors == false) {
                 for (SingleNameMatchingResult singleResult : resultInput){
-                    Double distanceAuthorComparison = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(authorshipCacheQuery,
+                    Double distanceAuthorComparison = Double.valueOf(NameMatchingUtils.modifiedDamerauLevenshteinDistance(authorshipCacheQuery,
                             singleResult.getAuthorshipCache()));
                     singleResult.setDistance((distanceAuthorComparison/3) + singleResult.getDistance());
                 }
@@ -706,8 +706,8 @@ public class NameMatchingServiceImpl
                     if (basionymAuthorDB == null) {
                         basionymAuthorDB = "";
                     }
-                    Double distanceAuthorComparison = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(combinationAuthorDB, combinationAuthor));
-                    Double distanceAuthorComparison2 = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(basionymAuthorDB, basionymAuthor));
+                    Double distanceAuthorComparison = Double.valueOf(NameMatchingUtils.modifiedDamerauLevenshteinDistance(combinationAuthorDB, combinationAuthor));
+                    Double distanceAuthorComparison2 = Double.valueOf(NameMatchingUtils.modifiedDamerauLevenshteinDistance(basionymAuthorDB, basionymAuthor));
 
                     singleResult.setDistance((distanceAuthorComparison/3)+(distanceAuthorComparison2/3) + singleResult.getDistance());
                 }
@@ -864,7 +864,7 @@ public class NameMatchingServiceImpl
                 restantTrimmedDB = trimmedStrings.split(" ")[1];}
         	catch (Exception e) {
         	}
-            computedDistanceTemp = new Double (NameMatchingUtils.modifiedDamerauLevenshteinDistance(restantTrimmedQuery,
+            computedDistanceTemp = Double.valueOf(NameMatchingUtils.modifiedDamerauLevenshteinDistance(restantTrimmedQuery,
                     restantTrimmedDB));
         }
         return computedDistanceTemp;
@@ -991,8 +991,8 @@ public class NameMatchingServiceImpl
             Double epithetComputedDistance, String normalizedEphitetQuery, SingleNameMatchingResult part,
             String epithetInDB, Double totalDist) {
         List<SingleNameMatchingResult> epithetListTemp = new ArrayList<>();
-        Double epithetQueryLength = new Double (epithetQuery.length());
-        Double epithetDBLength = new Double (epithetInDB.length());
+        Double epithetQueryLength = Double.valueOf(epithetQuery.length());
+        Double epithetDBLength = Double.valueOf(epithetInDB.length());
         Double halfLength = Math.max(epithetDBLength, epithetQueryLength) / 2;
 
         if (totalDist <= maxDistance) {

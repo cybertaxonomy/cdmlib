@@ -29,7 +29,7 @@ public class NameParserResult {
 
     private Set<TaxonName> otherNames = new HashSet<>();
 
-    private Set<TeamOrPersonBase> authors = new HashSet<>();
+    private Set<TeamOrPersonBase<?>> authors = new HashSet<>();
 
     private Set<Reference> references = new HashSet<>();
 
