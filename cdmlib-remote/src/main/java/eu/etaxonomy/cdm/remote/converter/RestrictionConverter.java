@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.converter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +18,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 
 /**
  * Converter implementation to read a {@link Restriction} from its
@@ -27,7 +26,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
  *
  * @author a.kohlbecker
  * @since Jun 3, 2019
- *
  */
 public class RestrictionConverter implements Converter<String, Restriction<?>>  {
 
@@ -40,29 +38,27 @@ public class RestrictionConverter implements Converter<String, Restriction<?>>  
     @Override
     public Restriction<?> convert(String source) {
 
-            try {
-                Restriction restriction = objectMapper.readValue(source, Restriction.class);
-                // the below loop is detects UUID string representations and converts them to UUIDs
-                // such conversion is needed for all user types, we are only handling UUIDs here quickly and dirty
-                // TODO think about the best solution, handle the string to object conversion in
-                // CdmEntityDaoBase.createRestriction(String propertyName, Object value, MatchMode matchMode) ?
-                List<Object> convertedValues = new ArrayList<>(restriction.getValues().size());
-                for(Object val : restriction.getValues()){
-                    if(val.toString().matches("([a-f\\d]{8}(-[a-f\\d]{4}){3}-[a-f\\d]{12}?)")){
-                        convertedValues.add(UUID.fromString(val.toString()));
-                    } else {
-                        convertedValues.add(val);
-                    }
+        try {
+            Restriction restriction = objectMapper.readValue(source, Restriction.class);
+            // the below loop is detects UUID string representations and converts them to UUIDs
+            // such conversion is needed for all user types, we are only handling UUIDs here quickly and dirty
+            // TODO think about the best solution, handle the string to object conversion in
+            // CdmEntityDaoBase.createRestriction(String propertyName, Object value, MatchMode matchMode) ?
+            List<Object> convertedValues = new ArrayList<>(restriction.getValues().size());
+            for(Object val : restriction.getValues()){
+                if(val.toString().matches("([a-f\\d]{8}(-[a-f\\d]{4}){3}-[a-f\\d]{12}?)")){
+                    convertedValues.add(UUID.fromString(val.toString()));
+                } else {
+                    convertedValues.add(val);
                 }
-                restriction.setValues(convertedValues);
-                return restriction ;
-            } catch (JsonParseException | JsonMappingException e) {
-                throw new IllegalArgumentException(e);
-            }catch (IOException e) {
-                // TODO more specific unchecked exception type?
-                throw new RuntimeException(e);
             }
-
+            restriction.setValues(convertedValues);
+            return restriction ;
+        } catch (JsonParseException | JsonMappingException e) {
+            throw new IllegalArgumentException("Json for 'restriction' could not be parsed or mapped correctly", e);
+        }catch (Exception e) {
+            // TODO more specific unchecked exception type?
+            throw new RuntimeException("Unexpected exception when parsing 'restriction'", e);
+        }
     }
-
 }

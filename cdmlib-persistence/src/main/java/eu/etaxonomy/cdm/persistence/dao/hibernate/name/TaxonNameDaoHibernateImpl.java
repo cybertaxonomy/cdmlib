@@ -13,20 +13,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.LogicalExpression;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
@@ -34,6 +33,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -52,14 +54,11 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -72,6 +71,7 @@ public class TaxonNameDaoHibernateImpl
         extends IdentifiableDaoBase<TaxonName>
         implements ITaxonNameDao {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     @Autowired
@@ -114,77 +114,38 @@ public class TaxonNameDaoHibernateImpl
     }
 
     @Override
-    public long countNames(String queryString) {
-        checkNotInPriorView("TaxonNameDaoHibernateImpl.countNames(String queryString)");
-        Criteria criteria = getCriteria(null);
+    public long countNames(String queryString, MatchMode matchMode, List<EntityFilter<TaxonName>> filter) {
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<TaxonName> root = cq.from(type);
+        Predicate predicate = predicateForMatchMode("nameCache", queryString, matchMode, cb, root, true);
+        predicate = addPredicateFromFilter(predicate, filter, cb, root);
 
-        if (queryString != null) {
-            criteria.add(Restrictions.ilike("nameCache", queryString));
-        }
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+        cq.select(cb.count(root))
+          .where(predicate);
 
-        return (Long)criteria.uniqueResult();
-    }
-
-    @Override
-    public long countNames(String queryString, MatchMode matchMode, List<Criterion> criteria) {
-
-        Criteria crit = getCriteria(type);
-        if (matchMode == MatchMode.EXACT) {
-            crit.add(Restrictions.eq("nameCache", matchMode.queryStringFrom(queryString)));
-        } else {
-            crit.add(Restrictions.ilike("nameCache", matchMode.queryStringFrom(queryString)));
-        }
-        if(criteria != null) {
-            for (Criterion criterion : criteria) {
-                crit.add(criterion);
-            }
-        }
-
-        crit.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return (Long)crit.uniqueResult();
+        return getSession().createQuery(cq).getSingleResult();
     }
 
     @Override
     public long countNames(String genusOrUninomial, String infraGenericEpithet,	String specificEpithet, String infraSpecificEpithet, Rank rank) {
+
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getCriteria(TaxonName.class);
 
-            /**
-             * Given HHH-2951 - "Restrictions.eq when passed null, should create a NullRestriction"
-             * We need to convert nulls to NullRestrictions for now
-             */
-            if(genusOrUninomial != null) {
-                criteria.add(Restrictions.eq("genusOrUninomial",genusOrUninomial));
-            } else {
-                criteria.add(Restrictions.isNull("genusOrUninomial"));
-            }
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+            Root<TaxonName> root = cq.from(type);
 
-            if(infraGenericEpithet != null) {
-                criteria.add(Restrictions.eq("infraGenericEpithet", infraGenericEpithet));
-            } else {
-                criteria.add(Restrictions.isNull("infraGenericEpithet"));
-            }
+            List<Predicate> predicates = searchNamePredicates(genusOrUninomial, infraGenericEpithet, specificEpithet,
+                    infraSpecificEpithet, rank, cb, root);
 
-            if(specificEpithet != null) {
-                criteria.add(Restrictions.eq("specificEpithet", specificEpithet));
-            } else {
-                criteria.add(Restrictions.isNull("specificEpithet"));
-            }
+            Predicate predicate = predicateAnd(cb, predicates);
+            cq.select(cb.countDistinct(root.get("id")))
+                .where(predicate);
 
-            if(infraSpecificEpithet != null) {
-                criteria.add(Restrictions.eq("infraSpecificEpithet",infraSpecificEpithet));
-            } else {
-                criteria.add(Restrictions.isNull("infraSpecificEpithet"));
-            }
+            return getSession().createQuery(cq).getSingleResult();
 
-            if(rank != null) {
-                criteria.add(Restrictions.eq("rank", rank));
-            }
-
-            criteria.setProjection(Projections.rowCount());
-            return (Long)criteria.uniqueResult();
         } else {
             AuditQuery query = makeAuditQuery(TaxonName.class, auditEvent);
 
@@ -270,19 +231,24 @@ public class TaxonNameDaoHibernateImpl
 
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(HybridRelationship.class);
-            criteria.add(Restrictions.eq("relatedFrom", name));
-            if(type != null) {
-                criteria.add(Restrictions.eq("type", type));
-            }
 
-            addPageSizeAndNumber(criteria, pageSize, pageNumber);
-            addOrder(criteria, orderHints);
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<HybridRelationship> cq = cb.createQuery(HybridRelationship.class);
+            Root<HybridRelationship> root = cq.from(HybridRelationship.class);
 
-            @SuppressWarnings("unchecked")
-            List<HybridRelationship> results = criteria.list();
-            defaultBeanInitializer.initializeAll(results, propertyPaths);
-            return results;
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(predicateEqual(cb, root, "relatedFrom", name));
+            predicates.add(predicateEqualIfNotNull(cb, root, "type", type));
+
+            cq.select(root)
+              .where(predicateAnd(cb, predicates))
+              .orderBy(ordersFrom(cb, root, orderHints));
+
+            List<HybridRelationship> results = addPageSizeAndNumber(
+                    getSession().createQuery(cq), pageSize, pageNumber)
+                   .getResultList();
+           defaultBeanInitializer.initializeAll(results, propertyPaths);
+           return results;
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(HybridRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId("relatedFrom").eq(name.getId()));
@@ -314,26 +280,24 @@ public class TaxonNameDaoHibernateImpl
 
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(NameRelationship.class);
-            if (name != null || direction != null){
-                criteria.add(Restrictions.eq(direction.toString(), name));
-            }
-            if(type != null) {
-                criteria.add(Restrictions.eq("type", type));
-            }
 
-            if(pageSize != null) {
-                criteria.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    criteria.setFirstResult(pageNumber * pageSize);
-                } else {
-                    criteria.setFirstResult(0);
-                }
-            }
-            addOrder(criteria, orderHints);
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<NameRelationship> cq = cb.createQuery(NameRelationship.class);
+            Root<NameRelationship> root = cq.from(NameRelationship.class);
 
-            @SuppressWarnings("unchecked")
-            List<NameRelationship> results = criteria.list();
+            List<Predicate> predicates = new ArrayList<>();
+            if (name != null && direction != null){
+                predicates.add(predicateEqual(cb, root, direction.toString(), name));
+            }
+            predicates.add(predicateEqualIfNotNull(cb, root, "type", type));
+
+            cq.select(root)
+              .where(predicateAnd(cb, predicates))
+              .orderBy(ordersFrom(cb, root, orderHints));
+
+            List<NameRelationship> results = addPageSizeAndNumber(
+                    getSession().createQuery(cq), pageSize, pageNumber)
+                   .getResultList();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
         } else {
@@ -420,88 +384,30 @@ public class TaxonNameDaoHibernateImpl
         return query;
     }
 
-    public List<TaxonName> searchNames(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
-
-        checkNotInPriorView("TaxonNameDaoHibernateImpl.searchNames(String queryString, Integer pageSize, Integer pageNumber)");
-        Criteria criteria = getSession().createCriteria(TaxonName.class);
-
-        if (queryString != null) {
-            criteria.add(Restrictions.ilike("nameCache", queryString));
-        }
-        if(pageSize != null) {
-            criteria.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                criteria.setFirstResult(pageNumber * pageSize);
-            } else {
-                criteria.setFirstResult(0);
-            }
-        }
-        @SuppressWarnings("unchecked")
-        List<TaxonName> results = criteria.list();
-        return results;
-    }
-
-
     @Override
-    public List<TaxonName> searchNames(String queryString, Integer pageSize, Integer pageNumber) {
-        return searchNames(queryString, MatchMode.BEGINNING, pageSize, pageNumber);
-    }
-
-
-    @Override
-    public List<TaxonName> searchNames(String genusOrUninomial,String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,
+    public List<TaxonName> searchNames(String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(TaxonName.class);
 
-            /**
-             * Given HHH-2951 - "Restrictions.eq when passed null, should create a NullRestriction"
-             * We need to convert nulls to NullRestrictions for now
-             */
-            if(genusOrUninomial != null) {
-                criteria.add(Restrictions.eq("genusOrUninomial",genusOrUninomial));
-            } else {
-                criteria.add(Restrictions.isNull("genusOrUninomial"));
-            }
+            CriteriaBuilder cb = getCriteriaBuilder();
+            CriteriaQuery<TaxonName> cq = cb.createQuery(type);
+            Root<TaxonName> root = cq.from(type);
 
-            if(infraGenericEpithet != null) {
-                criteria.add(Restrictions.eq("infraGenericEpithet", infraGenericEpithet));
-            } else {
-                criteria.add(Restrictions.isNull("infraGenericEpithet"));
-            }
+            List<Predicate> predicates = searchNamePredicates(genusOrUninomial,
+                    infraGenericEpithet, specificEpithet,
+                    infraSpecificEpithet, rank, cb, root);
 
-            if(specificEpithet != null) {
-                criteria.add(Restrictions.eq("specificEpithet", specificEpithet));
-            } else {
-                criteria.add(Restrictions.isNull("specificEpithet"));
-            }
+            cq.select(root)
+              .where(predicateAnd(cb, predicates))
+              .orderBy(ordersFrom(cb, root, orderHints));
 
-            if(infraSpecificEpithet != null) {
-                criteria.add(Restrictions.eq("infraSpecificEpithet",infraSpecificEpithet));
-            } else {
-                criteria.add(Restrictions.isNull("infraSpecificEpithet"));
-            }
-
-            if(rank != null) {
-                criteria.add(Restrictions.eq("rank", rank));
-            }
-
-            if(pageSize != null) {
-                criteria.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    criteria.setFirstResult(pageNumber * pageSize);
-                } else {
-                    criteria.setFirstResult(0);
-                }
-            }
-
-            addOrder(criteria, orderHints);
-
-            @SuppressWarnings("unchecked")
-            List<TaxonName> results = criteria.list();
+            List<TaxonName> results = addPageSizeAndNumber(
+                  getSession().createQuery(cq), pageSize, pageNumber)
+                 .getResultList();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
+
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonName.class,auditEvent.getRevisionNumber());
 
@@ -549,260 +455,181 @@ public class TaxonNameDaoHibernateImpl
         }
     }
 
+    private List<Predicate> searchNamePredicates(String genusOrUninomial, String infraGenericEpithet,
+            String specificEpithet, String infraSpecificEpithet, Rank rank, CriteriaBuilder cb, Root<TaxonName> root) {
+        List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(predicateStrIfNotNull(cb, root, "genusOrUninomial", genusOrUninomial));
+        predicates.add(predicateStrIfNotNull(cb, root, "infraGenericEpithet", infraGenericEpithet));
+        predicates.add(predicateStrIfNotNull(cb, root, "specificEpithet", specificEpithet));
+        predicates.add(predicateStrIfNotNull(cb, root, "infraSpecificEpithet", infraSpecificEpithet));
+        if(rank != null) {
+            predicates.add(predicateEqual(cb, root, "rank", rank));
+        }
+        return predicates;
+    }
+
     @Override
     public List<TaxonName> findByName(boolean doIncludeAuthors,
-            String queryString, MatchMode matchmode, Integer pageSize,
-            Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
+            String queryString, MatchMode matchmode, List<EntityFilter<TaxonName>> filter,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
-        Criteria crit = getSession().createCriteria(type);
-        Criterion nameCacheLike;
-        if (matchmode == MatchMode.EXACT) {
-            nameCacheLike = Restrictions.eq("nameCache", matchmode.queryStringFrom(queryString));
-        } else {
-            nameCacheLike = Restrictions.ilike("nameCache", matchmode.queryStringFrom(queryString));
-        }
-        Criterion notNull = Restrictions.isNotNull("nameCache");
-        LogicalExpression nameCacheExpression = Restrictions.and(notNull, nameCacheLike);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TaxonName> cq = cb.createQuery(type);
+        Root<TaxonName> root = cq.from(type);
 
-        Criterion titleCacheLike;
-        if (matchmode == MatchMode.EXACT) {
-            titleCacheLike = Restrictions.eq("titleCache", matchmode.queryStringFrom(queryString));
-        } else {
-            titleCacheLike =Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString));
-        }
-        Criterion isNull = Restrictions.isNull("nameCache");
-        LogicalExpression titleCacheExpression = Restrictions.and(isNull, titleCacheLike);
+        Predicate nameCachePredicate = predicateForMatchMode("nameCache", queryString, matchmode, cb, root, true);
 
-        LogicalExpression orExpression = Restrictions.or(titleCacheExpression, nameCacheExpression);
+        Predicate titleCacheLikePredicate = predicateForMatchMode("titleCache", queryString, matchmode, cb, root, true);
+        Predicate titleCachePredicate = cb.and(
+                titleCacheLikePredicate,
+                predicateIsNull(cb, root, "nameCache")
+        );
+        Predicate orPredicate = cb.or(nameCachePredicate, titleCachePredicate);
 
-        Criterion finalCriterion = doIncludeAuthors ? titleCacheLike : orExpression;
+        Predicate predicate = doIncludeAuthors ? titleCacheLikePredicate : orPredicate;
 
-        crit.add(finalCriterion);
-        if(criteria != null){
-            for (Criterion criterion : criteria) {
-                crit.add(criterion);
-            }
-        }
-        crit.addOrder(Order.asc("nameCache"));
+        predicate = addPredicateFromFilter(predicate, filter, cb, root);
 
-        if(pageSize != null) {
-            crit.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                crit.setFirstResult(pageNumber * pageSize);
-            }
-        }
+        cq.select(root)
+          .where(predicate)
+          .orderBy(cb.asc(root.get("nameCache")), cb.asc(root.get("titleCache")));
 
-        @SuppressWarnings("unchecked")
-        List<TaxonName> results = crit.list();
+        List<TaxonName> results = addPageSizeAndNumber(
+               getSession().createQuery(cq), pageSize, pageNumber)
+              .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
-
         return results;
     }
 
     @Override
-    public List<TaxonName> findByFullTitle(String queryString,
-            MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
+    public List<TaxonName> findByFullTitle(String queryString, MatchMode matchMode,
+            List<EntityFilter<TaxonName>> filter,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
-        Criteria crit = getSession().createCriteria(type);
-        if (matchmode == null){
-            matchmode = MatchMode.LIKE;
-        }
-        if (matchmode == MatchMode.EXACT) {
-            crit.add(Restrictions.eq("fullTitleCache", matchmode.queryStringFrom(queryString)));
-        } else {
-            crit.add(Restrictions.ilike("fullTitleCache", matchmode.queryStringFrom(queryString)));
-        }
-        if(criteria != null){
-            for (Criterion criterion : criteria) {
-                crit.add(criterion);
-            }
-        }
-        crit.addOrder(Order.asc("fullTitleCache"));
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TaxonName> cq = cb.createQuery(type);
+        Root<TaxonName> root = cq.from(type);
 
-        if(pageSize != null) {
-            crit.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                crit.setFirstResult(pageNumber * pageSize);
-            }
-        }
+        Predicate predicate = predicateForMatchMode("fullTitleCache", queryString, matchMode, cb, root, true);
+        predicate = addPredicateFromFilter(predicate, filter, cb, root);
 
-        @SuppressWarnings("unchecked")
-        List<TaxonName> results = crit.list();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        cq.select(root)
+          .where(predicate)
+          .orderBy(cb.asc(root.get("fullTitleCache")));
 
-        return results;
+        List<TaxonName> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
+         defaultBeanInitializer.initializeAll(results, propertyPaths);
+         return results;
     }
 
     @Override
-    public List<TaxonName> findByTitle(String queryString,
-            MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
+    public List<TaxonName> findByTitle(String queryString, MatchMode matchMode,
+            List<EntityFilter<TaxonName>> filter,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
-        Criteria crit = getSession().createCriteria(type);
-        if (matchmode == MatchMode.EXACT) {
-            crit.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(queryString)));
-        } else {
-            crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
-        }
-        if(criteria != null){
-            for (Criterion criterion : criteria) {
-                crit.add(criterion);
-            }
-        }
-        crit.addOrder(Order.asc("titleCache"));
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TaxonName> cq = cb.createQuery(type);
+        Root<TaxonName> root = cq.from(type);
 
-        if(pageSize != null) {
-            crit.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                crit.setFirstResult(pageNumber * pageSize);
-            }
-        }
+        Predicate predicate = predicateForMatchMode("titleCache", queryString, matchMode, cb, root, true);
+        predicate = addPredicateFromFilter(predicate, filter, cb, root);
 
-        @SuppressWarnings("unchecked")
-        List<TaxonName> results = crit.list();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        cq.select(root)
+          .where(predicate)
+          .orderBy(cb.asc(root.get("titleCache")));
 
-        return results;
-    }
-
-
-    @Override
-    public TaxonName findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths) {
-
-        Criteria crit = getSession().createCriteria(type);
-
-        if (uuid != null) {
-            crit.add(Restrictions.eq("uuid", uuid));
-        } else {
-            logger.warn("UUID is NULL");
-            return null;
-        }
-        if(criteria != null){
-            for (Criterion criterion : criteria) {
-                crit.add(criterion);
-            }
-        }
-        crit.addOrder(Order.asc("uuid"));
-
-        @SuppressWarnings("unchecked")
-        List<TaxonName> results = crit.list();
-        if (results.size() == 1) {
-            defaultBeanInitializer.initializeAll(results, propertyPaths);
-            TaxonName taxonName = results.iterator().next();
-            return taxonName;
-        } else if (results.size() > 1) {
-            logger.error("Multiple results for UUID: " + uuid);
-        } else if (results.size() == 0) {
-            logger.info("No results for UUID: " + uuid);
-        }
-
-        return null;
-    }
-
-
-    @Override
-    public <S extends TaxonName> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        // TODO Auto-generated method stub
-        return list(type, restrictions, limit, start, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
+        List<TaxonName> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
+         defaultBeanInitializer.initializeAll(results, propertyPaths);
+         return results;
     }
 
     @Override
-    public <S extends TaxonName> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
-            Integer start, List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished) {
-        Criteria criteria = createCriteria(type, restrictions, false);
+    public TaxonName findByUuid(UUID uuid, List<EntityFilter<TaxonName>> filter, List<String> propertyPaths) {
 
-        if(!includePublished){
-            criteria.add(Restrictions.eq("taxonBases.publish", true));
-        }
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TaxonName> cq = cb.createQuery(type);
+        Root<TaxonName> root = cq.from(type);
 
-        addLimitAndStart(criteria, limit, start);
-        addOrder(criteria, orderHints);
+        Predicate uuidPredicate = predicateUuid(cb, root, uuid);
+        Predicate predicate = addPredicateFromFilter(uuidPredicate, filter, cb, root);
 
-        @SuppressWarnings("unchecked")
-        List<S> result = criteria.list();
-        defaultBeanInitializer.initializeAll(result, propertyPaths);
+        cq.select(root)
+          .distinct(true)
+          .where(predicate);
+
+        TaxonName result = getSession().createQuery(cq).getSingleResult();
+        defaultBeanInitializer.initialize(result, propertyPaths);
         return result;
     }
 
     @Override
-    public long count(Class<? extends TaxonName> type, List<Restriction<?>> restrictions) {
+    public <S extends TaxonName> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return list(type, restrictions, limit, start, orderHints, propertyPaths, INCLUDE_UNPUBLISHED);
+    }
+
+    @Override
+    public <S extends TaxonName> List<S> list(Class<S> clazz, List<Restriction<?>> restrictions, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished) {
+
+        String path = "taxonBases";
+        restrictions = addPublishOnlyRestriction(restrictions, includeUnpublished, path);
+        return super.list(clazz, restrictions, limit, start, orderHints, propertyPaths);
+    }
+
+    @Override
+    public <S extends TaxonName> long count(Class<S> type, List<Restriction<?>> restrictions) {
         return count(type, restrictions, INCLUDE_UNPUBLISHED);
     }
 
-
     @Override
-    public long count(Class<? extends TaxonName> type, List<Restriction<?>> restrictions, boolean includePublished) {
+    public long count(Class<? extends TaxonName> clazz, List<Restriction<?>> restrictions, boolean includeUnpublished) {
 
-        Criteria criteria = createCriteria(type, restrictions, false);
-        if(!includePublished){
-            criteria.add(Restrictions.eq("taxonBases.publish", true));
-        }
-        criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-        return (Long) criteria.uniqueResult();
+        String path = "taxonBases";
+        restrictions = addPublishOnlyRestriction(restrictions, includeUnpublished, path);
+        return super.count(clazz, restrictions);
+
     }
 
     @Override
-    public Integer countByName(String queryString, MatchMode matchmode, List<Criterion> criteria) {
+    public Integer countByName(String queryString, MatchMode matchmode, List<EntityFilter<TaxonName>> filter) {
         //TODO improve performance
         boolean includeAuthors = false;
         List<TaxonName> results = findByName(
-                includeAuthors,queryString, matchmode, null, null, criteria, null);
+                includeAuthors, queryString, matchmode, filter, null, null, null);
         return results.size();
-
     }
 
     @Override
-    public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern) {
-        String queryString = "SELECT uuid, id, fullTitleCache FROM TaxonName LIMIT " + limit;
-
-        @SuppressWarnings("unchecked")
-        List<Object[]> result = getSession().createSQLQuery(queryString).list();
-
-        if(result.size() == 0){
-            return null;
-        }else{
-            List<UuidAndTitleCache> list = new ArrayList<>(result.size());
-
-            for (Object object : result){
-
-                Object[] objectArray = (Object[]) object;
-
-                UUID uuid = UUID.fromString((String) objectArray[0]);
-                Integer id = (Integer) objectArray[1];
-                String titleCache = (String) objectArray[2];
-
-                list.add(new UuidAndTitleCache(type, uuid, id, titleCache));
-            }
-
-            return list;
-        }
+    public long countByName(Class<TaxonName> clazz,String queryString, MatchMode matchmode, List<EntityFilter<TaxonName>> filter) {
+        return super.countByParam(clazz, "nameCache", queryString, matchmode, filter);
     }
 
     @Override
-    public long countByName(Class<TaxonName> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
-        return super.countByParam(clazz, "nameCache", queryString, matchmode, criteria);
+    public long countByFullTitle(Class<TaxonName> clazz,String queryString, MatchMode matchmode, List<EntityFilter<TaxonName>> filter) {
+        return super.countByParam(clazz, "fullTitleCache", queryString, matchmode, filter);
     }
 
     @Override
-    public long countByFullTitle(Class<TaxonName> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
-        return super.countByParam(clazz, "fullTitleCache", queryString, matchmode, criteria);
-    }
-
-    @Override
-    public List<TaxonName> findByName(Class<TaxonName> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
-        return super.findByParam(clazz, "nameCache", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+    public List<TaxonName> findByName(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
+            List<EntityFilter<TaxonName>> filter, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
+        return super.findByParam(clazz, "nameCache", queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override
     public UUID delete (TaxonName persistentObject){
-        @SuppressWarnings("rawtypes")
         Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
 
         getSession().saveOrUpdate(persistentObject);
         UUID homotypicalGroupUUID = persistentObject.getHomotypicalGroup().getUuid();
 
 
-        for (TaxonBase<?> taxonBase: taxonBases){
+        for (TaxonBase taxonBase: taxonBases){
             taxonDao.delete(taxonBase);
         }
         HomotypicalGroup homotypicalGroup = homotypicalGroupDao.load(homotypicalGroupUUID);
@@ -822,38 +649,9 @@ public class TaxonNameDaoHibernateImpl
         return persistentObject.getUuid();
     }
 
-
+    @Deprecated //only used by csv export, use property path method instead
     @Override
-    public TaxonName findZoologicalNameByUUID(UUID uuid){
-
-        Criteria criteria = getSession().createCriteria(type);
-        if (uuid != null) {
-            criteria.add(Restrictions.eq("uuid", uuid));
-        } else {
-            logger.warn("UUID is NULL");
-            return null;
-        }
-
-        @SuppressWarnings("unchecked")
-        List<TaxonName> results = criteria.list();
-        if (results.size() == 1) {
-            defaultBeanInitializer.initializeAll(results, null);
-            TaxonName taxonName = results.iterator().next();
-            if (taxonName.isZoological()) {
-                return taxonName;
-            } else {
-                logger.warn("This UUID (" + uuid + ") does not belong to a ZoologicalName. It belongs to: " + taxonName.getUuid() + " (" + taxonName.getTitleCache() + ")");
-            }
-        } else if (results.size() > 1) {
-            logger.error("Multiple results for UUID: " + uuid);
-        } else if (results.size() == 0) {
-            logger.info("No results for UUID: " + uuid);
-        }
-        return null;
-    }
-
-    @Override
-    public List<HashMap<String,String>> getNameRecords(){
+    public List<Map<String,String>> getNameRecords(){
     	String sql= "SELECT"
     			+ "  (SELECT famName.namecache FROM TaxonNode famNode"
     			+ "  LEFT OUTER JOIN TaxonBase famTax ON famNode.taxon_id = famTax.id"
@@ -900,13 +698,13 @@ public class TaxonNameDaoHibernateImpl
     	Query hqlQuery = getSession().createQuery(hqlQueryStringFrom);
     	List<?> hqlResult = hqlQuery.list();
 
-		List<HashMap<String,String>> nameRecords = new ArrayList<>();
+		List<Map<String,String>> nameRecords = new ArrayList<>();
 		HashMap<String,String> nameRecord = new HashMap<>();
 		TaxonNode familyNode = null;
 		for(Object object : hqlResult){
 			Object[] row = (Object[])object;
 			nameRecord = new HashMap<>();
-			TaxonBase<?> taxonBase = (TaxonBase<?>)row[0];
+			TaxonBase taxonBase = (TaxonBase)row[0];
 			Taxon accTaxon = null;
 			if (taxonBase instanceof Taxon){
 			    accTaxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
@@ -1024,20 +822,25 @@ public class TaxonNameDaoHibernateImpl
 
     @Override
     public long countNameRelationships(Set<NameRelationshipType> types) {
-        Criteria criteria = getSession().createCriteria(NameRelationship.class);
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<NameRelationship> root = cq.from(NameRelationship.class);
+
+        List<Predicate> predicates = new ArrayList<>();
 
         if (types != null) {
             if (types.isEmpty()){
                 return 0l;
             }else{
-                criteria.add(Restrictions.in("type", types) );
+                predicates.add(predicateIn(root, "type", types));
             }
         }
-        //count
-        criteria.setProjection(Projections.rowCount());
-        long result = (Long)criteria.uniqueResult();
 
-        return result;
+        cq.select(cb.countDistinct(root))
+          .where(predicateAnd(cb, predicates));
+
+        return getSession().createQuery(cq).getSingleResult();
     }
 
     @Override
@@ -1045,40 +848,51 @@ public class TaxonNameDaoHibernateImpl
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Criteria criteria = getCriteria(NameRelationship.class);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<NameRelationship> cq = cb.createQuery(NameRelationship.class);
+        Root<NameRelationship> root = cq.from(NameRelationship.class);
+
+        List<Predicate> predicates = new ArrayList<>();
         if (types != null) {
-            if (types.isEmpty()){
+            if (types.isEmpty()) {
                 return new ArrayList<>();
-            }else{
-                criteria.add(Restrictions.in("type", types) );
+            } else {
+                predicates.add(predicateIn(root, "type", types));
             }
         }
-        addOrder(criteria,orderHints);
-        addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
-        @SuppressWarnings("unchecked")
-        List<NameRelationship> results = criteria.list();
+        cq.select(root)
+          .where(predicateAnd(cb, predicates))
+          .orderBy(ordersFrom(cb, root, orderHints));
+
+        List<NameRelationship> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
-
         return results;
     }
 
     @Override
     public long countHybridRelationships(Set<HybridRelationshipType> types) {
-        Criteria criteria = getSession().createCriteria(HybridRelationship.class);
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<HybridRelationship> root = cq.from(HybridRelationship.class);
+
+        List<Predicate> predicates = new ArrayList<>();
 
         if (types != null) {
             if (types.isEmpty()){
                 return 0l;
             }else{
-                criteria.add(Restrictions.in("type", types) );
+                predicates.add(predicateIn(root, "type", types));
             }
         }
-        //count
-        criteria.setProjection(Projections.rowCount());
-        long result = (Long)criteria.uniqueResult();
 
-        return result;
+        cq.select(cb.countDistinct(root))
+          .where(predicateAnd(cb, predicates));
+
+        return getSession().createQuery(cq).getSingleResult();
     }
 
     @Override
@@ -1086,38 +900,45 @@ public class TaxonNameDaoHibernateImpl
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Criteria criteria = getCriteria(HybridRelationship.class);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<HybridRelationship> cq = cb.createQuery(HybridRelationship.class);
+        Root<HybridRelationship> root = cq.from(HybridRelationship.class);
+
+        List<Predicate> predicates = new ArrayList<>();
         if (types != null) {
-            if (types.isEmpty()){
+            if (types.isEmpty()) {
                 return new ArrayList<>();
-            }else{
-                criteria.add(Restrictions.in("type", types) );
+            } else {
+                predicates.add(predicateIn(root, "type", types));
             }
         }
-        addOrder(criteria,orderHints);
-        addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
-        @SuppressWarnings("unchecked")
-        List<HybridRelationship> results = criteria.list();
+        cq.select(root)
+          .where(predicateAnd(cb, predicates))
+          .orderBy(ordersFrom(cb, root, orderHints));
+
+        List<HybridRelationship> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
-
         return results;
     }
 
     //TODO limit start
     @Override
-    public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer limit, Integer start) {
+    public List<TypeDesignationBase<?>> getAllTypeDesignations(Integer pageSize, Integer pageNumber) {
 
-        Criteria crit = getSession().createCriteria(TypeDesignationBase.class);
-        if(limit != null){
-            crit.setMaxResults(limit);
-        }
-        if(start != null){
-            crit.setFirstResult(start);
-        }
-        @SuppressWarnings("unchecked")
-        List<TypeDesignationBase<?>> results = crit.list();
-        return results;
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<TypeDesignationBase> cq = cb.createQuery(TypeDesignationBase.class);
+        Root<TypeDesignationBase> root = cq.from(TypeDesignationBase.class);
+
+        cq.select(root)
+          .distinct(true);
+
+        List<TypeDesignationBase<?>> results = (List)addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
+        return deduplicateResult(results);
     }
 
     @Override

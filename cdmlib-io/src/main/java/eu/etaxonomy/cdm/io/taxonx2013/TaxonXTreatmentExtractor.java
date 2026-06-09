@@ -33,6 +33,7 @@ import org.w3c.dom.NodeList;
 
 import com.ibm.lsid.MalformedLSIDException;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacade;
@@ -68,7 +69,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -1857,7 +1857,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         }
     }
 
-    private void setLSID(String identifier, TaxonBase<?> taxon) {
+    private void setLSID(String identifier, TaxonBase taxon) {
         //logger.info("setLSID");
         //        boolean lsidok=false;
         String id = identifier.split("__")[0];
@@ -2231,7 +2231,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @return
      */
 
-    private boolean compareStatus(TaxonBase<?> t, NomenclaturalStatusType statusType) {
+    private boolean compareStatus(TaxonBase t, NomenclaturalStatusType statusType) {
         //logger.info("compareStatus");
         boolean statusMatch=false;
         //found one taxon
@@ -3423,9 +3423,9 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
             INonViralName identicName = null;
             boolean foundIdentic=false;
-            TaxonBase<?> tmpTaxonBase=null;
+            TaxonBase tmpTaxonBase=null;
             //            Taxon tmpPartial=null;
-            for (TaxonBase<?> tmpb:tmpList){
+            for (TaxonBase tmpb:tmpList){
                 if(tmpb !=null){
                     TaxonName tnb =  tmpb.getName();
                     Rank crank=null;
@@ -3537,7 +3537,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
             importer.getNameService().save(taxonName);
 
-            TaxonBase<?> tmpTaxonBase;
+            TaxonBase tmpTaxonBase;
             if (!isSynonym) {
                 tmpTaxonBase =Taxon.NewInstance(taxonName, refMods); //sec set null
             }
@@ -3682,7 +3682,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
         }
 
-		private boolean checkNodeNameReplaceable(Taxon nodeTaxon, TaxonBase<?> newTaxon) {
+		private boolean checkNodeNameReplaceable(Taxon nodeTaxon, TaxonBase newTaxon) {
 			//TODO preliminary check
 			if (newTaxon.isInstanceOf(Synonym.class)){
 				return false;

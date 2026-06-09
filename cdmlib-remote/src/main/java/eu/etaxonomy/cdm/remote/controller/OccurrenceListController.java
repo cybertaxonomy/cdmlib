@@ -57,7 +57,8 @@ import io.swagger.annotations.Api;
 @Controller
 @Api("occurrence")
 @RequestMapping(value = {"/occurrence"})
-public class OccurrenceListController extends AbstractIdentifiableListController<SpecimenOrObservationBase, IOccurrenceService> {
+public class OccurrenceListController
+        extends AbstractIdentifiableListController<SpecimenOrObservationBase, IOccurrenceService> {
 
     private static final Logger logger = LogManager.getLogger();
 

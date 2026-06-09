@@ -48,7 +48,7 @@ public abstract class CdmLinkBase extends VersionableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    protected TaxonBase<?> taxon;
+    protected TaxonBase taxon;
 
 // ************************* CLONE *******************/
 

@@ -2,7 +2,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>5.58.0-SNAPSHOT</version>
+    <version>5.60.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -118,6 +118,7 @@
   		</plugins>
       </pluginManagement>
   </build>
+  
   <dependencies>
     <dependency>
       <groupId>eu.etaxonomy</groupId>

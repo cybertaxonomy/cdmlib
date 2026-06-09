@@ -19,7 +19,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author ayco_holleman
  * @since 20 jan. 2015
- *
  */
 public class JdbcDaoUtils {
 
@@ -87,11 +86,6 @@ public class JdbcDaoUtils {
 	/**
 	 * Retrieves the first column from the first record returned by the specified sql
 	 * query. The column is presumed to be an integer column.
-	 *
-	 * @param connection
-	 * @param sql
-	 * @return
-	 * @throws SQLException
 	 */
 	public static int fetchInt(Connection connection, String sql) throws SQLException
 	{
@@ -109,5 +103,4 @@ public class JdbcDaoUtils {
 		}
 		return result;
 	}
-
 }

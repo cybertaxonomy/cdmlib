@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.OccurrenceStatus;
-import eu.etaxonomy.cdm.ref.TypedEntityReferenceFactory;
 
 /**
  * @author muellera
@@ -145,10 +144,6 @@ public abstract class DerivedUnitDtoLoaderBase<T extends DerivedUnit>
         //summary
         dto.setDerivationTreeSummary(DerivationTreeSummaryDtoLoader.fromEntity(derivedUnit, dto.getSpecimenShortTitle()));
 
-        //stored under
-        if(derivedUnit.getStoredUnder() != null) {
-            dto.setStoredUnder(TypedEntityReferenceFactory.fromEntity(derivedUnit.getStoredUnder()));
-        }
         //original label
         dto.setOriginalLabelInfo(derivedUnit.getOriginalLabelInfo());
         //exsiccatum

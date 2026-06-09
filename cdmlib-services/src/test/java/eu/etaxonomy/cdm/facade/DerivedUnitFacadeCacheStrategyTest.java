@@ -22,9 +22,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
@@ -77,7 +74,6 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 	private String accessionNumber = "B 8909756";
 	private String catalogNumber = "UU879873590";
 	private String barcode = "B12345678";
-	private TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
 	private String collectorsNumber = "234589913A34";
 	private Collection collection = Collection.NewInstance();
 
@@ -93,7 +89,8 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 
 //****************************** SET UP *****************************************/
 
-	@Before
+	@Deprecated
+    @Before
 	public void setUp() throws Exception {
 		specimen = DerivedUnit.NewPreservedSpecimenInstance();
 
@@ -134,7 +131,6 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);
 		specimen.setBarcode(barcode);
-		specimen.setStoredUnder(taxonName);
 		specimen.setCollection(collection);
 		specimen.setPreservation(preservationMethod);
 		specimen.setExsiccatum(exsiccatum);
@@ -160,7 +156,8 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 		firstFieldObject.setGatheringEvent(existingGatheringEvent);
 	}
 
-	@Test
+	@Deprecated
+    @Test
 	public void testGetTitleCache() {
 		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: B 8909756); flowers blue";
 		specimenFacade.setEcology(ecology);
@@ -172,6 +169,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
         Assert.assertEquals(correctCache.replace("B: B 8909756", "Herbarium Berolinense: B 8909756"), specimenFacade.getTitleCache());
 	}
 
+    @Deprecated
     @Test
     public void testGetTitleCacheWithEtAl() {
         String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller, Kohlbecker & al.; Greuter, Pl. Dahlem. 456 (B: B 8909756); flowers blue";
@@ -183,6 +181,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
     }
 
     //#6381
+    @Deprecated
     @Test
     public void testGetTitleCacheAccessionBarcodeCatalogNumber() {
         //Note: Collection Code B might be deduplicated in future

@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -114,7 +115,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
     }
 
     private boolean isSynonym(StreamItem item) {
-        TaxonBase<?> taxonBase = getTaxonBase(item);
+        TaxonBase taxonBase = getTaxonBase(item);
         return taxonBase instanceof Synonym;
     }
 
@@ -128,8 +129,8 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		String sourceReferenceDetail = null;
 
 		//taxon
-		TaxonBase<?> taxonBase = getTaxonBase(csvTaxonRecord);
-		MappedCdmBase<TaxonBase<?>>  mcb = new MappedCdmBase<>(csvTaxonRecord.term, csvTaxonRecord.get(ID), taxonBase);
+		TaxonBase taxonBase = getTaxonBase(csvTaxonRecord);
+		MappedCdmBase<TaxonBase>  mcb = new MappedCdmBase<>(csvTaxonRecord.term, csvTaxonRecord.get(ID), taxonBase);
 		resultList.add(mcb);
 
 		//original source
@@ -230,7 +231,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		return new ListReader<>(resultList);
 	}
 
-    private void handleIsExtinct(StreamItem item, TaxonBase<?> taxonBase) {
+    private void handleIsExtinct(StreamItem item, TaxonBase taxonBase) {
         String isExtinctStr = item.get(TermUri.GBIF_IS_EXTINCT);
         if (isBlank(isExtinctStr)){
             return;
@@ -260,7 +261,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
         }
     }
 
-    private void handleModified(StreamItem item, TaxonBase<?> taxonBase) {
+    private void handleModified(StreamItem item, TaxonBase taxonBase) {
         String modifiedStr = item.get(TermUri.DC_MODIFIED);
         if (isBlank(modifiedStr)){
             return;
@@ -277,7 +278,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
         }
     }
 
-	private void handleIdentifiableObjects(StreamItem item,TaxonBase<?> taxonBase,
+	private void handleIdentifiableObjects(StreamItem item,TaxonBase taxonBase,
 	        List<MappedCdmBase<? extends CdmBase>> resultList) {
 
 		String references = item.get(TermUri.DC_REFERENCES);
@@ -326,7 +327,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		}
 	}
 
-	private void handleCommonNames(StreamItem item, TaxonBase<?> taxonBase,
+	private void handleCommonNames(StreamItem item, TaxonBase taxonBase,
 	        List<MappedCdmBase<? extends CdmBase>> resultList) {
 
 		//TODO: handle comma separated values
@@ -344,7 +345,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		}
 	}
 
-	private void handleTdwgArea(StreamItem item, TaxonBase<?> taxonBase,
+	private void handleTdwgArea(StreamItem item, TaxonBase taxonBase,
 	        List<MappedCdmBase<? extends CdmBase>> resultList) {
 
 	    String tdwg_area = item.get(TermUri.DWC_COUNTRY_CODE);
@@ -381,7 +382,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
     	}
 	}
 
-	private void handleTaxonRemarks(StreamItem item,TaxonBase<?> taxonBase) {
+	private void handleTaxonRemarks(StreamItem item,TaxonBase taxonBase) {
 		String comment = item.get(TermUri.DWC_TAXON_REMARKS);
 		Language language = getLanguage(item);
 		if(StringUtils.isNotBlank(comment)){
@@ -396,7 +397,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 	//TODO handle non LSIDs
 	//TODO handle LSIDs for names
-	private void handleIdentifier(StreamItem csvTaxonRecord, TaxonBase<?> taxonBase) {
+	private void handleIdentifier(StreamItem csvTaxonRecord, TaxonBase taxonBase) {
 		String identifier = csvTaxonRecord.get(TermUri.DC_IDENTIFIER);
 		if (StringUtils.isNotBlank(identifier)){
 			if (identifier.trim().startsWith("urn:lsid")){
@@ -418,7 +419,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		}
 	}
 
-	private void handleDataset(StreamItem item, TaxonBase<?> taxonBase,
+	private void handleDataset(StreamItem item, TaxonBase taxonBase,
 	        List<MappedCdmBase<? extends CdmBase>> resultList,
 	        Reference sourceReference,
 	        String sourceReferecenDetail) {
@@ -709,11 +710,11 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 * Creates an empty taxon object with a given status.
 	 * <i>Empty</i> taxon means, without a defined name or sec.
 	 */
-	private TaxonBase<?> getTaxonBase(StreamItem item) {
+	private TaxonBase getTaxonBase(StreamItem item) {
 
 	    TaxonName name = null;
 		Reference sec = null;
-		TaxonBase<?> result;
+		TaxonBase result;
 		String taxStatus = item.get(TermUri.DWC_TAXONOMIC_STATUS);
 		String status = "";
 
@@ -758,9 +759,9 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	    String langItem = item.get(TermUri.DC_LANGUAGE);
 		Language language = null;
 
-		if(StringUtils.equalsIgnoreCase(langItem, "de")){
+		if(Strings.CI.equals(langItem, "de")){
 			language = Language.GERMAN();
-		}else if(StringUtils.equalsIgnoreCase(langItem, "en")){
+		}else if(Strings.CI.equals(langItem, "en")){
 			language = Language.ENGLISH();
 		}else{
 			language = Language.DEFAULT();

@@ -23,6 +23,14 @@ package eu.etaxonomy.cdm.model.name;
  */
 public interface IBotanicalName extends INonViralName {
 
-//    no specific attributes for botanical names
+    /**
+     * <code>true</code> if the rank of this name is infraspecific ({@link #isInfraSpecific()})
+     * and below rank of subspecies ({@link Rank#SUBSPECIES()}). This is a special class
+     * of ranks relevant for pseudo autonmys (names that look like autonyms but are not).
+     * They exist only for names of a rank below subspecies (at least in botany).
+     *
+     * @see Rank#isSubSubSpecific()
+     */
+    public boolean isSubSubSpecific();
 
 }

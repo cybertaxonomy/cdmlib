@@ -31,7 +31,7 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrati
     private static final Logger logger = LogManager.getLogger();
 
 	private UUID uuid;
-	private TaxonBase<?> cdmBase;
+	private TaxonBase cdmBase;
 
 	@SpringBeanByType
 	private ITaxonDao cdmEntityDaoBase;
@@ -62,7 +62,7 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrati
 	//@DataSet
 	//@ExpectedDataSet
 	public void testSaveOrUpdate(){
-		TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setDoubtful(true);
 		cdmEntityDaoBase.saveOrUpdate(cdmBase);
 		commit();
@@ -80,7 +80,7 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrati
 	//@DataSet
 	//@ExpectedDataSet
 	public void testUpdate(){
-		TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setDoubtful(true);
 		cdmEntityDaoBase.update(cdmBase);
 		commit();
@@ -90,7 +90,7 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrati
 	//@DataSet("CdmEntityDaoBaseTest.xml")
 	//@ExpectedDataSet
 	public void testDelete(){
-		TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		assertNotNull(cdmBase);
 		cdmEntityDaoBase.delete(cdmBase);
 	}

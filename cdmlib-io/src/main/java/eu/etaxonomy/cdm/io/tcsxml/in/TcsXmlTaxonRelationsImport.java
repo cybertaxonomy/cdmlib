@@ -167,14 +167,14 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			String id = elTaxonName.getAttributeValue("id");
 			TaxonName name = taxonNameMap.get(removeVersionOfRef(id));
 
-			TaxonBase<?> taxonBase = name.getTaxonBases().iterator().next();
+			TaxonBase taxonBase = name.getTaxonBases().iterator().next();
 
 			String ref = elBasionym.getAttributeValue("ref");
 			TaxonName basionymName = taxonNameMap.get(removeVersionOfRef(ref));
 
 			if (basionymName != null){
 				basionymName = HibernateProxyHelper.deproxy(basionymName, TaxonName.class);
-				TaxonBase<?> basionym;
+				TaxonBase basionym;
 				if (basionymName.getTaxonBases().isEmpty()){
 					 basionym = Synonym.NewInstance(basionymName, null);
 				}else{

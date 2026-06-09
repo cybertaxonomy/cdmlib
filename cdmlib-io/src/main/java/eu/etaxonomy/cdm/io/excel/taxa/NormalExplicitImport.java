@@ -269,7 +269,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		String id = taxonDataHolder.getId();
 		UUID cdmUuid = taxonDataHolder.getCdmUuid();
 
-		TaxonBase<?> taxonBase = null;
+		TaxonBase taxonBase = null;
 		if (cdmUuid != null){
 			taxonBase = getTaxonService().find(cdmUuid);
 		}else{
@@ -412,7 +412,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 			UUID cdmUuid = taxonDataHolder.getCdmUuid();
 			Taxon acceptedTaxon = null;
 			TaxonName nameUsedInSource = null;
-			TaxonBase<?> taxonBase = null;
+			TaxonBase taxonBase = null;
 			Taxon parentTaxon = null;
 
 			if (cdmUuid != null){
@@ -582,7 +582,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		return;
 	}
 
-    private Synonym createSynonym(TaxonExcelImportState state, TaxonBase<?> taxonBase,
+    private Synonym createSynonym(TaxonExcelImportState state, TaxonBase taxonBase,
             String synonymNameStr) {
 
         NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
@@ -735,7 +735,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		}
 	}
 
-	private TaxonBase<?> createTaxon(TaxonExcelImportState state, Rank rank,
+	private TaxonBase createTaxon(TaxonExcelImportState state, Rank rank,
 	        String familyNameStr, String infraFamilyNameStr, String genusNameStr,
 	        String infraGenusNameStr, String speciesNameStr, String infraSpeciesNameStr,
 	        String authorStr, String publishingAuthorStr, String basionymAuthorStr,
@@ -747,7 +747,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 
 		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
 
-		TaxonBase<?> taxonBase;
+		TaxonBase taxonBase;
 		String nameCache = null;
 		if (rank.isGenus()){
 		    nameCache =genusNameStr;
@@ -777,7 +777,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 		return taxonBase;
 	}
 
-    private TaxonBase<?> findOrCreateTaxon(TaxonExcelImportState state, Rank rank,
+    private TaxonBase findOrCreateTaxon(TaxonExcelImportState state, Rank rank,
             String taxonNameStr, String authorStr, String publishingAuthorStr,
             String basionymAuthorStr, String reference, String date, String nameStatus,
             String taxonomicStatus, Set<CdmBase> entitiesToSave) {
@@ -789,7 +789,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
         }
         NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
 
-        TaxonBase<?> taxonBase = null;
+        TaxonBase taxonBase = null;
 
         String titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
         if (! synonymMarkers.contains(nameStatus)  && state.getConfig().isReuseExistingTaxaWhenPossible()){
@@ -811,12 +811,12 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
         return taxonBase;
     }
 
-	private TaxonBase<?> createTaxon(TaxonExcelImportState state, Rank rank, String taxonNameStr,
+	private TaxonBase createTaxon(TaxonExcelImportState state, Rank rank, String taxonNameStr,
 			String authorStr, String publishingAutorStr, String basionymAuthor, String reference,
 			String date, String nameStatus, String taxonomicStatus, NomenclaturalCode nc,
 			Set<CdmBase> entitiesToSave) {
 
-	    TaxonBase<?> taxonBase;
+	    TaxonBase taxonBase;
 		TaxonName taxonName;
 		if (nc == NomenclaturalCode.ICVCN){
 			throw new RuntimeException("ICVCN not yet supported");

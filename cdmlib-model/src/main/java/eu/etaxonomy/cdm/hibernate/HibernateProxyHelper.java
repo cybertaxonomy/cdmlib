@@ -8,9 +8,6 @@
 */
 package eu.etaxonomy.cdm.hibernate;
 
-import java.io.Serializable;
-
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -103,14 +100,6 @@ public class HibernateProxyHelper {
 	         return clazz.isAssignableFrom(object.getClass());
 	     }
 	 }
-
-	public static Serializable getIdentifierOf(Object object) {
-        if (object instanceof HibernateProxy) {
-            return  ((HibernateProxy) object).getHibernateLazyInitializer().getIdentifier();
-        } else {
-            throw new ClassCastException("Cannot cast the given Object to a known Hibernate proxy.");
-        }
-    }
 
 	/**
 	 * Get the class of an instance or the underlying class

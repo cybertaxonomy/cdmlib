@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
@@ -143,7 +143,7 @@ public class SDDDataSet {
         @XmlElement(name = "Representation", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Representation.class),
         @XmlElement(name = "LanguageString", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = LanguageString.class)
     })
-    protected List<LanguageStringBase> languageData;
+    protected List<AnnotatableLanguageStringBase> languageData;
 
     @XmlElementWrapper(name = "Terms")
     @XmlElements({
@@ -186,7 +186,7 @@ public class SDDDataSet {
 
     @XmlElementWrapper(name = "TermVocabularies")
     @XmlElement(name = "TermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
-    protected List<TermVocabulary<DefinedTermBase>> termVocabularies;
+    protected List<TermVocabulary<?>> termVocabularies;
 
     @XmlElementWrapper(name = "Occurrences")
     @XmlElements({
@@ -289,11 +289,11 @@ public class SDDDataSet {
         this.terms = value;
     }
 
-    public List<TermVocabulary<DefinedTermBase>> getTermVocabularies() {
+    public List<TermVocabulary<?>> getTermVocabularies() {
         return termVocabularies;
     }
 
-    public void setTermVocabularies(List<TermVocabulary<DefinedTermBase>> value) {
+    public void setTermVocabularies(List<TermVocabulary<?>> value) {
         this.termVocabularies = value;
     }
 
@@ -372,15 +372,15 @@ public class SDDDataSet {
     //    featureData.addAll(value);
     //}
 
-    public <T extends LanguageStringBase> void addLanguageData(Collection<T> value) {
+    public <T extends AnnotatableLanguageStringBase> void addLanguageData(Collection<T> value) {
     	for (T languageItem: value) {
     		this.languageData.add(languageItem);
     	}
     }
-    public List<LanguageStringBase> getLanguageData() {
+    public List<AnnotatableLanguageStringBase> getLanguageData() {
         return languageData;
     }
-    public void setLanguageData(List<? extends LanguageStringBase> value) {
+    public void setLanguageData(List<? extends AnnotatableLanguageStringBase> value) {
         this.languageData = new ArrayList<>();
         languageData.addAll(value);
     }

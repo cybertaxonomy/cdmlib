@@ -35,11 +35,13 @@ public class ChildTaxaMustNotSkipRanksValidator implements
     	    if (parent != null  && parent.getName() != null && childRank != null ) {
                 if(parent.getName().isSupraGeneric() && childRank.isLowerThan(RankClass.Genus)) {
         			valid = false;
-        			constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.cannotSkipGenus.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();
+        			constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.cannotSkipGenus.message}")
+        			    .addPropertyNode("fromTaxon").addPropertyNode("name").addPropertyNode("rank").addConstraintViolation();
         		} else if(parentRank != null && parentRank.isSupraSpecific()
         		        && childRank.isLowerThan(RankClass.Species)) {
         			valid = false;
-        			constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.cannotSkipSpecies.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();
+        			constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks.cannotSkipSpecies.message}")
+        			.addPropertyNode("fromTaxon").addPropertyNode("name").addPropertyNode("rank").addConstraintViolation();
         		}
                 if (!valid){
                     constraintContext.disableDefaultConstraintViolation();

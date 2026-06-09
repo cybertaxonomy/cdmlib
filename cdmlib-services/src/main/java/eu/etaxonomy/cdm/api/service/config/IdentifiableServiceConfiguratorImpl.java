@@ -10,11 +10,10 @@ package eu.etaxonomy.cdm.api.service.config;
 
 import java.util.List;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -32,7 +31,7 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
 	private Integer pageSize;
 	private Integer pageNumber;
 	private Class<? extends T> clazz;
-    private List<Criterion> criteria;
+    private List<EntityFilter<T>> filter;
 	private List<Restriction<?>> restrictions;
 	private List<String> propertyPaths;
 	private List<OrderHint> orderHints;
@@ -103,14 +102,13 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
 	}
 
     @Override
-    public List<Criterion> getCriteria() {
-        return criteria;
+    public List<EntityFilter<T>> getEntityFilters() {
+        return filter;
     }
     @Override
-    public void setCriteria(List<Criterion> criteria) {
-        this.criteria = criteria;
+    public void setEntityFilter(List<EntityFilter<T>> filter) {
+        this.filter = filter;
     }
-
 
     @Override
     public List<Restriction<?>> getRestrictions() {
@@ -139,9 +137,11 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
 		this.propertyPaths = propertyPaths;
 	}
 
+    @Override
     public boolean isIncludeUnpublished() {
         return includeUnpublished;
     }
+    @Override
     public void setIncludeUnpublished(boolean includeUnpublished) {
         this.includeUnpublished = includeUnpublished;
     }

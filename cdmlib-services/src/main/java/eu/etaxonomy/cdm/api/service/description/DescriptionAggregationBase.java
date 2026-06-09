@@ -496,7 +496,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     protected abstract boolean isRelevantDescriptionElement(DescriptionElementBase deb);
 
-    protected String taxonToString(TaxonBase<?> taxon) {
+    protected String taxonToString(TaxonBase taxon) {
         if(logger.isTraceEnabled()) {
             return taxon.getTitleCache();
         } else {

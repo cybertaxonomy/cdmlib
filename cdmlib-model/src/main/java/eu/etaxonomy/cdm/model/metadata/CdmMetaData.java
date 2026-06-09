@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,7 +51,7 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-	private static final String dbSchemaVersion = CdmVersion.V_05_54_00.versionString;
+	private static final String dbSchemaVersion = CdmVersion.V_05_58_00.versionString;
 
 	public enum CdmVersion {
 	    V_05_12_00("5.12.0.0.20191202"),
@@ -88,7 +88,8 @@ public class CdmMetaData extends CdmBase{
         V_05_46_01("5.46.1.0.20241017"),
         V_05_48_00("5.48.0.0.20241211"),
         V_05_49_00("5.49.0.0.20250102"),
-        V_05_54_00("5.54.0.0.20251006")
+        V_05_54_00("5.54.0.0.20251006"),
+        V_05_58_00("5.58.0.0.20260423")
         ;
 
         private String versionString;

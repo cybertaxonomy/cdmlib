@@ -77,7 +77,8 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-		  <xs:element name="TermVocabulary" type="xs:IDREF" minOccurs="0"/> 
+		  <xs:element name="TermVocabulary" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="OrderIndex" type="xs:int" minOccurs="0"/> 
        </xs:sequence>
       </xs:extension>
     </xs:complexContent>

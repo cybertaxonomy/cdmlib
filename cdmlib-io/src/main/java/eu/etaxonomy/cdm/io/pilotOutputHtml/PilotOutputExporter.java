@@ -237,8 +237,8 @@ public class PilotOutputExporter
 		if (pilotOutputExpConfig.isDoFeatureData() == true) {
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
-			sddDataSet.setFeatureData(getTermNodeService().list(TermType.Feature,null,null,null,null));
-			sddDataSet.addFeatureData(getTermTreeService().list(TermType.Feature,null,null,null,null));
+			sddDataSet.setFeatureData(getTermNodeService().list(TermType.Feature, null, null, null, null));
+			sddDataSet.addFeatureData(getTermTreeService().list(TermType.Feature, null, null, null, null));
 		}
 	}
 

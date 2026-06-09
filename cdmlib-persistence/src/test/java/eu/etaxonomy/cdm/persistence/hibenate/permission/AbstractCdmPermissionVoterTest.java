@@ -25,10 +25,6 @@ import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
  */
 abstract public class AbstractCdmPermissionVoterTest extends Assert {
 
-    /**
-     * @param e
-     * @return
-     */
     protected Authentication authentication(CdmAuthority ... authorities) {
 
         List<GrantedAuthority> ga = new ArrayList<>();
@@ -43,5 +39,4 @@ abstract public class AbstractCdmPermissionVoterTest extends Assert {
                 ga);
         return auth;
     }
-
 }

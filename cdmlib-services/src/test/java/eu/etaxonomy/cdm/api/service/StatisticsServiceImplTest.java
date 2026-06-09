@@ -131,8 +131,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	// --------------------variables for all ------------------
 
-	private Long no_of_all_references = new Long(0);
-	private Long no_of_descriptive_source_references = new Long(0);
+	private Long no_of_all_references = Long.valueOf(0);
+	private Long no_of_descriptive_source_references = Long.valueOf(0);
 
 	// ............................................
 
@@ -143,19 +143,19 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	// int[] anArray = new int[NO_OF_CLASSIFICATIONS];
 	private static List<Long> no_of_all_taxa_c = new ArrayList<Long>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	private static List<Long> no_of_accepted_taxa_c = new ArrayList<Long>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	private static List<Long> no_of_synonyms_c = new ArrayList<Long>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	private static List<Long> no_of_taxon_names_c = new ArrayList<Long>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	private static List<Long> no_of_descriptive_source_references_c = new ArrayList<>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	private static List<Long> no_of_all_references_c = new ArrayList<Long>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	private static List<Long> no_of_nomenclatural_references_c = new ArrayList<>(
-			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
+			Collections.nCopies(NO_OF_CLASSIFICATIONS, Long.valueOf(0)));
 	// we do not count classifications in classifications
 
 	// ........................... constant map ..........................
@@ -263,9 +263,9 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 			for (int taxonCounter = 1; taxonCounter <= taxaInClass; taxonCounter++) {
 
 				// create a String for the Name
-				RandomStringUtils.randomAlphabetic(10);
-				String randomName = RandomStringUtils.randomAlphabetic(5) + " "
-						+ RandomStringUtils.randomAlphabetic(10);
+				RandomStringUtils.insecure().nextAlphabetic(10);
+				String randomName = RandomStringUtils.insecure().nextAlphabetic(5) + " "
+						+ RandomStringUtils.insecure().nextAlphabetic(10);
 
 				MyCounter taxonContextCounter = new MyCounter();
 				// create a name for the taxon
@@ -370,8 +370,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				// now if there are any left, we create a synonym for the taxon
 				if (synonymCounter < NO_OF_SYNONYMS) {
 					synonymFlag = true;
-					randomName = RandomStringUtils.randomAlphabetic(5) + " "
-							+ RandomStringUtils.randomAlphabetic(10);
+					randomName = RandomStringUtils.insecure().nextAlphabetic(5) + " "
+							+ RandomStringUtils.insecure().nextAlphabetic(10);
 					// name for synonym
 					name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 					name.setNameCache(randomName, true);
@@ -566,7 +566,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		// create configurator needed to call
 		// StatisticsService.getCountStatistics:
 		List<StatisticsConfigurator> configuratorList = createConfiguratorList(
-				(String[]) PARTS.toArray(), TYPES);
+				(String[]) PARTS.toArray(new String[0]), TYPES);
 
 		// run method of StatisticsService
 		List<Statistics> statisticsList = service.getCountStatistics(configuratorList);

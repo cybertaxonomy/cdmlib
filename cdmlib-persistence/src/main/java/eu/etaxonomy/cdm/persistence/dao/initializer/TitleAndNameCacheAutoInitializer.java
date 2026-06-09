@@ -73,7 +73,7 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
             }
         } else if(bean instanceof TaxonBase)  {
             if (!bean.isProtectedTitleCache()){
-                TaxonBase<?> taxonBase = (TaxonBase<?>)bean;
+                TaxonBase taxonBase = (TaxonBase)bean;
                 taxonBase.getTaggedTitle();
                 //#10090 alternative solution for initializing sec.collectorTitleCache, but this solution initializes sec-author.teamMembers unnecessarily therefore it is not used.
                 //if(taxonBase.getSecSource()!=null && taxonBase.getSec() != null && taxonBase.getSec().getAuthorship() != null) {

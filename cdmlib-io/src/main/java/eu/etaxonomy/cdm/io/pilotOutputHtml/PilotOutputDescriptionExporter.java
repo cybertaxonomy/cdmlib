@@ -194,7 +194,7 @@ public class PilotOutputDescriptionExporter
 //			dataSet.setTaxa(new ArrayList<Taxon>());
 //			dataSet.setSynonyms(new ArrayList<Synonym>());
 			List<TaxonBase> tb = getTaxonService().list(null,taxonBaseRows, 0,null,null);
-			for (TaxonBase<?> taxonBase : tb) {
+			for (TaxonBase taxonBase : tb) {
 				if (taxonBase instanceof Taxon) {
 					sddDataSet.addTaxon((Taxon)taxonBase);
 				} else if (taxonBase instanceof Synonym) {
@@ -244,8 +244,8 @@ public class PilotOutputDescriptionExporter
 		if (sddExpConfig.isDoFeatureData() == true) {
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
-			sddDataSet.setFeatureData(getTermNodeService().list(TermType.Feature,null,null,null,null));
-			sddDataSet.addFeatureData(getTermTreeService().list(TermType.Feature,null,null,null,null));
+			sddDataSet.setFeatureData(getTermNodeService().list(TermType.Feature, null, null, null, null));
+			sddDataSet.addFeatureData(getTermTreeService().list(TermType.Feature, null, null, null, null));
 		}
 	}
 

@@ -21,12 +21,13 @@ import javax.persistence.criteria.Root;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -35,11 +36,12 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dto.TeamOrPersonUuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Repository
-public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAgentDao{
+public class AgentDaoImpl
+        extends IdentifiableDaoBase<AgentBase>
+        implements IAgentDao{
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
@@ -180,13 +182,15 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
     }
 
 	@Override
-    public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(Class<T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Set<String> params = new HashSet<>();
+    public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(Class<T> clazz, String queryString, MatchMode matchmode,
+            List<EntityFilter<T>> entityFilters, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+	    Set<String> params = new HashSet<>();
         params.add("titleCache");
         params.add("nomenclaturalTitleCache");
         params.add("collectorTitleCache");
 
-	    return findByParam(clazz, params, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+	    return findByParam(clazz, params, queryString, matchmode, entityFilters, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     protected <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(Query<Object[]> query){

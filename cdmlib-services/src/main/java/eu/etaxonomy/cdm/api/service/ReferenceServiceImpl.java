@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -28,7 +29,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
@@ -157,7 +157,6 @@ public class ReferenceServiceImpl
             Integer limit) {
 
         long numberOfResults = dao.countByIdentifier(Reference.class, identifier, identifierType, matchmode);
-        long numberOfResultsTitle = dao.countByTitle(identifier);
         List<Object[]> daoResults = new ArrayList<>();
         List<UuidAndTitleCache<Reference>> daoResultsTitle = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
@@ -168,7 +167,7 @@ public class ReferenceServiceImpl
 
         List<IdentifiedEntityDTO<Reference>> result = new ArrayList<>();
         for (Object[] daoObj : daoResults){
-            result.add(new IdentifiedEntityDTO<Reference>((IdentifierType)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
+            result.add(new IdentifiedEntityDTO<>((IdentifierType)daoObj[0], (String)daoObj[1], (UUID)daoObj[2], (String)daoObj[3],(String)daoObj[4]));
 
         }
         for (UuidAndTitleCache<Reference> uuidAndTitleCache: daoResultsTitle){
@@ -206,6 +205,6 @@ public class ReferenceServiceImpl
 
     @Override
     public List<Reference> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<Reference> config){
-        return dao.findByTitleAndAbbrevTitle(config.getClazz(),config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
+        return dao.findByTitleAndAbbrevTitle(config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getEntityFilters(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
     }
 }

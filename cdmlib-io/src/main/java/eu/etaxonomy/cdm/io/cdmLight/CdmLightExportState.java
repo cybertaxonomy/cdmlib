@@ -38,7 +38,7 @@ public class CdmLightExportState
 
     private CdmLightExportResultProcessor processor = new CdmLightExportResultProcessor(this);
 
-    private TaxonBase<?> actualTaxonBase;
+    private TaxonBase actualTaxonBase;
 
     private ArrayList<UUID> homotypicalGroupStore = new ArrayList<>();
     private Map<Integer, TeamOrPersonBase<?>> authorStore = new HashMap<>();
@@ -76,11 +76,11 @@ public class CdmLightExportState
         return processor;
     }
 
-    protected void setActualTaxonBase(TaxonBase<?> actualTaxonBase){
+    protected void setActualTaxonBase(TaxonBase actualTaxonBase){
         this.actualTaxonBase = actualTaxonBase;
     }
 
-    protected TaxonBase<?> getActualTaxonBase() {
+    protected TaxonBase getActualTaxonBase() {
         return actualTaxonBase;
     }
 

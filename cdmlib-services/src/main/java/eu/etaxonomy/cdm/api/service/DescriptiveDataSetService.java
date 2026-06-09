@@ -775,11 +775,11 @@ public class DescriptiveDataSetService
 
     @Override
     public Map<UUID, List<TermDto>> getSupportedStatesForFeature(Set<UUID> featureUuids){
-        return termDao.getSupportedStatesForFeature(featureUuids);
+        return termDao.mapSupportedStatesForFeature(featureUuids);
     }
     @Override
     public Map<UUID, List<TermDto>> getRecommendedModifiersForFeature(Set<UUID> featureUuids){
-        return termDao.getRecommendedModifiersForFeature(featureUuids);
+        return termDao.mapRecommendedModifiersByFeature(featureUuids);
     }
 
 //    @Override

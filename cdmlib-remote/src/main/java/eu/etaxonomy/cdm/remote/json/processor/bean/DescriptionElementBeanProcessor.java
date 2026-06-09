@@ -23,13 +23,9 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-
 /**
- *
- *
  * @author a.kohlbecker
  * @since Dec 4, 2013
- *
  */
 public class DescriptionElementBeanProcessor extends AbstractModifiableThingBeanProcessor<DescriptionElementBase> {
 

@@ -8,15 +8,18 @@
 */
 package eu.etaxonomy.cdm.common;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringBufferInputStream;
+import java.io.UncheckedIOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,35 +45,38 @@ public class StreamUtils {
 	 * @throws IOException
 	 *
 	 */
-	public static InputStream streamReplace(InputStream stream, String search,	String replace) throws IOException {
-		InputStreamReader reader = new InputStreamReader(stream);
-		StringBuilder strBuilder = new StringBuilder();
+	public static InputStream streamReplace(InputStream inputStream, String search, String replace) throws IOException {
+        // 1. Read input stream with correct character set
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
 
-		char[] cbuf = new char[1024];
-		int charsRead = -1;
-		while ((charsRead = reader.read(cbuf)) > -1){
-			strBuilder.append(cbuf, 0, charsRead);
-		}
-		String replacedContent = strBuilder.toString().replace(search, replace);
-		StringBufferInputStream replacedStream = new StringBufferInputStream(replacedContent); //TODO replace with StringReader
-		logger.debug(replacedContent);
-		return replacedStream;
+            // 2. convert to a single String and replace regex
+            String content = reader.lines().collect(Collectors.joining("\n"));
+            String modifiedContent = content.replace(search, replace);
+
+            // 3. return modified content as InputStream
+            return new ByteArrayInputStream(modifiedContent.getBytes(StandardCharsets.UTF_8));
+
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
 	}
 
-	public static InputStream streamReplaceAll(InputStream stream, String regex, String replace) throws IOException {
-		InputStreamReader reader = new InputStreamReader(stream);
-		StringBuilder strBuilder = new StringBuilder();
+    public InputStream streamReplaceAll(InputStream inputStream, String regex, String replacement) throws IOException {
+        // 1. Read input stream with correct character set
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
 
-		char[] cbuf = new char[1024];
-		int charsRead = -1;
-		while ((charsRead = reader.read(cbuf)) > -1){
-			strBuilder.append(cbuf, 0, charsRead);
-		}
-		String replacedContent = strBuilder.toString().replaceAll(regex, replace);
-		StringBufferInputStream replacedStream = new StringBufferInputStream(replacedContent); //TODO replace with StringReader
-		logger.debug(replacedContent);
-		return replacedStream;
-	}
+            // 2. convert to a single String and replace regex
+            String content = reader.lines().collect(Collectors.joining("\n"));
+            String modifiedContent = content.replaceAll(regex, replacement);
+
+            // 3. return modified content as InputStream
+            return new ByteArrayInputStream(modifiedContent.getBytes(StandardCharsets.UTF_8));
+
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
 	public static String readToString(InputStream stream) throws IOException {
 		InputStreamReader reader = new InputStreamReader(stream);

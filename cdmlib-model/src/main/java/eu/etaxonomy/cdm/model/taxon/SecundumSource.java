@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.beans.PropertyChangeListener;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
@@ -16,7 +17,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-
 
 import org.hibernate.envers.Audited;
 
@@ -45,7 +45,7 @@ public class SecundumSource extends NamedSourceBase {
 
     private static final long serialVersionUID = 7899107010799860914L;
 
-    public static SecundumSource NewSecundumInstance(TaxonBase<?> taxonBase) {
+    public static SecundumSource NewSecundumInstance(TaxonBase taxonBase) {
         SecundumSource result = new SecundumSource();
         result.sourcedTaxon = taxonBase;
         return result;
@@ -58,12 +58,11 @@ public class SecundumSource extends NamedSourceBase {
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY /*, mappedBy="secSource"*/)
     @Merge(value=MergeMode.MERGE)  //TODO maybe there is a better solution
-    private TaxonBase<?> sourcedTaxon;
+    private TaxonBase sourcedTaxon;
 
 //*********************** CONSTRUCTOR ******************************/
 
     //*packet* private required by bytebuddy
-    @SuppressWarnings("deprecation")
     SecundumSource(){
         setType(OriginalSourceType.PrimaryTaxonomicSource);
         initListener();
@@ -88,11 +87,11 @@ public class SecundumSource extends NamedSourceBase {
 
 //***************** GETTER / SETTER ****************************/
 
-    public TaxonBase<?> getSourcedTaxon() {
+    public TaxonBase getSourcedTaxon() {
         return sourcedTaxon;
     }
 
-    public void setSourcedTaxon(TaxonBase<?> sourcedTaxon) {
+    public void setSourcedTaxon(TaxonBase sourcedTaxon) {
         if (this.sourcedTaxon != sourcedTaxon){
             this.sourcedTaxon = sourcedTaxon;
             if (sourcedTaxon != null){

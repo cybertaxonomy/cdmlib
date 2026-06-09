@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.description;
 import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -29,8 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -476,7 +476,7 @@ public class PolytomousKey
                     result += otherNodeString + separator;
                 }
 
-                result = StringUtils.chomp(result, separator);
+                result = Strings.CS.removeEnd(result, separator);
                 result += "\n";
             }
         }

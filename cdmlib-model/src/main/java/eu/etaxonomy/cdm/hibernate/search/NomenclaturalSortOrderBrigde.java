@@ -59,7 +59,7 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
         TaxonName taxonName = null;
         value = CdmBase.deproxy(value);
         if(value instanceof TaxonBase) {
-            taxonName = ((TaxonBase<?>)value).getName();
+            taxonName = ((TaxonBase)value).getName();
             if (taxonName == null){
             	return;
             }

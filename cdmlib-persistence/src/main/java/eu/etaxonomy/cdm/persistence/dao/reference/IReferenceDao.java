@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -90,12 +89,12 @@ public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<R
     List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthor(Integer limit,
             String authorPattern, ReferenceType refType);
 
-    List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Set<UUID> uuids, ReferenceType refType);
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitleCache(Set<UUID> uuids, ReferenceType refType);
 
-    List<Reference> findByTitleAndAbbrevTitle(Class clazz, String queryString, MatchMode matchmode,
-            List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+    public List<Reference> findByTitleAndAbbrevTitle(String queryString, MatchMode matchmode,
+            List<EntityFilter<Reference>> filter, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
 
-	List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit,
+	public List<UuidAndTitleCache<Reference>> getUuidAndAbbrevTitleCacheForAuthorID(Integer limit,
 	        Integer authorID, ReferenceType refType);
 }

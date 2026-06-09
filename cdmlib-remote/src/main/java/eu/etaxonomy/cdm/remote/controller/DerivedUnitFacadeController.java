@@ -183,7 +183,6 @@ public class DerivedUnitFacadeController
     // public Map<Language, LanguageString> getPlantDescriptionAll(){ ==> representation !!
     // public PreservationMethod getPreservationMethod()
     // public Set<IdentifiableSource> getSources(){
-    // public TaxonName getStoredUnder() {
 
 
     /**

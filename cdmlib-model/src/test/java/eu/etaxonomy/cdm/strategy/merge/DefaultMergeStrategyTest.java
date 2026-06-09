@@ -20,9 +20,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.model.agent.Address;
-import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -32,9 +29,6 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.location.Country;
-import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -294,8 +288,8 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 		botName2.setCombinationAuthorship(team2);
 
 		//taxa
-		TaxonBase<?> taxon1= Taxon.NewInstance(botName1, book1);
-		TaxonBase<?> taxon2= Taxon.NewInstance(botName2, book2);
+		TaxonBase taxon1= Taxon.NewInstance(botName1, book1);
+		TaxonBase taxon2= Taxon.NewInstance(botName2, book2);
 
 		try {
 			botNameMergeStrategy.setMergeMode("combinationAuthorship", MergeMode.SECOND);
@@ -351,53 +345,17 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 
 		team1.setTitleCache("Team1", true);
 		team1.setNomenclaturalTitleCache("T.1", true);
-		String street1 = "Strasse1";
-		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", URI.create("www.abc.de"), Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
-		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
-		String street3 = "Street3";
-		team2.addAddress(street3, null, null, null, null, null, Point.NewInstance(1.1, 2.2, null, 4));
-		String emailAddress1 = "Email1";
-		team1.addEmailAddress(emailAddress1);
 
 		team2.addTeamMember(person1);
 		team2.addTeamMember(person2);
-		String emailAddress2 = "Email2";
-		team2.addEmailAddress(emailAddress2);
 
 		team3.addTeamMember(person3);
-		team3.addEmailAddress("emailAddress3");
 
 		teamMergeStrategy.invoke(team2, team3);
 
 		Assert.assertEquals("Team2 must have 3 persons as members",3, team2.getTeamMembers().size());
 		Assert.assertTrue("Team2 must have person3 as new member", team2.getTeamMembers().contains(person3));
 		Assert.assertSame("Team2 must have person3 as third member",person3, team2.getTeamMembers().get(2));
-
-		//Contact
-		teamMergeStrategy.invoke(team2, team1);
-		Contact team2Contact = team2.getContact();
-		Assert.assertNotNull("team2Contact must not be null", team2Contact);
-		Assert.assertNotNull("Addresses must not be null", team2Contact.getAddresses());
-		Assert.assertEquals("Number of addresses must be 3", 3, team2Contact.getAddresses().size());
-		Assert.assertEquals("Number of email addresses must be 4", 4, team2Contact.getEmailAddresses().size());
-
-		boolean street1Exists = false;
-		boolean street3Exists = false;
-		boolean country1Exists = false;
-		for  (Address address : team2Contact.getAddresses()){
-			if (street1.equals(address.getStreet())){
-				street1Exists = true;
-			}
-			if (street3.equals(address.getStreet())){
-				street3Exists = true;
-			}
-			if (Country.ARGENTINAARGENTINEREPUBLIC() == address.getCountry()){
-				country1Exists = true;
-			}
-		}
-		Assert.assertTrue("Street1 must be one of the streets in team2's addresses", street1Exists);
-		Assert.assertTrue("Street3 must be one of the streets in team2's addressesss", street3Exists);
-		Assert.assertTrue("Argentina must be one of the countries in team2's addresses", country1Exists);
 
 		//Person
 		Institution institution1 = Institution.NewInstance();

@@ -11,13 +11,12 @@ package eu.etaxonomy.cdm.persistence.dao.molecular;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -39,17 +38,18 @@ public interface IAmplificationDao extends IAnnotatableDao<Amplification>{
      *
      * @param queryString the query string to filter by
      * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-     * @param criteria extra restrictions to apply
+     * @param filter a list of filters to apply to the query (can be null or empty)
+     *
      * @return a count of instances of type T matching the queryString
      */
-    public long countByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria);
+    public long countByTitle(String queryString, MatchMode matchmode, List<EntityFilter<Amplification>> filter);
 
     /**
     * Return a List of {@link Amplification}s matching the given query string, optionally with a particular MatchMode
     *
     * @param queryString the query string to filter by
     * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-    * @param criteria extra restrictions to apply
+    * @param filter a list of filters to apply to the query (can be null or empty)
     * @param pageSize The maximum number of rights returned (can be null for all rights)
     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
@@ -59,6 +59,6 @@ public interface IAmplificationDao extends IAnnotatableDao<Amplification>{
     *            authorTeam.persistentTitleCache
     * @return a List of instances of type T matching the queryString
     */
-    public List<Amplification> findByTitle(String queryString, MatchMode matchmode, List<Criterion> criteria,
+    public List<Amplification> findByTitle(String queryString, MatchMode matchmode, List<EntityFilter<Amplification>> filter,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 }

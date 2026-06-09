@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.term;
 import java.beans.Transient;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -24,7 +25,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;

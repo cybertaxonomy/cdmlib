@@ -290,7 +290,7 @@ public abstract class MarkupImportBase  {
 			String message = "Tried to save a null object.";
 			fireWarningEvent(message, "--location ?? --", 6,1);
 		} else if (cdmBase.isInstanceOf(TaxonBase.class)){
-			docImport.getTaxonService().saveOrUpdate((TaxonBase<?>)cdmBase);
+			docImport.getTaxonService().saveOrUpdate((TaxonBase)cdmBase);
 		}else if (cdmBase.isInstanceOf(Classification.class)){
 			docImport.getClassificationService().saveOrUpdate((Classification)cdmBase);
 		}else if (cdmBase.isInstanceOf(PolytomousKey.class)){

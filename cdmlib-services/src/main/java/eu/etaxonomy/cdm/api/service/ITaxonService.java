@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.dto.TaxonFindDto;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
@@ -60,10 +62,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 
@@ -767,10 +767,6 @@ public interface ITaxonService
     /**
      * Returns the TaxonBase with the given UUID
      * using the given match mode and initialization strategy
-     *
-     * @param uuid
-     * @param propertyPaths
-     * @return
      */
     public TaxonBase findTaxonByUuid(UUID uuid, List<String> propertyPaths);
 

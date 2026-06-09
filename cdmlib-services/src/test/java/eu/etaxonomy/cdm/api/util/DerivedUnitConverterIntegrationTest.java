@@ -136,13 +136,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-       // using empty database
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

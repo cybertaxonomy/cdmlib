@@ -1214,7 +1214,7 @@ public class BerlinModelTransformer {
 	}
 
 
-	public static Integer taxonBase2statusFk (TaxonBase<?> taxonBase){
+	public static Integer taxonBase2statusFk (TaxonBase taxonBase){
 		if (taxonBase == null){return null;}
 		if (taxonBase.isInstanceOf(Taxon.class)){
 			return T_STATUS_ACCEPTED;

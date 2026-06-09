@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
@@ -37,7 +36,6 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGroup;
 
@@ -68,7 +66,7 @@ import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGro
 @Configurable
 @HomotypicSynonymsShouldBelongToGroup(groups = Level3.class)
 public class Synonym
-        extends TaxonBase<ITaxonCacheStrategy<Synonym>>
+        extends TaxonBase
         implements IHasCredits, IHasLink {
 
     private static final long serialVersionUID = 6977221584815363620L;

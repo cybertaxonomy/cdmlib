@@ -30,21 +30,19 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 
-public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
+public class TaxonBaseDefaultCacheStrategy
         extends StrategyBase
-        implements ITaxonCacheStrategy<T> {
+        implements ITaxonCacheStrategy {
 
     private static final long serialVersionUID = 5769890979070021350L;
 
     final static UUID uuid = UUID.fromString("931e48f0-2033-11de-8c30-0800200c9a66");
 
-    @SuppressWarnings("rawtypes")
     static TaxonBaseDefaultCacheStrategy instance;
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public final static <T extends TaxonBase> TaxonBaseDefaultCacheStrategy<T> INSTANCE() {
+    public final static TaxonBaseDefaultCacheStrategy INSTANCE() {
         if (instance == null) {
-            instance = new TaxonBaseDefaultCacheStrategy<T>();
+            instance = new TaxonBaseDefaultCacheStrategy();
         }
         return instance;
     }
@@ -55,12 +53,12 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 	}
 
     @Override
-    public String getTitleCache(T taxonBase) {
+    public String getTitleCache(TaxonBase taxonBase) {
         return getTitleCache(taxonBase, null);
     }
 
     @Override
-    public List<TaggedText> getTaggedTitle(T taxonBase) {
+    public List<TaggedText> getTaggedTitle(TaxonBase taxonBase) {
         if (taxonBase == null){
             return null;
         }
@@ -120,7 +118,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
-    private boolean isMisapplication(T taxonBase) {
+    private boolean isMisapplication(TaxonBase taxonBase) {
         if (! taxonBase.isInstanceOf(Taxon.class)){
             return false;
         }else{
@@ -128,7 +126,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         }
     }
 
-    private List<TaggedText> getNameTags(T taxonBase, boolean useNameCache) {
+    private List<TaggedText> getNameTags(TaxonBase taxonBase, boolean useNameCache) {
         List<TaggedText> tags = new ArrayList<>();
         TaxonName name = CdmBase.deproxy(taxonBase.getName());
 
@@ -158,7 +156,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
-    private List<TaggedText> getSecNameUsedInSourceTags(T taxonBase) {
+    private List<TaggedText> getSecNameUsedInSourceTags(TaxonBase taxonBase) {
         List<TaggedText> tags = new ArrayList<>();
         if (taxonBase.getSecSource()!=null && taxonBase.getSecSource().getNameUsedInSource() != null) {
             //if names are equal there is no need for now to show the "sub" name
@@ -174,7 +172,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
      * Handle all data related to the secundum part of a taxon. This includes also
      * the appended phrase field (beside the
      */
-    public List<TaggedText> getSecundumTags(T taxonBase, boolean isMisapplication) {
+    public List<TaggedText> getSecundumTags(TaxonBase taxonBase, boolean isMisapplication) {
         List<TaggedText> tags = new ArrayList<>();
 
         Reference sec = taxonBase.getSec();
@@ -243,7 +241,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
     }
 
     @Override
-    public String getTitleCache(T taxonBase, HTMLTagRules htmlTagRules) {
+    public String getTitleCache(TaxonBase taxonBase, HTMLTagRules htmlTagRules) {
         List<TaggedText> tags = getTaggedTitle(taxonBase);
         if (tags == null){
             return null;

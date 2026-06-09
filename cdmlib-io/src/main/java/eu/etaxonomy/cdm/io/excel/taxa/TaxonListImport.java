@@ -93,7 +93,7 @@ public class TaxonListImport extends TaxonExcelImportBase {
                 if (taxon.getName().isGenus()){
                     makeParent(state, null, taxon);
                 }else{
-                    TaxonBase<?> parent =  state.getTaxonMap().get(taxon.getName().getGenusOrUninomial());
+                    TaxonBase parent =  state.getTaxonMap().get(taxon.getName().getGenusOrUninomial());
                     if (parent instanceof Taxon){
                         Taxon parentTaxon = (Taxon)parent;
                         makeParent(state, parentTaxon, taxon);

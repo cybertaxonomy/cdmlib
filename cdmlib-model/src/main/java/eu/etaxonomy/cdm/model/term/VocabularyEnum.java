@@ -92,6 +92,7 @@ public enum VocabularyEnum {
 	DnaQualityType("55746f7b-78a8-4e5f-8e70-ee9ce047c835", OrderedTerm.class, 0),
 	TaxonNodeAgentRelationType("0aa8e0c6-c7b5-42dd-91b7-0bd273a64b2c", DefinedTerm.class, 0),
 	OccurrenceStatusType("6d06b750-4f48-42de-85b5-220256e4e5ba", DefinedTerm.class, 0),
+	IucnMainCategories("e69c75ad-f152-4f27-8e12-757eb82059e7", State.class, 1),
 	;
 
 	private UUID uuid;
@@ -114,8 +115,9 @@ public enum VocabularyEnum {
 	/**
 	 * @return the Class of a specific term vocabulary
 	 */
-	public Class<? extends DefinedTermBase<?>> getClazz(){
-		return clazz;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    public <T extends DefinedTermBase<T>> Class<T> getClazz(){
+		return (Class)clazz;  //for field clazz it is impossible to use generics in Java
 	}
 
 	public static VocabularyEnum getVocabularyEnumByUuid(UUID uuid){

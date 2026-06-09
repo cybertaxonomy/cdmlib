@@ -13,11 +13,12 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
@@ -25,7 +26,6 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IAmplificationDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -53,12 +53,13 @@ public class AmplificationServiceImpl
     }
 
     @Override
-    public Pager<Amplification> findByLabelCache(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
-        long numberOfResults = dao.countByTitle(queryString, matchmode, criteria);
+    public Pager<Amplification> findByLabelCache(String queryString, MatchMode matchmode, List<EntityFilter<Amplification>> filter,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+        long numberOfResults = dao.countByTitle(queryString, matchmode, filter);
 
         List<Amplification> results = new ArrayList<Amplification>();
         if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) {
-               results = dao.findByTitle(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+               results = dao.findByTitle(queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
         }
 
         return new DefaultPagerImpl<Amplification>(pageNumber, numberOfResults, pageSize, results);

@@ -25,7 +25,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Store;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase;
 
 /**
  * workaround for enumerations
@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.Representation")
 @Audited
-public class Representation extends LanguageStringBase {
+public class Representation extends AnnotatableLanguageStringBase {
 
     private static final long serialVersionUID = -4202420199587324532L;
     private static final Logger logger = LogManager.getLogger();
@@ -163,7 +163,7 @@ public class Representation extends LanguageStringBase {
      * a new instance that differs only slightly from <i>this</i> Representation by
      * modifying only some of the attributes.
      *
-     * @see eu.etaxonomy.cdm.model.common.LanguageStringBase#clone()
+     * @see eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase#clone()
      * @see java.lang.Object#clone()
      */
     @Override

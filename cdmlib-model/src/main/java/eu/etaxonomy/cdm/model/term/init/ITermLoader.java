@@ -21,9 +21,10 @@ public interface ITermLoader {
 
 	/**
 	 * Loads the terms for the DefinedTermBase subclass defined by vocType.
-	 * The terms will be loadded into the terms map and
+	 * The terms will be loaded into the terms map and
 	 */
-	public <T extends DefinedTermBase<T>> TermVocabulary<T> loadTerms(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms);
+	public <T extends DefinedTermBase<T>> TermVocabulary<T> loadTerms(
+	        VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms);
 
 	/**
 	 * Unload all static terms. After calling this method all static methods returning terms in DefinedTermBase subclasses

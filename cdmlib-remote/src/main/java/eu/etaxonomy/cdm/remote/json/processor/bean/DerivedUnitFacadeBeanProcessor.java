@@ -34,9 +34,6 @@ public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<Derive
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#processBeanSecondStep(java.lang.Object, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-	 */
 	@Override
 	public JSONObject processBeanSecondStep(DerivedUnitFacade bean,
 			JSONObject json, JsonConfig jsonConfig) {
@@ -92,7 +89,6 @@ public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<Derive
 			} catch (MethodNotSupportedByDerivedUnitTypeException e) {
 				/* Skip - Only supported by specimen and fossils */
 			}
-			addJsonElement(json, jsonConfig, "storedUnder", bean.getStoredUnder());
 			try {
 				addJsonElement(json, jsonConfig, "exsiccatum", bean.getExsiccatum());
 			} catch (MethodNotSupportedByDerivedUnitTypeException e) {
@@ -105,10 +101,6 @@ public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<Derive
 			}
 		}
 
-
-
 		return json;
 	}
-
-
 }

@@ -169,7 +169,7 @@ public class DistributionImport
 		try {
     		// get the matching names from the DB
     		//List<TaxonName> taxonNames = getNameService().findByTitle(config);
-    		List<TaxonName> taxonNames = getNameService().findByName(null, taxonName, null, null, null, null,null,null).getRecords();
+    		List<TaxonName> taxonNames = getNameService().findByName(null, taxonName, null, null, null, null, null, null).getRecords();
     		if (taxonNames.isEmpty()) {
     			logger.error("Taxon name '" + taxonName + "' not found in DB");
     		} else {

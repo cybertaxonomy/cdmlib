@@ -14,9 +14,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author pplitzner

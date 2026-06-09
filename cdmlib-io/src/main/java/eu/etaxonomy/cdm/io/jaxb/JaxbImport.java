@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -114,8 +114,8 @@ public class JaxbImport
 		List<TermTree> featureTrees;
 		List<TermNode> termNodes;
 		List<Media> media;
-		List<LanguageStringBase> languageData;
-		List<TermVocabulary<DefinedTermBase>> termVocabularies;
+		List<AnnotatableLanguageStringBase> languageData;
+		List<TermVocabulary<?>> termVocabularies;
 		List<HomotypicalGroup> homotypicalGroups;
 
 		TransactionStatus txStatus = startTransaction();
@@ -137,11 +137,11 @@ public class JaxbImport
 				logger.info("Users: " + (users = dataSet.getUsers()).size());
 				for (User user : users) {
 
-					List<User> usersList = getUserService().listByUsername(user.getUsername(),null, null, null, null, null, null);
-					if (usersList.isEmpty()){
+					User existingUser = getUserService().loadUserByUsernameAsUser(user.getUsername());
+					if (existingUser == null){
 						getUserService().save(user);
 					}else{
-//						User existingUser = usersList.get(0);
+//						User existingUser = user;
 //						user.setId(existingUser.getId());
 //						getUserService().merge(user);
 						//merging does not yet work because of #4102
@@ -356,7 +356,7 @@ public class JaxbImport
 	}
 
 	private boolean saveTermVocabularies(
-			List<TermVocabulary<DefinedTermBase>> termVocabularies) {
+			List<TermVocabulary<?>> termVocabularies) {
 
 		boolean success = true;
 		logger.info("Term vocabularies: " + termVocabularies.size());

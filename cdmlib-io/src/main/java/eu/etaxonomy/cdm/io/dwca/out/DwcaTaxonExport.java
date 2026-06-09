@@ -180,7 +180,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
         }
     }
 
-	private void handleTaxonBase(DwcaTaxExportState state, DwcaTaxonRecord record, TaxonBase<?> taxonBase, TaxonName name,
+	private void handleTaxonBase(DwcaTaxExportState state, DwcaTaxonRecord record, TaxonBase taxonBase, TaxonName name,
 			Taxon acceptedTaxon, Taxon parent, TaxonName basionym, Classification classification,
 			IRelationshipType relType) {
 
@@ -439,7 +439,7 @@ public class DwcaTaxonExport extends DwcaDataExportBase {
 	 * @param taxon
 	 * @param name
 	 */
-	private void handleNomStatus(DwcaTaxonRecord record, TaxonBase<?> taxon,
+	private void handleNomStatus(DwcaTaxonRecord record, TaxonBase taxon,
 			INonViralName name) {
 		int nStatus = name.getStatus().size();
 		if (nStatus > 0){

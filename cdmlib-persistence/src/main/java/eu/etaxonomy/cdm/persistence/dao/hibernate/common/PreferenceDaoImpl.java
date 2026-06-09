@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.model.metadata.IPreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.common.CdmPreferenceCache;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
 
 /**

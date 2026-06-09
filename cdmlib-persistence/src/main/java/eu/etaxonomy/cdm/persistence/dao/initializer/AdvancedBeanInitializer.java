@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 /**
  * Bean initializer with improved performance.
@@ -157,11 +156,6 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
         bulkLoadLazies(node);
     }
 
-    /**
-     * @param initToMany
-     * @param beans
-     * @param clazz
-     */
     private void initializeNodeWildcardOld(boolean initToMany,
             Map<Class<?>, Set<Object>> beans, Class<?> clazz) {
         for (Object bean : beans.get(clazz)){
@@ -525,8 +519,8 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
 							" FROM %s as oc LEFT JOIN FETCH oc.%s as col %s" +
 							" WHERE oc.id IN (:idSet) ";
 
-					if (collectionEntitiyType instanceof ParameterizedTypeImpl){
-					    collectionEntitiyType = ((ParameterizedTypeImpl)collectionEntitiyType).getRawType();
+					if (collectionEntitiyType instanceof ParameterizedType){
+					    collectionEntitiyType = ((ParameterizedType)collectionEntitiyType).getRawType();
 					}
 					AutoInit autoInit = addAutoinitFetchLoading((Class<?>)collectionEntitiyType, "col");
                     hql = String.format(hql, ownerClazz.getSimpleName(), param,

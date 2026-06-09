@@ -14,7 +14,6 @@ import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
@@ -825,6 +824,25 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     	Assert.assertEquals("<b><i>Abies alba</i></b> <i>L.</i>", strategy.getTitleCache(speciesName, rules));
     	rules = new HTMLTagRules().addRule(TagEnum.name, "i").addRule(TagEnum.name, "b").addRule(TagEnum.authors, "b");
     	Assert.assertEquals("<b><i>Abies alba</i> L.</b>", strategy.getTitleCache(speciesName, rules));
+    }
+
+    @Test //#10924
+    public void testAutonymForVariety(){
+        IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
+        name.setGenusOrUninomial("Euphorbia");
+        name.setSpecificEpithet("atropurpurea");
+        name.setInfraSpecificEpithet("atropurpurea");
+        Team combTeam = Team.NewTitledInstance("Combauthor", "Combauthor");
+        name.setCombinationAuthorship(combTeam);
+        Assert.assertEquals("", "Euphorbia atropurpurea Combauthor var. atropurpurea", name.getTitleCache());
+
+        name.setAutonymFlag(false);
+        Assert.assertEquals("", "Euphorbia atropurpurea var. atropurpurea Combauthor", name.getTitleCache());
+
+        name.setRank(Rank.SUBSPECIES());
+        Assert.assertEquals("The autonym flag is valid only for names below rank subspecies",
+                "Euphorbia atropurpurea Combauthor subsp. atropurpurea", name.getTitleCache());
+
     }
 
     @Test //#2888

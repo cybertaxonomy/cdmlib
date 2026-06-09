@@ -6,7 +6,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.58.0-SNAPSHOT</version>
+    <version>5.60.0-SNAPSHOT</version>
 	<relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -62,6 +62,11 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
     </dependency>
+    
+<!--    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+    </dependency>-->
     <dependency>
         <!-- use as replacement for commons-logging used in httpclient but excluded, see parent pom. Further info: (https://www.slf4j.org/legacy.html) --> 
         <groupId>org.slf4j</groupId>
@@ -87,6 +92,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
+      <!--<artifactId>doxia-module-xhtml5</artifactId>-->
       <artifactId>doxia-module-xhtml</artifactId>
     </dependency>
 

@@ -12,12 +12,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStreamReader;
-import eu.etaxonomy.cdm.common.URI;
 
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
-import eu.etaxonomy.cdm.model.common.Annotation;
 
 public class AnnotationTest {
 
@@ -34,12 +33,5 @@ public class AnnotationTest {
 
 			assertNotNull("annotatableEntity must have annotations",annotatableEntity.getAnnotations());
 			assertEquals("There should be one annotation",1,annotatableEntity.getAnnotations().size());
-
-			Annotation annotation = annotatableEntity.getAnnotations().iterator().next();
-//			assertEquals("object must also be the annotated object",annotatableEntity,annotation.getAnnotatedObj());
-			assertNotNull("Annotation must have annotations",annotation.getAnnotations());
-			assertEquals("There should be one annotation",1,annotation.getAnnotations().size());
-			Annotation annotationTwo = annotation.getAnnotations().iterator().next();
-//			assertEquals("Annotation should be the annotated object",annotation,annotationTwo.getAnnotatedObj());
 	    }
 }

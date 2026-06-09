@@ -15,14 +15,14 @@ import static org.junit.Assert.assertNotNull;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import org.hibernate.criterion.Criterion;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -45,18 +45,18 @@ public class UserDaoHibernateImplTest extends CdmIntegrationTest {
 	public void findByUsername(){
 		String queryString = "test";
 		MatchMode matchmode = MatchMode.ANYWHERE;
-		List<Criterion> criteria = null;
+		List<EntityFilter<User>> filter = null;
 		Integer pageSize = null;
 		Integer pageNumber = null;
 		List<OrderHint> orderHints = null;
 		List<String> propertyPaths = null;
-		List<User> list = userDao.findByUsername(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+		List<User> list = userDao.findByUsername(queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
 
 		assertNotNull("A list should be returned", list);
 		assertEquals("3 users should be returned", 3, list.size());
 
 		pageSize = 2;
-		list = userDao.findByUsername(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+		list = userDao.findByUsername(queryString, matchmode, filter, pageSize, pageNumber, orderHints, propertyPaths);
 		assertNotNull("A list should be returned", list);
 		assertEquals("2 users should be returned", 2, list.size());
 	}

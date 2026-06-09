@@ -108,7 +108,7 @@ public class TaxonNodeByRankAndNameComparator
         }
     }
 
-    public String getTaxonTitle(TaxonBase<?> taxon, TaxonNode node) {
+    public String getTaxonTitle(TaxonBase taxon, TaxonNode node) {
         return (taxon == null) ? node.getUuid().toString(): taxon.getTitleCache();
     }
 }

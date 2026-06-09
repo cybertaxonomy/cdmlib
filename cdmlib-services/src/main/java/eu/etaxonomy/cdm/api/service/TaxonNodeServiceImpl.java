@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
@@ -84,7 +85,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
@@ -219,7 +219,7 @@ public class TaxonNodeServiceImpl
     }
 
     @Override
-    public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase<?> taxonBase) {
+    public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase taxonBase) {
         return dao.getParentTaxonNodeDtoForRank(classification, rank, taxonBase);
     }
 
@@ -632,9 +632,7 @@ public class TaxonNodeServiceImpl
 	            		    taxonService.saveOrUpdate(taxon);
 	            		    saveOrUpdate(taxonNode);
 
-			            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
-			            	configNew.setClassificationUuid(classification.getUuid());
-			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, classification.getUuid());
+			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), config, classification.getUuid());
 			            	if (!resultTaxon.isOk()){
                                 result.addExceptions(resultTaxon.getExceptions());
                                 result.setStatus(resultTaxon.getStatus());
@@ -651,10 +649,9 @@ public class TaxonNodeServiceImpl
 	            	if (taxon != null){
 	            		taxon.removeTaxonNode(taxonNode);
 	            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
-			            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
 			            	saveOrUpdate(taxonNode);
 			            	taxonService.saveOrUpdate(taxon);
-			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, classification.getUuid());
+			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), config, classification.getUuid());
 
                             if (!resultTaxon.isOk()){
                                 result.addExceptions(resultTaxon.getExceptions());
@@ -674,14 +671,7 @@ public class TaxonNodeServiceImpl
 
 	        }
         }
-        /*if (classification != null){
-            result.addUpdatedObject(classification);
-        	DeleteResult resultClassification = classService.delete(classification);
-        	 if (!resultClassification.isOk()){
-                 result.addExceptions(resultClassification.getExceptions());
-                 result.setStatus(resultClassification.getStatus());
-             }
-        }*/
+
         return result;
     }
 
@@ -796,12 +786,12 @@ public class TaxonNodeServiceImpl
 
 
     @Override
-    public List<TaxonNode> listAllNodesForClassification(Classification classification, Integer start, Integer end) {
-        return dao.getTaxonOfAcceptedTaxaByClassification(classification, start, end);
+    public List<TaxonNode> listAllNodesForClassification(Classification classification, Integer pageSize, Integer pageNumber) {
+        return dao.getTaxonOfAcceptedTaxaByClassification(classification, pageSize, pageNumber);
     }
 
     @Override
-    public int countAllNodesForClassification(Classification classification) {
+    public long countAllNodesForClassification(Classification classification) {
         return dao.countTaxonOfAcceptedTaxaByClassification(classification);
     }
 
@@ -919,7 +909,6 @@ public class TaxonNodeServiceImpl
         }
 
         monitor.done();
-//        ((RemotingProgressMonitor)monitor).setResult(result);
         return result;
     }
 

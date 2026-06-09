@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.springframework.security.core.Authentication;
 
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
@@ -44,7 +45,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dto.HomotypicGroupDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -168,7 +168,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @param classification - according to the given classification the TaxonNodes are filtered.
 	 * @return the count result
 	 */
-	public int countAllNodesForClassification(Classification classification);
+	public long countAllNodesForClassification(Classification classification);
 
     public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid, int movingType,
             SecReferenceHandlingEnum secHandling, UUID secUuid, PublishEnumForMoving publishBehaviour);
@@ -263,7 +263,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
 	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name);
 
-	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase<?> taxonBase);
+	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase taxonBase);
 
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
             Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode, DistributionDescription descHandling);

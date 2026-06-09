@@ -15,8 +15,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
-
+import eu.etaxonomy.cdm.api.filter.EntityFilter;
+import eu.etaxonomy.cdm.api.filter.MatchMode;
+import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -37,10 +38,8 @@ import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IPublishableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
@@ -101,7 +100,7 @@ public interface ITaxonDao
      * @return a count of TaxonBase instances
      */
     public long countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet,
-            String infraspecificEpithet, String authorshipCache, Rank rank);
+            String infraspecificEpithet, String authorshipCache, Rank rank, EnumSet<NomenclaturalCode> nameTypes);
 
     /**
      * Returns a list of TaxonBase instances where the
@@ -157,32 +156,21 @@ public interface ITaxonDao
      *
      * @param uuid
      * 			The uuid of the taxon requested
-     * @param criteria
-     * 			Custom criteria to be added to the default list of applied criteria.
+     * @param filter
+     * 			Custom filter to be added to the default list of applied criteria.
      * @param propertyPaths
      *
      * @return
      */
-    public TaxonBase findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths);
+    public TaxonBase findByUuid(UUID uuid, List<EntityFilter<TaxonBase>> filter, List<String> propertyPaths);
 
     /**
      * Returns a list of Taxon entities corresponding to the given uuid list.
-     * @param uuids
-     * @param criteria
-     * @param propertyPaths
-     * @return
      */
-    public List<? extends TaxonBase> findByUuids(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths);
+    public List<? extends TaxonBase> findByUuids(List<UUID> uuids, List<EntityFilter<TaxonBase>> filter, List<String> propertyPaths);
 
     /**
-     * @param queryString
-     * @param classification
-     * @param matchMode
-     * @param namedAreas
-     * @param pageSize
-     * @param pageNumber
-     * @param propertyPaths
-     * @return A List matching Taxa
+     * @return A list of matching taxa
      */
     public List<Taxon> getTaxaByCommonName(String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
@@ -191,14 +179,10 @@ public interface ITaxonDao
     /**
      * Counts the number of synonyms
      * @param onlyAttachedToTaxon if <code>true</code> only those synonyms being attached to
-     * an accepted taxon are counted
+     *                            an accepted taxon are counted
      * @return the number of synonyms
      */
     public long countSynonyms(boolean onlyAttachedToTaxon);
-
-    public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted);
-
-    public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria);
 
     /**
      * Returns a count of the TaxonRelationships (of where relationship.type ==
@@ -216,6 +200,7 @@ public interface ITaxonDao
      */
     public long countTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
             boolean includeUnpublished, Direction direction);
+
     public long countTaxonRelationships(Taxon taxon, Set<TaxonRelationshipType> types,
             boolean includeUnpublished, Direction direction);
 
@@ -280,16 +265,6 @@ public interface ITaxonDao
      * @return a {@link List} of {@link Synonym} instances
      */
     public List<Synonym> getSynonyms(Taxon taxon, SynonymType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-    /**
-     * Returns a count of the synonyms (where relationship.type == type,
-     * if this argument is supplied) which do have an accepted taxon.
-     *
-     * @param synonym The synonym that is relatedFrom
-     * @param type The type of Synonym (can be null)
-     * @return the number of Synonym instances
-     */
-    public long countSynonyms(Synonym synonym, SynonymType type);
 
     public long countTaxaByCommonName(String searchString,
             Classification classification, MatchMode matchMode,
