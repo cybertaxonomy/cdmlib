@@ -21,7 +21,8 @@ public enum ExportType {
         CSV_PRINT,
         CSV,
         JAXB,
-        SDD
+        SDD,
+        PRINT_PUBLICATION
         ;
 
 }
