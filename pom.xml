@@ -173,17 +173,6 @@
       <id>EditRepository</id>
       <url>https://cybertaxonomy.org/mavenrepo/</url>
     </repository>
-    <!-- apache incubating repository, was used for jena-tdb -->
- <!--   <repository>
-      <id>ApacheIncubating</id>
-      <url>https://people.apache.org/repo/m2-incubating-repository/</url>
-    </repository> -->
-    <!-- was neccessary for hibernate-envers -->
-<!--    <repository>
-      <id>jboss-repository</id>
-      <name>JBoss Repository</name>
-      <url>https://repository.jboss.org</url>
-    </repository>  -->
     <!-- required for org.geotools:gt-opengis/gt-referencing/gt-epsg-wkt/gt-main -->    
     <repository>
     	<id>OSGeo Repository</id>
@@ -207,7 +196,7 @@
             </activeRecipes>
           </configuration>
           <dependencies>
-          <dependency>
+            <dependency>
               <groupId>org.openrewrite.recipe</groupId>
               <artifactId>rewrite-migrate-java</artifactId>
               <version>3.34.0</version>
@@ -218,8 +207,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-		<!-- TODO #6407#9919 upgrading to 3.x leads to test failures in model etc. -->
-    <!--   <version>3.10.1</version>  --> 
         <version>3.13.0</version> 
         <configuration>
           <source>${java.codelevel}</source>
