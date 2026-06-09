@@ -42,8 +42,8 @@
     <doxia.version>1.11.1</doxia.version>
     <!--<doxia.version>2.1.0</doxia.version> -->               <!-- checked 2021-12 -->
     <poi.version>5.5.1</poi.version>                    <!-- checked 2026-05 -->
-    <jackson.version>2.21.3</jackson.version>           <!-- checked 2022-05 -->
-    <jackson.annotations.version>2.21</jackson.annotations.version>
+    <jackson.version>2.14.2</jackson.version>           <!-- temporarily reduced from 2.21 to check if remote-webapp runs with lower version -->
+    <jackson.annotations.version>2.14.3</jackson.annotations.version>
 	<!-- CAUTION when upgrading, 1.8x requires another log4j binding: https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html -->
     <slf4j.version>1.7.36</slf4j.version>               <!-- checked 2022-06 -->
 	<log4j.version>2.25.4</log4j.version>
