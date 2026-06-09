@@ -56,7 +56,7 @@ public class PrintPubExportState extends TaxonTreeExportStateBase<PrintPubExport
 	private final PrintPubExportResultProcessor processor;
 	private ExportResult result;
 
-	private TaxonBase<?> currentTaxon;
+	private TaxonBase currentTaxon;
 
 	// ======================
 	// Rendering / bookkeeping helpers
@@ -106,11 +106,11 @@ public class PrintPubExportState extends TaxonTreeExportStateBase<PrintPubExport
 	// Taxon traversal context
 	// ======================
 
-	public TaxonBase<?> getCurrentTaxon() {
+	public TaxonBase getCurrentTaxon() {
 		return currentTaxon;
 	}
 
-	public void setCurrentTaxon(TaxonBase<?> currentTaxon) {
+	public void setCurrentTaxon(TaxonBase currentTaxon) {
 		this.currentTaxon = currentTaxon;
 	}
 
