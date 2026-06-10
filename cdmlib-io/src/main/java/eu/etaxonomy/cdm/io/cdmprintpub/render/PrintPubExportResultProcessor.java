@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.io.cdmprintpub.render;
 
 import java.io.File;
-import java.io.FileOutputStream;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 import eu.etaxonomy.cdm.io.cdmprintpub.element.IPrintPubDocumentElement;
@@ -57,24 +56,24 @@ public class PrintPubExportResultProcessor {
 			byte[] data = interpreter.getResultBytes();
 			String fileName = interpreter.getTimestampedFileName();
 
-			state.getResult().putExportData(fileName, data);
+			state.getResult().addExportData(data);
 			state.getResult().setExportType(ExportType.PRINT_PUBLICATION);
 
-			File destinationDir = state.getConfig().getDestination();
+//			File destinationDir = state.getConfig().getDestination();
 
-			if (destinationDir != null) {
-				if (!destinationDir.exists()) {
-					destinationDir.mkdirs();
-				}
-
-				File outputFile = new File(destinationDir, fileName);
-
-				try (FileOutputStream fos = new FileOutputStream(outputFile)) {
-					fos.write(data);
-				}
-			} else {
-				state.getResult().addError("No destination directory configured. File could not be written.");
-			}
+//			if (destinationDir != null) {
+//				if (!destinationDir.exists()) {
+//					destinationDir.mkdirs();
+//				}
+//
+//				File outputFile = new File(destinationDir, fileName);
+//
+//				try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+//					fos.write(data);
+//				}
+//			} else {
+//				state.getResult().addError("No destination directory configured. File could not be written.");
+//			}
 
 		} catch (Exception e) {
 			state.getResult().addException(e, "Error rendering/writing document: " + e.getMessage());
