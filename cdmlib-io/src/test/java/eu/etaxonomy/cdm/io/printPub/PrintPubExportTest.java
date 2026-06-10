@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author k.luther
- * @since 17.01.2018
+ * @since 10.06.2026
  */
 public class PrintPubExportTest
         extends TaxonTreeExportTestBase<PrintPubExportConfigurator,PrintPubExportState> {
@@ -46,7 +46,6 @@ public class PrintPubExportTest
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testGeneralExport(){
-
 
       //config + invoke
         PrintPubExportConfigurator config = newConfigurator();
@@ -71,11 +70,7 @@ public class PrintPubExportTest
 //      }
         Assert.assertTrue(result.getExportType().equals(ExportType.PRINT_PUBLICATION));
         //test export type
-
-
-
     }
-
 
     @Override
     protected PrintPubExportConfigurator newConfigurator() {

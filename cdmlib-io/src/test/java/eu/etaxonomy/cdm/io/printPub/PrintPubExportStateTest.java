@@ -15,8 +15,8 @@ import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportConfigurator;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 
 /**
- * @author muellera
- * @since 11.07.2024
+ * @author k.luther
+ * @since 10.06.2026
  */
 public class PrintPubExportStateTest {
 

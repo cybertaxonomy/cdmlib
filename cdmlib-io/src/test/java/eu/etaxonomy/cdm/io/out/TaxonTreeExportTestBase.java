@@ -329,7 +329,6 @@ public abstract class TaxonTreeExportTestBase
         ExportDataWrapper<?> exportData = result.getExportData();
         Assert.assertNotNull("Export data must not be null", exportData);
 
-        @SuppressWarnings("unchecked")
         Object data = exportData.getExportData();
 
         return data;
