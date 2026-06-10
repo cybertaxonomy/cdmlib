@@ -112,19 +112,13 @@ public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
                 boolean doIndent = false;
 
                 // --- choose prefix ---
-                if (first) {
-                    // group header
-                    if (syn.forceDashMarker) {
-                        line.append("- ");
-                    } else if (group.isHomotypic) {
-                        line.append("≡ ");
-                    } else {
-                        line.append("= ");
-                    }
-                    first = false;
+                if (syn.forceDashMarker) {
+                    line.append("- ");
+                } else if (first) {
+                    line.append("= ");
                 } else {
                     // members of the same homotypic group
-                    line.append("- ");
+                    line.append("≡ ");
                     doIndent = true;
                 }
 
