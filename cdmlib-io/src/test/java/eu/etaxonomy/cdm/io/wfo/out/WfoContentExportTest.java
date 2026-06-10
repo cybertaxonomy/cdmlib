@@ -85,7 +85,7 @@ public class WfoContentExportTest
         config.setFamilyStr("family");
         config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(node4Uuid));
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
 
         //counts and result lists
         List<String> taxonResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
@@ -127,7 +127,7 @@ public class WfoContentExportTest
         WfoContentExportConfigurator config = newConfigurator();
         config.getTaxonNodeFilter().setIncludeUnpublished(true);
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
 
         //test counts
         List<String> taxonResult = getStringList(data, WfoContentExportTable.CLASSIFICATION);
@@ -183,7 +183,7 @@ public class WfoContentExportTest
         //config+invoke
         WfoContentExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
         Assert.assertTrue(result.getExportType().equals(ExportType.COLDP)); //test export type
 
         //test counts

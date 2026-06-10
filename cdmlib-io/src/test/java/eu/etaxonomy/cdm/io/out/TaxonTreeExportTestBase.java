@@ -316,11 +316,11 @@ public abstract class TaxonTreeExportTestBase
         return new String(tableByte);
     }
 
-    protected Map<String, byte[]> checkAndGetData(ExportResult result) {
+    protected Object checkAndGetData(ExportResult result) {
         return checkAndGetData(result, 0, 0, 0);
     }
 
-    protected Map<String, byte[]> checkAndGetData(ExportResult result, int countException, int countError, int countWarning) {
+    protected Object checkAndGetData(ExportResult result, int countException, int countError, int countWarning) {
 
         //test exceptions
         testExceptionsErrorsWarnings(result, countException, countError, countWarning);
@@ -330,10 +330,12 @@ public abstract class TaxonTreeExportTestBase
         Assert.assertNotNull("Export data must not be null", exportData);
 
         @SuppressWarnings("unchecked")
-        Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
+        Object data = exportData.getExportData();
 
         return data;
     }
+
+
 
     protected void print(List<String> resultsToPrint) {
         System.out.println(resultsToPrint);
