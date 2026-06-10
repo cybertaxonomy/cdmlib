@@ -116,6 +116,7 @@ public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
                     line.append("- ");
                 } else if (first) {
                     line.append("= ");
+                    first = false;
                 } else {
                     // members of the same homotypic group
                     line.append("≡ ");
