@@ -40,9 +40,6 @@ public class PrintPubExportTest
         createFullTestDataSet();
     }
 
-
-
-
     @Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
