@@ -235,7 +235,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @Ignore
+    @Ignore //TODO remove ignore!
     public void testLongFile() {
 
         RisReferenceImportConfigurator configurator = getConfigurator("Acantholimon.ris");
