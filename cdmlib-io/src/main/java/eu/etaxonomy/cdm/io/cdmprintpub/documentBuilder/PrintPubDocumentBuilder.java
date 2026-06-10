@@ -14,11 +14,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportConfigurator.FeatureSortMode;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 import eu.etaxonomy.cdm.io.cdmprintpub.compare.IPrintPubFactOrderStrategy;
 import eu.etaxonomy.cdm.io.cdmprintpub.compare.IPrintPubFeatureOrderStrategy;
@@ -163,6 +165,18 @@ public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
         // Group facts by featureUuid + normalized label
         Map<PrintPubFeatureKey, List<PrintPubFactDTO>> groups = dto.facts.stream().collect(
                 Collectors.groupingBy(f -> new PrintPubFeatureKey(f.featureUuid, normalizeFactLabel(f.label))));
+
+        if (state.getConfig().getFeatureSortMode() == FeatureSortMode.FEATURE_TREE) {
+
+            Map<UUID, Integer> index = state.getFeatureOrderIndex();
+
+            if (index != null && !index.isEmpty()) {
+                groups.entrySet().removeIf(entry -> {
+                    UUID uuid = entry.getKey().getFeatureUuid();
+                    return uuid == null || !index.containsKey(uuid);
+                });
+            }
+        }
 
         // Sort the feature keys using chosen feature ordering
         List<PrintPubFeatureKey> keys = new ArrayList<>(groups.keySet());
