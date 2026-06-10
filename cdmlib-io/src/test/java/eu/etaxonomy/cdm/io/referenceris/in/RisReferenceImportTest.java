@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -63,13 +62,11 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 
 	@Test
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-	//@Ignore
     public void testShort() {
 	    RisReferenceImportConfigurator configurator = getConfigurator("RisReferenceImportTest-input.ris");
 		ImportResult result = defaultImport.invoke(configurator);
 		String report = result.createReport().toString();
 		Assert.assertTrue(report.length() > 0);
-//		System.out.println(report);
 
 		Integer expected = 2;
 		Assert.assertEquals(expected, result.getNewRecords(Reference.class));
@@ -235,6 +232,7 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testLongFile() {
 
         RisReferenceImportConfigurator configurator = getConfigurator("Acantholimon.ris");
