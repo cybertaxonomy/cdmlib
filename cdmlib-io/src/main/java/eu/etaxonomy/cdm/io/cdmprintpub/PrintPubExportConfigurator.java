@@ -76,6 +76,11 @@ public class PrintPubExportConfigurator
         return result;
     }
 
+    public static PrintPubExportConfigurator NewInstance() {
+        PrintPubExportConfigurator result = new PrintPubExportConfigurator(null);
+        return result;
+    }
+
     public PrintPubExportConfigurator(IExportTransformer transformer) {
         super(transformer);
         this.resultType = ExportResultType.BYTE_ARRAY;

@@ -126,7 +126,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 
 //************************* STATIC ***************************************************/
 
-	public static <ST  extends IoStateBase>  TaxonNodeOutStreamPartitioner NewInstance(
+	public static <ST  extends IoStateBase>  TaxonNodeOutStreamPartitioner<ST> NewInstance(
 	        ICdmApplication repository, ST state,
             TaxonNodeFilter filter, Integer partitionSize,
             IProgressMonitor parentMonitor, Integer parentTicks){
@@ -137,7 +137,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 		return taxonNodePartitioner;
 	}
 
-    public static <ST  extends IoStateBase> TaxonNodeOutStreamPartitioner NewInstance(
+    public static <ST  extends IoStateBase> TaxonNodeOutStreamPartitioner<ST> NewInstance(
             ICdmApplication repository, ST state,
             TaxonNodeFilter filter, Integer partitionSize,
             IProgressMonitor parentMonitor, Integer parentTicks, List<String> propertyPath){

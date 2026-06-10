@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.io.coldp.ColDpExportTransformer.ColDpNameRelType;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
-import eu.etaxonomy.cdm.io.common.XmlExportState;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -144,8 +143,7 @@ public class ColDpClassificationExport
                 state.setRootId(config.getTaxonNodeFilter().getSubtreeFilter().get(0).getUuid());
             }
 
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            TaxonNodeOutStreamPartitioner<XmlExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
+            TaxonNodeOutStreamPartitioner<ColDpExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
                     state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
 
 //            handleMetaData(state);  //FIXME metadata;
