@@ -267,7 +267,7 @@
           <stopPort>9199</stopPort>
           <scan>10</scan>
           <useTestScope>true</useTestScope>
-          <!-- jvmArgs will only be used when running mvn jetty:run-forked -->
+          <!-- jvmArgs will only be used when running mvn jetty:run-forked (<deployMode>FORK</deployMode> in jetty 10+) -->
           <jvmArgs>-Xmx2000M 
             -Dcdm.datasource=${datasource}
             -Duser.home=${basedir}/target/target/
