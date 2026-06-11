@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportConfigurator.FeatureSortMode;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 import eu.etaxonomy.cdm.io.cdmprintpub.compare.IPrintPubFactOrderStrategy;
@@ -113,7 +114,7 @@ public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
 
                 // --- choose prefix ---
                 if (syn.forceDashMarker) {
-                    line.append("- ");
+                    line.append(UTF8.EM_DASH + " ");
                 } else if (first) {
                     line.append("= ");
                     first = false;
