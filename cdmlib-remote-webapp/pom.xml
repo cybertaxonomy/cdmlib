@@ -261,11 +261,12 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.58.v20250814</version>
+<!--        <version>9.4.58.v20250814</version>-->
+        <version>10.0.26</version>
         <configuration>
           <stopKey>stop</stopKey>
           <stopPort>9199</stopPort>
-          <scanIntervalSeconds>10</scanIntervalSeconds>
+          <scan>10</scan>
           <useTestScope>true</useTestScope>
           <!-- jvmArgs will only be used when running mvn jetty:run-forked -->
           <jvmArgs>-Xmx2000M 
@@ -278,40 +279,27 @@
             -Dorg.eclipse.jetty.annotations.AnnotationParser.LEVEL=OFF
             --add-opens java.base/java.lang=ALL-UNNAMED
           </jvmArgs>
-          <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty.xml,${basedir}/src/test/resources/etc/jetty/jetty-http.xml</jettyXml>
-          <!-- <jettyXml>./src/test/resources/etc/jetty/jetty.xml,./src/test/resources/etc/jetty/jetty-http.xml,./src/test/resources/etc/jetty/jetty-ssl.xml,./src/test/resources/etc/jetty/jetty-https.xml</jettyXml> -->
+<!--          <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty.xml,${basedir}/src/test/resources/etc/jetty/jetty-http.xml</jettyXml>-->
+          <jettyXmls>
+            <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty.xml</jettyXml>
+            <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty-http.xml</jettyXml>
+<!--            <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty-ssl.xml</jettyXml>-->
+<!--            <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty-https.xml</jettyXml>-->
+          </jettyXmls>
+          
           <systemProperties>
-            <force>true</force>
-            <systemProperty>
-              <name>cdm.datasource</name>
-              <value>${datasource}</value>
-            </systemProperty>
-            <systemProperty>
+              <cdm.datasource>${datasource}</cdm.datasource>
               <!-- The lucene index should be placed into the target folder, 
                 so user.home needs to be set to this folder. user.home needs to be overridden 
                 since it already exists, thus the force option is turned on above -->
-              <name>user.home</name>
-              <value>${basedir}/target/</value>
-            </systemProperty>
-            <systemProperty>
+              <user.home>${basedir}/target/</user.home>
               <!-- datasources.xml is prepared by <plugins><resources>..</resources> above -->
-              <name>cdm.beanDefinitionFile</name>
-              <value>${beanDefinitionFile}</value>
-            </systemProperty>
-            <systemProperty>
-                <name>cdm.forceSchemaCreate</name>
-                <value>${forceSchemaCreate}</value>
-            </systemProperty>
-            <systemProperty>
+              <cdm.beanDefinitionFile>${beanDefinitionFile}</cdm.beanDefinitionFile>
+              <cdm.forceSchemaCreate>${forceSchemaCreate}</cdm.forceSchemaCreate>
               <!-- start with swagger profile so that the swagger doc can 
                 be generated -->
-              <name>spring.profiles.active</name>
-              <value>swagger</value>
-            </systemProperty>
-            <systemProperty>
-                <name>log4j.configuration</name>
-                <value>${log4jFile}</value>
-            </systemProperty>
+              <spring.profiles.active>swagger</spring.profiles.active>
+              <log4j.configuration>${log4jFile}</log4j.configuration>
           </systemProperties>
         </configuration>
         <dependencies>

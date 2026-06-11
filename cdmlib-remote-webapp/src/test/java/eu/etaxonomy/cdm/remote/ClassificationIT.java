@@ -23,7 +23,8 @@ public class ClassificationIT extends WebServiceTestBase {
     @Test
     public void checkInstanceIsOnline(){
         String response = httpGetJson("/classification", null);
-        logger.debug("response: " + response);
-        assertTrue(response.contains("My Classification"));
+        logger.warn("response: " + response);
+        assertTrue("Response does not contain 'My Classification' but: " + response,
+                response.contains("My Classification"));
     }
 }
