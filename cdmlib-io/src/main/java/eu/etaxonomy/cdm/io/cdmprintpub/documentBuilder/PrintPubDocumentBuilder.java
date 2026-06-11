@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportConfigurator.FeatureSortMode;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 import eu.etaxonomy.cdm.io.cdmprintpub.compare.IPrintPubFactOrderStrategy;
@@ -112,19 +113,14 @@ public class PrintPubDocumentBuilder extends AbstractPrintPubDocumentBuilder {
                 boolean doIndent = false;
 
                 // --- choose prefix ---
-                if (first) {
-                    // group header
-                    if (syn.forceDashMarker) {
-                        line.append("- ");
-                    } else if (group.isHomotypic) {
-                        line.append("≡ ");
-                    } else {
-                        line.append("= ");
-                    }
+                if (syn.forceDashMarker) {
+                    line.append(UTF8.EM_DASH + " ");
+                } else if (first) {
+                    line.append("= ");
                     first = false;
                 } else {
                     // members of the same homotypic group
-                    line.append("- ");
+                    line.append("≡ ");
                     doIndent = true;
                 }
 

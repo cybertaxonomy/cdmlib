@@ -154,7 +154,8 @@ public class PrintPubDtoMapper {
         }
 
         if (synName != null) {
-            synDTO.forceDashMarker = synName.getStatus().stream().map(NomenclaturalStatus::getType)
+            synDTO.forceDashMarker = synName.getStatus().stream()
+                    .map(NomenclaturalStatus::getType)
                     .filter(statusType -> statusType != null)
                     .anyMatch(statusType -> statusType.isInvalid());
         }
