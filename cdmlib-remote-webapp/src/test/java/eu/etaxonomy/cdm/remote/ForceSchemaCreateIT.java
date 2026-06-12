@@ -22,7 +22,7 @@ public class ForceSchemaCreateIT extends WebServiceTestBase {
 
     @Test
     public void checkInstanceIsOnline(){
-        String response = httpGetJson("metadata", null);
+        String response = httpGetJson("/metadata", null);
         logger.debug("response: " + response);
         assertTrue(response.contains("DB_SCHEMA_VERSION"));
         assertTrue(response.contains("DB_CREATE_DATE"));
