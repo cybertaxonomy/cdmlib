@@ -57,6 +57,7 @@
         <forceSchemaCreate>true</forceSchemaCreate>
         <log4jFile>${project.build.directory}/target/test-classes/log4j2.xml</log4jFile>
         <beanDefinitionFile>${project.build.directory}/test-classes/datasources.xml</beanDefinitionFile>
+        <spring.profiles>swagger</spring.profiles>
       </properties>
       <build>
         <plugins>
@@ -98,6 +99,7 @@
         <forceSchemaCreate>false</forceSchemaCreate>
         <integrationTest.log4j.configuration>${project.build.directory}/target/test-classes/log4j2.xml</integrationTest.log4j.configuration>
         <beanDefinitionFile>${project.build.directory}/test-classes/datasources.xml</beanDefinitionFile>
+        <spring.profiles>swagger</spring.profiles>
       </properties>
       <build>
         <plugins>
@@ -297,7 +299,7 @@
               <cdm.forceSchemaCreate>${forceSchemaCreate}</cdm.forceSchemaCreate>
               <!-- start with swagger profile so that the swagger doc can 
                 be generated -->
-              <spring.profiles.active>swagger</spring.profiles.active>
+              <spring.profiles.active>${spring.profiles}</spring.profiles.active>
               <log4j.configuration>${log4jFile}</log4j.configuration>
           </systemProperties>
         </configuration>
