@@ -21,7 +21,6 @@
     <module>cdmlib-ext</module>
     <module>cdmlib-io</module>
     <module>cdmlib-remote</module>
-    <module>cdmlib-print</module>
     <module>cdmlib-remote-webapp</module>
   </modules>
   <properties>    
@@ -644,11 +643,6 @@
       <dependency>
         <groupId>eu.etaxonomy</groupId>
         <artifactId>cdmlib-ext</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>eu.etaxonomy</groupId>
-        <artifactId>cdmlib-print</artifactId>
         <version>${project.version}</version>
       </dependency>
       
@@ -1304,18 +1298,6 @@
         <artifactId>xercesImpl</artifactId>
         <version>2.12.2</version>
         <!-- checked 2022-06 -->
-      </dependency>
-      <dependency> <!-- required by cdmlib-print -->
-        <groupId>org.apache.xmlgraphics</groupId>
-        <artifactId>fop</artifactId>
-        <version>${fop.version}</version>
-        <exclusions>
-          <exclusion>
-            <!-- we use jcl-over-slf4j instead -->
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.odftoolkit</groupId>
