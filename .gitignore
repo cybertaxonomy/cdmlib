@@ -53,8 +53,6 @@ cdmlib-persistence/src/test/resources/Copy[!!-~]of[!!-~]test.cdm.datasource.xml
 cdmlib-persistence/src/test/resources/dbscripts/Kopie[!!-~]von[!!-~]001_cdm.ddl
 cdmlib-persistence/test.xml
 
-cdmlib-print/*odf_output.odf
-
 cdmlib-services/CleanSweepInsertLoadStrategy-debug.xml
 cdmlib-services/cdmlib-services.uml
 cdmlib-services/src/main/resources/log4j.properties
