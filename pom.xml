@@ -825,8 +825,14 @@
         <groupId>xmlunit</groupId>
         <artifactId>xmlunit</artifactId>
         <version>1.6</version>
-     <!--    <scope>test</scope>  -->
       </dependency>
+     <!--    <scope>test</scope>  -->
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>5.23.0</version>
+      </dependency>
+     <!--    <scope>test</scope>  -->
   <!--    <dependency>
         <groupId>org.dbunit</groupId>
         <artifactId>dbunit</artifactId>
