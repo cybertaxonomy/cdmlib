@@ -417,8 +417,6 @@
           <execution>
             <id>enforce</id>
             <configuration>
-              <fail>true</fail>
-              <skip>false</skip>
               <rules>
                 <dependencyConvergence />                
 				<requireMavenVersion>
