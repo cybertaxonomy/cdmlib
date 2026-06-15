@@ -69,26 +69,26 @@
     <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree</url>
   </scm>
   
-    <mailingLists>
-        <mailingList>
-            <name>EDIT Platform Developers</name>
-            <subscribe>
-                https://lists.fu-berlin.de/listinfo/editplatformdevelopers#subscribe
-            </subscribe>
-            <unsubscribe>
-                https://lists.fu-berlin.de/listinfo/editplatformdevelopers#options
-            </unsubscribe>
-        </mailingList>
-        <mailingList>
-            <name>EDIT User</name>
-            <subscribe>
-                https://lists.fu-berlin.de/listinfo/edituser#subscribe
-            </subscribe>
-            <unsubscribe>
-                https://lists.fu-berlin.de/listinfo/edituser#options
-            </unsubscribe>
-        </mailingList>
-    </mailingLists>
+  <mailingLists>
+    <mailingList>
+        <name>EDIT Platform Developers</name>
+        <subscribe>
+            https://lists.fu-berlin.de/listinfo/editplatformdevelopers#subscribe
+        </subscribe>
+        <unsubscribe>
+            https://lists.fu-berlin.de/listinfo/editplatformdevelopers#options
+        </unsubscribe>
+    </mailingList>
+    <mailingList>
+        <name>EDIT User</name>
+        <subscribe>
+            https://lists.fu-berlin.de/listinfo/edituser#subscribe
+        </subscribe>
+        <unsubscribe>
+            https://lists.fu-berlin.de/listinfo/edituser#options
+        </unsubscribe>
+    </mailingList>
+  </mailingLists>
   <licenses>
     <license>
       <name>Mozilla Public License Version 1.1</name>
