@@ -69,10 +69,6 @@
     <url>https://dev.e-taxonomy.eu/gitweb/cdmlib.git/tree</url>
   </scm>
   
-  <prerequisites>
-    <maven>3.6.3</maven>
-  </prerequisites>
-  
     <mailingLists>
         <mailingList>
             <name>EDIT Platform Developers</name>
@@ -416,7 +412,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.6.2</version>
+        <version>3.6.3</version>
         <executions>
           <execution>
             <id>enforce</id>
@@ -426,7 +422,8 @@
               <rules>
                 <dependencyConvergence />                
 				<requireMavenVersion>
-                  <version>[3.6.0,)</version>
+                  <version>[3.6.3,)</version>
+                  <message>You need at least maven 3.6.3 for this project!</message>
                 </requireMavenVersion>
               </rules>
             </configuration>
