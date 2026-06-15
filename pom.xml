@@ -208,8 +208,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version> 
         <configuration>
-          <source>${java.codelevel}</source>
-          <target>${java.codelevel}</target>
+          <source>${maven.compiler.release}</source>
+          <target>${maven.compiler.release}</target>
           <encoding>${project.build.sourceEncoding}</encoding>  <!-- necessary? should be covered by project. properties source encoding -->
 		  <!-- to increase stacksize see #6404 -->
         </configuration>
