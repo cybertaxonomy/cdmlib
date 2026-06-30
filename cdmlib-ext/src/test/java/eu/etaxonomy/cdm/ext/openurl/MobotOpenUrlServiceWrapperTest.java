@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.common.UriUtils;
 /**
  * @author a.mueller
  */
+@Ignore  //temporarily while BHL is moving to new location
 public class MobotOpenUrlServiceWrapperTest {
 
     private static final Logger logger = LogManager.getLogger();
