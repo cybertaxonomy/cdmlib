@@ -398,8 +398,6 @@ public interface ITaxonNameBase
 
     /**
      * Assigns a {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
-     * The corresponding {@link eu.etaxonomy.cdm.model.reference.Reference.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
-     * as it is obviously used for nomenclatural purposes.
      *
      * @see  #getNomenclaturalReference()
      */
