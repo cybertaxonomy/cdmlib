@@ -123,6 +123,7 @@ public class PrintPubClassificationExport
                     referenceDepth = mapper.calculateDepth(node);
 
                     if (node.getTaxon() != null && node.getTaxon().getName() != null) {
+                        //TODO store in state not in configurator
                         state.getConfig().setDocumentTitle(node.getTaxon().getName().getTitleCache());
                     }
                 }

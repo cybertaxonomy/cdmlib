@@ -12,18 +12,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-
-import org.passay.CharacterRule;
-import org.passay.EnglishCharacterData;
-import org.passay.LengthRule;
+import org.passay.DefaultPasswordValidator;
 import org.passay.PasswordData;
-import org.passay.PasswordData.Origin;
 import org.passay.PasswordValidator;
-import org.passay.RuleResult;
-import org.passay.WhitespaceRule;
+import org.passay.ValidationResult;
+import org.passay.data.EnglishCharacterData;
+import org.passay.rule.CharacterRule;
+import org.passay.rule.LengthRule;
+import org.passay.rule.WhitespaceRule;
+import org.passay.support.Origin;
 
 import eu.etaxonomy.cdm.validation.annotation.ValidPassword;
 
@@ -44,11 +45,12 @@ public class ValidPasswordValidator implements ConstraintValidator<ValidPassword
         final PasswordValidator validator = getDefaultPasswordValidator();
         String message;
         if (value != null) {
-            final RuleResult result = validator.validate(new PasswordData(value));
+            final ValidationResult result = validator.validate(new PasswordData(value));
             if (result.isValid()) {
                 return true;
             }
-            message = validator.getMessages(result).stream().collect(Collectors.joining(" "));
+            message = result.getMessages().stream()
+                    .collect(Collectors.joining(" "));
         }else {
             message = "Null is not allowed for password";
         }
@@ -60,7 +62,7 @@ public class ValidPasswordValidator implements ConstraintValidator<ValidPassword
 
     private static PasswordValidator getDefaultPasswordValidator() {
         if (defaultValidator == null) {
-            defaultValidator = new PasswordValidator(Arrays.asList(
+            defaultValidator = new DefaultPasswordValidator(Arrays.asList(
                 // see https://www.passay.org/reference/
 
                 // length between 8 and 16 characters
@@ -112,11 +114,11 @@ public class ValidPasswordValidator implements ConstraintValidator<ValidPassword
             return readViolationMessageList(validator.validate(new PasswordData(password, Origin.Generated)));
         }
 
-        private List<String> readViolationMessageList(RuleResult validate) {
-            if (validate.isValid()) {
+        private List<String> readViolationMessageList(ValidationResult result) {
+            if (result.isValid()) {
                 return new ArrayList<>(0);
             }
-            return validator.getMessages(validate);
+            return result.getMessages();
         }
 
         protected PasswordValidator getValidator() {

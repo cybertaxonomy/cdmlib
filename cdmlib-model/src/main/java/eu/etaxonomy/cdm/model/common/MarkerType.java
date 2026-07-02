@@ -6,19 +6,17 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
-
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-
 
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
@@ -68,8 +66,6 @@ public class MarkerType extends AvailableForIdentifiableBase<MarkerType> {
     //TODO remove once the handling is not hardcoded anymore
     public static final UUID uuidEfloraMex = UUID.fromString("ba2c1a71-7886-4968-851f-0f898e4db172");
 
-
-
 	protected static Map<UUID, MarkerType> termMap = null;
 
     @XmlAttribute(name = "isTechnical")
@@ -81,7 +77,6 @@ public class MarkerType extends AvailableForIdentifiableBase<MarkerType> {
 	public static MarkerType NewInstance(String term, String label, String labelAbbrev){
 		return new MarkerType(term, label, labelAbbrev);
 	}
-
 
 // ***************************** CONSTRUCTOR ******************************/
 
@@ -125,7 +120,6 @@ public class MarkerType extends AvailableForIdentifiableBase<MarkerType> {
 	public void resetTerms(){
 		termMap = null;
 	}
-
 
 	protected static MarkerType getTermByUuid(UUID uuid){
         if (termMap == null || termMap.isEmpty()){
@@ -191,10 +185,9 @@ public class MarkerType extends AvailableForIdentifiableBase<MarkerType> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<MarkerType> termVocabulary) {
-		termMap = new HashMap<UUID, MarkerType>();
+		termMap = new HashMap<>();
 		for (MarkerType term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
 		}
 	}
-
 }

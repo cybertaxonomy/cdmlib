@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 /**
@@ -18,12 +16,10 @@ import org.junit.Test;
  */
 public class ClassificationIT extends WebServiceTestBase {
 
-    private static final Logger logger = LogManager.getLogger();
-
     @Test
     public void checkInstanceIsOnline(){
         String response = httpGetJson("/classification", null);
-        logger.debug("response: " + response);
-        assertTrue(response.contains("My Classification"));
+        assertTrue("Response does not contain 'My Classification' but: " + response,
+                response.contains("My Classification"));
     }
 }

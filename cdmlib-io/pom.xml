@@ -7,7 +7,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.60.0-SNAPSHOT</version>
+    <version>6.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -50,20 +50,47 @@
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
     </dependency>
+    
+    <!-- JAXB API -->
+    <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-oxm</artifactId>
     </dependency>
+    <!--identificationKeyAPI-->
     <dependency>
       <groupId>identificationKeyAPI</groupId>
       <artifactId>identificationKeyAPI</artifactId>
-      <!--       <exclusions> -->
-      <!--         <exclusion> -->
-      <!--           <groupId>xml-apis</groupId> -->
-      <!--           <artifactId>xml-apis</artifactId> -->
-      <!--         </exclusion> -->
-      <!--       </exclusions> -->
+      <exclusions>
+         <exclusion>
+         <!-- will be added below with runtime scope as some 
+              old Xerces classes like SAXParser are explicitly used in identificationKeyAPI -->  
+           <groupId>xerces</groupId>
+           <artifactId>xercesImpl</artifactId>
+         </exclusion>
+       </exclusions>
     </dependency>
+    <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <scope>compile</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    
+    
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
@@ -74,7 +101,6 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>3.17.0</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>

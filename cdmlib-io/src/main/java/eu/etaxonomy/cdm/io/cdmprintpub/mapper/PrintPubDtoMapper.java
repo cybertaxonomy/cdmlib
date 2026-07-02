@@ -154,8 +154,10 @@ public class PrintPubDtoMapper {
         }
 
         if (synName != null) {
-            synDTO.forceDashMarker = synName.getStatus().stream().map(NomenclaturalStatus::getType)
-                    .anyMatch(statusType -> statusType.isInvalidExplicit() || statusType.isDesignationOnly());
+            synDTO.forceDashMarker = synName.getStatus().stream()
+                    .map(NomenclaturalStatus::getType)
+                    .filter(statusType -> statusType != null)
+                    .anyMatch(statusType -> statusType.isInvalid());
         }
 
         if (state.getConfig().isIncludeSynonymConceptReference() && syn.getSec() != null) {

@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
-import eu.etaxonomy.cdm.io.common.XmlExportState;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -161,8 +160,8 @@ public class CdmLightClassificationExport
             } else if (config.getTaxonNodeFilter().hasSubtreeFilter()) {
                 state.setRootId(config.getTaxonNodeFilter().getSubtreeFilter().get(0).getUuid());
             }
-            @SuppressWarnings("unchecked")
-            TaxonNodeOutStreamPartitioner<XmlExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
+
+            TaxonNodeOutStreamPartitioner<CdmLightExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
                     state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
 
             handleMetaData(state);
@@ -2309,7 +2308,7 @@ public class CdmLightClassificationExport
         }
 
         Optional<SecundumSource> match = synSecSources.stream().filter(s->sourceMatches(s, newSource)).findFirst();
-        if (!match.isPresent()){
+        if (match.isEmpty()){
             synSecSources.add(newSource);
         }
     }

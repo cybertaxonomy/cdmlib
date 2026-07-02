@@ -153,8 +153,7 @@ public class ManifestComposer {
                     throw new RuntimeException(e);
                 }
             })
-            .filter(Optional::isPresent)
-            .map(Optional::get)
+            .flatMap(Optional::stream)
             .collect(Collectors.toList());
         } catch(RuntimeException re) {
             // re-throw  IOException from lambda expression

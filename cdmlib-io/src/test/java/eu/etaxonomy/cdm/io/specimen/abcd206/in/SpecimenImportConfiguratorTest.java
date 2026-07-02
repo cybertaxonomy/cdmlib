@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  * @since 29.01.2009
  */
-@Ignore  //bicocase server currently not available
+@Ignore  //as long as biocase service does not work
 public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName

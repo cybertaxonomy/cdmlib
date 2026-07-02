@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +25,7 @@ import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -75,7 +75,7 @@ public class TestingTermInitializer extends DefaultTermInitializer {
         this.termsDtd = termsDtd;
     }
 
-    @PostConstruct
+    @Bean(initMethod = "initialize")
     @Override
     public void initialize() {
         super.initialize();

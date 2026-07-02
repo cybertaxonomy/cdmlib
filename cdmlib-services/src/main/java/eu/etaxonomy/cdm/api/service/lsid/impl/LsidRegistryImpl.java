@@ -12,11 +12,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -61,7 +60,7 @@ public class LsidRegistryImpl implements LSIDRegistry {
 		this.transactionManager = transactionManager;
 	}
 
-	@PostConstruct
+    @Bean(initMethod = "initialize")
 	public void init() {
 		registry = new HashMap<>();
 		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);

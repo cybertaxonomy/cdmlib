@@ -4,7 +4,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>5.60.0-SNAPSHOT</version>
+    <version>6.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>cdmlib-remote-webapp</artifactId>
@@ -53,9 +53,11 @@
         </property>
       </activation>
       <properties>
-        <integrationTest.jvmArgs.cdm.datasource>h2_cdm_blank</integrationTest.jvmArgs.cdm.datasource>
-        <integrationTest.jvmArgs.cdm.forceSchemaCreate>true</integrationTest.jvmArgs.cdm.forceSchemaCreate>
-        <integrationTest.jvmArgs.log4j.configuration>${project.build.directory}/target/test-classes/log4j.xml</integrationTest.jvmArgs.log4j.configuration>
+        <datasource>h2_cdm_blank</datasource>
+        <forceSchemaCreate>true</forceSchemaCreate>
+        <log4jFile>${project.build.directory}/target/test-classes/log4j2.xml</log4jFile>
+        <beanDefinitionFile>${project.build.directory}/test-classes/datasources.xml</beanDefinitionFile>
+        <spring.profiles>swagger</spring.profiles>
       </properties>
       <build>
         <plugins>
@@ -93,9 +95,11 @@
         </property>
       </activation>
       <properties>
-        <integrationTest.jvmArgs.cdm.datasource>h2_cdmTest</integrationTest.jvmArgs.cdm.datasource>
-        <integrationTest.jvmArgs.cdm.forceSchemaCreate>false</integrationTest.jvmArgs.cdm.forceSchemaCreate>
+        <datasource>h2_cdmTest</datasource>
+        <forceSchemaCreate>false</forceSchemaCreate>
         <integrationTest.log4j.configuration>${project.build.directory}/target/test-classes/log4j2.xml</integrationTest.log4j.configuration>
+        <beanDefinitionFile>${project.build.directory}/test-classes/datasources.xml</beanDefinitionFile>
+        <spring.profiles>swagger</spring.profiles>
       </properties>
       <build>
         <plugins>
@@ -253,63 +257,74 @@
         <directory>src/main/resources</directory>
       </resource>
     </resources>
+    
+    <!-- PLUGINS -->
     <plugins>
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.4.15.v20190215</version>
+        <version>10.0.26</version>
         <configuration>
           <stopKey>stop</stopKey>
           <stopPort>9199</stopPort>
-          <scanIntervalSeconds>10</scanIntervalSeconds>
+          <scan>10</scan>
           <useTestScope>true</useTestScope>
-          <!-- jvmArgs will only be used when running mvn jetty:run-forked -->
+          <!-- jvmArgs will only be used when running mvn jetty:run-forked (<deployMode>FORK</deployMode> in jetty 10+) -->
           <jvmArgs>-Xmx2000M 
-            -Dcdm.datasource=${integrationTest.jvmArgs.cdm.datasource}
+            -Dcdm.datasource=${datasource}
             -Duser.home=${basedir}/target/target/
             -Dcdm.beanDefinitionFile=${project.build.directory}/test-classes/datasources.xml
             -Dspring.profiles.active=remoting
-            -Dcdm.forceSchemaCreate=${integrationTest.jvmArgs.cdm.forceSchemaCreate}
-            -Dlog4j.configuration=${integrationTest.jvmArgs.log4j.configuration}
+            -Dcdm.forceSchemaCreate=${forceSchemaCreate}
+            -Dlog4j.configuration=${log4jFile}
             -Dorg.eclipse.jetty.annotations.AnnotationParser.LEVEL=OFF
             --add-opens java.base/java.lang=ALL-UNNAMED
-           </jvmArgs>
-          <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty.xml,${basedir}/src/test/resources/etc/jetty/jetty-http.xml</jettyXml>
-          <!-- <jettyXml>./src/test/resources/etc/jetty/jetty.xml,./src/test/resources/etc/jetty/jetty-http.xml,./src/test/resources/etc/jetty/jetty-ssl.xml,./src/test/resources/etc/jetty/jetty-https.xml</jettyXml> -->
+          </jvmArgs>
+<!--          <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty.xml,${basedir}/src/test/resources/etc/jetty/jetty-http.xml</jettyXml>-->
+          <jettyXmls>
+            <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty.xml</jettyXml>
+            <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty-http.xml</jettyXml>
+<!--            <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty-ssl.xml</jettyXml>-->
+<!--            <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty-https.xml</jettyXml>-->
+          </jettyXmls>
+          
           <systemProperties>
-            <force>true</force>
-            <systemProperty>
-              <name>cdm.datasource</name>
-              <value>${integrationTest.jvmArgs.cdm.datasource}</value>
-            </systemProperty>
-            <systemProperty>
+              <cdm.datasource>${datasource}</cdm.datasource>
               <!-- The lucene index should be placed into the target folder, 
                 so user.home needs to be set to this folder. user.home needs to be overridden 
                 since it already exists, thus the force option is turned on above -->
-              <name>user.home</name>
-              <value>${basedir}/target/</value>
-            </systemProperty>
-            <systemProperty>
+              <user.home>${basedir}/target/</user.home>
               <!-- datasources.xml is prepared by <plugins><resources>..</resources> above -->
-              <name>cdm.beanDefinitionFile</name>
-              <value>${project.build.directory}/test-classes/datasources.xml</value>
-            </systemProperty>
-            <systemProperty>
-                <name>cdm.forceSchemaCreate</name>
-                <value>${integrationTest.jvmArgs.cdm.forceSchemaCreate}</value>
-            </systemProperty>
-            <systemProperty>
+              <cdm.beanDefinitionFile>${beanDefinitionFile}</cdm.beanDefinitionFile>
+              <cdm.forceSchemaCreate>${forceSchemaCreate}</cdm.forceSchemaCreate>
               <!-- start with swagger profile so that the swagger doc can 
                 be generated -->
-              <name>spring.profiles.active</name>
-              <value>swagger</value>
-            </systemProperty>
-            <systemProperty>
-                <name>log4j.configuration</name>
-                <value>${integrationTest.jvmArgs.log4j.configuration}</value>
-            </systemProperty>
+              <spring.profiles.active>${spring.profiles}</spring.profiles.active>
+              <log4j.configuration>${log4jFile}</log4j.configuration>
           </systemProperties>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>${mysql.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>${mariadb.version}</version>
+          </dependency>
+<!--          <dependency>-->
+<!--            <groupId>com.mchange</groupId>-->
+<!--            <artifactId>c3p0</artifactId>-->
+<!--            <version>${c3p0.version}</version>-->
+<!--          </dependency>-->
+        </dependencies>
         <executions>
           <execution>
             <id>start-jetty</id>
@@ -319,7 +334,6 @@
             </goals>
             <configuration>
               <scanIntervalSeconds>0</scanIntervalSeconds>
-              <daemon>true</daemon>
             </configuration>
           </execution>
           <execution>
