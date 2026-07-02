@@ -69,10 +69,9 @@ public class PrintPubExportConfigurator
     private FeatureSortMode featureSortMode = FeatureSortMode.FEATURE_TREE;
     private FactSortMode factSortMode = FactSortMode.PORTAL_LIKE;
 
-    public static PrintPubExportConfigurator NewInstance(ICdmDataSource source, File destination) {
+    public static PrintPubExportConfigurator NewInstance(ICdmDataSource source) {
         PrintPubExportConfigurator result = new PrintPubExportConfigurator(null);
         result.setSource(source);
-        result.setDestination(destination);
         return result;
     }
 
