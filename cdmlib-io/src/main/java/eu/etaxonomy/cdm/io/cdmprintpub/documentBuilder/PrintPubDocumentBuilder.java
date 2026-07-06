@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportConfigurator;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportConfigurator.FeatureSortMode;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 import eu.etaxonomy.cdm.io.cdmprintpub.compare.IPrintPubFactOrderStrategy;
@@ -255,7 +256,7 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
         // Remove leading <Category> if present
         return label.replaceFirst("^<[^>]+>", "").trim();
     }
-    
+
     @Override
     public void buildLayout(PrintPubExportState state) {
 
@@ -273,7 +274,7 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
             buildAppendix(state);
         }
     }
-    
+
     protected void buildHeader(PrintPubExportState state) {
         state.getProcessor().add(new PrintPubSectionHeaderElement(state.getConfig().getDocumentTitle(), 1));
         state.getProcessor().add(new PrintPubParagraphElement("Total Taxa: " + state.getTaxa().size()));
@@ -320,11 +321,66 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
     }
 
     protected void buildAppendix(PrintPubExportState state) {
+        
+        PrintPubExportConfigurator conf = state.getConfig();
+
+        if (!conf.isAppendIdentifierList()) {
+            return;
+        }
+
         state.getProcessor().add(new PrintPubPageBreakElement());
         state.getProcessor().add(new PrintPubSectionHeaderElement("Appendix: Digital Identifiers", 1));
 
         for (PrintPubTaxonSummaryDTO dto : state.getTaxa()) {
-            state.getProcessor().add(new PrintPubParagraphElement(dto.titleCache + " [" + dto.uuid + "]"));
+
+            StringBuilder line = new StringBuilder();
+
+            if (dto.titleCache != null && !dto.titleCache.trim().isEmpty()) {
+                line.append(dto.titleCache.trim());
+            }
+
+            String wfoId = dto.wfoId == null ? null : dto.wfoId.trim();
+
+            if (conf.isIncludeWfoId()
+                    && wfoId != null
+                    && !wfoId.isEmpty()) {
+
+                if (line.length() > 0) {
+                    line.append(" - ");
+                }
+                line.append(wfoId);
+            }
+
+            if (conf.isIncludeProtologueUris()) {
+
+                StringBuilder links = new StringBuilder();
+
+                if (dto.links != null && !dto.links.isEmpty()) {
+                    for (String link : dto.links) {
+                        if (link == null || link.trim().isEmpty()) {
+                            continue;
+                        }
+
+                        if (links.length() > 0) {
+                            links.append(", ");
+                        }
+
+                        links.append(link.trim());
+                    }
+                }
+
+                if (line.length() > 0) {
+                    line.append(" - ");
+                }
+
+                if (links.length() > 0) {
+                    line.append(links.toString());
+                } else {
+                    line.append("No orig. publ. URI");
+                }
+            }
+
+            state.getProcessor().add(new PrintPubParagraphElement(line.toString()));
         }
     }
 }

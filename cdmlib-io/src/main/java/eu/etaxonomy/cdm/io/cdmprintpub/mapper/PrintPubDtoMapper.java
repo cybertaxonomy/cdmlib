@@ -10,6 +10,9 @@
 package eu.etaxonomy.cdm.io.cdmprintpub.mapper;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,6 +31,7 @@ import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubSynonymDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubSynonymGroupDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -36,6 +40,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -47,6 +52,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -97,6 +103,9 @@ public class PrintPubDtoMapper {
             dto.secReferenceCitation = ref.getTitleCache();
         }
 
+        extractIdentifiers(state, taxon, dto);
+        ;
+
         return dto;
     }
 
@@ -133,6 +142,40 @@ public class PrintPubDtoMapper {
         }
     }
 
+    private void extractIdentifiers(PrintPubExportState state, Taxon taxon, PrintPubTaxonSummaryDTO dto) {
+
+        if (taxon == null) {
+            return;
+        }
+
+        TaxonName name = taxon.getName();        
+        
+        if (name == null) {
+            return;
+        }
+        
+        // Wfo ID
+        Set<String> wfoIdLinks = name.getIdentifierStrings(IdentifierType.IDENTIFIER_NAME_WFO());                
+        Iterator<String> wfoLinksIterator = wfoIdLinks.iterator();
+        
+        if (wfoLinksIterator.hasNext()) {
+            dto.wfoId = wfoLinksIterator.next().toString().trim();
+
+        }
+                
+        // General Links
+        if (dto.links == null) {
+            dto.links = new LinkedList<String>();
+        }
+        
+        Set<ExternalLink> allLinks = name.getLinks();
+        
+        for (ExternalLink link : allLinks) {
+            dto.links.add(link.getUri().toString());
+        }
+        
+    }
+
     private void filterMisapplied(List<Synonym> synonyms, boolean includeMisapplied) {
         if (includeMisapplied) {
             return;
@@ -154,10 +197,8 @@ public class PrintPubDtoMapper {
         }
 
         if (synName != null) {
-            synDTO.forceDashMarker = synName.getStatus().stream()
-                    .map(NomenclaturalStatus::getType)
-                    .filter(statusType -> statusType != null)
-                    .anyMatch(statusType -> statusType.isInvalid());
+            synDTO.forceDashMarker = synName.getStatus().stream().map(NomenclaturalStatus::getType)
+                    .filter(statusType -> statusType != null).anyMatch(statusType -> statusType.isInvalid());
         }
 
         if (state.getConfig().isIncludeSynonymConceptReference() && syn.getSec() != null) {

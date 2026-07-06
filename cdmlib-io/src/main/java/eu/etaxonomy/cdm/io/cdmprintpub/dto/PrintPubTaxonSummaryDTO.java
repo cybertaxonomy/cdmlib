@@ -36,4 +36,7 @@ public class PrintPubTaxonSummaryDTO {
     public List<String> commonNames = new ArrayList<>();
     public String distributionString;
     public String secReferenceCitation;
+
+    public List<String> links = new ArrayList<>();
+    public String wfoId;
 }
