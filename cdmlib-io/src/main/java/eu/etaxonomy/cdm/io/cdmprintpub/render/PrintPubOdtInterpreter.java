@@ -171,28 +171,25 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubPageBreak");
         textRoot.appendChild(p);
     }
+
     private void renderTextRun(PrintPubTextRunElement element) {
 
         TextPElement p = contentDom.newOdfElement(TextPElement.class);
 
         String styleName;
         switch (element.getRole()) {
-            case TAXON_NAME:
-                styleName = "PrintPubTaxonName";
-                break;
-            case FACT_GROUP:
-                styleName = "PrintPubBody"; // or future variant
-                break;
-            case BODY:
-            default:
-                styleName = "PrintPubBody";
+        case TAXON_NAME:
+            styleName = "PrintPubTaxonName";
+            break;
+        case FACT_GROUP:
+            styleName = "PrintPubBody"; // or future variant
+            break;
+        case BODY:
+        default:
+            styleName = "PrintPubBody";
         }
 
-        p.setAttributeNS(
-            OdfDocumentNamespace.TEXT.getUri(),
-            "text:style-name",
-            styleName
-        );
+        p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", styleName);
 
         if (element.getLabel() != null) {
             TextSpanElement label = contentDom.newOdfElement(TextSpanElement.class);
@@ -212,7 +209,8 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
 
             if (run.type == PrintPubTextRunElement.RunType.BOLD) {
                 span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBold");
-            } else if (run.type == PrintPubTextRunElement.RunType.ITALIC) {
+            } else if (run.type == PrintPubTextRunElement.RunType.ITALIC
+                    || run.type == PrintPubTextRunElement.RunType.CDM_REFERENCE) {
                 span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubItalic");
             }
 
