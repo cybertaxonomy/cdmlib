@@ -61,7 +61,6 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
     private PrintPubFactOrderStrategyResolver factOrderResolver;
 
     protected void buildContent(PrintPubExportState state) {
-        state.clearCollectedReferences();
         state.getProcessor().add(new PrintPubSectionHeaderElement("Taxonomic Hierarchy", 1));
 
         for (PrintPubTaxonSummaryDTO dto : state.getTaxa()) {

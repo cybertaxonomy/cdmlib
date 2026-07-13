@@ -70,6 +70,8 @@ public class PrintPubClassificationExport
                 logger.info("PrintPub export cancelled before initialization");
                 return;
             }
+            
+            state.clearCollectedReferences();
 
             // --------------------------------------------------
             // Initialize feature ordering
