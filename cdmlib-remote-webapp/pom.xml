@@ -348,10 +348,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version>   
-        <configuration>
-          <packagingExcludes>WEB-INF/lib/spring-web-*.jar</packagingExcludes>
-        </configuration>    
+        <version>3.3.2</version>           
         <executions>
           <execution>
             <!-- The war must be created after running the integration-tests, 
