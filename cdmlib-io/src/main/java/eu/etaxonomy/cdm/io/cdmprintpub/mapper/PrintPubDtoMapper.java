@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportConfigurator;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubFactDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubFactDTO.PrintPubFactKind;
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubReferenceEntryDTO.PrintPubReferenceSourceType;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubSynonymDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubSynonymGroupDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
@@ -99,12 +100,11 @@ public class PrintPubDtoMapper {
 
         if (state.getConfig().isIncludeTaxonomicConceptReference() && taxon.getSec() != null) {
             Reference ref = HibernateProxyHelper.deproxy(taxon.getSec());
-            state.addReference(ref);
+            state.addReference(ref, PrintPubReferenceSourceType.TAXON_SEC);
             dto.secReferenceCitation = ref.getTitleCache();
         }
 
         extractIdentifiers(state, taxon, dto);
-        ;
 
         return dto;
     }
@@ -203,7 +203,7 @@ public class PrintPubDtoMapper {
 
         if (state.getConfig().isIncludeSynonymConceptReference() && syn.getSec() != null) {
             Reference ref = HibernateProxyHelper.deproxy(syn.getSec());
-            state.addReference(ref);
+            state.addReference(ref, PrintPubReferenceSourceType.SYNONYM_SEC);
             synDTO.secReference = ref.getTitleCache();
         }
 
@@ -340,7 +340,7 @@ public class PrintPubDtoMapper {
                     for (DescriptionElementSource source : element.getSources()) {
                         if (source.getCitation() != null) {
                             Reference ref = HibernateProxyHelper.deproxy(source.getCitation());
-                            state.addReference(ref);
+                            state.addReference(ref, PrintPubReferenceSourceType.FACT_SOURCE);
                             String shortCit = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(ref, null);
                             fact.citation = (fact.citation == null) ? shortCit : fact.citation + "; " + shortCit;
                         }

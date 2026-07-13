@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubReferenceEntryDTO;
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubReferenceEntryDTO.PrintPubReferenceSourceType;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.model.PrintPubDocumentModel;
 import eu.etaxonomy.cdm.io.cdmprintpub.render.PrintPubExportResultProcessor;
@@ -39,8 +41,7 @@ public class PrintPubExportState extends TaxonTreeExportStateBase<PrintPubExport
 	// ======================
 
 	private final List<PrintPubTaxonSummaryDTO> taxonList = new ArrayList<>();
-	private final Map<UUID, Reference> referenceStore = new HashMap<>();
-
+	private final Map<UUID, PrintPubReferenceEntryDTO> referenceStore = new HashMap<>();
 
 	// ======================
     // Sorting
@@ -145,16 +146,50 @@ public class PrintPubExportState extends TaxonTreeExportStateBase<PrintPubExport
 	// Bibliographic references
 	// ======================
 
-	public void addReference(Reference ref) {
-		if (ref != null) {
-			referenceStore.putIfAbsent(ref.getUuid(), ref);
-		}
+	public void addReference(Reference ref, PrintPubReferenceSourceType sourceType) {
+	    if (ref == null || ref.getUuid() == null) {
+	        return;
+	    }
+
+	    PrintPubReferenceEntryDTO entry = referenceStore.get(ref.getUuid());
+
+	    if (entry == null) {
+	        entry = new PrintPubReferenceEntryDTO(ref);
+	        referenceStore.put(ref.getUuid(), entry);
+	    }
+
+	    entry.addSourceType(sourceType);
 	}
 
 	public List<Reference> getSortedBibliography() {
-		List<Reference> refs = new ArrayList<>(referenceStore.values());
-		refs.sort(Comparator.comparing(Reference::getTitleCache, Comparator.nullsLast(String::compareTo)));
-		return refs;
+	    List<Reference> refs = new ArrayList<Reference>();
+
+	    for (PrintPubReferenceEntryDTO entry : referenceStore.values()) {
+	        refs.add(entry.getReference());
+	    }
+
+	    refs.sort(Comparator.comparing(Reference::getTitleCache, Comparator.nullsLast(String::compareTo)));
+	    return refs;
+	}
+	
+	public Map<PrintPubReferenceSourceType, Integer> getReferenceSourceTypeCounts() {
+
+	    Map<PrintPubReferenceSourceType, Integer> counts =
+	            new HashMap<PrintPubReferenceSourceType, Integer>();
+
+	    for (PrintPubReferenceSourceType type : PrintPubReferenceSourceType.values()) {
+	        counts.put(type, 0);
+	    }
+
+	    for (PrintPubReferenceEntryDTO entry : referenceStore.values()) {
+	        for (PrintPubReferenceSourceType type : PrintPubReferenceSourceType.values()) {
+	            if (entry.hasSourceType(type)) {
+	                counts.put(type, counts.get(type) + 1);
+	            }
+	        }
+	    }
+
+	    return counts;
 	}
 
 	// ======================
