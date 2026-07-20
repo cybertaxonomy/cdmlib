@@ -320,7 +320,7 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
     }
 
     protected void buildAppendix(PrintPubExportState state) {
-        
+
         PrintPubExportConfigurator conf = state.getConfig();
 
         if (!conf.isAppendIdentifierList()) {
@@ -338,48 +338,50 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
                 line.append(dto.titleCache.trim());
             }
 
-            String wfoId = dto.wfoId == null ? null : dto.wfoId.trim();
-
-            if (conf.isIncludeWfoId()
-                    && wfoId != null
-                    && !wfoId.isEmpty()) {
-
-                if (line.length() > 0) {
-                    line.append(" - ");
-                }
-                line.append(wfoId);
+            if (conf.isIncludeWfoId()) {
+                appendAppendixField(line, "WFO", dto.wfoIds);
             }
 
+            appendAppendixField(line, "IPNI", dto.ipniIds);
+
             if (conf.isIncludeProtologueUris()) {
-
-                StringBuilder links = new StringBuilder();
-
-                if (dto.links != null && !dto.links.isEmpty()) {
-                    for (String link : dto.links) {
-                        if (link == null || link.trim().isEmpty()) {
-                            continue;
-                        }
-
-                        if (links.length() > 0) {
-                            links.append(", ");
-                        }
-
-                        links.append(link.trim());
-                    }
-                }
-
-                if (line.length() > 0) {
-                    line.append(" - ");
-                }
-
-                if (links.length() > 0) {
-                    line.append(links.toString());
-                } else {
-                    line.append("No orig. publ. URI");
-                }
+                appendAppendixField(line, "URL", dto.links);
             }
 
             state.getProcessor().add(new PrintPubParagraphElement(line.toString()));
         }
+    }
+    
+    private void appendAppendixField(StringBuilder line, String label, List<String> values) {
+
+        if (line.length() > 0) {
+            line.append("; ");
+        }
+
+        line.append(label).append(": ").append(joinValuesOrDash(values));
+    }
+
+    private String joinValuesOrDash(List<String> values) {
+
+        if (values == null || values.isEmpty()) {
+            return "--";
+        }
+
+        StringBuilder result = new StringBuilder();
+
+        for (String value : values) {
+
+            if (value == null || value.trim().isEmpty()) {
+                continue;
+            }
+
+            if (result.length() > 0) {
+                result.append(", ");
+            }
+
+            result.append(value.trim());
+        }
+
+        return result.length() == 0 ? "--" : result.toString();
     }
 }

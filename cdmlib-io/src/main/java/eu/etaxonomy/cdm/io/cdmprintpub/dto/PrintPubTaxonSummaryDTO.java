@@ -38,5 +38,6 @@ public class PrintPubTaxonSummaryDTO {
     public String secReferenceCitation;
 
     public List<String> links = new ArrayList<>();
-    public String wfoId;
+    public List<String> wfoIds = new ArrayList<>();
+    public List<String> ipniIds = new ArrayList<>();
 }

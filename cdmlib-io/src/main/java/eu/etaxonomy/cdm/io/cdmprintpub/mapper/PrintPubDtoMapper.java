@@ -148,32 +148,46 @@ public class PrintPubDtoMapper {
             return;
         }
 
-        TaxonName name = taxon.getName();        
-        
+        TaxonName name = HibernateProxyHelper.deproxy(taxon.getName());
+
         if (name == null) {
             return;
         }
-        
-        // Wfo ID
-        Set<String> wfoIdLinks = name.getIdentifierStrings(IdentifierType.IDENTIFIER_NAME_WFO());                
-        Iterator<String> wfoLinksIterator = wfoIdLinks.iterator();
-        
-        if (wfoLinksIterator.hasNext()) {
-            dto.wfoId = wfoLinksIterator.next().toString().trim();
 
-        }
-                
-        // General Links
-        if (dto.links == null) {
-            dto.links = new LinkedList<String>();
-        }
-        
+        addIdentifierStrings(dto.wfoIds, name.getIdentifierStrings(IdentifierType.IDENTIFIER_NAME_WFO()));
+        addIdentifierStrings(dto.ipniIds, name.getIdentifierStrings(IdentifierType.IDENTIFIER_NAME_IPNI()));
+
         Set<ExternalLink> allLinks = name.getLinks();
-        
-        for (ExternalLink link : allLinks) {
-            dto.links.add(link.getUri().toString());
+
+        if (allLinks != null) {
+            for (ExternalLink link : allLinks) {
+
+                link = HibernateProxyHelper.deproxy(link);
+
+                if (link == null || link.getUri() == null) {
+                    continue;
+                }
+
+                String uri = link.getUri().toString();
+
+                if (uri != null && !uri.trim().isEmpty()) {
+                    dto.links.add(uri.trim());
+                }
+            }
         }
-        
+    }
+
+    private void addIdentifierStrings(List<String> target, Set<String> values) {
+
+        if (target == null || values == null || values.isEmpty()) {
+            return;
+        }
+
+        for (String value : values) {
+            if (value != null && !value.trim().isEmpty()) {
+                target.add(value.trim());
+            }
+        }
     }
 
     private void filterMisapplied(List<Synonym> synonyms, boolean includeMisapplied) {
