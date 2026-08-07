@@ -203,9 +203,11 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
                 combinedRuns.addAll(
                         PrintPubNonNestedHtmlTokenConverter.toRuns(PrintPubNonNestedHtmlTokenizer.tokenize(fact.text)));
 
-                if (fact.citation != null) {
-                    combinedRuns.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT,
-                            " [" + fact.citation + "]"));
+                if (fact.citations != null && !fact.citations.isEmpty()) {
+                    combinedRuns.add(new PrintPubTextRunElement.Run(
+                            PrintPubTextRunElement.RunType.TEXT,
+                            " [" + String.join("; ", fact.citations) + "]"
+                    ));
                 }
             }
 

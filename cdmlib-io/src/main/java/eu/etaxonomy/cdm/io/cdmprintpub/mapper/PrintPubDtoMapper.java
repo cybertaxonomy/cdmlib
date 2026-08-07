@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubSynonymDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubSynonymGroupDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -43,6 +44,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -50,6 +52,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.SecundumSource;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -100,8 +103,11 @@ public class PrintPubDtoMapper {
 
         if (state.getConfig().isIncludeTaxonomicConceptReference() && taxon.getSec() != null) {
             Reference ref = HibernateProxyHelper.deproxy(taxon.getSec());
-            state.addReference(ref, PrintPubReferenceSourceType.TAXON_SEC);
-            dto.secReferenceCitation = ref.getTitleCache();
+            SecundumSource secSource = taxon.getSecSource();
+            
+            state.addReference(secSource.getCitation(), PrintPubReferenceSourceType.TAXON_SEC);
+            dto.secReferenceCitation = secSource.getCitation().getTitleCache();
+            dto.secMicroCitation = secSource.getCitationMicroReference();
         }
 
         extractIdentifiers(state, taxon, dto);
@@ -158,6 +164,13 @@ public class PrintPubDtoMapper {
         addIdentifierStrings(dto.ipniIds, name.getIdentifierStrings(IdentifierType.IDENTIFIER_NAME_IPNI()));
 
         Set<ExternalLink> allLinks = name.getLinks();
+
+        NomenclaturalSource nameSource = name.getNomenclaturalSource();
+
+        if (nameSource != null) {
+            Set<ExternalLink> nomenclaturalSourceLinks = nameSource.getLinks();
+            allLinks.addAll(nomenclaturalSourceLinks);
+        }
 
         if (allLinks != null) {
             for (ExternalLink link : allLinks) {
@@ -300,6 +313,8 @@ public class PrintPubDtoMapper {
             if (!state.getConfig().isIncludeUnpublishedFacts() && !desc.isPublish()) {
                 continue;
             }
+            
+            Set<IdentifiableSource> descSources = desc.getSources();
 
             for (DescriptionElementBase element : desc.getElements()) {
 
@@ -345,7 +360,6 @@ public class PrintPubDtoMapper {
                     }
 
                     fact.text = text;
-
                     fact.kind = PrintPubFactKind.TEXT_DATA;
                     fact.sortIndex = element.getSortIndex();
                     fact.elementId = element.getId();
@@ -354,10 +368,24 @@ public class PrintPubDtoMapper {
                     for (DescriptionElementSource source : element.getSources()) {
                         if (source.getCitation() != null) {
                             Reference ref = HibernateProxyHelper.deproxy(source.getCitation());
-                            state.addReference(ref, PrintPubReferenceSourceType.FACT_SOURCE);
+                            state.addReference(ref, PrintPubReferenceSourceType.TAXON_FACT_SOURCE);
                             String shortCit = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(ref, null);
-                            fact.citation = (fact.citation == null) ? shortCit : fact.citation + "; " + shortCit;
+                            fact.citations.add(shortCit);
                         }
+                    }
+                    
+                    for (IdentifiableSource identifiableSource : descSources) {
+                        if (identifiableSource == null || identifiableSource.getCitation() == null) {
+                            continue;
+                        }
+
+                        Reference ref = HibernateProxyHelper.deproxy(identifiableSource.getCitation());
+
+                        // Add enum first, see PrintPubReferenceEntryDTO section.
+                        state.addReference(ref, PrintPubReferenceSourceType.FACT_DATASET_SOURCE);
+
+                        String shortCit = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(ref, null);
+                        fact.citations.add(shortCit);
                     }
 
                     dto.facts.add(fact);

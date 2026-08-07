@@ -20,7 +20,8 @@ public class PrintPubReferenceEntryDTO {
     public enum PrintPubReferenceSourceType {
         TAXON_SEC,
         SYNONYM_SEC,
-        FACT_SOURCE
+        TAXON_FACT_SOURCE,
+        FACT_DATASET_SOURCE
     }
 
     private final Reference reference;

@@ -52,6 +52,7 @@ public class PrintPubExportConfigurator
 
     // 4. Appendix: Digital Identifiers
     private boolean appendIdentifierList = true;
+    private boolean includeEmptyIds = true;
     private boolean includeWfoId = true;
     private boolean includeProtologueUris = true;
 
@@ -207,6 +208,14 @@ public class PrintPubExportConfigurator
     public void setAppendIdentifierList(boolean appendIdentifierList) {
         this.appendIdentifierList = appendIdentifierList;
     }
+    
+    public boolean isIncludeEmptyIds() {
+        return includeEmptyIds;
+    }
+
+    public void setIncludeEmptyIds(boolean includeEmptyIds) {
+        this.includeEmptyIds = includeEmptyIds;
+    }
 
     public boolean isIncludeWfoId() {
         return includeWfoId;
@@ -247,4 +256,5 @@ public class PrintPubExportConfigurator
     public void setFactSortMode(FactSortMode factSortMode) {
         this.factSortMode = factSortMode;
     }
+
 }
