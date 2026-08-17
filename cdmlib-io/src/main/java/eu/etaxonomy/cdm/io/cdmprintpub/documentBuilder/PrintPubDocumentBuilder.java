@@ -204,10 +204,8 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
                         PrintPubNonNestedHtmlTokenConverter.toRuns(PrintPubNonNestedHtmlTokenizer.tokenize(fact.text)));
 
                 if (fact.citations != null && !fact.citations.isEmpty()) {
-                    combinedRuns.add(new PrintPubTextRunElement.Run(
-                            PrintPubTextRunElement.RunType.TEXT,
-                            " [" + String.join("; ", fact.citations) + "]"
-                    ));
+                    combinedRuns.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT,
+                            " [" + String.join("; ", fact.citations) + "]"));
                 }
             }
 
@@ -334,6 +332,10 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
 
         for (PrintPubTaxonSummaryDTO dto : state.getTaxa()) {
 
+            if (!conf.isIncludeEmptyIds() && !hasAnySelectedIdentifier(dto, conf)) {
+                continue;
+            }
+
             StringBuilder line = new StringBuilder();
 
             if (dto.titleCache != null && !dto.titleCache.trim().isEmpty()) {
@@ -344,16 +346,54 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
                 appendAppendixField(line, "WFO", dto.wfoIds);
             }
 
-            appendAppendixField(line, "IPNI", dto.ipniIds);
+            if (conf.isIncludeIpniId()) {
+                appendAppendixField(line, "IPNI", dto.ipniIds);
+            }
 
             if (conf.isIncludeProtologueUris()) {
                 appendAppendixField(line, "URL", dto.links);
             }
 
-            state.getProcessor().add(new PrintPubParagraphElement(line.toString()));
+            state.getProcessor().add(new PrintPubParagraphElement(line.toString(), true));
         }
     }
-    
+
+    private boolean hasAnySelectedIdentifier(PrintPubTaxonSummaryDTO dto, PrintPubExportConfigurator conf) {
+
+        if (dto == null) {
+            return false;
+        }
+
+        if (conf.isIncludeWfoId() && hasValues(dto.wfoIds)) {
+            return true;
+        }
+
+        if (conf.isIncludeIpniId() && hasValues(dto.ipniIds)) {
+            return true;
+        }
+
+        if (conf.isIncludeProtologueUris() && hasValues(dto.links)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean hasValues(List<String> values) {
+
+        if (values == null || values.isEmpty()) {
+            return false;
+        }
+
+        for (String value : values) {
+            if (value != null && !value.trim().isEmpty()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void appendAppendixField(StringBuilder line, String label, List<String> values) {
 
         if (line.length() > 0) {

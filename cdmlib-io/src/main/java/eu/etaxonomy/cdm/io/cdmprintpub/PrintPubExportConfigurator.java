@@ -55,6 +55,7 @@ public class PrintPubExportConfigurator
     private boolean includeEmptyIds = true;
     private boolean includeWfoId = true;
     private boolean includeProtologueUris = true;
+    private boolean includeIpniId = true;
 
     // 5. Fact sorting
     private UUID featureTreeUuid;
@@ -231,6 +232,14 @@ public class PrintPubExportConfigurator
 
     public void setIncludeProtologueUris(boolean includeProtologueUris) {
         this.includeProtologueUris = includeProtologueUris;
+    }
+    
+    public boolean isIncludeIpniId() {
+        return includeIpniId;
+    }
+
+    public void setIncludeIpniId(boolean includeIpniId) {
+        this.includeIpniId = includeIpniId;
     }
 
     public UUID getFeatureTreeUuid() {
