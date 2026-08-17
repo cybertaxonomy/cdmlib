@@ -603,9 +603,20 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      * @return
      */
     @Transient
-    public SpecimenOrObservationBase getOriginalUnit(){
-        logger.warn("GetOriginalUnit not yet implemented");
-        return null;
+    public SpecimenOrObservationBase<?> getOriginalUnit(){
+        if (this instanceof DerivedUnit){
+            DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(this, DerivedUnit.class);
+            Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
+            if (originals.isEmpty()){
+                return null;
+            }else if (originals.size() == 1){
+                return originals.iterator().next();
+            }else {
+                throw new IllegalStateException("Derived unit " + derivedUnit.getUuid() + " has multiple original units");
+            }
+        }else {
+            return null;
+        }
     }
 
 
