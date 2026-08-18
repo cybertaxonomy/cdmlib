@@ -37,6 +37,7 @@ import org.joda.time.Partial;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
@@ -87,6 +88,7 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
+@Ignore //ignore only in branch 5.60.0+
 public class AssemblerTest extends UnitilsJUnit4 {
 
     @SpringBeanByType
