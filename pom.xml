@@ -658,13 +658,12 @@
         <artifactId>jakarta.xml.bind-api</artifactId>
         <version>${jaxb.version}</version>  <!-- not sure if jaxb.version is always the same -->
       </dependency>
-<!--       <dependency> -->
-<!--         replaced by jakarta.xml.bind-api -->
-<!--         <groupId>javax.xml.bind</groupId> -->
-<!--         <artifactId>jaxb-api</artifactId> -->
-<!--         <version>2.3.1</version> -->
-<!--         checked 2020-08 -->
-<!--       </dependency> -->
+       <dependency>
+<!--         replaced by jakarta.xml.bind-api, here only for 5.60.0+ -->
+         <groupId>javax.xml.bind</groupId>
+         <artifactId>jaxb-api</artifactId>
+         <version>2.3.1</version>
+       </dependency>
       <dependency>
          <!-- dependency for jaxb-api -->
          <groupId>javax.activation</groupId>

@@ -39,6 +39,16 @@
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-ext</artifactId>
     </dependency>
+        <!-- JAXB API -->
+    <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+    </dependency>
+    <!-- JAXB Implementation -->
+    <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+    </dependency>
     <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
