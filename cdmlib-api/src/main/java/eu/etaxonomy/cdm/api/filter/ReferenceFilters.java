@@ -10,7 +10,12 @@ package eu.etaxonomy.cdm.api.filter;
 
 import java.util.EnumSet;
 
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -29,11 +34,56 @@ public class ReferenceFilters {
     }
 
     public static EntityFilter<Reference> isBeforeDatePublished(DateTime date) {
-        return (root, cb) -> date == null ? null : cb.or(
-                cb.lessThan(root.get("datePublished.start"), date),
-                cb.and(cb.isNull(root.get("datePublished.start")),
-                   cb.lessThan(root.get("datePublished.end"), date))
-                );
+//        return (root, cb) -> date == null ? null : cb.or(
+//                cb.lessThan(root.get("datePublished").get("start"), date),
+//                cb.and(cb.isNull(root.get("datePublished").get("start")),
+//                   cb.lessThan(root.get("datePublished").get("end"), date))
+//                );
+
+        return (root, cb) -> {
+            if (date == null) {
+                return null;
+            }
+
+            // path to partial fields
+            Path<Partial> startPath = root.get("datePublished").get("start");
+            Path<Partial> endPath = root.get("datePublished").get("end");
+
+
+            // 1. Convert date time parameter to partial to make it comparable.
+            Partial dateAsPartial = new Partial()
+                .with(DateTimeFieldType.year(), date.getYear())
+                .with(DateTimeFieldType.monthOfYear(), date.getMonthOfYear())
+                .with(DateTimeFieldType.dayOfMonth(), date.getDayOfMonth());
+
+            //2. Define predicates for valid years
+            Predicate startHasValidYear = cb.not(cb.like(startPath.as(String.class), "0000%"));
+            Predicate endHasValidYear = cb.not(cb.like(endPath.as(String.class), "0000%"));
+            //TODO also define valid months (but not critical)
+
+            // 3. Compare logic is handled via Partial object
+            // Hibernate-UserType translates cb.lessThan() into database comparison
+            Predicate startCompare = cb.and(
+                cb.isNotNull(startPath),
+                startHasValidYear,
+                cb.lessThan(startPath, dateAsPartial)
+            );
+
+            Predicate endCompare = cb.and(
+                cb.isNotNull(endPath),
+                endHasValidYear,
+                cb.lessThan(endPath, dateAsPartial)
+            );
+
+            //4. fallback if start does not exist but end exists
+            return cb.or(
+                startCompare,
+                cb.and(
+                    cb.isNull(startPath),
+                    endCompare
+                )
+            );
+        };
     }
 
     //required by phycobank
