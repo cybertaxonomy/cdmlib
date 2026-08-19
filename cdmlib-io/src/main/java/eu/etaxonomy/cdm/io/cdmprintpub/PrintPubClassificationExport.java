@@ -123,14 +123,16 @@ public class PrintPubClassificationExport
 
                 if (referenceDepth == null) {
                     referenceDepth = mapper.calculateDepth(node);
-
-                    if (node.getTaxon() != null && node.getTaxon().getName() != null) {
-                        //TODO store in state not in configurator
-                        state.getConfig().setDocumentTitle(node.getTaxon().getName().getTitleCache());
-                    }
                 }
 
                 PrintPubTaxonSummaryDTO dto = mapper.mapNodeToDto(node, referenceDepth, state);
+
+                if (nodesProcessed == 1
+                        && dto != null
+                        && dto.titleCache != null) { 
+                    state.getConfig().setDocumentTitle(dto.titleCache);
+                }
+                
                 if (dto != null) {
                     state.addTaxon(dto);
                 }

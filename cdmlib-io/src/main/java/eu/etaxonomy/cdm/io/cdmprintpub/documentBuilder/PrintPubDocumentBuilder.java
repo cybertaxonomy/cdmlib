@@ -92,7 +92,7 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
     private void renderTaxonHeading(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, String indent) {
         int headerLevel = Math.min(dto.relativeDepth + 2, 6);
 
-        state.getProcessor().add(new PrintPubTextRunElement(null, runsFromTaggedName(dto.taggedName),
+        state.getProcessor().add(new PrintPubTextRunElement(null, runsFromTaggedName(dto.taggedNameList),
                 PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME));
     }
 
@@ -108,33 +108,31 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
 
             for (PrintPubSynonymDTO syn : group.synonyms) {
 
-                StringBuilder line = new StringBuilder();
-
                 boolean doIndent = false;
+                String prefix;
 
                 // --- choose prefix ---
                 if (syn.forceDashMarker) {
-                    line.append(UTF8.EM_DASH + " ");
+                    prefix = UTF8.EM_DASH + " ";
                 } else if (first) {
-                    line.append("= ");
+                    prefix = "= ";
                     first = false;
                 } else {
-                    // members of the same homotypic group
-                    line.append("≡ ");
+                    prefix = "≡ ";
                     doIndent = true;
                 }
 
-                // --- name ---
-                line.append(syn.titleCache);
+                // --- sec. reference suffix ---
+                String suffix = "";
 
-                // --- sec. reference ---
                 if (state.getConfig().isIncludeSynonymConceptReference() && syn.secReference != null) {
 
-                    String suffix = state.incrementShortCitation(syn.secReference);
-                    line.append(" sec. ").append(syn.secReference).append(suffix);
+                    String citationSuffix = state.incrementShortCitation(syn.secReference);
+                    suffix = " sec. " + syn.secReference + citationSuffix;
                 }
 
-                state.getProcessor().add(new PrintPubParagraphElement(line.toString(), doIndent));
+                // --- name rendered from TaggedText, not titleCache ---
+                state.getProcessor().add(new PrintPubTextRunElement(synonymRuns(syn, prefix, suffix)));
 
                 // --- type information ---
                 if (syn.typeSpecimenString != null && !syn.typeSpecimenString.trim().isEmpty()) {
@@ -244,6 +242,27 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
         return runs;
     }
 
+    private List<PrintPubTextRunElement.Run> synonymRuns(PrintPubSynonymDTO syn, String prefix, String suffix) {
+
+        List<PrintPubTextRunElement.Run> runs = new ArrayList<>();
+
+        runs.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT, prefix));
+
+        List<PrintPubTextRunElement.Run> nameRuns = runsFromTaggedName(syn.taggedNameList);
+
+        if (!nameRuns.isEmpty()) {
+            runs.addAll(nameRuns);
+        } else if (syn.titleCache != null && !syn.titleCache.trim().isEmpty()) {
+            runs.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT, syn.titleCache.trim()));
+        }
+
+        if (suffix != null && !suffix.isEmpty()) {
+            runs.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT, suffix));
+        }
+
+        return runs;
+    }
+
     private boolean needsSpaceBefore(String text) {
         return !text.startsWith(",") && !text.startsWith(";") && !text.startsWith(")");
     }
@@ -302,10 +321,17 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
             state.getProcessor().add(new PrintPubSectionHeaderElement("Index to Scientific Names", 1));
 
             List<PrintPubTaxonSummaryDTO> sortedTaxa = state.getTaxa().stream()
-                    .sorted(Comparator.comparing(t -> t.titleCache)).collect(Collectors.toList());
+                    .sorted(Comparator.comparing(
+                            t -> t.titleCache,
+                            Comparator.nullsLast(String::compareToIgnoreCase)))
+                    .collect(Collectors.toList());
 
             for (PrintPubTaxonSummaryDTO dto : sortedTaxa) {
-                state.getProcessor().add(new PrintPubParagraphElement(dto.titleCache));
+                state.getProcessor().add(
+                        new PrintPubTextRunElement(
+                                runsFromTaggedName(dto.taggedNameList)
+                        )
+                );
             }
         }
 
@@ -338,23 +364,43 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
 
             StringBuilder line = new StringBuilder();
 
-            if (dto.titleCache != null && !dto.titleCache.trim().isEmpty()) {
-                line.append(dto.titleCache.trim());
+            List<PrintPubTextRunElement.Run> runs =
+                    new ArrayList<PrintPubTextRunElement.Run>();
+
+            // --- name rendered from TaggedText ---
+            List<PrintPubTextRunElement.Run> nameRuns =
+                    runsFromTaggedName(dto.taggedNameList);
+
+            if (!nameRuns.isEmpty()) {
+                runs.addAll(nameRuns);
+            } else if (dto.titleCache != null && !dto.titleCache.trim().isEmpty()) {
+                runs.add(new PrintPubTextRunElement.Run(
+                        PrintPubTextRunElement.RunType.TEXT,
+                        dto.titleCache.trim()));
             }
 
+            // --- plain identifier suffix ---
+            StringBuilder suffix = new StringBuilder();
+
             if (conf.isIncludeWfoId()) {
-                appendAppendixField(line, "WFO", dto.wfoIds);
+                appendAppendixField(suffix, "WFO", dto.wfoIds);
             }
 
             if (conf.isIncludeIpniId()) {
-                appendAppendixField(line, "IPNI", dto.ipniIds);
+                appendAppendixField(suffix, "IPNI", dto.ipniIds);
             }
 
             if (conf.isIncludeProtologueUris()) {
-                appendAppendixField(line, "URL", dto.links);
+                appendAppendixField(suffix, "URL", dto.links);
             }
 
-            state.getProcessor().add(new PrintPubParagraphElement(line.toString(), true));
+            if (suffix.length() > 0) {
+                runs.add(new PrintPubTextRunElement.Run(
+                        PrintPubTextRunElement.RunType.TEXT,
+                        "; " + suffix.toString()));
+            }
+
+            state.getProcessor().add(new PrintPubTextRunElement(runs));
         }
     }
 

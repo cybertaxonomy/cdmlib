@@ -83,11 +83,13 @@ public class PrintPubDtoMapper {
 
         TaxonName name = HibernateProxyHelper.deproxy(taxon.getName());
 
-        dto.titleCache = (name != null) ? name.getTitleCache() : taxon.getTitleCache();
-
         if (name != null) {
-            dto.taggedName = name.getTaggedFullTitle();
+            dto.taggedNameList = name.getTaggedFullTitle();
+            dto.titleCache = name.getTitleCache();
+        } else {
+            dto.titleCache = taxon.getTitleCache(); // temporary fallback
         }
+        
 
         if (name != null) {
             extractTypeData(name, dto, state.getConfig());
@@ -104,7 +106,7 @@ public class PrintPubDtoMapper {
         if (state.getConfig().isIncludeTaxonomicConceptReference() && taxon.getSec() != null) {
             Reference ref = HibernateProxyHelper.deproxy(taxon.getSec());
             SecundumSource secSource = taxon.getSecSource();
-            
+
             state.addReference(secSource.getCitation(), PrintPubReferenceSourceType.TAXON_SEC);
             dto.secReferenceCitation = secSource.getCitation().getTitleCache();
             dto.secMicroCitation = secSource.getCitationMicroReference();
@@ -217,10 +219,11 @@ public class PrintPubDtoMapper {
 
         TaxonName synName = HibernateProxyHelper.deproxy(syn.getName());
 
-        synDTO.titleCache = (synName != null) ? synName.getTitleCache() : syn.getTitleCache();
-
         if (synName != null) {
-            synDTO.taggedName = synName.getTaggedFullTitle();
+            synDTO.taggedNameList = synName.getTaggedFullTitle();
+            synDTO.titleCache = synName.getTitleCache();
+        } else {
+            synDTO.titleCache = syn.getTitleCache();
         }
 
         if (synName != null) {
@@ -313,7 +316,7 @@ public class PrintPubDtoMapper {
             if (!state.getConfig().isIncludeUnpublishedFacts() && !desc.isPublish()) {
                 continue;
             }
-            
+
             Set<IdentifiableSource> descSources = desc.getSources();
 
             for (DescriptionElementBase element : desc.getElements()) {
@@ -373,7 +376,7 @@ public class PrintPubDtoMapper {
                             fact.citations.add(shortCit);
                         }
                     }
-                    
+
                     for (IdentifiableSource identifiableSource : descSources) {
                         if (identifiableSource == null || identifiableSource.getCitation() == null) {
                             continue;
