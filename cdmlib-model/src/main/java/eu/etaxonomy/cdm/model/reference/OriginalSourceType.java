@@ -121,7 +121,7 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
      * See https://dev.e-taxonomy.eu/redmine/issues/11012
      */
     @XmlEnumValue("Internal")
-    IntextReference(UUID.fromString(""), "Intext Reference", "INR", null),
+    IntextReference(UUID.fromString("1e85c4ec-2572-485b-ba7f-07964e0c083d"), "Intext Reference", "INR", null),
 
 	//9
 	/**
