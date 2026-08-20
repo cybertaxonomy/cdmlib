@@ -13,9 +13,9 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -115,7 +115,15 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
     @XmlEnumValue("Internal")
     Internal(UUID.fromString("c250c4cb-de38-4040-be7b-4c082d6bf0e6"), "Internal", "INT", null),
 
-	//8
+    /**
+     * <code>Intext Reference</code> is the type to be used if a reference is used in freetext like textual
+     * facts or annotations. This is a priliminary solution to make such references available in the bibliography.
+     * See https://dev.e-taxonomy.eu/redmine/issues/11012
+     */
+    @XmlEnumValue("Internal")
+    IntextReference(UUID.fromString(""), "Intext Reference", "INR", null),
+
+	//9
 	/**
 	 * <code>Other</code> is the type to be used if none of the other types is applicable.
 	 */
