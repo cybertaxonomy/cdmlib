@@ -72,11 +72,13 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 public class PrintPubDtoMapper {
 
     public PrintPubTaxonSummaryDTO mapNodeToDto(TaxonNode node, int referenceDepth, PrintPubExportState state) {
+
         if (node == null || node.getTaxon() == null) {
             return null;
         }
 
         Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon());
+
         PrintPubTaxonSummaryDTO dto = new PrintPubTaxonSummaryDTO();
         dto.uuid = taxon.getUuid();
         dto.relativeDepth = calculateDepth(node) - referenceDepth;
@@ -87,9 +89,8 @@ public class PrintPubDtoMapper {
             dto.taggedNameList = name.getTaggedFullTitle();
             dto.titleCache = name.getTitleCache();
         } else {
-            dto.titleCache = taxon.getTitleCache(); // temporary fallback
+            dto.titleCache = taxon.getTitleCache();
         }
-        
 
         if (name != null) {
             extractTypeData(name, dto, state.getConfig());
@@ -104,12 +105,17 @@ public class PrintPubDtoMapper {
         }
 
         if (state.getConfig().isIncludeTaxonomicConceptReference() && taxon.getSec() != null) {
+
             Reference ref = HibernateProxyHelper.deproxy(taxon.getSec());
             SecundumSource secSource = taxon.getSecSource();
 
-            state.addReference(secSource.getCitation(), PrintPubReferenceSourceType.TAXON_SEC);
-            dto.secReferenceCitation = secSource.getCitation().getTitleCache();
-            dto.secMicroCitation = secSource.getCitationMicroReference();
+            if (secSource != null && secSource.getType().isPrimarySource()) {
+
+                state.addReference(ref, PrintPubReferenceSourceType.TAXON_SEC);
+
+                dto.secReferenceCitation = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(ref,
+                        secSource.getCitationMicroReference(), null, null);
+            }
         }
 
         extractIdentifiers(state, taxon, dto);
@@ -369,7 +375,7 @@ public class PrintPubDtoMapper {
                     fact.sequence = factSequence++;
 
                     for (DescriptionElementSource source : element.getSources()) {
-                        if (source.getCitation() != null) {
+                        if (source.getCitation() != null && !source.getType().isPrimarySource()) {
                             Reference ref = HibernateProxyHelper.deproxy(source.getCitation());
                             state.addReference(ref, PrintPubReferenceSourceType.TAXON_FACT_SOURCE);
                             String shortCit = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(ref, null);
@@ -378,7 +384,8 @@ public class PrintPubDtoMapper {
                     }
 
                     for (IdentifiableSource identifiableSource : descSources) {
-                        if (identifiableSource == null || identifiableSource.getCitation() == null) {
+                        if (identifiableSource == null || identifiableSource.getCitation() == null
+                                || !identifiableSource.getType().isPrimarySource()) {
                             continue;
                         }
 

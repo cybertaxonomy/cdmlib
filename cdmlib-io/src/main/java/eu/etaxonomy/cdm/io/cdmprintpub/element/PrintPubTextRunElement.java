@@ -33,9 +33,7 @@ public class PrintPubTextRunElement implements IPrintPubDocumentElement {
         BOLD,
         ITALIC,
         LINE_BREAK,
-
-        // Future-proof semantic run type.
-        // Currently rendered like italic text.
+        BOLD_ITALIC,
         CDM_REFERENCE
     }
 

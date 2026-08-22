@@ -62,6 +62,12 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         italic.setStyleNameAttribute("PrintPubItalic");
         italic.setProperty(OdfTextProperties.FontStyle, "italic");
 
+        OdfStyle boldItalic = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Text);
+
+        boldItalic.setStyleNameAttribute("PrintPubBoldItalic");
+        boldItalic.setProperty(OdfTextProperties.FontWeight, "bold");
+        boldItalic.setProperty(OdfTextProperties.FontStyle, "italic");
+
         // ---------- PARAGRAPH STYLES ----------
         OdfStyle body = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
         body.setStyleNameAttribute("PrintPubBody");
@@ -212,6 +218,8 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
             } else if (run.type == PrintPubTextRunElement.RunType.ITALIC
                     || run.type == PrintPubTextRunElement.RunType.CDM_REFERENCE) {
                 span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubItalic");
+            } else if (run.type == PrintPubTextRunElement.RunType.BOLD_ITALIC) {
+                span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBoldItalic");
             }
 
             span.setTextContent(run.text);

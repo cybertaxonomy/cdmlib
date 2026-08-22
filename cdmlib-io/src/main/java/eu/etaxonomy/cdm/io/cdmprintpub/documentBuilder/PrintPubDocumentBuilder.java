@@ -38,6 +38,8 @@ import eu.etaxonomy.cdm.io.cdmprintpub.element.PrintPubPageBreakElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.element.PrintPubParagraphElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.element.PrintPubSectionHeaderElement;
 import eu.etaxonomy.cdm.io.cdmprintpub.element.PrintPubTextRunElement;
+import eu.etaxonomy.cdm.io.cdmprintpub.element.PrintPubTextRunElement.Run;
+import eu.etaxonomy.cdm.io.cdmprintpub.element.PrintPubTextRunElement.RunType;
 import eu.etaxonomy.cdm.io.cdmprintpub.util.PrintPubNonNestedHtmlTokenConverter;
 import eu.etaxonomy.cdm.io.cdmprintpub.util.PrintPubNonNestedHtmlTokenizer;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -90,10 +92,17 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
     }
 
     private void renderTaxonHeading(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, String indent) {
-        int headerLevel = Math.min(dto.relativeDepth + 2, 6);
 
-        state.getProcessor().add(new PrintPubTextRunElement(null, runsFromTaggedName(dto.taggedNameList),
-                PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME));
+        List<PrintPubTextRunElement.Run> runs = new ArrayList<>(runsFromTaggedNameForTitle(dto.taggedNameList));
+
+        if (dto.secReferenceCitation != null && !dto.secReferenceCitation.isBlank()) {
+
+            runs.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT,
+                    " sec. " + dto.secReferenceCitation));
+        }
+
+        state.getProcessor()
+                .add(new PrintPubTextRunElement(null, runs, PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME));
     }
 
     private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, String indent) {
@@ -242,6 +251,37 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
         return runs;
     }
 
+    private List<Run> runsFromTaggedNameForTitle(List<TaggedText> taggedName) {
+
+        List<Run> runs = new ArrayList<>();
+        boolean first = true;
+
+        for (TaggedText tt : taggedName) {
+
+            String text = tt.getText();
+            if (text == null || text.isEmpty()) {
+                continue;
+            }
+
+            if (!first && needsSpaceBefore(text)) {
+                runs.add(new Run(RunType.TEXT, " "));
+            }
+            first = false;
+
+            RunType type;
+
+            if (tt.getType() == TagEnum.name) {
+                type = RunType.BOLD_ITALIC;
+            } else {
+                type = RunType.BOLD;
+            }
+
+            runs.add(new Run(type, text));
+        }
+
+        return runs;
+    }
+
     private List<PrintPubTextRunElement.Run> synonymRuns(PrintPubSynonymDTO syn, String prefix, String suffix) {
 
         List<PrintPubTextRunElement.Run> runs = new ArrayList<>();
@@ -321,17 +361,11 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
             state.getProcessor().add(new PrintPubSectionHeaderElement("Index to Scientific Names", 1));
 
             List<PrintPubTaxonSummaryDTO> sortedTaxa = state.getTaxa().stream()
-                    .sorted(Comparator.comparing(
-                            t -> t.titleCache,
-                            Comparator.nullsLast(String::compareToIgnoreCase)))
+                    .sorted(Comparator.comparing(t -> t.titleCache, Comparator.nullsLast(String::compareToIgnoreCase)))
                     .collect(Collectors.toList());
 
             for (PrintPubTaxonSummaryDTO dto : sortedTaxa) {
-                state.getProcessor().add(
-                        new PrintPubTextRunElement(
-                                runsFromTaggedName(dto.taggedNameList)
-                        )
-                );
+                state.getProcessor().add(new PrintPubTextRunElement(runsFromTaggedName(dto.taggedNameList)));
             }
         }
 
@@ -364,19 +398,15 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
 
             StringBuilder line = new StringBuilder();
 
-            List<PrintPubTextRunElement.Run> runs =
-                    new ArrayList<PrintPubTextRunElement.Run>();
+            List<PrintPubTextRunElement.Run> runs = new ArrayList<PrintPubTextRunElement.Run>();
 
             // --- name rendered from TaggedText ---
-            List<PrintPubTextRunElement.Run> nameRuns =
-                    runsFromTaggedName(dto.taggedNameList);
+            List<PrintPubTextRunElement.Run> nameRuns = runsFromTaggedName(dto.taggedNameList);
 
             if (!nameRuns.isEmpty()) {
                 runs.addAll(nameRuns);
             } else if (dto.titleCache != null && !dto.titleCache.trim().isEmpty()) {
-                runs.add(new PrintPubTextRunElement.Run(
-                        PrintPubTextRunElement.RunType.TEXT,
-                        dto.titleCache.trim()));
+                runs.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT, dto.titleCache.trim()));
             }
 
             // --- plain identifier suffix ---
@@ -395,9 +425,7 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
             }
 
             if (suffix.length() > 0) {
-                runs.add(new PrintPubTextRunElement.Run(
-                        PrintPubTextRunElement.RunType.TEXT,
-                        "; " + suffix.toString()));
+                runs.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT, "; " + suffix.toString()));
             }
 
             state.getProcessor().add(new PrintPubTextRunElement(runs));
