@@ -365,7 +365,7 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
                     .collect(Collectors.toList());
 
             for (PrintPubTaxonSummaryDTO dto : sortedTaxa) {
-                state.getProcessor().add(new PrintPubTextRunElement(runsFromTaggedName(dto.taggedNameList)));
+                state.getProcessor().add(new PrintPubTextRunElement(runsFromTaggedName(dto.taggedScientificIndexNameList)));
             }
         }
 

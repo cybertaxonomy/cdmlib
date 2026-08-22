@@ -87,6 +87,7 @@ public class PrintPubDtoMapper {
 
         if (name != null) {
             dto.taggedNameList = name.getTaggedFullTitle();
+            dto.taggedScientificIndexNameList = name.getTaggedName();
             dto.titleCache = name.getTitleCache();
         } else {
             dto.titleCache = taxon.getTitleCache();

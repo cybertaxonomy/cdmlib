@@ -23,6 +23,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 public class PrintPubTaxonSummaryDTO {
     public UUID uuid;
     public List<TaggedText> taggedNameList;
+    public List<TaggedText> taggedScientificIndexNameList;
+    
     public int relativeDepth;
     public String titleCache;
     
