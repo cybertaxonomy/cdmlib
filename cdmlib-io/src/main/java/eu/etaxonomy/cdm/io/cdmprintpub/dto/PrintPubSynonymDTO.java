@@ -19,10 +19,14 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  */
 
 public class PrintPubSynonymDTO {
+
     public List<TaggedText> taggedNameList;
+
+    public String scientificName;
     public String secReference;
     public String typeSpecimenString;
     public String typeStatementString;
     public String titleCache;
+
     public boolean forceDashMarker;
 }

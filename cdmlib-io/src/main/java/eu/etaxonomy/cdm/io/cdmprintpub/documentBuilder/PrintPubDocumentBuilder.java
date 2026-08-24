@@ -14,8 +14,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -326,7 +328,13 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
             buildBibliography(state);
         }
 
-        buildIndices(state);
+        if (state.getConfig().isGenerateScientificNameIndex()) {
+            buildScientificNameIndex(state);
+        }
+
+        if (state.getConfig().isGenerateCommonNameIndex()) {
+            buildCommonNameIndex(state);
+        }
 
         if (state.getConfig().isAppendIdentifierList()) {
             buildAppendix(state);
@@ -353,30 +361,41 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
         }
     }
 
-    protected void buildIndices(PrintPubExportState state) {
+    protected void buildScientificNameIndex(PrintPubExportState state) {
 
-        // ---- Scientific name index ----
-        if (state.getConfig().isGenerateScientificNameIndex()) {
-            state.getProcessor().add(new PrintPubPageBreakElement());
-            state.getProcessor().add(new PrintPubSectionHeaderElement("Index to Scientific Names", 1));
+        state.getProcessor().add(new PrintPubPageBreakElement());
+        state.getProcessor().add(
+                new PrintPubSectionHeaderElement("Index to Scientific Names", 1));
 
-            List<PrintPubTaxonSummaryDTO> sortedTaxa = state.getTaxa().stream()
-                    .sorted(Comparator.comparing(t -> t.titleCache, Comparator.nullsLast(String::compareToIgnoreCase)))
-                    .collect(Collectors.toList());
+        // To do, put together scientific names with back-references to origin in checklist
+        state.getTaxa().stream()
+                .filter(Objects::nonNull)
+                .flatMap(taxon -> Stream.concat(
+                        Stream.ofNullable(taxon.scientificName),
+                        taxon.synonymGroups.stream()
+                                .filter(group -> group != null && group.synonyms != null)
+                                .flatMap(group -> group.synonyms.stream())
+                                .filter(Objects::nonNull)
+                                .map(synonym -> synonym.scientificName)))
+                .filter(name -> name != null && !name.isBlank())
+                .map(String::trim)
+                .distinct()
+                .sorted(String.CASE_INSENSITIVE_ORDER)
+                .forEach(name -> state.getProcessor().add(
+                        new PrintPubTextRunElement(List.of(
+                                new PrintPubTextRunElement.Run(
+                                        PrintPubTextRunElement.RunType.ITALIC,
+                                        name)))));
+    }
 
-            for (PrintPubTaxonSummaryDTO dto : sortedTaxa) {
-                state.getProcessor().add(new PrintPubTextRunElement(runsFromTaggedName(dto.taggedScientificIndexNameList)));
-            }
-        }
+    protected void buildCommonNameIndex(PrintPubExportState state) {
 
-        // ---- Common name index ----
-        if (state.getConfig().isGenerateCommonNameIndex()) {
-            state.getProcessor().add(new PrintPubPageBreakElement());
-            state.getProcessor().add(new PrintPubSectionHeaderElement("Index to Common Names", 1));
+        state.getProcessor().add(new PrintPubPageBreakElement());
+        state.getProcessor().add(new PrintPubSectionHeaderElement("Index to Common Names", 1));
 
-            state.getTaxa().stream().flatMap(dto -> dto.commonNames.stream()).sorted()
-                    .forEach(commonName -> state.getProcessor().add(new PrintPubParagraphElement(commonName)));
-        }
+        state.getTaxa().stream().filter(dto -> dto.commonNames != null).flatMap(dto -> dto.commonNames.stream())
+                .filter(Objects::nonNull).sorted(String.CASE_INSENSITIVE_ORDER)
+                .forEach(commonName -> state.getProcessor().add(new PrintPubParagraphElement(commonName)));
     }
 
     protected void buildAppendix(PrintPubExportState state) {
