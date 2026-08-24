@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.odftoolkit.odfdom.dom.OdfContentDom;
+import org.odftoolkit.odfdom.dom.OdfDocumentNamespace;
 import org.odftoolkit.odfdom.dom.element.text.TextHElement;
 import org.odftoolkit.odfdom.dom.element.text.TextLineBreakElement;
 import org.odftoolkit.odfdom.dom.element.text.TextPElement;
@@ -45,8 +46,7 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
     public PrintPubOdtInterpreter() throws Exception {
         this.document = OdfTextDocument.newTextDocument();
         this.contentDom = document.getContentDom();
-
-        this.textRoot = contentDom.getRootElement();
+        this.textRoot = (OdfElement) contentDom.getElementsByTagName("office:text").item(0);
 
         ensureStyles();
     }
@@ -61,6 +61,12 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         OdfStyle italic = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Text);
         italic.setStyleNameAttribute("PrintPubItalic");
         italic.setProperty(OdfTextProperties.FontStyle, "italic");
+
+        OdfStyle boldItalic = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Text);
+
+        boldItalic.setStyleNameAttribute("PrintPubBoldItalic");
+        boldItalic.setProperty(OdfTextProperties.FontWeight, "bold");
+        boldItalic.setProperty(OdfTextProperties.FontStyle, "italic");
 
         // ---------- PARAGRAPH STYLES ----------
         OdfStyle body = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
@@ -130,18 +136,17 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         int level = Math.max(1, Math.min(6, header.getLevel()));
 
         TextHElement h = contentDom.newOdfElement(TextHElement.class);
-        h.setTextStyleNameAttribute("PrintPubHeading" + level);
-        h.setTextOutlineLevelAttribute(level);
+        h.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubHeading" + level);
+        h.setAttribute("text:outline-level", Integer.toString(level));
         h.setTextContent(header.getTitle());
 
         textRoot.appendChild(h);
-
     }
 
     private void renderParagraph(PrintPubParagraphElement para) {
 
         TextPElement p = contentDom.newOdfElement(TextPElement.class);
-        p.setTextStyleNameAttribute(
+        p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name",
                 para.isIndented() ? "PrintPubIndent" : "PrintPubBody");
         p.setTextContent(para.getText());
 
@@ -151,11 +156,10 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
     private void renderLabeledText(PrintPubLabeledTextElement labeled) {
 
         TextPElement p = contentDom.newOdfElement(TextPElement.class);
-        p.setTextStyleNameAttribute("PrintPubBody");
+        p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBody");
 
         TextSpanElement label = contentDom.newOdfElement(TextSpanElement.class);
-        label.setTextStyleNameAttribute("PrintPubBold");
-
+        label.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBold");
         label.setTextContent(labeled.getLabel() + ": ");
 
         TextSpanElement value = contentDom.newOdfElement(TextSpanElement.class);
@@ -170,31 +174,32 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
     private void renderPageBreak() {
 
         TextPElement p = contentDom.newOdfElement(TextPElement.class);
-        p.setTextStyleNameAttribute("PrintPubPageBreak");
+        p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubPageBreak");
         textRoot.appendChild(p);
     }
+
     private void renderTextRun(PrintPubTextRunElement element) {
 
         TextPElement p = contentDom.newOdfElement(TextPElement.class);
 
         String styleName;
         switch (element.getRole()) {
-            case TAXON_NAME:
-                styleName = "PrintPubTaxonName";
-                break;
-            case FACT_GROUP:
-                styleName = "PrintPubBody"; // or future variant
-                break;
-            case BODY:
-            default:
-                styleName = "PrintPubBody";
+        case TAXON_NAME:
+            styleName = "PrintPubTaxonName";
+            break;
+        case FACT_GROUP:
+            styleName = "PrintPubBody"; // or future variant
+            break;
+        case BODY:
+        default:
+            styleName = "PrintPubBody";
         }
 
-        p.setTextStyleNameAttribute(styleName);
+        p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", styleName);
 
         if (element.getLabel() != null) {
             TextSpanElement label = contentDom.newOdfElement(TextSpanElement.class);
-            label.setTextStyleNameAttribute("PrintPubBold");
+            label.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBold");
             label.setTextContent(element.getLabel() + ": ");
             p.appendChild(label);
         }
@@ -209,9 +214,12 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
             TextSpanElement span = contentDom.newOdfElement(TextSpanElement.class);
 
             if (run.type == PrintPubTextRunElement.RunType.BOLD) {
-                span.setTextStyleNameAttribute("PrintPubBold");
-            } else if (run.type == PrintPubTextRunElement.RunType.ITALIC) {
-                span.setTextStyleNameAttribute("PrintPubItalic");
+                span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBold");
+            } else if (run.type == PrintPubTextRunElement.RunType.ITALIC
+                    || run.type == PrintPubTextRunElement.RunType.CDM_REFERENCE) {
+                span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubItalic");
+            } else if (run.type == PrintPubTextRunElement.RunType.BOLD_ITALIC) {
+                span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBoldItalic");
             }
 
             span.setTextContent(run.text);

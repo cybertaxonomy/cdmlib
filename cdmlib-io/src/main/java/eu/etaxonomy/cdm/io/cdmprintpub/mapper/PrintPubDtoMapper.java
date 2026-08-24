@@ -10,6 +10,9 @@
 package eu.etaxonomy.cdm.io.cdmprintpub.mapper;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,10 +27,13 @@ import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportConfigurator;
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubFactDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubFactDTO.PrintPubFactKind;
+import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubReferenceEntryDTO.PrintPubReferenceSourceType;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubSynonymDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubSynonymGroupDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -36,7 +42,9 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -44,9 +52,11 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.SecundumSource;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -62,21 +72,25 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 public class PrintPubDtoMapper {
 
     public PrintPubTaxonSummaryDTO mapNodeToDto(TaxonNode node, int referenceDepth, PrintPubExportState state) {
+
         if (node == null || node.getTaxon() == null) {
             return null;
         }
 
         Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon());
+
         PrintPubTaxonSummaryDTO dto = new PrintPubTaxonSummaryDTO();
         dto.uuid = taxon.getUuid();
         dto.relativeDepth = calculateDepth(node) - referenceDepth;
 
         TaxonName name = HibernateProxyHelper.deproxy(taxon.getName());
 
-        dto.titleCache = (name != null) ? name.getTitleCache() : taxon.getTitleCache();
-
         if (name != null) {
-            dto.taggedName = name.getTaggedFullTitle();
+            dto.taggedNameList = name.getTaggedFullTitle();
+            dto.taggedScientificIndexNameList = name.getTaggedName();
+            dto.titleCache = name.getTitleCache();
+        } else {
+            dto.titleCache = taxon.getTitleCache();
         }
 
         if (name != null) {
@@ -92,10 +106,20 @@ public class PrintPubDtoMapper {
         }
 
         if (state.getConfig().isIncludeTaxonomicConceptReference() && taxon.getSec() != null) {
+
             Reference ref = HibernateProxyHelper.deproxy(taxon.getSec());
-            state.addReference(ref);
-            dto.secReferenceCitation = ref.getTitleCache();
+            SecundumSource secSource = taxon.getSecSource();
+
+            if (secSource != null && secSource.getType().isPrimarySource()) {
+
+                state.addReference(ref, PrintPubReferenceSourceType.TAXON_SEC);
+
+                dto.secReferenceCitation = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(ref,
+                        secSource.getCitationMicroReference(), null, null);
+            }
         }
+
+        extractIdentifiers(state, taxon, dto);
 
         return dto;
     }
@@ -133,6 +157,61 @@ public class PrintPubDtoMapper {
         }
     }
 
+    private void extractIdentifiers(PrintPubExportState state, Taxon taxon, PrintPubTaxonSummaryDTO dto) {
+
+        if (taxon == null) {
+            return;
+        }
+
+        TaxonName name = HibernateProxyHelper.deproxy(taxon.getName());
+
+        if (name == null) {
+            return;
+        }
+
+        addIdentifierStrings(dto.wfoIds, name.getIdentifierStrings(IdentifierType.IDENTIFIER_NAME_WFO()));
+        addIdentifierStrings(dto.ipniIds, name.getIdentifierStrings(IdentifierType.IDENTIFIER_NAME_IPNI()));
+
+        Set<ExternalLink> allLinks = name.getLinks();
+
+        NomenclaturalSource nameSource = name.getNomenclaturalSource();
+
+        if (nameSource != null) {
+            Set<ExternalLink> nomenclaturalSourceLinks = nameSource.getLinks();
+            allLinks.addAll(nomenclaturalSourceLinks);
+        }
+
+        if (allLinks != null) {
+            for (ExternalLink link : allLinks) {
+
+                link = HibernateProxyHelper.deproxy(link);
+
+                if (link == null || link.getUri() == null) {
+                    continue;
+                }
+
+                String uri = link.getUri().toString();
+
+                if (uri != null && !uri.trim().isEmpty()) {
+                    dto.links.add(uri.trim());
+                }
+            }
+        }
+    }
+
+    private void addIdentifierStrings(List<String> target, Set<String> values) {
+
+        if (target == null || values == null || values.isEmpty()) {
+            return;
+        }
+
+        for (String value : values) {
+            if (value != null && !value.trim().isEmpty()) {
+                target.add(value.trim());
+            }
+        }
+    }
+
     private void filterMisapplied(List<Synonym> synonyms, boolean includeMisapplied) {
         if (includeMisapplied) {
             return;
@@ -147,22 +226,21 @@ public class PrintPubDtoMapper {
 
         TaxonName synName = HibernateProxyHelper.deproxy(syn.getName());
 
-        synDTO.titleCache = (synName != null) ? synName.getTitleCache() : syn.getTitleCache();
-
         if (synName != null) {
-            synDTO.taggedName = synName.getTaggedFullTitle();
+            synDTO.taggedNameList = synName.getTaggedFullTitle();
+            synDTO.titleCache = synName.getTitleCache();
+        } else {
+            synDTO.titleCache = syn.getTitleCache();
         }
 
         if (synName != null) {
-            synDTO.forceDashMarker = synName.getStatus().stream()
-                    .map(NomenclaturalStatus::getType)
-                    .filter(statusType -> statusType != null)
-                    .anyMatch(statusType -> statusType.isInvalid());
+            synDTO.forceDashMarker = synName.getStatus().stream().map(NomenclaturalStatus::getType)
+                    .filter(statusType -> statusType != null).anyMatch(statusType -> statusType.isInvalid());
         }
 
         if (state.getConfig().isIncludeSynonymConceptReference() && syn.getSec() != null) {
             Reference ref = HibernateProxyHelper.deproxy(syn.getSec());
-            state.addReference(ref);
+            state.addReference(ref, PrintPubReferenceSourceType.SYNONYM_SEC);
             synDTO.secReference = ref.getTitleCache();
         }
 
@@ -246,6 +324,8 @@ public class PrintPubDtoMapper {
                 continue;
             }
 
+            Set<IdentifiableSource> descSources = desc.getSources();
+
             for (DescriptionElementBase element : desc.getElements()) {
 
                 element = CdmBase.deproxy(element);
@@ -290,19 +370,33 @@ public class PrintPubDtoMapper {
                     }
 
                     fact.text = text;
-
                     fact.kind = PrintPubFactKind.TEXT_DATA;
                     fact.sortIndex = element.getSortIndex();
                     fact.elementId = element.getId();
                     fact.sequence = factSequence++;
 
                     for (DescriptionElementSource source : element.getSources()) {
-                        if (source.getCitation() != null) {
+                        if (source.getCitation() != null && !source.getType().isPrimarySource()) {
                             Reference ref = HibernateProxyHelper.deproxy(source.getCitation());
-                            state.addReference(ref);
+                            state.addReference(ref, PrintPubReferenceSourceType.TAXON_FACT_SOURCE);
                             String shortCit = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(ref, null);
-                            fact.citation = (fact.citation == null) ? shortCit : fact.citation + "; " + shortCit;
+                            fact.citations.add(shortCit);
                         }
+                    }
+
+                    for (IdentifiableSource identifiableSource : descSources) {
+                        if (identifiableSource == null || identifiableSource.getCitation() == null
+                                || !identifiableSource.getType().isPrimarySource()) {
+                            continue;
+                        }
+
+                        Reference ref = HibernateProxyHelper.deproxy(identifiableSource.getCitation());
+
+                        // Add enum first, see PrintPubReferenceEntryDTO section.
+                        state.addReference(ref, PrintPubReferenceSourceType.FACT_DATASET_SOURCE);
+
+                        String shortCit = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(ref, null);
+                        fact.citations.add(shortCit);
                     }
 
                     dto.facts.add(fact);

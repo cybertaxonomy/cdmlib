@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.cdmprintpub.render;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 import eu.etaxonomy.cdm.io.cdmprintpub.element.IPrintPubDocumentElement;
 import eu.etaxonomy.cdm.io.common.ExportType;

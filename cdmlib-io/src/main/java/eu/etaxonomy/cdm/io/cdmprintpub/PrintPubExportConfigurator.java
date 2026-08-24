@@ -52,8 +52,10 @@ public class PrintPubExportConfigurator
 
     // 4. Appendix: Digital Identifiers
     private boolean appendIdentifierList = true;
+    private boolean includeEmptyIds = true;
     private boolean includeWfoId = true;
     private boolean includeProtologueUris = true;
+    private boolean includeIpniId = true;
 
     // 5. Fact sorting
     private UUID featureTreeUuid;
@@ -69,10 +71,9 @@ public class PrintPubExportConfigurator
     private FeatureSortMode featureSortMode = FeatureSortMode.FEATURE_TREE;
     private FactSortMode factSortMode = FactSortMode.PORTAL_LIKE;
 
-    public static PrintPubExportConfigurator NewInstance(ICdmDataSource source, File destination) {
+    public static PrintPubExportConfigurator NewInstance(ICdmDataSource source) {
         PrintPubExportConfigurator result = new PrintPubExportConfigurator(null);
         result.setSource(source);
-        result.setDestination(destination);
         return result;
     }
 
@@ -208,6 +209,14 @@ public class PrintPubExportConfigurator
     public void setAppendIdentifierList(boolean appendIdentifierList) {
         this.appendIdentifierList = appendIdentifierList;
     }
+    
+    public boolean isIncludeEmptyIds() {
+        return includeEmptyIds;
+    }
+
+    public void setIncludeEmptyIds(boolean includeEmptyIds) {
+        this.includeEmptyIds = includeEmptyIds;
+    }
 
     public boolean isIncludeWfoId() {
         return includeWfoId;
@@ -223,6 +232,14 @@ public class PrintPubExportConfigurator
 
     public void setIncludeProtologueUris(boolean includeProtologueUris) {
         this.includeProtologueUris = includeProtologueUris;
+    }
+    
+    public boolean isIncludeIpniId() {
+        return includeIpniId;
+    }
+
+    public void setIncludeIpniId(boolean includeIpniId) {
+        this.includeIpniId = includeIpniId;
     }
 
     public UUID getFeatureTreeUuid() {
@@ -248,4 +265,5 @@ public class PrintPubExportConfigurator
     public void setFactSortMode(FactSortMode factSortMode) {
         this.factSortMode = factSortMode;
     }
+
 }

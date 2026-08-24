@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.io.cdmprintpub.element;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.render.IPrintPubDocumentInterpreter;
@@ -30,7 +32,9 @@ public class PrintPubTextRunElement implements IPrintPubDocumentElement {
         TEXT,
         BOLD,
         ITALIC,
-        LINE_BREAK
+        LINE_BREAK,
+        BOLD_ITALIC,
+        CDM_REFERENCE
     }
 
     public enum PrintPubTextRole {
@@ -39,33 +43,59 @@ public class PrintPubTextRunElement implements IPrintPubDocumentElement {
         FACT_GROUP
     }
 
-    /**
-     * A single inline text run with formatting.
-     */
     public static class Run {
 
         public final RunType type;
         public final String text;
 
+        public final String rawMarkup;
+        public final String tagName;
+        public final Map<String, String> attributes;
+
         public Run(RunType type, String text) {
+            this(type, text, null, null, null);
+        }
+
+        public Run(
+                RunType type,
+                String text,
+                String rawMarkup,
+                String tagName,
+                Map<String, String> attributes) {
+
             this.type = Objects.requireNonNull(type, "RunType must not be null");
             this.text = Objects.requireNonNull(text, "Run text must not be null");
+            this.rawMarkup = rawMarkup;
+            this.tagName = tagName;
+            this.attributes = attributes == null
+                    ? new LinkedHashMap<String, String>()
+                    : new LinkedHashMap<String, String>(attributes);
+        }
+
+        public String getAttribute(String key) {
+            return attributes.get(key);
+        }
+
+        public String getCdmId() {
+            return attributes.get("cdmId");
+        }
+
+        public String getIntextId() {
+            return attributes.get("intextId");
         }
     }
 
-    private final String label;              // optional label (rendered e.g. as bold prefix)
-    private final List<Run> runs;             // inline content
-    private final PrintPubTextRole role;      // semantic intent
+    private final String label;
+    private final List<Run> runs;
+    private final PrintPubTextRole role;
 
     public PrintPubTextRunElement(List<Run> runs) {
         this(null, runs, PrintPubTextRole.BODY);
     }
 
-
     public PrintPubTextRunElement(String label, List<Run> runs) {
         this(label, runs, PrintPubTextRole.BODY);
     }
-
 
     public PrintPubTextRunElement(String label, List<Run> runs, PrintPubTextRole role) {
         this.label = label;

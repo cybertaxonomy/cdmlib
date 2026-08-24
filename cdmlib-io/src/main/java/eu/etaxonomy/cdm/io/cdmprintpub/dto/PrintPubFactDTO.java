@@ -9,11 +9,9 @@
 
 package eu.etaxonomy.cdm.io.cdmprintpub.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
-
-/**
- * Data transfer object representing a factual statement for a taxon.
- */
 
 public class PrintPubFactDTO {
 
@@ -27,12 +25,11 @@ public class PrintPubFactDTO {
     public UUID featureUuid;
     public String label;
     public String text;
-    public String citation;
+    public List<String> citations = new ArrayList<>();
 
     public Integer sortIndex;
     public Integer elementId;
     public PrintPubFactKind kind;
 
     public int sequence;
-
 }
