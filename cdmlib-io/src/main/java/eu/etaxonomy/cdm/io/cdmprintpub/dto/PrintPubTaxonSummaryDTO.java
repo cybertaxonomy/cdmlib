@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.cdmprintpub.dto;
 
 import java.util.ArrayList;
@@ -15,19 +14,17 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
-
 /**
  * Primary data transfer object for rendering a taxon.
  */
-
 public class PrintPubTaxonSummaryDTO {
     public UUID uuid;
     public List<TaggedText> taggedNameList;
     public List<TaggedText> taggedScientificIndexNameList;
-    
+
     public int relativeDepth;
     public String titleCache;
-    
+
     public String typeSpecimenString;
     public String typeStatementString;
 
