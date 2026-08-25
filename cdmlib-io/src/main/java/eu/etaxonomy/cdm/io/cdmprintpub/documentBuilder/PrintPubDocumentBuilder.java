@@ -66,7 +66,11 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
         state.getProcessor().add(new PrintPubSectionHeaderElement("Taxonomic Hierarchy", 1));
 
         for (PrintPubTaxonSummaryDTO dto : state.getTaxa()) {
-            renderTaxon(state, dto);
+            try {
+                renderTaxon(state, dto);
+            } catch (Exception e) {
+                state.getResult().addException(e, "An handled exception occurred while handling content.", "PrintPubDocumentBuilder.buildContent(state)", "Taxon: " + dto.titleCache);
+            }
         }
     }
 
