@@ -70,7 +70,7 @@ public class PrintPubClassificationExport
                 logger.info("PrintPub export cancelled before initialization");
                 return;
             }
-            
+
             state.clearCollectedReferences();
 
             // --------------------------------------------------
@@ -129,10 +129,10 @@ public class PrintPubClassificationExport
 
                 if (nodesProcessed == 1
                         && dto != null
-                        && dto.titleCache != null) { 
+                        && dto.titleCache != null) {
                     state.getConfig().setDocumentTitle(dto.titleCache);
                 }
-                
+
                 if (dto != null) {
                     state.addTaxon(dto);
                 }
@@ -157,7 +157,7 @@ public class PrintPubClassificationExport
             logger.info("PrintPub document layout generated successfully");
 
         } catch (Exception e) {
-            state.getResult().addException(e, "Error during PrintPub export: " + e.getMessage());
+            state.getResult().addException(e, "Unhandled error during PrintPub export: " + e.getMessage());
             monitor.warning("Export failed: " + e.getMessage(), e);
             logger.error("PrintPub export failed", e);
 
@@ -171,7 +171,7 @@ public class PrintPubClassificationExport
         UUID featureTreeUuid = state.getConfig().getFeatureTreeUuid();
 
         if (featureTreeUuid == null) {
-            state.setFeatureOrderIndex(new HashMap<UUID, Integer>());
+            state.setFeatureOrderIndex(new HashMap<>());
             logger.info("No feature tree configured; using alphabetical feature ordering");
             return;
         }

@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.cdmprintpub.compare;
 
 import java.util.Comparator;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 
-
 /**
  * Orders feature groups using the precomputed feature order index
  * stored in {@link PrintPubExportState}.
@@ -25,7 +23,6 @@ import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
  * Unknown features are placed after indexed features and then
  * deterministically ordered by label and UUID.
  */
-
 @Component
 public class FeatureTreeOrderStrategy implements IPrintPubFeatureOrderStrategy {
 

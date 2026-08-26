@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.cdmprintpub.model;
 
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import eu.etaxonomy.cdm.io.cdmprintpub.render.IPrintPubDocumentInterpreter;
  * Maintains an ordered list of document elements produced during export.
  * Rendering is deferred until a document interpreter processes the model.
  */
-
 public class PrintPubDocumentModel {
 
 	private List<IPrintPubDocumentElement> elements = new ArrayList<>();
