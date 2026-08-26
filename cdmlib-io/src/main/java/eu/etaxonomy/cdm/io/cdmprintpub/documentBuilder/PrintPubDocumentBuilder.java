@@ -64,6 +64,12 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
     @Autowired
     private PrintPubFactOrderStrategyResolver factOrderResolver;
 
+    private static final String SYNONYM_MARKER = UTF8.EQUALS_SIGN + " ";
+
+    private static final String HOMOTYPIC_MARKER = UTF8.IDENTICAL_TO + " ";
+
+    private static final String INVALID_NAME_MARKER = UTF8.EN_DASH + " ";
+
     protected void buildContent(PrintPubExportState state) {
         state.getProcessor().add(new PrintPubSectionHeaderElement("Taxonomic Hierarchy", 1));
 
