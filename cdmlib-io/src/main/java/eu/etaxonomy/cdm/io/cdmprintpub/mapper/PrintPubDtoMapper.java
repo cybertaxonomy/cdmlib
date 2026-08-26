@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
@@ -251,8 +250,7 @@ public class PrintPubDtoMapper {
 
     private void extractTypeData(TaxonName name, PrintPubTaxonSummaryDTO dto, PrintPubExportConfigurator config) {
 
-        Rank rank = name.getRank();
-        boolean isSupraspecific = (rank != null && rank.compareTo(Rank.SPECIES()) > 0);
+        boolean isSupraspecific = name.isSupraSpecific();
 
         if (isSupraspecific && !config.isIncludeSupraspecificTypes()) {
             return;
