@@ -123,8 +123,6 @@ public class PrintPubDtoMapper {
         HomotypicalGroup acceptedGroup = taxon.getHomotypicGroup();
         List<Synonym> homotypicSynonyms = taxon.getSynonymsInGroup(acceptedGroup);
 
-        filterMisapplied(homotypicSynonyms, state.getConfig().isIncludeMisappliedNames());
-
         if (!homotypicSynonyms.isEmpty()) {
             PrintPubSynonymGroupDTO homotypicGroupDTO = new PrintPubSynonymGroupDTO();
             homotypicGroupDTO.isHomotypic = true;
@@ -137,8 +135,6 @@ public class PrintPubDtoMapper {
         List<HomotypicalGroup> heteroGroups = taxon.getHeterotypicSynonymyGroups();
         for (HomotypicalGroup group : heteroGroups) {
             List<Synonym> groupSynonyms = taxon.getSynonymsInGroup(group);
-
-            filterMisapplied(groupSynonyms, state.getConfig().isIncludeMisappliedNames());
 
             if (!groupSynonyms.isEmpty()) {
                 PrintPubSynonymGroupDTO heteroGroupDTO = new PrintPubSynonymGroupDTO();
@@ -204,13 +200,6 @@ public class PrintPubDtoMapper {
                 target.add(value.trim());
             }
         }
-    }
-
-    private void filterMisapplied(List<Synonym> synonyms, boolean includeMisapplied) {
-        if (includeMisapplied) {
-            return;
-        }
-        synonyms.removeIf(syn -> syn.getType() == null);
     }
 
     private PrintPubSynonymDTO createSynonymDTO(PrintPubExportState state, Synonym syn) {
