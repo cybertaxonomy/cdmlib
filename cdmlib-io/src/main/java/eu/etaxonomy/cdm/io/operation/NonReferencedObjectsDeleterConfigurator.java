@@ -8,6 +8,10 @@
 */
 package eu.etaxonomy.cdm.io.operation;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +41,9 @@ public class NonReferencedObjectsDeleterConfigurator
 
 	private boolean isKeepReferencesWithTitle = false;
 	private boolean isKeepRisSources = false;
+	private Set<UUID> identifierTypesToKeep = new HashSet<>();
+
+	private int startPage = 0;
 
 	//if true, records are not deleted but only reported (later this will be part of the analyzing step
 	private boolean doOnlyReport = false;
@@ -117,5 +124,23 @@ public class NonReferencedObjectsDeleterConfigurator
     }
     public void setDoTaxonNames(boolean doTaxonNames) {
         this.doTaxonNames = doTaxonNames;
+    }
+
+    public Set<UUID> getIdentifierTypesToKeep() {
+        return identifierTypesToKeep;
+    }
+
+    public void setIdentifierTypesToKeep(Set<UUID> identifierTypesToKeep) {
+        this.identifierTypesToKeep = identifierTypesToKeep == null? new HashSet<>() : identifierTypesToKeep;
+    }
+    public void addIdentifierTypeToKeep(UUID identifierTypeToKeep) {
+        this.identifierTypesToKeep.add(identifierTypeToKeep);
+    }
+
+    public int getStartPage() {
+        return startPage;
+    }
+    public void setStartPage(int startPage) {
+        this.startPage = startPage;
     }
 }
