@@ -28,6 +28,7 @@ public class PrintPubTaxonSummaryDTO {
     public String typeSpecimenString;
     public String typeStatementString;
 
+    public PrintPubSynonymGroupDTO homotypicSynonymGroup;
     public List<PrintPubSynonymGroupDTO> synonymGroups = new ArrayList<>();
 
     public List<PrintPubFactDTO> facts = new ArrayList<>();

@@ -129,7 +129,7 @@ public class PrintPubDtoMapper {
             for (Synonym syn : homotypicSynonyms) {
                 homotypicGroupDTO.synonyms.add(createSynonymDTO(state, syn));
             }
-            dto.synonymGroups.add(homotypicGroupDTO);
+            dto.homotypicSynonymGroup = homotypicGroupDTO;
         }
 
         List<HomotypicalGroup> heteroGroups = taxon.getHeterotypicSynonymyGroups();
