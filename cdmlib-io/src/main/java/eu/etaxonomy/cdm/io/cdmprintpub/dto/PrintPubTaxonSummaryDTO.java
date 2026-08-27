@@ -43,4 +43,6 @@ public class PrintPubTaxonSummaryDTO {
     public List<String> links = new ArrayList<>();
     public List<String> wfoIds = new ArrayList<>();
     public List<String> ipniIds = new ArrayList<>();
+    
+    public PrintPubSynonymGroupDTO homotypicSynonymGroup;
 }
