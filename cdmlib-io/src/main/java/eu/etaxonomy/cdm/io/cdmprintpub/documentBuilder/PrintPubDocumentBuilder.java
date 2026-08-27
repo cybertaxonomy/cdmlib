@@ -117,50 +117,56 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
                 .add(new PrintPubTextRunElement(null, runs, PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME));
     }
 
-    private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, String indent) {
+    private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, String indentStr) {
 
-        if (dto.synonymGroups.isEmpty()) {
-            return;
+        if (dto.homotypicSynonymGroup != null) {
+            boolean first = false;  //the accepted name is always the first in group for the homotypic group
+            for (PrintPubSynonymDTO syn : dto.homotypicSynonymGroup.synonyms) {
+                renderSingleSynonym(state, first, syn, indentStr);
+            }
         }
 
         for (PrintPubSynonymGroupDTO group : dto.synonymGroups) {
 
-            boolean first = true;
+            boolean firstInGroup = true;
 
             for (PrintPubSynonymDTO syn : group.synonyms) {
 
-                boolean doIndent = false;
-                String prefix;
-
-                // --- choose prefix ---
-                if (syn.forceDashMarker) {
-                    prefix = UTF8.EM_DASH + " ";
-                } else if (first) {
-                    prefix = "= ";
-                    first = false;
-                } else {
-                    prefix = "≡ ";
-                    doIndent = true;
-                }
-
-                // --- sec. reference suffix ---
-                String suffix = "";
-
-                if (state.getConfig().isIncludeSynonymConceptReference() && syn.secReference != null) {
-
-                    String citationSuffix = state.incrementShortCitation(syn.secReference);
-                    suffix = " sec. " + syn.secReference + citationSuffix;
-                }
-
-                // --- name rendered from TaggedText, not titleCache ---
-                state.getProcessor().add(new PrintPubTextRunElement(synonymRuns(syn, prefix, suffix)));
-
-                // --- type information ---
-                if (syn.typeSpecimenString != null && !syn.typeSpecimenString.trim().isEmpty()) {
-                    state.getProcessor().add(new PrintPubParagraphElement(syn.typeSpecimenString));
-                }
+                renderSingleSynonym(state, firstInGroup, syn, indentStr);
+                firstInGroup = false;
             }
         }
+    }
+
+    private void renderSingleSynonym(PrintPubExportState state, boolean firstInGroup,
+            PrintPubSynonymDTO syn, String indentStr) {
+
+        // --- choose prefix ---
+        String prefix;
+        if (syn.forceDashMarker) {
+            prefix = UTF8.EM_DASH + " ";
+        } else if (firstInGroup) {
+            prefix = "= ";
+        } else {
+            prefix = indentStr + "≡ ";
+        }
+
+        // --- sec. reference suffix ---
+        String suffix = "";
+
+        if (state.getConfig().isIncludeSynonymConceptReference() && syn.secReference != null) {
+            String citationSuffix = state.incrementShortCitation(syn.secReference);
+            suffix = " sec. " + syn.secReference + citationSuffix;
+        }
+
+        // --- name rendered from TaggedText, not titleCache ---
+        state.getProcessor().add(new PrintPubTextRunElement(synonymRuns(syn, prefix, suffix)));
+
+        // --- type information ---
+        if (syn.typeSpecimenString != null && !syn.typeSpecimenString.trim().isEmpty()) {
+            state.getProcessor().add(new PrintPubParagraphElement(syn.typeSpecimenString));
+        }
+        return;
     }
 
     private void renderTaxonDetails(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
