@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.cdmprintpub.element;
 
 import eu.etaxonomy.cdm.io.cdmprintpub.render.IPrintPubDocumentInterpreter;
@@ -18,7 +17,6 @@ import eu.etaxonomy.cdm.io.cdmprintpub.render.IPrintPubDocumentInterpreter;
  * interpreter, allowing the same document model to be rendered into different
  * output formats.
  */
-
 public interface IPrintPubDocumentElement {
 	void accept(IPrintPubDocumentInterpreter interpreter);
 }

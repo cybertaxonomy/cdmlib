@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.cdmprintpub;
 
-import java.io.File;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -209,7 +208,7 @@ public class PrintPubExportConfigurator
     public void setAppendIdentifierList(boolean appendIdentifierList) {
         this.appendIdentifierList = appendIdentifierList;
     }
-    
+
     public boolean isIncludeEmptyIds() {
         return includeEmptyIds;
     }
@@ -233,7 +232,7 @@ public class PrintPubExportConfigurator
     public void setIncludeProtologueUris(boolean includeProtologueUris) {
         this.includeProtologueUris = includeProtologueUris;
     }
-    
+
     public boolean isIncludeIpniId() {
         return includeIpniId;
     }

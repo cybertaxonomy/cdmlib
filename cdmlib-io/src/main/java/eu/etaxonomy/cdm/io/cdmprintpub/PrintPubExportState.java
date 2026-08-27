@@ -171,7 +171,7 @@ public class PrintPubExportState extends TaxonTreeExportStateBase<PrintPubExport
 	    refs.sort(Comparator.comparing(Reference::getTitleCache, Comparator.nullsLast(String::compareTo)));
 	    return refs;
 	}
-	
+
 	public Map<PrintPubReferenceSourceType, Integer> getReferenceSourceTypeCounts() {
 
 	    Map<PrintPubReferenceSourceType, Integer> counts =
