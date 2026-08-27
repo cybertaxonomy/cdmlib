@@ -87,7 +87,7 @@ public class PrintPubDtoMapper {
 
         if (name != null) {
             dto.taggedNameList = name.getTaggedFullTitle();
-            dto.taggedScientificIndexNameList = name.getTaggedName();
+            dto.scientificName = TaggedTextFormatter.createString(name.getTaggedName());
             dto.titleCache = name.getTitleCache();
         } else {
             dto.titleCache = taxon.getTitleCache();
@@ -228,6 +228,7 @@ public class PrintPubDtoMapper {
 
         if (synName != null) {
             synDTO.taggedNameList = synName.getTaggedFullTitle();
+            synDTO.scientificName = TaggedTextFormatter.createString(synName.getTaggedName());
             synDTO.titleCache = synName.getTitleCache();
         } else {
             synDTO.titleCache = syn.getTitleCache();
