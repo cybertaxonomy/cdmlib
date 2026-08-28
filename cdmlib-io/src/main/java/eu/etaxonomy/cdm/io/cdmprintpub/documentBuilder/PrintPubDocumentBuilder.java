@@ -71,6 +71,10 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
 
     private static final String INVALID_NAME_MARKER = UTF8.EN_DASH + " ";
 
+    private static final String ACC_SEC_MARKER = " sec. ";
+
+    private static final String SYN_SEC_MARKER = " syn sec. ";
+
     protected void buildContent(PrintPubExportState state) {
         state.getProcessor().add(new PrintPubSectionHeaderElement("Taxonomic Hierarchy", 1));
 
@@ -109,7 +113,7 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
         if (dto.secReferenceCitation != null && !dto.secReferenceCitation.isBlank()) {
 
             runs.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT,
-                    " sec. " + dto.secReferenceCitation));
+                    ACC_SEC_MARKER + dto.secReferenceCitation));
         }
 
         state.getProcessor()
@@ -156,7 +160,7 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
 
         if (state.getConfig().isIncludeSynonymConceptReference() && syn.secReference != null) {
             String citationSuffix = state.incrementShortCitation(syn.secReference);
-            suffix = " syn sec. " + syn.secReference + citationSuffix;
+            suffix = SYN_SEC_MARKER + syn.secReference + citationSuffix;
         }
 
         // --- name rendered from TaggedText, not titleCache ---
