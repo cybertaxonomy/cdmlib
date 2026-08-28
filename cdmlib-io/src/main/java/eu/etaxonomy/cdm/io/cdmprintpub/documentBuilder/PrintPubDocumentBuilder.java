@@ -156,7 +156,7 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
 
         if (state.getConfig().isIncludeSynonymConceptReference() && syn.secReference != null) {
             String citationSuffix = state.incrementShortCitation(syn.secReference);
-            suffix = " sec. " + syn.secReference + citationSuffix;
+            suffix = " syn sec. " + syn.secReference + citationSuffix;
         }
 
         // --- name rendered from TaggedText, not titleCache ---
