@@ -19,6 +19,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -163,7 +164,7 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
         state.getProcessor().add(new PrintPubTextRunElement(synonymRuns(syn, prefix, suffix)));
 
         // --- type information ---
-        if (syn.typeSpecimenString != null && !syn.typeSpecimenString.trim().isEmpty()) {
+        if (StringUtils.isNotBlank(syn.typeSpecimenString)) {
             state.getProcessor().add(new PrintPubParagraphElement(syn.typeSpecimenString));
         }
         return;
