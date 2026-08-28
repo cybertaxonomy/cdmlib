@@ -121,7 +121,6 @@ public class PrintPubExportConfigurator
     public boolean isDoFactualData() {
         return doFactualData;
     }
-
     @Override
     public void setDoFactualData(boolean doFactualData) {
         this.doFactualData = doFactualData;
@@ -131,7 +130,6 @@ public class PrintPubExportConfigurator
     public boolean isIncludeUnpublishedFacts() {
         return includeUnpublishedFacts;
     }
-
     @Override
     public void setIncludeUnpublishedFacts(boolean includeUnpublishedFacts) {
         this.includeUnpublishedFacts = includeUnpublishedFacts;
@@ -140,7 +138,6 @@ public class PrintPubExportConfigurator
     public boolean isIncludeMisappliedNames() {
         return includeMisappliedNames;
     }
-
     public void setIncludeMisappliedNames(boolean includeMisappliedNames) {
         this.includeMisappliedNames = includeMisappliedNames;
     }
@@ -148,7 +145,6 @@ public class PrintPubExportConfigurator
     public boolean isIncludeTaxonomicConceptReference() {
         return includeTaxonomicConceptReference;
     }
-
     public void setIncludeTaxonomicConceptReference(boolean includeTaxonomicConceptReference) {
         this.includeTaxonomicConceptReference = includeTaxonomicConceptReference;
     }
@@ -156,7 +152,6 @@ public class PrintPubExportConfigurator
     public boolean isIncludeSynonymConceptReference() {
         return includeSynonymConceptReference;
     }
-
     public void setIncludeSynonymConceptReference(boolean includeSynonymConceptReference) {
         this.includeSynonymConceptReference = includeSynonymConceptReference;
     }
@@ -164,7 +159,6 @@ public class PrintPubExportConfigurator
     public boolean isIncludeSupraspecificTypes() {
         return includeSupraspecificTypes;
     }
-
     public void setIncludeSupraspecificTypes(boolean includeSupraspecificTypes) {
         this.includeSupraspecificTypes = includeSupraspecificTypes;
     }
@@ -172,7 +166,6 @@ public class PrintPubExportConfigurator
     public boolean isIncludeSpeciesTypes() {
         return includeSpeciesTypes;
     }
-
     public void setIncludeSpeciesTypes(boolean includeSpeciesTypes) {
         this.includeSpeciesTypes = includeSpeciesTypes;
     }
@@ -180,7 +173,6 @@ public class PrintPubExportConfigurator
     public boolean isStartSupraspecificTypesOnNewLine() {
         return startSupraspecificTypesOnNewLine;
     }
-
     public void setStartSupraspecificTypesOnNewLine(boolean startSupraspecificTypesOnNewLine) {
         this.startSupraspecificTypesOnNewLine = startSupraspecificTypesOnNewLine;
     }
@@ -188,7 +180,6 @@ public class PrintPubExportConfigurator
     public boolean isGenerateCommonNameIndex() {
         return generateCommonNameIndex;
     }
-
     public void setGenerateCommonNameIndex(boolean generateCommonNameIndex) {
         this.generateCommonNameIndex = generateCommonNameIndex;
     }
@@ -196,7 +187,6 @@ public class PrintPubExportConfigurator
     public boolean isGenerateScientificNameIndex() {
         return generateScientificNameIndex;
     }
-
     public void setGenerateScientificNameIndex(boolean generateScientificNameIndex) {
         this.generateScientificNameIndex = generateScientificNameIndex;
     }
@@ -204,7 +194,6 @@ public class PrintPubExportConfigurator
     public boolean isAppendIdentifierList() {
         return appendIdentifierList;
     }
-
     public void setAppendIdentifierList(boolean appendIdentifierList) {
         this.appendIdentifierList = appendIdentifierList;
     }
@@ -212,7 +201,6 @@ public class PrintPubExportConfigurator
     public boolean isIncludeEmptyIds() {
         return includeEmptyIds;
     }
-
     public void setIncludeEmptyIds(boolean includeEmptyIds) {
         this.includeEmptyIds = includeEmptyIds;
     }
@@ -220,7 +208,6 @@ public class PrintPubExportConfigurator
     public boolean isIncludeWfoId() {
         return includeWfoId;
     }
-
     public void setIncludeWfoId(boolean includeWfoId) {
         this.includeWfoId = includeWfoId;
     }
@@ -232,7 +219,6 @@ public class PrintPubExportConfigurator
     public void setIncludeProtologueUris(boolean includeProtologueUris) {
         this.includeProtologueUris = includeProtologueUris;
     }
-
     public boolean isIncludeIpniId() {
         return includeIpniId;
     }
@@ -244,7 +230,6 @@ public class PrintPubExportConfigurator
     public UUID getFeatureTreeUuid() {
         return featureTreeUuid;
     }
-
     public void setFeatureTreeUuid(UUID featureTreeUuid) {
         this.featureTreeUuid = featureTreeUuid;
     }
@@ -252,7 +237,6 @@ public class PrintPubExportConfigurator
     public FeatureSortMode getFeatureSortMode() {
         return featureSortMode;
     }
-
     public void setFeatureSortMode(FeatureSortMode featureSortMode) {
         this.featureSortMode = featureSortMode;
     }
@@ -260,7 +244,6 @@ public class PrintPubExportConfigurator
     public FactSortMode getFactSortMode() {
         return factSortMode;
     }
-
     public void setFactSortMode(FactSortMode factSortMode) {
         this.factSortMode = factSortMode;
     }
