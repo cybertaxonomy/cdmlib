@@ -133,16 +133,17 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
         for (PrintPubSynonymGroupDTO group : taxonDto.synonymGroups) {
 
             boolean firstInGroup = true;
-
+            List<Run> runs = new ArrayList<>();
             for (PrintPubSynonymDTO syn : group.synonyms) {
 
-                renderSingleSynonym(state, firstInGroup, syn, oneLinePerHomotypicGroup);
+                runs.addAll(renderSingleSynonym(state, firstInGroup, syn, oneLinePerHomotypicGroup));
                 firstInGroup = false;
             }
+            state.getProcessor().add(new PrintPubTextRunElement(runs));
         }
     }
 
-    private void renderSingleSynonym(PrintPubExportState state, boolean isFirstInGroup,
+    private List<Run> renderSingleSynonym(PrintPubExportState state, boolean isFirstInGroup,
             PrintPubSynonymDTO synDto, boolean oneLinePerHomotypicGroup) {
 
         // --- choose prefix ---
@@ -165,13 +166,13 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
 
         // --- name rendered from TaggedText, not titleCache ---
         boolean newLine = !isFirstInGroup && !oneLinePerHomotypicGroup;
-        state.getProcessor().add(new PrintPubTextRunElement(synonymRuns(synDto, prefix, suffix, newLine)));
+        List<Run> runs = synonymRuns(synDto, prefix, suffix, newLine);
 
         // --- type information ---
         if (StringUtils.isNotBlank(synDto.typeSpecimenString)) {
             state.getProcessor().add(new PrintPubParagraphElement(synDto.typeSpecimenString));
         }
-        return;
+        return runs;
     }
 
     private void renderTaxonDetails(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
