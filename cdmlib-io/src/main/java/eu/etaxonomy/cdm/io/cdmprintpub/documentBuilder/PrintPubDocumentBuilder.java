@@ -84,9 +84,8 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
     }
 
     private void renderTaxon(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
-        String indent = "   ";
 
-        renderTaxonHeading(state, dto, indent);
+        renderTaxonHeading(state, dto);
 
         if (dto.typeSpecimenString != null && !dto.typeSpecimenString.trim().isEmpty()) {
             state.getProcessor().add(new PrintPubParagraphElement(dto.typeSpecimenString));
@@ -97,14 +96,13 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
         }
 
         if (state.getConfig().isDoSynonyms()) {
-            renderSynonyms(state, dto, indent);
+            renderSynonyms(state, dto);
         }
 
         renderTaxonDetails(state, dto);
-
     }
 
-    private void renderTaxonHeading(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, String indent) {
+    private void renderTaxonHeading(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
 
         List<PrintPubTextRunElement.Run> runs = new ArrayList<>(runsFromTaggedNameForTitle(dto.taggedNameList));
 
@@ -118,12 +116,13 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
                 .add(new PrintPubTextRunElement(null, runs, PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME));
     }
 
-    private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto, String indentStr) {
+    private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
 
+        boolean oneLinePerHomotypicGroup = !state.getConfig().isIncludeSynonymConceptReference();
         if (dto.homotypicSynonymGroup != null) {
             boolean first = false;  //the accepted name is always the first in group for the homotypic group
             for (PrintPubSynonymDTO syn : dto.homotypicSynonymGroup.synonyms) {
-                renderSingleSynonym(state, first, syn, indentStr);
+                renderSingleSynonym(state, first, syn, oneLinePerHomotypicGroup);
             }
         }
 
@@ -133,23 +132,23 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
 
             for (PrintPubSynonymDTO syn : group.synonyms) {
 
-                renderSingleSynonym(state, firstInGroup, syn, indentStr);
+                renderSingleSynonym(state, firstInGroup, syn, oneLinePerHomotypicGroup);
                 firstInGroup = false;
             }
         }
     }
 
-    private void renderSingleSynonym(PrintPubExportState state, boolean firstInGroup,
-            PrintPubSynonymDTO syn, String indentStr) {
+    private void renderSingleSynonym(PrintPubExportState state, boolean isFirstInGroup,
+            PrintPubSynonymDTO syn, boolean oneLinePerHomotypicGroup) {
 
         // --- choose prefix ---
         String prefix;
         if (syn.forceDashMarker) {
-            prefix = UTF8.EM_DASH + " ";
-        } else if (firstInGroup) {
-            prefix = "= ";
+            prefix = INVALID_NAME_MARKER;
+        } else if (isFirstInGroup) {
+            prefix = SYNONYM_MARKER;
         } else {
-            prefix = indentStr + "≡ ";
+            prefix = HOMOTYPIC_MARKER;
         }
 
         // --- sec. reference suffix ---
@@ -161,7 +160,8 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
         }
 
         // --- name rendered from TaggedText, not titleCache ---
-        state.getProcessor().add(new PrintPubTextRunElement(synonymRuns(syn, prefix, suffix)));
+        boolean newLine = !isFirstInGroup && !oneLinePerHomotypicGroup;
+        state.getProcessor().add(new PrintPubTextRunElement(synonymRuns(syn, prefix, suffix, newLine)));
 
         // --- type information ---
         if (StringUtils.isNotBlank(syn.typeSpecimenString)) {
@@ -301,9 +301,15 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
         return runs;
     }
 
-    private List<PrintPubTextRunElement.Run> synonymRuns(PrintPubSynonymDTO syn, String prefix, String suffix) {
+    private List<PrintPubTextRunElement.Run> synonymRuns(PrintPubSynonymDTO syn, String prefix, String suffix, boolean newLine) {
 
         List<PrintPubTextRunElement.Run> runs = new ArrayList<>();
+
+        if (newLine) {
+            runs.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.LINE_BREAK, ""));
+        }else {
+            runs.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT, " "));
+        }
 
         runs.add(new PrintPubTextRunElement.Run(PrintPubTextRunElement.RunType.TEXT, prefix));
 
@@ -432,9 +438,7 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
                 continue;
             }
 
-            StringBuilder line = new StringBuilder();
-
-            List<PrintPubTextRunElement.Run> runs = new ArrayList<PrintPubTextRunElement.Run>();
+            List<PrintPubTextRunElement.Run> runs = new ArrayList<>();
 
             // --- name rendered from TaggedText ---
             List<PrintPubTextRunElement.Run> nameRuns = runsFromTaggedName(dto.taggedNameList);
