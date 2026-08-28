@@ -232,7 +232,7 @@ public class PrintPubDtoMapper {
 
             dto.titleCache = name.getTitleCache();
 
-            dto.forceDashMarker = name.getStatus().stream().map(NomenclaturalStatus::getType)
+            dto.isInvalidDesignation = name.getStatus().stream().map(NomenclaturalStatus::getType)
                     .filter(type -> type != null).anyMatch(type -> type.isInvalid());
 
             bibliographyCollector.collectSynonymNameSources(state, name);
@@ -253,7 +253,7 @@ public class PrintPubDtoMapper {
         return dto;
     }
 
-    private void extractSynonymSecReference(PrintPubExportState state, Synonym synonym, PrintPubSynonymDTO dto) {
+    private void extractSynonymSecReference(PrintPubExportState state, Synonym synonym, PrintPubSynonymDTO synDto) {
 
         if (!state.getConfig().isIncludeSynonymConceptReference()) {
             return;
@@ -267,7 +267,7 @@ public class PrintPubDtoMapper {
 
         state.addReference(reference, PrintPubReferenceSourceType.SYNONYM_SEC);
 
-        dto.secReference = reference.getTitleCache();
+        synDto.secReference = reference.getTitleCache();
     }
 
     private void extractIdentifiers(Taxon taxon, PrintPubTaxonSummaryDTO dto) {

@@ -6,18 +6,15 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.cdmprintpub.dto;
 
 import java.util.List;
 
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
-
 /**
  * Data transfer object representing a single taxonomic synonym.
  */
-
 public class PrintPubSynonymDTO {
 
     public List<TaggedText> taggedNameList;
@@ -28,5 +25,5 @@ public class PrintPubSynonymDTO {
     public String typeStatementString;
     public String titleCache;
 
-    public boolean forceDashMarker;
+    public boolean isInvalidDesignation;
 }
