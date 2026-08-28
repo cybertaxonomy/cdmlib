@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubSynonymGroupDTO;
 import eu.etaxonomy.cdm.io.cdmprintpub.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -280,9 +282,8 @@ public class PrintPubDtoMapper {
             return;
         }
 
-        addIdentifierStrings(dto.wfoIds, name.getIdentifierStrings(IdentifierType.IDENTIFIER_NAME_WFO()));
-
-        addIdentifierStrings(dto.ipniIds, name.getIdentifierStrings(IdentifierType.IDENTIFIER_NAME_IPNI()));
+        addIdentifierStrings(dto.wfoIds, name, IdentifierType.IDENTIFIER_NAME_WFO());
+        addIdentifierStrings(dto.ipniIds, name, IdentifierType.IDENTIFIER_NAME_IPNI());
 
         /*
          * Do not add nomenclatural-source links directly to name.getLinks(). That
@@ -317,13 +318,24 @@ public class PrintPubDtoMapper {
         }
     }
 
-    private void addIdentifierStrings(List<String> target, Set<String> values) {
+    private void addIdentifierStrings(List<String> target, TaxonName name, IdentifierType requestedType) {
 
-        if (target == null || values == null || values.isEmpty()) {
+        if (target == null || name == null || requestedType == null || name.getIdentifiers() == null) {
             return;
         }
 
-        for (String value : values) {
+        for (Identifier identifier : name.getIdentifiers()) {
+
+            if (identifier == null || identifier.getType() == null) {
+                continue;
+            }
+
+            if (!requestedType.equals(identifier.getType())) {
+                continue;
+            }
+
+            String value = identifier.getIdentifier();
+
             if (value != null && !value.isBlank()) {
                 target.add(value.trim());
             }
@@ -511,8 +523,7 @@ public class PrintPubDtoMapper {
         }
     }
 
-    private PrintPubFactDTO createTextFact(DescriptionElementBase element, Feature feature, String text,
-            int sequence) {
+    private PrintPubFactDTO createTextFact(DescriptionElementBase element, Feature feature, String text, int sequence) {
 
         PrintPubFactDTO fact = new PrintPubFactDTO();
 
@@ -534,8 +545,7 @@ public class PrintPubDtoMapper {
         return fact;
     }
 
-    private void addElementCitations(PrintPubExportState state, DescriptionElementBase element,
-            PrintPubFactDTO fact) {
+    private void addElementCitations(PrintPubExportState state, DescriptionElementBase element, PrintPubFactDTO fact) {
 
         if (element.getSources() == null) {
             return;
