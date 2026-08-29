@@ -160,10 +160,11 @@ public class PrintPubDtoMapper {
                 secSource.getCitationMicroReference(), null, null);
     }
 
-    private void extractSynonymGroups(PrintPubExportState state, Taxon taxon, PrintPubTaxonSummaryDTO dto) {
+    private void extractSynonymGroups(PrintPubExportState state, Taxon taxon, PrintPubTaxonSummaryDTO taxonDto) {
 
         HomotypicalGroup acceptedGroup = taxon.getHomotypicGroup();
 
+        //homotypic synonyms
         List<Synonym> homotypicSynonyms = taxon.getSynonymsInGroup(acceptedGroup);
 
         if (homotypicSynonyms != null && !homotypicSynonyms.isEmpty()) {
@@ -180,9 +181,10 @@ public class PrintPubDtoMapper {
                 }
             }
 
-            dto.homotypicSynonymGroup = homotypicGroupDTO;
+            taxonDto.homotypicSynonymGroup = homotypicGroupDTO;
         }
 
+        //heterotypic synonyms
         List<HomotypicalGroup> heterotypicGroups = taxon.getHeterotypicSynonymyGroups();
 
         if (heterotypicGroups == null) {
@@ -209,7 +211,7 @@ public class PrintPubDtoMapper {
                 }
             }
 
-            dto.synonymGroups.add(heterotypicGroupDTO);
+            taxonDto.synonymGroups.add(heterotypicGroupDTO);
         }
     }
 
@@ -221,18 +223,18 @@ public class PrintPubDtoMapper {
             return null;
         }
 
-        PrintPubSynonymDTO dto = new PrintPubSynonymDTO();
+        PrintPubSynonymDTO synDto = new PrintPubSynonymDTO();
 
         TaxonName name = HibernateProxyHelper.deproxy(synonym.getName());
 
         if (name != null) {
-            dto.taggedNameList = name.getTaggedFullTitle();
+            synDto.taggedNameList = name.getTaggedFullTitle();
 
-            dto.scientificName = TaggedTextFormatter.createString(name.getTaggedName());
+            synDto.scientificName = TaggedTextFormatter.createString(name.getTaggedName());
 
-            dto.titleCache = name.getTitleCache();
+            synDto.titleCache = name.getTitleCache();
 
-            dto.isInvalidDesignation = name.getStatus().stream().map(NomenclaturalStatus::getType)
+            synDto.isInvalidDesignation = name.getStatus().stream().map(NomenclaturalStatus::getType)
                     .filter(type -> type != null).anyMatch(type -> type.isInvalid());
 
             bibliographyCollector.collectSynonymNameSources(state, name);
@@ -241,16 +243,16 @@ public class PrintPubDtoMapper {
 
             extractTypeData(name, typeData, state.getConfig());
 
-            dto.typeSpecimenString = typeData.typeSpecimenString;
+            synDto.typeSpecimenString = typeData.typeSpecimenString;
 
-            dto.typeStatementString = typeData.typeStatementString;
+            synDto.typeStatementString = typeData.typeStatementString;
         } else {
-            dto.titleCache = synonym.getTitleCache();
+            synDto.titleCache = synonym.getTitleCache();
         }
 
-        extractSynonymSecReference(state, synonym, dto);
+        extractSynonymSecReference(state, synonym, synDto);
 
-        return dto;
+        return synDto;
     }
 
     private void extractSynonymSecReference(PrintPubExportState state, Synonym synonym, PrintPubSynonymDTO synDto) {
@@ -332,9 +334,9 @@ public class PrintPubDtoMapper {
         }
     }
 
-    private void extractTypeData(TaxonName name, PrintPubTaxonSummaryDTO dto, PrintPubExportConfigurator config) {
+    private void extractTypeData(TaxonName name, PrintPubTaxonSummaryDTO taxonDto, PrintPubExportConfigurator config) {
 
-        if (name == null || dto == null || config == null) {
+        if (name == null || taxonDto == null || config == null) {
             return;
         }
 
@@ -378,10 +380,10 @@ public class PrintPubDtoMapper {
 
                 String formattedTypes = createTypeDesignationString(types);
 
-                dto.typeSpecimenString = addOptionalTypeLineBreak(formattedTypes, isSupraspecific, config);
+                taxonDto.typeSpecimenString = addOptionalTypeLineBreak(formattedTypes, isSupraspecific, config);
 
             } catch (Exception exception) {
-                dto.typeSpecimenString = "Error retrieving type data: " + exception.getMessage();
+                taxonDto.typeSpecimenString = "Error retrieving type data: " + exception.getMessage();
             }
         }
 
@@ -390,7 +392,7 @@ public class PrintPubDtoMapper {
                     .filter(text -> text != null && !text.isBlank()).collect(Collectors.joining("; "));
 
             if (!statement.isBlank()) {
-                dto.typeStatementString = addOptionalTypeLineBreak(statement, isSupraspecific, config);
+                taxonDto.typeStatementString = addOptionalTypeLineBreak(statement, isSupraspecific, config);
             }
         }
     }
