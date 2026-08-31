@@ -171,8 +171,6 @@ public class PrintPubDtoMapper {
 
             PrintPubSynonymGroupDTO homotypicGroupDTO = new PrintPubSynonymGroupDTO();
 
-            homotypicGroupDTO.isHomotypic = true;
-
             for (Synonym synonym : homotypicSynonyms) {
                 PrintPubSynonymDTO synonymDTO = createSynonymDTO(state, synonym);
 
