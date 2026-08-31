@@ -199,8 +199,6 @@ public class PrintPubDtoMapper {
 
             PrintPubSynonymGroupDTO heterotypicGroupDTO = new PrintPubSynonymGroupDTO();
 
-            heterotypicGroupDTO.isHomotypic = false;
-
             for (Synonym synonym : groupSynonyms) {
                 PrintPubSynonymDTO synonymDTO = createSynonymDTO(state, synonym);
 
