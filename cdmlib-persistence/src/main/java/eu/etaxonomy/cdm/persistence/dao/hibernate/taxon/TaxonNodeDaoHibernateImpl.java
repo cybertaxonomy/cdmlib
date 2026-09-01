@@ -250,12 +250,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
         if(logger.isTraceEnabled()){
             logger.trace("number of matches:" + result.size());
-            result.stream().forEach(o -> logger.trace("uuid: " + o.getTaxonNodeUuid() + " titleCache:" + o.getTaxonTitleCache() + " rank: " + o.getNameRank()));
+            result.stream().forEach(o -> logger.trace("uuid: " + o.getTaxonNodeUuid() + " titleCache:" + o.getTaxonTitleCache() + " rank: " + o.getRank()));
         }
         List<TaxonNodeDto> list = new ArrayList<>();
         for(SortableTaxonNodeQueryResult stnqr : result){
             TaxonNodeDto newNode = new TaxonNodeDto(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonUuid(), stnqr.getTreeIndex(), stnqr.getNameTitleCache(),stnqr.getTaxonTitleCache(),
-                    stnqr.getNameRank().getOrderIndex(), parent.getUuid(),stnqr.getSortIndex(),parent.getClassificationUUID(), stnqr.isTaxonIsPublish(), stnqr.getStatus(), stnqr.getPlacementNote(), stnqr.getChildrenCount(), stnqr.getSecUuid(), null);
+                    stnqr.getRank().getOrderIndex(), parent.getUuid(),stnqr.getSortIndex(),parent.getClassificationUUID(), stnqr.isTaxonIsPublish(), stnqr.getStatus(), stnqr.getPlacementNote(), stnqr.getChildrenCount(), stnqr.getSecUuid(), null);
 
             list.add(newNode);
         }
@@ -272,7 +272,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
         if(logger.isTraceEnabled()){
             logger.trace("number of matches:" + result.size());
-            result.stream().forEach(o -> logger.trace("uuid: " + o.getTaxonNodeUuid() + " titleCache:" + o.getTaxonTitleCache() + " rank: " + o.getNameRank()));
+            result.stream().forEach(o -> logger.trace("uuid: " + o.getTaxonNodeUuid() + " titleCache:" + o.getTaxonTitleCache() + " rank: " + o.getRank()));
         }
         List<TaxonNodeDto> list = new ArrayList<>();
         for(SortableTaxonNodeQueryResult stnqr : result){
@@ -379,7 +379,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             Integer id = (Integer) object[1];
             String taxonTitleCache = (String) object[2];
             String classificationTitleCache = (String) object[3];
-            if(taxonTitleCache!=null){
+            if(taxonTitleCache != null){
                 list.add(new TaxonNodeDto(uuid,id, taxonTitleCache));
             }
             else{

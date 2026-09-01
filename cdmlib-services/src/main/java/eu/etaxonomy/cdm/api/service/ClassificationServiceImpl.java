@@ -731,7 +731,7 @@ public class ClassificationServiceImpl
 
         Map<TreeIndex, Integer> treeIndexSortIndexMapTmp = taxonNodeDao.rankOrderIndexForTreeIndex(treeIndexClosure, minRankOrderIndex, maxRankOrderIndex);
 
-        //remove all treeindex with "exists child in above map(and child.sortindex > xxx)
+        //remove all treeindex with "exists child in above map(and child.sortindex > xxx)"
         List<TreeIndex> treeIndexList = TreeIndex.sort(treeIndexSortIndexMapTmp.keySet());
 
         Map<TreeIndex, Integer> treeIndexSortIndexMap = new HashMap<>();
@@ -753,7 +753,6 @@ public class ClassificationServiceImpl
             result.add(item);
             item.setTaxonUuid(originalTaxonUuid);
             TreeIndex groupTreeIndex = taxonIdTreeIndexMap.get(originalTaxonUuid);
-            String groupIndexX = TreeIndex.toString(groupTreeIndex);
             while (groupTreeIndex != null){
                 if (treeIndexTaxonIdMap.get(groupTreeIndex) != null){
                     UuidAndTitleCache<?> uuidAndLabel = treeIndexTaxonIdMap.get(groupTreeIndex);

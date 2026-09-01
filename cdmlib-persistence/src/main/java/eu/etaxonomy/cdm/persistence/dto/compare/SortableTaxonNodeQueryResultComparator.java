@@ -18,7 +18,8 @@ import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
  * @author k.luther
  * @since 06.12.2017
  */
-public class SortableTaxonNodeQueryResultComparator implements Serializable, Comparator<SortableTaxonNodeQueryResult>{
+public class SortableTaxonNodeQueryResultComparator
+        implements Serializable, Comparator<SortableTaxonNodeQueryResult>{
 
     private static final long serialVersionUID = 6000794425983318091L;
 
@@ -32,12 +33,12 @@ public class SortableTaxonNodeQueryResultComparator implements Serializable, Com
 
         //Rank
         Rank rankName1 = Rank.UNKNOWN_RANK();
-        if (o1.getNameRank() != null){
-            rankName1 = o1.getNameRank();
+        if (o1.getRank() != null){
+            rankName1 = o1.getRank();
         }
         Rank rankName2 = Rank.UNKNOWN_RANK();
-        if (o2.getNameRank() != null){
-            rankName2 = o2.getNameRank();
+        if (o2.getRank() != null){
+            rankName2 = o2.getRank();
         }
 
         //first compare ranks, if ranks are equal (or both null) compare names or taxon title cache if names are null

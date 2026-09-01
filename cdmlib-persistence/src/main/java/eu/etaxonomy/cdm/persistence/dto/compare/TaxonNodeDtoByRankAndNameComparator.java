@@ -57,7 +57,7 @@ public class TaxonNodeDtoByRankAndNameComparator
 		int rankOrder = OrderIndexComparator.instance().compare(rankTax1, rankTax2);
 
 		if (rankOrder == 0) {
-			if (node1.getTaggedTitle() != null && node2.getTaggedTitle() != null){
+		    if (node1.getTaggedTitle() != null && node2.getTaggedTitle() != null){
 				//same rank, order by name
 			    String sortableName1 = "";
 			    for (TaggedText tagged: node1.getTaggedTitle()){

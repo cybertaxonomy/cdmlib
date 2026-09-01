@@ -279,10 +279,18 @@ public class TaxonNodeFilter implements Serializable{
         return this;
     }
 
+    /**
+     * Adds an area filter to the filter. If no area filter exists yet, it is added as an
+     * AND filter. Otherwise it is added as an OR filter.
+     */
     public TaxonNodeFilter orArea(UUID uuid){
         areaFilter.add( new LogicFilter<>(NamedArea.class, uuid, Op.OR));
         return this;
     }
+    /**
+     * Adds an area filter to the filter. If no area filter exists yet, it is added as an
+     * AND filter. Otherwise it is added as an OR filter.
+     */
     public TaxonNodeFilter orArea(NamedArea area){
         areaFilter.add( new LogicFilter<>(area, Op.OR));
         return this;
