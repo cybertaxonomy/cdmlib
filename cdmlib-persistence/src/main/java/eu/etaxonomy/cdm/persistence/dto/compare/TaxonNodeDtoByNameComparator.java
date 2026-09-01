@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.compare.taxon.ITaxonNodeComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeStatusComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author k.luther/a.kohlbecker

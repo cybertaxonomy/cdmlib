@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * Comparator to compare {@link TaxonNode taxon nodes} by its user defined ordering
