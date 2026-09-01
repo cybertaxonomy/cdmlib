@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupComparator;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainerFormatter;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.name.TypeComparator;
 import eu.etaxonomy.cdm.compare.reference.SourceComparator;
@@ -2038,13 +2039,13 @@ public class CdmLightClassificationExport
                     if (name.isInvalid()){
                         synonymSign = "\u2212 ";
                     }else{
-                        synonymSign = "\u2261 ";
+                        synonymSign = UTF8.IDENTICAL_TO + " ";
                     }
                 }else{
                     if (name.isInvalid() ){
                         synonymSign = "\u2212 ";
                     }else{
-                        synonymSign = "\u003D ";
+                        synonymSign = UTF8.EQUALS_SIGN + " ";
                     }
                 }
                 boolean isAccepted = false;
