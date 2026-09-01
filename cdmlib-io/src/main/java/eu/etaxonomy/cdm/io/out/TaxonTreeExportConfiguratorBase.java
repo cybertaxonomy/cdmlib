@@ -17,8 +17,7 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
  * @author a.mueller
  * @date 20.07.2023
  */
-public abstract class TaxonTreeExportConfiguratorBase
-           <STATE extends TaxonTreeExportStateBase<CONFIG,STATE>, CONFIG extends TaxonTreeExportConfiguratorBase<STATE, CONFIG>>
+public abstract class TaxonTreeExportConfiguratorBase<STATE extends TaxonTreeExportStateBase<CONFIG,STATE>, CONFIG extends TaxonTreeExportConfiguratorBase<STATE, CONFIG>>
         extends ExportConfiguratorBase<STATE, IExportTransformer, File> {
 
     private static final long serialVersionUID = 1663876643435871032L;
