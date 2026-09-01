@@ -9,10 +9,10 @@
 package eu.etaxonomy.cdm.io.cdmLight;
 
 import java.io.File;
-import java.util.Comparator;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.out.IFactExportConfigurator;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * The configurator for the CDM light export.
@@ -57,7 +56,7 @@ public class CdmLightExportConfigurator
     private boolean isShowTypeOfDesignationIdentifier = true;
     private boolean isShowSynSecForHomotypicGroup = false;
 
-    private Comparator<TaxonNodeDto> taxonNodeComparator;
+    private TaxonNodeDtoSortMode taxonNodeSortMode;
 
     //filter
     private boolean isExcludeImportSources = true;
@@ -282,11 +281,11 @@ public class CdmLightExportConfigurator
         this.isFilterIntextReferences = isRemoveIntextReferences;
     }
 
-    public Comparator<TaxonNodeDto> getTaxonNodeComparator() {
-        return taxonNodeComparator;
+    public TaxonNodeDtoSortMode getTaxonNodeSortMode() {
+        return taxonNodeSortMode;
     }
-    public void setTaxonNodeComparator(Comparator<TaxonNodeDto> taxonNodeComparator) {
-        this.taxonNodeComparator = taxonNodeComparator;
+    public void setTaxonNodeSortMode(TaxonNodeDtoSortMode taxonNodeSortMode) {
+        this.taxonNodeSortMode = taxonNodeSortMode;
     }
 
     public boolean isExcludeImportSources() {
