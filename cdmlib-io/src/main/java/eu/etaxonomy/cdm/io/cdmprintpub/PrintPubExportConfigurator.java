@@ -39,6 +39,7 @@ public class PrintPubExportConfigurator
     private boolean includeMisappliedNames = true;
     private boolean includeTaxonomicConceptReference = true; // "Secundum" for accepted taxa
     private boolean includeSynonymConceptReference = false; // "Secundum" for synonyms
+    private boolean oneLinePerHomotypicGroup = true;
 
     // 2. Type Information & Formatting
     private boolean includeSupraspecificTypes = true;
@@ -246,6 +247,13 @@ public class PrintPubExportConfigurator
     }
     public void setFactSortMode(FactSortMode factSortMode) {
         this.factSortMode = factSortMode;
+    }
+
+    public boolean isOneLinePerHomotypicGroup() {
+        return oneLinePerHomotypicGroup;
+    }
+    public void setOneLinePerHomotypicGroup(boolean oneLinePerHomotypicGroup) {
+        this.oneLinePerHomotypicGroup = oneLinePerHomotypicGroup;
     }
 
 }
