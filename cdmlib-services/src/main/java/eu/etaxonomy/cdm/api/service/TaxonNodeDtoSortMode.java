@@ -11,9 +11,9 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.Comparator;
 
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByNameComparator;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoNaturalComparator;
+import eu.etaxonomy.cdm.persistence.dto.compare.TaxonNodeDtoByNameComparator;
+import eu.etaxonomy.cdm.persistence.dto.compare.TaxonNodeDtoByRankAndNameComparator;
+import eu.etaxonomy.cdm.persistence.dto.compare.TaxonNodeDtoNaturalComparator;
 
 public enum TaxonNodeDtoSortMode {
 

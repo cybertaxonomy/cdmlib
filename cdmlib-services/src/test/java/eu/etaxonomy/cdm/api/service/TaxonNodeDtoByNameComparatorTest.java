@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByNameComparator;
+import eu.etaxonomy.cdm.persistence.dto.compare.TaxonNodeDtoByNameComparator;
 
 /**
  * @author a.kohlbecker
