@@ -22,7 +22,7 @@ public interface ITaxonNodeFilterDao {
 
     /**
      * Counts the number of taxon node IDs returned
-     * when calling {@link #listUuids(TaxonNodeFilter)}
+     * when calling any of the listXXX methods, e.g. {@link #listUuids(TaxonNodeFilter)}
      * @param filter the taxon node filter
      * @return Count of taxon nodes
      */
@@ -43,6 +43,6 @@ public interface ITaxonNodeFilterDao {
      * @param filter the taxon node filter
      * @return List of taxon node IDs
      */
-    public List<Integer> idList(TaxonNodeFilter filter);
+    public List<Integer> listIds(TaxonNodeFilter filter);
 
 }

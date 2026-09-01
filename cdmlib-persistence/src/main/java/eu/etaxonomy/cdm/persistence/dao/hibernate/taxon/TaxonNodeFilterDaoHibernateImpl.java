@@ -81,7 +81,7 @@ public class TaxonNodeFilterDaoHibernateImpl
     }
 
     @Override
-    public List<Integer> idList(TaxonNodeFilter filter){
+    public List<Integer> listIds(TaxonNodeFilter filter){
 
         String queryStr = query(filter, "tn.id");
         Query<Integer> query = getSession().createQuery(queryStr, Integer.class);

@@ -1250,7 +1250,7 @@ public class TaxonNodeServiceImpl
 
     @Override
     public List<Integer> idList(TaxonNodeFilter filter){
-        return nodeFilterDao.idList(filter);
+        return nodeFilterDao.listIds(filter);
     }
 
     @Override
