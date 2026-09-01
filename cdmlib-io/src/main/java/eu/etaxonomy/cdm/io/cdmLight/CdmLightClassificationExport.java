@@ -2037,7 +2037,7 @@ public class CdmLightClassificationExport
                 String synonymSign = "";
                 if (index > 0){
                     if (name.isInvalid()){
-                        synonymSign = "\u2212 ";
+                        synonymSign = UTF8.MINUS + " ";
                     }else{
                         synonymSign = UTF8.IDENTICAL_TO + " ";
                     }

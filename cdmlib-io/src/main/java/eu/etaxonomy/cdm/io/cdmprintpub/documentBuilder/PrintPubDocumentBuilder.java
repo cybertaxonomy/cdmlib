@@ -69,7 +69,7 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
 
     private static final String HOMOTYPIC_MARKER = UTF8.IDENTICAL_TO + " ";
 
-    private static final String INVALID_NAME_MARKER = UTF8.EN_DASH + " ";
+    private static final String INVALID_NAME_MARKER = UTF8.MINUS + " ";
 
     private static final String ACC_SEC_MARKER = " sec. ";
 
