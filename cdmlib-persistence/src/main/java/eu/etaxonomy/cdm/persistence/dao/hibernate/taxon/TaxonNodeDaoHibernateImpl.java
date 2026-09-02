@@ -1211,7 +1211,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
     }
 
     @Override
-    public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid) {
+    public List<TaxonNodeDto> listTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid) {
 
         String queryString = getTaxonNodeDtoQuery();
         queryString += "  INNER JOIN tn.classification AS cls " + " WHERE t.titleCache LIKE :pattern ";
@@ -1353,7 +1353,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
     }
 
     @Override
-    public List<TaxonNodeDto> getTaxonNodeForTaxonInClassificationDto(UUID taxonUUID, UUID classificationUuid) {
+    public List<TaxonNodeDto> getTaxonNodeForTaxonInClassificationDto(
+            UUID taxonUUID, UUID classificationUuid) {
+
         String queryString = getTaxonNodeDtoQuery();
         queryString = queryString + "   INNER JOIN tn.classification AS cls "  + " WHERE t.uuid = :uuid ";
 

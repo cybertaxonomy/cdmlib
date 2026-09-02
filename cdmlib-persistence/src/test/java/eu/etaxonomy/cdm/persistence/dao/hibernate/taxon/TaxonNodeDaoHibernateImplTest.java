@@ -458,7 +458,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
     public final void testGetTaxonNodeDtoWithoutRank(){
 
-        List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null); // cant use "*" here since this is not supported by the method under test
+        List<TaxonNodeDto> result = taxonNodeDao.listTaxonNodeDto(null, "", null); // cant use "*" here since this is not supported by the method under test
         assertNotNull(result);
         assertEquals(5, result.size());
         assertEquals("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7", result.get(0).getUuid().toString()); // Acherontia(Fabricius, 1798) rank: Genus
@@ -471,7 +471,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
     public final void testGetTaxonNodeDtoCheckSortIndex(){
 
-        List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null);
+        List<TaxonNodeDto> result = taxonNodeDao.listTaxonNodeDto(null, "", null);
         assertEquals(5, result.size());
 
         assertTrue(0 == result.get(0).getSortIndex()); // Acherontia(Fabricius, 1798) rank: Genus
@@ -484,7 +484,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
     public final void testGetTaxonNodeDtoCheckStatus(){
 
-        List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null);
+        List<TaxonNodeDto> result = taxonNodeDao.listTaxonNodeDto(null, "", null);
         assertEquals(5, result.size());
 
         assertEquals(TaxonNodeStatus.UNPLACED, result.get(0).getStatus()); // Acherontia(Fabricius, 1798) rank: Genus
@@ -499,7 +499,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
     public final void testGetTaxonNodeDtoCheckNote(){
 
-        List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null);
+        List<TaxonNodeDto> result = taxonNodeDao.listTaxonNodeDto(null, "", null);
         assertEquals(5, result.size());
 
         assertNotNull(result.get(3).getPlacementNote()); // Acherontia(Fabricius, 1798) rank: Genus

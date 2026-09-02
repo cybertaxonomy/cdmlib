@@ -178,7 +178,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
 
 	public List<TaxonNodeDto> getParentTaxonNodeDtoForRank( Classification classification, Rank rank, TaxonBase taxonBase);
 
-    public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid);
+    public List<TaxonNodeDto> listTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid);
 
     public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid, boolean includeDoubtful);
 
