@@ -50,9 +50,9 @@ public class TaxonNodeFilter implements Serializable{
 
     private boolean includeUnpublished = false;
 
-    private SortMode sortMode = null;
+    private TaxonNodeFilterSortMode sortMode = null;
 
-    public enum SortMode{
+    public enum TaxonNodeFilterSortMode{
         ID("tn.id", null),
         TREEINDEX("tn.treeIndex", null),
         TREEINDEX_DESC("tn.treeIndex DESC", null),
@@ -62,11 +62,11 @@ public class TaxonNodeFilter implements Serializable{
         //(check with SortableTaxonNodeQueryResult for how to implement if it works there
 //        NATURAL("tn.treeIndex", TaxonNodeSortMode.NaturalOrder)
         ;
-        String hql;
-        boolean isTaxonomic;
-        TaxonNodeSortMode baseSortMode;
+        private String hql;
+        private boolean isTaxonomic;
+        private TaxonNodeSortMode baseSortMode;
 
-        private SortMode(String hql, TaxonNodeSortMode baseSortMode){
+        private TaxonNodeFilterSortMode(String hql, TaxonNodeSortMode baseSortMode){
             this.hql = hql;
             this.baseSortMode = baseSortMode;
             this.isTaxonomic = baseSortMode != null;
@@ -400,11 +400,11 @@ public class TaxonNodeFilter implements Serializable{
                 && !getSubtreeFilter().isEmpty();
     }
 
-    public SortMode getSortMode() {
+    public TaxonNodeFilterSortMode getSortMode() {
         return sortMode;
     }
-    public void setSortMode(SortMode sortMode) {
-        this.sortMode = sortMode;
+    public void setSortMode(TaxonNodeFilterSortMode taxonNodeFilterSortMode) {
+        this.sortMode = taxonNodeFilterSortMode;
     }
     public TaxonNodeSortMode getBaseSortMode() {
         return this.sortMode.getBaseSortMode();

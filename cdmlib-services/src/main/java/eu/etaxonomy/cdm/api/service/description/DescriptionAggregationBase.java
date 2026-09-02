@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
-import eu.etaxonomy.cdm.filter.TaxonNodeFilter.SortMode;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter.TaxonNodeFilterSortMode;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -106,7 +106,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             logger.info("Hibernate JDBC Batch size: " +  getSession().getSessionFactory().getSessionFactoryOptions().getJdbcBatchSize());
 
             TaxonNodeFilter filter = getConfig().getTaxonNodeFilter();
-            filter.setSortMode(SortMode.TREEINDEX_DESC); //DESC guarantees that child taxa are aggregated before parent
+            filter.setSortMode(TaxonNodeFilterSortMode.TREEINDEX_DESC); //DESC guarantees that child taxa are aggregated before parent
             filter.setIncludeRootNodes(false);  //root nodes do not make sense for aggregation
 
             monitor.beginTask("Accumulating " + pluralDataType(), 100);

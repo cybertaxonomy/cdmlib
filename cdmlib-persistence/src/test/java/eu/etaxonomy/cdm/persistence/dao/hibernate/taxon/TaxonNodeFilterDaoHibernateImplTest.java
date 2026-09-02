@@ -170,7 +170,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
         //UUID
         filter = TaxonNodeFilter.NewClassificationInstance(classification);
-        filter.setSortMode(TaxonNodeFilter.SortMode.TREEINDEX);
+        filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.TREEINDEX);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
@@ -187,7 +187,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertEquals((Integer)node2.getId(), idList.get(4));
 
         //ID
-        filter.setSortMode(TaxonNodeFilter.SortMode.ID);
+        filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.ID);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
@@ -196,7 +196,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         //and therefore we expect the given result
         Assert.assertEquals(expectedList, listUuid);
 
-        filter.setSortMode(TaxonNodeFilter.SortMode.TREEINDEX_DESC);
+        filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.TREEINDEX_DESC);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
@@ -219,7 +219,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
         //Sort by rank and name
         TaxonNodeFilter filter = TaxonNodeFilter.NewClassificationInstance(classification);
-        filter.setSortMode(TaxonNodeFilter.SortMode.ALPHABETIC_WITH_RANK);
+        filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.ALPHABETIC_WITH_RANK);
 
         //UUID List
         List<UUID> listUuid = filterDao.listUuids(filter);
@@ -241,7 +241,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertEquals((Integer)node4.getId(), idList.get(i++));
 
         //Sort by name only
-        filter.setSortMode(TaxonNodeFilter.SortMode.ALPHABETIC);
+        filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.ALPHABETIC);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
