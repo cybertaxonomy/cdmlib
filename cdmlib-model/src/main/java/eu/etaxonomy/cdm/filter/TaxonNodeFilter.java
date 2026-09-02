@@ -410,6 +410,10 @@ public class TaxonNodeFilter implements Serializable{
         return this.sortMode.getBaseSortMode();
     }
 
+    public boolean hasTaxonomicSortMode() {
+        return this.sortMode != null && this.sortMode.isTaxonomic();
+    }
+
     public boolean isIncludeAbsentDistributions() {
         return includeAbsentDistributions;
     }

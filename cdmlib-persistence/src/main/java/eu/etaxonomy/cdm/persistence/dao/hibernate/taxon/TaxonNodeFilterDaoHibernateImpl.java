@@ -81,28 +81,30 @@ public class TaxonNodeFilterDaoHibernateImpl
     @Override
     public List<UUID> listUuids(TaxonNodeFilter filter){
 
-        if (filter.getSortMode().isTaxonomic()) {
+        if (filter.hasTaxonomicSortMode()) {
             return listTaxonomicallySorted(filter, true);
-        }
-        String queryStr = query(filter, "tn.uuid");
-        Query<UUID> query = getSession().createQuery(queryStr, UUID.class);
-        List<UUID> list = query.list();
+        }else {
+            String queryStr = query(filter, "tn.uuid");
+            Query<UUID> query = getSession().createQuery(queryStr, UUID.class);
+            List<UUID> list = query.list();
 
-        list = deduplicate(list);
-        return list;
+            list = deduplicate(list);
+            return list;
+        }
     }
 
     @Override
     public List<Integer> listIds(TaxonNodeFilter filter){
 
-        if (filter.getSortMode().isTaxonomic()) {
+        if (filter.hasTaxonomicSortMode()) {
             return listTaxonomicallySorted(filter, false);
+        }else {
+            String queryStr = query(filter, "tn.id");
+            Query<Integer> query = getSession().createQuery(queryStr, Integer.class);
+            List<Integer> list = query.list();
+            list = deduplicate(list);
+            return list;
         }
-        String queryStr = query(filter, "tn.id");
-        Query<Integer> query = getSession().createQuery(queryStr, Integer.class);
-        List<Integer> list = query.list();
-        list = deduplicate(list);
-        return list;
     }
 
     private <S extends Object> List<S> listTaxonomicallySorted(TaxonNodeFilter filter, boolean isUuid) {
