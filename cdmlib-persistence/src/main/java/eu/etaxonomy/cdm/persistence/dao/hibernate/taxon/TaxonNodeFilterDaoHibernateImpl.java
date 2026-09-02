@@ -298,7 +298,7 @@ public class TaxonNodeFilterDaoHibernateImpl
     private String query(TaxonNodeFilter filter, String selectPart){
 
         String select = " SELECT " + selectPart;
-        boolean isSorted = filter.getSortMode().isTaxonomic();  //sorted by content, not ids
+        boolean isSorted = filter.hasTaxonomicSortMode();  //sorted taxonomically, not by IDs or treeindex
         String from = getFrom(filter, isSorted);
         String subtreeFilter = getSubtreeFilter(filter);
         String taxonNodeFilter = getTaxonNodeFilter(filter);
