@@ -60,9 +60,7 @@ public abstract class AbstractStringComparator<T extends Object> implements Comp
 				sb.append(substitutionRules.get(pattern)).append(s);
 				return sb.toString();
 			}
-
 		}
 		return s;
 	}
-
 }
