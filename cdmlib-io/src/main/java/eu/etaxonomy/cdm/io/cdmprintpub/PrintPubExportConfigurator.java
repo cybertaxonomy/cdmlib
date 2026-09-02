@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.cdmprintpub;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter.SortMode;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.out.IFactExportConfigurator;
@@ -34,6 +35,7 @@ public class PrintPubExportConfigurator
     private String documentTitle = "Taxonomic Export";
     private boolean doFactualData = true;
     private boolean includeUnpublishedFacts = false;
+    private SortMode defaultTaxonSortMode = SortMode.ALPHABETIC_WITH_RANK;
 
     // 1. Taxonomic Scope & Concepts
     private boolean includeMisappliedNames = true;
@@ -82,11 +84,12 @@ public class PrintPubExportConfigurator
         return result;
     }
 
-    public PrintPubExportConfigurator(IExportTransformer transformer) {
+    private PrintPubExportConfigurator(IExportTransformer transformer) {
         super(transformer);
         this.resultType = ExportResultType.BYTE_ARRAY;
         this.setTarget(TARGET.EXPORT_DATA);
         setUserFriendlyIOName("Print/Publication Export");
+        this.getTaxonNodeFilter().setSortMode(defaultTaxonSortMode);
     }
 
     @Override
