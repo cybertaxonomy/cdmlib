@@ -82,21 +82,30 @@ public class TaxonNodeDtoByRankAndNameComparator
 	}
 
     private int sortByName(ISortableTaxonNodeDto node1, ISortableTaxonNodeDto node2) {
+
+        //name1
         String sortableName1 = "";
-        for (TaggedText tagged: node1.getTaggedTitle()){
-            if (tagged.getType().equals(TagEnum.name)){
-                sortableName1 += " " + tagged.getText();
+        if(node1.getTaggedTitle() != null) {
+            for (TaggedText tagged: node1.getTaggedTitle()){
+                if (tagged.getType().equals(TagEnum.name)){
+                    sortableName1 += " " + tagged.getText();
+                }
             }
         }
         sortableName1 = StringUtils.isBlank(sortableName1)? node1.getNameTitleCache(): sortableName1;
 
+        //name2
         String sortableName2 = "";
-        for (TaggedText tagged: node2.getTaggedTitle()){
-            if (tagged.getType().equals(TagEnum.name)){
-                sortableName2 += " " + tagged.getText();
+        if(node2.getTaggedTitle() != null) {
+            for (TaggedText tagged: node2.getTaggedTitle()){
+                if (tagged.getType().equals(TagEnum.name)){
+                    sortableName2 += " " + tagged.getText();
+                }
             }
         }
         sortableName2 = StringUtils.isBlank(sortableName2)? node1.getNameTitleCache(): sortableName2;
+
+        //compare
         int result = sortableName1.compareTo(sortableName2);
         return result;
     }
