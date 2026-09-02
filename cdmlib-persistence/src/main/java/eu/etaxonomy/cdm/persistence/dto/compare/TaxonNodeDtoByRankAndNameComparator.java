@@ -101,7 +101,7 @@ public class TaxonNodeDtoByRankAndNameComparator
                 }
             }
         }
-        sortableName2 = StringUtils.isBlank(sortableName2)? node1.getNameTitleCache(): sortableName2;
+        sortableName2 = StringUtils.isBlank(sortableName2)? node2.getNameTitleCache(): sortableName2;
 
         //compare
         int result = sortableName1.compareTo(sortableName2);
