@@ -15,8 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.compare.common.OrderIndexComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeStatusComparator;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -112,9 +110,5 @@ public class TaxonNodeDtoByRankAndNameComparator
 
     private int compareStatus(TaxonNodeStatus status1, TaxonNodeStatus status2) {
         return TaxonNodeStatusComparator.INSTANCE().compare(status1, status2);
-    }
-
-    public String getTaxonTitle(TaxonBase taxon, TaxonNode node) {
-        return (taxon == null) ? node.getUuid().toString(): taxon.getTitleCache();
     }
 }

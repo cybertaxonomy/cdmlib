@@ -242,14 +242,17 @@ public class TaxonNodeDto
         return classificationUUID;
     }
 
+    @Override
     public String getTreeIndex() {
         return treeIndex;
     }
 
+    @Override
     public UUID getParentUUID() {
         return parentUUID;
     }
 
+    @Override
     public Integer getSortIndex() {
         return sortIndex;
     }
