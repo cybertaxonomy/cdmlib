@@ -78,11 +78,11 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     private final UUID middleEuropeUuid = UUID.fromString("d292f237-da3d-408b-93a1-3257a8c80b97");
     private final UUID africaUuid = UUID.fromString("9444016a-b334-4772-8795-ed4019552087");
 
-    private final UUID uuidNode1 = UUID.fromString("ec88fd49-59c8-4228-a826-77dff951d7f8");
-    private final UUID uuidNode2 = UUID.fromString("4c0ecc22-e3c0-445d-912a-93ee49fb256a");
-    private final UUID uuidNode3 = UUID.fromString("30ba17f1-2f37-4286-9665-27d5adbd230d");
-    private final UUID uuidNode4 = UUID.fromString("2e6ca5d6-2fc8-4f0c-a3fe-03e596dd8afe");
-    private final UUID uuidNode5 = UUID.fromString("e01f56c7-0315-450b-a05b-881d21adf02b");
+    private final UUID uuidNode1Gen = UUID.fromString("ec88fd49-59c8-4228-a826-77dff951d7f8");
+    private final UUID uuidNode2Fam = UUID.fromString("4c0ecc22-e3c0-445d-912a-93ee49fb256a");
+    private final UUID uuidNode3Spec = UUID.fromString("30ba17f1-2f37-4286-9665-27d5adbd230d");
+    private final UUID uuidNode4SubSpec1 = UUID.fromString("2e6ca5d6-2fc8-4f0c-a3fe-03e596dd8afe");
+    private final UUID uuidNode5SubSpec2 = UUID.fromString("e01f56c7-0315-450b-a05b-881d21adf02b");
     private final UUID uuidNodeUnpublished = UUID.fromString("96888466-f40e-43ed-a17d-cdc62bdf0ff0");
 
     private Classification classification1;
@@ -112,12 +112,12 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         classification1 = Classification.NewInstance("TestClassification");
         Reference citation = null;
         String microCitation = null;
-        taxon1 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.GENUS(), null, null, null, null, null, null, null, null), null);
-        taxon2 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.FAMILY(), null, null, null, null, null, null, null, null), null);
-        taxon3 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), null, null, null, null, null, null, null, null), null);
-        taxon4 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
-        taxon5 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
-        taxonUnpublished = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
+        taxon1 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.GENUS(), "Genus", null, null, null, null, null, null, null), null);
+        taxon2 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.FAMILY(), "Myfamily", null, null, null, null, null, null, null), null);
+        taxon3 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), "Genus", null, "species", null, null, null, null, null), null);
+        taxon4 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), "Genus", null, "species", "first", null, null, null, null), null);
+        taxon5 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), "Genus", null, "species", "before-first", null, null, null, null), null);
+        taxonUnpublished = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), "Genus", null, "species", "unpub", null, null, null, null), null);
         taxonUnpublished.setPublish(false);
 
         NamedArea europe = (NamedArea) termDao.load(europeUuid);
@@ -130,23 +130,23 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         save(TaxonDescription.NewInstance(taxon4)).addElement(save(Distribution.NewInstance(denmark, PresenceAbsenceTerm.ABSENT())));
 
         node1 = classification1.addChildTaxon(taxon1, citation, microCitation);
-        node1.setUuid(uuidNode1);
+        node1.setUuid(uuidNode1Gen);
         node1= taxonNodeDao.save(node1);
 
         node2 = classification1.addChildTaxon(taxon2, citation, microCitation);
-        node2.setUuid(uuidNode2);
+        node2.setUuid(uuidNode2Fam);
         node2 = taxonNodeDao.save(node2);
 
         node3 = node1.addChildTaxon(taxon3, citation, microCitation);
-        node3.setUuid(uuidNode3);
+        node3.setUuid(uuidNode3Spec);
         taxonNodeDao.save(node3);
 
         node4 = node3.addChildTaxon(taxon4, citation, microCitation);
-        node4.setUuid(uuidNode4);
+        node4.setUuid(uuidNode4SubSpec1);
         taxonNodeDao.save(node4);
 
         node5 = node3.addChildTaxon(taxon5, citation, microCitation);
-        node5.setUuid(uuidNode5);
+        node5.setUuid(uuidNode5SubSpec2);
         node5 = taxonNodeDao.save(node5);
 
         nodeUnpublished = node3.addChildTaxon(taxonUnpublished, citation, microCitation);
@@ -170,11 +170,11 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
         //UUID
         filter = TaxonNodeFilter.NewClassificationInstance(classification);
-        filter.setOrder(TaxonNodeFilter.ORDER.TREEINDEX);
+        filter.setSortMode(TaxonNodeFilter.SortMode.TREEINDEX);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
-        List<UUID> expectedList = Arrays.asList(new UUID[]{uuidNode1, uuidNode3, uuidNode4, uuidNode5, uuidNode2});
+        List<UUID> expectedList = Arrays.asList(new UUID[]{uuidNode1Gen, uuidNode3Spec, uuidNode4SubSpec1, uuidNode5SubSpec2, uuidNode2Fam});
         //in theory node1 and 3 as well as node4 and 5 could be exchanged depending on the id they get. But we expect
         //in this test environment that node1.id < node2.id and node4.id < node5.id
         Assert.assertEquals(expectedList, listUuid);
@@ -187,20 +187,20 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertEquals((Integer)node2.getId(), idList.get(4));
 
         //ID
-        filter.setOrder(TaxonNodeFilter.ORDER.ID);
+        filter.setSortMode(TaxonNodeFilter.SortMode.ID);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
-        expectedList = Arrays.asList(new UUID[]{uuidNode1, uuidNode2, uuidNode3, uuidNode4, uuidNode5});
+        expectedList = Arrays.asList(new UUID[]{uuidNode1Gen, uuidNode2Fam, uuidNode3Spec, uuidNode4SubSpec1, uuidNode5SubSpec2});
         //in theory the given id is not necessarily ascending per save, but usually it is, at least in test environment
         //and therefore we expect the given result
         Assert.assertEquals(expectedList, listUuid);
 
-        filter.setOrder(TaxonNodeFilter.ORDER.TREEINDEX_DESC);
+        filter.setSortMode(TaxonNodeFilter.SortMode.TREEINDEX_DESC);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
-        expectedList = Arrays.asList(new UUID[]{uuidNode2, uuidNode5, uuidNode4, uuidNode3, uuidNode1});
+        expectedList = Arrays.asList(new UUID[]{uuidNode2Fam, uuidNode5SubSpec2, uuidNode4SubSpec1, uuidNode3Spec, uuidNode1Gen});
         //in theory node 1 and 3 as well as node 4 and 5 could be exchanged depending on the id they get. But we expect
         //in this test environment that node1.id < node2.id and node4.id < node5.id
         Assert.assertEquals(expectedList, listUuid);
@@ -211,6 +211,44 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertEquals((Integer)node4.getId(), idList.get(2));
         Assert.assertEquals((Integer)node3.getId(), idList.get(3));
         Assert.assertEquals((Integer)node1.getId(), idList.get(4));
+    }
+
+    @Test
+    public void testListUuidsOrderedByNameAndRank() {
+        Classification classification = classificationDao.findByUuid(classification1.getUuid());
+
+        //Sort by rank and name
+        TaxonNodeFilter filter = TaxonNodeFilter.NewClassificationInstance(classification);
+        filter.setSortMode(TaxonNodeFilter.SortMode.ALPHABETIC_WITH_RANK);
+
+        //UUID List
+        List<UUID> listUuid = filterDao.listUuids(filter);
+        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+
+        //family should be sorted before genus and children due to rank
+        //subspecies 2 should be sorted before subspecies 1 due to alphabetic order
+        List<UUID> expectedList = Arrays.asList(new UUID[]{uuidNode2Fam, uuidNode1Gen, uuidNode3Spec,
+                uuidNode5SubSpec2, uuidNode4SubSpec1});
+        Assert.assertEquals(expectedList, listUuid);
+
+        //ID list
+        List<Integer> idList = filterDao.listIds(filter);
+        int i = 0;
+        Assert.assertEquals((Integer)node2.getId(), idList.get(i++));
+        Assert.assertEquals((Integer)node1.getId(), idList.get(i++));
+        Assert.assertEquals((Integer)node3.getId(), idList.get(i++));
+        Assert.assertEquals((Integer)node5.getId(), idList.get(i++));
+        Assert.assertEquals((Integer)node4.getId(), idList.get(i++));
+
+        //Sort by name only
+        filter.setSortMode(TaxonNodeFilter.SortMode.ALPHABETIC);
+        listUuid = filterDao.listUuids(filter);
+        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+
+        //genus and children should be sorted before family (due to alphabet only)
+        //subspecies 2 should be sorted before subspecies 1 (due to alphabetic order)
+        expectedList = Arrays.asList(new UUID[]{uuidNode1Gen, uuidNode3Spec, uuidNode5SubSpec2, uuidNode4SubSpec1, uuidNode2Fam});
+        Assert.assertEquals(expectedList, listUuid);
     }
 
     @Test

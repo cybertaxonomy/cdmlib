@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.filter.LogicFilter.Op;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -49,18 +50,35 @@ public class TaxonNodeFilter implements Serializable{
 
     private boolean includeUnpublished = false;
 
-    private ORDER orderBy = null;
+    private SortMode sortMode = null;
 
-    public enum ORDER{
-        ID("tn.id"),
-        TREEINDEX("tn.treeIndex"),
-        TREEINDEX_DESC("tn.treeIndex DESC");
+    public enum SortMode{
+        ID("tn.id", null),
+        TREEINDEX("tn.treeIndex", null),
+        TREEINDEX_DESC("tn.treeIndex DESC", null),
+        ALPHABETIC("tn.treeIndex", TaxonNodeSortMode.AlphabeticalOrder),
+        ALPHABETIC_WITH_RANK("tn.treeIndex", TaxonNodeSortMode.RankAndAlphabeticalOrder),
+        //TODO NATURAL not yet supported as retrieving the taxon node's sortindex is difficult
+        //(check with SortableTaxonNodeQueryResult for how to implement if it works there
+//        NATURAL("tn.treeIndex", TaxonNodeSortMode.NaturalOrder)
+        ;
         String hql;
-        private ORDER(String hql){
+        boolean isTaxonomic;
+        TaxonNodeSortMode baseSortMode;
+
+        private SortMode(String hql, TaxonNodeSortMode baseSortMode){
             this.hql = hql;
+            this.baseSortMode = baseSortMode;
+            this.isTaxonomic = baseSortMode != null;
         }
         public String getHql(){
             return hql;
+        }
+        public boolean isTaxonomic() {
+            return isTaxonomic;
+        }
+        public TaxonNodeSortMode getBaseSortMode() {
+            return baseSortMode;
         }
     }
 
@@ -382,11 +400,14 @@ public class TaxonNodeFilter implements Serializable{
                 && !getSubtreeFilter().isEmpty();
     }
 
-    public ORDER getOrderBy() {
-        return orderBy;
+    public SortMode getSortMode() {
+        return sortMode;
     }
-    public void setOrder(ORDER orderBy) {
-        this.orderBy = orderBy;
+    public void setSortMode(SortMode sortMode) {
+        this.sortMode = sortMode;
+    }
+    public TaxonNodeSortMode getBaseSortMode() {
+        return this.sortMode.getBaseSortMode();
     }
 
     public boolean isIncludeAbsentDistributions() {
@@ -404,6 +425,6 @@ public class TaxonNodeFilter implements Serializable{
         return "TaxonNodeFilter [subtrees=" + subtrees + ", taxonNodes=" + taxonNodes + ", classifications="
                 + classifications + ", taxa=" + taxa + ", rankMin=" + rankMin + ", rankMax=" + rankMax + ", areaFilter="
                 + areaFilter + ", distributionStatusFilter=" + distributionStatusFilter + ", includeRootNodes="
-                + includeRootNodes + ", includeUnpublished=" + includeUnpublished + ", orderBy=" + orderBy + "]";
+                + includeRootNodes + ", includeUnpublished=" + includeUnpublished + ", sortMode=" + sortMode + "]";
     }
 }

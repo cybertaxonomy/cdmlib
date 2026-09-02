@@ -113,8 +113,6 @@ public class TreeIndex {
         return count == 2;
     }
 
-// ********************** STATIC METHODS  *****************************/
-
     /**
      * Returns a list of string based tree node ids of all ancestors. Starts with the highest ancestor.
      *
@@ -145,6 +143,17 @@ public class TreeIndex {
         }
         return result;
     }
+
+    public TreeIndex indexOfTree() {
+        if (treeIndex == null || !treeIndex.startsWith(sep)) {
+            return null;
+        }else {
+            String treeTreeIndex = sep + treeIndex.split(sep)[1] + sep;
+            return NewInstance(treeTreeIndex);
+        }
+    }
+
+    // ********************** STATIC METHODS  *****************************/
 
     /**
      * Creates a list for the given tree indexes and sorts them in ascending
