@@ -100,8 +100,10 @@ public class TaxonNodeDto
     	this(uuid, id, treeIndex, nameTitleCache, taxonTitleCache, rankOrderIndex, parentUuid, sortIndex, classificationUuid);
     	this.status = status;
     	this.taxonIsPublish = taxonIsPublished;
-    	for (LanguageString str: placementNote) {
-    		this.placementNote.put(str.getLanguage(), str.getText());
+    	if (placementNote != null) {
+        	for (LanguageString str: placementNote) {
+        		this.placementNote.put(str.getLanguage(), str.getText());
+        	}
     	}
     	this.taxonUuid = taxonUuid;
         this.taxonomicChildrenCount = childrenCount;
