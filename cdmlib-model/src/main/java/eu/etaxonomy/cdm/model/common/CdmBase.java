@@ -391,7 +391,14 @@ public abstract class CdmBase
         ICdmBase cdmObj = (ICdmBase)obj;
         UUID objUuid = cdmObj.getUuid();
         if (objUuid == null){
-            throw new NullPointerException("CdmBase is missing UUID");
+            // symmetric with hashCode() below, which was deliberately made null-safe
+            // for the same reason (see #2114): hibernate/deserialization can compute
+            // hashCode()/equals() for a CdmBase used as a set/map element or key
+            // before its uuid has been loaded/populated yet. Two entities that cannot
+            // be identified by uuid cannot be confirmed equal, so treat them as
+            // unequal instead of throwing - the identity check above already covers
+            // the case where obj is actually the same (circularly referenced) instance.
+            return false;
         }
         boolean uuidEqual = objUuid.equals(this.getUuid());
         //TODO is this still needed?
