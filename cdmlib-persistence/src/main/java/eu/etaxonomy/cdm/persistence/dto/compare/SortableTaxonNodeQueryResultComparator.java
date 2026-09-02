@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dto.compare;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 
@@ -25,43 +26,30 @@ public class SortableTaxonNodeQueryResultComparator
 
     @Override
     public int compare(SortableTaxonNodeQueryResult o1, SortableTaxonNodeQueryResult o2) {
-        //same UUID
 
+        //same taxon node
         if (o1.getTaxonNodeUuid().equals(o2.getTaxonNodeUuid())){
             return 0;
         }
 
         //Rank
-        Rank rankName1 = Rank.UNKNOWN_RANK();
-        if (o1.getRank() != null){
-            rankName1 = o1.getRank();
-        }
-        Rank rankName2 = Rank.UNKNOWN_RANK();
-        if (o2.getRank() != null){
-            rankName2 = o2.getRank();
-        }
+        Rank rank1 = o1.getRank() != null? o1.getRank(): Rank.UNKNOWN_RANK();
+        Rank rank2 = o2.getRank() != null? o2.getRank(): Rank.UNKNOWN_RANK();
 
-        //first compare ranks, if ranks are equal (or both null) compare names or taxon title cache if names are null
+        //first compare ranks, if ranks are equal compare names or taxon title cache if names are null
         // TODO can't we use DefinedTermBase.performCompareTo here?
-        if (rankName1 == null && rankName2 != null){
-            return 1;
-        }else if(rankName2 == null && rankName1 != null){
-            return -1;
-        }else if (rankName1 != null && rankName1.compareTo(rankName2)>0){
-            return -1;
-        }else if (rankName1 == null && rankName2 == null || rankName1.equals(rankName2)) {
-            if (o1.getTaxonTitleCache() != null && o2.getTaxonTitleCache() != null){
-                //same rank, order by titleCache
-                int result = o1.getTaxonTitleCache().compareTo(o2.getTaxonTitleCache());
-                if (result == 0){
-                    return o1.getTaxonNodeUuid().compareTo(o2.getTaxonNodeUuid());
-                }else{
-                    return result;
-                }
+        if (rank2.compareTo(rank1) != 0){
+            return rank2.compareTo(rank1);
+        }else {
+            String titleCache1 = CdmUtils.Nz(o1.getTaxonTitleCache());
+            String titleCache2 = CdmUtils.Nz(o2.getTaxonTitleCache());
+            //same rank, order by titleCache
+            int result = titleCache1.compareTo(titleCache2);
+            if (result == 0){
+                return o1.getTaxonNodeUuid().compareTo(o2.getTaxonNodeUuid());
+            }else{
+                return result;
             }
-        }else{
-            return 1;
         }
-        return 0;
     }
 }
