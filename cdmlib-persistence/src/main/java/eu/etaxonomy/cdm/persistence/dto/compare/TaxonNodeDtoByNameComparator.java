@@ -19,15 +19,14 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.compare.taxon.ITaxonNodeComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeStatusComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author k.luther/a.kohlbecker
  * @since 09.03.2018
  */
 public class TaxonNodeDtoByNameComparator
-        extends AbstractStringComparator<TaxonNodeDto>
-        implements Serializable, ITaxonNodeComparator<TaxonNodeDto>{
+        extends AbstractStringComparator<ISortableTaxonNodeDto>
+        implements Serializable, ITaxonNodeComparator<ISortableTaxonNodeDto>{
 
     private static final long serialVersionUID = -5939529760454590279L;
 
@@ -39,7 +38,7 @@ public class TaxonNodeDtoByNameComparator
     private boolean sortInfraGenericFirst = true;
 
     @Override
-    public int compare(TaxonNodeDto node1, TaxonNodeDto node2) {
+    public int compare(ISortableTaxonNodeDto node1, ISortableTaxonNodeDto node2) {
         if (node1 == null && node2 == null) {
             return 0;
         }
@@ -102,9 +101,9 @@ public class TaxonNodeDtoByNameComparator
         return TaxonNodeStatusComparator.INSTANCE().compare(status1, status2);
     }
 
-    private String createSortableTitleCache(TaxonNodeDto taxonNode) {
+    private String createSortableTitleCache(ISortableTaxonNodeDto taxonNode) {
 
-        String nameTitleCache= taxonNode.getTitleCache();
+        String nameTitleCache= taxonNode.getNameTitleCache();
 
         if (nameTitleCache == null){
             if (logger.isTraceEnabled()){logger.trace("titleCache still null, using taxonNode id");}

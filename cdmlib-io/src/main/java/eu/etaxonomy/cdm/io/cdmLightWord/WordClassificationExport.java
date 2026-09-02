@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
+import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupComparator;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
@@ -104,7 +105,6 @@ import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-import eu.etaxonomy.cdm.persistence.dto.compare.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -166,12 +166,12 @@ public class WordClassificationExport
             if (state.getRootId() != null) {
                 List<TaxonNodeDto> childrenOfRoot = state.getNodeChildrenMap().get(state.getRootId());
 
-                Comparator<TaxonNodeDto> comp = state.getConfig().getComparator();
-                if (comp == null) {
-                    comp = new TaxonNodeDtoByRankAndNameComparator();
+                TaxonNodeDtoSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
+                if (sortMode == null) {
+                    sortMode = TaxonNodeDtoSortMode.RankAndAlphabeticalOrder;
                 }
                 if (childrenOfRoot != null) {
-                    Collections.sort(childrenOfRoot, comp);
+                    Collections.sort(childrenOfRoot, sortMode.comparator());
                     OrderHelper helper = new OrderHelper(state.getRootId());
                     helper.setOrderIndex(state.getActualOrderIndexAndUpdate());
                     state.getOrderHelperMap().put(state.getRootId(), helper);
@@ -223,11 +223,11 @@ public class WordClassificationExport
         if (children == null) {
             return null;
         }
-        Comparator<TaxonNodeDto> comp = state.getConfig().getComparator();
-        if (comp == null) {
-            comp = new TaxonNodeDtoByRankAndNameComparator();
+        TaxonNodeDtoSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
+        if (sortMode == null) {
+            sortMode = TaxonNodeDtoSortMode.RankAndAlphabeticalOrder;
         }
-        Collections.sort(children, comp);
+        Collections.sort(children, sortMode.comparator());
         // TODO: nochmal checken!!!
         OrderHelper helperChild;
         List<OrderHelper> childrenHelper = new ArrayList<>();

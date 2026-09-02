@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
+import eu.etaxonomy.cdm.persistence.dto.compare.ISortableTaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.compare.SortableTaxonNodeQueryResultComparator;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
@@ -26,7 +27,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @author a.kohlbecker
  * @since Mar 20, 2020
  */
-public class SortableTaxonNodeQueryResult {
+public class SortableTaxonNodeQueryResult implements ISortableTaxonNodeDto {
 
     private UUID taxonNodeUuid;
     private Integer taxonNodeId;
@@ -220,6 +221,7 @@ public class SortableTaxonNodeQueryResult {
         this.taxonNodeUuid = taxonNodeUuid;
     }
 
+    @Override
     public String getTreeIndex() {
         return treeIndex;
     }
@@ -227,6 +229,7 @@ public class SortableTaxonNodeQueryResult {
         this.treeIndex = treeIndex;
     }
 
+    @Override
     public Integer getSortIndex() {
 		return sortIndex;
 	}
@@ -235,6 +238,7 @@ public class SortableTaxonNodeQueryResult {
 		this.sortIndex = sortIndex;
 	}
 
+    @Override
     public UUID getTaxonUuid() {
         return taxonUuid;
     }
@@ -291,6 +295,7 @@ public class SortableTaxonNodeQueryResult {
         this.rank = rank;
     }
 
+    @Override
     public String getNameTitleCache() {
         return nameTitleCache;
     }
@@ -321,7 +326,8 @@ public class SortableTaxonNodeQueryResult {
         this.taggedName = taggedName;
     }
 
-	public TaxonNodeStatus getStatus() {
+	@Override
+    public TaxonNodeStatus getStatus() {
 		return status;
 	}
 	public void setStatus(TaxonNodeStatus status) {
@@ -346,4 +352,28 @@ public class SortableTaxonNodeQueryResult {
         return nodeDtos;
     }
 
+    @Override
+    public Integer getId() {
+        return getTaxonNodeId();
+    }
+
+    @Override
+    public UUID getUuid() {
+        return getTaxonNodeUuid();
+    }
+
+    @Override
+    public Integer getRankOrderIndex() {
+        return this.rank == null? null: this.rank.getOrderIndex();
+    }
+
+    @Override
+    public List<TaggedText> getTaggedTitle() {
+        return getTaggedName();
+    }
+
+    @Override
+    public UUID getParentUUID() {
+        return getParentNodeUuid();
+    }
 }

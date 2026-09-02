@@ -9,17 +9,16 @@
 package eu.etaxonomy.cdm.io.cdmLightWord;
 
 import java.io.File;
-import java.util.Comparator;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
+import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author a.mueller
@@ -74,7 +73,7 @@ public class WordClassificationExportConfigurator
 
     private boolean isAddHTML = true;
 
-    private Comparator<TaxonNodeDto> comparator;
+    private TaxonNodeDtoSortMode taxonNodeSortMode;
 
     //metadata /gfbio
     private String description;
@@ -193,11 +192,11 @@ public class WordClassificationExportConfigurator
         this.isFilterIntextReferences = isRemoveIntextReferences;
     }
 
-    public Comparator<TaxonNodeDto> getComparator() {
-        return comparator;
+    public TaxonNodeDtoSortMode getTaxonNodeSortMode() {
+        return taxonNodeSortMode;
     }
-    public void setComparator(Comparator<TaxonNodeDto> comparator) {
-        this.comparator = comparator;
+    public void setTaxonNodeSortMode(TaxonNodeDtoSortMode taxonNodeSortMode) {
+        this.taxonNodeSortMode = taxonNodeSortMode;
     }
 
     public boolean isExcludeImportSources() {

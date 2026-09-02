@@ -16,8 +16,6 @@ import eu.etaxonomy.cdm.compare.taxon.TaxonNodeStatusComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
-import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
@@ -26,12 +24,14 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @since 18.03.2010
  */
 public class TaxonNodeDtoByRankAndNameComparator
-        implements Serializable, Comparator<TaxonNodeDto> {
+        implements Serializable, Comparator<ISortableTaxonNodeDto> {
 
     private static final long serialVersionUID = 2596641007876609704L;
 
-	@Override
-    public int compare(TaxonNodeDto node1, TaxonNodeDto node2) {
+
+    @Override
+//	public int compare(TaxonNodeCompareDto node1, TaxonNodeCompareDto node2) {
+	public int compare(ISortableTaxonNodeDto node1, ISortableTaxonNodeDto node2) {
         if (node1 == null && node2 == null) {
             return 0;
         }

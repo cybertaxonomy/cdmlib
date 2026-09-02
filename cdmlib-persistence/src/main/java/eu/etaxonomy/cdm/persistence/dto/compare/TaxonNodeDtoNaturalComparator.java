@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
  *
  * @author k.luther
  */
-public class TaxonNodeDtoNaturalComparator implements Serializable, Comparator<TaxonNodeDto> {
+public class TaxonNodeDtoNaturalComparator implements Serializable, Comparator<ISortableTaxonNodeDto> {
 
     private static final long serialVersionUID = 2124577165012914101L;
 
@@ -29,7 +29,7 @@ public class TaxonNodeDtoNaturalComparator implements Serializable, Comparator<T
 	}
 
     @Override
-	public int compare(TaxonNodeDto node1, TaxonNodeDto node2) {
+	public int compare(ISortableTaxonNodeDto node1, ISortableTaxonNodeDto node2) {
 	   // System.out.println("compare node 1: "+ node1.getTaxon().getTitleCache() + " - node 2: " + node2.getTaxon().getTitleCache());
 	    if (node1.equals(node2)) {
 	        return 0;

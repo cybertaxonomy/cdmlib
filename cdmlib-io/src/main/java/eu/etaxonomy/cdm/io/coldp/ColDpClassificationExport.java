@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +28,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupComparator;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -97,7 +97,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-import eu.etaxonomy.cdm.persistence.dto.compare.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -159,13 +158,12 @@ public class ColDpClassificationExport
             if (state.getRootId() != null) {
                 List<TaxonNodeDto> childrenOfRoot = state.getNodeChildrenMap().get(state.getRootId());
 
-                Comparator<TaxonNodeDto> comp = state.getConfig().getTaxonNodeComparator();
-                //FIXME comparator
-                if (comp == null) {
-                    comp = new TaxonNodeDtoByRankAndNameComparator();
+                TaxonNodeDtoSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
+                if (sortMode == null) {
+                    sortMode = TaxonNodeDtoSortMode.RankAndAlphabeticalOrder;
                 }
                 if (childrenOfRoot != null) {
-                    Collections.sort(childrenOfRoot, comp);
+                    Collections.sort(childrenOfRoot, sortMode.comparator());
                     OrderHelper helper = new OrderHelper(state.getRootId());
                     helper.setOrderIndex(state.getActualOrderIndexAndUpdate());
                     state.getOrderHelperMap().put(state.getRootId(), helper);
@@ -217,11 +215,11 @@ public class ColDpClassificationExport
         if (children == null) {
             return null;
         }
-        Comparator<TaxonNodeDto> comp = state.getConfig().getTaxonNodeComparator();
-        if (comp == null) {
-            comp = new TaxonNodeDtoByRankAndNameComparator();
+        TaxonNodeDtoSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
+        if (sortMode == null) {
+            sortMode = TaxonNodeDtoSortMode.RankAndAlphabeticalOrder;
         }
-        Collections.sort(children, comp);
+        Collections.sort(children, sortMode.comparator());
         // TODO 3 taxon ordering: nochmal checken!!! - s.auch seq index
         OrderHelper helperChild;
         List<OrderHelper> childrenHelper = new ArrayList<>();
