@@ -13,10 +13,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.filter.LogicFilter;
@@ -118,7 +118,7 @@ public class TaxonNodeFilterDaoHibernateImpl
         //create tree
         String treeIndexOfClassification = idTreeIndexList.get(0).treeIndex.indexOfTree().toString();
         SortableTaxonNodeDto tempRoot = new SortableTaxonNodeDto(null, null, treeIndexOfClassification,
-                null, null, null, null, null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null, null, null, null, null, null, null);
 
         SortableTaxonNodeDto last = tempRoot;
         for (SortableTaxonNodeDto node : idTreeIndexList) {
@@ -181,7 +181,7 @@ public class TaxonNodeFilterDaoHibernateImpl
         public SortableTaxonNodeDto(Integer id, UUID uuid, String treeIndex, UUID parentUuid, Integer sortIndex,
                 TaxonNodeStatus status, UUID taxonUuid, String nameTitleCache, Integer rankOrderIndex,
                 String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
-                String infraSpecificEpithet, String cultivarEpithet, String authorshipCache) {
+                String infraSpecificEpithet, String cultivarEpithet, String appendedPhrase, String authorshipCache) {
 
             this.id = id;
             this.treeIndex = treeIndex == null ? null : TreeIndex.NewInstance(treeIndex);
@@ -192,19 +192,35 @@ public class TaxonNodeFilterDaoHibernateImpl
             this.taxonUuid = taxonUuid;
             this.nameTitleCache = nameTitleCache;
             this.rankOrderIndex = rankOrderIndex;
-            this.taggedTitle = createTaggedTitle(genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, cultivarEpithet, authorshipCache);
+            this.taggedTitle = createTaggedTitle(genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
+                    cultivarEpithet, appendedPhrase, authorshipCache);
         }
 
         private List<TaggedText> createTaggedTitle(String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
-                String infraSpecificEpithet, String cultivarEpithet, String authorshipCache) {
+                String infraSpecificEpithet, String cultivarEpithet, String appendedPhrase, String authorshipCache) {
 
             TaggedTextBuilder builder = new TaggedTextBuilder();
-            builder.add(TagEnum.name, genusOrUninomial);
-            builder.add(TagEnum.name, infraGenericEpithet);
-            builder.add(TagEnum.name, specificEpithet);
-            builder.add(TagEnum.name, infraSpecificEpithet);
-            builder.add(TagEnum.name, cultivarEpithet);
-            builder.add(TagEnum.authors, authorshipCache);
+            if (StringUtils.isNotBlank(genusOrUninomial)) {
+                builder.add(TagEnum.name, genusOrUninomial);
+            }
+            if (StringUtils.isNotBlank(infraGenericEpithet)) {
+                builder.add(TagEnum.name, infraGenericEpithet);
+            }
+            if (StringUtils.isNotBlank(specificEpithet)) {
+                builder.add(TagEnum.name, specificEpithet);
+            }
+            if (StringUtils.isNotBlank(infraSpecificEpithet)) {
+                builder.add(TagEnum.name, infraSpecificEpithet);
+            }
+            if (StringUtils.isNotBlank(cultivarEpithet)) {
+                builder.add(TagEnum.name, cultivarEpithet);
+            }
+            if (StringUtils.isNotBlank(appendedPhrase)) {
+                builder.add(TagEnum.name, appendedPhrase);
+            }
+            if (StringUtils.isNotBlank(authorshipCache)) {
+                builder.add(TagEnum.authors, authorshipCache);
+            }
             return builder.getTaggedText();
         }
 
@@ -267,7 +283,7 @@ public class TaxonNodeFilterDaoHibernateImpl
                 + "taxon.uuid, "
                 + "name.titleCache, rank.orderIndex, "
                 + "name.genusOrUninomial, name.infraGenericEpithet, name.specificEpithet, "
-                +   "name.infraSpecificEpithet, name.cultivarEpithet, name.authorshipCache";
+                +   "name.infraSpecificEpithet, name.cultivarEpithet, name.appendedPhrase, name.authorshipCache";
         String queryStr = query(filter, selectPart);
         List<SortableTaxonNodeDto> list = getSession().createQuery(queryStr, Object[].class)
                 .getResultList()
@@ -288,6 +304,7 @@ public class TaxonNodeFilterDaoHibernateImpl
                      ,   (String) row[12]
                      ,   (String) row[13]
                      ,   (String) row[14]
+                     ,   (String) row[15]
                         ))
                 .toList();
         list = deduplicate(list);
@@ -365,7 +382,7 @@ public class TaxonNodeFilterDaoHibernateImpl
             String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
             result = String.format("(%s%s(" + DESCRIPTION_ELEMENTS + ".feature.uuid='" + DISTRIBUTION_FEATURE_UUID + "' "
                     + " AND " + DESCRIPTION_ELEMENTS + ".area.id in (%s))",
-                    result, op, StringUtils.collectionToCommaDelimitedString(areaIds)
+                    result, op, org.springframework.util.StringUtils.collectionToCommaDelimitedString(areaIds)
                     );
             if (!filter.isIncludeAbsentDistributions()) {
                 result +=  " AND " + DESCRIPTION_ELEMENTS + ".status.absenceTerm = " + HQL_FALSE;

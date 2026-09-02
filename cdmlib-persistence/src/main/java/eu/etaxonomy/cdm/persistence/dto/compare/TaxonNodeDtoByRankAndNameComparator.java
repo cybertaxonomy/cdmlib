@@ -83,20 +83,14 @@ public class TaxonNodeDtoByRankAndNameComparator
 
         //name1
         String sortableName1 = "";
-        if(node1.getTaggedTitle() != null) {
-            for (TaggedText tagged: node1.getTaggedTitle()){
-                if (tagged.getType().equals(TagEnum.name)){
-                    sortableName1 += " " + tagged.getText();
-                }
-            }
-        }
+        sortableName1 = makeTaggedName(node1, sortableName1);
         sortableName1 = StringUtils.isBlank(sortableName1)? node1.getNameTitleCache(): sortableName1;
 
         //name2
         String sortableName2 = "";
         if(node2.getTaggedTitle() != null) {
             for (TaggedText tagged: node2.getTaggedTitle()){
-                if (tagged.getType().equals(TagEnum.name)){
+                if (tagged.getType().equals(TagEnum.name) || tagged.getType().equals(TagEnum.name)){
                     sortableName2 += " " + tagged.getText();
                 }
             }
@@ -106,6 +100,21 @@ public class TaxonNodeDtoByRankAndNameComparator
         //compare
         int result = sortableName1.compareTo(sortableName2);
         return result;
+    }
+
+    private String makeTaggedName(ISortableTaxonNodeDto node1, String sortableName1) {
+        if(node1.getTaggedTitle() != null) {
+            for (TaggedText tagged: node1.getTaggedTitle()){
+                if (tagged.getType().equals(TagEnum.name)
+                        || tagged.getType().equals(TagEnum.authors)
+                        || tagged.getType().equals(TagEnum.appendedPhrase)
+                        || tagged.getType().equals(TagEnum.cultivar)
+                        || tagged.getType().equals(TagEnum.year)){
+                    sortableName1 += " " + tagged.getText();
+                }
+            }
+        }
+        return sortableName1;
     }
 
     private int compareStatus(TaxonNodeStatus status1, TaxonNodeStatus status2) {
