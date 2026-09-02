@@ -15,9 +15,9 @@ import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration
 import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
-import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
 import eu.etaxonomy.cdm.model.common.Language;
 
 /**
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @date 29.06.2022
  */
 public class WordClassificationExportConfigurator
-        extends ExportConfiguratorBase<WordClassificationExportState, IExportTransformer, File>{
+        extends TaxonTreeExportConfiguratorBase<WordClassificationExportState, WordClassificationExportConfigurator>{
 
     private static final long serialVersionUID = -3761996101744657311L;
 
