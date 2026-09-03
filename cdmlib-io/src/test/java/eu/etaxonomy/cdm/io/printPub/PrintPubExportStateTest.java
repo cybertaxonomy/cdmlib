@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.io.printPub;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportConfigurator;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
+import eu.etaxonomy.cdm.io.print.PrintPubExportConfigurator;
+import eu.etaxonomy.cdm.io.print.PrintPubExportState;
 
 /**
  * @author k.luther

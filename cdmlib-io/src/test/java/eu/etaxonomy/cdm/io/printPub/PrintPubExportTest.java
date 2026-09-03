@@ -18,11 +18,11 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportConfigurator;
-import eu.etaxonomy.cdm.io.cdmprintpub.PrintPubExportState;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportTestBase;
+import eu.etaxonomy.cdm.io.print.PrintPubExportConfigurator;
+import eu.etaxonomy.cdm.io.print.PrintPubExportState;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
