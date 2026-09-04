@@ -122,7 +122,7 @@ public class PrintPubDocumentBuilder implements IPrintPubDocumentBuilder {
 
     private void renderSynonyms(PrintPubExportState state, PrintPubTaxonSummaryDTO taxonDto) {
 
-        boolean oneLinePerHomotypicGroup = !state.getConfig().isOneLinePerHomotypicGroup();
+        boolean oneLinePerHomotypicGroup = state.getConfig().isOneLinePerHomotypicGroup();
         if (taxonDto.homotypicSynonymGroup != null) {
             boolean first = false;  //the accepted name is always the first in group for the homotypic group
             for (PrintPubSynonymDTO syn : taxonDto.homotypicSynonymGroup.synonyms) {
