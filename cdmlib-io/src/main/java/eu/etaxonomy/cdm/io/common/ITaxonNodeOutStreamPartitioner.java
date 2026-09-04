@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.common;
 
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -16,7 +17,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public interface ITaxonNodeOutStreamPartitioner {
 
-    public TaxonNode next();
+    /**
+     * Retrieve next partition. If a sortMode is given, the partition will be sorted accordingly.
+     */
+    public TaxonNode next(TaxonNodeFilter.TaxonNodeFilterSortMode sortMode);
 
     void setReadOnly(boolean readOnly);
 

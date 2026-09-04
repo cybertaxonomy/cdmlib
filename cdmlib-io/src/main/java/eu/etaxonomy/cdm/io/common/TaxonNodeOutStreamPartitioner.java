@@ -21,6 +21,7 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.api.application.ICdmApplication;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
+import eu.etaxonomy.cdm.compare.common.IdListComparator;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -237,11 +238,11 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 
 
 	@Override
-    public TaxonNode next(){
+    public TaxonNode next(TaxonNodeFilter.TaxonNodeFilterSortMode sortMode){
 	    int currentIndexAtStart = currentIndex;
 	    initialize();
 	    if(fifo.isEmpty()){
-	        List<TaxonNode> list = getNextPartition();
+	        List<TaxonNode> list = getNextPartition(sortMode);
 	        fifo.addAll(list);
 	    }
 	    if (!fifo.isEmpty()){
@@ -266,7 +267,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 	    commitTransaction();
 	}
 
-    private List<TaxonNode> getNextPartition() {
+    private List<TaxonNode> getNextPartition(TaxonNodeFilter.TaxonNodeFilterSortMode sortMode) {
         List<Integer> partList = new ArrayList<>();
 
         if (txStatus != null){
@@ -284,14 +285,37 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
         List<TaxonNode> partition = new ArrayList<>();
         if (!partList.isEmpty()){
             monitor.subTask(String.format("Reading partition %d/%d", currentPartition + 1, (totalCount / partitionSize) +1 ));
-            OrderHint orderHint = new OrderHint("treeIndex", SortOrder.ASCENDING);
-            List<OrderHint> orderHints = Arrays.asList(new OrderHint[]{orderHint});
+            List<OrderHint> orderHints = orderHintForSqlBasedSorting(sortMode);
             partition = repository.getTaxonNodeService().loadByIds(partList, orderHints, propertyPaths);
+            if (sortMode != null && sortMode.isTaxonomic()) {
+                partition.sort(new IdListComparator(partList));
+            }
+
             monitor.worked(partition.size());
             currentPartition++;
             monitor.subTask(String.format("Writing partition %d/%d", currentPartition, (totalCount / partitionSize) +1 ));
         }
         return partition;
+    }
+
+    /**
+     * Returns an {@link OrderHint} as list if the sort node can be implemented
+     * via SQL/HQL.
+     */
+    private List<OrderHint> orderHintForSqlBasedSorting(TaxonNodeFilter.TaxonNodeFilterSortMode sortMode) {
+        List<OrderHint> orderHints = null;
+        if (sortMode != null && !sortMode.isTaxonomic()) {
+            OrderHint orderHint = null;
+            if (sortMode.equals(TaxonNodeFilter.TaxonNodeFilterSortMode.TREEINDEX)) {
+                orderHint = new OrderHint("treeIndex", SortOrder.ASCENDING);
+            } else if (sortMode.equals(TaxonNodeFilter.TaxonNodeFilterSortMode.TREEINDEX_DESC)) {
+                orderHint = new OrderHint("treeIndex", SortOrder.DESCENDING);
+            } else if (sortMode.equals(TaxonNodeFilter.TaxonNodeFilterSortMode.ID)) {
+                orderHint = new OrderHint("id", SortOrder.ASCENDING);
+            }
+            orderHints = List.of(orderHint);
+        }
+        return orderHints;
     }
 
     private void commitTransaction() {
