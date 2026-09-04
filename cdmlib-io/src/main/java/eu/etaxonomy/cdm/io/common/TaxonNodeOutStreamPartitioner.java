@@ -236,13 +236,12 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 	    }
 	}
 
-
 	@Override
-    public TaxonNode next(TaxonNodeFilter.TaxonNodeFilterSortMode sortMode){
+    public TaxonNode next(){
 	    int currentIndexAtStart = currentIndex;
 	    initialize();
 	    if(fifo.isEmpty()){
-	        List<TaxonNode> list = getNextPartition(sortMode);
+	        List<TaxonNode> list = getNextPartition();
 	        fifo.addAll(list);
 	    }
 	    if (!fifo.isEmpty()){
@@ -267,7 +266,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 	    commitTransaction();
 	}
 
-    private List<TaxonNode> getNextPartition(TaxonNodeFilter.TaxonNodeFilterSortMode sortMode) {
+    private List<TaxonNode> getNextPartition() {
         List<Integer> partList = new ArrayList<>();
 
         if (txStatus != null){
@@ -285,9 +284,10 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
         List<TaxonNode> partition = new ArrayList<>();
         if (!partList.isEmpty()){
             monitor.subTask(String.format("Reading partition %d/%d", currentPartition + 1, (totalCount / partitionSize) +1 ));
+            TaxonNodeFilter.TaxonNodeFilterSortMode sortMode = filter.getSortMode() == null ? TaxonNodeFilter.TaxonNodeFilterSortMode.TREEINDEX : filter.getSortMode();
             List<OrderHint> orderHints = orderHintForSqlBasedSorting(sortMode);
             partition = repository.getTaxonNodeService().loadByIds(partList, orderHints, propertyPaths);
-            if (sortMode != null && sortMode.isTaxonomic()) {
+            if (sortMode.isTaxonomic()) {
                 partition.sort(new IdListComparator(partList));
             }
 
@@ -304,7 +304,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
      */
     private List<OrderHint> orderHintForSqlBasedSorting(TaxonNodeFilter.TaxonNodeFilterSortMode sortMode) {
         List<OrderHint> orderHints = null;
-        if (sortMode != null && !sortMode.isTaxonomic()) {
+        if (!sortMode.isTaxonomic()) {
             OrderHint orderHint = null;
             if (sortMode.equals(TaxonNodeFilter.TaxonNodeFilterSortMode.TREEINDEX)) {
                 orderHint = new OrderHint("treeIndex", SortOrder.ASCENDING);
