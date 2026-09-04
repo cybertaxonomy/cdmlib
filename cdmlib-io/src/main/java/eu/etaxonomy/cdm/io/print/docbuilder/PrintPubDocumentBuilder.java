@@ -25,8 +25,8 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.io.print.PrintPubExportConfigurator;
-import eu.etaxonomy.cdm.io.print.PrintPubExportState;
 import eu.etaxonomy.cdm.io.print.PrintPubExportConfigurator.FeatureSortMode;
+import eu.etaxonomy.cdm.io.print.PrintPubExportState;
 import eu.etaxonomy.cdm.io.print.compare.IPrintPubFactOrderStrategy;
 import eu.etaxonomy.cdm.io.print.compare.IPrintPubFeatureOrderStrategy;
 import eu.etaxonomy.cdm.io.print.compare.PrintPubFactOrderStrategyResolver;
