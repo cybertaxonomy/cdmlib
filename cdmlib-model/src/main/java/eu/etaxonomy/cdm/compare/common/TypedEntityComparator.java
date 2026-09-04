@@ -10,17 +10,16 @@ package eu.etaxonomy.cdm.compare.common;
 
 import java.util.Comparator;
 
-import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
  * @author pplitzner
  * @since May 3, 2018
  */
-public class TypedEntityComparator implements Comparator<TypedEntityReference<TypeDesignationBase<?>> >{
+public class TypedEntityComparator implements Comparator<TypedEntityReference<?> >{
 
     @Override
-    public int compare(TypedEntityReference<TypeDesignationBase<?>> o1, TypedEntityReference<TypeDesignationBase<?>> o2) {
+    public int compare(TypedEntityReference<?> o1, TypedEntityReference<?> o2) {
         if (o1==o2){
             return 0;
         }else if(o1==null){
