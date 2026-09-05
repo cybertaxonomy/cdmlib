@@ -2039,7 +2039,7 @@ public class CdmLightClassificationExport
                     }
                 }else{
                     if (name.isInvalid() ){
-                        synonymSign = "\u2212 ";
+                        synonymSign = UTF8.MINUS + " ";
                     }else{
                         synonymSign = UTF8.EQUALS_SIGN + " ";
                     }
