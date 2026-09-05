@@ -1936,12 +1936,9 @@ public class CdmLightClassificationExport
                 Set<TaxonBase> taxonBases = name.getTaxonBases();
                 TaxonBase taxonBase;
 
-
                 String sec = "";
                 String nameString = name.getFullTitleCache();
                 String doubtful = "";
-
-
 
                 if (state.getConfig().isAddHTML()){
                     nameString = createNameWithItalics(name.getTaggedFullTitle()) ;
@@ -2062,8 +2059,8 @@ public class CdmLightClassificationExport
                              sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxonBase.getSec(), taxonBase.getSecSource().getCitationMicroReference(), null,
                                  state.getReferenceStore().get(taxonBase.getSec().getUuid()));
                          }
-
                      }
+
                      if (taxonBase.isDoubtful()){
                          doubtful = "?";
                      }else{
@@ -2071,7 +2068,6 @@ public class CdmLightClassificationExport
                      }
                      if (taxonBase instanceof Synonym){
                          if (isNotBlank(sec)){
-                             String secSignOrSec = "";
                              if (!state.getConfig().isShowSynSecForHomotypicGroup()) {
                                  sec = " syn. sec. " + sec + " ";
                              }
@@ -2079,12 +2075,13 @@ public class CdmLightClassificationExport
                              sec = "";
                          }
                      }else{
-                         if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
-                             acceptedTaxon = (Taxon)taxonBase;
+                         Taxon tmpTaxon = (Taxon)taxonBase;
+                         if (!(tmpTaxon.isProparteSynonym() || tmpTaxon.isMisapplication())){
+                             acceptedTaxon = tmpTaxon;
                              isAccepted = true;
                              synonymSign = "";
                          }else {
-                             synonymSign = "\u003D ";
+                             synonymSign = UTF8.EQUALS_SIGN + " ";
                          }
                      }
                      if (taxonBase.getAppendedPhrase() != null){
