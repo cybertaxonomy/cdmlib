@@ -47,7 +47,7 @@ public class PrintPubExportTest
     })
     public void testGeneralExport(){
 
-      //config + invoke
+        //config + invoke
         PrintPubExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
         checkAndGetData(result);

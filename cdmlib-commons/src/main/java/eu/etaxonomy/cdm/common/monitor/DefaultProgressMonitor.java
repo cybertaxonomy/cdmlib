@@ -12,13 +12,13 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This is a console style progress monitor with prints the progress information to configured {@link Logger} with level {@link Level#INFO}
+ * This is a console style progress monitor witch prints the progress information
+ * to configured {@link Logger} with level {@link Level#INFO}
  *
  * @author a.mueller
  * @since 14.09.2010
@@ -49,9 +49,7 @@ public class DefaultProgressMonitor implements IProgressMonitor {
 
     private String owner;
 
-    protected DefaultProgressMonitor(){
-
-    }
+    protected DefaultProgressMonitor(){}
 
     @Override
     public void beginTask(String taskName, int totalWork) {
@@ -96,7 +94,7 @@ public class DefaultProgressMonitor implements IProgressMonitor {
     @Override
     public void internalWorked(double work) {
         computeWorked(work);
-//      this.workDone = this.workDone +  work;
+//      this.workDone = this.workDone + work;
     }
 
     private void computeWorked(double work){
@@ -106,7 +104,6 @@ public class DefaultProgressMonitor implements IProgressMonitor {
             lastPercentage = getPercentageRounded(2);
         }else if (logger.isDebugEnabled()){
             logger.debug(getPercentage() + "% done (Completed Task: " + subTask + ")");
-
         }
     }
 

@@ -75,8 +75,6 @@ public class DwcaTaxExport extends DwcaExportBase {
 	        new DwcaImageExport(state)
 		});
 
-
-		@SuppressWarnings("unchecked")
 	    TaxonNodeOutStreamPartitioner<XmlExportState> partitioner
 	          = TaxonNodeOutStreamPartitioner.NewInstance(
                     this, state, state.getConfig().getTaxonNodeFilter(),

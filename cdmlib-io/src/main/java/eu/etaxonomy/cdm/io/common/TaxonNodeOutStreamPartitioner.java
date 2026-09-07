@@ -227,9 +227,9 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 	        parentMonitor.subTask("Compute total number of records");
 	        totalCount = ((Long)repository.getTaxonNodeService().count(filter)).intValue();
 	        idList = repository.getTaxonNodeService().idList(filter);
-	        int parTicks = this.parentTicks == null? totalCount : this.parentTicks;
+	        int parentTicks = this.parentTicks == null? totalCount : this.parentTicks;
 
-	        monitor = SubProgressMonitor.NewStarted(parentMonitor, parTicks,
+	        monitor = SubProgressMonitor.NewStarted(parentMonitor, parentTicks,
 	                "Taxon node streamer", totalCount * (retrieveFactor +  iterateFactor));
 	        idIterator = idList.iterator();
 	        monitor.subTask("id iterator created");
@@ -284,9 +284,13 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
         List<TaxonNode> partition = new ArrayList<>();
         if (!partList.isEmpty()){
             monitor.subTask(String.format("Reading partition %d/%d", currentPartition + 1, (totalCount / partitionSize) +1 ));
+
+            //order hints for sql based sorting
             TaxonNodeFilter.TaxonNodeFilterSortMode sortMode = filter.getSortMode() == null ? TaxonNodeFilter.TaxonNodeFilterSortMode.TREEINDEX : filter.getSortMode();
             List<OrderHint> orderHints = orderHintForSqlBasedSorting(sortMode);
+            //load
             partition = repository.getTaxonNodeService().loadByIds(partList, orderHints, propertyPaths);
+            //sort partition taxonomically if needed
             if (sortMode.isTaxonomic()) {
                 partition.sort(new IdListComparator(partList));
             }

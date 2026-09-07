@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -11,10 +10,7 @@
  *******************************************************************************/
 package eu.etaxonomy.cdm.common.monitor;
 
-
 /**
- * For new implementations consider using {@link SubMonitor}.
- *
  * A progress monitor that uses a given amount of work ticks
  * from a parent monitor. It can be used as follows:
  * <pre>
@@ -80,12 +76,12 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
      * progress monitor uses the given number of work ticks from its
      * parent monitor.
      *
-     * @param monitor the parent progress monitor
+     * @param parentMonitor the parent progress monitor
      * @param ticks the number of work ticks allocated from the
      *    parent monitor
      */
-    public SubProgressMonitor(IProgressMonitor monitor, int ticks) {
-        this (monitor, ticks, 0);
+    public SubProgressMonitor(IProgressMonitor parentMonitor, int ticks) {
+        this (parentMonitor, ticks, 0);
     }
 
     /**
@@ -104,11 +100,11 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
      * @see #SUPPRESS_SUBTASK_LABEL
      * @see #PREPEND_MAIN_LABEL_TO_SUBTASK
      */
-    public SubProgressMonitor(IProgressMonitor monitor, int ticks,
+    public SubProgressMonitor(IProgressMonitor parentMonitor, int ticks,
             int style) {
-        super (monitor);
-        this .parentTicks = (ticks > 0) ? ticks : 0;
-        this .style = style;
+        super (parentMonitor);
+        this.parentTicks = (ticks > 0) ? ticks : 0;
+        this.style = style;
     }
 
     /* (Intentionally not javadoc'd)

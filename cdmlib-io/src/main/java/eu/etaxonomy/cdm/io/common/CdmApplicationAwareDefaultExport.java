@@ -245,6 +245,9 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 		return result;
 	}
 
+    /**
+     * Computes the steps per IO and adds the sum to the end of the list.
+     */
     private List<Integer> countSteps(ExportStateBase state, List<ICdmExport> ioList) {
         //do invoke for each class
         List<Integer> result = new ArrayList<>();
