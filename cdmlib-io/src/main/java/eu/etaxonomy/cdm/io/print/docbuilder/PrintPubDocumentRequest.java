@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2026 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.io.print.docbuilder;
 
 import java.util.List;
@@ -19,7 +27,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public record PrintPubDocumentRequest(
         String documentTitle,
         List<PrintPubTaxonSummaryDTO> taxa,
-        Map<UUID, Integer> featureOrderIndex,
         List<Reference> bibliography,
         boolean includeSynonyms,
         boolean includeSynonymConceptReferences,
@@ -30,9 +37,7 @@ public record PrintPubDocumentRequest(
         boolean includeEmptyIds,
         boolean includeWfoId,
         boolean includeIpniId,
-        boolean includeProtologueUris,
-        FeatureSortMode featureSortMode,
-        FactSortMode factSortMode) {
+        boolean includeProtologueUris) {
 
     public PrintPubDocumentRequest {
 
@@ -46,32 +51,10 @@ public record PrintPubDocumentRequest(
                         ? List.of()
                         : List.copyOf(taxa);
 
-        featureOrderIndex =
-                featureOrderIndex == null
-                        ? Map.of()
-                        : Map.copyOf(featureOrderIndex);
-
         bibliography =
                 bibliography == null
                         ? List.of()
                         : List.copyOf(bibliography);
-
-        featureSortMode =
-                featureSortMode == null
-                        ? FeatureSortMode.ALPHABETICAL
-                        : featureSortMode;
-
-        factSortMode =
-                factSortMode == null
-                        ? FactSortMode.PORTAL_LIKE
-                        : factSortMode;
-    }
-
-    /**
-     * Indicates whether feature-tree filtering and ordering can be applied.
-     */
-    public boolean hasFeatureOrderIndex() {
-        return !featureOrderIndex.isEmpty();
     }
 
     /**
@@ -232,7 +215,6 @@ public record PrintPubDocumentRequest(
             return new PrintPubDocumentRequest(
                     documentTitle,
                     taxa,
-                    featureOrderIndex,
                     bibliography,
                     includeSynonyms,
                     includeSynonymConceptReferences,
@@ -243,9 +225,7 @@ public record PrintPubDocumentRequest(
                     includeEmptyIds,
                     includeWfoId,
                     includeIpniId,
-                    includeProtologueUris,
-                    featureSortMode,
-                    factSortMode);
+                    includeProtologueUris);
         }
     }
 }

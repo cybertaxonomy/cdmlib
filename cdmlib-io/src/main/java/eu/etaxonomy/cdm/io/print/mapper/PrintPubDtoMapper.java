@@ -9,12 +9,16 @@
 package eu.etaxonomy.cdm.io.print.mapper;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
@@ -22,7 +26,13 @@ import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainerFormatter;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.print.PrintPubExportConfigurator;
+import eu.etaxonomy.cdm.io.print.PrintPubExportConfigurator.FeatureSortMode;
 import eu.etaxonomy.cdm.io.print.PrintPubExportState;
+import eu.etaxonomy.cdm.io.print.compare.IPrintPubFactOrderStrategy;
+import eu.etaxonomy.cdm.io.print.compare.IPrintPubFeatureOrderStrategy;
+import eu.etaxonomy.cdm.io.print.compare.PrintPubFactOrderStrategyResolver;
+import eu.etaxonomy.cdm.io.print.compare.PrintPubFeatureKey;
+import eu.etaxonomy.cdm.io.print.compare.PrintPubFeatureOrderStrategyResolver;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubFactDTO;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubSynonymDTO;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubSynonymGroupDTO;
@@ -80,6 +90,12 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 @Component
 public class PrintPubDtoMapper {
 
+    @Autowired
+    private PrintPubFeatureOrderStrategyResolver featureOrderResolver;
+
+    @Autowired
+    private PrintPubFactOrderStrategyResolver factOrderResolver;
+
     private final PrintPubBibliographyCollector bibliographyCollector;
 
     public PrintPubDtoMapper(PrintPubBibliographyCollector bibliographyCollector) {
@@ -116,6 +132,7 @@ public class PrintPubDtoMapper {
 
         if (state.getConfig().isDoFactualData()) {
             extractDescriptionData(state, taxon, dto);
+            sortAndFilterFacts(state, dto);
         }
 
         extractTaxonSecReference(state, taxon, dto);
@@ -123,6 +140,59 @@ public class PrintPubDtoMapper {
         extractIdentifiers(taxon, dto);
 
         return dto;
+    }
+
+    private void sortAndFilterFacts(PrintPubExportState state, PrintPubTaxonSummaryDTO dto) {
+
+        if (dto.facts == null || dto.facts.isEmpty()) {
+            return;
+        }
+
+        PrintPubExportConfigurator config = state.getConfig();
+
+        final Map<UUID, Integer> featureOrderIndex = state.getFeatureOrderIndex() == null ? Map.of()
+                : state.getFeatureOrderIndex();
+
+        boolean useFeatureTree = config.getFeatureSortMode() == FeatureSortMode.FEATURE_TREE
+                && !featureOrderIndex.isEmpty();
+
+        if (useFeatureTree) {
+            dto.facts.removeIf(fact -> fact == null || fact.featureUuid == null
+                    || !featureOrderIndex.containsKey(fact.featureUuid));
+        } else {
+            dto.facts.removeIf(Objects::isNull);
+        }
+
+        IPrintPubFeatureOrderStrategy featureOrderStrategy = featureOrderResolver.resolve(config.getFeatureSortMode(),
+                featureOrderIndex);
+
+        IPrintPubFactOrderStrategy factOrderStrategy = factOrderResolver.resolve(config.getFactSortMode());
+
+        Comparator<PrintPubFeatureKey> featureComparator = featureOrderStrategy.comparator(featureOrderIndex);
+
+        Comparator<PrintPubFactDTO> factComparator = factOrderStrategy.comparator();
+
+        dto.facts.sort((fact1, fact2) -> {
+
+            PrintPubFeatureKey key1 = createFeatureKey(fact1);
+            PrintPubFeatureKey key2 = createFeatureKey(fact2);
+
+            int featureComparison = featureComparator.compare(key1, key2);
+
+            if (featureComparison != 0) {
+                return featureComparison;
+            }
+
+            return factComparator.compare(fact1, fact2);
+        });
+    }
+
+    private PrintPubFeatureKey createFeatureKey(PrintPubFactDTO fact) {
+        return new PrintPubFeatureKey(fact.featureUuid, fact.label);
+    }
+
+    private String normalizeFactLabel(String label) {
+        return label == null ? null : label.replaceFirst("^<[^>]+>", "").trim();
     }
 
     private void mapAcceptedName(Taxon taxon, TaxonName name, PrintPubTaxonSummaryDTO dto) {
@@ -166,7 +236,7 @@ public class PrintPubDtoMapper {
 
         HomotypicalGroup acceptedGroup = taxon.getHomotypicGroup();
 
-        //homotypic synonyms
+        // homotypic synonyms
         List<Synonym> homotypicSynonyms = taxon.getSynonymsInGroup(acceptedGroup);
 
         if (homotypicSynonyms != null && !homotypicSynonyms.isEmpty()) {
@@ -184,7 +254,7 @@ public class PrintPubDtoMapper {
             taxonDto.homotypicSynonymGroup = homotypicGroupDTO;
         }
 
-        //heterotypic synonyms
+        // heterotypic synonyms
         List<HomotypicalGroup> heterotypicGroups = taxon.getHeterotypicSynonymyGroups();
 
         if (heterotypicGroups == null) {
@@ -528,8 +598,7 @@ public class PrintPubDtoMapper {
         PrintPubFactDTO fact = new PrintPubFactDTO();
 
         if (feature != null) {
-            fact.label = feature.getLabel();
-
+            fact.label = normalizeFactLabel(feature.getLabel());
             fact.featureUuid = feature.getUuid();
         } else {
             fact.label = "Fact";

@@ -9,28 +9,20 @@
 package eu.etaxonomy.cdm.io.print.docbuilder;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.io.print.PrintPubCitationRegistry;
-import eu.etaxonomy.cdm.io.print.PrintPubExportConfigurator;
-import eu.etaxonomy.cdm.io.print.PrintPubExportConfigurator.FeatureSortMode;
 import eu.etaxonomy.cdm.io.print.PrintPubExportState;
-import eu.etaxonomy.cdm.io.print.compare.IPrintPubFactOrderStrategy;
-import eu.etaxonomy.cdm.io.print.compare.IPrintPubFeatureOrderStrategy;
-import eu.etaxonomy.cdm.io.print.compare.PrintPubFactOrderStrategyResolver;
 import eu.etaxonomy.cdm.io.print.compare.PrintPubFeatureKey;
-import eu.etaxonomy.cdm.io.print.compare.PrintPubFeatureOrderStrategyResolver;
 import eu.etaxonomy.cdm.io.print.docmodel.IPrintPubDocumentElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubLabeledTextElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubPageBreakElement;
@@ -63,12 +55,6 @@ public class PrintPubDocumentBuilder {
     private static final String INVALID_NAME_MARKER = UTF8.MINUS + " ";
     private static final String ACC_SEC_MARKER = " sec. ";
     private static final String SYN_SEC_MARKER = " syn sec. ";
-
-    @Autowired
-    private PrintPubFeatureOrderStrategyResolver featureOrderResolver;
-
-    @Autowired
-    private PrintPubFactOrderStrategyResolver factOrderResolver;
 
     public List<IPrintPubDocumentElement> buildLayout(PrintPubDocumentRequest request) {
 
@@ -309,45 +295,20 @@ public class PrintPubDocumentBuilder {
             return elements;
         }
 
-        Map<UUID, Integer> featureIndex = request.featureOrderIndex();
+        Map<PrintPubFeatureKey, List<PrintPubFactDTO>> groups =
+                dto.facts.stream()
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.groupingBy(
+                                fact -> new PrintPubFeatureKey(
+                                        fact.featureUuid,
+                                        fact.label),
+                                LinkedHashMap::new,
+                                Collectors.toList()));
 
-        IPrintPubFeatureOrderStrategy featureOrder = featureOrderResolver.resolve(request.featureSortMode(),
-                featureIndex);
+        for (Map.Entry<PrintPubFeatureKey, List<PrintPubFactDTO>> entry : groups.entrySet()) {
 
-        IPrintPubFactOrderStrategy factOrder = factOrderResolver.resolve(request.factSortMode());
-
-        Map<PrintPubFeatureKey, List<PrintPubFactDTO>> groups = dto.facts.stream().filter(Objects::nonNull)
-                .collect(Collectors
-                        .groupingBy(fact -> new PrintPubFeatureKey(fact.featureUuid, normalizeFactLabel(fact.label))));
-
-        boolean useFeatureTree = request.featureSortMode() == FeatureSortMode.FEATURE_TREE && !featureIndex.isEmpty();
-
-        if (useFeatureTree) {
-            groups.entrySet().removeIf(entry -> {
-                UUID featureUuid = entry.getKey().getFeatureUuid();
-
-                return featureUuid == null || !featureIndex.containsKey(featureUuid);
-            });
-        }
-
-        if (groups.isEmpty()) {
-            return elements;
-        }
-
-        List<PrintPubFeatureKey> keys = new ArrayList<>(groups.keySet());
-
-        keys.sort(featureOrder.comparator(featureIndex));
-
-        Comparator<PrintPubFactDTO> factComparator = factOrder.comparator();
-
-        for (PrintPubFeatureKey key : keys) {
-            List<PrintPubFactDTO> facts = groups.get(key);
-
-            if (facts == null || facts.isEmpty()) {
-                continue;
-            }
-
-            facts.sort(factComparator);
+            PrintPubFeatureKey key = entry.getKey();
+            List<PrintPubFactDTO> facts = entry.getValue();
 
             List<Run> combinedRuns = buildFactRuns(facts);
 
@@ -357,7 +318,8 @@ public class PrintPubDocumentBuilder {
 
             String label = StringUtils.defaultIfBlank(key.getLabel(), "Facts");
 
-            elements.add(new PrintPubTextRunElement(label, combinedRuns));
+            elements.add(new PrintPubTextRunElement(label, combinedRuns,
+                    PrintPubTextRunElement.PrintPubTextRole.FACT_GROUP));
         }
 
         return elements;
@@ -667,10 +629,6 @@ public class PrintPubDocumentBuilder {
 
     private boolean needsSpaceBefore(String text) {
         return !text.startsWith(",") && !text.startsWith(";") && !text.startsWith(")");
-    }
-
-    private String normalizeFactLabel(String label) {
-        return label == null ? null : label.replaceFirst("^<[^>]+>", "").trim();
     }
 
     private record SynonymModel(List<Run> runs, List<IPrintPubDocumentElement> additionalElements) {

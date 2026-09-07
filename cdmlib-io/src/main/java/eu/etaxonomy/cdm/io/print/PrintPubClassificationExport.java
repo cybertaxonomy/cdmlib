@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.io.print.compare.PrintPubFeatureOrderIndexService;
 import eu.etaxonomy.cdm.io.print.docbuilder.PrintPubDocumentBuilder;
 import eu.etaxonomy.cdm.io.print.docbuilder.PrintPubDocumentRequest;
 import eu.etaxonomy.cdm.io.print.docmodel.IPrintPubDocumentElement;
