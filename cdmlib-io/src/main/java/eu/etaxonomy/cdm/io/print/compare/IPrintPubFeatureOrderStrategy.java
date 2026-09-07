@@ -9,10 +9,10 @@
 package eu.etaxonomy.cdm.io.print.compare;
 
 import java.util.Comparator;
-
-import eu.etaxonomy.cdm.io.print.PrintPubExportState;
+import java.util.Map;
+import java.util.UUID;
 
 public interface IPrintPubFeatureOrderStrategy {
 
-    Comparator<PrintPubFeatureKey> comparator(PrintPubExportState state);
+    Comparator<PrintPubFeatureKey> comparator(Map<UUID, Integer> featureOrderIndex);
 }
