@@ -18,7 +18,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -124,7 +123,6 @@ public class GbifQueryServiceWrapperTest {
     }
 
     @Test
-    @Ignore //temp ignored because in error
     public void testGbifWebService() {
         OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "E. J. Palmer", null, null, null, null, null, null, null, false);
         GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
