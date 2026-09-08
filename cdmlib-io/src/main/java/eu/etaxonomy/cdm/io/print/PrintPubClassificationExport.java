@@ -44,9 +44,9 @@ public class PrintPubClassificationExport
     private static final long serialVersionUID = -623958635483883990L;
     private static final Logger logger = LogManager.getLogger();
 
-    private static final int TICKS_DATA_RETRIEVAL = 80;
-    private static final int TICKS_LAYOUT = 10;
-    private static final int TICKS_RENDERING = 10;
+    private static final int TICKS_DATA_RETRIEVAL = 90;
+    private static final int TICKS_LAYOUT = 5;
+    private static final int TICKS_RENDERING = 5;
     private static final int TICKS_TOTAL = TICKS_DATA_RETRIEVAL + TICKS_LAYOUT + TICKS_RENDERING;
 
 
@@ -68,7 +68,7 @@ public class PrintPubClassificationExport
     protected void doInvoke(PrintPubExportState state) {
 
         IProgressMonitor ioMonitor = state.getCurrentIoProgressMonitor();
-        ioMonitor.beginTask("Print Pub Classification Export", TICKS_TOTAL);
+        ioMonitor.beginTask("Print Pub Export -", TICKS_TOTAL);
         ioMonitor.subTask("Start classification export ...");
 
         try {
@@ -155,7 +155,7 @@ public class PrintPubClassificationExport
             // --------------------------------------------------
             // Build layout
             // --------------------------------------------------
-            ioMonitor.subTask("Generating document layout (PDF/HTML)...");
+            ioMonitor.subTask("Generating document layout");
             builder.buildLayout(state);
             ioMonitor.worked(TICKS_LAYOUT);
 
