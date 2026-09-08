@@ -48,8 +48,8 @@ public class PrintPubIndexBuilder {
 
         Stream<String> homotypicNames = synonymScientificNames(taxon.homotypicSynonymGroup);
 
-        Stream<String> heterotypicNames = taxon.synonymGroups == null ? Stream.empty()
-                : taxon.synonymGroups.stream().filter(Objects::nonNull).flatMap(this::synonymScientificNames);
+        Stream<String> heterotypicNames = taxon.heterotypicSynonymGroups == null ? Stream.empty()
+                : taxon.heterotypicSynonymGroups.stream().filter(Objects::nonNull).flatMap(this::synonymScientificNames);
 
         return Stream.concat(homotypicNames, heterotypicNames);
     }

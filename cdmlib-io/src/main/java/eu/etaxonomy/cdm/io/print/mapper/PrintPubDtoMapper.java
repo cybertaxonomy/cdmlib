@@ -34,11 +34,11 @@ import eu.etaxonomy.cdm.io.print.compare.PrintPubFactOrderStrategyResolver;
 import eu.etaxonomy.cdm.io.print.compare.PrintPubFeatureKey;
 import eu.etaxonomy.cdm.io.print.compare.PrintPubFeatureOrderStrategyResolver;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubFactDTO;
+import eu.etaxonomy.cdm.io.print.dto.PrintPubFactDTO.PrintPubFactKind;
+import eu.etaxonomy.cdm.io.print.dto.PrintPubReferenceEntryDTO.PrintPubReferenceSourceType;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubSynonymDTO;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubSynonymGroupDTO;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubTaxonSummaryDTO;
-import eu.etaxonomy.cdm.io.print.dto.PrintPubFactDTO.PrintPubFactKind;
-import eu.etaxonomy.cdm.io.print.dto.PrintPubReferenceEntryDTO.PrintPubReferenceSourceType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
@@ -234,62 +234,58 @@ public class PrintPubDtoMapper {
 
     private void extractSynonymGroups(PrintPubExportState state, Taxon taxon, PrintPubTaxonSummaryDTO taxonDto) {
 
-        HomotypicalGroup acceptedGroup = taxon.getHomotypicGroup();
-
         // homotypic synonyms
+        HomotypicalGroup acceptedGroup = taxon.getHomotypicGroup();
         List<Synonym> homotypicSynonyms = taxon.getSynonymsInGroup(acceptedGroup);
 
         if (homotypicSynonyms != null && !homotypicSynonyms.isEmpty()) {
 
             PrintPubSynonymGroupDTO homotypicGroupDTO = new PrintPubSynonymGroupDTO();
-
-            for (Synonym synonym : homotypicSynonyms) {
-                PrintPubSynonymDTO synonymDTO = createSynonymDTO(state, synonym);
-
-                if (synonymDTO != null) {
-                    homotypicGroupDTO.synonyms.add(synonymDTO);
-                }
-            }
-
             taxonDto.homotypicSynonymGroup = homotypicGroupDTO;
+
+            extractSynonymGroup(state, acceptedGroup, homotypicSynonyms, homotypicGroupDTO);
         }
 
         // heterotypic synonyms
         List<HomotypicalGroup> heterotypicGroups = taxon.getHeterotypicSynonymyGroups();
 
-        if (heterotypicGroups == null) {
-            return;
-        }
-
         for (HomotypicalGroup group : heterotypicGroups) {
 
             List<Synonym> groupSynonyms = taxon.getSynonymsInGroup(group);
 
-            if (groupSynonyms == null || groupSynonyms.isEmpty()) {
-                continue;
-            }
-
             PrintPubSynonymGroupDTO heterotypicGroupDTO = new PrintPubSynonymGroupDTO();
+            taxonDto.heterotypicSynonymGroups.add(heterotypicGroupDTO);
 
-            for (Synonym synonym : groupSynonyms) {
-                PrintPubSynonymDTO synonymDTO = createSynonymDTO(state, synonym);
-
-                if (synonymDTO != null) {
-                    heterotypicGroupDTO.synonyms.add(synonymDTO);
-                }
-            }
-
-            taxonDto.synonymGroups.add(heterotypicGroupDTO);
+            extractSynonymGroup(state, group, groupSynonyms, heterotypicGroupDTO);
         }
     }
 
-    private PrintPubSynonymDTO createSynonymDTO(PrintPubExportState state, Synonym synonym) {
+    private void extractSynonymGroup(PrintPubExportState state, HomotypicalGroup homotypicGroup,
+            List<Synonym> synonyms, PrintPubSynonymGroupDTO homotypicGroupDTO) {
 
-        synonym = CdmBase.deproxy(synonym);
-
-        if (synonym == null) {
-            return null;
+        //synonyms
+        for (Synonym synonym : synonyms) {
+            PrintPubSynonymDTO synonymDTO = createSynonymDTO(state, synonym);
+            homotypicGroupDTO.synonyms.add(synonymDTO);
         }
+
+        //types
+        handleTypes(state, homotypicGroup, homotypicGroupDTO);
+    }
+
+    private void handleTypes(PrintPubExportState state, HomotypicalGroup homotypicGroup,
+            PrintPubSynonymGroupDTO homotypicGroupDTO) {
+
+        TypeDesignationGroupContainer container = new TypeDesignationGroupContainer(homotypicGroup);
+        List<TaggedText> types = new TypeDesignationGroupContainerFormatter().withStartingTypeLabel(true)
+                .toTaggedText(container);
+        String formattedTypes = createTypeDesignationString(types);
+
+        boolean isSupraspecific = false; //TODO
+        homotypicGroupDTO.typeSpecimenString = addOptionalTypeLineBreak(formattedTypes, isSupraspecific, state.getConfig());
+    }
+
+    private PrintPubSynonymDTO createSynonymDTO(PrintPubExportState state, Synonym synonym) {
 
         PrintPubSynonymDTO synDto = new PrintPubSynonymDTO();
 

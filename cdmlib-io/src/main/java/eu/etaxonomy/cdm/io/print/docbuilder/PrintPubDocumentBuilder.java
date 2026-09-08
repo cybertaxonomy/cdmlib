@@ -174,75 +174,53 @@ public class PrintPubDocumentBuilder {
             PrintPubCitationRegistry citations, PrintPubTaxonSummaryDTO taxonDto) {
 
         List<IPrintPubDocumentElement> elements = new ArrayList<>();
-
         boolean oneLinePerHomotypicGroup = request.oneLinePerHomotypicGroup();
 
-        if (taxonDto.homotypicSynonymGroup != null && taxonDto.homotypicSynonymGroup.synonyms != null) {
-
-            List<Run> runs = new ArrayList<>();
-            List<IPrintPubDocumentElement> additionalElements = new ArrayList<>();
-
-            // The accepted name is already first in the homotypic group,
-            // so all listed synonyms use the homotypic marker.
-            boolean firstInGroup = false;
-
-            for (PrintPubSynonymDTO synonym : taxonDto.homotypicSynonymGroup.synonyms) {
-
-                if (synonym == null) {
-                    continue;
-                }
-
-                SynonymModel model = renderSingleSynonym(request, citations, firstInGroup, synonym,
-                        oneLinePerHomotypicGroup);
-
-                runs.addAll(model.runs());
-                additionalElements.addAll(model.additionalElements());
-            }
-
-            if (!runs.isEmpty()) {
-                elements.add(new PrintPubTextRunElement(runs));
-            }
-
-            elements.addAll(additionalElements);
+        //homotypic synonyms
+        if (taxonDto.homotypicSynonymGroup != null) {
+            PrintPubSynonymGroupDTO groupDto = taxonDto.homotypicSynonymGroup;
+            boolean isHomotypicToAccepted = true;
+            handleHomotypicGroup(request, groupDto, citations, elements, oneLinePerHomotypicGroup, isHomotypicToAccepted);
         }
 
-        if (taxonDto.synonymGroups == null) {
-            return elements;
-        }
-
-        for (PrintPubSynonymGroupDTO group : taxonDto.synonymGroups) {
-
-            if (group == null || group.synonyms == null) {
-                continue;
-            }
-
-            boolean firstInGroup = true;
-            List<Run> runs = new ArrayList<>();
-            List<IPrintPubDocumentElement> additionalElements = new ArrayList<>();
-
-            for (PrintPubSynonymDTO synonym : group.synonyms) {
-
-                if (synonym == null) {
-                    continue;
-                }
-
-                SynonymModel model = renderSingleSynonym(request, citations, firstInGroup, synonym,
-                        oneLinePerHomotypicGroup);
-
-                runs.addAll(model.runs());
-                additionalElements.addAll(model.additionalElements());
-
-                firstInGroup = false;
-            }
-
-            if (!runs.isEmpty()) {
-                elements.add(new PrintPubTextRunElement(runs));
-            }
-
-            elements.addAll(additionalElements);
+        //heterotypic synonyms
+        for (PrintPubSynonymGroupDTO groupDto : taxonDto.heterotypicSynonymGroups) {
+            boolean isHomotypicToAccepted = false;
+            handleHomotypicGroup(request, groupDto, citations, elements, oneLinePerHomotypicGroup, isHomotypicToAccepted);
         }
 
         return elements;
+    }
+
+    private void handleHomotypicGroup(PrintPubDocumentRequest request, PrintPubSynonymGroupDTO groupDto,
+            PrintPubCitationRegistry citations, List<IPrintPubDocumentElement> elements,
+            boolean oneLinePerHomotypicGroup, boolean isHomotypicToAccepted) {
+
+        boolean firstInGroup = !isHomotypicToAccepted;
+        List<Run> runs = new ArrayList<>();
+        List<IPrintPubDocumentElement> additionalElements = new ArrayList<>();
+        for (PrintPubSynonymDTO synonym : groupDto.synonyms) {
+
+            SynonymModel model = renderSingleSynonym(request, citations, firstInGroup, synonym,
+                    oneLinePerHomotypicGroup);
+
+            runs.addAll(model.runs());
+            additionalElements.addAll(model.additionalElements());
+            firstInGroup = false;
+        }
+
+        if (!runs.isEmpty()) {
+            elements.add(new PrintPubTextRunElement(runs));
+        }
+
+        if (StringUtils.isNotBlank(groupDto.typeSpecimenString)) {
+            additionalElements.add(new PrintPubParagraphElement(groupDto.typeSpecimenString));
+        }
+        if (StringUtils.isNotBlank(groupDto.typeStatementString)) {
+            additionalElements.add(new PrintPubParagraphElement(groupDto.typeSpecimenString));
+        }
+
+        elements.addAll(additionalElements);
     }
 
     /**
@@ -261,23 +239,23 @@ public class PrintPubDocumentBuilder {
             prefix = HOMOTYPIC_MARKER;
         }
 
-        String suffix = "";
+        String synSecPart = "";
 
         if (request.includeSynonymConceptReferences() && StringUtils.isNotBlank(synonym.secReference)) {
             String citationSuffix = citations.incrementShortCitation(synonym.secReference);
 
-            suffix = SYN_SEC_MARKER + synonym.secReference + citationSuffix;
+            synSecPart = SYN_SEC_MARKER + synonym.secReference + citationSuffix;
         }
 
         boolean newLine = !firstInGroup && !oneLinePerHomotypicGroup;
 
-        List<Run> runs = synonymRuns(synonym, prefix, suffix, newLine);
+        List<Run> runs = synonymRuns(synonym, prefix, synSecPart, newLine);
 
         List<IPrintPubDocumentElement> additionalElements = new ArrayList<>();
 
-        if (StringUtils.isNotBlank(synonym.typeSpecimenString)) {
-            additionalElements.add(new PrintPubParagraphElement(synonym.typeSpecimenString));
-        }
+//        if (StringUtils.isNotBlank(synonym.typeSpecimenString)) {
+//            additionalElements.add(new PrintPubParagraphElement(synonym.typeSpecimenString));
+//        }
 
         return new SynonymModel(runs, additionalElements);
     }
@@ -421,11 +399,11 @@ public class PrintPubDocumentBuilder {
 
     private Stream<String> synonymScientificNames(PrintPubTaxonSummaryDTO taxon) {
 
-        if (taxon.synonymGroups == null) {
+        if (taxon.heterotypicSynonymGroups == null) {
             return Stream.empty();
         }
 
-        return taxon.synonymGroups.stream().filter(Objects::nonNull).filter(group -> group.synonyms != null)
+        return taxon.heterotypicSynonymGroups.stream().filter(Objects::nonNull).filter(group -> group.synonyms != null)
                 .flatMap(group -> group.synonyms.stream()).filter(Objects::nonNull)
                 .map(synonym -> synonym.scientificName);
     }

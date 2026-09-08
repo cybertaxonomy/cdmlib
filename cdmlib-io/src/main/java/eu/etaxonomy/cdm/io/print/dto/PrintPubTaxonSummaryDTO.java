@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * Primary data transfer object for rendering a taxon.
  */
 public class PrintPubTaxonSummaryDTO {
+
     public UUID uuid;
     public List<TaggedText> taggedNameList;
     public String scientificName;
@@ -29,7 +30,7 @@ public class PrintPubTaxonSummaryDTO {
     public String typeStatementString;
 
     public PrintPubSynonymGroupDTO homotypicSynonymGroup;
-    public List<PrintPubSynonymGroupDTO> synonymGroups = new ArrayList<>();
+    public List<PrintPubSynonymGroupDTO> heterotypicSynonymGroups = new ArrayList<>();
 
     public List<PrintPubFactDTO> facts = new ArrayList<>();
 
