@@ -226,19 +226,18 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 
 	        parentMonitor.subTask("Compute total number of records");
 	        totalCount = ((Long)repository.getTaxonNodeService().count(filter)).intValue();
-	        idList = repository.getTaxonNodeService().idList(filter);
 	        int parentTicks = this.parentTicks == null? totalCount : this.parentTicks;
-
 	        monitor = SubProgressMonitor.NewStarted(parentMonitor, parentTicks,
 	                "Taxon node streamer", totalCount * (retrieveFactor +  iterateFactor));
+
+	        monitor.subTask("Create ID iterator in partitioner");
+	        idList = repository.getTaxonNodeService().idList(filter);
 	        idIterator = idList.iterator();
-	        monitor.subTask("id iterator created");
 	    }
 	}
 
 	@Override
     public TaxonNode next(){
-	    int currentIndexAtStart = currentIndex;
 	    initialize();
 	    if(fifo.isEmpty()){
 	        List<TaxonNode> list = getNextPartition();
@@ -246,11 +245,7 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 	    }
 	    if (!fifo.isEmpty()){
 	        TaxonNode result = fifo.removeFirst();
-	        // worked should be called after each step is ready,
-	        //this is usually after each next() call but not for the first
-	        if (currentIndexAtStart > 0){
-	            monitor.worked(iterateFactor);
-	        }
+            monitor.worked(iterateFactor);
 	        return result;
 	    }else{
 	        if(!lastCommitManually){
@@ -267,39 +262,46 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
 	}
 
     private List<TaxonNode> getNextPartition() {
-        List<Integer> partList = new ArrayList<>();
 
+        List<Integer> idListForPartition = new ArrayList<>();
         if (txStatus != null){
             commitTransaction();
         }
-
         txStatus = startTransaction();
 //        if (readOnly){
 //            txStatus.setRollbackOnly();  //unclear if this is correct way to handle rollback, see comment on method
 //        }
-        while (partList.size() < partitionSize && idIterator.hasNext()){
-            partList.add(idIterator.next());
+
+        //fill ID list for partition
+        while (idListForPartition.size() < partitionSize && idIterator.hasNext()){
+            idListForPartition.add(idIterator.next());
             currentIndex++;
         }
-        List<TaxonNode> partition = new ArrayList<>();
-        if (!partList.isEmpty()){
-            monitor.subTask(String.format("Reading partition %d/%d", currentPartition + 1, (totalCount / partitionSize) +1 ));
+
+        //fill taxon node list for partition
+        List<TaxonNode> taxonNodeListForPartition = new ArrayList<>();
+        if (!idListForPartition.isEmpty()){
+            currentPartition++;
+            monitor.subTask(String.format("Reading partition %d/%d", currentPartition, totalPartitions() ));
 
             //order hints for sql based sorting
             TaxonNodeFilter.TaxonNodeFilterSortMode sortMode = filter.getSortMode() == null ? TaxonNodeFilter.TaxonNodeFilterSortMode.TREEINDEX : filter.getSortMode();
             List<OrderHint> orderHints = orderHintForSqlBasedSorting(sortMode);
             //load
-            partition = repository.getTaxonNodeService().loadByIds(partList, orderHints, propertyPaths);
+            taxonNodeListForPartition = repository.getTaxonNodeService().loadByIds(idListForPartition, orderHints, propertyPaths);
             //sort partition taxonomically if needed
             if (sortMode.isTaxonomic()) {
-                partition.sort(new IdListComparator(partList));
+                taxonNodeListForPartition.sort(new IdListComparator(idListForPartition));
             }
 
-            monitor.worked(partition.size());
-            currentPartition++;
-            monitor.subTask(String.format("Writing partition %d/%d", currentPartition, (totalCount / partitionSize) +1 ));
+            monitor.worked(taxonNodeListForPartition.size() * retrieveFactor);
+            monitor.subTask(String.format("Writing partition %d/%d", currentPartition, totalPartitions() ));
         }
-        return partition;
+        return taxonNodeListForPartition;
+    }
+
+    private int totalPartitions() {
+        return (totalCount / partitionSize) +1;
     }
 
     /**
