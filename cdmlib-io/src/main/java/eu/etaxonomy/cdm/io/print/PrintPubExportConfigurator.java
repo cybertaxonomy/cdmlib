@@ -62,6 +62,9 @@ public class PrintPubExportConfigurator
     // 5. Fact sorting
     private UUID featureTreeUuid;
 
+    // 6. Monitoring
+    private boolean monitorNameLabels = false;
+
     public enum FeatureSortMode {
         FEATURE_TREE, ALPHABETICAL
     }
@@ -259,4 +262,10 @@ public class PrintPubExportConfigurator
         this.oneLinePerHomotypicGroup = oneLinePerHomotypicGroup;
     }
 
+    public boolean isMonitorNames() {
+        return monitorNameLabels;
+    }
+    public void setMonitorNames(boolean monitorNameLabels) {
+        this.monitorNameLabels = monitorNameLabels;
+    }
 }

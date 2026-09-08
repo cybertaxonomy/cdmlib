@@ -118,7 +118,7 @@ public class PrintPubClassificationExport
 
                 nodesProcessed++;
 
-                if (nodesProcessed % 10 == 0) {
+                if (state.getConfig().isMonitorNames() && nodesProcessed % 10 == 0) {
                     String nodeLabel = (node.getTaxon() != null && node.getTaxon().getName() != null)
                             ? node.getTaxon().getName().getTitleCache()
                             : "Node ID: " + node.getId();
