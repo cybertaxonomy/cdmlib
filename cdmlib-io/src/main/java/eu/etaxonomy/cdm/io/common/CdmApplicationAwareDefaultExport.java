@@ -221,7 +221,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 		    Integer singleIoTicks = stepCounts.get(i);
 		    Integer ticksInMainMonitor = singleIoTicks;
 			try {
-			    String ioName = export.getClass().getSimpleName();
 			    SubProgressMonitor singleIoMonitor = SubProgressMonitor
 			            .NewInstance(mainMonitor, ticksInMainMonitor, SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
 			    state.setCurrentIoProgressMonitor(singleIoMonitor);
