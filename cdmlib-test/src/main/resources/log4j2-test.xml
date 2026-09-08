@@ -44,6 +44,9 @@
          leakages when using DriverManagerConnectionProvider -->
     <!-- Logger name="org.hibernate.connection.DriverManagerConnectionProvider" level="debug"/ -->
     
+    <!-- Monitoring -->
+    <Logger name="eu.etaxonomy.cdm.common.monitor" level="INFO"/>
+    
     <!-- suppress HHH90000003 (but be aware there might be other deprecations) -->
     <Logger name="org.hibernate.orm.deprecation" level="ERROR"/>
     <!-- suppress HHH000179: Narrowing proxy to class ... issues -->
