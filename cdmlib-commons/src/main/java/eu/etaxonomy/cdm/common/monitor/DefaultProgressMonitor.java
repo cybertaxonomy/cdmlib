@@ -98,10 +98,11 @@ public class DefaultProgressMonitor implements IProgressMonitor {
     }
 
     private void computeWorked(double work){
-        this.workDone = this.workDone +  work;
-        if (logger.isInfoEnabled() && getPercentageRounded(2) != lastPercentage){
-            logger.info(getPercentageRounded(2) + "% done (Completed Task: " + subTask + ")");
-            lastPercentage = getPercentageRounded(2);
+        this.workDone = this.workDone + work;
+        BigDecimal percentageRounded2 = getPercentageRounded(2);
+        if (logger.isInfoEnabled() && percentageRounded2.compareTo(lastPercentage) != 0){
+            logger.info(percentageRounded2 + "% done (Completed Task: " + subTask + ")");
+            lastPercentage = percentageRounded2;
         }else if (logger.isDebugEnabled()){
             logger.debug(getPercentage() + "% done (Completed Task: " + subTask + ")");
         }
