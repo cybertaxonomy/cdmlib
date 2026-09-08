@@ -17,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * This is a console style progress monitor witch prints the progress information
+ * This is a console style progress monitor which prints the progress information
  * to configured {@link Logger} with level {@link Level#INFO}
  *
  * @author a.mueller

@@ -59,22 +59,6 @@ public class PrintPubExportTest
         ExportResult result = defaultExport.invoke(config);
         checkAndGetData(result);
 
-//        if (destinationDir != null) {
-
-//          File outputFile = new File("/home/kluther/Dokumente/cdmLight/", "Test.odt");
-//
-//          try (FileOutputStream fos = new FileOutputStream(outputFile)) {
-//              fos.write(data);
-//          } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//      } else {
-//          state.getResult().addError("No destination directory configured. File could not be written.");
-//      }
         Assert.assertTrue(result.getExportType().equals(ExportType.PRINT_PUBLICATION));
         //test export type
     }
