@@ -120,6 +120,10 @@ public class WordClassificationExport
 
     private static final long serialVersionUID = 5373475508269756045L;
 
+    private static final int TICKS_DATA_RETRIEVAL = 98;
+    private static final int TICKS_FINAL_RESULT = 2;
+    private static final int TICKS_TOTAL = TICKS_DATA_RETRIEVAL + TICKS_FINAL_RESULT;
+
     @Autowired
     private IDistributionService geoService;
 
@@ -140,8 +144,12 @@ public class WordClassificationExport
     protected void doInvoke(WordClassificationExportState state) {
         try {
 
-            IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+            IProgressMonitor ioMonitor = state.getCurrentIoProgressMonitor();
+            ioMonitor.beginTask("Word Export -", TICKS_TOTAL);
+            ioMonitor.subTask("Start classification export ...");
+
             WordClassificationExportConfigurator config = state.getConfig();
+
             if (config.getTaxonNodeFilter().hasClassificationFilter()) {
                 Classification classification = getClassificationService()
                         .load(config.getTaxonNodeFilter().getClassificationFilter().get(0).getUuid());
@@ -152,10 +160,10 @@ public class WordClassificationExport
             }
 
             TaxonNodeOutStreamPartitioner<WordClassificationExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
-                    state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
+                    state, state.getConfig().getTaxonNodeFilter(), 100, ioMonitor, TICKS_DATA_RETRIEVAL);
 
 //            handleMetaData(state);
-            monitor.subTask("Start partitioning");
+            ioMonitor.subTask("Start partitioning");
 
             TaxonNode node = partitioner.next();
             while (node != null) {
@@ -191,7 +199,9 @@ public class WordClassificationExport
                 }
             }
 
+            ioMonitor.subTask("Create final result");
             state.getProcessor().createFinalResult(state);
+            ioMonitor.worked(TICKS_FINAL_RESULT);
         } catch (Exception e) {
             state.getResult().addException(e,
                     "An unexpected error occurred in main method doInvoke() " + e.getMessage());

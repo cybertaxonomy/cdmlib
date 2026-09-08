@@ -116,6 +116,10 @@ public class ColDpClassificationExport
 
     private static boolean WITH_NAME_REL = true;
 
+    private static final int TICKS_DATA_RETRIEVAL = 98;
+    private static final int TICKS_FINAL_RESULT = 2;
+    private static final int TICKS_TOTAL = TICKS_DATA_RETRIEVAL + TICKS_FINAL_RESULT;
+
     public ColDpClassificationExport() {
         this.ioName = this.getClass().getSimpleName();
     }
@@ -130,7 +134,9 @@ public class ColDpClassificationExport
     protected void doInvoke(ColDpExportState state) {
 
         try {
-            IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+            IProgressMonitor ioMonitor = state.getCurrentIoProgressMonitor();
+            ioMonitor.beginTask("CoL-DP Export -", TICKS_TOTAL);
+            ioMonitor.subTask("Start classification export ...");
             ColDpExportConfigurator config = state.getConfig();
 
             //set root node
@@ -143,10 +149,10 @@ public class ColDpClassificationExport
             }
 
             TaxonNodeOutStreamPartitioner<ColDpExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
-                    state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
+                    state, state.getConfig().getTaxonNodeFilter(), 100, ioMonitor, TICKS_DATA_RETRIEVAL);
 
 //            handleMetaData(state);  //FIXME metadata;
-            monitor.subTask("Start partitioning");
+            ioMonitor.subTask("Start partitioning");
 
             TaxonNode node = partitioner.next();
             while (node != null) {
@@ -183,7 +189,9 @@ public class ColDpClassificationExport
                 }
             }
 
+            ioMonitor.subTask("Create final result");
             state.getProcessor().createFinalResult(state);
+            ioMonitor.worked(TICKS_FINAL_RESULT);
         } catch (Exception e) {
             state.getResult().addException(e,
                     "An unexpected error occurred in main method doInvoke() " + e.getMessage());

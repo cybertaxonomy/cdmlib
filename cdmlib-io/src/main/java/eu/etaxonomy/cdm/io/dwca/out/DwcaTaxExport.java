@@ -37,6 +37,10 @@ public class DwcaTaxExport extends DwcaExportBase {
 
     private static final Logger logger = LogManager.getLogger();
 
+    private static final int TICKS_DATA_RETRIEVAL = 99;
+    private static final int TICKS_FINAL_RESULT = 1;
+    private static final int TICKS_TOTAL = TICKS_DATA_RETRIEVAL + TICKS_FINAL_RESULT;
+
     @Autowired
     private ITaxonNodeService taxonNodeService;
 
@@ -62,7 +66,9 @@ public class DwcaTaxExport extends DwcaExportBase {
 	@Override
 	protected void doInvoke(DwcaTaxExportState state){
 
-	    IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+        IProgressMonitor ioMonitor = state.getCurrentIoProgressMonitor();
+        ioMonitor.beginTask("CDM Light Export -", TICKS_TOTAL);
+        ioMonitor.subTask("Start classification export ...");
 
 		List<DwcaDataExportBase> exports =  Arrays.asList(new DwcaDataExportBase[]{
 	        new DwcaTaxonExport(state),
@@ -78,10 +84,10 @@ public class DwcaTaxExport extends DwcaExportBase {
 	    TaxonNodeOutStreamPartitioner<XmlExportState> partitioner
 	          = TaxonNodeOutStreamPartitioner.NewInstance(
                     this, state, state.getConfig().getTaxonNodeFilter(),
-                    100, monitor, null);
+                    100, ioMonitor, TICKS_DATA_RETRIEVAL);
 		try {
 
-		    monitor.subTask("Start partitioning");
+		    ioMonitor.subTask("Start partitioning");
 
 		    TaxonNode node = partitioner.next();
 			while (node != null){
@@ -95,12 +101,14 @@ public class DwcaTaxExport extends DwcaExportBase {
 			state.getResult().addException(e, message, "DwcaTaxExport.doInvoke()");
 		}
 		finally{
-		    if(partitioner != null){
+            ioMonitor.subTask("Close");
+            if(partitioner != null){
 		        partitioner.close();
 		    }
 		    for (DwcaDataExportBase export : exports){
 		        closeWriter(export, state);
             }
+		    ioMonitor.worked(TICKS_FINAL_RESULT);
 		}
 
 		return;
