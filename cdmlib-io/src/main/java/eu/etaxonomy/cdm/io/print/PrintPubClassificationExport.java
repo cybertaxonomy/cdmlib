@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class PrintPubClassificationExport
         extends CdmExportBase<PrintPubExportConfigurator, PrintPubExportState, IExportTransformer, File> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -623958635483883990L;
     private static final Logger logger = LogManager.getLogger();
 
     @Autowired

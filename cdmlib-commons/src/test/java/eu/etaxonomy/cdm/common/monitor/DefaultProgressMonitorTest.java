@@ -46,7 +46,7 @@ public class DefaultProgressMonitorTest {
         }
 
         for (int i = 0; i < subTasks; i++){
-            SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, subTaskTicks);
+            SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, subTaskTicks);
             int subTicks = 2457;
             subMonitor.beginTask("SubMonitor", subTicks);
             monitor.beginTask("Hallo", steps);

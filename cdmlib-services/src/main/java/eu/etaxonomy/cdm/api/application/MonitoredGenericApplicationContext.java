@@ -69,7 +69,7 @@ public class MonitoredGenericApplicationContext extends GenericApplicationContex
         checkMonitorCancelled(currentMonitor);
         String task = "Finish bean factory initialization";
         currentMonitor.subTask(task);
-        IProgressMonitor subMonitor	= new SubProgressMonitor(currentMonitor, countFinishBeanFactoryInitialization);
+        IProgressMonitor subMonitor	= SubProgressMonitor.NewInstance(currentMonitor, countFinishBeanFactoryInitialization);
         getMyBeanFactory().setCurrentMonitor(subMonitor);
         super.finishBeanFactoryInitialization(beanFactory);
         checkMonitorCancelled(currentMonitor);

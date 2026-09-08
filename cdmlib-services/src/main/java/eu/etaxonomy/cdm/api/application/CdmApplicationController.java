@@ -214,7 +214,7 @@ public class CdmApplicationController
 		//		subMonitor.beginTask(message, 2);
 		//		applicationContext.setProgressMonitor(subMonitor);
 
-		applicationContext.refresh(new SubProgressMonitor(progressMonitor, refreshTasks));
+		applicationContext.refresh(SubProgressMonitor.NewInstance(progressMonitor, refreshTasks));
 		applicationContext.start();
 		//		progressMonitor.worked(1);
 
@@ -359,7 +359,8 @@ public class CdmApplicationController
 	}
 
 
-	protected void init(){
+	@Override
+    protected void init(){
 		logger.debug("Init " + this.getClass().getName() + " ... ");
 		if (logger.isDebugEnabled()) {
 			for (String beanName : applicationContext.getBeanDefinitionNames()) {

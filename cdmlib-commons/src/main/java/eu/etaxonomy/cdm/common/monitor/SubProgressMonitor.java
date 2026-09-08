@@ -71,6 +71,16 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
         return result;
     }
 
+    public static SubProgressMonitor NewInstance(IProgressMonitor monitor, int parentTicks){
+        SubProgressMonitor result = new SubProgressMonitor(monitor, parentTicks);
+        return result;
+    }
+
+    public static SubProgressMonitor NewInstance(IProgressMonitor monitor, int parentTicks, int styles){
+        SubProgressMonitor result = new SubProgressMonitor(monitor, parentTicks, styles);
+        return result;
+    }
+
     /**
      * Creates a new sub-progress monitor for the given monitor. The sub
      * progress monitor uses the given number of work ticks from its
@@ -80,7 +90,7 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
      * @param ticks the number of work ticks allocated from the
      *    parent monitor
      */
-    public SubProgressMonitor(IProgressMonitor parentMonitor, int ticks) {
+    private SubProgressMonitor(IProgressMonitor parentMonitor, int ticks) {
         this (parentMonitor, ticks, 0);
     }
 
@@ -100,7 +110,7 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
      * @see #SUPPRESS_SUBTASK_LABEL
      * @see #PREPEND_MAIN_LABEL_TO_SUBTASK
      */
-    public SubProgressMonitor(IProgressMonitor parentMonitor, int ticks,
+    private SubProgressMonitor(IProgressMonitor parentMonitor, int ticks,
             int style) {
         super (parentMonitor);
         this.parentTicks = (ticks > 0) ? ticks : 0;
@@ -195,5 +205,4 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
 	public void warning(String message, Throwable throwable) {
 		// TODO Auto-generated method stub
 	}
-
 }

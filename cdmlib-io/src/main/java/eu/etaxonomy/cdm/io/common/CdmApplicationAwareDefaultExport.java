@@ -180,8 +180,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 		}
 	}
 
-
-
 	/**
 	 * Executes the whole
 	 */

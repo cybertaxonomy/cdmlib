@@ -109,7 +109,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         int batchSize = sweetestBatchSize(type);
         int numOfBatches = calculateNumOfBatches(countResult, batchSize);
 
-        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+        SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
         subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
 
         // Scrollable results will avoid loading too many objects in memory
@@ -163,7 +163,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         monitor.subTask("creating dictionary " + type.getSimpleName());
 
-        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+        SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
         subMonitor.beginTask("Creating dictionary " + type.getSimpleName(), 1);
 
         Directory directory = ((DirectoryBasedIndexManager) indexManager).getDirectoryProvider().getDirectory();
@@ -338,7 +338,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         if(HS_31_MODE) {
             monitor.subTask("Optimizing Index");
-            SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+            SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
             subMonitor.beginTask("Optimizing Index",1);
             optimize();
             logger.info("end index optimization");
@@ -372,7 +372,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         int batchSize = sweetestBatchSize(type);
         int numOfBatches = calculateNumOfBatches(countResult * 2, batchSize); // each entity is worked two times 1. document added, 2. document build
 
-        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+        SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
         subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
 
 

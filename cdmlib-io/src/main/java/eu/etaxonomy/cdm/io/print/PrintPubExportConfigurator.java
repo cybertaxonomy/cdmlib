@@ -88,7 +88,7 @@ public class PrintPubExportConfigurator
         super(transformer);
         this.resultType = ExportResultType.BYTE_ARRAY;
         this.setTarget(TARGET.EXPORT_DATA);
-        setUserFriendlyIOName("Print/Publication Export");
+        setUserFriendlyIOName("Print Publication Export");
         this.getTaxonNodeFilter().setSortMode(defaultTaxonSortMode);
     }
 

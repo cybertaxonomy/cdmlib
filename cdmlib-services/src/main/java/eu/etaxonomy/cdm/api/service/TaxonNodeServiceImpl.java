@@ -895,7 +895,7 @@ public class TaxonNodeServiceImpl
         monitor.done();
         if (!monitor.isCanceled() ){
             monitor.subTask("saving and reindex");
-            IProgressMonitor subMonitor = new SubProgressMonitor(monitor, nodes.size());
+            IProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, nodes.size());
             try {
                 referenceDao.saveOrUpdate(sec);
                 dao.saveOrUpdateAll(nodes);

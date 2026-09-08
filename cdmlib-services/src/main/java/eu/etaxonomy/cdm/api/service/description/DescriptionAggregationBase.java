@@ -142,7 +142,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             double startAccumulate = System.currentTimeMillis();
 
             //TODO AM move to invokeOnSingleTaxon()
-            IProgressMonitor aggregateMonitor = new SubProgressMonitor(subMonitor, aggregationWorkTicks);
+            IProgressMonitor aggregateMonitor = SubProgressMonitor.NewInstance(subMonitor, aggregationWorkTicks);
             try {
                 aggregate(taxonNodeIdList, aggregateMonitor);
             } catch (Exception e) {
