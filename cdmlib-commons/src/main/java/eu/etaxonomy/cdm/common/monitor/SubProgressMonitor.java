@@ -40,7 +40,7 @@ package eu.etaxonomy.cdm.common.monitor;
 public class SubProgressMonitor extends ProgressMonitorWrapper {
     private static final long serialVersionUID = 3258788051657003998L;
 
-   /**
+    /**
      * Style constant indicating that calls to <code>subTask</code>
      * should not have any effect.
      *

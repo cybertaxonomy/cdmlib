@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 
+import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportTestBase;
@@ -35,6 +36,9 @@ public class PrintPubExportTest
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
+    //requires log level info for DefaultProgressMonitor and other monitors
+    private static final boolean useCommandLineMonitor = true;
+
     @Before
     public void setUp()  {
         createFullTestDataSet();
@@ -49,6 +53,9 @@ public class PrintPubExportTest
 
         //config + invoke
         PrintPubExportConfigurator config = newConfigurator();
+        if (useCommandLineMonitor) {
+            config.setProgressMonitor(DefaultProgressMonitor.NewInstance());
+        }
         ExportResult result = defaultExport.invoke(config);
         checkAndGetData(result);
 

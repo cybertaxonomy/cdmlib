@@ -212,7 +212,7 @@ public abstract class TaxonTreeExportTestBase
     @SpringBeanByType
     protected IOccurrenceService occurrenceService;
 
-    //this test only test the COL-DB export runs without throwing exception
+    //this test only tests the COL-DB export runs without throwing exception
     //on the full sample data
     @Test
     @DataSets({
