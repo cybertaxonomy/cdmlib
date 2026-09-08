@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.common;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
 /**
@@ -24,6 +25,8 @@ public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase<?, T
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
+    private IProgressMonitor currentIoProgressMonitor;
+
     protected ExportStateBase(CONFIG config){
 		this.config = config;
 	}
@@ -31,4 +34,11 @@ public abstract class ExportStateBase<CONFIG extends ExportConfiguratorBase<?, T
 	public TRANSFORM getTransformer(){
 		return this.config.getTransformer();
 	}
+
+    public IProgressMonitor getCurrentIoProgressMonitor() {
+        return currentIoProgressMonitor;
+    }
+    public void setCurrentIoProgressMonitor(IProgressMonitor currentIoProgressMonitor) {
+        this.currentIoProgressMonitor = currentIoProgressMonitor;
+    }
 }

@@ -209,25 +209,25 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator>
 		List<ICdmExport> ioList = makeIoList(state, config);
 
 		List<Integer> stepCounts = countSteps(state, ioList);
-		Integer totalCount = stepCounts.get(stepCounts.size()-1);
-		config.getProgressMonitor().beginTask(config.getUserFriendlyIOName() != null? config.getUserFriendlyIOName():"Start Export", totalCount);
-		config.getProgressMonitor().worked(1);
-		IProgressMonitor parentMonitor = SubProgressMonitor
-		        .NewStarted(config.getProgressMonitor(), 99, "Process data", totalCount);
+		Integer totalCount = stepCounts.get(stepCounts.size()-1);  //last in list is sum
+		String taskName = config.getUserFriendlyIOName() != null? config.getUserFriendlyIOName(): "Start Export";
+		IProgressMonitor mainMonitor = config.getProgressMonitor();
+		mainMonitor.beginTask(taskName, totalCount);
 
 		//do invoke for each class
 		for (int i = 0; i< ioList.size(); i++){
 		    @SuppressWarnings("rawtypes")
             ICdmExport export = ioList.get(i);
-		    Integer counts = stepCounts.get(i);
+		    Integer singleIoTicks = stepCounts.get(i);
+		    Integer ticksInMainMonitor = singleIoTicks;
 			try {
 			    String ioName = export.getClass().getSimpleName();
-			    SubProgressMonitor ioMonitor = SubProgressMonitor
-			            .NewStarted(parentMonitor, counts, ioName, counts );
-//			    state.getConfig().setProgressMonitor(ioMonitor);
+			    SubProgressMonitor singleIoMonitor = SubProgressMonitor
+			            .NewInstance(mainMonitor, ticksInMainMonitor, SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
+			    state.setCurrentIoProgressMonitor(singleIoMonitor);
 			    state.setCurrentIO(export);
 				export.invoke(state);
-				ioMonitor.done();
+				singleIoMonitor.done();
 			} catch (Exception e) {
 				String message = "Unexpected exception in " + export.getClass().getSimpleName()+ ": " + e.getMessage();
 				logger.error(message);
