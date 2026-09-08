@@ -37,7 +37,7 @@ public class PrintPubExportTest
     private static final Logger logger = LogManager.getLogger();
 
     //requires log level info for DefaultProgressMonitor and other monitors
-    private static final boolean useCommandLineMonitor = true;
+    private static final boolean useCommandLineMonitor = false;
 
     @Before
     public void setUp()  {
