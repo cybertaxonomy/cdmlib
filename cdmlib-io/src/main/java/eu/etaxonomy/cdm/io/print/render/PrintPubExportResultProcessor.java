@@ -8,9 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.print.render;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.io.print.PrintPubExportState;
 import eu.etaxonomy.cdm.io.print.docmodel.IPrintPubDocumentElement;
@@ -44,18 +42,19 @@ public class PrintPubExportResultProcessor {
 		state.getDocumentModel().add(element);
 	}
 
-	public void createFinalResult() {
+	public void createFinalResult(IProgressMonitor monitor, int renderTicks) {
 		if (state.getDocumentModel().isEmpty()) {
 			state.getResult().addWarning("Document Model is empty. No data exported.");
 			return;
 		}
 
 		try {
-			IPrintPubDocumentInterpreter interpreter = new PrintPubOdtInterpreter();
+			monitor.subTask("Rendering document model");
+		    IPrintPubDocumentInterpreter interpreter = new PrintPubOdtInterpreter();
 			state.getDocumentModel().render(interpreter);
+			monitor.worked(renderTicks);
 
 			byte[] data = interpreter.getResultBytes();
-			String fileName = interpreter.getTimestampedFileName();
 
 			state.getResult().addExportData(data);
 			state.getResult().setExportType(ExportType.PRINT_PUBLICATION);

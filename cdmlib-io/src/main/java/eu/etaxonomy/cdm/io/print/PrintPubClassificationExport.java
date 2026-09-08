@@ -44,6 +44,12 @@ public class PrintPubClassificationExport
     private static final long serialVersionUID = -623958635483883990L;
     private static final Logger logger = LogManager.getLogger();
 
+    private static final int TICKS_DATA_RETRIEVAL = 80;
+    private static final int TICKS_LAYOUT = 10;
+    private static final int TICKS_RENDERING = 10;
+    private static final int TICKS_TOTAL = TICKS_DATA_RETRIEVAL + TICKS_LAYOUT + TICKS_RENDERING;
+
+
     @Autowired
     private PrintPubDtoMapper mapper;
 
@@ -60,13 +66,14 @@ public class PrintPubClassificationExport
     @Override
     @Transactional(readOnly = true)
     protected void doInvoke(PrintPubExportState state) {
-        IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+
+        IProgressMonitor ioMonitor = state.getCurrentIoProgressMonitor();
+        ioMonitor.beginTask("Print Pub Classification Export", TICKS_TOTAL);
+        ioMonitor.subTask("Start classification export ...");
 
         try {
-            monitor.beginTask("Exporting Classification to Print/Pub", IProgressMonitor.UNKNOWN);
-
-            if (monitor.isCanceled()) {
-                logger.info("PrintPub export cancelled before initialization");
+            if (ioMonitor.isCanceled()) {
+                logger.warn("PrintPub export cancelled before initialization");
                 return;
             }
 
@@ -75,9 +82,9 @@ public class PrintPubClassificationExport
             // --------------------------------------------------
             // Initialize feature ordering
             // --------------------------------------------------
-            initializeFeatureOrdering(state, monitor);
+            initializeFeatureOrdering(state, ioMonitor);
 
-            if (monitor.isCanceled()) {
+            if (ioMonitor.isCanceled()) {
                 logger.info("PrintPub export cancelled after feature ordering initialization");
                 return;
             }
@@ -85,16 +92,17 @@ public class PrintPubClassificationExport
             // --------------------------------------------------
             // Main taxon stream
             // --------------------------------------------------
-            monitor.subTask("Initializing data stream...");
+            ioMonitor.subTask("Initializing data stream...");
 
+            int partitionSize = 100;
             TaxonNodeOutStreamPartitioner<PrintPubExportState> partitioner =
                     TaxonNodeOutStreamPartitioner.NewInstance(
                             this,
                             state,
                             state.getConfig().getTaxonNodeFilter(),
-                            100,
-                            monitor,
-                            null
+                            partitionSize,
+                            ioMonitor,
+                            TICKS_DATA_RETRIEVAL
                     );
 
             Integer referenceDepth = null;
@@ -103,7 +111,7 @@ public class PrintPubClassificationExport
 
             while (node != null) {
 
-                if (monitor.isCanceled()) {
+                if (ioMonitor.isCanceled()) {
                     logger.info("PrintPub export cancelled during taxon processing after {} nodes", nodesProcessed);
                     return;
                 }
@@ -115,10 +123,8 @@ public class PrintPubClassificationExport
                             ? node.getTaxon().getName().getTitleCache()
                             : "Node ID: " + node.getId();
 
-                    //monitor.subTask("Processing: " + nodeLabel);
+                    ioMonitor.subTask("Processing: " + nodeLabel);
                 }
-
-                monitor.worked(1);
 
                 if (referenceDepth == null) {
                     referenceDepth = mapper.calculateDepth(node);
@@ -141,7 +147,7 @@ public class PrintPubClassificationExport
 
             logger.info("Processed {} taxon nodes for PrintPub export", nodesProcessed);
 
-            if (monitor.isCanceled()) {
+            if (ioMonitor.isCanceled()) {
                 logger.info("PrintPub export cancelled before document layout generation");
                 return;
             }
@@ -149,20 +155,20 @@ public class PrintPubClassificationExport
             // --------------------------------------------------
             // Build layout
             // --------------------------------------------------
-            monitor.subTask("Generating document layout (PDF/HTML)...");
+            ioMonitor.subTask("Generating document layout (PDF/HTML)...");
             builder.buildLayout(state);
-            monitor.worked(10);
+            ioMonitor.worked(TICKS_LAYOUT);
 
             logger.info("PrintPub document layout generated successfully");
 
         } catch (Exception e) {
             state.getResult().addException(e, "Unhandled error during PrintPub export: " + e.getMessage());
-            monitor.warning("Export failed: " + e.getMessage(), e);
+            ioMonitor.warning("Export failed: " + e.getMessage(), e);
             logger.error("PrintPub export failed", e);
 
         } finally {
-            monitor.done();
-            state.getProcessor().createFinalResult();
+            state.getProcessor().createFinalResult(ioMonitor, TICKS_RENDERING);
+            ioMonitor.done();
         }
     }
 
