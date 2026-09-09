@@ -526,7 +526,7 @@ public class TaxonNodeFilterDaoHibernateImpl
 
     private String getTaxonNodeIdFilter(TaxonNodeFilter filter) {
         String result = "";
-        Set<Integer> taxonNodeIdFilter = filter.setPotentialParentNodeIdsForArea();
+        Set<Integer> taxonNodeIdFilter = filter.getPotentialParentNodeIdsForArea();
         boolean isFirst = true;
         for (Integer singleFilter : taxonNodeIdFilter){
             String op = isFirst ? "" : op2Hql(LogicFilter.Op.OR);
