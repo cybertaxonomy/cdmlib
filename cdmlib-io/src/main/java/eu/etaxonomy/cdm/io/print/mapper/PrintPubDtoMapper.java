@@ -299,13 +299,6 @@ public class PrintPubDtoMapper {
 
             bibliographyCollector.collectSynonymNameSources(state, name);
 
-//            PrintPubTaxonSummaryDTO typeData = new PrintPubTaxonSummaryDTO();
-//
-//            extractTypeData(name, typeData, state.getConfig());
-//
-//            synDto.typeSpecimenString = typeData.typeSpecimenString;
-//
-//            synDto.typeStatementString = typeData.typeStatementString;
         } else {
             synDto.titleCache = synonym.getTitleCache();
         }

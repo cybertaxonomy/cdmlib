@@ -142,14 +142,6 @@ public class PrintPubDocumentBuilder {
 
         elements.add(renderTaxonHeading(taxonDto));
 
-//        if (StringUtils.isNotBlank(taxonDto.typeSpecimenString)) {
-//            elements.add(new PrintPubParagraphElement(taxonDto.typeSpecimenString));
-//        }
-//
-//        if (StringUtils.isNotBlank(taxonDto.typeStatementString)) {
-//            elements.add(new PrintPubParagraphElement(taxonDto.typeStatementString));
-//        }
-
         if (request.includeSynonyms()) {
             elements.addAll(renderSynonyms(request, citations, taxonDto));
         }
@@ -216,9 +208,6 @@ public class PrintPubDocumentBuilder {
         if (StringUtils.isNotBlank(groupDto.typeSpecimenString)) {
             additionalElements.add(new PrintPubParagraphElement(groupDto.typeSpecimenString));
         }
-        if (StringUtils.isNotBlank(groupDto.typeStatementString)) {
-            additionalElements.add(new PrintPubParagraphElement(groupDto.typeSpecimenString));
-        }
 
         elements.addAll(additionalElements);
     }
@@ -252,10 +241,6 @@ public class PrintPubDocumentBuilder {
         List<Run> runs = synonymRuns(synonym, prefix, synSecPart, newLine);
 
         List<IPrintPubDocumentElement> additionalElements = new ArrayList<>();
-
-//        if (StringUtils.isNotBlank(synonym.typeSpecimenString)) {
-//            additionalElements.add(new PrintPubParagraphElement(synonym.typeSpecimenString));
-//        }
 
         return new SynonymModel(runs, additionalElements);
     }

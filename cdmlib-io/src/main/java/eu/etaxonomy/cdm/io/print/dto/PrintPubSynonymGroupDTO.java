@@ -19,6 +19,4 @@ public class PrintPubSynonymGroupDTO {
     public List<PrintPubSynonymDTO> synonyms = new ArrayList<>();
 
     public String typeSpecimenString;
-
-    public String typeStatementString;
 }
