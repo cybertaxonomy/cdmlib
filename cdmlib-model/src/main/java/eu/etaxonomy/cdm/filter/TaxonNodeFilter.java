@@ -45,6 +45,7 @@ public class TaxonNodeFilter implements Serializable{
     private List<LogicFilter<PresenceAbsenceTerm>> distributionStatusFilter = new ArrayList<>();
 
     private boolean includeAbsentDistributions = false;
+    private boolean propagateDistributionToHigherTaxa = true;
 
     private boolean includeRootNodes = false;
 
@@ -417,9 +418,15 @@ public class TaxonNodeFilter implements Serializable{
     public boolean isIncludeAbsentDistributions() {
         return includeAbsentDistributions;
     }
-
     public void setIncludeAbsentDistributions(boolean includeAbsentDistributions) {
         this.includeAbsentDistributions = includeAbsentDistributions;
+    }
+
+    public boolean isPropagateDistributionToHigherTaxa() {
+        return propagateDistributionToHigherTaxa;
+    }
+    public void setPropagateDistributionToHigherTaxa(boolean propagateDistributionToHigherTaxa) {
+        this.propagateDistributionToHigherTaxa = propagateDistributionToHigherTaxa;
     }
 
 // ************************** toString *********************************/
