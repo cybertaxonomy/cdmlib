@@ -62,7 +62,7 @@ public class PrintPubBibliographyCollector {
                 ? PrintPubReferenceSourceType.ACCEPTED_NAME_RELATIONSHIP_SOURCE
                 : PrintPubReferenceSourceType.SYNONYM_NAME_RELATIONSHIP_SOURCE;
 
-        Set<NameRelationship> processed = new HashSet<NameRelationship>();
+        Set<NameRelationship> processed = new HashSet<>();
 
         collectNameRelationships(state, name.getRelationsFromThisName(), category, processed);
 

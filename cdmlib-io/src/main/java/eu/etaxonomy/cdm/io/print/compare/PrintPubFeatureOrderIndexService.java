@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -59,27 +58,16 @@ public class PrintPubFeatureOrderIndexService {
             Map<UUID, Integer> index,
             int[] counter) {
 
-        if (node == null) {
-            return;
-        }
-
-        // optional but safe while session is active
-        node = HibernateProxyHelper.deproxy(node);
-
         Feature feature = node.getTerm();
         if (feature != null) {
-            feature = HibernateProxyHelper.deproxy(feature);
-
             if (feature.getUuid() != null && !index.containsKey(feature.getUuid())) {
                 index.put(feature.getUuid(), counter[0]++);
             }
         }
 
         List<TermNode<Feature>> children = node.getChildNodes();
-        if (children != null) {
-            for (TermNode<Feature> child : children) {
-                traverse(child, index, counter);
-            }
+        for (TermNode<Feature> child : children) {
+            traverse(child, index, counter);
         }
     }
 }

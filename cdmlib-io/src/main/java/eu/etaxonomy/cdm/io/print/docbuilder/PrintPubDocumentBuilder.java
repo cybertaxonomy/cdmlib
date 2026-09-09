@@ -142,19 +142,19 @@ public class PrintPubDocumentBuilder {
 
         elements.add(renderTaxonHeading(taxonDto));
 
-        if (StringUtils.isNotBlank(taxonDto.typeSpecimenString)) {
-            elements.add(new PrintPubParagraphElement(taxonDto.typeSpecimenString));
-        }
-
-        if (StringUtils.isNotBlank(taxonDto.typeStatementString)) {
-            elements.add(new PrintPubParagraphElement(taxonDto.typeStatementString));
-        }
+//        if (StringUtils.isNotBlank(taxonDto.typeSpecimenString)) {
+//            elements.add(new PrintPubParagraphElement(taxonDto.typeSpecimenString));
+//        }
+//
+//        if (StringUtils.isNotBlank(taxonDto.typeStatementString)) {
+//            elements.add(new PrintPubParagraphElement(taxonDto.typeStatementString));
+//        }
 
         if (request.includeSynonyms()) {
             elements.addAll(renderSynonyms(request, citations, taxonDto));
         }
 
-        elements.addAll(renderTaxonDetails(request, taxonDto));
+        elements.addAll(renderTaxonFacts(request, taxonDto));
 
         return elements;
     }
@@ -260,7 +260,7 @@ public class PrintPubDocumentBuilder {
         return new SynonymModel(runs, additionalElements);
     }
 
-    private List<IPrintPubDocumentElement> renderTaxonDetails(PrintPubDocumentRequest request,
+    private List<IPrintPubDocumentElement> renderTaxonFacts(PrintPubDocumentRequest request,
             PrintPubTaxonSummaryDTO dto) {
 
         List<IPrintPubDocumentElement> elements = new ArrayList<>();

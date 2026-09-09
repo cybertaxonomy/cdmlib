@@ -101,9 +101,10 @@ public class PrintPubClassificationExport
 
             int partitionSize = 100;
 
-            TaxonNodeOutStreamPartitioner<PrintPubExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(
-                    this, state, state.getConfig().getTaxonNodeFilter(), partitionSize, ioMonitor,
-                    TICKS_DATA_RETRIEVAL);
+            TaxonNodeOutStreamPartitioner<PrintPubExportState> partitioner =
+                    TaxonNodeOutStreamPartitioner.NewInstance(
+                            this, state, state.getConfig().getTaxonNodeFilter(),
+                            partitionSize, ioMonitor, TICKS_DATA_RETRIEVAL);
 
             Integer referenceDepth = null;
             TaxonNode node = partitioner.next();
@@ -211,7 +212,7 @@ public class PrintPubClassificationExport
             }
 
         } catch (Exception e) {
-            state.setFeatureOrderIndex(new HashMap<UUID, Integer>());
+            state.setFeatureOrderIndex(new HashMap<>());
 
             monitor.warning(
                     "Could not initialize feature ordering; falling back to alphabetical order: " + e.getMessage(), e);

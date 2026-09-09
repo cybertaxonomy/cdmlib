@@ -25,9 +25,9 @@ public class PrintPubTaxonSummaryDTO {
 
     public int relativeDepth;
     public String titleCache;
-
-    public String typeSpecimenString;
-    public String typeStatementString;
+//
+//    public String typeSpecimenString;
+//    public String typeStatementString;
 
     public PrintPubSynonymGroupDTO homotypicSynonymGroup;
     public List<PrintPubSynonymGroupDTO> heterotypicSynonymGroups = new ArrayList<>();

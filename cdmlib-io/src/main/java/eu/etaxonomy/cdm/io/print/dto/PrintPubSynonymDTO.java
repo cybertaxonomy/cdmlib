@@ -21,8 +21,8 @@ public class PrintPubSynonymDTO {
 
     public String scientificName;
     public String secReference;
-    public String typeSpecimenString;
-    public String typeStatementString;
+//    public String typeSpecimenString;
+//    public String typeStatementString;
     public String titleCache;
 
     public boolean isInvalidDesignation;
