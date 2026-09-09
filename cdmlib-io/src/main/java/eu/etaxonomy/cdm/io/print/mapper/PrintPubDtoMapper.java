@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -436,43 +438,38 @@ public class PrintPubDtoMapper {
 
             Set<IdentifiableSource> descriptionSources = description.getSources();
 
-            for (DescriptionElementBase baseElement : description.getElements()) {
+            for (DescriptionElementBase fact : description.getElements()) {
 
-                DescriptionElementBase element = CdmBase.deproxy(baseElement);
+                fact = CdmBase.deproxy(fact);
+                Feature feature = fact.getFeature();
 
-                Feature feature = element.getFeature();
+                if (Feature.COMMON_NAME().equals(feature) && fact instanceof CommonTaxonName) {
 
-                if (Feature.COMMON_NAME().equals(feature) && element instanceof CommonTaxonName) {
+                    addCommonName(taxonDto, (CommonTaxonName) fact);
 
-                    addCommonName(taxonDto, (CommonTaxonName) element);
+                } else if (Feature.DISTRIBUTION().equals(feature) && fact instanceof Distribution) {
 
+                    addDistribution(taxonDto, (Distribution) fact);
+
+                } else if (fact instanceof TextData) {
+
+                    LanguageString textLs = ((TextData) fact).getPreferredLanguageString(Language.DEFAULT());
+
+                    if (textLs == null || StringUtils.isBlank(textLs.getText())) {
+                        continue;
+                    }
+
+                    PrintPubFactDTO factDto = createTextFact((TextData)fact, feature, textLs.getText(), factSequence++);
+
+                    addElementCitations(state, fact, factDto);
+
+                    addDatasetCitations(state, descriptionSources, factDto);
+
+                    taxonDto.facts.add(factDto);
+                } else {
+                    // TODO Handle other types of DescriptionElementBase if needed
                     continue;
                 }
-
-                if (Feature.DISTRIBUTION().equals(feature) && element instanceof Distribution) {
-
-                    addDistribution(taxonDto, (Distribution) element);
-
-                    continue;
-                }
-
-                if (!(element instanceof TextData)) {
-                    continue;
-                }
-
-                String text = ((TextData) element).getText(Language.DEFAULT());
-
-                if (text == null) {
-                    continue;
-                }
-
-                PrintPubFactDTO fact = createTextFact(element, feature, text, factSequence++);
-
-                addElementCitations(state, element, fact);
-
-                addDatasetCitations(state, descriptionSources, fact);
-
-                taxonDto.facts.add(fact);
             }
         }
     }
@@ -512,7 +509,7 @@ public class PrintPubDtoMapper {
         }
     }
 
-    private PrintPubFactDTO createTextFact(DescriptionElementBase element, Feature feature, String text, int sequence) {
+    private PrintPubFactDTO createTextFact(TextData element, Feature feature, String text, int sequence) {
 
         PrintPubFactDTO fact = new PrintPubFactDTO();
 
@@ -534,10 +531,6 @@ public class PrintPubDtoMapper {
     }
 
     private void addElementCitations(PrintPubExportState state, DescriptionElementBase element, PrintPubFactDTO fact) {
-
-        if (element.getSources() == null) {
-            return;
-        }
 
         for (DescriptionElementSource source : element.getSources()) {
 
