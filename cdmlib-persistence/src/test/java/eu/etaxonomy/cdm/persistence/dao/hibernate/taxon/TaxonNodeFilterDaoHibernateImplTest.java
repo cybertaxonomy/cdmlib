@@ -24,6 +24,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -101,11 +102,12 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
     @Before
     public void setUp() throws Exception {
+
         /*
          * classification 1
          *  - node1 (taxon1, Genus, Europe)
-         *   - node3 (taxon3, Species, Germany)  //if subspecies exists in Denmark this is not fully correct !!
-         *    - node4 (taxon4, Subspecies, Denmark)
+         *   - node3 (taxon3, Species, Germany)  //if subspecies exists in Denmark only this is not fully correct !!
+         *    - node4 (taxon4, Subspecies, Denmark, absent)
          *    - node5 (taxon5, Subspecies)
          *  - node2 (taxon2, Family, France)
          */
@@ -257,12 +259,14 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         String message = "wrong number of nodes filtered";
 //        System.out.println("start:" + new DateTime().toString());
 
-        NamedArea europe = HibernateProxyHelper.deproxy(termDao.load(europeUuid), NamedArea.class);
-        NamedArea middleEurope = HibernateProxyHelper.deproxy(termDao.load(middleEuropeUuid), NamedArea.class);
-        NamedArea africa = HibernateProxyHelper.deproxy(termDao.load(africaUuid), NamedArea.class);
-        NamedArea germany = HibernateProxyHelper.deproxy(termDao.load(germanyUuid), NamedArea.class);
+        NamedArea europe = CdmBase.deproxy(termDao.load(europeUuid), NamedArea.class);
+        NamedArea middleEurope = CdmBase.deproxy(termDao.load(middleEuropeUuid), NamedArea.class);
+        NamedArea africa = CdmBase.deproxy(termDao.load(africaUuid), NamedArea.class);
+        NamedArea germany = CdmBase.deproxy(termDao.load(germanyUuid), NamedArea.class);
+        NamedArea denmark = CdmBase.deproxy(termDao.load(denmarkUuid), NamedArea.class);
 
         TaxonNodeFilter filter = new TaxonNodeFilter(europe);
+
         List<UUID> listUuid = filterDao.listUuids(filter);
 
         assertEquals(message, 3, listUuid.size());
@@ -272,54 +276,59 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertFalse(listUuid.contains(node4.getUuid())); //status is absent
 
         filter = new TaxonNodeFilter(germany);
+        filter.setPropagateDistributionToHigherTaxa(false);
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 1, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node3.getUuid())); //German taxon but no propagation to parent
+
+        filter = new TaxonNodeFilter(germany);
+        filter.setPropagateDistributionToHigherTaxa(true);
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 2, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node3.getUuid())); //German taxon and ...
+        Assert.assertTrue(listUuid.contains(node1.getUuid())); //propagated parent
+
+
+        filter = new TaxonNodeFilter(middleEurope);
+        filter.setPropagateDistributionToHigherTaxa(false);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 1, listUuid.size());
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
 
         filter = new TaxonNodeFilter(middleEurope);
+        filter.setPropagateDistributionToHigherTaxa(true);
         listUuid = filterDao.listUuids(filter);
-        assertEquals(message, 1, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+        assertEquals(message, 2, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));  //German taxon and ...
+        Assert.assertTrue(listUuid.contains(node1.getUuid()));  //propagated parent
 
+        //denmark - find all propagated parents
+        filter = new TaxonNodeFilter(denmark);
+        filter.setIncludeAbsentDistributions(true);  //subspecies has absent distribution in denmark
+        filter.setPropagateDistributionToHigherTaxa(true);  //note: does not really make sense for absent distributions
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 3, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node4.getUuid()));
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));  //propagated parent
+        Assert.assertTrue(listUuid.contains(node1.getUuid()));  //propagated parent
+
+        //find subspecies in denmark in propagate to parent,
+        //but not to grand parent as it is not in the taxonomic scope (subtree filter)
+        filter = new TaxonNodeFilter(denmark);
+        filter.setPropagateDistributionToHigherTaxa(true);
+        filter.setIncludeAbsentDistributions(true);  //note: does not really make sense for absent distributions
+        filter.orSubtree(node3);
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 2, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node4.getUuid()));
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));  //propagated parent
+        Assert.assertFalse(listUuid.contains(node1.getUuid()));  //should not be included due to subtree filter
+
+        //africa - no available distribution
         filter = new TaxonNodeFilter(africa);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 0, listUuid.size());
     }
-
-//    @Test
-//    public void testListUuidsByAreasWithAncestor() {
-//        String message = "wrong number of nodes filtered";
-////        System.out.println("start:" + new DateTime().toString());
-//
-//        NamedArea europe = HibernateProxyHelper.deproxy(termDao.load(europeUuid), NamedArea.class);
-//        NamedArea middleEurope = HibernateProxyHelper.deproxy(termDao.load(middleEuropeUuid), NamedArea.class);
-//        NamedArea africa = HibernateProxyHelper.deproxy(termDao.load(africaUuid), NamedArea.class);
-//        NamedArea germany = HibernateProxyHelper.deproxy(termDao.load(germanyUuid), NamedArea.class);
-//
-//        TaxonNodeFilter filter = new TaxonNodeFilter(europe);
-//        List<String> listTreeIndex = filterDao.listTreeIndex(filter);
-//
-//        assertEquals(message, 3, listTreeIndex.size());
-//        Assert.assertTrue(listTreeIndex.contains(node1.getUuid()));
-//        Assert.assertTrue(listTreeIndex.contains(node2.getUuid()));
-//        Assert.assertTrue(listTreeIndex.contains(node3.getUuid()));
-//        Assert.assertFalse(listTreeIndex.contains(node4.getUuid())); //status is absent
-//
-//        filter = new TaxonNodeFilter(germany);
-//        List<UUID> listUuid = filterDao.listUuids(filter);
-//        assertEquals(message, 1, listUuid.size());
-//        Assert.assertTrue(listUuid.contains(node3.getUuid()));
-//
-//        filter = new TaxonNodeFilter(middleEurope);
-//        listUuid = filterDao.listUuids(filter);
-//        assertEquals(message, 1, listUuid.size());
-//        Assert.assertTrue(listUuid.contains(node3.getUuid()));
-//
-//        filter = new TaxonNodeFilter(africa);
-//        listUuid = filterDao.listUuids(filter);
-//        assertEquals(message, 0, listUuid.size());
-//
-//    }
 
     @Test
     @DataSets({

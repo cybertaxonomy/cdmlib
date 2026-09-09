@@ -12,7 +12,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
@@ -36,6 +38,7 @@ public class TaxonNodeFilter implements Serializable{
 
     private List<LogicFilter<TaxonNode>> subtrees = new ArrayList<>();
     private List<LogicFilter<TaxonNode>> taxonNodes = new ArrayList<>();
+    private Set<Integer> taxonNodeIds = new HashSet<>();
     private List<LogicFilter<Classification>> classifications = new ArrayList<>();
     private List<LogicFilter<Taxon>> taxa = new ArrayList<>();
     private LogicFilter<Rank> rankMin = null;
@@ -45,7 +48,7 @@ public class TaxonNodeFilter implements Serializable{
     private List<LogicFilter<PresenceAbsenceTerm>> distributionStatusFilter = new ArrayList<>();
 
     private boolean includeAbsentDistributions = false;
-    private boolean propagateDistributionToHigherTaxa = true;
+    private boolean propagateDistributionToHigherTaxa = false;
 
     private boolean includeRootNodes = false;
 
@@ -226,6 +229,9 @@ public class TaxonNodeFilter implements Serializable{
         return Collections.unmodifiableList(taxonNodes);
     }
 
+    public Set<Integer>getPotentialParentNodeIdsForArea(){
+        return Collections.unmodifiableSet(taxonNodeIds);
+    }
 
     public List<LogicFilter<Classification>>getClassificationFilter(){
         return Collections.unmodifiableList(classifications);
@@ -276,6 +282,17 @@ public class TaxonNodeFilter implements Serializable{
      */
     public TaxonNodeFilter orTaxonNode(UUID uuid){
         taxonNodes.add( new LogicFilter<>(TaxonNode.class, uuid, Op.OR));
+        return this;
+    }
+    /**
+     * Adds a set of potential parent node IDs which .<BR><BR>
+     * NOTE: for internal use together with area filter only.
+     *
+     * @deprecated might become protected in future
+     */
+    @Deprecated
+    public TaxonNodeFilter setPotentialParentNodeIdsForArea(Set<Integer> potentialParentIds){
+        taxonNodeIds = potentialParentIds == null ? Collections.emptySet() : potentialParentIds;
         return this;
     }
 
@@ -399,6 +416,11 @@ public class TaxonNodeFilter implements Serializable{
     public boolean hasSubtreeFilter(){
         return getSubtreeFilter() != null  //just in case, but should never be null
                 && !getSubtreeFilter().isEmpty();
+    }
+
+    public boolean hasAreaFilter() {
+        return getAreaFilter() != null  //just in case, but should never be null
+                && !getAreaFilter().isEmpty();
     }
 
     public TaxonNodeFilterSortMode getSortMode() {

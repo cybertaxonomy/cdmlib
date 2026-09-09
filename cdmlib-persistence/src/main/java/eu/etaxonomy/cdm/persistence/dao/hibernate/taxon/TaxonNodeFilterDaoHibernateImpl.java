@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.query.Query;
@@ -105,6 +107,19 @@ public class TaxonNodeFilterDaoHibernateImpl
             list = deduplicate(list);
             return list;
         }
+    }
+
+    private Set<Integer> collectParentIds(TaxonNodeFilter filter){
+
+        String queryStr = query(filter, "tn.treeIndex");
+        Query<String> query = getSession().createQuery(queryStr, String.class);
+        List<String> list = query.list();
+        Set<Integer> idSet = list.stream()
+            .filter(ti->ti != null)
+            .map(TreeIndex::NewInstance)
+            .flatMap(ti-> ti.parentNodeIds(false).stream())
+            .collect(Collectors.toSet());
+        return idSet;
     }
 
     private <S extends Object> List<S> listTaxonomicallySorted(TaxonNodeFilter filter, boolean isUuid) {
@@ -314,6 +329,26 @@ public class TaxonNodeFilterDaoHibernateImpl
     //maybe we will later want to have ordering included
     private String query(TaxonNodeFilter filter, String selectPart){
 
+        if (filter.isPropagateDistributionToHigherTaxa() && filter.hasAreaFilter()) {
+            //if area filter should propagate to taxon ancestors which have no
+            //distribution on their own the following algorithm applies:
+            // 1. search all taxa with distributions that fullfill the filter
+            // 2. compute the list of taxon node IDs for these taxon nodes
+            //    and all their parents (up to the root (invisible root excluded)
+            // 3. run the query again with OR-filter for the area part,
+            //    => returns the taxon nodes computed at 1.) and all the
+            //    (ancestor) nodes computed at 2. which fullfill the remaining
+            //    filter conditions (except for the area filter).
+            //E.g.: if the filter has a subtree filter on a family and a species
+            //      of this family fullfills the area filter, the genus parent
+            //      and the family grand parent is found, but not the
+            //      order or class ancestors
+            filter.setPropagateDistributionToHigherTaxa(false); //to avoid infinite loop as the following command again calls the query() method
+            Set<Integer> parentIds = collectParentIds(filter);
+            filter.setPotentialParentNodeIdsForArea(parentIds);
+            filter.setPropagateDistributionToHigherTaxa(true);
+        }
+
         String select = " SELECT " + selectPart;
         boolean isSorted = filter.hasTaxonomicSortMode();  //sorted taxonomically, not by IDs or treeindex
         String from = getFrom(filter, isSorted);
@@ -324,7 +359,7 @@ public class TaxonNodeFilterDaoHibernateImpl
         String rootNodeFilter = getRootNodeFilter(filter);
         String rankMaxFilter = getRankMaxFilter(filter);
         String rankMinFilter = getRankMinFilter(filter);
-        String areaFilter = getAreaFilter(filter);
+        String areaFilter = getAreaFilter(filter, filter.isPropagateDistributionToHigherTaxa());
         String unpublishFilter = getUnpublishFilter(filter);
 
         String fullFilter = getFullFilter(subtreeFilter, taxonNodeFilter,
@@ -372,7 +407,7 @@ public class TaxonNodeFilterDaoHibernateImpl
         return result;
     }
 
-    private String getAreaFilter(TaxonNodeFilter filter) {
+    private String getAreaFilter(TaxonNodeFilter filter, boolean includeTaxonNodeIdFilter) {
         String result = "";
         List<LogicFilter<NamedArea>> areaFilter = filter.getAreaFilter();
         boolean isFirst = true;
@@ -382,7 +417,7 @@ public class TaxonNodeFilterDaoHibernateImpl
             String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
             result = String.format("(%s%s(" + DESCRIPTION_ELEMENTS + ".feature.uuid='" + DISTRIBUTION_FEATURE_UUID + "' "
                     + " AND " + DESCRIPTION_ELEMENTS + ".area.id in (%s))",
-                    result, op, org.springframework.util.StringUtils.collectionToCommaDelimitedString(areaIds)
+                    result, op, concat(areaIds)
                     );
             if (!filter.isIncludeAbsentDistributions()) {
                 result +=  " AND " + DESCRIPTION_ELEMENTS + ".status.absenceTerm = " + HQL_FALSE;
@@ -390,7 +425,22 @@ public class TaxonNodeFilterDaoHibernateImpl
             result += ")";
             isFirst = false;
         }
+        //add precomputed potential parent taxon nodes
+        if (includeTaxonNodeIdFilter && StringUtils.isNotBlank(result)) {
+            String potentialParentFilter = this.getTaxonNodeIdFilter(filter);
+            if (StringUtils.isNotBlank(potentialParentFilter)) {
+                result = "(" + result
+                        + " OR "
+                        + potentialParentFilter
+                        +")";
+            }
+        }
+
         return result;
+    }
+
+    private String concat(List<Integer> areaIds) {
+        return org.springframework.util.StringUtils.collectionToCommaDelimitedString(areaIds);
     }
 
     private List<Integer> getChildAreasRecursively(UUID uuid){
@@ -406,9 +456,6 @@ public class TaxonNodeFilterDaoHibernateImpl
         }
         return areaIds;
     }
-
-
-
 
     private String getRootNodeFilter(TaxonNodeFilter filter) {
         String result = "";
@@ -436,11 +483,6 @@ public class TaxonNodeFilterDaoHibernateImpl
         return result;
     }
 
-
-    /**
-     * @param list
-     * @return
-     */
     private <T> List<T> deduplicate(List<T> list) {
         List<T> result = new ArrayList<>();
         for (T uuid : list){
@@ -477,6 +519,18 @@ public class TaxonNodeFilterDaoHibernateImpl
             String uuid = singleFilter.getUuid().toString();
             String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
             result = String.format("(%s%s(tn.uuid = '%s'))", result, op, uuid);
+            isFirst = false;
+        }
+        return result;
+    }
+
+    private String getTaxonNodeIdFilter(TaxonNodeFilter filter) {
+        String result = "";
+        Set<Integer> taxonNodeIdFilter = filter.setPotentialParentNodeIdsForArea();
+        boolean isFirst = true;
+        for (Integer singleFilter : taxonNodeIdFilter){
+            String op = isFirst ? "" : op2Hql(LogicFilter.Op.OR);
+            result = String.format("(%s%s(tn.id = %d))", result, op, singleFilter);
             isFirst = false;
         }
         return result;
