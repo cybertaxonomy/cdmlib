@@ -106,7 +106,7 @@ public class PrintPubDtoMapper {
             return null;
         }
 
-        Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon());
+        Taxon taxon = node.getTaxon();
 
         PrintPubTaxonSummaryDTO taxonDto = new PrintPubTaxonSummaryDTO();
 
@@ -124,6 +124,10 @@ public class PrintPubDtoMapper {
 
         if (state.getConfig().isDoSynonyms()) {
             extractSynonymGroups(state, taxon, taxonDto);
+        } else if (includeAnyTypes(state.getConfig())){
+            //handle accepted name types
+            taxonDto.homotypicSynonymGroup = new PrintPubSynonymGroupDTO();
+            handleTypes(state, taxon.getName().getHomotypicalGroup(), taxonDto.homotypicSynonymGroup);
         }
 
         if (state.getConfig().isDoFactualData()) {
@@ -136,6 +140,10 @@ public class PrintPubDtoMapper {
         extractIdentifiers(taxon, taxonDto);
 
         return taxonDto;
+    }
+
+    private boolean includeAnyTypes(PrintPubExportConfigurator config) {
+        return config.isIncludeSpeciesTypes() || config.isIncludeSupraspecificTypes();
     }
 
     private void sortAndFilterFacts(PrintPubExportState state, PrintPubTaxonSummaryDTO taxonDto) {
@@ -234,13 +242,10 @@ public class PrintPubDtoMapper {
         HomotypicalGroup acceptedGroup = taxon.getHomotypicGroup();
         List<Synonym> homotypicSynonyms = taxon.getSynonymsInGroup(acceptedGroup);
 
-        if (homotypicSynonyms != null && !homotypicSynonyms.isEmpty()) {
+        PrintPubSynonymGroupDTO homotypicGroupDTO = new PrintPubSynonymGroupDTO();
+        taxonDto.homotypicSynonymGroup = homotypicGroupDTO;
 
-            PrintPubSynonymGroupDTO homotypicGroupDTO = new PrintPubSynonymGroupDTO();
-            taxonDto.homotypicSynonymGroup = homotypicGroupDTO;
-
-            extractSynonymGroup(state, acceptedGroup, homotypicSynonyms, homotypicGroupDTO);
-        }
+        extractSynonymGroup(state, acceptedGroup, homotypicSynonyms, homotypicGroupDTO);
 
         // heterotypic synonyms
         List<HomotypicalGroup> heterotypicGroups = taxon.getHeterotypicSynonymyGroups();
