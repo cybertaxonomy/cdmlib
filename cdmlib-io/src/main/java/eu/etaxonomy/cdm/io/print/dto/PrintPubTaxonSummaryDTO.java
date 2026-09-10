@@ -32,7 +32,7 @@ public class PrintPubTaxonSummaryDTO {
     public List<PrintPubFactDTO> facts = new ArrayList<>();
 
     public String commonNameString;
-    public List<String> commonNames;
+    public List<String> commonNames = new ArrayList<>();
     public String distributionString;
     public String secReferenceCitation;
     public String secMicroCitation;
