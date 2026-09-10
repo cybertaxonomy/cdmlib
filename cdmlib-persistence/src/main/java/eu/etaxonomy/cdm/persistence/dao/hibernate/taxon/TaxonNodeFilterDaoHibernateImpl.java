@@ -542,7 +542,7 @@ public class TaxonNodeFilterDaoHibernateImpl
     private String getRankMaxFilter(TaxonNodeFilter filter) {
         String result = "";
         LogicFilter<Rank> rankFilter = filter.getRankMax();
-        if(rankFilter!=null){
+        if(rankFilter != null){
             UUID rankUuid = rankFilter.getUuid();
             Rank rank = (Rank) termDao.load(rankUuid);
             result = String.format("(tn.taxon.name.rank.orderIndex >= %s)", rank.getOrderIndex());
