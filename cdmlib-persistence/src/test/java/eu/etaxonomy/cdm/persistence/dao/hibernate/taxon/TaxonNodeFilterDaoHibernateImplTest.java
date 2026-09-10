@@ -105,7 +105,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
         /*
          * classification 1
-         *  - node1 (taxon1, Genus, Europe)
+         *  - node1 (taxon1, Genus)  -- was Europe in old version, but failed to test propagating area filter to taxa with no distributions
          *   - node3 (taxon3, Species, Germany)  //if subspecies exists in Denmark only this is not fully correct !!
          *    - node4 (taxon4, Subspecies, Denmark, absent)
          *    - node5 (taxon5, Subspecies)
@@ -126,7 +126,6 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         NamedArea germany = (NamedArea) termDao.load(germanyUuid);
         NamedArea denmark = (NamedArea) termDao.load(denmarkUuid);
         NamedArea france = (NamedArea) termDao.load(franceUuid);
-        save(TaxonDescription.NewInstance(taxon1)).addElement(save(Distribution.NewInstance(europe, PresenceAbsenceTerm.NATIVE())));
         save(TaxonDescription.NewInstance(taxon2)).addElement(save(Distribution.NewInstance(france, PresenceAbsenceTerm.NATIVE())));
         save(TaxonDescription.NewInstance(taxon3)).addElement(save(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE())));
         save(TaxonDescription.NewInstance(taxon4)).addElement(save(Distribution.NewInstance(denmark, PresenceAbsenceTerm.ABSENT())));
@@ -265,22 +264,23 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         NamedArea germany = CdmBase.deproxy(termDao.load(germanyUuid), NamedArea.class);
         NamedArea denmark = CdmBase.deproxy(termDao.load(denmarkUuid), NamedArea.class);
 
+        List<UUID> listUuid;
+
+        //europe
         TaxonNodeFilter filter = new TaxonNodeFilter(europe);
-
-        List<UUID> listUuid = filterDao.listUuids(filter);
-
-        assertEquals(message, 3, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node1.getUuid()));
-        Assert.assertTrue(listUuid.contains(node2.getUuid()));
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 2, listUuid.size());
+/        Assert.assertTrue(listUuid.contains(node2.getUuid()));
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
         Assert.assertFalse(listUuid.contains(node4.getUuid())); //status is absent
 
+        //germany
         filter = new TaxonNodeFilter(germany);
         filter.setPropagateDistributionToHigherTaxa(false);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 1, listUuid.size());
         Assert.assertTrue(listUuid.contains(node3.getUuid())); //German taxon but no propagation to parent
-
+        //...propagate
         filter = new TaxonNodeFilter(germany);
         filter.setPropagateDistributionToHigherTaxa(true);
         listUuid = filterDao.listUuids(filter);
@@ -288,13 +288,13 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertTrue(listUuid.contains(node3.getUuid())); //German taxon and ...
         Assert.assertTrue(listUuid.contains(node1.getUuid())); //propagated parent
 
-
+        //middleEurope
         filter = new TaxonNodeFilter(middleEurope);
         filter.setPropagateDistributionToHigherTaxa(false);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 1, listUuid.size());
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
-
+        //... propagate
         filter = new TaxonNodeFilter(middleEurope);
         filter.setPropagateDistributionToHigherTaxa(true);
         listUuid = filterDao.listUuids(filter);
@@ -312,7 +312,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertTrue(listUuid.contains(node3.getUuid()));  //propagated parent
         Assert.assertTrue(listUuid.contains(node1.getUuid()));  //propagated parent
 
-        //find subspecies in denmark in propagate to parent,
+        //find subspecies in denmark and propagate to parent,
         //but not to grand parent as it is not in the taxonomic scope (subtree filter)
         filter = new TaxonNodeFilter(denmark);
         filter.setPropagateDistributionToHigherTaxa(true);

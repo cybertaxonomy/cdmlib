@@ -388,9 +388,11 @@ public class TaxonNodeFilterDaoHibernateImpl
             from += " LEFT JOIN tn.taxon taxon ";  //LEFT to allow includeRootNode
         }
         if(!filter.getAreaFilter().isEmpty()){
-        	from += " LEFT JOIN taxon.descriptions descriptions "            	 
+        	from += " LEFT JOIN taxon.descriptions descriptions "
                   + " LEFT JOIN descriptions.descriptionElements " + DESCRIPTION_ELEMENTS + " "
-                  + " LEFT JOIN descriptionElements.area " + "area" + " ";
+                  + " LEFT JOIN descriptionElements.area area "
+                  + " LEFT JOIN descriptionElements.feature feature "
+                  + " LEFT JOIN descriptionElements.status status ";
         }
         if (isSorted) {
             from += " LEFT JOIN taxon.name name "
@@ -416,12 +418,12 @@ public class TaxonNodeFilterDaoHibernateImpl
         for (LogicFilter<NamedArea> singleFilter : areaFilter){
             areaIds = getChildAreasRecursively(singleFilter.getUuid());
             String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
-            result = String.format("(%s%s(" + DESCRIPTION_ELEMENTS + ".feature.uuid='" + DISTRIBUTION_FEATURE_UUID + "' "
+            result = String.format("(%s%s(feature.uuid='" + DISTRIBUTION_FEATURE_UUID + "' "
                     + " AND " +  " area.id in (%s))",
                     result, op, concat(areaIds)
                     );
             if (!filter.isIncludeAbsentDistributions()) {
-                result +=  " AND " + DESCRIPTION_ELEMENTS + ".status.absenceTerm = " + HQL_FALSE;
+                result +=  " AND status.absenceTerm = " + HQL_FALSE;
             }
             result += ")";
             isFirst = false;
