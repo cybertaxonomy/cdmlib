@@ -388,8 +388,8 @@ public class TaxonNodeFilterDaoHibernateImpl
             from += " LEFT JOIN tn.taxon taxon ";  //LEFT to allow includeRootNode
         }
         if(!filter.getAreaFilter().isEmpty()){
-            from += " INNER JOIN taxon.descriptions descriptions "
-                  + " INNER JOIN descriptions.descriptionElements " + DESCRIPTION_ELEMENTS + " ";
+            from += " LEFT JOIN taxon.descriptions descriptions "
+                  + " LEFT JOIN descriptions.descriptionElements " + DESCRIPTION_ELEMENTS + " ";
         }
         if (isSorted) {
             from += " LEFT JOIN taxon.name name "
