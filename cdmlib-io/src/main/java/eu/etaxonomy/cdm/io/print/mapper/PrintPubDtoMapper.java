@@ -507,7 +507,8 @@ public class PrintPubDtoMapper {
             return;
         }
 
-        String area = distribution.getArea().getPreferredLabel(Language.DEFAULT());
+        List<Language> languages = List.of(Language.DEFAULT());
+        String area = distribution.getArea().getPreferredLabel(languages);
 
         if (StringUtils.isNotBlank(area)){
             distributions.add(area);
