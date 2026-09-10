@@ -8,6 +8,7 @@
  */
 package eu.etaxonomy.cdm.io.print.mapper;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainerFormatter;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.StringComparator;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.print.PrintPubExportConfigurator;
@@ -428,6 +430,7 @@ public class PrintPubDtoMapper {
     private void extractDescriptionData(PrintPubExportState state, Taxon taxon, PrintPubTaxonSummaryDTO taxonDto) {
 
         int factSequence = 0;
+        List<String> distributions = new ArrayList<>();
 
         for (TaxonDescription description : taxon.getDescriptions()) {
 
@@ -448,7 +451,7 @@ public class PrintPubDtoMapper {
 
                 } else if (Feature.DISTRIBUTION().equals(feature) && fact instanceof Distribution) {
 
-                    addDistribution(taxonDto, (Distribution) fact);
+                    addDistribution(distributions, (Distribution) fact);
 
                 } else if (fact instanceof TextData) {
 
@@ -471,6 +474,14 @@ public class PrintPubDtoMapper {
                 }
             }
         }
+        //sort common names
+        taxonDto.commonNames.sort(StringComparator.Instance);
+        taxonDto.commonNameString = StringUtils.join(taxonDto.commonNames, ", ");
+
+        //distributions
+        distributions.sort(StringComparator.Instance);
+        taxonDto.distributionString = StringUtils.join(distributions, ", ");
+
     }
 
     private void addCommonName(PrintPubTaxonSummaryDTO dto, CommonTaxonName commonName) {
@@ -490,23 +501,16 @@ public class PrintPubDtoMapper {
         dto.commonNameString = CdmUtils.concat(", ", dto.commonNameString, value);
     }
 
-    private void addDistribution(PrintPubTaxonSummaryDTO dto, Distribution distribution) {
+    private void addDistribution(List<String> distributions, Distribution distribution) {
 
         if (distribution.getArea() == null) {
             return;
         }
 
-        String area = distribution.getArea().getLabel();
+        String area = distribution.getArea().getPreferredLabel(Language.DEFAULT());
 
-        if (area == null || area.isBlank()) {
-            return;
-        }
-
-        if (dto.distributionString == null || dto.distributionString.isBlank()) {
-
-            dto.distributionString = area;
-        } else {
-            dto.distributionString += ", " + area;
+        if (StringUtils.isNotBlank(area)){
+            distributions.add(area);
         }
     }
 
