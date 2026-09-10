@@ -287,6 +287,9 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         assertEquals(message, 2, listUuid.size());
         Assert.assertTrue(listUuid.contains(node3.getUuid())); //German taxon and ...
         Assert.assertTrue(listUuid.contains(node1.getUuid())); //propagated parent
+        filter = new TaxonNodeFilter(germany);
+        filter.setPropagateDistributionToHigherTaxa(true);
+        Assert.assertEquals(2, filterDao.count(filter));
 
         //middleEurope
         filter = new TaxonNodeFilter(middleEurope);
@@ -323,6 +326,11 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertTrue(listUuid.contains(node4.getUuid()));
         Assert.assertTrue(listUuid.contains(node3.getUuid()));  //propagated parent
         Assert.assertFalse(listUuid.contains(node1.getUuid()));  //should not be included due to subtree filter
+        filter = new TaxonNodeFilter(denmark);
+        filter.setPropagateDistributionToHigherTaxa(true);
+        filter.setIncludeAbsentDistributions(true);  //note: does not really make sense for absent distributions
+        filter.orSubtree(node3);
+        Assert.assertEquals(2, filterDao.count(filter));
 
         //africa - no available distribution
         filter = new TaxonNodeFilter(africa);
