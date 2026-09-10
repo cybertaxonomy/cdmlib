@@ -388,8 +388,9 @@ public class TaxonNodeFilterDaoHibernateImpl
             from += " LEFT JOIN tn.taxon taxon ";  //LEFT to allow includeRootNode
         }
         if(!filter.getAreaFilter().isEmpty()){
-            from += " LEFT JOIN taxon.descriptions descriptions "
-                  + " LEFT JOIN descriptions.descriptionElements " + DESCRIPTION_ELEMENTS + " ";
+        	from += " LEFT JOIN taxon.descriptions descriptions "            	 
+                  + " LEFT JOIN descriptions.descriptionElements " + DESCRIPTION_ELEMENTS + " "
+                  + " LEFT JOIN descriptionElements.area " + "area" + " ";
         }
         if (isSorted) {
             from += " LEFT JOIN taxon.name name "
@@ -416,7 +417,7 @@ public class TaxonNodeFilterDaoHibernateImpl
             areaIds = getChildAreasRecursively(singleFilter.getUuid());
             String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
             result = String.format("(%s%s(" + DESCRIPTION_ELEMENTS + ".feature.uuid='" + DISTRIBUTION_FEATURE_UUID + "' "
-                    + " AND " + DESCRIPTION_ELEMENTS + ".area.id in (%s))",
+                    + " AND " +  " area.id in (%s))",
                     result, op, concat(areaIds)
                     );
             if (!filter.isIncludeAbsentDistributions()) {
