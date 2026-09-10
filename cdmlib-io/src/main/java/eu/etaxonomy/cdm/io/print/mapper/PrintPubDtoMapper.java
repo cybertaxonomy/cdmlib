@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainerFormatter;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.print.PrintPubExportConfigurator;
@@ -484,7 +485,9 @@ public class PrintPubDtoMapper {
             value += " [" + commonName.getLanguage().getLabel() + "]";
         }
 
+        //preliminary implementation
         dto.commonNames.add(value);
+        dto.commonNameString = CdmUtils.concat(", ", dto.commonNameString, value);
     }
 
     private void addDistribution(PrintPubTaxonSummaryDTO dto, Distribution distribution) {

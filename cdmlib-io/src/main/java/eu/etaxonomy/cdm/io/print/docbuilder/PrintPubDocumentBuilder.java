@@ -254,6 +254,10 @@ public class PrintPubDocumentBuilder {
             elements.add(new PrintPubLabeledTextElement("Distribution", dto.distributionString));
         }
 
+        if (StringUtils.isNotBlank(dto.commonNameString)) {
+            elements.add(new PrintPubLabeledTextElement("Common Names", dto.commonNameString));
+        }
+
         if (dto.facts == null || dto.facts.isEmpty()) {
             return elements;
         }
