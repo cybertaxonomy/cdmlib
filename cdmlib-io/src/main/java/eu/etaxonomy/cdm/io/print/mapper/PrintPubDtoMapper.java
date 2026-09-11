@@ -23,8 +23,6 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainerFormatter;
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.StringComparator;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.print.PrintPubExportConfigurator;
@@ -475,11 +473,11 @@ public class PrintPubDtoMapper {
             }
         }
         //sort common names
-        taxonDto.commonNames.sort(StringComparator.Instance);
+        taxonDto.commonNames.sort(String.CASE_INSENSITIVE_ORDER);
         taxonDto.commonNameString = StringUtils.join(taxonDto.commonNames, ", ");
 
         //distributions
-        distributions.sort(StringComparator.Instance);
+        distributions.sort(String.CASE_INSENSITIVE_ORDER);
         taxonDto.distributionString = StringUtils.join(distributions, ", ");
 
     }
@@ -498,7 +496,6 @@ public class PrintPubDtoMapper {
 
         //preliminary implementation
         dto.commonNames.add(value);
-        dto.commonNameString = CdmUtils.concat(", ", dto.commonNameString, value);
     }
 
     private void addDistribution(List<String> distributions, Distribution distribution) {
