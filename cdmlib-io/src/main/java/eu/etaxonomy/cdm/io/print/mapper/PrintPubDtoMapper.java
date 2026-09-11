@@ -490,8 +490,9 @@ public class PrintPubDtoMapper {
             return;
         }
 
+        List<Language> languages = List.of(Language.DEFAULT());
         if (commonName.getLanguage() != null) {
-            value += " [" + commonName.getLanguage().getLabel() + "]";
+            value += " [" + commonName.getLanguage().getPreferredLabel(languages) + "]";
         }
 
         //preliminary implementation
