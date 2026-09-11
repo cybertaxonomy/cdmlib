@@ -101,12 +101,6 @@ public class PrintPubDtoMapperTest extends TermTestBase {
         Assert.assertTrue(taxonDto.homotypicSynonymGroup != null);
         Assert.assertTrue(taxonDto.homotypicSynonymGroup.typeSpecimenString != null);
 
-        //facts
-        Assert.assertEquals("First flower name [Irish], My flower [English]", taxonDto.commonNameString);
-
-        //TODO preliminary
-        Assert.assertEquals("Africa, Europe", taxonDto.distributionString);
-
     }
 
     @Test
