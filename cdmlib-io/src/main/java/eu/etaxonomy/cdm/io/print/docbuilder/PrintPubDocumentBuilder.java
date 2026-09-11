@@ -379,13 +379,6 @@ public class PrintPubDocumentBuilder {
                 .filter(StringUtils::isNotBlank).map(String::trim).distinct().sorted(String.CASE_INSENSITIVE_ORDER);
     }
 
-    private Stream<String> scientificNames(PrintPubExportState state) {
-
-        return state.getTaxa().stream().filter(Objects::nonNull)
-                .flatMap(taxon -> Stream.concat(Stream.ofNullable(taxon.scientificName), synonymScientificNames(taxon)))
-                .filter(StringUtils::isNotBlank).map(String::trim).distinct().sorted(String.CASE_INSENSITIVE_ORDER);
-    }
-
     private Stream<String> synonymScientificNames(PrintPubTaxonSummaryDTO taxon) {
 
         if (taxon.heterotypicSynonymGroups == null) {
@@ -423,9 +416,6 @@ public class PrintPubDocumentBuilder {
         List<IPrintPubDocumentElement> rows = new ArrayList<>();
 
         for (PrintPubTaxonSummaryDTO dto : taxa) {
-            if (dto == null) {
-                continue;
-            }
 
             if (!request.includeEmptyIds() && !hasAnySelectedIdentifier(dto, request)) {
                 continue;
