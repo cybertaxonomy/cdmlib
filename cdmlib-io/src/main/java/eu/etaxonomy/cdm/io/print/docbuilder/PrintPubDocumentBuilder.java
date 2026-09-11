@@ -75,8 +75,8 @@ public class PrintPubDocumentBuilder {
             elements.addAll(buildCommonNameIndex(request.taxa()));
         }
 
-        if (request.includeAppendix()) {
-            elements.addAll(buildAppendix(request));
+        if (request.includeIdentifierAppendix()) {
+            elements.addAll(buildIdentifierAppendix(request));
         }
 
         return List.copyOf(elements);
@@ -412,11 +412,11 @@ public class PrintPubDocumentBuilder {
         return elements;
     }
 
-    protected List<IPrintPubDocumentElement> buildAppendix(PrintPubDocumentRequest request) {
+    protected List<IPrintPubDocumentElement> buildIdentifierAppendix(PrintPubDocumentRequest request) {
 
         List<PrintPubTaxonSummaryDTO> taxa = request.taxa();
 
-        if (!request.includeAppendix() || taxa.isEmpty()) {
+        if (!request.includeIdentifierAppendix() || taxa.isEmpty()) {
             return List.of();
         }
 

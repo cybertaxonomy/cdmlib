@@ -33,7 +33,7 @@ public record PrintPubDocumentRequest(
         boolean oneLinePerHomotypicGroup,
         boolean includeScientificNameIndex,
         boolean includeCommonNameIndex,
-        boolean includeAppendix,
+        boolean includeIdentifierAppendix,
         boolean includeEmptyIds,
         boolean includeWfoId,
         boolean includeIpniId,
