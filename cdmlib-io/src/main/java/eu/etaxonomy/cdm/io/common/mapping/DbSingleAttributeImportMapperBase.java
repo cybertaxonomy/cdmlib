@@ -66,8 +66,8 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		}
 	}
 
-	protected Class getTargetClass(Class<?> destinationClass) throws SecurityException, NoSuchMethodException{
-		Class result = destinationClass;
+	protected Class<?> getTargetClass(Class<?> destinationClass) throws SecurityException, NoSuchMethodException{
+		Class<?> result = destinationClass;
 		String destinationAttribute = getDestinationAttribute();
 		if (destinationAttribute == null){
 			return null;
@@ -81,7 +81,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 			String methodName = ImportHelper.getGetterMethodName(split, false);
 			Method getterMethod;
 			try {
-				getterMethod = result.getMethod(methodName, null);
+				getterMethod = result.getMethod(methodName);
 			} catch (NoSuchMethodException e1) {
 				throw e1;
 			}
@@ -122,7 +122,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		return castString;
 	}
 
-	private String getMethodName(Class clazz) {
+	private String getMethodName(Class<?> clazz) {
 		String cdmAttributeName = getTargetClassAttribute(getDestinationAttribute());
 		String result = ImportHelper.getSetterMethodName(clazz, cdmAttributeName);
 		return result;
@@ -173,8 +173,8 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 			String split = splits[i];
 			split = removeCast(split);
 			String methodName = ImportHelper.getGetterMethodName(split, false);
-			Method method = objectToInvoke.getClass().getMethod(methodName, null);
-			objectToInvoke = method.invoke(cdmBase, null);
+			Method method = objectToInvoke.getClass().getMethod(methodName);
+			objectToInvoke = method.invoke(cdmBase);
 		}
 		return objectToInvoke;
 	}
@@ -218,9 +218,9 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		return importMapperHelper.getTableName();
 	}
 
-	protected boolean checkDbColumnExists() throws DatabaseTypeNotSupportedException{
+	protected boolean checkDbColumnExists() throws DatabaseTypeNotSupportedException {
 //		//TODO remove cast
-//		Source source = (Source)getState().getConfig().getSource();
+//		Source source = getState().getConfig().getSource();
 //		String tableName = getTableName();
 //		String attributeName = getSourceAttribute();
 //		return source.checkColumnExists(tableName, attributeName);

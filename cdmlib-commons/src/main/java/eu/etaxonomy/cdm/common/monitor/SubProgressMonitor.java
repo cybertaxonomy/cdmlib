@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -11,10 +10,7 @@
  *******************************************************************************/
 package eu.etaxonomy.cdm.common.monitor;
 
-
 /**
- * For new implementations consider using {@link SubMonitor}.
- *
  * A progress monitor that uses a given amount of work ticks
  * from a parent monitor. It can be used as follows:
  * <pre>
@@ -44,7 +40,7 @@ package eu.etaxonomy.cdm.common.monitor;
 public class SubProgressMonitor extends ProgressMonitorWrapper {
     private static final long serialVersionUID = 3258788051657003998L;
 
-   /**
+    /**
      * Style constant indicating that calls to <code>subTask</code>
      * should not have any effect.
      *
@@ -75,17 +71,27 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
         return result;
     }
 
+    public static SubProgressMonitor NewInstance(IProgressMonitor monitor, int parentTicks){
+        SubProgressMonitor result = new SubProgressMonitor(monitor, parentTicks);
+        return result;
+    }
+
+    public static SubProgressMonitor NewInstance(IProgressMonitor monitor, int parentTicks, int styles){
+        SubProgressMonitor result = new SubProgressMonitor(monitor, parentTicks, styles);
+        return result;
+    }
+
     /**
      * Creates a new sub-progress monitor for the given monitor. The sub
      * progress monitor uses the given number of work ticks from its
      * parent monitor.
      *
-     * @param monitor the parent progress monitor
+     * @param parentMonitor the parent progress monitor
      * @param ticks the number of work ticks allocated from the
      *    parent monitor
      */
-    public SubProgressMonitor(IProgressMonitor monitor, int ticks) {
-        this (monitor, ticks, 0);
+    private SubProgressMonitor(IProgressMonitor parentMonitor, int ticks) {
+        this (parentMonitor, ticks, 0);
     }
 
     /**
@@ -104,11 +110,11 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
      * @see #SUPPRESS_SUBTASK_LABEL
      * @see #PREPEND_MAIN_LABEL_TO_SUBTASK
      */
-    public SubProgressMonitor(IProgressMonitor monitor, int ticks,
+    private SubProgressMonitor(IProgressMonitor parentMonitor, int ticks,
             int style) {
-        super (monitor);
-        this .parentTicks = (ticks > 0) ? ticks : 0;
-        this .style = style;
+        super (parentMonitor);
+        this.parentTicks = (ticks > 0) ? ticks : 0;
+        this.style = style;
     }
 
     /* (Intentionally not javadoc'd)
@@ -199,5 +205,4 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
 	public void warning(String message, Throwable throwable) {
 		// TODO Auto-generated method stub
 	}
-
 }

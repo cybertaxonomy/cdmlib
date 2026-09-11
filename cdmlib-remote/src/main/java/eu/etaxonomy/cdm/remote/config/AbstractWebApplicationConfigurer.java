@@ -8,9 +8,8 @@
  */
 package eu.etaxonomy.cdm.remote.config;
 
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -58,14 +57,16 @@ public abstract class AbstractWebApplicationConfigurer  implements InitializingB
         if(userDefinedProperties == null) {
             userDefinedProperties = new Properties();
             try {
-                InputStream in = new FileInputStream(
-                        configFileUtil.perUserCdmFolder()
-                            + java.io.File.separator
-                            + CDMLIB_REMOTE_PROPERTIES
-                    );
-                userDefinedProperties.load(in);
-            } catch (IOException e) {
-                logger.debug("No per user " + CDMLIB_REMOTE_PROPERTIES + " found.");
+                String remotePropertiesPath  = configFileUtil.perUserCdmFolder()
+                        + java.io.File.separator;
+                File remotePropertiesFile = new File(remotePropertiesPath + CDMLIB_REMOTE_PROPERTIES);
+                if (remotePropertiesFile.exists()) {
+                    userDefinedProperties.load(new FileInputStream(remotePropertiesFile));
+                }else {
+                    logger.debug("No per user " + CDMLIB_REMOTE_PROPERTIES + " found at {" + remotePropertiesPath + "}.");
+                }
+            } catch (Exception e) {
+                logger.debug("Could not load " + CDMLIB_REMOTE_PROPERTIES );
             }
         }
     }

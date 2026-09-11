@@ -11,15 +11,12 @@ package eu.etaxonomy.cdm.remote.dto.assembler.lsid;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.withSettings;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -38,6 +35,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -82,9 +81,6 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonRelationshipTerm;
 import eu.etaxonomy.cdm.remote.view.OaiPmhViewTest;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class AssemblerTest extends UnitilsJUnit4 {
@@ -269,8 +265,10 @@ public class AssemblerTest extends UnitilsJUnit4 {
         secField.set(source, proxy);
 
         TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
-        assertNull("TaxonBase.sec was uninitialized, so TaxonConcept.publishedInCitation should be null",taxonConcept.getPublishedInCitation());
-        assertNull("TaxonBase.sec was uninitialized, so TaxonConcept.accordingTo should be null",taxonConcept.getAccordingTo());
+        assertNull("TaxonBase.sec was uninitialized, so TaxonConcept.publishedInCitation should be null",
+                taxonConcept.getPublishedInCitation());
+        assertNull("TaxonBase.sec was uninitialized, so TaxonConcept.accordingTo should be null",
+                taxonConcept.getAccordingTo());
     }
 
     @Test
@@ -337,73 +335,69 @@ public class AssemblerTest extends UnitilsJUnit4 {
     }
 
     private <T extends Collection> T getUninitializedPersistentCollection(final Class<T> clazz, final T wrappedCollection) {
-        final Enhancer enhancer = new Enhancer();
-        List<Class> interfaces = new ArrayList<>();
-        interfaces.addAll(Arrays.asList(clazz.getInterfaces()));
-        interfaces.add(PersistentCollection.class);
-        enhancer.setSuperclass(clazz);
-        enhancer.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
-        enhancer.setCallback( new MethodInterceptor() {
-            @Override
-            public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-                if("wasInitialized".equals(method.getName())) {
-                  return false;
-                } else if(clazz.getDeclaredConstructor().equals(method)){
-                     return proxy.invoke(obj, args);
-                } else if("finalize".equals(method.getName())){
-                     return proxy.invoke(obj, args);
-                } else if("toString".equals(method.getName())) {
-                    return wrappedCollection.toString();
-                } else if("getClass".equals(method.getName())) {
-                    return proxy.invoke(obj, args);
-                } else if("hashCode".equals(method.getName())) {
-                    return wrappedCollection.hashCode();
-                }else if("initListener".equals(method.getName())) {
-                    return null;
-                } else {
-                    throw new LazyInitializationException(null);
-                }
-            }
-        });
 
+        // Define the global behavior for all method calls on the collection proxy
+        Answer<Object> defaultBehavior = invocation -> {
+            String methodName = invocation.getMethod().getName();
+
+            // Handle explicit exceptions allowed by the proxy
+            if ("wasInitialized".equals(methodName)) {
+                return false;
+            } else if ("toString".equals(methodName)) {
+                return wrappedCollection.toString();
+            } else if ("hashCode".equals(methodName)) {
+                return wrappedCollection.hashCode();
+            } else if ("getClass".equals(methodName)) {
+                return clazz; // Return the original collection class type
+            } else if ("initListener".equals(methodName)) {
+                return null;
+            } else if ("finalize".equals(methodName)) {
+                return null;
+            }
+
+            // Throw exception for any other uninitialized access (catch-all)
+            throw new LazyInitializationException(null);
+        };
+
+        // Create the mock with the PersistentCollection interface and the default behavior applied
         @SuppressWarnings("unchecked")
-        T proxy = (T)enhancer.create();
+        T proxy = (T) Mockito.mock(clazz, withSettings()
+                .extraInterfaces(PersistentCollection.class)
+                .defaultAnswer(defaultBehavior));
+
         return proxy;
     }
 
-    private <T> T getUninitializedDetachedProxy(final Class<T> clazz,final T wrappedClass) {
-        final Enhancer enhancer = new Enhancer();
-        List<Class> interfaces = new ArrayList<>();
-        interfaces.addAll(Arrays.asList(clazz.getInterfaces()));
-        interfaces.add(HibernateProxy.class);
-        enhancer.setSuperclass(clazz);
-        enhancer.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
-        enhancer.setCallback( new MethodInterceptor() {
-            @Override
-            public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-                if("getHibernateLazyInitializer".equals(method.getName())) {
-                  return new UninitializedLazyInitializer();
-                } else if(clazz.getDeclaredConstructor().equals(method)){
-                     return proxy.invoke(obj, args);
-                } else if("finalize".equals(method.getName())){
-                     return proxy.invoke(obj, args);
-                } else if("toString".equals(method.getName())) {
-                    return wrappedClass.toString();
-                } else if("getClass".equals(method.getName())) {
-                    return proxy.invoke(obj, args);
-                } else if("hashCode".equals(method.getName())) {
-                    return wrappedClass.hashCode();
-                } else if("initListener".equals(method.getName())) {
-                    return null;
-                } else {
-                    throw new LazyInitializationException(null);
-                }
+    private <T> T getUninitializedDetachedProxy(final Class<T> clazz, final T wrappedClass) {
 
+        // Define the global behavior for all method calls on the proxy
+        Answer<Object> defaultBehavior = invocation -> {
+            String methodName = invocation.getMethod().getName();
+
+            // Handle explicit exceptions allowed by the proxy
+            if ("getHibernateLazyInitializer".equals(methodName)) {
+                return new UninitializedLazyInitializer();
+            } else if ("toString".equals(methodName)) {
+                return wrappedClass.toString();
+            } else if ("hashCode".equals(methodName)) {
+                return wrappedClass.hashCode();
+            } else if ("getClass".equals(methodName)) {
+                return clazz; // Return the original class type
+            } else if ("initListener".equals(methodName)) {
+                return null;
+            } else if ("finalize".equals(methodName)) {
+                return null;
             }
-        });
 
-        @SuppressWarnings("unchecked")
-        T proxy = (T)enhancer.create();
+            // Throw exception for any other uninitialized access (catch-all)
+            throw new LazyInitializationException(null);
+        };
+
+        // Create the mock with the HibernateProxy interface and the default behavior applied
+        T proxy = Mockito.mock(clazz, withSettings()
+                .extraInterfaces(HibernateProxy.class)
+                .defaultAnswer(defaultBehavior));
+
         return proxy;
     }
 

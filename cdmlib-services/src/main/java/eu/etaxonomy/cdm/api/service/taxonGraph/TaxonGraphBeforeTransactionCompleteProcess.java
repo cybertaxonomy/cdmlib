@@ -355,7 +355,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
     protected void createTempSession(SessionImplementor session) {
         if(getSession() == null){
             parentSession = session;
-            temporarySession = ((Session) session)
+            temporarySession = session
                       .sessionWithOptions().transactionContext()
                       // in contrast to AuditProcess.doBeforeTransactionCompletion we need the session to close automatically,
                       // otherwise the hibernate search indexer will suffer from LazyInitializationExceptions

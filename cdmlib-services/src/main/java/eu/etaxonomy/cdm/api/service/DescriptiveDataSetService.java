@@ -328,7 +328,7 @@ public class DescriptiveDataSetService
 
         for (SpecimenRowWrapperDTO wrapper : wrappers) {
             Optional<TaxonBase> findAny = taxa.stream().filter(taxon->taxon.getUuid().equals(wrapper.getTaxonNode().getTaxonUuid())).findAny();
-            if(!findAny.isPresent()){
+            if(findAny.isEmpty()){
                 result.addException(new IllegalArgumentException("Could not create wrapper for "+ wrapper.getSpecimenDto().getLabel()));
                 continue;
             }

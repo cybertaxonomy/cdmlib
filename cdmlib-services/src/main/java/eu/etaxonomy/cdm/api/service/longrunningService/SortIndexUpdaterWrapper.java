@@ -99,7 +99,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
             }
             monitor.beginTask("Update index", data.size()*c);
             monitor.subTask("Create new index");
-            IProgressMonitor subMonitor = new SubProgressMonitor(monitor, data.size());
+            IProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, data.size());
             List<Integer[]> result = new ArrayList<>();
             int done = 0;
             for(Object object : data){
@@ -127,7 +127,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
             monitor.subTask("update indices");
 
             Map<Integer, Set<Integer>> indexMap =  updater.makeIndexMap(result);
-            subMonitor = new SubProgressMonitor(monitor, indexMap.size());
+            subMonitor = SubProgressMonitor.NewInstance(monitor, indexMap.size());
             done = 0;
             for (Map.Entry<Integer, Set<Integer>> entry: indexMap.entrySet()){
                 String idSet = SortIndexUpdater.makeIdSetString(entry.getValue());
@@ -143,7 +143,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
 
                 query = updater.getChildrenCountQuery();
                 data = getSqlResult(query);
-                subMonitor = new SubProgressMonitor(monitor, data.size());
+                subMonitor = SubProgressMonitor.NewInstance(monitor, data.size());
                 int realCount;
                 int countChildren;
                 int work = 0;

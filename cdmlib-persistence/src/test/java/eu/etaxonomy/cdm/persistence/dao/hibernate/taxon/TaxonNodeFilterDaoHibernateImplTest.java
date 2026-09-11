@@ -24,6 +24,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -78,11 +79,11 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     private final UUID middleEuropeUuid = UUID.fromString("d292f237-da3d-408b-93a1-3257a8c80b97");
     private final UUID africaUuid = UUID.fromString("9444016a-b334-4772-8795-ed4019552087");
 
-    private final UUID uuidNode1 = UUID.fromString("ec88fd49-59c8-4228-a826-77dff951d7f8");
-    private final UUID uuidNode2 = UUID.fromString("4c0ecc22-e3c0-445d-912a-93ee49fb256a");
-    private final UUID uuidNode3 = UUID.fromString("30ba17f1-2f37-4286-9665-27d5adbd230d");
-    private final UUID uuidNode4 = UUID.fromString("2e6ca5d6-2fc8-4f0c-a3fe-03e596dd8afe");
-    private final UUID uuidNode5 = UUID.fromString("e01f56c7-0315-450b-a05b-881d21adf02b");
+    private final UUID uuidNode1Gen = UUID.fromString("ec88fd49-59c8-4228-a826-77dff951d7f8");
+    private final UUID uuidNode2Fam = UUID.fromString("4c0ecc22-e3c0-445d-912a-93ee49fb256a");
+    private final UUID uuidNode3Spec = UUID.fromString("30ba17f1-2f37-4286-9665-27d5adbd230d");
+    private final UUID uuidNode4SubSpec1 = UUID.fromString("2e6ca5d6-2fc8-4f0c-a3fe-03e596dd8afe");
+    private final UUID uuidNode5SubSpec2 = UUID.fromString("e01f56c7-0315-450b-a05b-881d21adf02b");
     private final UUID uuidNodeUnpublished = UUID.fromString("96888466-f40e-43ed-a17d-cdc62bdf0ff0");
 
     private Classification classification1;
@@ -101,52 +102,52 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
     @Before
     public void setUp() throws Exception {
+
         /*
          * classification 1
-         *  - node1 (taxon1, Genus, Europe)
-         *   - node3 (taxon3, Species, Germany)  //if subspecies exists in Denmark this is not fully correct !!
-         *    - node4 (taxon4, Subspecies, Denmark)
+         *  - node1 (taxon1, Genus)  -- was Europe in old version, but failed to test propagating area filter to taxa with no distributions
+         *   - node3 (taxon3, Species, Germany)  //if subspecies exists in Denmark only this is not fully correct !!
+         *    - node4 (taxon4, Subspecies, Denmark, absent)
          *    - node5 (taxon5, Subspecies)
          *  - node2 (taxon2, Family, France)
          */
         classification1 = Classification.NewInstance("TestClassification");
         Reference citation = null;
         String microCitation = null;
-        taxon1 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.GENUS(), null, null, null, null, null, null, null, null), null);
-        taxon2 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.FAMILY(), null, null, null, null, null, null, null, null), null);
-        taxon3 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), null, null, null, null, null, null, null, null), null);
-        taxon4 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
-        taxon5 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
-        taxonUnpublished = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), null, null, null, null, null, null, null, null), null);
+        taxon1 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.GENUS(), "Genus", null, null, null, null, null, null, null), null);
+        taxon2 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.FAMILY(), "Myfamily", null, null, null, null, null, null, null), null);
+        taxon3 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), "Genus", null, "species", null, null, null, null, null), null);
+        taxon4 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), "Genus", null, "species", "first", null, null, null, null), null);
+        taxon5 = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), "Genus", null, "species", "before-first", null, null, null, null), null);
+        taxonUnpublished = Taxon.NewInstance(TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SUBSPECIES(), "Genus", null, "species", "unpub", null, null, null, null), null);
         taxonUnpublished.setPublish(false);
 
         NamedArea europe = (NamedArea) termDao.load(europeUuid);
         NamedArea germany = (NamedArea) termDao.load(germanyUuid);
         NamedArea denmark = (NamedArea) termDao.load(denmarkUuid);
         NamedArea france = (NamedArea) termDao.load(franceUuid);
-        save(TaxonDescription.NewInstance(taxon1)).addElement(save(Distribution.NewInstance(europe, PresenceAbsenceTerm.NATIVE())));
         save(TaxonDescription.NewInstance(taxon2)).addElement(save(Distribution.NewInstance(france, PresenceAbsenceTerm.NATIVE())));
         save(TaxonDescription.NewInstance(taxon3)).addElement(save(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE())));
         save(TaxonDescription.NewInstance(taxon4)).addElement(save(Distribution.NewInstance(denmark, PresenceAbsenceTerm.ABSENT())));
 
         node1 = classification1.addChildTaxon(taxon1, citation, microCitation);
-        node1.setUuid(uuidNode1);
+        node1.setUuid(uuidNode1Gen);
         node1= taxonNodeDao.save(node1);
 
         node2 = classification1.addChildTaxon(taxon2, citation, microCitation);
-        node2.setUuid(uuidNode2);
+        node2.setUuid(uuidNode2Fam);
         node2 = taxonNodeDao.save(node2);
 
         node3 = node1.addChildTaxon(taxon3, citation, microCitation);
-        node3.setUuid(uuidNode3);
+        node3.setUuid(uuidNode3Spec);
         taxonNodeDao.save(node3);
 
         node4 = node3.addChildTaxon(taxon4, citation, microCitation);
-        node4.setUuid(uuidNode4);
+        node4.setUuid(uuidNode4SubSpec1);
         taxonNodeDao.save(node4);
 
         node5 = node3.addChildTaxon(taxon5, citation, microCitation);
-        node5.setUuid(uuidNode5);
+        node5.setUuid(uuidNode5SubSpec2);
         node5 = taxonNodeDao.save(node5);
 
         nodeUnpublished = node3.addChildTaxon(taxonUnpublished, citation, microCitation);
@@ -170,16 +171,16 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
 
         //UUID
         filter = TaxonNodeFilter.NewClassificationInstance(classification);
-        filter.setOrder(TaxonNodeFilter.ORDER.TREEINDEX);
+        filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.TREEINDEX);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
-        List<UUID> expectedList = Arrays.asList(new UUID[]{uuidNode1, uuidNode3, uuidNode4, uuidNode5, uuidNode2});
+        List<UUID> expectedList = Arrays.asList(new UUID[]{uuidNode1Gen, uuidNode3Spec, uuidNode4SubSpec1, uuidNode5SubSpec2, uuidNode2Fam});
         //in theory node1 and 3 as well as node4 and 5 could be exchanged depending on the id they get. But we expect
         //in this test environment that node1.id < node2.id and node4.id < node5.id
         Assert.assertEquals(expectedList, listUuid);
 
-        List<Integer> idList = filterDao.idList(filter);
+        List<Integer> idList = filterDao.listIds(filter);
         Assert.assertEquals((Integer)node1.getId(), idList.get(0));
         Assert.assertEquals((Integer)node3.getId(), idList.get(1));
         Assert.assertEquals((Integer)node4.getId(), idList.get(2));
@@ -187,25 +188,25 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertEquals((Integer)node2.getId(), idList.get(4));
 
         //ID
-        filter.setOrder(TaxonNodeFilter.ORDER.ID);
+        filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.ID);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
-        expectedList = Arrays.asList(new UUID[]{uuidNode1, uuidNode2, uuidNode3, uuidNode4, uuidNode5});
+        expectedList = Arrays.asList(new UUID[]{uuidNode1Gen, uuidNode2Fam, uuidNode3Spec, uuidNode4SubSpec1, uuidNode5SubSpec2});
         //in theory the given id is not necessarily ascending per save, but usually it is, at least in test environment
         //and therefore we expect the given result
         Assert.assertEquals(expectedList, listUuid);
 
-        filter.setOrder(TaxonNodeFilter.ORDER.TREEINDEX_DESC);
+        filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.TREEINDEX_DESC);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
-        expectedList = Arrays.asList(new UUID[]{uuidNode2, uuidNode5, uuidNode4, uuidNode3, uuidNode1});
-        //in theory node1 and 3 as well as node4 and 5 could be exchanged depending on the id they get. But we expect
+        expectedList = Arrays.asList(new UUID[]{uuidNode2Fam, uuidNode5SubSpec2, uuidNode4SubSpec1, uuidNode3Spec, uuidNode1Gen});
+        //in theory node 1 and 3 as well as node 4 and 5 could be exchanged depending on the id they get. But we expect
         //in this test environment that node1.id < node2.id and node4.id < node5.id
         Assert.assertEquals(expectedList, listUuid);
 
-        idList = filterDao.idList(filter);
+        idList = filterDao.listIds(filter);
         Assert.assertEquals((Integer)node2.getId(), idList.get(0));
         Assert.assertEquals((Integer)node5.getId(), idList.get(1));
         Assert.assertEquals((Integer)node4.getId(), idList.get(2));
@@ -214,74 +215,128 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     }
 
     @Test
+    public void testListUuidsOrderedByNameAndRank() {
+        Classification classification = classificationDao.findByUuid(classification1.getUuid());
+
+        //Sort by rank and name
+        TaxonNodeFilter filter = TaxonNodeFilter.NewClassificationInstance(classification);
+        filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.ALPHABETIC_WITH_RANK);
+
+        //UUID List
+        List<UUID> listUuid = filterDao.listUuids(filter);
+        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+
+        //family should be sorted before genus and children due to rank
+        //subspecies 2 should be sorted before subspecies 1 due to alphabetic order
+        List<UUID> expectedList = Arrays.asList(new UUID[]{uuidNode2Fam, uuidNode1Gen, uuidNode3Spec,
+                uuidNode5SubSpec2, uuidNode4SubSpec1});
+        Assert.assertEquals(expectedList, listUuid);
+
+        //ID list
+        List<Integer> idList = filterDao.listIds(filter);
+        int i = 0;
+        Assert.assertEquals((Integer)node2.getId(), idList.get(i++));
+        Assert.assertEquals((Integer)node1.getId(), idList.get(i++));
+        Assert.assertEquals((Integer)node3.getId(), idList.get(i++));
+        Assert.assertEquals((Integer)node5.getId(), idList.get(i++));
+        Assert.assertEquals((Integer)node4.getId(), idList.get(i++));
+
+        //Sort by name only
+        filter.setSortMode(TaxonNodeFilter.TaxonNodeFilterSortMode.ALPHABETIC);
+        listUuid = filterDao.listUuids(filter);
+        Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
+
+        //genus and children should be sorted before family (due to alphabet only)
+        //subspecies 2 should be sorted before subspecies 1 (due to alphabetic order)
+        expectedList = Arrays.asList(new UUID[]{uuidNode1Gen, uuidNode3Spec, uuidNode5SubSpec2, uuidNode4SubSpec1, uuidNode2Fam});
+        Assert.assertEquals(expectedList, listUuid);
+    }
+
+    @Test
     public void testListUuidsByAreas() {
 
         String message = "wrong number of nodes filtered";
 //        System.out.println("start:" + new DateTime().toString());
 
-        NamedArea europe = HibernateProxyHelper.deproxy(termDao.load(europeUuid), NamedArea.class);
-        NamedArea middleEurope = HibernateProxyHelper.deproxy(termDao.load(middleEuropeUuid), NamedArea.class);
-        NamedArea africa = HibernateProxyHelper.deproxy(termDao.load(africaUuid), NamedArea.class);
-        NamedArea germany = HibernateProxyHelper.deproxy(termDao.load(germanyUuid), NamedArea.class);
+        NamedArea europe = CdmBase.deproxy(termDao.load(europeUuid), NamedArea.class);
+        NamedArea middleEurope = CdmBase.deproxy(termDao.load(middleEuropeUuid), NamedArea.class);
+        NamedArea africa = CdmBase.deproxy(termDao.load(africaUuid), NamedArea.class);
+        NamedArea germany = CdmBase.deproxy(termDao.load(germanyUuid), NamedArea.class);
+        NamedArea denmark = CdmBase.deproxy(termDao.load(denmarkUuid), NamedArea.class);
 
+        List<UUID> listUuid;
+
+        //europe
         TaxonNodeFilter filter = new TaxonNodeFilter(europe);
-        List<UUID> listUuid = filterDao.listUuids(filter);
-
-        assertEquals(message, 3, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node1.getUuid()));
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 2, listUuid.size());
         Assert.assertTrue(listUuid.contains(node2.getUuid()));
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
         Assert.assertFalse(listUuid.contains(node4.getUuid())); //status is absent
 
+        //germany
         filter = new TaxonNodeFilter(germany);
+        filter.setPropagateDistributionToHigherTaxa(false);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 1, listUuid.size());
-        Assert.assertTrue(listUuid.contains(node3.getUuid()));
+        Assert.assertTrue(listUuid.contains(node3.getUuid())); //German taxon but no propagation to parent
+        //...propagate
+        filter = new TaxonNodeFilter(germany);
+        filter.setPropagateDistributionToHigherTaxa(true);
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 2, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node3.getUuid())); //German taxon and ...
+        Assert.assertTrue(listUuid.contains(node1.getUuid())); //propagated parent
+        filter = new TaxonNodeFilter(germany);
+        filter.setPropagateDistributionToHigherTaxa(true);
+        Assert.assertEquals(2, filterDao.count(filter));
 
+        //middleEurope
         filter = new TaxonNodeFilter(middleEurope);
+        filter.setPropagateDistributionToHigherTaxa(false);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 1, listUuid.size());
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
+        //... propagate
+        filter = new TaxonNodeFilter(middleEurope);
+        filter.setPropagateDistributionToHigherTaxa(true);
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 2, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));  //German taxon and ...
+        Assert.assertTrue(listUuid.contains(node1.getUuid()));  //propagated parent
 
+        //denmark - find all propagated parents
+        filter = new TaxonNodeFilter(denmark);
+        filter.setIncludeAbsentDistributions(true);  //subspecies has absent distribution in denmark
+        filter.setPropagateDistributionToHigherTaxa(true);  //note: does not really make sense for absent distributions
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 3, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node4.getUuid()));
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));  //propagated parent
+        Assert.assertTrue(listUuid.contains(node1.getUuid()));  //propagated parent
+
+        //find subspecies in denmark and propagate to parent,
+        //but not to grand parent as it is not in the taxonomic scope (subtree filter)
+        filter = new TaxonNodeFilter(denmark);
+        filter.setPropagateDistributionToHigherTaxa(true);
+        filter.setIncludeAbsentDistributions(true);  //note: does not really make sense for absent distributions
+        filter.orSubtree(node3);
+        listUuid = filterDao.listUuids(filter);
+        assertEquals(message, 2, listUuid.size());
+        Assert.assertTrue(listUuid.contains(node4.getUuid()));
+        Assert.assertTrue(listUuid.contains(node3.getUuid()));  //propagated parent
+        Assert.assertFalse(listUuid.contains(node1.getUuid()));  //should not be included due to subtree filter
+        filter = new TaxonNodeFilter(denmark);
+        filter.setPropagateDistributionToHigherTaxa(true);
+        filter.setIncludeAbsentDistributions(true);  //note: does not really make sense for absent distributions
+        filter.orSubtree(node3);
+        Assert.assertEquals(2, filterDao.count(filter));
+
+        //africa - no available distribution
         filter = new TaxonNodeFilter(africa);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 0, listUuid.size());
     }
-
-//    @Test
-//    public void testListUuidsByAreasWithAncestor() {
-//        String message = "wrong number of nodes filtered";
-////        System.out.println("start:" + new DateTime().toString());
-//
-//        NamedArea europe = HibernateProxyHelper.deproxy(termDao.load(europeUuid), NamedArea.class);
-//        NamedArea middleEurope = HibernateProxyHelper.deproxy(termDao.load(middleEuropeUuid), NamedArea.class);
-//        NamedArea africa = HibernateProxyHelper.deproxy(termDao.load(africaUuid), NamedArea.class);
-//        NamedArea germany = HibernateProxyHelper.deproxy(termDao.load(germanyUuid), NamedArea.class);
-//
-//        TaxonNodeFilter filter = new TaxonNodeFilter(europe);
-//        List<String> listTreeIndex = filterDao.listTreeIndex(filter);
-//
-//        assertEquals(message, 3, listTreeIndex.size());
-//        Assert.assertTrue(listTreeIndex.contains(node1.getUuid()));
-//        Assert.assertTrue(listTreeIndex.contains(node2.getUuid()));
-//        Assert.assertTrue(listTreeIndex.contains(node3.getUuid()));
-//        Assert.assertFalse(listTreeIndex.contains(node4.getUuid())); //status is absent
-//
-//        filter = new TaxonNodeFilter(germany);
-//        List<UUID> listUuid = filterDao.listUuids(filter);
-//        assertEquals(message, 1, listUuid.size());
-//        Assert.assertTrue(listUuid.contains(node3.getUuid()));
-//
-//        filter = new TaxonNodeFilter(middleEurope);
-//        listUuid = filterDao.listUuids(filter);
-//        assertEquals(message, 1, listUuid.size());
-//        Assert.assertTrue(listUuid.contains(node3.getUuid()));
-//
-//        filter = new TaxonNodeFilter(africa);
-//        listUuid = filterDao.listUuids(filter);
-//        assertEquals(message, 0, listUuid.size());
-//
-//    }
 
     @Test
     @DataSets({

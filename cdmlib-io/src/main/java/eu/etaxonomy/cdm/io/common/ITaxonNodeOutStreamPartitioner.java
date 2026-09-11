@@ -16,10 +16,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public interface ITaxonNodeOutStreamPartitioner {
 
+    /**
+     * Retrieve next (ordered) partition.
+     */
     public TaxonNode next();
 
     void setReadOnly(boolean readOnly);
 
     public void close();
-
 }

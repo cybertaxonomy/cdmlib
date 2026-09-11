@@ -169,9 +169,6 @@ public class TaxonComparatorTest extends TermTestBase {
         List<TaxonNode> list = createTestDataWithTaxonNodes();
 
         Collections.sort(list, new TaxonNodeByNameComparator());
-        for(TaxonNode node: list){
-            System.out.println(node.getTaxon().getName().getFullTitleCache());
-        }
 
         //Order should be
 //        5: without rank

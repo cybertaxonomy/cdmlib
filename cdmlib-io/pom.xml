@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <!-- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <!-- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+  http://maven.apache.org/maven-v4_0_0.xsd" -->
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.59.0</version>
+    <version>6.0.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -31,50 +34,80 @@
   </build>
   <dependencies>
     <dependency>
-        <groupId>eu.etaxonomy</groupId>
-        <artifactId>cdmlib-test</artifactId>
-        <scope>test</scope>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-test</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-ext</artifactId>
     </dependency>
     <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
     </dependency>
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
     </dependency>
+    
+    <!-- JAXB API -->
+    <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-oxm</artifactId>
     </dependency>
+    <!--identificationKeyAPI-->
     <dependency>
       <groupId>identificationKeyAPI</groupId>
       <artifactId>identificationKeyAPI</artifactId>
-<!--       <exclusions> -->
-<!--         <exclusion> -->
-<!--           <groupId>xml-apis</groupId> -->
-<!--           <artifactId>xml-apis</artifactId> -->
-<!--         </exclusion> -->
-<!--       </exclusions> -->
+      <exclusions>
+         <exclusion>
+         <!-- will be added below with runtime scope as some 
+              old Xerces classes like SAXParser are explicitly used in identificationKeyAPI -->  
+           <groupId>xerces</groupId>
+           <artifactId>xercesImpl</artifactId>
+         </exclusion>
+       </exclusions>
     </dependency>
     <dependency>
- 		<groupId>org.apache.jena</groupId>
- 		<artifactId>jena-tdb</artifactId>
- 		<exclusions>
- 		  <exclusion>
- 		    <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
- 		  </exclusion>
- 		  <exclusion>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-          </exclusion>
- 		</exclusions>
-	</dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <scope>compile</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.6</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>org.docx4j</groupId>
       <artifactId>docx4j-JAXB-Internal</artifactId>
@@ -83,6 +116,10 @@
       <groupId>xml-resolver</groupId>
       <artifactId>xml-resolver</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.odftoolkit</groupId>
+      <artifactId>odfdom-java</artifactId>
+    </dependency>
+
   </dependencies>
 </project>
-

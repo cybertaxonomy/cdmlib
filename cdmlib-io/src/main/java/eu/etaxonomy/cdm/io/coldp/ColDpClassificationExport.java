@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +28,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupComparator;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.io.coldp.ColDpExportTransformer.ColDpNameRelType;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
-import eu.etaxonomy.cdm.io.common.XmlExportState;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -98,7 +97,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -118,6 +116,10 @@ public class ColDpClassificationExport
 
     private static boolean WITH_NAME_REL = true;
 
+    private static final int TICKS_DATA_RETRIEVAL = 98;
+    private static final int TICKS_FINAL_RESULT = 2;
+    private static final int TICKS_TOTAL = TICKS_DATA_RETRIEVAL + TICKS_FINAL_RESULT;
+
     public ColDpClassificationExport() {
         this.ioName = this.getClass().getSimpleName();
     }
@@ -132,7 +134,9 @@ public class ColDpClassificationExport
     protected void doInvoke(ColDpExportState state) {
 
         try {
-            IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+            IProgressMonitor ioMonitor = state.getCurrentIoProgressMonitor();
+            ioMonitor.beginTask("CoL-DP Export -", TICKS_TOTAL);
+            ioMonitor.subTask("Start classification export ...");
             ColDpExportConfigurator config = state.getConfig();
 
             //set root node
@@ -144,12 +148,11 @@ public class ColDpClassificationExport
                 state.setRootId(config.getTaxonNodeFilter().getSubtreeFilter().get(0).getUuid());
             }
 
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            TaxonNodeOutStreamPartitioner<XmlExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
-                    state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
+            TaxonNodeOutStreamPartitioner<ColDpExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
+                    state, state.getConfig().getTaxonNodeFilter(), 100, ioMonitor, TICKS_DATA_RETRIEVAL);
 
 //            handleMetaData(state);  //FIXME metadata;
-            monitor.subTask("Start partitioning");
+            ioMonitor.subTask("Start partitioning");
 
             TaxonNode node = partitioner.next();
             while (node != null) {
@@ -161,13 +164,12 @@ public class ColDpClassificationExport
             if (state.getRootId() != null) {
                 List<TaxonNodeDto> childrenOfRoot = state.getNodeChildrenMap().get(state.getRootId());
 
-                Comparator<TaxonNodeDto> comp = state.getConfig().getTaxonNodeComparator();
-                //FIXME comparator
-                if (comp == null) {
-                    comp = new TaxonNodeDtoByRankAndNameComparator();
+                TaxonNodeDtoSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
+                if (sortMode == null) {
+                    sortMode = TaxonNodeDtoSortMode.RankAndAlphabeticalOrder;
                 }
                 if (childrenOfRoot != null) {
-                    Collections.sort(childrenOfRoot, comp);
+                    Collections.sort(childrenOfRoot, sortMode.comparator());
                     OrderHelper helper = new OrderHelper(state.getRootId());
                     helper.setOrderIndex(state.getActualOrderIndexAndUpdate());
                     state.getOrderHelperMap().put(state.getRootId(), helper);
@@ -187,7 +189,9 @@ public class ColDpClassificationExport
                 }
             }
 
+            ioMonitor.subTask("Create final result");
             state.getProcessor().createFinalResult(state);
+            ioMonitor.worked(TICKS_FINAL_RESULT);
         } catch (Exception e) {
             state.getResult().addException(e,
                     "An unexpected error occurred in main method doInvoke() " + e.getMessage());
@@ -219,11 +223,11 @@ public class ColDpClassificationExport
         if (children == null) {
             return null;
         }
-        Comparator<TaxonNodeDto> comp = state.getConfig().getTaxonNodeComparator();
-        if (comp == null) {
-            comp = new TaxonNodeDtoByRankAndNameComparator();
+        TaxonNodeDtoSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
+        if (sortMode == null) {
+            sortMode = TaxonNodeDtoSortMode.RankAndAlphabeticalOrder;
         }
-        Collections.sort(children, comp);
+        Collections.sort(children, sortMode.comparator());
         // TODO 3 taxon ordering: nochmal checken!!! - s.auch seq index
         OrderHelper helperChild;
         List<OrderHelper> childrenHelper = new ArrayList<>();

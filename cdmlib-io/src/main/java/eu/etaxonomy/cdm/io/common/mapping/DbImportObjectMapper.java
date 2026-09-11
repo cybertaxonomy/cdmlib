@@ -44,17 +44,17 @@ public class DbImportObjectMapper extends DbSingleAttributeImportMapperBase<DbIm
 		Object result;
 		Object dbValue = getDbValue(rs);
 		String id = String.valueOf(dbValue);
-		DbImportStateBase state = importMapperHelper.getState();
+		DbImportStateBase<?,?> state = importMapperHelper.getState();
 		result = state.getRelatedObject(relatedObjectNamespace, id);
 		return result;
 	}
 
 	@Override
-	public Class getTypeClass() {
+	public Class<?> getTypeClass() {
 		String getterMethodName = ImportHelper.getGetterMethodName(getDestinationAttribute(), false);
 		Method method;
 		try {
-			method = targetClass.getMethod(getterMethodName, null);
+			method = targetClass.getMethod(getterMethodName);
 		} catch (Exception e) {
 			throw new RuntimeException("parameter type for DbImportObjectMapper could not be determined :"+  getterMethodName);
 		}

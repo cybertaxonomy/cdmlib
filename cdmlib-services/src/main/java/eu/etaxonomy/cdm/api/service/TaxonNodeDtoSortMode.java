@@ -10,10 +10,10 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.Comparator;
 
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByNameComparator;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoNaturalComparator;
+import eu.etaxonomy.cdm.persistence.dto.compare.ISortableTaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.compare.TaxonNodeDtoByNameComparator;
+import eu.etaxonomy.cdm.persistence.dto.compare.TaxonNodeDtoByRankAndNameComparator;
+import eu.etaxonomy.cdm.persistence.dto.compare.TaxonNodeDtoNaturalComparator;
 
 public enum TaxonNodeDtoSortMode {
 
@@ -27,13 +27,14 @@ public enum TaxonNodeDtoSortMode {
 	 */
 	AlphabeticalOrder(new TaxonNodeDtoByNameComparator());
 
-	private Comparator<TaxonNodeDto> comparator;
 
-    private TaxonNodeDtoSortMode(Comparator<TaxonNodeDto> comparator){
+	private Comparator<ISortableTaxonNodeDto> comparator;
+
+    private TaxonNodeDtoSortMode(Comparator<ISortableTaxonNodeDto> comparator){
 	    this.comparator = comparator;
 	}
 
-    public Comparator<TaxonNodeDto> comparator() {
+    public Comparator<ISortableTaxonNodeDto> comparator() {
         return comparator;
     }
 }

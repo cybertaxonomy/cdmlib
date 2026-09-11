@@ -106,7 +106,7 @@ public class ColDpExportTest
         config.setIncludeFullName(true);
         config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(node4Uuid));
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
 
         //counts and result lists
         List<String> taxonResult = getStringList(data, ColDpExportTable.TAXON);
@@ -158,7 +158,7 @@ public class ColDpExportTest
         ColDpExportConfigurator config = newConfigurator();
         config.getTaxonNodeFilter().setIncludeUnpublished(true);
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
 
         //test counts
         List<String> taxonResult = getStringList(data, ColDpExportTable.TAXON);
@@ -273,7 +273,7 @@ public class ColDpExportTest
         //config+invoke
         ColDpExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
         Assert.assertTrue(result.getExportType().equals(ExportType.COLDP)); //test export type
 
         //test counts

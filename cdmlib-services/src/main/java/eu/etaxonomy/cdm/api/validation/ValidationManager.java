@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.validation;
 
-import javax.annotation.PostConstruct;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
@@ -17,6 +15,7 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
@@ -69,7 +68,7 @@ public class ValidationManager {
 
     private TaskScheduler scheduler;
 
-    @PostConstruct
+    @Bean(initMethod = "initialize")
     public void initializeManager(){
         registerValidationListeners();
         initTaskExecutor();

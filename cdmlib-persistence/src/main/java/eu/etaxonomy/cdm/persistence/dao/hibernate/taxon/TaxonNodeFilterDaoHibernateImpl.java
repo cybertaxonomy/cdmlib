@@ -9,29 +9,39 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.filter.LogicFilter;
 import eu.etaxonomy.cdm.filter.LogicFilter.Op;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dto.compare.ISortableTaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.compare.TaxonNodeDtoComparatorFactory;
+import eu.etaxonomy.cdm.strategy.cache.TagEnum;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 
 /**
  * DAO to retrieve taxon node uuids according to a {@link TaxonNodeFilter}.
@@ -62,7 +72,8 @@ public class TaxonNodeFilterDaoHibernateImpl
 
     @Override
     public long count(TaxonNodeFilter filter){
-        String queryStr = query(filter, "count(*) as n ");
+        String selectPart = "count(*) as n ";
+        String queryStr = query(filter, selectPart);
         Query<Long> query = getSession().createQuery(queryStr, Long.class);
         long result = query.uniqueResult();
 
@@ -72,20 +83,245 @@ public class TaxonNodeFilterDaoHibernateImpl
     @Override
     public List<UUID> listUuids(TaxonNodeFilter filter){
 
-        String queryStr = query(filter, "tn.uuid");
-        Query<UUID> query = getSession().createQuery(queryStr, UUID.class);
-        List<UUID> list = query.list();
+        if (filter.hasTaxonomicSortMode()) {
+            return listTaxonomicallySorted(filter, true);
+        }else {
+            String queryStr = query(filter, "tn.uuid");
+            Query<UUID> query = getSession().createQuery(queryStr, UUID.class);
+            List<UUID> list = query.list();
 
-        list = deduplicate(list);
-        return list;
+            list = deduplicate(list);
+            return list;
+        }
     }
 
     @Override
-    public List<Integer> idList(TaxonNodeFilter filter){
+    public List<Integer> listIds(TaxonNodeFilter filter){
 
-        String queryStr = query(filter, "tn.id");
-        Query<Integer> query = getSession().createQuery(queryStr, Integer.class);
-        List<Integer> list = query.list();
+        if (filter.hasTaxonomicSortMode()) {
+            return listTaxonomicallySorted(filter, false);
+        }else {
+            String queryStr = query(filter, "tn.id");
+            Query<Integer> query = getSession().createQuery(queryStr, Integer.class);
+            List<Integer> list = query.list();
+            list = deduplicate(list);
+            return list;
+        }
+    }
+
+    private Set<Integer> collectParentIds(TaxonNodeFilter filter){
+
+        String queryStr = query(filter, "tn.treeIndex");
+        Query<String> query = getSession().createQuery(queryStr, String.class);
+        List<String> list = query.list();
+        Set<Integer> idSet = list.stream()
+            .filter(ti->ti != null)
+            .map(TreeIndex::NewInstance)
+            .flatMap(ti-> ti.parentNodeIds(false).stream())
+            .collect(Collectors.toSet());
+        return idSet;
+    }
+
+    private <S extends Object> List<S> listTaxonomicallySorted(TaxonNodeFilter filter, boolean isUuid) {
+
+        List<SortableTaxonNodeDto> idTreeIndexList = listIdWithTreeIndex(filter, isUuid);
+        List<S> result = new ArrayList<>();
+        if (idTreeIndexList.isEmpty()) {
+            return result;
+        }
+
+        //create tree
+        String treeIndexOfClassification = idTreeIndexList.get(0).treeIndex.indexOfTree().toString();
+        SortableTaxonNodeDto tempRoot = new SortableTaxonNodeDto(null, null, treeIndexOfClassification,
+                null, null, null, null, null, null, null, null, null, null, null, null, null);
+
+        SortableTaxonNodeDto last = tempRoot;
+        for (SortableTaxonNodeDto node : idTreeIndexList) {
+            while (last != null && last.treeIndex != null
+                    && !last.treeIndex.hasChild(node.treeIndex)) {
+                last = last.parent;
+            }
+            if (last != null) {
+                last.children.add(node);
+                node.parent = last;
+                last = node;
+            }
+        }
+
+        //sort
+        Comparator<ISortableTaxonNodeDto> comparator = TaxonNodeDtoComparatorFactory.getDtoComparator(filter.getBaseSortMode());
+        sortRecursively(tempRoot, filter, comparator);
+
+        //tree->list
+        tempRoot.children.forEach(child->addToResultList(child, result, isUuid));
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <S extends Object> void addToResultList(SortableTaxonNodeDto dto, List<S> result, boolean isUuid) {
+        if (isUuid) {
+            result.add((S) dto.uuid);
+        }else {
+            result.add((S) dto.id);
+        }
+        dto.children.forEach(child->addToResultList(child, result, isUuid));
+        return;
+    }
+
+    private <S extends Object>  void sortRecursively(SortableTaxonNodeDto root, TaxonNodeFilter filter,
+            Comparator<ISortableTaxonNodeDto> comparator) {
+
+        root.children.sort(comparator);
+        root.children.forEach(child -> sortRecursively(child, filter, comparator));
+    }
+
+    //TODO maybe we can merge with SortableTaxonNodeQueryResultDto
+    //note: should not be a record as not all field can be final (e.g. parent)
+    private class SortableTaxonNodeDto implements ISortableTaxonNodeDto{
+        private Integer id;
+        private UUID uuid;
+        private TreeIndex treeIndex;
+        private UUID parentUUID;
+        private TaxonNodeStatus status;
+        private Integer rankOrderIndex;
+        private List<TaggedText> taggedTitle;
+        private UUID taxonUuid;
+        private String nameTitleCache;
+        private Integer sortIndex;
+
+        private SortableTaxonNodeDto parent;
+
+        List<SortableTaxonNodeDto> children = new ArrayList<>();
+
+        public SortableTaxonNodeDto(Integer id, UUID uuid, String treeIndex, UUID parentUuid, Integer sortIndex,
+                TaxonNodeStatus status, UUID taxonUuid, String nameTitleCache, Integer rankOrderIndex,
+                String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
+                String infraSpecificEpithet, String cultivarEpithet, String appendedPhrase, String authorshipCache) {
+
+            this.id = id;
+            this.treeIndex = treeIndex == null ? null : TreeIndex.NewInstance(treeIndex);
+            this.uuid = uuid;
+            this.parentUUID = parentUuid;
+            this.sortIndex = sortIndex;
+            this.status = status;
+            this.taxonUuid = taxonUuid;
+            this.nameTitleCache = nameTitleCache;
+            this.rankOrderIndex = rankOrderIndex;
+            this.taggedTitle = createTaggedTitle(genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
+                    cultivarEpithet, appendedPhrase, authorshipCache);
+        }
+
+        private List<TaggedText> createTaggedTitle(String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
+                String infraSpecificEpithet, String cultivarEpithet, String appendedPhrase, String authorshipCache) {
+
+            TaggedTextBuilder builder = new TaggedTextBuilder();
+            if (StringUtils.isNotBlank(genusOrUninomial)) {
+                builder.add(TagEnum.name, genusOrUninomial);
+            }
+            if (StringUtils.isNotBlank(infraGenericEpithet)) {
+                builder.add(TagEnum.name, infraGenericEpithet);
+            }
+            if (StringUtils.isNotBlank(specificEpithet)) {
+                builder.add(TagEnum.name, specificEpithet);
+            }
+            if (StringUtils.isNotBlank(infraSpecificEpithet)) {
+                builder.add(TagEnum.name, infraSpecificEpithet);
+            }
+            if (StringUtils.isNotBlank(cultivarEpithet)) {
+                builder.add(TagEnum.name, cultivarEpithet);
+            }
+            if (StringUtils.isNotBlank(appendedPhrase)) {
+                builder.add(TagEnum.name, appendedPhrase);
+            }
+            if (StringUtils.isNotBlank(authorshipCache)) {
+                builder.add(TagEnum.authors, authorshipCache);
+            }
+            return builder.getTaggedText();
+        }
+
+        @Override
+        public TaxonNodeStatus getStatus() {
+            return status;
+        }
+
+        @Override
+        public Integer getRankOrderIndex() {
+            return rankOrderIndex;
+        }
+
+        @Override
+        public List<TaggedText> getTaggedTitle() {
+            return taggedTitle;
+        }
+
+        @Override
+        public UUID getTaxonUuid() {
+            return taxonUuid;
+        }
+
+        @Override
+        public String getNameTitleCache() {
+            return nameTitleCache;
+        }
+
+        @Override
+        public Integer getId() {
+            return id;
+        }
+
+        @Override
+        public UUID getUuid() {
+            return uuid;
+        }
+
+        @Override
+        public UUID getParentUUID() {
+            return parentUUID;
+        }
+
+        @Override
+        public Integer getSortIndex() {
+            return sortIndex;
+        }
+
+        @Override
+        public String getTreeIndex() {
+            return treeIndex.toString();
+        }
+    }
+
+    private <S extends Object> List<SortableTaxonNodeDto> listIdWithTreeIndex(TaxonNodeFilter filter, boolean isUuid){
+
+//        String selectPart = isUuid ? "tn.id, tn.uuid, tn.treeIndex" : "tn.id, tn.treeIndex";
+        //TODO sortIndex of taxon node not yet supported (for natural order)
+        String selectPart = "tn.id, tn.uuid, tn.treeIndex, parent.uuid, cast(null as integer), tn.status, "
+                + "taxon.uuid, "
+                + "name.titleCache, rank.orderIndex, "
+                + "name.genusOrUninomial, name.infraGenericEpithet, name.specificEpithet, "
+                +   "name.infraSpecificEpithet, name.cultivarEpithet, name.appendedPhrase, name.authorshipCache";
+        String queryStr = query(filter, selectPart);
+        List<SortableTaxonNodeDto> list = getSession().createQuery(queryStr, Object[].class)
+                .getResultList()
+                .stream()
+                .map(row -> new SortableTaxonNodeDto(
+                       (Integer)row[0]
+                       ,(UUID)row[1]
+                     ,   (String) row[2]
+                     ,   (UUID) row[3]
+                     ,   (Integer) row[4]
+                     ,   (TaxonNodeStatus) row[5]
+                     ,   (UUID) row[6]
+                     ,   (String) row[7]
+                     ,   (Integer) row[8]
+                     ,   (String) row[9] //genus
+                     ,   (String) row[10]
+                     ,   (String) row[11]
+                     ,   (String) row[12]
+                     ,   (String) row[13]
+                     ,   (String) row[14]
+                     ,   (String) row[15]
+                        ))
+                .toList();
         list = deduplicate(list);
         return list;
     }
@@ -93,8 +329,29 @@ public class TaxonNodeFilterDaoHibernateImpl
     //maybe we will later want to have ordering included
     private String query(TaxonNodeFilter filter, String selectPart){
 
+        if (filter.isPropagateDistributionToHigherTaxa() && filter.hasAreaFilter()) {
+            //if area filter should propagate to taxon ancestors which have no
+            //distribution on their own the following algorithm applies:
+            // 1. search all taxa with distributions that fullfill the filter
+            // 2. compute the list of taxon node IDs for these taxon nodes
+            //    and all their parents (up to the root (invisible root excluded)
+            // 3. run the query again with OR-filter for the area part,
+            //    => returns the taxon nodes computed at 1.) and all the
+            //    (ancestor) nodes computed at 2. which fullfill the remaining
+            //    filter conditions (except for the area filter).
+            //E.g.: if the filter has a subtree filter on a family and a species
+            //      of this family fullfills the area filter, the genus parent
+            //      and the family grand parent is found, but not the
+            //      order or class ancestors
+            filter.setPropagateDistributionToHigherTaxa(false); //to avoid infinite loop as the following command again calls the query() method
+            Set<Integer> parentIds = collectParentIds(filter);
+            filter.setPotentialParentNodeIdsForArea(parentIds);
+            filter.setPropagateDistributionToHigherTaxa(true);
+        }
+
         String select = " SELECT " + selectPart;
-        String from = getFrom(filter);
+        boolean isSorted = filter.hasTaxonomicSortMode();  //sorted taxonomically, not by IDs or treeindex
+        String from = getFrom(filter, isSorted);
         String subtreeFilter = getSubtreeFilter(filter);
         String taxonNodeFilter = getTaxonNodeFilter(filter);
         String classificationFilter = getClassificationFilter(filter);
@@ -102,7 +359,7 @@ public class TaxonNodeFilterDaoHibernateImpl
         String rootNodeFilter = getRootNodeFilter(filter);
         String rankMaxFilter = getRankMaxFilter(filter);
         String rankMinFilter = getRankMinFilter(filter);
-        String areaFilter = getAreaFilter(filter);
+        String areaFilter = getAreaFilter(filter, filter.isPropagateDistributionToHigherTaxa());
         String unpublishFilter = getUnpublishFilter(filter);
 
         String fullFilter = getFullFilter(subtreeFilter, taxonNodeFilter,
@@ -119,20 +376,30 @@ public class TaxonNodeFilterDaoHibernateImpl
 
     private String getOrderBy(TaxonNodeFilter filter, String selectPart) {
         String orderBy = "";
-        if (filter.getOrderBy()!= null && !selectPart.contains("count")){
-            orderBy = "ORDER BY " + filter.getOrderBy().getHql();
+        if (filter.getSortMode()!= null && !selectPart.contains("count")){
+            orderBy = "ORDER BY " + filter.getSortMode().getHql();
         }
         return orderBy;
     }
 
-    private String getFrom(TaxonNodeFilter filter){
+    private String getFrom(TaxonNodeFilter filter, boolean isSorted){
         String from = " FROM TaxonNode tn ";
-        if (hasTaxonFilter(filter)){
+        if (hasTaxonFilter(filter) || isSorted){
             from += " LEFT JOIN tn.taxon taxon ";  //LEFT to allow includeRootNode
         }
         if(!filter.getAreaFilter().isEmpty()){
-            from += " INNER JOIN taxon.descriptions descriptions "
-                  + " INNER JOIN descriptions.descriptionElements " + DESCRIPTION_ELEMENTS + " ";
+        	from += " LEFT JOIN taxon.descriptions descriptions "
+                  + " LEFT JOIN descriptions.descriptionElements " + DESCRIPTION_ELEMENTS + " "
+                  + " LEFT JOIN descriptionElements.area area "
+                  + " LEFT JOIN descriptionElements.feature feature "
+                  + " LEFT JOIN descriptionElements.status status ";
+        }
+        if (isSorted) {
+            from += " LEFT JOIN taxon.name name "
+                  + " LEFT JOIN name.rank rank "
+                  + " LEFT JOIN tn.parent parent "
+//                  + " LEFT JOIN parent.childNodes ch"
+                  ;
         }
         return from;
     }
@@ -143,7 +410,7 @@ public class TaxonNodeFilterDaoHibernateImpl
         return result;
     }
 
-    private String getAreaFilter(TaxonNodeFilter filter) {
+    private String getAreaFilter(TaxonNodeFilter filter, boolean includeTaxonNodeIdFilter) {
         String result = "";
         List<LogicFilter<NamedArea>> areaFilter = filter.getAreaFilter();
         boolean isFirst = true;
@@ -151,17 +418,32 @@ public class TaxonNodeFilterDaoHibernateImpl
         for (LogicFilter<NamedArea> singleFilter : areaFilter){
             areaIds = getChildAreasRecursively(singleFilter.getUuid());
             String op = isFirst ? "" : op2Hql(singleFilter.getOperator());
-            result = String.format("(%s%s(" + DESCRIPTION_ELEMENTS + ".feature.uuid='" + DISTRIBUTION_FEATURE_UUID + "' "
-                    + " AND " + DESCRIPTION_ELEMENTS + ".area.id in (%s))",
-                    result, op, StringUtils.collectionToCommaDelimitedString(areaIds)
+            result = String.format("(%s%s(feature.uuid='" + DISTRIBUTION_FEATURE_UUID + "' "
+                    + " AND " +  " area.id in (%s))",
+                    result, op, concat(areaIds)
                     );
             if (!filter.isIncludeAbsentDistributions()) {
-                result +=  " AND " + DESCRIPTION_ELEMENTS + ".status.absenceTerm = " + HQL_FALSE;
+                result +=  " AND status.absenceTerm = " + HQL_FALSE;
             }
             result += ")";
             isFirst = false;
         }
+        //add precomputed potential parent taxon nodes
+        if (includeTaxonNodeIdFilter && StringUtils.isNotBlank(result)) {
+            String potentialParentFilter = this.getTaxonNodeIdFilter(filter);
+            if (StringUtils.isNotBlank(potentialParentFilter)) {
+                result = "(" + result
+                        + " OR "
+                        + potentialParentFilter
+                        +")";
+            }
+        }
+
         return result;
+    }
+
+    private String concat(List<Integer> areaIds) {
+        return org.springframework.util.StringUtils.collectionToCommaDelimitedString(areaIds);
     }
 
     private List<Integer> getChildAreasRecursively(UUID uuid){
@@ -177,9 +459,6 @@ public class TaxonNodeFilterDaoHibernateImpl
         }
         return areaIds;
     }
-
-
-
 
     private String getRootNodeFilter(TaxonNodeFilter filter) {
         String result = "";
@@ -207,11 +486,6 @@ public class TaxonNodeFilterDaoHibernateImpl
         return result;
     }
 
-
-    /**
-     * @param list
-     * @return
-     */
     private <T> List<T> deduplicate(List<T> list) {
         List<T> result = new ArrayList<>();
         for (T uuid : list){
@@ -253,10 +527,22 @@ public class TaxonNodeFilterDaoHibernateImpl
         return result;
     }
 
+    private String getTaxonNodeIdFilter(TaxonNodeFilter filter) {
+        String result = "";
+        Set<Integer> taxonNodeIdFilter = filter.getPotentialParentNodeIdsForArea();
+        boolean isFirst = true;
+        for (Integer singleFilter : taxonNodeIdFilter){
+            String op = isFirst ? "" : op2Hql(LogicFilter.Op.OR);
+            result = String.format("(%s%s(tn.id = %d))", result, op, singleFilter);
+            isFirst = false;
+        }
+        return result;
+    }
+
     private String getRankMaxFilter(TaxonNodeFilter filter) {
         String result = "";
         LogicFilter<Rank> rankFilter = filter.getRankMax();
-        if(rankFilter!=null){
+        if(rankFilter != null){
             UUID rankUuid = rankFilter.getUuid();
             Rank rank = (Rank) termDao.load(rankUuid);
             result = String.format("(tn.taxon.name.rank.orderIndex >= %s)", rank.getOrderIndex());
@@ -305,7 +591,7 @@ public class TaxonNodeFilterDaoHibernateImpl
     private void initializeSubtreeIndex(List<LogicFilter<TaxonNode>> subtreeFilter) {
         for (LogicFilter<TaxonNode> filter : subtreeFilter){
             if (filter.getTreeIndex() == null){
-                //TODO finde without loading, best be sending full list and returning tree indexes
+                //TODO find without loading, best be sending full list and returning tree indexes
                 TaxonNode node = taxonNodeDao.findByUuid(filter.getUuid());
                 if (node != null){
                     filter.setTreeIndex(node.treeIndex());

@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
+import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupComparator;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
@@ -42,7 +43,6 @@ import eu.etaxonomy.cdm.io.cdmLight.OrderHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
-import eu.etaxonomy.cdm.io.common.XmlExportState;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -105,7 +105,6 @@ import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -120,6 +119,10 @@ public class WordClassificationExport
         extends CdmExportBase<WordClassificationExportConfigurator, WordClassificationExportState, IExportTransformer, File>{
 
     private static final long serialVersionUID = 5373475508269756045L;
+
+    private static final int TICKS_DATA_RETRIEVAL = 98;
+    private static final int TICKS_FINAL_RESULT = 2;
+    private static final int TICKS_TOTAL = TICKS_DATA_RETRIEVAL + TICKS_FINAL_RESULT;
 
     @Autowired
     private IDistributionService geoService;
@@ -141,8 +144,12 @@ public class WordClassificationExport
     protected void doInvoke(WordClassificationExportState state) {
         try {
 
-            IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+            IProgressMonitor ioMonitor = state.getCurrentIoProgressMonitor();
+            ioMonitor.beginTask("Word Export -", TICKS_TOTAL);
+            ioMonitor.subTask("Start classification export ...");
+
             WordClassificationExportConfigurator config = state.getConfig();
+
             if (config.getTaxonNodeFilter().hasClassificationFilter()) {
                 Classification classification = getClassificationService()
                         .load(config.getTaxonNodeFilter().getClassificationFilter().get(0).getUuid());
@@ -151,12 +158,12 @@ public class WordClassificationExport
             } else if (config.getTaxonNodeFilter().hasSubtreeFilter()) {
                 state.setRootId(config.getTaxonNodeFilter().getSubtreeFilter().get(0).getUuid());
             }
-            @SuppressWarnings("unchecked")
-            TaxonNodeOutStreamPartitioner<XmlExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
-                    state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
+
+            TaxonNodeOutStreamPartitioner<WordClassificationExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
+                    state, state.getConfig().getTaxonNodeFilter(), 100, ioMonitor, TICKS_DATA_RETRIEVAL);
 
 //            handleMetaData(state);
-            monitor.subTask("Start partitioning");
+            ioMonitor.subTask("Start partitioning");
 
             TaxonNode node = partitioner.next();
             while (node != null) {
@@ -167,12 +174,12 @@ public class WordClassificationExport
             if (state.getRootId() != null) {
                 List<TaxonNodeDto> childrenOfRoot = state.getNodeChildrenMap().get(state.getRootId());
 
-                Comparator<TaxonNodeDto> comp = state.getConfig().getComparator();
-                if (comp == null) {
-                    comp = new TaxonNodeDtoByRankAndNameComparator();
+                TaxonNodeDtoSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
+                if (sortMode == null) {
+                    sortMode = TaxonNodeDtoSortMode.RankAndAlphabeticalOrder;
                 }
                 if (childrenOfRoot != null) {
-                    Collections.sort(childrenOfRoot, comp);
+                    Collections.sort(childrenOfRoot, sortMode.comparator());
                     OrderHelper helper = new OrderHelper(state.getRootId());
                     helper.setOrderIndex(state.getActualOrderIndexAndUpdate());
                     state.getOrderHelperMap().put(state.getRootId(), helper);
@@ -192,7 +199,9 @@ public class WordClassificationExport
                 }
             }
 
+            ioMonitor.subTask("Create final result");
             state.getProcessor().createFinalResult(state);
+            ioMonitor.worked(TICKS_FINAL_RESULT);
         } catch (Exception e) {
             state.getResult().addException(e,
                     "An unexpected error occurred in main method doInvoke() " + e.getMessage());
@@ -224,11 +233,11 @@ public class WordClassificationExport
         if (children == null) {
             return null;
         }
-        Comparator<TaxonNodeDto> comp = state.getConfig().getComparator();
-        if (comp == null) {
-            comp = new TaxonNodeDtoByRankAndNameComparator();
+        TaxonNodeDtoSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
+        if (sortMode == null) {
+            sortMode = TaxonNodeDtoSortMode.RankAndAlphabeticalOrder;
         }
-        Collections.sort(children, comp);
+        Collections.sort(children, sortMode.comparator());
         // TODO: nochmal checken!!!
         OrderHelper helperChild;
         List<OrderHelper> childrenHelper = new ArrayList<>();

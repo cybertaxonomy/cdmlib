@@ -14,14 +14,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -79,14 +78,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
         this.transactionManager = transactionManager;
     }
 
-    /*
-     * After a bit of head-scratching I found section 3.5.1.3. in the current spring
-     * reference manual - @PostConstruct / afterPropertiesSet() is called
-     * immediatly after the bean is constructed, prior to any AOP interceptors being
-     * wrapped round the bean. Thus, we have to use programmatic transactions, not
-     * annotations or pointcuts.
-     */
-    @PostConstruct
+    @Bean(initMethod = "initialize")
     @Override
     public void initialize() {
         super.initialize();
@@ -100,6 +92,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             logger.info("PersistentTermInitializer.omit == true, returning without initializing terms");
             return;
         } else {
+            @SuppressWarnings("rawtypes")
             Map<UUID,DefinedTermBase> terms = new HashMap<>();
             logger.info("PersistentTermInitializer.omit == false, initializing " + VocabularyEnum.values().length + " term classes");
 

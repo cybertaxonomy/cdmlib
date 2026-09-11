@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,11 +28,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
+import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
 import eu.etaxonomy.cdm.api.service.geo.IDistributionService;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupComparator;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainerFormatter;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.name.TypeComparator;
 import eu.etaxonomy.cdm.compare.reference.SourceComparator;
@@ -45,7 +46,6 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
-import eu.etaxonomy.cdm.io.common.XmlExportState;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -110,7 +110,6 @@ import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -130,6 +129,10 @@ public class CdmLightClassificationExport
     private static final long serialVersionUID = 2518643632756927053L;
 
     private static boolean WITH_NAME_REL = true;
+
+    private static final int TICKS_DATA_RETRIEVAL = 98;
+    private static final int TICKS_FINAL_RESULT = 2;
+    private static final int TICKS_TOTAL = TICKS_DATA_RETRIEVAL + TICKS_FINAL_RESULT;
 
     @Autowired
     private IDistributionService distributionService;
@@ -151,7 +154,10 @@ public class CdmLightClassificationExport
     protected void doInvoke(CdmLightExportState state) {
         try {
 
-            IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+            IProgressMonitor ioMonitor = state.getCurrentIoProgressMonitor();
+            ioMonitor.beginTask("CDM Light Export -", TICKS_TOTAL);
+            ioMonitor.subTask("Start classification export ...");
+
             CdmLightExportConfigurator config = state.getConfig();
             if (config.getTaxonNodeFilter().hasClassificationFilter()) {
                 Classification classification = getClassificationService()
@@ -161,12 +167,13 @@ public class CdmLightClassificationExport
             } else if (config.getTaxonNodeFilter().hasSubtreeFilter()) {
                 state.setRootId(config.getTaxonNodeFilter().getSubtreeFilter().get(0).getUuid());
             }
-            @SuppressWarnings("unchecked")
-            TaxonNodeOutStreamPartitioner<XmlExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
-                    state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
+
+            ioMonitor.subTask("Start partitioning");
+            TaxonNodeOutStreamPartitioner<CdmLightExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
+                    state, state.getConfig().getTaxonNodeFilter(), 100, ioMonitor, TICKS_DATA_RETRIEVAL);
 
             handleMetaData(state);
-            monitor.subTask("Start partitioning");
+
 
             TaxonNode node = partitioner.next();
             while (node != null) {
@@ -177,12 +184,12 @@ public class CdmLightClassificationExport
             if (state.getRootId() != null) {
                 List<TaxonNodeDto> childrenOfRoot = state.getNodeChildrenMap().get(state.getRootId());
 
-                Comparator<TaxonNodeDto> comp = state.getConfig().getTaxonNodeComparator();
-                if (comp == null) {
-                    comp = new TaxonNodeDtoByRankAndNameComparator();
+                TaxonNodeDtoSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
+                if (sortMode == null) {
+                    sortMode = TaxonNodeDtoSortMode.RankAndAlphabeticalOrder;
                 }
                 if (childrenOfRoot != null) {
-                    Collections.sort(childrenOfRoot, comp);
+                    Collections.sort(childrenOfRoot, sortMode.comparator());
                     OrderHelper helper = new OrderHelper(state.getRootId());
                     helper.setOrderIndex(state.getActualOrderIndexAndUpdate());
                     state.getOrderHelperMap().put(state.getRootId(), helper);
@@ -202,7 +209,9 @@ public class CdmLightClassificationExport
                 }
             }
 
+            ioMonitor.subTask("Create final result");
             state.getProcessor().createFinalResult(state);
+            ioMonitor.worked(TICKS_FINAL_RESULT);
         } catch (Exception e) {
             state.getResult().addException(e,
                     "An unexpected error occurred in main method doInvoke() " + e.getMessage());
@@ -234,11 +243,11 @@ public class CdmLightClassificationExport
         if (children == null) {
             return null;
         }
-        Comparator<TaxonNodeDto> comp = state.getConfig().getTaxonNodeComparator();
-        if (comp == null) {
-            comp = new TaxonNodeDtoByRankAndNameComparator();
+        TaxonNodeDtoSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
+        if (sortMode == null) {
+            sortMode = TaxonNodeDtoSortMode.RankAndAlphabeticalOrder;
         }
-        Collections.sort(children, comp);
+        Collections.sort(children, sortMode.comparator());
         // TODO: nochmal checken!!!
         OrderHelper helperChild;
         List<OrderHelper> childrenHelper = new ArrayList<>();
@@ -1937,12 +1946,9 @@ public class CdmLightClassificationExport
                 Set<TaxonBase> taxonBases = name.getTaxonBases();
                 TaxonBase taxonBase;
 
-
                 String sec = "";
                 String nameString = name.getFullTitleCache();
                 String doubtful = "";
-
-
 
                 if (state.getConfig().isAddHTML()){
                     nameString = createNameWithItalics(name.getTaggedFullTitle()) ;
@@ -2037,15 +2043,15 @@ public class CdmLightClassificationExport
                 String synonymSign = "";
                 if (index > 0){
                     if (name.isInvalid()){
-                        synonymSign = "\u2212 ";
+                        synonymSign = UTF8.MINUS + " ";
                     }else{
-                        synonymSign = "\u2261 ";
+                        synonymSign = UTF8.IDENTICAL_TO + " ";
                     }
                 }else{
                     if (name.isInvalid() ){
-                        synonymSign = "\u2212 ";
+                        synonymSign = UTF8.MINUS + " ";
                     }else{
-                        synonymSign = "\u003D ";
+                        synonymSign = UTF8.EQUALS_SIGN + " ";
                     }
                 }
                 boolean isAccepted = false;
@@ -2063,8 +2069,8 @@ public class CdmLightClassificationExport
                              sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxonBase.getSec(), taxonBase.getSecSource().getCitationMicroReference(), null,
                                  state.getReferenceStore().get(taxonBase.getSec().getUuid()));
                          }
-
                      }
+
                      if (taxonBase.isDoubtful()){
                          doubtful = "?";
                      }else{
@@ -2072,7 +2078,6 @@ public class CdmLightClassificationExport
                      }
                      if (taxonBase instanceof Synonym){
                          if (isNotBlank(sec)){
-                             String secSignOrSec = "";
                              if (!state.getConfig().isShowSynSecForHomotypicGroup()) {
                                  sec = " syn. sec. " + sec + " ";
                              }
@@ -2080,12 +2085,13 @@ public class CdmLightClassificationExport
                              sec = "";
                          }
                      }else{
-                         if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
-                             acceptedTaxon = (Taxon)taxonBase;
+                         Taxon tmpTaxon = (Taxon)taxonBase;
+                         if (!(tmpTaxon.isProparteSynonym() || tmpTaxon.isMisapplication())){
+                             acceptedTaxon = tmpTaxon;
                              isAccepted = true;
                              synonymSign = "";
                          }else {
-                             synonymSign = "\u003D ";
+                             synonymSign = UTF8.EQUALS_SIGN + " ";
                          }
                      }
                      if (taxonBase.getAppendedPhrase() != null){
@@ -2309,7 +2315,7 @@ public class CdmLightClassificationExport
         }
 
         Optional<SecundumSource> match = synSecSources.stream().filter(s->sourceMatches(s, newSource)).findFirst();
-        if (!match.isPresent()){
+        if (match.isEmpty()){
             synSecSources.add(newSource);
         }
     }

@@ -2,7 +2,6 @@
 # set the default behavior for all files:
 * text=auto !eol
 pom.xml merge=ours
-cdmlib-print/pom.xml merge=ours
 cdmlib-test/pom.xml merge=ours
 cdmlib-io/pom.xml merge=ours
 cdmlib-ext/pom.xml merge=ours
@@ -321,28 +320,6 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/override.prop
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/override.properties-testPersistentDataSource -text
 cdmlib-persistence/src/test/resources/log4j.properties -text
 cdmlib-persistence/src/test/resources/unitils.properties -text
-cdmlib-print/build.properties -text
-cdmlib-print/pom.xml -text
-cdmlib-print/src/main/resources/eu/etaxonomy/cdm/print/package.html -text
-cdmlib-print/src/main/resources/log4j.properties -text
-cdmlib-print/src/main/resources/stylesheets/mediawiki/functx-1.0-doc-2007-01.xsl -text
-cdmlib-print/src/main/resources/stylesheets/mediawiki/multipages.xsl -text
-cdmlib-print/src/main/resources/stylesheets/odf/cdmToOdfText.xsl -text
-cdmlib-print/src/main/resources/stylesheets/pdf/Untitled21212.xml -text
-cdmlib-print/src/main/resources/stylesheets/pdf/caryophyllales.xsl -text
-cdmlib-print/src/main/resources/stylesheets/pdf/flora-malesiana.xsl -text
-cdmlib-print/src/main/resources/stylesheets/pdf/flore-afrique-centrale.xsl -text
-cdmlib-print/src/site/apt/download.apt -text
-cdmlib-print/src/site/apt/formats.apt -text
-cdmlib-print/src/site/apt/getting-started.apt -text
-cdmlib-print/src/site/apt/index.apt -text
-cdmlib-print/src/site/apt/writing-templates.apt -text
-cdmlib-print/src/site/fml/troubleshooting.fml -text
-cdmlib-print/src/site/site.xml -text
-cdmlib-print/src/test/resources/20100719-1939-xml_export.xml -text
-cdmlib-print/src/test/resources/20130403-1752-output.xml -text
-cdmlib-print/src/test/resources/eu/etaxonomy/cdm/print/out/odf/input.xml -text
-cdmlib-print/src/test/resources/eu/etaxonomy/cdm/print/out/odf/single_input.xml -text
 cdmlib-remote-webapp/LICENSE.TXT -text
 cdmlib-remote-webapp/README.TXT -text
 cdmlib-remote-webapp/ide/eclipse/Jetty[!!-~]Launcher/cdmlib-remote-webapp[!!-~]-[!!-~]profile.launch -text

@@ -12,9 +12,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.filter.LogicFilter.Op;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -35,6 +38,7 @@ public class TaxonNodeFilter implements Serializable{
 
     private List<LogicFilter<TaxonNode>> subtrees = new ArrayList<>();
     private List<LogicFilter<TaxonNode>> taxonNodes = new ArrayList<>();
+    private Set<Integer> taxonNodeIds = new HashSet<>();
     private List<LogicFilter<Classification>> classifications = new ArrayList<>();
     private List<LogicFilter<Taxon>> taxa = new ArrayList<>();
     private LogicFilter<Rank> rankMin = null;
@@ -44,23 +48,41 @@ public class TaxonNodeFilter implements Serializable{
     private List<LogicFilter<PresenceAbsenceTerm>> distributionStatusFilter = new ArrayList<>();
 
     private boolean includeAbsentDistributions = false;
+    private boolean propagateDistributionToHigherTaxa = false;
 
     private boolean includeRootNodes = false;
 
     private boolean includeUnpublished = false;
 
-    private ORDER orderBy = null;
+    private TaxonNodeFilterSortMode sortMode = null;
 
-    public enum ORDER{
-        ID("tn.id"),
-        TREEINDEX("tn.treeIndex"),
-        TREEINDEX_DESC("tn.treeIndex DESC");
-        String hql;
-        private ORDER(String hql){
+    public enum TaxonNodeFilterSortMode{
+        ID("tn.id", null),
+        TREEINDEX("tn.treeIndex", null),
+        TREEINDEX_DESC("tn.treeIndex DESC", null),
+        ALPHABETIC("tn.treeIndex", TaxonNodeSortMode.AlphabeticalOrder),
+        ALPHABETIC_WITH_RANK("tn.treeIndex", TaxonNodeSortMode.RankAndAlphabeticalOrder),
+        //TODO NATURAL not yet supported as retrieving the taxon node's sortindex is difficult
+        //(check with SortableTaxonNodeQueryResult for how to implement if it works there
+//        NATURAL("tn.treeIndex", TaxonNodeSortMode.NaturalOrder)
+        ;
+        private String hql;
+        private boolean isTaxonomic;
+        private TaxonNodeSortMode baseSortMode;
+
+        private TaxonNodeFilterSortMode(String hql, TaxonNodeSortMode baseSortMode){
             this.hql = hql;
+            this.baseSortMode = baseSortMode;
+            this.isTaxonomic = baseSortMode != null;
         }
         public String getHql(){
             return hql;
+        }
+        public boolean isTaxonomic() {
+            return isTaxonomic;
+        }
+        public TaxonNodeSortMode getBaseSortMode() {
+            return baseSortMode;
         }
     }
 
@@ -207,6 +229,9 @@ public class TaxonNodeFilter implements Serializable{
         return Collections.unmodifiableList(taxonNodes);
     }
 
+    public Set<Integer>getPotentialParentNodeIdsForArea(){
+        return Collections.unmodifiableSet(taxonNodeIds);
+    }
 
     public List<LogicFilter<Classification>>getClassificationFilter(){
         return Collections.unmodifiableList(classifications);
@@ -259,6 +284,17 @@ public class TaxonNodeFilter implements Serializable{
         taxonNodes.add( new LogicFilter<>(TaxonNode.class, uuid, Op.OR));
         return this;
     }
+    /**
+     * Adds a set of potential parent node IDs which .<BR><BR>
+     * NOTE: for internal use together with area filter only.
+     *
+     * @deprecated might become protected in future
+     */
+    @Deprecated
+    public TaxonNodeFilter setPotentialParentNodeIdsForArea(Set<Integer> potentialParentIds){
+        taxonNodeIds = potentialParentIds == null ? Collections.emptySet() : potentialParentIds;
+        return this;
+    }
 
     public TaxonNodeFilter notTaxonNode(TaxonNode taxonNode){
         taxonNodes.add( new LogicFilter<>(taxonNode, Op.NOT));
@@ -279,10 +315,18 @@ public class TaxonNodeFilter implements Serializable{
         return this;
     }
 
+    /**
+     * Adds an area filter to the filter. If no area filter exists yet, it is added as an
+     * AND filter. Otherwise it is added as an OR filter.
+     */
     public TaxonNodeFilter orArea(UUID uuid){
         areaFilter.add( new LogicFilter<>(NamedArea.class, uuid, Op.OR));
         return this;
     }
+    /**
+     * Adds an area filter to the filter. If no area filter exists yet, it is added as an
+     * AND filter. Otherwise it is added as an OR filter.
+     */
     public TaxonNodeFilter orArea(NamedArea area){
         areaFilter.add( new LogicFilter<>(area, Op.OR));
         return this;
@@ -374,19 +418,37 @@ public class TaxonNodeFilter implements Serializable{
                 && !getSubtreeFilter().isEmpty();
     }
 
-    public ORDER getOrderBy() {
-        return orderBy;
+    public boolean hasAreaFilter() {
+        return getAreaFilter() != null  //just in case, but should never be null
+                && !getAreaFilter().isEmpty();
     }
-    public void setOrder(ORDER orderBy) {
-        this.orderBy = orderBy;
+
+    public TaxonNodeFilterSortMode getSortMode() {
+        return sortMode;
+    }
+    public void setSortMode(TaxonNodeFilterSortMode taxonNodeFilterSortMode) {
+        this.sortMode = taxonNodeFilterSortMode;
+    }
+    public TaxonNodeSortMode getBaseSortMode() {
+        return this.sortMode.getBaseSortMode();
+    }
+
+    public boolean hasTaxonomicSortMode() {
+        return this.sortMode != null && this.sortMode.isTaxonomic();
     }
 
     public boolean isIncludeAbsentDistributions() {
         return includeAbsentDistributions;
     }
-
     public void setIncludeAbsentDistributions(boolean includeAbsentDistributions) {
         this.includeAbsentDistributions = includeAbsentDistributions;
+    }
+
+    public boolean isPropagateDistributionToHigherTaxa() {
+        return propagateDistributionToHigherTaxa;
+    }
+    public void setPropagateDistributionToHigherTaxa(boolean propagateDistributionToHigherTaxa) {
+        this.propagateDistributionToHigherTaxa = propagateDistributionToHigherTaxa;
     }
 
 // ************************** toString *********************************/
@@ -396,6 +458,6 @@ public class TaxonNodeFilter implements Serializable{
         return "TaxonNodeFilter [subtrees=" + subtrees + ", taxonNodes=" + taxonNodes + ", classifications="
                 + classifications + ", taxa=" + taxa + ", rankMin=" + rankMin + ", rankMax=" + rankMax + ", areaFilter="
                 + areaFilter + ", distributionStatusFilter=" + distributionStatusFilter + ", includeRootNodes="
-                + includeRootNodes + ", includeUnpublished=" + includeUnpublished + ", orderBy=" + orderBy + "]";
+                + includeRootNodes + ", includeUnpublished=" + includeUnpublished + ", sortMode=" + sortMode + "]";
     }
 }

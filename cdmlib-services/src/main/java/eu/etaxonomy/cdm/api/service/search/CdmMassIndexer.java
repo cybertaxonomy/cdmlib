@@ -109,7 +109,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         int batchSize = sweetestBatchSize(type);
         int numOfBatches = calculateNumOfBatches(countResult, batchSize);
 
-        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+        SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
         subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
 
         // Scrollable results will avoid loading too many objects in memory
@@ -163,7 +163,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         monitor.subTask("creating dictionary " + type.getSimpleName());
 
-        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+        SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
         subMonitor.beginTask("Creating dictionary " + type.getSimpleName(), 1);
 
         Directory directory = ((DirectoryBasedIndexManager) indexManager).getDirectoryProvider().getDirectory();
@@ -227,13 +227,12 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
 
         // TODO check for min free:
-        // < 600MB => ERROR may fail with out of memory
-        // < 750MB => WARNING may be slow
+        // < 600MB => WARNING may fail with out of memory
+        // < 750MB => INFO may be slow
         if(freeMemoryMB < 600) {
-            logger.error("The available free heap space appears to be too small (<600MB), the mass indexer may run out of memory!");
-        }
-        if(freeMemoryMB < 750) {
-            logger.warn("The available free heap space appears to be small (<750MB), the mass indexer could be slow!");
+            logger.warn("The available free heap space appears to be too small (<600MB), the mass indexer may run out of memory!");
+        } else if(freeMemoryMB < 750) {
+            logger.info("The available free heap space appears to be small (<750MB), the mass indexer could be slow!");
         }
 
         double factor = 0.769; // default
@@ -339,7 +338,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         if(HS_31_MODE) {
             monitor.subTask("Optimizing Index");
-            SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+            SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
             subMonitor.beginTask("Optimizing Index",1);
             optimize();
             logger.info("end index optimization");
@@ -373,7 +372,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         int batchSize = sweetestBatchSize(type);
         int numOfBatches = calculateNumOfBatches(countResult * 2, batchSize); // each entity is worked two times 1. document added, 2. document build
 
-        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+        SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
         subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
 
 

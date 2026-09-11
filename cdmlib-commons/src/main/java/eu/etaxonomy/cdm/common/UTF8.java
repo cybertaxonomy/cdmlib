@@ -52,7 +52,10 @@ public enum UTF8 {
 	BLACK_CIRCLE("\u25CF"),       //Black circle, symbol for endemic
 	DEGREE_SIGN("\u00B0"),      //°
 	NARROW_NO_BREAK("\u202F"),   //narrow space that does not break, as used after the hybrid sign
-	ELLIPSIS("\u2026")
+	ELLIPSIS("\u2026"),
+	EQUALS_SIGN("\u003D"),       // = U+003D EQUALS SIGN
+	IDENTICAL_TO("\u2261"),      // ≡ U+2261 IDENTICAL TO
+	MINUS("\u2212")  // − U+2212 MINUS SIGN as used for invalid names and in mathematics
 	;
 
 	private String value;
@@ -62,7 +65,7 @@ public enum UTF8 {
 	}
 
 	public static String ANY_DASH_RE(){
-	    return SPATIUM+"?[\\-"+HYPHEN+HYPHEN_NO_BREAK+FIGURE_DASH+EN_DASH+EM_DASH+BAR_HORIZON+EM_DASH_DOUBLE+"]"+SPATIUM+"?";
+	    return SPATIUM+"?[\\-"+HYPHEN+HYPHEN_NO_BREAK+FIGURE_DASH+EN_DASH+EM_DASH+BAR_HORIZON+EM_DASH_DOUBLE+MINUS+"]"+SPATIUM+"?";
 	}
 
 	@Override

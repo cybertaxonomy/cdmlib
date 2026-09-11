@@ -43,12 +43,10 @@ public class LogicFilter<T extends CdmBase> implements Serializable{
     private Op operator = defaultOperator;
 
     private UUID uuid;
-    private String treeIndex;
+    private String treeIndex; //for taxon nodes only
     private Class<? extends T> clazz;
 
 //  private boolean hasUncheckedUuid = false;
-
-
 
     public LogicFilter(T cdmBase){
         this(cdmBase, defaultOperator);
@@ -66,7 +64,6 @@ public class LogicFilter<T extends CdmBase> implements Serializable{
         this.uuid = uuid;
         this.operator = operator;
         this.clazz = clazz;
-
     }
 
     public <S extends T> LogicFilter(S cdmBase, Op operator){
@@ -85,8 +82,6 @@ public class LogicFilter<T extends CdmBase> implements Serializable{
             this.treeIndex = ((ITreeNode<?>)cdmBase).treeIndex();
         }
     }
-
-
 
     public Op getOperator() {
         return operator;

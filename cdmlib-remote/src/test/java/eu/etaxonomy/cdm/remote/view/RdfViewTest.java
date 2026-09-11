@@ -68,9 +68,7 @@ public class RdfViewTest extends UnitilsJUnit4 {
 
 	@Before
 	public void setUp() throws Exception {
-		XMLUnit.setControlParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-	    XMLUnit.setTestParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-	    XMLUnit.setSAXParserFactory("org.apache.xerces.jaxp.SAXParserFactoryImpl");
+
 	    XMLUnit.setIgnoreWhitespace(true);
 
 		taxonConcept = new TaxonConcept();

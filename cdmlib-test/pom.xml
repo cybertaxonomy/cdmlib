@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.59.0</version>
+    <version>6.0.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -169,6 +169,11 @@
 		<groupId>xmlunit</groupId>
 		<artifactId>xmlunit</artifactId>
         <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>jakarta.annotation</groupId>

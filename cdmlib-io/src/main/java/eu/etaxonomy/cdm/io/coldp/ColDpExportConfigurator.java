@@ -9,15 +9,14 @@
 package eu.etaxonomy.cdm.io.coldp;
 
 import java.io.File;
-import java.util.Comparator;
 
+import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.io.out.IFactExportConfigurator;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportConfiguratorBase;
-import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author a.mueller
@@ -38,7 +37,7 @@ public class ColDpExportConfigurator
 
     private boolean createZipFile = true;
 
-    private Comparator<TaxonNodeDto> taxonNodeComparator;
+    private TaxonNodeDtoSortMode taxonNodeSortMode;
 
     private boolean includeFullName = false;
 
@@ -141,11 +140,11 @@ public class ColDpExportConfigurator
         this.createZipFile = createZipFile;
     }
 
-    public Comparator<TaxonNodeDto> getTaxonNodeComparator() {
-        return taxonNodeComparator;
+    public TaxonNodeDtoSortMode getTaxonNodeSortMode() {
+        return taxonNodeSortMode;
     }
-    public void setTaxonNodeComparator(Comparator<TaxonNodeDto> taxonNodeComparator) {
-        this.taxonNodeComparator = taxonNodeComparator;
+    public void setTaxonNodeSortMode(TaxonNodeDtoSortMode taxonNodeSortMode) {
+        this.taxonNodeSortMode = taxonNodeSortMode;
     }
 
     @Override

@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.DeleteResult;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DefaultImportState;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -88,46 +90,82 @@ public class NonReferencedObjectsDeleter extends CdmImportBase<NonReferencedObje
             List<String> propertyPath = new ArrayList<>();
             propertyPath.add("sources.citation");
             propertyPath.add("createdBy");
+            propertyPath.add("identifiers.type");
 
-            List<Reference> references =getReferenceService().list(Reference.class, null, null, getOrderHint(), propertyPath);
+            int pageSize = 500;
+            int pageNumber = state.getConfig().getStartPage();
+
+            TransactionStatus tx = this.startTransaction();
+            Pager<Reference> page = getReferenceService().page(Reference.class, pageSize, pageNumber, getOrderHint(), propertyPath);
+//            List<Reference> references = getReferenceService().list(Reference.class, null, null, getOrderHint(), propertyPath);
 
             int deleted = 0;
-            System.out.println("There are " + references.size() + " " + label + "s");
-            for (Reference ref: references){
-                long refObjects = getCommonService().getReferencingObjectsCount(ref);
-                if (refObjects == 0) {
-                    if (isIgnore(state, ref)){
-                        System.out.println("Ignore: " + ref.getId() + "\t" + ref.getType() + "\t" +ref.getTitleCache() + "\t" + ref.getCreated()+ "\t" +
-                                (ref.getCreatedBy() == null? "" : ref.getCreatedBy().getUsername()) + "\t" +
-                                ref.getUpdated() + "\t" +  getSources(ref));
-                    }else{
-                        if (!state.getConfig().isDoOnlyReport()){
-                            DeleteResult result = getReferenceService().delete(ref);
-                            if (!result.isOk()){
-                                System.out.println(label + " " + ref.getTitle() + " with id " + ref.getId() + " could not be deleted.");
-                                result = null;
-                            }else{
-                                deleted++;
-                                System.out.println("Deleted: " + ref.getTitleCache() + "; id = " + ref.getId());
-                            }
-                        }else{
-                            deleted++;
-                            System.out.println(label + " to delete: " + ref.getTitleCache() + "; id = " + ref.getId());
-                        }
-                    }
+            System.out.println("There are " + page.getCount() + " " + label + "s");
+
+            while (page.getPagesAvailable() > 0){
+
+                System.out.println(pageNumber++);
+                for (Reference ref : page.getRecords()) {
+                    deleted = handleSingleReference(state, label, deleted, ref);
                 }
+
+                try {
+                    this.commitTransaction(tx);
+                } catch (Exception e) {
+                    // TODO Exception handling for commit failure
+                    e.printStackTrace();
+                }
+                tx = this.startTransaction();
+                page = getReferenceService().page(Reference.class, pageSize, page.getNextIndex(), getOrderHint(), propertyPath);
             }
+            this.commitTransaction(tx);
             System.out.println(deleted + " " + label + "s are deleted.");
         }
     }
 
+    private int handleSingleReference(DefaultImportState<NonReferencedObjectsDeleterConfigurator> state, String label,
+            int deleted, Reference ref) {
+
+        long refObjects = getCommonService().getReferencingObjectsCount(ref);
+        if (refObjects == 0) {
+            if (isIgnore(state, ref)){
+                System.out.println("Ignore: " + ref.getId() + "\t" + ref.getType() + "\t" +ref.getTitleCache() + "\t" + ref.getCreated()+ "\t" +
+                        (ref.getCreatedBy() == null? "" : ref.getCreatedBy().getUsername()) + "\t" +
+                        ref.getUpdated() + "\t" +  getSources(ref));
+            }else{
+                if (!state.getConfig().isDoOnlyReport()){
+                    DeleteResult result = getReferenceService().delete(ref);
+                    if (!result.isOk()){
+                        System.out.println(label + " " + ref.getTitle() + " with id " + ref.getId() + " could not be deleted.");
+                        result = null;
+                    }else{
+                        deleted++;
+                        System.out.println("Deleted: " + ref.getTitleCache() + "; id = " + ref.getId());
+                    }
+                }else{
+                    deleted++;
+                    System.out.println(label + " to delete: " + ref.getTitleCache() + "; id = " + ref.getId());
+                }
+            }
+        }
+        return deleted;
+    }
+
     private boolean isIgnore(DefaultImportState<NonReferencedObjectsDeleterConfigurator> state, Reference ref) {
         if (state.getConfig().isKeepReferencesWithTitle() && isNotBlank(ref.getTitle())
-                || state.getConfig().isKeepRisSources() && hasRISSource(ref)){
+                || state.getConfig().isKeepRisSources() && hasRISSource(ref)
+                || hasIdentifierTypeToKeep(state, ref)){
             return true;
         }else{
             return false;
         }
+    }
+
+    private boolean hasIdentifierTypeToKeep(DefaultImportState<NonReferencedObjectsDeleterConfigurator> state,
+            Reference ref) {
+        return state.getConfig().getIdentifierTypesToKeep().stream()
+                .anyMatch(idType -> ref.getIdentifiers().stream()
+                        .anyMatch(identifier -> identifier.getType().getUuid().equals(idType)));
     }
 
     private String getSources(Reference ref) {

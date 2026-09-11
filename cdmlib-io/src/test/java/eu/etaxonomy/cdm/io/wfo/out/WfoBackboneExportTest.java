@@ -91,7 +91,7 @@ public class WfoBackboneExportTest
         config.setSourceLinkBaseUrl("https://www.abc.de/mytaxon");
         config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(node4Uuid));
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
 
         //counts and result lists
         List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
@@ -129,7 +129,7 @@ public class WfoBackboneExportTest
         config.getTaxonNodeFilter().setIncludeUnpublished(true);
         //Note: on purpose we do not define a familyStr here as it is to be taken from the persisted family
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result, 0, 1, 1);  //1 warning expected for missing basionym author, 1 error because of missing wfo identifier for a synonym
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result, 0, 1, 1);  //1 warning expected for missing basionym author, 1 error because of missing wfo identifier for a synonym
 
         //test counts
         List<String> taxonResult = getStringList(data, WfoBackboneExportTable.CLASSIFICATION);
@@ -216,7 +216,7 @@ public class WfoBackboneExportTest
         //config+invoke
         WfoBackboneExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result, 0, 1, 1);  //1 warning expected for missing basionym author,one error because of a missing wfo identifier
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result, 0, 1, 1);  //1 warning expected for missing basionym author,one error because of a missing wfo identifier
         Assert.assertTrue(result.getExportType().equals(ExportType.WFO_BACKBONE)); //test export type
 
         //test counts
@@ -243,6 +243,8 @@ public class WfoBackboneExportTest
         config.setSourceLinkBaseUrl("http://www.abc.de/mytaxon/");
         return config;
     }
+
+
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

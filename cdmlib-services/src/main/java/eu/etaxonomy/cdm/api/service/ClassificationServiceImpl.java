@@ -76,6 +76,7 @@ import eu.etaxonomy.cdm.persistence.dto.EntityDTO;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonStatus;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.dto.compare.ISortableTaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -317,7 +318,7 @@ public class ClassificationServiceImpl
         if (!"instance".equals(loadingMode)) {
             List<TaxonNodeDto> results = dao.listChildrenOf(
                     taxon, classification, subtree, includeUnpublished, pageSize, pageIndex);
-            Comparator<TaxonNodeDto> comparator = sortMode.comparator();
+            Comparator<ISortableTaxonNodeDto> comparator = sortMode.comparator();
             // TODO order during the hibernate query in the dao?
             List<TaxonNodeDto> dtos = results.stream()
                     .sorted(comparator)
@@ -327,7 +328,7 @@ public class ClassificationServiceImpl
             List<TaxonNode> results = dao.listChildrenOf(
                     taxon, classification, subtree, includeUnpublished, pageSize, pageIndex,
                     new ArrayList<>());
-            Comparator<TaxonNodeDto> comparator = sortMode.comparator();
+            Comparator<ISortableTaxonNodeDto> comparator = sortMode.comparator();
             // TODO order during the hibernate query in the dao?
             List<TaxonNodeDto> dtos = results.stream()
                     .map(tn -> new TaxonNodeDto(tn))
@@ -731,7 +732,7 @@ public class ClassificationServiceImpl
 
         Map<TreeIndex, Integer> treeIndexSortIndexMapTmp = taxonNodeDao.rankOrderIndexForTreeIndex(treeIndexClosure, minRankOrderIndex, maxRankOrderIndex);
 
-        //remove all treeindex with "exists child in above map(and child.sortindex > xxx)
+        //remove all treeindex with "exists child in above map(and child.sortindex > xxx)"
         List<TreeIndex> treeIndexList = TreeIndex.sort(treeIndexSortIndexMapTmp.keySet());
 
         Map<TreeIndex, Integer> treeIndexSortIndexMap = new HashMap<>();
@@ -753,7 +754,6 @@ public class ClassificationServiceImpl
             result.add(item);
             item.setTaxonUuid(originalTaxonUuid);
             TreeIndex groupTreeIndex = taxonIdTreeIndexMap.get(originalTaxonUuid);
-            String groupIndexX = TreeIndex.toString(groupTreeIndex);
             while (groupTreeIndex != null){
                 if (treeIndexTaxonIdMap.get(groupTreeIndex) != null){
                     UuidAndTitleCache<?> uuidAndLabel = treeIndexTaxonIdMap.get(groupTreeIndex);

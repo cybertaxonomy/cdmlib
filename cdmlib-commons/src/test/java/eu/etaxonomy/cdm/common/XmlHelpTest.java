@@ -10,12 +10,8 @@ package eu.etaxonomy.cdm.common;
 
 import static org.junit.Assert.assertTrue;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -28,59 +24,46 @@ public class XmlHelpTest {
 		logger.warn("Tests for " + XmlHelpTest.class.getName() + " not yet implemented");
 	}
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
 /******* TESTS *************************************/
 
 	@Test
 	public void testSaveToXmlDocumentStringStringFormat() {
-		logger.warn("Not yet implemented"); // TODO
+		// TODO
 	}
 
 	@Test
 	public void testSaveToXmlDocumentOutputStreamFormat() {
-		logger.warn("Not yet implemented"); // TODO
+		// TODO
 		assertTrue(true);
 	}
 
 	@Test
 	public void testGetFirstAttributedChild() {
-		logger.warn("Not yet implemented"); // TODO
+		// TODO
 	}
 
 	@Test
 	public void testGetOrAddChild() {
-		logger.warn("Not yet implemented"); // TODO
+		// TODO
 	}
 
 	@Test
 	public void testInsertXmlRefProperty() {
-		logger.warn("Not yet implemented"); // TODO
+		// TODO
 	}
 
 	@Test
 	public void testInsertXmlValueProperty() {
-		logger.warn("Not yet implemented"); // TODO
+		// TODO
 	}
 
 	@Test
 	public void testInsertXmlBean() {
-		logger.warn("Not yet implemented"); // TODO
+		// TODO
 	}
 
 	@Test
 	public void testGetRoot() {
-		logger.warn("Not yet implemented"); // TODO
+		// TODO
 	}
-
 }

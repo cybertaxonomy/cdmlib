@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
-import eu.etaxonomy.cdm.io.common.XmlExportState;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -78,6 +77,10 @@ public class WfoBackboneExport
 
     private static final long serialVersionUID = -4560488499411723333L;
 
+    private static final int TICKS_DATA_RETRIEVAL = 98;
+    private static final int TICKS_FINAL_RESULT = 2;
+    private static final int TICKS_TOTAL = TICKS_DATA_RETRIEVAL + TICKS_FINAL_RESULT;
+
     public WfoBackboneExport() {
         this.ioName = this.getClass().getSimpleName();
     }
@@ -92,7 +95,9 @@ public class WfoBackboneExport
     protected void doInvoke(WfoBackboneExportState state) {
 
         try {
-            IProgressMonitor monitor = state.getConfig().getProgressMonitor();
+            IProgressMonitor ioMonitor = state.getCurrentIoProgressMonitor();
+            ioMonitor.beginTask("WFO Backbone Export -", TICKS_TOTAL);
+            ioMonitor.subTask("Start classification export ...");
             WfoBackboneExportConfigurator config = state.getConfig();
 
             //set root node
@@ -104,12 +109,11 @@ public class WfoBackboneExport
                 state.setRootId(config.getTaxonNodeFilter().getSubtreeFilter().get(0).getUuid());
             }
 
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            TaxonNodeOutStreamPartitioner<XmlExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
-                    state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
+            TaxonNodeOutStreamPartitioner<WfoBackboneExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
+                    state, state.getConfig().getTaxonNodeFilter(), 100, ioMonitor, TICKS_DATA_RETRIEVAL);
 
 //          handleMetaData(state);  //FIXME metadata;
-            monitor.subTask("Start partitioning");
+            ioMonitor.subTask("Start partitioning");
 
             //test configurator
             String baseUrl = state.getConfig().getSourceLinkBaseUrl();
@@ -128,7 +132,9 @@ public class WfoBackboneExport
                 node = partitioner.next();
             }
 
+            ioMonitor.subTask("Create final result");
             state.getProcessor().createFinalResult(state);
+            ioMonitor.worked(TICKS_FINAL_RESULT);
         } catch (Exception e) {
             state.getResult().addException(e,
                     "An unexpected error occurred in main method doInvoke() " + e.getMessage());

@@ -54,7 +54,7 @@ public enum PreferencePredicate
     CommonNameLanguages(UUID.fromString("860b0395-09ad-42f5-9dc7-a277ebc034ea"), "Common name: Languages", "commonname.languages", null),
 
     //PreferencePredicates from TaxEditor:
-    TaxonNodeOrder(UUID.fromString("ce06bd8e-4371-4ee5-8f57-cf23930cfd12"), "Taxon node order", "model.taxon.TNO", NodeOrderEnum.RankAndNameOrder),  //default alphabet + rank
+    TaxonNodeOrder(UUID.fromString("ce06bd8e-4371-4ee5-8f57-cf23930cfd12"), "Taxon node order", "model.taxon.TNO", TaxonNodeOrderEnum.RankAndNameOrder),  //default alphabet + rank
     NameDetailsView(UUID.fromString("3c4ec5f5-feb5-44a8-8533-c3c3484a6869"), "NameDetailsView", "model.editor.NDV", null),
     DeterminationOnlyForFieldUnits(UUID.fromString("91b9224b-6610-4cf1-b3da-d60d6f9d59b1"), "DeterminationOnlyForFieldUnit", "model.editor.DOFU", Boolean.FALSE),
     LogSaveActivities(UUID.fromString("f634a98a-3449-4231-9d58-32d76b07496f"), "Log save activities", "editor.save.log", Boolean.FALSE),

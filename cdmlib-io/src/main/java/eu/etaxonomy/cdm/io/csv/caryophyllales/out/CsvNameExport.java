@@ -206,7 +206,7 @@ public class CsvNameExport extends CsvNameExportBase {
 //        findChildren(state, childrenUuids, parentsNodesUUID);
 
         IProgressMonitor monitor = state.getConfig().getProgressMonitor();
-        @SuppressWarnings("unchecked")
+
         TaxonNodeOutStreamPartitioner<XmlExportState> partitioner
           = TaxonNodeOutStreamPartitioner.NewInstance(
                 this, state, state.getConfig().getTaxonNodeFilter(),

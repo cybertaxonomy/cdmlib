@@ -91,7 +91,6 @@ public class EndnoteRecordsImport
 		Map<String, Reference> map_webPage = new HashMap<>();
 		Map<String, Reference> map_generic = new HashMap<>();
 		Map<String, Reference> map_printSeries = new HashMap<>();
-		Map<String, Reference> map_personalCommunication = new HashMap<>();
 
 		IReferenceService referenceService = getReferenceService();
 

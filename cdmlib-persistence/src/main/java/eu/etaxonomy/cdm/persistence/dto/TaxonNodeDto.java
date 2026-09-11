@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
+import eu.etaxonomy.cdm.persistence.dto.compare.ISortableTaxonNodeDto;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
@@ -31,7 +32,9 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
  * @author a.kohlbecker
  * @since Jun 13, 2016
  */
-public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
+public class TaxonNodeDto
+        extends UuidAndTitleCache<ITaxonTreeNode>
+        implements ISortableTaxonNodeDto {
 
     private static final long serialVersionUID = -7169646913528213604L;
 
@@ -97,8 +100,10 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     	this(uuid, id, treeIndex, nameTitleCache, taxonTitleCache, rankOrderIndex, parentUuid, sortIndex, classificationUuid);
     	this.status = status;
     	this.taxonIsPublish = taxonIsPublished;
-    	for (LanguageString str: placementNote) {
-    		this.placementNote.put(str.getLanguage(), str.getText());
+    	if (placementNote != null) {
+        	for (LanguageString str: placementNote) {
+        		this.placementNote.put(str.getLanguage(), str.getText());
+        	}
     	}
     	this.taxonUuid = taxonUuid;
         this.taxonomicChildrenCount = childrenCount;
@@ -200,14 +205,17 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         return secUuid;
     }
 
+    @Override
     public UUID getTaxonUuid() {
         return taxonUuid;
     }
 
+    @Override
     public List<TaggedText> getTaggedTitle() {
         return taggedTitle;
     }
 
+    @Override
     public TaxonNodeStatus getStatus() {
         return status;
     }
@@ -236,18 +244,22 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         return classificationUUID;
     }
 
+    @Override
     public String getTreeIndex() {
         return treeIndex;
     }
 
+    @Override
     public UUID getParentUUID() {
         return parentUUID;
     }
 
+    @Override
     public Integer getSortIndex() {
         return sortIndex;
     }
 
+    @Override
     public Integer getRankOrderIndex() {
         return rankOrderIndex;
     }
@@ -256,6 +268,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         return getAbbrevTitleCache();
     }
 
+    @Override
     public String getNameTitleCache(){
         return getTitleCache();
     }

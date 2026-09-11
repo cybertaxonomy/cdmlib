@@ -250,8 +250,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		}
 		UpdateResult result = new UpdateResult();
 		long count = dao.count(clazz);
+		subMonitor.beginTask("", Long.valueOf(count).intValue());
 
-		int worked = 0;
 		Set<CdmEntityIdentifier> updatedCdmIds = new HashSet<>();
 		for(int i = 0 ; i < count ; i = i + stepSize){
 			// not sure if such strict ordering is necessary here, but for safety reasons I do it
@@ -267,8 +267,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 			    if (entity.updateCaches(cacheStrategy)){
 			        updatedCdmIds.add(CdmEntityIdentifier.NewInstance(entity.getId(), clazz));
 			    }
-				worked++;
-				subMonitor.internalWorked(1);
+				subMonitor.worked(1);
 			}
 			getSession().flush();
 			//still causes LIE during hibernate search indexing (but not when running from command line)

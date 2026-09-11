@@ -61,7 +61,7 @@ public class CdmLightExportTest
         CdmLightExportConfigurator config = newConfigurator();
         config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(node4Uuid));
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
 
         //taxon table
         byte[] taxonByte = data.get(CdmLightExportTable.TAXON.getTableName());
@@ -143,7 +143,7 @@ public class CdmLightExportTest
         CdmLightExportConfigurator config = newConfigurator();
         config.getTaxonNodeFilter().setIncludeUnpublished(true);
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
 
         //test counts
         List<String> taxonResult = getStringList(data, CdmLightExportTable.TAXON);
@@ -228,7 +228,7 @@ public class CdmLightExportTest
         //config + invoke
         CdmLightExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
         Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
 
         //test ...
@@ -264,7 +264,7 @@ public class CdmLightExportTest
         //config + invoke
         CdmLightExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
         Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
 
         //test ...
@@ -324,7 +324,7 @@ public class CdmLightExportTest
       //config + invoke
         CdmLightExportConfigurator config = newConfigurator();
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
         Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
         List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
         Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
@@ -355,7 +355,7 @@ public class CdmLightExportTest
         config.setShowSynSecForHomotypicGroup(true);
 
         ExportResult result = defaultExport.invoke(config);
-        Map<String, byte[]> data = checkAndGetData(result);
+        Map<String, byte[]> data = (Map<String, byte[]>)checkAndGetData(result);
         Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
         List<String> hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
         Assert.assertNotNull("HomotypicGroup table must not be null", hgList);
@@ -369,7 +369,7 @@ public class CdmLightExportTest
         //show syn sec for every synonym
         config.setShowSynSecForHomotypicGroup(false);
         result = defaultExport.invoke(config);
-        data = checkAndGetData(result);
+        data = (Map<String, byte[]>)checkAndGetData(result);
         Assert.assertTrue(result.getExportType().equals(ExportType.CDM_LIGHT)); //test export type
         hgList = getStringList(data, CdmLightExportTable.HOMOTYPIC_GROUP);
         Assert.assertNotNull("HomotypicGroup table must not be null", hgList);

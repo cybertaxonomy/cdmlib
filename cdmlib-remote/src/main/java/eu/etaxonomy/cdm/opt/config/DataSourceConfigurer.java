@@ -432,13 +432,8 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         }
         try {
             url = (String)m.invoke(ds);
-        } catch (IllegalArgumentException e) {
-            logger.error(e);
-        } catch (IllegalAccessException e) {
-            logger.error(e);
-        } catch (InvocationTargetException e) {
-            logger.error(e);
-        } catch (SecurityException e) {
+        } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException
+                | SecurityException e) {
             logger.error(e);
         }
 

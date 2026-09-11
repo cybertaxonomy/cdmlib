@@ -9,6 +9,10 @@
 
 package eu.etaxonomy.cdm.strategy.cache;
 
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
+
 import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
@@ -176,7 +180,19 @@ public enum TagEnum {
 	 * {@link #isSeparator()} is also unclear, currently it is not.
 	 */
 	public boolean isNameCachePart() {
-        return isName()||isRank()||isHybridSign()||isAppendedPhrase();
+	    return nameCacheTags().contains(this);
     }
+
+	public static final EnumSet<TagEnum> nameCacheTags(){
+	    return EnumSet.of(name, rank, hybridSign, appendedPhrase, cultivar);
+	}
+
+    public static final EnumSet<TagEnum> titleCacheTags(){
+        Set<TagEnum> set = new HashSet<>(nameCacheTags());
+        set.add(authors);
+        set.add(fullName);
+        return EnumSet.copyOf(set);
+    }
+
 
 }
