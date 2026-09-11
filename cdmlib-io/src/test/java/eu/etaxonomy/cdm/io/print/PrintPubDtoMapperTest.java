@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.print;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.io.print.dto.PrintPubTaxonSummaryDTO;
@@ -41,11 +42,17 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  */
 public class PrintPubDtoMapperTest extends TermTestBase {
 
+    private PrintPubExportConfigurator config;
+    private PrintPubExportState state;
+
     private TaxonNode taxonNode;
     private PrintPubDtoMapper mapper;
 
     @Before
     public void setUp() throws Exception {
+
+        config = PrintPubExportConfigurator.NewInstance();
+        state = new PrintPubExportState(config);
 
         PrintPubBibliographyCollector bibCollector = new PrintPubBibliographyCollector();
         mapper = new PrintPubDtoMapper(bibCollector);
@@ -86,8 +93,6 @@ public class PrintPubDtoMapperTest extends TermTestBase {
 
     @Test
     public void testMapNodeToDto() {
-        PrintPubExportConfigurator config = PrintPubExportConfigurator.NewInstance();
-        PrintPubExportState state = new PrintPubExportState(config);
 
         //map
         PrintPubTaxonSummaryDTO taxonDto = mapper.mapNodeToDto(taxonNode, 1, state);
@@ -104,4 +109,19 @@ public class PrintPubDtoMapperTest extends TermTestBase {
 
     }
 
+    @Test
+    @Ignore   //temp ignored as language labels convert to idInVoc in jenkins
+    public void testMapNodeToDto_Facts() {
+        PrintPubExportConfigurator config = PrintPubExportConfigurator.NewInstance();
+        PrintPubExportState state = new PrintPubExportState(config);
+
+        //map
+        PrintPubTaxonSummaryDTO taxonDto = mapper.mapNodeToDto(taxonNode, 1, state);
+
+        //facts
+        Assert.assertEquals("First flower name [Irish], My flower [English]", taxonDto.commonNameString);
+
+        //TODO preliminary
+        Assert.assertEquals("Africa, Europe", taxonDto.distributionString);
+    }
 }
