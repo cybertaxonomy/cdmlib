@@ -28,7 +28,7 @@ public class PrintPubIndexBuilder {
         }
 
         return taxa.stream().filter(Objects::nonNull)
-                .flatMap(taxon -> Stream.concat(Stream.ofNullable(taxon.scientificName), synonymScientificNames(taxon)))
+                .flatMap(taxon -> Stream.concat(Stream.ofNullable(taxon.nameDTO.scientificName), synonymScientificNames(taxon)))
                 .filter(StringUtils::isNotBlank).map(String::trim).distinct().sorted(String.CASE_INSENSITIVE_ORDER)
                 .toList();
     }
@@ -60,6 +60,6 @@ public class PrintPubIndexBuilder {
             return Stream.empty();
         }
 
-        return group.synonyms.stream().filter(Objects::nonNull).map(synonym -> synonym.scientificName);
+        return group.synonyms.stream().filter(Objects::nonNull).map(synonym -> synonym.nameDTO.scientificName);
     }
 }

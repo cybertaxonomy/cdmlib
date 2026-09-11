@@ -8,18 +8,13 @@
  */
 package eu.etaxonomy.cdm.io.print.dto;
 
-import java.util.List;
-
-import eu.etaxonomy.cdm.strategy.cache.TaggedText;
-
 /**
  * Data transfer object representing a single taxonomic synonym.
  */
 public class PrintPubSynonymDTO {
 
-    public List<TaggedText> taggedNameList;
-
-    public String scientificName;
+    //should never become null
+    public PrintPubNameDTO nameDTO = new PrintPubNameDTO();
 
     public String secReference;
 

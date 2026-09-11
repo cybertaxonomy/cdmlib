@@ -9,10 +9,13 @@
 package eu.etaxonomy.cdm.io.print.docbuilder;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,6 +35,7 @@ import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement.Run;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement.RunType;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubFactDTO;
+import eu.etaxonomy.cdm.io.print.dto.PrintPubNameDTO;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubSynonymDTO;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubSynonymGroupDTO;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubTaxonSummaryDTO;
@@ -55,6 +59,9 @@ public class PrintPubDocumentBuilder {
     private static final String INVALID_NAME_MARKER = UTF8.MINUS + " ";
     private static final String ACC_SEC_MARKER = " sec. ";
     private static final String SYN_SEC_MARKER = " syn sec. ";
+
+    private static final EnumSet<TagEnum> FULL_TITLE_CACHE_TAGS = EnumSet.allOf(TagEnum.class);
+    private static final EnumSet<TagEnum> TITLE_CACHE_TAGS = TagEnum.titleCacheTags();
 
     public List<IPrintPubDocumentElement> buildLayout(PrintPubDocumentRequest request) {
 
@@ -153,7 +160,7 @@ public class PrintPubDocumentBuilder {
 
     private PrintPubTextRunElement renderTaxonHeading(PrintPubTaxonSummaryDTO taxonDto) {
 
-        List<Run> runs = new ArrayList<>(runsFromTaggedNameForTitle(taxonDto.taggedNameList));
+        List<Run> runs = new ArrayList<>(runsFromTaggedNameForTitle(taxonDto.nameDTO.taggedNameList));
 
         if (StringUtils.isNotBlank(taxonDto.secReferenceCitation)) {
             runs.add(new Run(RunType.TEXT, ACC_SEC_MARKER + taxonDto.secReferenceCitation));
@@ -348,9 +355,9 @@ public class PrintPubDocumentBuilder {
         return elements;
     }
 
-    protected List<IPrintPubDocumentElement> buildScientificNameIndex(List<PrintPubTaxonSummaryDTO> taxa) {
+    protected List<IPrintPubDocumentElement> buildScientificNameIndex(List<PrintPubTaxonSummaryDTO> taxonDtos) {
 
-        List<String> names = scientificNames(taxa).toList();
+        List<PrintPubNameDTO> names = scientificNameDtos(taxonDtos).toList();
 
         if (names.isEmpty()) {
             return List.of();
@@ -361,33 +368,47 @@ public class PrintPubDocumentBuilder {
         elements.add(new PrintPubPageBreakElement());
         elements.add(new PrintPubSectionHeaderElement("Index to Scientific Names", 1));
 
-        for (String name : names) {
-            elements.add(new PrintPubTextRunElement(List.of(new Run(RunType.ITALIC, name))));
+        for (PrintPubNameDTO nameDto : names) {
+            List<Run> nameRuns = runsFromTaggedName(nameDto.taggedNameList, TITLE_CACHE_TAGS);
+            elements.add(new PrintPubTextRunElement(nameRuns));
         }
 
         return elements;
     }
 
-    private Stream<String> scientificNames(List<PrintPubTaxonSummaryDTO> taxa) {
+    private Stream<PrintPubNameDTO> scientificNameDtos(List<PrintPubTaxonSummaryDTO> taxonDtos) {
 
-        if (taxa == null) {
+        if (taxonDtos == null) {
             return Stream.empty();
         }
 
-        return taxa.stream().filter(Objects::nonNull)
-                .flatMap(taxon -> Stream.concat(Stream.ofNullable(taxon.scientificName), synonymScientificNames(taxon)))
-                .filter(StringUtils::isNotBlank).map(String::trim).distinct().sorted(String.CASE_INSENSITIVE_ORDER);
+        return taxonDtos.stream()
+                .filter(Objects::nonNull)
+                .flatMap(taxon -> Stream.concat(
+                        Stream.ofNullable(taxon.nameDTO),
+                        synonymScientificNameDtos(taxon)))
+                .distinct()
+                .sorted((n1,n2)-> String.CASE_INSENSITIVE_ORDER.compare(n1.scientificName, n2.scientificName));
     }
 
-    private Stream<String> synonymScientificNames(PrintPubTaxonSummaryDTO taxon) {
+    private Stream<PrintPubNameDTO> synonymScientificNameDtos(PrintPubTaxonSummaryDTO taxon) {
 
-        if (taxon.heterotypicSynonymGroups == null) {
+        if (taxon.heterotypicSynonymGroups == null && taxon.homotypicSynonymGroup == null) {
             return Stream.empty();
         }
 
-        return taxon.heterotypicSynonymGroups.stream().filter(Objects::nonNull).filter(group -> group.synonyms != null)
-                .flatMap(group -> group.synonyms.stream()).filter(Objects::nonNull)
-                .map(synonym -> synonym.scientificName);
+        Set<PrintPubSynonymGroupDTO> groupSet = new HashSet<>();
+        if (taxon.heterotypicSynonymGroups != null) {
+            groupSet.addAll(taxon.heterotypicSynonymGroups);
+        }
+        if (taxon.homotypicSynonymGroup != null) {
+            groupSet.add(taxon.homotypicSynonymGroup);
+        }
+
+        return groupSet.stream()
+                .filter(group -> group.synonyms != null)
+                .flatMap(group -> group.synonyms.stream())
+                .map(synonym -> synonym.nameDTO);
     }
 
     protected List<IPrintPubDocumentElement> buildCommonNameIndex(PrintPubExportState state) {
@@ -415,33 +436,33 @@ public class PrintPubDocumentBuilder {
 
         List<IPrintPubDocumentElement> rows = new ArrayList<>();
 
-        for (PrintPubTaxonSummaryDTO dto : taxa) {
+        for (PrintPubTaxonSummaryDTO taxonDto : taxa) {
 
-            if (!request.includeEmptyIds() && !hasAnySelectedIdentifier(dto, request)) {
+            if (!request.includeEmptyIds() && !hasAnySelectedIdentifier(taxonDto, request)) {
                 continue;
             }
 
             List<Run> runs = new ArrayList<>();
-            List<Run> nameRuns = runsFromTaggedName(dto.taggedNameList);
+            List<Run> nameRuns = runsFromTaggedName(taxonDto.nameDTO.taggedNameList, TITLE_CACHE_TAGS);
 
             if (!nameRuns.isEmpty()) {
                 runs.addAll(nameRuns);
-            } else if (StringUtils.isNotBlank(dto.titleCache)) {
-                runs.add(new Run(RunType.TEXT, dto.titleCache.trim()));
+            } else if (StringUtils.isNotBlank(taxonDto.titleCache)) {
+                runs.add(new Run(RunType.TEXT, taxonDto.titleCache.trim()));
             }
 
             StringBuilder suffix = new StringBuilder();
 
             if (request.includeWfoId()) {
-                appendAppendixField(suffix, "WFO", dto.wfoIds);
+                appendAppendixField(suffix, "WFO", taxonDto.nameDTO.wfoIds);
             }
 
             if (request.includeIpniId()) {
-                appendAppendixField(suffix, "IPNI", dto.ipniIds);
+                appendAppendixField(suffix, "IPNI", taxonDto.nameDTO.ipniIds);
             }
 
             if (request.includeProtologueUris()) {
-                appendAppendixField(suffix, "URL", dto.links);
+                appendAppendixField(suffix, "URL", taxonDto.nameDTO.links);
             }
 
             if (suffix.length() > 0) {
@@ -466,17 +487,17 @@ public class PrintPubDocumentBuilder {
         return elements;
     }
 
-    private boolean hasAnySelectedIdentifier(PrintPubTaxonSummaryDTO dto, PrintPubDocumentRequest request) {
+    private boolean hasAnySelectedIdentifier(PrintPubTaxonSummaryDTO taxonDto, PrintPubDocumentRequest request) {
 
-        if (dto == null) {
+        if (taxonDto == null) {
             return false;
         }
 
-        return request.includeWfoId() && hasValues(dto.wfoIds) || request.includeIpniId() && hasValues(dto.ipniIds)
-                || request.includeProtologueUris() && hasValues(dto.links);
+        return request.includeWfoId() && hasValues(taxonDto.nameDTO.wfoIds) || request.includeIpniId() && hasValues(taxonDto.nameDTO.ipniIds)
+                || request.includeProtologueUris() && hasValues(taxonDto.nameDTO.links);
     }
 
-    private List<Run> runsFromTaggedName(List<TaggedText> taggedName) {
+    private List<Run> runsFromTaggedName(List<TaggedText> taggedName, EnumSet<TagEnum> supportedTags) {
 
         List<Run> runs = new ArrayList<>();
         boolean first = true;
@@ -486,6 +507,10 @@ public class PrintPubDocumentBuilder {
         }
 
         for (TaggedText taggedText : taggedName) {
+
+            if(!supportedTags.contains(taggedText.getType())) {
+                continue;
+            }
             String text = taggedText.getText();
 
             if (StringUtils.isEmpty(text)) {
@@ -544,7 +569,7 @@ public class PrintPubDocumentBuilder {
 
         runs.add(new Run(RunType.TEXT, prefix));
 
-        List<Run> nameRuns = runsFromTaggedName(synonym.taggedNameList);
+        List<Run> nameRuns = runsFromTaggedName(synonym.nameDTO.taggedNameList, FULL_TITLE_CACHE_TAGS);
 
         if (!nameRuns.isEmpty()) {
             runs.addAll(nameRuns);

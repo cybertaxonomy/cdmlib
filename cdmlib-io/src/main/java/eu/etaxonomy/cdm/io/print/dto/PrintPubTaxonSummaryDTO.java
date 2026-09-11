@@ -12,16 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.strategy.cache.TaggedText;
-
 /**
  * Primary data transfer object for rendering a taxon.
  */
 public class PrintPubTaxonSummaryDTO {
 
     public UUID uuid;
-    public List<TaggedText> taggedNameList;
-    public String scientificName;
+
+    //should never become null
+    public PrintPubNameDTO nameDTO = new PrintPubNameDTO();
 
     public int relativeDepth;
     public String titleCache;
@@ -36,9 +35,5 @@ public class PrintPubTaxonSummaryDTO {
     public String distributionString;
     public String secReferenceCitation;
     public String secMicroCitation;
-
-    public List<String> links = new ArrayList<>();
-    public List<String> wfoIds = new ArrayList<>();
-    public List<String> ipniIds = new ArrayList<>();
 
 }

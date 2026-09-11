@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.io.print.compare.PrintPubFeatureKey;
 import eu.etaxonomy.cdm.io.print.compare.PrintPubFeatureOrderStrategyResolver;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubFactDTO;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubFactDTO.PrintPubFactKind;
+import eu.etaxonomy.cdm.io.print.dto.PrintPubNameDTO;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubReferenceEntryDTO.PrintPubReferenceSourceType;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubSynonymDTO;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubSynonymGroupDTO;
@@ -138,7 +139,7 @@ public class PrintPubDtoMapper {
 
         extractTaxonSecReference(state, taxon, taxonDto);
 
-        extractIdentifiers(taxon, taxonDto);
+        extractIdentifiers(taxon.getName(), taxonDto.nameDTO);
 
         return taxonDto;
     }
@@ -203,9 +204,9 @@ public class PrintPubDtoMapper {
     private void mapAcceptedName(Taxon taxon, TaxonName name, PrintPubTaxonSummaryDTO taxonDto) {
 
         if (name != null) {
-            taxonDto.taggedNameList = name.getTaggedFullTitle();
+            taxonDto.nameDTO.taggedNameList = name.getTaggedFullTitle();
 
-            taxonDto.scientificName = TaggedTextFormatter.createString(name.getTaggedName());
+            taxonDto.nameDTO.scientificName = TaggedTextFormatter.createString(name.getTaggedName());
 
             taxonDto.titleCache = name.getTitleCache();
         } else {
@@ -294,9 +295,9 @@ public class PrintPubDtoMapper {
         TaxonName name = HibernateProxyHelper.deproxy(synonym.getName());
 
         if (name != null) {
-            synDto.taggedNameList = name.getTaggedFullTitle();
+            synDto.nameDTO.taggedNameList = name.getTaggedFullTitle();
 
-            synDto.scientificName = TaggedTextFormatter.createString(name.getTaggedName());
+            synDto.nameDTO.scientificName = TaggedTextFormatter.createString(name.getTaggedName());
 
             synDto.titleCache = name.getTitleCache();
 
@@ -310,6 +311,8 @@ public class PrintPubDtoMapper {
         }
 
         extractSynonymSecReference(state, synonym, synDto);
+
+        extractIdentifiers(synonym.getName(), synDto.nameDTO);
 
         return synDto;
     }
@@ -331,16 +334,14 @@ public class PrintPubDtoMapper {
         synDto.secReference = reference.getTitleCache();
     }
 
-    private void extractIdentifiers(Taxon taxon, PrintPubTaxonSummaryDTO dto) {
-
-        TaxonName name = HibernateProxyHelper.deproxy(taxon.getName());
+    private void extractIdentifiers(TaxonName name, PrintPubNameDTO nameDto) {
 
         if (name == null) {
             return;
         }
 
-        addIdentifierStrings(dto.wfoIds, name, IdentifierType.IDENTIFIER_NAME_WFO());
-        addIdentifierStrings(dto.ipniIds, name, IdentifierType.IDENTIFIER_NAME_IPNI());
+        addIdentifierStrings(nameDto.wfoIds, name, IdentifierType.IDENTIFIER_NAME_WFO());
+        addIdentifierStrings(nameDto.ipniIds, name, IdentifierType.IDENTIFIER_NAME_IPNI());
 
         /*
          * Do not add nomenclatural-source links directly to name.getLinks(). That
@@ -370,7 +371,7 @@ public class PrintPubDtoMapper {
             String uri = link.getUri().toString();
 
             if (uri != null && !uri.isBlank()) {
-                dto.links.add(uri.trim());
+                nameDto.links.add(uri.trim());
             }
         }
     }
