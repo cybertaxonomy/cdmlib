@@ -357,7 +357,7 @@ public class PrintPubDocumentBuilder {
 
     protected List<IPrintPubDocumentElement> buildScientificNameIndex(List<PrintPubTaxonSummaryDTO> taxonDtos) {
 
-        List<PrintPubNameDTO> names = scientificNameDtos(taxonDtos).toList();
+        List<PrintPubNameDTO> names = scientificNameDtosSorted(taxonDtos).toList();
 
         if (names.isEmpty()) {
             return List.of();
@@ -376,7 +376,7 @@ public class PrintPubDocumentBuilder {
         return elements;
     }
 
-    private Stream<PrintPubNameDTO> scientificNameDtos(List<PrintPubTaxonSummaryDTO> taxonDtos) {
+    private Stream<PrintPubNameDTO> scientificNameDtosSorted(List<PrintPubTaxonSummaryDTO> taxonDtos) {
 
         if (taxonDtos == null) {
             return Stream.empty();
@@ -428,41 +428,45 @@ public class PrintPubDocumentBuilder {
 
     protected List<IPrintPubDocumentElement> buildIdentifierAppendix(PrintPubDocumentRequest request) {
 
-        List<PrintPubTaxonSummaryDTO> taxa = request.taxa();
+        List<PrintPubTaxonSummaryDTO> taxonDtos = request.taxa();
 
-        if (!request.includeIdentifierAppendix() || taxa.isEmpty()) {
+        if (!request.includeIdentifierAppendix() || taxonDtos.isEmpty()) {
+            return List.of();
+        }
+
+        List<PrintPubNameDTO> names = scientificNameDtosSorted(taxonDtos).toList();
+        if (names.isEmpty()) {
             return List.of();
         }
 
         List<IPrintPubDocumentElement> rows = new ArrayList<>();
+        for (PrintPubNameDTO nameDto : names) {
 
-        for (PrintPubTaxonSummaryDTO taxonDto : taxa) {
-
-            if (!request.includeEmptyIds() && !hasAnySelectedIdentifier(taxonDto, request)) {
+            if (!request.includeEmptyIds() && !hasAnySelectedIdentifier(nameDto, request)) {
                 continue;
             }
 
             List<Run> runs = new ArrayList<>();
-            List<Run> nameRuns = runsFromTaggedName(taxonDto.nameDTO.taggedNameList, TITLE_CACHE_TAGS);
+            List<Run> nameRuns = runsFromTaggedName(nameDto.taggedNameList, TITLE_CACHE_TAGS);
 
             if (!nameRuns.isEmpty()) {
                 runs.addAll(nameRuns);
-            } else if (StringUtils.isNotBlank(taxonDto.titleCache)) {
-                runs.add(new Run(RunType.TEXT, taxonDto.titleCache.trim()));
+            } else if (StringUtils.isNotBlank(nameDto.scientificName)) {
+                runs.add(new Run(RunType.TEXT, nameDto.scientificName.trim()));
             }
 
             StringBuilder suffix = new StringBuilder();
 
             if (request.includeWfoId()) {
-                appendAppendixField(suffix, "WFO", taxonDto.nameDTO.wfoIds);
+                appendAppendixField(suffix, "WFO", nameDto.wfoIds);
             }
 
             if (request.includeIpniId()) {
-                appendAppendixField(suffix, "IPNI", taxonDto.nameDTO.ipniIds);
+                appendAppendixField(suffix, "IPNI", nameDto.ipniIds);
             }
 
             if (request.includeProtologueUris()) {
-                appendAppendixField(suffix, "URL", taxonDto.nameDTO.links);
+                appendAppendixField(suffix, "URL", nameDto.links);
             }
 
             if (suffix.length() > 0) {
@@ -487,14 +491,15 @@ public class PrintPubDocumentBuilder {
         return elements;
     }
 
-    private boolean hasAnySelectedIdentifier(PrintPubTaxonSummaryDTO taxonDto, PrintPubDocumentRequest request) {
+    private boolean hasAnySelectedIdentifier(PrintPubNameDTO nameDto, PrintPubDocumentRequest request) {
 
-        if (taxonDto == null) {
+        if (nameDto == null) {
             return false;
         }
 
-        return request.includeWfoId() && hasValues(taxonDto.nameDTO.wfoIds) || request.includeIpniId() && hasValues(taxonDto.nameDTO.ipniIds)
-                || request.includeProtologueUris() && hasValues(taxonDto.nameDTO.links);
+        return request.includeWfoId() && hasValues(nameDto.wfoIds)
+                || request.includeIpniId() && hasValues(nameDto.ipniIds)
+                || request.includeProtologueUris() && hasValues(nameDto.links);
     }
 
     private List<Run> runsFromTaggedName(List<TaggedText> taggedName, EnumSet<TagEnum> supportedTags) {
