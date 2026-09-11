@@ -17,7 +17,6 @@ import java.util.Map;
 /**
  * @author k.luther
  * @since 17.03.2017
- *
  */
 public class ExportDataWrapper<T> implements Serializable{
 

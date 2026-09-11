@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.print.docmodel;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -80,8 +80,8 @@ public class PrintPubTextRunElement implements IPrintPubDocumentElement {
             this.rawMarkup = rawMarkup;
             this.tagName = tagName;
             this.attributes = attributes == null
-                    ? new LinkedHashMap<String, String>()
-                    : new LinkedHashMap<String, String>(attributes);
+                    ? new HashMap<>()
+                    : new HashMap<>(attributes);
             this.uuid = null;
         }
 

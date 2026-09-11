@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.io.print.render.IPrintPubDocumentInterpreter;
  * Supports optional indentation and is used for free text such as type
  * statements or synonym entries.
  */
-
 public class PrintPubParagraphElement implements IPrintPubDocumentElement {
 
 	private final String text;
