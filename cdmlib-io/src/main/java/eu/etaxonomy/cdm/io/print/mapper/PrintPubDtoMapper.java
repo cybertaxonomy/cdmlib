@@ -128,7 +128,7 @@ public class PrintPubDtoMapper {
         } else if (includeAnyTypes(state.getConfig())){
             //handle accepted name types
             taxonDto.homotypicSynonymGroup = new PrintPubSynonymGroupDTO();
-            handleTypes(state, taxon.getName().getHomotypicalGroup(), taxonDto.homotypicSynonymGroup);
+            extractTypes(state, taxon.getName().getHomotypicalGroup(), taxonDto.homotypicSynonymGroup);
         }
 
         if (state.getConfig().isDoFactualData()) {
@@ -272,10 +272,10 @@ public class PrintPubDtoMapper {
         }
 
         //types
-        handleTypes(state, homotypicGroup, homotypicGroupDTO);
+        extractTypes(state, homotypicGroup, homotypicGroupDTO);
     }
 
-    private void handleTypes(PrintPubExportState state, HomotypicalGroup homotypicGroup,
+    private void extractTypes(PrintPubExportState state, HomotypicalGroup homotypicGroup,
             PrintPubSynonymGroupDTO homotypicGroupDTO) {
 
         TypeDesignationGroupContainer container = new TypeDesignationGroupContainer(homotypicGroup);
