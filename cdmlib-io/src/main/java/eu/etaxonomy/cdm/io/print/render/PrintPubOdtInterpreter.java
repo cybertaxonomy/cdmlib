@@ -16,6 +16,8 @@ import org.odftoolkit.odfdom.dom.OdfDocumentNamespace;
 import org.odftoolkit.odfdom.dom.element.text.TextHElement;
 import org.odftoolkit.odfdom.dom.element.text.TextLineBreakElement;
 import org.odftoolkit.odfdom.dom.element.text.TextPElement;
+import org.odftoolkit.odfdom.dom.element.text.TextReferenceMarkElement;
+import org.odftoolkit.odfdom.dom.element.text.TextReferenceRefElement;
 import org.odftoolkit.odfdom.dom.element.text.TextSpanElement;
 import org.odftoolkit.odfdom.dom.style.OdfStyleFamily;
 import org.odftoolkit.odfdom.dom.style.props.OdfParagraphProperties;
@@ -26,6 +28,7 @@ import org.odftoolkit.odfdom.pkg.OdfElement;
 import eu.etaxonomy.cdm.io.print.docmodel.IPrintPubDocumentElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubLabeledTextElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubPageBreakElement;
+import eu.etaxonomy.cdm.io.print.docmodel.PrintPubPageReferenceElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubParagraphElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubSectionHeaderElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement;
@@ -123,6 +126,9 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
 
         } else if (element instanceof PrintPubTextRunElement) {
             renderTextRun((PrintPubTextRunElement) element);
+
+        } else if (element instanceof PrintPubPageReferenceElement) {
+            renderPageReference((PrintPubPageReferenceElement) element);
         }
     }
 
@@ -177,6 +183,16 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         textRoot.appendChild(p);
     }
 
+    private void renderPageReference(PrintPubPageReferenceElement pageReference) {
+
+        TextReferenceRefElement ref = new TextReferenceRefElement(contentDom);
+        ref.setTextRefNameAttribute(pageReference.getRefMarkId());
+        ref.setTextReferenceFormatAttribute("page");
+        ref.setTextContent("1");                        //placeholder, freshly computed when opening / printing
+
+        textRoot.appendChild(ref);
+    }
+
     private void renderTextRun(PrintPubTextRunElement element) {
 
         TextPElement p = contentDom.newOdfElement(TextPElement.class);
@@ -207,6 +223,11 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
 
             if (run.type == PrintPubTextRunElement.RunType.LINE_BREAK) {
                 p.appendChild(contentDom.newOdfElement(TextLineBreakElement.class));
+                continue;
+            } else if (run.type == PrintPubTextRunElement.RunType.REFERENCE_MARK) {
+                TextReferenceMarkElement mark = new TextReferenceMarkElement(contentDom);
+                mark.setTextNameAttribute(run.uuid.toString());
+                p.appendChild(mark);
                 continue;
             }
 

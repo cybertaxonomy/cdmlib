@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.io.print.render.IPrintPubDocumentInterpreter;
 
@@ -34,7 +35,8 @@ public class PrintPubTextRunElement implements IPrintPubDocumentElement {
         ITALIC,
         LINE_BREAK,
         BOLD_ITALIC,
-        CDM_REFERENCE
+        CDM_REFERENCE,
+        REFERENCE_MARK
     }
 
     public enum PrintPubTextRole {
@@ -51,9 +53,19 @@ public class PrintPubTextRunElement implements IPrintPubDocumentElement {
         public final String rawMarkup;
         public final String tagName;
         public final Map<String, String> attributes;
+        public final UUID uuid;
 
         public Run(RunType type, String text) {
             this(type, text, null, null, null);
+        }
+
+        public Run(RunType type, UUID uuid) {
+            this.type = type;
+            this.uuid = uuid;
+            this.text = null;
+            this.rawMarkup = null;
+            this.attributes = null;
+            this.tagName = null;
         }
 
         public Run(
@@ -70,6 +82,7 @@ public class PrintPubTextRunElement implements IPrintPubDocumentElement {
             this.attributes = attributes == null
                     ? new LinkedHashMap<String, String>()
                     : new LinkedHashMap<String, String>(attributes);
+            this.uuid = null;
         }
 
         public String getAttribute(String key) {

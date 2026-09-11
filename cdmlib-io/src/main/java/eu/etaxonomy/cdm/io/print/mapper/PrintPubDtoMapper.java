@@ -204,6 +204,8 @@ public class PrintPubDtoMapper {
     private void mapAcceptedName(Taxon taxon, TaxonName name, PrintPubTaxonSummaryDTO taxonDto) {
 
         if (name != null) {
+            taxonDto.nameDTO.uuid = name.getUuid();
+
             taxonDto.nameDTO.taggedNameList = name.getTaggedFullTitle();
 
             taxonDto.nameDTO.scientificName = TaggedTextFormatter.createString(name.getTaggedName());
@@ -295,6 +297,8 @@ public class PrintPubDtoMapper {
         TaxonName name = HibernateProxyHelper.deproxy(synonym.getName());
 
         if (name != null) {
+
+            synDto.nameDTO.uuid = name.getUuid();
             synDto.nameDTO.taggedNameList = name.getTaggedFullTitle();
 
             synDto.nameDTO.scientificName = TaggedTextFormatter.createString(name.getTaggedName());

@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.io.print.compare.PrintPubFeatureKey;
 import eu.etaxonomy.cdm.io.print.docmodel.IPrintPubDocumentElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubLabeledTextElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubPageBreakElement;
+import eu.etaxonomy.cdm.io.print.docmodel.PrintPubPageReferenceElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubParagraphElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubSectionHeaderElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement;
@@ -160,7 +161,12 @@ public class PrintPubDocumentBuilder {
 
     private PrintPubTextRunElement renderTaxonHeading(PrintPubTaxonSummaryDTO taxonDto) {
 
-        List<Run> runs = new ArrayList<>(runsFromTaggedNameForTitle(taxonDto.nameDTO.taggedNameList));
+        List<Run> runs = new ArrayList<>();
+        if (taxonDto.nameDTO != null) {
+            runs.add(new Run(RunType.REFERENCE_MARK, taxonDto.nameDTO.uuid));
+        }
+
+        runs.addAll(runsFromTaggedNameForTitle(taxonDto.nameDTO.taggedNameList));
 
         if (StringUtils.isNotBlank(taxonDto.secReferenceCitation)) {
             runs.add(new Run(RunType.TEXT, ACC_SEC_MARKER + taxonDto.secReferenceCitation));
@@ -371,6 +377,9 @@ public class PrintPubDocumentBuilder {
         for (PrintPubNameDTO nameDto : names) {
             List<Run> nameRuns = runsFromTaggedName(nameDto.taggedNameList, TITLE_CACHE_TAGS);
             elements.add(new PrintPubTextRunElement(nameRuns));
+            if (nameDto.uuid != null) {
+                elements.add(new PrintPubPageReferenceElement(nameDto.uuid.toString()));
+            }
         }
 
         return elements;
@@ -574,6 +583,7 @@ public class PrintPubDocumentBuilder {
 
         runs.add(new Run(RunType.TEXT, prefix));
 
+        runs.add(new Run(RunType.REFERENCE_MARK, synonym.nameDTO.uuid));
         List<Run> nameRuns = runsFromTaggedName(synonym.nameDTO.taggedNameList, FULL_TITLE_CACHE_TAGS);
 
         if (!nameRuns.isEmpty()) {

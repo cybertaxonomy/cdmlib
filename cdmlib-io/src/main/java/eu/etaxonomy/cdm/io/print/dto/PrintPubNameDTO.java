@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.print.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
@@ -18,6 +19,8 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @since 11.09.2026
  */
 public class PrintPubNameDTO {
+
+    public UUID uuid;
 
     public List<TaggedText> taggedNameList;
     public String scientificName;
