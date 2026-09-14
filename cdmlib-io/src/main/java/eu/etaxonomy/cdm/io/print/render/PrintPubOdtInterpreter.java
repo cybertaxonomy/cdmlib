@@ -28,7 +28,6 @@ import org.odftoolkit.odfdom.pkg.OdfElement;
 import eu.etaxonomy.cdm.io.print.docmodel.IPrintPubDocumentElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubLabeledTextElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubPageBreakElement;
-import eu.etaxonomy.cdm.io.print.docmodel.PrintPubPageReferenceElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubParagraphElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubSectionHeaderElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement;
@@ -127,8 +126,6 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         } else if (element instanceof PrintPubTextRunElement) {
             renderTextRun((PrintPubTextRunElement) element);
 
-        } else if (element instanceof PrintPubPageReferenceElement) {
-            renderPageReference((PrintPubPageReferenceElement) element);
         }
     }
 
@@ -183,16 +180,6 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         textRoot.appendChild(p);
     }
 
-    private void renderPageReference(PrintPubPageReferenceElement pageReference) {
-
-        TextReferenceRefElement ref = new TextReferenceRefElement(contentDom);
-        ref.setTextRefNameAttribute(pageReference.getRefMarkId());
-        ref.setTextReferenceFormatAttribute("page");
-        ref.setTextContent("1");                        //placeholder, freshly computed when opening / printing
-
-        textRoot.appendChild(ref);
-    }
-
     private void renderTextRun(PrintPubTextRunElement element) {
 
         TextPElement p = contentDom.newOdfElement(TextPElement.class);
@@ -229,6 +216,12 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
                 mark.setTextNameAttribute(run.uuid.toString());
                 p.appendChild(mark);
                 continue;
+            } else if (run.type == PrintPubTextRunElement.RunType.PAGE_REFERENCE) {
+                TextReferenceRefElement ref = new TextReferenceRefElement(contentDom);
+                ref.setTextRefNameAttribute(run.uuid.toString());
+                ref.setTextReferenceFormatAttribute("page");
+                ref.setTextContent("1");                        //placeholder, freshly computed when opening / printing
+                textRoot.appendChild(ref);
             }
 
             TextSpanElement span = contentDom.newOdfElement(TextSpanElement.class);

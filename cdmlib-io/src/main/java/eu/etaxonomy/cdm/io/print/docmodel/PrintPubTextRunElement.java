@@ -36,7 +36,8 @@ public class PrintPubTextRunElement implements IPrintPubDocumentElement {
         LINE_BREAK,
         BOLD_ITALIC,
         CDM_REFERENCE,
-        REFERENCE_MARK
+        REFERENCE_MARK,
+        PAGE_REFERENCE
     }
 
     public enum PrintPubTextRole {

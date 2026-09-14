@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.io.print.compare.PrintPubFeatureKey;
 import eu.etaxonomy.cdm.io.print.docmodel.IPrintPubDocumentElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubLabeledTextElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubPageBreakElement;
-import eu.etaxonomy.cdm.io.print.docmodel.PrintPubPageReferenceElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubParagraphElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubSectionHeaderElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement;
@@ -376,10 +375,11 @@ public class PrintPubDocumentBuilder {
 
         for (PrintPubNameDTO nameDto : names) {
             List<Run> nameRuns = runsFromTaggedName(nameDto.taggedNameList, TITLE_CACHE_TAGS);
-            elements.add(new PrintPubTextRunElement(nameRuns));
             if (nameDto.uuid != null) {
-                elements.add(new PrintPubPageReferenceElement(nameDto.uuid.toString()));
+                nameRuns.add(new Run(RunType.TEXT, "..."));
+                nameRuns.add(new Run(RunType.PAGE_REFERENCE, nameDto.uuid));
             }
+            elements.add(new PrintPubTextRunElement(nameRuns));
         }
 
         return elements;
