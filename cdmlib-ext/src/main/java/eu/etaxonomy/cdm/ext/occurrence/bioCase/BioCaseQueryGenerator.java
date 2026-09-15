@@ -10,9 +10,9 @@ package eu.etaxonomy.cdm.ext.occurrence.bioCase;
 
 import java.util.Calendar;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.Namespace;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
 
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 
@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
  * Generates an XML query according to the BioCASe protocol.
  * @author pplitzner
  * @since 13.09.2013
- *
  */
 public class BioCaseQueryGenerator {
 /*

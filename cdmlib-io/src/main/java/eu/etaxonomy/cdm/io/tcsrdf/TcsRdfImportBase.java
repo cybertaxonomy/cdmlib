@@ -19,9 +19,9 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jdom.Content;
-import org.jdom.Element;
-import org.jdom.Text;
+import org.jdom2.Content;
+import org.jdom2.Element;
+import org.jdom2.Text;
 
 import org.apache.jena.rdf.model.Statement;
 

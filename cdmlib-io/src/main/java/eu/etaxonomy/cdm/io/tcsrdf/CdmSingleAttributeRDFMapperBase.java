@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.tcsrdf;
 
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.IRdfMapper;
