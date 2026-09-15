@@ -277,7 +277,7 @@ public class KMLDocumentBuilder {
 			LineStyle lineStyle = style.createAndSetLineStyle();
 			// lineStyle.setColor("ff880088"); // aabbggrr, where aa=alpha (00 to ff);
 			// bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
-			lineStyle.setWidth(1);
+			lineStyle.setWidth(1.0d);
 			styles.put(key, style);
 		}
 		return "#" + key;

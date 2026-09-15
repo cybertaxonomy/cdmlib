@@ -109,7 +109,7 @@ public enum MapMarkerIcons {
 		IconStyle iconStyle = KmlFactory.createIconStyle().withIcon(
 				KmlFactory.createIcon().withHref(this.toString())
 				);
-		iconStyle.setScale(1);
+		iconStyle.setScale(1.0d);
 		iconStyle.setHotSpot(hotspot);
 		return iconStyle;
 	}
