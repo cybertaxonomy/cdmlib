@@ -15,7 +15,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -78,7 +77,7 @@ public class UriUtilsTest {
     }
 
     @Test
-    public void testGetResourceLengthMissingProtocol() throws ClientProtocolException, HttpException{
+    public void testGetResourceLengthMissingProtocol(){
     	URI uri;
 		try {
 			uri = URI.create("www.abc.de");
@@ -91,7 +90,7 @@ public class UriUtilsTest {
     }
 
     @Test
-    public void testGetResourceLengthUnknownProtocol() throws ClientProtocolException, HttpException{
+    public void testGetResourceLengthUnknownProtocol(){
     	URI uri;
 		try {
 			uri = URI.create("xxx://www.abc.de");

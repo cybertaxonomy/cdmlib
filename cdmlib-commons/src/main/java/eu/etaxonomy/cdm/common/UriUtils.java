@@ -21,7 +21,6 @@ import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +45,6 @@ import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -285,11 +283,7 @@ public class UriUtils {
         }
 
         if(qparams == null){
-            qparams = new ArrayList<>(0);
-        }
-        String query = null;
-        if(! qparams.isEmpty()){
-            query = URLEncodedUtils.format(qparams, "UTF-8");
+            qparams = List.of();
         }
 
         URIBuilder uriBuilder = new URIBuilder();
@@ -297,7 +291,9 @@ public class UriUtils {
         uriBuilder.setHost(baseUrl.getHost());
         uriBuilder.setPort(baseUrl.getPort());
         uriBuilder.setPath(path);
-        uriBuilder.setQuery(query);
+        if (!qparams.isEmpty()) {
+            uriBuilder.setParameters(qparams);
+        }
         uriBuilder.setFragment(fragment);
         return new URI(uriBuilder.build());
     }
