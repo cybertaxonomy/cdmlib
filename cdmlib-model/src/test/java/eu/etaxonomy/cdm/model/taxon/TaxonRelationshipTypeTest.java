@@ -28,16 +28,16 @@ public class TaxonRelationshipTypeTest extends EntityTestBase {
 
         //MISAPPLIED_NAME_FOR
         TaxonRelationshipType type = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
-        Assert.assertEquals(UTF8.EM_DASH.toString(), inverseAbbrev(type));
+        Assert.assertEquals(UTF8.MINUS.toString(), inverseAbbrev(type));
         Assert.assertEquals("misapplied for", abbrev(type));
 
         //PRO PARTE MISAPPLIED_NAME_FOR
         type = TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR();
-        Assert.assertEquals(UTF8.EM_DASH + "(p.p.)", inverseAbbrev(type));
+        Assert.assertEquals(UTF8.MINUS + "(p.p.)", inverseAbbrev(type));
         Assert.assertEquals("p.p. misapplied for", abbrev(type));
 
         type = TaxonRelationshipType.PARTIAL_MISAPPLIED_NAME_FOR();
-        Assert.assertEquals(UTF8.EM_DASH + "(part.)", inverseAbbrev(type));
+        Assert.assertEquals(UTF8.MINUS + "(part.)", inverseAbbrev(type));
         Assert.assertEquals("part. misapplied for", abbrev(type));
     }
 
