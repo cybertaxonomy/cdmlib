@@ -207,14 +207,11 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 				archive = (Archive)unmarshaller.unmarshal(metaInputStream);
 
 				validateArchive(archive);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			} catch (JAXBException e) {
+			} catch (IOException | JAXBException e) {
 				throw new RuntimeException(e);
 			}
 		}
 	}
-
 
 	private void validateArchive(Archive archive) {
 		if (archive.getCore().getFieldsTerminatedBy() != null && archive.getCore().getFieldsTerminatedBy().length() > 1){

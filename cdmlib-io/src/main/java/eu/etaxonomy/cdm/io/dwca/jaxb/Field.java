@@ -5,7 +5,6 @@
 // Generated on: 2011.10.17 at 04:06:44 PM CEST
 //
 
-
 package eu.etaxonomy.cdm.io.dwca.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;

@@ -21,16 +21,18 @@ public class CdmAccessorFactoryImpl implements AccessorFactory {
 		this.delegate = delegate;
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public Accessor createFieldAccessor(Class bean, Field f, boolean readOnly)
 			throws JAXBException {
-		return new CdmAccessor(delegate.createFieldAccessor(bean, f, readOnly));
+		return new CdmAccessor<>(delegate.createFieldAccessor(bean, f, readOnly));
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public Accessor createPropertyAccessor(Class bean, Method getter,
 			Method setter) throws JAXBException {
-		return new CdmAccessor(delegate.createPropertyAccessor(bean, getter, setter));
+		return new CdmAccessor<>(delegate.createPropertyAccessor(bean, getter, setter));
 	}
 
 }

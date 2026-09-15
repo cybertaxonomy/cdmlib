@@ -43,8 +43,6 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.TermType;
 import tec.uom.se.quantity.Quantities;
 import tec.uom.se.unit.Units;
 
@@ -62,8 +60,6 @@ public class KMLDocumentBuilder {
 	private Map<FieldUnit, Set<SpecimenOrObservationType>> fieldUnitRecordBases = new HashMap<>();
 
 	private Map<String, Style> styles = new HashMap<>();
-
-	private static final DefinedTerm KIND_OF_UNIT_UNSET = DefinedTerm.NewInstance(TermType.KindOfUnit);
 
 	public KMLDocumentBuilder addSpecimenOrObservationBase(SpecimenOrObservationBase<?> occurrence) {
 		occSet.add(occurrence);
@@ -230,7 +226,7 @@ public class KMLDocumentBuilder {
 		}
 		description += "</p>";
 		description += "<figure><figcaption>Specimens and observations:</figcaption><ul>";
-		for(SpecimenOrObservationBase sob : fieldUnitMap.get(fieldUnit)) {
+		for(SpecimenOrObservationBase<?> sob : fieldUnitMap.get(fieldUnit)) {
 			SpecimenOrObservationType type = sob.getRecordBasis() != null ? sob.getRecordBasis() : SpecimenOrObservationType.Unknown;
 			String unitTitle = type.name();
 			if(sob instanceof DerivedUnit) {
