@@ -44,13 +44,13 @@
     <jackson.annotations.version>2.14.3</jackson.annotations.version>
 	<!-- CAUTION when upgrading, 1.8x requires another log4j binding: https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html -->
     <slf4j.version>1.7.36</slf4j.version>               <!-- checked 2022-06 -->
-	<log4j.version>2.25.4</log4j.version>
+	<log4j.version>2.26.1</log4j.version>
 	<jaxb.version>2.3.3</jaxb.version>
 	<jaxb.jakarta.version>4.0.5</jaxb.jakarta.version>
     <javax.activation.version>1.2.0</javax.activation.version>
     <jakarta.activation.version>2.0.1</jakarta.activation.version>
     <cglib.version>3.3.0</cglib.version>
-	<aspectj.version>1.9.21</aspectj.version>            <!-- checked 2022-05 -->
+	<aspectj.version>1.9.25.1</aspectj.version>            <!-- checked 2022-05 -->
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
     <dozer.version>6.5.2</dozer.version>                <!-- checked 2021-02 -->
     <jakarta.mail.version>1.6.2</jakarta.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
@@ -709,7 +709,7 @@
              org.unitils:unitils-easymock:3.4.2 and org.glassfish.jaxb:jaxb-jxc:2.2.11 -->
 	    <groupId>org.apache.ant</groupId>
 	    <artifactId>ant</artifactId>
-	    <version>1.10.15</version>
+	    <version>1.10.18</version>
 	  </dependency>
       <!-- ******* hibernate uses slf4j ******* -->
       <dependency>
@@ -998,7 +998,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.21.0</version>
+        <version>2.22.0</version>
       </dependency>
       <dependency>
           <groupId>org.apache.commons</groupId>
@@ -1013,7 +1013,7 @@
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
-        <version>1.22.0</version>
+        <version>1.22.1</version>
       </dependency>
       <!-- only for version management, hibernate-commons-annotations:4.0.1.Final 
         requires 3.1.0.CR2 , so we update 
@@ -1021,19 +1021,17 @@
       <dependency>
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging</artifactId>
-        <!-- v3.5.0.Final requires java11 -->
-        <version>3.4.3.Final</version>
-        <!-- checked 2022-05 -->
+        <version>3.6.3.Final</version>
       </dependency>
 	  <dependency>
-	      <groupId>org.jboss.logging</groupId>
-	      <artifactId>jboss-logging-annotations</artifactId>
-	      <version>2.2.1.Final</version>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging-annotations</artifactId>
+        <version>3.0.4.Final</version>
 	  </dependency>
 	  <dependency>
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging-processor</artifactId>
-        <version>2.2.1.Final</version>
+        <version>3.0.4.Final</version>
       </dependency>
 <!-- 	  <dependency> -->
 <!-- 	    see note in cdmib-persistence pom  -->
@@ -1165,19 +1163,19 @@
       <dependency>
       	<groupId>org.apache.xmlbeans</groupId>
       	<artifactId>xmlbeans</artifactId>
-      	<version>5.3.0</version>
-        <!-- checked 2026-01 -->
+      	<version>5.4.0</version>
+        <!-- checked 2026-09 -->
       </dependency>
       <dependency>
         <groupId>org.docx4j</groupId>
         <artifactId>docx4j-JAXB-Internal</artifactId>
-        <version>8.3.15</version>
+        <version>8.3.16</version>
       </dependency>
       <dependency>
         <!-- dependency of guava and docx4j -->
         <groupId>com.google.errorprone</groupId>
         <artifactId>error_prone_annotations</artifactId>
-        <version>2.49.0</version>
+        <version>2.50.0</version>
       </dependency>
       <dependency>
         <!-- only for version management org.apache.xmlgraphics:xmlgraphics-commons depends in different versions from 
@@ -1203,7 +1201,7 @@
         <!-- only for version management -->
         <groupId>org.apache.pdfbox</groupId>
         <artifactId>fontbox</artifactId>
-        <version>3.0.7</version>
+        <version>3.0.8</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -1405,7 +1403,7 @@
       <dependency>
         <groupId>net.sf.saxon</groupId>
         <artifactId>Saxon-HE</artifactId>
-        <version>12.9</version>
+        <version>13.0</version>
       </dependency>
       <!-- ******* http components (ViBRANT)******* -->
       <dependency>
@@ -1492,7 +1490,7 @@
         <!-- dependency of iiif-apis (and still by hibernate but will be removed in v5.6 as hibernate uses bytebuddy)  -->
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
-        <version>3.29.0-GA</version>
+        <version>3.33.0-GA</version>
       </dependency>
 
       <!-- ******* SPRING ******* -->
@@ -1684,7 +1682,7 @@
       <dependency>
         <groupId>com.itextpdf</groupId>
         <artifactId>itextpdf</artifactId>
-        <version>5.5.13.5</version>
+        <version>5.5.13.6</version>
         <scope>compile</scope>
       </dependency>
       <!-- AptView -->
