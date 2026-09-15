@@ -15,10 +15,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +26,7 @@ import eu.etaxonomy.cdm.ext.geo.kml.KMLDocumentBuilder;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import jakarta.xml.bind.JAXBException;
 
 public class KmlJaxbMarshallerTest {
 
@@ -51,19 +48,17 @@ public class KmlJaxbMarshallerTest {
 	@Test
 	public void marshallTest() throws JAXBException, IOException {
 
-		JAXBContext jaxbContext = JAXBContext.newInstance(Kml.class);
-		Marshaller marshaller = jaxbContext.createMarshaller();
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		StringWriter sw = new StringWriter();
-		marshaller.marshal(kml, sw);
+	    StringWriter sw = new StringWriter();
+	    kml.marshal(sw);
+
 		String kml = sw.toString();
 		if(logger.isDebugEnabled()) {
 			logger.debug("kml:\n" + kml);
 			FileUtils.write(new File("KmlJaxbMarshallerTest.kml"), kml, Charset.defaultCharset());
 		}
-		assertTrue(kml.contains("<kml:Document>"));
-		assertTrue(kml.contains("<kml:Point>"));
-		assertTrue(kml.contains("<kml:coordinates>-112.292238941097,36.09520916122063</kml:coordinates>"));
-		assertTrue(kml.contains("<kml:altitudeMode>absolute</kml:altitudeMode>"));
+		assertTrue(kml.contains("<Document>"));
+		assertTrue(kml.contains("<Point>"));
+		assertTrue(kml.contains("<coordinates>-112.292238941097,36.09520916122063</coordinates>"));
+		assertTrue(kml.contains("<altitudeMode>absolute</altitudeMode>"));
 	}
 }
