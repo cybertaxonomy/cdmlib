@@ -52,7 +52,7 @@
     <cglib.version>3.3.0</cglib.version>
 	<aspectj.version>1.9.25.1</aspectj.version>            <!-- checked 2022-05 -->
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
-    <dozer.version>6.5.2</dozer.version>                <!-- checked 2021-02 -->
+    <dozer.version>7.0.0</dozer.version>                <!-- checked 2021-02 -->
     <jakarta.mail.version>1.6.2</jakarta.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
     <fop.version>2.11</fop.version>
     <jena.version>4.6.1</jena.version> <!-- 4.7.0 still creates problems with term loading (AnnotationType.UNHANDLED-->
@@ -1350,7 +1350,7 @@
           <!-- used in eu.etaxonomy.cdm.io.markup and for swagger -->
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
-          <version>33.6.0-jre</version>
+          <version>33.7.1-jre</version>
       </dependency>
 	  <dependency>
 	      <groupId>com.google.code.findbugs</groupId>
@@ -1832,7 +1832,7 @@
       <dependency>
         <groupId>com.google.protobuf</groupId>
         <artifactId>protobuf-java</artifactId>
-        <version>4.34.1</version>
+        <version>4.36.1</version>
       </dependency>  
    </dependencies>    
   </dependencyManagement>
