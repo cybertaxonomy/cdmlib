@@ -46,6 +46,8 @@
     <slf4j.version>2.0.19</slf4j.version>               <!-- checked 2022-06 -->
 	<log4j.version>2.26.1</log4j.version>
 	<jaxb.version>2.3.3</jaxb.version>
+	<jaxb.api.version>2.3.1</jaxb.api.version>
+	<jaxb.api.jakarta.version>4.0.5</jaxb.api.jakarta.version>
 	<jaxb.jakarta.version>4.0.9</jaxb.jakarta.version>
     <javax.activation.version>1.2.0</javax.activation.version>
     <jakarta.activation.version>2.0.1</jakarta.activation.version>
@@ -642,7 +644,7 @@
       <dependency>
         <groupId>jakarta.xml.bind</groupId>
         <artifactId>jakarta.xml.bind-api</artifactId>
-        <version>${jaxb.jakarta.version}</version>
+        <version>${jaxb.api.jakarta.version}</version>
       </dependency>
       <dependency>
         <groupId>org.glassfish.jaxb</groupId>
@@ -659,7 +661,7 @@
          <!-- old jaxb version, still required for Spring 5 --> 
          <groupId>javax.xml.bind</groupId> 
          <artifactId>jaxb-api</artifactId> 
-         <version>2.3.1</version>   <!-- not the same as jaxb version as 2.3.3 does not exist --> 
+         <version>${jaxb.api.version}</version>
        </dependency> 
       <dependency>
          <!-- dependency for jaxb-api -->
