@@ -55,11 +55,10 @@
             </execution>
           </executions>
           <dependencies>
-            <!-- AspectJ Version die Java 11 unterstützt -->
             <dependency>
               <groupId>org.aspectj</groupId>
               <artifactId>aspectjtools</artifactId>
-              <version>1.9.20.1</version>
+              <version>1.9.25.1</version>
             </dependency>
           </dependencies>
         </plugin>
