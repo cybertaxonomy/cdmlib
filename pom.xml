@@ -43,7 +43,7 @@
     <jackson.version>2.14.2</jackson.version>           <!-- temporarily reduced from 2.21 to check if remote-webapp runs with lower version -->
     <jackson.annotations.version>2.14.3</jackson.annotations.version>
 	<!-- CAUTION when upgrading, 1.8x requires another log4j binding: https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html -->
-    <slf4j.version>1.7.36</slf4j.version>               <!-- checked 2022-06 -->
+    <slf4j.version>2.0.19</slf4j.version>               <!-- checked 2022-06 -->
 	<log4j.version>2.26.1</log4j.version>
 	<jaxb.version>2.3.3</jaxb.version>
 	<jaxb.jakarta.version>4.0.5</jaxb.jakarta.version>
