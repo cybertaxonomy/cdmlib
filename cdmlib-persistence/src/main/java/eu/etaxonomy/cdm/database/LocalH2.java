@@ -212,8 +212,9 @@ public class LocalH2 extends BasicDataSource {
 
     @Override
     public java.util.logging.Logger getParentLogger() {
-        // TODO java 11
-        return null;
+        return java.util.logging.Logger.getLogger("eu.etaxonomy.cdm");
+        //or throw
+        //throw new SQLFeatureNotSupportedException("Log4j is used. JUL is not supported.");
     }
 
 }
