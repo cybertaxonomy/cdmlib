@@ -47,10 +47,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -214,20 +213,22 @@ public class UriUtils {
      * @throws ClientProtocolException
      */
     public static HttpResponse getResponseByType(URI uri, Map<String, String> requestHeaders, HttpMethod httpMethod, HttpEntity entity) throws IOException, ClientProtocolException {
-        // Create an instance of HttpClient.
-        //NOTE: deprecated Methode besser unter Java 11 zu ersetzen, oder durch httpclient 5
-        HttpClient client = new DefaultHttpClient();
 
+        // Create an instance of HttpClient.
+        HttpClient client;
         try {
-            SSLContext sc = SSLContext.getInstance("SSL");
+            SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(null, getTrustingManager(), new java.security.SecureRandom());
-            SSLSocketFactory socketFactory = new SSLSocketFactory(sc);
-            Scheme sch = new Scheme("https", 443, socketFactory);
-            client.getConnectionManager().getSchemeRegistry().register(sch);
-        } catch (KeyManagementException e1) {
-            throw new RuntimeException("Registration of ssl support failed", e1);
-        } catch (NoSuchAlgorithmException e2) {
-            throw new RuntimeException("Registration of ssl support failed", e2);
+
+            SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(
+                    sc, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+
+            client = HttpClientBuilder.create()
+                    .setSSLSocketFactory(socketFactory)
+                    .build();
+
+        } catch (KeyManagementException | NoSuchAlgorithmException e1) {
+            throw new RuntimeException("Registration of tsl support failed", e1);
         }
 
         HttpUriRequest method;
