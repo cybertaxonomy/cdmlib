@@ -45,8 +45,11 @@
 	<!-- CAUTION when upgrading, 1.8x requires another log4j binding: https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html -->
     <slf4j.version>1.7.36</slf4j.version>               <!-- checked 2022-06 -->
 	<log4j.version>2.25.4</log4j.version>
-	<jaxb.version>2.3.3</jaxb.version>                 <!-- checked 2020-08, there is a newer version 3.0.0-MX, not checked if compatible -->
-	<cglib.version>3.3.0</cglib.version>
+	<jaxb.version>2.3.3</jaxb.version>
+	<jaxb.jakarta.version>4.0.5</jaxb.jakarta.version>
+    <javax.activation.version>1.2.0</javax.activation.version>
+    <jakarta.activation.version>2.0.1</jakarta.activation.version>
+    <cglib.version>3.3.0</cglib.version>
 	<aspectj.version>1.9.21</aspectj.version>            <!-- checked 2022-05 -->
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
     <dozer.version>6.5.2</dozer.version>                <!-- checked 2021-02 -->
@@ -639,26 +642,42 @@
       <dependency>
         <groupId>jakarta.xml.bind</groupId>
         <artifactId>jakarta.xml.bind-api</artifactId>
-        <version>${jaxb.version}</version>  <!-- not sure if jaxb.version is always the same -->
+        <version>${jaxb.jakarta.version}</version>
       </dependency>
-<!--       <dependency> -->
-<!--         replaced by jakarta.xml.bind-api -->
-<!--         <groupId>javax.xml.bind</groupId> -->
-<!--         <artifactId>jaxb-api</artifactId> -->
-<!--         <version>2.3.1</version> -->
-<!--         checked 2020-08 -->
-<!--       </dependency> -->
+      <dependency>
+        <!-- old jaxb version, still required for Spring 5 -->
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-impl</artifactId>
+        <version>${jaxb.version}</version>
+      </dependency>
+       <dependency> 
+         <!-- old jaxb version, still required for Spring 5 --> 
+         <groupId>javax.xml.bind</groupId> 
+         <artifactId>jaxb-api</artifactId> 
+         <version>2.3.1</version>   <!-- not the same as jaxb version as 2.3.3 does not exist --> 
+       </dependency> 
       <dependency>
          <!-- dependency for jaxb-api -->
          <groupId>javax.activation</groupId>
          <artifactId>javax.activation-api</artifactId>
-         <version>1.2.0</version>
-         <!-- checked 2020-08 -->
+         <version>${javax.activation.version}</version>
+      </dependency>
+      <dependency>
+         <!-- dependency for jaxb-api -->
+         <groupId>com.sun.activation</groupId>
+         <artifactId>javax.activation</artifactId>
+         <version>${javax.activation.version}</version>
+      </dependency>
+      <dependency>
+         <!-- dependency for jaxb-api -->
+         <groupId>com.sun.activation</groupId>
+         <artifactId>jakarta.activation</artifactId>
+         <version>${jakarta.activation.version}</version>
       </dependency>
  	  <dependency>
 		<groupId>org.glassfish.jaxb</groupId>
 		<artifactId>jaxb-runtime</artifactId>
-		<version>${jaxb.version}</version>
+		<version>${jaxb.jakarta.version}</version>
 	  </dependency>
 	  <dependency>
 		<groupId>org.glassfish.jaxb</groupId>
@@ -677,7 +696,6 @@
           <artifactId>jakarta.activation-api</artifactId>
           <version>1.2.2</version>
       </dependency>
-      
       
       <dependency>
         <groupId>jakarta.annotation</groupId>

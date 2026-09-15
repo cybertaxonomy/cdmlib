@@ -48,21 +48,6 @@
 	    <!-- new groupId is better as it references a more recent jaxb version -->
         <!-- it is probably a Java 11 issue, so try again after upgrade -->
         <artifactId>javaapiforkml</artifactId>
-        <exclusions>
-          <!-- need to exclude jaxb-impl since it depends on an old version  -->
-          <exclusion>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-xjc</artifactId>
-          </exclusion>
-        <exclusion>
-          <groupId>org.glassfish.jaxb</groupId>
-          <artifactId>jaxb-runtime</artifactId>
-        </exclusion>
-        </exclusions>
 	</dependency>
 	<dependency>
 	    <groupId>org.geotools</groupId>

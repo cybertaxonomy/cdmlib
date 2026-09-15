@@ -105,10 +105,17 @@
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-commons</artifactId>
     </dependency>
+    <!-- JAXB -->
     <dependency>
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-runtime</artifactId>
     </dependency>
+    <dependency>
+        <!-- old jaxb version, still required for Spring 5 -->
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-impl</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-envers</artifactId>
