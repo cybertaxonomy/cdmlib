@@ -1423,7 +1423,7 @@
       <dependency>
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
-        <version>20220320</version>
+        <version>20260814</version>
       </dependency>
       <!-- ******* HIBERNATE / EJB3 ******* -->
       <dependency>
