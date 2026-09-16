@@ -1486,7 +1486,7 @@
         <!-- used by hibernate as bytecode provider framework -->
         <groupId>net.bytebuddy</groupId>
         <artifactId>byte-buddy</artifactId>
-        <version>1.18.8</version>
+        <version>1.18.13</version>
       </dependency>
       <!-- dependency of hibernate-core -->
       <dependency>
