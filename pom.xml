@@ -1617,14 +1617,6 @@
         <version>4.0.1</version>
         <!-- checked 2020-08 -->
       </dependency>
-      <dependency>
-          <!-- management needed for some older dependencies -->
-          <!-- TODO check if possible to use exclusions -->
-          <groupId>javax.servlet</groupId>
-          <artifactId>servlet-api</artifactId>
-          <version>2.5</version>
-      </dependency>
-
 
       <!-- yourkit profiler api controller (used in ..) -->
       <dependency>
