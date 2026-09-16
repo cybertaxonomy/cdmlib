@@ -12,14 +12,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 
 /**
  * @author a.kohlbecker
  */
-public class LocaleContextHandlerInterceptor extends HandlerInterceptorAdapter {
+public class LocaleContextHandlerInterceptor implements HandlerInterceptor {
 
     @Autowired
     private final LocaleContext localeContext = null;
