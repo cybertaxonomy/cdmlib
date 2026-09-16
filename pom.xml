@@ -1797,6 +1797,11 @@
 	    <artifactId>gt-main</artifactId>
 	    <version>${geotools.version}</version>
 	  </dependency>
+	  <dependency>
+        <groupId>javax.measure</groupId>
+        <artifactId>unit-api</artifactId>
+        <version>2.2</version>
+      </dependency> 
     
       <dependency>
          <groupId>com.sun</groupId>
