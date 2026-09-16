@@ -110,7 +110,7 @@
     </dependency>
     <dependency>
       <groupId>org.docx4j</groupId>
-      <artifactId>docx4j-JAXB-Internal</artifactId>
+      <artifactId>docx4j-JAXB-ReferenceImpl</artifactId>
     </dependency>
     <dependency>
       <groupId>xml-resolver</groupId>
