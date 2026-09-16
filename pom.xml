@@ -53,7 +53,7 @@
     <jakarta.activation.version>2.0.1</jakarta.activation.version>
     <cglib.version>3.3.0</cglib.version>
 	<aspectj.version>1.9.25.1</aspectj.version>            <!-- checked 2022-05 -->
-	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
+	<geotools.version>35.1</geotools.version>
     <dozer.version>6.5.2</dozer.version>                <!-- checked 2021-02 -->
     <jakarta.mail.version>1.6.2</jakarta.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
     <fop.version>2.11</fop.version>
@@ -1780,7 +1780,7 @@
 	  </dependency>
 	  <dependency>
 	    <groupId>org.geotools</groupId>
-	    <artifactId>gt-opengis</artifactId>
+	    <artifactId>gt-api</artifactId>
 	    <version>${geotools.version}</version>
 	  </dependency>
 	  <dependency>
