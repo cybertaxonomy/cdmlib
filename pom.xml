@@ -1013,11 +1013,6 @@
           <version>1.28.0</version>
       </dependency>
       <dependency>
-          <groupId>org.checkerframework</groupId>
-          <artifactId>checker-qual</artifactId>
-          <version>3.21.1</version>
-      </dependency>
-      <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
         <version>1.22.1</version>
@@ -1179,11 +1174,17 @@
         <version>8.3.16</version>
       </dependency>
       <dependency>
-        <!-- dependecy of docx4j -->
+        <!-- dependecy of docx4j, but with lower version number -->
         <groupId>com.thoughtworks.qdox</groupId>
         <artifactId>qdox</artifactId>
         <version>2.2.0</version>
-    </dependency>
+      </dependency>
+      <dependency>
+        <!-- dependecy of docx4j, but with lower version number -->
+        <groupId>org.checkerframework</groupId>
+        <artifactId>checker-qual</artifactId>
+        <version>4.2.3</version>
+      </dependency>
       <dependency>
         <!-- dependency of guava and docx4j -->
         <groupId>com.google.errorprone</groupId>
@@ -1203,12 +1204,6 @@
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>fop-events</artifactId>
         <version>${fop.version}</version>
-      </dependency>
-      <dependency>
-        <!-- only for version management -->
-        <groupId>com.thoughtworks.qdox</groupId>
-        <artifactId>qdox</artifactId>
-        <version>1.12.1</version>
       </dependency>
       <dependency>
         <!-- only for version management -->
