@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.api.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.dto.DerivedUnitStatusDto;
@@ -135,7 +135,6 @@ public abstract class DerivedUnitDtoLoaderBase<T extends DerivedUnit>
                     DerivedUnitStatusDto statusDto = new DerivedUnitStatusDto(typeLabel);
                     statusDto.setStatusSource(SourceDtoLoader.fromEntity(specimenStatus.getSource()) ) ;
                     status.add(statusDto);
-
                 }
             }
             dto.setStatus(status);

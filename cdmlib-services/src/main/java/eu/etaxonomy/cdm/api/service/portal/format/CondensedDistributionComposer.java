@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.api.dto.portal.DistributionDto;
 import eu.etaxonomy.cdm.api.dto.portal.NamedAreaDto;

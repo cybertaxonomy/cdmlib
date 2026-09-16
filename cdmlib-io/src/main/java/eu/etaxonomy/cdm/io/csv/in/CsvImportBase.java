@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.TransactionStatus;
 
 import au.com.bytecode.opencsv.CSVReader;

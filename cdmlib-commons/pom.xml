@@ -88,9 +88,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven.doxia</groupId>
-      <!--<artifactId>doxia-module-xhtml5</artifactId>-->
-      <artifactId>doxia-module-xhtml</artifactId>
+      <artifactId>doxia-module-xhtml5</artifactId>
     </dependency>
-
   </dependencies>
 </project>

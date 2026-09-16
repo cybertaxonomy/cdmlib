@@ -37,8 +37,7 @@
     <lucene.version>5.5.5</lucene.version>
 	<unitils.version>3.4.6</unitils.version>
     <httpcomponents.version>4.5.14</httpcomponents.version>
-    <doxia.version>1.11.1</doxia.version>
-    <!--<doxia.version>2.1.0</doxia.version> -->               <!-- checked 2021-12 -->
+    <doxia.version>2.1.0</doxia.version>
     <poi.version>5.5.1</poi.version>                    <!-- checked 2026-05 -->
     <jackson.version>2.22.2</jackson.version>
     <jackson.annotations.version>2.22</jackson.annotations.version>
@@ -255,7 +254,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.10.0</version>
+        <version>3.22.0</version>
         <configuration>
           <locales>en</locales>
           <outputEncoding>UTF-8</outputEncoding><!-- necessary? should be covered by project. properties output encoding -->
@@ -1686,7 +1685,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.maven.doxia</groupId>
-        <artifactId>doxia-module-xhtml</artifactId>
+        <artifactId>doxia-module-xhtml5</artifactId>
         <version>${doxia.version}</version>
       </dependency>
       <dependency>
