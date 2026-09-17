@@ -184,14 +184,14 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
 
         List<TypeDesignationBase<?>> typeDesignations = nameService.loadTypeDesignations(uuidList, Arrays.asList("typeSpecimen"));
 
-        List<SpecimenOrObservationBase> specimensOrObersvations = typeDesignations.stream()
+        List<SpecimenOrObservationBase> specimensOrObservations = typeDesignations.stream()
         		.filter(td -> td != null && td instanceof SpecimenTypeDesignation)
         		.map(SpecimenTypeDesignation.class::cast)
         		.map(SpecimenTypeDesignation::getTypeSpecimen)
         		.filter(s -> s != null)
         		.collect(Collectors.toList());
 
-        Kml kml = geoservice.occurrencesToKML(specimensOrObersvations, specimenOrObservationTypeColors);
+        Kml kml = geoservice.occurrencesToKML(specimensOrObservations, specimenOrObservationTypeColors);
 
         return kml;
     }

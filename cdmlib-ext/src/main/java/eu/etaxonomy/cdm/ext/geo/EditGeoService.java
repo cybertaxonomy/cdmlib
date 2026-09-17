@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.micromata.opengis.kml.v_2_2_0.Kml;
-import eu.etaxonomy.cdm.ext.geo.kml.KMLDocumentBuilder;
+import eu.etaxonomy.cdm.ext.geo.kml.KmlDocumentBuilder;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -81,7 +81,7 @@ public class EditGeoService implements IEditGeoService {
             @SuppressWarnings("rawtypes") List<SpecimenOrObservationBase> specimensOrObservations,
             Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
 
-    		KMLDocumentBuilder builder = new KMLDocumentBuilder();
+    		KmlDocumentBuilder builder = new KmlDocumentBuilder();
 
     		for (SpecimenOrObservationBase<?> specimenOrObservationBase : specimensOrObservations) {
     			builder.addSpecimenOrObservationBase(occurrenceDao.load(specimenOrObservationBase.getUuid()));

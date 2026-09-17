@@ -6,7 +6,7 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-package eu.etaxonomy.cdm.ext.kml;
+package eu.etaxonomy.cdm.ext.geo.kml;
 
 import static org.junit.Assert.assertTrue;
 
@@ -22,11 +22,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.micromata.opengis.kml.v_2_2_0.Kml;
-import eu.etaxonomy.cdm.ext.geo.kml.KMLDocumentBuilder;
+import eu.etaxonomy.cdm.ext.geo.kml.KmlDocumentBuilder;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import jakarta.xml.bind.JAXBException;
 
 public class KmlJaxbMarshallerTest {
 
@@ -40,13 +39,13 @@ public class KmlJaxbMarshallerTest {
 		fu.setGatheringEvent(GatheringEvent.NewInstance());
 		fu.getGatheringEvent().setExactLocation(Point.NewInstance(-112.292238941097, 36.09520916122063, null, null));
 
-		KMLDocumentBuilder builder = new KMLDocumentBuilder();
+		KmlDocumentBuilder builder = new KmlDocumentBuilder();
 		builder.addSpecimenOrObservationBase(fu);
 		kml = builder.build();
 	}
 
 	@Test
-	public void marshallTest() throws JAXBException, IOException {
+	public void marshallTest() throws IOException {
 
 	    StringWriter sw = new StringWriter();
 	    kml.marshal(sw);

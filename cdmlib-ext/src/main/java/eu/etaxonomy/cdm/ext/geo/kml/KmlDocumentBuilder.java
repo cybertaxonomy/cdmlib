@@ -50,7 +50,7 @@ import tech.units.indriya.unit.Units;
  * @author Andreas Kohlbecker
  * @since Apr 21, 2020
  */
-public class KMLDocumentBuilder {
+public class KmlDocumentBuilder {
 
 	private static final Logger logger = LogManager.getLogger();
 
@@ -61,7 +61,7 @@ public class KMLDocumentBuilder {
 
 	private Map<String, Style> styles = new HashMap<>();
 
-	public KMLDocumentBuilder addSpecimenOrObservationBase(SpecimenOrObservationBase<?> occurrence) {
+	public KmlDocumentBuilder addSpecimenOrObservationBase(SpecimenOrObservationBase<?> occurrence) {
 		occSet.add(occurrence);
 		return this;
 	}
@@ -105,7 +105,8 @@ public class KMLDocumentBuilder {
 			}
 			fieldUnitRecordBases.get(fu).addAll(recordBases);
 		} else if (original instanceof DerivedUnit) {
-			Set<SpecimenOrObservationBase> originals = ((DerivedUnit)original).getOriginals();
+			@SuppressWarnings("rawtypes")
+            Set<SpecimenOrObservationBase> originals = ((DerivedUnit)original).getOriginals();
 			if (originals != null) {
 				for (SpecimenOrObservationBase<?> parentOriginal : originals) {
 					mapFieldUnit(original, parentOriginal, recordBases);
@@ -135,8 +136,9 @@ public class KMLDocumentBuilder {
 			point.setCoordinates(Arrays.asList(KmlFactory.createCoordinate(exactLocation.getLongitude(),
 					exactLocation.getLatitude(), altitude.doubleValue())));
 		} else {
-			point.setCoordinates(Arrays
-					.asList(KmlFactory.createCoordinate(exactLocation.getLongitude(), exactLocation.getLatitude())));
+			point.setCoordinates(Arrays.asList(
+			        KmlFactory.createCoordinate(
+			                exactLocation.getLongitude(), exactLocation.getLatitude())));
 		}
 		mapMarker.setGeometry(point);
 		mapMarker.setStyleUrl(styleURL(recordBases));
