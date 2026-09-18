@@ -25,5 +25,4 @@ public class CycleSetAccess{
 	public void addToCycleSet(Object instance) {
 		AbstractJSON.addInstance(instance);
 	}
-
 }

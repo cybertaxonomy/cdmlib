@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.term.TermBase;
 import net.sf.json.processors.JsonBeanProcessorMatcher;
 
 /**
- * can handle HibernateProxys
+ * Can handle HibernateProxys
  *
  * @author a.kohlbecker
  */
