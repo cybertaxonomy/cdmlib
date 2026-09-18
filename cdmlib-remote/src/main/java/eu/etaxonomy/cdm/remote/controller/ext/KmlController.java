@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2009 EDIT
+ * Copyright (C) 2020 EDIT
  * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
  *
@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
-import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -65,16 +64,8 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 import io.swagger.annotations.Api;
 
 /**
- * The ExternalGeoController class is a Spring MVC Controller.
- * <p>
- * The syntax of the mapped service URIs contains the the {datasource-name} path element.
- * The available {datasource-name}s are defined in a configuration file which
- * is loaded by the {@link UpdatableRoutingDataSource}. If the
- * UpdatableRoutingDataSource is not being used in the actual application
- * context any arbitrary {datasource-name} may be used.
  * <p>
  * @author a.kohlbecker
- * @since 18.06.2009
  */
 @CrossOrigin(origins = "*")
 @Controller
@@ -124,19 +115,6 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    /**
-     * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the
-     * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into
-     * an valid URI parameter String. Higher level distribution areas are expanded in order to include all
-     * nested sub-areas.
-     * <p>
-     * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
-     *
-     * @param request
-     * @param response
-     * @return URI parameter Strings for the EDIT Map Service
-     * @throws IOException TODO write controller method documentation
-     */
     @RequestMapping(
             value = { "specimensOrOccurences/{uuid-list}" }
             , method = RequestMethod.GET
@@ -159,17 +137,6 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
         createKmlResponse(response, kml);
     }
 
-    /**
-     * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the
-     * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into
-     * an valid URI parameter String. Higher level distribution areas are expanded in order to include all
-     * nested sub-areas.
-     * <p>
-     * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
-     *
-     * @return URI parameter Strings for the EDIT Map Service
-     * @throws IOException TODO write controller method documentation
-     */
     @RequestMapping(
             value = { "typeDesignations/{uuid-list}" }
             , method = RequestMethod.GET
