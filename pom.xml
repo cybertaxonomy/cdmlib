@@ -1352,12 +1352,6 @@
         <artifactId>xstream</artifactId>
         <version>1.4.21</version>
       </dependency>
-      <dependency>
-        <!-- newer version exists for groupId org.ogce, need to check exclusions before moving -->
-        <groupId>xpp3</groupId>
-        <artifactId>xpp3</artifactId>
-        <version>1.1.4c</version>
-      </dependency>
 <!--       <dependency> -->
 <!--        stax is part of java8 and therefore not needed anymore -->
 <!--         <groupId>stax</groupId> -->
