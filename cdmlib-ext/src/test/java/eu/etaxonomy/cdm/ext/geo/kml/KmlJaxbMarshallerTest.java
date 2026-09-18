@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.micromata.opengis.kml.v_2_2_0.Kml;
-import eu.etaxonomy.cdm.ext.geo.kml.KmlDocumentBuilder;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;

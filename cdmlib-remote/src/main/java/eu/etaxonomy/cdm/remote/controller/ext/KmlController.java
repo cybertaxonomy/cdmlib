@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.remote.controller.ext;
 
 import java.awt.Color;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -136,25 +137,26 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
      * @return URI parameter Strings for the EDIT Map Service
      * @throws IOException TODO write controller method documentation
      */
-    @RequestMapping(value = { "specimensOrOccurences/{uuid-list}" }, method = RequestMethod.GET)
-    public Kml doGetSpecimensOrOccurencesKml(
+    @RequestMapping(
+            value = { "specimensOrOccurences/{uuid-list}" }
+            , method = RequestMethod.GET
+            , produces = "application/vnd.google-earth.kml+xml"
+    )
+    public void doGetSpecimensOrOccurencesKml(
             @PathVariable("uuid-list") UuidList uuidList,
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
 
-
         logger.info("doGetSpecimensOrOccurencesKml() " + requestPathAndQuery(request));
 
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
-
         List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.load(uuidList, null);
-
         specimensOrObersvations = specimensOrObersvations.stream().filter(s -> s != null).collect(Collectors.toList());
 
         Kml kml = geoservice.occurrencesToKML(specimensOrObersvations, specimenOrObservationTypeColors);
 
-        return kml;
+        createKmlResponse(response, kml);
     }
 
     /**
@@ -165,35 +167,31 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
      *
-     * @param request
-     * @param response
      * @return URI parameter Strings for the EDIT Map Service
      * @throws IOException TODO write controller method documentation
      */
-    @RequestMapping(value = { "typeDesignations/{uuid-list}" }, method = RequestMethod.GET)
-    public Kml doGetTypeDesignationsKml(
+    @RequestMapping(
+            value = { "typeDesignations/{uuid-list}" }
+            , method = RequestMethod.GET
+            , produces = "application/vnd.google-earth.kml+xml"
+    )
+    public void doGetTypeDesignationsKml(
             @PathVariable("uuid-list") UuidList uuidList,
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
 
-
         logger.info("doGetTypeDesignationsKml() " + requestPathAndQuery(request));
-
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
-
         List<TypeDesignationBase<?>> typeDesignations = nameService.loadTypeDesignations(uuidList, Arrays.asList("typeSpecimen"));
-
         List<SpecimenOrObservationBase> specimensOrObservations = typeDesignations.stream()
         		.filter(td -> td != null && td instanceof SpecimenTypeDesignation)
         		.map(SpecimenTypeDesignation.class::cast)
         		.map(SpecimenTypeDesignation::getTypeSpecimen)
         		.filter(s -> s != null)
         		.collect(Collectors.toList());
-
         Kml kml = geoservice.occurrencesToKML(specimensOrObservations, specimenOrObservationTypeColors);
-
-        return kml;
+        createKmlResponse(response, kml);
     }
 
     /**
@@ -209,8 +207,12 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
      * @return URI parameter Strings for the EDIT Map Service
      * @throws IOException TODO write controller method documentation
      */
-    @RequestMapping(value = { "taxonOccurrencesFor/{uuid}" }, method = RequestMethod.GET)
-    public Kml doGetTaxonOccurrenceKml(
+    @RequestMapping(
+            value = { "taxonOccurrencesFor/{uuid}" }
+            , method = RequestMethod.GET
+            , produces = "application/vnd.google-earth.kml+xml"
+    )
+    public void doGetTaxonOccurrenceKml(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
             @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
@@ -232,7 +234,7 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
 
         Kml kml = geoservice.occurrencesToKML(specimensOrObersvations, specimenOrObservationTypeColors);
 
-        return kml;
+        createKmlResponse(response, kml);
     }
 
 	private List<SpecimenOrObservationBase> occurencesForTaxon(UUID taxonUuid, UuidList relationshipUuids,
@@ -248,9 +250,19 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
         List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
-        List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(
+        List<SpecimenOrObservationBase> specimensOrObservations = occurrenceService.listByAssociatedTaxon(
                 null, includeRelationships, taxon, includeUnpublished, taxonOccurrenceRelTypes,
                 maxDepth, null, null, orderHints, null);
-		return specimensOrObersvations;
+		return specimensOrObservations;
 	}
+
+    /**
+     * Writes the jaxb converted xml into the response using the
+     * content type "application/vnd.google-earth.kml+xml"
+     */
+    private void createKmlResponse(HttpServletResponse response, Kml kml) throws FileNotFoundException, IOException {
+        response.setContentType("application/vnd.google-earth.kml+xml");
+        response.setCharacterEncoding("UTF-8");
+        kml.marshal(response.getOutputStream());
+    }
 }
