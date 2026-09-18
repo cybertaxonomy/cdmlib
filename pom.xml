@@ -188,8 +188,7 @@
           <version>6.37.0</version>
           <configuration>
             <activeRecipes>
-             <!-- <recipe>org.openrewrite.java.OrderImports</recipe> 
-              <recipe>org.openrewrite.java.migrate.Java8toJava11</recipe>-->
+             <!-- <recipe>org.openrewrite.java.OrderImports</recipe>-->
              <recipe>org.openrewrite.java.migrate.UpgradeBuildToJava17</recipe>
             </activeRecipes>
           </configuration>
