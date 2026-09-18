@@ -150,7 +150,8 @@
       <artifactId>json-lib</artifactId>
 <!--       classifier required as json-lib exists on maven central as json-lib-2.4-jdk15.jar and xxx-jdk13.jar, see 9887 -->
 <!-- upgrading to org.json:json as mentioned in mnvrepository is not possible as these are completely different
-     libraries with different focus. Better migrate to jackson -->
+     libraries with different focus. Better migrate to jackson 
+     When removing json-lib also remove below xom:xom -->
       <classifier>jdk15</classifier>
     </dependency>
 
@@ -162,7 +163,8 @@
 
     <!-- JsonView -->
     <dependency>
-      <!-- for xml serialization (net.sf.json.xml.XMLSerializer) -->
+      <!-- for xml serialization (net.sf.json.xml.XMLSerializer) 
+            Only optionally needed (?) for json-lib -->
       <groupId>xom</groupId>
       <artifactId>xom</artifactId>
       <exclusions>
