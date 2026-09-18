@@ -659,4 +659,17 @@ public interface INonViralName extends ITaxonNameBase{
     */
     //moved to INonViralName because also Fungi names can have in-authors
     public void setInBasionymAuthorship(TeamOrPersonBase<?> inBasionymAuthorship);
+
+    /**
+     * Returns the {@link TaxonNameGender gender} of this name. Relevant
+     * only for names of rank genus. Used for validating epithet ending
+     * of specific and infraspecific names (also infrageneric?).
+     *
+     * @see https://dev.e-taxonomy.eu/redmine/issues/10922
+     */
+    public TaxonNameGender getGender();
+    /**
+     * @see #getGender()
+     */
+    public void setGender(TaxonNameGender gender);
 }

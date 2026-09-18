@@ -151,6 +151,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "specificEpithet",
     "infraSpecificEpithet",
     "autonymFlag",
+    "gender",
     "combinationAuthorship",
     "exCombinationAuthorship",
     "basionymAuthorship",
@@ -217,6 +218,18 @@ public class TaxonName
     )
     @Audited //needed ?
     private NomenclaturalCode nameType;
+
+    /**
+     * The gender of a taxon name of rank genus. Relevant to validate
+     * correct epithet endings of specific or subspecific names.
+     */
+    @XmlAttribute(name ="NameType")
+    @Column(name="gender", length=1)
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.name.TaxonNameGender")}
+    )
+    @Audited
+    private TaxonNameGender gender;
 
     @XmlElement(name = "FullTitleCache")
     @Column(length=800, name="fullTitleCache")  //see #1592
@@ -914,6 +927,15 @@ public class TaxonName
     @Override
     public void setAutonymFlag(Boolean autonymFlag) {
         this.autonymFlag = TriState.fromBoolean(autonymFlag);
+    }
+
+    @Override
+    public TaxonNameGender getGender() {
+        return gender;
+    }
+    @Override
+    public void setGender(TaxonNameGender gender) {
+        this.gender = gender;
     }
 
     /**

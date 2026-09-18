@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCodeEdition;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStanding;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameGender;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
@@ -129,6 +130,9 @@ public class EnumUserType<E extends Enum<E>>
         //RankClass
         }else if (clazz.equals(RankClass.class)){
         	return RankClass.getByKey(val);
+        //Gender
+        }else if (clazz.equals(TaxonNameGender.class)){
+            return TaxonNameGender.getByKey(val);
         //SynonymType
         }else if (clazz.equals(SynonymType.class)){
             return SynonymType.getByKey(val);
