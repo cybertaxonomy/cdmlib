@@ -145,6 +145,15 @@
       <artifactId>spring-oxm</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>net.sf.json-lib</groupId>
+      <artifactId>json-lib</artifactId>
+<!--       classifier required as json-lib exists on maven central as json-lib-2.4-jdk15.jar and xxx-jdk13.jar, see 9887 -->
+<!-- upgrading to org.json:json as mentioned in mnvrepository is not possible as these are completely different
+     libraries with different focus. Better migrate to jackson -->
+      <classifier>jdk15</classifier>
+    </dependency>
+
     <!-- XmlView -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
