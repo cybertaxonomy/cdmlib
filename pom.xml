@@ -1010,9 +1010,6 @@
         <artifactId>commons-codec</artifactId>
         <version>1.22.1</version>
       </dependency>
-      <!-- only for version management, hibernate-commons-annotations:4.0.1.Final 
-        requires 3.1.0.CR2 , so we update 
-        here to the latest version 3.4.1.Final -->
       <dependency>
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging</artifactId>
