@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.update.v54x_54x.SchemaUpdater_5540_5580;
+import eu.etaxonomy.cdm.database.update.v540_558.SchemaUpdater_5540_5580;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
