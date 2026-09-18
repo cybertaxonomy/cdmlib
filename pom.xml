@@ -1349,12 +1349,6 @@
         <artifactId>xstream</artifactId>
         <version>1.4.21</version>
       </dependency>
-<!--       <dependency> -->
-<!--        stax is part of java8 and therefore not needed anymore -->
-<!--         <groupId>stax</groupId> -->
-<!--         <artifactId>stax</artifactId> -->
-<!--         <version>1.2.0</version> -->
-<!--       </dependency> -->
       <dependency>
         <groupId>xom</groupId>
         <artifactId>xom</artifactId>
