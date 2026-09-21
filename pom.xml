@@ -422,8 +422,8 @@
               <rules>
                 <dependencyConvergence />                
 				<requireMavenVersion>
-                  <version>[3.6.3,)</version>
-                  <message>You need at least maven 3.6.3 for this project!</message>
+                  <version>[3.9.16,)</version>
+                  <message>You need at least maven 3.9.16 for this project!</message>
                 </requireMavenVersion>
               </rules>
             </configuration>
