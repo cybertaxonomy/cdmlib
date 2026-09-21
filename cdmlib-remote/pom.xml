@@ -26,7 +26,7 @@
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
 		<!-- TODO upgrading to 3.2.0 shows an exception, needs further research -->
-        <version>3.1.0</version>
+        <version>3.5.0</version>
         <executions>
           <execution>
             <id>copy-resources</id>
