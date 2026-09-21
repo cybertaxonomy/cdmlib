@@ -23,7 +23,8 @@
     <module>cdmlib-remote</module>
     <module>cdmlib-remote-webapp</module>
   </modules>
-  <properties>    
+  <properties>
+    <maven-project-info-reports-plugin-artifactId>maven-project-info-reports-plugin</maven-project-info-reports-plugin-artifactId>    
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -503,7 +504,7 @@
           the items marked @todo or TODO -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>taglist-maven-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.3</version>
       </plugin>
       <plugin>
         <!-- Test coverage can be a useful indication of the quality of your 
@@ -518,9 +519,9 @@
       </plugin>
       <!-- -->
       <plugin>
-	    <groupId>org.apache.maven.plugins</groupId>
-	    <artifactId>maven-project-info-reports-plugin</artifactId>
-	    <version>3.1.2</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.9.0</version>
         <configuration>
           <!-- when the dependencyLocations option is enabled maven will 
             determine if resources are located within a given repository. If that repository 
