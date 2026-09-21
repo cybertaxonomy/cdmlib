@@ -17,7 +17,7 @@
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>3.0.0</version>
+            <version>3.6.4</version>
             <executions>
                 <execution>
                     <phase>compile</phase> 
@@ -51,7 +51,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <versionRange>[3.0.0,)</versionRange>
+                    <versionRange>[3.6.4,)</versionRange>
                     <phase>compile</phase>
                     <goals>
                       <goal>exec</goal>
