@@ -187,21 +187,13 @@
     </dependency>
 
     <!-- ******* DATABASES DRIVER ******* -->
-
-    <!-- for other databases see also #6025 -->
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <scope>compile</scope>
-    </dependency>
     
-    <!-- still creates problems in cdmlib-remote-webapp testing with MySQL connector -->
-<!--     <dependency> -->
-<!--       <groupId>eu.etaxonomy</groupId> -->
-<!--       <artifactId>cdmlib-db</artifactId> -->
-<!--       <version>${project.version}</version> -->
-<!--       <scope>compile</scope> -->
-<!--     </dependency> -->
+    <dependency> 
+       <groupId>eu.etaxonomy</groupId> 
+       <artifactId>cdmlib-db</artifactId> 
+       <version>${project.version}</version> 
+       <scope>compile</scope> 
+     </dependency> 
 
 	<!-- Profiling -->
 	<dependency>
