@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.http.HttpException;
+import org.apache.hc.core5.http.HttpException;
 
 import eu.etaxonomy.cdm.api.service.config.MediaDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;

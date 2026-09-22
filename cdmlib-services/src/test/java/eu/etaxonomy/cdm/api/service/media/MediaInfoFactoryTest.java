@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.apache.http.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import org.cybertaxonomy.media.info.model.MediaInfo;
 import org.junit.Before;
 import org.junit.Test;

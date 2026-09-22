@@ -11,8 +11,7 @@ package eu.etaxonomy.cdm.ext.occurrence.gbif;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.core5.http.NameValuePair;
 
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;

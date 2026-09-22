@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service.media;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.http.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cybertaxonomy.media.info.model.MediaInfo;

@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -281,9 +281,9 @@ public class IpniService  implements IIpniService{
 
             URI newUri = URI.fromUrl(newUrl);
             logger.info("Firing request for URI: " + newUri);
-            HttpResponse response = UriUtils.getResponse(newUri, null);
+            ClassicHttpResponse response = UriUtils.getResponse(newUri, null);
 
-            int responseCode = response.getStatusLine().getStatusCode();
+            int responseCode = response.getCode();
 
             // get the content at the resource
             InputStream content = response.getEntity().getContent();
@@ -327,7 +327,7 @@ public class IpniService  implements IIpniService{
             URI newUri = URI.fromUrl(newUrl);
             logger.info("Firing request for URI: " + newUri);
 
-            HttpResponse response = UriUtils.getResponse(newUri, null);
+            ClassicHttpResponse response = UriUtils.getResponse(newUri, null);
 
             // get the content at the resource
             InputStream content = response.getEntity().getContent();

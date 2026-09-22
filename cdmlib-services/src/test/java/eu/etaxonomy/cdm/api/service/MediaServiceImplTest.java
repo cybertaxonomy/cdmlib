@@ -18,7 +18,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
-import org.apache.http.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;

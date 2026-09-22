@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.service.media;
 
 import java.io.IOException;
 
-import org.apache.http.HttpException;
+import org.apache.hc.core5.http.HttpException;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;

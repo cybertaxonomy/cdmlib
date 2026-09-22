@@ -14,9 +14,9 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.client5.http.ClientProtocolException;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.net.URIBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

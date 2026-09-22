@@ -30,25 +30,26 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.hc.client5.http.ClientProtocolException;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpHead;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.ClientTlsStrategyBuilder;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.net.URIBuilder;
+import org.apache.hc.core5.util.Timeout;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,6 +68,41 @@ public class UriUtils {
         POST
     }
 
+    private static final CloseableHttpClient httpClient;
+
+    static {
+        try {
+            // 1. avoid SSL certificate check once (trust manager)
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, getTrustingManager(), new java.security.SecureRandom());
+
+            var tlsStrategy = ClientTlsStrategyBuilder.create()
+                    .setSslContext(sc)
+                    .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                    .buildClassic();
+
+            // 2. Increase connection pool for parallel use
+            var connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+                    .setTlsSocketStrategy(tlsStrategy)
+                    .setMaxConnTotal(200)         // max. 200 open sockets totally
+                    .setMaxConnPerRoute(50)       // max. 50 parallel Sockets to the same domain
+                    .build();
+
+            // 3. create client
+            httpClient = HttpClients.custom()
+                    .setConnectionManager(connectionManager)
+                    .build();
+
+            // clean closing of client when closing app
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try { httpClient.close(); } catch (Exception ignored) {}
+            }));
+
+        } catch (KeyManagementException | NoSuchAlgorithmException e) {
+            throw new RuntimeException("Initialisierung des statischen HttpClients fehlgeschlagen", e);
+        }
+    }
+
     /**
      * see {@link #getInputStream(URI, Map)}
      */
@@ -83,19 +119,22 @@ public class UriUtils {
             requestHeaders = new HashMap<>();
         }
 
-        if (uri.getScheme().equals("http") || uri.getScheme().equals("https")){
-            HttpResponse response = UriUtils.getResponse(uri, requestHeaders);
+        String scheme = uri.getScheme();
+        if ("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme)){
+            ClassicHttpResponse response = UriUtils.getResponse(uri, requestHeaders);
             if(UriUtils.isOk(response)){
                 InputStream stream = getContent(response);
                 return stream;
             } else {
-                throw new HttpException("HTTP GET response " + UriUtils.getStatus(response) + " for " + uri.toString());
+                int statusCode = response.getCode();
+                response.close();
+                throw new HttpException("HTTP GET response " + statusCode + " for " + uri.toString());
             }
-        }else if (uri.getScheme().equals("file")){
+        }else if ("file".equalsIgnoreCase(scheme)){
             File file = new File(uri.getJavaUri());
             return new FileInputStream(file);
         }else{
-            throw new RuntimeException("Protocol not handled yet: " + uri.getScheme());
+            throw new RuntimeException("Protocol not handled yet: " + scheme);
         }
     }
 
@@ -152,7 +191,7 @@ public class UriUtils {
      * @return <code>true</code> if response is OK, <code>false</code> otherwise
      */
     public static boolean isOk(HttpResponse response){
-        return response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
+        return response.getCode() == HttpStatus.SC_OK;
     }
 
     /**
@@ -161,8 +200,12 @@ public class UriUtils {
      * @return the content as InputStream
      * @throws IOException
      */
-    public static InputStream getContent(HttpResponse response) throws IOException{
-        return response.getEntity().getContent();
+    public static InputStream getContent(ClassicHttpResponse response) throws IOException{
+        HttpEntity entity = response.getEntity();
+        if (entity == null) {
+            throw new IOException("Response contains no entity / no content.");
+        }
+        return entity.getContent();
     }
 
     /**
@@ -171,8 +214,7 @@ public class UriUtils {
      * @return status as a string
      */
     public static String getStatus(HttpResponse response){
-        StatusLine statusLine = response.getStatusLine();
-        return "(" + statusLine.getStatusCode() + ")" + statusLine.getReasonPhrase();
+        return "(" + response.getCode() + ")" + response.getReasonPhrase();
     }
 
     /**
@@ -183,7 +225,7 @@ public class UriUtils {
      * @throws IOException
      * @throws ClientProtocolException
      */
-    public static HttpResponse getResponse(URI uri, Map<String, String> requestHeaders) throws ClientProtocolException, IOException{
+    public static ClassicHttpResponse getResponse(URI uri, Map<String, String> requestHeaders) throws ClientProtocolException, IOException{
         return getResponseByType(uri, requestHeaders, HttpMethod.GET, null);
     }
 
@@ -210,54 +252,49 @@ public class UriUtils {
      * @throws IOException
      * @throws ClientProtocolException
      */
-    public static HttpResponse getResponseByType(URI uri, Map<String, String> requestHeaders, HttpMethod httpMethod, HttpEntity entity) throws IOException, ClientProtocolException {
+    public static ClassicHttpResponse getResponseByType(URI cdmUri,
+            Map<String, String> requestHeaders,
+            HttpMethod httpMethod, HttpEntity entity)
+            throws IOException, ClientProtocolException {
 
-        // Create an instance of HttpClient.
-        HttpClient client;
-        try {
-            SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(null, getTrustingManager(), new java.security.SecureRandom());
-
-            SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(
-                    sc, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
-
-            client = HttpClientBuilder.create()
-                    .setSSLSocketFactory(socketFactory)
-                    .build();
-
-        } catch (KeyManagementException | NoSuchAlgorithmException e1) {
-            throw new RuntimeException("Registration of tsl support failed", e1);
-        }
-
-        HttpUriRequest method;
+        //ClassicHttpRequest (HttpClient 5 default for synchronous calls
+        java.net.URI uri = cdmUri.getJavaUri();
+        HttpUriRequestBase method;
         switch (httpMethod) {
-        case GET:
-            method = new HttpGet(uri.getJavaUri());
-            break;
-        case POST:
-            HttpPost httpPost = new HttpPost(uri.getJavaUri());
-            if(entity!=null){
-                httpPost.setEntity(entity);
-            }
-            method = httpPost;
-            break;
-        default:
-            method = new HttpPost(uri.getJavaUri());
-            break;
+            case GET:
+                method = new HttpGet(uri);
+                break;
+            case POST:
+                HttpPost httpPost = new HttpPost(uri);
+                if (entity != null) {
+                    httpPost.setEntity(entity);
+                }
+                method = httpPost;
+                break;
+            default:
+                method = new HttpPost(uri);
+                break;
         }
 
-        // configure the connection
-        if(requestHeaders != null){
-            for(Entry<String, String> e : requestHeaders.entrySet()){
+        //configure header
+        if (requestHeaders != null) {
+            for (Entry<String, String> e : requestHeaders.entrySet()) {
                 method.addHeader(e.getKey(), e.getValue());
             }
         }
 
-        //TODO  method.setFollowRedirects(followRedirects);
+        //prepare request configuration
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setRedirectsEnabled(true)
+                .build();
+        method.setConfig(requestConfig);
 
-        if (logger.isDebugEnabled()){logger.debug("sending "+httpMethod+" request: " + uri);}
+        if (logger.isDebugEnabled()) {
+            logger.debug("sending " + httpMethod + " request: " + uri);
+        }
 
-        return client.execute(method);
+        // Use executeOpen to allow the calling client to read it.
+        return httpClient.executeOpen(null, method, null);
     }
 
     /**
@@ -350,6 +387,7 @@ public class UriUtils {
      * @return true if service is available, false otherwise. Also a non-absolute URI will return false.
      */
     public static boolean isServiceAvailable(URI serviceUri, Integer timeout){
+
         boolean result = false;
 
         if(serviceUri==null || serviceUri.getHost()==null || !serviceUri.isAbsolute()){
@@ -357,28 +395,33 @@ public class UriUtils {
         }
 
         //Http
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpHead httpget = new HttpHead(serviceUri.getJavaUri());
-
+        HttpHead request = new HttpHead(serviceUri.getJavaUri());
 
         if(timeout!=null){
 
             RequestConfig requestConfig = RequestConfig.custom()
-                    .setSocketTimeout(timeout)
-                    .setConnectTimeout(timeout)
-                    .setConnectionRequestTimeout(timeout)
+                    .setResponseTimeout(Timeout.ofMilliseconds(timeout))
                     .build();
-            httpget.setConfig(requestConfig);
+            request.setConfig(requestConfig);
         }
 
         try {
-            // Execute the request
-            HttpResponse response = httpclient.execute(httpget);
-            // Examine the response status
-            if (logger.isDebugEnabled()){
-                logger.debug(response.getStatusLine());
-            }
-             result = true;
+            return httpClient.execute(request, response -> {
+                int statusCode = response.getCode();
+
+                if (statusCode == 200) {
+                    if (logger.isDebugEnabled()){
+                        logger.debug(response.getCode() + "\n"+ response.getHeaders() + "\n"+ response.getReasonPhrase());
+                    }
+                    return true;
+                } else {
+
+                    String reason = response.getReasonPhrase();
+                    logger.info("Ressource not available. Status: " + statusCode + " (" + reason + ")");
+
+                    return false;
+                }
+            });
 
         } catch (UnknownHostException e1) {
             logger.info("Unknown Host: " +e1.getMessage());
@@ -387,12 +430,6 @@ public class UriUtils {
         } catch (IOException e3) {
             logger.info("IOException: " + e3.getMessage());
         }
-
-         // When HttpClient instance is no longer needed,
-         // shut down the connection manager to ensure
-         // immediate deallocation of all system resources
-        //needed ?
-//	     client.getConnectionManager().shutdown();
 
         return result;
     }

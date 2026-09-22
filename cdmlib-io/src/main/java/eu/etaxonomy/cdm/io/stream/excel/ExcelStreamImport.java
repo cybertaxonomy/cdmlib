@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.stream.excel;
 
 import java.io.IOException;
 
-import org.apache.http.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
