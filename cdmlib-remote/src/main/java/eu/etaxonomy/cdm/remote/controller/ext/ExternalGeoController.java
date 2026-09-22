@@ -34,6 +34,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.opencsv.exceptions.CsvException;
+
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -211,13 +213,8 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
      * EXPERIMENTAL !!!!!
      * DO NOT USE   !!!!!
      *
-     * @param vocabUuid
-     * @param request
-     * @param response
-     * @return
-     * @throws IOException
-     *
      * @author a.kohlbecker
+     * @throws IOException, CsvException
      */
     @RequestMapping(value = { "mapShapeFileToNamedAreas" }, method = RequestMethod.GET)
     public ModelAndView doMapShapeFileToNamedAreas(
@@ -228,7 +225,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
             @RequestParam(required=true, value="wmsLayerName") String wmsLayerName,
             HttpServletRequest request,
             HttpServletResponse response)
-            throws IOException {
+            throws IOException, CsvException {
 
         logger.info("doMapShapeFileToNamedAreas() " + requestPathAndQuery(request));
         ModelAndView mv = new ModelAndView();
@@ -241,7 +238,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         }
         Map<NamedArea, String> resultMap = distributionService.mapShapeFileToNamedAreas(
                 reader, idSearchFields , wmsLayerName , vocabUuid, areaUuidSet);
-        Map<String, String> flatResultMap = new HashMap<String, String>(resultMap.size());
+        Map<String, String> flatResultMap = new HashMap<>(resultMap.size());
         for(NamedArea area : resultMap.keySet()){
             flatResultMap.put(area.getTitleCache() + " [" + area.getUuid() + "]", resultMap.get(area));
         }

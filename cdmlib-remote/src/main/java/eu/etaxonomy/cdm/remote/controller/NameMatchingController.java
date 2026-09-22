@@ -33,8 +33,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opencsv.CSVWriterBuilder;
+import com.opencsv.ICSVWriter;
 
-import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCandidateResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingCombinedResult;
 import eu.etaxonomy.cdm.api.nameMatching.NameMatchingExactResult;
@@ -246,13 +247,15 @@ public class NameMatchingController {
             }
         }
 
-        private static void csvResponse(HttpServletRequest request, HttpServletResponse response, NameMatchingOutputList outputObjectList) throws IOException {
+        private static void csvResponse(HttpServletRequest request, HttpServletResponse response, NameMatchingOutputList outputObjectList) {
             response.setContentType("text/csv");
             response.setHeader("Content-Disposition", "attachment; filename= \"name_matching.csv\"");
             try (PrintWriter writer = response.getWriter();
-                    CSVWriter csvWriter = new CSVWriter (writer, ';');){
+                    ICSVWriter csvWriter = new CSVWriterBuilder(writer)
+                            .withSeparator(';')
+                            .build();){
 
-                List <String> csvStringBuilder = new ArrayList<String>();
+                List <String> csvStringBuilder = new ArrayList<>();
                 csvWriter.writeNext(new String[]{
                         "inputName",
                         "compareAuthor",

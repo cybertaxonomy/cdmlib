@@ -14,6 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.opencsv.exceptions.CsvValidationException;
+
 import eu.etaxonomy.cdm.io.common.mapping.out.ExportTransformerBase;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -49,7 +51,7 @@ public class DwcaTaxExportTransformer extends ExportTransformerBase {
 			if (nomStatusMapping == null){
 				try {
 					nomStatusMapping = new TermMapping("nomStatusToGbif.tsv");
-				} catch (IOException e) {
+				} catch (IOException | CsvValidationException e) {
 					throw new RuntimeException(e);
 				}
 			}
@@ -102,7 +104,7 @@ public class DwcaTaxExportTransformer extends ExportTransformerBase {
 			if (rankMapping == null){
 				try {
 					rankMapping = new TermMapping("rankToGbif.tsv");
-				} catch (IOException e) {
+				} catch (IOException | CsvValidationException e) {
 					throw new RuntimeException(e);
 				}
 			}
@@ -121,7 +123,7 @@ public class DwcaTaxExportTransformer extends ExportTransformerBase {
 			if (specimenTypeMapping == null){
 				try {
 					specimenTypeMapping = new TermMapping("specimenTypeStatusToGbif.tsv");
-				} catch (IOException e) {
+				} catch (IOException | CsvValidationException e) {
 					throw new RuntimeException(e);
 				}
 			}
@@ -141,7 +143,7 @@ public class DwcaTaxExportTransformer extends ExportTransformerBase {
 			if (nameTypeMapping == null){
 				try {
 					nameTypeMapping = new TermMapping("nameTypeStatusToGbif.tsv");
-				} catch (IOException e) {
+				} catch (IOException | CsvValidationException e) {
 					throw new RuntimeException(e);
 				}
 			}
@@ -160,7 +162,7 @@ public class DwcaTaxExportTransformer extends ExportTransformerBase {
 			if (sexMapping == null){
 				try {
 					sexMapping = new TermMapping("sexToGbif.tsv");
-				} catch (IOException e) {
+				} catch (IOException | CsvValidationException e) {
 					throw new RuntimeException(e);
 				}
 			}
@@ -179,7 +181,7 @@ public class DwcaTaxExportTransformer extends ExportTransformerBase {
 			if (lifeStageMapping == null){
 				try {
 					lifeStageMapping = new TermMapping("lifeStageToGbif.tsv");
-				} catch (IOException e) {
+				} catch (IOException | CsvValidationException e) {
 					throw new RuntimeException(e);
 				}
 			}
@@ -198,7 +200,7 @@ public class DwcaTaxExportTransformer extends ExportTransformerBase {
 			if (occStatusMapping == null){
 				try {
 					occStatusMapping = new TermMapping("presenceTermToGbifOccurrenceStatus.tsv");
-				} catch (IOException e) {
+				} catch (IOException | CsvValidationException e) {
 					throw new RuntimeException(e);
 				}
 			}
@@ -217,7 +219,7 @@ public class DwcaTaxExportTransformer extends ExportTransformerBase {
 			if (establishmentMeansMapping == null){
 				try {
 					establishmentMeansMapping = new TermMapping("presenceTermToGbifEstablishmentMeans.tsv");
-				} catch (IOException e) {
+				} catch (IOException | CsvValidationException e) {
 					throw new RuntimeException(e);
 				}
 			}

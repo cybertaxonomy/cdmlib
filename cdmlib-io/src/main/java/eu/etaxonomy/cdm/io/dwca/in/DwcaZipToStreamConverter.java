@@ -30,9 +30,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import au.com.bytecode.opencsv.CSVParser;
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.ICSVParser;
+import com.opencsv.ICSVWriter;
+
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Archive;
 import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
@@ -173,11 +177,11 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 			return null;
 		}
 
-		char fieldTerminatedBy = StringUtils.isEmpty(archiveEntry.getFieldsTerminatedBy()) ? CSVParser.DEFAULT_SEPARATOR : archiveEntry.getFieldsTerminatedBy().charAt(0);
+		char fieldTerminatedBy = StringUtils.isEmpty(archiveEntry.getFieldsTerminatedBy()) ? ICSVParser.DEFAULT_SEPARATOR : archiveEntry.getFieldsTerminatedBy().charAt(0);
 		// default is a kind of 'null' quote, which tells opencsv to ignore the enclosing quotes
-		char fieldsEnclosedBy = CSVWriter.NO_QUOTE_CHARACTER;
+		char fieldsEnclosedBy = ICSVWriter.NO_QUOTE_CHARACTER;
 		if(state == null || !state.getConfig().isNoQuotes()) {
-		        fieldsEnclosedBy= StringUtils.isEmpty(archiveEntry.getFieldsEnclosedBy()) ? CSVParser.DEFAULT_QUOTE_CHARACTER: archiveEntry.getFieldsEnclosedBy().charAt(0);
+		        fieldsEnclosedBy= StringUtils.isEmpty(archiveEntry.getFieldsEnclosedBy()) ? ICSVParser.DEFAULT_QUOTE_CHARACTER: archiveEntry.getFieldsEnclosedBy().charAt(0);
 		}
 		boolean ignoreHeader = archiveEntry.getIgnoreHeaderLines();
 		String linesTerminatedBy = archiveEntry.getLinesTerminatedBy();
@@ -187,7 +191,14 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 		String fileLocation = archiveEntry.getFiles().getLocation();
 		InputStream coreCsvInputStream = makeInputStream(fileLocation);
 		Reader coreReader = new InputStreamReader(coreCsvInputStream, encoding);
-		CSVReader csvReader = new CSVReader(coreReader, fieldTerminatedBy,fieldsEnclosedBy, skipLines);
+		CSVParser parser = new CSVParserBuilder()
+		        .withSeparator(fieldTerminatedBy)
+		        .withQuoteChar(fieldsEnclosedBy)
+		        .build();
+		CSVReader csvReader = new CSVReaderBuilder(coreReader)
+		        .withSkipLines(skipLines)
+		        .withCSVParser(parser)
+		        .build();
 		CsvStream csvStream = new CsvStream(csvReader, archiveEntry, skipLines);
 
 		//		InputStream s;

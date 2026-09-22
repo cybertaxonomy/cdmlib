@@ -19,7 +19,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
+
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -44,8 +46,6 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class ShpAttributesToNamedAreaMapper {
 
     private static final Logger logger = LogManager.getLogger();
-
-    private static final char COMMA = ',';
 
     private final Set<NamedArea> areas;
 
@@ -78,14 +78,16 @@ public class ShpAttributesToNamedAreaMapper {
      * @return the resulting table of the import, also together with diagnostic
      *         messages per NamedArea (id not found)
      * @throws IOException
+     * @throws CsvException
      */
-    public Map<NamedArea, String> readCsv(Reader reader, List<String> idSearchFields, String wmsLayerName) throws IOException {
+    public Map<NamedArea, String> readCsv(Reader reader, List<String> idSearchFields,
+            String wmsLayerName) throws IOException, CsvException {
 
         //logger.setLevel(Level.DEBUG);
 
         Map<NamedArea, String> resultMap = new HashMap<>(areas.size());
 
-        CSVReader csvReader = new CSVReader(reader, COMMA);
+        CSVReader csvReader = new CSVReader(reader);  //uses comma as separator
 
         // read header row and prepare the searchColumnMap
         String[] headerRow = csvReader.readNext();

@@ -19,7 +19,9 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.TransactionStatus;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
+
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -49,13 +51,13 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
         ImportResult result = state.getResult();
         try {
             InputStreamReader inputReader = state.getConfig().getSource();
-            CSVReader csvReader = new CSVReader(inputReader, state.getConfig().getFieldSeparator());
+            CSVReader csvReader = csvReader(inputReader, state.getConfig().getFieldSeparator());
             String[] headerStr;
             try {
                 headerStr = csvReader.readNext();
-            } catch (IOException e1) {
+            } catch (IOException | CsvValidationException e1) {
                 csvReader.close();  //to handle multiple readings of input stream
-                csvReader = new CSVReader(state.getConfig().newInputStream(), state.getConfig().getFieldSeparator());
+                csvReader = csvReader(state.getConfig().newInputStream(), state.getConfig().getFieldSeparator());
                 headerStr = csvReader.readNext();
             }
             String[] next = csvReader.readNext();
@@ -106,7 +108,7 @@ public abstract class CsvImportBase<CONFIG extends CsvImportConfiguratorBase, ST
 
             return ;
 
-        } catch (IOException e) {
+        } catch (IOException | CsvValidationException e) {
             throw new RuntimeException(e);
         }
     }

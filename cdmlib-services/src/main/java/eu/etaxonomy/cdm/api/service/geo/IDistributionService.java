@@ -21,6 +21,8 @@ import javax.xml.stream.XMLStreamException;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.opencsv.exceptions.CsvException;
+
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
@@ -144,10 +146,11 @@ public interface IDistributionService {
      *
      * @return
      * @throws IOException
+     * @throws CsvException
      */
     @Transactional(readOnly=false)
     public abstract Map<NamedArea, String> mapShapeFileToNamedAreas(Reader csvReader,
             List<String> idSearchFields, String wmsLayerName, UUID areaVocabularyUuid,
             Set<UUID> namedAreaUuids)
-            throws IOException;
+            throws IOException, CsvException;
 }

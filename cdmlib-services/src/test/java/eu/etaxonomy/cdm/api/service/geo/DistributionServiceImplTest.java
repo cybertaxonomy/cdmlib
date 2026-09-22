@@ -38,6 +38,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import com.opencsv.exceptions.CsvException;
+
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -126,7 +128,7 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
 
     //TODO move to AreaMapServiceParameterBuilder and simplify dependencies
     @Test
-    public void testGetWebServiceUrlCyprus() throws ClientProtocolException, IOException {
+    public void testGetWebServiceUrlCyprus() throws ClientProtocolException, IOException, CsvException {
         makeCyprusAreas();
         Set<Distribution> distributions = new HashSet<>();
         distributions.add(Distribution.NewInstance(divisions.get("1"), PresenceAbsenceTerm.PRESENT()));
@@ -160,7 +162,7 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         subTestWithEditMapService(result);
     }
 
-    private void makeCyprusAreas() throws IOException {
+    private void makeCyprusAreas() throws IOException, CsvException {
 
         //divisions
         NamedAreaType areaType = NamedAreaType.NATURAL_AREA();

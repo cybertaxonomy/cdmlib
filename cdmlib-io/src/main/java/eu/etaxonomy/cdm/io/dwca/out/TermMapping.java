@@ -17,7 +17,11 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvValidationException;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 
@@ -39,14 +43,19 @@ public class TermMapping {
 	private Map<UUID, String> mappingMap = new HashMap<>();
 
 
-	public TermMapping(String filename) throws IOException{
+	public TermMapping(String filename) throws IOException, CsvValidationException{
 		readMapping(filename);
 	}
 
-	private void readMapping(String filename) throws IOException {
+	private void readMapping(String filename) throws IOException, CsvValidationException {
 		String strResourceFileName = "mapping/" + filename;
 		InputStreamReader isr = CdmUtils.getUtf8ResourceReader(strResourceFileName);
-		CSVReader reader = new CSVReader(isr, separator);
+		CSVReader reader = new CSVReaderBuilder(isr)
+		        .withCSVParser(
+		                new CSVParserBuilder()
+		                .withSeparator(separator)
+		                .build())
+		        .build();
 
 		String [] nextLine = reader.readNext();
 		uuidCdmVoc = UUID.fromString(nextLine[0]);

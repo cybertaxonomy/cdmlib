@@ -30,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.opencsv.exceptions.CsvException;
+
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto;
 import eu.etaxonomy.cdm.api.dto.portal.DistributionInfoDto.InfoPart;
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
@@ -255,7 +257,7 @@ public class DistributionServiceImpl implements IDistributionService {
     @Transactional(readOnly=false)
     public Map<NamedArea, String> mapShapeFileToNamedAreas(Reader csvReader,
             List<String> idSearchFields, String wmsLayerName, UUID areaVocabularyUuid,
-            Set<UUID> namedAreaUuids) throws IOException {
+            Set<UUID> namedAreaUuids) throws IOException, CsvException {
 
         Set<NamedArea> areas = new HashSet<>();
 

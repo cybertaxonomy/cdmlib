@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.sql.ResultSet;
@@ -21,6 +22,11 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -1609,5 +1615,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
                 ((Team)agent).getTeamMembers().stream().forEach(m->getAgentService().save(m));
             }
         }
+    }
+
+    protected CSVReader csvReader(Reader reader, char separator) {
+        CSVParser parser = new CSVParserBuilder()
+                .withSeparator(separator)
+                .build();
+        return new CSVReaderBuilder(reader)
+            .withCSVParser(parser)
+            .build();
     }
 }

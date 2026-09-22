@@ -21,7 +21,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.SimpleImport;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -59,7 +61,7 @@ public class IdentifierImport
         try {
             //read stream
             InputStreamReader inputReader = config.getSource();
-            CSVReader csvReader = new CSVReader(inputReader, config.getSeparator());
+            CSVReader csvReader = csvReader(inputReader, config.getSeparator());
             List<String[]> lines = csvReader.readAll();
             if (lines.isEmpty()){
                 logger.info("Import file is empty");
@@ -84,7 +86,7 @@ public class IdentifierImport
             //not needed as the objects update automatically during transactions in handleSingleLine()
 //            getCommonService().saveOrUpdate(entitiesToSave);
 
-        } catch (IOException e) {
+        } catch (IOException | CsvException e) {
             throw new RuntimeException(e);
         }
     }
