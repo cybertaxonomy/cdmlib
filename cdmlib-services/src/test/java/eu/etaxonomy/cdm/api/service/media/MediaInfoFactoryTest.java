@@ -120,11 +120,12 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
         URI transformedUri = list.get(0);
         assertEquals("https://image.bgbm.org/metadata/info?file=mediacloud/org1/1adb62d8-0b67-4128-927b-b713d164f98e/original", transformedUri.toString());
         if(UriUtils.isInternetAvailable(new URI("https://image.bgbm.org/"))){
-            InputStream jsonStream = UriUtils.getInputStream(transformedUri);
-            ObjectMapper mapper = new ObjectMapper();
-            MediaInfo mediaInfo = mapper.readValue(jsonStream, MediaInfo.class);
-            assertEquals(937, mediaInfo.getHeight());
-            assertEquals(1400, mediaInfo.getWidth());
+            try (InputStream jsonStream = UriUtils.getInputStream(transformedUri)){
+                ObjectMapper mapper = new ObjectMapper();
+                MediaInfo mediaInfo = mapper.readValue(jsonStream, MediaInfo.class);
+                assertEquals(937, mediaInfo.getHeight());
+                assertEquals(1400, mediaInfo.getWidth());
+            }
         }
     }
 

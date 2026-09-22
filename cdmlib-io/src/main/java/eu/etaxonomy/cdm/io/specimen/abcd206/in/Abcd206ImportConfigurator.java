@@ -80,8 +80,7 @@ public class Abcd206ImportConfigurator
         if (super.getSource() != null){
         	return super.getSource();
         }else if (this.sourceUri != null){
-        	try {
-				InputStream is = UriUtils.getInputStream(sourceUri);
+        	try (InputStream is = UriUtils.getInputStream(sourceUri)){
 				setSource(is);
 				return is;
 			} catch (Exception e) {

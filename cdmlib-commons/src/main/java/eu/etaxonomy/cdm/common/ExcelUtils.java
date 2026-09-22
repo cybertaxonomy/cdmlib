@@ -44,8 +44,7 @@ public class ExcelUtils {
 
 	/** Reads all rows of an Excel worksheet */
     public static List<Map<String, String>> parseXLS(URI uri, String worksheetName) throws FileNotFoundException {
-        try {
-            InputStream stream = UriUtils.getInputStream(uri);
+        try (InputStream stream = UriUtils.getInputStream(uri)) {
             return parseXLS(stream, worksheetName);
         } catch(FileNotFoundException fne) {
             throw new FileNotFoundException(uri.toString());

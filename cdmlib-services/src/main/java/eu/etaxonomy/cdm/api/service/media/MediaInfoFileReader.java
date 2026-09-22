@@ -87,9 +87,7 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
      */
     public AbstactMediaMetadataReader readImageInfo() throws IOException {
 
-        InputStream inputStream;
-        try {
-            inputStream = UriUtils.getInputStream(cdmImageInfo.getUri());
+        try (InputStream inputStream = UriUtils.getInputStream(cdmImageInfo.getUri())) {
             ImageInfo imageInfo = Imaging.getImageInfo(inputStream, null);
 
             cdmImageInfo.setFormatName(imageInfo.getFormatName());
@@ -111,8 +109,7 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
     public AbstactMediaMetadataReader readMetaData() throws IOException, HttpException {
 
         ImageMetadata mediaData = null;
-        try {
-            InputStream inputStream = UriUtils.getInputStream(cdmImageInfo.getUri());
+        try (InputStream inputStream = UriUtils.getInputStream(cdmImageInfo.getUri())) {
             mediaData = Imaging.getMetadata(inputStream, null);
         }catch (ImagingException e) {
             String newMessage = "Could not read: " + cdmImageInfo.getUri() + ". " + e.getMessage();
@@ -143,14 +140,17 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
             cdmImageInfo.setLength(length);
         } catch (HttpException e) {
             if (e.getMessage().equals("Could not retrieve Content-Length")){
-                InputStream inputStream = UriUtils.getInputStream(cdmImageInfo.getUri());
-                int n = 0;
-                while(inputStream.read() != -1){
-                    n++;
+
+                try(InputStream inputStream = UriUtils.getInputStream(cdmImageInfo.getUri())){
+                    int n = 0;
+                    while(inputStream.read() != -1){
+                        n++;
+                    }
+                    inputStream.close();
+                    logger.info("Content-Length not available in http header. Image size computed via input stream size: " + cdmImageInfo.getUri());
+                    cdmImageInfo.setLength(n);
                 }
-                inputStream.close();
-                logger.info("Content-Length not available in http header. Image size computed via input stream size: " + cdmImageInfo.getUri());
-                cdmImageInfo.setLength(n);
+
             }else{
                 throw e;
             }

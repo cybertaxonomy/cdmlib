@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.excel.stream;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +58,10 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 
 	public IReader<ExcelRecordStream> getWorksheetStream(STATE state) throws IOException, HttpException {
 
-		Workbook wb = WorkbookFactory.create(UriUtils.getInputStream(source));
+	    Workbook wb;
+	    try(InputStream is = UriUtils.getInputStream(source)){
+	        wb = WorkbookFactory.create(is);
+	    }
 
 		Map<TermUri, Integer> map = new HashMap<>();
 		for (int i = 0 ; i < wb.getNumberOfSheets(); i++){

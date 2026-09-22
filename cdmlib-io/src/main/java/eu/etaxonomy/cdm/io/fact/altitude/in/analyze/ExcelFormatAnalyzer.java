@@ -95,8 +95,8 @@ public class ExcelFormatAnalyzer<CONFIG extends FactExcelImportConfiguratorBase<
             result.addFatalError("Now source defined. Import not possible.");
             return;
         }
-        try {
-            InputStream stream = UriUtils.getInputStream(uri);
+        try (InputStream stream = UriUtils.getInputStream(uri)) {
+
             Workbook wb = WorkbookFactory.create(stream);
 
             List<String> worksheetNames = new ArrayList<>();
