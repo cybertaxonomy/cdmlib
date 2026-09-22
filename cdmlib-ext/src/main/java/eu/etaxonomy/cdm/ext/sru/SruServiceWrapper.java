@@ -63,7 +63,7 @@ public class SruServiceWrapper extends ServiceWrapperBase<Reference> {
 	 */
 	public List<Reference> doSearchRetrieve(String cqlQuery, String recordSchema){
 
-		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+		List<NameValuePair> pairs = new ArrayList<>();
 
 		SchemaAdapterBase<Reference> schemaAdapter = schemaAdapterMap.get(recordSchema);
 		if(schemaAdapter == null){

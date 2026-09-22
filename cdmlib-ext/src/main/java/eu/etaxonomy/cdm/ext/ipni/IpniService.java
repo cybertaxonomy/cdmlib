@@ -319,10 +319,10 @@ public class IpniService  implements IIpniService{
 
             // create the request url
             URL newUrl = new URL(serviceUrl.getProtocol(),
-                                                     serviceUrl.getHost(),
-                                                     serviceUrl.getPort(),
-                                                     serviceUrl.getPath()
-                                                     + "?" + request);
+                     serviceUrl.getHost(),
+                     serviceUrl.getPort(),
+                     serviceUrl.getPath()
+                     + "?" + request);
 
             URI newUri = URI.fromUrl(newUrl);
             logger.info("Firing request for URI: " + newUri);

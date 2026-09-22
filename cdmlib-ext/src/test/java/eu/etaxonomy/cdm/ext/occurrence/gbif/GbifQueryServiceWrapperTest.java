@@ -146,11 +146,7 @@ public class GbifQueryServiceWrapperTest {
     	GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
     	try {
     		service.query(query);
-    	} catch (ClientProtocolException e) {
-    		Assert.fail(e.getMessage());
-    	} catch (IOException e) {
-    		Assert.fail(e.getMessage());
-    	} catch (URISyntaxException e) {
+    	} catch (IOException | URISyntaxException e) {
     		Assert.fail(e.getMessage());
     	}
     }

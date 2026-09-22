@@ -32,7 +32,7 @@ public class GbifQueryGenerator {
      * @return the query URL string
      */
     public List<NameValuePair> generateQueryParams(OccurenceQuery query){
-        List<NameValuePair> queryParamsGET = new ArrayList<NameValuePair>();
+        List<NameValuePair> queryParamsGET = new ArrayList<>();
         // only look for preserved specimens
 
         if (checkForValidQuery(query)) {

@@ -84,7 +84,7 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
             String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(doc);
 
             //POST parameters
-            List<NameValuePair> queryParamsPOST = new ArrayList<NameValuePair>();
+            List<NameValuePair> queryParamsPOST = new ArrayList<>();
             queryParamsPOST.add(SUBMIT_PARAM);
             addNameValuePairTo(queryParamsPOST, QUERY_PARAM_NAME, xmlOutputString);
             UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(queryParamsPOST);
@@ -170,7 +170,7 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
             String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(doc);
 
             //POST parameters
-            List<NameValuePair> queryParamsPOST = new ArrayList<NameValuePair>();
+            List<NameValuePair> queryParamsPOST = new ArrayList<>();
             queryParamsPOST.add(SUBMIT_PARAM);
             addNameValuePairTo(queryParamsPOST, QUERY_PARAM_NAME, xmlOutputString);
             UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(queryParamsPOST);

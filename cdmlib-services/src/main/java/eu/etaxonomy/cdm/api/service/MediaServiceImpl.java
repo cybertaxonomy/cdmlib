@@ -211,12 +211,6 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         return result;
     }
 
-    /**
-     * @param media
-     * @param textData
-     * @param desc
-     * @param taxon
-     */
     private IDescribable<DescriptionBase<?>> handleDeleteMedia(Media media, TextData textData,
             DescriptionBase<?> desc, IDescribable<DescriptionBase<?>> describable) {
         while(textData.getMedia().contains(media)){
@@ -225,7 +219,6 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 
         return describable;
     }
-
 
     @Override
     public DeleteResult isDeletable(UUID mediaUuid, DeleteConfiguratorBase config){
@@ -278,7 +271,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             }else {
                 message = "The media can't be completely deleted because it is referenced by a " + ref.getUserFriendlyTypeName();
                 if (ref instanceof IdentifiableEntity) {
-                	message += ": " + ((IdentifiableEntity)ref).getTitleCache();
+                	message += ": " + ((IdentifiableEntity<?>)ref).getTitleCache();
                 }
                 result.setAbort();
             }
@@ -324,7 +317,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
        if(metadata == null) {
             metadata = new HashMap<>();
        }
-       Map<String, String> resultMetadata = new HashMap();
+       Map<String, String> resultMetadata = new HashMap<>();
        String replacedKey = null;
        for (Entry<String,String> a: metadata.entrySet()) {
            if (includes.containsKey(a.getKey().replaceAll(" ", ""))) {
@@ -454,7 +447,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         ObjectMapper mapper = new ObjectMapper();
         try {
             Map<String, String> map
-            = mapper.readValue(json, new TypeReference<Map<String,String>>(){});
+            = mapper.readValue(json, new TypeReference<>(){});
             return map;
         } catch (JsonProcessingException e) {
            logger.error(e.getMessage());

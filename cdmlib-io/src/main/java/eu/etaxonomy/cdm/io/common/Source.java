@@ -16,7 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.http.MethodNotSupportedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,7 +36,6 @@ public class Source {
 
 /* ************ Constants **************************************/
     //Mode
-	private final static boolean DEBUG_MODE = false;
     private final static boolean DEBUG_LOG_WRITER = false;
 
     //DB info
@@ -62,7 +60,6 @@ public class Source {
     private static String clsOracle = "oracle.jdbc.driver.OracleDriver";
     private static String clsDB2 = "COM.ibm.db2.jdbc.net.DB2Driver";
     private static String clsSQLServerDdtek = "com.ddtek.jdbc.sqlserver.SQLServerDriver";
-    private static String clsDefault = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
     private static String clsPostgreSQL = "org.postgresql.Driver";
     private static String clsMySQL = "com.mysql.cj.jdbc.Driver";
     private static String clsMariaDB = "org.mariadb.jdbc.Driver";

@@ -63,7 +63,7 @@ public class GbifImport
     @Override
     protected void doInvoke(SpecimenImportStateBase state) {
        // GbifImportState gbifImportState = (GbifImportState)state;
-        SpecimenImportConfiguratorBase config = state.getConfig();
+        SpecimenImportConfiguratorBase<?,?,?> config = state.getConfig();
 
             state.setTx(startTransaction());
             logger.info("INVOKE Specimen Import from Gbif webservice");
