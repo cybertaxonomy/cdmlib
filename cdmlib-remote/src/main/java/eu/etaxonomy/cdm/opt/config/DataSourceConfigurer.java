@@ -233,6 +233,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
                     if(resultSet.next()){
                         version = resultSet.getString(1);
                     } else {
+                        //no metadata available
                         CdmDatabaseException cde = new CdmDatabaseException("Unable to retrieve version info from data source " + dataSource.toString()
                         + " -  the database may have been corrupted or is not a cdm database");
                         addErrorMessageToServletContextAttributes(cde.getMessage());

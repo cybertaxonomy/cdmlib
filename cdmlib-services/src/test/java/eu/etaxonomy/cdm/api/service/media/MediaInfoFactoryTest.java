@@ -128,7 +128,6 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
         }
     }
 
-
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }

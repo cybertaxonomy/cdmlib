@@ -59,7 +59,7 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 
 		Workbook wb = WorkbookFactory.create(UriUtils.getInputStream(source));
 
-		Map<TermUri, Integer> map = new HashMap<TermUri, Integer>();
+		Map<TermUri, Integer> map = new HashMap<>();
 		for (int i = 0 ; i < wb.getNumberOfSheets(); i++){
 			String wsName = wb.getSheetName(i);
 			TermUri termUri = convertSheetName2TermUri(wsName);
