@@ -221,27 +221,33 @@
   <build>
     <resources>
       <resource>
-        <!-- replace the place holders like ${...} in datasources.xml -->
-        <filtering>true</filtering>
-        <directory>src/test/resources</directory>
-        <targetPath>../test-classes</targetPath>
-        <includes>
-          <include>datasources.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <!-- all other test resources without filtering -->
-        <directory>src/test/resources</directory>
-        <targetPath>../test-classes</targetPath>
-        <excludes>
-          <exclude>datasources.xml</exclude>
-        </excludes>
-      </resource>
-      <resource>
         <!-- all main resources without filtering -->
         <directory>src/main/resources</directory>
       </resource>
     </resources>
+    <testResources>
+      <testResource>
+        <!-- replace the place holders like ${...} in datasources.xml.
+          This must be declared as testResource (not as resource with a
+          "../test-classes" targetPath as before), otherwise the default,
+          unfiltered testResources binding (process-test-resources phase,
+          which runs after process-resources) copies the unfiltered
+          src/test/resources/datasources.xml over this filtered copy,
+          leaving placeholders like ${project.build.directory} unresolved. -->
+        <filtering>true</filtering>
+        <directory>src/test/resources</directory>
+        <includes>
+          <include>datasources.xml</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <!-- all other test resources without filtering -->
+        <directory>src/test/resources</directory>
+        <excludes>
+          <exclude>datasources.xml</exclude>
+        </excludes>
+      </testResource>
+    </testResources>
     
     <!-- PLUGINS -->
     <plugins>
