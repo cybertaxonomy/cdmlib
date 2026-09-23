@@ -244,8 +244,5 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         }
         mv.addObject(flatResultMap);
         return mv;
-
     }
-
-
 }
