@@ -128,7 +128,7 @@ public class PrintPubDtoMapper {
 
         if (state.getConfig().isDoSynonyms()) {
             extractSynonymGroups(state, taxon, taxonDto);
-        } else if (includeAnyTypes(state.getConfig())) {
+        } else if (includeAnyTypes(state.getConfig(), taxon.getName())) {
             // handle accepted name types
             taxonDto.homotypicSynonymGroup = new PrintPubSynonymGroupDTO();
             extractTypes(state, taxon.getName().getHomotypicalGroup(), taxonDto.homotypicSynonymGroup);
@@ -146,8 +146,10 @@ public class PrintPubDtoMapper {
         return taxonDto;
     }
 
-    private boolean includeAnyTypes(PrintPubExportConfigurator config) {
-        return config.isIncludeSpeciesTypes() || config.isIncludeSupraspecificTypes();
+    private boolean includeAnyTypes(PrintPubExportConfigurator config, TaxonName name) {
+        return config.isIncludeSpeciesTypes() && config.isIncludeSupraspecificTypes()
+                || config.isIncludeSpeciesTypes() && !name.isSupraSpecific()
+                || config.isIncludeSupraspecificTypes() && name.isSupraSpecific();
     }
 
     private void sortAndFilterFacts(PrintPubExportState state, PrintPubTaxonSummaryDTO taxonDto) {
