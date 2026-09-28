@@ -69,9 +69,9 @@ public class PrintPubNonNestedHtmlTokenizer {
 
     private static final Pattern TOKEN_PATTERN = Pattern.compile(
             "<cdm:reference\\b[^>]*>.*?</cdm:reference>"
-            + "|<b>.*?</b>"
-            + "|<i>.*?</i>"
-            + "|<br\\s*/?>"
+            + "|(?i)(<b>.*?</b>)"
+            + "|(?i)(<i>.*?</i>)"
+            + "|(?i)(<br\\s*/?>\\r?\n?\\s*)"
             + "|[^<>]+",
             Pattern.DOTALL
     );
@@ -102,7 +102,7 @@ public class PrintPubNonNestedHtmlTokenizer {
                         extractAttributes(part)
                 ));
 
-            } else if (part.startsWith("<b>")) {
+            } else if (part.toLowerCase().startsWith("<b>")) {
                 tokens.add(new PrintPubHtmlToken(
                         PrintPubHtmlTokenType.BOLD,
                         part.substring(3, part.length() - 4),
@@ -111,7 +111,7 @@ public class PrintPubNonNestedHtmlTokenizer {
                         null
                 ));
 
-            } else if (part.startsWith("<i>")) {
+            } else if (part.toLowerCase().startsWith("<i>")) {
                 tokens.add(new PrintPubHtmlToken(
                         PrintPubHtmlTokenType.ITALIC,
                         part.substring(3, part.length() - 4),
@@ -120,7 +120,7 @@ public class PrintPubNonNestedHtmlTokenizer {
                         null
                 ));
 
-            } else if (part.startsWith("<br")) {
+            } else if (part.toLowerCase().startsWith("<br")) {
                 tokens.add(new PrintPubHtmlToken(
                         PrintPubHtmlTokenType.BR,
                         "",
