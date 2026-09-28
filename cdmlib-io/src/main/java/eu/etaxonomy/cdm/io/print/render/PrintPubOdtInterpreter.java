@@ -186,7 +186,7 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
 
     private void renderTextRun(PrintPubTextRunElement element) {
 
-        TextPElement p = contentDom.newOdfElement(TextPElement.class);
+        TextPElement paragraph = contentDom.newOdfElement(TextPElement.class);
 
         String styleName;
 
@@ -210,24 +210,24 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
             break;
         }
 
-        p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", styleName);
+        paragraph.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", styleName);
 
         if (element.getLabel() != null) {
             TextSpanElement label = contentDom.newOdfElement(TextSpanElement.class);
             label.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBold");
             label.setTextContent(element.getLabel() + ": ");
-            p.appendChild(label);
+            paragraph.appendChild(label);
         }
 
         for (PrintPubTextRunElement.Run run : element.getRuns()) {
 
             if (run.type == PrintPubTextRunElement.RunType.LINE_BREAK) {
-                p.appendChild(contentDom.newOdfElement(TextLineBreakElement.class));
+                paragraph.appendChild(contentDom.newOdfElement(TextLineBreakElement.class));
                 continue;
             } else if (run.type == PrintPubTextRunElement.RunType.REFERENCE_MARK) {
                 TextReferenceMarkElement mark = new TextReferenceMarkElement(contentDom);
                 mark.setTextNameAttribute(run.uuid.toString());
-                p.appendChild(mark);
+                paragraph.appendChild(mark);
                 continue;
             } else if (run.type == PrintPubTextRunElement.RunType.PAGE_REFERENCE) {
                 TextReferenceRefElement ref = new TextReferenceRefElement(contentDom);
@@ -249,10 +249,10 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
             }
 
             span.setTextContent(run.text);
-            p.appendChild(span);
+            paragraph.appendChild(span);
         }
 
-        textRoot.appendChild(p);
+        textRoot.appendChild(paragraph);
     }
 
     // =============================

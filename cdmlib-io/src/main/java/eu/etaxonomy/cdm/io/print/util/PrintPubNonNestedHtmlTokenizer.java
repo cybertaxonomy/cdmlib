@@ -6,8 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
-
 package eu.etaxonomy.cdm.io.print.util;
 
 import java.util.ArrayList;
@@ -44,7 +42,7 @@ public class PrintPubNonNestedHtmlTokenizer {
         final Map<String, String> attributes;
 
         PrintPubHtmlToken(PrintPubHtmlTokenType type, String value) {
-            this(type, value, null, null, new LinkedHashMap<String, String>());
+            this(type, value, null, null, new LinkedHashMap<>());
         }
 
         PrintPubHtmlToken(
@@ -59,7 +57,7 @@ public class PrintPubNonNestedHtmlTokenizer {
             this.rawMarkup = rawMarkup;
             this.tagName = tagName;
             this.attributes = attributes == null
-                    ? new LinkedHashMap<String, String>()
+                    ? new LinkedHashMap<>()
                     : attributes;
         }
 
@@ -83,7 +81,8 @@ public class PrintPubNonNestedHtmlTokenizer {
     );
 
     public static List<PrintPubHtmlToken> tokenize(String input) {
-        List<PrintPubHtmlToken> tokens = new ArrayList<PrintPubHtmlToken>();
+
+        List<PrintPubHtmlToken> tokens = new ArrayList<>();
 
         if (input == null || input.isEmpty()) {
             return tokens;
