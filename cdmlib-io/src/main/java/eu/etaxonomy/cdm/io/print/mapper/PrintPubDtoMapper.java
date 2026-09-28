@@ -58,8 +58,8 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.SecundumSource;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -257,7 +257,7 @@ public class PrintPubDtoMapper {
 
         SecundumSource secSource = taxon.getSecSource();
 
-        if (secSource == null || secSource.getType() == null || !secSource.getType().isPrimarySource()) {
+        if (!isRelevantSource(secSource)) {
             return;
         }
 
@@ -572,8 +572,7 @@ public class PrintPubDtoMapper {
 
         for (DescriptionElementSource source : element.getSources()) {
 
-            if (source == null || source.getCitation() == null || source.getType() == null
-                    || source.getType().isPrimarySource()) {
+            if (!isRelevantSource(source)) {
                 continue;
             }
 
@@ -585,6 +584,11 @@ public class PrintPubDtoMapper {
         }
     }
 
+    private boolean isRelevantSource(OriginalSourceBase source) {
+        return source != null && source.getCitation() != null && source.getType() != null
+                && (source.getType().isPrimarySource() || source.getType().isIntextReference());
+    }
+
     private void addDatasetCitations(PrintPubExportState state, Set<IdentifiableSource> descriptionSources,
             PrintPubFactDTO fact) {
 
@@ -594,8 +598,7 @@ public class PrintPubDtoMapper {
 
         for (IdentifiableSource source : descriptionSources) {
 
-            if (source == null || source.getCitation() == null || source.getType() == null
-                    || !source.getType().isPrimarySource()) {
+            if (!isRelevantSource(source)) {
                 continue;
             }
 

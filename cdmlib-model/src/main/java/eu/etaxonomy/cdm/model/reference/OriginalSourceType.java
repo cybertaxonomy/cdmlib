@@ -195,6 +195,11 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
     public boolean isUnknown() {
         return this == Unknown;
     }
+
+    public boolean isIntextReference() {
+        return this == IntextReference;
+    }
+
     /**
      * Checks if this is any of the primary source types (currently either {@link #PrimaryTaxonomicSource}
      * or {@link #isPrimaryMediaSource()})
