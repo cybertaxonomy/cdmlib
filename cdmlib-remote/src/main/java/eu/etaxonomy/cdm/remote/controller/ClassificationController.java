@@ -32,7 +32,6 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -103,7 +102,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
     public List<TaxonNodeDto> getChildNodes(
             @PathVariable("uuid") UUID classificationUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
-            @RequestParam(value = "sortMode", required = false, defaultValue = DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeDtoSortMode sortMode,
+            @RequestParam(value = "sortMode", required = false, defaultValue = DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeSortMode sortMode,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
@@ -118,7 +117,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
             @PathVariable("uuid") UUID classificationUuid,
             @PathVariable("rankUuid") UUID rankUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
-            @RequestParam(value = "sortMode", required = false, defaultValue = DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeDtoSortMode sortMode,
+            @RequestParam(value = "sortMode", required = false, defaultValue = DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeSortMode sortMode,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {

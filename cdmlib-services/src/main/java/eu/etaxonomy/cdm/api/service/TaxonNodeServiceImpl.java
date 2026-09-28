@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeComparatorFactory;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -160,7 +161,8 @@ public class TaxonNodeServiceImpl
         taxonNode = load(taxonNode.getUuid());
         List<TaxonNode> childNodes;
         if (recursive == true){
-            Comparator<TaxonNode> comparator = sortMode == null? null : sortMode.comparator();
+            Comparator<TaxonNode> comparator = sortMode == null? null
+                    : TaxonNodeComparatorFactory.bySortMode(sortMode);
             childNodes = dao.listChildrenOf(taxonNode, null, null, recursive, includeUnpublished, propertyPaths, comparator);
         }else if (includeUnpublished){
             childNodes = new ArrayList<>(taxonNode.getChildNodes());
@@ -174,7 +176,7 @@ public class TaxonNodeServiceImpl
         }
 
         if (recursive == false && sortMode != null){
-            Comparator<TaxonNode> comparator = sortMode.comparator();
+            Comparator<TaxonNode> comparator = TaxonNodeComparatorFactory.bySortMode(sortMode);
         	Collections.sort(childNodes, comparator);
         }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
@@ -1309,7 +1311,7 @@ public class TaxonNodeServiceImpl
 
         List<TaxonNode> parentNodes = load(nodeUuids, propertyPaths);
         if (sortMode != null){
-            parentNodes.sort(sortMode.comparator());
+            parentNodes.sort(TaxonNodeComparatorFactory.bySortMode(sortMode));
         }
         if (openChildren){
             //TODO we could remove nodes which are children of other nodes in parentNodes list here as they are duplicates

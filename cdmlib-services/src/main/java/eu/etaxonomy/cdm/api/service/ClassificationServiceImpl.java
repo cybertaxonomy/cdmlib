@@ -77,6 +77,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonStatus;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dto.compare.ISortableTaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.compare.TaxonNodeDtoComparatorFactory;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -142,10 +143,14 @@ public class ClassificationServiceImpl
 
     @Override
     public List<TaxonNodeDto> listRankSpecificRootNodeDtos(Classification classification, TaxonNode subtree,
-            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode sortMode,
+            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex, TaxonNodeSortMode sortMode,
             List<String> propertyPaths) {
         List<TaxonNode> list = listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, pageSize, pageIndex, propertyPaths);
-        return list.stream().filter(e ->  e != null).map(e -> new TaxonNodeDto(e)).sorted(sortMode.comparator()).collect(Collectors.toList());
+        return list.stream()
+                .filter(e ->  e != null)
+                .map(e -> new TaxonNodeDto(e))
+                .sorted(TaxonNodeDtoComparatorFactory.bySortMode(sortMode))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -305,7 +310,7 @@ public class ClassificationServiceImpl
     @Override
     public List<TaxonNodeDto> listChildNodeDtosOfTaxon(UUID taxonUuid, UUID classificationUuid,
             UUID subtreeUuid, boolean includeUnpublished,
-            Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode sortMode,
+            Integer pageSize, Integer pageIndex, TaxonNodeSortMode sortMode,
             String loadingMode) throws FilterException{
 
         Classification classification = dao.load(classificationUuid);
@@ -315,10 +320,10 @@ public class ClassificationServiceImpl
             throw new FilterException("Taxon node for subtree filter can not be found in database", true);
         }
 
+        Comparator<ISortableTaxonNodeDto> comparator = TaxonNodeDtoComparatorFactory.bySortMode(sortMode);
         if (!"instance".equals(loadingMode)) {
             List<TaxonNodeDto> results = dao.listChildrenOf(
                     taxon, classification, subtree, includeUnpublished, pageSize, pageIndex);
-            Comparator<ISortableTaxonNodeDto> comparator = sortMode.comparator();
             // TODO order during the hibernate query in the dao?
             List<TaxonNodeDto> dtos = results.stream()
                     .sorted(comparator)
@@ -328,7 +333,6 @@ public class ClassificationServiceImpl
             List<TaxonNode> results = dao.listChildrenOf(
                     taxon, classification, subtree, includeUnpublished, pageSize, pageIndex,
                     new ArrayList<>());
-            Comparator<ISortableTaxonNodeDto> comparator = sortMode.comparator();
             // TODO order during the hibernate query in the dao?
             List<TaxonNodeDto> dtos = results.stream()
                     .map(tn -> new TaxonNodeDto(tn))

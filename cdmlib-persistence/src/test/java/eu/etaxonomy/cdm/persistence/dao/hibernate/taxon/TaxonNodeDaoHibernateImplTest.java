@@ -32,6 +32,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeComparatorFactory;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -190,7 +191,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertNotNull(children);
         assertEquals(3, children.size());
         //with comparator
-        Comparator<TaxonNode> comparator = TaxonNodeSortMode.RankAndAlphabeticalOrder.comparator();
+        Comparator<TaxonNode> comparator = TaxonNodeComparatorFactory.bySortMode(TaxonNodeSortMode.RankAndAlphabeticalOrder);
         children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, true, includeUnpublished, null, comparator);
         assertEquals("Size should be same as without comparator", 3, children.size());
         //not recursive
