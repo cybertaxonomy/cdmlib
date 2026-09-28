@@ -386,8 +386,8 @@ public class ClassificationServiceImpl
     }
 
     @Override
-    public List<Classification> listClassifications(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        return dao.list(limit, start, orderHints, propertyPaths);
+    public List<Classification> listClassifications(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return dao.list(pageSize, pageNumber, orderHints, propertyPaths);
     }
 
     @Override

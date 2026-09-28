@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -96,7 +96,7 @@ public class EnumSetUserType<E extends Enum<E>>
 			return result;
 		} else {
 			String[] splits = val.split(SEP);
-			for (String split:splits){
+			for (String split: splits){
 			    if (StringUtils.isNotEmpty(split)) {
 			        @SuppressWarnings("unchecked")
                     E term = (E)EnumUserType.getTerm(clazz, split);

@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -252,7 +251,7 @@ public class SingleRead extends EventBase {
 	 */
 	@Transient
 	public TimePeriod getDateSequenced(){
-		return ((EventBase)this).getTimeperiod();
+		return this.getTimeperiod();
 	}
 
 	/**
@@ -268,7 +267,7 @@ public class SingleRead extends EventBase {
 	 */
 	@Transient
 	public AgentBase getSequencedBy(){
-		return ((EventBase)this).getActor();
+		return this.getActor();
 	}
 
 	/**
