@@ -354,7 +354,18 @@ public class PrintPubDocumentBuilder {
                 continue;
             }
 
-            elements.add(new PrintPubParagraphElement(reference.getTitleCache()));
+            String title = reference.getTitleCache();
+
+            if (StringUtils.isBlank(title)) {
+                continue;
+            }
+
+            List<Run> runs = PrintPubNonNestedHtmlTokenConverter.toRuns(
+                    PrintPubNonNestedHtmlTokenizer.tokenize(title));
+
+            if (!runs.isEmpty()) {
+                elements.add(new PrintPubTextRunElement(runs));
+            }
         }
 
         return elements;
