@@ -22,7 +22,6 @@ public class PrintPubTaxonSummaryDTO {
     //should never become null
     public PrintPubNameDTO nameDTO = new PrintPubNameDTO();
 
-    public int relativeDepth;
     public String titleCache;
 
     public PrintPubSynonymGroupDTO homotypicSynonymGroup;

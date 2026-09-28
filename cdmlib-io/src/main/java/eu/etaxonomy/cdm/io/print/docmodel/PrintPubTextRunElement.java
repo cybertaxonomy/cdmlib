@@ -42,7 +42,9 @@ public class PrintPubTextRunElement implements IPrintPubDocumentElement {
 
     public enum PrintPubTextRole {
         BODY,
-        TAXON_NAME,
+        TAXON_NAME_HIGHER,
+        TAXON_NAME_INTERMEDIATE,
+        TAXON_NAME_LOWER,
         FACT_GROUP
     }
 

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -28,4 +29,6 @@ public class PrintPubNameDTO {
     public List<String> links = new ArrayList<>();
     public List<String> wfoIds = new ArrayList<>();
     public List<String> ipniIds = new ArrayList<>();
+
+    public PrintPubTaxonHeadingLevel headingLevel = PrintPubTaxonHeadingLevel.LOWER;
 }

@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.io.print.dto.PrintPubNameDTO;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubReferenceEntryDTO.PrintPubReferenceSourceType;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubSynonymDTO;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubSynonymGroupDTO;
+import eu.etaxonomy.cdm.io.print.dto.PrintPubTaxonHeadingLevel;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -56,6 +57,8 @@ import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.SecundumSource;
@@ -113,7 +116,6 @@ public class PrintPubDtoMapper {
         PrintPubTaxonSummaryDTO taxonDto = new PrintPubTaxonSummaryDTO();
 
         taxonDto.uuid = taxon.getUuid();
-        taxonDto.relativeDepth = calculateDepth(node) - referenceDepth;
 
         TaxonName name = HibernateProxyHelper.deproxy(taxon.getName());
 
@@ -126,8 +128,8 @@ public class PrintPubDtoMapper {
 
         if (state.getConfig().isDoSynonyms()) {
             extractSynonymGroups(state, taxon, taxonDto);
-        } else if (includeAnyTypes(state.getConfig())){
-            //handle accepted name types
+        } else if (includeAnyTypes(state.getConfig())) {
+            // handle accepted name types
             taxonDto.homotypicSynonymGroup = new PrintPubSynonymGroupDTO();
             extractTypes(state, taxon.getName().getHomotypicalGroup(), taxonDto.homotypicSynonymGroup);
         }
@@ -211,9 +213,34 @@ public class PrintPubDtoMapper {
             taxonDto.nameDTO.scientificName = TaggedTextFormatter.createString(name.getTaggedName());
 
             taxonDto.titleCache = name.getTitleCache();
+
+            taxonDto.nameDTO.headingLevel = determineHeadingLevel(name);
         } else {
             taxonDto.titleCache = taxon.getTitleCache();
         }
+    }
+
+    private PrintPubTaxonHeadingLevel determineHeadingLevel(TaxonName name) {
+
+        if (name == null || name.getRank() == null) {
+            return PrintPubTaxonHeadingLevel.LOWER;
+        }
+
+        Rank rank = name.getRank();
+
+        if (rank.getRankClass() == null) {
+            return PrintPubTaxonHeadingLevel.LOWER;
+        }
+
+        if (rank.compareTo(Rank.FAMILY()) >= 0) {
+            return PrintPubTaxonHeadingLevel.HIGHER;
+        }
+
+        if (rank.compareTo(Rank.SPECIES()) > 0) {
+            return PrintPubTaxonHeadingLevel.INTERMEDIATE;
+        }
+
+        return PrintPubTaxonHeadingLevel.LOWER;
     }
 
     private void extractTaxonSecReference(PrintPubExportState state, Taxon taxon, PrintPubTaxonSummaryDTO dto) {
@@ -265,16 +292,16 @@ public class PrintPubDtoMapper {
         }
     }
 
-    private void extractSynonymGroup(PrintPubExportState state, HomotypicalGroup homotypicGroup,
-            List<Synonym> synonyms, PrintPubSynonymGroupDTO homotypicGroupDTO) {
+    private void extractSynonymGroup(PrintPubExportState state, HomotypicalGroup homotypicGroup, List<Synonym> synonyms,
+            PrintPubSynonymGroupDTO homotypicGroupDTO) {
 
-        //synonyms
+        // synonyms
         for (Synonym synonym : synonyms) {
             PrintPubSynonymDTO synonymDTO = createSynonymDTO(state, synonym);
             homotypicGroupDTO.synonyms.add(synonymDTO);
         }
 
-        //types
+        // types
         extractTypes(state, homotypicGroup, homotypicGroupDTO);
     }
 
@@ -286,8 +313,9 @@ public class PrintPubDtoMapper {
                 .toTaggedText(container);
         String formattedTypes = createTypeDesignationString(types);
 
-        boolean isSupraspecific = false; //TODO
-        homotypicGroupDTO.typeSpecimenString = addOptionalTypeLineBreak(formattedTypes, isSupraspecific, state.getConfig());
+        boolean isSupraspecific = false; // TODO
+        homotypicGroupDTO.typeSpecimenString = addOptionalTypeLineBreak(formattedTypes, isSupraspecific,
+                state.getConfig());
     }
 
     private PrintPubSynonymDTO createSynonymDTO(PrintPubExportState state, Synonym synonym) {
@@ -464,7 +492,8 @@ public class PrintPubDtoMapper {
                         continue;
                     }
 
-                    PrintPubFactDTO factDto = createTextFact((TextData)fact, feature, textLs.getText(), factSequence++);
+                    PrintPubFactDTO factDto = createTextFact((TextData) fact, feature, textLs.getText(),
+                            factSequence++);
 
                     addElementCitations(state, fact, factDto);
 
@@ -477,11 +506,11 @@ public class PrintPubDtoMapper {
                 }
             }
         }
-        //sort common names
+        // sort common names
         taxonDto.commonNames.sort(String.CASE_INSENSITIVE_ORDER);
         taxonDto.commonNameString = StringUtils.join(taxonDto.commonNames, ", ");
 
-        //distributions
+        // distributions
         distributions.sort(String.CASE_INSENSITIVE_ORDER);
         taxonDto.distributionString = StringUtils.join(distributions, ", ");
 
@@ -500,7 +529,7 @@ public class PrintPubDtoMapper {
             value += " [" + commonName.getLanguage().getPreferredLabel(languages) + "]";
         }
 
-        //preliminary implementation
+        // preliminary implementation
         dto.commonNames.add(value);
     }
 
@@ -513,7 +542,7 @@ public class PrintPubDtoMapper {
         List<Language> languages = List.of(Language.DEFAULT());
         String area = distribution.getArea().getPreferredLabel(languages);
 
-        if (StringUtils.isNotBlank(area)){
+        if (StringUtils.isNotBlank(area)) {
             distributions.add(area);
         }
     }

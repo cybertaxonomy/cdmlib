@@ -96,16 +96,20 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         }
 
         // ---------- TAXON NAME STYLE ----------
-        OdfStyle taxonName = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
 
-        taxonName.setStyleNameAttribute("PrintPubTaxonName");
+        createTaxonNameStyle("PrintPubTaxonNameHigher", "18pt", "0.4cm", "0.15cm");
+        createTaxonNameStyle("PrintPubTaxonNameIntermediate", "16pt", "0.3cm", "0.1cm");
+        createTaxonNameStyle("PrintPubTaxonNameLower", "14pt", "0.2cm", "0.05cm");
+    }
 
-        // slightly larger than body
-        taxonName.setProperty(OdfTextProperties.FontSize, "16pt");
+    private void createTaxonNameStyle(String styleName, String fontSize, String marginTop, String marginBottom) {
 
-        // optional visual tuning
-        taxonName.setProperty(OdfParagraphProperties.MarginTop, "0.3cm");
-        taxonName.setProperty(OdfParagraphProperties.MarginBottom, "0.1cm");
+        OdfStyle style = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+
+        style.setStyleNameAttribute(styleName);
+        style.setProperty(OdfTextProperties.FontSize, fontSize);
+        style.setProperty(OdfParagraphProperties.MarginTop, marginTop);
+        style.setProperty(OdfParagraphProperties.MarginBottom, marginBottom);
     }
 
     @Override
@@ -185,16 +189,25 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         TextPElement p = contentDom.newOdfElement(TextPElement.class);
 
         String styleName;
+
         switch (element.getRole()) {
-        case TAXON_NAME:
-            styleName = "PrintPubTaxonName";
+        case TAXON_NAME_HIGHER:
+            styleName = "PrintPubTaxonNameHigher";
             break;
+
+        case TAXON_NAME_INTERMEDIATE:
+            styleName = "PrintPubTaxonNameIntermediate";
+            break;
+
+        case TAXON_NAME_LOWER:
+            styleName = "PrintPubTaxonNameLower";
+            break;
+
         case FACT_GROUP:
-            styleName = "PrintPubBody"; // or future variant
-            break;
         case BODY:
         default:
             styleName = "PrintPubBody";
+            break;
         }
 
         p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", styleName);
@@ -220,7 +233,7 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
                 TextReferenceRefElement ref = new TextReferenceRefElement(contentDom);
                 ref.setTextRefNameAttribute(run.uuid.toString());
                 ref.setTextReferenceFormatAttribute("page");
-                ref.setTextContent("1");                        //placeholder, freshly computed when opening / printing
+                ref.setTextContent("1"); // placeholder, freshly computed when opening / printing
                 textRoot.appendChild(ref);
             }
 
