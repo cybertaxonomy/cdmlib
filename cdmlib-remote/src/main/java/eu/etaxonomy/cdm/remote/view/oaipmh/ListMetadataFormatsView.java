@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.view.oaipmh;
 
 import java.util.Map;
@@ -11,17 +19,18 @@ import eu.etaxonomy.cdm.remote.view.OaiPmhResponseView;
 
 public class ListMetadataFormatsView extends OaiPmhResponseView {
 
+    @Override
     protected void constructResponse(OAIPMH oaiPmh,Map<String,Object> model) {
     	oaiPmh.getRequest().setVerb(Verb.LIST_METADATA_FORMATS);
     	oaiPmh.getRequest().setValue((String)model.get("request"));
-        
+
     	ListMetadataFormats listMetadataFormats = new ListMetadataFormats();
     	MetadataFormat oai_dc = new MetadataFormat();
     	oai_dc.setMetadataPrefix(MetadataPrefix.OAI_DC);
     	oai_dc.setSchema("http://www.openarchives.org/OAI/2.0/oai_dc.xsd");
     	oai_dc.setMetadataNamespace("http://www.openarchives.org/OAI/2.0/oai_dc/");
     	listMetadataFormats.getMetadataFormat().add(oai_dc);
-    
+
         oaiPmh.setListMetadataFormats(listMetadataFormats);
     }
 }

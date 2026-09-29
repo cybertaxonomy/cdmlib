@@ -6,21 +6,20 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.hibernate.search.bridge.StringBridge;
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
-public class DateTimeBridge implements StringBridge {
+import org.hibernate.search.bridge.StringBridge;
+
+public class ZonedDateTimeBridge implements StringBridge {
 
 	@Override
     public String objectToString(Object object) {
 		if(object != null) {
-			DateTime dateTime = ((DateTime)object);
+			ZonedDateTime dateTime = ((ZonedDateTime)object);
 			return dateTime.toString();
 		}
 		return null;
 	}
-
 }

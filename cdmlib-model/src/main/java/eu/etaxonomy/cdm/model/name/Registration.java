@@ -8,8 +8,10 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,13 +29,11 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -84,12 +84,11 @@ public class Registration extends AnnotatableEntity {
 
     @XmlElement (name = "RegistrationDate", type= String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    @Type(type="dateTimeUserType")
     //TODO ??
     @Basic(fetch = FetchType.LAZY)
 //    @Field(analyze = Analyze.NO)
 //    @FieldBridge(impl = DateTimeBridge.class)
-    private DateTime registrationDate;
+    private ZonedDateTime registrationDate;
 
     @XmlAttribute(name ="Status")
     @Column(name="status", length=10)
@@ -201,7 +200,7 @@ public class Registration extends AnnotatableEntity {
     public void updateStatusAndDate(RegistrationStatus status) {
         if(status != this.status){
             if(status == RegistrationStatus.PUBLISHED){
-                setRegistrationDate(DateTime.now());
+                setRegistrationDate(ZonedDateTime.now());
             } else if(this.status == RegistrationStatus.PUBLISHED){
                 setRegistrationDate(null);
             }
@@ -209,8 +208,8 @@ public class Registration extends AnnotatableEntity {
         }
     }
 
-    public DateTime getRegistrationDate() {return registrationDate;}
-    public void setRegistrationDate(DateTime registrationDate) {this.registrationDate = registrationDate;}
+    public ZonedDateTime getRegistrationDate() {return registrationDate;}
+    public void setRegistrationDate(ZonedDateTime registrationDate) {this.registrationDate = registrationDate;}
 
     public Institution getRegistrationCenter() {return registrationCenter;}
     public void setRegistrationCenter(Institution registrationCenter) {this.registrationCenter = registrationCenter;}

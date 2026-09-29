@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,7 +22,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.dto.RegistrationDTO;
 import eu.etaxonomy.cdm.api.dto.RegistrationDTO.RankedNameReference;
@@ -194,7 +194,7 @@ public class RegistrationWrapperDTO {
         return reg.getSpecificIdentifier();
     }
 
-    public DateTime getRegistrationDate() {
+    public ZonedDateTime getRegistrationDate() {
         return reg.getRegistrationDate();
     }
 
@@ -206,7 +206,7 @@ public class RegistrationWrapperDTO {
         return citation == null ? null : citation.getDatePublished();
     }
 
-    public DateTime getCreated() {
+    public ZonedDateTime getCreated() {
         return reg.getCreated();
     }
 

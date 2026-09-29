@@ -8,17 +8,22 @@
 */
 package eu.etaxonomy.cdm.model.occurrence;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -215,7 +220,7 @@ public class SpecimenTest extends EntityTestBase {
 		String catalogNumber = "catNumber";
 		Collection collection = Collection.NewInstance();
 		collection.setCode("code");
-		DateTime created = new DateTime();
+		ZonedDateTime created = ZonedDateTime.now();
 		Person createdByPerson = Person.NewTitledInstance("creator");
 		User createdBy = User.NewInstance("username", "pwd");
 		createdBy.setPerson(createdByPerson);
@@ -236,7 +241,7 @@ public class SpecimenTest extends EntityTestBase {
 		boolean protectedTitleCache = true;
 		DefinedTerm sex = DefinedTerm.SEX_FEMALE();
 		String titleCache = "title";
-		DateTime updated = DateTime.now();
+		ZonedDateTime updated = ZonedDateTime.now();
 		Person updatedByPerson = Person.NewTitledInstance("updatedPerson");
 	    User updatedBy = User.NewInstance("updated", "pwd2");
 	    updatedBy.setPerson(updatedByPerson);

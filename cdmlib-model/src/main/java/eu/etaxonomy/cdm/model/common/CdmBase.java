@@ -13,11 +13,13 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.time.ZonedDateTime;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
@@ -39,7 +41,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,11 +53,10 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Store;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
+import eu.etaxonomy.cdm.hibernate.search.ZonedDateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
@@ -67,7 +67,6 @@ import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
-
 
 /**
  * The base class for all CDM domain classes implementing UUIDs and bean property change event firing.
@@ -134,13 +133,12 @@ public abstract class CdmBase
 
     @XmlElement (name = "Created", type= String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    @Type(type="dateTimeUserType")
     @Basic(fetch = FetchType.LAZY)
     @Match(MatchMode.IGNORE)
     @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = DateTimeBridge.class)
+    @FieldBridge(impl = ZonedDateTimeBridge.class)
     @Audited
-    private DateTime created;
+    private ZonedDateTime created;
 
     @XmlElement (name = "CreatedBy")
     @XmlIDREF
@@ -156,7 +154,7 @@ public abstract class CdmBase
      */
     public CdmBase() {
         this.uuid = UUID.randomUUID();
-        this.created = new DateTime().withMillisOfSecond(0);
+        this.created = ZonedDateTime.now().withNano(0);
     }
 
     //TODO are these 2 methods really needed, looks they are not used except for NewEntityListenerTest
@@ -277,14 +275,13 @@ public abstract class CdmBase
     }
 
     @Override
-    public DateTime getCreated() {
+    public ZonedDateTime getCreated() {
         return created;
     }
     @Override
-    public void setCreated(DateTime created) {
+    public void setCreated(ZonedDateTime created) {
         if (created != null){
-            created = created.withMillisOfSecond(0);
-            //created.set(Calendar.MILLISECOND, 0);  //old, can be deleted
+            created = created.withNano(0);
         }
         this.created = created;
     }
@@ -578,7 +575,7 @@ public abstract class CdmBase
         //TODO ?
         result.setId(0);
         result.setUuid(UUID.randomUUID());
-        result.setCreated(new DateTime());
+        result.setCreated(ZonedDateTime.now().withNano(0));
         result.setCreatedBy(null);
 
         //no changes to: -

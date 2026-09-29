@@ -14,6 +14,7 @@ import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -200,7 +200,7 @@ public class DefaultMatchStrategy
 				}
 			}
 		} catch (Exception e) {
-			throw new MatchException("Match Exception in invoke", e);
+			throw new MatchException("Match Exception in invokeChecked():" + e.getMessage(), e);
 		}
 		return;
 	}
@@ -266,6 +266,8 @@ public class DefaultMatchStrategy
         }else if(fieldType == UUID.class){
             fieldResult = MatchResult.SUCCESS();
         	//result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+        }else if(fieldType == ZonedDateTime.class){
+            fieldResult = matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList, failAll);
         }else if(fieldType == URI.class){
             fieldResult = matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList, failAll);
         }else if(fieldType == DOI.class){

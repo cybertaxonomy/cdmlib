@@ -9,18 +9,24 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Field;
+import java.time.ZonedDateTime;
 import java.util.UUID;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -404,24 +410,24 @@ public class CdmBaseTest extends EntityTestBase{
 	@Test
 	public void testGetCreated() {
 		assertNotNull(cdmBase.getCreated());
-		assertFalse(cdmBase.getCreated().isAfter(new DateTime()));
-		DateTime dateTime = new DateTime();
+		assertFalse(cdmBase.getCreated().isAfter(ZonedDateTime.now()));
+		ZonedDateTime dateTime = ZonedDateTime.now();
 		cdmBase.setCreated(dateTime);
-		assertEquals(0, cdmBase.getCreated().getMillisOfSecond());
-		dateTime = dateTime.withMillisOfSecond(0);
+		assertEquals(0, cdmBase.getCreated().getNano());
+		dateTime = dateTime.withNano(0);
 		assertEquals(dateTime, cdmBase.getCreated());
 	}
 
 	@Test
 	public void testSetCreated() {
-		DateTime calendar = new DateTime();
-		DateTime calendarTrue = calendar.withMillisOfSecond(23);
-		DateTime calendarFalse = calendar.withMillisOfSecond(23);
+	    ZonedDateTime calendar = ZonedDateTime.now();
+	    ZonedDateTime calendarTrue = calendar.withNano(23000);
+	    ZonedDateTime calendarFalse = calendar.withNano(23000);
 		calendarFalse = calendarFalse.plusMonths(5);
 		cdmBase.setCreated(calendar);
-		calendar = calendar.withMillisOfSecond(0);
-		calendarTrue = calendarTrue.withMillisOfSecond(0);
-		calendarFalse = calendarFalse.withMillisOfSecond(0);
+		calendar = calendar.withNano(0);
+		calendarTrue = calendarTrue.withNano(0);
+		calendarFalse = calendarFalse.withNano(0);
 		assertEquals(calendar, cdmBase.getCreated());
 		assertEquals(calendarTrue, cdmBase.getCreated());
 		assertFalse(calendarFalse.equals(calendar));

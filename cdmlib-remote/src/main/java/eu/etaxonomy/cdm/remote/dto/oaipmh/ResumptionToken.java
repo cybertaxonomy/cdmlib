@@ -8,6 +8,7 @@ package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -18,8 +19,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
@@ -58,7 +57,7 @@ public class ResumptionToken implements Serializable {
 
     @XmlAttribute
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    protected DateTime expirationDate;
+    protected ZonedDateTime expirationDate;
 
     @XmlAttribute
     @XmlSchemaType(name = "positiveInteger")
@@ -72,16 +71,16 @@ public class ResumptionToken implements Serializable {
 	private MetadataPrefix metadataPrefix;
 
     @XmlTransient
-	private DateTime from;
+	private ZonedDateTime from;
 
     @XmlTransient
-	private DateTime until;
+	private ZonedDateTime until;
 
     @XmlTransient
 	private SetSpec set;
 
-    public ResumptionToken(Pager results, DateTime from,
-			DateTime until, MetadataPrefix metadataPrefix, SetSpec set) {
+    public ResumptionToken(Pager results, ZonedDateTime from,
+            ZonedDateTime until, MetadataPrefix metadataPrefix, SetSpec set) {
 		this.from = from;
 		this.until = until;
 		this.metadataPrefix = metadataPrefix;
@@ -101,11 +100,11 @@ public class ResumptionToken implements Serializable {
         this.value = value;
     }
 
-    public DateTime getExpirationDate() {
+    public ZonedDateTime getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(DateTime value) {
+    public void setExpirationDate(ZonedDateTime value) {
         this.expirationDate = value;
     }
 
@@ -129,11 +128,11 @@ public class ResumptionToken implements Serializable {
 		return metadataPrefix;
 	}
 
-	public DateTime getFrom() {
+	public ZonedDateTime getFrom() {
 		return from;
 	}
 
-	public DateTime getUntil() {
+	public ZonedDateTime getUntil() {
 		return until;
 	}
 

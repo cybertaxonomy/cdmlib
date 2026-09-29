@@ -8,37 +8,39 @@
 */
 package eu.etaxonomy.cdm.jaxb;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * @author a.mueller
  * @since 23.07.2008
  */
-public class DateTimeAdapter extends XmlAdapter<String, DateTime> {
+public class DateTimeAdapter extends XmlAdapter<String, ZonedDateTime> {
 
     private static final Logger logger = LogManager.getLogger();
 
 	@Override
-	public String marshal(DateTime dateTime) throws Exception {
+	public String marshal(ZonedDateTime dateTime) throws Exception {
 		if (logger.isDebugEnabled()){logger.debug("marshal");}
 		if(dateTime == null) {
 			return null;
 		} else {
-		    DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime();
-		    return dateTimeFormatter.print(dateTime);
+//		    DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime();
+		    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+		    return dateTimeFormatter.format(dateTime);
 		}
 	}
 
 	@Override
-	public DateTime unmarshal(String value) throws Exception {
+	public ZonedDateTime unmarshal(String value) throws Exception {
 		if (logger.isDebugEnabled()){logger.debug("unmarshal");}
-		return ISODateTimeFormat.dateTimeParser().parseDateTime(value);
+//		return ISODateTimeFormat.dateTimeParser().parseDateTime(value);
+		return ZonedDateTime.parse(value);
+//		return ZonedDateTime.parse(value, DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC));
 	}
 }

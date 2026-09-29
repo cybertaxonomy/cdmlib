@@ -10,25 +10,24 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.UUID;
-
-import org.joda.time.DateTime;
 
 /**
  * @author KatjaLuther
  * @date 23.06.2023
  *
  */
-public class CdmBaseDto implements Serializable,ICdmBaseDto {
+public class CdmBaseDto implements Serializable, ICdmBaseDto {
 
     private static final long serialVersionUID = -5979861496250590244L;
 
     private UUID uuid;
     private int id;
-    private DateTime created;
+    private ZonedDateTime created;
     private String createdBy;
     private UUID createdByUuid;
-    private DateTime updated;
+    private ZonedDateTime updated;
     private String updatedBy;
     private UUID updatedByUuid;
 
@@ -48,7 +47,7 @@ public class CdmBaseDto implements Serializable,ICdmBaseDto {
         this.createdByUuid = createdByUuid;
     }
 
-    public CdmBaseDto(UUID uuid, int id, DateTime created, String createdBy, DateTime updated, String updatedBy) {
+    public CdmBaseDto(UUID uuid, int id, ZonedDateTime created, String createdBy, ZonedDateTime updated, String updatedBy) {
         this(uuid, id);
         this.created = created;
         this.createdBy = createdBy;
@@ -73,7 +72,7 @@ public class CdmBaseDto implements Serializable,ICdmBaseDto {
     }
 
     @Override
-    public DateTime getCreated() {
+    public ZonedDateTime getCreated() {
         return created;
     }
 
@@ -97,7 +96,7 @@ public class CdmBaseDto implements Serializable,ICdmBaseDto {
     }
 
     @Override
-    public DateTime getUpdated() {
+    public ZonedDateTime getUpdated() {
         return updated;
     }
 
@@ -121,7 +120,7 @@ public class CdmBaseDto implements Serializable,ICdmBaseDto {
         this.updatedByUuid = updatedByUuid;
     }
 
-    public void setCreated(DateTime created) {
+    public void setCreated(ZonedDateTime created) {
         this.created = created;
     }
 
@@ -130,7 +129,7 @@ public class CdmBaseDto implements Serializable,ICdmBaseDto {
         this.createdBy= createdBy ;
     }
 
-    public void setUpdated(DateTime updated) {
+    public void setUpdated(ZonedDateTime updated) {
         this.updated= updated ;
     }
 

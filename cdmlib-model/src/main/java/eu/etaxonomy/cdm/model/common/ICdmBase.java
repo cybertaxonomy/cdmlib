@@ -8,13 +8,12 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
+
 import javax.persistence.Transient;
 import javax.validation.GroupSequence;
 import javax.validation.groups.Default;
-
-
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.validation.Level2;
@@ -41,17 +40,15 @@ public interface ICdmBase {
 
 	public void setUuid(UUID uuid);
 
-	public DateTime getCreated();
+	public ZonedDateTime getCreated();
 
 	/**
 	 * Sets the timestamp this object was created.
 	 * Most databases cannot store milliseconds, so they are removed by this method.
-	 * Caution: We are planning to replace the Calendar class with a different datetime representation which is more suitable for hibernate
-	 * see {@link https://dev.e-taxonomy.eu/redmine/issues/247 TRAC ticket}
 	 *
 	 * @param created
 	 */
-	public void setCreated(DateTime created);
+	public void setCreated(ZonedDateTime created);
 
 	/**
 	 * @return The {@link User} who was authenticated when the entity was created.

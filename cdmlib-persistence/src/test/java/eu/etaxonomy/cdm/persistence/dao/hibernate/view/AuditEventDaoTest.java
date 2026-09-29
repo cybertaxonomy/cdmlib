@@ -6,14 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.view;
 
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
+import java.time.ZonedDateTime;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -26,20 +25,18 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  * @author ben.clark
- *
  */
 public class AuditEventDaoTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
 	private IAuditEventDao auditEventDao;
 
-	private DateTime dateTime;
+	private ZonedDateTime dateTime;
 
 	@Before
 	public void setUp() {
-		dateTime = new DateTime();
+		dateTime = ZonedDateTime.now();
 	}
-
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.view.AuditEventDao#findByDate()}.
@@ -51,13 +48,6 @@ public class AuditEventDaoTest extends CdmTransactionalIntegrationTest {
 		assertNotNull(auditEvent);
 	}
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

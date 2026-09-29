@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.cdm2cdm;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -26,7 +27,6 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplication;
@@ -1169,7 +1169,7 @@ public abstract class Cdm2CdmImportBase
             externallyManaged.setExternalLink(URI.create(state.getConfig().getExternallyManagedBaseURI()
                     + subdomain + result.getUuid()));  //TODO
             externallyManaged.setImportMethod(ExternallyManagedImport.CDM_TERMS);
-            externallyManaged.setLastRetrieved(DateTime.now());
+            externallyManaged.setLastRetrieved(ZonedDateTime.now());
             result.setExternallyManaged(externallyManaged);
         }
     }
@@ -1505,7 +1505,9 @@ public abstract class Cdm2CdmImportBase
         }
     }
 
-    private DateTime makeCreatedUpdatedWhen(DateTime createdOriginal, Cdm2CdmImportState state, boolean isUpdatedBy) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    private ZonedDateTime makeCreatedUpdatedWhen(ZonedDateTime createdOriginal, Cdm2CdmImportState state, boolean isUpdatedBy)
+            throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+
         CreatedUpdatedMode mode = isUpdatedBy? state.getConfig().getUpdatedMode() : state.getConfig().getCreatedMode();
 
         switch (mode) {

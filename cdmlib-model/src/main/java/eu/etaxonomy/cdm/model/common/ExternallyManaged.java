@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -22,13 +24,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
@@ -59,11 +59,10 @@ public class ExternallyManaged implements Cloneable, Serializable, ICheckEmpty{
 
 //  @XmlElement (name = "LastRetrieved", type= String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    @Type(type="dateTimeUserType")
     //TODO needed??
     @Basic(fetch = FetchType.LAZY)
     @Column(name="lastRetrieved")
-    private DateTime lastRetrieved;
+    private ZonedDateTime lastRetrieved;
 
     @XmlElement(name ="ExternalId" )
 //  @Field
@@ -106,10 +105,10 @@ public class ExternallyManaged implements Cloneable, Serializable, ICheckEmpty{
 
 // ************************ GETTER /SETTER ***********************/
 
-    public DateTime getLastRetrieved() {
+    public ZonedDateTime getLastRetrieved() {
         return lastRetrieved;
     }
-    public void setLastRetrieved(DateTime lastRetrieved) {
+    public void setLastRetrieved(ZonedDateTime lastRetrieved) {
         this.lastRetrieved = lastRetrieved;
     }
 

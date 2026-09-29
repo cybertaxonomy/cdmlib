@@ -13,9 +13,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,11 +29,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -528,7 +529,8 @@ public class SDDImport
 				int hourOfDay = Integer.parseInt(nameCreated.substring(11,13));
 				int minuteOfHour = Integer.parseInt(nameCreated.substring(14,16));
 				int secondOfMinute = Integer.parseInt(nameCreated.substring(17,19));
-				DateTime created = new DateTime(year,monthOfYear,dayOfMonth,hourOfDay,minuteOfHour,secondOfMinute,0);
+				//TODO zoneId
+				ZonedDateTime created = ZonedDateTime.of(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, 0, DateTimeUtil.BERLIN);
 				sourceReference.setCreated(created);
 				sec.setCreated(created);
 			}
@@ -818,21 +820,18 @@ public class SDDImport
 			String stringDateModified = (String)ImportHelper.getXmlInputValue(elRevisionData, "DateModified",sddNamespace);
 
 			if (stringDateModified != null) {
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
-				Date date = null;
-				try {
-				    date = sdf.parse(stringDateModified);
-				} catch(Exception e) {
-					System.err.println("Exception :");
-					e.printStackTrace();
-				}
+			    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss");
+			    ZonedDateTime updated;
+                try {
+                    updated = ZonedDateTime.parse(stringDateModified, formatter);
+                    if (updated != null) {
+                        sourceReference.setUpdated(updated);
+                        sec.setUpdated(updated);
+                    }
+                } catch (DateTimeParseException e) {
+                    logger.warn("Date not parsable: " + stringDateModified);
+                }
 
-				DateTime updated = null;
-				if (date != null) {
-					updated = new DateTime(date);
-					sourceReference.setUpdated(updated);
-					sec.setUpdated(updated);
-				}
 			}
 		}
 	}

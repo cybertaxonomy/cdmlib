@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.remote.dto.tdwg;
 
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -16,8 +17,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
@@ -60,11 +59,11 @@ public abstract class BaseThing {
 
 	@XmlElement(namespace = "http://purl.org/dc/terms/")
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
-	private DateTime created;
+	private ZonedDateTime created;
 
 	@XmlElement(namespace = "http://purl.org/dc/terms/")
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
-	private DateTime date;
+	private ZonedDateTime date;
 
 	@XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
 	private String creator;
@@ -111,11 +110,11 @@ public abstract class BaseThing {
 	@XmlElement(name = "publishedInCitation")
 	private PublishedInCitation publishedInCitation;
 
-	public DateTime getDate() {
+	public ZonedDateTime getDate() {
 		return date;
 	}
 
-	public void setDate(DateTime date) {
+	public void setDate(ZonedDateTime date) {
 		this.date = date;
 	}
 
@@ -144,7 +143,7 @@ public abstract class BaseThing {
 	}
 
 	//dcterms:created
-	public DateTime getCreated() {
+	public ZonedDateTime getCreated() {
 		return created;
 	}
 
@@ -243,7 +242,7 @@ public abstract class BaseThing {
 		this.title = title;
 	}
 
-	public void setCreated(DateTime created) {
+	public void setCreated(ZonedDateTime created) {
 		this.created = created;
 	}
 

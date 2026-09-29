@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
 import eu.etaxonomy.cdm.model.permission.User;
 
@@ -22,8 +22,8 @@ public interface IVersionableEntity extends ICdmBase {
 
 	public void setUpdatedBy(User updatedBy);
 
-	public DateTime getUpdated();
+	public ZonedDateTime getUpdated();
 
-	public void setUpdated(DateTime updated);
+	public void setUpdated(ZonedDateTime updated);
 
 }

@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.InputStream;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -17,7 +17,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -101,22 +100,17 @@ public class AbcdParseUtility {
         return doubleValue;
     }
 
-    public static DateTime parseFirstDateTime(NodeList nodeList) {
-        DateTime dateTime = null;
+    public static ZonedDateTime parseFirstDateTime(NodeList nodeList) {
+        ZonedDateTime dateTime = null;
         String textContent = parseFirstTextContent(nodeList);
         if(textContent!=null){
-            dateTime = DateTime.parse(textContent);
+            dateTime = ZonedDateTime.parse(textContent);
         }
         return dateTime;
     }
 
-    public static Date parseFirstDate(NodeList nodeList) {
-        Date date = null;
-        DateTime dateTime = parseFirstDateTime(nodeList);
-        if(dateTime!=null){
-            date = dateTime.toDate();
-        }
-        return date;
+    public static ZonedDateTime parseFirstDate(NodeList nodeList) {
+        return parseFirstDateTime(nodeList);
     }
 
     public static Reference parseFirstReference(NodeList referenceNodeList, ICdmRepository cdmAppController){

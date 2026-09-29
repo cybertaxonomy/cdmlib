@@ -8,9 +8,11 @@
  */
 package eu.etaxonomy.cdm.model.validation;
 
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -25,7 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -36,9 +37,8 @@ import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
+import eu.etaxonomy.cdm.hibernate.search.ZonedDateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
@@ -111,10 +111,9 @@ public class EntityValidation extends CdmBase {
 
     @XmlElement(name = "Updated", type = String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    @Type(type = "dateTimeUserType")
     @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = DateTimeBridge.class)
-    private DateTime updated;
+    @FieldBridge(impl = ZonedDateTimeBridge.class)
+    private ZonedDateTime updated;
 
     @XmlElement(name = "UserFriendlyDescription")
     private String userFriendlyDescription;
@@ -186,11 +185,11 @@ public class EntityValidation extends CdmBase {
         this.validationCount = validationCount;
     }
 
-    public DateTime getUpdated() {
+    public ZonedDateTime getUpdated() {
         return updated;
     }
 
-    public void setUpdated(DateTime updated) {
+    public void setUpdated(ZonedDateTime updated) {
         this.updated = updated;
     }
 

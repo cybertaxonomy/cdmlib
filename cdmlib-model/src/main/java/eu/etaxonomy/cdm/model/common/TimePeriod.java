@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -140,6 +141,14 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
      * Factory method to create a TimePeriod from a starting and an ending <code>Calendar</code>
      * @return
      */
+    public static final TimePeriod NewInstance(ZonedDateTime startDateTime, Calendar endDateTime){
+        return new TimePeriod(calendarToPartial(startDateTime), calendarToPartial(endDateTime), null);
+    }
+
+    /**
+     * Factory method to create a TimePeriod from a starting and an ending <code>Calendar</code>
+     * @return
+     */
     public static final TimePeriod NewInstance(Calendar startCalendar, Calendar endCalendar){
         return new TimePeriod(calendarToPartial(startCalendar), calendarToPartial(endCalendar), null);
     }
@@ -161,6 +170,16 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
     }
 
 //****************** PARTIAL CONVERTERS ******************/
+
+    public static Partial calendarToPartial(ZonedDateTime dateTime){
+        if (dateTime == null){
+            return null;
+        }else{
+            LocalDate ld = new LocalDate(dateTime);
+            Partial partial = new Partial(ld);
+            return partial;
+        }
+    }
 
     /**
      * Transforms a {@link Calendar} into a <code>Partial</code>

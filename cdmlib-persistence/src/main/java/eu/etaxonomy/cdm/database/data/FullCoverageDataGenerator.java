@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.database.data;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -659,7 +660,7 @@ public class FullCoverageDataGenerator {
 		entitiesToSave.add(mu);
 		dnaQuality.setConcentrationUnit(mu);
 		dnaQuality.setPurificationMethod("purification method");
-		dnaQuality.setQualityCheckDate(DateTime.now());
+		dnaQuality.setQualityCheckDate(ZonedDateTime.now());
 		dnaQuality.setQualityTerm(null); //TODO
 		dnaQuality.setRatioOfAbsorbance260_230(22.0);
 		dnaQuality.setRatioOfAbsorbance260_280(3.9);
@@ -933,7 +934,7 @@ public class FullCoverageDataGenerator {
 		Registration registration = Registration.NewInstance("registration identifier",
 		        "specificIdentifier", speciesZooName, null);
 		registration.addTypeDesignation(specimenDesig);
-		registration.setRegistrationDate(DateTime.now());
+		registration.setRegistrationDate(ZonedDateTime.now());
 		Registration blockingRegistration = Registration.NewInstance();
 		registration.addBlockedBy(blockingRegistration);
 		registration.setRegistrationCenter(createNewInstitution(entitiesToSave));

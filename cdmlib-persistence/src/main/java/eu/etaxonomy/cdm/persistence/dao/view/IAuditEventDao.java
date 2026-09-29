@@ -9,10 +9,9 @@
 
 package eu.etaxonomy.cdm.persistence.dao.view;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
-
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.query.AuditEventSort;
@@ -86,5 +85,5 @@ public interface IAuditEventDao {
      * @param dateTime
      * @return an AuditEvent object
      */
-	public AuditEvent findByDate(DateTime dateTime);
+	public AuditEvent findByDate(ZonedDateTime dateTime);
 }

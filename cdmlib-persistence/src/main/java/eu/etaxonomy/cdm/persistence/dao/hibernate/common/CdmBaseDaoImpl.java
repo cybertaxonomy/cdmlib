@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
-import org.joda.time.DateTime;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,7 +55,7 @@ public abstract class CdmBaseDaoImpl
             Session session = getSession();
             if (transientObject.getId() != 0 && VersionableEntity.class.isAssignableFrom(transientObject.getClass())) {
                 VersionableEntity versionableEntity = (VersionableEntity) transientObject;
-                versionableEntity.setUpdated(new DateTime());
+                versionableEntity.setUpdated(ZonedDateTime.now());
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 if (authentication != null && authentication.getPrincipal() != null
                         && authentication.getPrincipal() instanceof User) {

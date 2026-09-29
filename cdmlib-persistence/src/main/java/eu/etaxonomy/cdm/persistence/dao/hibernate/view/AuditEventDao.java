@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.view;
 
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +18,6 @@ import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.query.Query;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -91,9 +92,9 @@ public class AuditEventDao extends DaoBase implements IAuditEventDao {
 	}
 
 	@Override
-    public AuditEvent findByDate(DateTime dateTime) {
-		Number id = getAuditReader().getRevisionNumberForDate(dateTime.toDate());
-		AuditEvent auditEvent  =getSession().load(AuditEvent.class, id);
+    public AuditEvent findByDate(ZonedDateTime dateTime) {
+		Number id = getAuditReader().getRevisionNumberForDate(Date.from(dateTime.toInstant()));
+		AuditEvent auditEvent = getSession().load(AuditEvent.class, id);
 		Hibernate.initialize(auditEvent);
 		return auditEvent;
 	}

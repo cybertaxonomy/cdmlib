@@ -8,11 +8,11 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,7 +72,7 @@ public class AuditEventService implements IAuditEventService {
 	}
 
 	@Override
-    public AuditEvent find(DateTime dateTime) {
+    public AuditEvent find(ZonedDateTime dateTime) {
 		return dao.findByDate(dateTime);
 	}
 }

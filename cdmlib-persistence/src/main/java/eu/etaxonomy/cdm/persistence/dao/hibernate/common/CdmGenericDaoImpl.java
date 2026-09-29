@@ -56,6 +56,7 @@ import org.hibernate.type.OneToOneType;
 import org.hibernate.type.SerializableType;
 import org.hibernate.type.StringType;
 import org.hibernate.type.Type;
+import org.hibernate.type.ZonedDateTimeType;
 import org.jadira.usertype.dateandtime.joda.PersistentDateTime;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
@@ -407,11 +408,9 @@ public class CdmGenericDaoImpl
 			allCdmClasses = getAllPersistedClasses(false); //findAllCdmClasses();
 		}
 		SessionFactory sessionFactory = getSession().getSessionFactory();
-//        EntityManagerFactory sessionFactory = getSession().getSessionFactory();
 
 		for (Class<? extends CdmBase> cdmClass : allCdmClasses){
 			ClassMetadata classMetadata = sessionFactory.getClassMetadata(cdmClass);
-//	        javax.persistence.metamodel.EntityType<? extends CdmBase> classMetadata = sessionFactory.getMetamodel().entity(cdmClass);
 			Type[] propertyTypes = classMetadata.getPropertyTypes();
 			int propertyNr = 0;
 			for (Type propertyType: propertyTypes){
@@ -518,6 +517,7 @@ public class CdmGenericDaoImpl
 				WSDLDefinitionUserType.class,
 				UUIDUserType.class,
 				PartialUserType.class,
+				ZonedDateTimeType.class,
 				StringType.class,
 				BooleanType.class,
 				IntegerType.class,

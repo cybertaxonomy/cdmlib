@@ -9,8 +9,10 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.persistence.Basic;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -23,17 +25,15 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
+import eu.etaxonomy.cdm.hibernate.search.ZonedDateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -73,14 +73,11 @@ public abstract class VersionableEntity
 
 	@XmlElement(name ="Updated", type = String.class)
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
-	//@XmlElement(name ="Updated")
-	//@XmlElement(name ="Updated")
-	@Type(type="dateTimeUserType")
 	@Basic(fetch = FetchType.LAZY)
 	@Match(MatchMode.IGNORE)
 	@Field(analyze = Analyze.NO)
-	@FieldBridge(impl = DateTimeBridge.class)
-	private DateTime updated;
+	@FieldBridge(impl = ZonedDateTimeBridge.class)
+	private ZonedDateTime updated;
 
 	@XmlElement(name = "UpdatedBy")
 	@XmlIDREF
@@ -99,11 +96,11 @@ public abstract class VersionableEntity
 	}
 
 	@Override
-    public DateTime getUpdated(){
+    public ZonedDateTime getUpdated(){
 		return this.updated;
 	}
 	@Override
-    public void setUpdated(DateTime updated){
+    public void setUpdated(ZonedDateTime updated){
 		this.updated = updated;
 	}
 

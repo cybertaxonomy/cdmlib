@@ -8,6 +8,7 @@
  */
 package eu.etaxonomy.cdm.remote.controller.oaipmh;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -270,7 +271,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         modelAndView.addObject("granularity",Granularity.YYYY_MM_DD_THH_MM_SS_Z);
 
         Pager<AuditEvent> auditEvents = auditEventService.list(0,1,AuditEventSort.FORWARDS);
-        modelAndView.addObject("earliestDatestamp",auditEvents.getRecords().get(0).getDate());
+        modelAndView.addObject("earliestDatestamp", auditEvents.getRecords().get(0).getDate());
         modelAndView.addObject("adminEmail",adminEmail);
         modelAndView.addObject("description",description);
 
@@ -279,8 +280,8 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
     @RequestMapping(method = RequestMethod.GET, params = {"verb=ListIdentifiers", "!resumptionToken"})
     public ModelAndView listIdentifiers(
-            @RequestParam(value = "from", required = false) DateTime from,
-            @RequestParam(value = "until", required = false) DateTime until,
+            @RequestParam(value = "from", required = false) ZonedDateTime from,
+            @RequestParam(value = "until", required = false) ZonedDateTime until,
             @RequestParam(value = "metadataPrefix",required = true) MetadataPrefix metadataPrefix,
             @RequestParam(value = "set", required = false) SetSpec set) {
 
@@ -385,8 +386,8 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"verb=ListRecords", "!resumptionToken"})
-    public ModelAndView listRecords(@RequestParam(value = "from", required = false) DateTime from,
-            @RequestParam(value = "until", required = false) DateTime until,
+    public ModelAndView listRecords(@RequestParam(value = "from", required = false) ZonedDateTime from,
+            @RequestParam(value = "until", required = false) ZonedDateTime until,
             @RequestParam(value = "metadataPrefix", required = true) MetadataPrefix metadataPrefix,
             @RequestParam(value = "set", required = false) SetSpec set) {
 

@@ -9,9 +9,9 @@
 package eu.etaxonomy.cdm.strategy;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.UUID;
-
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -76,7 +76,8 @@ public abstract class StrategyBase
 		if (	fieldType == TimePeriod.class ||
 		        fieldType == VerbatimTimePeriod.class ||
                 fieldType == DateTime.class ||
-				fieldType == LSID.class ||
+                fieldType == ZonedDateTime.class ||
+                fieldType == LSID.class ||
 				fieldType == Contact.class ||
 				fieldType == URI.class ||
 				fieldType == DOI.class ||

@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.remote.controller.dto;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,9 +31,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.Document;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
@@ -134,7 +133,7 @@ public class NameCatalogueController
 
     private static final String DWC_DATASET_ID = "http://rs.tdwg.org/dwc/terms/datasetID";
 
-    private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     @Autowired
     private ITaxonService taxonService;
@@ -828,8 +827,8 @@ public class NameCatalogueController
                     String modified = "";
                     if(taxon.getSec() != null) {
                         secTitle = taxon.getSec().getTitleCache();
-                        DateTime dt = taxon.getUpdated();
-                        modified = fmt.print(dt);
+                        ZonedDateTime dt = taxon.getUpdated();
+                        modified = fmt.format(dt);
                     }
                     String extMod = taxon.getExtensionsConcat(DwcaImportTransformer.uuidExtensionTypeModified,";");
                     if (StringUtils.isNotBlank(extMod)){
@@ -878,8 +877,8 @@ public class NameCatalogueController
                         modified = "";
                         if(syn.getSec() != null) {
                             secTitle = syn.getSec().getTitleCache();
-                            DateTime dt = syn.getUpdated();
-                            modified = fmt.print(dt);
+                            ZonedDateTime dt = syn.getUpdated();
+                            modified = fmt.format(dt);
                         }
 
                         sources = syn.getSources();
@@ -920,8 +919,8 @@ public class NameCatalogueController
                         modified = "";
                         if(toTaxon.getSec() != null) {
                             secTitle = toTaxon.getSec().getTitleCache();
-                            DateTime dt = toTaxon.getUpdated();
-                            modified = fmt.print(dt);
+                            ZonedDateTime dt = toTaxon.getUpdated();
+                            modified = fmt.format(dt);
                         }
 
                         sources = toTaxon.getSources();
@@ -961,8 +960,8 @@ public class NameCatalogueController
 
                         if(fromTaxon.getSec() != null) {
                             secTitle = fromTaxon.getSec().getTitleCache();
-                            DateTime dt = fromTaxon.getSec().getUpdated();
-                            modified = fmt.print(dt);
+                            ZonedDateTime dt = fromTaxon.getSec().getUpdated();
+                            modified = fmt.format(dt);
                         }else{
                             secTitle = "";
                         }
@@ -988,8 +987,8 @@ public class NameCatalogueController
                     Synonym synonym = (Synonym) tb;
                     TaxonName nvn = synonym.getName();
                  // update taxon information object with synonym related data
-                    DateTime dt = synonym.getUpdated();
-                    String modified = fmt.print(dt);
+                    ZonedDateTime dt = synonym.getUpdated();
+                    String modified = fmt.format(dt);
 
                     Set<IdentifiableSource> sources = synonym.getSources();
                     String[] didname = getDatasetIdName(sources);
@@ -1022,7 +1021,7 @@ public class NameCatalogueController
                         String status = ACCEPTED_NAME_STATUS;
                         String relLabel = synonym.getType().getLabel(Language.DEFAULT());
                         dt = accTaxon.getUpdated();
-                        modified = fmt.print(dt);
+                        modified = fmt.format(dt);
 
                         sources = accTaxon.getSources();
                         didname = getDatasetIdName(sources);
