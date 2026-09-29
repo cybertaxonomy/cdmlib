@@ -62,4 +62,15 @@ public class DateTimeUtil {
                 .appendFraction(ChronoField.NANO_OF_SECOND, 3, 3, true)
                 .appendPattern("XXX") // Zeitzonen-Offset wie +02:00
                 .toFormatter();
+
+    public static final DateTimeFormatter FLEXIBLE_ISO =
+            new DateTimeFormatterBuilder()
+                .append(DateTimeFormatter.ISO_LOCAL_DATE)
+
+                //defaults
+                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                .toFormatter()
+                .withZone(BERLIN);
 }

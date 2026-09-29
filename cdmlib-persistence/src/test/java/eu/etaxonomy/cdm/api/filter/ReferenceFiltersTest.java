@@ -19,6 +19,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
@@ -68,7 +69,7 @@ public class ReferenceFiltersTest extends CdmTransactionalIntegrationTest {
 
         //validate
         List<EntityFilter<Reference>> filters = new ArrayList<>();
-        ZonedDateTime compareDate = ZonedDateTime.parse("2026-06-24");
+        ZonedDateTime compareDate = ZonedDateTime.parse("2026-06-24", DateTimeUtil.FLEXIBLE_ISO);
         filters.add(ReferenceFilters.isBeforeDatePublished(compareDate));
         long result = refDao.countByTitle("abc", MatchMode.ANYWHERE, filters);
         Assert.assertEquals("Only the earlier references 1972 should be returned", 1, result);
@@ -78,7 +79,7 @@ public class ReferenceFiltersTest extends CdmTransactionalIntegrationTest {
 
         //validate against future date
         filters = new ArrayList<>();
-        compareDate = ZonedDateTime.parse("3026-06-24");
+        compareDate = ZonedDateTime.parse("3026-06-24", DateTimeUtil.FLEXIBLE_ISO);
         filters.add(ReferenceFilters.isBeforeDatePublished(compareDate));
         result = refDao.countByTitle("abc", MatchMode.ANYWHERE, filters);
         Assert.assertEquals("All references with defined date before 3026 should be returned", 2, result);
