@@ -24,6 +24,7 @@ import java.util.UUID;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.From;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -32,12 +33,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
-import org.hibernate.HibernateException;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Example.PropertySelector;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.ProjectionList;
@@ -47,13 +46,11 @@ import org.hibernate.criterion.Subqueries;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.sql.JoinType;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.MatchMode;
@@ -1060,38 +1057,106 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     @Override
     public long count(T example, Set<String> includeProperties) {
 
-        Criteria criteria = getSession().createCriteria(example.getClass());
-        addExample(criteria, example, includeProperties);
+        Class<T> clazz = (Class)example.getClass();
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<T> root = cq.from(clazz);
 
-        criteria.setProjection(Projections.rowCount());
-        return (Long) criteria.uniqueResult();
+        Predicate predicate = getExamplePredicate(cb, root, example, includeProperties);
+        cq.select(cb.countDistinct(root))
+          .where(predicate);
+
+        return getSession().createQuery(cq).getSingleResult();
     }
 
-    protected void addExample(Criteria criteria, T example, Set<String> includeProperties) {
-        if (includeProperties != null && !includeProperties.isEmpty()) {
-            criteria.add(Example.create(example).setPropertySelector(new PropertySelectorImpl(includeProperties)));
-            ClassMetadata classMetadata = getSession().getSessionFactory().getClassMetadata(example.getClass());
-            for (String property : includeProperties) {
-                Type type = classMetadata.getPropertyType(property);
-                if (type.isEntityType()) {
-                    try {
-                        Field field = ReflectionUtils.findField(example.getClass(), property);
+    private <S extends T> Predicate getExamplePredicate(CriteriaBuilder cb, Root<S> root, S example, Set<String> includeProperties) {
+        if (example == null) {
+            return cb.conjunction();
+        }
+        try {
+            List<Predicate> predicates = new ArrayList<>();
+            if (!CdmUtils.isNullSafeEmpty(includeProperties)) {
+                for (String property : includeProperties) {
+                    Object value = getPropertyValueByPath(example, property);
+                    Path<?> path = root;
+                    String[] segments = property.split("\\.");
+                    for (String seg : segments) {
+                        path = path.get(seg);
+                    }
+                    if (value == null) {
+                        predicates.add(cb.isNull(path));
+                    } else {
+                        predicates.add(cb.equal(path, value));
+                    }
+                }
+            } else {
+                Class<?> clazz = example.getClass();
+                while (clazz != null && !clazz.equals(Object.class)) {
+                    for (Field field : clazz.getDeclaredFields()) {
+                        int mods = field.getModifiers();
+                        if (java.lang.reflect.Modifier.isStatic(mods) || field.isSynthetic()) {
+                            continue;
+                        }
                         field.setAccessible(true);
                         Object value = field.get(example);
                         if (value != null) {
-                            criteria.add(Restrictions.eq(property, value));
-                        } else {
-                            criteria.add(Restrictions.isNull(property));
+                            Path<?> path = root.get(field.getName());
+                            predicates.add(cb.equal(path, value));
                         }
-                    } catch (SecurityException | HibernateException | IllegalArgumentException | IllegalAccessException e) {
-                        throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property,
-                                e);
                     }
+                    clazz = clazz.getSuperclass();
                 }
             }
-        } else {
-            criteria.add(Example.create(example));
+
+            if (predicates.isEmpty()) {
+                return cb.conjunction();
+            } else if (predicates.size() == 1) {
+                return predicates.get(0);
+            } else {
+                return cb.and(predicates.toArray(new Predicate[0]));
+            }
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            throw new InvalidDataAccessApiUsageException("Tried to build predicate from example", e);
         }
+    }
+
+    private Object getPropertyValueByPath(Object root, String propertyPath) throws IllegalAccessException {
+        if (root == null || propertyPath == null || propertyPath.isEmpty()) {
+            return null;
+        }
+        String[] parts = propertyPath.split("\\.");
+        Object current = root;
+        for (String part : parts) {
+            if (current == null) {
+                return null;
+            }
+            Field field = org.springframework.util.ReflectionUtils.findField(current.getClass(), part);
+            if (field != null) {
+                field.setAccessible(true);
+                current = field.get(current);
+            } else {
+                // try standard getter as fallback: getXxx() or isXxx()
+                String capital = part.substring(0, 1).toUpperCase() + part.substring(1);
+                String getter = "get" + capital;
+                String isser = "is" + capital;
+                try {
+                    java.lang.reflect.Method method = current.getClass().getMethod(getter);
+                    current = method.invoke(current);
+                } catch (NoSuchMethodException e1) {
+                    try {
+                        java.lang.reflect.Method method = current.getClass().getMethod(isser);
+                        current = method.invoke(current);
+                    } catch (NoSuchMethodException e2) {
+                        throw new IllegalArgumentException("Property not found: " + part + " in " + current.getClass(), e2);
+                    } catch (ReflectiveOperationException roe) {
+                        throw new IllegalArgumentException("Error invoking accessor for " + part + " on " + current.getClass(), roe);
+                    }
+                } catch (ReflectiveOperationException roe) {
+                    throw new IllegalArgumentException("Error invoking accessor for " + part + " on " + current.getClass(), roe);
+                }
+            }
+        }
+        return current;
     }
 
     /**
@@ -1253,17 +1318,24 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     public <S extends T> List<S> list(S example, Set<String> includeProperties, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Criteria criteria = getSession().createCriteria(example.getClass());
-        addExample(criteria, example, includeProperties);
+        Class<S> clazz = example == null ? (Class<S>) (Class<?>) type : (Class<S>) example.getClass();
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<S> cq = cb.createQuery(clazz);
+        Root<S> root = cq.from(clazz);
 
-        addLimitAndStart(criteria, limit, start);
+        Predicate predicate = getExamplePredicate(cb, root, example, includeProperties);
 
-        addOrder(criteria, orderHints);
+        cq.select(root)
+          .distinct(true)
+          .where(predicate)
+          .orderBy(ordersFrom(cb, root, orderHints));
 
-        @SuppressWarnings("unchecked")
-        List<S> results = criteria.list();
+        List<S> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), limit, start)
+            .getResultList();
+
         defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
+        return deduplicateResult(results);
     }
 
     private class PropertySelectorImpl implements PropertySelector {
