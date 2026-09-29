@@ -13,6 +13,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.persistence.Embeddable;
 import javax.persistence.MappedSuperclass;
@@ -147,7 +148,7 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
      * @return
      */
     public static final TimePeriod NewInstance(ZonedDateTime startDateTime, ZonedDateTime endDateTime){
-        return new TimePeriod(calendarToPartial(startDateTime), calendarToPartial(endDateTime), null);
+        return new TimePeriod(zonedDateTimeToPartial(startDateTime), zonedDateTimeToPartial(endDateTime), null);
     }
 
     /**
@@ -176,20 +177,16 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
 
 //****************** PARTIAL CONVERTERS ******************/
 
-    public static Partial calendarToPartial(ZonedDateTime dateTime){
-        if (dateTime == null){
+    public static Partial zonedDateTimeToPartial(ZonedDateTime dateTime){
+        if (dateTime == null) {
             return null;
-        }else{
-            LocalDate ld = new LocalDate(dateTime);
-            Partial partial = new Partial(ld);
-            return partial;
         }
+        Calendar calendar = GregorianCalendar.from(dateTime);
+        return calendarToPartial(calendar);
     }
 
     /**
      * Transforms a {@link Calendar} into a <code>Partial</code>
-     * @param calendar
-     * @return
      */
     public static Partial calendarToPartial(Calendar calendar){
         if (calendar == null){
