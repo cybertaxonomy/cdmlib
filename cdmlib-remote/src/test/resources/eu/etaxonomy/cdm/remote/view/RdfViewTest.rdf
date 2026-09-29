@@ -14,7 +14,7 @@
   <tc:TaxonConcept>
     <dc:title>Lorem ipsum</dc:title>
     <dc:identifier>urn:lsid:example.org:taxonconcepts:1</dc:identifier>
-    <dcterms:created>2004-12-25T12:00:00.000Z</dcterms:created>
+    <dcterms:created>2004-12-25T12:00:00Z</dcterms:created>
     <dc:relation rdf:resource="http://www.example.org/"/>
     <tcom:publishedIn>Lorem ipsum dolor</tcom:publishedIn>
     <tc:accordingTo>

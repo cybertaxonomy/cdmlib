@@ -11,8 +11,12 @@ package eu.etaxonomy.cdm.remote.json.processor.value;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.junit.Test;
+
+import eu.etaxonomy.cdm.common.DateTimeUtil;
 
 /**
  * @author a.kohlbecker
@@ -22,9 +26,11 @@ public class DateTimeJSONValueProcessorTest {
 
     @Test
     public void testFormatDateTime(){
+        DateTimeFormatter formatter = DateTimeUtil.FLEXIBEL_DATE_TIME_FORMATTER;
+        ZonedDateTime dateTime = ZonedDateTime.parse("2010-06-30T01:20+02:00", formatter);
         DateTimeJSONValueProcessor processor = new DateTimeJSONValueProcessor();
-        DateTime dateTime = DateTime.parse("2010-06-30T01:20");
-        assertEquals("2010-06-30T01:20:00.000+02:00", processor.formatDateTime(dateTime));
+        //Note: nanos are optional, maybe we should remove them from being obligatory here
+        assertEquals("2010-06-30T01:20:00+02:00", processor.formatDateTime(dateTime));
     }
 
     @Test
@@ -32,5 +38,4 @@ public class DateTimeJSONValueProcessorTest {
         DateTimeJSONValueProcessor processor = new DateTimeJSONValueProcessor();
         assertNull(processor.formatDateTime(null));
     }
-
 }

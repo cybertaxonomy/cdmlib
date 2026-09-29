@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.media;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,7 +17,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.apache.hc.core5.http.HttpException;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
@@ -62,8 +62,8 @@ public abstract class AbstactMediaMetadataReader {
         Matcher matcher = pattern.matcher(text);
         if (matcher.matches()) {
             try {
-                DateTime date = DateTime.parse(text);
-                String result = date.year().get()+ "-" + date.monthOfYear().get() + "-" + date.dayOfMonth().get();
+                ZonedDateTime date = ZonedDateTime.parse(text);
+                String result = date.getYear()+ "-" + date.getMonthValue() + "-" + date.getDayOfMonth();
                 return result;
             }catch(Exception e) {
                 if (text.contains("T")) {

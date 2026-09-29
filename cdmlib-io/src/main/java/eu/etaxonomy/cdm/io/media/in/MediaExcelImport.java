@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.media.in;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +17,6 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 import org.springframework.stereotype.Component;
@@ -200,7 +200,7 @@ public class MediaExcelImport
         }
     }
 
-    private DateTime toDateTime(MediaExcelImportState state, Partial partial, String dateStr, String line) {
+    private ZonedDateTime toDateTime(MediaExcelImportState state, Partial partial, String dateStr, String line) {
         if (partial == null){
             return null;
         }
@@ -209,7 +209,7 @@ public class MediaExcelImport
                 && typeList.contains(DateTimeFieldType.monthOfYear())
                 && typeList.contains(DateTimeFieldType.dayOfMonth())
                 ){
-            DateTime result = partial.toDateTime(DateTime.now());
+            ZonedDateTime result = TimePeriod.zonedDateTimeFromPartial(partial, ZonedDateTime.now());
             return result;
         }else{
             String message = "Date time does not include year, month and day information. Currently all these 3 parts are required: %s";

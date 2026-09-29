@@ -9,19 +9,21 @@
 package eu.etaxonomy.cdm.remote.editor;
 
 import java.beans.PropertyEditorSupport;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 
 public class DateTimeEditor extends PropertyEditorSupport {
 
-	private static DateTimeFormatter parser;
-	private static DateTimeFormatter printer;
+	private static org.joda.time.format.DateTimeFormatter parser;
+	private static DateTimeFormatter formatter;
 
 	static {
-		parser = new DateTimeFormatterBuilder().appendPattern("dd/MM/YYYY").appendOptional(new DateTimeFormatterBuilder().appendPattern(" HH:mm:ss").toParser()).toFormatter();
-		printer = new DateTimeFormatterBuilder().appendPattern("dd/MM/YYYY HH:mm:ss").toFormatter();
+		parser = new DateTimeFormatterBuilder().appendPattern("dd/MM/YYYY")
+		        .appendOptional(new DateTimeFormatterBuilder().appendPattern(" HH:mm:ss").toParser())
+		        .toFormatter();
+		formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 	}
 
 	@Override
@@ -31,6 +33,6 @@ public class DateTimeEditor extends PropertyEditorSupport {
 
 	@Override
     public String getAsText() {
-		return printer.print((DateTime)getValue());
+		return formatter.format((ZonedDateTime)getValue());
 	}
 }

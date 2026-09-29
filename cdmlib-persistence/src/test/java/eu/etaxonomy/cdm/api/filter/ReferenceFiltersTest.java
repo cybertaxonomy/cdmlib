@@ -9,10 +9,10 @@
 package eu.etaxonomy.cdm.api.filter;
 
 import java.io.FileNotFoundException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 import org.junit.Assert;
@@ -68,7 +68,7 @@ public class ReferenceFiltersTest extends CdmTransactionalIntegrationTest {
 
         //validate
         List<EntityFilter<Reference>> filters = new ArrayList<>();
-        DateTime compareDate = DateTime.parse("2026-06-24");
+        ZonedDateTime compareDate = ZonedDateTime.parse("2026-06-24");
         filters.add(ReferenceFilters.isBeforeDatePublished(compareDate));
         long result = refDao.countByTitle("abc", MatchMode.ANYWHERE, filters);
         Assert.assertEquals("Only the earlier references 1972 should be returned", 1, result);
@@ -78,7 +78,7 @@ public class ReferenceFiltersTest extends CdmTransactionalIntegrationTest {
 
         //validate against future date
         filters = new ArrayList<>();
-        compareDate = DateTime.parse("3026-06-24");
+        compareDate = ZonedDateTime.parse("3026-06-24");
         filters.add(ReferenceFilters.isBeforeDatePublished(compareDate));
         result = refDao.countByTitle("abc", MatchMode.ANYWHERE, filters);
         Assert.assertEquals("All references with defined date before 3026 should be returned", 2, result);

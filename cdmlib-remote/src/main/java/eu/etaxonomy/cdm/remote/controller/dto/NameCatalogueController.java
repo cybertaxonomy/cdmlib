@@ -43,7 +43,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.filter.MatchMode;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
-import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
@@ -138,12 +137,8 @@ public class NameCatalogueController
     @Autowired
     private ITaxonService taxonService;
 
-
     @Autowired
     private IClassificationService classificationService;
-
-    @Autowired
-    private ICommonService commonService;
 
     /** Hibernate name search initialisation strategy */
     private static final List<String> NAME_SEARCH_INIT_STRATEGY = Arrays.asList(new String[] {

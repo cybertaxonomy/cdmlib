@@ -19,10 +19,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.joda.time.DateTime;
-
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
-
 
 /**
  * <p>Java class for IdentifyType complex type.

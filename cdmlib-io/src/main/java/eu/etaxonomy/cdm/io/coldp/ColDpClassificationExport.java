@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.io.coldp;
 
 import java.io.File;
+import java.time.chrono.ChronoLocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,10 +23,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
-import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.springframework.stereotype.Component;
 
@@ -572,7 +572,7 @@ public class ColDpClassificationExport
             //TODO 2 date, log warning, also if mediaCreated.getEnd() != null or so
             return null;
         } else {
-            DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+            org.joda.time.format.DateTimeFormatter formatter = new DateTimeFormatterBuilder()
                     .appendYear(4, 4).appendLiteral('-')
                     .appendMonthOfYear(2).appendLiteral('-')
                     .appendDayOfMonth(2)
@@ -584,16 +584,11 @@ public class ColDpClassificationExport
     /**
      * transforms the given date to an iso date
      */
-    protected String toIsoDate(DateTime dateTime) {
+    protected String toIsoDate(ChronoLocalDate dateTime) {
         if (dateTime == null) {
             return null;
         }
-        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                .appendYear(4, 4).appendLiteral('-')
-                .appendMonthOfYear(2).appendLiteral('-')
-                .appendDayOfMonth(2)
-                .toFormatter();
-        return formatter.print(dateTime);
+        return DateTimeFormatter.ISO_LOCAL_DATE.format(dateTime);
     }
 
     private void handleDescriptions(ColDpExportState state, Taxon taxon) {

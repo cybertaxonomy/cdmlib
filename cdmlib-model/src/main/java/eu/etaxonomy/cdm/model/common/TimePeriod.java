@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -128,6 +129,10 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
         return NewInstance(startCalendar, null);
     }
 
+    public static final TimePeriod NewInstance(ZonedDateTime startDate){
+        return TimePeriod.NewInstance(startDate, null);
+    }
+
     /**
      * Factory method to create a TimePeriod from a <code>ReadableInstant</code>(e.g. <code>DateTime</code>).
      * The <code>ReadableInstant</code> is stored as the starting instant.
@@ -141,7 +146,7 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
      * Factory method to create a TimePeriod from a starting and an ending <code>Calendar</code>
      * @return
      */
-    public static final TimePeriod NewInstance(ZonedDateTime startDateTime, Calendar endDateTime){
+    public static final TimePeriod NewInstance(ZonedDateTime startDateTime, ZonedDateTime endDateTime){
         return new TimePeriod(calendarToPartial(startDateTime), calendarToPartial(endDateTime), null);
     }
 
@@ -265,6 +270,41 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
         }else{
             return partial.get(type);
         }
+    }
+
+    public static ZonedDateTime zonedDateTimeFromPartial(Partial partial,
+            ZonedDateTime defaultDateTime) {
+
+        if (partial == null) {
+            return defaultDateTime;
+        }
+        defaultDateTime = defaultDateTime == null ? ZonedDateTime.now() : defaultDateTime;
+
+        ZonedDateTime result = defaultDateTime;
+
+        //go through all fields
+        for (int i = 0; i < partial.size(); i++) {
+            DateTimeFieldType jodaType = partial.getFieldType(i);
+            int value = partial.getValue(i);
+
+            if (jodaType == DateTimeFieldType.year()) {
+                result = result.with(ChronoField.YEAR, value);
+            } else if (jodaType == DateTimeFieldType.monthOfYear()) {
+                result = result.with(ChronoField.MONTH_OF_YEAR, value);
+            } else if (jodaType == DateTimeFieldType.dayOfMonth()) {
+                result = result.with(ChronoField.DAY_OF_MONTH, value);
+            } else if (jodaType == DateTimeFieldType.hourOfDay()) {
+                result = result.with(ChronoField.HOUR_OF_DAY, value);
+            } else if (jodaType == DateTimeFieldType.minuteOfHour()) {
+                result = result.with(ChronoField.MINUTE_OF_HOUR, value);
+            } else if (jodaType == DateTimeFieldType.secondOfMinute()) {
+                result = result.with(ChronoField.SECOND_OF_MINUTE, value);
+            } else if (jodaType == DateTimeFieldType.millisOfSecond()) {
+                result = result.with(ChronoField.MILLI_OF_SECOND, value);
+            }
+        }
+
+        return result;
     }
 
 //****************** TIME PERIOD CONVERTERS ******************/

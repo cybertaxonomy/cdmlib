@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.Session;
-import org.joda.time.DateTime;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.ibm.lsid.MalformedLSIDException;
@@ -551,7 +550,7 @@ public class FullCoverageDataGenerator {
 		media.addRepresentation(mediaRepresentation);
 
 		media.putTitle(Language.ENGLISH(), "Media title");
-		media.setMediaCreated(TimePeriod.NewInstance(DateTime.now()));
+		media.setMediaCreated(TimePeriod.NewInstance(ZonedDateTime.now()));
 		media.putDescription(Language.ENGLISH(), "Media description");
 		handleIdentifiableEntity(media, entitiesToSave);
 
@@ -975,7 +974,7 @@ public class FullCoverageDataGenerator {
 		//Credits
 	    if (identifiableEntity instanceof IHasCredits) {
 	        Person creditor = createNewPerson("Creditor", entitiesToSave);
-	        Credit credit = Credit.NewInstance(creditor, TimePeriod.NewInstance(DateTime.now(), DateTime.now()), "credit");
+	        Credit credit = Credit.NewInstance(creditor, TimePeriod.NewInstance(ZonedDateTime.now(), ZonedDateTime.now()), "credit");
 	        ((IHasCredits)identifiableEntity).addCredit(credit);
 	    }
 

@@ -8,11 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import org.joda.time.DateTime;
 
 /**
  * @author a.mueller
@@ -60,7 +59,7 @@ public class IncludedTaxaDTO {
 
 	private List<IncludedTaxon> includedTaxa = new ArrayList<>();
 
-	private DateTime date = DateTime.now();
+	private ZonedDateTime date = ZonedDateTime.now();
 
 	//** ******************* CONSTRUCTOR **************************/
 
@@ -89,10 +88,10 @@ public class IncludedTaxaDTO {
 		includedTaxa.add(new IncludedTaxon(taxonUuid, uuidPath, doubtful));
 	}
 
-	public DateTime getDate() {
+	public ZonedDateTime getDate() {
 		return date;
 	}
-	public void setDate(DateTime date) {
+	public void setDate(ZonedDateTime date) {
 		this.date = date;
 	}
 

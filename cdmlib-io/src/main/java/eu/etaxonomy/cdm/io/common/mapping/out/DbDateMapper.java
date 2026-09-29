@@ -6,20 +6,21 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.sql.Types;
+import java.time.ZonedDateTime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 
 /**
  * @author a.mueller
  * @since 12.05.2009
  */
-public class DbDateMapper extends DbSingleAttributeExportMapperBase implements IDbExportMapper {
+public class DbDateMapper
+        extends DbSingleAttributeExportMapperBase
+        implements IDbExportMapper {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
@@ -28,11 +29,11 @@ public class DbDateMapper extends DbSingleAttributeExportMapperBase implements I
 		return new DbDateMapper(cdmAttributeString, dbAttributeString, null);
 	}
 
-	public static DbDateMapper NewInstance(String cdmAttributeString, String dbAttributeString, DateTime defaultValue){
+	public static DbDateMapper NewInstance(String cdmAttributeString, String dbAttributeString, ZonedDateTime defaultValue){
 		return new DbDateMapper(cdmAttributeString, dbAttributeString, defaultValue);
 	}
 
-	private DbDateMapper(String cdmAttributeString, String dbAttributeString, DateTime defaultValue) {
+	private DbDateMapper(String cdmAttributeString, String dbAttributeString, ZonedDateTime defaultValue) {
 		super(cdmAttributeString, dbAttributeString, defaultValue);
 	}
 
@@ -72,6 +73,6 @@ public class DbDateMapper extends DbSingleAttributeExportMapperBase implements I
 
 	@Override
 	public Class<?> getTypeClass() {
-		return DateTime.class;
+		return ZonedDateTime.class;
 	}
 }

@@ -8,7 +8,9 @@
 */
 package eu.etaxonomy.cdm.remote.view;
 
+import java.time.ZonedDateTime;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -17,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.stream.StreamResult;
 
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.oxm.Marshaller;
@@ -111,8 +112,11 @@ public class RdfView extends AbstractView {
 	protected void renderMergedOutputModel(Map<String, Object> model,HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		if(expiresPlus != null) {
-		    DateTime expires = new DateTime();
-	        response.setHeader(HTTPConstants.EXPIRES_HEADER, HTTPConstants.HTTP_DATE_FORMAT.format(expires.plusDays(expiresPlus).toDate()));
+		    ZonedDateTime expires = ZonedDateTime.now();
+	        response.setHeader(HTTPConstants.EXPIRES_HEADER,
+	                HTTPConstants.HTTP_DATE_FORMAT.format(
+	                        Date.from(expires.plusDays(expiresPlus).toInstant()))
+	                );
 	    }
 
 		rdfMarshaller.marshal(buildRdf(model), new StreamResult(response.getOutputStream()));

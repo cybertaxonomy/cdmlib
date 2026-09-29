@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.criteria.AuditCriterion;
-import org.joda.time.DateTime;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -156,7 +155,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(DateTime.class, new IsoDateTimeEditor());
+        binder.registerCustomEditor(ZonedDateTime.class, new IsoDateTimeEditor());
         binder.registerCustomEditor(LSID.class, new LSIDPropertyEditor());
         binder.registerCustomEditor(MetadataPrefix.class, new MetadataPrefixEditor());
         binder.registerCustomEditor(SetSpec.class, new SetSpecEditor());

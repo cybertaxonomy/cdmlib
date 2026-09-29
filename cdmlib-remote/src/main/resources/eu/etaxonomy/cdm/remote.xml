@@ -85,7 +85,7 @@
           <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.LsidConverter"/>
         </entry>
         <entry key="dateTimeConverter">
-          <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.DateTimeConverter"/>
+          <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.ZonedDateTimeConverter"/>
         </entry>
         <entry key="timePeriodConverter">
           <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.TimePeriodConverter"/>

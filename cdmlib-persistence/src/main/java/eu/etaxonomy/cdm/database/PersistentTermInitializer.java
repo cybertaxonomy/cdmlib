@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.database;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +19,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
-import org.joda.time.DateTime;
-import org.joda.time.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -96,7 +96,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             Map<UUID,DefinedTermBase> terms = new HashMap<>();
             logger.info("PersistentTermInitializer.omit == false, initializing " + VocabularyEnum.values().length + " term classes");
 
-            DateTime start = new DateTime();
+            ZonedDateTime start = ZonedDateTime.now();
 
             TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
 
@@ -144,9 +144,9 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 
             transactionManager.commit(txStatus);
 
-            DateTime end = new DateTime();
-            Period period = new Period(start, end);
-            logger.info ("Term loading took " + period.getSeconds() + "." + period.getMillis() + " seconds ");
+            ZonedDateTime end = ZonedDateTime.now();
+            Duration duration = Duration.between(start, end);
+            logger.info ("Term loading took " + duration.getSeconds() + "." + duration.getNano() + " seconds ");
 
         }
         logger.info("PersistentTermInitializer initialize end ...");

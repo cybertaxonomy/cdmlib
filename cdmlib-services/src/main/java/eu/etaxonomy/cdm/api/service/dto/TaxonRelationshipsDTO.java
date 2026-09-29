@@ -8,13 +8,12 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.dto.SourceDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
@@ -29,8 +28,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 
 /**
  * DTO to transfer a list of taxon relationships for a given taxon.
@@ -171,7 +170,7 @@ public class TaxonRelationshipsDTO {
 
     private List<List<TaggedText>> misapplications = new ArrayList<>();
 
-    private DateTime date = DateTime.now();
+    private ZonedDateTime date = ZonedDateTime.now();
 
     //** ******************* CONSTRUCTOR **************************/
 
@@ -298,10 +297,12 @@ public class TaxonRelationshipsDTO {
         }
     }
 
-    public DateTime getDate() {
+    @Deprecated
+    public ZonedDateTime getDate() {
         return date;
     }
-    public void setDate(DateTime date) {
+    @Deprecated
+    public void setDate(ZonedDateTime date) {
         this.date = date;
     }
 

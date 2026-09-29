@@ -8,11 +8,12 @@
 */
 package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
+import java.time.ZonedDateTime;
+import java.util.GregorianCalendar;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.joda.time.DateTime;
 
 import com.github.dozermapper.core.CustomConverter;
 import com.github.dozermapper.core.MappingException;
@@ -23,7 +24,7 @@ import com.github.dozermapper.core.MappingException;
  * @author ben.clark
  * @date 2009
  */
-public class DateTimeConverter implements CustomConverter {
+public class ZonedDateTimeConverter implements CustomConverter {
 
 	@Override
     public Object convert(Object destination, Object source, Class<?> destClass, Class<?> sourceClass) {
@@ -31,11 +32,13 @@ public class DateTimeConverter implements CustomConverter {
 			return null;
 		}
 		Object result = null;
-		if (source instanceof DateTime) {
-			if(destClass.equals(DateTime.class)){
-				result =  new DateTime((source));
+		if (source instanceof ZonedDateTime) {
+		    ZonedDateTime zdtSource = (ZonedDateTime)source;
+		    if(destClass.equals(ZonedDateTime.class)){
+				result = zdtSource;
 			} else if(destClass.equals(XMLGregorianCalendar.class)){
-				result = dataTypeFactory().newXMLGregorianCalendar(((DateTime)source).toGregorianCalendar()); //naive approach, may mot result in correct representation of partial datetime
+				result = dataTypeFactory().newXMLGregorianCalendar(
+				        GregorianCalendar.from(zdtSource)); //naive approach, may mot result in correct representation of partial datetime
 			}
 		}
 

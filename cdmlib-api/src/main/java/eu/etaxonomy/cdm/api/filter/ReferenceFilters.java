@@ -8,12 +8,12 @@
 */
 package eu.etaxonomy.cdm.api.filter;
 
+import java.time.ZonedDateTime;
 import java.util.EnumSet;
 
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
@@ -33,7 +33,7 @@ public class ReferenceFilters {
         return (root, cb) -> types == null ? null :  cb.not(root.get("type").in(types));
     }
 
-    public static EntityFilter<Reference> isBeforeDatePublished(DateTime date) {
+    public static EntityFilter<Reference> isBeforeDatePublished(ZonedDateTime date) {
 
         return (root, cb) -> {
             if (date == null) {
@@ -48,7 +48,7 @@ public class ReferenceFilters {
             // 1. Convert date time parameter to partial to make it comparable.
             Partial dateAsPartial = new Partial()
                 .with(DateTimeFieldType.year(), date.getYear())
-                .with(DateTimeFieldType.monthOfYear(), date.getMonthOfYear())
+                .with(DateTimeFieldType.monthOfYear(), date.getMonthValue())
                 .with(DateTimeFieldType.dayOfMonth(), date.getDayOfMonth());
 
             //2. Define predicates for valid years

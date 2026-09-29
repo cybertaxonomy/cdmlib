@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,8 +18,8 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -173,10 +174,10 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 	/**
 	 * Returns a time string with date and time (without millis) that
 	 * can be used as a time string for database insert and update
-	 * @return
 	 */
 	protected String getNowString() {
-		return DateTime.now().toString("YYYY-MM-dd HH:mm:ss");
+	    return LocalDateTime.now()
+	            .format(DateTimeUtil.DATE_TIME_FORMATTER);
 	}
 
     protected String nullSafeParam(String param) {

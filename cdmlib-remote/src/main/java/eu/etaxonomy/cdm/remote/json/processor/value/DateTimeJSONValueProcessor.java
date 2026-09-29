@@ -8,9 +8,8 @@
 */
 package eu.etaxonomy.cdm.remote.json.processor.value;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
@@ -21,25 +20,25 @@ import net.sf.json.processors.JsonValueProcessor;
  */
 public class DateTimeJSONValueProcessor implements JsonValueProcessor {
 
-	private static DateTimeFormatter iso8601Format = ISODateTimeFormat.dateTime();
+	private static final DateTimeFormatter ISO8601_FORMAT = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
 	@Override
     public Object processArrayValue(Object object, JsonConfig jsonConfig) {
-		DateTime dateTime = (DateTime) object;
+		ZonedDateTime dateTime = (ZonedDateTime) object;
         return formatDateTime(dateTime);
 	}
 
 	@Override
     public Object processObjectValue(String key, Object object,
 			JsonConfig jsonConfig) {
-	    return formatDateTime((DateTime)object);
+	    return formatDateTime((ZonedDateTime)object);
 	}
 
-    Object formatDateTime(DateTime object) {
+    Object formatDateTime(ZonedDateTime object) {
         if(object != null){
-	        DateTime dateTime = object;
+	        ZonedDateTime dateTime = object;
 	        // WARNING! null means now!
-	        return DateTimeJSONValueProcessor.iso8601Format.print(dateTime);
+	        return ISO8601_FORMAT.format(dateTime);
 	    } else {
 	        return null;
 	    }

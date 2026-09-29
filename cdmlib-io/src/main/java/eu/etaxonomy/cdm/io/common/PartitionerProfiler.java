@@ -8,12 +8,11 @@
 */
 package eu.etaxonomy.cdm.io.common;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.ReadableDuration;
-
 
 /**
  * @author a.mueller
@@ -23,94 +22,92 @@ public class PartitionerProfiler {
 
     private static final Logger logger = LogManager.getLogger();
 
-	ResultSetPartitioner partitioner;
+	ResultSetPartitioner<?> partitioner;
 
-	DateTime startTx = new DateTime();
-	DateTime startRs = new DateTime();
-	DateTime startRelObjects = new DateTime();
-	DateTime startRS2 = new DateTime();
-	DateTime startDoPartition = new DateTime();
-	DateTime startDoSave = new DateTime();
-	DateTime startDoCommit = new DateTime();
-	DateTime end = new DateTime();
+	LocalDateTime startTx = LocalDateTime.now();
+	LocalDateTime startRs = LocalDateTime.now();
+	LocalDateTime startRelObjects = LocalDateTime.now();
+	LocalDateTime startRS2 = LocalDateTime.now();
+	LocalDateTime startDoPartition = LocalDateTime.now();
+	LocalDateTime startDoSave = LocalDateTime.now();
+	LocalDateTime startDoCommit = LocalDateTime.now();
+	LocalDateTime end = LocalDateTime.now();
 
-	private Duration durTxStartAll = new Duration(0, 0);
-	private Duration durPartitionRs1All= new Duration(0, 0);
-	private Duration durRelObjectsAll = new Duration(0, 0);
-	private Duration durPartitionRs2All =new Duration(0, 0);
-	private Duration durPartitionAll = new Duration(0, 0);
-	private Duration durTxCommitAll = new Duration(0, 0);
-	private Duration durSaveAll = new Duration(0, 0);
+	private Duration durTxStartAll = Duration.ZERO;
+	private Duration durPartitionRs1All= Duration.ZERO;
+	private Duration durRelObjectsAll = Duration.ZERO;
+	private Duration durPartitionRs2All = Duration.ZERO;
+	private Duration durPartitionAll = Duration.ZERO;
+	private Duration durTxCommitAll = Duration.ZERO;
+	private Duration durSaveAll = Duration.ZERO;
 
-
-	private ReadableDuration durTxStartSingle;
-	private ReadableDuration durPartitionRs1Single;
-	private ReadableDuration durRelObjectsSingle;
-	private ReadableDuration durPartitionRs2Single;
-	private ReadableDuration durPartitionSingle;
-	private ReadableDuration durSaveSingle;
-	private ReadableDuration durTxCommitSingle;
+	private Duration durTxStartSingle;
+	private Duration durPartitionRs1Single;
+	private Duration durRelObjectsSingle;
+	private Duration durPartitionRs2Single;
+	private Duration durPartitionSingle;
+	private Duration durSaveSingle;
+	private Duration durTxCommitSingle;
 
 	public void startTx(){
-		startTx = new DateTime();
-
+		startTx = LocalDateTime.now();
 	}
 
 	public void startRs(){
-		startRs = new DateTime();
-		durTxStartSingle = new Duration(startTx, startRs);
-		durTxStartAll = durTxStartAll.withDurationAdded(durTxStartSingle, 1);
+		startRs = LocalDateTime.now();
+		durTxStartSingle = Duration.between(startTx, startRs);
+		durTxStartAll = durTxStartAll.plus(durTxStartSingle);
 	}
 
 	public void startRelObjects(){
-		startRelObjects = new DateTime();
-		durPartitionRs1Single = new Duration(startRs, startRelObjects);
-		durPartitionRs1All= durPartitionRs1All.withDurationAdded(durPartitionRs1Single, 1);
+		startRelObjects = LocalDateTime.now();
+		durPartitionRs1Single = Duration.between(startRs, startRelObjects);
+		durPartitionRs1All= durPartitionRs1All.plus(durPartitionRs1Single);
 	}
 
 	public void startRs2(){
-		startRS2 = new DateTime();
-		durRelObjectsSingle = new Duration(startRelObjects, startRS2);
-		durRelObjectsAll = durRelObjectsAll.withDurationAdded(durRelObjectsSingle, 1);
+		startRS2 = LocalDateTime.now();
+		durRelObjectsSingle = Duration.between(startRelObjects, startRS2);
+		durRelObjectsAll = durRelObjectsAll.plus(durRelObjectsSingle);
 	}
 
 	public void startDoPartition(){
-		startDoPartition = new DateTime();
-		startDoSave = new DateTime();
-		durPartitionRs2Single = new Duration(startRS2, startDoPartition);
-		durPartitionRs2All = durPartitionRs2All.withDurationAdded(durPartitionRs2Single, 1);
+		startDoPartition = LocalDateTime.now();
+		startDoSave = LocalDateTime.now();
+		durPartitionRs2Single = Duration.between(startRS2, startDoPartition);
+		durPartitionRs2All = durPartitionRs2All.plus(durPartitionRs2Single);
 	}
 
 	public void startDoSave(){
-		startDoSave = new DateTime();
-		//durSaveSingle = new Duration(startRS2, startSave);
+		startDoSave = LocalDateTime.now();
+		//durSaveSingle = Duration.between(startRS2, startSave);
 		//durPartitionRs2All = durPartitionRs2All.withDurationAdded(durPartitionRs2Single, 1);
 	}
 
 	public void startDoCommit(){
-		startDoCommit = new DateTime();
-		durPartitionSingle = new Duration(startDoPartition, startDoCommit);
-		durPartitionAll = durPartitionAll.withDurationAdded(durPartitionSingle, 1);
-		durSaveSingle = new Duration(startDoSave, startDoCommit);
-		durSaveAll = durSaveAll.withDurationAdded(durSaveSingle, 1);
+		startDoCommit = LocalDateTime.now();
+		durPartitionSingle = Duration.between(startDoPartition, startDoCommit);
+		durPartitionAll = durPartitionAll.plus(durPartitionSingle);
+		durSaveSingle = Duration.between(startDoSave, startDoCommit);
+		durSaveAll = durSaveAll.plus(durSaveSingle);
 	}
 
 	public void end(){
-		end = new DateTime();
-		durTxCommitSingle = new Duration(startDoCommit, end);
-		durTxCommitAll = durTxCommitAll.withDurationAdded(durTxCommitSingle, 1);
+		end = LocalDateTime.now();
+		durTxCommitSingle = Duration.between(startDoCommit, end);
+		durTxCommitAll = durTxCommitAll.plus(durTxCommitSingle);
 	}
 
 	public void print(){
 		if (logger.isDebugEnabled()){
 			System.out.println("Durations: " +
-					"Start Transaction: " + durTxStartSingle.getMillis() + "/" + durTxStartAll.getMillis() +
-					"; partitionRS1: " + durPartitionRs1Single.getMillis() + "/" + durPartitionRs1All.getMillis() +
-					"; getRelatedObjects: " + durRelObjectsSingle.getMillis() + "/" + durRelObjectsAll.getMillis() +
-					"; partitionRS2 " + durPartitionRs2Single.getMillis() + "/" + durPartitionRs2All.getMillis() +
-					"; doPartition " + durPartitionSingle.getMillis() + "/" + durPartitionAll.getMillis() +
-					"; doSave " + durSaveSingle.getMillis() + "/" + durSaveAll.getMillis() +
-					"; commit " + durTxCommitSingle.getMillis() + "/" + durTxCommitAll.getMillis()
+					"Start Transaction: " + durTxStartSingle.getNano() + "/" + durTxStartAll.getNano() +
+					"; partitionRS1: " + durPartitionRs1Single.getNano() + "/" + durPartitionRs1All.getNano() +
+					"; getRelatedObjects: " + durRelObjectsSingle.getNano() + "/" + durRelObjectsAll.getNano() +
+					"; partitionRS2 " + durPartitionRs2Single.getNano() + "/" + durPartitionRs2All.getNano() +
+					"; doPartition " + durPartitionSingle.getNano() + "/" + durPartitionAll.getNano() +
+					"; doSave " + durSaveSingle.getNano() + "/" + durSaveAll.getNano() +
+					"; commit " + durTxCommitSingle.getNano() + "/" + durTxCommitAll.getNano()
 			);
 		}
 	}

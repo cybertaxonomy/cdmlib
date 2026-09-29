@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.registration;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,7 +22,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
-import org.joda.time.DateTime;
 import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.util.UserHelper;
 import eu.etaxonomy.cdm.format.reference.ReferenceEllypsisFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -312,10 +313,10 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             return !reference.getDatePublished().getFreeText().isEmpty();
         }
 
-        DateTime nowLocal = new DateTime();
+        ZonedDateTime nowLocal = ZonedDateTime.now();
         //LocalDateTime nowUTC = nowLocal.withZone(DateTimeZone.UTC).toLocalDateTime();
 
-        DateTime pubDateTime = pubPartial.toDateTime(null);
+        ZonedDateTime pubDateTime = TimePeriod.zonedDateTimeFromPartial(pubPartial, null);
         return nowLocal.isAfter(pubDateTime);
     }
 

@@ -19,10 +19,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Partial;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -195,9 +194,8 @@ public class DwcaEmlExport extends DwcaExportBase {
 				writer.writeEndElement();
 			}
 
-			DateTimeFormatter dateFormatter = DateTimeFormat.forPattern("YYYY-MM-dd");
 			elementName = "pubDate";
-			text = emlRecord.getPublicationDate().toString(dateFormatter);
+			text = emlRecord.getPublicationDate().format(DateTimeUtil.DATE_FORMATTER);
 			writeTextElement(writer, elementName, text);
 
 			elementName = "language";

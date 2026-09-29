@@ -13,10 +13,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -126,10 +127,10 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 				        String strDate = (String)value;
 				        sqlTimestamp = java.sql.Timestamp.valueOf(strDate);
 				    }else{
-				        DateTime dateTime = (DateTime)value;
-				        java.util.Date date = dateTime.toDate();
-				        long t = date.getTime();
-				        sqlTimestamp = new java.sql.Timestamp(t);
+				        ZonedDateTime dateTime = (ZonedDateTime)value;
+				        Date date = Date.from(dateTime.toInstant());
+				        long time = date.getTime();
+				        sqlTimestamp = new java.sql.Timestamp(time);
 				    }
 					getPreparedStatement().setTimestamp(getIndex(), sqlTimestamp);
 				}else{
