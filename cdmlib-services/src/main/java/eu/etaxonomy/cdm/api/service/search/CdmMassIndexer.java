@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.spell.Dictionary;
@@ -34,11 +35,11 @@ import org.hibernate.ObjectNotFoundException;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
-import org.hibernate.search.FullTextSession;
 import org.hibernate.search.backend.lucene.LuceneExtension;
 import org.hibernate.search.backend.lucene.scope.LuceneIndexScope;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.mapping.SearchMapping;
+import org.hibernate.search.mapper.orm.work.SearchIndexingPlan;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
@@ -100,10 +101,10 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         // queries to the index is not recommended when a MassIndexer is busy.
         // fullTextSession.createIndexer().startAndWait();
 
-        FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(getSession());
-
-        fullTextSession.setHibernateFlushMode(FlushMode.MANUAL);
-        fullTextSession.setCacheMode(CacheMode.IGNORE);
+        Session session = getSession();
+        session.setHibernateFlushMode(FlushMode.MANUAL);
+        session.setCacheMode(CacheMode.IGNORE);
+        SearchIndexingPlan indexingPlan = Search.session(session).indexingPlan();
 
         logger.info("start indexing " + type.getName());
         monitor.subTask("indexing " + type.getSimpleName());
@@ -116,7 +117,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
 
         // Scrollable results will avoid loading too many objects in memory
-        ScrollableResults results = fullTextSession.createCriteria(type).setFetchSize(batchSize).scroll(ScrollMode.FORWARD_ONLY);
+        ScrollableResults results = session.createCriteria(type).setFetchSize(batchSize).scroll(ScrollMode.FORWARD_ONLY);
         long index = 0;
         int batchesWorked = 0;
 
@@ -124,17 +125,16 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         try {
             while (results.next()) {
                 index++;
-                fullTextSession.index(results.get(0)); // index each element
+                indexingPlan.addOrUpdate(results.get(0)); // index each element
                 if (index % batchSize == 0 || index == countResult) {
                     batchesWorked++;
                     try {
-                        fullTextSession.flushToIndexes(); // apply changes to indexes
+                        indexingPlan.execute(); // apply changes to indexes
                     } catch(ObjectNotFoundException e){
                         // TODO report this issue to progress monitor once it can report on errors
                         logger.error("possibly invalid data, thus skipping this batch and continuing with next one", e);
                     } finally {
-                        fullTextSession.clear(); // clear since the queue is processed
-                        getSession().clear(); // clear session to free memory
+                        session.clear(); // clear session to free memory
                         subMonitor.worked(1);
                         logger.info("\tbatch " + batchesWorked + "/" + numOfBatches + " processed");
                     }
@@ -180,8 +180,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
                 String indexedField = itr.next();
                 logger.info("creating dictionary for field " + indexedField);
                 Dictionary dictionary = new LuceneDictionary(indexReader, indexedField);
-                IndexWriterConfig iwc = new IndexWriterConfig(
-                        org.hibernate.search.Search.getFullTextSession(getSession()).getSearchFactory().getAnalyzer(type));
+                IndexWriterConfig iwc = new IndexWriterConfig(new StandardAnalyzer());
                 spellChecker.indexDictionary(dictionary, iwc, true);
             }
             subMonitor.internalWorked(1);
@@ -263,9 +262,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     protected <T extends CdmBase>void purge(Class<T> type, IProgressMonitor monitor) {
 
-        FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(getSession());
         logger.info("purging " + type.getName());
-        fullTextSession.purgeAll(type);
+        Search.session(getSession()).workspace(type).purge();
 
         // Spell-check index purge relied on HS5 DirectoryBasedIndexManager; disabled under HS6.
         boolean doSpellIndex = false;
@@ -383,11 +381,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     }
     protected void optimize() {
-
-        FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(getSession());
-        fullTextSession.getSearchFactory().optimize();
-        fullTextSession.flushToIndexes();
-        fullTextSession.clear();
+        Search.session(getSession()).workspace().mergeSegments();
+        getSession().clear();
     }
 
     @Override
@@ -405,10 +400,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             purge(type, monitor);
             monitor.worked(1);
         }
-        // need to flush to the index before optimizing
-        // the purge method is not doing the flushing by itself
-        FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(getSession());
-        fullTextSession.flushToIndexes();
 
         // optimize
         optimize();

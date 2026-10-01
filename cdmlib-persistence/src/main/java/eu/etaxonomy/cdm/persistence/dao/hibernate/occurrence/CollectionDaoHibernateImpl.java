@@ -21,8 +21,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
+import org.hibernate.search.mapper.orm.Search;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -106,14 +105,14 @@ public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> 
 
 	@Override
 	public void rebuildIndex() {
-		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+		var indexingPlan = Search.session(getSession()).indexingPlan();
 
 		for(Collection collection : list(null,null)) { // re-index all taxon base
 
 			Hibernate.initialize(collection.getSuperCollection());
 			Hibernate.initialize(collection.getInstitute());
-			fullTextSession.index(collection);
+			indexingPlan.addOrUpdate(collection);
 		}
-		fullTextSession.flushToIndexes();
+		indexingPlan.execute();
 	}
 }

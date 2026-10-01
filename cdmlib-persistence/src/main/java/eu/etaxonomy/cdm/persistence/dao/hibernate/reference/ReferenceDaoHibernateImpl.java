@@ -24,8 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
+import org.hibernate.search.mapper.orm.Search;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -58,7 +57,7 @@ public class ReferenceDaoHibernateImpl
 
 	@Override
 	public void rebuildIndex() {
-		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+		var indexingPlan = Search.session(getSession()).indexingPlan();
 
 		for(Reference reference : list(null,null)) { // re-index all agents
 			Hibernate.initialize(reference.getAuthorship());
@@ -76,9 +75,9 @@ public class ReferenceDaoHibernateImpl
 			} else if(reference.getType().isPrintedUnit()) {
 				Hibernate.initialize(reference.getInSeries());
 			}
-			fullTextSession.index(reference);
+			indexingPlan.addOrUpdate(reference);
 		}
-		fullTextSession.flushToIndexes();
+		indexingPlan.execute();
 	}
 
     @Override

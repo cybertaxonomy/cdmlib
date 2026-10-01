@@ -18,8 +18,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hibernate.Hibernate;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
+import org.hibernate.search.mapper.orm.Search;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -55,7 +54,7 @@ public class DescriptionElementDaoImpl
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
 
-            FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+            FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(getSession());
             FullTextQuery fullTextQuery = null;
 
             if(clazz == null) {
@@ -78,7 +77,7 @@ public class DescriptionElementDaoImpl
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
             FullTextQuery fullTextQuery = null;
-            FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+            FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(getSession());
             if(clazz == null) {
                 fullTextQuery = fullTextSession.createFullTextQuery(query, type);
             } else {
@@ -100,33 +99,30 @@ public class DescriptionElementDaoImpl
 
     @Override
     public void purgeIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+        var searchSession = Search.session(getSession());
         for(Class<? extends DescriptionElementBase> clazz : indexedClasses) {
-            fullTextSession.purgeAll(clazz); // remove all description element base from indexes
+            searchSession.workspace(clazz).purge();
         }
-        fullTextSession.flushToIndexes();
     }
 
     @Override
     public void rebuildIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+        var indexingPlan = Search.session(getSession()).indexingPlan();
 
         for(DescriptionElementBase descriptionElementBase : list(null,null)) { // re-index all descriptionElements
             Hibernate.initialize(descriptionElementBase.getInDescription());
             Hibernate.initialize(descriptionElementBase.getFeature());
-            fullTextSession.index(descriptionElementBase);
+            indexingPlan.addOrUpdate(descriptionElementBase);
         }
-        fullTextSession.flushToIndexes();
+        indexingPlan.execute();
     }
 
     @Override
     public void optimizeIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-        SearchFactory searchFactory = fullTextSession.getSearchFactory();
+        var searchSession = Search.session(getSession());
         for(Class<? extends DescriptionElementBase> clazz : indexedClasses) {
-            searchFactory.optimize(clazz); // optimize the indices ()
+            searchSession.workspace(clazz).mergeSegments();
         }
-        fullTextSession.flushToIndexes();
     }
 
     public int count(String queryString) {
@@ -136,7 +132,7 @@ public class DescriptionElementDaoImpl
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
 
-            FullTextSession fullTextSession = Search.getFullTextSession(this.getSession());
+            FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(this.getSession());
             org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, type);
 
             return fullTextQuery.getResultSize();

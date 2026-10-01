@@ -27,8 +27,7 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
 import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
+import org.hibernate.search.mapper.orm.Search;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.IdentifiableEntityFilters;
@@ -318,7 +317,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
 
-            FullTextSession fullTextSession = Search.getFullTextSession(this.getSession());
+            FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(this.getSession());
             org.hibernate.search.FullTextQuery fullTextQuery = null;
 
             if(clazz == null) {
@@ -337,31 +336,28 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
     @Override
     public void optimizeIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-        SearchFactory searchFactory = fullTextSession.getSearchFactory();
+        var searchSession = Search.session(getSession());
         for(Class<?> clazz : indexedClasses) {
-            searchFactory.optimize(clazz); // optimize the indices ()
+            searchSession.workspace(clazz).mergeSegments();
         }
-        fullTextSession.flushToIndexes();
     }
 
     @Override
     public void purgeIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+        var searchSession = Search.session(getSession());
         for(Class<?> clazz : indexedClasses) {
-            fullTextSession.purgeAll(clazz); // remove all objects of type t from indexes
+            searchSession.workspace(clazz).purge();
         }
-        fullTextSession.flushToIndexes();
     }
 
     @Override
     public void rebuildIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+        var indexingPlan = Search.session(getSession()).indexingPlan();
 
         for(T t : list(null,null)) { // re-index all objects
-            fullTextSession.index(t);
+            indexingPlan.addOrUpdate(t);
         }
-        fullTextSession.flushToIndexes();
+        indexingPlan.execute();
     }
 
     @Override
@@ -372,7 +368,7 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
 
-            FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+            FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(getSession());
             org.hibernate.search.FullTextQuery fullTextQuery = null;
 
             if(clazz == null) {

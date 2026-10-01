@@ -42,8 +42,7 @@ import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.envers.query.criteria.internal.NotNullAuditExpression;
 import org.hibernate.envers.query.internal.property.EntityPropertyName;
 import org.hibernate.query.Query;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
+import org.hibernate.search.mapper.orm.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -1064,13 +1063,13 @@ public class TaxonDaoHibernateImpl
 
     @Override
     public void rebuildIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+        var indexingPlan = Search.session(getSession()).indexingPlan();
 
         for(TaxonBase taxonBase : list(null,null)) { // re-index all taxon base
             Hibernate.initialize(taxonBase.getName());
-            fullTextSession.index(taxonBase);
+            indexingPlan.addOrUpdate(taxonBase);
         }
-        fullTextSession.flushToIndexes();
+        indexingPlan.execute();
     }
 
     @Override

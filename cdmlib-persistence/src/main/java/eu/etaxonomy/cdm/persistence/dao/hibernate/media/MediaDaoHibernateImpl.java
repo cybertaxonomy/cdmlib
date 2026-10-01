@@ -22,8 +22,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
+import org.hibernate.search.mapper.orm.Search;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -170,14 +169,14 @@ public class MediaDaoHibernateImpl
 
 	@Override
 	public void rebuildIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+		var indexingPlan = Search.session(getSession()).indexingPlan();
 
 		for(Media media : list(null,null)) { // re-index all media
 			Hibernate.initialize(media.getTitle());
 			Hibernate.initialize(media.getAllDescriptions());
 			Hibernate.initialize(media.getArtist());
-			fullTextSession.index(media);
+			indexingPlan.addOrUpdate(media);
 		}
-		fullTextSession.flushToIndexes();
+		indexingPlan.execute();
 	}
 }
