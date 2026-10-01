@@ -21,8 +21,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Store;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase;
@@ -49,16 +49,16 @@ public class Representation extends AnnotatableLanguageStringBase {
     private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Label")
-    @Field(store=Store.YES)
+    @FullTextField(projectable=Projectable.YES)
     private String label;
 
     @XmlElement(name = "AbbreviatedLabel")
-    @Field(store=Store.YES)
+    @FullTextField(projectable=Projectable.YES)
     private String abbreviatedLabel;
 
     //#8142
     @XmlElement(name = "Plural")
-    @Field(store=Store.YES)
+    @FullTextField(projectable=Projectable.YES)
     private String plural;
 
 //********************************************* FACTORY ************************/

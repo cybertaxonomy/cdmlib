@@ -155,7 +155,7 @@ public class Feature extends AvailableForTermBase<Feature> {
         //  inverseJoinColumns
     )
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-//    @IndexedEmbedded(depth = 2)
+//    @IndexedEmbedded(includeDepth = 2)
     private Set<Representation> inverseRepresentations = new HashSet<>();
 
 	//#10328 the maximum number of entries per dataset, null = unlimited

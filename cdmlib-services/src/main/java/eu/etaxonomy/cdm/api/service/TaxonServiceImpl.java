@@ -32,6 +32,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.SortedSetSortField;
 import org.apache.lucene.search.grouping.TopGroups;
 import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.util.BytesRef;
@@ -79,6 +80,7 @@ import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
+import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -151,12 +153,6 @@ public class TaxonServiceImpl
             implements ITaxonService {
 
     private static final Logger logger = LogManager.getLogger();
-//
-//    public static final String POTENTIAL_COMBINATION_NAMESPACE = "Potential combination";
-//
-//    public static final String INFERRED_EPITHET_NAMESPACE = "Inferred epithet";
-//
-//    public static final String INFERRED_GENUS_NAMESPACE = "Inferred genus";
 
     @Autowired
     private ITaxonNodeDao taxonNodeDao;
@@ -184,9 +180,6 @@ public class TaxonServiceImpl
 
     @Autowired
     private IOriginalSourceDao sourceDao;
-//
-//    @Autowired
-//    private IOrderedTermVocabularyDao orderedVocabularyDao;
 
     @Autowired
     private IOccurrenceDao occurrenceDao;
@@ -195,7 +188,7 @@ public class TaxonServiceImpl
     private IClassificationDao classificationDao;
 
     @Autowired
-    private AbstractBeanInitializer beanInitializer;
+    private AbstractBeanInitializer<?> beanInitializer;
 
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
@@ -1818,7 +1811,7 @@ public class TaxonServiceImpl
         QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
 
         if(sortFields == null){
-            sortFields = new SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING, false)};
+            sortFields = new SortField[]{SortField.FIELD_SCORE, new SortedSetSortField("titleCache__sort", false)};
         }
         luceneSearch.setSortFields(sortFields);
 
@@ -1923,7 +1916,7 @@ public class TaxonServiceImpl
         Query joinQuery = taxonBaseQueryFactory.newJoinQuery(TaxonRelationship.class, fromField, false, joinFromQueryBuilder.build(), toField, null, ScoreMode.Max);
 
         if(sortFields == null){
-            sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING,  false)};
+            sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortedSetSortField("titleCache__sort",  false)};
         }
         luceneSearch.setSortFields(sortFields);
 
@@ -1985,8 +1978,11 @@ public class TaxonServiceImpl
         if(orderHints == null){
             orderHints = OrderHint.NOMENCLATURAL_SORT_ORDER.asList();
         }
-        SortField[] sortFields = new SortField[orderHints.size()];
-        int i = 0;
+        // Score must be the primary sort for correct maxScore in LuceneSearch grouping,
+        // and SortedSetSortField-only sorts can drop docs that lack the sort DocValues.
+        SortField[] sortFields = new SortField[orderHints.size() + 1];
+        sortFields[0] = SortField.FIELD_SCORE;
+        int i = 1;
         for(OrderHint orderHint : orderHints){
             sortFields[i++] = orderHint.toSortField();
         }
@@ -2180,8 +2176,9 @@ public class TaxonServiceImpl
                  * The bug is persistent after a reboot of the development computer.
                  */
 //                String misappliedNameForUuid = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString();
-                String toField = "relation." + TaxonRelationshipType.uuidMisappliedNameFor +".to.id";
-//                String toField = "relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id";
+                String toField = TaxonRelationshipClassBridge.TO_ID_PREFIX
+                        + TaxonRelationshipType.uuidMisappliedNameFor;
+//                String toField = "relation.to.id.1ed87175-59dd-437e-959e-0d71583d8417";
 //                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + misappliedNameForUuid +".to.id") ? " > identical" : " > different");
 //                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString() +".to.id") ? " > identical" : " > different");
 
@@ -2190,12 +2187,14 @@ public class TaxonServiceImpl
                         fromField, true, byDistributionQuery, toField, null, ScoreMode.None);
                 multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery, Occur.SHOULD);
 
-                String toFieldProParte = "relation." + TaxonRelationshipType.uuidProParteMisappliedNameFor +".to.id";
+                String toFieldProParte = TaxonRelationshipClassBridge.TO_ID_PREFIX
+                        + TaxonRelationshipType.uuidProParteMisappliedNameFor;
                 Query taxonAreaJoinQueryProParte = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
                         fromField, true, byDistributionQuery, toFieldProParte, null, ScoreMode.None);
                 multiIndexByAreaFilterBuilder.add(taxonAreaJoinQueryProParte, Occur.SHOULD);
 
-                String toFieldPartial = "relation." + TaxonRelationshipType.uuidPartialMisappliedNameFor +".to.id";
+                String toFieldPartial = TaxonRelationshipClassBridge.TO_ID_PREFIX
+                        + TaxonRelationshipType.uuidPartialMisappliedNameFor;
                 Query taxonAreaJoinQueryPartial = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
                         fromField, true, byDistributionQuery, toFieldPartial, null, ScoreMode.None);
                 multiIndexByAreaFilterBuilder.add(taxonAreaJoinQueryPartial, Occur.SHOULD);
@@ -2217,14 +2216,16 @@ public class TaxonServiceImpl
                 String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
 
                 //proparte synonyms
-                String toField = "relation."+TaxonRelationshipType.uuidProParteSynonymFor+".to.id";
+                String toField = TaxonRelationshipClassBridge.TO_ID_PREFIX
+                        + TaxonRelationshipType.uuidProParteSynonymFor;
                 BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
                 Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
                         fromField, true, byDistributionQuery, toField, null, ScoreMode.None);
                 multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery, Occur.SHOULD);
 
                 //partial synonyms
-                toField = "relation."+TaxonRelationshipType.uuidPartialSynonymFor+".to.id";
+                toField = TaxonRelationshipClassBridge.TO_ID_PREFIX
+                        + TaxonRelationshipType.uuidPartialSynonymFor;
 //                BooleanQuery byDistributionQuery2 = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
                 Query taxonAreaJoinQuery2 = distributionFilterQueryFactory.newJoinQuery(Distribution.class,
                         fromField, true, byDistributionQuery, toField, null, ScoreMode.None);
@@ -2349,7 +2350,7 @@ public class TaxonServiceImpl
         // FIXME is this query factory using the wrong type?
         QueryFactory taxonQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(Taxon.class);
 
-        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING, false)};
+        SortField[] sortFields = new SortField[]{SortField.FIELD_SCORE, new SortedSetSortField("titleCache__sort", false)};
         luceneSearch.setSortFields(sortFields);
 
 
@@ -2445,7 +2446,7 @@ public class TaxonServiceImpl
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, DescriptionElementBase.class);
         QueryFactory descriptionElementQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(DescriptionElementBase.class);
 
-        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("inDescription.taxon.titleCache__sort", SortField.Type.STRING, false)};
+        SortField[] sortFields = new SortField[]{SortField.FIELD_SCORE, new SortedSetSortField("inDescription.taxon.titleCache__sort", false)};
 
         BooleanQuery finalQuery = createByDescriptionElementFullTextQuery(queryString, classification, subtree, features,
                 languages, descriptionElementQueryFactory);

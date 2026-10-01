@@ -24,9 +24,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
@@ -60,16 +59,14 @@ public class ExtendedTimePeriod extends TimePeriod {
     @XmlElement(name = "ExtremeStart")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
     @Type(type="partialUserType")
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = PartialBridge.class)
+    @KeywordField(valueBridge = @ValueBridgeRef(type = PartialBridge.class))
     @JsonIgnore // currently used for swagger model scanner
     private Partial extremeStart;
 
     @XmlElement(name = "ExtremeEnd")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
     @Type(type="partialUserType")
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = PartialBridge.class)
+    @KeywordField(valueBridge = @ValueBridgeRef(type = PartialBridge.class))
     @JsonIgnore // currently used for swagger model scanner
     private Partial extremeEnd;
 

@@ -26,10 +26,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.TypeBinding;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.hibernate.search.SynonymTaxonNodesBridge;
 import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -61,7 +63,8 @@ import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGro
 })
 @XmlRootElement(name = "Synonym")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonBase")
+@Indexed
+@TypeBinding(binder = @TypeBinderRef(type = SynonymTaxonNodesBridge.class))
 @Audited
 @Configurable
 @HomotypicSynonymsShouldBelongToGroup(groups = Level3.class)
@@ -78,7 +81,6 @@ public class Synonym
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @ContainedIn
 //  @NotEmpty(groups = Level2.class,message="{eu.etaxonomy.cdm.model.taxon.Synonym.noOrphanedSynonyms.message}")
 //    @NotNull(groups = Level2.class)
     private Taxon acceptedTaxon;

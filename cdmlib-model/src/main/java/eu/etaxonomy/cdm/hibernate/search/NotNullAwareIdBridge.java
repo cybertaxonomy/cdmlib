@@ -8,88 +8,120 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Field.Index;
-import org.apache.lucene.document.Field.Store;
-import org.apache.lucene.document.Field.TermVector;
-import org.apache.lucene.document.SortedDocValuesField;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.util.BytesRef;
-import org.hibernate.search.bridge.LuceneOptions;
-import org.hibernate.search.bridge.TwoWayFieldBridge;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.hibernate.search.engine.backend.document.DocumentElement;
+import org.hibernate.search.engine.backend.document.model.dsl.IndexSchemaElement;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.engine.backend.types.Searchable;
+import org.hibernate.search.engine.backend.types.Sortable;
+import org.hibernate.search.mapper.pojo.bridge.binding.PropertyBindingContext;
+import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.PropertyBinder;
 
 /**
- * This {@link TwoWayFieldBridge} allows to efficiently query for associated
- * entities which are not null. This field bridge works the following way:
- * <p>
- * It adds the id field to the document as if it would be done without the
- * intervention of this class, all field attributes are preserved, additionally
- * this field bridge also adds a field named <code>id.notNull</code> and stores
- * the term "true" for this field. So all associated entities which are not null
- * can now be queried by searching for <code>+id.notNull:true</code> which is
- * much more efficient than using range queries.
- * <p>
- * The <code>id.notNull</code> is stored with the following attributes :
- * {@link Store.NO},{@link Index.NOT_ANALYZED}, {@link TermVector.NO}.
+ * This {@link PropertyBinder} allows to efficiently query for associated entities
+ * which are not null. For the entity id it contributes three fields to the document:
+ * <ol>
+ * <li><code>{name}</code>: the id itself, as a not analyzed and stored string</li>
+ * <li><code>{name}__sort</code>: a doc value field with the same content, which is
+ * required by Lucene sorts and by the join queries used in the CDM searches</li>
+ * <li><code>{name}__notNull</code>: holds the term {@link #NOT_NULL_VALUE} whenever the
+ * id is set. All associated entities which are not null can therefore be queried by
+ * searching for <code>+{name}__notNull:1</code> which is much more efficient than using
+ * range queries. The double-underscore suffix (instead of the former
+ * <code>{name}.notNull</code>) is required because Hibernate Search 6 treats dots as
+ * object-field path separators and rejects a value field sibling under the same name as
+ * the id value field.</li>
+ * </ol>
+ * The class level binders of this package contribute the same set of fields for the ids
+ * they write, using {@link #declareIdFields(IndexSchemaElement, String, boolean)} and
+ * {@link #writeIdFields(DocumentElement, String, int)}.
  *
  * @author a.kohlbecker
  * @since Sep 21, 2012
  */
-public class NotNullAwareIdBridge implements TwoWayFieldBridge {
+public class NotNullAwareIdBridge implements PropertyBinder {
 
     public static final String NOT_NULL_VALUE = "1";
     public static final String NOT_NULL_FIELD_NAME = "notNull";
-    public static final String NULL_STRING = "";
+    public static final String SORT_FIELD_SUFFIX = "__sort";
+    public static final String NOT_NULL_FIELD_SUFFIX = "__" + NOT_NULL_FIELD_NAME;
 
-    public static String notNullField(String name) {
-        return name + "." + NOT_NULL_FIELD_NAME;
+    /**
+     * The name of the id field, relative to the type the id belongs to. Not to be
+     * confused with the document id, which Hibernate Search stores in an internal field.
+     */
+    public static final String ID_FIELD_NAME = "id";
+
+    public static String notNullField(String idFieldName) {
+        return idFieldName + NOT_NULL_FIELD_SUFFIX;
+    }
+
+    public static String sortField(String idFieldName) {
+        return idFieldName + SORT_FIELD_SUFFIX;
     }
 
     @Override
-    public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
+    public void bind(PropertyBindingContext context) {
 
-        /*
-         * DocumentBuilderIndexedEntity<T>.buildDocumentFields(Object, Document, PropertiesMetadata, Map<String,String>, Set<String>)
-         * is adding the idField a second time even if it has already been set by an idFieldBrige. This might be fixed in a
-         * more recent version of hibernate! TODO after hibernate update: check if we can remove this extra condition.
-         * We are avoiding this by checking the document:
-         */
-        if(name.endsWith("id") && document.getField(name) != null) { // id already set?
-            return;
-        }
+        context.dependencies().useRootOnly();
 
-        Field field = new StringField(
-                name,
-                value.toString(),
-                luceneOptions.getStore());
-        document.add(field);
+        declareIdFields(context.indexSchemaElement(), ID_FIELD_NAME, false);
 
-        Field sort_field = new SortedDocValuesField(
-                name + "__sort",
-                new BytesRef(value.toString()));
-        LuceneDocumentUtility.setOrReplaceDocValueField(sort_field, document);
-
-        Field notNullField = new StringField(
-                notNullField(name),
-                String.valueOf(NOT_NULL_VALUE),
-                Store.NO
-                );
-        document.add(notNullField);
+        context.bridge(Integer.class, (target, id, writeContext) -> {
+            if (id != null) {
+                writeIdFields(target, ID_FIELD_NAME, id);
+            }
+        });
     }
 
-    @Override
-    public Object get(String name, Document document) {
-        return document.get(name);
+    /**
+     * Declares the index fields described in {@link NotNullAwareIdBridge} for all id
+     * paths matching <code>idFieldGlob</code>.
+     * <p>
+     * The fields are declared as dynamic fields because their names contain dots, which
+     * Hibernate Search 6 only accepts for dynamic fields. Ids written under a path which
+     * is already declared statically - by an <code>@IndexedEmbedded</code> for example -
+     * end up in that static field instead.
+     *
+     * @param idFieldGlob
+     *            the path of the id field relative to <code>schema</code>, optionally
+     *            containing the <code>*</code> wildcard
+     * @param multiValued
+     *            whether more than one id may be written to the same path, as is the case
+     *            for ids read from a collection
+     */
+    public static void declareIdFields(IndexSchemaElement schema, String idFieldGlob, boolean multiValued) {
+        declareIdFields(schema, idFieldGlob, multiValued, new HashSet<>());
     }
 
-    @Override
-    public String objectToString(Object object) {
-        if(object == null){
-            return NULL_STRING;
-        } else {
-            return object.toString();
-        }
+    /**
+     * Same as {@link #declareIdFields(IndexSchemaElement, String, boolean)} but reuses
+     * <code>declaredObjectPaths</code> so overlapping dotted paths can share ancestor
+     * object-field templates.
+     */
+    public static void declareIdFields(IndexSchemaElement schema, String idFieldGlob,
+            boolean multiValued, Set<String> declaredObjectPaths) {
+
+        DynamicIndexFields.declareAncestorObjects(schema, idFieldGlob, declaredObjectPaths);
+        DynamicIndexFields.declareValueTemplate(schema, idFieldGlob,
+                f -> f.asString().projectable(Projectable.YES), multiValued);
+        DynamicIndexFields.declareValueTemplate(schema, sortField(idFieldGlob),
+                f -> f.asString().searchable(Searchable.NO).sortable(Sortable.YES), multiValued);
+        DynamicIndexFields.declareValueTemplate(schema, notNullField(idFieldGlob),
+                f -> f.asString(), multiValued);
     }
 
+    /**
+     * Writes the index fields described in {@link NotNullAwareIdBridge}. The fields must
+     * have been declared by {@link #declareIdFields(IndexSchemaElement, String, boolean)}.
+     */
+    public static void writeIdFields(DocumentElement target, String idFieldName, int id) {
+
+        String value = Integer.toString(id);
+        target.addValue(idFieldName, value);
+        target.addValue(sortField(idFieldName), value);
+        target.addValue(notNullField(idFieldName), NOT_NULL_VALUE);
+    }
 }

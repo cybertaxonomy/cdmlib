@@ -29,9 +29,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.LocalDate;
@@ -83,16 +82,14 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
     @XmlElement(name = "Start")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
     @Type(type="partialUserType")
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = PartialBridge.class)
+    @KeywordField(valueBridge = @ValueBridgeRef(type = PartialBridge.class))
     @JsonIgnore // currently used for swagger model scanner
     private Partial start;
 
     @XmlElement(name = "End")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
     @Type(type="partialUserType")
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = PartialBridge.class)
+    @KeywordField(valueBridge = @ValueBridgeRef(type = PartialBridge.class))
     @JsonIgnore // currently used for swagger model scanner
     private Partial end;
 

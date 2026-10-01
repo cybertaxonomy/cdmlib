@@ -31,8 +31,13 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.EventBase;
@@ -101,6 +106,7 @@ public class AmplificationResult extends AnnotatableEntity{
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private DnaSample dnaSample;
 
    /** @see #getAmplification() */
@@ -110,6 +116,7 @@ public class AmplificationResult extends AnnotatableEntity{
     @ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@IndexedEmbedded
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Amplification amplification;
 
     @XmlElementWrapper(name = "SingleReads")
@@ -133,14 +140,13 @@ public class AmplificationResult extends AnnotatableEntity{
 
     /** @see #getSuccessText() */
     @XmlElement(name = "successText")
-	@Field
+	@FullTextField
     @Column(length=255)
 	private String successText;
 //
 //    /** @see #getGelRunningTime() */
 //	@XmlElement(name = "gelRunningTime")
-//	@Field(analyze = Analyze.NO)
-//	@NumericField
+//	@GenericField
 //	private Double gelRunningTime;
 
     @XmlElement(name = "GelPhoto")

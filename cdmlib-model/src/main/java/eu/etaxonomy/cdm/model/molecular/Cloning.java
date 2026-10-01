@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
@@ -55,7 +55,7 @@ public class Cloning extends MaterialOrMethodEvent {
 
 	/** @see #getStrain() */
     @XmlElement(name = "strain")
-	@Field
+	@FullTextField
     @Column(length=100)
 	private String strain;
 

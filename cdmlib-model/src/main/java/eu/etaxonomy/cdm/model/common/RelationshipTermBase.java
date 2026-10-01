@@ -35,9 +35,10 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import com.opencsv.CSVWriter;
 
@@ -76,12 +77,12 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "Symmetrical")
-	@Field(analyze = Analyze.NO)
+	@GenericField
 	@Column(name="symmetrical") //to be compatible with PostGreSQL
 	private boolean symmetric;
 
 	@XmlElement(name = "Transitive")
-	@Field(analyze = Analyze.NO)
+	@GenericField
 	private boolean transitive;
 
 	@XmlElementWrapper(name = "InverseRepresentations")
@@ -92,7 +93,8 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 //	    inverseJoinColumns
     )
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-	@IndexedEmbedded(depth = 2)
+	@IndexedEmbedded(includeDepth = 2)
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private Set<Representation> inverseRepresentations = new HashSet<>();
 
     @XmlElement(name = "inverseSymbol")

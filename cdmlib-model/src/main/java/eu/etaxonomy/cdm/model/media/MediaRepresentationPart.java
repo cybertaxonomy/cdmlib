@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.media;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -23,17 +24,14 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.FieldBridge;
 
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
@@ -61,8 +59,7 @@ public class MediaRepresentationPart extends VersionableEntity {
 
 	// where the media file is stored
 	@XmlElement(name = "URI")
-    @FieldBridge(impl = UriBridge.class)
-	@Type(type="uriUserType")
+    @Type(type="uriUserType")
 	private URI uri;
 
 	// in bytes

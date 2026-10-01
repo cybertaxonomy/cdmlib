@@ -27,9 +27,10 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -68,23 +69,24 @@ public class TaxonRelationship
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
-    @ContainedIn  //see #5477 at least MAN and proparte synonym relations need to update the TaxonBase index of the related taxon to fully work
+    //see #5477 at least MAN and proparte synonym relations need to update the TaxonBase index of the
+    //related taxon to fully work; reindex when the related taxon's indexed properties (e.g. publish) change
+    @IndexedEmbedded(includeDepth=1)
     private Taxon relatedFrom;
 
     @XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
-    @ContainedIn
+    @IndexedEmbedded(includeDepth=1)
     private Taxon relatedTo;
 
     @XmlElement(name = "Type")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private TaxonRelationshipType type;
 
     @XmlElement(name = "Type")

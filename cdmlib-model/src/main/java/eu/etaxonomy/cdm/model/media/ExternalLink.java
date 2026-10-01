@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.media;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,7 +25,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -32,10 +32,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.FieldBridge;
 
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -79,7 +77,6 @@ public class ExternalLink extends VersionableEntity{
 
     // the URI to link to
     @XmlElement(name = "URI")
-    @FieldBridge(impl = UriBridge.class)
     @Type(type="uriUserType")
     private URI uri;
 

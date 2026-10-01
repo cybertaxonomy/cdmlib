@@ -16,6 +16,7 @@ import java.math.RoundingMode;
 import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -29,16 +30,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Latitude;
-import org.hibernate.search.annotations.Longitude;
-import org.hibernate.search.annotations.NumericField;
-import org.hibernate.search.annotations.Spatial;
-import org.hibernate.search.annotations.SpatialMode;
+import org.hibernate.search.mapper.pojo.bridge.builtin.annotation.GeoPointBinding;
+import org.hibernate.search.mapper.pojo.bridge.builtin.annotation.Latitude;
+import org.hibernate.search.mapper.pojo.bridge.builtin.annotation.Longitude;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter;
@@ -58,7 +56,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 })
 @XmlRootElement(name = "Point")
 @Embeddable
-@Spatial(spatialMode = SpatialMode.RANGE, name = "point")
+@GeoPointBinding(fieldName = "point", markerSet = "point")
 public class Point implements Cloneable, Serializable {
 
     private static final long serialVersionUID = 531030660792800636L;
@@ -66,12 +64,12 @@ public class Point implements Cloneable, Serializable {
 
     //TODO was Float but H2 threw errors, maybe we should also use BigDecimal for exactness, see #8978
     @XmlElement(name = "Longitude")
-    @Longitude(of="point")
+    @Longitude(markerSet="point")
     @NotNull(groups = Level2.class)
     private Double longitude;
 
     @XmlElement(name = "Latitude")
-    @Latitude(of="point")
+    @Latitude(markerSet="point")
     @NotNull(groups = Level2.class)
     private Double latitude;
 
@@ -79,8 +77,7 @@ public class Point implements Cloneable, Serializable {
      * Error radius in meters
      */
     @XmlElement(name = "ErrorRadius")
-    @Field
-    @NumericField
+    @GenericField
     private Integer errorRadius;
 
     @XmlElement(name = "ReferenceSystem")

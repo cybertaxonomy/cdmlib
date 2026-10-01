@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -52,7 +52,7 @@ public class Identifier
 
 	@XmlElement(name ="Identifier" )
 	@Column(length=800, name="identifier")
-	@Field
+	@FullTextField
     @NullOrNotEmpty
 	private String identifier;
 

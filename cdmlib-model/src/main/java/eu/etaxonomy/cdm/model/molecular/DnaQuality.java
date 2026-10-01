@@ -29,11 +29,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 
-import eu.etaxonomy.cdm.hibernate.search.ZonedDateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -111,8 +108,7 @@ public class DnaQuality extends VersionableEntity {
     @XmlElement (name = "QualityCheckDate", type= String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
     @Basic(fetch = FetchType.LAZY)
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = ZonedDateTimeBridge.class)
+    @GenericField
     @Audited
     private ZonedDateTime qualityCheckDate;
 

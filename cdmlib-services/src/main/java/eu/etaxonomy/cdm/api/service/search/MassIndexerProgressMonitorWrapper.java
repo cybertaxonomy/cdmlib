@@ -8,18 +8,22 @@
 */
 package eu.etaxonomy.cdm.api.service.search;
 
-import org.hibernate.search.batchindexing.MassIndexerProgressMonitor;
-import org.hibernate.search.batchindexing.impl.SimpleIndexingProgressMonitor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.search.mapper.pojo.massindexing.MassIndexingMonitor;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 
 /**
+ * Adapts Hibernate Search 6 {@link MassIndexingMonitor} to the CDM {@link IProgressMonitor}.
+ *
  * @author a.kohlbecker
  * @since Dec 7, 2015
  */
-public class MassIndexerProgressMonitorWrapper implements MassIndexerProgressMonitor {
+public class MassIndexerProgressMonitorWrapper implements MassIndexingMonitor {
 
-    MassIndexerProgressMonitor massIndexerMonitor ;
+    private static final Logger logger = LogManager.getLogger();
+
     private final IProgressMonitor monitor;
     private final int batchSize;
     private long tickCount = 0;
@@ -31,46 +35,37 @@ public class MassIndexerProgressMonitorWrapper implements MassIndexerProgressMon
     public MassIndexerProgressMonitorWrapper(IProgressMonitor monitor, int batchSize) {
         this.monitor = monitor;
         this.batchSize = batchSize;
-        this.massIndexerMonitor = new SimpleIndexingProgressMonitor(batchSize);
     }
 
     @Override
     public void documentsAdded(long increment) {
-        // all current implementations always pass 1l as parameter
-        massIndexerMonitor.documentsAdded(increment);
-        updatePerBatchMonitor((int)increment);
-
+        updatePerBatchMonitor((int) increment);
     }
 
     private void updatePerBatchMonitor(int increment) {
         tickCount += increment;
-        if(tickCount % (batchSize * 2) == 0) {
-            // one batch worked
+        if(tickCount % (batchSize * 2L) == 0) {
             monitor.worked(1);
         }
     }
 
     @Override
-    public void documentsBuilt(int number) {
-        // unused as of implementing this
-        massIndexerMonitor.documentsBuilt(number);
-        updatePerBatchMonitor(number);
+    public void documentsBuilt(long number) {
+        updatePerBatchMonitor((int) number);
     }
 
     @Override
-    public void entitiesLoaded(int size) {
-        massIndexerMonitor.entitiesLoaded(size);
-
+    public void entitiesLoaded(long size) {
+        // no-op; progress is driven by documentsAdded/documentsBuilt
     }
 
     @Override
     public void addToTotalCount(long count) {
-        massIndexerMonitor.addToTotalCount(count);
+        logger.debug("Mass indexing total count: {}", count);
     }
 
     @Override
     public void indexingCompleted() {
-        massIndexerMonitor.indexingCompleted();
         monitor.done();
     }
 }

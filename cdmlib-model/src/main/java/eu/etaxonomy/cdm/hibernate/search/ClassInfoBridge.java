@@ -8,13 +8,19 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.hibernate.search.bridge.FieldBridge;
-import org.hibernate.search.bridge.LuceneOptions;
+import org.hibernate.search.engine.backend.document.DocumentElement;
+import org.hibernate.search.engine.backend.document.IndexFieldReference;
+import org.hibernate.search.engine.backend.document.IndexObjectFieldReference;
+import org.hibernate.search.engine.backend.document.model.dsl.IndexSchemaObjectField;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.bridge.binding.TypeBindingContext;
+import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.TypeBinder;
+
 /**
- * Lucene index class bridge which sets class information for the objects into the index.
+ * Lucene index type binder which sets class information for the objects into the index.
+ * The fields are written below the object field given by the <code>fieldName</code>
+ * parameter, so with <code>fieldName=classInfo</code> the documents get the fields
+ * <code>classInfo.name</code> and <code>classInfo.canonicalName</code>.
  *
  * TODO: is this class really needed?
  *  1. the canonical name should for all cdm types be the same as the name
@@ -23,20 +29,30 @@ import org.hibernate.search.bridge.LuceneOptions;
  * @author c.mathew
  * @since 26 Jul 2013
  */
-public class ClassInfoBridge implements FieldBridge {
+public class ClassInfoBridge implements TypeBinder {
+
+    public static final String FIELD_NAME_PARAM = "fieldName";
+
+    private static final String NAME_FIELD = "name";
+    private static final String CANONICAL_NAME_FIELD = "canonicalName";
 
     @Override
-    public void set(String name, Object value, Document document,
-            LuceneOptions luceneOptions) {
-        Field nameField = new StringField(name + ".name",
-                value.getClass().getName(),
-                luceneOptions.getStore());
-        document.add(nameField);
+    public void bind(TypeBindingContext context) {
 
-        Field canonicalNameField = new StringField(name + ".canonicalName",
-                value.getClass().getCanonicalName(),
-                luceneOptions.getStore());
-        document.add(canonicalNameField);
+        context.dependencies().useRootOnly();
 
+        IndexSchemaObjectField classInfoField = context.indexSchemaElement()
+                .objectField((String)context.param(FIELD_NAME_PARAM));
+        IndexFieldReference<String> nameRef = classInfoField
+                .field(NAME_FIELD, f -> f.asString().projectable(Projectable.YES)).toReference();
+        IndexFieldReference<String> canonicalNameRef = classInfoField
+                .field(CANONICAL_NAME_FIELD, f -> f.asString().projectable(Projectable.YES)).toReference();
+        IndexObjectFieldReference classInfoRef = classInfoField.toReference();
+
+        context.bridge(Object.class, (target, entity, writeContext) -> {
+            DocumentElement classInfo = target.addObject(classInfoRef);
+            classInfo.addValue(nameRef, entity.getClass().getName());
+            classInfo.addValue(canonicalNameRef, entity.getClass().getCanonicalName());
+        });
     }
 }

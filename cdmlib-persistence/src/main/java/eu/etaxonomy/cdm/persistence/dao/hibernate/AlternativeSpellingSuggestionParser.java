@@ -12,34 +12,24 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.spell.Dictionary;
-import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.util.BytesRef;
-import org.apache.lucene.util.BytesRefIterator;
 import org.hibernate.SessionFactory;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
-import org.hibernate.search.indexes.IndexReaderAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 
@@ -47,11 +37,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.IAlternativeSpellingSuggestionParser;
 
 /**
- * @author unknown
- *
  * @param <T>
- * @deprecated Use current methods for alternative spelling suggestions. This class is
- * no longer supported after migration to hibernate 4.x.
+ * @deprecated Spelling support is disabled (see spelling.xml). Kept only so existing
+ * subclasses still compile after the Hibernate Search 6 / Lucene 8 migration.
  */
 @Deprecated
 public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
@@ -105,55 +93,36 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 		}
 		@Override
         protected Query getFieldQuery(String field, String queryText, boolean quoted) throws ParseException {
-			// Copied from org.apache.lucene.queryParser.QueryParser
-			// replacing construction of TermQuery with call to getTermQuery()
-			// which finds close matches.
-			TokenStream source;
-            source = getAnalyzer().tokenStream(field, new StringReader(queryText));
-			Vector<Object> v = new Vector<Object>();
-			Token t;
-
-			while (true) {
-				try {
-					//OLD
-//					t = source.next();
-
-					//FIXME this is new after Hibernate 4 migration
-					//but completely unchecked and unsure if correct
-					//#3344
-					boolean it = source.incrementToken();
-					t = source.getAttribute(Token.class);
-				} catch (IOException e) {
-					t = null;
-				}
-				if (t == null){
-					break;
-				}
-
-//		OLD		v.addElement(t.termText());
-				//FIXME unchecked #3344
-				//FIXME #4716  not sure if this implementation equals the old t.term()
-                String term = new String(t.buffer(), 0, t.length());
-
-				v.addElement(term);
-			}
+			TokenStream source = getAnalyzer().tokenStream(field, new StringReader(queryText));
+			List<String> terms = new ArrayList<>();
 			try {
-				source.close();
+				CharTermAttribute termAttr = source.addAttribute(CharTermAttribute.class);
+				source.reset();
+				while (source.incrementToken()) {
+					terms.add(termAttr.toString());
+				}
+				source.end();
 			} catch (IOException e) {
-				// ignore
+				terms.clear();
+			} finally {
+				try {
+					source.close();
+				} catch (IOException e) {
+					// ignore
+				}
 			}
 
-			if (v.size() == 0) {
+			if (terms.isEmpty()) {
                 return null;
-            } else if (v.size() == 1) {
-                return new TermQuery(getTerm(field, (String) v.elementAt(0)));
+            } else if (terms.size() == 1) {
+                return new TermQuery(getTerm(field, terms.get(0)));
             } else {
-				PhraseQuery q = new PhraseQuery();
-				q.setSlop(getPhraseSlop());
-				for (int i = 0; i < v.size(); i++) {
-					q.add(getTerm(field, (String) v.elementAt(i)));
+				PhraseQuery.Builder builder = new PhraseQuery.Builder();
+				builder.setSlop(getPhraseSlop());
+				for (String term : terms) {
+					builder.add(getTerm(field, term));
 				}
-				return q;
+				return builder.build();
 			}
 		}
 
@@ -185,54 +154,9 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 
 	@Override
     public void refresh() {
-		FullTextSession fullTextSession = Search.getFullTextSession(currentSession());
-		SearchFactory searchFactory = fullTextSession.getSearchFactory();
-		try {
-			SpellChecker spellChecker = new SpellChecker(directory);
-
-			for(Class<? extends T> indexedClass : indexedClasses) {
-				//OLD
-//				DirectoryProvider<?> directoryProvider = searchFactory.getDirectoryProviders(indexedClass)[0];
-//				ReaderProvider readerProvider = searchFactory.getReaderProvider();
-				IndexReaderAccessor ira = searchFactory.getIndexReaderAccessor();
-//				IndexReader indexReader = ira.open(indexedClass);
-				IndexReader indexReader = null;
-
-				try {
-
-					indexReader = ira.open(indexedClass);
-//					indexReader = readerProvider.openIndexReader(); //  .openReader(directoryProvider);
-					logger.debug("Creating new dictionary for words in " + defaultField + " docs " + indexReader.numDocs());
-
-					Dictionary dictionary = new LuceneDictionary(indexReader, defaultField);
-					if(logger.isDebugEnabled()) {
-						BytesRefIterator iterator = dictionary.getEntryIterator();
-						BytesRef bytesRef;
-						while((bytesRef = iterator.next())  != null) {
-							logger.debug("Indexing word " + bytesRef);
-						}
-					}
-
-
-//					OLD: spellChecker.indexDictionary(dictionary);
-					//FIXME preliminary for Hibernate 4 migration see # 3344
-					IndexWriterConfig config = new IndexWriterConfig( new StandardAnalyzer());
-					boolean fullMerge = true;
-					spellChecker.indexDictionary(dictionary, config, fullMerge);
-
-				} catch (CorruptIndexException cie) {
-					logger.error("Spellings index is corrupted", cie);
-				} finally {
-					if (indexReader != null) {
-//						readerProvider.closeIndexReader(indexReader);
-						ira.close(indexReader);
-					}
-				}
-			}
-			spellChecker.close();
-		}catch (IOException ioe) {
-			logger.error(ioe);
-		}
+		// Spelling dictionary refresh relied on Hibernate Search 5 IndexReaderAccessor
+		// APIs that no longer exist. Spelling support itself is disabled in the app context.
+		logger.warn("AlternativeSpellingSuggestionParser.refresh() is a no-op under Hibernate Search 6");
 	}
 
 }

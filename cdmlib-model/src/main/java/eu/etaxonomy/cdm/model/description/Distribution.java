@@ -25,8 +25,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -56,7 +58,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @XmlRootElement(name = "Distribution")
 @Entity
 @Audited
-@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
+@Indexed
 public class Distribution
         extends DescriptionElementBase
         implements IHasModifyingText {
@@ -70,7 +72,8 @@ public class Distribution
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(groups = Level2.class)
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private NamedArea area;
 
     @XmlElement(name = "PresenceAbsenceStatus")
@@ -78,7 +81,8 @@ public class Distribution
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(groups = Level2.class)
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private PresenceAbsenceTerm status;
 
 

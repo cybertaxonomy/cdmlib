@@ -35,7 +35,9 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -120,7 +122,8 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(mappedBy="typeDesignations", fetch= FetchType.LAZY)
     @NotNull
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Set<Registration> registrations = new HashSet<>();
 
 

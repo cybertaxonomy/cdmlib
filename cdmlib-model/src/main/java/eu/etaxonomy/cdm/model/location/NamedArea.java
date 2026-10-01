@@ -36,12 +36,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.ClassBridge;
-import org.hibernate.search.annotations.Parameter;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -75,11 +72,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 })
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-@ClassBridge(impl = DefinedTermBaseClassBridge.class, params = {
-        @Parameter(name = "includeParentTerms", value = "true")
-})
 public class NamedArea extends DefinedTermBase<NamedArea> {
 
     private static final long serialVersionUID = 6248434369557403036L;

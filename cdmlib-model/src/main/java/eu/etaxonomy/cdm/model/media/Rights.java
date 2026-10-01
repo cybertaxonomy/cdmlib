@@ -25,9 +25,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
@@ -62,8 +65,7 @@ public class Rights extends AnnotatableLanguageStringBase {
 
 	//external location of copyright text
 	@XmlElement(name = "URI")
-	@Field(analyze = Analyze.NO)
-    @FieldBridge(impl = UriBridge.class)
+	@KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
 	@Type(type="uriUserType")
 	private URI uri;
 

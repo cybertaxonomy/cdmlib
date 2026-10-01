@@ -30,10 +30,17 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -94,46 +101,46 @@ public class Person
 	private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name="NomenclaturalTitle")
-    @Field(index=Index.YES)
+    @FullTextField
     @NullOrNotEmpty
     @Column(length=255)
     private String nomenclaturalTitle;
 
     @XmlElement(name="CollectorTitle")
-    @Field(index=Index.YES)
+    @FullTextField
     @NullOrNotEmpty
     @Column(length=255)
     private String collectorTitle;
 
     @XmlElement(name = "Prefix")
-    @Field
+    @FullTextField
   //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
 	private String prefix;
 
     @XmlElement(name = "GivenName")
-    @Field
+    @FullTextField
   //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
 	private String givenName;
 
     @XmlElement(name = "Initials")
-    @Field
+    @FullTextField
     @NullOrNotEmpty
     @Column(length=80)
     private String initials;
 
     @XmlElement(name = "FamilyName")
-    @Field
+    @FullTextField
   //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
 	private String familyName;
 
     @XmlElement(name = "Suffix")
-    @Field
+    @FullTextField
   //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
@@ -141,21 +148,20 @@ public class Person
 
     @XmlElement(name = "Lifespan")
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @Match(value=MatchMode.EQUAL_OR_ONE_NULL)
   //TODO Val #3379    check carefully what the condition is that lifespan is really null in legacy data
 //    @NotNull
 	private TimePeriod lifespan = TimePeriod.NewInstance();
 
     @XmlElement(name = "Orcid")
-    @Field
-    @FieldBridge(impl = OrcidBridge.class)
+    @FullTextField(valueBridge = @ValueBridgeRef(type = OrcidBridge.class))
     @Type(type="orcidUserType")
     @Column(length=16)
     private ORCID orcid;
 
     @XmlElement(name = "WikiDataId")
-    @Field
-    @FieldBridge(impl = WikiDataItemIdBridge.class)
+    @FullTextField(valueBridge = @ValueBridgeRef(type = WikiDataItemIdBridge.class))
     @Type(type="wikiDataItemIdUserType")
     @Column(length=16)
     private WikiDataItemId wikiDataItemId;

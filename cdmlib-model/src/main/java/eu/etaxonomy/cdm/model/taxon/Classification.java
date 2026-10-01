@@ -40,8 +40,10 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -88,6 +90,7 @@ public class Classification
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @JoinColumn(name = "name_id", referencedColumnName = "id")
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private LanguageString name;
 
     @XmlElement(name = "rootNode")
@@ -114,8 +117,8 @@ public class Classification
 	@MapKeyJoinColumn(name="description_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
 	@JoinTable(name = "Classification_Description")
-//	@Field(name="text", store=Store.YES)
-//    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
+//    @PropertyBinding(binder = @PropertyBinderRef(type=MultilanguageTextFieldBridge.class,
+//            params = @Param(name="fieldName", value="text")))
     private Map<Language,LanguageString> description = new HashMap<>();
 
 	//TODO remove, due to #9211

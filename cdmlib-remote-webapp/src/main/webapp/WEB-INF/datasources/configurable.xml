@@ -26,11 +26,11 @@
               <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
               <prop key="hibernate.show_sql">false</prop>
               <prop key="hibernate.format_sql">false</prop>
-              <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
-              <prop key="hibernate.search.default.indexBase">${eu.etaxonomy.cdm.search.index.path}</prop><!-- set in applicationContext.xml -->
+              <prop key="hibernate.search.backend.directory.type">local-filesystem</prop>
+              <prop key="hibernate.search.backend.directory.root">${eu.etaxonomy.cdm.search.index.path}</prop><!-- set in applicationContext.xml -->
 
               <!-- disabling hibernate search for testing (speed up and lesser heap usage)
-              <prop key="hibernate.search.autoregister_listeners">false</prop>
+              <prop key="hibernate.search.enabled">false</prop>
               -->
 
             </props>

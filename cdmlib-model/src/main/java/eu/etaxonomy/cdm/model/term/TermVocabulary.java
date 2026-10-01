@@ -33,10 +33,11 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
@@ -71,8 +72,7 @@ public class TermVocabulary<T extends DefinedTermBase>
 	// Software can go and grap these terms incl. labels and description.
 	// UUID needed? Further vocs can be setup through our own ontology.
 	@XmlElement(name = "TermSourceURI")
-	@Field(analyze = Analyze.NO)
-    @FieldBridge(impl = UriBridge.class)
+	@KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
 	@Type(type="uriUserType")
 	private URI termSourceUri;
 
@@ -83,7 +83,8 @@ public class TermVocabulary<T extends DefinedTermBase>
     @OneToMany(mappedBy="vocabulary", fetch=FetchType.LAZY, targetEntity = DefinedTermBase.class)
 	@Type(type="DefinedTermBase")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	@IndexedEmbedded(depth = 2)
+	@IndexedEmbedded(includeDepth = 2)
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	protected Set<T> terms = newTermSet();
 
 // ********************************* FACTORY METHODS *****************************************/

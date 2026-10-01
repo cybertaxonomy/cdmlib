@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
@@ -28,17 +29,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.FieldBridge;
 
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
@@ -80,10 +78,9 @@ public class Contact implements Serializable, Cloneable {
 
 	@XmlElementWrapper(name = "URLs", nillable = true)
 	@XmlElement(name = "URL")
-    @XmlSchemaType(name = "anyURI")
-    @FieldBridge(impl = UriBridge.class)
+	@XmlSchemaType(name = "anyURI")
 	@ElementCollection(fetch = FetchType.LAZY)
-    @Column(name = "contact_urls_element" /*, length=330  */)  //length >255 does not work in InnoDB AUD tables for Key length of (REV, id, url) key
+	@Column(name = "contact_urls_element" /*, length=330  */)  //length >255 does not work in InnoDB AUD tables for Key length of (REV, id, url) key
 	private final List<String> urls = new ArrayList<>();
 
 	@XmlElementWrapper(name = "PhoneNumbers", nillable = true)

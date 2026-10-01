@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 
@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 @XmlRootElement(name = "TemporalData")
 @Entity
 @Audited
-@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
+@Indexed
 public class TemporalData
         extends DescriptionElementBase
         implements IHasModifyingText {

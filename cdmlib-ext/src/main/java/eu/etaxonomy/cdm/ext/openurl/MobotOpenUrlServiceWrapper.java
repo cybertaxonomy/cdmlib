@@ -67,13 +67,14 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
 
         List<NameValuePair> pairs = new ArrayList<>();
 
-        // find the appropriate schemadapter using the schemaShortName
+        // find the appropriate schema adapter using the schemaShortName
         if(query.schemaShortName == null){
             query.schemaShortName = "MOBOT.OpenUrl.Utilities.OpenUrlResponse";
         }
         SchemaAdapterBase<OpenUrlReference> schemaAdapter = schemaAdapterMap.get(query.schemaShortName);
         if (schemaAdapter == null) {
             logger.error("No SchemaAdapter found for " + query.schemaShortName);
+            return null;
         }
 
         addNameValuePairTo(pairs, "format", "xml");

@@ -19,6 +19,8 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.lucene.document.IntPoint;
+import org.apache.lucene.document.LatLonPoint;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -26,19 +28,14 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
-import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.join.JoinUtil;
 import org.apache.lucene.search.join.ScoreMode;
-import org.hibernate.search.engine.ProjectionConstants;
 
 import eu.etaxonomy.cdm.api.service.dto.RectangleDTO;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
@@ -146,8 +143,14 @@ public class QueryFactory {
         return newTermQuery(fieldName, queryString, true);
     }
 
+    /**
+     * Hibernate Search 6 indexes {@code @GenericField} booleans as Lucene
+     * {@link IntPoint} values {@code 1}/{@code 0} (not the strings
+     * {@code "true"}/{@code "false"}). Bridge-written publish fields must use
+     * the same encoding.
+     */
     public Query newBooleanQuery(String fieldName, boolean value){
-        return new TermQuery(new Term(fieldName, Boolean.valueOf(value).toString()));
+        return IntPoint.newExactQuery(fieldName, value ? 1 : 0);
     }
 
     /**
@@ -303,46 +306,22 @@ public class QueryFactory {
      */
     public static Query buildSpatialQueryByRange(RectangleDTO boundingBox, String fieldName) {
 
-        String latitudeFieldName = fieldName + "_HSSI_Latitude";
-        String longitudeFieldName = fieldName + "_HSSI_Longitude";
+        double minLat = boundingBox.getLowerLeftLatitude();
+        double maxLat = boundingBox.getUpperRightLatitude();
+        double minLon = boundingBox.getLowerLeftLongitude();
+        double maxLon = boundingBox.getUpperRightLongitude();
 
-        //for Lucene 6+
-//        Query latQuery= DoublePoint.newRangeQuery(latitudeFieldName, boundingBox.getLowerLeftLatitude(),
-//                boundingBox.getUpperRightLatitude());
-        Query latQuery= NumericRangeQuery.newDoubleRange(
-                latitudeFieldName, boundingBox.getLowerLeftLatitude(),
-                boundingBox.getUpperRightLatitude(), true, true
-        );
-
-        Builder longQueryBuilder = new Builder();
-        if ( boundingBox.getLowerLeftLongitude() <= boundingBox.getUpperRightLongitude() ) {
-            //for Lucene 6+
-//            longQueryBuilder.add(DoublePoint.newRangeQuery( longitudeFieldName, boundingBox.getLowerLeftLongitude(),
-//                    boundingBox.getUpperRightLongitude()), Occur.MUST);
-              longQueryBuilder.add(NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeftLongitude(),
-                      boundingBox.getUpperRightLongitude(), true, true), Occur.MUST);
-
+        // HS6 @GeoPointBinding indexes as Lucene LatLonPoint under fieldName
+        if (minLon <= maxLon) {
+            return LatLonPoint.newBoxQuery(fieldName, minLat, maxLat, minLon, maxLon);
         }
-        else {
-            //for Lucene 6+
-//            longQueryBuilder.add( DoublePoint.newRangeQuery( longitudeFieldName, boundingBox.getLowerLeftLongitude(),
-//                    180.0), BooleanClause.Occur.SHOULD );
-            longQueryBuilder.add( NumericRangeQuery.newDoubleRange( longitudeFieldName, boundingBox.getLowerLeftLongitude(),
-                    180.0, true, true), BooleanClause.Occur.SHOULD );
-//            longQueryBuilder.add( DoublePoint.newRangeQuery( longitudeFieldName, -180.0,
-//                    boundingBox.getUpperRightLongitude()), BooleanClause.Occur.SHOULD );
-            longQueryBuilder.add( NumericRangeQuery.newDoubleRange( longitudeFieldName, -180.0,
-                    boundingBox.getUpperRightLongitude(), true, true ), BooleanClause.Occur.SHOULD );
-        }
-
-        Builder boxQueryBuilder = new Builder();
-        boxQueryBuilder.add( latQuery, BooleanClause.Occur.MUST );
-        boxQueryBuilder.add( longQueryBuilder.build(), BooleanClause.Occur.MUST );
-
-        return new FilteredQuery(
-                new MatchAllDocsQuery(),
-                new QueryWrapperFilter( boxQueryBuilder.build() )
-        );
+        // crossing the date line: union of two boxes
+        Query east = LatLonPoint.newBoxQuery(fieldName, minLat, maxLat, minLon, 180.0);
+        Query west = LatLonPoint.newBoxQuery(fieldName, minLat, maxLat, -180.0, maxLon);
+        return new BooleanQuery.Builder()
+                .add(east, Occur.SHOULD)
+                .add(west, Occur.SHOULD)
+                .build();
     }
 
     /**
@@ -360,7 +339,7 @@ public class QueryFactory {
      */
     public Query newJoinQuery(Class<? extends CdmBase> fromType, String fromField, boolean fromFieldIsMultivalued,
             Query fromQuery, String toField, Class<? extends CdmBase> toType, ScoreMode scoreMode) throws IOException {
-            boolean multipleValuesPerDocument = false;
+            boolean multipleValuesPerDocument = true; // HS6 keyword sort fields use SortedSetDocValues
             Query joinQuery = JoinUtil.createJoinQuery(
                     // need to use the sort field of the id field since
                     // ScoreMode.Max forces the fromField to be a docValue
@@ -398,7 +377,7 @@ public class QueryFactory {
         Builder filteredQueryBuilder = new Builder();
         Builder classFilterBuilder = new Builder();
 
-        Term t = new Term(ProjectionConstants.OBJECT_CLASS, cdmTypeRestriction.getName());
+        Term t = new Term(LuceneIndexFields.OBJECT_CLASS, cdmTypeRestriction.getName());
         TermQuery termQuery = new TermQuery(t);
 
         classFilterBuilder.add(termQuery, Occur.SHOULD);

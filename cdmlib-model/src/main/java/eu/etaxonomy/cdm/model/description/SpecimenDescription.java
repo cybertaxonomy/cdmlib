@@ -35,10 +35,8 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.FieldBridge;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.media.IHasRights;
@@ -83,7 +81,6 @@ public class SpecimenDescription
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
     @JoinColumn(name="specimen_id")
-    @FieldBridge(impl=NotNullAwareIdBridge.class)
     private SpecimenOrObservationBase<?> describedSpecimenOrObservation;
 
     //#10772

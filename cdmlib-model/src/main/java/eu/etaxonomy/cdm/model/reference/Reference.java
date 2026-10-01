@@ -48,10 +48,21 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.DOI;
@@ -175,7 +186,7 @@ public class Reference
 	@XmlElement(name ="Title" )
 	@Column(length=4096, name="title")
 	@Lob
-	@Field
+	@FullTextField
 	@Match(MatchMode.EQUAL_REQUIRED) //TODO correct? was EQUAL_REQUIRED before, but with abbrevTitle this is not realistic anymore, see also #6427
     //TODO Val #3379
 //	@NullOrNotEmpty
@@ -183,7 +194,7 @@ public class Reference
 
 	//Title of the reference
 	@XmlElement(name ="AbbrevTitle" )
-	@Field
+	@FullTextField
 	@Match(MatchMode.EQUAL)  //TODO check if this is correct
 	@NullOrNotEmpty
 	@Column(length=255)
@@ -191,7 +202,7 @@ public class Reference
 
 	//Title of the reference
 	@XmlElement(name ="AbbrevTitleCache" )
-	@Field
+	@FullTextField
 	@Match(MatchMode.CACHE)
     //TODO Val #3379
 //	@NotNull
@@ -205,28 +216,28 @@ public class Reference
 //********************************************************/
 
     @XmlElement(name = "Volume")
-    @Field
+    @FullTextField
     //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
     private String volume;
 
     @XmlElement(name = "Pages")
-    @Field
+    @FullTextField
     //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
     private String pages;
 
     @XmlElement(name = "Edition")
-    @Field
+    @FullTextField
     //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
     private String edition;
 
     @XmlElement(name = "ISBN")
-    @Field
+    @FullTextField
     //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
@@ -234,14 +245,13 @@ public class Reference
     private String isbn;
 
     @XmlElement(name = "Doi")
-    @Field
-    @FieldBridge(impl = DoiBridge.class)
+    @FullTextField(valueBridge = @ValueBridgeRef(type = DoiBridge.class))
     @Type(type="doiUserType")
     @Column(length=DOI.MAX_LENGTH)
     private DOI doi;
 
 	@XmlElement(name = "ISSN")
-    @Field
+    @FullTextField
     //TODO Val #3379
 //	@NullOrNotEmpty
     @Column(length=255)
@@ -249,40 +259,40 @@ public class Reference
 	private String issn;
 
     @XmlElement(name = "SeriesPart")
-    @Field
+    @FullTextField
     //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
     private String seriesPart;
 
 	@XmlElement(name = "Organization")
-    @Field
+    @FullTextField
     //TODO Val #3379
 //	@NullOrNotEmpty
     @Column(length=255)
 	private String organization;
 
 	@XmlElement(name = "Publisher")
-    @Field
+    @FullTextField
     //TODO Val #3379
 //	@NullOrNotEmpty
     @Column(length=255)
 	private String publisher;
 
     @XmlElement(name = "Publisher2")
-    @Field
+    @FullTextField
     @Column(length=255)
     private String publisher2;
 
 	@XmlElement(name = "PlacePublished")
-    @Field
+    @FullTextField
     //TODO Val #3379
 //	@NullOrNotEmpty
     @Column(length=255)
 	private String placePublished;
 
     @XmlElement(name = "PlacePublished2")
-    @Field
+    @FullTextField
     @Column(length=255)
     private String placePublished2;
 
@@ -291,6 +301,7 @@ public class Reference
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private Institution institution;
 
 	@XmlElement(name = "School")
@@ -298,6 +309,7 @@ public class Reference
     @XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private Institution school;
 
     @XmlElement(name = "InReference")
@@ -313,12 +325,13 @@ public class Reference
 	@XmlElement(name ="DatePublished" )
 	@Embedded
 	@IndexedEmbedded
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private VerbatimTimePeriod datePublished = VerbatimTimePeriod.NewVerbatimInstance();
 
     @XmlElement(name ="Abstract" )
 	@Column(length=CLOB_LENGTH, name="referenceAbstract")
 	@Lob
-    @Field
+    @FullTextField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	private String referenceAbstract;  //abstract is a reserved term in Java
@@ -326,8 +339,7 @@ public class Reference
 
 	//URIs like DOIs, LSIDs or Handles for this reference
 	@XmlElement(name = "URI")
-	@Field(analyze = Analyze.NO)
-    @FieldBridge(impl = UriBridge.class)
+	@KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
 	@Type(type="uriUserType")
 	private URI uri;
 
@@ -344,6 +356,7 @@ public class Reference
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private TeamOrPersonBase<?> authorship;
 
     @XmlElement(name ="authorIsEditor")

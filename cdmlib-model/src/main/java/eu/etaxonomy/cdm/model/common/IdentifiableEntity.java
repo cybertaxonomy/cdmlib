@@ -39,13 +39,12 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Fields;
-import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.SortableField;
-import org.hibernate.search.annotations.Store;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.engine.backend.types.Searchable;
+import org.hibernate.search.engine.backend.types.Sortable;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
@@ -110,14 +109,12 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Column(name="titleCache", length=800) //see #1592
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
     @NotEmpty(groups = Level2.class) // implicitly NotNull
-    @Fields({
-        @Field(store=Store.YES),
-        //  If the field is only needed for sorting and nothing else, you may configure it as
-        //  un-indexed and un-stored, thus avoid unnecessary index growth.
-        @Field(name = "titleCache__sort", analyze = Analyze.NO, store=Store.NO, index = Index.NO)
-    })
-    @SortableField(forField = "titleCache__sort")
-    @FieldBridge(impl=StripHtmlBridge.class)
+    @FullTextField(projectable = Projectable.YES,
+        valueBridge = @ValueBridgeRef(type=StripHtmlBridge.class))
+    //  If the field is only needed for sorting and nothing else, you may configure it as
+    //  un-searchable and un-projectable, thus avoid unnecessary index growth.
+    @KeywordField(name = "titleCache__sort", sortable = Sortable.YES, searchable = Searchable.NO,
+        projectable = Projectable.NO, valueBridge = @ValueBridgeRef(type=StripHtmlBridge.class))
     protected String titleCache;
 
     //if true titleCache will not be automatically generated/updated

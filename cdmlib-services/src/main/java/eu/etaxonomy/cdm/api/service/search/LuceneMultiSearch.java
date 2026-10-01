@@ -18,13 +18,13 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.SortField;
-import org.hibernate.search.indexes.IndexReaderAccessor;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -56,7 +56,9 @@ public class LuceneMultiSearch extends LuceneSearch {
 
         for(LuceneSearch search : luceneSearch){
 
-            this.directorySelectClasses.add(search.getDirectorySelectClass());
+            // Use the original type (e.g. TaxonBase), not pushAbstractBaseTypeDown(Taxon).
+            // HS6 scope(TaxonBase) covers Taxon and Synonym indexes; scope(Taxon) alone drops synonyms.
+            this.directorySelectClasses.add(search.getRawDirectorySelectClass());
             queryBuilder.add(search.getQuery(), Occur.SHOULD);
 
             // add the highlightFields from each of the sub searches
@@ -104,15 +106,7 @@ public class LuceneMultiSearch extends LuceneSearch {
         if(searcher == null){
             List<IndexReader> readers = new ArrayList<>();
             for(Class<? extends CdmBase> type : directorySelectClasses){
-                   //OLD
-//                DirectoryProvider[] directoryProviders = searchFactory.getDirectoryProviders(type);
-//                logger.info(directoryProviders[0].getDirectory().toString());
-
-//                ReaderProvider readerProvider = searchFactory.getReaderProvider();
-                IndexReaderAccessor ira = toolProvider.getIndexReaderAccessor();
-                IndexReader reader = ira.open(type);
-//            	readers.add(readerProvider.openReader(directoryProviders[0]));
-                readers.add(reader);
+                readers.add(toolProvider.getIndexReaderFor(type));
             }
             if(readers.size() > 1){
                 IndexReader[] readersArray = readers.toArray(new IndexReader[readers.size()]);
@@ -133,27 +127,21 @@ public class LuceneMultiSearch extends LuceneSearch {
     }
 
     /**
-     * does exactly the same as {@link LuceneSearch#getAnalyzer()} but perform
-     * an additional check to assure that all indexes are using the same
-     * analyzer
-     *
-     * @return
+     * Returns a shared analyzer suitable for all indexes in this multi-search.
+     * Mixed scopes (e.g. {@code TaxonBase} + {@code DescriptionElementBase}) may
+     * expose different {@code IndexingScopedAnalyzer}s in HS6; fall back to
+     * {@link StandardAnalyzer} which matches {@code AnalyzerNames.DEFAULT}.
      */
     @Override
     public Analyzer getAnalyzer() {
         Analyzer analyzer = null;
         for(Class<? extends CdmBase> type : directorySelectClasses){
             Analyzer a = toolProvider.getAnalyzerFor(type);
-            if(isEqual(analyzer, a)){
-                throw new RuntimeException("The LuceneMultiSearch must only be used on indexes which are using the same Analyzer.");
+            if(analyzer != null && !analyzer.getClass().equals(a.getClass())){
+                return new StandardAnalyzer();
             }
             analyzer = a;
         }
         return analyzer;
-    }
-
-    private boolean isEqual(Analyzer analyzer, Analyzer a) {
-        // FIXME PatternAnalyzers must be compared by Pattern also other analyzers must be compared by their properties
-        return analyzer != null && !analyzer.getClass().equals(a.getClass());
     }
 }

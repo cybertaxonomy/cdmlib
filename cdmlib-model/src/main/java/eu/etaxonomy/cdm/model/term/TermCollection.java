@@ -29,7 +29,9 @@ import javax.xml.bind.annotation.XmlType;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -62,7 +64,8 @@ public abstract class TermCollection<TERM extends DefinedTermBase, REL extends T
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="graph", fetch=FetchType.LAZY, targetEntity = TermRelationBase.class)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    @IndexedEmbedded(depth = 2)
+    @IndexedEmbedded(includeDepth = 2)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Set<REL> termRelations = new HashSet<>();
 
     //#7372 indicates if this tree/graph allows duplicated terms/features

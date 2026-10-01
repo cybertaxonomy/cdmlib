@@ -44,17 +44,15 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.ClassBridge;
-import org.hibernate.search.annotations.ClassBridges;
-import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.TypeBinding;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
-import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.CdmClass;
@@ -101,13 +99,10 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
 })
 @XmlRootElement(name = "Taxon")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonBase")
+@Indexed
 @Audited
 @Configurable
-@ClassBridges({
-    @ClassBridge(impl = GroupByTaxonClassBridge.class),
-    @ClassBridge(impl = TaxonRelationshipClassBridge.class)
-})
+@TypeBinding(binder = @TypeBinderRef(type = TaxonRelationshipClassBridge.class))
 public class Taxon
             extends TaxonBase
             implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, ICdmTarget,
@@ -123,7 +118,6 @@ public class Taxon
     @OneToMany(mappedBy="taxon", fetch= FetchType.LAZY)
     @Cascade({CascadeType.DELETE})
     @NotNull
-    @ContainedIn
     private Set<TaxonDescription> descriptions = new HashSet<>();
 
     // all related synonyms
@@ -134,7 +128,6 @@ public class Taxon
     @OneToMany(mappedBy="acceptedTaxon", fetch=FetchType.LAZY, orphanRemoval=false) //we allow synonyms to stay on their own for dirty data and for intermediate states during e.g. imports
     @NotNull
     @Valid
-    @ContainedIn
     private Set<Synonym> synonyms = new HashSet<>();
 
     // all taxa relations with rel.fromTaxon==this
@@ -144,7 +137,6 @@ public class Taxon
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
 //    @Valid
-    @ContainedIn
     private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<>();
 
     // all taxa relations with rel.toTaxon==this
@@ -155,7 +147,6 @@ public class Taxon
     @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //    @Valid
-    @ContainedIn
     private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<>();
 
     @XmlAttribute(name= "taxonStatusUnknown")
@@ -174,6 +165,7 @@ public class Taxon
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="taxon", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    // Deep reindex when TaxonNode.classification / treeIndex change (HS5 ContainedIn on TaxonNode.taxon).
     @IndexedEmbedded
     private Set<TaxonNode> taxonNodes = new HashSet<>();
 

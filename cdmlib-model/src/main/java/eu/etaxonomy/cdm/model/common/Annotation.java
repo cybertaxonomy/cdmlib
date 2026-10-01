@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -24,17 +25,14 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.FieldBridge;
 
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.agent.Person;
 
 /**
@@ -84,7 +82,6 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
     // should be useful to implement trackback, pingback or linkback:
     // http://en.wikipedia.org/wiki/Linkback
     @XmlElement(name = "LinkbackUri")
-    @FieldBridge(impl = UriBridge.class)
     @Type(type="uriUserType")
     private URI linkbackUri;
 

@@ -45,14 +45,16 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Fields;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.SortableField;
-import org.hibernate.search.annotations.Store;
-import org.hibernate.search.bridge.builtin.BooleanBridge;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.engine.backend.types.Searchable;
+import org.hibernate.search.engine.backend.types.Sortable;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -151,7 +153,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlElement(name = "Determination")
     @OneToMany(mappedBy="identifiedUnit", orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    @IndexedEmbedded(depth = 2)
+    @IndexedEmbedded(includeDepth = 2)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @NotNull
     private Set<DeterminationEvent> determinations = new HashSet<>();
 
@@ -178,11 +181,11 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-//    @IndexedEmbedded(depth=1)
+//    @IndexedEmbedded(includeDepth=1)
     private DefinedTerm kindOfUnit;
 
     @XmlElement(name = "IndividualCount")
-    @Field(analyze = Analyze.NO)
+    @KeywordField
     private String individualCount;
 
     /**
@@ -190,8 +193,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      * {@link  https://dev.e-taxonomy.eu/redmine/issues/5606}
      */
     @XmlElement(name = "PreferredStableUri")
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = UriBridge.class)
+    @KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
     @Type(type="uriUserType")
     private URI preferredStableUri;
 
@@ -203,6 +205,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @MapKeyJoinColumn(name="definition_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @NotNull
     protected Map<Language,LanguageString> definition = new HashMap<>();
 
@@ -217,22 +220,19 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     protected Set<DerivationEvent> derivationEvents = new HashSet<>();
 
     @XmlAttribute(name = "publish")
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl=BooleanBridge.class)
+    @GenericField
     private boolean publish = true;
 
     @XmlElement(name = "IdentityCache", required = false)
     @XmlJavaTypeAdapter(FormattedTextAdapter.class)
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
 //    @NotEmpty(groups = Level2.class) // implicitly NotNull
-    @Fields({
-        @Field(store=Store.YES),
-        //  If the field is only needed for sorting and nothing else, you may configure it as
-        //  un-indexed and un-stored, thus avoid unnecessary index growth.
-        @Field(name = "identityCache__sort", analyze = Analyze.NO, store=Store.NO, index = org.hibernate.search.annotations.Index.NO)
-    })
-    @SortableField(forField = "identityCache__sort")
-    @FieldBridge(impl=StripHtmlBridge.class)
+    @FullTextField(projectable = Projectable.YES,
+        valueBridge = @ValueBridgeRef(type=StripHtmlBridge.class))
+    //  If the field is only needed for sorting and nothing else, you may configure it as
+    //  un-searchable and un-projectable, thus avoid unnecessary index growth.
+    @KeywordField(name = "identityCache__sort", sortable = Sortable.YES, searchable = Searchable.NO,
+        projectable = Projectable.NO, valueBridge = @ValueBridgeRef(type=StripHtmlBridge.class))
     private String identityCache;
 
 

@@ -8,7 +8,9 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.hibernate.search.bridge.StringBridge;
+import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
+import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeFromIndexedValueContext;
+import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContext;
 
 import eu.etaxonomy.cdm.common.URI;
 
@@ -16,13 +18,20 @@ import eu.etaxonomy.cdm.common.URI;
  * @author a.mueller
  * @since 05.01.2021
  */
-public class UriBridge implements StringBridge {
+public class UriBridge implements ValueBridge<URI, String> {
 
     @Override
-    public String objectToString(Object object) {
-        if(object != null) {
-            return ((URI)object).toString();
-        }
-        return null;
+    public String toIndexedValue(URI value, ValueBridgeToIndexedValueContext context) {
+        return value == null ? null : value.toString();
+    }
+
+    @Override
+    public URI fromIndexedValue(String value, ValueBridgeFromIndexedValueContext context) {
+        return value == null ? null : URI.create(value);
+    }
+
+    @Override
+    public String parse(String value) {
+        return value;
     }
 }

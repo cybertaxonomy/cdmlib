@@ -33,10 +33,12 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
@@ -81,7 +83,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrateg
 @Audited
 // even if hibernate complains "Abstract classes can never insert index documents. Remove @Indexed."
 // this is needed, otherwise the fields of the also abstract super class are missed during indexing
-@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
+@Indexed
 public class DerivedUnit
         extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<? extends DerivedUnit>>
         implements IHasLink {
@@ -94,24 +96,25 @@ public class DerivedUnit
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private Collection collection;
 
 	@XmlElement(name = "CatalogNumber")
-	@Field(analyze = Analyze.NO)
+	@KeywordField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
 	private String catalogNumber;
 
 	@XmlElement(name = "AccessionNumber")
-	@Field(analyze = Analyze.NO)
+	@KeywordField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
 	private String accessionNumber;
 
 	@XmlElement(name = "CollectorsNumber")
-	@Field(analyze = Analyze.NO)
+	@KeywordField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
@@ -119,7 +122,7 @@ public class DerivedUnit
 	private String collectorsNumber;
 
 	@XmlElement(name = "Barcode")
-	@Field(analyze = Analyze.NO)
+	@KeywordField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
@@ -130,7 +133,8 @@ public class DerivedUnit
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	@IndexedEmbedded(depth = 4)
+	@IndexedEmbedded(includeDepth = 4)
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private DerivationEvent derivedFrom;
 
 	@XmlElement(name = "OriginalLabelInfo")
@@ -148,7 +152,8 @@ public class DerivedUnit
     @OneToMany(fetch= FetchType.LAZY, mappedBy = "unit", orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Set<OccurrenceStatus> status = new HashSet<>();
 
 //*** attributes valid only for preserved specimen (PreservedSpecimen, Fossil, DnaSample)
@@ -164,7 +169,7 @@ public class DerivedUnit
 	@XmlElement(name = "Exsiccatum")
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Field
+	@FullTextField
     @Column(length=255)
     private String exsiccatum;
 

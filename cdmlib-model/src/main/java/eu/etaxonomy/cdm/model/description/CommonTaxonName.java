@@ -23,10 +23,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.Store;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
@@ -55,7 +57,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlRootElement(name = "CommonTaxonName")
 @Entity
 @Audited
-@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
+@Indexed
 public class CommonTaxonName
         extends DescriptionElementBase
         implements IHasModifyingText {
@@ -63,25 +65,27 @@ public class CommonTaxonName
     private static final long serialVersionUID = 2643808051976643339L;
 
     @XmlElement(name = "Name")
-    @Field(store=Store.YES)
+    @FullTextField(projectable=Projectable.YES)
     private String name;
 
     @XmlElement(name = "Name")
-    @Field(store=Store.YES)
+    @FullTextField(projectable=Projectable.YES)
     private String transliteration;
 
     @XmlElement(name = "Language")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Language language;
 
     @XmlElement(name = "Area")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded(depth=1) // FIXME do we need a special field bridge for this type?
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW) // FIXME do we need a special field bridge for this type?
     private NamedArea area;
 
 

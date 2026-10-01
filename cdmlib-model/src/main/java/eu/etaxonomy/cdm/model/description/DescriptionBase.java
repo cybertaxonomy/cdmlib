@@ -37,14 +37,10 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.ClassBridge;
-import org.hibernate.search.annotations.ClassBridges;
-import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Store;
-import org.hibernate.search.bridge.builtin.BooleanBridge;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.TypeBinding;
 
 import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
@@ -86,10 +82,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Entity
 @Audited
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@ClassBridges({
-        @ClassBridge(impl = DescriptionBaseClassBridge.class),
-        @ClassBridge(impl = GroupByTaxonClassBridge.class)
-})
+@TypeBinding(binder = @TypeBinderRef(type = DescriptionBaseClassBridge.class))
+@TypeBinding(binder = @TypeBinderRef(type = GroupByTaxonClassBridge.class))
 public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy<?>>
         extends CreditableEntity<S>
         implements ICdmTarget,IPublishable {
@@ -125,7 +119,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     })
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription", orphanRemoval=true)
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    @ContainedIn
     private Set<DescriptionElementBase> descriptionElements = new HashSet<>();
 
     @XmlElement(name = "ImageGallery")
@@ -136,7 +129,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     private boolean isDefault;
 
     @XmlElement(name = "publish")
-    @Field(analyze = Analyze.NO, store = Store.YES, bridge= @FieldBridge(impl=BooleanBridge.class))
+    @GenericField(projectable = Projectable.YES)
     private boolean publish = true;
 
     @XmlAttribute(name ="types")

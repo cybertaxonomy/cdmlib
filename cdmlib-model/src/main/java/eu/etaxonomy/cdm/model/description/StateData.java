@@ -35,9 +35,12 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
+import org.hibernate.search.mapper.pojo.common.annotation.Param;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.PropertyBinding;
 
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -85,14 +88,16 @@ public class StateData
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private CategoricalData categoricalData;
 
     @XmlElement(name = "State", type=DefinedTermBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY, targetEntity=DefinedTermBase.class)
-    @IndexedEmbedded(depth=1, targetElement=DefinedTermBase.class)
+    @IndexedEmbedded(includeDepth=1, targetType=DefinedTermBase.class)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     //we could also use DefinedTermBase here, we use only DefinedTermBase<?> for
     //better understanding the code #10196
     private DefinedTermBase<?> state;
@@ -104,7 +109,8 @@ public class StateData
     @XmlElementWrapper(name = "Modifiers")
     @XmlElement(name = "Modifier")
     @ManyToMany(fetch = FetchType.LAZY)
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 //	@NotNull // avoids creating a UNIQUE key for this field -> not needed for ManyToMany
     private Set<DefinedTerm> modifiers = new HashSet<>();
 
@@ -113,8 +119,8 @@ public class StateData
     @OneToMany(fetch = FetchType.LAZY)
     @MapKeyJoinColumn(name="modifyingtext_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    @Field(name="modifyingText")
-    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
+    @PropertyBinding(binder = @PropertyBinderRef(type=MultilanguageTextFieldBridge.class,
+            params = @Param(name="fieldName", value="modifyingText")))
     private Map<Language,LanguageString> modifyingText = new HashMap<>();
 
     private boolean usePlural;

@@ -31,7 +31,9 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.EventBase;
@@ -63,7 +65,8 @@ public class DerivationEvent extends EventBase {
 	@XmlSchemaType(name = "IDREF")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@ManyToMany(fetch = FetchType.LAZY,mappedBy="derivationEvents")
-	@IndexedEmbedded(depth = 3)
+	@IndexedEmbedded(includeDepth = 3)
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	protected Set<SpecimenOrObservationBase> originals = new HashSet<>();
 
 	@XmlElementWrapper(name = "Derivatives")
@@ -79,6 +82,7 @@ public class DerivationEvent extends EventBase {
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	@JoinColumn(name="institution_id")
 	private Institution institution;
 

@@ -33,7 +33,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -86,8 +88,7 @@ public class Registration extends AnnotatableEntity {
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
     //TODO ??
     @Basic(fetch = FetchType.LAZY)
-//    @Field(analyze = Analyze.NO)
-//    @FieldBridge(impl = DateTimeBridge.class)
+//    @GenericField
     private ZonedDateTime registrationDate;
 
     @XmlAttribute(name ="Status")
@@ -103,6 +104,7 @@ public class Registration extends AnnotatableEntity {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Institution registrationCenter;
 
     @XmlElement(name = "Name")

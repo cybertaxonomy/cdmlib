@@ -17,6 +17,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.SortedSetSortField;
 import org.hibernate.Criteria;
 import org.hibernate.NullPrecedence;
 import org.hibernate.criterion.Order;
@@ -248,13 +249,18 @@ public class OrderHint implements Serializable {
     }
 
     /**
-     * @return a Lucene {@link SortField} for the Lucene field type <code>Sting</code>
+     * @return a Lucene {@link SortField} for string sort fields. Hibernate Search 6
+     *         indexes sortable keyword fields with SortedSetDocValues, so
+     *         {@link SortedSetSortField} is required instead of
+     *         {@code SortField.Type.STRING}.
      */
     public SortField toSortField() {
         if(propertyName.equals(LUCENE_SCORE)){
             return SortField.FIELD_SCORE;
         }
-        return new SortField(propertyName + "__sort", SortField.Type.STRING, sortOrder.equals(SortOrder.DESCENDING));
+        // NOMENCLATURAL_SORT_ORDER already stores the full Lucene field name including __sort
+        String sortFieldName = propertyName.endsWith("__sort") ? propertyName : propertyName + "__sort";
+        return new SortedSetSortField(sortFieldName, sortOrder.equals(SortOrder.DESCENDING));
     }
 
     @Override

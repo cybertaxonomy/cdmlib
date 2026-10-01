@@ -26,9 +26,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
@@ -73,8 +72,7 @@ public class ExternallyManaged implements Cloneable, Serializable, ICheckEmpty{
 
     //Actionable link e.g. to a webservice
     @XmlElement(name = "ExternalLink")
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = UriBridge.class)
+    @KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
     @Type(type="uriUserType")
     @Column(name="externalLink")
     private URI externalLink;

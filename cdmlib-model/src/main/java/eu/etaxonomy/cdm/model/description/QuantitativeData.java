@@ -37,7 +37,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import eu.etaxonomy.cdm.common.BigDecimalUtil;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -75,7 +75,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 })
 @XmlRootElement(name = "QuantitativeData")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
+@Indexed
 @Audited
 public class QuantitativeData
         extends DescriptionElementBase

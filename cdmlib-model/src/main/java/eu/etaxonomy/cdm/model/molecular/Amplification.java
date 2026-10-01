@@ -27,10 +27,17 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.NumericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -134,31 +141,29 @@ public class Amplification extends EventBase {
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	@JoinColumn(name="institution_id")
 	private Institution institution;
 
     /** @see #getLadderUsed() */
     @XmlElement(name = "ladderUsed")
-	@Field
+	@FullTextField
     @Column(length=255)
 	private String ladderUsed;
 
     /** @see #getElectrophoresisVoltage()*/
 	@XmlElement(name = "electrophoresisVoltage")
-	@Field(analyze = Analyze.NO)
-	@NumericField
+	@GenericField
 	private Double electrophoresisVoltage;
 
     /** @see #getGelRunningTime() */
 	@XmlElement(name = "gelRunningTime")
-	@Field(analyze = Analyze.NO)
-	@NumericField
+	@GenericField
 	private Double gelRunningTime;
 
     /** @see #getGelConcentration() */
 	@XmlElement(name = "gelConcentration")
-	@Field(analyze = Analyze.NO)
-	@NumericField
+	@GenericField
 	private Double gelConcentration;
 
 	//automatically created

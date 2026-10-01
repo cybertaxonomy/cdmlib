@@ -28,9 +28,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Store;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
+import org.hibernate.search.mapper.pojo.common.annotation.Param;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.PropertyBinding;
 
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -65,8 +65,8 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
     @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true)
     @MapKeyJoinColumn(name="text_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    @Field(name="text", store=Store.YES)
-    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
+    @PropertyBinding(binder = @PropertyBinderRef(type=MultilanguageTextFieldBridge.class,
+            params = @Param(name="fieldName", value="text")))
     @NotNull
     private Map<Language, LanguageString> text = new HashMap<>();
 

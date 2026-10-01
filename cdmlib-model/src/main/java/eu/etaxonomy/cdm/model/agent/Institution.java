@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.media.IHasLink;
@@ -72,14 +72,14 @@ public class Institution
     private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "Code")
-    @Field
+    @FullTextField
     //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)
 	private String code;
 
     @XmlElement(name = "Name")
-    @Field
+    @FullTextField
 //TODO Val #3379
 //    @NullOrNotEmpty
     @Column(length=255)

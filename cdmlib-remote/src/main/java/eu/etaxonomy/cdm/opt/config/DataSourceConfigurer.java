@@ -95,7 +95,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     private static final Logger logger = LogManager.getLogger();
 
     protected static final String HIBERNATE_DIALECT = "hibernate.dialect";
-    protected static final String HIBERNATE_SEARCH_DEFAULT_INDEX_BASE = "hibernate.search.default.indexBase";
+    protected static final String HIBERNATE_SEARCH_DEFAULT_INDEX_BASE = "hibernate.search.backend.directory.root";
     protected static final String CDM_BEAN_DEFINITION_FILE = "cdm.beanDefinitionFile";
 
     @Autowired // Important!!!!

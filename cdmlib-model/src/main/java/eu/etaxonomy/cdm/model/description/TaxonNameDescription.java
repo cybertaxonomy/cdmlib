@@ -23,10 +23,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.FieldBridge;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -63,7 +61,6 @@ public class TaxonNameDescription
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @FieldBridge(impl=NotNullAwareIdBridge.class)
     private TaxonName taxonName;
 
 //******************* FACTORY ********************************************/

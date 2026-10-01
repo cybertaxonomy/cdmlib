@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlRootElement(name = "TaxonInteraction")
 @Entity
 @Audited
-@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
+@Indexed
 public class TaxonInteraction
         extends DescriptionElementBase {
 

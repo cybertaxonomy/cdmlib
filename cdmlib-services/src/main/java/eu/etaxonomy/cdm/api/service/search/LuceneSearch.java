@@ -25,12 +25,12 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.grouping.AllGroupsCollector;
+import org.apache.lucene.search.grouping.FirstPassGroupingCollector;
 import org.apache.lucene.search.grouping.GroupDocs;
 import org.apache.lucene.search.grouping.SearchGroup;
 import org.apache.lucene.search.grouping.TopGroups;
-import org.apache.lucene.search.grouping.term.TermAllGroupsCollector;
-import org.apache.lucene.search.grouping.term.TermFirstPassGroupingCollector;
-import org.apache.lucene.search.grouping.term.TermSecondPassGroupingCollector;
+import org.apache.lucene.search.grouping.TopGroupsCollector;
 import org.apache.lucene.util.BytesRef;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -87,6 +87,15 @@ public class LuceneSearch {
         this.toolProvider = toolProvider;
         this.directorySelectClass = directorySelectClass;
         this.groupByField = groupByField;
+    }
+
+    /**
+     * The type used to open the Lucene index reader / scope. Prefer this over
+     * {@link #getDirectorySelectClass()} when the full inheritance hierarchy must
+     * be searched (e.g. {@code TaxonBase} covering Taxon and Synonym).
+     */
+    public Class<? extends CdmBase> getRawDirectorySelectClass() {
+        return directorySelectClass;
     }
 
     protected Class<? extends CdmBase> getDirectorySelectClass() {
@@ -211,7 +220,7 @@ public class LuceneSearch {
     public TopDocs executeSearch(int maxNoOfHits) throws IOException {
         BooleanQuery fullQuery = expandQuery();
         logger.info("lucene query string to be parsed: " + fullQuery.toString());
-        return getSearcher().search(fullQuery, maxNoOfHits, Sort.RELEVANCE, true, true);
+        return getSearcher().search(fullQuery, maxNoOfHits);
     }
 
     /**
@@ -253,27 +262,25 @@ public class LuceneSearch {
                     ", groupSort=" + groupSort + ", withinGroupSort=" + withinGroupSort + ", limit=" + limit + ", maxDocsPerGroup="+ maxDocsPerGroup);
         }
         // - first pass
-        TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(groupByField, groupSort, limit);
+        FirstPassGroupingCollector<BytesRef> firstPassCollector =
+                new FirstPassGroupingCollector<>(new SortedSetTermGroupSelector(groupByField), groupSort, limit);
 
         getSearcher().search(fullQuery, firstPassCollector);
-        Collection<SearchGroup<BytesRef>> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
+        Collection<SearchGroup<BytesRef>> topGroups = firstPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
 
         if (topGroups == null) {
               return null;
         }
         // - flags for second pass
-        boolean getScores = false;
         boolean getMaxScores = true;
         if(groupSort.getSort()[0] != SortField.FIELD_SCORE){
             getMaxScores = false;
             // see inner class TopGroupsWithMaxScore
             logger.warn("Fist sort field must be SortField.FIELD_SCORE otherwise the max score value will not be correct! MaxScore calculation will be skipped");
         }
-        boolean fillFields = true;
-        TermAllGroupsCollector allGroupsCollector = new TermAllGroupsCollector(groupByField);
-        TermSecondPassGroupingCollector secondPassCollector = new TermSecondPassGroupingCollector(
-                groupByField, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores,
-                getMaxScores, fillFields
+        AllGroupsCollector<BytesRef> allGroupsCollector = new AllGroupsCollector<>(new SortedSetTermGroupSelector(groupByField));
+        TopGroupsCollector<BytesRef> secondPassCollector = new TopGroupsCollector<>(
+                new SortedSetTermGroupSelector(groupByField), topGroups, groupSort, withinGroupSort, maxDocsPerGroup, getMaxScores
                 );
         getSearcher().search(fullQuery, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
 

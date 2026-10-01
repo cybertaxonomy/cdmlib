@@ -34,12 +34,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 
-import eu.etaxonomy.cdm.hibernate.search.ZonedDateTimeBridge;
-import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -55,7 +51,6 @@ import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
  * @see EntityValidation
  *
  * @author ayco_holleman
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 // @formatter:off
@@ -77,9 +72,6 @@ public class EntityValidation extends CdmBase {
 
     /**
      * Create a new {@code EntityValidation} instance.
-     * @param validatedEntity
-     * @param crudEventType
-     * @return
      */
     public static EntityValidation newInstance(ICdmBase validatedEntity, CRUDEventType crudEventType) {
         EntityValidation result = newInstance();
@@ -99,7 +91,6 @@ public class EntityValidation extends CdmBase {
     @Type(type = "uuidUserType")
     @Column(length = 36)
     // TODO needed? Type UUID will always assure that is exactly 36
-    @FieldBridge(impl = UuidBridge.class)
     // TODO required?
     private UUID validatedEntityUuid;
 
@@ -111,8 +102,7 @@ public class EntityValidation extends CdmBase {
 
     @XmlElement(name = "Updated", type = String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = ZonedDateTimeBridge.class)
+    @GenericField
     private ZonedDateTime updated;
 
     @XmlElement(name = "UserFriendlyDescription")

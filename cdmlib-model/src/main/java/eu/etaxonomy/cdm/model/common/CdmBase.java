@@ -47,18 +47,20 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.DocumentId;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.Store;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
+import org.hibernate.search.mapper.pojo.common.annotation.Param;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.DocumentId;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.PropertyBinding;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.TypeBinding;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.hibernate.search.ZonedDateTimeBridge;
+import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
-import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.NewEntityListener;
@@ -87,6 +89,9 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
         "createdBy"
 })
 @MappedSuperclass
+// HS6 no longer writes _hibernate_class; ClassInfoBridge replaces ProjectionConstants.OBJECT_CLASS
+@TypeBinding(binder = @TypeBinderRef(type = ClassInfoBridge.class,
+        params = @Param(name = ClassInfoBridge.FIELD_NAME_PARAM, value = "classInfo")))
 public abstract class CdmBase
         implements Serializable, ICdmBase, ISelfDescriptive, Cloneable{
 
@@ -111,7 +116,8 @@ public abstract class CdmBase
 //	@GeneratedValue(generator = "enhanced-table")
     @GeneratedValue(generator = "custom-enhanced-table")
     @DocumentId
-    @FieldBridge(impl=NotNullAwareIdBridge.class)
+    //the binder adds the "id__notNull" and sort fields which a plain identifier bridge can not contribute
+    @PropertyBinding(binder = @PropertyBinderRef(type = NotNullAwareIdBridge.class))
     @Match(MatchMode.IGNORE)
     @NotNull
     @Min(0)
@@ -126,8 +132,7 @@ public abstract class CdmBase
     @Column(length=36)  //TODO needed? Type UUID will always assure that is exactly 36
     @Match(MatchMode.IGNORE)
     @NotNull
-    @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
-    @FieldBridge(impl = UuidBridge.class)
+    @KeywordField(projectable = Projectable.YES)
     @Audited
     protected UUID uuid;
 
@@ -135,8 +140,7 @@ public abstract class CdmBase
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
     @Basic(fetch = FetchType.LAZY)
     @Match(MatchMode.IGNORE)
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = ZonedDateTimeBridge.class)
+    @GenericField
     @Audited
     private ZonedDateTime created;
 

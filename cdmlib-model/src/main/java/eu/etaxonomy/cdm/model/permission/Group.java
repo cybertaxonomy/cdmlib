@@ -33,7 +33,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.search.annotations.Field;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -83,7 +83,7 @@ public class Group extends CdmBase {
 
     @XmlElement(name = "Name")
     @Column(unique = true)
-    @Field
+    @FullTextField
     @NotNull
     @Pattern(regexp=User.USERNAME_REGEX)
     private String name;

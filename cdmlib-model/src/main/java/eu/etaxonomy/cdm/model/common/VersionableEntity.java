@@ -28,12 +28,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.hibernate.search.ZonedDateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -75,8 +72,7 @@ public abstract class VersionableEntity
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	@Basic(fetch = FetchType.LAZY)
 	@Match(MatchMode.IGNORE)
-	@Field(analyze = Analyze.NO)
-	@FieldBridge(impl = ZonedDateTimeBridge.class)
+	@GenericField
 	private ZonedDateTime updated;
 
 	@XmlElement(name = "UpdatedBy")

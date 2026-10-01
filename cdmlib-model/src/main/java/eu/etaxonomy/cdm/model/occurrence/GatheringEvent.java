@@ -35,10 +35,11 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.NumericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -85,10 +86,12 @@ public class GatheringEvent extends EventBase {
 	@OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
 	@Cascade({CascadeType.ALL})
 	@IndexedEmbedded
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private LanguageString locality;
 
 	@XmlElement(name = "ExactLocation")
 	@IndexedEmbedded
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	@Valid
 	private Point exactLocation;
 
@@ -98,6 +101,7 @@ public class GatheringEvent extends EventBase {
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private NamedArea country;
 
     @XmlElementWrapper(name = "CollectingAreas")
@@ -110,7 +114,7 @@ public class GatheringEvent extends EventBase {
 	private Set<NamedArea> collectingAreas = new HashSet<>();
 
 	@XmlElement(name = "CollectingMethod")
-	@Field
+	@FullTextField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
@@ -122,14 +126,12 @@ public class GatheringEvent extends EventBase {
 	* of the range
 	 */
 	@XmlElement(name = "AbsoluteElevation")
-	@Field
-	@NumericField
+	@GenericField
 	private Integer absoluteElevation;
 
 	// meter above/below sea level of the surface, maximum value
 	@XmlElement(name = "AbsoluteElevationMax")
-	@Field
-	@NumericField
+	@GenericField
 	private Integer absoluteElevationMax;
 
 
@@ -142,20 +144,18 @@ public class GatheringEvent extends EventBase {
 	 * "ca." it is suggested to use min/max value instead.
 	 */
 	@XmlElement(name = "AbsoluteElevationText")
-	@Field
+	@FullTextField
     @Column(length=30)
 	private String absoluteElevationText;
 
 	// distance in meter from the ground surface when collecting. E.g. 10m below the ground or 10m above the ground/bottom of a lake or 20m up in the canope
 	@XmlElement(name = "DistanceToGround")
-	@Field(analyze = Analyze.NO)
-	@NumericField
+	@GenericField
 	private Double distanceToGround;
 
 	// distance in meter from the ground surface when collecting. E.g. 10m below the ground or 10m above the ground/bottom of a lake or 20m up in the canope
 	@XmlElement(name = "distanceToGroundMax")
-	@Field(analyze = Analyze.NO)
-	@NumericField
+	@GenericField
 	private Double distanceToGroundMax;
 
 	/**
@@ -167,20 +167,18 @@ public class GatheringEvent extends EventBase {
 	 * "ca." it is suggested to use min/max value instead.
 	 */
 	@XmlElement(name = "distanceToGroundText")
-	@Field
+	@FullTextField
     @Column(length=30)
 	private String distanceToGroundText;
 
 	// distance in meters to lake or sea surface. Similar to distanceToGround use negative integers for distance *below* the surface, ie under water
 	@XmlElement(name = "DistanceToWaterSurface")
-	@Field(analyze = Analyze.NO)
-	@NumericField
+	@GenericField
 	private Double distanceToWaterSurface;
 
 	// distance in meters to lake or sea surface. Similar to distanceToGround use negative integers for distance *below* the surface, ie under water
 	@XmlElement(name = "DistanceToWaterSurface")
-	@Field(analyze = Analyze.NO)
-	@NumericField
+	@GenericField
 	private Double distanceToWaterSurfaceMax;
 
 	/**
@@ -192,7 +190,7 @@ public class GatheringEvent extends EventBase {
 	 * "ca." it is suggested to use min/max value instead.
 	 */
 	@XmlElement(name = "distanceToGroundText")
-	@Field
+	@FullTextField
     @Column(length=30)
 	private String distanceToWaterSurfaceText;
 

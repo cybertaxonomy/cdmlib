@@ -34,8 +34,10 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -58,7 +60,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @XmlType(name = "StatisticalMeasureValue")
 @XmlRootElement(name = "StatisticalMeasureValue")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
+@Indexed
 @Audited
 public class StatisticalMeasurementValue
         extends VersionableEntity
@@ -91,7 +93,8 @@ public class StatisticalMeasurementValue
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY )
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private QuantitativeData quantitativeData;
 
 // ***************** FACTORY ****************************/

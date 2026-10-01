@@ -27,9 +27,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -72,28 +74,28 @@ public class Collection
 	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "Code")
-	@Field(analyze = Analyze.NO)
+	@KeywordField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
 	private String code;
 
 	@XmlElement(name = "CodeStandard")
-	@Field(analyze = Analyze.NO)
+	@KeywordField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
 	private String codeStandard;
 
 	@XmlElement(name = "Name")
-	@Field
+	@FullTextField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
 	private String name;
 
 	@XmlElement(name = "TownOrLocation")
-	@Field
+	@FullTextField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
@@ -104,6 +106,7 @@ public class Collection
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private Institution institute;
 
 	@XmlElement(name = "SuperCollection")

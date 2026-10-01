@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.hibernate.search.bridge.StringBridge;
+import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
+import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContext;
 
 import eu.etaxonomy.cdm.model.common.WikiDataItemId;
 
@@ -16,14 +17,15 @@ import eu.etaxonomy.cdm.model.common.WikiDataItemId;
  * @author muellera
  * @since 17.10.2024
  */
-public class WikiDataItemIdBridge implements StringBridge {
+public class WikiDataItemIdBridge implements ValueBridge<WikiDataItemId, String> {
 
     @Override
-    public String objectToString(Object object) {
-        if(object != null) {
-            return ((WikiDataItemId)object).toString();
-        }
-        return null;
+    public String toIndexedValue(WikiDataItemId value, ValueBridgeToIndexedValueContext context) {
+        return value == null ? null : value.toString();
     }
 
+    @Override
+    public String parse(String value) {
+        return value;
+    }
 }

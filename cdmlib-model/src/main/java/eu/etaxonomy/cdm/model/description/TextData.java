@@ -37,10 +37,10 @@ import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.Store;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
+import org.hibernate.search.mapper.pojo.common.annotation.Param;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.PropertyBinding;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.model.term.TermBase;
 @XmlRootElement(name = "TextData")
 @Entity
 @Audited
-@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
+@Indexed
 public class TextData
         extends DescriptionElementBase
         implements IMultiLanguageTextHolder, Cloneable{
@@ -86,8 +86,8 @@ public class TextData
     @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true)
     @MapKeyJoinColumn(name="multilanguagetext_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    @Field(name="text", store=Store.YES)
-    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
+    @PropertyBinding(binder = @PropertyBinderRef(type=MultilanguageTextFieldBridge.class,
+            params = @Param(name="fieldName", value="text")))
     @NotNull
     private Map<Language, LanguageString> multilanguageText = new HashMap<>();
 

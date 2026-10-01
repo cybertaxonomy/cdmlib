@@ -8,23 +8,29 @@
  */
 package eu.etaxonomy.cdm.api.service.search;
 
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.queryparser.complexPhrase.ComplexPhraseQueryParser;
 import org.hibernate.SessionFactory;
-import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
-import org.hibernate.search.indexes.IndexReaderAccessor;
+import org.hibernate.search.backend.lucene.LuceneExtension;
+import org.hibernate.search.backend.lucene.scope.LuceneIndexScope;
+import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.mapping.SearchMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -45,17 +51,18 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
 
 
     private SearchFactory getCurrentSearchFactory() {
-        return Search.getFullTextSession(sessionFactory.getCurrentSession()).getSearchFactory();
+        return org.hibernate.search.Search.getFullTextSession(sessionFactory.getCurrentSession()).getSearchFactory();
+    }
+
+    private SearchMapping getSearchMapping() {
+        return Search.mapping(sessionFactory);
     }
 
     /**
-     * TODO the abstract base class DescriptionElementBase can not be used, so
-     * we are using an arbitrary subclass to find the DirectoryProvider, future
-     * versions of hibernate search may allow using abstract base classes see
-     * {@link http://stackoverflow.com/questions/492184/how-do-you-find-all-subclasses-of-a-given-class-in-java}
-     *
-     * @param type must not be null
-     * @return
+     * Maps abstract indexed base types to a concrete subclass for APIs that still
+     * require a directly {@code @Indexed} type (e.g. analyzer lookup via the v5 helper).
+     * Index readers no longer need this: {@link SearchMapping#scope(Class)} includes
+     * all indexed subtypes.
      */
     protected Class<? extends CdmBase> pushAbstractBaseTypeDown(Class<? extends CdmBase> type) {
         if(type == null) {
@@ -67,13 +74,19 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
         if (type.equals(TaxonBase.class)) {
             return Taxon.class;
         }
+        if (type.equals(SpecimenOrObservationBase.class)) {
+            return DerivedUnit.class;
+        }
         return type;
     }
 
     @Override
     public IndexReader getIndexReaderFor(Class<? extends CdmBase> clazz) {
-        IndexReader reader = getCurrentSearchFactory().getIndexReaderAccessor().open(pushAbstractBaseTypeDown(clazz));
-        return reader;
+        // Scope on a parent type covers all indexed subtypes (separate indexes in HS6).
+        LuceneIndexScope scope = getSearchMapping()
+                .scope(clazz)
+                .extension(LuceneExtension.get());
+        return scope.openIndexReader();
     }
 
     @Override
@@ -99,31 +112,35 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
 
 
     /**
-     * <b>WARING</b> This method might return an Analyzer
-     * which is not suitable for all fields of the lucene document. This method
-     * internally uses the simplified method from {@link {
-     * @link org.hibernate.search.SearchFactory#getAnalyzer(Class)}
-     *
-     * TODO implement method which allows to retrieve the correct Analyzer
-     * per document field, this method will have another signature.
-     *
-     * @return the Analyzer suitable for the lucene index of the given
-     *         <code>clazz</code>
+     * <b>WARNING</b> For concrete {@code @Indexed} types this returns Hibernate Search's
+     * per-field {@code IndexingScopedAnalyzer}. For abstract base types that span multiple
+     * indexes in HS6 (e.g. {@link DescriptionElementBase}), that analyzer only knows the
+     * fields of the pushed-down subtype (TextData) and would fail to tokenize fields such
+     * as {@code name} or {@code area.label}. In that case a {@link StandardAnalyzer} is
+     * used, which matches {@code AnalyzerNames.DEFAULT} for QueryParser purposes.
      */
     @Override
     public Analyzer getAnalyzerFor(Class<? extends CdmBase> clazz) {
-        Analyzer analyzer = getCurrentSearchFactory().getAnalyzer(pushAbstractBaseTypeDown(clazz));
-        return analyzer;
+        if (needsSharedQueryAnalyzer(clazz)) {
+            return new StandardAnalyzer();
+        }
+        return getCurrentSearchFactory().getAnalyzer(pushAbstractBaseTypeDown(clazz));
+    }
+
+    private static boolean needsSharedQueryAnalyzer(Class<? extends CdmBase> clazz) {
+        return clazz == null
+                || Modifier.isAbstract(clazz.getModifiers())
+                || clazz.equals(DescriptionElementBase.class)
+                || clazz.equals(TaxonBase.class)
+                || clazz.equals(SpecimenOrObservationBase.class);
     }
 
     @Override
     public QueryFactory newQueryFactoryFor(Class<? extends CdmBase> clazz){
-        return new QueryFactory(this, pushAbstractBaseTypeDown(clazz));
-    }
-
-    @Override
-    public IndexReaderAccessor getIndexReaderAccessor(){
-        return getCurrentSearchFactory().getIndexReaderAccessor();
+        // Keep the original clazz for analyzer selection; do not push abstract types down
+        // here or QueryFactory would analyse DescriptionElement queries with TextData's
+        // IndexingScopedAnalyzer (missing name / area.label / …).
+        return new QueryFactory(this, clazz);
     }
 
 }

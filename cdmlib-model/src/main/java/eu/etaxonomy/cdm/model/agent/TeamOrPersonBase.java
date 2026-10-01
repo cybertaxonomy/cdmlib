@@ -17,8 +17,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
@@ -48,14 +48,14 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
 
     //under construction #4311
     @XmlElement(name="CollectorTitleCache")
-    @Field(index=Index.YES)
+    @FullTextField
     @Column(length=800)//see #1592
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.NONE)  //TODO: still needs to be checked if correct. ReplaceMode was chosen as it is not the only cache.
     protected String collectorTitleCache;
 
     //under construction #9664
     @XmlElement(name="NomenclaturalTitleCache")
-    @Field(index=Index.YES)
+    @FullTextField
     @Column(length=800)//see #1592
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.NONE)  //TODO: still needs to be checked if correct. ReplaceMode was chosen as it is not the only cache.
     protected String nomenclaturalTitleCache;
