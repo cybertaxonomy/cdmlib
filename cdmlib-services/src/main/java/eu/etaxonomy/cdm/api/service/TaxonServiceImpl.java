@@ -64,6 +64,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
+import eu.etaxonomy.cdm.api.service.search.LuceneIndexFields;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearch;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
@@ -1823,7 +1824,7 @@ public class TaxonServiceImpl
             textQueryBuilder.add(taxonBaseQueryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
         }
         if(className != null){
-            textQueryBuilder.add(taxonBaseQueryFactory.newTermQuery("classInfo.name", className, false), Occur.MUST);
+            textQueryBuilder.add(taxonBaseQueryFactory.newTermQuery(LuceneIndexFields.OBJECT_CLASS, className, false), Occur.MUST);
         }
 
         BooleanQuery textQuery = textQueryBuilder.build();

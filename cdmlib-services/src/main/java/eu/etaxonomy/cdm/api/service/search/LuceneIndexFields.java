@@ -20,5 +20,5 @@ public final class LuceneIndexFields {
      * Fully qualified entity class name. Written by {@link eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge}
      * (HS5 used {@code ProjectionConstants.OBJECT_CLASS} / {@code _hibernate_class}).
      */
-    public static final String OBJECT_CLASS = "classInfo.name";
+    public static final String OBJECT_CLASS = "classInfo";
 }

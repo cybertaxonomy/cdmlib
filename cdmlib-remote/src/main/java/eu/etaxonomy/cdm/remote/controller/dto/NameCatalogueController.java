@@ -400,7 +400,7 @@ public class NameCatalogueController
                     // scientific name to taxon concept in two web service calls.
                     List<String> accTbUuidList = new ArrayList<>();
                     String[] tbUuids = doc.getValues("taxonBases.uuid");
-                    String[] tbClassNames = doc.getValues("taxonBases.classInfo.name");
+                    String[] tbClassNames = doc.getValues("taxonBases.classInfo");
                     for(int i=0;i<tbUuids.length;i++) {
                         if(tbClassNames[i].equals("eu.etaxonomy.cdm.model.taxon.Taxon")) {
                             accTbUuidList.add(tbUuids[i]);
@@ -572,7 +572,7 @@ public class NameCatalogueController
                     // scientific name to taxon concept in two web service calls.
                     List<String> accTbUuidList = new ArrayList<>();
                     String[] tbUuids = doc.getValues("taxonBases.uuid");
-                    String[] tbClassNames = doc.getValues("taxonBases.classInfo.name");
+                    String[] tbClassNames = doc.getValues("taxonBases.classInfo");
                     for(int i=0;i<tbUuids.length;i++) {
                         if(tbClassNames[i].equals("eu.etaxonomy.cdm.model.taxon.Taxon")) {
                             accTbUuidList.add(tbUuids[i]);
