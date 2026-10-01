@@ -1422,11 +1422,6 @@
         <artifactId>hibernate-search-engine</artifactId>
         <version>${hibernate-search.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.hibernate.search</groupId>
-        <artifactId>hibernate-search-v5migrationhelper-orm</artifactId>
-        <version>${hibernate-search.version}</version>
-      </dependency>
 
       <dependency>
         <!-- used by hibernate as bytecode provider framework -->

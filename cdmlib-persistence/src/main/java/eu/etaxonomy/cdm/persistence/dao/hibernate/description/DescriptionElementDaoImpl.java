@@ -16,8 +16,6 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hibernate.Hibernate;
-import org.hibernate.search.FullTextQuery;
-import org.hibernate.search.FullTextSession;
 import org.hibernate.search.mapper.orm.Search;
 import org.springframework.stereotype.Repository;
 
@@ -53,16 +51,9 @@ public class DescriptionElementDaoImpl
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
-
-            FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(getSession());
-            FullTextQuery fullTextQuery = null;
-
-            if(clazz == null) {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-            } else {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
-            }
-            return fullTextQuery.getResultSize();
+            @SuppressWarnings("unchecked")
+            Class<DescriptionElementBase> entityType = (Class<DescriptionElementBase>) (clazz == null ? type : clazz);
+            return countFullTextResults(entityType, query);
         } catch (ParseException e) {
             throw new QueryParseException(e, queryString);
         }
@@ -76,22 +67,11 @@ public class DescriptionElementDaoImpl
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
-            FullTextQuery fullTextQuery = null;
-            FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(getSession());
-            if(clazz == null) {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-            } else {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
-            }
-            addOrder(fullTextQuery,orderHints);
-
-            this.addPageSizeAndNumber(fullTextQuery, pageSize, pageNumber);
-
             @SuppressWarnings("unchecked")
-            List<DescriptionElementBase> results = fullTextQuery.list();
+            Class<DescriptionElementBase> entityType = (Class<DescriptionElementBase>) (clazz == null ? type : clazz);
+            List<DescriptionElementBase> results = executeFullTextSearch(entityType, query, orderHints, pageSize, pageNumber);
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
-
         } catch (ParseException e) {
             throw new QueryParseException(e, queryString);
         }
@@ -131,12 +111,7 @@ public class DescriptionElementDaoImpl
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
-
-            FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(this.getSession());
-            org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-
-            return fullTextQuery.getResultSize();
-
+            return Math.toIntExact(countFullTextResults(type, query));
         } catch (ParseException e) {
             throw new QueryParseException(e, queryString);
         }

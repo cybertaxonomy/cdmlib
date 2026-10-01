@@ -302,7 +302,7 @@ public class QueryFactory {
      * @param fieldName name of the Lucene Field implementing Coordinates
      * @return Lucene Query to be used in a search
      * @see Query
-     * @see org.hibernate.search.spatial.Coordinates
+     * @see org.hibernate.search.mapper.pojo.bridge.builtin.annotation.GeoPointBinding
      */
     public static Query buildSpatialQueryByRange(RectangleDTO boundingBox, String fieldName) {
 

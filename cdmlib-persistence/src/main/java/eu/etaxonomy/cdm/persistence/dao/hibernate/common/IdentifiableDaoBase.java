@@ -26,7 +26,6 @@ import org.hibernate.Session;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
-import org.hibernate.search.FullTextSession;
 import org.hibernate.search.mapper.orm.Search;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
@@ -316,19 +315,9 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
-
-            FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(this.getSession());
-            org.hibernate.search.FullTextQuery fullTextQuery = null;
-
-            if(clazz == null) {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-            } else {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
-            }
-
-            int  result = fullTextQuery.getResultSize();
-            return result;
-
+            @SuppressWarnings("unchecked")
+            Class<T> entityType = (Class<T>) (clazz == null ? type : clazz);
+            return countFullTextResults(entityType, query);
         } catch (ParseException e) {
             throw new QueryParseException(e, queryString);
         }
@@ -367,32 +356,11 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
-
-            FullTextSession fullTextSession = org.hibernate.search.Search.getFullTextSession(getSession());
-            org.hibernate.search.FullTextQuery fullTextQuery = null;
-
-            if(clazz == null) {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-            } else {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
-            }
-
-            addOrder(fullTextQuery,orderHints);
-
-            if(pageSize != null) {
-                fullTextQuery.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    fullTextQuery.setFirstResult(pageNumber * pageSize);
-                } else {
-                    fullTextQuery.setFirstResult(0);
-                }
-            }
-
             @SuppressWarnings("unchecked")
-			List<T> result = fullTextQuery.list();
+            Class<T> entityType = (Class<T>) (clazz == null ? type : clazz);
+            List<T> result = executeFullTextSearch(entityType, query, orderHints, pageSize, pageNumber);
             defaultBeanInitializer.initializeAll(result, propertyPaths);
             return result;
-
         } catch (ParseException e) {
             throw new QueryParseException(e, queryString);
         }
