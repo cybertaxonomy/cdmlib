@@ -29,7 +29,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.permission.User;
@@ -57,7 +56,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
         "updated",
         "updatedBy"
 })
-@XmlJavaTypeAdapter(value = DateTimeAdapter.class, type = DateTime.class)
+@XmlJavaTypeAdapter(value = DateTimeAdapter.class, type = ZonedDateTime.class)
 @MappedSuperclass
 @Audited
 public abstract class VersionableEntity

@@ -8,18 +8,12 @@
 */
 package eu.etaxonomy.cdm.strategy.parser;
 
-import java.text.DateFormat;
-import java.text.ParsePosition;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
@@ -160,43 +154,6 @@ public class TimePeriodParser {
             return false;
         }
     }
-
-    private static boolean isDateString(String periodString) {
-		String[] startEnd = makeStartEnd(periodString);
-		String start = startEnd[0];
-		DateTime startDateTime = dateStringParse(start, true);
-		if (startDateTime == null){
-			return false;
-		}
-		if (startEnd.length > 1){
-			DateTime endDateTime = dateStringParse(startEnd[1], true);
-			if (endDateTime != null){
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private static String[] makeStartEnd(String periodString) {
-		String[] startEnd = new String[]{periodString};
-		if (periodString.contains("-") && periodString.matches("^-{2,}-^-{2,}")){
-			startEnd = periodString.split("-");
-		}
-		return startEnd;
-	}
-
-	private static DateTime dateStringParse(String string, boolean strict) {
-		DateFormat dateFormat = DateFormat.getDateInstance();
-		ParsePosition pos = new ParsePosition(0);
-		Date a = dateFormat.parse(string, pos);
-		if (a == null || pos.getIndex() != string.length()){
-			return null;
-		}
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(a);
-		DateTime result = new DateTime(cal);
-		return result;
-	}
 
     private static void parseSlashDatePattern(String periodString, TimePeriod result) {
         String[] dates = periodString.split("-");
@@ -798,9 +755,6 @@ public class TimePeriodParser {
         return result;
     }
 
-    private static boolean isBlank(String str){
-        return StringUtils.isBlank(str);
-    }
     private static boolean isNotBlank(String str){
         return StringUtils.isNotBlank(str);
     }

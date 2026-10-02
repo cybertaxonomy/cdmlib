@@ -9,22 +9,22 @@
 package eu.etaxonomy.cdm.remote.editor;
 
 import java.beans.PropertyEditorSupport;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
+import eu.etaxonomy.cdm.common.DateTimeUtil;
 
 public class IsoDateTimeEditor extends PropertyEditorSupport {
 
-	private static DateTimeFormatter iso8601Format = ISODateTimeFormat.dateTime();
+	private static DateTimeFormatter iso8601Formatter = DateTimeUtil.DATE_TIME_FORMATTER;
 
 	@Override
     public void setAsText(String text) {
-		setValue(iso8601Format.parseDateTime(text));
+		setValue(iso8601Formatter.parse(text));
 	}
 
 	@Override
     public String getAsText() {
-		return iso8601Format.print((DateTime)getValue());
+		return ((ZonedDateTime)getValue()).format(iso8601Formatter);
 	}
 }

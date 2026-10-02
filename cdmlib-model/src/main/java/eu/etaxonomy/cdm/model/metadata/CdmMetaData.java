@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.model.metadata;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -21,7 +23,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -140,7 +141,7 @@ public class CdmMetaData extends CdmBase{
         // schema version
         result.add(new CdmMetaData(CdmMetaDataPropertyName.DB_SCHEMA_VERSION, dbSchemaVersion));
         // database create time
-        result.add(new CdmMetaData(CdmMetaDataPropertyName.DB_CREATE_DATE, new DateTime().toString()));
+        result.add(new CdmMetaData(CdmMetaDataPropertyName.DB_CREATE_DATE, ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE)));
         result.add(new CdmMetaData(CdmMetaDataPropertyName.INSTANCE_ID, UUID.randomUUID().toString()));
         result.add(new CdmMetaData(CdmMetaDataPropertyName.INSTANCE_NAME, UNNAMED));
         return result;

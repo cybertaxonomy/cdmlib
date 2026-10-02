@@ -16,7 +16,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DOI;
@@ -75,7 +74,6 @@ public abstract class StrategyBase
 	protected boolean isUserType(Class<?> fieldType) {
 		if (	fieldType == TimePeriod.class ||
 		        fieldType == VerbatimTimePeriod.class ||
-                fieldType == DateTime.class ||
                 fieldType == ZonedDateTime.class ||
                 fieldType == LSID.class ||
 				fieldType == Contact.class ||

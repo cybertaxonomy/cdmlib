@@ -223,10 +223,6 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.DateTime">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
-        </entry>
         <entry key="java.util.Calendar">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
@@ -323,10 +319,6 @@
         <entry key="java.util.UUID">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
-        </entry>
-        <entry key="org.joda.time.DateTime">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
         </entry>
         <entry key="java.util.Calendar">
           <bean
@@ -528,10 +520,6 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.DateTime">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
-        </entry>
         <entry key="java.util.Calendar">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
@@ -616,10 +604,6 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.DateTime">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
-        </entry>
         <entry key="java.util.Calendar">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
@@ -674,10 +658,6 @@
         <entry key="java.util.UUID">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
-        </entry>
-        <entry key="org.joda.time.DateTime">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
         </entry>
         <entry key="java.util.Calendar">
           <bean
