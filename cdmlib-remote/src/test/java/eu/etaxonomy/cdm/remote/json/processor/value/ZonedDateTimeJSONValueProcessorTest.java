@@ -22,20 +22,20 @@ import eu.etaxonomy.cdm.common.DateTimeUtil;
  * @author a.kohlbecker
  * @since Jan 15, 2019
  */
-public class DateTimeJSONValueProcessorTest {
+public class ZonedDateTimeJSONValueProcessorTest {
 
     @Test
     public void testFormatDateTime(){
         DateTimeFormatter formatter = DateTimeUtil.FLEXIBEL_DATE_TIME_FORMATTER;
         ZonedDateTime dateTime = ZonedDateTime.parse("2010-06-30T01:20+02:00", formatter);
-        DateTimeJSONValueProcessor processor = new DateTimeJSONValueProcessor();
+        ZonedDateTimeJSONValueProcessor processor = new ZonedDateTimeJSONValueProcessor();
         //Note: nanos are optional, maybe we should remove them from being obligatory here
         assertEquals("2010-06-30T01:20:00+02:00", processor.formatDateTime(dateTime));
     }
 
     @Test
     public void testFormatDateTimeNull(){
-        DateTimeJSONValueProcessor processor = new DateTimeJSONValueProcessor();
+        ZonedDateTimeJSONValueProcessor processor = new ZonedDateTimeJSONValueProcessor();
         assertNull(processor.formatDateTime(null));
     }
 }
