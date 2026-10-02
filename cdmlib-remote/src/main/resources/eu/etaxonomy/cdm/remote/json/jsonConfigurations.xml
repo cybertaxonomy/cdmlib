@@ -235,6 +235,10 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
         </entry>
+        <entry key="java.time.ZonedDateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.ZonedDateTimeJSONValueProcessor" />
+        </entry>
         <entry key="java.lang.Class">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.ClassJSONValueProcessor" />
@@ -331,6 +335,10 @@
         <entry key="org.joda.time.Partial">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
+        </entry>
+        <entry key="java.time.ZonedDateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.ZonedDateTimeJSONValueProcessor" />
         </entry>
         <entry key="java.lang.Class">
           <bean
@@ -532,6 +540,10 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
         </entry>
+        <entry key="java.time.ZonedDateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.ZonedDateTimeJSONValueProcessor" />
+        </entry>
         <entry key="java.lang.Class">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.ClassJSONValueProcessor" />
@@ -616,6 +628,10 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
         </entry>
+        <entry key="java.time.ZonedDateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.ZonedDateTimeJSONValueProcessor" />
+        </entry>
         <entry key="java.util.Map">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
         </entry>
@@ -670,6 +686,10 @@
         <entry key="org.joda.time.Partial">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
+        </entry>
+        <entry key="java.time.ZonedDateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.ZonedDateTimeJSONValueProcessor" />
         </entry>
         <entry key="java.util.Map">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />

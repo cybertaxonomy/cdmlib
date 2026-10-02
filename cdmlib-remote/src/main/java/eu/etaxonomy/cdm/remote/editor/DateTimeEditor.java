@@ -14,6 +14,8 @@ import java.time.format.DateTimeFormatter;
 
 import org.joda.time.format.DateTimeFormatterBuilder;
 
+@Deprecated  //we do not use joda.time.DateTime anymore and therefore
+//this will be removed in near future
 public class DateTimeEditor extends PropertyEditorSupport {
 
 	private static org.joda.time.format.DateTimeFormatter parser;
@@ -26,12 +28,14 @@ public class DateTimeEditor extends PropertyEditorSupport {
 		formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 	}
 
-	@Override
+	@Deprecated
+    @Override
     public void setAsText(String text) {
 		setValue(parser.parseDateTime(text));
 	}
 
-	@Override
+	@Deprecated
+    @Override
     public String getAsText() {
 		return formatter.format((ZonedDateTime)getValue());
 	}

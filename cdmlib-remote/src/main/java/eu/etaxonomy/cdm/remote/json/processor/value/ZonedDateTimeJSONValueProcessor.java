@@ -15,34 +15,28 @@ import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
 
 /**
- * @author n.hoffmann
- * @since 24.07.2008
+ * @author a.mueller
+ * @since 02.10.2026
  */
-@Deprecated //we do not use joda.time anymore. This Processor will be removed soon
-//Use ZonedDateTimeJSONValueProcessor instead
-public class DateTimeJSONValueProcessor implements JsonValueProcessor {
+public class ZonedDateTimeJSONValueProcessor implements JsonValueProcessor {
 
 	private static final DateTimeFormatter ISO8601_FORMAT = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
-	@Deprecated
-    @Override
+	@Override
     public Object processArrayValue(Object object, JsonConfig jsonConfig) {
 		ZonedDateTime dateTime = (ZonedDateTime) object;
         return formatDateTime(dateTime);
 	}
 
-	@Deprecated
-    @Override
+	@Override
     public Object processObjectValue(String key, Object object,
 			JsonConfig jsonConfig) {
 	    return formatDateTime((ZonedDateTime)object);
 	}
 
-    @Deprecated
     Object formatDateTime(ZonedDateTime object) {
         if(object != null){
 	        ZonedDateTime dateTime = object;
-	        // WARNING! null means now!
 	        return ISO8601_FORMAT.format(dateTime);
 	    } else {
 	        return null;
