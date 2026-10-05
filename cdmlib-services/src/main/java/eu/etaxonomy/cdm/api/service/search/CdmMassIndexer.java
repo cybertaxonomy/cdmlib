@@ -13,6 +13,8 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.reflect.Field;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -84,7 +86,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     protected <T extends CdmBase> void createDictionary(Class<T> type, IProgressMonitor monitor)  {
         if(!type.isAnnotationPresent(Indexed.class)) {
-            //TODO:give some indication that this class is infact not indexed
+            //TODO:give some indication that this class is in fact not indexed
             return;
         }
 
@@ -216,19 +218,19 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
 
         monitor.setTaskName("CdmMassIndexer");
-        int steps = types.size();
-        monitor.beginTask("Reindexing " + types.size() + " classes", steps);
+        int nSteps = types.size();
+        monitor.beginTask("Reindexing " + nSteps + " classes", nSteps);
 
-        long start = System.currentTimeMillis();
+        var start = Instant.now();
         for(Class<? extends CdmBase> type : types){
-            long perTypeStart = System.currentTimeMillis();
+            var perTypeStart = Instant.now();
 
-           reindex_55(type, monitor);
+            reindexSingleClass(type, monitor);
 
-            logger.info("Indexing of " + type.getSimpleName() + " in " + ((System.currentTimeMillis() - perTypeStart) / 1000) + "s");
+            logger.info("Indexing of " + type.getSimpleName() + " in " + Duration.between(perTypeStart, Instant.now()).toSeconds() + "s");
         }
 
-        logger.info("reindexing completed in " + ((System.currentTimeMillis() - start) / 1000) + "s");
+        logger.info("reindexing completed in " + Duration.between(start, Instant.now()).toSeconds() + "s");
 
         //monitor.worked(1);
         monitor.done();
@@ -236,14 +238,14 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     }
 
     /**
-     * new reindex method which benefits from
+     * Reindex method which uses
      * the mass indexer available in hibernate search 5.5
      *
      * @param type
      * @param monitor
      * @throws InterruptedException
      */
-    protected void reindex_55(Class<? extends CdmBase> type, IProgressMonitor monitor) {
+    protected void reindexSingleClass(Class<? extends CdmBase> type, IProgressMonitor monitor) {
 
         logger.info("start indexing " + type.getName());
         monitor.subTask("indexing " + type.getSimpleName());
@@ -322,7 +324,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     /**
      * Returns a list of declared indexable fields within a class through reflection.
      */
-    private List<String> getIndexedDeclaredFields(Class clazz) {
+    private List<String> getIndexedDeclaredFields(Class<?> clazz) {
         List<String> idFields = new ArrayList<String>();
         if(clazz.isAnnotationPresent(Indexed.class)) {
             Field[] declaredFields = clazz.getDeclaredFields();

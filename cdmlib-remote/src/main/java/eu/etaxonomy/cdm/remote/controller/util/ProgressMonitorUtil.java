@@ -20,8 +20,8 @@ import org.springframework.web.servlet.view.RedirectView;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
-import eu.etaxonomy.cdm.remote.json.JsonpRedirect;
 import eu.etaxonomy.cdm.remote.json.JsonUtil;
+import eu.etaxonomy.cdm.remote.json.JsonpRedirect;
 
 /**
  * @author Andreas Kohlbecker
@@ -52,7 +52,6 @@ public class ProgressMonitorUtil {
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         return respondWithMonitorOrDownload(frontendBaseUrl, null, processLabel, monitorUuid, dataRedirect, request, response);
     }
-
 
     /**
      * send redirect "see other"
@@ -100,14 +99,9 @@ public class ProgressMonitorUtil {
         return mv;
     }
 
-
-    /**
-     * @return
-     */
     public UUID registerNewMonitor() {
         final RestServiceProgressMonitor monitor = new RestServiceProgressMonitor();
         final UUID monitorUuid = progressMonitorController.registerMonitor(monitor);
         return monitorUuid;
     }
-
 }

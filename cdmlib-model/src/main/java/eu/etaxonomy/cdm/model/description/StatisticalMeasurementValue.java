@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.description;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,15 +29,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
-import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -125,7 +125,6 @@ public class StatisticalMeasurementValue
 
 // ***************** GETTER / SETTER **************************/
 
-
 	/**
 	 * Returns the type of {@link StatisticalMeasure statistical measure} used in
 	 * <i>this</i> statistical measurement value.
@@ -139,7 +138,6 @@ public class StatisticalMeasurementValue
 	public void setType(StatisticalMeasure type){
 		this.type = type;
 	}
-
 
 	/**
 	 * Returns the numerical value used to describe the {@link Feature feature}
@@ -241,5 +239,4 @@ public class StatisticalMeasurementValue
 	            (type!=null?type:"[no type]")
 	            +"="+value;
 	}
-
 }

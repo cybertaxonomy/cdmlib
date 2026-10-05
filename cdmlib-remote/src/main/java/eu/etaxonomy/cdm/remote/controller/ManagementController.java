@@ -46,7 +46,7 @@ public class ManagementController {
     private static final Logger logger = LogManager.getLogger();
 
     // @Autowired
-    private DataSourceReloader datasoucrceLoader;
+    private DataSourceReloader datasourceLoader;
 
     @Autowired
     public ICdmMassIndexer indexer;
@@ -85,7 +85,7 @@ public class ManagementController {
             @SuppressWarnings("unused") HttpServletResponse respone) throws Exception {
 
         ModelAndView mv = new ModelAndView();
-        Map<String, DataSourceInfo> dataSourceInfos = datasoucrceLoader.test();
+        Map<String, DataSourceInfo> dataSourceInfos = datasourceLoader.test();
         mv.addObject(dataSourceInfos);
 
         return mv;
@@ -97,7 +97,7 @@ public class ManagementController {
             @SuppressWarnings("unused") HttpServletResponse respone) throws Exception {
 
         ModelAndView mv = new ModelAndView();
-        Map<String, DataSourceInfo> dataSourceInfos = datasoucrceLoader
+        Map<String, DataSourceInfo> dataSourceInfos = datasourceLoader
                 .reload();
         mv.addObject(dataSourceInfos);
 

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.permission;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,7 +27,6 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
