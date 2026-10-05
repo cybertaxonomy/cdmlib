@@ -30,16 +30,11 @@ import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.store.Directory;
 import org.hibernate.CacheMode;
-import org.hibernate.FlushMode;
-import org.hibernate.ObjectNotFoundException;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.search.backend.lucene.LuceneExtension;
 import org.hibernate.search.backend.lucene.scope.LuceneIndexScope;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.mapping.SearchMapping;
-import org.hibernate.search.mapper.orm.work.SearchIndexingPlan;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
@@ -75,11 +70,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     private final Set<Class<? extends CdmBase>> indexedClasses = new HashSet<>();
 
-    /*
-     * flag to enable old hibernate search 3.1 mode
-     */
-    private static final boolean HS_31_MODE = false;
-
     private HibernateTransactionManager transactionManager;
 
     @Autowired
@@ -90,64 +80,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     protected Session getSession(){
         Session session = transactionManager.getSessionFactory().getCurrentSession();
         return session;
-    }
-
-    /**
-     * Reindex method based on hibernate search  3.1
-     */
-    protected <T extends CdmBase>void reindex_31(Class<T> type, IProgressMonitor monitor) {
-
-        //TODO set the application in maintenance mode: making
-        // queries to the index is not recommended when a MassIndexer is busy.
-        // fullTextSession.createIndexer().startAndWait();
-
-        Session session = getSession();
-        session.setHibernateFlushMode(FlushMode.MANUAL);
-        session.setCacheMode(CacheMode.IGNORE);
-        SearchIndexingPlan indexingPlan = Search.session(session).indexingPlan();
-
-        logger.info("start indexing " + type.getName());
-        monitor.subTask("indexing " + type.getSimpleName());
-
-        Long countResult = countEntities(type);
-        int batchSize = sweetestBatchSize(type);
-        int numOfBatches = calculateNumOfBatches(countResult, batchSize);
-
-        SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
-        subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
-
-        // Scrollable results will avoid loading too many objects in memory
-        ScrollableResults results = session.createCriteria(type).setFetchSize(batchSize).scroll(ScrollMode.FORWARD_ONLY);
-        long index = 0;
-        int batchesWorked = 0;
-
-
-        try {
-            while (results.next()) {
-                index++;
-                indexingPlan.addOrUpdate(results.get(0)); // index each element
-                if (index % batchSize == 0 || index == countResult) {
-                    batchesWorked++;
-                    try {
-                        indexingPlan.execute(); // apply changes to indexes
-                    } catch(ObjectNotFoundException e){
-                        // TODO report this issue to progress monitor once it can report on errors
-                        logger.error("possibly invalid data, thus skipping this batch and continuing with next one", e);
-                    } finally {
-                        session.clear(); // clear session to free memory
-                        subMonitor.worked(1);
-                        logger.info("\tbatch " + batchesWorked + "/" + numOfBatches + " processed");
-                    }
-                }
-            }
-        } catch (RuntimeException e) {
-            //TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
-            monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
-            monitor.done();
-            throw	e;
-        }
-        logger.info("end indexing " + type.getName());
-        subMonitor.done();
     }
 
     protected <T extends CdmBase> void createDictionary(Class<T> type, IProgressMonitor monitor)  {
@@ -283,41 +215,19 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             types = indexedClasses();
         }
 
-        if(HS_31_MODE) {
-
-        }
-
         monitor.setTaskName("CdmMassIndexer");
-        int steps = types.size() + (HS_31_MODE ? 1 /* +1 for optimize */ : 0);
+        int steps = types.size();
         monitor.beginTask("Reindexing " + types.size() + " classes", steps);
-
-        boolean optimize = true;
 
         long start = System.currentTimeMillis();
         for(Class<? extends CdmBase> type : types){
             long perTypeStart = System.currentTimeMillis();
 
-            if(HS_31_MODE) {
-                // TODO remove this mode and all related code once the old reindex method is vanished
-                reindex_31(type, monitor);
-            } else {
-                reindex_55(type, monitor);
-                optimize = false;
-            }
-
+           reindex_55(type, monitor);
 
             logger.info("Indexing of " + type.getSimpleName() + " in " + ((System.currentTimeMillis() - perTypeStart) / 1000) + "s");
         }
 
-        if(HS_31_MODE) {
-            monitor.subTask("Optimizing Index");
-            SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
-            subMonitor.beginTask("Optimizing Index",1);
-            optimize();
-            logger.info("end index optimization");
-            subMonitor.worked(1);
-            subMonitor.done();
-        }
         logger.info("reindexing completed in " + ((System.currentTimeMillis() - start) / 1000) + "s");
 
         //monitor.worked(1);
@@ -344,7 +254,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
         subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
-
 
         MassIndexingMonitor indexerMonitorWrapper = new MassIndexerProgressMonitorWrapper(subMonitor, batchSize);
 
@@ -441,6 +350,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             indexedClasses.add(TaxonName.class);
             indexedClasses.add(SpecimenOrObservationBase.class);
             indexedClasses.add(TaxonRelationship.class);
+
         }
         return indexedClasses;
     }
