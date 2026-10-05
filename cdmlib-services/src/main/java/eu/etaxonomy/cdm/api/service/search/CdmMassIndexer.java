@@ -31,6 +31,7 @@ import org.apache.lucene.search.spell.Dictionary;
 import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 import org.hibernate.CacheMode;
 import org.hibernate.Session;
 import org.hibernate.search.backend.lucene.LuceneExtension;
@@ -105,7 +106,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         try {
             // Use a RAM directory for the spell checker index; the former HS5
             // DirectoryBasedIndexManager API is no longer available.
-            Directory directory = org.apache.lucene.store.NIOFSDirectory.open(
+            Directory directory = FSDirectory.open(
                     java.nio.file.Paths.get(System.getProperty("java.io.tmpdir"),
                             "cdm-spellcheck", type.getSimpleName()));
             spellChecker = new SpellChecker(directory);
@@ -156,7 +157,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         if(memoryMXBean != null){
             logger.debug("NonHeapMemoryUsage: "+memoryMXBean.getHeapMemoryUsage());
              MemoryUsage memusage = memoryMXBean.getHeapMemoryUsage();
-             freeMemoryMB =( memusage.getMax() - memusage.getUsed()) / (1024 * 1024);
+             freeMemoryMB = (memusage.getMax() - memusage.getUsed()) / (1024 * 1024);
         } else {
             // will be smaller than the actual free mem since Runtime does not
             // know about Committed heap mem
@@ -178,7 +179,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
 
         int batchSize = (int) Math.floor( factor * freeMemoryMB);
-        logger.info("calculated batch size sweet spot for indexing " + type.getSimpleName()
+        logger.info("Calculated batch size sweet spot for indexing " + type.getSimpleName()
                 + " with " +  freeMemoryMB +  "MB free mem is " + batchSize);
         return batchSize;
     }
