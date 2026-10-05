@@ -37,12 +37,14 @@ import org.hibernate.Session;
 import org.hibernate.search.backend.lucene.LuceneExtension;
 import org.hibernate.search.backend.lucene.scope.LuceneIndexScope;
 import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.entity.SearchIndexedEntity;
 import org.hibernate.search.mapper.orm.mapping.SearchMapping;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.hibernate.search.mapper.pojo.massindexing.MassIndexingMonitor;
+import org.hibernate.search.util.common.SearchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
@@ -56,10 +58,6 @@ import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 /**
  * @author Andreas Kohlbecker
@@ -86,13 +84,15 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     }
 
     protected <T extends CdmBase> void createDictionary(Class<T> type, IProgressMonitor monitor)  {
-        if(!type.isAnnotationPresent(Indexed.class)) {
-            //TODO:give some indication that this class is in fact not indexed
+
+        SearchMapping mapping = getSearchMapping();
+        try {
+            mapping.indexedEntity(type);
+        } catch (SearchException e) {
+            logger.info("Skipping dictionary creation for non-indexed type {}", type.getName());
             return;
         }
 
-        SearchMapping mapping = Search.mapping(
-                transactionManager.getSessionFactory());
         LuceneIndexScope scope = mapping.scope(type).extension(LuceneExtension.get());
         IndexReader indexReader = scope.openIndexReader();
         List<String> idFields = getIndexedDeclaredFields(type);
@@ -147,6 +147,10 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
         logger.info("end creating dictionary " + type.getName());
         subMonitor.done();
+    }
+
+    private SearchMapping getSearchMapping() {
+        return Search.mapping(transactionManager.getSessionFactory());
     }
 
     private int sweetestBatchSize(Class<? extends CdmBase> type){
@@ -344,16 +348,13 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     @Override
     public Set<Class<? extends CdmBase>> indexedClasses() {
+
         // if no indexed classes have been 'manually' set then
         // the default is the full list
         if(indexedClasses.size() == 0) {
-            indexedClasses.add(DescriptionElementBase.class);
-            indexedClasses.add(TaxonBase.class);
-            indexedClasses.add(Classification.class);
-            indexedClasses.add(TaxonName.class);
-            indexedClasses.add(SpecimenOrObservationBase.class);
-            indexedClasses.add(TaxonRelationship.class);
-
+            SearchMapping mapping = getSearchMapping();
+            Collection<? extends SearchIndexedEntity<?>> all = mapping.allIndexedEntities();
+            all.forEach(sie->indexedClasses.add((Class<? extends CdmBase>)sie.javaClass()));
         }
         return indexedClasses;
     }
