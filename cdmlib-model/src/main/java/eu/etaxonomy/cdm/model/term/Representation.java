@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 @XmlRootElement(name = "Representation")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.term.Representation")
+//@Indexed
 @Audited
 public class Representation extends AnnotatableLanguageStringBase {
 

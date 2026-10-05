@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 )
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
+//@Indexed
 @Audited
 public class NomenclaturalStatusType
         extends DefinedTermBase<NomenclaturalStatusType>

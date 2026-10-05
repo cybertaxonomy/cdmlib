@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @XmlRootElement(name = "Group")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.Group")
+//@Indexed
 @Table(name = "PermissionGroup")
 public class Group extends CdmBase {
 

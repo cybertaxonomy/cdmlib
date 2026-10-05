@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 @XmlType(name = "MarkerType")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
+//@Indexed
 @Audited
 public class MarkerType extends AvailableForIdentifiableBase<MarkerType> {
 

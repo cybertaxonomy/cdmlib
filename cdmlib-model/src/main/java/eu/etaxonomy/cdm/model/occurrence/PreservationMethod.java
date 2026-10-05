@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 })
 @XmlRootElement(name = "PreservationMethod")
 @Entity
-//TODO @Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
+//@Indexed
 @Audited
 public class PreservationMethod extends MaterialOrMethodEvent {
 

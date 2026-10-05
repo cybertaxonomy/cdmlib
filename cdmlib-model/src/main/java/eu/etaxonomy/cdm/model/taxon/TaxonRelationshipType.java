@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 @XmlRootElement(name = "TaxonRelationshipType")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
+//@Indexed
 @Audited
 public class TaxonRelationshipType
         extends RelationshipTermBase<TaxonRelationshipType> {

@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlRootElement(name = "Institution")
 @Entity
 // @Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
+//@Indexed
 @Audited
 @Configurable
 public class Institution

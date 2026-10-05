@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 @XmlRootElement(name = "TermVocabulary")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.term.TermVocabulary")
+//@Indexed
 @Audited
 public class TermVocabulary<T extends DefinedTermBase>
         extends TermCollection<T,TermNode> {

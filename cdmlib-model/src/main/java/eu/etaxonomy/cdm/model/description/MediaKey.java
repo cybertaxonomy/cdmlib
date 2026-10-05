@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 @XmlRootElement(name = "MediaKey")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
+//@Indexed
 @Audited
 public class MediaKey extends Media implements IIdentificationKey{
 

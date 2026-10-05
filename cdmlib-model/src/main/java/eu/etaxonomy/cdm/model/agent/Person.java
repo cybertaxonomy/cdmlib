@@ -84,7 +84,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @XmlRootElement(name = "Person")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
+//@Indexed
 @Audited
 @Configurable
 public class Person

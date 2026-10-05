@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlRootElement(name = "TaxonRelationship")
 @Entity
 @Audited
-@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonRelationship")
+@Indexed
 public class TaxonRelationship
         extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
 

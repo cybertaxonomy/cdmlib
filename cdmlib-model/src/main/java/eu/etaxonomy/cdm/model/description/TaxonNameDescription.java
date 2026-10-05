@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.strategy.cache.description.TaxonNameDescriptionDefaultCa
 @XmlRootElement(name = "TaxonNameDescription")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
+//@Indexed
 @Audited
 @Configurable
 public class TaxonNameDescription

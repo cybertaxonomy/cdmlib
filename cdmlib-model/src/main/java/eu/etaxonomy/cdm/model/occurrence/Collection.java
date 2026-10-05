@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy
 @XmlRootElement(name = "Collection")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.Collection")
+//@Indexed
 @Audited
 @Configurable
 @Table(name = "Collection", indexes = {@javax.persistence.Index(name = "collectionTitleCacheIndex", columnList = "titleCache")})

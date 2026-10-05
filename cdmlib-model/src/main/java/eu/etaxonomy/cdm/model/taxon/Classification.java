@@ -77,7 +77,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.ClassificationDefaultCacheStrategy;
 @XmlRootElement(name = "Classification")
 @Entity
 @Audited
-@Indexed(index = "eu.etaxonomy.cdm.model.taxon.Classification")
+@Indexed
 public class Classification
         extends CreditableEntity<IIdentifiableEntityCacheStrategy<Classification>>
         implements ITaxonTreeNode, IHasCredits, IHasLink {

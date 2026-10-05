@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 @XmlRootElement(name = "MultiAccessKey")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptiveDataSet")
+//@Indexed
 @Audited
 
 public class MultiAccessKey extends DescriptiveDataSet implements IIdentificationKey {

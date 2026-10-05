@@ -69,7 +69,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidPassword;
 @XmlRootElement(name = "User")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.User")
+//@Indexed
 @Audited
 @Table(name = "UserAccount")
 public class User extends CdmBase implements UserDetails {

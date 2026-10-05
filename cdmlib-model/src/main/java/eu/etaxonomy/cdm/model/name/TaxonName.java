@@ -193,7 +193,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @CorrectRanksForCode(groups = Level2.class)
 @NameMustHaveAuthority(groups = Level2.class)
 @NoDuplicateNames(groups = Level3.class)
-@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonName")
+@Indexed
 public class TaxonName
             extends IdentifiableEntity<INameCacheStrategy>
             implements ITaxonNameBase, INonViralName, IViralName, IBacterialName, IZoologicalName,

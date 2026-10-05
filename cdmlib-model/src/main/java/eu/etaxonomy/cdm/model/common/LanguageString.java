@@ -39,7 +39,7 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "LanguageString")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.LanguageString")
+//@Indexed
 @Audited
 public class LanguageString
         extends AnnotatableLanguageStringBase

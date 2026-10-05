@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 @XmlRootElement(name = "TermRelationshipType")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//@Indexed
 @Audited
 public class TermRelationshipType extends RelationshipTermBase<TermRelationshipType> {
 
