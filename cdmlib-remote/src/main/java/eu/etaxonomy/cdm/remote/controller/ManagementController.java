@@ -42,6 +42,7 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = { "/manage" })
 public class ManagementController {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     // @Autowired
@@ -80,8 +81,8 @@ public class ManagementController {
      */
     // @RequestMapping(value = { "/manager/datasources/list" }, method =
     // RequestMethod.GET)
-    protected ModelAndView doList(HttpServletRequest request,
-            HttpServletResponse respone) throws Exception {
+    protected ModelAndView doList(@SuppressWarnings("unused") HttpServletRequest request,
+            @SuppressWarnings("unused") HttpServletResponse respone) throws Exception {
 
         ModelAndView mv = new ModelAndView();
         Map<String, DataSourceInfo> dataSourceInfos = datasoucrceLoader.test();
@@ -92,8 +93,8 @@ public class ManagementController {
 
     // @RequestMapping(value = { "/manager/datasources/reload" }, method =
     // RequestMethod.GET)
-    public ModelAndView doReload(HttpServletRequest request,
-            HttpServletResponse respone) throws Exception {
+    public ModelAndView doReload(@SuppressWarnings("unused") HttpServletRequest request,
+            @SuppressWarnings("unused") HttpServletResponse respone) throws Exception {
 
         ModelAndView mv = new ModelAndView();
         Map<String, DataSourceInfo> dataSourceInfos = datasoucrceLoader
