@@ -165,10 +165,10 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         Object directoryRoot = props.get("hibernate.search.backend.directory.root");
         if (directoryRoot != null) {
             String absolute = Paths.get(directoryRoot.toString()).toAbsolutePath().normalize().toString();
-            logger.info("Hibernate Search index location: type={}, root={} (absolute={})",
+            logger.warn("Hibernate Search index location: type={}, root={} (absolute={})",
                     directoryType, directoryRoot, absolute);
         } else {
-            logger.info("Hibernate Search index location: type={}, root=<not set>", directoryType);
+            logger.warn("Hibernate Search index location: type={}, root=<not set>", directoryType);
         }
     }
 
