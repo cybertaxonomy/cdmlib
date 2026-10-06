@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * Integration tests for {@link CdmMassIndexer} / {@link ICdmMassIndexer}.
@@ -40,7 +41,8 @@ public class CdmMassIndexerTest extends CdmTransactionalIntegrationTest {
     private ITaxonService taxonService;
 
     @Test
-    @DataSet(value = "/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml")
+    @DataSet(value = "/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml",
+            loadStrategy = CleanSweepInsertLoadStrategy.class)
     public final void testPurge() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
@@ -59,7 +61,8 @@ public class CdmMassIndexerTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value = "/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml")
+    @DataSet(value = "/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml",
+            loadStrategy = CleanSweepInsertLoadStrategy.class)
     public final void testReindex() throws IOException, LuceneParseException {
 
         refreshLuceneIndex();
