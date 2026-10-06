@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 /**
  * @author a.kohlbecker
  * @since Jan 13, 2017
- *
  */
 public class QueryFactoryTest extends CdmIntegrationTest {
 

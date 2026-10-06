@@ -35,13 +35,6 @@ public class LuceneIndexToolProviderTest extends CdmIntegrationTest {
         Assert.assertEquals(ComplexPhraseQueryParser.class, luceneIndexToolProvider.getQueryParserFor(Taxon.class, true).getClass());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }
