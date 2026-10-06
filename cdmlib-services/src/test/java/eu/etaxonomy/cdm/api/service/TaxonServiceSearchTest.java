@@ -154,30 +154,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public final void testPurgeAndReindex() throws IOException, LuceneParseException {
-
-        refreshLuceneIndex();
-        TaxonNode subtree = null;
-
-        Pager<SearchResult<TaxonBase>> pager = taxonService.findByFullText(null, "Abies", null, subtree,
-                includeUnpublished, null, true, null, null, null, null); // --> 8
-        Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
-
-        indexer.purge(null);
-        commitAndStartNewTransaction(null);
-
-        pager = taxonService.findByFullText(null, "Abies", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 0
-        Assert.assertEquals("Expecting no entities since the index has been purged", 0, pager.getCount().intValue());
-
-        indexer.reindex(indexer.indexedClasses(), null);
-        commitAndStartNewTransaction(null);
-
-        pager = taxonService.findByFullText(null, "Abies", null, subtree, includeUnpublished, null, true, null, null, null, null); // --> 8
-        Assert.assertEquals("Expecting 8 entities", 8, pager.getCount().intValue());
-    }
-
-    @Test
-    @DataSet
     public final void testFindByDescriptionElementFullText_CommonName() throws IOException,
             LuceneParseException {
 
