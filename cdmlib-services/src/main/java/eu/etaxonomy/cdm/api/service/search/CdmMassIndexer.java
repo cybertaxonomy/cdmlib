@@ -13,6 +13,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.reflect.Field;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -153,6 +155,23 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         return Search.mapping(transactionManager.getSessionFactory());
     }
 
+    /**
+     * Logs the configured Lucene index storage location (once per purge/reindex call).
+     * Index files for each entity live under {@code <root>/<indexName>/}.
+     */
+    private void logIndexDirectory() {
+        Map<String, Object> props = transactionManager.getSessionFactory().getProperties();
+        Object directoryType = props.get("hibernate.search.backend.directory.type");
+        Object directoryRoot = props.get("hibernate.search.backend.directory.root");
+        if (directoryRoot != null) {
+            String absolute = Paths.get(directoryRoot.toString()).toAbsolutePath().normalize().toString();
+            logger.info("Hibernate Search index location: type={}, root={} (absolute={})",
+                    directoryType, directoryRoot, absolute);
+        } else {
+            logger.info("Hibernate Search index location: type={}, root=<not set>", directoryType);
+        }
+    }
+
     private int sweetestBatchSize(Class<? extends CdmBase> type){
 
         Runtime.getRuntime().gc();
@@ -221,6 +240,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         if(types == null){
             types = indexedClasses();
         }
+
+        logIndexDirectory();
 
         monitor.setTaskName("CdmMassIndexer");
         int nSteps = types.size();
@@ -307,6 +328,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         if(monitor == null){
             monitor = new NullProgressMonitor();
         }
+
+        logIndexDirectory();
 
         monitor.setTaskName("CdmMassIndexer");
         int steps = indexedClasses().size() + 1; // +1 for optimize
