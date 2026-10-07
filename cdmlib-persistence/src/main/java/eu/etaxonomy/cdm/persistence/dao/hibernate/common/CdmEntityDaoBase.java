@@ -97,9 +97,8 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public void lock(T t, LockOptions lockOptions) {
-        getSession().buildLockRequest(lockOptions).lock(t);
+        getSession().lock(t, lockOptions.getLockMode());
     }
-
 
     @Override
     public UUID refresh(T persistentObject) throws DataAccessException {
@@ -108,7 +107,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
     @Override
     public void refresh(T t, LockOptions lockOptions, List<String> propertyPaths) {
-        getSession().refresh(t, lockOptions);
+        getSession().refresh(t, lockOptions.getLockMode());
         defaultBeanInitializer.initialize(t, propertyPaths);
     }
 

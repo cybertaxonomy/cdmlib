@@ -59,7 +59,7 @@ public interface IService<T extends ICdmBase>{
      * {@link IBeanInitializer#initialize(Object, List)}
      *
      * NOTE: in the case of lockmodes that hit the database (e.g. LockMode.READ), you will need to re-initialize
-     * child propertiesto avoid a HibernateLazyInitializationException (even if the properties of the child
+     * child properties to avoid a HibernateLazyInitializationException (even if the properties of the child
      * were initialized prior to the refresh).
      *
      * NOTE: with hibernate 4 we changed parameter lockMode to lockOptions. LockOptions can be created from LockMode.
