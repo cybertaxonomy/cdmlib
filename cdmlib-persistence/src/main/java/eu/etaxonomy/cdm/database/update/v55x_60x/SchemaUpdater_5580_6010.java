@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
@@ -90,6 +91,28 @@ public class SchemaUpdater_5580_6010 extends SchemaUpdaterBase {
         stepName = "Remove TaxonBase.doubtful";
         columnName = "doubtful";
         ColumnRemover.NewInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT);
+
+        //#11035 update inverseSymbol misapplied names
+        // (mathematical minus U+2212, not hyphen or en-dash)
+        stepName = "Update inverseSymbol for partial misapplied name";
+        tableName = "DefinedTermBase";
+        sql = "UPDATE @@DefinedTermBase@@ "
+                + " SET inverseSymbol = '" + UTF8.MINUS + "' "
+                + " WHERE uuid = '1ed87175-59dd-437e-959e-0d71583d8417'";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
+
+        stepName = "Update inverseSymbol for partial misapplied name";
+        tableName = "DefinedTermBase";
+        sql = "UPDATE @@DefinedTermBase@@ "
+                + " SET inverseSymbol = '" + UTF8.MINUS + "(part.)' "
+                + " WHERE uuid = '859fb615-b0e8-440b-866e-8a19f493cd36'";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
+
+        stepName = "Update inverseSymbol for pro parte misapplied name";
+        sql = "UPDATE @@DefinedTermBase@@ "
+                + " SET inverseSymbol = '" + UTF8.MINUS + "(p.p.)' "
+                + " WHERE uuid = 'b59b4bd2-11ff-45d1-bae2-146efdeee206'";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         return stepList;
     }
