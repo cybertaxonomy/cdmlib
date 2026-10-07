@@ -114,6 +114,12 @@ public class SchemaUpdater_5580_6010 extends SchemaUpdaterBase {
                 + " WHERE uuid = 'b59b4bd2-11ff-45d1-bae2-146efdeee206'";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
+        //#10974
+        stepName = "Remove accessed from Reference";
+        tableName = "Reference";
+        columnName = "accessed";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT);
+
         return stepList;
     }
 }
