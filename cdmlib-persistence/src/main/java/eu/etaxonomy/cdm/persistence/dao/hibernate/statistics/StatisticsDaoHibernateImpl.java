@@ -305,7 +305,6 @@ public class StatisticsDaoHibernateImpl
 		}
 
 		else if (clazz.equals(Synonym.class)) {
-			// criteria= getSession().createCriteria(TaxonNode.class);
 
 			Query<Long> query = getSession().createQuery(
 					"SELECT COUNT(DISTINCT s.uuid) FROM TaxonNode tn "

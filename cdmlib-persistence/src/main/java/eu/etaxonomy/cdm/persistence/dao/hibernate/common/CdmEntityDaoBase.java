@@ -24,27 +24,22 @@ import java.util.UUID;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.From;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.LogicalExpression;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -75,9 +70,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         implements ICdmEntityDao<T> {
 
     private static final Logger logger = LogManager.getLogger();
-
-    //prepare for using hibernate 6 predicates in withRestrictions
-    boolean withPredicate = false;
 
     @Autowired
     private ICdmGenericDao genericDao;
@@ -488,37 +480,25 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     public <S extends T> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        if (withPredicate) {
-            CriteriaBuilder cb = getCriteriaBuilder();
-            CriteriaQuery<S> cq = cb.createQuery(type);
-            Root<S> root = cq.from(type);
+        type = entityType(type);
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<S> cq = cb.createQuery(type);
+        Root<S> root = cq.from(type);
 
-            Predicate predicate = predicateFromRestrictions(cb, root, restrictions);
+        Predicate predicate = predicateFromRestrictions(cb, root, restrictions);
 
-            cq.select(root)
-              .distinct(true)
-              .where(predicate)
-              .orderBy(ordersFrom(cb, root, orderHints));
+        cq.select(root)
+          .distinct(true)
+          .where(predicate)
+          .orderBy(ordersFrom(cb, root, orderHints));
 
-            List<S> results = addPageSizeAndNumber(
-                    getSession().createQuery(cq), pageSize, pageNumber)
-                   .getResultList();
-            defaultBeanInitializer.initializeAll(results, propertyPaths);
-            return deduplicateResult(results);
-        }else {
-            Criteria criteria = createCriteria(type, restrictions, false);
-
-            addLimitAndStart(criteria, pageSize, pageNumber);
-            addOrder(criteria, orderHints);
-
-            @SuppressWarnings("unchecked")
-            List<S> result = criteria.list();
-            defaultBeanInitializer.initializeAll(result, propertyPaths);
-            return result;
-        }
+        List<S> results = addPageSizeAndNumber(
+                getSession().createQuery(cq), pageSize, pageNumber)
+               .getResultList();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return deduplicateResult(results);
     }
 
-    //TODO change root to path or from if necessary
     private <S extends T> Predicate predicateFromRestrictions(CriteriaBuilder cb,
             Root<S> root, List<Restriction<?>> restrictions) {
 
@@ -526,7 +506,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
             return cb.conjunction();
         }
 
-        Predicate finalPredicate = cb.conjunction();
+        Predicate finalPredicate = null;
         for(Restriction<?> restriction : restrictions){
             Predicate restrictionPredicate;
 
@@ -538,62 +518,49 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
                 restrictionPredicate = cb.conjunction();  //always true
             }else {
 
-                restrictionPredicate = cb.disjunction();
-                javax.persistence.criteria.JoinType joinType = LEFTOUTER_OPS.contains(restriction.getOperator()) ? javax.persistence.criteria.JoinType.LEFT : javax.persistence.criteria.JoinType.INNER;
-
-                // ---
+                JoinType joinType = LEFTOUTER_OPS.contains(restriction.getOperator())
+                        ? JoinType.LEFT
+                        : JoinType.INNER;
 
                 List<String> props = Arrays.asList(propertyPath.split("\\."));
-
                 List<String> notLastProps = props.subList(0, props.size()-1);
                 String lastProp = props.get(props.size() - 1);
 
                 From<?,?> path = root;
                 for (String notLastProp : notLastProps) {
-                    Class<?> t = path.getJavaType();
-
-                    path = path.join(notLastProp);
+                    // treat() to subclass when attribute exists only there
+                    // (e.g. typeDesignations.typeSpecimen → SpecimenTypeDesignation)
+                    path = joinPathSegment(cb, path, notLastProp, joinType);
                 }
+                path = treatForAttribute(cb, path, lastProp);
 
+                // Legacy Hibernate Criteria: AND_NOT combines values with AND, all other operators with OR
+                boolean andValues = restriction.getOperator() == Operator.AND_NOT;
+                restrictionPredicate = andValues ? cb.conjunction() : cb.disjunction();
                 for (Object value : values) {
                     Predicate valuePredicate = createPredicate(cb, path, lastProp, value, restriction.getMatchMode());
-                    restrictionPredicate = cb.or(restrictionPredicate, valuePredicate);
+                    if (restriction.isNot() && props.size() > 1) {
+                        // match legacy Hibernate Criteria behavior for nested properties
+                        valuePredicate = cb.or(cb.not(valuePredicate), cb.isNull(path.get(lastProp)));
+                    } else if (restriction.isNot()) {
+                        valuePredicate = cb.not(valuePredicate);
+                    }
+                    restrictionPredicate = andValues
+                            ? cb.and(restrictionPredicate, valuePredicate)
+                            : cb.or(restrictionPredicate, valuePredicate);
                 }
-
-//                Predicate valuePredicate = predicateForMatchMode(lastProp,
-//                        (String)values.iterator().next(), restriction.getMatchMode(), cb, path, ignoreCase);
-
-//                String propertyName;
-//                if(props.length == 1){
-//                    // direct property of the base type of the criteria
-//                    propertyName = propertyPath;
-//                } else {
-//                    // create aliases if the propertyName is a dot separated property path
-//                    String aĺiasKey = jointype.name() + "_";
-//                    String aliasedProperty = null;
-//                    String alias = "";
-//                    for(int p = 0; p < props.length -1; p++){
-//                        aĺiasKey = aĺiasKey + (aĺiasKey.isEmpty() ? "" : ".") + props[p];
-//                        aliasedProperty = alias + (alias.isEmpty() ? "" : ".") + props[p];
-////                        if(!aliases.containsKey(aliasedProperty)){
-////                            alias = alias + (alias.isEmpty() ? "" : "_" ) + props[p];
-////                            aliases.put(aĺiasKey, alias);
-////                            criteria.createAlias(aliasedProperty, alias, jointype);
-////                            if(logger.isDebugEnabled()){
-////                                logger.debug("addRestrictions() alias created with aliasKey " + aĺiasKey + " => " + aliasedProperty + " as " + alias);
-////                            }
-////                        }
-//                    }
-//                    propertyName = alias + "." + props[props.length -1];
-//                }
             }
-            if (restriction.getOperator() == Restriction.Operator.OR) {
-                finalPredicate = cb.and(finalPredicate, restrictionPredicate);
-            }else {
+
+            if (finalPredicate == null) {
+                finalPredicate = restrictionPredicate;
+            } else if (restriction.getOperator() == Operator.OR
+                    || restriction.getOperator() == Operator.OR_NOT) {
+                finalPredicate = cb.or(finalPredicate, restrictionPredicate);
+            } else {
                 finalPredicate = cb.and(finalPredicate, restrictionPredicate);
             }
         }
-        return finalPredicate;
+        return finalPredicate == null ? cb.conjunction() : finalPredicate;
     }
 
     private Predicate createPredicate(CriteriaBuilder cb, From<?, ?> path,
@@ -629,6 +596,53 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return predicate;
     }
 
+    /**
+     * Joins {@code attributeName} on {@code from}, using {@link CriteriaBuilder#treat}
+     * when the attribute exists only on a subclass (polymorphic associations).
+     */
+    private From<?, ?> joinPathSegment(CriteriaBuilder cb, From<?, ?> from, String attributeName,
+            JoinType joinType) {
+        From<?, ?> typed = treatForAttribute(cb, from, attributeName);
+        return typed.join(attributeName, joinType);
+    }
+
+    /**
+     * Returns {@code from} if it already declares {@code attributeName}, otherwise
+     * {@code treat}s to a concrete subclass that declares it (legacy Hibernate Criteria
+     * did this implicitly via createAlias).
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private From<?, ?> treatForAttribute(CriteriaBuilder cb, From<?, ?> from, String attributeName) {
+        try {
+            from.get(attributeName);
+            return from;
+        } catch (IllegalArgumentException e) {
+            Class<?> baseType = from.getJavaType();
+            if (baseType == null) {
+                throw e;
+            }
+            for (EntityType<?> entityType : getSession().getMetamodel().getEntities()) {
+                Class<?> subClass = entityType.getJavaType();
+                if (!baseType.isAssignableFrom(subClass) || baseType.equals(subClass)) {
+                    continue;
+                }
+                try {
+                    entityType.getAttribute(attributeName);
+                } catch (IllegalArgumentException noAttr) {
+                    continue;
+                }
+                if (from instanceof Root) {
+                    return cb.treat((Root) from, subClass);
+                }
+                if (from instanceof Join) {
+                    return cb.treat((Join) from, subClass);
+                }
+                throw e;
+            }
+            throw e;
+        }
+    }
+
 
     private List<Restriction<?>> addRestriction(List<Restriction<?>> restrictions, Restriction<?> restriction, boolean atStart) {
         List<Restriction<?>> result = new ArrayList<>();
@@ -662,185 +676,19 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return restrictions;
     }
 
-    private <S extends T> void addRestrictions(List<Restriction<?>> restrictions, DetachedCriteria criteria) {
-
-        if(restrictions == null || restrictions.isEmpty()){
-            return ;
-        }
-
-        List<CriterionWithOperator> perProperty = new ArrayList<>(restrictions.size());
-        Map<String, String> aliases = new HashMap<>();
-
-        for(Restriction<?> restriction : restrictions){
-            Collection<? extends Object> values = restriction.getValues();
-            JoinType jointype = LEFTOUTER_OPS.contains(restriction.getOperator()) ? JoinType.LEFT_OUTER_JOIN : JoinType.INNER_JOIN;
-            if(values != null && !values.isEmpty()){
-                // ---
-                String propertyPath = restriction.getPropertyName();
-                String[] props =  propertyPath.split("\\.");
-                String propertyName;
-                if(props.length == 1){
-                    // direct property of the base type of the criteria
-                    propertyName = propertyPath;
-                } else {
-                    // create aliases if the propertyName is a dot separated property path
-                    String aĺiasKey = jointype.name() + "_";
-                    String aliasedProperty = null;
-                    String alias = "";
-                    for(int p = 0; p < props.length -1; p++){
-                        aĺiasKey = aĺiasKey + (aĺiasKey.isEmpty() ? "" : ".") + props[p];
-                        aliasedProperty = alias + (alias.isEmpty() ? "" : ".") + props[p];
-                        if(!aliases.containsKey(aliasedProperty)){
-                            alias = alias + (alias.isEmpty() ? "" : "_" ) + props[p];
-                            aliases.put(aĺiasKey, alias);
-                            criteria.createAlias(aliasedProperty, alias, jointype);
-                            if(logger.isDebugEnabled()){
-                                logger.debug("addRestrictions() alias created with aliasKey " + aĺiasKey + " => " + aliasedProperty + " as " + alias);
-                            }
-                        }
-                    }
-                    propertyName = alias + "." + props[props.length -1];
-                }
-                // ---
-                Criterion[] predicates = new Criterion[values.size()];
-                int i = 0;
-                for(Object value : values){
-                    Criterion criterion = createRestriction(propertyName, value, restriction.getMatchMode());
-                    if(restriction.isNot()){
-                        if(props.length > 1){
-                            criterion = Restrictions.or(Restrictions.not(criterion), Restrictions.isNull(propertyName));
-                        } else {
-                            criterion = Restrictions.not(criterion);
-                        }
-                    }
-                    predicates[i++] = criterion;
-                    if(logger.isDebugEnabled()){
-                        logger.debug("addRestrictions() predicate with " + propertyName + " " + (restriction.getMatchMode() == null ? "=" : restriction.getMatchMode().name()) + " " + value.toString());
-                    }
-                }
-                if(restriction.getOperator() == Operator.AND_NOT){
-                    perProperty.add(new CriterionWithOperator(restriction.getOperator(), Restrictions.and(predicates)));
-                } else {
-                    perProperty.add(new CriterionWithOperator(restriction.getOperator(), Restrictions.or(predicates)));
-                }
-            } // check has values
-        } // loop over restrictions
-
-        Restriction.Operator firstOperator = null;
-        if(!perProperty.isEmpty()){
-            LogicalExpression logicalExpression = null;
-            for(CriterionWithOperator cwo : perProperty){
-                if(logicalExpression == null){
-                    firstOperator = cwo.operator;
-                    logicalExpression = Restrictions.and(Restrictions.sqlRestriction("1=1"), cwo.criterion);
-                } else {
-                    switch(cwo.operator){
-                        case AND:
-                        case AND_NOT:
-                            logicalExpression = Restrictions.and(logicalExpression, cwo.criterion);
-                            break;
-                        case OR:
-                        case OR_NOT:
-                            logicalExpression = Restrictions.or(logicalExpression, cwo.criterion);
-                            break;
-                        default:
-                            throw new RuntimeException("Unsupported Operator");
-                    }
-                }
-            }
-
-            criteria.add(logicalExpression);
-//            if(firstOperator == Operator.OR){
-//                // OR
-//            } else {
-//                // AND
-//                criteria.add(Restrictions.and(queryStringCriterion, logicalExpression));
-//            }
-        }
-        if(logger.isDebugEnabled()){
-            logger.debug("addRestrictions() final criteria: " + criteria.toString());
-        }
-    }
-
-    /**
-     * @param propertyName
-     * @param value
-     * @param matchMode
-     *            is only applied if the <code>value</code> is a
-     *            <code>String</code> object
-     * @param criteria
-     * @return
-     */
-    private Criterion createRestriction(String propertyName, Object value, MatchMode matchMode) {
-
-        Criterion restriction;
-        if (value == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("createRestriction() " + propertyName + " is null ");
-            }
-            restriction = Restrictions.isNull(propertyName);
-        } else if (value instanceof EnumSet<?>) {
-            //in EnumSet restriction
-            if (logger.isDebugEnabled()) {
-                logger.debug("createRestriction() " + propertyName + " IN " + value.toString());
-            }
-            restriction = Restrictions.in(propertyName, (EnumSet<?>)value);
-        } else if (matchMode == null || !(value instanceof String)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("createRestriction() " + propertyName + " = " + value.toString());
-            }
-            restriction = Restrictions.eq(propertyName, value);
-        } else {
-            String queryString = (String) value;
-            if (logger.isDebugEnabled()) {
-                logger.debug("createRestriction() " + propertyName + " " + matchMode.getMatchOperator() + " "
-                        + matchMode.queryStringFrom(queryString));
-            }
-            switch(matchMode){
-            case BEGINNING:
-                restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.START);
-                break;
-            case END:
-                restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.END);
-                break;
-            case LIKE:
-                restriction = Restrictions.ilike(propertyName, matchMode.queryStringFrom(queryString), org.hibernate.criterion.MatchMode.ANYWHERE);
-                break;
-            case EXACT:
-                restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.EXACT);
-                break;
-            case ANYWHERE:
-                restriction = Restrictions.ilike(propertyName, queryString, org.hibernate.criterion.MatchMode.ANYWHERE);
-                break;
-            default:
-                throw new RuntimeException("Unknown MatchMode: " + matchMode.name());
-            }
-        }
-        return restriction;
-    }
-
     @Override
     public <S extends T> long count(Class<S> clazz, List<Restriction<?>> restrictions) {
 
-        if (withPredicate) {
-            CriteriaBuilder cb = getCriteriaBuilder();
-            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-            Root<S> root = cq.from(entityType(clazz));
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<S> root = cq.from(entityType(clazz));
 
-            Predicate predicate = predicateFromRestrictions(cb, root, restrictions);
+        Predicate predicate = predicateFromRestrictions(cb, root, restrictions);
 
-            cq.select(cb.countDistinct(root))
-              .where(predicate);
+        cq.select(cb.countDistinct(root))
+          .where(predicate);
 
-            return getSession().createQuery(cq).getSingleResult();
-        }else {
-
-            Criteria criteria = createCriteria(clazz, restrictions, false);
-
-            criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-
-            return (Long) criteria.uniqueResult();
-        }
+        return getSession().createQuery(cq).getSingleResult();
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -1184,40 +1032,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return getSession().createQuery(cq).getSingleResult();
     }
 
-    /**
-     * Creates a criteria query for the CDM <code>type</code> either for counting or listing matching entities.
-     * <p>
-     * The set of matching entities can be restricted by passing a list of {@link Restriction} objects.
-     * Restrictions can logically be combined:
-     <pre>
-       Arrays.asList(
-           new Restriction<String>("titleCache", MatchMode.ANYWHERE, "foo"),
-           new Restriction<String>("institute.name", Operator.OR, MatchMode.BEGINNING, "Bar")
-       );
-     </pre>
-     * The first Restriction in the example above by default has the <code>Operator.AND</code> which will be
-     * ignored since this is the first restriction. The <code>Operator</code> of further restrictions in the
-     * list are used to combine with the previous restriction.
-     */
-    protected <S extends T> Criteria createCriteria(Class<S> clazz, List<Restriction<?>> restrictions, boolean doCount) {
-
-        DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(entityType(clazz));
-        idsOnlyCriteria.setProjection(Projections.distinct(Projections.id()));
-
-        addRestrictions(restrictions, idsOnlyCriteria);
-
-        Criteria criteria = getCriteria(clazz);
-        criteria.add(Subqueries.propertyIn("id", idsOnlyCriteria));
-
-        if(doCount){
-            criteria.setProjection(Projections.rowCount());
-        } else {
-            idsOnlyCriteria.setProjection(Projections.distinct(Projections.property("id")));
-        }
-
-        return criteria;
-    }
-
     @Override
     public <S extends T> List<S> findByParamWithRestrictions(Class<S> clazz, String param, String queryString,
             MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber,
@@ -1291,34 +1105,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return deduplicateResult(results);
-    }
-
-    private class CriterionWithOperator {
-
-        Restriction.Operator operator;
-        Criterion criterion;
-
-        public CriterionWithOperator(Operator operator, Criterion criterion) {
-            this.operator = operator;
-            this.criterion = criterion;
-        }
-    }
-
-    /**
-     * Returns a Criteria for the given {@link Class class} or, if
-     * <code>null</code>, for the base {@link Class class} of this DAO.
-     *
-     * @param clazz
-     * @return the Criteria
-     */
-    protected Criteria getCriteria(Class<? extends CdmBase> clazz) {
-        Criteria criteria = null;
-        if (clazz == null) {
-            criteria = getSession().createCriteria(type);
-        } else {
-            criteria = getSession().createCriteria(clazz);
-        }
-        return criteria;
     }
 
     protected AuditQuery makeAuditQuery(Class<? extends CdmBase> clazz, AuditEvent auditEvent) {
