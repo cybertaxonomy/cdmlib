@@ -240,7 +240,7 @@ public interface ICdmGenericDao {
 	 * @return
 	 */
 	@Deprecated
-	public Query<?> getHqlQuery(String hqlQuery) throws UnsupportedOperationException;
+	public Query<Object> getHqlQuery(String hqlQuery) throws UnsupportedOperationException;
 
     public <T> Query<T> getHqlQuery(String hqlQuery, Class<T> clazz) throws UnsupportedOperationException;
 
