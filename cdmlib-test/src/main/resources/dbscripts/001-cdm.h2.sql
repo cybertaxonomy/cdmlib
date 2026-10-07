@@ -5044,6 +5044,8 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CURRENTCONCEPTPERIOD_END varchar(255),
         CURRENTCONCEPTPERIOD_FREETEXT varchar(255),
         CURRENTCONCEPTPERIOD_START varchar(255),
+        REVISIONSTATUS_CHANGED date,
+        REVISIONSTATUS_STATUS_ID integer,
         TAXONSTATUSUNKNOWN boolean,
         TAXONTYPES varchar(255),
 		TYPE VARCHAR(10),
@@ -5093,6 +5095,8 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CURRENTCONCEPTPERIOD_END varchar(255),
         CURRENTCONCEPTPERIOD_FREETEXT varchar(255),
         CURRENTCONCEPTPERIOD_START varchar(255),
+        REVISIONSTATUS_CHANGED date,
+        REVISIONSTATUS_STATUS_ID integer,
         TAXONSTATUSUNKNOWN boolean,
         TAXONTYPES varchar(255),
 		TYPE VARCHAR(10),
@@ -11268,6 +11272,11 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
        add constraint FKfb64jyfxe0di03m6okc3l5bso 
        foreign key (ACCEPTEDTAXON_ID) 
        references PUBLIC.TAXONBASE;
+
+    alter table PUBLIC.TAXONBASE 
+       add constraint FKtaxonbase_revisionstatus_status 
+       foreign key (REVISIONSTATUS_STATUS_ID) 
+       references PUBLIC.DEFINEDTERMBASE;
 
     alter table PUBLIC.TAXONBASE_ANNOTATION 
        add constraint FKhod10mprpi6uhsfowir3vthjh 

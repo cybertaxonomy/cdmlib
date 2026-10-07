@@ -145,6 +145,7 @@
         @MetaValue(value = "Feature", targetEntity = Feature.class),
         @MetaValue(value = "Language", targetEntity = Language.class),
         @MetaValue(value = "MarkerType", targetEntity = MarkerType.class),
+        @MetaValue(value = "RevisionStatus", targetEntity = RevisionStatus.class),
         @MetaValue(value = "MeasurementUnit", targetEntity = MeasurementUnit.class),
         @MetaValue(value = "NamedAreaType", targetEntity = NamedAreaType.class),
         @MetaValue(value = "NaturalLanguageTerm", targetEntity = NaturalLanguageTerm.class),

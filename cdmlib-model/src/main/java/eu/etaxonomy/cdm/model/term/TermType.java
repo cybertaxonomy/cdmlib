@@ -11,9 +11,9 @@ package eu.etaxonomy.cdm.model.term;
 
 import java.util.Set;
 import java.util.UUID;
+
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -499,6 +499,14 @@ public enum TermType implements IEnumTerm<TermType>{
     @XmlEnumValue("OccurrenceStatusType")
     OccurrenceStatusType(UUID.fromString("c50a977a-e697-4973-9514-08aeb0d05483"), "Occurrence status type", "OST", null),
 
+    //43
+    /**
+     * The type for revision / editorial status terms.
+     * @see eu.etaxonomy.cdm.model.common.RevisionStatus
+     **/
+    @XmlEnumValue("RevisionStatus")
+    RevisionStatus(UUID.fromString("98344fc7-3290-4848-9cd5-38627f3088cd"), "Revision Status", "RST", null),
+
     ;
 
 // **************** END ENUM **********************/
@@ -587,6 +595,9 @@ public enum TermType implements IEnumTerm<TermType>{
             case PresenceAbsenceTerm:
             	emptyTerm = eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm.NewPresenceInstance(null, labelString, null);
             	break;
+            case RevisionStatus:
+                emptyTerm = eu.etaxonomy.cdm.model.common.RevisionStatus.NewInstance(null, labelString, null);
+                break;
             case Language:
             	emptyTerm = eu.etaxonomy.cdm.model.common.Language.NewInstance((String)null, labelString, (String)null);
             	break;

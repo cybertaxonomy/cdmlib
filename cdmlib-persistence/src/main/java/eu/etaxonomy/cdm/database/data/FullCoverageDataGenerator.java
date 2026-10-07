@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.database.data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.RevisionStatus;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.WikiDataItemId;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -697,6 +699,7 @@ public class FullCoverageDataGenerator {
 				sec, "444");
 		taxRel.setOperation(TaxonomicOperation.NewInstance(TaxonomicOperationType.SPLIT));
 		taxon.setTaxonStatusUnknown(true);
+		taxon.setRevisionStatus(RevisionStatus.COMPLETED(), LocalDate.now());
 		handleAnnotatableEntity(taxRel);
 		concept.setConcept(true);
 		concept.setNameUsage(true);

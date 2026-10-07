@@ -64,6 +64,7 @@ import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.RevisionStatus;
 import eu.etaxonomy.cdm.model.common.WikiDataItemId;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -110,6 +111,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
         Feature.class,
         Language.class,
         MarkerType.class,
+        RevisionStatus.class,
         MeasurementUnit.class,
         NamedAreaType.class,
         NomenclaturalCode.class,

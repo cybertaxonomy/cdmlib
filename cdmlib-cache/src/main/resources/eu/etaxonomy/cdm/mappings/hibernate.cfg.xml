@@ -86,6 +86,7 @@ Difference are to be found in
       <mapping class="eu.etaxonomy.cdm.model.common.LSIDAuthority"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Marker"/>
       <mapping class="eu.etaxonomy.cdm.model.common.MarkerType"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.RevisionStatus"/>
       
       <!-- Description Package -->
       <mapping class="eu.etaxonomy.cdm.model.description.CategoricalData"/>

@@ -61,6 +61,15 @@ public class SchemaUpdater_5580_6010 extends SchemaUpdaterBase {
         String columnName = "gender";
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, columnName, 1, INCLUDE_AUDIT);
 
+        //#11040
+        stepName = "Add revisionStatus.changed to TaxonBase";
+        tableName = "TaxonBase";
+        columnName = "revisionStatus_changed";
+        ColumnAdder.NewDateTimeInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT, !NOT_NULL);
+
+        stepName = "Add revisionStatus.status to TaxonBase";
+        columnName = "revisionStatus_status_id";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT, !NOT_NULL, "DefinedTermBase");
 
         return stepList;
     }

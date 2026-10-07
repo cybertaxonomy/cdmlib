@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -59,6 +61,8 @@ import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.RevisionStatus;
+import eu.etaxonomy.cdm.model.common.RevisionStatusInfo;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
@@ -71,7 +75,6 @@ import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
 
 /**
  * The class for "accepted/correct" {@link TaxonBase taxa} (only these taxa according to
@@ -95,7 +98,8 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
     "conceptDefinitions",
     "conceptStatus",
     "taxonTypes",
-    "currentConceptPeriod"
+    "currentConceptPeriod",
+    "revisionStatus"
 })
 @XmlRootElement(name = "Taxon")
 @Entity
@@ -197,6 +201,11 @@ public class Taxon
 
     private TimePeriod currentConceptPeriod = TimePeriod.NewInstance();
 
+    //#11040
+    @XmlElement(name = "RevisionStatus")
+    @Embedded
+    private RevisionStatusInfo revisionStatus;
+
 // ************************* FACTORY METHODS ********************************/
 
     /**
@@ -279,6 +288,19 @@ public class Taxon
     public void setCurrentConceptPeriod(TimePeriod currentConceptPeriod) {
         this.currentConceptPeriod = currentConceptPeriod;
     }
+
+    /**
+     * @see #11040
+     */
+    public RevisionStatusInfo getRevisionStatus() {
+        return revisionStatus;
+    }
+    public void setRevisionStatus(RevisionStatusInfo revisionStatus) {
+        this.revisionStatus = revisionStatus;
+    }
+    public void setRevisionStatus(RevisionStatus status, LocalDate changed) {
+        this.revisionStatus = RevisionStatusInfo.NewInstance(status, changed);
+    };
 
 // ************************ Concept Defintion ************************/
 
@@ -2063,6 +2085,10 @@ public class Taxon
 
         if (this.currentConceptPeriod != null){
             result.currentConceptPeriod = this.currentConceptPeriod.clone();
+        }
+
+        if (this.revisionStatus != null) {
+            result.revisionStatus = this.revisionStatus.clone();
         }
 
         return result;
