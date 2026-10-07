@@ -17,8 +17,8 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.FlushMode;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
@@ -176,13 +176,13 @@ public class SortIndexUpdaterWrapper implements Serializable {
     }
 
     private List<?> getSqlResult(String query) {
-        SQLQuery sqlQuery = getSession().createSQLQuery(query);
+        NativeQuery<?> sqlQuery = getSession().createNativeQuery(query);
         List<?> data = sqlQuery.list();
         return data;
     }
 
     private int executeSqlResult(String query) {
-        SQLQuery sqlQuery = getSession().createSQLQuery(query);
+        NativeQuery<?> sqlQuery = getSession().createNativeQuery(query);
         return sqlQuery.executeUpdate();
     }
 
