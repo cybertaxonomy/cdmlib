@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * @author a.mueller
@@ -57,7 +58,7 @@ public class MapTableCreator extends TableCreator {
 			result = "REV, " + primaryKey(false) + ",";
 			result += getSecondIdColumn() + ",";
 		}
-		result = StringUtils.chomp(result.trim(), ",");
+		result = Strings.CS.removeEnd(result.trim(), ",");
 		return result;
 	}
 
