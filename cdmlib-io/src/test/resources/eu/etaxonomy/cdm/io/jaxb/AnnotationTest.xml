@@ -30,7 +30,7 @@
       </name:ZoologicalName>
     </TaxonomicNames>
     <TaxonBases>
-      <taxon:Taxon id="1" uuid="urn-uuid-2c980a17-4a96-4ea1-b688-90396c0771d9" isDoubtful="false">
+      <taxon:Taxon id="1" uuid="urn-uuid-2c980a17-4a96-4ea1-b688-90396c0771d9">
         <common:Annotations>
           <common:Annotation id="1" uuid="urn-uuid-775f5099-0908-4b8b-a59e-4398800a2e1c">
           <common:Created>2007-04-21T00:00:00Z</common:Created>

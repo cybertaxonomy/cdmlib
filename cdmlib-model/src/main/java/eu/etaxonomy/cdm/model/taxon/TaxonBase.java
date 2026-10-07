@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
@@ -32,6 +33,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.engine.backend.types.Projectable;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
@@ -88,7 +91,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
 @XmlType(name = "TaxonBase", propOrder = {
         "name",
         "secSource",
-        "doubtful",
+        "taxonStatus",
         "appendedPhrase",
         "useNameCache",
         "publish"
@@ -126,9 +129,17 @@ public abstract class TaxonBase
         }
     }
 
-    //The assignment to the Taxon or to the Synonym class is not definitive
-    @XmlAttribute(name = "isDoubtful")
-    private boolean doubtful;
+    /**
+     * Editorial / taxonomic acceptance status of this taxon or synonym.
+     * See #11039
+     */
+    @XmlAttribute(name = "TaxonStatus")
+    @Column(name = "taxonStatus", length = 10)
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.taxon.TaxonStatus")}
+    )
+    @NotNull
+    private TaxonStatus taxonStatus = TaxonStatus.OK;
 
     @XmlElement(name = "Name")
     @XmlIDREF
@@ -229,20 +240,37 @@ public abstract class TaxonBase
     }
 
     /**
-     * Returns the boolean value indicating whether the assignment of <i>this</i>
-     * (abstract) taxon to the {@link Taxon Taxon} or to the {@link Synonym Synonym} class
-     * is definitive (false) or not (true). If this flag is set the use of <i>this</i> (abstract)
-     * taxon as an "accepted/correct" name or as a (junior) "synonym" might
-     * still change in the course of taxonomical working process.
+     * Returns the {@link TaxonStatus} of <i>this</i> (abstract) taxon.
+     * See #11039
      */
-    public boolean isDoubtful(){
-        return this.doubtful;
+    public TaxonStatus getTaxonStatus(){
+        return this.taxonStatus;
     }
     /**
-     * @see  #isDoubtful()
+     * @see #getTaxonStatus()
+     * See #11039
+     */
+    public void setTaxonStatus(TaxonStatus taxonStatus){
+        this.taxonStatus = taxonStatus == null ? TaxonStatus.OK : taxonStatus;
+    }
+
+    /**
+     * Returns <code>true</code> if the {@link TaxonStatus} is {@link TaxonStatus#DOUBTFUL}.
+     * Convenience for the former boolean doubtful flag.
+     * See #11039
+     */
+    public boolean isDoubtful(){
+        return this.taxonStatus == TaxonStatus.DOUBTFUL;
+    }
+    /**
+     * Sets the status to {@link TaxonStatus#DOUBTFUL} or {@link TaxonStatus#OK}.
+     * See #11039
+     *
+     * @see #isDoubtful()
+     * @see #setTaxonStatus(TaxonStatus)
      */
     public void setDoubtful(boolean doubtful){
-        this.doubtful = doubtful;
+        setTaxonStatus(doubtful ? TaxonStatus.DOUBTFUL : TaxonStatus.OK);
     }
 
     /**

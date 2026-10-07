@@ -15,9 +15,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.v540_558.SchemaUpdater_5540_5580;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
@@ -70,6 +72,24 @@ public class SchemaUpdater_5580_6010 extends SchemaUpdaterBase {
         stepName = "Add revisionStatus.status to TaxonBase";
         columnName = "revisionStatus_status_id";
         ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT, !NOT_NULL, "DefinedTermBase");
+
+        //#11039 replace TaxonBase.doubtful boolean by TaxonStatus enum
+        stepName = "Add TaxonBase.taxonStatus column";
+        tableName = "TaxonBase";
+        columnName = "taxonStatus";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, columnName, 10, INCLUDE_AUDIT);
+
+        stepName = "Set TaxonBase.taxonStatus=DOU for doubtful=true";
+        String sql = "UPDATE @@TaxonBase@@ SET taxonStatus = 'DOU' WHERE doubtful = @TRUE@";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
+
+        stepName = "Set TaxonBase.taxonStatus=OK for doubtful=false";
+        sql = "UPDATE @@TaxonBase@@ SET taxonStatus = 'OK' WHERE doubtful = @FALSE@ OR doubtful IS NULL OR taxonStatus IS NULL";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
+
+        stepName = "Remove TaxonBase.doubtful";
+        columnName = "doubtful";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT);
 
         return stepList;
     }

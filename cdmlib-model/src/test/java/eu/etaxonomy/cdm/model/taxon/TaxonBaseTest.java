@@ -76,6 +76,9 @@ public class TaxonBaseTest extends EntityTestBase {
 //		assertTrue(name2.getSynonyms().contains(synonym1));
 //	}
 
+	/**
+	 * See #11039
+	 */
 	@Test
 	public final void testIsSetDoubtful() {
 		boolean oldValue;
@@ -84,6 +87,22 @@ public class TaxonBaseTest extends EntityTestBase {
 		assertEquals(! oldValue, taxon1.isDoubtful());
 		taxon1.setDoubtful(oldValue);
 		assertEquals( oldValue, taxon1.isDoubtful());
+	}
+
+	/**
+	 * See #11039
+	 */
+	@Test
+	public final void testTaxonStatus() {
+		assertEquals(TaxonStatus.OK, taxon1.getTaxonStatus());
+		taxon1.setTaxonStatus(TaxonStatus.DOUBTFUL);
+		assertEquals(TaxonStatus.DOUBTFUL, taxon1.getTaxonStatus());
+		assertTrue(taxon1.isDoubtful());
+		taxon1.setTaxonStatus(TaxonStatus.PROVISIONALLY_ACCEPTED);
+		assertEquals(TaxonStatus.PROVISIONALLY_ACCEPTED, taxon1.getTaxonStatus());
+		assertFalse(taxon1.isDoubtful());
+		taxon1.setTaxonStatus(null);
+		assertEquals(TaxonStatus.OK, taxon1.getTaxonStatus());
 	}
 
 	@Test
