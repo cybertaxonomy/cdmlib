@@ -10,88 +10,101 @@ package eu.etaxonomy.cdm.persistence.permission;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
-import org.springframework.security.access.vote.AbstractAccessDecisionManager;
 import org.springframework.security.access.vote.UnanimousBased;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
-
 /**
- * Based on the {@link UnanimousBased} AccessDecisionManager.
- *
- * In contrast to the UnanimousBased a voter which voted once with
- * <code>ACCESS_GRANTED</code> can not revoke this decision again.
+ * Based on the former {@link UnanimousBased} AccessDecisionManager, now as
+ * {@link AuthorizationManager} (Spring Security 5.8+).
+ * <p>
+ * In contrast to UnanimousBased a voter which voted once with
+ * {@code ACCESS_GRANTED} can not revoke this decision again.
+ * Any {@code ACCESS_DENIED} denies authorization. If all voters abstain,
+ * access is denied (same as {@code allowIfAllAbstainDecisions=false}).
  *
  * @author a.kohlbecker
  * @since Oct 11, 2013
  */
-public class UnanimousBasedUnrevokable extends AbstractAccessDecisionManager {
+public class UnanimousBasedUnrevokable implements AuthorizationManager<CdmAuthorizationTarget> {
 
-    //Constructor, called by Spring (see security_base.xml)
+    private static final Logger logger = LogManager.getLogger();
+
+    private final List<AccessDecisionVoter<? extends Object>> decisionVoters;
+
+    /**
+     * Constructor, called by Spring (see security_base.xml)
+     */
     public UnanimousBasedUnrevokable(List<AccessDecisionVoter<? extends Object>> decisionVoters) {
-        super(decisionVoters);
+        this.decisionVoters = Collections.unmodifiableList(new ArrayList<>(decisionVoters));
     }
 
     @Override
-    public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> attributes)
-            throws AccessDeniedException {
+    public AuthorizationDecision check(Supplier<Authentication> authentication,
+            CdmAuthorizationTarget object) {
+
+        Authentication auth = authentication.get();
+        Collection<ConfigAttribute> attributes = Collections.singletonList(object.getRequiredAuthority());
 
         int grant = 0;
-        int abstain = 0;
         List<ConfigAttribute> singleAttributeList = new ArrayList<>(1);
         singleAttributeList.add(null);
 
-        Map<AccessDecisionVoter<CdmBase>, Integer> voteMap = new HashMap<>();
+        Map<AccessDecisionVoter<?>, Integer> voteMap = new HashMap<>();
 
         for (ConfigAttribute attribute : attributes) {
             singleAttributeList.set(0, attribute);
 
-            for(AccessDecisionVoter voter : getDecisionVoters()) {
+            for (AccessDecisionVoter voter : decisionVoters) {
 
                 Integer lastResult = voteMap.get(voter);
-                if(lastResult != null && lastResult == AccessDecisionVoter.ACCESS_GRANTED){
+                if (lastResult != null && lastResult == AccessDecisionVoter.ACCESS_GRANTED) {
                     continue;
                 }
 
-                int result = voter.vote(authentication, object, singleAttributeList);
+                @SuppressWarnings("unchecked")
+                int result = voter.vote(auth, object.getTargetEntityStates(), singleAttributeList);
 
                 voteMap.put(voter, result);
 
                 if (logger.isDebugEnabled()) {
                     logger.debug("Voter: " + voter + ", returned: " + result);
                 }
-
             }
         }
 
-        for(Integer result : voteMap.values()) {
+        for (Integer result : voteMap.values()) {
             switch (result) {
             case AccessDecisionVoter.ACCESS_GRANTED:
                 grant++;
                 break;
 
             case AccessDecisionVoter.ACCESS_DENIED:
-                throw new AccessDeniedException(messages.getMessage("AbstractAccessDecisionManager.accessDenied",
-                        "Access is denied"));
+                return new AuthorizationDecision(false);
+
             default:
-                abstain++;
+                // abstain
                 break;
             }
         }
 
         // To get this far, there were no deny votes
         if (grant > 0) {
-            return;
+            return new AuthorizationDecision(true);
         }
 
-        // To get this far, every AccessDecisionVoter abstained
-        checkAllowIfAllAbstainDecisions();
+        // Every AccessDecisionVoter abstained → deny (legacy allowIfAllAbstainDecisions=false)
+        return new AuthorizationDecision(false);
     }
 }
