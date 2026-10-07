@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,6 +40,8 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.RevisionStatus;
+import eu.etaxonomy.cdm.model.common.RevisionStatusInfo;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -1032,6 +1035,112 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             commitAndRestartTransaction();
         }
         return result;
+    }
+
+    @Override
+    public int countRevisionStatusForSubtreeAcceptedTaxa(TreeIndex subTreeIndex,
+            boolean overwriteExisting, boolean includeSharedTaxa, boolean includeHybrids) {
+        String queryStr = forSubtreeAcceptedQueryStr(includeSharedTaxa, subTreeIndex, !includeHybrids, SelectMode.COUNT);
+        if (!overwriteExisting){
+            queryStr += " AND t.revisionStatus.status IS NULL ";
+        }
+        return countResult(queryStr);
+    }
+
+    @Override
+    public Set<Taxon> setRevisionStatusForSubtreeAcceptedTaxa(TreeIndex subTreeIndex,
+            RevisionStatusInfo revisionStatus, boolean overwriteExisting,
+            boolean includeSharedTaxa, boolean includeHybrids, IProgressMonitor monitor) {
+        String queryStr = forSubtreeAcceptedQueryStr(includeSharedTaxa, subTreeIndex, !includeHybrids, SelectMode.ID);
+        if (!overwriteExisting){
+            queryStr += " AND t.revisionStatus.status IS NULL ";
+        }
+        return setRevisionStatus(revisionStatus, queryStr, null, monitor);
+    }
+
+    @Override
+    public int countRevisionStatusForSubtreeRelatedTaxa(TreeIndex subTreeIndex,
+            boolean overwriteExisting, boolean includeSharedTaxa, boolean includeHybrids) {
+        String queryStr = forSubtreeRelatedTaxaRevisionQueryStr(includeSharedTaxa, subTreeIndex, !includeHybrids, SelectMode.COUNT);
+        if (!overwriteExisting){
+            queryStr += " AND relTax.revisionStatus.status IS NULL ";
+        }
+        return countResult(queryStr);
+    }
+
+    @Override
+    public Set<Taxon> setRevisionStatusForSubtreeRelatedTaxa(TreeIndex subTreeIndex,
+            RevisionStatusInfo revisionStatus, Set<UUID> relationTypes,
+            boolean overwriteExisting, boolean includeSharedTaxa, boolean includeHybrids,
+            IProgressMonitor monitor) {
+        String queryStr = forSubtreeRelatedTaxaRevisionQueryStr(includeSharedTaxa, subTreeIndex, !includeHybrids, SelectMode.ID);
+        if (!overwriteExisting){
+            queryStr += " AND relTax.revisionStatus.status IS NULL ";
+        }
+        queryStr += " AND rel.type.uuid IN (:relTypeUuid)";
+        return setRevisionStatus(revisionStatus, queryStr, relationTypes, monitor);
+    }
+
+    private Set<Taxon> setRevisionStatus(RevisionStatusInfo revisionStatus, String queryStr,
+            Set<UUID> relTypeUuids, IProgressMonitor monitor) {
+        Set<Taxon> result = new HashSet<>();
+        Query<Integer> query = getSession().createQuery(queryStr, Integer.class);
+        if (relTypeUuids != null && !relTypeUuids.isEmpty()){
+            query.setParameterList("relTypeUuid", relTypeUuids);
+        }
+
+        RevisionStatus statusEntity = revisionStatus == null ? null : revisionStatus.getStatus();
+        List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
+        for (List<Integer> taxonIdList : partitionList){
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            List<TaxonBase> taxonList = (List)taxonDao.loadList(taxonIdList, null, null);
+            for (TaxonBase taxonBase : taxonList){
+                if (taxonBase != null){
+                    Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+                    if (taxon != null && revisionStatusNeedsUpdate(taxon.getRevisionStatus(), revisionStatus)){
+                        taxon.setRevisionStatus(revisionStatus == null ? null : revisionStatus.clone());
+                        result.add(taxon);
+                    }
+                    monitor.worked(1);
+                    if (monitor.isCanceled()){
+                        return result;
+                    }
+                }
+            }
+            commitAndRestartTransaction(statusEntity);
+        }
+        return result;
+    }
+
+    private boolean revisionStatusNeedsUpdate(RevisionStatusInfo current, RevisionStatusInfo newInfo) {
+        if (current == null && newInfo == null){
+            return false;
+        }
+        if (current == null || newInfo == null){
+            return true;
+        }
+        return !Objects.equals(current.getStatus(), newInfo.getStatus())
+                || !Objects.equals(current.getChanged(), newInfo.getChanged());
+    }
+
+    private String forSubtreeRelatedTaxaRevisionQueryStr(boolean includeSharedTaxa, TreeIndex subTreeIndex,
+            boolean excludeHybrids, SelectMode mode) {
+        String queryStr = "SELECT " + mode.hql("relTax")
+                + " FROM TaxonNode tn "
+                + "   JOIN tn.taxon t "
+                + "   JOIN t.relationsToThisTaxon rel"
+                + "   JOIN rel.relatedFrom relTax "
+                + "   LEFT JOIN relTax.name n ";
+        String whereStr =" tn.treeIndex LIKE '%1$s%%' ";
+        if (!includeSharedTaxa){
+            whereStr += " AND NOT EXISTS ("
+                    + "FROM TaxonNode tn2 WHERE tn2.taxon = t AND tn2.treeIndex not like '%1$s%%')  ";
+            whereStr += " AND NOT EXISTS ("
+                    + "FROM TaxonNode tn3 WHERE tn3.taxon = relTax AND tn3.treeIndex not like '%1$s%%')  ";
+        }
+        whereStr = handleExcludeHybrids(whereStr, excludeHybrids, "relTax");
+        queryStr += " WHERE " + String.format(whereStr, subTreeIndex.toString());
+        return queryStr;
     }
 
     private String forSubtreeSynonymQueryStr(boolean includeSharedTaxa, TreeIndex subTreeIndex, boolean excludeHybrids, SelectMode mode) {

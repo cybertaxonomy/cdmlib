@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.api.service.config.CacheUpdaterConfigurator;
 import eu.etaxonomy.cdm.api.service.config.DeleteDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.RevisionStatusForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationBase;
@@ -191,8 +192,12 @@ public class LongRunningTasksService implements ILongRunningTasksService{
     private UpdateResult updateData(ForSubtreeConfiguratorBase config){
         if (config instanceof SecundumForSubtreeConfigurator){
             return taxonNodeService.setSecundumForSubtree((SecundumForSubtreeConfigurator)config);
-        }else{
+        }else if (config instanceof RevisionStatusForSubtreeConfigurator){
+            return taxonNodeService.setRevisionStatusForSubtree((RevisionStatusForSubtreeConfigurator) config);
+        }else if (config instanceof PublishForSubtreeConfigurator){
             return taxonNodeService.setPublishForSubtree((PublishForSubtreeConfigurator) config);
+        }else {
+            throw new IllegalArgumentException(config.getClass().getSimpleName() + " not yet supported for 'updateData'");
         }
     }
 

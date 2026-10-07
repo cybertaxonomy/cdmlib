@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.RevisionStatusForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
@@ -57,6 +58,8 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.RevisionStatus;
+import eu.etaxonomy.cdm.model.common.RevisionStatusInfo;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -116,9 +119,6 @@ public class TaxonNodeServiceImpl
 
     @Autowired
     private ITaxonService taxonService;
-
-//    @Autowired
-//    private IReferenceService referenceService;
 
     @Autowired
     private IDescriptiveDataSetService dataSetService;
@@ -1215,6 +1215,99 @@ public class TaxonNodeServiceImpl
                 @SuppressWarnings("rawtypes")
                 Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeRelatedTaxa(subTreeIndex, publish,
                         relationTypes, includeSharedTaxa, includeHybrids, subMonitor);
+                result.addUpdatedObjects(updatedTaxa);
+                if (monitor.isCanceled()){
+                    return result;
+                }
+            }
+        } catch (Exception e) {
+            result.setError();
+            result.addException(e);
+        }
+
+        monitor.done();
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly=false)
+    public UpdateResult setRevisionStatusForSubtree(RevisionStatusForSubtreeConfigurator config){
+
+        UpdateResult result = new UpdateResult();
+        IProgressMonitor monitor = config.getMonitor();
+        if (monitor == null){
+            monitor = DefaultProgressMonitor.NewInstance();
+        }
+        monitor.beginTask("Update revision status for subtree", 100);
+        monitor.subTask("Check start conditions");
+
+        if (config.getSubtreeUuid() == null){
+            result.setError();
+            result.addException(new NullPointerException("No subtree given"));
+            monitor.done();
+            return result;
+        }
+        monitor.worked(1);
+
+        TaxonNode subTree = find(config.getSubtreeUuid());
+        if (subTree == null){
+            result.setError();
+            result.addException(new NullPointerException("Subtree does not exist"));
+            monitor.done();
+            return result;
+        }
+        monitor.worked(1);
+
+        RevisionStatusInfo revisionStatus = config.getRevisionStatus();
+        if (revisionStatus != null && revisionStatus.getStatus() != null){
+            RevisionStatus status = genericDao.find(RevisionStatus.class, revisionStatus.getStatus().getUuid());
+            if (status == null){
+                result.setError();
+                result.addException(new NullPointerException("Revision status term does not exist"));
+                monitor.done();
+                return result;
+            }
+            revisionStatus = RevisionStatusInfo.NewInstance(status, revisionStatus.getChanged());
+        }
+        monitor.worked(1);
+
+        monitor.subTask("Count records");
+        boolean includeAcceptedTaxa = config.isIncludeAcceptedTaxa();
+        boolean includeSharedTaxa = config.isIncludeSharedTaxa();
+        boolean includeHybrids = config.isIncludeHybrids();
+        boolean overwriteExisting = config.isOverwriteExisting();
+        boolean includeRelatedTaxa = config.isIncludeProParteSynonyms() || config.isIncludeMisapplications();
+        try {
+            TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
+            int count = includeAcceptedTaxa
+                    ? dao.countRevisionStatusForSubtreeAcceptedTaxa(subTreeIndex, overwriteExisting, includeSharedTaxa, includeHybrids)
+                    : 0;
+            monitor.worked(3);
+            count += includeRelatedTaxa
+                    ? dao.countRevisionStatusForSubtreeRelatedTaxa(subTreeIndex, overwriteExisting, includeSharedTaxa, includeHybrids)
+                    : 0;
+            monitor.worked(3);
+            if (monitor.isCanceled()){
+                return result;
+            }
+
+            SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor, 90,
+                    "Updating revision status for subtree", count);
+            if (includeAcceptedTaxa){
+                monitor.subTask("Update Accepted Taxa");
+                Set<Taxon> updatedTaxa = dao.setRevisionStatusForSubtreeAcceptedTaxa(subTreeIndex,
+                        revisionStatus, overwriteExisting, includeSharedTaxa, includeHybrids, subMonitor);
+                result.addUpdatedObjects(updatedTaxa);
+                if (monitor.isCanceled()){
+                    return result;
+                }
+            }
+            if (includeRelatedTaxa){
+                monitor.subTask("Update Related Taxa");
+                Set<UUID> relationTypes = getRelationTypesForSubtree(config);
+                Set<Taxon> updatedTaxa = dao.setRevisionStatusForSubtreeRelatedTaxa(subTreeIndex,
+                        revisionStatus, relationTypes, overwriteExisting, includeSharedTaxa,
+                        includeHybrids, subMonitor);
                 result.addUpdatedObjects(updatedTaxa);
                 if (monitor.isCanceled()){
                     return result;

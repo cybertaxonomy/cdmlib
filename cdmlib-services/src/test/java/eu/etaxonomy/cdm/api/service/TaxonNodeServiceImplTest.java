@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,12 +32,15 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.RevisionStatusForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.RevisionStatus;
+import eu.etaxonomy.cdm.model.common.RevisionStatusInfo;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.metadata.DistributionDescription;
@@ -1049,6 +1053,56 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(taxonService.find(7).isPublish());
     }
 
+    @Test
+    @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
+    public void testSetRevisionStatusForSubtree(){
+
+        RevisionStatus completed = (RevisionStatus)termService.find(RevisionStatus.uuidCompleted);
+        Assert.assertNotNull(completed);
+        LocalDate changed = LocalDate.of(2026, 10, 7);
+        RevisionStatusInfo info = RevisionStatusInfo.NewInstance(completed, changed);
+
+        Assert.assertNull(((Taxon)taxonService.find(1)).getRevisionStatus());
+        Assert.assertNull(((Taxon)taxonService.find(2)).getRevisionStatus());
+        Assert.assertNull(((Taxon)taxonService.find(5)).getRevisionStatus());
+        Assert.assertNull(((Taxon)taxonService.find(6)).getRevisionStatus());
+
+        RevisionStatusForSubtreeConfigurator config = RevisionStatusForSubtreeConfigurator.NewInstance(
+                node1Uuid, info, null);
+        config.setIncludeSharedTaxa(true);
+        UpdateResult result = taxonNodeService.setRevisionStatusForSubtree(config);
+        Assert.assertTrue(result.getExceptions().isEmpty());
+        Assert.assertTrue(result.isOk());
+
+        commitAndStartNewTransaction();
+        Taxon taxon1 = (Taxon)taxonService.find(1);
+        Taxon taxon2 = (Taxon)taxonService.find(2);
+        Taxon taxon5 = (Taxon)taxonService.find(5);
+        Taxon taxon6 = (Taxon)taxonService.find(6);
+        Assert.assertEquals(completed, taxon1.getRevisionStatus().getStatus());
+        Assert.assertEquals(changed, taxon1.getRevisionStatus().getChanged());
+        Assert.assertNull("Taxon2 is not in subtree", taxon2.getRevisionStatus());
+        Assert.assertEquals(completed, taxon5.getRevisionStatus().getStatus());
+        Assert.assertNull("Related taxon should not be updated by default", taxon6.getRevisionStatus());
+
+        // overwriteExisting=false: already set taxa stay unchanged when another status is requested
+        RevisionStatus inProcess = (RevisionStatus)termService.find(RevisionStatus.uuidInProcess);
+        RevisionStatusInfo otherInfo = RevisionStatusInfo.NewInstance(inProcess, changed);
+        config.setRevisionStatus(otherInfo);
+        config.setOverwriteExisting(false);
+        taxonNodeService.setRevisionStatusForSubtree(config);
+        commitAndStartNewTransaction();
+        taxon1 = (Taxon)taxonService.find(1);
+        Assert.assertEquals("Existing revision status must not be overwritten",
+                completed, taxon1.getRevisionStatus().getStatus());
+
+        config.setIncludeMisapplications(true);
+        config.setOverwriteExisting(true);
+        taxonNodeService.setRevisionStatusForSubtree(config);
+        commitAndStartNewTransaction();
+        taxon6 = (Taxon)taxonService.find(6);
+        Assert.assertEquals(inProcess, taxon6.getRevisionStatus().getStatus());
+    }
 
     @Test
     @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
