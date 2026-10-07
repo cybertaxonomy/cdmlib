@@ -1713,7 +1713,6 @@ public class TaxonServiceImpl
 
         // ---  initialize taxa, thighlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
-        @SuppressWarnings("rawtypes")
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
@@ -2041,7 +2040,6 @@ public class TaxonServiceImpl
 
         // search for taxa or synonyms
         if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) || searchModes.contains(TaxaAndNamesSearchMode.doSynonyms) ) {
-            @SuppressWarnings("rawtypes")
             Class<? extends TaxonBase> taxonBaseSubclass = TaxonBase.class;
             String className = null;
             if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && !searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
@@ -2395,7 +2393,6 @@ public class TaxonServiceImpl
 
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
-        @SuppressWarnings("rawtypes")
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
@@ -2900,7 +2897,6 @@ public class TaxonServiceImpl
             }
         }
         classification = null;
-        @SuppressWarnings("rawtypes")
         List<TaxonBase> taxonList = dao.getTaxaByName(true, config.isIncludeSynonyms(), false, false, false,
                 config.getTaxonNameTitle(), classification, null, MatchMode.EXACT, null, config.isIncludeSynonyms(), null, null, null, config.getPropertyPath());
         return taxonList;

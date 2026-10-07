@@ -37,7 +37,6 @@ import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Example.PropertySelector;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
@@ -47,7 +46,6 @@ import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.sql.JoinType;
-import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -1318,7 +1316,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     public <S extends T> List<S> list(S example, Set<String> includeProperties, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
 
-        Class<S> clazz = example == null ? (Class<S>) (Class<?>) type : (Class<S>) example.getClass();
+        Class<S> clazz = example == null ? (Class<S>)type : (Class<S>) example.getClass();
         CriteriaBuilder cb = getCriteriaBuilder();
         CriteriaQuery<S> cq = cb.createQuery(clazz);
         Root<S> root = cq.from(clazz);
@@ -1336,26 +1334,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
 
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return deduplicateResult(results);
-    }
-
-    private class PropertySelectorImpl implements PropertySelector {
-
-        private static final long serialVersionUID = -3175311800911570546L;
-
-        private final Set<String> includeProperties;
-
-        public PropertySelectorImpl(Set<String> includeProperties) {
-            this.includeProperties = includeProperties;
-        }
-
-        @Override
-        public boolean include(Object propertyValue, String propertyName, Type type) {
-            if (includeProperties.contains(propertyName)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
     }
 
     private class CriterionWithOperator {
