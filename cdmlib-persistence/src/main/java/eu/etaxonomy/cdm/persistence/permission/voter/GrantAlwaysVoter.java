@@ -8,26 +8,24 @@
 */
 package eu.etaxonomy.cdm.persistence.permission.voter;
 
-import java.util.Collection;
-
-import org.springframework.security.access.ConfigAttribute;
-import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
 
 /**
- * This voter always returns {@link #ACCESS_GRANTED}.
- * It is needed as default voter when using the {@link UnanimousBased}
+ * This voter always returns {@link CdmVote#GRANTED}.
+ * It is needed as default voter for {@link eu.etaxonomy.cdm.persistence.permission.UnanimousBasedUnrevokable}.
+ *
  * @author andreas kohlbecker
  * @since Sep 4, 2012
  */
 public class GrantAlwaysVoter extends CdmPermissionVoter {
 
     @Override
-    public int vote(Authentication authentication, TargetEntityStates object, Collection<ConfigAttribute> attributes) {
-        return ACCESS_GRANTED;
+    public CdmVote vote(Authentication authentication, TargetEntityStates object, CdmAuthority requiredAuthority) {
+        return CdmVote.GRANTED;
     }
 
     @Override

@@ -2,7 +2,6 @@ package eu.etaxonomy.cdm.persistence.permission;
 
 import java.util.UUID;
 
-import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
 
@@ -10,8 +9,7 @@ import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.persistence.dao.permission.IGrantedAuthorityDao;
 
 /**
- * The role prefix 'ROLE_' is defined in the spring security
- * <code>RoleVoter</code>
+ * Roles use the conventional Spring Security prefix {@code ROLE_}.
  *
  * @author a.kohlbecker
  * @since Oct 5, 2012
@@ -21,8 +19,7 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
     private static final long serialVersionUID = -2244354513663448504L;
 
     /**
-     * The role prefix 'ROLE_' is defined in the spring security
-     * {@link RoleVoter}
+     * Conventional Spring Security role prefix.
      */
     private static final String ROLE_PREFIX = "ROLE_";
 

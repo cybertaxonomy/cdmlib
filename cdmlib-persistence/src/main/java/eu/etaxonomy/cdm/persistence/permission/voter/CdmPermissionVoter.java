@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.persistence.permission.voter;
 
-import java.util.Collection;
 import java.util.EnumSet;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -23,38 +23,28 @@ import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.permission.CdmAuthorityParsingException;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthorizationTarget;
 import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
 
 /**
- * The <code>CdmPermissionVoter</code> provides access control votes for {@link CdmBase} objects.
+ * Provides access control votes for {@link CdmBase} objects.
+ * <p>
+ * Implements {@link AuthorizationManager}: {@link CdmVote#ABSTAIN} is returned as
+ * {@code null} (Spring convention), grant/deny as {@link AuthorizationDecision}.
  *
  * @author andreas kohlbecker
  * @since Sep 4, 2012
  */
-public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetEntityStates> {
+public abstract class CdmPermissionVoter implements AuthorizationManager<CdmAuthorizationTarget> {
 
     private static final Logger logger = LogManager.getLogger();
 
     private static final EnumSet<CRUD> DELETE = EnumSet.of(CRUD.DELETE);
 
-    @Override
-    public boolean supports(ConfigAttribute attribute) {
-        // all CdmPermissionVoter support CdmAuthority
-        return attribute instanceof CdmAuthority;
-    }
-
-    @Override
-    public boolean supports(Class<?> clazz) {
-        /* NOTE!!!
-         * Do not change this, all CdmPermissionVoters must support CdmBase.class
-         */
-        return clazz.isInstance(CdmBase.class);
-    }
-
     /**
      * Sets the Cdm type, or super type this Voter is responsible for.
      */
-    abstract public Class<? extends CdmBase> getResponsibilityClass();
+    public abstract Class<? extends CdmBase> getResponsibilityClass();
 
     protected boolean isResponsibleFor(Object securedObject) {
         return getResponsibilityClass().isAssignableFrom(securedObject.getClass());
@@ -66,191 +56,161 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetE
 
     /**
      * Get the according CdmPermissionClass matching {@link #getResponsibilityClass()} the cdm class this voter is responsible for.
-     * @return
      */
     protected PermissionClass getResponsibility() {
         return PermissionClass.getValueOf(getResponsibilityClass());
     }
 
     @Override
-    public int vote(Authentication authentication, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes) {
+    public AuthorizationDecision check(Supplier<Authentication> authentication, CdmAuthorizationTarget object) {
+        CdmVote vote = vote(authentication.get(), object.getTargetEntityStates(), object.getRequiredAuthority());
+        if (vote == CdmVote.ABSTAIN) {
+            return null;
+        }
+        return new AuthorizationDecision(vote == CdmVote.GRANTED);
+    }
 
-        if(!isResponsibleFor(targetEntityStates.getEntity())){
-            if (logger.isDebugEnabled()) {logger.debug(voterLoggingLabel() + " class missmatch => ACCESS_ABSTAIN");}
-            return ACCESS_ABSTAIN;
+    /**
+     * Vote on whether {@code authentication} may perform {@code requiredAuthority} on {@code targetEntityStates}.
+     */
+    public CdmVote vote(Authentication authentication, TargetEntityStates targetEntityStates,
+            CdmAuthority requiredAuthority) {
+
+        if (!isResponsibleFor(targetEntityStates.getEntity())) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(voterLoggingLabel() + " class missmatch => ACCESS_ABSTAIN");
+            }
+            return CdmVote.ABSTAIN;
         }
 
-        if (logger.isDebugEnabled()){logger.debug(voterLoggingLabel() + " voting for authentication: " + authentication.getName() + ", object : " + targetEntityStates.getEntity().toString() + ", attribute[0]:" + ((CdmAuthority)attributes.iterator().next()).getAttribute());}
+        if (logger.isDebugEnabled()) {
+            logger.debug(voterLoggingLabel() + " voting for authentication: " + authentication.getName()
+                    + ", object : " + targetEntityStates.getEntity().toString()
+                    + ", required:" + requiredAuthority.getAttribute());
+        }
 
-        int fallThroughVote = ACCESS_DENIED;
+        CdmVote fallThroughVote = CdmVote.DENIED;
         boolean deniedByPreviousFurtherVoting = false;
 
-        // loop over all attributes = permissions of which at least one must match
-        // usually there is only one element in the collection!
-        for(ConfigAttribute attribute : attributes){
-            if(!(attribute instanceof CdmAuthority)){
-                throw new RuntimeException("attributes must contain only CdmAuthority");
+        CdmAuthority evalPermission = requiredAuthority;
+
+        for (GrantedAuthority authority : authentication.getAuthorities()) {
+
+            CdmAuthority auth;
+            try {
+                auth = CdmAuthority.fromGrantedAuthority(authority);
+            } catch (CdmAuthorityParsingException e) {
+                logger.debug(voterLoggingLabel() + " skipping " + authority.getAuthority()
+                        + " due to CdmAuthorityParsingException");
+                continue;
             }
-            CdmAuthority evalPermission = (CdmAuthority)attribute;
 
-            for (GrantedAuthority authority: authentication.getAuthorities()){
+            // check if the voter is responsible for the permission to be evaluated
+            if (!isResponsibleFor(evalPermission.getPermissionClass())) {
+                logger.debug(voterLoggingLabel() + " not responsible for " + evalPermission.getPermissionClass()
+                        + " -> skipping");
+                continue;
+            }
 
-                CdmAuthority auth;
-                try {
-                    auth = CdmAuthority.fromGrantedAuthority(authority);
-                } catch (CdmAuthorityParsingException e) {
-                    logger.debug(voterLoggingLabel() + " skipping " + authority.getAuthority() + " due to CdmAuthorityParsingException");
-                    continue;
+            ValidationResult vr = new ValidationResult();
+
+            boolean isALL = auth.getPermissionClass().equals(PermissionClass.ALL);
+
+            vr.isClassMatch = isALL || auth.getPermissionClass().equals(evalPermission.getPermissionClass());
+            vr.isPermissionMatch = auth.getOperation().containsAll(evalPermission.getOperation());
+            vr.isUuidMatch = auth.hasTargetUuid()
+                    && auth.getTargetUUID().equals(targetEntityStates.getEntity().getUuid());
+            vr.isIgnoreUuidMatch = !auth.hasTargetUuid();
+
+            if (logger.isDebugEnabled()) {
+                logger.debug(voterLoggingLabel() + " " + vr);
+            }
+
+            // first of all, always allow deleting orphan entities
+            if (vr.isClassMatch && evalPermission.getOperation().equals(DELETE)
+                    && isOrpahn(targetEntityStates.getEntity())) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug(voterLoggingLabel() + " entity is considered orphan => ACCESS_GRANTED");
                 }
+                return CdmVote.GRANTED;
+            }
 
-                // check if the voter is responsible for the permission to be evaluated
-                if( ! isResponsibleFor(evalPermission.getPermissionClass())){
-                    logger.debug(voterLoggingLabel() + " not responsible for " + evalPermission.getPermissionClass() + " -> skipping");
-                    continue;
+            if (!auth.hasProperty()) {
+                if (vr.isIgnoreUuidMatch && vr.isClassMatch && vr.isPermissionMatch) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(voterLoggingLabel()
+                                + " no targetUuid, class & permission match => ACCESS_GRANTED");
+                    }
+                    return CdmVote.GRANTED;
                 }
-
-                ValidationResult vr = new ValidationResult();
-
-                boolean isALL = auth.getPermissionClass().equals(PermissionClass.ALL);
-
-                vr.isClassMatch = isALL || auth.getPermissionClass().equals(evalPermission.getPermissionClass());
-                vr.isPermissionMatch = auth.getOperation().containsAll(evalPermission.getOperation());
-                vr.isUuidMatch = auth.hasTargetUuid() && auth.getTargetUUID().equals(targetEntityStates.getEntity().getUuid());
-                vr.isIgnoreUuidMatch = !auth.hasTargetUuid();
-
-                if(logger.isDebugEnabled()){
-                    logger.debug(voterLoggingLabel() + " " + vr);
+                if (vr.isUuidMatch && vr.isClassMatch && vr.isPermissionMatch) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(voterLoggingLabel()
+                                + " permission, class and uuid are matching => ACCESS_GRANTED");
+                    }
+                    return CdmVote.GRANTED;
                 }
-
-                // first of all, always allow deleting orphan entities
-                if(vr.isClassMatch && evalPermission.getOperation().equals(DELETE) && isOrpahn(targetEntityStates.getEntity())) {
-                    if(logger.isDebugEnabled()){
-                        logger.debug(voterLoggingLabel() +" entity is considered orphan => ACCESS_GRANTED");
-                    }
-                    return ACCESS_GRANTED;
+            } else {
+                // If the authority contains a property AND the voter is responsible for this class
+                // we must change the fallThroughVote to ABSTAIN; decision is delegated to furtherVotingDescisions()
+                if (vr.isClassMatch) {
+                    fallThroughVote = CdmVote.ABSTAIN;
                 }
+            }
 
-                if(!auth.hasProperty()){
-                    if ( vr.isIgnoreUuidMatch && vr.isClassMatch && vr.isPermissionMatch){
-                        if(logger.isDebugEnabled()){
-                            logger.debug(voterLoggingLabel() +" no targetUuid, class & permission match => ACCESS_GRANTED");
-                        }
-                        return ACCESS_GRANTED;
-                    }
-                    if ( vr.isUuidMatch && vr.isClassMatch && vr.isPermissionMatch ){
-                        if(logger.isDebugEnabled()){
-                            logger.debug(voterLoggingLabel() +" permission, class and uuid are matching => ACCESS_GRANTED");
-                        }
-                        return ACCESS_GRANTED;
-                    }
-                } else {
-                    //
-                    // If the authority contains a property AND the voter is responsible for this class
-                    // we must change the fallThroughVote
-                    // to ABSTAIN, since no decision can be made in this case at this point
-                    // the decision will be delegated to the furtherVotingDescisions() method
-                    if(vr.isClassMatch){
-                        fallThroughVote = ACCESS_ABSTAIN;
-                    }
+            CdmVote furtherVotingResult = furtherVotingDescisions(auth, targetEntityStates, evalPermission, vr);
+            if (furtherVotingResult != null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug(voterLoggingLabel() + " furtherVotingResult => " + furtherVotingResult);
                 }
-
-                //
-                // ask subclasses for further voting decisions
-                // subclasses will cast votes for specific Cdm Types
-                //
-                Integer furtherVotingResult = furtherVotingDescisions(auth, targetEntityStates, attributes, vr);
-                if(furtherVotingResult != null){
-                    if(logger.isDebugEnabled()){
-                        logger.debug(voterLoggingLabel() + " furtherVotingResult => " + voteToString(furtherVotingResult));
-                    }
-                    switch(furtherVotingResult){
-                        case ACCESS_GRANTED:
-                            // no further check needed
-                            return ACCESS_GRANTED;
-                        case ACCESS_DENIED:
-                            // remember the DENIED vote in case none of
-                            // potentially following furtherVotes are
-                            // GRANTED
-                            deniedByPreviousFurtherVoting = true;
-                        //$FALL-THROUGH$
-                        case ACCESS_ABSTAIN: /* nothing to do */
-                            default: /* nothing to do */
-                    }
+                switch (furtherVotingResult) {
+                case GRANTED:
+                    return CdmVote.GRANTED;
+                case DENIED:
+                    deniedByPreviousFurtherVoting = true;
+                    break;
+                case ABSTAIN:
+                default:
+                    break;
                 }
-            } // END Authorities loop
-        } // END attributes loop
+            }
+        }
 
-        int votingResult = deniedByPreviousFurtherVoting ? ACCESS_DENIED : fallThroughVote;
-        // the value of fallThroughVote depends on whether the authority had an property or not, see above
-        if(logger.isDebugEnabled()){
-            logger.debug(voterLoggingLabel() + " fallThroughVote => " + voteToString(fallThroughVote));
-            logger.debug(voterLoggingLabel() + " ##votingResult## => " + voteToString(votingResult));
+        CdmVote votingResult = deniedByPreviousFurtherVoting ? CdmVote.DENIED : fallThroughVote;
+        if (logger.isDebugEnabled()) {
+            logger.debug(voterLoggingLabel() + " fallThroughVote => " + fallThroughVote);
+            logger.debug(voterLoggingLabel() + " ##votingResult## => " + votingResult);
         }
         return votingResult;
     }
 
     /**
-     * The AccessDecisionVoter implementing this method can indicate via this method that
-     * an entity has become orphan in order to allow deleting it. In case the implementing method
-     * returns <code>false</code> deleting of the entity will be denied.
+     * Indicates that an entity has become orphan in order to allow deleting it.
+     * In case the implementing method returns {@code false}, deleting of the entity will be denied.
      * <p>
-     * This is important
-     * in the context of hierarchic permission propagation like for example in
-     * tree structures where the permission to delete an entity is given on base
-     * of the permission on an parent object. Entities which become detached
-     * from the tree would otherwise no longer be deletable.
+     * This is important in the context of hierarchic permission propagation (e.g. trees)
+     * where the permission to delete an entity is given based on a parent object.
      *
-     * @param object
-     * @return whether the cdm entity is orpahn
+     * @return whether the cdm entity is orphan
      */
     public abstract boolean isOrpahn(CdmBase object);
 
     /**
-     * Override this method to implement specific decisions.
-     * Implementations of this method will be executed in {@link #vote(Authentication, TargetEntityStates, Collection)}.
-     *
-     * @param CdmAuthority
-     * @param targetEntityStates
-     * @param attributes
-     * @param validationResult
-     * @return A return value of ACCESS_ABSTAIN or null will be ignored in {@link #vote(Authentication, Object, Collection)}
+     * Override to implement type-specific decisions.
+     * {@link CdmVote#ABSTAIN} or {@code null} are ignored in {@link #vote}.
      */
-    protected Integer furtherVotingDescisions(CdmAuthority CdmAuthority, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes,
-            ValidationResult validationResult) {
+    protected CdmVote furtherVotingDescisions(CdmAuthority userAuthority, TargetEntityStates targetEntityStates,
+            CdmAuthority requiredAuthority, ValidationResult validationResult) {
         return null;
     }
 
-    /**
-     * returns a label for the logging output
-     * @return
-     */
-    protected String voterLoggingLabel(){
+    protected String voterLoggingLabel() {
         return "(" + getResponsibilityClass().getSimpleName() + "-Voter)";
     }
 
     /**
-     *
-     * @param vote
-     * @return string representations for the votes defined in {@link AccessDecisionVoter}
-     */
-    protected String voteToString(int vote) {
-        switch (vote){
-            case 1: return "ACCESS_GRANTED";
-            case 0: return "ACCESS_ABSTAIN";
-            case -1: return "ACCESS_DENIED";
-            default: return Integer.toString(vote);
-        }
-    }
-
-    /**
      * Holds various flags with validation results.
-     * Is used to pass this information from
-     * {@link CdmPermissionVoter#vote(Authentication, Object, Collection)}
-     * to {@link CdmPermissionVoter#furtherVotingDescisions(CdmAuthority, Object, Collection, ValidationResult)}
-     *
-     * @author andreas kohlbecker
-     * @since Sep 5, 2012
-     *
+     * Passed from {@link #vote} to {@link #furtherVotingDescisions}.
      */
     protected class ValidationResult {
 
@@ -266,7 +226,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetE
         boolean isClassMatch = false;
 
         @Override
-        public String toString(){
+        public String toString() {
             return "isClassMatch: " + Boolean.toString(isClassMatch) + ", "
                     + "isUuidMatch: " + Boolean.toString(isUuidMatch) + ", "
                     + "isPermissionMatch: " + Boolean.toString(isPermissionMatch) + ", "
