@@ -38,7 +38,6 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.LogicalExpression;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
@@ -934,75 +933,34 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     public List<Object[]> group(Class<? extends T> clazz, Integer limit, Integer start, List<Grouping> groups,
             List<String> propertyPaths) {
 
-        Criteria criteria = getCriteria(clazz);
+        Class<? extends T> entityClass = clazz == null ? type : clazz;
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
+        Root<? extends T> root = cq.from(entityClass);
 
-        addGroups(criteria, groups);
+        List<javax.persistence.criteria.Selection<?>> selections = new ArrayList<>();
+        List<javax.persistence.criteria.Expression<?>> groupByExpressions = new ArrayList<>();
+        List<javax.persistence.criteria.Order> orders = new ArrayList<>();
+        Map<String, From<?, ?>> joins = new HashMap<>();
 
-        if (limit != null) {
-            criteria.setFirstResult(start);
-            criteria.setMaxResults(limit);
+        if (groups != null) {
+            for (Grouping grouping : groups) {
+                grouping.addToCriteria(cb, root, joins, selections, groupByExpressions, orders);
+            }
         }
 
-        @SuppressWarnings("unchecked")
-        List<Object[]> result = criteria.list();
+        cq.multiselect(selections);
+        if (!groupByExpressions.isEmpty()) {
+            cq.groupBy(groupByExpressions);
+        }
+        if (!orders.isEmpty()) {
+            cq.orderBy(orders);
+        }
+
+        List<Object[]> result = addLimitAndStart(getSession().createQuery(cq), limit, start)
+                .getResultList();
         defaultBeanInitializer.initializeAll(result, propertyPaths);
-
         return result;
-    }
-
-    protected void countGroups(DetachedCriteria criteria, List<Grouping> groups) {
-        if (groups != null) {
-
-            Map<String, String> aliases = new HashMap<String, String>();
-
-            for (Grouping grouping : groups) {
-                if (grouping.getAssociatedObj() != null) {
-                    String alias = null;
-                    if ((alias = aliases.get(grouping.getAssociatedObj())) == null) {
-                        alias = grouping.getAssociatedObjectAlias();
-                        aliases.put(grouping.getAssociatedObj(), alias);
-                        criteria.createAlias(grouping.getAssociatedObj(), alias);
-                    }
-                }
-            }
-
-            ProjectionList projectionList = Projections.projectionList();
-
-            for (Grouping grouping : groups) {
-                grouping.addProjection(projectionList);
-            }
-            criteria.setProjection(projectionList);
-        }
-    }
-
-    protected void addGroups(Criteria criteria, List<Grouping> groups) {
-        if (groups != null) {
-
-            Map<String, String> aliases = new HashMap<String, String>();
-
-            for (Grouping grouping : groups) {
-                if (grouping.getAssociatedObj() != null) {
-                    String alias = null;
-                    if ((alias = aliases.get(grouping.getAssociatedObj())) == null) {
-                        alias = grouping.getAssociatedObjectAlias();
-                        aliases.put(grouping.getAssociatedObj(), alias);
-                        criteria.createAlias(grouping.getAssociatedObj(), alias);
-                    }
-                }
-            }
-
-            ProjectionList projectionList = Projections.projectionList();
-
-            for (Grouping grouping : groups) {
-                grouping.addProjection(projectionList);
-            }
-            criteria.setProjection(projectionList);
-
-            for (Grouping grouping : groups) {
-                grouping.addOrder(criteria);
-
-            }
-        }
     }
 
     @Override
