@@ -28,6 +28,9 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * {@code duration} and {@code DTYPE} already exist on {@code MediaRepresentation}.
  * The precondition that each representation has at most one part is checked
  * earlier by {@link MediaRepresentationPartSinglePartChecker}.
+ * <p>
+ * SQL uses correlated subselects so it works on MySQL/MariaDB, H2 and PostgreSQL
+ * (MySQL {@code UPDATE … JOIN} is not portable).
  *
  * @author muellera
  * @since 08.10.2026
@@ -37,6 +40,12 @@ public class MediaRepresentationPartMerger extends SchemaUpdaterStepBase {
     private static final Logger logger = LogManager.getLogger();
 
     private static final String stepName = "Merge MediaRepresentationPart into MediaRepresentation";
+
+    private static final String DTYPE_EXPR =
+            "CASE "
+            + " WHEN mrp.DTYPE = 'MediaRepresentationPart' OR mrp.DTYPE IS NULL "
+            + " THEN 'MediaRepresentation' "
+            + " ELSE mrp.DTYPE END";
 
     public static final MediaRepresentationPartMerger NewInstance(List<ISchemaUpdaterStep> stepList) {
         return new MediaRepresentationPartMerger(stepList);
@@ -60,18 +69,18 @@ public class MediaRepresentationPartMerger extends SchemaUpdaterStepBase {
     private void copyPartDataToRepresentation(ICdmDataSource datasource, CaseType caseType)
             throws SQLException {
 
-        // DTYPE: base class MediaRepresentationPart becomes MediaRepresentation
         String sql = "UPDATE @@MediaRepresentation@@ mr "
-                + " INNER JOIN @@MediaRepresentationPart@@ mrp ON mrp.representation_id = mr.id "
-                + " SET mr.uri = mrp.uri, "
-                + "     mr.size = mrp.size, "
-                + "     mr.height = mrp.height, "
-                + "     mr.width = mrp.width, "
-                + "     mr.duration = mrp.duration, "
-                + "     mr.DTYPE = CASE "
-                + "         WHEN mrp.DTYPE = 'MediaRepresentationPart' OR mrp.DTYPE IS NULL "
-                + "         THEN 'MediaRepresentation' "
-                + "         ELSE mrp.DTYPE END ";
+                + " SET "
+                + "   uri = (SELECT mrp.uri FROM @@MediaRepresentationPart@@ mrp WHERE mrp.representation_id = mr.id), "
+                + "   size = (SELECT mrp.size FROM @@MediaRepresentationPart@@ mrp WHERE mrp.representation_id = mr.id), "
+                + "   height = (SELECT mrp.height FROM @@MediaRepresentationPart@@ mrp WHERE mrp.representation_id = mr.id), "
+                + "   width = (SELECT mrp.width FROM @@MediaRepresentationPart@@ mrp WHERE mrp.representation_id = mr.id), "
+                + "   duration = (SELECT mrp.duration FROM @@MediaRepresentationPart@@ mrp WHERE mrp.representation_id = mr.id), "
+                + "   DTYPE = (SELECT " + DTYPE_EXPR
+                + "            FROM @@MediaRepresentationPart@@ mrp WHERE mrp.representation_id = mr.id) "
+                + " WHERE EXISTS ("
+                + "   SELECT 1 FROM @@MediaRepresentationPart@@ mrp WHERE mrp.representation_id = mr.id"
+                + " )";
         int updated = datasource.executeUpdate(caseType.replaceTableNames(sql));
         logger.info("Copied MediaRepresentationPart data into MediaRepresentation for " + updated + " rows");
     }
@@ -79,31 +88,47 @@ public class MediaRepresentationPartMerger extends SchemaUpdaterStepBase {
     private void copyPartDataToRepresentationAud(ICdmDataSource datasource, CaseType caseType)
             throws SQLException {
 
-        // Prefer matching audit revisions; then fill remaining AUD rows from live part data
+        // Prefer matching audit revisions
         String sql = "UPDATE @@MediaRepresentation_AUD@@ mr "
-                + " INNER JOIN @@MediaRepresentationPart_AUD@@ mrp "
-                + "     ON mrp.representation_id = mr.id AND mrp.REV = mr.REV "
-                + " SET mr.uri = mrp.uri, "
-                + "     mr.size = mrp.size, "
-                + "     mr.height = mrp.height, "
-                + "     mr.width = mrp.width, "
-                + "     mr.duration = mrp.duration, "
-                + "     mr.DTYPE = CASE "
-                + "         WHEN mrp.DTYPE = 'MediaRepresentationPart' OR mrp.DTYPE IS NULL "
-                + "         THEN 'MediaRepresentation' "
-                + "         ELSE mrp.DTYPE END ";
+                + " SET "
+                + "   uri = (SELECT mrp.uri FROM @@MediaRepresentationPart_AUD@@ mrp "
+                + "          WHERE mrp.representation_id = mr.id AND mrp.REV = mr.REV), "
+                + "   size = (SELECT mrp.size FROM @@MediaRepresentationPart_AUD@@ mrp "
+                + "           WHERE mrp.representation_id = mr.id AND mrp.REV = mr.REV), "
+                + "   height = (SELECT mrp.height FROM @@MediaRepresentationPart_AUD@@ mrp "
+                + "             WHERE mrp.representation_id = mr.id AND mrp.REV = mr.REV), "
+                + "   width = (SELECT mrp.width FROM @@MediaRepresentationPart_AUD@@ mrp "
+                + "            WHERE mrp.representation_id = mr.id AND mrp.REV = mr.REV), "
+                + "   duration = (SELECT mrp.duration FROM @@MediaRepresentationPart_AUD@@ mrp "
+                + "               WHERE mrp.representation_id = mr.id AND mrp.REV = mr.REV), "
+                + "   DTYPE = (SELECT " + DTYPE_EXPR
+                + "            FROM @@MediaRepresentationPart_AUD@@ mrp "
+                + "            WHERE mrp.representation_id = mr.id AND mrp.REV = mr.REV) "
+                + " WHERE EXISTS ("
+                + "   SELECT 1 FROM @@MediaRepresentationPart_AUD@@ mrp "
+                + "   WHERE mrp.representation_id = mr.id AND mrp.REV = mr.REV"
+                + " )";
         datasource.executeUpdate(caseType.replaceTableNames(sql));
 
+        // Fill remaining AUD rows from live part data
         sql = "UPDATE @@MediaRepresentation_AUD@@ mr "
-                + " INNER JOIN @@MediaRepresentationPart@@ mrp ON mrp.representation_id = mr.id "
-                + " SET mr.uri = COALESCE(mr.uri, mrp.uri), "
-                + "     mr.size = COALESCE(mr.size, mrp.size), "
-                + "     mr.height = COALESCE(mr.height, mrp.height), "
-                + "     mr.width = COALESCE(mr.width, mrp.width), "
-                + "     mr.duration = COALESCE(mr.duration, mrp.duration), "
-                + "     mr.DTYPE = COALESCE(mr.DTYPE, "
-                + "         CASE WHEN mrp.DTYPE = 'MediaRepresentationPart' OR mrp.DTYPE IS NULL "
-                + "              THEN 'MediaRepresentation' ELSE mrp.DTYPE END) ";
+                + " SET "
+                + "   uri = COALESCE(uri, (SELECT mrp.uri FROM @@MediaRepresentationPart@@ mrp "
+                + "                        WHERE mrp.representation_id = mr.id)), "
+                + "   size = COALESCE(size, (SELECT mrp.size FROM @@MediaRepresentationPart@@ mrp "
+                + "                          WHERE mrp.representation_id = mr.id)), "
+                + "   height = COALESCE(height, (SELECT mrp.height FROM @@MediaRepresentationPart@@ mrp "
+                + "                              WHERE mrp.representation_id = mr.id)), "
+                + "   width = COALESCE(width, (SELECT mrp.width FROM @@MediaRepresentationPart@@ mrp "
+                + "                            WHERE mrp.representation_id = mr.id)), "
+                + "   duration = COALESCE(duration, (SELECT mrp.duration FROM @@MediaRepresentationPart@@ mrp "
+                + "                                  WHERE mrp.representation_id = mr.id)), "
+                + "   DTYPE = COALESCE(DTYPE, (SELECT " + DTYPE_EXPR
+                + "                           FROM @@MediaRepresentationPart@@ mrp "
+                + "                           WHERE mrp.representation_id = mr.id)) "
+                + " WHERE EXISTS ("
+                + "   SELECT 1 FROM @@MediaRepresentationPart@@ mrp WHERE mrp.representation_id = mr.id"
+                + " )";
         datasource.executeUpdate(caseType.replaceTableNames(sql));
     }
 
@@ -121,8 +146,14 @@ public class MediaRepresentationPartMerger extends SchemaUpdaterStepBase {
 
         // mediaRepresentation_id pointed to MediaRepresentationPart.id → MediaRepresentation.id
         String sql = "UPDATE @@MediaMetaData@@ mmd "
-                + " INNER JOIN @@MediaRepresentationPart@@ mrp ON mmd.mediaRepresentation_id = mrp.id "
-                + " SET mmd.mediaRepresentation_id = mrp.representation_id ";
+                + " SET mediaRepresentation_id = ("
+                + "   SELECT mrp.representation_id FROM @@MediaRepresentationPart@@ mrp "
+                + "   WHERE mmd.mediaRepresentation_id = mrp.id"
+                + " ) "
+                + " WHERE EXISTS ("
+                + "   SELECT 1 FROM @@MediaRepresentationPart@@ mrp "
+                + "   WHERE mmd.mediaRepresentation_id = mrp.id"
+                + " )";
         int updated = datasource.executeUpdate(caseType.replaceTableNames(sql));
         logger.info("Remapped MediaMetaData.mediaRepresentation_id for " + updated + " rows");
     }
@@ -130,14 +161,25 @@ public class MediaRepresentationPartMerger extends SchemaUpdaterStepBase {
     private void remapMediaMetaDataAud(ICdmDataSource datasource, CaseType caseType) throws SQLException {
 
         String sql = "UPDATE @@MediaMetaData_AUD@@ mmd "
-                + " INNER JOIN @@MediaRepresentationPart@@ mrp ON mmd.mediaRepresentation_id = mrp.id "
-                + " SET mmd.mediaRepresentation_id = mrp.representation_id ";
+                + " SET mediaRepresentation_id = ("
+                + "   SELECT mrp.representation_id FROM @@MediaRepresentationPart@@ mrp "
+                + "   WHERE mmd.mediaRepresentation_id = mrp.id"
+                + " ) "
+                + " WHERE EXISTS ("
+                + "   SELECT 1 FROM @@MediaRepresentationPart@@ mrp "
+                + "   WHERE mmd.mediaRepresentation_id = mrp.id"
+                + " )";
         datasource.executeUpdate(caseType.replaceTableNames(sql));
 
         sql = "UPDATE @@MediaMetaData_AUD@@ mmd "
-                + " INNER JOIN @@MediaRepresentationPart_AUD@@ mrp "
-                + "     ON mmd.mediaRepresentation_id = mrp.id AND mmd.REV = mrp.REV "
-                + " SET mmd.mediaRepresentation_id = mrp.representation_id ";
+                + " SET mediaRepresentation_id = ("
+                + "   SELECT mrp.representation_id FROM @@MediaRepresentationPart_AUD@@ mrp "
+                + "   WHERE mmd.mediaRepresentation_id = mrp.id AND mmd.REV = mrp.REV"
+                + " ) "
+                + " WHERE EXISTS ("
+                + "   SELECT 1 FROM @@MediaRepresentationPart_AUD@@ mrp "
+                + "   WHERE mmd.mediaRepresentation_id = mrp.id AND mmd.REV = mrp.REV"
+                + " )";
         datasource.executeUpdate(caseType.replaceTableNames(sql));
     }
 }
