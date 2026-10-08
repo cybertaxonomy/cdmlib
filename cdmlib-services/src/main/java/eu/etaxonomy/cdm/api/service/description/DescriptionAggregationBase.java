@@ -617,7 +617,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         }
 
         TransactionStatus txStatus = getTransactionManager().getTransaction(txDef);
-        getSession().setFlushMode(FlushMode.COMMIT);
+        getSession().setHibernateFlushMode(FlushMode.COMMIT);
 
         return txStatus;
     }

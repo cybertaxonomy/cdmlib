@@ -369,7 +369,7 @@ public class ConversationHolder {
         // This will create a new session which must be explicitly managed by this conversation, which includes
         // binding / unbinding / closing session as well as starting / committing transactions.
         Session session = sessionFactory.openSession();
-        session.setFlushMode(getDefaultFlushMode());
+        session.setHibernateFlushMode(getDefaultFlushMode());
 
         return session;
     }

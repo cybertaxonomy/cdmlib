@@ -207,7 +207,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
         TransactionStatus txStatus = transactionManager.getTransaction(txDef);
 
         //TODO is this really necessary
-        getSession().setFlushMode(FlushMode.COMMIT);
+        getSession().setHibernateFlushMode(FlushMode.COMMIT);
 
         return txStatus;
     }
