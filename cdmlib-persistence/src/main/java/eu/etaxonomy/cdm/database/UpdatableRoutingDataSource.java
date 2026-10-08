@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database;
 
 import java.sql.Connection;
@@ -19,7 +18,6 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-
 
 /**
  * A simple RoutingDataSource.
@@ -44,8 +42,8 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
  * @deprecated<b>NOTICE:</b>
  * <em>This class is related to the switchable database infrastructure which allows to serve
  * multiple databases with only a single instance of the cdm-remote-webapp.
- * This concept however is deprecated due to several problems of which the most severe is the term loading issue.
- * This class should however not deleted since we once might wish to switch back to this concept when we are
+ * @Deprecated This concept however is deprecated due to several problems of which the most severe is the term loading issue.
+ * This class should however not be deleted since we once might wish to switch back to this concept when we are
  * able to deal with the implicated issues.
  *
  * See https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmServerSwitchableDataSources for more information.</em>
@@ -53,28 +51,31 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 @Deprecated
 public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 
-
 	private String defaultDatasourceName = "default";
 
-	@Override
+	@Deprecated
+    @Override
 	protected Object determineCurrentLookupKey() {
 		return NamedContextHolder.getContextKey();
 	}
 
-	@Override
+	@Deprecated
+    @Override
 	public void afterPropertiesSet() {
 		updateDataSources();
 		// super.afterPropertiesSet() is called by updateRoutingDataSource()
 	}
 
-	public void setDefaultDatasourceName(String name){
+	@Deprecated
+    public void setDefaultDatasourceName(String name){
 		this.defaultDatasourceName = name;
 	}
 
 
 
 
-	public Map<String, DataSourceInfo> updateDataSources() {
+	@Deprecated
+    public Map<String, DataSourceInfo> updateDataSources() {
 
 		logger.info("loading & testing datasources .. ");
 		Map<String,SimpleDriverDataSource> dataSources = loadDataSources();
@@ -91,7 +92,8 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 		return dataSourceInfos;
 	}
 
-	protected Map<String, SimpleDriverDataSource> loadDataSources(){
+	@Deprecated
+    protected Map<String, SimpleDriverDataSource> loadDataSources(){
 		return DataSourceBeanLoader.loadDataSources(SimpleDriverDataSource.class);
 	}
 
@@ -99,7 +101,8 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 	 * @param dataSources
 	 * @return
 	 */
-	protected Map<String, DataSourceInfo> testDataSources(Map<String, SimpleDriverDataSource> dataSources) {
+	@Deprecated
+    protected Map<String, DataSourceInfo> testDataSources(Map<String, SimpleDriverDataSource> dataSources) {
 
 		Map<String, DataSourceInfo> dataSourceInfos = new HashMap<String, DataSourceInfo>();
 
@@ -126,7 +129,8 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 	}
 
 	// added for compatibility with Java 7
-	@Override
+	@Deprecated
+    @Override
     public Logger getParentLogger() /* throws SQLFeatureNotSupportedException (is not compatibel with parent class in Java 6)*/  {
 		// TODO Auto-generated method stub
 		return null;
