@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.model.taxon;
 
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,31 +37,60 @@ public enum TaxonStatus
 
     /**
      * Taxon or synonym assignment without doubt (default).
-     * See #11039
      */
-    @XmlEnumValue("OK")
-    OK(UUID.fromString("ee74d076-b89c-4491-9d6e-04e5359b2b79"), "OK", "OK", null),
+    @XmlEnumValue("Accepted")
+    ACCEPTED(UUID.fromString("ee74d076-b89c-4491-9d6e-04e5359b2b79"), "Accepted", "ACC", true, false),
 
     /**
      * The assignment to accepted taxon or synonym is doubtful.
-     * See #11039
      */
     @XmlEnumValue("Doubtful")
-    DOUBTFUL(UUID.fromString("e073d533-dd5a-4aad-95e7-335a0d94391f"), "Doubtful", "DOU", null),
+    DOUBTFUL(UUID.fromString("e073d533-dd5a-4aad-95e7-335a0d94391f"), "Doubtful", "DOU", true, true),
 
     /**
      * Provisionally accepted taxon.
-     * See #11039
      */
     @XmlEnumValue("Provisionally Accepted")
-    PROVISIONALLY_ACCEPTED(UUID.fromString("ad6418fc-267d-419e-bf9f-336e077911b7"), "Provisionally Accepted", "PAC", null),
+    PROVISIONALLY_ACCEPTED(UUID.fromString("ad6418fc-267d-419e-bf9f-336e077911b7"), "Provisionally Accepted", "PAC", true, false),
+
+    /**
+     * Synonym.
+     */
+    @XmlEnumValue("Synonym")
+    SYNONYM(UUID.fromString("ddfb069c-5d98-40bd-b229-9a2fa871e700"), "Synonym", "SYN", false, true),
 
     ;
 
 // **************** END ENUM **********************/
 
-    private TaxonStatus(UUID uuid, String defaultString, String key, TaxonStatus parent){
-        delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
+    private boolean supportsAccepted;
+    private boolean supportsSynonym;
+
+    private TaxonStatus(UUID uuid, String defaultString, String key, boolean supportsAccepted, boolean supportsSynonym){
+        delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, null);
+        this.supportsAccepted = supportsAccepted;
+        this.supportsSynonym = supportsSynonym;
+    }
+
+    public static final EnumSet<TaxonStatus> forAccepted(){
+        Set<TaxonStatus> result = new HashSet<>();
+        for (TaxonStatus st : values()) {
+            if (st.supportsAccepted) {
+                result.add(st);
+            }
+        }
+        return EnumSet.copyOf(result);
+    }
+
+    public static final EnumSet<TaxonStatus> forSynonyms(){
+        Set<TaxonStatus> result = new HashSet<>();
+        for (TaxonStatus st : values()) {
+            if (st.supportsSynonym) {
+                result.add(st);
+            }
+        }
+        return EnumSet.copyOf(result);
+
     }
 
 // *************************** DELEGATE **************************************/

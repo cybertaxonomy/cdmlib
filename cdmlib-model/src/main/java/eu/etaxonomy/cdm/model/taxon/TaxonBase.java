@@ -139,7 +139,7 @@ public abstract class TaxonBase
         parameters = {@Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.taxon.TaxonStatus")}
     )
     @NotNull
-    private TaxonStatus taxonStatus = TaxonStatus.OK;
+    private TaxonStatus taxonStatus = getDefaultStatus();
 
     @XmlElement(name = "Name")
     @XmlIDREF
@@ -251,8 +251,14 @@ public abstract class TaxonBase
      * See #11039
      */
     public void setTaxonStatus(TaxonStatus taxonStatus){
-        this.taxonStatus = taxonStatus == null ? TaxonStatus.OK : taxonStatus;
+        this.taxonStatus = taxonStatus == null ? getDefaultStatus() : taxonStatus;
     }
+
+    /**
+     * Returns the default status for the according subclas.
+     * E.g. "Accepted" for a Taxon.
+     */
+    protected abstract @NotNull TaxonStatus getDefaultStatus();
 
     /**
      * Returns <code>true</code> if the {@link TaxonStatus} is {@link TaxonStatus#DOUBTFUL}.
@@ -270,7 +276,7 @@ public abstract class TaxonBase
      * @see #setTaxonStatus(TaxonStatus)
      */
     public void setDoubtful(boolean doubtful){
-        setTaxonStatus(doubtful ? TaxonStatus.DOUBTFUL : TaxonStatus.OK);
+        setTaxonStatus(doubtful ? TaxonStatus.DOUBTFUL : getDefaultStatus());
     }
 
     /**

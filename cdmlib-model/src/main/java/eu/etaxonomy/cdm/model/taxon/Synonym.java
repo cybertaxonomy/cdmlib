@@ -156,6 +156,15 @@ public class Synonym
         }
     }
 
+    /**
+     * @see #11039
+     */
+    @Override
+    @Transient
+    public TaxonStatus getDefaultStatus() {
+        return TaxonStatus.SYNONYM;
+    }
+
     public SynonymType getType() {
         return type;
     }

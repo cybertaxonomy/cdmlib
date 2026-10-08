@@ -8,8 +8,12 @@
 */
 package eu.etaxonomy.cdm.model.taxon;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -94,7 +98,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	 */
 	@Test
 	public final void testTaxonStatus() {
-		assertEquals(TaxonStatus.OK, taxon1.getTaxonStatus());
+		assertEquals(TaxonStatus.ACCEPTED, taxon1.getTaxonStatus());
 		taxon1.setTaxonStatus(TaxonStatus.DOUBTFUL);
 		assertEquals(TaxonStatus.DOUBTFUL, taxon1.getTaxonStatus());
 		assertTrue(taxon1.isDoubtful());
@@ -102,7 +106,7 @@ public class TaxonBaseTest extends EntityTestBase {
 		assertEquals(TaxonStatus.PROVISIONALLY_ACCEPTED, taxon1.getTaxonStatus());
 		assertFalse(taxon1.isDoubtful());
 		taxon1.setTaxonStatus(null);
-		assertEquals(TaxonStatus.OK, taxon1.getTaxonStatus());
+		assertEquals(TaxonStatus.ACCEPTED, taxon1.getTaxonStatus());
 	}
 
 	@Test

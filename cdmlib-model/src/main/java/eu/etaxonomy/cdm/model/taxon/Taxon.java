@@ -300,7 +300,16 @@ public class Taxon
     }
     public void setRevisionStatus(RevisionStatus status, LocalDate changed) {
         this.revisionStatus = RevisionStatusInfo.NewInstance(status, changed);
-    };
+    }
+
+    /**
+     * @see #11039
+     */
+    @Override
+    @Transient
+    public TaxonStatus getDefaultStatus() {
+        return TaxonStatus.ACCEPTED;
+    }
 
 // ************************ Concept Defintion ************************/
 
