@@ -22,6 +22,7 @@ public enum Datatype {
     CLOB("clob"),
     VARCHAR("varchar"),
     DATETIME("datetime"),
+    DATE("date"),
     DOUBLE("double"),
     FLOAT("float"),
     TINYINTEGER("tinyint"),
@@ -49,6 +50,7 @@ public enum Datatype {
             result = result.replace("double", dbType.getHibernateDialect().getTypeName(Types.DOUBLE));
             result = result.replace("bit", dbType.getHibernateDialect().getTypeName(Types.BIT));
             result = result.replace("datetime", dbType.getHibernateDialect().getTypeName(Types.TIMESTAMP));
+            result = result.replace("date", dbType.getHibernateDialect().getTypeName(Types.DATE));
             result = result.replace("tinyint", DatabaseTypeEnum.PostgreSQL.getHibernateDialect().getTypeName(Types.TINYINT));
         }
         //CLOB

@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.model.taxon;
 
 
 import java.lang.reflect.Field;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -298,7 +298,7 @@ public class Taxon
     public void setRevisionStatus(RevisionStatusInfo revisionStatus) {
         this.revisionStatus = revisionStatus;
     }
-    public void setRevisionStatus(RevisionStatus status, LocalDate changed) {
+    public void setRevisionStatus(RevisionStatus status, ZonedDateTime changed) {
         this.revisionStatus = RevisionStatusInfo.NewInstance(status, changed);
     }
 

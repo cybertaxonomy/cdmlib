@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.database.data;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -698,7 +697,7 @@ public class FullCoverageDataGenerator {
 				sec, "444");
 		taxRel.setOperation(TaxonomicOperation.NewInstance(TaxonomicOperationType.SPLIT));
 		taxon.setTaxonStatusUnknown(true);
-		taxon.setRevisionStatus(RevisionStatus.COMPLETED(), LocalDate.now());
+		taxon.setRevisionStatus(RevisionStatus.COMPLETED(), ZonedDateTime.now());
 		handleAnnotatableEntity(taxRel);
 		concept.setConcept(true);
 		concept.setNameUsage(true);

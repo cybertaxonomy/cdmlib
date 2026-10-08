@@ -93,6 +93,10 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 		return new ColumnAdder(stepList, stepName, tableName, newColumnName, Datatype.DATETIME, null, null, includeAudTable, null, notNull, null);
 	}
 
+	public static final ColumnAdder NewDateInstance(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull){
+		return new ColumnAdder(stepList, stepName, tableName, newColumnName, Datatype.DATE, null, null, includeAudTable, null, notNull, null);
+	}
+
 	protected ColumnAdder(List<? extends ISchemaUpdaterStep> stepList, String stepName, String tableName, String newColumnName,
 	        Datatype columnType, Integer size, Integer scale, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
 		super(stepList, stepName, tableName, includeAudTable);

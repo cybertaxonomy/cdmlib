@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
@@ -38,16 +38,16 @@ public class RevisionStatusInfo {
     @ManyToOne(fetch = FetchType.LAZY)
     private RevisionStatus status;
 
-    private LocalDate changed;
+    private ZonedDateTime changed;
 
-    public static final RevisionStatusInfo NewInstance(RevisionStatus status, LocalDate changed) {
+    public static final RevisionStatusInfo NewInstance(RevisionStatus status, ZonedDateTime changed) {
         return new RevisionStatusInfo(status, changed);
     }
 
     //for hibernate use only
     protected RevisionStatusInfo() {}
 
-    private RevisionStatusInfo(RevisionStatus status, LocalDate changed) {
+    private RevisionStatusInfo(RevisionStatus status, ZonedDateTime changed) {
         this.status = status;
         this.changed = changed;
     }
@@ -63,10 +63,10 @@ public class RevisionStatusInfo {
     }
 
     //changed
-    public LocalDate getChanged() {
+    public ZonedDateTime getChanged() {
         return changed;
     }
-    public void setChanged(LocalDate changed) {
+    public void setChanged(ZonedDateTime changed) {
         this.changed = changed;
     }
 

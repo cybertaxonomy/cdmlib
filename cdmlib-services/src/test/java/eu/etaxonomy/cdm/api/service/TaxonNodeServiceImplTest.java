@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1059,7 +1059,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
         RevisionStatus completed = (RevisionStatus)termService.find(RevisionStatus.uuidCompleted);
         Assert.assertNotNull(completed);
-        LocalDate changed = LocalDate.of(2026, 10, 7);
+        ZonedDateTime changed = ZonedDateTime.parse("2026-10-07T00:00:00Z");
         RevisionStatusInfo info = RevisionStatusInfo.NewInstance(completed, changed);
 
         Assert.assertNull(((Taxon)taxonService.find(1)).getRevisionStatus());
