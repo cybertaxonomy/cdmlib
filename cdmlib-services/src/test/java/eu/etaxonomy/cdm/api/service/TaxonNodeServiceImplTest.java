@@ -1059,7 +1059,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
         RevisionStatus completed = (RevisionStatus)termService.find(RevisionStatus.uuidCompleted);
         Assert.assertNotNull(completed);
-        ZonedDateTime changed = ZonedDateTime.parse("2026-10-07T00:00:00Z");
+        ZonedDateTime changed = ZonedDateTime.parse("2026-10-07T00:00+02:00[Europe/Berlin]");
         RevisionStatusInfo info = RevisionStatusInfo.NewInstance(completed, changed);
 
         Assert.assertNull(((Taxon)taxonService.find(1)).getRevisionStatus());
