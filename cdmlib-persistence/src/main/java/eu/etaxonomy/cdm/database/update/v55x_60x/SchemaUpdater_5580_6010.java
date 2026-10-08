@@ -113,8 +113,14 @@ public class SchemaUpdater_5580_6010 extends SchemaUpdaterBase {
         String sql = "UPDATE @@TaxonBase@@ SET taxonStatus = 'DOU' WHERE doubtful = @TRUE@";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
-        stepName = "Set TaxonBase.taxonStatus=OK for doubtful=false";
-        sql = "UPDATE @@TaxonBase@@ SET taxonStatus = 'OK' WHERE doubtful = @FALSE@ OR doubtful IS NULL OR taxonStatus IS NULL";
+        stepName = "Set TaxonBase.taxonStatus=ACC for doubtful=false";
+        sql = "UPDATE @@TaxonBase@@ SET taxonStatus = 'ACC' "
+                + " WHERE DTYPE = 'TAXON' AND (doubtful = @FALSE@ OR doubtful IS NULL OR taxonStatus IS NULL)";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
+
+        stepName = "Set TaxonBase.taxonStatus=ACC for doubtful=false";
+        sql = "UPDATE @@TaxonBase@@ SET taxonStatus = 'SYN' "
+                + "WHERE DTYPE = 'SYNONYM' AND (doubtful = @FALSE@ OR doubtful IS NULL OR taxonStatus IS NULL)";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName);
 
         stepName = "Remove TaxonBase.doubtful";
