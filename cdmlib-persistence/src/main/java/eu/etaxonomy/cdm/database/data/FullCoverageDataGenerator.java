@@ -88,7 +88,6 @@ import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaMetaData;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MovieFile;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
@@ -540,16 +539,16 @@ public class FullCoverageDataGenerator {
 
 	private void buildMedia(List<CdmBase> entitiesToSave){
 
-	    AudioFile audioFile = AudioFile.NewInstance(URI.create("http://a.b.de"), 22);
-		ImageFile imageFile = ImageFile.NewInstance(URI.create("http://b.c.de"), 44, 467, 55);
-		MovieFile movieFile = MovieFile.NewInstance(URI.create("http://b.c.de"), 67);
-		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance("mime", "media");
-
-		mediaRepresentation.addRepresentationPart(movieFile);
-		mediaRepresentation.addRepresentationPart(imageFile);
-		mediaRepresentation.addRepresentationPart(audioFile);
+	    AudioFile audioFile = AudioFile.NewInstance(URI.create("http://a.b.de"),
+	            "audio/mpeg", "mp3", 22);
+		ImageFile imageFile = ImageFile.NewInstance(URI.create("http://b.c.de"),
+		        "image/jpeg", "jpg", 44, 467, 55);
+		MovieFile movieFile = MovieFile.NewInstance(URI.create("http://b.c.de"),
+		        "video/mpeg", "mpg", 67);
 		Media media = Media.NewInstance();
-		media.addRepresentation(mediaRepresentation);
+		media.addRepresentation(movieFile);
+		media.addRepresentation(imageFile);
+		media.addRepresentation(audioFile);
 
 		media.putTitle(Language.ENGLISH(), "Media title");
 		media.setMediaCreated(TimePeriod.NewInstance(ZonedDateTime.now()));

@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportStateBase;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -184,8 +184,8 @@ public class ColDpExportState
     protected void setMediaStore(List<UUID> mediaStore) {
         this.mediaStore = mediaStore;
     }
-    //TODO for now we use mediaRepPart, but in future it may become Media
-    protected void addMediaToStore(MediaRepresentationPart media) {
+    //TODO for now we use mediaRepresentation, but in future it may become Media
+    protected void addMediaToStore(MediaRepresentation media) {
         this.mediaStore.add(media.getUuid());
     }
 }

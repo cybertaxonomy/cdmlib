@@ -1455,18 +1455,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         	fireWarningEvent(message, "unknown location", 2, 0);
         }
         ImageFile imageFile = ImageFile.NewInstance(uri, null, cdmImageInfo);
-
-        MediaRepresentation representation = MediaRepresentation.NewInstance();
-
-        if(cdmImageInfo != null){
-        	representation.setMimeType(cdmImageInfo.getMimeType());
-        	representation.setSuffix(cdmImageInfo.getSuffix());
-        }
         if (uriString.endsWith(".json")) {
-            representation.setMimeType("application/json");
+            imageFile.setMimeType("application/json");
         }
-        representation.addRepresentationPart(imageFile);
-        return representation;
+        return imageFile;
     }
 
 

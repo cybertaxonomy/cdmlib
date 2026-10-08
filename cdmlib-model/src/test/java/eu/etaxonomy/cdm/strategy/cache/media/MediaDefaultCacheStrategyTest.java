@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.strategy.cache.media;
 
 import java.net.URISyntaxException;
 
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,7 +42,7 @@ public class MediaDefaultCacheStrategyTest extends TermTestBase {
 			media.setArtist(person);
 			Assert.assertEquals("Wrong title cache for media with artist", "Artist", media.getTitleCache());
 
-			MediaRepresentation representation = MediaRepresentation.NewInstance(null, null, new URI("www.abc.de/myFileName.jpg&mo=file"), 0, null);
+			MediaRepresentation representation = MediaRepresentation.NewInstance(new URI("www.abc.de/myFileName.jpg&mo=file"), null, null, 0, null);
 			media.addRepresentation(representation);
 			Assert.assertEquals("Wrong title cache for media with artist", "Artist", media.getTitleCache());
 
@@ -51,7 +50,7 @@ public class MediaDefaultCacheStrategyTest extends TermTestBase {
 			Assert.assertEquals("Wrong title cache for media", "myFileName", media.getTitleCache());
 			media.removeRepresentation(representation);
 
-			representation = MediaRepresentation.NewInstance(null, null, new URI("www.abc.de/"), 0, null);
+			representation = MediaRepresentation.NewInstance(new URI("www.abc.de/"), null, null, 0, null);
 			media.addRepresentation(representation);
 			Assert.assertEquals("Wrong title cache for media", "www.abc.de/", media.getTitleCache());
 		} catch (URISyntaxException e) {

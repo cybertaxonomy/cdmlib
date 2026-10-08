@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -264,9 +264,9 @@ public class OwlExportUtil {
         }
 
         // TODO: support for multiple media representations
-        MediaRepresentationPart part = MediaUtils.getFirstMediaRepresentationPart(media);
-        if(part!=null){
-            mediaResource.addProperty(OwlUtil.propMediaUri, part.getUri().toString());
+        MediaRepresentation rep = MediaUtils.getFirstMediaRepresentationPart(media);
+        if(rep != null){
+            mediaResource.addProperty(OwlUtil.propMediaUri, rep.getUri().toString());
         }
         return mediaResource;
     }

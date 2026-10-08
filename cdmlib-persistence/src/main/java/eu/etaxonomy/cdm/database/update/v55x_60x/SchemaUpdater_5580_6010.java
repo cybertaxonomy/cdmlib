@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
  * @author a.mueller
- * @date 2024-10-17
+ * @date 2026-09-18
  */
 public class SchemaUpdater_5580_6010 extends SchemaUpdaterBase {
 
@@ -58,9 +58,38 @@ public class SchemaUpdater_5580_6010 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
+		//#3556
+        // Pre-check before any schema changes: each MediaRepresentation must have ≤1 part
+        MediaRepresentationPartSinglePartChecker.NewInstance(stepList);
+
+
+        //#3556
+        // Merge MediaRepresentationPart into MediaRepresentation
+        stepName = "Add DTYPE to MediaRepresentation";
+        String tableName = "MediaRepresentation";
+        ColumnAdder.NewDTYPEInstance(stepList, stepName, tableName, "MediaRepresentation", INCLUDE_AUDIT);
+
+        stepName = "Add uri to MediaRepresentation";
+        ColumnAdder.NewClobInstance(stepList, stepName, tableName, "uri", INCLUDE_AUDIT);
+
+        stepName = "Add size to MediaRepresentation";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, "size", INCLUDE_AUDIT, null, !NOT_NULL);
+
+        stepName = "Add height to MediaRepresentation";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, "height", INCLUDE_AUDIT, null, !NOT_NULL);
+
+        stepName = "Add width to MediaRepresentation";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, "width", INCLUDE_AUDIT, null, !NOT_NULL);
+
+        stepName = "Add duration to MediaRepresentation";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, "duration", INCLUDE_AUDIT, null, !NOT_NULL);
+
+        MediaRepresentationPartMerger.NewInstance(stepList);
+        //drop tables will be executed in next updater
+
         //#10922
         stepName = "Add gender to taxon name";
-        String tableName = "TaxonName";
+        tableName = "TaxonName";
         String columnName = "gender";
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, columnName, 1, INCLUDE_AUDIT);
 

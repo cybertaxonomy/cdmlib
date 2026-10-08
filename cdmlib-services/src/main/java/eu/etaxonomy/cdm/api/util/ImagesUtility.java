@@ -17,6 +17,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -25,7 +26,6 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -51,12 +51,8 @@ public class ImagesUtility {
 			Set<MediaRepresentation> representations = media.getRepresentations();
 
 			for(MediaRepresentation representation : representations){
-				List<MediaRepresentationPart> parts = representation.getParts();
-
-				for (MediaRepresentationPart part : parts){
-					if(part instanceof ImageFile){
-						return (ImageFile) part;
-					}
+				if(representation instanceof ImageFile){
+					return (ImageFile) representation;
 				}
 			}
 		}
@@ -69,13 +65,13 @@ public class ImagesUtility {
 	@Deprecated
 	public static List<ImageFile> getOrderedImages(DescriptionElementBase element){
 		List<ImageFile> imageList = new ArrayList<>();
-		MediaRepresentation representation = getImageMediaRepresentation(element);
-		if (representation != null) {
-			for (MediaRepresentationPart part : representation.getParts()){
-				if(!(part instanceof ImageFile)){
+		Media media = getImageMedia(element);
+		if (media != null) {
+			for (MediaRepresentation representation : media.getRepresentations()){
+				if(!(representation instanceof ImageFile)){
 					throw new RuntimeException("Your database contains media that mix Image Files with non-Image Files.");
 				} else {
-					imageList.add((ImageFile) part);
+					imageList.add((ImageFile) representation);
 				}
 			}
 		}
@@ -83,33 +79,28 @@ public class ImagesUtility {
 	}
 
 	/**
-	 * Returns the first Representation with images. If none is found, a
-	 * Representation for storing images is created and returned.
+	 * Returns the first Media with image representations. If none is found, a
+	 * Media for storing images is created and returned.
 	 *
 	 * @deprecated not used by EDITor anymore
 	 * @param element
 	 * @return
 	 */
 	@Deprecated
-	private static MediaRepresentation getImageMediaRepresentation(DescriptionElementBase element) {
+	private static Media getImageMedia(DescriptionElementBase element) {
 		// Drill down until a representation with images is found
 		for(Media media : element.getMedia()){
 			Set<MediaRepresentation> representations = media.getRepresentations();
 			for(MediaRepresentation representation : representations){
-				List<MediaRepresentationPart> parts = representation.getParts();
-				for (MediaRepresentationPart part : parts){
-					if(part instanceof ImageFile){
-						return representation;
-					}
+				if(representation instanceof ImageFile){
+					return media;
 				}
 			}
 		}
 		// No representation with images found - create
-		MediaRepresentation representation = MediaRepresentation.NewInstance();
 		Media media = Media.NewInstance();
 		element.addMedia(media);
-		media.addRepresentation(representation);
-		return representation;
+		return media;
 	}
 
 	/**
@@ -132,12 +123,8 @@ public class ImagesUtility {
 					Set<MediaRepresentation> representations = media.getRepresentations();
 
 					for(MediaRepresentation representation : representations){
-						List<MediaRepresentationPart> parts = representation.getParts();
-
-						for (MediaRepresentationPart part : parts){
-							if(part instanceof ImageFile){
-								images.add((ImageFile) part);
-							}
+						if(representation instanceof ImageFile){
+							images.add((ImageFile) representation);
 						}
 					}
 				}
@@ -170,11 +157,7 @@ public class ImagesUtility {
 		DescriptionElementBase descriptionElement = TextData.NewInstance(Feature.IMAGE());
 
 		Media media = Media.NewInstance();
-		MediaRepresentation representation = MediaRepresentation.NewInstance();
-
-		representation.addRepresentationPart(imageFile);
-
-		media.addRepresentation(representation);
+		media.addRepresentation(imageFile);
 
 		descriptionElement.addMedia(media);
 
@@ -192,8 +175,8 @@ public class ImagesUtility {
 	 */
 	@Deprecated
 	public static ImageFile addImagePart(DescriptionElementBase element) {
-		ImageFile imageFile = ImageFile.NewInstance(null, null);
-		getImageMediaRepresentation(element).addRepresentationPart(imageFile);
+		ImageFile imageFile = ImageFile.NewInstance((URI)null, (Integer)null);
+		getImageMedia(element).addRepresentation(imageFile);
 		return imageFile;
 	}
 
@@ -204,8 +187,8 @@ public class ImagesUtility {
 	 */
 	@Deprecated
 	public static void removeTaxonImage(Taxon taxon, DescriptionBase<?> imageGallery, ImageFile imageFile) {
-		Set<DescriptionElementBase> descriptionElementsToRemove = new HashSet<DescriptionElementBase>();
-		Set<MediaRepresentationPart> representationPartsToRemove = new HashSet<MediaRepresentationPart>();
+		Set<DescriptionElementBase> descriptionElementsToRemove = new HashSet<>();
+		Set<MediaRepresentation> representationsToRemove = new HashSet<>();
 
 		Set<DescriptionElementBase> images = imageGallery.getElements();
 
@@ -213,24 +196,19 @@ public class ImagesUtility {
 		for(DescriptionElementBase descriptionElement : images){
 			for(Media media : descriptionElement.getMedia()){
 				for(MediaRepresentation representation : media.getRepresentations()){
-					for(MediaRepresentationPart part : representation.getParts()){
-						if(part.equals(imageFile)){
-							// because of concurrent modification, we just collect the parts to remove
-							representationPartsToRemove.add(part);
-						}
+					if(representation.equals(imageFile)){
+						representationsToRemove.add(representation);
 					}
+				}
 
-					// and then remove the representation parts here
-					for (MediaRepresentationPart part : representationPartsToRemove){
-						representation.removeRepresentationPart(part);
-					}
-					// clear set for next run
-					representationPartsToRemove.clear();
+				for (MediaRepresentation representation : representationsToRemove){
+					media.removeRepresentation(representation);
+				}
+				representationsToRemove.clear();
 
-					// description elements with empty representations should be deleted as well
-					if(representation.getParts().size() == 0){
-						descriptionElementsToRemove.add(descriptionElement);
-					}
+				// description elements with empty representations should be deleted as well
+				if(media.getRepresentations().size() == 0){
+					descriptionElementsToRemove.add(descriptionElement);
 				}
 			}
 		}

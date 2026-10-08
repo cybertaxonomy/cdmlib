@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
         "value"
 })
 @Entity
-@Audited  //necessary because otherwise mapping from MediaRepresentationPart to MediaMetaData is not possible
+@Audited  //necessary because otherwise mapping from MediaRepresentation to MediaMetaData is not possible
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class MediaMetaData extends CdmBase {
 
@@ -60,7 +60,7 @@ public class MediaMetaData extends CdmBase {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mediaRepresentation_id")
-    private MediaRepresentationPart mediaRepresentation;
+    private MediaRepresentation mediaRepresentation;
 
     @Column(name="pairkey") //to avoid conflicts with SQL keywords
     private String key;
@@ -70,7 +70,7 @@ public class MediaMetaData extends CdmBase {
 
 // ************************** FACTORY ***********************/
 
-    public static MediaMetaData NewInstance(MediaRepresentationPart mediaRepresentation,
+    public static MediaMetaData NewInstance(MediaRepresentation mediaRepresentation,
             String key, String value) {
         return new MediaMetaData(mediaRepresentation, key, value);
     }
@@ -79,7 +79,7 @@ public class MediaMetaData extends CdmBase {
 
     private MediaMetaData(){}
 
-    private MediaMetaData(MediaRepresentationPart mediaRepresentation, String key, String value){
+    private MediaMetaData(MediaRepresentation mediaRepresentation, String key, String value){
         setMediaRepresentation(mediaRepresentation);
         this.key = key;
         this.value = value;
@@ -87,11 +87,11 @@ public class MediaMetaData extends CdmBase {
 
 //*********************** GETTER / SETTER **********************/
 
-    public MediaRepresentationPart getMediaRepresentation() {
+    public MediaRepresentation getMediaRepresentation() {
         return mediaRepresentation;
     }
 
-    protected void setMediaRepresentation(MediaRepresentationPart mediaRepresentation) {
+    protected void setMediaRepresentation(MediaRepresentation mediaRepresentation) {
         this.mediaRepresentation = mediaRepresentation;
         if (mediaRepresentation != null){
             mediaRepresentation.addMediaMetaData(this);

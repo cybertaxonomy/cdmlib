@@ -76,7 +76,7 @@ public class DbImportMediaMapper extends DbImportMultiAttributeMapperBase<Descri
 		}
 		Media media = Media.NewInstance(uri1, size, mimeType, suffix);
 		if (media != null){
-			MediaRepresentation secondRepresentation = MediaRepresentation.NewInstance(mimeType, suffix, uri2, size, null);
+			MediaRepresentation secondRepresentation = MediaRepresentation.NewInstance(uri2, mimeType, suffix, size, null);
 			media.addRepresentation(secondRepresentation);
 		}else{
 			media = Media.NewInstance(uri2, size, mimeType, suffix);

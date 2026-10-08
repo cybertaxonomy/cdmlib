@@ -16,7 +16,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -34,7 +33,7 @@ import eu.etaxonomy.cdm.common.URI;
 @XmlRootElement(name = "AudioFile")
 @Entity
 @Audited
-public class AudioFile extends MediaRepresentationPart {
+public class AudioFile extends MediaRepresentation {
 
 	private static final long serialVersionUID = 2327736023969971196L;
     private static final Logger logger = LogManager.getLogger();
@@ -46,21 +45,23 @@ public class AudioFile extends MediaRepresentationPart {
 
 // *************** FACTORY METHOD *********************************/
 
-	public static AudioFile NewInstance(URI uri, Integer size){
-		logger.debug("NewInstance");
-		return new AudioFile(uri, size);
-	}
 	public static AudioFile NewInstance(){
-		return new AudioFile();
+	    return new AudioFile();
 	}
+	public static AudioFile NewInstance(URI uri, Integer size){
+		return new AudioFile(uri, null, null, size);
+	}
+    public static AudioFile NewInstance(URI uri, String mimeType, String suffix, Integer size){
+        return new AudioFile(uri, mimeType, suffix, size);
+    }
+
 
 // ********************** CONSTRUCTOR ***************************/
-	protected AudioFile() {
-		super();
-	}
 
-	protected AudioFile(URI uri, Integer size) {
-		super(uri, size);
+    protected AudioFile() {}
+
+	private AudioFile(URI uri, String mimeType, String suffix, Integer size) {
+		super(uri, mimeType, suffix, size);
 	}
 
 // ******************** GETTER / SETTER *************************/

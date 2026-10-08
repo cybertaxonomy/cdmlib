@@ -1,7 +1,6 @@
 package eu.etaxonomy.cdm.model.media;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -13,10 +12,10 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 public class MediaUtils {
@@ -25,22 +24,22 @@ public class MediaUtils {
 
 
     public static MediaRepresentation findBestMatchingRepresentation(Media media,
-            Class<? extends MediaRepresentationPart> representationPartType, Integer size, Integer height,
+            Class<? extends MediaRepresentation> representationType, Integer size, Integer height,
             Integer widthOrDuration, String[] mimeTypes, MissingValueStrategy missingValStrategy){
 
         // find best matching representations of each media
         Set<MediaRepresentation> representations = media.getRepresentations();
-        return findBestMatchingRepresentation(representations, representationPartType, size, height, widthOrDuration,
+        return findBestMatchingRepresentation(representations, representationType, size, height, widthOrDuration,
                 mimeTypes, missingValStrategy);
     }
 
     public static MediaRepresentation findBestMatchingRepresentation(
-            Set<MediaRepresentation> representations, Class<? extends MediaRepresentationPart> representationPartType, Integer size,
+            Set<MediaRepresentation> representations, Class<? extends MediaRepresentation> representationType, Integer size,
             Integer height, Integer widthOrDuration, String[] mimeTypes,
             MissingValueStrategy missingValStrategy) {
 
         SortedMap<Long, MediaRepresentation> prefRepresentations
-                = filterAndOrderMediaRepresentations(representations, representationPartType, mimeTypes,
+                = filterAndOrderMediaRepresentations(representations, representationType, mimeTypes,
                         size, widthOrDuration, height, missingValStrategy);
         if(prefRepresentations.size() > 0){
             MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
@@ -50,72 +49,51 @@ public class MediaUtils {
     }
 
     /**
-     * Return the first {@link MediaRepresentationPart} found for the given {@link Media}
+     * Return the first {@link MediaRepresentation} found for the given {@link Media}
      * or <code>null</code> otherwise.
-     * @param media the media which is searched for the first part
-     * @return the first part found or <code>null</code>
+     * @param media the media which is searched for the first representation
+     * @return the first representation found or <code>null</code>
      */
-    public static MediaRepresentationPart getFirstMediaRepresentationPart(Media media){
+    public static MediaRepresentation getFirstMediaRepresentationPart(Media media){
         if(media==null){
             return null;
         }
-        MediaRepresentationPart mediaRepresentationPart = null;
         Set<MediaRepresentation> representations = media.getRepresentations();
         if(representations!=null && representations.size()>0){
-            MediaRepresentation mediaRepresentation = representations.iterator().next();
-            List<MediaRepresentationPart> parts = mediaRepresentation.getParts();
-            if(parts!=null && parts.size()>0){
-                mediaRepresentationPart = parts.iterator().next();
-            }
+            return representations.iterator().next();
         }
-        return mediaRepresentationPart;
+        return null;
     }
 
     /**
-     * Creates one single {@link MediaRepresentationPart} for the given {@link Media}
-     * if it does not already exists. Otherwise the first part found is returned.<br>
-     * @param media the media for which the representation part should be created
-     * @return the first or newly created representation part
+     * Creates one single {@link MediaRepresentation} for the given {@link Media}
+     * if it does not already exists. Otherwise the first representation found is returned.<br>
+     * @param media the media for which the representation should be created
+     * @return the first or newly created representation
      */
-    public static MediaRepresentationPart initFirstMediaRepresentationPart(Media media, boolean isImage) {
-        MediaRepresentationPart mediaRepresentationPart = getFirstMediaRepresentationPart(media);
-        if(mediaRepresentationPart==null){
-            Set<MediaRepresentation> representations = media.getRepresentations();
-            if(representations!=null && representations.size()>0){
-                MediaRepresentation mediaRepresentation = representations.iterator().next();
-                if(isImage){
-                    mediaRepresentationPart = ImageFile.NewInstance(null, null);
-                }
-                else{
-                    mediaRepresentationPart = MediaRepresentationPart.NewInstance(null, null);
-                }
-                mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
+    public static MediaRepresentation initFirstMediaRepresentationPart(Media media, boolean isImage) {
+        MediaRepresentation mediaRepresentation = getFirstMediaRepresentationPart(media);
+        if(mediaRepresentation==null){
+            if(isImage){
+                mediaRepresentation = ImageFile.NewInstance((URI)null, (Integer)null);
             }
             else{
-                if(isImage){
-                    mediaRepresentationPart = ImageFile.NewInstance(null, null);
-                }
-                else{
-                    mediaRepresentationPart = MediaRepresentationPart.NewInstance(null, null);
-                }
-
-                MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance();
-                mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
-                media.addRepresentation(mediaRepresentation);
+                mediaRepresentation = MediaRepresentation.NewInstance();
             }
+            media.addRepresentation(mediaRepresentation);
         }
-        return mediaRepresentationPart;
+        return mediaRepresentation;
     }
 
     /**
-     * Filters the given List of Media by the supplied filter parameters <code>representationPartType</code>,
+     * Filters the given List of Media by the supplied filter parameters <code>representationType</code>,
      * <code>mimeTypes</code>, <code>widthOrDuration</code>, <code>height</code>, <code>size</code>.
      * Only best matching MediaRepresentation remains attached to the Media entities.
      * A Media entity may be completely omitted in the resulting list if  {@link #filterAndOrderMediaRepresentations(Set, Class, String[], Integer, Integer, Integer)}
-     * is not returning any matching representation. This can be the case if a <code>representationPartType</code> is supplied.
+     * is not returning any matching representation. This can be the case if a <code>representationType</code> is supplied.
      *
      * @param mediaList
-     * @param representationPartType any subclass of {@link MediaRepresentationPart}
+     * @param representationType any subclass of {@link MediaRepresentation}
      * @param mimeTypes
      * @param widthOrDuration
      * @param height
@@ -123,7 +101,7 @@ public class MediaUtils {
      * @return
      */
     public static Map<Media, MediaRepresentation> findPreferredMedia(List<Media> mediaList,
-            Class<? extends MediaRepresentationPart> representationPartType, String[] mimeTypes, Integer widthOrDuration,
+            Class<? extends MediaRepresentation> representationType, String[] mimeTypes, Integer widthOrDuration,
             Integer height, Integer size, MissingValueStrategy missingValStrat) {
 
         if(mimeTypes != null) {
@@ -141,7 +119,7 @@ public class MediaUtils {
                 candidateRepresentations.addAll(media.getRepresentations());
 
                 SortedMap<Long, MediaRepresentation> prefRepresentations
-                    = filterAndOrderMediaRepresentations(candidateRepresentations, representationPartType,
+                    = filterAndOrderMediaRepresentations(candidateRepresentations, representationType,
                             mimeTypes, size, widthOrDuration, height, missingValStrat);
 
                 if(prefRepresentations.size() > 0){
@@ -163,13 +141,13 @@ public class MediaUtils {
      * @see also cdm-dataportal: cdm-api.module#cdm_preferred_media_representations()
      *
      * @param mediaRepresentations
-     * @param representationPartType
+     * @param representationType
      * @param mimeTypeRegexes
      * @param size
-     *  Applies to all {@link MediaRepresentationPart}s (value = <code>null</code> means ignore, for maximum size use {@link Integer#MAX_VALUE})
+     *  Applies to all {@link MediaRepresentation}s (value = <code>null</code> means ignore, for maximum size use {@link Integer#MAX_VALUE})
      * @param widthOrDuration
-     *   Applied to {@link ImageFile#getWidth()}, or {@link {@link MovieFile#getDuration()},
-     *   or {@link {@link AudioFile#getDuration()} (value = <code>null</code> means ignore,
+     *   Applied to {@link ImageFile#getWidth()}, or {@link MovieFile#getDuration()},
+     *   or {@link AudioFile#getDuration()} (value = <code>null</code> means ignore,
      *   for maximum use {@link Integer#MAX_VALUE})
      * @param height
      *   The height is only applied to {@link ImageFile}s (value = <code>null</code> means ignore,
@@ -178,7 +156,7 @@ public class MediaUtils {
      */
     public static SortedMap<Long, MediaRepresentation> filterAndOrderMediaRepresentations(
             Set<MediaRepresentation> mediaRepresentations,
-            Class<? extends MediaRepresentationPart> representationPartType, String[] mimeTypeRegexes,
+            Class<? extends MediaRepresentation> representationType, String[] mimeTypeRegexes,
             Integer size, Integer widthOrDuration, Integer height,
             MissingValueStrategy missingValStrat) {
 
@@ -196,9 +174,6 @@ public class MediaUtils {
             int representationCnt = 0;
             for (MediaRepresentation representation : mediaRepresentations) {
 
-                List<MediaRepresentationPart> matchingParts = new ArrayList<>();
-
-
                 // check MIME type
                 boolean isMimeTypeMatch = representation.getMimeType() == null
                         || mimeTypePattern.matcher(representation.getMimeType()).matches();
@@ -206,103 +181,87 @@ public class MediaUtils {
                     logger.debug("isMimeTypeMatch: " + Boolean.valueOf(isMimeTypeMatch).toString());
                 }
 
-                long dimensionsDeltaAllParts = 0;
+                // check representationType
+                boolean isRepresentationTypeMatch = representationType == null
+                        || representation.getClass().isAssignableFrom(representationType);
+                if(logger.isDebugEnabled()){
+                    logger.debug("isRepresentationTypeMatch: " + Boolean.valueOf(isRepresentationTypeMatch).toString());
+                }
 
-                //first the size is used for comparison
-                for (MediaRepresentationPart part : representation.getParts()) {
+                if ( !(isRepresentationTypeMatch && isMimeTypeMatch) ) {
+                    continue;
+                }
 
-                    // check representationPartType
-                    boolean isRepresentationPartTypeMatch = representationPartType == null
-                            || part.getClass().isAssignableFrom(representationPartType);
-                    if(logger.isDebugEnabled()){
-                        logger.debug("isRepresentationPartTypeMatch: " + Boolean.valueOf(isRepresentationPartTypeMatch).toString());
+                if(logger.isDebugEnabled()){
+                    logger.debug(representation + " matches");
+                }
+
+                long dimensionsDelta = 0;
+
+                Integer sizeOfRepr = representation.getSize();
+                if(isUndefined(sizeOfRepr)){
+                    sizeOfRepr = missingValStrat.applyTo(sizeOfRepr);
+                }
+                if (size != null && sizeOfRepr != null){
+                    int distance = sizeOfRepr - size;
+                    if (distance < 0) {
+                        distance *= -1;
                     }
+                    dimensionsDelta += distance;
 
-                    if ( !(isRepresentationPartTypeMatch && isMimeTypeMatch) ) {
-                        continue;
-                    }
+                }
 
-                    if(logger.isDebugEnabled()){
-                        logger.debug(part + " matches");
-                    }
-                    matchingParts.add(part);
-
-                    Integer sizeOfPart = part.getSize();
-                    if(isUndefined(sizeOfPart)){
-                        sizeOfPart = missingValStrat.applyTo(sizeOfPart);
-                    }
-                    if (size != null && sizeOfPart != null){
-                        int distance = sizeOfPart - size;
-                        if (distance < 0) {
-                            distance *= -1;
-                        }
-                        dimensionsDeltaAllParts += distance;
-
-                    }
-
-                    //if height and width/duration is defined, add this information, too
-                    if (preferredImageDimensions != null || widthOrDuration != null){
-                        long expansionDelta = 0;
-                        if (part.isInstanceOf(ImageFile.class)) {
-                            if (preferredImageDimensions != null){
-                                ImageFile image = CdmBase.deproxy(part, ImageFile.class);
-                                Dimension imageDimension = dimensionsFilter(image.getWidth(), image.getHeight(), missingValStrat);
-                                if (imageDimension != null){
-                                    expansionDelta = Math.abs(expanse(imageDimension) - preferredExpansion);
-                                }
-                                if(logger.isDebugEnabled()){
-                                    if(logger.isDebugEnabled()){
-                                        logger.debug("part [" + part.getUri() + "; " + imageDimension + "] : preferredImageDimensions= " + preferredImageDimensions + ", size= "  + size+ " >>" + expansionDelta );
-                                    }
-                                }
-                            }
-                        }
-                        else if (part.isInstanceOf(MovieFile.class)){
-                             MovieFile movie = CdmBase.deproxy(part, MovieFile.class);
-                             Integer durationOfMovie = movie.getDuration();
-                             if(isUndefined(durationOfMovie)){
-                                 durationOfMovie = null; // convert potential 0 to null!
-                             }
-                             durationOfMovie = missingValStrat.applyTo(durationOfMovie);
-                             if(widthOrDuration != null){
-                                expansionDelta = durationOfMovie - widthOrDuration;
-                            }
-                             if(logger.isDebugEnabled()){
-                                 logger.debug("part MovieFile[" + part.getUri() + "; duration=" + movie.getDuration() + "-> " + durationOfMovie + "] : preferrdDuration= " + widthOrDuration + ", size= "  + size+ " >>" + expansionDelta );
-                             }
-                        } else if (part.isInstanceOf(AudioFile.class)){
-                            AudioFile audio = CdmBase.deproxy(part, AudioFile.class);
-                            Integer durationOfAudio = audio.getDuration();
-                            if(isUndefined(durationOfAudio)){
-                                durationOfAudio = null;  // convert potential 0 to null!
-                            }
-                            durationOfAudio = missingValStrat.applyTo(durationOfAudio);
-                            if(widthOrDuration != null) {
-                                expansionDelta = durationOfAudio - widthOrDuration;
+                //if height and width/duration is defined, add this information, too
+                if (preferredImageDimensions != null || widthOrDuration != null){
+                    long expansionDelta = 0;
+                    if (representation.isInstanceOf(ImageFile.class)) {
+                        if (preferredImageDimensions != null){
+                            ImageFile image = CdmBase.deproxy(representation, ImageFile.class);
+                            Dimension imageDimension = dimensionsFilter(image.getWidth(), image.getHeight(), missingValStrat);
+                            if (imageDimension != null){
+                                expansionDelta = Math.abs(expanse(imageDimension) - preferredExpansion);
                             }
                             if(logger.isDebugEnabled()){
-                                logger.debug("part AudioFile[" + part.getUri() + "; duration=" +  audio.getDuration() + "-> " + durationOfAudio + "] : preferrdDuration= " + widthOrDuration + ", size= "  + size + " >>" + expansionDelta );
+                                logger.debug("repr [" + representation.getUri() + "; " + imageDimension + "] : preferredImageDimensions= " + preferredImageDimensions + ", size= "  + size+ " >>" + expansionDelta );
                             }
                         }
-                        // the expansionDelta is summed up since the parts together for the whole
-                        // which is bigger than only a part. By simply summing up images splitted
-                        // into parts have too much weight compared to the single image but since
-                        // parts are not used at all this is currently not a problem
-                        dimensionsDeltaAllParts += expansionDelta;
-
                     }
-                } // loop parts
-                logger.debug("matchingParts.size():" + matchingParts.size());
-                if(matchingParts.size() > 0 ){
-                    representation.getParts().clear();
-                    representation.getParts().addAll(matchingParts);
-                    prefRepr.put((dimensionsDeltaAllParts + representationCnt++), representation);
+                    else if (representation.isInstanceOf(MovieFile.class)){
+                         MovieFile movie = CdmBase.deproxy(representation, MovieFile.class);
+                         Integer durationOfMovie = movie.getDuration();
+                         if(isUndefined(durationOfMovie)){
+                             durationOfMovie = null; // convert potential 0 to null!
+                         }
+                         durationOfMovie = missingValStrat.applyTo(durationOfMovie);
+                         if(widthOrDuration != null){
+                            expansionDelta = durationOfMovie - widthOrDuration;
+                        }
+                         if(logger.isDebugEnabled()){
+                             logger.debug("repr MovieFile[" + representation.getUri() + "; duration=" + movie.getDuration() + "-> " + durationOfMovie + "] : preferrdDuration= " + widthOrDuration + ", size= "  + size+ " >>" + expansionDelta );
+                         }
+                    } else if (representation.isInstanceOf(AudioFile.class)){
+                        AudioFile audio = CdmBase.deproxy(representation, AudioFile.class);
+                        Integer durationOfAudio = audio.getDuration();
+                        if(isUndefined(durationOfAudio)){
+                            durationOfAudio = null;  // convert potential 0 to null!
+                        }
+                        durationOfAudio = missingValStrat.applyTo(durationOfAudio);
+                        if(widthOrDuration != null) {
+                            expansionDelta = durationOfAudio - widthOrDuration;
+                        }
+                        if(logger.isDebugEnabled()){
+                            logger.debug("repr AudioFile[" + representation.getUri() + "; duration=" +  audio.getDuration() + "-> " + durationOfAudio + "] : preferrdDuration= " + widthOrDuration + ", size= "  + size + " >>" + expansionDelta );
+                        }
+                    }
+                    dimensionsDelta += expansionDelta;
+
                 }
+                prefRepr.put((dimensionsDelta + representationCnt++), representation);
             } // loop representations
         } // loop mime types
         if(logger.isDebugEnabled()){
             String text =  prefRepr.keySet().stream()
-            .map(key -> key + ": " + prefRepr.get(key).getParts().get(0).getUri().toString())
+            .map(key -> key + ": " + (prefRepr.get(key).getUri() == null ? "null" : prefRepr.get(key).getUri().toString()))
             .collect(Collectors.joining(", ", "{", "}"));
             logger.debug("resulting representations: " + text);
         }

@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -43,8 +44,8 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -138,7 +139,12 @@ public class Media
     //A single medium such as a picture can have multiple representations in files.
     //Common are multiple resolutions or file formats for images for example
     @XmlElementWrapper(name = "MediaRepresentations")
-    @XmlElement(name = "MediaRepresentation")
+    @XmlElements({
+        @XmlElement(name = "MediaRepresentation", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MediaRepresentation.class),
+        @XmlElement(name = "AudioFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = AudioFile.class),
+        @XmlElement(name = "ImageFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = ImageFile.class),
+        @XmlElement(name = "MovieFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MovieFile.class)
+    })
     @OneToMany(mappedBy="media",fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
     @NotNull
@@ -185,7 +191,7 @@ public class Media
      */
     public static Media NewInstance(URI uri, Integer size, String mimeType, String suffix){
     	//TODO improve type recognition
-    	Class<? extends MediaRepresentationPart> clazz = null;
+    	Class<? extends MediaRepresentation> clazz = null;
     	if (isNotBlank(mimeType)){
     		if (mimeType.matches("image.*")){
     			clazz = ImageFile.class;
@@ -200,7 +206,7 @@ public class Media
     			clazz = ImageFile.class;
     		}
     	}
-    	MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix, uri, size,clazz);
+    	MediaRepresentation representation = MediaRepresentation.NewInstance(uri, mimeType, suffix, size, clazz);
         if (representation == null){
             return null;
         }
@@ -384,12 +390,9 @@ public class Media
                 if (representation.getMimeType() != null && representation.getMimeType().equals("application/json")) {
                     isManifest = true;
                 }
-                if (!isManifest && representation.getParts() != null && representation.getParts().size() > 0) {
-                    for (MediaRepresentationPart part: representation.getParts()) {
-                        if (part.getUri().toString().contains("json")) {
-                            isManifest = true;
-                        }
-                    }
+                if (!isManifest && representation.getUri() != null
+                        && representation.getUri().toString().contains("json")) {
+                    isManifest = true;
                 }
             }
         }

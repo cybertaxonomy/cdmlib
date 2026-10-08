@@ -16,7 +16,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -34,47 +33,34 @@ import eu.etaxonomy.cdm.common.URI;
 @XmlRootElement(name = "MovieFile")
 @Entity
 @Audited
-public class MovieFile extends MediaRepresentationPart {
+public class MovieFile extends MediaRepresentation {
 
 	private static final long serialVersionUID = 8650308822737671731L;
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
 	//Length of movie in seconds
 	@XmlElement(name = "Duration")
 	private int duration;
 
-	public static MovieFile NewInstance(URI uri, Integer size){
-		logger.debug("NewInstance");
-		return new MovieFile(uri, size);
+    public static MovieFile NewInstance(){
+        return new MovieFile();
+    }
+
+	public static MovieFile NewInstance(URI uri, String mimeType, String suffix, Integer size){
+		return new MovieFile(uri, mimeType, suffix, size);
 	}
 
-	/**
-	 * Factory method
-	 * @return
-	 */
-	public static MovieFile NewInstance(){
-		return new MovieFile();
-	}
+// ******************** CONSTRUCTOR *************************/
 
-	/**
-	 * Constructor
-	 */
-	protected MovieFile() {
-		super();
-	}
+	protected MovieFile() {}
 
-	/**
-	 * Constructor
-	 */
-	protected MovieFile(URI uri, Integer size) {
-		super(uri, size);
+	private MovieFile(URI uri, String mimeType, String suffix, Integer size) {
+		super(uri, mimeType, suffix, size);
 	}
-
 
 	/**
 	 * The Length of the movie in seconds
-	 *
-	 * @return
 	 */
 	public int getDuration(){
 		return this.duration;
@@ -82,10 +68,8 @@ public class MovieFile extends MediaRepresentationPart {
 
 	/**
 	 * Sets the Length of the movie in seconds
-	 * @param duration    duration
 	 */
 	public void setDuration(int duration){
 		this.duration = duration;
 	}
-
 }

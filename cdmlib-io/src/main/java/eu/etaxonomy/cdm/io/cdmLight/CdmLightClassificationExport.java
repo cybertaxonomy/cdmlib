@@ -79,7 +79,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -2681,17 +2680,14 @@ public class CdmLightClassificationExport
         boolean first = true;
         while (it.hasNext()) {
             MediaRepresentation rep = it.next();
-            List<MediaRepresentationPart> parts = rep.getParts();
-            for (MediaRepresentationPart part : parts) {
-                if (first) {
-                    if (part.getUri() != null) {
-                        mediaUriString += part.getUri().toString();
-                        first = false;
-                    }
-                } else {
-                    if (part.getUri() != null) {
-                        mediaUriString += ", " + part.getUri().toString();
-                    }
+            if (first) {
+                if (rep.getUri() != null) {
+                    mediaUriString += rep.getUri().toString();
+                    first = false;
+                }
+            } else {
+                if (rep.getUri() != null) {
+                    mediaUriString += ", " + rep.getUri().toString();
                 }
             }
         }

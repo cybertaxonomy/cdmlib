@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.api.service.media.MediaUriTransformation;
 import eu.etaxonomy.cdm.api.service.media.MediaUriTransformationProcessor;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.media.MediaUtils.MissingValueStrategy;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
@@ -61,7 +60,7 @@ public class MediaToolbox implements IMediaToolbox {
     private IPreferenceService preferenceService;
 
     @Override
-    public List<Media> processAndFilterPreferredMediaRepresentations(Class<? extends MediaRepresentationPart> type, String[] mimeTypes,
+    public List<Media> processAndFilterPreferredMediaRepresentations(Class<? extends MediaRepresentation> type, String[] mimeTypes,
             Integer widthOrDuration, Integer height, Integer size, List<Media> mediaList) {
 
         MediaUriTransformationProcessor mediaTransformationProcessor = new MediaUriTransformationProcessor();
@@ -70,12 +69,10 @@ public class MediaToolbox implements IMediaToolbox {
         for(Media media : mediaList) {
             List<MediaRepresentation> newReprs = new ArrayList<>();
             for(MediaRepresentation repr : media.getRepresentations()) {
-                for(MediaRepresentationPart part : repr.getParts()) {
-                    try {
-                        newReprs.addAll(mediaTransformationProcessor.makeNewMediaRepresentationsFor(part));
-                    }catch(Exception e) {
-                        logger.error(e.getLocalizedMessage(), e);
-                    }
+                try {
+                    newReprs.addAll(mediaTransformationProcessor.makeNewMediaRepresentationsFor(repr));
+                }catch(Exception e) {
+                    logger.error(e.getLocalizedMessage(), e);
                 }
             }
             for(MediaRepresentation r : newReprs) {
@@ -88,7 +85,7 @@ public class MediaToolbox implements IMediaToolbox {
 
     @Override
     public MediaRepresentation processAndFindBestMatchingRepresentation(Media media,
-            Class<? extends MediaRepresentationPart> type, Integer size, Integer height, Integer widthOrDuration,
+            Class<? extends MediaRepresentation> type, Integer size, Integer height, Integer widthOrDuration,
             String[] mimeTypes, MissingValueStrategy missingValStrategy) {
 
         MediaUriTransformationProcessor mediaTransformationProcessor = new MediaUriTransformationProcessor();
@@ -96,9 +93,7 @@ public class MediaToolbox implements IMediaToolbox {
 
         Set<MediaRepresentation> newReprs = new HashSet<>();
         for (MediaRepresentation repr : media.getRepresentations()) {
-            for (MediaRepresentationPart part : repr.getParts()) {
-                newReprs.addAll(mediaTransformationProcessor.makeNewMediaRepresentationsFor(part));
-            }
+            newReprs.addAll(mediaTransformationProcessor.makeNewMediaRepresentationsFor(repr));
         }
         newReprs.addAll(media.getRepresentations());
         return MediaUtils.findBestMatchingRepresentation(newReprs, type, size, height, widthOrDuration, mimeTypes, missingValStrategy);
@@ -109,7 +104,7 @@ public class MediaToolbox implements IMediaToolbox {
      */
     @Override
     @Deprecated
-    public List<Media> filterPreferredMediaRepresentations(List<Media> mediaList, Class<? extends MediaRepresentationPart> type,
+    public List<Media> filterPreferredMediaRepresentations(List<Media> mediaList, Class<? extends MediaRepresentation> type,
             String[] mimeTypes, Integer widthOrDuration, Integer height, Integer size) {
 
         Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(mediaList, type, mimeTypes, widthOrDuration, height, size, MediaUtils.MissingValueStrategy.MAX);

@@ -69,7 +69,6 @@ import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -455,7 +454,7 @@ public class SDDImport
 					String rel = elLink.getAttributeValue("rel");
 					String href = elLink.getAttributeValue("href");
 					URI uri = new URI(href);
-					mr.addRepresentationPart(MediaRepresentationPart.NewInstance(uri, null));
+					mr.setUri(uri);
 					link.addRepresentation(mr);
 					ime.addMedia(link);
 
@@ -1441,7 +1440,7 @@ public class SDDImport
 
 								Media link = Media.NewInstance();
 								MediaRepresentation mr = MediaRepresentation.NewInstance();
-								mr.addRepresentationPart(MediaRepresentationPart.NewInstance(href, null));
+								mr.setUri(new URI(href));
 								link.addRepresentation(mr);
 								person.addMedia(link);
 
@@ -1572,10 +1571,7 @@ public class SDDImport
 							imageMetaData = getMediaInfoFactory().cdmImageInfo(new URI(fi), false); //file
 							image = ImageFile.NewInstance(URI.fromFile(file), null, imageMetaData);
 						}
-						MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
-						representation.addRepresentationPart(image);
-
-						media.addRepresentation(representation);
+						media.addRepresentation(image);
 
 						ArrayList<CdmBase> lcb = (ArrayList<CdmBase>) mediaObject_ListCdmBase.get(idMO);
 						if (lcb != null) {

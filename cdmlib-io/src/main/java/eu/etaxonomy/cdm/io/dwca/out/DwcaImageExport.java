@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -69,15 +68,13 @@ public class DwcaImageExport extends DwcaDataExportBase {
             		if (el.getMedia().size() > 0){
             			for (Media media: el.getMedia()){
             				for (MediaRepresentation repr : media.getRepresentations()){
-            					for (MediaRepresentationPart part : repr.getParts()){
-            						if (! state.recordExists(file, part)){
+            						if (! state.recordExists(file, repr)){
             							DwcaImageRecord record = new DwcaImageRecord(metaRecord, config);
-            							handleMedia(state, record, media, repr, part, taxon);
+            							handleMedia(state, record, media, repr, taxon);
             							PrintWriter writer = createPrintWriter(state, file);
             				            record.write(state, writer);
-            							state.addExistingRecord(file,part);
+            							state.addExistingRecord(file,repr);
             						}
-            					}
             				}
             			}
             		}
@@ -92,14 +89,14 @@ public class DwcaImageExport extends DwcaDataExportBase {
         }
     }
 
-	private void handleMedia(DwcaTaxExportState state, DwcaImageRecord record, Media media, MediaRepresentation repr, MediaRepresentationPart part, Taxon taxon) {
+	private void handleMedia(DwcaTaxExportState state, DwcaImageRecord record, Media media, MediaRepresentation repr, Taxon taxon) {
 		record.setId(taxon.getId());
 		record.setUuid(taxon.getUuid());
-		if (part.getUri() == null){
+		if (repr.getUri() == null){
 			String message = "No uri available for media ("+media.getId()+"). URI is required field. Taxon: " + this.getTaxonLogString(taxon);
 			state.getResult().addWarning(message);
 		}
-		record.setIdentifier(part.getUri());
+		record.setIdentifier(repr.getUri());
 		record.setTitle(media.getTitleCache());
 		//TODO description if default language description is not available
 		LanguageString description = media.getDescription(Language.DEFAULT());

@@ -89,7 +89,7 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
                 if(applyFilterPreset) {
                    result = service.readResourceMetadataFiltered(mediaRepresentation);
                 } else {
-                    uri = mediaRepresentation.getParts().get(0).getUri();
+                    uri = mediaRepresentation.getUri();
                     if (uri == null) {
                         return null;
                     }

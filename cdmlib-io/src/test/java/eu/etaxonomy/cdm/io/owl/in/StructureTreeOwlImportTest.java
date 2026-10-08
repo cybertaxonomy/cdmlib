@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -132,9 +132,9 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
                 Set<Media> mediaSet = inflorescence.getMedia();
                 assertEquals("wrong number of media", 1, mediaSet.size());
                 Media media = mediaSet.iterator().next();
-                MediaRepresentationPart part = MediaUtils.getFirstMediaRepresentationPart(media);
-                assertNotNull("media part not found", part);
-                assertEquals("incorrect URI", URI.create("https://upload.wikimedia.org/wikipedia/commons/8/82/Aloe_hereroensis_Auob_C15.JPG"), part.getUri());
+                MediaRepresentation rep = MediaUtils.getFirstMediaRepresentationPart(media);
+                assertNotNull("media part not found", rep);
+                assertEquals("incorrect URI", URI.create("https://upload.wikimedia.org/wikipedia/commons/8/82/Aloe_hereroensis_Auob_C15.JPG"), rep.getUri());
                 assertEquals("incorrect title", "Aloe hereroensis", media.getTitle(Language.DEFAULT()).getText());
 
                 Representation englishRepresentation = inflorescence.getRepresentation(Language.ENGLISH());

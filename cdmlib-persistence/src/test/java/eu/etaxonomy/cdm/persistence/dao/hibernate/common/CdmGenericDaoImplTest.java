@@ -81,7 +81,6 @@ import eu.etaxonomy.cdm.model.media.AudioFile;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MovieFile;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
@@ -297,7 +296,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 				ImageFile.class,
 				Media.class,
 				MediaRepresentation.class,
-				MediaRepresentationPart.class,
 				MovieFile.class,
 				Rights.class,
 				RightsType.class,

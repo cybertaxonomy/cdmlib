@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -52,7 +51,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
-
 
 /**
  * Utility class which provides the functionality to convert a JSON response
@@ -483,10 +481,7 @@ public class GbifJsonOccurrenceParser {
                             }
                         }
                         ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInf);
-                        MediaRepresentation representation = MediaRepresentation.NewInstance();
-
-                        representation.addRepresentationPart(imageFile);
-                        media.addRepresentation(representation);
+                        media.addRepresentation(imageFile);
 
                         derivedUnitFacade.addDerivedUnitMedia(media);
                     }

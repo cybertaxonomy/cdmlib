@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -231,15 +230,7 @@ public class MediaExcelImport
                 state.getResult().addException(e, message, null, line);
             }
             ImageFile imageFile = ImageFile.NewInstance(uri, null, cdmImageInfo);
-
-            MediaRepresentation representation = MediaRepresentation.NewInstance();
-
-            if(cdmImageInfo != null){
-                representation.setMimeType(cdmImageInfo.getMimeType());
-                representation.setSuffix(cdmImageInfo.getSuffix());
-            }
-            representation.addRepresentationPart(imageFile);
-            media.addRepresentation(representation);
+            media.addRepresentation(imageFile);
     }
 
     private List<URI> getUrls(MediaExcelImportState state, String line) {

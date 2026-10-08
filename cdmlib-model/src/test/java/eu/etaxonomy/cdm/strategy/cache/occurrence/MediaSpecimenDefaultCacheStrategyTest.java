@@ -95,7 +95,7 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
         Assert.assertEquals("[icon]", strategy.getTitleCache(specimen));
 
         //fully empty but with media representation filename
-        MediaRepresentation mediaRep = MediaRepresentation.NewInstance("jpg", null, URI.create("https://www.abc.de/test.jpg"), 20, ImageFile.class);
+        MediaRepresentation mediaRep = MediaRepresentation.NewInstance(URI.create("https://www.abc.de/test.jpg"), "jpg", null, 20, ImageFile.class);
         media.addRepresentation(mediaRep);
         Assert.assertEquals("[icon] test", strategy.getTitleCache(specimen));
 

@@ -73,7 +73,6 @@ import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -508,22 +507,20 @@ public class ColDpClassificationExport
         //handle single media
         for (Media media : mediaSet) {
             for (MediaRepresentation repr : media.getRepresentations()){
-                for (MediaRepresentationPart part : repr.getParts()){
-                        handleMediaRepresentation(state, taxon, part);
-                }
+                handleMediaRepresentation(state, taxon, repr);
             }
         }
     }
 
-    private void handleMediaRepresentation(ColDpExportState state, Taxon taxon, MediaRepresentationPart part) {
-        if (part == null || state.getMediaStore().contains(part.getUuid())) {
+    private void handleMediaRepresentation(ColDpExportState state, Taxon taxon, MediaRepresentation representation) {
+        if (representation == null || state.getMediaStore().contains(representation.getUuid())) {
             return;
         }
 
-        state.addMediaToStore(part);
+        state.addMediaToStore(representation);
         ColDpExportTable table = ColDpExportTable.MEDIA;
         String[] csvLine = new String[table.getSize()];
-        part = HibernateProxyHelper.deproxy(part);
+        representation = HibernateProxyHelper.deproxy(representation);
 
         csvLine[table.getIndex(ColDpExportTable.TAXON_ID)] = getId(state, taxon);
 
@@ -531,17 +528,17 @@ public class ColDpClassificationExport
         csvLine[table.getIndex(ColDpExportTable.SOURCE_ID)] = null;
 
         //url
-        if (part.getUri() != null) {
-            csvLine[table.getIndex(ColDpExportTable.MEDIA_URL)] = part.getUri().toString();
+        if (representation.getUri() != null) {
+            csvLine[table.getIndex(ColDpExportTable.MEDIA_URL)] = representation.getUri().toString();
         }
 
         //TODO 3 media type, still open?
-        csvLine[table.getIndex(ColDpExportTable.TYPE)] = part.getMediaRepresentation().getMimeType();
+        csvLine[table.getIndex(ColDpExportTable.TYPE)] = representation.getMimeType();
 
         //TODO 3 media format
         csvLine[table.getIndex(ColDpExportTable.MEDIA_FORMAT)] = null;
 
-        Media media = part.getMediaRepresentation().getMedia();
+        Media media = representation.getMedia();
 
         //title
         csvLine[table.getIndex(ColDpExportTable.MEDIA_TITLE)] = getTitleCache(media);
@@ -558,7 +555,7 @@ public class ColDpClassificationExport
         //TODO 5 media link
         csvLine[table.getIndex(ColDpExportTable.LINK)] = null;
 
-        state.getProcessor().put(table, part, csvLine);
+        state.getProcessor().put(table, representation, csvLine);
     }
 
     private String toIsoDate(TimePeriod mediaCreated) {
@@ -2311,17 +2308,14 @@ public class ColDpClassificationExport
         boolean first = true;
         while (it.hasNext()) {
             MediaRepresentation rep = it.next();
-            List<MediaRepresentationPart> parts = rep.getParts();
-            for (MediaRepresentationPart part : parts) {
-                if (first) {
-                    if (part.getUri() != null) {
-                        mediaUriString += part.getUri().toString();
-                        first = false;
-                    }
-                } else {
-                    if (part.getUri() != null) {
-                        mediaUriString += ", " + part.getUri().toString();
-                    }
+            if (first) {
+                if (rep.getUri() != null) {
+                    mediaUriString += rep.getUri().toString();
+                    first = false;
+                }
+            } else {
+                if (rep.getUri() != null) {
+                    mediaUriString += ", " + rep.getUri().toString();
                 }
             }
         }

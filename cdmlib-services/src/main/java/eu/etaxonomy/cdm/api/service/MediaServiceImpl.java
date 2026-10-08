@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
@@ -375,11 +374,8 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             throws IOException, HttpException {
         Map<String, String> metadata = new HashMap<>();
 
-        for(MediaRepresentationPart part : representation.getParts()) {
-            if (part.getUri() == null) {
-                continue;
-            }
-            CdmImageInfo iInfo =  mediaInfoFactory.cdmImageInfo(part.getUri(), true);
+        if (representation.getUri() != null) {
+            CdmImageInfo iInfo =  mediaInfoFactory.cdmImageInfo(representation.getUri(), true);
             if(iInfo.getMetaData() != null) {
                 for (Entry<String,String> item:iInfo.getMetaData().entrySet()) {
                     String key = item.getKey();

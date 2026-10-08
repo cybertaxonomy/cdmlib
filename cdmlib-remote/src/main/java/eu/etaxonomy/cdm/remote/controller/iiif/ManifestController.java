@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
@@ -100,7 +100,7 @@ public class ManifestController {
             method = RequestMethod.GET)
     public String doTaxonMedia(
                 @PathVariable("uuid") UUID uuid,
-                @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
+                @RequestParam(value = "type", required = false) Class<? extends MediaRepresentation> type,
                 @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
                 @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
                 @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,

@@ -86,7 +86,6 @@ import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -849,10 +848,9 @@ public class TaxonPageDtoLoaderTest extends CdmTransactionalIntegrationTest {
         Media media1 = Media.NewInstance(URI.create("http://media.de/file.jpg"), 2, "JPG", "jpg");
         media1.setTitleCache("Media title", true);
         media1.setUuid(mediaUuid1);
-        ImageFile image = ImageFile.NewInstance(URI.create("http://media.de/file/rep2.jpg"), 5, 100, 200);
-        MediaRepresentation rep = MediaRepresentation.NewInstance("JPG2", "jpg");
-        rep.addRepresentationPart(image);
-        media1.addRepresentation(rep);
+        ImageFile image = ImageFile.NewInstance(URI.create("http://media.de/file/rep2.jpg"),
+                "JPG2", "jpg", 5, 100, 200);
+        media1.addRepresentation(image);
         Media media2 = Media.NewInstance(URI.create("http://media.de/file2.gif"), 3, "GIF", "gif");
         td3.addMedia(media1);
         td3.addMedia(media2);

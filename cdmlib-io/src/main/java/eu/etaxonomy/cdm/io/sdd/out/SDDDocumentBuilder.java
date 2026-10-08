@@ -69,7 +69,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -513,13 +512,9 @@ public class SDDDocumentBuilder {
 					for (Iterator<MediaRepresentation> mr = smr.iterator(); mr
 							.hasNext();) {
 						MediaRepresentation mediarep = mr.next();
-						List<MediaRepresentationPart> lmrp = mediarep
-								.getParts();
-						for (Iterator<MediaRepresentationPart> mrp = lmrp
-								.iterator(); mrp.hasNext();) {
-							MediaRepresentationPart mediareppart = mrp.next();
+						if (mediarep.getUri() != null) {
 							Element elLink = document.createElement("Link");
-							elLink.setAttribute("href", mediareppart.getUri()
+							elLink.setAttribute("href", mediarep.getUri()
 									.toString());
 							elLinks.appendChild(elLink);
 						}
@@ -1326,13 +1321,10 @@ public class SDDDocumentBuilder {
 					elType.appendChild(document.createTextNode(mediarep
 							.getMimeType()));
 					elMediaObject.appendChild(elType);
-					List<MediaRepresentationPart> lmrp = mediarep.getParts();
-					for (Iterator<MediaRepresentationPart> mrp = lmrp
-							.iterator(); mrp.hasNext();) {
-						MediaRepresentationPart mediareppart = mrp.next();
+					if (mediarep.getUri() != null) {
 						Element elSource = document.createElement(
 								"Source");
-						elSource.setAttribute("href", mediareppart.getUri()
+						elSource.setAttribute("href", mediarep.getUri()
 								.toString());
 						elMediaObject.appendChild(elSource);
 					}
