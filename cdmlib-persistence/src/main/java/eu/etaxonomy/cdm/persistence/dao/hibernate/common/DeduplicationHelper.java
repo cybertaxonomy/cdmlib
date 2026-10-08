@@ -252,7 +252,7 @@ public class DeduplicationHelper {
 		//roles = sessionFactory.getCollectionRolesByEntityParticipant("eu.etaxonomy.cdm.model.name.BotanicalName");
 		CollectionPersister collPersister;
 		try {
-			collPersister = sessionFactory.getCollectionPersister(TaxonName.class.getCanonicalName()+".annotations");
+			collPersister = sessionFactory.getMetamodel().collectionPersister(TaxonName.class.getCanonicalName()+".annotations");
 		} catch (MappingException e) {
 		    // TODO Auto-generated catch block
             e.printStackTrace();
@@ -283,7 +283,7 @@ public class DeduplicationHelper {
 		if (classMetadata instanceof AbstractEntityPersister){
 			AbstractEntityPersister persister = (AbstractEntityPersister)classMetadata;
 			String rootName = persister.getRootEntityName();
-			collectionRoles = sessionFactory.getCollectionRolesByEntityParticipant(rootName);
+			collectionRoles = sessionFactory.getMetamodel().getCollectionRolesByEntityParticipant(rootName);
 			for (String collectionRole : collectionRoles){
 				CollectionMetadata collMetadata2 = sessionFactory.getCollectionMetadata(collectionRole);
 				String role = collMetadata2.getRole();
@@ -573,10 +573,10 @@ public class DeduplicationHelper {
 		if (classMetaData instanceof AbstractEntityPersister){
 			AbstractEntityPersister persister = (AbstractEntityPersister)classMetaData;
 			String rootName = persister.getRootEntityName();
-			collectionRoles = sessionFactory.getCollectionRolesByEntityParticipant(rootName);
+			collectionRoles = sessionFactory.getMetamodel().getCollectionRolesByEntityParticipant(rootName);
 			for (String collectionRole : collectionRoles){
 				CollectionMetadata collMetadata = sessionFactory.getCollectionMetadata(collectionRole);
-				CollectionPersister collPersister = sessionFactory.getCollectionPersister(collectionRole);
+				CollectionPersister collPersister = sessionFactory.getMetamodel().collectionPersister(collectionRole);
 				logger.debug("");
 			}
 		}else{
