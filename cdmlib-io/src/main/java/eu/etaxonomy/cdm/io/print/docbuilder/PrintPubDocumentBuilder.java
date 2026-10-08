@@ -54,607 +54,608 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 @Component("printPubDocumentBuilder")
 public class PrintPubDocumentBuilder {
 
-    private static final String SYNONYM_MARKER = UTF8.EQUALS_SIGN + " ";
-    private static final String HOMOTYPIC_MARKER = UTF8.IDENTICAL_TO + " ";
-    private static final String INVALID_NAME_MARKER = UTF8.MINUS + " ";
-    private static final String ACC_SEC_MARKER = " sec. ";
-    private static final String SYN_SEC_MARKER = " syn sec. ";
+	private static final String SYNONYM_MARKER = UTF8.EQUALS_SIGN + " ";
+	private static final String HOMOTYPIC_MARKER = UTF8.IDENTICAL_TO + " ";
+	private static final String INVALID_NAME_MARKER = UTF8.MINUS + " ";
+	private static final String ACC_SEC_MARKER = " sec. ";
+	private static final String SYN_SEC_MARKER = " syn sec. ";
 
-    private static final EnumSet<TagEnum> FULL_TITLE_CACHE_TAGS = EnumSet.allOf(TagEnum.class);
-    private static final EnumSet<TagEnum> TITLE_CACHE_TAGS = TagEnum.titleCacheTags();
+	private static final EnumSet<TagEnum> FULL_TITLE_CACHE_TAGS = EnumSet.allOf(TagEnum.class);
+	private static final EnumSet<TagEnum> TITLE_CACHE_TAGS = TagEnum.titleCacheTags();
 
-    public List<IPrintPubDocumentElement> buildLayout(PrintPubDocumentRequest request) {
+	public List<IPrintPubDocumentElement> buildLayout(PrintPubDocumentRequest request) {
 
-        List<IPrintPubDocumentElement> elements = new ArrayList<>();
+		List<IPrintPubDocumentElement> elements = new ArrayList<>();
 
-        elements.addAll(buildHeader(request));
-        elements.addAll(buildContent(request));
+		elements.addAll(buildHeader(request));
+		elements.addAll(buildContent(request));
 
-        if (request.hasBibliography()) {
-            elements.addAll(buildBibliography(request.bibliography()));
-        }
+		if (request.hasBibliography()) {
+			elements.addAll(buildBibliography(request.bibliography()));
+		}
 
-        if (request.includeScientificNameIndex()) {
-            elements.addAll(buildScientificNameIndex(request.taxa()));
-        }
+		if (request.includeScientificNameIndex()) {
+			elements.addAll(buildScientificNameIndex(request.taxa()));
+		}
 
-        if (request.includeCommonNameIndex()) {
-            elements.addAll(buildCommonNameIndex(request.taxa()));
-        }
+		if (request.includeCommonNameIndex()) {
+			elements.addAll(buildCommonNameIndex(request.taxa()));
+		}
 
-        if (request.includeIdentifierAppendix()) {
-            elements.addAll(buildIdentifierAppendix(request));
-        }
+		if (request.includeIdentifierAppendix()) {
+			elements.addAll(buildIdentifierAppendix(request));
+		}
 
-        return List.copyOf(elements);
-    }
+		return List.copyOf(elements);
+	}
 
-    protected List<IPrintPubDocumentElement> buildContent(PrintPubDocumentRequest request) {
+	protected List<IPrintPubDocumentElement> buildContent(PrintPubDocumentRequest request) {
 
-        List<IPrintPubDocumentElement> elements = new ArrayList<>();
+		List<IPrintPubDocumentElement> elements = new ArrayList<>();
 
-        if (request.taxa().isEmpty()) {
-            return elements;
-        }
+		if (request.taxa().isEmpty()) {
+			return elements;
+		}
 
-        elements.add(new PrintPubSectionHeaderElement("Taxonomic Hierarchy", 1));
+		elements.add(new PrintPubSectionHeaderElement("Taxonomic Hierarchy", 1));
 
-        PrintPubCitationRegistry citations = new PrintPubCitationRegistry();
+		PrintPubCitationRegistry citations = new PrintPubCitationRegistry();
 
-        for (PrintPubTaxonSummaryDTO dto : request.taxa()) {
-            if (dto != null) {
-                elements.addAll(renderTaxon(request, citations, dto));
-            }
-        }
+		for (PrintPubTaxonSummaryDTO dto : request.taxa()) {
+			if (dto != null) {
+				elements.addAll(renderTaxon(request, citations, dto));
+			}
+		}
 
-        return elements;
-    }
+		return elements;
+	}
 
-    protected List<IPrintPubDocumentElement> buildCommonNameIndex(List<PrintPubTaxonSummaryDTO> taxa) {
+	protected List<IPrintPubDocumentElement> buildCommonNameIndex(List<PrintPubTaxonSummaryDTO> taxa) {
 
-        if (taxa == null || taxa.isEmpty()) {
-            return List.of();
-        }
+		if (taxa == null || taxa.isEmpty()) {
+			return List.of();
+		}
 
-        List<String> commonNames = taxa.stream().filter(Objects::nonNull).filter(dto -> dto.commonNames != null)
-                .flatMap(dto -> dto.commonNames.stream()).filter(StringUtils::isNotBlank).map(String::trim).distinct()
-                .sorted(String.CASE_INSENSITIVE_ORDER).toList();
+		List<String> commonNames = taxa.stream().filter(Objects::nonNull).filter(dto -> dto.commonNames != null)
+				.flatMap(dto -> dto.commonNames.stream()).filter(StringUtils::isNotBlank).map(String::trim).distinct()
+				.sorted(String.CASE_INSENSITIVE_ORDER).toList();
 
-        if (commonNames.isEmpty()) {
-            return List.of();
-        }
+		if (commonNames.isEmpty()) {
+			return List.of();
+		}
 
-        List<IPrintPubDocumentElement> elements = new ArrayList<>();
+		List<IPrintPubDocumentElement> elements = new ArrayList<>();
 
-        elements.add(new PrintPubPageBreakElement());
-        elements.add(new PrintPubSectionHeaderElement("Index to Common Names", 1));
+		elements.add(new PrintPubPageBreakElement());
+		elements.add(new PrintPubSectionHeaderElement("Index to Common Names", 1));
 
-        for (String commonName : commonNames) {
-            elements.add(new PrintPubParagraphElement(commonName));
-        }
+		for (String commonName : commonNames) {
+			elements.add(new PrintPubParagraphElement(commonName));
+		}
 
-        return elements;
-    }
+		return elements;
+	}
 
-    protected List<IPrintPubDocumentElement> buildHeader(PrintPubDocumentRequest request) {
+	protected List<IPrintPubDocumentElement> buildHeader(PrintPubDocumentRequest request) {
 
-        return List.of(new PrintPubSectionHeaderElement(request.documentTitle(), 1),
-                new PrintPubParagraphElement("Total Taxa: " + request.taxa().size()), new PrintPubPageBreakElement());
-    }
+		return List.of(new PrintPubSectionHeaderElement(request.documentTitle(), 1),
+				new PrintPubParagraphElement("Total Taxa: " + request.taxa().size()), new PrintPubPageBreakElement());
+	}
 
-    private List<IPrintPubDocumentElement> renderTaxon(PrintPubDocumentRequest request,
-            PrintPubCitationRegistry citations, PrintPubTaxonSummaryDTO taxonDto) {
+	private List<IPrintPubDocumentElement> renderTaxon(PrintPubDocumentRequest request,
+			PrintPubCitationRegistry citations, PrintPubTaxonSummaryDTO taxonDto) {
 
-        List<IPrintPubDocumentElement> elements = new ArrayList<>();
+		List<IPrintPubDocumentElement> elements = new ArrayList<>();
 
-        elements.add(renderTaxonHeading(taxonDto));
+		elements.add(renderTaxonHeading(taxonDto));
 
-        if (request.includeSynonyms()) {
-            elements.addAll(renderSynonyms(request, citations, taxonDto));
-        }
+		if (request.includeSynonyms()) {
+			elements.addAll(renderSynonyms(request, citations, taxonDto));
+		}
 
-        elements.addAll(renderTaxonFacts(request, taxonDto));
+		elements.addAll(renderTaxonFacts(request, taxonDto));
 
-        return elements;
-    }
+		return elements;
+	}
 
-    private PrintPubTextRunElement renderTaxonHeading(PrintPubTaxonSummaryDTO taxonDto) {
+	private PrintPubTextRunElement renderTaxonHeading(PrintPubTaxonSummaryDTO taxonDto) {
 
-        List<Run> runs = new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
 
-        PrintPubNameDTO nameDto = taxonDto.nameDTO;
+		PrintPubNameDTO nameDto = taxonDto.nameDTO;
 
-        if (nameDto != null) {
+		if (nameDto != null) {
 
-            if (nameDto.uuid != null) {
-                runs.add(new Run(RunType.REFERENCE_MARK, nameDto.uuid));
-            }
+			if (nameDto.uuid != null) {
+				runs.add(new Run(RunType.REFERENCE_MARK, nameDto.uuid));
+			}
 
-            runs.addAll(runsFromTaggedNameForTitle(nameDto.taggedNameList));
-        }
+			runs.addAll(runsFromTaggedNameForTitle(nameDto.taggedNameList));
+		}
 
-        if (StringUtils.isNotBlank(taxonDto.secReferenceCitation)) {
-            runs.add(new Run(RunType.TEXT, ACC_SEC_MARKER + taxonDto.secReferenceCitation));
-        }
+		if (StringUtils.isNotBlank(taxonDto.secReferenceCitation)) {
+			runs.add(new Run(RunType.TEXT, ACC_SEC_MARKER + taxonDto.secReferenceCitation));
+		}
 
-        return new PrintPubTextRunElement(null, runs, taxonNameRole(nameDto));
-    }
+		return new PrintPubTextRunElement(null, runs, taxonNameRole(nameDto));
+	}
 
-    private PrintPubTextRunElement.PrintPubTextRole taxonNameRole(PrintPubNameDTO nameDto) {
+	private PrintPubTextRunElement.PrintPubTextRole taxonNameRole(PrintPubNameDTO nameDto) {
 
-        if (nameDto == null || nameDto.headingLevel == null) {
-            return PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME_LOWER;
-        }
+		if (nameDto == null || nameDto.headingLevel == null) {
+			return PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME_LOWER;
+		}
 
-        return switch (nameDto.headingLevel) {
-        case HIGHER -> PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME_HIGHER;
+		return switch (nameDto.headingLevel) {
+		case HIGHER -> PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME_HIGHER;
 
-        case INTERMEDIATE -> PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME_INTERMEDIATE;
+		case INTERMEDIATE -> PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME_INTERMEDIATE;
 
-        case LOWER -> PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME_LOWER;
-        };
-    }
+		case LOWER -> PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME_LOWER;
+		};
+	}
 
-    private List<IPrintPubDocumentElement> renderSynonyms(PrintPubDocumentRequest request,
-            PrintPubCitationRegistry citations, PrintPubTaxonSummaryDTO taxonDto) {
+	private List<IPrintPubDocumentElement> renderSynonyms(PrintPubDocumentRequest request,
+			PrintPubCitationRegistry citations, PrintPubTaxonSummaryDTO taxonDto) {
 
-        List<IPrintPubDocumentElement> elements = new ArrayList<>();
-        boolean oneLinePerHomotypicGroup = request.oneLinePerHomotypicGroup();
+		List<IPrintPubDocumentElement> elements = new ArrayList<>();
+		boolean oneLinePerHomotypicGroup = request.oneLinePerHomotypicGroup();
 
-        // homotypic synonyms
-        if (taxonDto.homotypicSynonymGroup != null) {
-            PrintPubSynonymGroupDTO groupDto = taxonDto.homotypicSynonymGroup;
-            boolean isHomotypicToAccepted = true;
-            handleHomotypicGroup(request, groupDto, citations, elements, oneLinePerHomotypicGroup,
-                    isHomotypicToAccepted);
-        }
+		// homotypic synonyms
+		if (taxonDto.homotypicSynonymGroup != null) {
+			PrintPubSynonymGroupDTO groupDto = taxonDto.homotypicSynonymGroup;
+			boolean isHomotypicToAccepted = true;
+			handleHomotypicGroup(request, groupDto, citations, elements, oneLinePerHomotypicGroup,
+					isHomotypicToAccepted);
+		}
 
-        // heterotypic synonyms
-        for (PrintPubSynonymGroupDTO groupDto : taxonDto.heterotypicSynonymGroups) {
-            boolean isHomotypicToAccepted = false;
-            handleHomotypicGroup(request, groupDto, citations, elements, oneLinePerHomotypicGroup,
-                    isHomotypicToAccepted);
-        }
+		// heterotypic synonyms
+		for (PrintPubSynonymGroupDTO groupDto : taxonDto.heterotypicSynonymGroups) {
+			boolean isHomotypicToAccepted = false;
+			handleHomotypicGroup(request, groupDto, citations, elements, oneLinePerHomotypicGroup,
+					isHomotypicToAccepted);
+		}
 
-        return elements;
-    }
+		return elements;
+	}
 
-    private void handleHomotypicGroup(PrintPubDocumentRequest request, PrintPubSynonymGroupDTO groupDto,
-            PrintPubCitationRegistry citations, List<IPrintPubDocumentElement> elements,
-            boolean oneLinePerHomotypicGroup, boolean isHomotypicToAccepted) {
+	private void handleHomotypicGroup(PrintPubDocumentRequest request, PrintPubSynonymGroupDTO groupDto,
+			PrintPubCitationRegistry citations, List<IPrintPubDocumentElement> elements,
+			boolean oneLinePerHomotypicGroup, boolean isHomotypicToAccepted) {
 
-        boolean firstInGroup = !isHomotypicToAccepted;
-        List<Run> runs = new ArrayList<>();
-        List<IPrintPubDocumentElement> additionalElements = new ArrayList<>();
-        for (PrintPubSynonymDTO synonym : groupDto.synonyms) {
+		boolean firstInGroup = !isHomotypicToAccepted;
+		List<Run> runs = new ArrayList<>();
+		List<IPrintPubDocumentElement> additionalElements = new ArrayList<>();
+		for (PrintPubSynonymDTO synonym : groupDto.synonyms) {
 
-            SynonymModel model = renderSingleSynonym(request, citations, firstInGroup, synonym,
-                    oneLinePerHomotypicGroup);
+			SynonymModel model = renderSingleSynonym(request, citations, firstInGroup, synonym,
+					oneLinePerHomotypicGroup);
 
-            runs.addAll(model.runs());
-            additionalElements.addAll(model.additionalElements());
-            firstInGroup = false;
-        }
+			runs.addAll(model.runs());
+			additionalElements.addAll(model.additionalElements());
+			firstInGroup = false;
+		}
 
-        if (!runs.isEmpty()) {
-            elements.add(new PrintPubTextRunElement(runs));
-        }
+		if (!runs.isEmpty()) {
+			elements.add(new PrintPubTextRunElement(runs));
+		}
 
-        if (StringUtils.isNotBlank(groupDto.typeSpecimenString)) {
-            additionalElements.add(new PrintPubParagraphElement(groupDto.typeSpecimenString));
-        }
+		if (StringUtils.isNotBlank(groupDto.typeSpecimenString)) {
+			additionalElements.add(new PrintPubParagraphElement(groupDto.typeSpecimenString));
+		}
 
-        elements.addAll(additionalElements);
-    }
+		elements.addAll(additionalElements);
+	}
 
-    /**
-     * Returns both the synonym runs and any separate model elements belonging to
-     * the synonym, such as type-specimen paragraphs.
-     */
-    private SynonymModel renderSingleSynonym(PrintPubDocumentRequest request, PrintPubCitationRegistry citations,
-            boolean firstInGroup, PrintPubSynonymDTO synonym, boolean oneLinePerHomotypicGroup) {
-        String prefix;
+	/**
+	 * Returns both the synonym runs and any separate model elements belonging to
+	 * the synonym, such as type-specimen paragraphs.
+	 */
+	private SynonymModel renderSingleSynonym(PrintPubDocumentRequest request, PrintPubCitationRegistry citations,
+			boolean firstInGroup, PrintPubSynonymDTO synonym, boolean oneLinePerHomotypicGroup) {
+		String prefix;
 
-        if (synonym.isInvalidDesignation) {
-            prefix = INVALID_NAME_MARKER;
-        } else if (firstInGroup) {
-            prefix = SYNONYM_MARKER;
-        } else {
-            prefix = HOMOTYPIC_MARKER;
-        }
+		if (synonym.isInvalidDesignation) {
+			prefix = INVALID_NAME_MARKER;
+		} else if (firstInGroup) {
+			prefix = SYNONYM_MARKER;
+		} else {
+			prefix = HOMOTYPIC_MARKER;
+		}
 
-        String synSecPart = "";
+		String synSecPart = "";
 
-        if (request.includeSynonymConceptReferences() && StringUtils.isNotBlank(synonym.secReference)) {
-            String citationSuffix = citations.incrementShortCitation(synonym.secReference);
+		if (request.includeSynonymConceptReferences() && StringUtils.isNotBlank(synonym.secReference)) {
+			String citationSuffix = citations.incrementShortCitation(synonym.secReference);
 
-            synSecPart = SYN_SEC_MARKER + synonym.secReference + citationSuffix;
-        }
+			synSecPart = SYN_SEC_MARKER + synonym.secReference + citationSuffix;
+		}
 
-        boolean newLine = !firstInGroup && !oneLinePerHomotypicGroup;
+		boolean newLine = !firstInGroup && !oneLinePerHomotypicGroup;
 
-        List<Run> runs = synonymRuns(synonym, prefix, synSecPart, newLine);
+		List<Run> runs = synonymRuns(synonym, prefix, synSecPart, newLine);
 
-        List<IPrintPubDocumentElement> additionalElements = new ArrayList<>();
+		List<IPrintPubDocumentElement> additionalElements = new ArrayList<>();
 
-        return new SynonymModel(runs, additionalElements);
-    }
+		return new SynonymModel(runs, additionalElements);
+	}
 
-    private List<IPrintPubDocumentElement> renderTaxonFacts(PrintPubDocumentRequest request,
-            PrintPubTaxonSummaryDTO dto) {
+	private List<IPrintPubDocumentElement> renderTaxonFacts(PrintPubDocumentRequest request,
+			PrintPubTaxonSummaryDTO dto) {
 
-        List<IPrintPubDocumentElement> elements = new ArrayList<>();
+		List<IPrintPubDocumentElement> elements = new ArrayList<>();
 
-        if (StringUtils.isNotBlank(dto.distributionString)) {
-            elements.add(new PrintPubLabeledTextElement("Distribution", dto.distributionString));
-        }
+		if (StringUtils.isNotBlank(dto.distributionString)) {
+			elements.add(new PrintPubLabeledTextElement("Distribution", dto.distributionString));
+		}
 
-        if (StringUtils.isNotBlank(dto.commonNameString)) {
-            elements.add(new PrintPubLabeledTextElement("Common Names", dto.commonNameString));
-        }
+		if (StringUtils.isNotBlank(dto.commonNameString)) {
+			elements.add(new PrintPubLabeledTextElement("Common Names", dto.commonNameString));
+		}
 
-        if (dto.facts == null || dto.facts.isEmpty()) {
-            return elements;
-        }
+		if (dto.facts == null || dto.facts.isEmpty()) {
+			return elements;
+		}
 
-        Map<PrintPubFeatureKey, List<PrintPubFactDTO>> groups = dto.facts.stream().filter(Objects::nonNull)
-                .collect(Collectors.groupingBy(fact -> new PrintPubFeatureKey(fact.featureUuid, fact.label),
-                        LinkedHashMap::new, Collectors.toList()));
+		Map<PrintPubFeatureKey, List<PrintPubFactDTO>> groups = dto.facts.stream().filter(Objects::nonNull)
+				.collect(Collectors.groupingBy(fact -> new PrintPubFeatureKey(fact.featureUuid, fact.label),
+						LinkedHashMap::new, Collectors.toList()));
 
-        for (Map.Entry<PrintPubFeatureKey, List<PrintPubFactDTO>> entry : groups.entrySet()) {
+		for (Map.Entry<PrintPubFeatureKey, List<PrintPubFactDTO>> entry : groups.entrySet()) {
 
-            PrintPubFeatureKey key = entry.getKey();
-            List<PrintPubFactDTO> facts = entry.getValue();
+			PrintPubFeatureKey key = entry.getKey();
+			List<PrintPubFactDTO> facts = entry.getValue();
 
-            List<Run> combinedRuns = buildFactRuns(facts);
+			List<Run> combinedRuns = buildFactRuns(facts);
 
-            if (combinedRuns.isEmpty()) {
-                continue;
-            }
+			if (combinedRuns.isEmpty()) {
+				continue;
+			}
 
-            String label = StringUtils.defaultIfBlank(key.getLabel(), "Facts");
+			String label = StringUtils.defaultIfBlank(key.getLabel(), "Facts");
 
-            elements.add(new PrintPubTextRunElement(label, combinedRuns,
-                    PrintPubTextRunElement.PrintPubTextRole.FACT_GROUP));
-        }
+			elements.add(new PrintPubTextRunElement(label, combinedRuns,
+					PrintPubTextRunElement.PrintPubTextRole.FACT_GROUP));
+		}
 
-        return elements;
-    }
+		return elements;
+	}
 
-    private List<Run> buildFactRuns(List<PrintPubFactDTO> facts) {
+	private List<Run> buildFactRuns(List<PrintPubFactDTO> facts) {
 
-        List<Run> runs = new ArrayList<>();
-        boolean first = true;
+		List<Run> runs = new ArrayList<>();
+		boolean first = true;
 
-        for (PrintPubFactDTO fact : facts) {
-            if (fact == null) {
-                continue;
-            }
+		for (PrintPubFactDTO fact : facts) {
+			if (fact == null) {
+				continue;
+			}
 
-            List<Run> factRuns = PrintPubNonNestedHtmlTokenConverter
-                    .toRuns(PrintPubNonNestedHtmlTokenizer.tokenize(fact.text));
+			List<Run> factRuns = PrintPubNonNestedHtmlTokenConverter
+					.toRuns(PrintPubNonNestedHtmlTokenizer.tokenize(fact.text));
 
-            boolean hasCitations = fact.citations != null && !fact.citations.isEmpty();
+			boolean hasCitations = fact.citations != null && !fact.citations.isEmpty();
 
-            if (factRuns.isEmpty() && !hasCitations) {
-                continue;
-            }
+			if (factRuns.isEmpty() && !hasCitations) {
+				continue;
+			}
 
-            if (!first) {
-                runs.add(new Run(RunType.TEXT, " "));
-            }
+			if (!first) {
+				runs.add(new Run(RunType.TEXT, " "));
+			}
 
-            first = false;
-            runs.addAll(factRuns);
+			first = false;
+			runs.addAll(factRuns);
 
-            if (hasCitations) {
-                runs.add(new Run(RunType.TEXT, " [" + String.join("; ", fact.citations) + "]"));
-            }
-        }
+			if (hasCitations) {
+				runs.add(new Run(RunType.TEXT, " [" + String.join("; ", fact.citations) + "]"));
+			}
+		}
 
-        return runs;
-    }
+		return runs;
+	}
 
-    protected List<IPrintPubDocumentElement> buildBibliography(List<Reference> bibliography) {
+	protected List<IPrintPubDocumentElement> buildBibliography(List<Reference> bibliography) {
 
-        if (bibliography == null || bibliography.isEmpty()) {
-            return List.of();
-        }
+		if (bibliography == null || bibliography.isEmpty()) {
+			return List.of();
+		}
 
-        List<IPrintPubDocumentElement> elements = new ArrayList<>();
+		List<IPrintPubDocumentElement> elements = new ArrayList<>();
 
-        elements.add(new PrintPubPageBreakElement());
-        elements.add(new PrintPubSectionHeaderElement("Bibliography", 1));
+		elements.add(new PrintPubPageBreakElement());
+		elements.add(new PrintPubSectionHeaderElement("Bibliography", 1));
 
-        for (Reference reference : bibliography) {
-            if (reference == null) {
-                continue;
-            }
+		for (Reference reference : bibliography) {
+			if (reference == null) {
+				continue;
+			}
 
-            String title = reference.getTitleCache();
+			String title = reference.getTitleCache();
 
-            if (StringUtils.isBlank(title)) {
-                continue;
-            }
+			if (StringUtils.isBlank(title)) {
+				continue;
+			}
 
-            List<Run> runs = PrintPubNonNestedHtmlTokenConverter.toRuns(PrintPubNonNestedHtmlTokenizer.tokenize(title));
+			List<Run> runs = PrintPubNonNestedHtmlTokenConverter.toRuns(PrintPubNonNestedHtmlTokenizer.tokenize(title));
 
-            if (!runs.isEmpty()) {
-                elements.add(new PrintPubTextRunElement(runs));
-            }
-        }
+			if (!runs.isEmpty()) {
+				elements.add(
+						new PrintPubTextRunElement(null, runs, PrintPubTextRunElement.PrintPubTextRole.BIBLIOGRAPHY));
+			}
+		}
 
-        return elements;
-    }
+		return elements;
+	}
 
-    protected List<IPrintPubDocumentElement> buildScientificNameIndex(List<PrintPubTaxonSummaryDTO> taxonDtos) {
+	protected List<IPrintPubDocumentElement> buildScientificNameIndex(List<PrintPubTaxonSummaryDTO> taxonDtos) {
 
-        List<PrintPubNameDTO> names = scientificNameDtosSorted(taxonDtos).toList();
+		List<PrintPubNameDTO> names = scientificNameDtosSorted(taxonDtos).toList();
 
-        if (names.isEmpty()) {
-            return List.of();
-        }
+		if (names.isEmpty()) {
+			return List.of();
+		}
 
-        List<IPrintPubDocumentElement> elements = new ArrayList<>();
+		List<IPrintPubDocumentElement> elements = new ArrayList<>();
 
-        elements.add(new PrintPubPageBreakElement());
-        elements.add(new PrintPubSectionHeaderElement("Index to Scientific Names", 1));
+		elements.add(new PrintPubPageBreakElement());
+		elements.add(new PrintPubSectionHeaderElement("Index to Scientific Names", 1));
 
-        for (PrintPubNameDTO nameDto : names) {
-            List<Run> nameRuns = runsFromTaggedName(nameDto.taggedNameList, TITLE_CACHE_TAGS);
-            if (nameDto.uuid != null) {
-                nameRuns.add(new Run(RunType.TEXT, "..."));
-                nameRuns.add(new Run(RunType.PAGE_REFERENCE, nameDto.uuid));
-            }
-            elements.add(new PrintPubTextRunElement(nameRuns));
-        }
+		for (PrintPubNameDTO nameDto : names) {
+			List<Run> nameRuns = runsFromTaggedName(nameDto.taggedNameList, TITLE_CACHE_TAGS);
+			if (nameDto.uuid != null) {
+				nameRuns.add(new Run(RunType.TEXT, "..."));
+				nameRuns.add(new Run(RunType.PAGE_REFERENCE, nameDto.uuid));
+			}
+			elements.add(new PrintPubTextRunElement(nameRuns));
+		}
 
-        return elements;
-    }
+		return elements;
+	}
 
-    private Stream<PrintPubNameDTO> scientificNameDtosSorted(List<PrintPubTaxonSummaryDTO> taxonDtos) {
+	private Stream<PrintPubNameDTO> scientificNameDtosSorted(List<PrintPubTaxonSummaryDTO> taxonDtos) {
 
-        if (taxonDtos == null) {
-            return Stream.empty();
-        }
+		if (taxonDtos == null) {
+			return Stream.empty();
+		}
 
-        return taxonDtos.stream().filter(Objects::nonNull)
-                .flatMap(taxon -> Stream.concat(Stream.ofNullable(taxon.nameDTO), synonymScientificNameDtos(taxon)))
-                .distinct()
-                .sorted((n1, n2) -> String.CASE_INSENSITIVE_ORDER.compare(n1.scientificName, n2.scientificName));
-    }
+		return taxonDtos.stream().filter(Objects::nonNull)
+				.flatMap(taxon -> Stream.concat(Stream.ofNullable(taxon.nameDTO), synonymScientificNameDtos(taxon)))
+				.distinct()
+				.sorted((n1, n2) -> String.CASE_INSENSITIVE_ORDER.compare(n1.scientificName, n2.scientificName));
+	}
 
-    private Stream<PrintPubNameDTO> synonymScientificNameDtos(PrintPubTaxonSummaryDTO taxon) {
+	private Stream<PrintPubNameDTO> synonymScientificNameDtos(PrintPubTaxonSummaryDTO taxon) {
 
-        if (taxon.heterotypicSynonymGroups == null && taxon.homotypicSynonymGroup == null) {
-            return Stream.empty();
-        }
+		if (taxon.heterotypicSynonymGroups == null && taxon.homotypicSynonymGroup == null) {
+			return Stream.empty();
+		}
 
-        Set<PrintPubSynonymGroupDTO> groupSet = new HashSet<>();
-        if (taxon.heterotypicSynonymGroups != null) {
-            groupSet.addAll(taxon.heterotypicSynonymGroups);
-        }
-        if (taxon.homotypicSynonymGroup != null) {
-            groupSet.add(taxon.homotypicSynonymGroup);
-        }
+		Set<PrintPubSynonymGroupDTO> groupSet = new HashSet<>();
+		if (taxon.heterotypicSynonymGroups != null) {
+			groupSet.addAll(taxon.heterotypicSynonymGroups);
+		}
+		if (taxon.homotypicSynonymGroup != null) {
+			groupSet.add(taxon.homotypicSynonymGroup);
+		}
 
-        return groupSet.stream().filter(group -> group.synonyms != null).flatMap(group -> group.synonyms.stream())
-                .map(synonym -> synonym.nameDTO);
-    }
+		return groupSet.stream().filter(group -> group.synonyms != null).flatMap(group -> group.synonyms.stream())
+				.map(synonym -> synonym.nameDTO);
+	}
 
-    protected List<IPrintPubDocumentElement> buildCommonNameIndex(PrintPubExportState state) {
+	protected List<IPrintPubDocumentElement> buildCommonNameIndex(PrintPubExportState state) {
 
-        List<IPrintPubDocumentElement> elements = new ArrayList<>();
+		List<IPrintPubDocumentElement> elements = new ArrayList<>();
 
-        elements.add(new PrintPubPageBreakElement());
-        elements.add(new PrintPubSectionHeaderElement("Index to Common Names", 1));
+		elements.add(new PrintPubPageBreakElement());
+		elements.add(new PrintPubSectionHeaderElement("Index to Common Names", 1));
 
-        state.getTaxa().stream().filter(Objects::nonNull).filter(dto -> dto.commonNames != null)
-                .flatMap(dto -> dto.commonNames.stream()).filter(StringUtils::isNotBlank).map(String::trim)
-                .sorted(String.CASE_INSENSITIVE_ORDER)
-                .forEach(commonName -> elements.add(new PrintPubParagraphElement(commonName)));
+		state.getTaxa().stream().filter(Objects::nonNull).filter(dto -> dto.commonNames != null)
+				.flatMap(dto -> dto.commonNames.stream()).filter(StringUtils::isNotBlank).map(String::trim)
+				.sorted(String.CASE_INSENSITIVE_ORDER)
+				.forEach(commonName -> elements.add(new PrintPubParagraphElement(commonName)));
 
-        return elements;
-    }
+		return elements;
+	}
 
-    protected List<IPrintPubDocumentElement> buildIdentifierAppendix(PrintPubDocumentRequest request) {
+	protected List<IPrintPubDocumentElement> buildIdentifierAppendix(PrintPubDocumentRequest request) {
 
-        List<PrintPubTaxonSummaryDTO> taxonDtos = request.taxa();
+		List<PrintPubTaxonSummaryDTO> taxonDtos = request.taxa();
 
-        if (!request.includeIdentifierAppendix() || taxonDtos.isEmpty()) {
-            return List.of();
-        }
+		if (!request.includeIdentifierAppendix() || taxonDtos.isEmpty()) {
+			return List.of();
+		}
 
-        List<PrintPubNameDTO> names = scientificNameDtosSorted(taxonDtos).toList();
-        if (names.isEmpty()) {
-            return List.of();
-        }
+		List<PrintPubNameDTO> names = scientificNameDtosSorted(taxonDtos).toList();
+		if (names.isEmpty()) {
+			return List.of();
+		}
 
-        List<IPrintPubDocumentElement> rows = new ArrayList<>();
-        for (PrintPubNameDTO nameDto : names) {
+		List<IPrintPubDocumentElement> rows = new ArrayList<>();
+		for (PrintPubNameDTO nameDto : names) {
 
-            if (!request.includeEmptyIds() && !hasAnySelectedIdentifier(nameDto, request)) {
-                continue;
-            }
+			if (!request.includeEmptyIds() && !hasAnySelectedIdentifier(nameDto, request)) {
+				continue;
+			}
 
-            List<Run> runs = new ArrayList<>();
-            List<Run> nameRuns = runsFromTaggedName(nameDto.taggedNameList, TITLE_CACHE_TAGS);
+			List<Run> runs = new ArrayList<>();
+			List<Run> nameRuns = runsFromTaggedName(nameDto.taggedNameList, TITLE_CACHE_TAGS);
 
-            if (!nameRuns.isEmpty()) {
-                runs.addAll(nameRuns);
-            } else if (StringUtils.isNotBlank(nameDto.scientificName)) {
-                runs.add(new Run(RunType.TEXT, nameDto.scientificName.trim()));
-            }
+			if (!nameRuns.isEmpty()) {
+				runs.addAll(nameRuns);
+			} else if (StringUtils.isNotBlank(nameDto.scientificName)) {
+				runs.add(new Run(RunType.TEXT, nameDto.scientificName.trim()));
+			}
 
-            StringBuilder suffix = new StringBuilder();
+			StringBuilder suffix = new StringBuilder();
 
-            if (request.includeWfoId()) {
-                appendAppendixField(suffix, "WFO", nameDto.wfoIds);
-            }
+			if (request.includeWfoId()) {
+				appendAppendixField(suffix, "WFO", nameDto.wfoIds);
+			}
 
-            if (request.includeIpniId()) {
-                appendAppendixField(suffix, "IPNI", nameDto.ipniIds);
-            }
+			if (request.includeIpniId()) {
+				appendAppendixField(suffix, "IPNI", nameDto.ipniIds);
+			}
 
-            if (request.includeProtologueUris()) {
-                appendAppendixField(suffix, "URL", nameDto.links);
-            }
+			if (request.includeProtologueUris()) {
+				appendAppendixField(suffix, "URL", nameDto.links);
+			}
 
-            if (suffix.length() > 0) {
-                runs.add(new Run(RunType.TEXT, "; " + suffix));
-            }
+			if (suffix.length() > 0) {
+				runs.add(new Run(RunType.TEXT, "; " + suffix));
+			}
 
-            if (!runs.isEmpty()) {
-                rows.add(new PrintPubTextRunElement(runs));
-            }
-        }
+			if (!runs.isEmpty()) {
+				rows.add(new PrintPubTextRunElement(runs));
+			}
+		}
 
-        if (rows.isEmpty()) {
-            return List.of();
-        }
+		if (rows.isEmpty()) {
+			return List.of();
+		}
 
-        List<IPrintPubDocumentElement> elements = new ArrayList<>();
+		List<IPrintPubDocumentElement> elements = new ArrayList<>();
 
-        elements.add(new PrintPubPageBreakElement());
-        elements.add(new PrintPubSectionHeaderElement("Appendix: Digital Identifiers", 1));
-        elements.addAll(rows);
+		elements.add(new PrintPubPageBreakElement());
+		elements.add(new PrintPubSectionHeaderElement("Appendix: Digital Identifiers", 1));
+		elements.addAll(rows);
 
-        return elements;
-    }
+		return elements;
+	}
 
-    private boolean hasAnySelectedIdentifier(PrintPubNameDTO nameDto, PrintPubDocumentRequest request) {
+	private boolean hasAnySelectedIdentifier(PrintPubNameDTO nameDto, PrintPubDocumentRequest request) {
 
-        if (nameDto == null) {
-            return false;
-        }
+		if (nameDto == null) {
+			return false;
+		}
 
-        return request.includeWfoId() && hasValues(nameDto.wfoIds)
-                || request.includeIpniId() && hasValues(nameDto.ipniIds)
-                || request.includeProtologueUris() && hasValues(nameDto.links);
-    }
+		return request.includeWfoId() && hasValues(nameDto.wfoIds)
+				|| request.includeIpniId() && hasValues(nameDto.ipniIds)
+				|| request.includeProtologueUris() && hasValues(nameDto.links);
+	}
 
-    private List<Run> runsFromTaggedName(List<TaggedText> taggedName, EnumSet<TagEnum> supportedTags) {
+	private List<Run> runsFromTaggedName(List<TaggedText> taggedName, EnumSet<TagEnum> supportedTags) {
 
-        List<Run> runs = new ArrayList<>();
-        boolean first = true;
+		List<Run> runs = new ArrayList<>();
+		boolean first = true;
 
-        if (taggedName == null) {
-            return runs;
-        }
+		if (taggedName == null) {
+			return runs;
+		}
 
-        for (TaggedText taggedText : taggedName) {
+		for (TaggedText taggedText : taggedName) {
 
-            if (!supportedTags.contains(taggedText.getType())) {
-                continue;
-            }
-            String text = taggedText.getText();
+			if (!supportedTags.contains(taggedText.getType())) {
+				continue;
+			}
+			String text = taggedText.getText();
 
-            if (StringUtils.isEmpty(text)) {
-                continue;
-            }
+			if (StringUtils.isEmpty(text)) {
+				continue;
+			}
 
-            if (!first && needsSpaceBefore(text)) {
-                runs.add(new Run(RunType.TEXT, " "));
-            }
+			if (!first && needsSpaceBefore(text)) {
+				runs.add(new Run(RunType.TEXT, " "));
+			}
 
-            first = false;
+			first = false;
 
-            RunType type = taggedText.getType() == TagEnum.name ? RunType.ITALIC : RunType.TEXT;
+			RunType type = taggedText.getType() == TagEnum.name ? RunType.ITALIC : RunType.TEXT;
 
-            runs.add(new Run(type, text));
-        }
+			runs.add(new Run(type, text));
+		}
 
-        return runs;
-    }
+		return runs;
+	}
 
-    private List<Run> runsFromTaggedNameForTitle(List<TaggedText> taggedName) {
+	private List<Run> runsFromTaggedNameForTitle(List<TaggedText> taggedName) {
 
-        List<Run> runs = new ArrayList<>();
-        boolean first = true;
+		List<Run> runs = new ArrayList<>();
+		boolean first = true;
 
-        if (taggedName == null) {
-            return runs;
-        }
+		if (taggedName == null) {
+			return runs;
+		}
 
-        for (TaggedText taggedText : taggedName) {
-            String text = taggedText.getText();
+		for (TaggedText taggedText : taggedName) {
+			String text = taggedText.getText();
 
-            if (StringUtils.isEmpty(text)) {
-                continue;
-            }
+			if (StringUtils.isEmpty(text)) {
+				continue;
+			}
 
-            if (!first && needsSpaceBefore(text)) {
-                runs.add(new Run(RunType.TEXT, " "));
-            }
+			if (!first && needsSpaceBefore(text)) {
+				runs.add(new Run(RunType.TEXT, " "));
+			}
 
-            first = false;
+			first = false;
 
-            RunType type = taggedText.getType() == TagEnum.name ? RunType.BOLD_ITALIC : RunType.BOLD;
+			RunType type = taggedText.getType() == TagEnum.name ? RunType.BOLD_ITALIC : RunType.BOLD;
 
-            runs.add(new Run(type, text));
-        }
+			runs.add(new Run(type, text));
+		}
 
-        return runs;
-    }
+		return runs;
+	}
 
-    private List<Run> synonymRuns(PrintPubSynonymDTO synonym, String prefix, String suffix, boolean newLine) {
+	private List<Run> synonymRuns(PrintPubSynonymDTO synonym, String prefix, String suffix, boolean newLine) {
 
-        List<Run> runs = new ArrayList<>();
+		List<Run> runs = new ArrayList<>();
 
-        runs.add(new Run(newLine ? RunType.LINE_BREAK : RunType.TEXT, newLine ? "" : " "));
+		runs.add(new Run(newLine ? RunType.LINE_BREAK : RunType.TEXT, newLine ? "" : " "));
 
-        runs.add(new Run(RunType.TEXT, prefix));
+		runs.add(new Run(RunType.TEXT, prefix));
 
-        runs.add(new Run(RunType.REFERENCE_MARK, synonym.nameDTO.uuid));
-        List<Run> nameRuns = runsFromTaggedName(synonym.nameDTO.taggedNameList, FULL_TITLE_CACHE_TAGS);
+		runs.add(new Run(RunType.REFERENCE_MARK, synonym.nameDTO.uuid));
+		List<Run> nameRuns = runsFromTaggedName(synonym.nameDTO.taggedNameList, FULL_TITLE_CACHE_TAGS);
 
-        if (!nameRuns.isEmpty()) {
-            runs.addAll(nameRuns);
-        } else if (StringUtils.isNotBlank(synonym.titleCache)) {
-            runs.add(new Run(RunType.TEXT, synonym.titleCache.trim()));
-        }
+		if (!nameRuns.isEmpty()) {
+			runs.addAll(nameRuns);
+		} else if (StringUtils.isNotBlank(synonym.titleCache)) {
+			runs.add(new Run(RunType.TEXT, synonym.titleCache.trim()));
+		}
 
-        if (StringUtils.isNotEmpty(suffix)) {
-            runs.add(new Run(RunType.TEXT, suffix));
-        }
+		if (StringUtils.isNotEmpty(suffix)) {
+			runs.add(new Run(RunType.TEXT, suffix));
+		}
 
-        return runs;
-    }
+		return runs;
+	}
 
-    private boolean hasValues(List<String> values) {
-        return values != null && values.stream().anyMatch(StringUtils::isNotBlank);
-    }
+	private boolean hasValues(List<String> values) {
+		return values != null && values.stream().anyMatch(StringUtils::isNotBlank);
+	}
 
-    private void appendAppendixField(StringBuilder line, String label, List<String> values) {
+	private void appendAppendixField(StringBuilder line, String label, List<String> values) {
 
-        if (line.length() > 0) {
-            line.append("; ");
-        }
+		if (line.length() > 0) {
+			line.append("; ");
+		}
 
-        line.append(label).append(": ").append(joinValuesOrDash(values));
-    }
+		line.append(label).append(": ").append(joinValuesOrDash(values));
+	}
 
-    private String joinValuesOrDash(List<String> values) {
+	private String joinValuesOrDash(List<String> values) {
 
-        if (values == null) {
-            return "--";
-        }
+		if (values == null) {
+			return "--";
+		}
 
-        String result = values.stream().filter(StringUtils::isNotBlank).map(String::trim)
-                .collect(Collectors.joining(", "));
+		String result = values.stream().filter(StringUtils::isNotBlank).map(String::trim)
+				.collect(Collectors.joining(", "));
 
-        return result.isEmpty() ? "--" : result;
-    }
+		return result.isEmpty() ? "--" : result;
+	}
 
-    private boolean needsSpaceBefore(String text) {
-        return !text.startsWith(",") && !text.startsWith(";") && !text.startsWith(")");
-    }
+	private boolean needsSpaceBefore(String text) {
+		return !text.startsWith(",") && !text.startsWith(";") && !text.startsWith(")");
+	}
 
-    private record SynonymModel(List<Run> runs, List<IPrintPubDocumentElement> additionalElements) {
+	private record SynonymModel(List<Run> runs, List<IPrintPubDocumentElement> additionalElements) {
 
-        private SynonymModel {
-            runs = List.copyOf(runs);
-            additionalElements = List.copyOf(additionalElements);
-        }
-    }
+		private SynonymModel {
+			runs = List.copyOf(runs);
+			additionalElements = List.copyOf(additionalElements);
+		}
+	}
 }

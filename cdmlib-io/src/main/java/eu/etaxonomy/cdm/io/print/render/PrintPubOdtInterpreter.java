@@ -40,237 +40,260 @@ import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement;
  */
 public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
 
-    private final OdfTextDocument document;
-    private final OdfContentDom contentDom;
-    private final OdfElement textRoot;
+	private final OdfTextDocument document;
+	private final OdfContentDom contentDom;
+	private final OdfElement textRoot;
 
-    public PrintPubOdtInterpreter() throws Exception {
-        this.document = OdfTextDocument.newTextDocument();
-        this.contentDom = document.getContentDom();
-        this.textRoot = (OdfElement) contentDom.getElementsByTagName("office:text").item(0);
+	public PrintPubOdtInterpreter() throws Exception {
+		this.document = OdfTextDocument.newTextDocument();
+		this.contentDom = document.getContentDom();
+		this.textRoot = (OdfElement) contentDom.getElementsByTagName("office:text").item(0);
 
-        ensureStyles();
-    }
+		ensureStyles();
+	}
 
-    private void ensureStyles() {
+	private void ensureStyles() {
 
-        // ---------- TEXT STYLES ----------
-        OdfStyle bold = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Text);
-        bold.setStyleNameAttribute("PrintPubBold");
-        bold.setProperty(OdfTextProperties.FontWeight, "bold");
+		// ---------- TEXT STYLES ----------
+		OdfStyle bold = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Text);
+		bold.setStyleNameAttribute("PrintPubBold");
+		bold.setProperty(OdfTextProperties.FontWeight, "bold");
 
-        OdfStyle italic = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Text);
-        italic.setStyleNameAttribute("PrintPubItalic");
-        italic.setProperty(OdfTextProperties.FontStyle, "italic");
+		OdfStyle italic = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Text);
+		italic.setStyleNameAttribute("PrintPubItalic");
+		italic.setProperty(OdfTextProperties.FontStyle, "italic");
 
-        OdfStyle boldItalic = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Text);
+		OdfStyle boldItalic = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Text);
 
-        boldItalic.setStyleNameAttribute("PrintPubBoldItalic");
-        boldItalic.setProperty(OdfTextProperties.FontWeight, "bold");
-        boldItalic.setProperty(OdfTextProperties.FontStyle, "italic");
+		boldItalic.setStyleNameAttribute("PrintPubBoldItalic");
+		boldItalic.setProperty(OdfTextProperties.FontWeight, "bold");
+		boldItalic.setProperty(OdfTextProperties.FontStyle, "italic");
 
-        // ---------- PARAGRAPH STYLES ----------
-        OdfStyle body = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
-        body.setStyleNameAttribute("PrintPubBody");
-        body.setProperty(OdfParagraphProperties.MarginLeft, "0cm");
+		// ---------- PARAGRAPH STYLES ----------
+		OdfStyle body = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+		body.setStyleNameAttribute("PrintPubBody");
+		body.setProperty(OdfParagraphProperties.MarginLeft, "0cm");
 
-        OdfStyle indent = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
-        indent.setStyleNameAttribute("PrintPubIndent");
-        indent.setProperty(OdfParagraphProperties.MarginLeft, "0.8cm");
+		OdfStyle indent = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+		indent.setStyleNameAttribute("PrintPubIndent");
+		indent.setProperty(OdfParagraphProperties.MarginLeft, "0.8cm");
 
-        OdfStyle pageBreak = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
-        pageBreak.setStyleNameAttribute("PrintPubPageBreak");
-        pageBreak.setProperty(OdfParagraphProperties.BreakBefore, "page");
+		OdfStyle pageBreak = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+		pageBreak.setStyleNameAttribute("PrintPubPageBreak");
+		pageBreak.setProperty(OdfParagraphProperties.BreakBefore, "page");
 
-        // ---------- HEADINGS ----------
-        int[] headingSizes = new int[] { 20, 16, 14, 12, 11, 10 };
+		// ---------- HEADINGS ----------
+		int[] headingSizes = new int[] { 20, 16, 14, 12, 11, 10 };
 
-        for (int level = 1; level <= 6; level++) {
+		for (int level = 1; level <= 6; level++) {
 
-            OdfStyle heading = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
-            heading.setStyleNameAttribute("PrintPubHeading" + level);
-            heading.setProperty(OdfTextProperties.FontWeight, "bold");
-            heading.setProperty(OdfTextProperties.FontSize, headingSizes[level - 1] + "pt");
-            heading.setProperty(OdfParagraphProperties.MarginTop, "0.4cm");
-            heading.setProperty(OdfParagraphProperties.MarginBottom, "0.2cm");
-        }
+			OdfStyle heading = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+			heading.setStyleNameAttribute("PrintPubHeading" + level);
+			heading.setProperty(OdfTextProperties.FontWeight, "bold");
+			heading.setProperty(OdfTextProperties.FontSize, headingSizes[level - 1] + "pt");
+			heading.setProperty(OdfParagraphProperties.MarginTop, "0.4cm");
+			heading.setProperty(OdfParagraphProperties.MarginBottom, "0.2cm");
+		}
 
-        // ---------- TAXON NAME STYLE ----------
+		// ---------- TAXON NAME STYLE ----------
 
-        createTaxonNameStyle("PrintPubTaxonNameHigher", "18pt", "0.4cm", "0.15cm");
-        createTaxonNameStyle("PrintPubTaxonNameIntermediate", "16pt", "0.3cm", "0.1cm");
-        createTaxonNameStyle("PrintPubTaxonNameLower", "14pt", "0.2cm", "0.05cm");
-    }
+		createTaxonNameStyle("PrintPubTaxonNameHigher", "18pt", "0.4cm", "0.15cm");
+		createTaxonNameStyle("PrintPubTaxonNameIntermediate", "16pt", "0.3cm", "0.1cm");
+		createTaxonNameStyle("PrintPubTaxonNameLower", "14pt", "0.2cm", "0.05cm");
 
-    private void createTaxonNameStyle(String styleName, String fontSize, String marginTop, String marginBottom) {
+		// ---------- BIBLIOGRAPHY ----------
 
-        OdfStyle style = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+		OdfStyle bibliography = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
 
-        style.setStyleNameAttribute(styleName);
-        style.setProperty(OdfTextProperties.FontSize, fontSize);
-        style.setProperty(OdfParagraphProperties.MarginTop, marginTop);
-        style.setProperty(OdfParagraphProperties.MarginBottom, marginBottom);
-    }
+		bibliography.setStyleNameAttribute("PrintPubBibliography");
+		bibliography.setProperty(OdfParagraphProperties.MarginLeft, "1cm");
+		bibliography.setProperty(OdfParagraphProperties.TextIndent, "-1cm");
 
-    @Override
-    public void visit(IPrintPubDocumentElement element) {
+		// ---------- BIBLIOGRAPHY ----------
 
-        if (element instanceof PrintPubSectionHeaderElement) {
-            renderSectionHeader((PrintPubSectionHeaderElement) element);
+		OdfStyle factGroup = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
 
-        } else if (element instanceof PrintPubParagraphElement) {
-            renderParagraph((PrintPubParagraphElement) element);
+		factGroup.setStyleNameAttribute("PrintPubFactGroup");
+		factGroup.setProperty(OdfParagraphProperties.MarginLeft, "0.5cm");
+		factGroup.setProperty(OdfParagraphProperties.TextIndent, "-0.5cm");
+	}
 
-        } else if (element instanceof PrintPubLabeledTextElement) {
-            renderLabeledText((PrintPubLabeledTextElement) element);
+	private void createTaxonNameStyle(String styleName, String fontSize, String marginTop, String marginBottom) {
 
-        } else if (element instanceof PrintPubPageBreakElement) {
-            renderPageBreak();
+		OdfStyle style = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
 
-        } else if (element instanceof PrintPubTextRunElement) {
-            renderTextRun((PrintPubTextRunElement) element);
+		style.setStyleNameAttribute(styleName);
+		style.setProperty(OdfTextProperties.FontSize, fontSize);
+		style.setProperty(OdfParagraphProperties.MarginTop, marginTop);
+		style.setProperty(OdfParagraphProperties.MarginBottom, marginBottom);
+	}
 
-        }
-    }
+	@Override
+	public void visit(IPrintPubDocumentElement element) {
 
-    // =============================
-    // Rendering helpers
-    // =============================
+		if (element instanceof PrintPubSectionHeaderElement) {
+			renderSectionHeader((PrintPubSectionHeaderElement) element);
 
-    private void renderSectionHeader(PrintPubSectionHeaderElement header) {
+		} else if (element instanceof PrintPubParagraphElement) {
+			renderParagraph((PrintPubParagraphElement) element);
 
-        int level = Math.max(1, Math.min(6, header.getLevel()));
+		} else if (element instanceof PrintPubLabeledTextElement) {
+			renderLabeledText((PrintPubLabeledTextElement) element);
 
-        TextHElement h = contentDom.newOdfElement(TextHElement.class);
-        h.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubHeading" + level);
-        h.setAttribute("text:outline-level", Integer.toString(level));
-        h.setTextContent(header.getTitle());
+		} else if (element instanceof PrintPubPageBreakElement) {
+			renderPageBreak();
 
-        textRoot.appendChild(h);
-    }
+		} else if (element instanceof PrintPubTextRunElement) {
+			renderTextRun((PrintPubTextRunElement) element);
 
-    private void renderParagraph(PrintPubParagraphElement para) {
+		}
+	}
 
-        TextPElement p = contentDom.newOdfElement(TextPElement.class);
-        p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name",
-                para.isIndented() ? "PrintPubIndent" : "PrintPubBody");
-        p.setTextContent(para.getText());
+	// =============================
+	// Rendering helpers
+	// =============================
 
-        textRoot.appendChild(p);
-    }
+	private void renderSectionHeader(PrintPubSectionHeaderElement header) {
 
-    private void renderLabeledText(PrintPubLabeledTextElement labeled) {
+		int level = Math.max(1, Math.min(6, header.getLevel()));
 
-        TextPElement p = contentDom.newOdfElement(TextPElement.class);
-        p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBody");
+		TextHElement h = contentDom.newOdfElement(TextHElement.class);
+		h.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubHeading" + level);
+		h.setAttribute("text:outline-level", Integer.toString(level));
+		h.setTextContent(header.getTitle());
 
-        TextSpanElement label = contentDom.newOdfElement(TextSpanElement.class);
-        label.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBold");
-        label.setTextContent(labeled.getLabel() + ": ");
+		textRoot.appendChild(h);
+	}
 
-        TextSpanElement value = contentDom.newOdfElement(TextSpanElement.class);
-        value.setTextContent(labeled.getText());
+	private void renderParagraph(PrintPubParagraphElement para) {
 
-        p.appendChild(label);
-        p.appendChild(value);
+		TextPElement p = contentDom.newOdfElement(TextPElement.class);
+		p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name",
+				para.isIndented() ? "PrintPubIndent" : "PrintPubBody");
+		p.setTextContent(para.getText());
 
-        textRoot.appendChild(p);
-    }
+		textRoot.appendChild(p);
+	}
 
-    private void renderPageBreak() {
+	private void renderLabeledText(PrintPubLabeledTextElement labeled) {
 
-        TextPElement p = contentDom.newOdfElement(TextPElement.class);
-        p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubPageBreak");
-        textRoot.appendChild(p);
-    }
+		TextPElement p = contentDom.newOdfElement(TextPElement.class);
+		p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBody");
 
-    private void renderTextRun(PrintPubTextRunElement element) {
+		TextSpanElement label = contentDom.newOdfElement(TextSpanElement.class);
+		label.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBold");
+		label.setTextContent(labeled.getLabel() + ": ");
 
-        TextPElement paragraph = contentDom.newOdfElement(TextPElement.class);
+		TextSpanElement value = contentDom.newOdfElement(TextSpanElement.class);
+		value.setTextContent(labeled.getText());
 
-        String styleName;
+		p.appendChild(label);
+		p.appendChild(value);
 
-        switch (element.getRole()) {
-        case TAXON_NAME_HIGHER:
-            styleName = "PrintPubTaxonNameHigher";
-            break;
+		textRoot.appendChild(p);
+	}
 
-        case TAXON_NAME_INTERMEDIATE:
-            styleName = "PrintPubTaxonNameIntermediate";
-            break;
+	private void renderPageBreak() {
 
-        case TAXON_NAME_LOWER:
-            styleName = "PrintPubTaxonNameLower";
-            break;
+		TextPElement p = contentDom.newOdfElement(TextPElement.class);
+		p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubPageBreak");
+		textRoot.appendChild(p);
+	}
 
-        case FACT_GROUP:
-        case BODY:
-        default:
-            styleName = "PrintPubBody";
-            break;
-        }
+	private void renderTextRun(PrintPubTextRunElement element) {
 
-        paragraph.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", styleName);
+		TextPElement paragraph = contentDom.newOdfElement(TextPElement.class);
 
-        if (element.getLabel() != null) {
-            TextSpanElement label = contentDom.newOdfElement(TextSpanElement.class);
-            label.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBold");
-            label.setTextContent(element.getLabel() + ": ");
-            paragraph.appendChild(label);
-        }
+		String styleName;
 
-        for (PrintPubTextRunElement.Run run : element.getRuns()) {
+		switch (element.getRole()) {
+		case TAXON_NAME_HIGHER:
+			styleName = "PrintPubTaxonNameHigher";
+			break;
 
-            if (run.type == PrintPubTextRunElement.RunType.LINE_BREAK) {
-                paragraph.appendChild(contentDom.newOdfElement(TextLineBreakElement.class));
-                continue;
-            } else if (run.type == PrintPubTextRunElement.RunType.REFERENCE_MARK) {
-                TextReferenceMarkElement mark = new TextReferenceMarkElement(contentDom);
-                mark.setTextNameAttribute(run.uuid.toString());
-                paragraph.appendChild(mark);
-                continue;
-            } else if (run.type == PrintPubTextRunElement.RunType.PAGE_REFERENCE) {
-                TextReferenceRefElement ref = new TextReferenceRefElement(contentDom);
-                ref.setTextRefNameAttribute(run.uuid.toString());
-                ref.setTextReferenceFormatAttribute("page");
-                ref.setTextContent("1"); // placeholder, freshly computed when opening / printing
-                textRoot.appendChild(ref);
-            }
+		case TAXON_NAME_INTERMEDIATE:
+			styleName = "PrintPubTaxonNameIntermediate";
+			break;
 
-            TextSpanElement span = contentDom.newOdfElement(TextSpanElement.class);
+		case TAXON_NAME_LOWER:
+			styleName = "PrintPubTaxonNameLower";
+			break;
 
-            if (run.type == PrintPubTextRunElement.RunType.BOLD) {
-                span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBold");
-            } else if (run.type == PrintPubTextRunElement.RunType.ITALIC
-                    || run.type == PrintPubTextRunElement.RunType.CDM_REFERENCE) {
-                span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubItalic");
-            } else if (run.type == PrintPubTextRunElement.RunType.BOLD_ITALIC) {
-                span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBoldItalic");
-            }
+		case FACT_GROUP:
+			styleName = "PrintPubFactGroup";
+			break;
 
-            span.setTextContent(run.text);
-            paragraph.appendChild(span);
-        }
+		case BIBLIOGRAPHY:
+			styleName = "PrintPubBibliography";
+			break;
 
-        textRoot.appendChild(paragraph);
-    }
+		case BODY:
+		default:
+			styleName = "PrintPubBody";
+			break;
+		}
 
-    // =============================
-    // Output
-    // =============================
+		paragraph.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", styleName);
 
-    @Override
-    public byte[] getResultBytes() {
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            document.save(out);
-            return out.toByteArray();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to serialize ODT document", e);
-        }
-    }
+		if (element.getLabel() != null) {
+			TextSpanElement label = contentDom.newOdfElement(TextSpanElement.class);
+			label.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBold");
+			label.setTextContent(element.getLabel() + ": ");
+			paragraph.appendChild(label);
+		}
 
-    @Override
-    public String getTimestampedFileName() {
-        return "printpub_" + System.currentTimeMillis() + ".odt";
-    }
+		for (PrintPubTextRunElement.Run run : element.getRuns()) {
+
+			if (run.type == PrintPubTextRunElement.RunType.LINE_BREAK) {
+				paragraph.appendChild(contentDom.newOdfElement(TextLineBreakElement.class));
+				continue;
+			} else if (run.type == PrintPubTextRunElement.RunType.REFERENCE_MARK) {
+				TextReferenceMarkElement mark = new TextReferenceMarkElement(contentDom);
+				mark.setTextNameAttribute(run.uuid.toString());
+				paragraph.appendChild(mark);
+				continue;
+			} else if (run.type == PrintPubTextRunElement.RunType.PAGE_REFERENCE) {
+				TextReferenceRefElement ref = new TextReferenceRefElement(contentDom);
+				ref.setTextRefNameAttribute(run.uuid.toString());
+				ref.setTextReferenceFormatAttribute("page");
+				ref.setTextContent("1"); // placeholder, freshly computed when opening / printing
+				textRoot.appendChild(ref);
+			}
+
+			TextSpanElement span = contentDom.newOdfElement(TextSpanElement.class);
+
+			if (run.type == PrintPubTextRunElement.RunType.BOLD) {
+				span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBold");
+			} else if (run.type == PrintPubTextRunElement.RunType.ITALIC
+					|| run.type == PrintPubTextRunElement.RunType.CDM_REFERENCE) {
+				span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubItalic");
+			} else if (run.type == PrintPubTextRunElement.RunType.BOLD_ITALIC) {
+				span.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBoldItalic");
+			}
+
+			span.setTextContent(run.text);
+			paragraph.appendChild(span);
+		}
+
+		textRoot.appendChild(paragraph);
+	}
+
+	// =============================
+	// Output
+	// =============================
+
+	@Override
+	public byte[] getResultBytes() {
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+			document.save(out);
+			return out.toByteArray();
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to serialize ODT document", e);
+		}
+	}
+
+	@Override
+	public String getTimestampedFileName() {
+		return "printpub_" + System.currentTimeMillis() + ".odt";
+	}
 }
