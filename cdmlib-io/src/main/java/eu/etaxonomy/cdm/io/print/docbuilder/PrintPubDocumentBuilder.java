@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.io.print.docmodel.PrintPubPageBreakElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubParagraphElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubSectionHeaderElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement;
+import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement.PrintPubTextRole;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement.Run;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement.RunType;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubFactDTO;
@@ -315,7 +316,7 @@ public class PrintPubDocumentBuilder {
 			String label = StringUtils.defaultIfBlank(key.getLabel(), "Facts");
 
 			elements.add(new PrintPubTextRunElement(label, combinedRuns,
-					PrintPubTextRunElement.PrintPubTextRole.FACT_GROUP));
+					request.indentFacts() ? PrintPubTextRole.FACT_GROUP_INDENT : PrintPubTextRole.FACT_GROUP));
 		}
 
 		return elements;

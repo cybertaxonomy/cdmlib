@@ -21,8 +21,8 @@ import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.out.TaxonTreeExportStateBase;
 import eu.etaxonomy.cdm.io.print.docbuilder.PrintPubDocumentRequest;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubReferenceEntryDTO;
-import eu.etaxonomy.cdm.io.print.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubReferenceEntryDTO.PrintPubReferenceSourceType;
+import eu.etaxonomy.cdm.io.print.dto.PrintPubTaxonSummaryDTO;
 import eu.etaxonomy.cdm.io.print.model.PrintPubDocumentModel;
 import eu.etaxonomy.cdm.io.print.render.PrintPubExportResultProcessor;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -246,7 +246,7 @@ public class PrintPubExportState extends TaxonTreeExportStateBase<PrintPubExport
                 .includeAppendix(config.isAppendIdentifierList()).includeEmptyIds(config.isIncludeEmptyIds())
                 .includeWfoId(config.isIncludeWfoId()).includeIpniId(config.isIncludeIpniId())
                 .includeProtologueUris(config.isIncludeProtologueUris()).featureSortMode(config.getFeatureSortMode())
-                .factSortMode(config.getFactSortMode()).build();
+                .factSortMode(config.getFactSortMode()).indentFacts(config.isIndentFacts()).build();
     }
 
 }

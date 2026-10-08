@@ -219,8 +219,12 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
 			styleName = "PrintPubTaxonNameLower";
 			break;
 
-		case FACT_GROUP:
+		case FACT_GROUP_INDENT:
 			styleName = "PrintPubFactGroup";
+			break;
+
+		case FACT_GROUP:
+			styleName = "PrintPubBody";
 			break;
 
 		case BIBLIOGRAPHY:

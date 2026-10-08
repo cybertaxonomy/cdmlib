@@ -268,4 +268,14 @@ public class PrintPubExportConfigurator
     public void setMonitorNames(boolean monitorNameLabels) {
         this.monitorNameLabels = monitorNameLabels;
     }
+
+	private boolean indentFacts;
+
+	public boolean isIndentFacts() {
+		return indentFacts;
+	}
+
+	public void setIndentFacts(boolean indentFacts) {
+		this.indentFacts = indentFacts;
+	}
 }

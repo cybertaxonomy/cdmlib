@@ -37,7 +37,8 @@ public record PrintPubDocumentRequest(
         boolean includeEmptyIds,
         boolean includeWfoId,
         boolean includeIpniId,
-        boolean includeProtologueUris) {
+        boolean includeProtologueUris,
+        boolean indentFacts) {
 
     public PrintPubDocumentRequest {
 
@@ -100,6 +101,8 @@ public record PrintPubDocumentRequest(
         private boolean includeWfoId;
         private boolean includeIpniId;
         private boolean includeProtologueUris;
+
+        private boolean indentFacts;
 
         private FeatureSortMode featureSortMode =
                 FeatureSortMode.ALPHABETICAL;
@@ -203,29 +206,23 @@ public record PrintPubDocumentRequest(
             return this;
         }
 
-        public Builder factSortMode(
-                FactSortMode value) {
+		public Builder factSortMode(FactSortMode value) {
 
             this.factSortMode = value;
+			return this;
+		}
+
+		public Builder indentFacts(boolean value) {
+		    this.indentFacts = value;
             return this;
         }
 
         public PrintPubDocumentRequest build() {
 
-            return new PrintPubDocumentRequest(
-                    documentTitle,
-                    taxa,
-                    bibliography,
-                    includeSynonyms,
-                    includeSynonymConceptReferences,
-                    oneLinePerHomotypicGroup,
-                    includeScientificNameIndex,
-                    includeCommonNameIndex,
-                    includeAppendix,
-                    includeEmptyIds,
-                    includeWfoId,
-                    includeIpniId,
-                    includeProtologueUris);
+			return new PrintPubDocumentRequest(documentTitle, taxa, bibliography, includeSynonyms,
+					includeSynonymConceptReferences, oneLinePerHomotypicGroup, includeScientificNameIndex,
+					includeCommonNameIndex, includeAppendix, includeEmptyIds, includeWfoId, includeIpniId,
+					includeProtologueUris, indentFacts);
         }
     }
 }

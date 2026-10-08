@@ -46,6 +46,7 @@ public class PrintPubTextRunElement implements IPrintPubDocumentElement {
         TAXON_NAME_INTERMEDIATE,
         TAXON_NAME_LOWER,
         FACT_GROUP,
+        FACT_GROUP_INDENT,
         BIBLIOGRAPHY
     }
 
