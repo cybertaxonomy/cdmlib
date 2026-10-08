@@ -4,6 +4,5 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2011.10.17 at 04:06:44 PM CEST 
 //
-
 @jakarta.xml.bind.annotation.XmlSchema(namespace = "http://rs.tdwg.org/dwc/text/", elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package eu.etaxonomy.cdm.io.dwca.jaxb;

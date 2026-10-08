@@ -4,15 +4,13 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2011.10.17 at 04:06:44 PM CEST 
 //
-
-
 package eu.etaxonomy.cdm.io.dwca.jaxb;
 
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.annotation.XmlElementDecl;
 import jakarta.xml.bind.annotation.XmlRegistry;
-import javax.xml.namespace.QName;
 
+import javax.xml.namespace.QName;
 
 /**
  * This object contains factory methods for each 
