@@ -13,7 +13,6 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.List;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;

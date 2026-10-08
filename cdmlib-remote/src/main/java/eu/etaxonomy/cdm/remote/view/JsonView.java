@@ -23,12 +23,12 @@ import org.springframework.web.servlet.View;
 
 import eu.etaxonomy.cdm.opt.config.DataSourceProperties;
 import eu.etaxonomy.cdm.remote.json.JsonUtil;
+
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.xml.XMLSerializer;
-
 
 public class JsonView extends BaseView implements View {
 

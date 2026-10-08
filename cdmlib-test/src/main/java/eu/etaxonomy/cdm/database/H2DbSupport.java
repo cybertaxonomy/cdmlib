@@ -3,7 +3,6 @@ package eu.etaxonomy.cdm.database;
 /**
  * Based on http://code.google.com/p/java-tester/source/browse/trunk/src/main/java/org/jtester/unitils/database/H2DbSupport.java
  */
-
 import java.util.Set;
 
 import org.unitils.core.dbsupport.DbSupport;

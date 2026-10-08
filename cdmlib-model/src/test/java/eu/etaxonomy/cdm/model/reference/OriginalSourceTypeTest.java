@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.reference;
 
 import static org.junit.Assert.assertSame;
 
-
 import org.junit.Before;
 import org.junit.Test;
 

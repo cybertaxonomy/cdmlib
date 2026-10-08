@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.persistence.dao.molecular;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
-
 /**
  * @author pplitzner
  * @since 11.03.2014

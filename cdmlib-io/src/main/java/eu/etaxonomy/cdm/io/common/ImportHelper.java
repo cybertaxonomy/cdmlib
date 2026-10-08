@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.lang.reflect.InvocationTargetException;
@@ -38,6 +37,7 @@ import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
+
 /**
  * @author a.mueller
  *

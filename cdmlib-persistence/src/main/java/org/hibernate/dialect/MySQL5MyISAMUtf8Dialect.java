@@ -6,13 +6,10 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package org.hibernate.dialect;
 
 import org.hibernate.mapping.Index;
 import org.hibernate.tool.schema.spi.Exporter;
-
-
 
 /**
  *  Extends MySQL5InnoDBDialect and sets the default charset to be UTF-8

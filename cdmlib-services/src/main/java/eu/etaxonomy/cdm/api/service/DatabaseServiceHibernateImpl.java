@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.sql.Connection;
@@ -39,8 +38,6 @@ import eu.etaxonomy.cdm.database.H2Mode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
-
-
 
 /**
  * Implementation of service which provides functionality to directly access database

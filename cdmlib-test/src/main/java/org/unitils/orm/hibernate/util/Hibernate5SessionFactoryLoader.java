@@ -30,7 +30,6 @@ import org.unitils.orm.common.util.OrmConfig;
 import org.unitils.orm.common.util.OrmPersistenceUnitLoader;
 import org.unitils.orm.hibernate.Hibernate5Module;
 
-
 //todo javadoc
 public class Hibernate5SessionFactoryLoader implements OrmPersistenceUnitLoader<SessionFactory, Configuration, OrmConfig> {
 

@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
-
 public interface IDescriptiveDataSetService extends IIdentifiableEntityService<DescriptiveDataSet> {
 	/**
 	 * Returns a Map of descriptions each with the description elements that match

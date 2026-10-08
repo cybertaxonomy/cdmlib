@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
+
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 

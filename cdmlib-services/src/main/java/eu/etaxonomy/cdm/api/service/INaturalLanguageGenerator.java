@@ -7,8 +7,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.term.TermTree;
 
-
-
 /**
  * Interface for Natural Language generation 
  * @author m.venin

@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
-
 /**
  * @author a.mueller
  * @since 25.06.2017

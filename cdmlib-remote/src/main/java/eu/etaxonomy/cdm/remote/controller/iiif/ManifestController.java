@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import de.digitalcollections.iiif.model.jackson.IiifObjectMapper;
-import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
 import eu.etaxonomy.cdm.api.filter.TaxonOccurrenceRelationType;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -50,6 +48,9 @@ import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
+
+import de.digitalcollections.iiif.model.jackson.IiifObjectMapper;
+import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
 import io.swagger.annotations.Api;
 
 /**

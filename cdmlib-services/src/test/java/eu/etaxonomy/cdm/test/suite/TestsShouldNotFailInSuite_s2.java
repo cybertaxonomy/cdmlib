@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.test.suite;
 
 import org.junit.runner.RunWith;
@@ -14,8 +13,6 @@ import org.junit.runners.Suite;
 
 import eu.etaxonomy.cdm.api.service.NameServiceImplTest;
 import eu.etaxonomy.cdm.facade.DerivedUnitFacadeTest;
-
-
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(

@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.format.description;
 
 import java.util.List;
 
-
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;

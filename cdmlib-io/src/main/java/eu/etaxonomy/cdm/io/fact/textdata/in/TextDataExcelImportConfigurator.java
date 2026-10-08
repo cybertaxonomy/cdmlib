@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.fact.textdata.in;
 
-import eu.etaxonomy.cdm.common.URI;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.fact.in.FactExcelImportConfiguratorBase;

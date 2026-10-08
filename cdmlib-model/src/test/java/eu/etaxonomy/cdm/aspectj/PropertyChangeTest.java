@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

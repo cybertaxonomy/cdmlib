@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.MapKeyJoinColumn;
@@ -23,7 +24,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;

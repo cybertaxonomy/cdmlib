@@ -13,7 +13,6 @@ import java.util.Optional;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 
-
 /**
  * @author a.kohlbecker
  * @since Jan 15, 2013

@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.ext.dc.DublinCoreSchemaAdapter;
 import eu.etaxonomy.cdm.ext.sru.SruServiceWrapper;
 import eu.etaxonomy.cdm.model.reference.Reference;
+
 import io.swagger.annotations.Api;
 
 /**

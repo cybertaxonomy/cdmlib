@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 
-
 /**
  * Generator of natural language descriptions from TaxonDescriptions.
  *

@@ -13,7 +13,6 @@ import org.hibernate.dialect.Dialect;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
-
 /**
  * !! UNTESTED !!
  * Db2 in use with Universal Driver (db2jcc.jar)

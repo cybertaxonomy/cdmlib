@@ -4,13 +4,10 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2009.11.02 at 12:58:05 PM GMT 
 //
-
-
 package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
-
 
 /**
  * <p>Java class for verbType.

@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.format.reference;
 
 import java.io.Serializable;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -18,8 +18,8 @@ import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
-import eu.etaxonomy.cdm.persistence.permission.voter.DescriptionBaseVoter;
 import eu.etaxonomy.cdm.persistence.permission.voter.CdmVote;
+import eu.etaxonomy.cdm.persistence.permission.voter.DescriptionBaseVoter;
 
 /**
  * @author a.kohlbecker

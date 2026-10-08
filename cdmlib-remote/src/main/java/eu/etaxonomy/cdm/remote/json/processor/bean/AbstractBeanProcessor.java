@@ -23,6 +23,7 @@ import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
+
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;

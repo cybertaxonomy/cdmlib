@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
-
 /**
  * Common updater base class for updating schema or terms.
  *

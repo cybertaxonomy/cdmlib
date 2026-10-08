@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.List;
 
-
 import org.hibernate.collection.internal.PersistentMap;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 

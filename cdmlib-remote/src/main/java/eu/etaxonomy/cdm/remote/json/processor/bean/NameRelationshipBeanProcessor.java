@@ -10,9 +10,10 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
 
 /**
  * @author a.kohlbecker

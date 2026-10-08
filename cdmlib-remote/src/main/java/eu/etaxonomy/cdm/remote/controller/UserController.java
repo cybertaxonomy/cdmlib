@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.model.permission.User;
+
+import io.swagger.annotations.Api;
 
 /**
  * @author a.kohlbecker

@@ -10,7 +10,6 @@ import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 import eu.etaxonomy.cdm.model.name.Rank;
 
-
 public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvNameExportState>{
 
     private static final long serialVersionUID = 412364298450440297L;

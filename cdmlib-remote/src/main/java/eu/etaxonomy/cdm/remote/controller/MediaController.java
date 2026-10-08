@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.remote.exception.NoRecordsMatchException;
+
 import io.swagger.annotations.Api;
 
 /**

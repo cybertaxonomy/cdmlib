@@ -12,6 +12,7 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 

@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.INameMatchingDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dto.NameMatchingParts;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+
 /**
  * This class implements name matching according to the algorithm built by Tony Rees.
  * It employs a custom Modified Damerau-Levenshtein Distance algorithm to calculate the

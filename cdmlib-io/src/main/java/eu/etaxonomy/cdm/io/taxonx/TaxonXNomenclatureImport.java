@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
-
 /**
  * @author a.mueller
  * @since 29.07.2008

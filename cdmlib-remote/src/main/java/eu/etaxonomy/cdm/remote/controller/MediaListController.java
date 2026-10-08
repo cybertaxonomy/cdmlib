@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.model.media.Media;
+
 import io.swagger.annotations.Api;
 
 /**

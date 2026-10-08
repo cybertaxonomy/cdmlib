@@ -73,6 +73,7 @@ import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.TaxonInformation;
 import eu.etaxonomy.cdm.remote.view.HtmlView;
+
 import io.swagger.annotations.Api;
 
 /**

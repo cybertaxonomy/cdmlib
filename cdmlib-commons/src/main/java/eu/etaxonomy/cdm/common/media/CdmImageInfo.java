@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.common.media;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import eu.etaxonomy.cdm.common.URI;
 
 /**

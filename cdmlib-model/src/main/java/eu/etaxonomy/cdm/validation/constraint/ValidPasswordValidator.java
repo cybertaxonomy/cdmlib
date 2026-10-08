@@ -28,7 +28,6 @@ import org.passay.support.Origin;
 
 import eu.etaxonomy.cdm.validation.annotation.ValidPassword;
 
-
 /**
  * See https://dev.e-taxonomy.eu/redmine/issues/9862
  *

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.ref;
 import java.io.Serializable;
 import java.util.UUID;
 
-
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**

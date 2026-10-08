@@ -24,7 +24,6 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.IHasLink;
 
-
 /**
  * @author a.mueller
  * @since 2013-06-19

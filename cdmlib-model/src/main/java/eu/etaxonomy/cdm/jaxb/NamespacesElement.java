@@ -4,17 +4,15 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2007.12.21 at 08:13:35 PM GMT 
 //
-
-
 package eu.etaxonomy.cdm.jaxb;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
 
 /**
  * <p>Java class for Namespaces complex type.

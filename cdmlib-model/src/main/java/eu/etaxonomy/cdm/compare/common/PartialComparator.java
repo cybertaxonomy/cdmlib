@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.compare.common;
 
 import java.util.Comparator;
 
-
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 

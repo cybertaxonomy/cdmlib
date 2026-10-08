@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.taxon;
 
-
 import java.lang.reflect.Field;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;

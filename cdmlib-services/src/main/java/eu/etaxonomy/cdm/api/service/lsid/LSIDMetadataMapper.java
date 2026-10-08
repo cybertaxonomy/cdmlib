@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.api.service.lsid;
 
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 
-
 /**
  * Class which takes an Identifiable entity of type T and transforms it into
  * an object graph which can be marshalled into an xml document. Classes extending this

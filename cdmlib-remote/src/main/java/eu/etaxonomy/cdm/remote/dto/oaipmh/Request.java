@@ -4,8 +4,6 @@
 // Any modifications to this file will be lost upon recompilation of the source schema.
 // Generated on: 2009.11.02 at 12:58:05 PM GMT
 //
-
-
 package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
 import java.time.ZonedDateTime;
@@ -19,7 +17,6 @@ import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
-
 
 /**
  * Define requestType, indicating the protocol request that

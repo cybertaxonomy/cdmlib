@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.permission;
 
 import java.util.EnumSet;
 import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -19,7 +20,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;

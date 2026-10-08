@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.description;
 
 import static org.junit.Assert.*;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;

@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate;
 
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;

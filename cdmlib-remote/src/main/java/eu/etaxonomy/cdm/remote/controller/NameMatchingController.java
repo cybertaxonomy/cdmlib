@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.NameMatchingResult;
 import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.SingleNameMatchingResult;
 import eu.etaxonomy.cdm.api.service.exception.NameMatchingParserException;
 import eu.etaxonomy.cdm.persistence.dto.NameMatchingParts;
+
 import io.swagger.annotations.Api;
 
 /**

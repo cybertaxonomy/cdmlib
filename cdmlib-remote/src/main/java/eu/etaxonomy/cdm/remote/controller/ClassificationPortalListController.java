@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
+
 import io.swagger.annotations.Api;
 
 /**

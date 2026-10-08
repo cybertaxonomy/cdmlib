@@ -25,15 +25,6 @@ import org.apache.hc.core5.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.digitalcollections.iiif.model.ImageContent;
-import de.digitalcollections.iiif.model.MetadataEntry;
-import de.digitalcollections.iiif.model.MimeType;
-import de.digitalcollections.iiif.model.PropertyValue;
-import de.digitalcollections.iiif.model.enums.ViewingDirection;
-import de.digitalcollections.iiif.model.sharedcanvas.Canvas;
-import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
-import de.digitalcollections.iiif.model.sharedcanvas.Resource;
-import de.digitalcollections.iiif.model.sharedcanvas.Sequence;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
@@ -57,6 +48,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
 import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
+
+import de.digitalcollections.iiif.model.ImageContent;
+import de.digitalcollections.iiif.model.MetadataEntry;
+import de.digitalcollections.iiif.model.MimeType;
+import de.digitalcollections.iiif.model.PropertyValue;
+import de.digitalcollections.iiif.model.enums.ViewingDirection;
+import de.digitalcollections.iiif.model.sharedcanvas.Canvas;
+import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
+import de.digitalcollections.iiif.model.sharedcanvas.Resource;
+import de.digitalcollections.iiif.model.sharedcanvas.Sequence;
 
 /**
  * Factory class for creating iiif manifests.

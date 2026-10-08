@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import eu.etaxonomy.cdm.config.ConfigFileUtil;
+
 import net.sf.ehcache.config.DiskStoreConfiguration;
 
 /**

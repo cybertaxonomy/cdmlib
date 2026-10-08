@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.ITermRepresentation_L10n;
+
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 

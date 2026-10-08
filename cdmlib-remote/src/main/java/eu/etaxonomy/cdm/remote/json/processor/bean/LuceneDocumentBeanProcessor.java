@@ -10,11 +10,11 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
+
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 /**
  * @author Andreas Kohlbecker

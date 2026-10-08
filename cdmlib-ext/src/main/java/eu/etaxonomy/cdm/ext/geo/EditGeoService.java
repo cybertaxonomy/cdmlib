@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.micromata.opengis.kml.v_2_2_0.Kml;
 import eu.etaxonomy.cdm.ext.geo.kml.KmlDocumentBuilder;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -30,6 +29,8 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+
+import de.micromata.opengis.kml.v_2_2_0.Kml;
 
 /**
  * @author a.kohlbecker

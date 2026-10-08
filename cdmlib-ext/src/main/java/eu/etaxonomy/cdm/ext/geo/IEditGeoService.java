@@ -12,9 +12,10 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 
-import de.micromata.opengis.kml.v_2_2_0.Kml;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+
+import de.micromata.opengis.kml.v_2_2_0.Kml;
 
 /**
  * @author a.kohlbecker

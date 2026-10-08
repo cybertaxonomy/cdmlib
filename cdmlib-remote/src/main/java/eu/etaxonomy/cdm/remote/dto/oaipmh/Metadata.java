@@ -4,8 +4,6 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2009.11.02 at 12:58:05 PM GMT 
 //
-
-
 package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,8 +13,8 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
 
 import eu.etaxonomy.cdm.remote.dto.dwc.SimpleDarwinRecord;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 
 /**
  * Metadata must be expressed in XML that complies

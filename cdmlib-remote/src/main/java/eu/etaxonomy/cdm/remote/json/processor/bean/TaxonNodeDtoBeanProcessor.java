@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 

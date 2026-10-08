@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.reference;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;

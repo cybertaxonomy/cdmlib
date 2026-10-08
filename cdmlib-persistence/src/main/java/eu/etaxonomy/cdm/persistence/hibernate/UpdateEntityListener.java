@@ -21,7 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.permission.User;
 
-
 public class UpdateEntityListener implements SaveOrUpdateEventListener {
 
     private static final long serialVersionUID = -3295612929556041686L;

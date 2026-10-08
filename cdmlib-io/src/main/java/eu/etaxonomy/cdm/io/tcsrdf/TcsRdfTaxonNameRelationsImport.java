@@ -11,12 +11,11 @@ package eu.etaxonomy.cdm.io.tcsrdf;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.jena.rdf.model.Model;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Namespace;
 import org.springframework.stereotype.Component;
-
-import org.apache.jena.rdf.model.Model;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;

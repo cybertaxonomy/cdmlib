@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
 
 import java.io.File;
@@ -15,8 +14,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
-import javax.wsdl.xml.WSDLLocator;
 
+import javax.wsdl.xml.WSDLLocator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -12,7 +12,6 @@ import java.util.EnumSet;
 
 import org.junit.Before;
 import org.junit.Test;
-import eu.etaxonomy.cdm.persistence.permission.voter.CdmVote;
 import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -21,6 +20,7 @@ import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
+import eu.etaxonomy.cdm.persistence.permission.voter.CdmVote;
 import eu.etaxonomy.cdm.persistence.permission.voter.RegistrationVoter;
 
 /**

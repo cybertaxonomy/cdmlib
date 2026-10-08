@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**

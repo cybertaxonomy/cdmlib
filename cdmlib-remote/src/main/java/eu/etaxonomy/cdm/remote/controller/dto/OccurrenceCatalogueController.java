@@ -7,6 +7,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 package eu.etaxonomy.cdm.remote.controller.dto;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ import eu.etaxonomy.cdm.remote.dto.common.ErrorResponse;
 import eu.etaxonomy.cdm.remote.dto.occurrencecatalogue.OccurrenceSearch;
 import eu.etaxonomy.cdm.remote.dto.occurrencecatalogue.OccurrenceSearch.OccurrenceSearchResponse;
 import eu.etaxonomy.cdm.remote.view.HtmlView;
+
 import io.swagger.annotations.Api;
 
 /**

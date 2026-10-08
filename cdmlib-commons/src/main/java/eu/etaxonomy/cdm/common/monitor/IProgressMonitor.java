@@ -3,8 +3,6 @@ package eu.etaxonomy.cdm.common.monitor;
 
 import java.io.Serializable;
 
-
-
 /**
  * This progress monitor interface is ad adaptation of the eclipse
  * org.eclipse.core.runtime.IProgressMonitor ;
