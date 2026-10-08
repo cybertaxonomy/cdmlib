@@ -688,6 +688,7 @@ public class FullCoverageDataGenerator {
 
 		TaxonName synName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Synonym syn = Synonym.NewInstance(synName, sec, "123");
+		entitiesToSave.add(syn);
 		taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF);
 		taxon.setDoubtful(true); //#11039
 		handleIdentifiableEntity(syn, entitiesToSave);
