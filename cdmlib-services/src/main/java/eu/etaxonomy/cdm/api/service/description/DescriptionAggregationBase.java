@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -56,6 +55,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import jakarta.persistence.FlushModeType;
 
 /**
  * A common base class to run aggregation tasks on descriptive data.
@@ -617,7 +617,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         }
 
         TransactionStatus txStatus = getTransactionManager().getTransaction(txDef);
-        getSession().setHibernateFlushMode(FlushMode.COMMIT);
+        getSession().setFlushMode(FlushModeType.COMMIT);
 
         return txStatus;
     }

@@ -54,7 +54,7 @@
 	<aspectj.version>1.9.25.1</aspectj.version>            <!-- checked 2022-05 -->
 	<geotools.version>35.1</geotools.version>
     <dozer.version>6.5.2</dozer.version>                <!-- checked 2021-02 -->
-    <jakarta.mail.version>2.0.1</jakarta.mail.version>
+    <jakarta.angus.mail.version>2.0.5</jakarta.angus.mail.version>
     <fop.version>2.11</fop.version>
     <jena.version>4.6.1</jena.version> <!-- 4.7.0 still creates problems with term loading (AnnotationType.UNHANDLED-->
     <doclint>none</doclint>
@@ -1604,8 +1604,7 @@
       <dependency>
         <groupId>com.fasterxml</groupId>
         <artifactId>classmate</artifactId>
-        <version>1.7.3</version>     
-        <!-- checked 2020-08 -->
+        <version>1.7.3</version>
       </dependency>
       <dependency>
         <groupId>jakarta.el</groupId>
@@ -1770,9 +1769,10 @@
       </dependency>
       <dependency>
         <!-- Email functionality (used in cdmlib-services) -->
-          <groupId>com.sun.mail</groupId>
-          <artifactId>jakarta.mail</artifactId>
-          <version>${jakarta.mail.version}</version>
+        <!-- is api and impl, only api you find at jakarta.mail:jakarta.mail-api and :angus-mail is pure implementation -->
+        <groupId>org.eclipse.angus</groupId>
+        <artifactId>jakarta.mail</artifactId>
+        <version>${jakarta.angus.mail.version}</version>
       </dependency>
       <dependency>
         <!-- only needed for PasswordResetService, may be replaced by Thymeleaf, but also needed in TaxEditor cdmlib modul -->

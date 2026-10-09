@@ -8,12 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.service.security;
 
-import jakarta.mail.internet.AddressException;
-
 import org.springframework.mail.MailException;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import eu.etaxonomy.cdm.api.security.AccountCreationRequest;
+import jakarta.mail.internet.AddressException;
 
 /**
  * @author a.kohlbecker
