@@ -201,7 +201,7 @@
 
     <!-- Connection Pooling and jdbc -->
     <dependency>
-      <groupId>org.hibernate</groupId>
+      <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-c3p0</artifactId>
       <scope>test</scope>
     </dependency>

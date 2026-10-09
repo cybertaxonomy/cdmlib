@@ -188,7 +188,7 @@
 
     <!-- Connection Pooling -->
     <dependency>
-      <groupId>org.hibernate</groupId>
+      <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-c3p0</artifactId>
     </dependency>
     
