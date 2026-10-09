@@ -60,7 +60,7 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
     //TODO do we need to add it to JAXB? #4706
     @XmlElementWrapper(name = "IntextReferences", nillable = true)
     @XmlElement(name = "IntextReference")
-    @OneToMany(mappedBy="languageString", fetch=FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(mappedBy="annotation", fetch=FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //  @Merge(MergeMode.ADD_CLONE)
     private Set<IntextReference> intextReferences = new HashSet<>();
