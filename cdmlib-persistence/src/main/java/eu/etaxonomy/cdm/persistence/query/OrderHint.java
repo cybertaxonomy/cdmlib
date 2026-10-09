@@ -11,15 +11,11 @@ package eu.etaxonomy.cdm.persistence.query;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.SortedSetSortField;
-import org.hibernate.Criteria;
-import org.hibernate.NullPrecedence;
-import org.hibernate.criterion.Order;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 
@@ -167,52 +163,6 @@ public class OrderHint implements Serializable {
 
     public boolean isAscending(){
         return sortOrder.isAsc();
-    }
-
-    /**
-     * FIXME document this
-     *
-     * @param criteria
-     * @param criteriaMap
-     */
-    public void add(Criteria criteria, Map<String, Criteria> criteriaMap) {
-        if(getPropertyName().indexOf(".") != -1) {
-            /**
-             * Here we have to work a bit of magic as currently hibernate will
-             * throw an error if we attempt to join the same association twice.
-             *
-             * http://opensource.atlassian.com/projects/hibernate/browse/HHH-879
-             */
-
-            String[] assocObjs = getPropertyName().split("\\.");
-            String path = "";
-            Criteria c = criteria;
-            for(int i = 0; i < assocObjs.length - 1; i++) {
-                path = path + assocObjs[i];
-                if(criteriaMap.get(path) == null) {
-                    c = c.createCriteria(assocObjs[i]);
-                    criteriaMap.put(path, c);
-                } else {
-                    c = criteriaMap.get(path);
-                }
-                path = path + '.';
-            }
-            String propName = assocObjs[assocObjs.length - 1];
-            createOrder(c, propName);
-        } else {
-            String propName = getPropertyName();
-            createOrder(criteria, propName);
-        }
-    }
-
-    private void createOrder(Criteria criteria, String propName) {
-        //order
-        Order order = isAscending() ? Order.asc(propName) : Order.desc(propName);
-        if (this.nullLast != null) {
-            //with JPA Criteria use criteriaBuilder.coalesce() instead to sort 2 columns where the first may have null values (see #10826, https://thorben-janssen.com/hibernate-tips-order-null-criteriaquery/ )
-            order.nulls(  this.nullLast ? NullPrecedence.LAST : NullPrecedence.FIRST);
-        }
-        criteria.addOrder(order);
     }
 
     /**

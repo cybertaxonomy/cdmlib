@@ -34,7 +34,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -49,7 +48,9 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.query.NativeSqlOrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.RandomOrder;
 
 public abstract class DaoBase {
 
@@ -197,28 +198,6 @@ public abstract class DaoBase {
         }
     }
 
-    protected void addPageSizeAndNumber(Criteria criteria, Integer pageSize, Integer pageNumber) {
-        if(pageSize != null) {
-            criteria.setMaxResults(pageSize);
-            if(pageNumber != null) {
-                criteria.setFirstResult(pageNumber * pageSize);
-            } else {
-                criteria.setFirstResult(0);
-            }
-        }
-    }
-
-    protected void addLimitAndStart(Criteria criteria, Integer limit, Integer start) {
-        if(limit != null) {
-            if(start != null) {
-                criteria.setFirstResult(start);
-            } else {
-                criteria.setFirstResult(0);
-            }
-            criteria.setMaxResults(limit);
-        }
-    }
-
     protected void addLimitAndStart(AuditQuery query, Integer limit, Integer start) {
         if(limit != null) {
             if(start != null) {
@@ -227,18 +206,6 @@ public abstract class DaoBase {
                 query.setFirstResult(0);
             }
             query.setMaxResults(limit);
-        }
-    }
-
-    protected void addOrder(Criteria criteria, List<OrderHint> orderHints) {
-
-        if(orderHints != null){
-            Collections.sort(orderHints, new OrderHintComparator());
-
-            Map<String,Criteria> criteriaMap = new HashMap<>();
-            for(OrderHint orderHint : orderHints){
-                orderHint.add(criteria, criteriaMap);
-            }
         }
     }
 
@@ -425,6 +392,13 @@ public abstract class DaoBase {
             return orders;
         }else {
             orderHints.forEach(oh->{
+               if (oh instanceof RandomOrder) {
+                   orders.add(builder.asc(builder.function("rand", Double.class)));
+                   return;
+               }
+               if (oh instanceof NativeSqlOrderHint) {
+                   throw new UnsupportedOperationException("Native SQL order is not supported with JPA Criteria API");
+               }
                String propertyName = oh.getPropertyName();
                String[] props = propertyName.split("\\.");
                Path<?> currentPath = root;
