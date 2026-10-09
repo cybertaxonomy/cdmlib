@@ -1390,6 +1390,12 @@
         <version>${hibernate.version}</version>
       </dependency>
       <dependency>
+        <!-- SchemaExport / hbm2ddl moved out of hibernate-core in Hibernate 6 -->
+        <groupId>org.hibernate.orm</groupId>
+        <artifactId>hibernate-ant</artifactId>
+        <version>${hibernate.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.mchange</groupId>
         <artifactId>c3p0</artifactId>
         <!-- 
