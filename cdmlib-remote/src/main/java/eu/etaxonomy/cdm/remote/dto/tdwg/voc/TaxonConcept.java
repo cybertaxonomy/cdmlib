@@ -11,17 +11,16 @@ package eu.etaxonomy.cdm.remote.dto.tdwg.voc;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.glassfish.jaxb.runtime.CycleRecoverable;
+
+import eu.etaxonomy.cdm.remote.dto.tdwg.Actor;
+import eu.etaxonomy.cdm.remote.dto.tdwg.Concept;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.glassfish.jaxb.runtime.CycleRecoverable;
-
-import eu.etaxonomy.cdm.remote.dto.tdwg.Actor;
-import eu.etaxonomy.cdm.remote.dto.tdwg.Concept;
 
 /**
  * TaxonConcept class for TDWG Ontology mapping.

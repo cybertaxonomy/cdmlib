@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
-import jakarta.xml.bind.ValidationEventHandler;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jaxb.runtime.IDResolver;
@@ -48,6 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import jakarta.xml.bind.ValidationEventHandler;
 
 public class CdmIDResolver extends IDResolver {
 

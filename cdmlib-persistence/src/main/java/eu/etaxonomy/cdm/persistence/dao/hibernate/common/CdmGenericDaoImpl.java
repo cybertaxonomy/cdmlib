@@ -767,8 +767,8 @@ public class CdmGenericDaoImpl
 
 	    List<T> result = new ArrayList<>();
 		Session session = getSession();
-	    @SuppressWarnings("unchecked")
-	    Class<CdmBase> matchClass = (Class<CdmBase>)objectToMatch.getClass();
+	    @SuppressWarnings({ "unchecked", "rawtypes" })
+	    Class<CdmBase> matchClass = (Class)objectToMatch.getClass();
 	    MappingMetamodel metamodel = (MappingMetamodel) session.getSessionFactory().getMetamodel();
 	    EntityPersister entityPersister = metamodel.getEntityDescriptor(matchClass);
 

@@ -361,7 +361,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
         };
 
         // Create the mock with the PersistentCollection interface and the default behavior applied
-        @SuppressWarnings("unchecked")
         T proxy = (T) Mockito.mock(clazz, withSettings()
                 .extraInterfaces(PersistentCollection.class)
                 .defaultAnswer(defaultBehavior));
@@ -405,101 +404,58 @@ public class AssemblerTest extends UnitilsJUnit4 {
     class UninitializedLazyInitializer implements LazyInitializer {
 
         @Override
-        public  boolean isUninitialized() {
-            return true;
-        }
+        public  boolean isUninitialized() {return true;}
 
         @Override
-        public String getEntityName() {
-            // TODO Auto-generated method stub
-            return null;
-        }
+        public String getEntityName() {return null;}
 
         @Override
-        public Serializable getIdentifier() {
-            // TODO Auto-generated method stub
-            return null;
-        }
+        public Serializable getIdentifier() {return null;}
 
         @Override
-        public Object getImplementation() {
-            // TODO Auto-generated method stub
-            return null;
-        }
+        public Object getImplementation() {return null;}
 
         @Override
-        public Class<?> getPersistentClass() {
-            // TODO Auto-generated method stub
-            return null;
-        }
+        public Class<?> getPersistentClass() {return null;}
 
         @Override
-        public SessionImplementor getSession() {
-            // TODO Auto-generated method stub
-            return null;
-        }
+        public SessionImplementor getSession() {return null;}
 
         @Override
-        public void initialize() throws HibernateException {
-            // TODO Auto-generated method stub
-        }
+        public void initialize() throws HibernateException {}
 
         @Override
-        public boolean isUnwrap() {
-            // TODO Auto-generated method stub
-            return false;
-        }
+        public boolean isUnwrap() {return false;}
 
         @Override
-        public void setIdentifier(Serializable arg0) {
-            // TODO Auto-generated method stub
-        }
+        public void setImplementation(Object arg0) {}
 
         @Override
-        public void setImplementation(Object arg0) {
-            // TODO Auto-generated method stub
-        }
-
-        @Override
-        public void setUnwrap(boolean arg0) {
-            // TODO Auto-generated method stub
-        }
+        public void setUnwrap(boolean arg0) {}
 
 		@Override
 		public Object getImplementation(
 		        SharedSessionContractImplementor session)
-				throws HibernateException {
-			// TODO Auto-generated method stub
-			return null;
-		}
+				throws HibernateException {return null;}
 
 		@Override
-		public boolean isReadOnlySettingAvailable() {
-			// TODO Auto-generated method stub
-			return false;
-		}
+		public boolean isReadOnlySettingAvailable() {return false;}
 
 		@Override
-		public boolean isReadOnly() {
-			// TODO Auto-generated method stub
-			return false;
-		}
+		public boolean isReadOnly() {return false;}
 
 		@Override
-		public void setReadOnly(boolean readOnly) {
-			// TODO Auto-generated method stub
-		}
+		public void setReadOnly(boolean readOnly) {}
 
 		@Override
 		public void setSession(
 		        SharedSessionContractImplementor session)
-				throws HibernateException {
-			// TODO Auto-generated method stub
-		}
+				throws HibernateException {}
 
 		@Override
-		public void unsetSession() {
-			// TODO Auto-generated method stub
-		}
+		public void unsetSession() {}
+
+        @Override
+        public void setIdentifier(Object id) {}
     }
 }
