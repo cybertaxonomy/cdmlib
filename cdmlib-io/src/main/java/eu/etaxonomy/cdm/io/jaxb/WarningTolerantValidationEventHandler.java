@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventLocator;
-import javax.xml.bind.helpers.DefaultValidationEventHandler;
+import jakarta.xml.bind.ValidationEvent;
+import jakarta.xml.bind.ValidationEventLocator;
+import jakarta.xml.bind.helpers.DefaultValidationEventHandler;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

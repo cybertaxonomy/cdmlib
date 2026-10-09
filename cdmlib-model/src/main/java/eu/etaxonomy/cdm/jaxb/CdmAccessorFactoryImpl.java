@@ -3,11 +3,11 @@ package eu.etaxonomy.cdm.jaxb;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
-import com.sun.xml.bind.AccessorFactory;
-import com.sun.xml.bind.AccessorFactoryImpl;
-import com.sun.xml.bind.v2.runtime.reflect.Accessor;
+import org.glassfish.jaxb.runtime.AccessorFactory;
+import org.glassfish.jaxb.runtime.AccessorFactoryImpl;
+import org.glassfish.jaxb.runtime.v2.runtime.reflect.Accessor;
 
 public class CdmAccessorFactoryImpl implements AccessorFactory {
 

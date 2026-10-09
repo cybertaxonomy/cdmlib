@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.remote.json;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * The JsonpRedirect is used to mimic redirects when using json ajax requests.

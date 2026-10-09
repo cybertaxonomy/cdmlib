@@ -20,8 +20,9 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
+import jakarta.validation.ConstraintViolation;
+
 import javax.sql.DataSource;
-import javax.validation.ConstraintViolation;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

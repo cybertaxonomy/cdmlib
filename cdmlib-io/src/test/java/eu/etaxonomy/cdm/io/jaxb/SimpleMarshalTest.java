@@ -15,8 +15,9 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import jakarta.xml.bind.JAXBException;
+
 import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;

@@ -10,8 +10,8 @@ package eu.etaxonomy.cdm.persistence.validation;
 
 import java.util.concurrent.ThreadFactory;
 
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidatorFactory;
 
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;

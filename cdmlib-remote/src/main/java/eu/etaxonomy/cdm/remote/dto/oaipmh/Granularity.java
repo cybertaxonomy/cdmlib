@@ -6,8 +6,8 @@
 //
 package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * <p>Java class for granularityType.

@@ -10,9 +10,9 @@ package eu.etaxonomy.cdm.model.term;
 
 import java.util.EnumSet;
 
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAttribute;
+import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

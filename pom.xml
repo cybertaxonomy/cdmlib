@@ -54,7 +54,7 @@
 	<aspectj.version>1.9.25.1</aspectj.version>            <!-- checked 2022-05 -->
 	<geotools.version>35.1</geotools.version>
     <dozer.version>6.5.2</dozer.version>                <!-- checked 2021-02 -->
-    <jakarta.mail.version>1.6.2</jakarta.mail.version>      <!-- compatible to the one in spring-context-support/4.3.28.RELEASE -->
+    <jakarta.mail.version>2.0.1</jakarta.mail.version>
     <fop.version>2.11</fop.version>
     <jena.version>4.6.1</jena.version> <!-- 4.7.0 still creates problems with term loading (AnnotationType.UNHANDLED-->
     <doclint>none</doclint>
@@ -1437,9 +1437,9 @@
       </dependency>
       <!-- dependency of hibernate-core -->
       <dependency>
-        <groupId>org.jboss.spec.javax.transaction</groupId>
-        <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-        <version>1.1.1.Final</version>
+        <groupId>jakarta.transaction</groupId>
+        <artifactId>jakarta.transaction-api</artifactId>
+        <version>2.0.1</version>
       </dependency>
       <dependency>
         <!-- dependency of iiif-apis (and still by hibernate but will be removed in v5.6 as hibernate uses bytebuddy)  -->
@@ -1559,10 +1559,15 @@
 
       <!-- ******* SERVLET/JSP/JSF ******* -->
       <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>6.0.0</version>
+      </dependency>
+      <!-- kept for any remaining transitive/legacy consumers -->
+      <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>javax.servlet-api</artifactId>
         <version>4.0.1</version>
-        <!-- checked 2020-08 -->
       </dependency>
 
       <!-- yourkit profiler api controller (used in ..) -->
@@ -1572,12 +1577,11 @@
         <version>2015-build-15086</version>
         <scope>test</scope>
       </dependency>
-      <!-- For Validation -->
+      <!-- For Validation (Jakarta / HV 8) -->
       <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>2.0.1.Final</version>
-        <!-- checked 2020-08 -->
+          <groupId>jakarta.validation</groupId>
+          <artifactId>jakarta.validation-api</artifactId>
+          <version>3.0.2</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate.validator</groupId>
@@ -1590,21 +1594,15 @@
         <version>1.7.3</version>     
         <!-- checked 2020-08 -->
       </dependency>
-	  <dependency>
-        <groupId>javax.el</groupId>
-        <artifactId>javax.el-api</artifactId>
-        <version>3.0.0</version>
-        <!-- checked 2020-08 -->
-	  </dependency>
       <dependency>
-          <groupId>jakarta.validation</groupId>
-          <artifactId>jakarta.validation-api</artifactId>
-          <version>3.1.1</version>
+        <groupId>jakarta.el</groupId>
+        <artifactId>jakarta.el-api</artifactId>
+        <version>5.0.1</version>
       </dependency>
 	  <dependency>
-		 <groupId>org.glassfish.web</groupId>
-		 <artifactId>javax.el</artifactId>
-		 <version>2.2.6</version>
+		 <groupId>org.glassfish.expressly</groupId>
+		 <artifactId>expressly</artifactId>
+		 <version>5.0.0</version>
 	  </dependency>
 	  <dependency>
 	     <groupId>org.hibernate.validator</groupId>
@@ -1760,7 +1758,7 @@
       <dependency>
         <!-- Email functionality (used in cdmlib-services) -->
           <groupId>com.sun.mail</groupId>
-          <artifactId>javax.mail</artifactId>
+          <artifactId>jakarta.mail</artifactId>
           <version>${jakarta.mail.version}</version>
       </dependency>
       <dependency>

@@ -18,32 +18,32 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -187,8 +187,8 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(name="TaxonName", indexes = {
-        @javax.persistence.Index(name = "taxonNameBaseTitleCacheIndex", columnList = "titleCache"),
-        @javax.persistence.Index(name = "taxonNameBaseNameCacheIndex", columnList = "nameCache") })
+        @jakarta.persistence.Index(name = "taxonNameBaseTitleCacheIndex", columnList = "titleCache"),
+        @jakarta.persistence.Index(name = "taxonNameBaseNameCacheIndex", columnList = "nameCache") })
 @NameMustFollowCode
 @CorrectEpithetsForRank(groups = Level2.class)
 @CorrectRanksForCode(groups = Level2.class)
@@ -280,8 +280,8 @@ public class TaxonName
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name="TaxonName_TypeDesignationBase",
-        joinColumns=@javax.persistence.JoinColumn(name="TaxonName_id"),
-        inverseJoinColumns=@javax.persistence.JoinColumn(name="typedesignations_id")
+        joinColumns=@jakarta.persistence.JoinColumn(name="TaxonName_id"),
+        inverseJoinColumns=@jakarta.persistence.JoinColumn(name="typedesignations_id")
     )
     @NotNull
     private Set<TypeDesignationBase> typeDesignations = new HashSet<>();

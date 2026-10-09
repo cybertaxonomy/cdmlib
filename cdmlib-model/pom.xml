@@ -86,15 +86,14 @@
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-commons</artifactId>
     </dependency>
-    <!-- JAXB -->
+    <!-- Jakarta JAXB 4 -->
+    <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+    </dependency>
     <dependency>
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-runtime</artifactId>
-    </dependency>
-    <dependency>
-        <!-- old jaxb version, still required for Spring 5 -->
-        <groupId>com.sun.xml.bind</groupId>
-        <artifactId>jaxb-impl</artifactId>
     </dependency>
     
     <dependency>
@@ -157,18 +156,17 @@
     </dependency>
 <!--     hibernate validator -->
     <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
     </dependency>
-<!-- these 2 are also required for hibernate validator according to https://hibernate.org/validator/documentation/getting-started/
-     but cdmlib-model tests require only for javax.el -->
+<!-- EL implementation required by hibernate-validator -->
     <dependency>
-       <groupId>org.glassfish.web</groupId>
-       <artifactId>javax.el</artifactId>
+       <groupId>org.glassfish.expressly</groupId>
+       <artifactId>expressly</artifactId>
     </dependency>
 <!--     <dependency> -->
 <!--        <groupId>org.hibernate.validator</groupId> -->

@@ -39,7 +39,7 @@ public class Level2ValidationEventListener extends ValidationEventListenerBase {
     }
 
     @Override
-    public boolean requiresPostCommitHanding(EntityPersister persister) {
+    public boolean requiresPostCommitHandling(EntityPersister persister) {
         return false;
     }
 

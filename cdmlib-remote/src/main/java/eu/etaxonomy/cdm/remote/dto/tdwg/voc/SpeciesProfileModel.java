@@ -11,13 +11,13 @@ package eu.etaxonomy.cdm.remote.dto.tdwg.voc;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 
-import com.sun.xml.bind.CycleRecoverable;
+import org.glassfish.jaxb.runtime.CycleRecoverable;
 
 import eu.etaxonomy.cdm.remote.dto.tdwg.Description;
 

@@ -215,7 +215,7 @@ public class CdmPostDataChangeObservableListener implements
 	}
 
     @Override
-    public boolean requiresPostCommitHanding(EntityPersister persister) {
+    public boolean requiresPostCommitHandling(EntityPersister persister) {
         return false;
     }
 }

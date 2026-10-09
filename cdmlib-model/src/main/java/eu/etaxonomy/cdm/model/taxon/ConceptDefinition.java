@@ -12,7 +12,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;

@@ -112,7 +112,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
     }
 
     @Override
-    public boolean requiresPostCommitHanding(EntityPersister persister) {
+    public boolean requiresPostCommitHandling(EntityPersister persister) {
         return true;
     }
 

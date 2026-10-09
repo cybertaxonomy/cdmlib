@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.remote.json;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author a.kohlbecker

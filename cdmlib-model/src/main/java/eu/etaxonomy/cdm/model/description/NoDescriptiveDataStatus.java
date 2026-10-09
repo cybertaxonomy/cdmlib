@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;

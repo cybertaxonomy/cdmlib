@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 
-import javax.swing.text.html.HTML;
-
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
@@ -24,7 +22,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
  * A class representing a condensed distribution stored as list of {@link TaggedText}
  * with TaggedText being extended by an isBold indicator.
  *
- * The class offers a method representing a string representation which uses {@link HTML}
+ * The class offers a method representing a string representation which uses HTML
  * tag < b> to indicate bold text.
  *
  * @author a.kohlbecker

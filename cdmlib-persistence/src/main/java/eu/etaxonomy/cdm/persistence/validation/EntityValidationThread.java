@@ -8,8 +8,8 @@
  */
 package eu.etaxonomy.cdm.persistence.validation;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.Validator;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.Validator;
 
 /**
  * A subclass of {@code Thread} specialized in running validation tasks. Each

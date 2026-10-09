@@ -53,6 +53,10 @@
       <artifactId>cdmlib-persistence</artifactId>
     </dependency>
     <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-test</artifactId>
       <scope>test</scope>
@@ -97,8 +101,7 @@
     </dependency>
     <dependency>
         <groupId>com.sun.mail</groupId>
-        <!-- is now jakarate.mail, but wait with update until spring-context-support upgrades -->
-        <artifactId>javax.mail</artifactId>
+        <artifactId>jakarta.mail</artifactId>
         <exclusions>
             <exclusion>
                 <groupId>javax.activation</groupId>

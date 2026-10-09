@@ -11,12 +11,12 @@ package eu.etaxonomy.cdm.model.validation;
 
 import java.util.Set;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Payload;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Payload;
 
 /**
  * A class conveying the severity of a {@link ConstraintViolation}. Severity
- * levels are extraneous to the javax.validation framework and can only be
+ * levels are extraneous to the jakarta.validation framework and can only be
  * conveyed using generic {@link Payload} objects. Unfortunately, only the class
  * of those objects is communicated back to the client. The class <i>is</i> the
  * message. Concrete instances or {@code enum} s (an obvious choice for severity

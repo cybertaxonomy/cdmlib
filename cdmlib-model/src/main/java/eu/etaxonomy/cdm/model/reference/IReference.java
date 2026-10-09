@@ -127,6 +127,6 @@ public interface IReference
      * @see #setProtectedAbbrevTitleCache(boolean)
      */
 	@Transient
-	@javax.persistence.Transient
+	@jakarta.persistence.Transient
     void setTitleCaches(String cache);
 }

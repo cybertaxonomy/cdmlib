@@ -153,8 +153,8 @@
     <dependency>
       <!-- TODO this is also offered by cdmlib-remote, can it be removed? 
         What does provided mean? -->
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
 

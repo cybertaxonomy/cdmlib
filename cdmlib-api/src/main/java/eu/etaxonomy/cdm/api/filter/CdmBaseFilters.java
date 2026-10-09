@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.filter;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Predicate;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 

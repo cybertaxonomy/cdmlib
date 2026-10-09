@@ -8,7 +8,7 @@
  */
 package eu.etaxonomy.cdm.validation;
 
-import javax.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolation;
 
 /**
  *

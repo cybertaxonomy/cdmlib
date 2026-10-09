@@ -14,7 +14,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
 
 import java.util.Collection;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

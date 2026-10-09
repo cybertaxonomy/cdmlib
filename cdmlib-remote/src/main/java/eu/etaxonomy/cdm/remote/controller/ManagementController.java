@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -77,8 +77,8 @@ public class ManagementController {
      *
      * @see
      * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
-     * (javax.servlet.http.HttpServletRequest,
-     * javax.servlet.http.HttpServletResponse)
+     * (jakarta.servlet.http.HttpServletRequest,
+     * jakarta.servlet.http.HttpServletResponse)
      */
     // @RequestMapping(value = { "/manager/datasources/list" }, method =
     // RequestMethod.GET)

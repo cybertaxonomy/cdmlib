@@ -21,16 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.From;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,6 +51,18 @@ import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFactory;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.From;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Selection;
+import jakarta.persistence.metamodel.EntityType;
 
 /**
  * Hibernate implementation for {@link ICdmEntityDao}.
@@ -785,9 +787,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
         Root<? extends T> root = cq.from(entityClass);
 
-        List<javax.persistence.criteria.Selection<?>> selections = new ArrayList<>();
-        List<javax.persistence.criteria.Expression<?>> groupByExpressions = new ArrayList<>();
-        List<javax.persistence.criteria.Order> orders = new ArrayList<>();
+        List<Selection<?>> selections = new ArrayList<>();
+        List<Expression<?>> groupByExpressions = new ArrayList<>();
+        List<Order> orders = new ArrayList<>();
         Map<String, From<?, ?>> joins = new HashMap<>();
 
         if (groups != null) {

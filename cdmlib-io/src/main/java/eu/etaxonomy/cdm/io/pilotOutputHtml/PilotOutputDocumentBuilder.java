@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.Marshaller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

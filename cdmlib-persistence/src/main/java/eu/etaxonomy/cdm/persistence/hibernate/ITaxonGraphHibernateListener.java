@@ -28,7 +28,7 @@ import org.hibernate.persister.entity.EntityPersister;
 public interface ITaxonGraphHibernateListener extends PostInsertEventListener, PostUpdateEventListener, PreDeleteEventListener {
 
     @Override
-    boolean requiresPostCommitHanding(EntityPersister persister);
+    boolean requiresPostCommitHandling(EntityPersister persister);
 
     @Override
     void onPostInsert(PostInsertEvent event);

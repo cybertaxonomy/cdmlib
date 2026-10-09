@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.api.filter;
 import java.time.ZonedDateTime;
 import java.util.EnumSet;
 
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
 
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;

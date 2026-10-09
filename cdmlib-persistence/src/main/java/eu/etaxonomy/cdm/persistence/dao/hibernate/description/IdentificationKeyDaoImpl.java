@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 import java.util.List;
 import java.util.UUID;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;

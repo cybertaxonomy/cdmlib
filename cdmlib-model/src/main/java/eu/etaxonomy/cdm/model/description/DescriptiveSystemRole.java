@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
-import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
+import jakarta.persistence.Transient;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.TermTree;

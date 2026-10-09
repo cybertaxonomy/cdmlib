@@ -5,5 +5,5 @@
 // Generated on: 2009.11.02 at 12:58:05 PM GMT 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.openarchives.org/OAI/2.0/", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "http://www.openarchives.org/OAI/2.0/", elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package eu.etaxonomy.cdm.remote.dto.oaipmh;

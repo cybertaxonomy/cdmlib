@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.jaxb;
 
 import java.util.UUID;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Transient;
+import jakarta.persistence.Transient;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -396,7 +396,7 @@ public abstract class AbstractBeanInitializer<CDM extends CdmBase> implements IB
             if( prop.getReadMethod() != null ){
                   try{
                      @SuppressWarnings("unchecked")
-                    Class<Transient> transientClass = (Class<Transient>)Class.forName( "javax.persistence.Transient" );
+                    Class<Transient> transientClass = (Class<Transient>)Class.forName( "jakarta.persistence.Transient" );
                      if( prop.getReadMethod().getAnnotation( transientClass ) != null ){
                         continue;
                      }

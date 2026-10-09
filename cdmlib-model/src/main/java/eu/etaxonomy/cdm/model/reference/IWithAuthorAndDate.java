@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.reference;
 
-import javax.persistence.Transient;
+import jakarta.persistence.Transient;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;

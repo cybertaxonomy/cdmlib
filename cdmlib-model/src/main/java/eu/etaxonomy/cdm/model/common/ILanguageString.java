@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import javax.persistence.Transient;
+import jakarta.persistence.Transient;
 
 /**
  * @author muellera
