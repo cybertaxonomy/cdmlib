@@ -313,7 +313,7 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
         if (propertyValue instanceof AbstractPersistentCollection ){
             //collections
             if (!node.hasWildcardToManySibling()){  //if wildcard sibling exists the lazies are already prepared there
-                AbstractPersistentCollection collection = (AbstractPersistentCollection)propertyValue;
+                AbstractPersistentCollection<?> collection = (AbstractPersistentCollection<?>)propertyValue;
                 if (collection.wasInitialized()){
                     storeInitializedCollection(collection, node, param);
                 }else{
@@ -345,7 +345,7 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
             if (!node.hasWildcardToOneSibling()){  //if wildcard exists the lazies are already prepared there
                 if (! Hibernate.isInitialized(propertyValue)){
                     if (propertyValue instanceof HibernateProxy){
-                        Serializable id = ((HibernateProxy)propertyValue).getHibernateLazyInitializer().getIdentifier();
+                        Serializable id = (Serializable) ((HibernateProxy)propertyValue).getHibernateLazyInitializer().getIdentifier();
                         Class<?> persistedClass = ((HibernateProxy)propertyValue).getHibernateLazyInitializer().getPersistentClass();
                         if (sibling != null){
                             sibling.putLazyBean(persistedClass, id);
@@ -382,7 +382,7 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
         }
     }
 
-	private void storeInitializedCollection(AbstractPersistentCollection persistedCollection,
+	private void storeInitializedCollection(AbstractPersistentCollection<?> persistedCollection,
 			BeanInitNode node, String param) {
 
 	    Collection<?> collection;
@@ -452,7 +452,7 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
                 AutoInit autoInit = addAutoinitFetchLoading(clazz, "c");
                 hql = String.format(hql, clazz.getSimpleName(), autoInit.leftJoinFetch);
                 if (logger.isTraceEnabled()){logger.trace(hql);}
-                Query<Object> query = genericDao.getHqlQuery(hql);
+                Query<Object> query = genericDao.getHqlQuery(hql, Object.class);
                 query.setParameterList("idSet", idSet);
                 List<Object> list = query.list();
 
@@ -506,7 +506,7 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
                                 collectionEntitiyType = actualTypeArguments[0];
                             }
                             if(collectionEntitiyType instanceof TypeVariable) {
-                                collectionEntitiyType = ((TypeVariable)collectionEntitiyType).getBounds()[0];
+                                collectionEntitiyType = ((TypeVariable<?>)collectionEntitiyType).getBounds()[0];
                             }
 					    }
 					}
@@ -527,7 +527,7 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
 
 					try {
 						if (logger.isTraceEnabled()){logger.trace(hql);}
-						Query query = genericDao.getHqlQuery(hql);
+						Query query = genericDao.getHqlQuery(hql, Object.class);
 						query.setParameterList("idSet", idSet);
 						list = query.list();
 						if (logger.isTraceEnabled()){logger.trace("size of retrieved list is " + list.size());}
@@ -549,7 +549,7 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
 							    logger.trace("Collection is null");
 							}else {
 							    if(propValue instanceof PersistentMap) {
-							        propValue = ((PersistentMap)propValue).values();
+							        propValue = ((PersistentMap<?,?>)propValue).values();
 							    }
 							    for(Object newBean : (Collection<Object>)propValue ) {
 							        if(newBean instanceof HibernateProxy){
@@ -571,7 +571,7 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
 				}
 			}
 		}
-		for (AbstractPersistentCollection collection : node.getUninitializedCollections()){
+		for (AbstractPersistentCollection<?> collection : node.getUninitializedCollections()){
 			if (! collection.wasInitialized()){  //should not happen anymore
 				collection.forceInitialization();
 				if (logger.isTraceEnabled()){logger.trace("forceInitialization of collection " + collection);}
@@ -645,13 +645,6 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
         }
     }
 
-    /**
-     * @param node
-     * @param property
-     * @param index
-     * @param bean
-     * @param unwrappedPropertyBean
-     */
     private void initializeNodeSinglePropertyOld(BeanInitNode node, String property,
             Integer index, Object bean, Object unwrappedPropertyBean) {
         Collection<?> collection = null;

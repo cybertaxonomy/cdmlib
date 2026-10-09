@@ -603,9 +603,8 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Query<Object> getHqlQuery(String hqlQuery){
-		return getSession().createQuery(hqlQuery);
+		return getSession().createQuery(hqlQuery, Object.class);
 	}
 
     @Override

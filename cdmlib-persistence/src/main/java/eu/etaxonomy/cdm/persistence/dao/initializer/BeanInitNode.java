@@ -179,7 +179,7 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 		if (Character.isLowerCase(parentParameter.charAt(0))){
 		    parameter = parentParameter + "." + parameter;
 		}
-		putLazyCollection(ownerClass, parameter, collection.getKey());
+		putLazyCollection(ownerClass, parameter, (Serializable) collection.getKey());
 		this.uninitializedCollections.add(collection);
 	}
 
