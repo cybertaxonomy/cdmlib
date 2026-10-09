@@ -12,10 +12,21 @@ import java.lang.reflect.Constructor;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.jpa.UriConverter;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -25,16 +36,6 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
-import org.hibernate.envers.Audited;
-
-import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * A media representation is basically anything having a
@@ -63,6 +64,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 public class MediaRepresentation extends VersionableEntity {
 
     private static final long serialVersionUID = -1520078266008619806L;
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     //http://www.iana.org/assignments/media-types
@@ -81,7 +83,8 @@ public class MediaRepresentation extends VersionableEntity {
 
     // where the media file is stored
     @XmlElement(name = "URI")
-    @Type(type="uriUserType")
+    @Convert(converter = UriConverter.class)
+    @Lob
     private URI uri;
 
     // in bytes

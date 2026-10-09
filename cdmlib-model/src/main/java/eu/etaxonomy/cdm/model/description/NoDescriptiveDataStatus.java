@@ -11,11 +11,12 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnumValue;
-
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * Enumeration describing why descriptive data are not available.
@@ -53,7 +54,14 @@ public enum NoDescriptiveDataStatus implements IEnumTerm<NoDescriptiveDataStatus
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
     }
 
-    // *************************** DELEGATE **************************************/
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class NoDescriptiveDataStatusConverter extends EnumConverterBase<NoDescriptiveDataStatus> {
+        public NoDescriptiveDataStatusConverter() { super(NoDescriptiveDataStatus.class); }
+    }
+
+// *************************** DELEGATE **************************************/
 
     private static EnumeratedTermVoc<NoDescriptiveDataStatus> delegateVoc;
     private IEnumTerm<NoDescriptiveDataStatus> delegateVocTerm;

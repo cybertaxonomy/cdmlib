@@ -11,14 +11,15 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnum;
-import jakarta.xml.bind.annotation.XmlEnumValue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * The type of authority for an externally loaded entity.
@@ -53,6 +54,13 @@ public enum AuthorityType implements IEnumTerm<AuthorityType>{
 	private AuthorityType(UUID uuid, String defaultString, String key, AuthorityType parent){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
 	}
+
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class AuthorityTypeConverter extends EnumConverterBase<AuthorityType> {
+        public AuthorityTypeConverter() { super(AuthorityType.class); }
+    }
 
 // *************************** DELEGATE **************************************/
 
@@ -89,6 +97,4 @@ public enum AuthorityType implements IEnumTerm<AuthorityType>{
 
 	public static AuthorityType getByKey(String key){return delegateVoc.getByKey(key);}
     public static AuthorityType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
-
-
 }

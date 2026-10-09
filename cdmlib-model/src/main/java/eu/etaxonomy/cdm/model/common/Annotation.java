@@ -12,8 +12,19 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.jpa.UriConverter;
+import eu.etaxonomy.cdm.model.agent.Person;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
@@ -24,16 +35,6 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
-import org.hibernate.envers.Audited;
-
-import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.model.agent.Person;
 
 /**
  * @author m.doering
@@ -82,7 +83,8 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
     // should be useful to implement trackback, pingback or linkback:
     // http://en.wikipedia.org/wiki/Linkback
     @XmlElement(name = "LinkbackUri")
-    @Type(type="uriUserType")
+    @Convert(converter = UriConverter.class)
+    @Lob
     private URI linkbackUri;
 
 // ******************************* FACTORY *******************************/

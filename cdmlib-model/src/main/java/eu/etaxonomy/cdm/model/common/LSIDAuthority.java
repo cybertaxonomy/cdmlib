@@ -11,10 +11,20 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.wsdl.Definition;
+
+import org.hibernate.annotations.NaturalId;
+
+import com.ibm.lsid.MalformedLSIDException;
+
+import eu.etaxonomy.cdm.jaxb.NamespacesAdapter;
+import eu.etaxonomy.cdm.jpa.WsdlDefinitionConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.Transient;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -24,18 +34,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import javax.wsdl.Definition;
-
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
-
-import com.ibm.lsid.MalformedLSIDException;
-
-import eu.etaxonomy.cdm.hibernate.WSDLDefinitionUserType;
-import eu.etaxonomy.cdm.jaxb.NamespacesAdapter;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LSIDAuthority", propOrder = {
@@ -47,7 +45,6 @@ import eu.etaxonomy.cdm.jaxb.NamespacesAdapter;
 })
 @XmlRootElement(name = "LSIDAuthority")
 @Entity
-@TypeDefs(@TypeDef(name = "wsdlDefinitionUserType", typeClass = WSDLDefinitionUserType.class))
 public class LSIDAuthority extends CdmBase {
 	private static final long serialVersionUID = 9168994979216936689L;
 
@@ -70,7 +67,8 @@ public class LSIDAuthority extends CdmBase {
 
 	// the wsdl describing how to invoke operations on the authority
     @XmlTransient
-	@Type(type = "wsdlDefinitionUserType")
+	@Convert(converter = WsdlDefinitionConverter.class)
+    @Lob
 	private Definition authorityWSDL;
 
     @XmlElement(name = "Namespaces")

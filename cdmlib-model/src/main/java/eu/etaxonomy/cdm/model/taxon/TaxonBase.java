@@ -134,9 +134,6 @@ public abstract class TaxonBase
      */
     @XmlAttribute(name = "TaxonStatus")
     @Column(name = "taxonStatus", length = 10)
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.taxon.TaxonStatus")}
-    )
     @NotNull
     private TaxonStatus taxonStatus = getDefaultStatus();
 

@@ -87,9 +87,6 @@ public class Synonym
 
     @XmlAttribute(name ="Type")
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.taxon.SynonymType")}
-    )
     private SynonymType type = SynonymType.SYNONYM_OF;
 
 //************************************* FACTORY ****************************/

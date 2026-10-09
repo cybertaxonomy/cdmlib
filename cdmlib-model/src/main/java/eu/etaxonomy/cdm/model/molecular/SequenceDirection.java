@@ -11,9 +11,11 @@ package eu.etaxonomy.cdm.model.molecular;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
 
 /**
  * A Sequence Direction defines the direction in which a DNA part was read by a {@link Primer}
@@ -32,7 +34,14 @@ public enum SequenceDirection implements IEnumTerm<SequenceDirection> {
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, null);
     }
 
-	// *************************** DELEGATE **************************************/
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class SequenceDirectionConverter extends EnumConverterBase<SequenceDirection> {
+        public SequenceDirectionConverter() { super(SequenceDirection.class); }
+    }
+
+// *************************** DELEGATE **************************************/
 
     private static EnumeratedTermVoc<SequenceDirection> delegateVoc;
     private IEnumTerm<SequenceDirection> delegateVocTerm;
@@ -67,5 +76,4 @@ public enum SequenceDirection implements IEnumTerm<SequenceDirection> {
 
     public static SequenceDirection getByKey(String key){return delegateVoc.getByKey(key);}
     public static SequenceDirection getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
-
 }

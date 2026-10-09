@@ -43,9 +43,6 @@ public class TaxonomicOperation extends VersionableEntity {
 
     @XmlAttribute(name ="TaxonomicOperationType")
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.taxon.TaxonomicOperationType")}
-    )
     @Audited
     @Column(length=20)
     private TaxonomicOperationType type;

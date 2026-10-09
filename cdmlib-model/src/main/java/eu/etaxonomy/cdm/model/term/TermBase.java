@@ -13,8 +13,33 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.LazyInitializationException;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.search.UriBridge;
+import eu.etaxonomy.cdm.jpa.UriConverter;
+import eu.etaxonomy.cdm.model.common.AuthorityType;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.CreditableEntity;
+import eu.etaxonomy.cdm.model.common.ExternallyManaged;
+import eu.etaxonomy.cdm.model.common.IExternallyManaged;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.term.TermDefaultCacheStrategy;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
@@ -26,30 +51,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.LazyInitializationException;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
-
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.hibernate.search.UriBridge;
-import eu.etaxonomy.cdm.model.common.AuthorityType;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.CreditableEntity;
-import eu.etaxonomy.cdm.model.common.ExternallyManaged;
-import eu.etaxonomy.cdm.model.common.IExternallyManaged;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.term.TermDefaultCacheStrategy;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermBase", propOrder = {
@@ -74,7 +75,8 @@ public abstract class TermBase
 
     @XmlElement(name = "URI")
     @KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
-    @Type(type="uriUserType")
+    @Convert(converter = UriConverter.class)
+    @Lob
     private URI uri;
 
 	/**
@@ -84,9 +86,6 @@ public abstract class TermBase
 	@XmlAttribute(name ="TermType")
 	@Column(name="termType")
 	@NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.term.TermType")}
-    )
 	@Audited
 	private TermType termType;
 

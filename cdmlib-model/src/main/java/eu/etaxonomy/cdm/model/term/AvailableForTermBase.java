@@ -10,18 +10,17 @@ package eu.etaxonomy.cdm.model.term;
 
 import java.util.EnumSet;
 
-import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotNull;
-import jakarta.xml.bind.annotation.XmlAttribute;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.CdmClass;
+import eu.etaxonomy.cdm.model.common.CdmClass.CdmClassEnumSetConverter;
 import eu.etaxonomy.cdm.model.common.Language;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.XmlAttribute;
 
 /**
  * This
@@ -40,9 +39,7 @@ public abstract class AvailableForTermBase<T extends DefinedTermBase<T>>
 
     @XmlAttribute(name ="availableFor")
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
-        parameters = {@Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.common.CdmClass")}
-    )
+    @Convert(converter = CdmClassEnumSetConverter.class)
     private EnumSet<CdmClass> availableFor = EnumSet.noneOf(CdmClass.class);
 
     //for hibernate use only, *packet* private required by bytebuddy

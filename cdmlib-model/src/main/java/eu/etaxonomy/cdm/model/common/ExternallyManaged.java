@@ -11,8 +11,18 @@ package eu.etaxonomy.cdm.model.common;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.search.UriBridge;
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
+import eu.etaxonomy.cdm.jpa.UriConverter;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Lob;
@@ -24,16 +34,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Type;
-import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
-
-import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.hibernate.search.UriBridge;
-import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * Embedabble class to embed attributes to use externally managed data.
@@ -74,23 +74,18 @@ public class ExternallyManaged implements Cloneable, Serializable, ICheckEmpty{
     //Actionable link e.g. to a webservice
     @XmlElement(name = "ExternalLink")
     @KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
-    @Type(type="uriUserType")
+    @Convert(converter = UriConverter.class)
+    @Lob
     @Column(name="externalLink")
     private URI externalLink;
 
     @XmlAttribute(name ="authority")
     @Column(name="authorityType", length=10)
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.common.AuthorityType")}
-    )
     @NotNull
     private AuthorityType authorityType;
 
     @XmlAttribute(name ="importMethod")
     @Column(name="importMethod", length=30)
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.common.ExternallyManagedImport")}
-    )
     @NotNull
     private ExternallyManagedImport importMethod;
 

@@ -11,18 +11,8 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.Calendar;
 import java.util.Date;
 
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Transient;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Type;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.joda.time.DateTimeFieldType;
@@ -34,6 +24,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import eu.etaxonomy.cdm.format.common.ExtendedTimePeriodFormatter;
 import eu.etaxonomy.cdm.hibernate.search.PartialBridge;
 import eu.etaxonomy.cdm.jaxb.PartialAdapter;
+import eu.etaxonomy.cdm.jpa.PartialConverter;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Transient;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * TimePeriod class with extended time period for "extreme" phases
@@ -59,14 +59,14 @@ public class ExtendedTimePeriod extends TimePeriod {
 
     @XmlElement(name = "ExtremeStart")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
-    @Type(type="partialUserType")
+    @Convert(converter = PartialConverter.class)
     @KeywordField(valueBridge = @ValueBridgeRef(type = PartialBridge.class))
     @JsonIgnore // currently used for swagger model scanner
     private Partial extremeStart;
 
     @XmlElement(name = "ExtremeEnd")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
-    @Type(type="partialUserType")
+    @Convert(converter = PartialConverter.class)
     @KeywordField(valueBridge = @ValueBridgeRef(type = PartialBridge.class))
     @JsonIgnore // currently used for swagger model scanner
     private Partial extremeEnd;

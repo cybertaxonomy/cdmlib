@@ -14,12 +14,13 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.UTF8;
-import jakarta.xml.bind.annotation.XmlEnum;
-import jakarta.xml.bind.annotation.XmlEnumValue;
-
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * Editorial / taxonomic acceptance status of a {@link TaxonBase}.
@@ -98,13 +99,20 @@ public enum TaxonStatus
     public String getSymbol() {
         return symbol;
     }
-
+    
     public boolean isDoubtful() {
         return this == DOUBTFUL;
     }
-
+    
     public boolean isProvisionally() {
         return this == PROVISIONALLY_ACCEPTED;
+    }
+
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class TaxonStatusConverter extends EnumConverterBase<TaxonStatus> {
+        public TaxonStatusConverter() { super(TaxonStatus.class); }
     }
 
 // *************************** DELEGATE **************************************/

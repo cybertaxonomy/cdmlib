@@ -11,15 +11,16 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnumValue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * The status for the placement (taxon node) of taxon/name in classification.
@@ -120,6 +121,12 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
         this.shortLabel = shortLabel;
     }
 
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class TaxonNodeStatusConverter extends EnumConverterBase<TaxonNodeStatus> {
+        public TaxonNodeStatusConverter() { super(TaxonNodeStatus.class); }
+    }
 
 // *************************** DELEGATE **************************************/
 
@@ -166,4 +173,5 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
     public String getShortLabel(){
         return shortLabel;
     }
+
 }

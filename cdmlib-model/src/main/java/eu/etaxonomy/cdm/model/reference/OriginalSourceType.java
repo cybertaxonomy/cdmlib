@@ -13,15 +13,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnum;
-import jakarta.xml.bind.annotation.XmlEnumValue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * The original source type is used to define the type of an {@link OriginalSourceBase original source}.<BR>
@@ -137,6 +138,13 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
     private OriginalSourceType(UUID uuid, String defaultString, String key, OriginalSourceType parent){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
 	}
+
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class OriginalSourceTypeConverter extends EnumConverterBase<OriginalSourceType> {
+        public OriginalSourceTypeConverter() { super(OriginalSourceType.class); }
+    }
 
 // *************************** DELEGATE **************************************/
 

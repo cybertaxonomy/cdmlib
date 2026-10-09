@@ -16,6 +16,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.common.CdmClass;
+import eu.etaxonomy.cdm.model.common.CdmClass.CdmClassEnumSetConverter;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.term.AvailableForTermBase;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermCollection;
+import eu.etaxonomy.cdm.model.term.TermTree;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -33,27 +53,6 @@ import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
-import org.hibernate.envers.Audited;
-
-import eu.etaxonomy.cdm.model.common.CdmClass;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.term.AvailableForTermBase;
-import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.Representation;
-import eu.etaxonomy.cdm.model.term.TermCollection;
-import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermType;
-import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * The class for individual properties (also designed as character, type or
@@ -123,9 +122,7 @@ public class Feature extends AvailableForTermBase<Feature> {
 
     @XmlAttribute(name ="supportedDataTypes")
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
-        parameters = {@Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.common.CdmClass")}
-    )
+    @Convert(converter = CdmClassEnumSetConverter.class)
     private EnumSet<CdmClass> supportedDataTypes = EnumSet.of(CdmClass.TEXT_DATA);  //by default TextData should always be supported
 
     /* for M:M see #4843 */

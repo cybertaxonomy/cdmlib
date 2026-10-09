@@ -8,12 +8,12 @@
 */
 package eu.etaxonomy.cdm.model.term;
 
-import eu.etaxonomy.cdm.hibernate.EnumUserType;
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * Interface for all enumerations which provide a key for persisting them as strings
- * via {@link EnumUserType}.
+ * via {@link EnumConverterBase}.
  * The key may also be used for other purposes.
  * The key must be unique within the enumeration.
  *

@@ -13,15 +13,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnum;
-import jakarta.xml.bind.annotation.XmlEnumValue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * The reference type is used to define the type of a {@link Reference reference}.<BR>
@@ -218,6 +219,13 @@ public enum ReferenceType implements IEnumTerm<ReferenceType> {
         }
 
         return inRefTypes;
+    }
+
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class ReferenceTypeConverter extends EnumConverterBase<ReferenceType> {
+        public ReferenceTypeConverter() { super(ReferenceType.class); }
     }
 
 // *************************** DELEGATE **************************************/

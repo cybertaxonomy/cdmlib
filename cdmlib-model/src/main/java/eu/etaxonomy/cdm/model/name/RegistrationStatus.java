@@ -11,13 +11,14 @@ package eu.etaxonomy.cdm.model.name;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnum;
-import jakarta.xml.bind.annotation.XmlEnumValue;
-
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * Enumeration for the taxon name registration status.
@@ -68,7 +69,14 @@ public enum RegistrationStatus implements IEnumTerm<RegistrationStatus>{
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
     }
 
-    // *************************** DELEGATE **************************************/
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class RegistrationStatusConverter extends EnumConverterBase<RegistrationStatus> {
+        public RegistrationStatusConverter() { super(RegistrationStatus.class); }
+    }
+
+// *************************** DELEGATE **************************************/
 
     private static EnumeratedTermVoc<RegistrationStatus> delegateVoc;
     private IEnumTerm<RegistrationStatus> delegateVocTerm;
@@ -104,6 +112,4 @@ public enum RegistrationStatus implements IEnumTerm<RegistrationStatus>{
 
     public static RegistrationStatus getByKey(String key){return delegateVoc.getByKey(key);}
     public static RegistrationStatus getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
-
-
 }

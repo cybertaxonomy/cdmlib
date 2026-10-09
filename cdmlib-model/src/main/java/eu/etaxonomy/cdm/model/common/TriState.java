@@ -11,14 +11,15 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnumValue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * A tri-state boolean to indicate if a {@link TaxonName} is an autonym or not.
@@ -56,6 +57,13 @@ public enum TriState implements IEnumTerm<TriState> {
         return bool == null ? INDETERMINATE : Boolean.TRUE.equals(bool) ? SELECTED : UNSELECTED;
     }
 
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class TriStateConverter extends EnumConverterBase<TriState> {
+        public TriStateConverter() { super(TriState.class); }
+    }
+
 // *************************** DELEGATE **************************************/
 
     private static EnumeratedTermVoc<TriState> delegateVoc;
@@ -91,5 +99,4 @@ public enum TriState implements IEnumTerm<TriState> {
 
     public static TriState getByKey(String key){return delegateVoc.getByKey(key);}
     public static TriState getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
-
 }

@@ -5,6 +5,13 @@ package eu.etaxonomy.cdm.model.molecular;
 
 import java.io.Serializable;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.jpa.ShiftConverter;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Lob;
@@ -16,13 +23,6 @@ import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
-import org.hibernate.envers.Audited;
-
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * @author a.mueller
@@ -60,7 +60,8 @@ public class SingleReadAlignment extends VersionableEntity {
 	private SingleRead singleRead;
 
 	//TODO XML mapping / user type
-	@Type(type="shiftUserType")
+	@Convert(converter = ShiftConverter.class)
+    @Lob
     private Shift[] shifts = new Shift[0];
 
 	private Integer firstSeqPosition;

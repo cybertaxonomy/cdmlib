@@ -11,13 +11,14 @@ package eu.etaxonomy.cdm.model.name;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnum;
-import jakarta.xml.bind.annotation.XmlEnumValue;
-import jakarta.xml.bind.annotation.XmlType;
-
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * Enumeration for the gender of a {@link TaxonName taxon name} or rank
@@ -66,6 +67,13 @@ public enum TaxonNameGender implements IEnumTerm<TaxonNameGender> {
         return this == NEUTER;
     }
 
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class TaxonNameGenderConverter extends EnumConverterBase<TaxonNameGender> {
+        public TaxonNameGenderConverter() { super(TaxonNameGender.class); }
+    }
+
 // *************************** DELEGATE **************************************/
 
 	private static EnumeratedTermVoc<TaxonNameGender> delegateVoc;
@@ -103,5 +111,4 @@ public enum TaxonNameGender implements IEnumTerm<TaxonNameGender> {
 
 	public static TaxonNameGender getByKey(String key){return delegateVoc.getByKey(key);}
     public static TaxonNameGender getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
-
 }

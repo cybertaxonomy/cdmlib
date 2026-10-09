@@ -22,28 +22,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Transient;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlIDREF;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlType;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
@@ -74,6 +56,26 @@ import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.ConceptDefinition.ConceptDefinitionEnumSetConverter;
+import eu.etaxonomy.cdm.model.taxon.ConceptStatus.ConceptStatusEnumSetConverter;
+import eu.etaxonomy.cdm.model.taxon.TaxonType.TaxonTypeEnumSetConverter;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * The class for "accepted/correct" {@link TaxonBase taxa} (only these taxa according to
@@ -176,25 +178,19 @@ public class Taxon
 
     @XmlAttribute(name ="TaxonType")
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.taxon.TaxonType")}
-    )
+    @Convert(converter = TaxonTypeEnumSetConverter.class)
     @Audited
     private EnumSet<TaxonType> taxonTypes = EnumSet.noneOf(TaxonType.class);
 
     @XmlAttribute(name ="ConceptDefinition")
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.taxon.ConceptDefinition")}
-    )
+    @Convert(converter = ConceptDefinitionEnumSetConverter.class)
     @Audited
     private EnumSet<ConceptDefinition> conceptDefinitions = EnumSet.noneOf(ConceptDefinition.class);
 
     @XmlAttribute(name ="ConceptStatus")
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.taxon.ConceptStatus")}
-    )
+    @Convert(converter = ConceptStatusEnumSetConverter.class)
     @Audited
     private EnumSet<ConceptStatus> conceptStatus = EnumSet.noneOf(ConceptStatus.class);
 

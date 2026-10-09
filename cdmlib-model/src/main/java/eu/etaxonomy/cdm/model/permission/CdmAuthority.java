@@ -11,7 +11,17 @@ package eu.etaxonomy.cdm.model.permission;
 import java.util.EnumSet;
 import java.util.UUID;
 
+import org.springframework.security.core.GrantedAuthority;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
+import eu.etaxonomy.cdm.jpa.UuidConverter;
+import eu.etaxonomy.cdm.model.permission.CRUD.CRUDEnumSetConverter;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -20,16 +30,6 @@ import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
-import org.springframework.security.core.GrantedAuthority;
-
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermType;
-import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * Model class for representing a structured CDM Authority<BR>.
@@ -69,9 +69,6 @@ public class CdmAuthority extends AuthorityBase {
      */
     @XmlAttribute(name ="PermissionClass")
 //    @NotNull  //AM: why did we remove NotNull here? For now ther permission class should be obligatory IMO
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.PermissionClass")}
-    )
     private PermissionClass permissionClass;
 
     //Not always needed, therefore not NOTNULL
@@ -79,13 +76,11 @@ public class CdmAuthority extends AuthorityBase {
 
     @XmlAttribute(name ="Operations")
     @NotNull  //an empty operations set will result in "#"
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
-        parameters = {@Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.permission.CRUD")}
-    )
+    @Convert(converter = CRUDEnumSetConverter.class)
     private EnumSet<CRUD> operations = EnumSet.noneOf(CRUD.class);
 
     @XmlJavaTypeAdapter(UUIDAdapter.class)
-    @Type(type="uuidUserType")
+    @Convert(converter = UuidConverter.class)
     @Column(length=36)  //TODO needed? Type UUID will always assure that is exactly 36
     private UUID targetUuid;
 

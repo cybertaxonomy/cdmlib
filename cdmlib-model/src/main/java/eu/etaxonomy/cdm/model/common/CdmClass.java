@@ -12,11 +12,10 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnumValue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.jpa.EnumSetConverterBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -34,6 +33,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * @author a.mueller
@@ -86,6 +87,13 @@ public enum CdmClass implements IEnumTerm<CdmClass>{
         this.isDescribed = isDescribed;
         this.isDescriptionElement = isDescriptionElement;
         this.isIdentifiable = IdentifiableEntity.class.isAssignableFrom(clazz);
+    }
+
+//****************************** CONVERTER ************************/
+
+    @Converter
+    public class CdmClassEnumSetConverter extends EnumSetConverterBase<CdmClass> {
+        public CdmClassEnumSetConverter() { super(CdmClass.class); }
     }
 
  // *************************** DELEGATE **************************************/

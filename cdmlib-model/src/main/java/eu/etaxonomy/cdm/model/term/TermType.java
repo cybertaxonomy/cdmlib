@@ -11,12 +11,10 @@ package eu.etaxonomy.cdm.model.term;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnum;
-import jakarta.xml.bind.annotation.XmlEnumValue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -46,6 +44,9 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * The term type is used to define the type of a {@link TermBase term}, may it be a vocabulary or a defined term.<BR>
@@ -609,6 +610,12 @@ public enum TermType implements IEnumTerm<TermType>{
         return emptyTerm;
     }
 
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class TermTypeConverter extends EnumConverterBase<TermType> {
+        public TermTypeConverter() { super(TermType.class); }
+    }
 
 // *************************** DELEGATE **************************************/
 
@@ -645,6 +652,4 @@ public enum TermType implements IEnumTerm<TermType>{
 
     public static TermType getByKey(String key){return delegateVoc.getByKey(key);}
     public static TermType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
-
 }
-

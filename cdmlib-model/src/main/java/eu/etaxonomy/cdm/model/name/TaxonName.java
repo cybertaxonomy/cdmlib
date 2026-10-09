@@ -213,9 +213,6 @@ public class TaxonName
     @XmlAttribute(name ="NameType")
     @Column(name="nameType", length=15)
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.name.NomenclaturalCode")}
-    )
     @Audited //needed ?
     private NomenclaturalCode nameType;
 
@@ -225,9 +222,6 @@ public class TaxonName
      */
     @XmlAttribute(name ="NameType")
     @Column(name="gender", length=1)
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.name.TaxonNameGender")}
-    )
     @Audited
     private TaxonNameGender gender;
 
@@ -425,9 +419,6 @@ public class TaxonName
 
     @XmlAttribute(name ="autonymFlag")
     @Column(name="autonymFlag", length=10)
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.common.TriState")}
-    )
     private TriState autonymFlag = TriState.INDETERMINATE;
 
     @XmlElement(name = "CombinationAuthorship")

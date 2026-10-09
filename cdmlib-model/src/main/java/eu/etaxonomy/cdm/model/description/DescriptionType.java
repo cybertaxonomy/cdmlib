@@ -12,14 +12,15 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnumValue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.jpa.EnumSetConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * @author a.mueller
@@ -97,6 +98,13 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
 
     private DescriptionType(UUID uuid, String defaultString, String key, DescriptionType parent){
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
+    }
+
+//********************** CONVERTER ****************************/
+
+    @Converter
+    public class DescriptionTypeEnumSetConverter extends EnumSetConverterBase<DescriptionType> {
+        public DescriptionTypeEnumSetConverter() { super(DescriptionType.class); }
     }
 
 // *************************** DELEGATE **************************************/

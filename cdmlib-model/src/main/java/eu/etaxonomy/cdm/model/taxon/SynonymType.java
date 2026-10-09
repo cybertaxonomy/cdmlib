@@ -11,10 +11,12 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.IRelationshipType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
 
 /**
  * @author a.mueller
@@ -89,6 +91,13 @@ public enum SynonymType implements IEnumTerm<SynonymType>, IRelationshipType {
         return inverseLabel;
     }
 
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class SynonymTypeConverter extends EnumConverterBase<SynonymType> {
+        public SynonymTypeConverter() { super(SynonymType.class); }
+    }
+
  // *************************** DELEGATE **************************************/
 
     private static EnumeratedTermVoc<SynonymType> delegateVoc;
@@ -131,5 +140,4 @@ public enum SynonymType implements IEnumTerm<SynonymType>, IRelationshipType {
     public boolean isInferredSynonym() {
         return this == INFERRED_EPITHET_OF || this == INFERRED_GENUS_OF || this == POTENTIAL_COMBINATION_OF;
     }
-
 }

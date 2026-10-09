@@ -31,7 +31,6 @@ import org.hibernate.proxy.pojo.bytebuddy.SerializableProxy;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.PersistentMultiLanguageText;
 
 /**
  * @author cmathew
@@ -88,7 +87,7 @@ public class ProxyUtils {
             if(pc instanceof PersistentList || pc instanceof PersistentBag) {
                 return new ArrayList<>((List<?>)pc);
             }
-            if(pc instanceof PersistentMap || pc instanceof PersistentMultiLanguageText) {
+            if(pc instanceof PersistentMap) {
                 return new HashMap<>((Map<?,?>)pc);
             }
             if(pc instanceof PersistentSortedMap) {
@@ -110,7 +109,7 @@ public class ProxyUtils {
             if(pc instanceof PersistentList) {
                 return new CollectionField(new ArrayList<>((List<?>)pc), CollectionType.LIST);
             }
-            if(pc instanceof PersistentMap || pc instanceof PersistentMultiLanguageText) {
+            if(pc instanceof PersistentMap) {
                 return new CollectionField(new HashMap<>((Map<?,?>)pc), CollectionType.MAP);
             }
             if(pc instanceof PersistentSortedMap) {

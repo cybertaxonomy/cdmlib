@@ -20,8 +20,37 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
+import org.hibernate.search.mapper.pojo.common.annotation.Param;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.DocumentId;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.PropertyBinding;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.TypeBinding;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
+import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
+import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
+import eu.etaxonomy.cdm.jpa.UuidConverter;
+import eu.etaxonomy.cdm.model.NewEntityListener;
+import eu.etaxonomy.cdm.model.permission.User;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -40,35 +69,6 @@ import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.engine.backend.types.Projectable;
-import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
-import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
-import org.hibernate.search.mapper.pojo.common.annotation.Param;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.DocumentId;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.PropertyBinding;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.TypeBinding;
-
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
-import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
-import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
-import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
-import eu.etaxonomy.cdm.model.NewEntityListener;
-import eu.etaxonomy.cdm.model.permission.User;
-import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
-import eu.etaxonomy.cdm.strategy.match.IMatchable;
-import eu.etaxonomy.cdm.strategy.match.Match;
-import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
 /**
  * The base class for all CDM domain classes implementing UUIDs and bean property change event firing.
@@ -127,7 +127,7 @@ public abstract class CdmBase
     @XmlAttribute(required = true)
     @XmlJavaTypeAdapter(UUIDAdapter.class)
     @XmlID
-    @Type(type="uuidUserType")
+    @Convert(converter = UuidConverter.class)
     @NaturalId // This has the effect of placing a "unique" constraint on the database column
     @Column(length=36)  //TODO needed? Type UUID will always assure that is exactly 36
     @Match(MatchMode.IGNORE)

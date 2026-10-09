@@ -15,20 +15,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Transient;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Type;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.joda.time.DateTime;
@@ -44,6 +33,16 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.format.common.TimePeriodFormatter;
 import eu.etaxonomy.cdm.hibernate.search.PartialBridge;
 import eu.etaxonomy.cdm.jaxb.PartialAdapter;
+import eu.etaxonomy.cdm.jpa.PartialConverter;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Transient;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * @author m.doering
@@ -59,7 +58,6 @@ import eu.etaxonomy.cdm.jaxb.PartialAdapter;
 })
 @XmlRootElement(name = "TimePeriod")
 @Embeddable
-@MappedSuperclass
 public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
 
     private static final long serialVersionUID = 3405969418194981401L;
@@ -81,14 +79,14 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
 
     @XmlElement(name = "Start")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
-    @Type(type="partialUserType")
+    @Convert(converter = PartialConverter.class)
     @KeywordField(valueBridge = @ValueBridgeRef(type = PartialBridge.class))
     @JsonIgnore // currently used for swagger model scanner
     private Partial start;
 
     @XmlElement(name = "End")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
-    @Type(type="partialUserType")
+    @Convert(converter = PartialConverter.class)
     @KeywordField(valueBridge = @ValueBridgeRef(type = PartialBridge.class))
     @JsonIgnore // currently used for swagger model scanner
     private Partial end;

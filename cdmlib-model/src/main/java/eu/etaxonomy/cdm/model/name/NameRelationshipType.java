@@ -99,9 +99,6 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
      */
     @XmlAttribute(name ="NomenclaturalStanding")
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.name.NomenclaturalStanding")}
-    )
     @Audited
 	private NomenclaturalStanding nomenclaturalStanding;
 
@@ -113,9 +110,6 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
      */
     @XmlAttribute(name ="NomenclaturalStanding")
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.name.NomenclaturalStanding")}
-    )
     @Audited
     private NomenclaturalStanding nomenclaturalStandingInverse;
 

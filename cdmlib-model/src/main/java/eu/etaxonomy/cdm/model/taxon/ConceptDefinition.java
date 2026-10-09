@@ -12,11 +12,12 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnum;
-
+import eu.etaxonomy.cdm.jpa.EnumSetConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 /**
  * @author a.mueller
@@ -35,6 +36,13 @@ public enum ConceptDefinition
     @SuppressWarnings("unchecked")
     private ConceptDefinition(UUID uuid, String defaultString, String key){
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, null);
+    }
+
+//********************** CONVERTER ****************************/
+
+    @Converter
+    public class ConceptDefinitionEnumSetConverter extends EnumSetConverterBase<ConceptDefinition> {
+        public ConceptDefinitionEnumSetConverter() { super(ConceptDefinition.class); }
     }
 
  // *************************** DELEGATE **************************************/

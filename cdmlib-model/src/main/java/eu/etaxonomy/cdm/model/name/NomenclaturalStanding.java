@@ -11,14 +11,15 @@ package eu.etaxonomy.cdm.model.name;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnum;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 /**
  * Represents a classification of nomenclatural status and/or name relationship types
@@ -135,6 +136,13 @@ public enum NomenclaturalStanding
      */
     public boolean isName() {
         return isLegitimate() || this == ILLEGITIMATE || this == NONE;
+    }
+
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class NomenclaturalStandingConverter extends EnumConverterBase<NomenclaturalStanding> {
+        public NomenclaturalStandingConverter() { super(NomenclaturalStanding.class); }
     }
 
 // *************************** DELEGATE **************************************/

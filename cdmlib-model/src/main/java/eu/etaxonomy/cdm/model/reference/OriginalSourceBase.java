@@ -88,9 +88,6 @@ public abstract class OriginalSourceBase
 	@XmlAttribute(name ="type")
 	@Column(name="sourceType")
 	@NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-    	parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.reference.OriginalSourceType")}
-    )
 	@Audited
 	private OriginalSourceType type;
 

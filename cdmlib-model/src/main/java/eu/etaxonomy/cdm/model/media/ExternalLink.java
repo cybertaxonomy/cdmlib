@@ -11,9 +11,24 @@ package eu.etaxonomy.cdm.model.media;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.jpa.UriConverter;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.MapKeyJoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
@@ -24,21 +39,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
-import org.hibernate.envers.Audited;
-
-import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * Class that represents a link to any web resource.
@@ -69,15 +69,13 @@ public class ExternalLink extends VersionableEntity{
     @XmlAttribute(name ="ExternalLinkType")
     @Column(name="linkType", length=10)
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.media.ExternalLinkType")}
-    )
     @Audited
     private ExternalLinkType linkType = ExternalLinkType.Unknown;
 
     // the URI to link to
     @XmlElement(name = "URI")
-    @Type(type="uriUserType")
+    @Convert(converter = UriConverter.class)
+    @Lob
     private URI uri;
 
     @XmlElement(name = "Description")

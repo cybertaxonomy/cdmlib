@@ -11,9 +11,11 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
 
 /**
  * see also https://dev.e-taxonomy.eu/redmine/issues/9692
@@ -28,6 +30,13 @@ public enum TaxonomicOperationType implements IEnumTerm<TaxonomicOperationType> 
     @SuppressWarnings("unchecked")
     private TaxonomicOperationType(UUID uuid, String defaultString, String key){
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, null);
+    }
+
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class TaxonomicOperationTypeConverter extends EnumConverterBase<TaxonomicOperationType> {
+        public TaxonomicOperationTypeConverter() { super(TaxonomicOperationType.class); }
     }
 
  // *************************** DELEGATE **************************************/
@@ -68,6 +77,4 @@ public enum TaxonomicOperationType implements IEnumTerm<TaxonomicOperationType> 
     public static TaxonomicOperationType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
 //*************************** END DELEGATE *********************************************/
-
-
 }

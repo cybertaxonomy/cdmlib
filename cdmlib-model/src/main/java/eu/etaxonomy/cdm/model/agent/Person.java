@@ -13,22 +13,10 @@ import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlType;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
@@ -40,6 +28,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.OrcidBridge;
 import eu.etaxonomy.cdm.hibernate.search.WikiDataItemIdBridge;
+import eu.etaxonomy.cdm.jpa.OrcidConverter;
+import eu.etaxonomy.cdm.jpa.WikiDataItemIdConverter;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.WikiDataItemId;
 import eu.etaxonomy.cdm.model.media.IHasLink;
@@ -47,6 +37,17 @@ import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * This class represents human beings, living or dead.<BR>
@@ -150,13 +151,13 @@ public class Person
 
     @XmlElement(name = "Orcid")
     @FullTextField(valueBridge = @ValueBridgeRef(type = OrcidBridge.class))
-    @Type(type="orcidUserType")
+    @Convert(converter = OrcidConverter.class)
     @Column(length=16)
     private ORCID orcid;
 
     @XmlElement(name = "WikiDataId")
     @FullTextField(valueBridge = @ValueBridgeRef(type = WikiDataItemIdBridge.class))
-    @Type(type="wikiDataItemIdUserType")
+    @Convert(converter = WikiDataItemIdConverter.class)
     @Column(length=16)
     private WikiDataItemId wikiDataItemId;
 

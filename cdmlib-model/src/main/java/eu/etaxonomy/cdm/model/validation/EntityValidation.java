@@ -13,7 +13,22 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
+import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
+import eu.etaxonomy.cdm.jpa.UuidConverter;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
+import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -26,21 +41,6 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Type;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
-
-import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
-import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.ICdmBase;
-import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 
 /**
  * An {@code EntityValidation} models the result of validating one entity, that
@@ -88,7 +88,7 @@ public class EntityValidation extends CdmBase {
 
     @XmlElement(name = "ValidatedEntityUuid")
     @XmlJavaTypeAdapter(UUIDAdapter.class)
-    @Type(type = "uuidUserType")
+    @Convert(converter = UuidConverter.class)
     @Column(length = 36)
     // TODO needed? Type UUID will always assure that is exactly 36
     // TODO required?

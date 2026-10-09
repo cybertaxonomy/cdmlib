@@ -12,6 +12,30 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.TypeBinding;
+
+import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseClassBridge;
+import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
+import eu.etaxonomy.cdm.model.common.CreditableEntity;
+import eu.etaxonomy.cdm.model.common.IPublishable;
+import eu.etaxonomy.cdm.model.description.DescriptionType.DescriptionTypeEnumSetConverter;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
@@ -29,31 +53,6 @@ import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.engine.backend.types.Projectable;
-import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.TypeBinding;
-
-import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseClassBridge;
-import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
-import eu.etaxonomy.cdm.model.common.CreditableEntity;
-import eu.etaxonomy.cdm.model.common.IPublishable;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ICdmTarget;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * The upmost (abstract) class for a description as a whole (with possibly
@@ -134,9 +133,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 
     @XmlAttribute(name ="types")
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
-        parameters = {@Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.description.DescriptionType")}
-    )
+    @Convert(converter = DescriptionTypeEnumSetConverter.class)
     private EnumSet<DescriptionType> types = EnumSet.noneOf(DescriptionType.class);
 
 //******************************** GETTER / SETTER ***************************/

@@ -175,9 +175,6 @@ public class Rank extends DefinedTermBase<Rank> {
      */
     @XmlAttribute(name ="RankClass")
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.name.RankClass")}
-    )
     @Audited
     private RankClass rankClass;
 

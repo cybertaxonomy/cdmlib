@@ -11,16 +11,17 @@ package eu.etaxonomy.cdm.model.name;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnum;
-import jakarta.xml.bind.annotation.XmlEnumValue;
-import jakarta.xml.bind.annotation.XmlType;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * The class for the five nomenclature codes (ICNP, ICBN, ICNCP, ICZN and ICVCN)
@@ -233,6 +234,12 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 		}
 	}
 
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class NomenclaturalCodeConverter extends EnumConverterBase<NomenclaturalCode> {
+        public NomenclaturalCodeConverter() { super(NomenclaturalCode.class); }
+    }
 
 // *************************** DELEGATE **************************************/
 
@@ -271,5 +278,4 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 
 	public static NomenclaturalCode getByKey(String key){return delegateVoc.getByKey(key);}
     public static NomenclaturalCode getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
-
 }

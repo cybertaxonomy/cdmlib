@@ -112,9 +112,6 @@ public class CdmMetaData extends CdmBase{
     @XmlAttribute(name ="PropertyName")
     @Column(name="propertyName", length=20)
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName")}
-    )
 	private CdmMetaDataPropertyName propertyName;
 	private String value;
 

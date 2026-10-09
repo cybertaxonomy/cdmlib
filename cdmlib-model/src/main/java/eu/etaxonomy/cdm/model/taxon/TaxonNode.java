@@ -157,9 +157,6 @@ public class TaxonNode
      */
     @XmlAttribute(name ="TaxonNodeStatus")
     @Column(name="status", length=10)
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus")}
-    )
     @Audited
     @NotNull
     private TaxonNodeStatus status = TaxonNodeStatus.INCLDUDED;
@@ -167,7 +164,7 @@ public class TaxonNode
     @XmlElement(name = "placementNote")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-//    @MapKeyJoinColumn(name="placementNote_mapkey_id")
+    @MapKeyJoinColumn(name="placementNote_mapkey_id") // required again for Hibernate 6 Map binding
     @JoinTable(name = "TaxonNode_PlacementNote")  //to make possible to add also unplacedNote
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     private Map<Language,LanguageString> placementNote = new HashMap<>();

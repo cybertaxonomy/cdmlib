@@ -8,8 +8,22 @@
 */
 package eu.etaxonomy.cdm.model.media;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.search.UriBridge;
+import eu.etaxonomy.cdm.jpa.UriConverter;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -19,19 +33,6 @@ import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Type;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
-
-import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.hibernate.search.UriBridge;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase;
-import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * Typically, rights information includes a statement about various property
@@ -61,7 +62,8 @@ public class Rights extends AnnotatableLanguageStringBase {
 	//external location of copyright text
 	@XmlElement(name = "URI")
 	@KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
-	@Type(type="uriUserType")
+	@Convert(converter = UriConverter.class)
+    @Lob
 	private URI uri;
 
 	@XmlElement(name = "AbbreviatedText")

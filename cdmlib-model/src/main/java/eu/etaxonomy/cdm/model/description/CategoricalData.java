@@ -94,9 +94,6 @@ public class CategoricalData
 
     @XmlAttribute(name ="NoDataStatus")
     @Column(name="noDataStatus", length=10)
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.description.NoDescriptiveDataStatus")}
-    )
     //see also QuantitativeData.noDataStatus
     private NoDescriptiveDataStatus noDataStatus;
 

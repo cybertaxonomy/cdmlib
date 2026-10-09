@@ -98,9 +98,6 @@ public class SingleRead extends EventBase {
 	/** @see #getDirection()*/
 	@XmlAttribute(name ="direction")
 	//TODO length = 3
-	@Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-    	parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.molecular.SequenceDirection")}
-	)
 	private SequenceDirection direction;
 
 	@XmlElement(name = "MaterialOrMethod")

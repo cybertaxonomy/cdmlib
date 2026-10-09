@@ -12,16 +12,17 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import org.hibernate.envers.RevisionEntity;
+import org.hibernate.envers.RevisionNumber;
+import org.hibernate.envers.RevisionTimestamp;
+
+import eu.etaxonomy.cdm.jpa.UuidConverter;
 import jakarta.persistence.Basic;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-
-import org.hibernate.annotations.Type;
-import org.hibernate.envers.RevisionEntity;
-import org.hibernate.envers.RevisionNumber;
-import org.hibernate.envers.RevisionTimestamp;
 
 @Entity
 @RevisionEntity
@@ -36,7 +37,7 @@ public class AuditEvent implements Serializable {
 		CURRENT_VIEW.setUuid(UUID.fromString("966728f0-ae51-11dd-ad8b-0800200c9a66"));
 	}
 
-	@Type(type="uuidUserType")
+	@Convert(converter = UuidConverter.class)
 	private UUID uuid;
 
     @Id

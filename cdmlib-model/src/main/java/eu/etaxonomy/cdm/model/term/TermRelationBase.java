@@ -72,9 +72,6 @@ public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends
     @XmlAttribute(name ="TermType")
     @Column(name="termType")
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.term.TermType")}
-    )
     @Audited
     private TermType termType;
 

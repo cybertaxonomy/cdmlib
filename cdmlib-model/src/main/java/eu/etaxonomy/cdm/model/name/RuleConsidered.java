@@ -53,9 +53,6 @@ public class RuleConsidered implements Cloneable, Serializable{
     @XmlAttribute(name ="CodeEdition")
     @Column(name="codeEdition", length=20)
     @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.name.NomenclaturalCodeEdition")}
-    )
     @Audited //needed ?
     private NomenclaturalCodeEdition codeEdition;
 

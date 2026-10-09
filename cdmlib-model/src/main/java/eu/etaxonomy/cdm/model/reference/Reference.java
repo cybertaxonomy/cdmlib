@@ -15,38 +15,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderColumn;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlIDREF;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlTransient;
-import jakarta.xml.bind.annotation.XmlType;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
@@ -62,6 +35,8 @@ import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
 import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
+import eu.etaxonomy.cdm.jpa.DoiConverter;
+import eu.etaxonomy.cdm.jpa.UriConverter;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Credit;
@@ -86,6 +61,31 @@ import eu.etaxonomy.cdm.validation.annotation.InReference;
 import eu.etaxonomy.cdm.validation.annotation.NoRecursiveInReference;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * The class for references (information sources). Originally
@@ -166,10 +166,6 @@ public class Reference
     @XmlAttribute(name ="type")
 	@Column(name="refType")
 	@NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-    	parameters = {@Parameter(name  = "enumClass",
-    	value = "eu.etaxonomy.cdm.model.reference.ReferenceType")}
-    )
 	@Audited
 	private ReferenceType type;
 
@@ -237,7 +233,7 @@ public class Reference
 
     @XmlElement(name = "Doi")
     @FullTextField(valueBridge = @ValueBridgeRef(type = DoiBridge.class))
-    @Type(type="doiUserType")
+    @Convert(converter = DoiConverter.class)
     @Column(length=DOI.MAX_LENGTH)
     private DOI doi;
 
@@ -331,7 +327,8 @@ public class Reference
 	//URIs like DOIs, LSIDs or Handles for this reference
 	@XmlElement(name = "URI")
 	@KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
-	@Type(type="uriUserType")
+	@Convert(converter = UriConverter.class)
+    @Lob
 	private URI uri;
 
 	//flag to subselect only references that could be useful for nomenclatural citations.

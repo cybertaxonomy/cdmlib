@@ -11,9 +11,11 @@ package eu.etaxonomy.cdm.model.permission;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.jpa.EnumSetConverterBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
 
 /**
  * @author a.kohlbecker
@@ -30,6 +32,13 @@ public enum CRUD implements IEnumTerm<CRUD>{
 
     private CRUD(UUID uuid, String defaultString, String key, CRUD parent){
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
+    }
+
+//********************** CONVERTER ****************************/
+
+    @Converter
+    public class CRUDEnumSetConverter extends EnumSetConverterBase<CRUD> {
+        public CRUDEnumSetConverter() { super(CRUD.class); }
     }
 
  // *************************** DELEGATE **************************************/

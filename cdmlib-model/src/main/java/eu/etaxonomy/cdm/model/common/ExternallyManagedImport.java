@@ -11,14 +11,15 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnum;
-import jakarta.xml.bind.annotation.XmlEnumValue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
 
 /**
  * The import method to use for importing the data.
@@ -43,6 +44,13 @@ public enum ExternallyManagedImport implements IEnumTerm<ExternallyManagedImport
 	private ExternallyManagedImport(UUID uuid, String defaultString, String key, ExternallyManagedImport parent){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
 	}
+
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class ExternallyManagedImportConverter extends EnumConverterBase<ExternallyManagedImport> {
+        public ExternallyManagedImportConverter() { super(ExternallyManagedImport.class); }
+    }
 
 // *************************** DELEGATE **************************************/
 
@@ -79,5 +87,4 @@ public enum ExternallyManagedImport implements IEnumTerm<ExternallyManagedImport
 
 	public static ExternallyManagedImport getByKey(String key){return delegateVoc.getByKey(key);}
     public static ExternallyManagedImport getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
-
 }

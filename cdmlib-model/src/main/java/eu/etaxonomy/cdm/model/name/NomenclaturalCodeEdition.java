@@ -13,10 +13,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.xml.bind.annotation.XmlEnum;
-import jakarta.xml.bind.annotation.XmlEnumValue;
-import jakarta.xml.bind.annotation.XmlType;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.jpa.EnumConverterBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -33,6 +30,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
+import jakarta.persistence.Converter;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * The class for the nomenclature code edition of the 5 nomenclatural codes (ICNP, ICBN, ICNCP, ICZN and ICVCN)
@@ -619,6 +620,13 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
         } else {
             return null;
         }
+    }
+
+//********************** CONVERTER **********************************/
+
+    @Converter(autoApply = true)
+    public static class NomenclaturalCodeEditionConverter extends EnumConverterBase<NomenclaturalCodeEdition> {
+        public NomenclaturalCodeEditionConverter() { super(NomenclaturalCodeEdition.class); }
     }
 
 // *************************** DELEGATE **************************************/
