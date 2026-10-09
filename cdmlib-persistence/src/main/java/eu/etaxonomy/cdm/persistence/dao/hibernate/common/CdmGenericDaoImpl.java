@@ -12,23 +12,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.From;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -39,25 +29,18 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.SessionImpl;
-import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.metamodel.MappingMetamodel;
+import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.query.Query;
-import org.hibernate.type.BooleanType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
-import org.hibernate.type.DoubleType;
 import org.hibernate.type.EntityType;
 import org.hibernate.type.EnumType;
-import org.hibernate.type.FloatType;
 import org.hibernate.type.ForeignKeyDirection;
-import org.hibernate.type.IntegerType;
-import org.hibernate.type.LongType;
-import org.hibernate.type.MaterializedClobType;
 import org.hibernate.type.OneToOneType;
 import org.hibernate.type.SerializableType;
-import org.hibernate.type.StringType;
+import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
-import org.hibernate.type.ZonedDateTimeType;
-import org.jadira.usertype.dateandtime.joda.PersistentDateTime;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
@@ -65,19 +48,17 @@ import org.springframework.util.ReflectionUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.database.data.FullCoverageDataGenerator;
-import eu.etaxonomy.cdm.hibernate.BigDecimalUserType;
-import eu.etaxonomy.cdm.hibernate.DOIUserType;
-import eu.etaxonomy.cdm.hibernate.EnumSetUserType;
-import eu.etaxonomy.cdm.hibernate.EnumUserType;
+import eu.etaxonomy.cdm.hibernate.BigDecimalCompositeUserType;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.hibernate.OrcidUserType;
-import eu.etaxonomy.cdm.hibernate.PartialUserType;
-import eu.etaxonomy.cdm.hibernate.SeverityUserType;
-import eu.etaxonomy.cdm.hibernate.ShiftUserType;
-import eu.etaxonomy.cdm.hibernate.URIUserType;
-import eu.etaxonomy.cdm.hibernate.UUIDUserType;
-import eu.etaxonomy.cdm.hibernate.WSDLDefinitionUserType;
-import eu.etaxonomy.cdm.hibernate.WikiDataItemIdUserType;
+import eu.etaxonomy.cdm.jpa.DoiConverter;
+import eu.etaxonomy.cdm.jpa.OrcidConverter;
+import eu.etaxonomy.cdm.jpa.PartialConverter;
+import eu.etaxonomy.cdm.jpa.SeverityConverter;
+import eu.etaxonomy.cdm.jpa.ShiftConverter;
+import eu.etaxonomy.cdm.jpa.UriConverter;
+import eu.etaxonomy.cdm.jpa.UuidConverter;
+import eu.etaxonomy.cdm.jpa.WikiDataItemIdConverter;
+import eu.etaxonomy.cdm.jpa.WsdlDefinitionConverter;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -95,6 +76,16 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.match.Matching;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.From;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 @Repository
 public class CdmGenericDaoImpl
@@ -410,11 +401,13 @@ public class CdmGenericDaoImpl
 		SessionFactory sessionFactory = getSession().getSessionFactory();
 
 		for (Class<? extends CdmBase> cdmClass : allCdmClasses){
-			ClassMetadata classMetadata = sessionFactory.getClassMetadata(cdmClass);
-			Type[] propertyTypes = classMetadata.getPropertyTypes();
+	        MappingMetamodel metamodel = (MappingMetamodel) getSession().getSessionFactory().getMetamodel();
+	        EntityPersister entityPersister = metamodel.getEntityDescriptor(cdmClass);
+
+	        Type[] propertyTypes = entityPersister.getPropertyTypes();
 			int propertyNr = 0;
 			for (Type propertyType: propertyTypes){
-				String propertyName = classMetadata.getPropertyNames()[propertyNr];
+				String propertyName = entityPersister.getPropertyNames()[propertyNr];
 				makePropertyType(result, referencedClass, sessionFactory, cdmClass, propertyType, propertyName, false);
 				propertyNr++;
 			}
@@ -512,32 +505,37 @@ public class CdmGenericDaoImpl
 
 	protected static boolean isNoDoType(Type propertyType) {
 		boolean result = false;
+		// AttributeConverters / CompositeUserType / built-in basic types that need no deep graph walk
 		Class<?>[] classes = new Class[]{
-				PersistentDateTime.class,
-				WSDLDefinitionUserType.class,
-				UUIDUserType.class,
-				PartialUserType.class,
-				ZonedDateTimeType.class,
-				StringType.class,
-				BooleanType.class,
-				IntegerType.class,
-				MaterializedClobType.class,
-				LongType.class,
-				FloatType.class,
+				WsdlDefinitionConverter.class,
+				UuidConverter.class,
+				PartialConverter.class,
 				SerializableType.class,
-				DoubleType.class,
-				URIUserType.class,
+				UriConverter.class,
 				EnumType.class,
-				EnumUserType.class,
-				DOIUserType.class,
-				OrcidUserType.class,
-				WikiDataItemIdUserType.class,
-                ShiftUserType.class,
-				EnumSetUserType.class,
-				SeverityUserType.class,
-				BigDecimalUserType.class,
+				Enum.class,
+				EnumSet.class,
+				DoiConverter.class,
+				OrcidConverter.class,
+				WikiDataItemIdConverter.class,
+				ShiftConverter.class,
+				SeverityConverter.class,
+				BigDecimalCompositeUserType.class,
 				};
 		Set<String> classNames = new HashSet<>();
+
+		//From AI, really needed?
+		classNames.add(StandardBasicTypes.STRING.getName());
+		classNames.add(StandardBasicTypes.BOOLEAN.getName());
+		classNames.add(StandardBasicTypes.INTEGER.getName());
+		classNames.add(StandardBasicTypes.LONG.getName());
+		classNames.add(StandardBasicTypes.FLOAT.getName());
+		classNames.add(StandardBasicTypes.DOUBLE.getName());
+		classNames.add(StandardBasicTypes.MATERIALIZED_CLOB.getName());
+		classNames.add(StandardBasicTypes.ZONED_DATE_TIME.getName());
+		// converted basic types often appear under these Hibernate type names
+		classNames.add("converted::eu.etaxonomy.cdm.hibernate.converter");
+
 		for (Class<?> clazz: classes){
 			classNames.add(clazz.getCanonicalName());
 			if (clazz == propertyType.getClass()){
@@ -546,6 +544,11 @@ public class CdmGenericDaoImpl
 		}
 		String propertyTypeClassName = propertyType.getName();
 		if (classNames.contains(propertyTypeClassName)){
+			return true;
+		}
+		// AttributeConverter-backed types: name often contains the converter FQCN
+		if (propertyTypeClassName != null
+				&& propertyTypeClassName.contains("eu.etaxonomy.cdm.hibernate.converter")) {
 			return true;
 		}
 		return result;
@@ -765,15 +768,17 @@ public class CdmGenericDaoImpl
 
 	    List<T> result = new ArrayList<>();
 		Session session = getSession();
-		Class<CdmBase> matchClass = (Class)objectToMatch.getClass();
-		ClassMetadata classMetaData = session.getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
+	    @SuppressWarnings("unchecked")
+	    Class<CdmBase> matchClass = (Class<CdmBase>)objectToMatch.getClass();
+	    MappingMetamodel metamodel = (MappingMetamodel) session.getSessionFactory().getMetamodel();
+	    EntityPersister entityPersister = metamodel.getEntityDescriptor(matchClass);
 
 		CriteriaBuilder cb = session.getCriteriaBuilder();
 		CriteriaQuery<CdmBase> query = cb.createQuery(matchClass);
 		List<Predicate> finalAndPredicates = new ArrayList<>();
 		Root<CdmBase> root = query.from(matchClass);
 		root.alias("root");
-		boolean noMatch = makeCriteria(objectToMatch, matchStrategy, classMetaData,
+		boolean noMatch = makeCriteria(objectToMatch, matchStrategy, entityPersister,
 		        cb, finalAndPredicates, root, 1);
 		Predicate finalPredicate = cb.and(finalAndPredicates.toArray(new Predicate[0]));
 		query.select(root)
@@ -813,7 +818,7 @@ public class CdmGenericDaoImpl
 	 *         <code>false</code> if nothing is known on the existence of a matching result
 	 */
 	private boolean makeCriteria(Object objectToMatch,
-			IMatchStrategy matchStrategy, ClassMetadata classMetaData,
+			IMatchStrategy matchStrategy, EntityPersister entityPersister,
 			CriteriaBuilder cb, List<Predicate> finalAndPredicates,
 			From<CdmBase, CdmBase> from, int level) throws IllegalAccessException, MatchException {
 
@@ -853,7 +858,7 @@ public class CdmGenericDaoImpl
 		//field matcher
 		for (FieldMatcher fieldMatcher : matching.getFieldMatchers(false)){
 			String propertyName = fieldMatcher.getPropertyName();
-			Type propertyType = classMetaData.getPropertyType(propertyName);
+			Type propertyType = entityPersister.getPropertyType(propertyName);
 			Object value = fieldMatcher.getField().get(objectToMatch);
 			List<MatchMode> matchModes = new ArrayList<>();
 			matchModes.add(fieldMatcher.getMatchMode());
@@ -960,9 +965,9 @@ public class CdmGenericDaoImpl
                         //     maybe not needed as we want to allow 2 objects to match even if they are of different subtypes
                         //     but they have only attributes in use that are available also in the superclass
 						IMatchStrategy valueMatchStrategy = fieldMatcher.getMatchStrategy() != null? fieldMatcher.getMatchStrategy() : DefaultMatchStrategy.NewInstance(matchClass);
-						ClassMetadata valueClassMetaData = getSession().getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
-						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, cb, finalAndPredicates, specificJoin, level+1);
-//						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria, level+1);
+	                    MappingMetamodel metamodel = (MappingMetamodel) getSession().getSessionFactory().getMetamodel();
+	                    EntityPersister valueEntityPersister = metamodel.getEntityDescriptor(matchClass.getCanonicalName());
+						noMatch = makeCriteria(value, valueMatchStrategy, valueEntityPersister, cb, finalAndPredicates, specificJoin, level+1);
 					}else{
 						logger.error("Class to match (" + matchClass + ") is not of type IMatchable");
 						throw new MatchException("Class to match (" + matchClass + ") is not of type IMatchable");

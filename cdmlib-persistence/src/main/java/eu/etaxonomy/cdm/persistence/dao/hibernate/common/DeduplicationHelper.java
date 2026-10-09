@@ -1,6 +1,11 @@
 /**
- *
- */
+* Copyright (C) 2015 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.lang.reflect.Field;
@@ -20,11 +25,13 @@ import org.hibernate.MappingException;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.internal.SessionImpl;
-import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.metadata.CollectionMetadata;
+import org.hibernate.metamodel.MappingMetamodel;
+import org.hibernate.metamodel.spi.MappingMetamodelImplementor;
 import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.persister.collection.OneToManyPersister;
 import org.hibernate.persister.entity.AbstractEntityPersister;
+import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.query.Query;
 import org.hibernate.type.AnyType;
 import org.hibernate.type.CollectionType;
@@ -62,7 +69,7 @@ public class DeduplicationHelper {
 
 	private static final Logger logger = LogManager.getLogger();
 
-	private final SessionImpl session;
+	private final Session session;
 	private final CdmGenericDaoImpl genericDao;
 
 	protected DeduplicationHelper(SessionImpl session, CdmGenericDaoImpl genericDao){
@@ -250,18 +257,21 @@ public class DeduplicationHelper {
 		Type propType = sessionFactory.getReferencedPropertyType(TaxonName.class.getCanonicalName(), "taxonBases");
 //		Map<?,?> collMetadata = sessionFactory.getAllCollectionMetadata();
 		//roles = sessionFactory.getCollectionRolesByEntityParticipant("eu.etaxonomy.cdm.model.name.BotanicalName");
-		CollectionPersister collPersister;
+
 		try {
-			collPersister = sessionFactory.getMetamodel().collectionPersister(TaxonName.class.getCanonicalName()+".annotations");
+		    MappingMetamodel metamodel = sessionFactory.getMetamodel();
+            String collectionRole = TaxonName.class.getCanonicalName()+".annotations";
+            CollectionPersister collPersister = metamodel.getCollectionDescriptor(collectionRole);
 		} catch (MappingException e) {
 		    // TODO Auto-generated catch block
             e.printStackTrace();
 		}
 //		Statistics statistics = sessionFactory.getStatistics();
 		logger.debug("");
-		ClassMetadata taxonMetaData = sessionFactory.getClassMetadata(Taxon.class);
-		String ename = taxonMetaData.getEntityName();
-		try {
+		MappingMetamodel metamodel = (MappingMetamodel) session.getSessionFactory().getMetamodel();
+        EntityPersister taxonEntityPersister = metamodel.getEntityDescriptor(Taxon.class);
+        String ename = taxonEntityPersister.getEntityName();
+        try {
 			Reference ref = sessionFactory.getReference();
 			logger.debug("");
 		} catch (Exception e) {
@@ -270,23 +280,24 @@ public class DeduplicationHelper {
 		}
 
 		//sessionFactory.get
-		ClassMetadata classMetadata = session.getSessionFactory().getClassMetadata(clazz);
-		Type[] propertyTypes = classMetadata.getPropertyTypes();
+        EntityPersister entityPersister = metamodel.getEntityDescriptor(clazz);
+        Type[] propertyTypes = entityPersister.getPropertyTypes();
 		int propertyNr = 0;
 		for (Type propertyType: propertyTypes){
-			String propertyName = classMetadata.getPropertyNames()[propertyNr];
+			String propertyName = entityPersister.getPropertyNames()[propertyNr];
 			logger.debug(propertyName);
 			makeMergeProperty(cdmBase1, cdmBase2, propertyType, propertyName, sessionFactory, false);
 			propertyNr++;
 		}
 		Set<String> collectionRoles;
-		if (classMetadata instanceof AbstractEntityPersister){
-			AbstractEntityPersister persister = (AbstractEntityPersister)classMetadata;
+		if (entityPersister instanceof AbstractEntityPersister){
+			AbstractEntityPersister persister = (AbstractEntityPersister) entityPersister;
 			String rootName = persister.getRootEntityName();
-			collectionRoles = sessionFactory.getMetamodel().getCollectionRolesByEntityParticipant(rootName);
-			for (String collectionRole : collectionRoles){
-				CollectionMetadata collMetadata2 = sessionFactory.getCollectionMetadata(collectionRole);
-				String role = collMetadata2.getRole();
+			MappingMetamodelImplementor metamodelImpl = (MappingMetamodelImplementor) sessionFactory.getMetamodel();
+            collectionRoles = metamodelImpl.getCollectionRolesByEntityParticipant(rootName);
+            for (String collectionRole : collectionRoles){
+                CollectionPersister collMetadata2 = metamodelImpl.getCollectionDescriptor(collectionRole);
+                String role = collMetadata2.getRole();
 				Type elType = collMetadata2.getElementType();
 				logger.debug(role);
 			}
@@ -555,9 +566,12 @@ public class DeduplicationHelper {
 		}
 	}
 
-	private void reallocateSingleItem_Old(CdmBase cdmBase1, CdmBase cdmBase2, ReferenceHolder refHolder) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-		List<? extends CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
-		for (CdmBase referencingObject : referencingObjects){
+	private void reallocateSingleItem_Old(CdmBase cdmBase1, CdmBase cdmBase2, ReferenceHolder refHolder)
+            throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+
+        List<? extends CdmBase> referencingObjects = genericDao.getCdmBasesByFieldAndClass(refHolder.otherClass,
+                refHolder.propertyName, cdmBase2, null);
+        for (CdmBase referencingObject : referencingObjects){
 			Field referencingField = refHolder.otherClass.getDeclaredField(refHolder.propertyName);
 			referencingField.setAccessible(true);
 			Object test = referencingField.get(referencingObject);
@@ -568,15 +582,16 @@ public class DeduplicationHelper {
 
 	private <T> Set<String> getCollectionRoles(Class<T> clazz,
 			SessionFactoryImpl sessionFactory) {
-		Set<String> collectionRoles = null;
-		ClassMetadata classMetaData = sessionFactory.getClassMetadata(clazz);
-		if (classMetaData instanceof AbstractEntityPersister){
-			AbstractEntityPersister persister = (AbstractEntityPersister)classMetaData;
+        Set<String> collectionRoles = null;
+        MappingMetamodel metamodel = (MappingMetamodel)session.getSessionFactory().getMetamodel();
+        EntityPersister entityPersister = metamodel.getEntityDescriptor(clazz);
+        if (entityPersister instanceof AbstractEntityPersister){
+            AbstractEntityPersister persister = (AbstractEntityPersister)entityPersister;
 			String rootName = persister.getRootEntityName();
-			collectionRoles = sessionFactory.getMetamodel().getCollectionRolesByEntityParticipant(rootName);
+            MappingMetamodelImplementor metamodelImpl = (MappingMetamodelImplementor) sessionFactory.getMetamodel();
+            collectionRoles = metamodelImpl.getCollectionRolesByEntityParticipant(rootName);
 			for (String collectionRole : collectionRoles){
-				CollectionMetadata collMetadata = sessionFactory.getCollectionMetadata(collectionRole);
-				CollectionPersister collPersister = sessionFactory.getMetamodel().collectionPersister(collectionRole);
+				CollectionPersister collPersister = metamodel.getCollectionDescriptor(collectionRole);
 				logger.debug("");
 			}
 		}else{

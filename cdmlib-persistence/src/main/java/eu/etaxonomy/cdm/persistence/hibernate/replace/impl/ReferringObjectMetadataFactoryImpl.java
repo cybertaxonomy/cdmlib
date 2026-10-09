@@ -14,17 +14,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.metamodel.Attribute;
-import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
-import jakarta.persistence.metamodel.EntityType;
-import jakarta.persistence.metamodel.Metamodel;
-
 import org.hibernate.MappingException;
 import org.hibernate.SessionFactory;
 import org.hibernate.internal.SessionFactoryImpl;
-import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.metamodel.MappingMetamodel;
+import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.type.AssociationType;
 import org.hibernate.type.BagType;
 import org.hibernate.type.CollectionType;
@@ -37,6 +31,11 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFactory;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.metamodel.Attribute;
+import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
+import jakarta.persistence.metamodel.EntityType;
+import jakarta.persistence.metamodel.Metamodel;
 
 @Component
 public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetadataFactory {
@@ -49,10 +48,11 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 	@Override
     public Set<ReferringObjectMetadata> get(Class<? extends CdmBase> toClass) {
 		if(!referringObjectMap.containsKey(toClass)) {
-			ClassMetadata toClassMetadata = sessionFactory.getClassMetadata(toClass);
+            MappingMetamodel mappingMetamodel = (MappingMetamodel) sessionFactory.getMetamodel();
+            EntityPersister entityPersister = mappingMetamodel.getEntityDescriptor(toClass);
 			Map<Class<?>,Set<String>> bidirectionalRelationships = new HashMap<>();
-			for(String propertyName : toClassMetadata.getPropertyNames()) {
-				Type propertyType = toClassMetadata.getPropertyType(propertyName);
+			for(String propertyName : entityPersister.getPropertyNames()) {
+				Type propertyType = entityPersister.getPropertyType(propertyName);
 				if(propertyType.isAssociationType() && !propertyType.isAnyType()) {
 					AssociationType associationType = (AssociationType)propertyType;
 
@@ -98,8 +98,7 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 
 			Set<ReferringObjectMetadata> referringObjectMetadata = new HashSet<>();
 
-			EntityManagerFactory entityManagerFactory = sessionFactory;
-			Metamodel metamodel = entityManagerFactory.getMetamodel();
+			Metamodel metamodel = sessionFactory.getMetamodel();
             for(EntityType<?> entityType : metamodel.getEntities()) {
                 String entityName = entityType.getName();
             	if(!entityName.endsWith("_AUD")) {
