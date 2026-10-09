@@ -141,7 +141,7 @@ public class CdmDataChangeEvent extends AbstractEvent{
                 PostInsertEvent postEvent = (PostInsertEvent) event;
                 mediationEvent = new CdmDataChangeEvent(
                         (CdmBase)postEvent.getEntity(),
-                        postEvent.getId(),
+                        (Serializable) postEvent.getId(),
                         postEvent.getState(),
                         null,
                         postEvent.getPersister(),
@@ -153,7 +153,7 @@ public class CdmDataChangeEvent extends AbstractEvent{
                 PostLoadEvent updateEvent = (PostLoadEvent) event;
                 mediationEvent = new CdmDataChangeEvent(
                         (CdmBase)updateEvent.getEntity(),
-                        updateEvent.getId(),
+                        (Serializable) updateEvent.getId(),
                         null,
                         null,
                         updateEvent.getPersister(),
@@ -165,7 +165,7 @@ public class CdmDataChangeEvent extends AbstractEvent{
                 PostUpdateEvent updateEvent = (PostUpdateEvent) event;
                 mediationEvent = new CdmDataChangeEvent(
                         (CdmBase)updateEvent.getEntity(),
-                        updateEvent.getId(),
+                        (Serializable) updateEvent.getId(),
                         updateEvent.getState(),
                         updateEvent.getOldState(),
                         updateEvent.getPersister(),
@@ -177,7 +177,7 @@ public class CdmDataChangeEvent extends AbstractEvent{
                 PostDeleteEvent deleteEvent = (PostDeleteEvent) event;
                 mediationEvent = new CdmDataChangeEvent(
                         (CdmBase)deleteEvent.getEntity(),
-                        deleteEvent.getId(),
+                        (Serializable) deleteEvent.getId(),
                         deleteEvent.getDeletedState(),
                         null,
                         deleteEvent.getPersister(),

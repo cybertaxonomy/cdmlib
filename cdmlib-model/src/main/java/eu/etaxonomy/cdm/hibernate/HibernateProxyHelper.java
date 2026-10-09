@@ -109,6 +109,9 @@ public class HibernateProxyHelper {
 	 * delegates calls to {@link org.hibernate.proxy.HibernateProxyHelper}
 	 */
 	public static Class getClassWithoutInitializingProxy(Object object) {
-		return org.hibernate.proxy.HibernateProxyHelper.getClassWithoutInitializingProxy(object);
+		if (object instanceof HibernateProxy) {
+			return ((HibernateProxy) object).getHibernateLazyInitializer().getPersistentClass();
+		}
+		return object.getClass();
 	}
 }
