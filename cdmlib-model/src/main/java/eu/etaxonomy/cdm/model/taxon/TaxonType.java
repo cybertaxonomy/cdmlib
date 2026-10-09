@@ -39,7 +39,7 @@ public enum TaxonType
 //*************************** CONVERTER ****************************/
 
     @Converter
-    public class TaxonTypeEnumSetConverter extends EnumSetConverterBase<TaxonType> {
+    public static class TaxonTypeEnumSetConverter extends EnumSetConverterBase<TaxonType> {
         public TaxonTypeEnumSetConverter() { super(TaxonType.class); }
     }
 

@@ -40,7 +40,7 @@ public enum ConceptStatus
 //********************** CONVERTER ****************************/
 
     @Converter
-    public class ConceptStatusEnumSetConverter extends EnumSetConverterBase<ConceptStatus> {
+    public static class ConceptStatusEnumSetConverter extends EnumSetConverterBase<ConceptStatus> {
         public ConceptStatusEnumSetConverter() { super(ConceptStatus.class); }
     }
 

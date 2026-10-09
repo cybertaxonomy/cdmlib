@@ -37,7 +37,7 @@ public enum CRUD implements IEnumTerm<CRUD>{
 //********************** CONVERTER ****************************/
 
     @Converter
-    public class CRUDEnumSetConverter extends EnumSetConverterBase<CRUD> {
+    public static class CRUDEnumSetConverter extends EnumSetConverterBase<CRUD> {
         public CRUDEnumSetConverter() { super(CRUD.class); }
     }
 

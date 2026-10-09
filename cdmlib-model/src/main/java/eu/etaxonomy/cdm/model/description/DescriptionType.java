@@ -103,7 +103,7 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
 //********************** CONVERTER ****************************/
 
     @Converter
-    public class DescriptionTypeEnumSetConverter extends EnumSetConverterBase<DescriptionType> {
+    public static class DescriptionTypeEnumSetConverter extends EnumSetConverterBase<DescriptionType> {
         public DescriptionTypeEnumSetConverter() { super(DescriptionType.class); }
     }
 

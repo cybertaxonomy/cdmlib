@@ -41,7 +41,7 @@ public enum ConceptDefinition
 //********************** CONVERTER ****************************/
 
     @Converter
-    public class ConceptDefinitionEnumSetConverter extends EnumSetConverterBase<ConceptDefinition> {
+    public static class ConceptDefinitionEnumSetConverter extends EnumSetConverterBase<ConceptDefinition> {
         public ConceptDefinitionEnumSetConverter() { super(ConceptDefinition.class); }
     }
 

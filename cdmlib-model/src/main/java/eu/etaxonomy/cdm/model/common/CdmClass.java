@@ -92,7 +92,7 @@ public enum CdmClass implements IEnumTerm<CdmClass>{
 //****************************** CONVERTER ************************/
 
     @Converter
-    public class CdmClassEnumSetConverter extends EnumSetConverterBase<CdmClass> {
+    public static class CdmClassEnumSetConverter extends EnumSetConverterBase<CdmClass> {
         public CdmClassEnumSetConverter() { super(CdmClass.class); }
     }
 
