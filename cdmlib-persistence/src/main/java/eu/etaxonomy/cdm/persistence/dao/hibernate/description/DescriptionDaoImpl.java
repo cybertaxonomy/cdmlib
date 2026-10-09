@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.EnumSetUserType;
+import eu.etaxonomy.cdm.jpa.EnumSetConverterBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -216,7 +216,7 @@ public class DescriptionDaoImpl
 
         //descriptionTypes
         if(!CdmUtils.isNullSafeEmpty(descriptionTypes)) {
-            Predicate p = EnumSetUserType.hasAllEnumValues(descriptionTypes, cb, root);
+            Predicate p = EnumSetConverterBase.hasAllEnumValues(descriptionTypes, cb, root);
             predicates.add(p);
         }
 

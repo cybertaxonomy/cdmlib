@@ -13,8 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.joda.time.Partial;
 import org.joda.time.format.ISODateTimeFormat;
 
-import eu.etaxonomy.cdm.hibernate.PartialUserType;
-
+import eu.etaxonomy.cdm.jpa.PartialConverter;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
 
@@ -35,7 +34,7 @@ public class PartialJSONValueProcessor implements JsonValueProcessor {
 		}
 		Partial partial = (Partial) object;
 		if (logger.isDebugEnabled()) {
-			logger.debug("processArrayValue of joda.time.DateTime: " + PartialUserType.partialToString(partial));
+			logger.debug("processArrayValue of joda.time.DateTime: " + PartialConverter.partialToString(partial));
 		}
         return partial.toString(ISODateTimeFormat.date());
 	}
@@ -47,7 +46,7 @@ public class PartialJSONValueProcessor implements JsonValueProcessor {
 		}
 		Partial partial = (Partial) object;
 		if (logger.isDebugEnabled()) {
-			logger.debug("processObjectValue of joda.time.DateTime: " + PartialUserType.partialToString(partial));
+			logger.debug("processObjectValue of joda.time.DateTime: " + PartialConverter.partialToString(partial));
 		}
 		return partial.toString(ISODateTimeFormat.date());
 	}

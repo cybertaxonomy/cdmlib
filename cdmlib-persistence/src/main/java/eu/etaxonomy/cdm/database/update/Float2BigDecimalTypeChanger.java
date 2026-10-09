@@ -16,10 +16,10 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.hibernate.BigDecimalUserType;
+import eu.etaxonomy.cdm.hibernate.BigDecimalCompositeUserType;
 
 /**
- * Changes a float column into a BigDecimal (2 columns) for usage in {@link BigDecimalUserType}.
+ * Changes a float column into a BigDecimal (2 columns) for usage in {@link BigDecimalCompositeUserType}.
  * First renames the old column and creates the 2 new columns via {@link #getInnerSteps() inner steps}
  * and then fills the new columns by using the mapping algorithm defined in
  *  {@link #invokeOnTable(String, ICdmDataSource, IProgressMonitor, CaseType, SchemaUpdateResult)}.
