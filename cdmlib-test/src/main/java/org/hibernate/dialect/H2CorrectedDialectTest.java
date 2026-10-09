@@ -17,8 +17,11 @@ import java.sql.Types;
  */
 public class H2CorrectedDialectTest extends H2Dialect {
 
-	 public H2CorrectedDialectTest() {
-	        super();
-	        registerColumnType(Types.FLOAT, "double"); //do we really want this
-	 }
+	@Override
+	protected String columnType(int sqlTypeCode) {
+		if (sqlTypeCode == Types.FLOAT) {
+			return "double"; //do we really want this
+		}
+		return super.columnType(sqlTypeCode);
+	}
 }
