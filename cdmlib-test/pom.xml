@@ -207,6 +207,11 @@
       <artifactId>hibernate-core</artifactId>
     </dependency>
     <dependency>
+      <!-- SchemaExport / hbm2ddl (DdlCreator) -->
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-ant</artifactId>
+    </dependency>
+    <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-model</artifactId>
     </dependency>
