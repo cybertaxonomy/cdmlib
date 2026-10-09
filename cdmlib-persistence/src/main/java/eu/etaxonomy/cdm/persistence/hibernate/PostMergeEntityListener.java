@@ -8,7 +8,6 @@
  */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.event.spi.MergeContext;
 import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
 
@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
  */
 public class PostMergeEntityListener implements MergeEventListener {
 
-    private static final long serialVersionUID = 1565797119368313987L;
     private static final Logger logger = LogManager.getLogger();
 
     private static Map<Session, Set<CdmBase>> newEntitiesMap = new ConcurrentHashMap<>();
@@ -59,11 +58,12 @@ public class PostMergeEntityListener implements MergeEventListener {
         //         not to be implemented for entities handle only here.
         //         Needs intensive testing if there is not maybe a reason why the method
         //         was not implemented.
-        onMerge(event, new HashMap<>());
+        //Note: AI wanted to delete this comment when migrating to h6.
+        onMerge(event, null);
     }
 
     @Override
-    public void onMerge(MergeEvent event, Map copiedAlready) throws HibernateException {
+    public void onMerge(MergeEvent event, MergeContext copiedAlready) throws HibernateException {
         // any new entities are added to a map which is retrieved at the end of the
         // CdmEntityDaoBase.merge(T transientObject, boolean returnTransientEntity) call
         if(event.getOriginal() != null && CdmBase.class.isAssignableFrom(event.getOriginal().getClass()) &&
@@ -83,7 +83,7 @@ public class PostMergeEntityListener implements MergeEventListener {
         }
     }
 
-    private static void handleTreeNodes(CdmBase result, CdmBase original, MergeEvent event, Map copiedAlready) {
+    private static void handleTreeNodes(CdmBase result, CdmBase original, MergeEvent event, MergeContext copiedAlready) {
         if (original != null){
             Class<?> entityClazz = original.getClass();
 

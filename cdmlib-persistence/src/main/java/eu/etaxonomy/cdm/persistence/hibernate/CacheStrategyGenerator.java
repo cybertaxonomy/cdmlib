@@ -8,11 +8,10 @@
  */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
+import org.hibernate.event.spi.MergeContext;
 import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
@@ -23,7 +22,7 @@ import org.hibernate.event.spi.SaveOrUpdateEventListener;
  * @since 04.03.2009
  */
 public class CacheStrategyGenerator implements SaveOrUpdateEventListener, MergeEventListener {
-    private static final long serialVersionUID = -5511287200489449838L;
+
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
@@ -40,8 +39,10 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener, MergeE
     }
 
     @Override
-    public void onMerge(MergeEvent event, Map copiedAlready) throws HibernateException {
-
+    public void onMerge(MergeEvent event, MergeContext copiedAlready) throws HibernateException {
+        logger.warn("OnMerge(MergeEvent, MergeContext) was called. This method from "
+                + "interface MergeListener is not implemented yet in"
+                + "CacheStrategyGenerator");
     }
 
     private void saveOrUpdateOrMerge(Object entity) {
