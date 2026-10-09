@@ -13,7 +13,8 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.FileSystemResource;
 
 // @Component
@@ -37,7 +38,9 @@ public class DataSourceBeanLoader {
 
         logger.info("loading DataSourceBeans from: " + path);
         FileSystemResource file = new FileSystemResource(path);
-        XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        reader.loadBeanDefinitions(file);
 
         for(String beanName : beanFactory.getBeanDefinitionNames()){
             T datasource = beanFactory.getBean(beanName, requiredType);

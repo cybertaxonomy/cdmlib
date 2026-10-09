@@ -29,7 +29,8 @@ import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
 import org.hibernate.dialect.PostgreSQL82Dialect;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -339,7 +340,8 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : getBeanDefinitionFile());
         logger.info("loading DataSourceBean '" + beanName + "' from: " + path);
         FileSystemResource file = new FileSystemResource(path);
-        XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        new XmlBeanDefinitionReader(beanFactory).loadBeanDefinitions(file);
         DataSource dataSource = beanFactory.getBean(beanName, DataSource.class);
         if(dataSource instanceof ComboPooledDataSource){
             logger.info("DataSourceBean '" + beanName + "' is a ComboPooledDataSource [URL:" + ((ComboPooledDataSource)dataSource).getJdbcUrl()+ "]");
@@ -363,7 +365,8 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : getBeanDefinitionFile());
         logger.info("loading dataSourceProperties from: " + path);
         FileSystemResource file = new FileSystemResource(path);
-        XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        new XmlBeanDefinitionReader(beanFactory).loadBeanDefinitions(file);
         DataSourceProperties properties = null;
         try {
             properties = beanFactory.getBean("dataSourceProperties", DataSourceProperties.class);
