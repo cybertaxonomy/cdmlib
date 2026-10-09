@@ -106,7 +106,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
 @TypeBinding(binder = @TypeBinderRef(type = eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde.class))
 @TypeBinding(binder = @TypeBinderRef(type = GroupByTaxonClassBridge.class))
 public abstract class TaxonBase
-        extends CreditableEntity<ITaxonCacheStrategy>
+        extends CreditableEntity
         implements  IPublishable, IIntextReferenceTarget{
 
     private static final long serialVersionUID = -3589185949928938529L;
@@ -196,6 +196,11 @@ public abstract class TaxonBase
     @Override
     protected void initDefaultCacheStrategy() {
         this.cacheStrategy = new TaxonBaseDefaultCacheStrategy();
+    }
+
+    @Override
+    public ITaxonCacheStrategy cacheStrategy() {
+        return (ITaxonCacheStrategy) super.cacheStrategy();
     }
 
 //********* METHODS **************************************/

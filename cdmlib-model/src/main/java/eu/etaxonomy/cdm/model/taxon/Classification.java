@@ -79,7 +79,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.ClassificationDefaultCacheStrategy;
 @Audited
 @Indexed
 public class Classification
-        extends CreditableEntity<IIdentifiableEntityCacheStrategy<Classification>>
+        extends CreditableEntity
         implements ITaxonTreeNode, IHasCredits, IHasLink {
 
     private static final long serialVersionUID = -753804821474209635L;

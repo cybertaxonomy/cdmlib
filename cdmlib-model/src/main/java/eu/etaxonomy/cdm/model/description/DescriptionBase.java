@@ -84,7 +84,7 @@ import jakarta.xml.bind.annotation.XmlType;
 @TypeBinding(binder = @TypeBinderRef(type = DescriptionBaseClassBridge.class))
 @TypeBinding(binder = @TypeBinderRef(type = GroupByTaxonClassBridge.class))
 public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy<?>>
-        extends CreditableEntity<S>
+        extends CreditableEntity
         implements ICdmTarget,IPublishable {
 
     private static final long serialVersionUID = 5504218413819040193L;

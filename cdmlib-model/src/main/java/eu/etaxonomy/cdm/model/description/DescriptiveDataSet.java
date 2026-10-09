@@ -74,7 +74,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Entity
 @Audited
 public class DescriptiveDataSet
-        extends CreditableEntity<DescriptiveDataSetDefaultCacheStrategy>
+        extends CreditableEntity
         implements IHasCredits, IHasLink {
 
     private static final long serialVersionUID = 3256448866757415686L;

@@ -38,6 +38,11 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 /**
  * An {@link IdentifiableEntity} which allows to have {@link Credit}s.
  * See #10772 for details.
+ * <p>
+ * Intentionally <strong>not</strong> generic: Hibernate ORM 6.1.x NPEs when an
+ * {@link OrderColumn} is declared on a generic {@link MappedSuperclass}.
+ * Typed cache strategies remain on concrete subclasses via covariant
+ * {@code cacheStrategy()} overrides. Fixed upstream from Hibernate 6.2.
  *
  * @author muellera
  * @since 02.12.2025
@@ -48,8 +53,8 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 })
 @MappedSuperclass
 @Audited
-public abstract class CreditableEntity<S extends IIdentifiableEntityCacheStrategy<?>>
-        extends IdentifiableEntity<S>
+public abstract class CreditableEntity
+        extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<?>>
         implements IHasCredits{
 
     private static final long serialVersionUID = 3612910783891987069L;
@@ -127,8 +132,8 @@ public abstract class CreditableEntity<S extends IIdentifiableEntityCacheStrateg
 //******************** CLONE **********************************************/
 
     @Override
-    public CreditableEntity<S> clone() throws CloneNotSupportedException{
-        CreditableEntity<S> result = (CreditableEntity<S>)super.clone();
+    public CreditableEntity clone() throws CloneNotSupportedException{
+        CreditableEntity result = (CreditableEntity)super.clone();
 
         //Credits
         result.credits = new ArrayList<>();

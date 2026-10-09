@@ -22,7 +22,6 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -88,7 +87,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Audited
 @MappedSuperclass
 public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy>
-        extends SourcedEntityBase<IdentifiableSource>
+        extends IdentifiableEntityBase
         implements IIdentifiableEntity /*, ISourceable<IdentifiableSource> */ {
 
     private static final long serialVersionUID = 7912083412108359559L;
@@ -129,15 +128,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
     private Set<Extension> extensions = new HashSet<>();
-
-    @XmlElementWrapper(name = "Identifiers", nillable = true)
-    @XmlElement(name = "Identifier")
-    @OrderColumn(name="sortIndex")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    @Merge(MergeMode.ADD_CLONE)
-    @NotNull
-    private List<Identifier> identifiers = new ArrayList<>();
 
     @XmlElementWrapper(name = "Links", nillable = true)
     @XmlElement(name = "Link")
@@ -324,113 +314,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
     }
 
-//************ IDENTIFIERS ********************************************/
-
-    @Override
-    public List<Identifier> getIdentifiers(){
-        if(this.identifiers == null) {
-            this.identifiers = new ArrayList<>();
-        }
-        return this.identifiers;
-    }
-    /**
-     * @return a set of identifier value strings
-     */
-    public Set<String> getIdentifierStrings(IdentifierType type){
-       return getIdentifierStrings(type == null? null :type.getUuid());
-    }
-    /**
-     * @param identifierTypeUuid
-     * @return a set of identifier value strings
-     */
-    public Set<String> getIdentifierStrings(UUID identifierTypeUuid){
-        Set<String> result = new HashSet<>();
-        for (Identifier identifier : getIdentifiers()){
-            if ( (identifier.getType()== null && identifierTypeUuid == null)
-                || (identifier.getType().getUuid().equals(identifierTypeUuid))){
-                result.add(identifier.getIdentifier());
-            }
-        }
-        return result;
-    }
-    /**
-     * Returns the first identifier value of the given type.
-     * <code>null</code> if no such identifier exists.
-     * @param identifierTypeUuid
-     */
-    public String getIdentifierString(UUID identifierTypeUuid){
-        Set<Identifier> set = getIdentifiers(identifierTypeUuid);
-        return set.isEmpty()? null : set.iterator().next().getIdentifier();
-    }
-    /**
-     * Returns the first identifier of the given type.
-     * <code>null</code> if no such identifier exists.
-     * @param identifierTypeUuid
-     */
-    public Identifier getIdentifier(UUID identifierTypeUuid){
-        Set<Identifier> set = getIdentifiers(identifierTypeUuid);
-        return set.isEmpty()? null : set.iterator().next();
-    }
-
-    public Set<Identifier> getIdentifiers(UUID identifierTypeUuid){
-        Set<Identifier> result = new HashSet<>();
-        for (Identifier identifier : getIdentifiers()){
-            if ( (identifier.getType() == null && identifierTypeUuid == null)
-                || (identifier.getType() != null && identifier.getType().getUuid().equals(identifierTypeUuid))){
-                result.add(identifier);
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public Identifier addIdentifier(String identifier, IdentifierType identifierType){
-    	Identifier result = Identifier.NewInstance(identifier, identifierType);
-    	addIdentifier(result);
-    	return result;
-    }
-
-    @Override
-    public void addIdentifier(Integer index, Identifier identifier){
-        if (identifier != null){
-        	//deduplication
-        	int oldIndex = getIdentifiers().indexOf(identifier);
-        	if(oldIndex > -1){
-        		getIdentifiers().remove(identifier);
-        		if (index != null && oldIndex < index){
-        			index--;
-        		}
-        	}
-
-        	if (index != null){
-        	    getIdentifiers().add(index, identifier);
-        	}else{
-        	    getIdentifiers().add(identifier);
-        	}
-        }
-    }
-
-    @Override
-    public void addIdentifier(Identifier identifier){
-        addIdentifier(null, identifier);
-    }
-
-    @Override
-    public void removeIdentifier(Identifier identifier){
-        if (identifier != null){
-            getIdentifiers().remove(identifier);
-        }
-    }
-    @Override
-    public void removeIdentifier(int index){
-    	getIdentifiers().remove(index);
-    }
-
-    @Override
-    public boolean replaceIdentifier(Identifier newObject, Identifier oldObject){
-        return replaceInList(this.identifiers, newObject, oldObject);
-    }
-
+//************ EXTENSIONS ********************************************/
 
     @Override
     public Set<Extension> getExtensions(){

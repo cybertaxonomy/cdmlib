@@ -94,7 +94,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Audited
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Media
-        extends CreditableEntity<IMediaCacheStrategy>
+        extends CreditableEntity
         implements IMultiLanguageTextHolder, IIntextReferenceTarget,
                    IHasRights, IHasCredits, IHasLink {
 
