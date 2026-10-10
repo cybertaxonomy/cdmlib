@@ -53,6 +53,11 @@
       <artifactId>cdmlib-persistence</artifactId>
     </dependency>
     <dependency>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-spring-remoting</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.persistence</groupId>
       <artifactId>jakarta.persistence-api</artifactId>
     </dependency>

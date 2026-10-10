@@ -16,6 +16,7 @@
     <module>cdmlib-db</module>
     <module>cdmlib-test</module>
     <module>cdmlib-persistence</module>
+    <module>cdmlib-spring-remoting</module>
     <module>cdmlib-services</module>
     <module>cdmlib-cache</module>
     <module>cdmlib-ext</module>
