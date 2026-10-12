@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -26,7 +27,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public interface IUserService
         extends IService<User>, UserDetailsManager, UserDetailsPasswordService {
 
-    public void changePasswordForUser(String username, String password) throws UsernameNotFoundException, DataAccessException;
+    public void changePasswordForUser(@P("username") String username, String password) throws UsernameNotFoundException, DataAccessException;
 
     public UUID saveGrantedAuthority(GrantedAuthority grantedAuthority);
 
