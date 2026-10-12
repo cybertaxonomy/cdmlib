@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -416,7 +417,7 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-	protected String getTimePeriod(TimePeriod period) {
+	protected String getTimePeriod(TimePeriodBase period) {
 		if (period == null){
 			return "";
 		}else{

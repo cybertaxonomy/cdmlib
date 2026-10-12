@@ -32,11 +32,7 @@ import jakarta.xml.bind.annotation.XmlType;
  * @updated 14-Jul-2013 move parser methods to TimePeriodParser
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TimePeriod", propOrder = {
-        "start",
-        "end",
-        "freeText"
-})
+@XmlType(name = "TimePeriod")
 @XmlRootElement(name = "TimePeriod")
 @Embeddable
 public class TimePeriod extends TimePeriodBase implements Cloneable, Serializable, ICheckEmpty {

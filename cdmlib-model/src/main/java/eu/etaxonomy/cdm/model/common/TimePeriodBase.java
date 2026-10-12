@@ -40,7 +40,6 @@ import jakarta.persistence.Transient;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -51,12 +50,11 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * @updated 14-Jul-2013 move parser methods to TimePeriodParser
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TimePeriod", propOrder = {
+@XmlType(name = "TimePeriodBase", propOrder = {
         "start",
         "end",
         "freeText"
 })
-@XmlRootElement(name = "TimePeriod")
 @MappedSuperclass
 public abstract class TimePeriodBase implements Cloneable, Serializable, ICheckEmpty {
 
