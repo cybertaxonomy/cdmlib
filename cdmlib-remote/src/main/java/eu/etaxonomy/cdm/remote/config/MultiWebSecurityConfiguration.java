@@ -12,19 +12,27 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 
 import eu.etaxonomy.cdm.config.ConfigFileUtil;
 
@@ -42,6 +50,7 @@ import eu.etaxonomy.cdm.config.ConfigFileUtil;
  */
 @EnableWebSecurity
 @Import(OAuth2ServerConfiguration.class)
+@Configuration
 public class MultiWebSecurityConfiguration {
 
     public static final String MANAGE_CLIENT = "MANAGE_CLIENT";
@@ -54,49 +63,35 @@ public class MultiWebSecurityConfiguration {
     private ConfigFileUtil configFileUtil;
 
     /**
-     * Check for full authentication for remoting services
-     * @author a.kohlbecker
-     * @since Oct 6, 2016
+     * Require full authentication on the OAuth2 authorization service
+     * so that the user is requested to provide his credentials.
      */
-    @Configuration
-    @Order(2)
-    public static class RemotingWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-              // @formatter:off
-                http
-             .anonymous().disable()
-             .antMatcher("/remoting/**")
-                 .authorizeRequests().anyRequest().access("hasAnyRole('ROLE_ADMIN', 'ROLE_PROJECT_MANAGER', 'ROLE_REMOTING')")
-                 .and()
-             .csrf().disable()
-             .httpBasic();
-             // @formatter:on
-        }
+    @Bean
+    @Order(1)
+    public SecurityFilterChain loginSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/oauth/authorize")
+            .authorizeHttpRequests(auth -> auth.anyRequest().fullyAuthenticated())
+            .csrf(AbstractHttpConfigurer::disable)
+            .httpBasic(Customizer.withDefaults())
+            .anonymous(AbstractHttpConfigurer::disable);
+        return http.build();
     }
 
     /**
-     * Require full authentication on the OAuth2 authorization service
-     * so that the user is requested to provide his credentials.
-     *
-     * @author a.kohlbecker
-     * @since Jan 16, 2017
+     * Check for full authentication for remoting services
      */
-    @Configuration
-    @Order(1)
-    public static class LoginWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-              // @formatter:off
-                http
-             .anonymous().disable()
-             .antMatcher("/oauth/authorize")
-                 .authorizeRequests().anyRequest().fullyAuthenticated()
-                 .and()
-             .csrf().disable()
-             .httpBasic();
-             // @formatter:on
-        }
+    @Bean
+    @Order(2)
+    public SecurityFilterChain remotingSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/remoting/**")
+            .authorizeHttpRequests(auth -> auth.anyRequest()
+                    .hasAnyRole("ADMIN", "PROJECT_MANAGER", "REMOTING"))
+            .csrf(AbstractHttpConfigurer::disable)
+            .httpBasic(Customizer.withDefaults())
+            .anonymous(AbstractHttpConfigurer::disable);
+        return http.build();
     }
 
     /**
@@ -104,46 +99,48 @@ public class MultiWebSecurityConfiguration {
      *
      * <b>NOTE:</b> Further access restrictions are defined
      * in the OAuth2ServerConfiguration.
-     *
-     * @author a.kohlbecker
-     * @since Oct 6, 2016
      */
-    @Configuration
-    public static class DefaultWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-              // @formatter:off
-                http
-             .anonymous().and()
-             .antMatcher("/**")
-             .csrf().disable()
-             .httpBasic();
-             // @formatter:on
-        }
+    @Bean
+    @Order(4)
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/**")
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+            .csrf(AbstractHttpConfigurer::disable)
+            .httpBasic(Customizer.withDefaults());
+        return http.build();
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth, DaoAuthenticationProvider daoAuthenticationProvider) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth,
+            DaoAuthenticationProvider daoAuthenticationProvider,
+            PasswordEncoder passwordEncoder) throws Exception {
 
         // add the DaoAuthenticationProvider which is defined in
         // /cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services_security.xml
-        // if not added here it will not be added to the context as long as we are doing the
-        // configuration explicitly here.
         auth.authenticationProvider(daoAuthenticationProvider);
 
-        // Add an inMemoryUserManager to  enable access to the global ROLE_MANAGE_CLIENTs.
-        // This is the casue for the need to do the configuration explicitly.
-        InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryAuthConf = auth.inMemoryAuthentication();
         File managingUsersFile = new File(configFileUtil.perUserCdmFolder(), MANAGING_USERS_PROPERTIES);
-        if(!managingUsersFile.exists()){
+        if (!managingUsersFile.exists()) {
             makeManagingUsersPropertiesFile(managingUsersFile);
         }
         Properties users = new Properties();
         users.load(new FileInputStream(managingUsersFile));
-        for(Object userName : users.keySet()){
-            inMemoryAuthConf.withUser(userName.toString()).password(users.get(userName).toString()).roles(MANAGE_CLIENT);
+        List<UserDetails> userDetails = new ArrayList<>();
+        for (Object userName : users.keySet()) {
+            String password = users.get(userName).toString();
+            if (!password.startsWith("{")) {
+                password = "{noop}" + password;
+            }
+            userDetails.add(User.withUsername(userName.toString())
+                    .password(password)
+                    .roles(MANAGE_CLIENT)
+                    .build());
         }
+        DaoAuthenticationProvider inMemoryProvider =
+                new DaoAuthenticationProvider(new InMemoryUserDetailsManager(userDetails));
+        inMemoryProvider.setPasswordEncoder(passwordEncoder);
+        auth.authenticationProvider(inMemoryProvider);
     }
 
     private void makeManagingUsersPropertiesFile(File propertiesFile) throws IOException {

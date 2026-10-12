@@ -8,20 +8,23 @@
 */
 package eu.etaxonomy.cdm.remote.oauth2;
 
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.Rule;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import eu.etaxonomy.cdm.remote.server.ServerRunning;
 
 /**
+ * Helper for authorization-code grant smoke tests.
+ * <p>
+ * Legacy {@code AuthorizationCodeResourceDetails} (spring-security-oauth2) was removed
+ * with the Spring Security 6 / Authorization Server migration.
+ *
  * @author a.kohlbecker
  * @since Jan 17, 2017
  *
@@ -30,17 +33,6 @@ public class AuthorizationCodeGrantTests {
 
     @Rule
     public ServerRunning serverRunning = ServerRunning.isRunning();
-
-    private AuthorizationCodeResourceDetails resource = new AuthorizationCodeResourceDetails();
-
-    {
-        resource.setAccessTokenUri(serverRunning.getUrl("/oauth/token"));
-        resource.setClientId("my-client-with-registered-redirect");
-        resource.setId("sparklr");
-        resource.setScope(Arrays.asList("trust"));
-        resource.setUserAuthorizationUri(serverRunning.getUrl("/oauth/authorize"));
-    }
-
 
     private String authenticateAndApprove(String location) {
 
