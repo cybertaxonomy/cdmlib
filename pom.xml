@@ -785,6 +785,11 @@
             <artifactId>hibernate</artifactId>
           </exclusion>
           <exclusion>
+            <!-- conflicts with org.hibernate.orm:hibernate-core 6.x -->
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+          </exclusion>
+          <exclusion>
             <!-- we use log4j-slf4j2-impl -->
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
