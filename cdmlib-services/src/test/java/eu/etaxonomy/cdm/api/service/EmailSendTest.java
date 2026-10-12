@@ -67,8 +67,7 @@ public class EmailSendTest extends CdmIntegrationTest {
         Wiser wiser = null;
         if(useWiser) {
             // start test smtp server
-            wiser = new Wiser();
-            wiser.setPort(2500); // better use random port
+            wiser = Wiser.port(2500); // better use random port
             wiser.start();
         }
 
@@ -93,7 +92,7 @@ public class EmailSendTest extends CdmIntegrationTest {
                 assertEquals(TO, envelopeReceiver);
                 try {
                     MimeMessage mess = message.getMimeMessage();
-                    subject  = mess.getSubject();
+                    subject = mess.getSubject();
                 } catch (MessagingException e) {
                     logger.error("MessagingException", e);
                 }

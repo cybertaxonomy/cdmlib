@@ -84,8 +84,7 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
     @Before
     public void startEmailServer() {
         // Integer smtpPort = env.getProperty(SendEmailConfigurer.PORT, Integer.class);
-        wiser = new Wiser();
-        wiser.setPort(2500); // must be the same as configured for SendEmailConfigurer.PORT
+        wiser = Wiser.port(2500); // must be the same as configured for SendEmailConfigurer.PORT
         wiser.start();
         logger.debug("Wiser email server started");
     }

@@ -87,8 +87,7 @@ public class AccountRegistrationServiceTest extends eu.etaxonomy.cdm.test.integr
     @Before
     public void startEmailServer() {
         // Integer smtpPort = env.getProperty(SendEmailConfigurer.PORT, Integer.class);
-        wiser = new Wiser();
-        wiser.setPort(2500); // must be the same as configured for SendEmailConfigurer.PORT
+        wiser = Wiser.port(2500); // must be the same as configured for SendEmailConfigurer.PORT
         wiser.start();
         logger.debug("Wiser email server started");
     }
