@@ -268,7 +268,9 @@ public abstract class TaxonBase
         return this.taxonStatus == TaxonStatus.DOUBTFUL;
     }
     /**
-     * Sets the status to {@link TaxonStatus#DOUBTFUL} or {@link TaxonStatus#OK}.
+     * If <code>true</code>, sets the status to {@link TaxonStatus#DOUBTFUL}.
+     * If <code>false</code> sets the default to the subclass's default.
+     * ({@link TaxonStatus#ACCEPTED} / {@link TaxonStatus#SYNONYM}).
      * See #11039
      *
      * @see #isDoubtful()
