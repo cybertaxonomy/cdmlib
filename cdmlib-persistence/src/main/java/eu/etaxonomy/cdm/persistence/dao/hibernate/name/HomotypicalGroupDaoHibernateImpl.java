@@ -59,7 +59,7 @@ public class HomotypicalGroupDaoHibernateImpl extends CdmEntityDaoBase<Homotypic
 			query.setParameter("status", status);
 		}
 		if(type != null){
-			query.setParameter("type", type.getSimpleName());
+			query.setParameter("type", type);
 		}
 
 		query.setParameter("homotypicalGroup",homotypicalGroup);

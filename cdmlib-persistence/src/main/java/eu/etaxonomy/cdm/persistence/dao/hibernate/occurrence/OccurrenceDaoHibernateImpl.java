@@ -582,7 +582,7 @@ public class OccurrenceDaoHibernateImpl
         query.setParameterList("setOfAll", setOfAll);
 
         if(type != null && !type.equals(SpecimenOrObservationBase.class)){
-            query.setParameter("type", type.getSimpleName());
+            query.setParameter("type", type);
         }
 
         addLimitAndStart(query, limit, start);
@@ -916,8 +916,7 @@ public class OccurrenceDaoHibernateImpl
         query.setParameterList("setOfAllIds", setOfAllIds);
 
         if(requiresClassFilter){
-            //note: null warning is incorrect here
-            query.setParameter("type", clazz.getSimpleName());
+            query.setParameter("type", clazz);
         }
 
         addLimitAndStart(query, limit, start);

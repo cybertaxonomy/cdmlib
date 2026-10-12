@@ -67,7 +67,7 @@ public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<Ent
                         + "ORDER BY ev.validatedEntityClass, ev.validatedEntityId",
                         EntityConstraintViolation.class);
         query.setParameter("cls", validatedEntityClass);
-        query.setParameter("severity", severity.toString());
+        query.setParameter("severity", severity);
         List<EntityConstraintViolation> result = query.list();
         return result;
     }
@@ -78,7 +78,7 @@ public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<Ent
                 "FROM EntityConstraintViolation cv " + "JOIN FETCH cv.entityValidation ev "
                         + "WHERE cv.severity = :severity " + "ORDER BY ev.validatedEntityClass, ev.validatedEntityId",
                         EntityConstraintViolation.class);
-        query.setParameter("severity", severity.toString());
+        query.setParameter("severity", severity);
         List<EntityConstraintViolation> result = query.list();
         return result;
     }

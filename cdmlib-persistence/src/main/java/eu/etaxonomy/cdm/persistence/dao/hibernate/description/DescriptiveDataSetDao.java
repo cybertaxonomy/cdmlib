@@ -144,7 +144,7 @@ public class DescriptiveDataSetDao
 			Query<Object[]> query = getSession().createQuery(strQuery, Object[].class);
 
 			query.setParameter("descriptiveDataSetUuid", descriptiveDataSetUuid);
-			query.setParameter("clazz", clazz.getSimpleName());
+			query.setParameter("clazz", clazz);
 			query.setParameterList("features", features);
 
 			//NOTE: Paging does not work with fetch

@@ -127,7 +127,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
                         + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
                         EntityValidation.class);
         query.setParameter("cls", validatedEntityClass);
-        query.setParameter("severity", severity.toString());
+        query.setParameter("severity", severity);
         List<EntityValidation> result = query.list();
         return result;
     }
@@ -139,7 +139,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
               + " WHERE cv.severity = :severity "
               + " ORDER BY vr.validatedEntityClass, vr.validatedEntityId",
               EntityValidation.class);
-        query.setParameter("severity", severity.toString());
+        query.setParameter("severity", severity);
         List<EntityValidation> result = query.list();
         return result;
     }

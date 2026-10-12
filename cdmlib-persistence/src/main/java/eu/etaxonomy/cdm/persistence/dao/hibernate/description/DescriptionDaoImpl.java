@@ -15,13 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,6 +54,12 @@ import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.QuantitativeDataDto;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 @Repository
 @Qualifier("descriptionDaoImpl")
@@ -562,7 +561,7 @@ public class DescriptionDaoImpl
 
         query.setParameter("taxon_uuid", taxonUuid);
         if(type != null){
-            query.setParameter("type", type.getSimpleName());
+            query.setParameter("type", type);
         }
         if (!includeUnpublished){
             query.setParameter("publish", true);

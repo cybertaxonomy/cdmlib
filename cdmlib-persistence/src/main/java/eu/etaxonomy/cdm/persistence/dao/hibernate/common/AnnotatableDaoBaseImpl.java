@@ -169,9 +169,9 @@ public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
 		}
 
 //		if(clazz == null) {
-//		  query.setParameter("class", type.getName());
+//		  query.setParameter("class", type);
 //		} else {
-//	      query.setParameter("class", clazz.getName());
+//	      query.setParameter("class", clazz);
 //		}
 
 		return query.uniqueResult().intValue();
@@ -192,9 +192,9 @@ public abstract class AnnotatableDaoBaseImpl<T extends AnnotatableEntity>
 		}
 
 //		if(clazz == null) {
-//			  query.setParameter("class", type.getName());
+//			  query.setParameter("class", type);
 //		} else {
-//		      query.setParameter("class", clazz.getName());
+//		      query.setParameter("class", clazz);
 //		}
 
         addPageSizeAndNumber(query, pageSize, pageNumber);
