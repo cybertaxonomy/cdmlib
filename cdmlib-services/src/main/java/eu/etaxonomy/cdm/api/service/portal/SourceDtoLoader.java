@@ -60,7 +60,7 @@ public class SourceDtoLoader {
                 +     " osb.id as id, osb.uuid as uuid, osb.accessed as accessed, "
                 +     " osb.originalInfo as originalInfo, "
                 +     " ref as ref, osb.citationMicroReference as detail, "
-                +     " osb.type as type, osb.accessed as accessed,"
+                +     " osb.type as type, "
                 +     " nameInSource as nameInSource) "
                 //cdmSource, links
                 //TODO can we avoid outer join?
@@ -107,7 +107,11 @@ public class SourceDtoLoader {
                         dto.setSortableDate(citation.getSortableDateString());
                     }
                     String label = OriginalSourceFormatter.INSTANCE_LONG_CITATION.format(citation, detail, accessed);
-                    String clazz = (String)e.get("cdmClass");
+                    // Hibernate 6 returns Class for entity.class projections (was String in H5)
+                    Object cdmClass = e.get("cdmClass");
+                    String clazz = cdmClass instanceof Class
+                            ? ((Class<?>) cdmClass).getSimpleName()
+                            : (String) cdmClass;
                     TypedLabel typedLabel = new TypedLabel(uuid, clazz, label);
                     dto.addLabel(typedLabel);
 
