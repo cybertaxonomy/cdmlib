@@ -22,6 +22,9 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -258,7 +261,7 @@ public class StatisticsDaoHibernateImpl
 				+ "and tdes.class=:type " + "and tn.taxon is not null "
 				+ "and tn.taxon.name is not null " + sourceRefWhere);
 
-		parameters.put("type", "SpecimenTypeDesignation");
+		parameters.put("type", SpecimenTypeDesignation.class);
 
 		// b. synonym names:
 		queryStrings.add("select distinct " + selection + "from TaxonNode tn "
@@ -530,8 +533,9 @@ public class StatisticsDaoHibernateImpl
 		// we do assume, that a name description would not have a
 		// SpecimenOrObservation element
 
-		parameters.put("dnaSample", "DnaSample");
-		parameters.put("individualsAssociation", "IndividualsAssociation");
+		// Hibernate 6: TYPE()/.class parameters must be Class, not simple name String
+		parameters.put("dnaSample", DnaSample.class);
+		parameters.put("individualsAssociation", IndividualsAssociation.class);
 
 		//
 		//
@@ -895,8 +899,9 @@ public class StatisticsDaoHibernateImpl
 		// we do assume, that a name description would not have a
 		// SpecimenOrObservation element
 
-		parameters.put("dnaSample", "DnaSample");
-		parameters.put("individualsAssociation", "IndividualsAssociation");
+		// Hibernate 6: TYPE()/.class parameters must be Class, not simple name String
+		parameters.put("dnaSample", DnaSample.class);
+		parameters.put("individualsAssociation", IndividualsAssociation.class);
 
 		//###TODO???
 		//		ids.addAll(processQueriesWithIdDistinctListResult(queryStrings,
