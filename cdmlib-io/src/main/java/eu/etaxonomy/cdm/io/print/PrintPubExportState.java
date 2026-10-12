@@ -246,7 +246,8 @@ public class PrintPubExportState extends TaxonTreeExportStateBase<PrintPubExport
                 .includeAppendix(config.isAppendIdentifierList()).includeEmptyIds(config.isIncludeEmptyIds())
                 .includeWfoId(config.isIncludeWfoId()).includeIpniId(config.isIncludeIpniId())
                 .includeProtologueUris(config.isIncludeProtologueUris()).featureSortMode(config.getFeatureSortMode())
-                .factSortMode(config.getFactSortMode()).indentFacts(config.isIndentFacts()).build();
+                .factSortMode(config.getFactSortMode()).indentFacts(config.isIndentFacts())
+                .indentTypeDesignations(config.isIndentTypeDesignations()).build();
     }
 
 }
