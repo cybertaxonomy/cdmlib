@@ -17,11 +17,6 @@ import org.apache.logging.log4j.Logger;
 import org.cybertaxonomy.media.info.model.MediaInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.dozermapper.core.DozerBeanMapperBuilder;
-import com.github.dozermapper.core.Mapper;
-import com.github.dozermapper.core.loader.api.BeanMappingBuilder;
-import com.github.dozermapper.core.loader.api.FieldsMappingOptions;
-import com.github.dozermapper.core.loader.api.TypeMappingOptions;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -38,36 +33,9 @@ public class MediaInfoServiceReader extends AbstactMediaMetadataReader {
 
     private static final Logger logger = LogManager.getLogger();
 
-    static private Mapper dozerMapper;
-
-    static {
-        // FIXME provide dozerMapper as bean via spring configuration
-        //dozerMapper = DozerBeanMapperBuilder.buildDefault();
-        dozerMapper = DozerBeanMapperBuilder.create().withMappingBuilder(new BeanMappingBuilder() {
-
-            @Override
-            protected void configure() {
-                mapping(type(MediaInfo.class).mapEmptyString(true),
-                        type(CdmImageInfo.class),
-                        TypeMappingOptions.wildcardCaseInsensitive(true)
-                ).fields(
-                        field("size"),
-                        field("length"),
-                        FieldsMappingOptions.oneWay()
-
-                ).fields(
-                        field("extension"),
-                        field("suffix"),
-                        FieldsMappingOptions.oneWay()
-                        );
-            }
-        }).build();
-
-    }
     protected MediaInfoServiceReader(URI imageUri, URI metadataUri) {
         super(imageUri, metadataUri);
     }
-
 
     @Override
     public AbstactMediaMetadataReader read() throws IOException, HttpException {
@@ -77,11 +45,24 @@ public class MediaInfoServiceReader extends AbstactMediaMetadataReader {
 
             ObjectMapper mapper = new ObjectMapper();
             MediaInfo mediaInfo = mapper.readValue(jsonStream, MediaInfo.class);
-            dozerMapper.map(mediaInfo, getCdmImageInfo());
-            // TODO how to do this with Dozer?:
+            mapMediaInfo(mediaInfo, getCdmImageInfo());
             mediaInfo.getMetaData().entrySet().forEach(e -> processPutMetadataEntry(e.getKey(), e.getValue()));
             return this;
         }
+    }
+
+    /**
+     * Maps MediaInfoService JSON model fields onto {@link CdmImageInfo}.
+     * Replaces former Dozer mapping (Dozer 6.5 still depends on javax.el / javax.xml.bind).
+     */
+    private static void mapMediaInfo(MediaInfo source, CdmImageInfo target) {
+        target.setWidth(source.getWidth());
+        target.setHeight(source.getHeight());
+        target.setBitPerPixel(source.getBitPerPixel());
+        target.setFormatName(source.getFormatName());
+        target.setMimeType(source.getMimeType());
+        target.setLength(source.getSize());
+        target.setSuffix(source.getExtension());
     }
 
 }
