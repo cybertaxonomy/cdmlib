@@ -956,10 +956,19 @@ public class CdmGenericDaoImpl
 //					join.on(cb.isNotNull(join.get("id")));
 
 					@SuppressWarnings("rawtypes")
-                    Class matchClass = value.getClass();
+                    Class matchClass = CdmBase.deproxy(value).getClass();
                     if (IMatchable.class.isAssignableFrom(matchClass)){
+                        // Hibernate 6: cb.treat(join, X) when join is already X (or X is not a
+                        // mapped subclass of the association) can make the join match nothing.
+                        // Only treat when matching a true entity subtype of the association type.
                         @SuppressWarnings({ "rawtypes", "unchecked" })
-                        Join specificJoin = cb.treat(join, matchClass);
+                        Join specificJoin = join;
+                        Class<?> joinJavaType = join.getJavaType();
+                        if (joinJavaType != null && matchClass != joinJavaType
+                                && !matchClass.isInterface()
+                                && joinJavaType.isAssignableFrom(matchClass)) {
+                            specificJoin = cb.treat(join, matchClass);
+                        }
                         //TODO do we want an explicit type check here like cb.equal(join.type(), matchClass);
                         //     maybe not needed as we want to allow 2 objects to match even if they are of different subtypes
                         //     but they have only attributes in use that are available also in the superclass
