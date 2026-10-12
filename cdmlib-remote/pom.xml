@@ -136,6 +136,15 @@
         <groupId>com.github.dozermapper</groupId>
         <artifactId>dozer-spring4</artifactId>
     </dependency>
+    <!-- Dozer 7 EL is optional/provided; Expressly implements jakarta.el -->
+    <dependency>
+      <groupId>jakarta.el</groupId>
+      <artifactId>jakarta.el-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.expressly</groupId>
+      <artifactId>expressly</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
