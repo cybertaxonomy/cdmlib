@@ -7,10 +7,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import java.util.List;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
@@ -18,6 +14,9 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoBaseImpl;
 import eu.etaxonomy.cdm.persistence.dao.term.IRepresentationDao;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 /**
  * @author a.babadshanjan
@@ -32,11 +31,13 @@ public class RepresentationDaoImpl
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-	public RepresentationDaoImpl() {
+	@Deprecated
+    public RepresentationDaoImpl() {
 		super(Representation.class);
 	}
 
-	@Override
+	@Deprecated
+    @Override
     public List<Representation> getAllRepresentations(Integer limit, Integer start) {
 
 	    CriteriaBuilder cb = getCriteriaBuilder();

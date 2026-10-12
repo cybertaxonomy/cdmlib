@@ -23,7 +23,6 @@ import org.hibernate.event.spi.SaveOrUpdateEventListener;
  */
 public class CacheStrategyGenerator implements SaveOrUpdateEventListener, MergeEventListener {
 
-    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     @Override

@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.validation.constraints.NotNull;
-
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,6 +20,7 @@ import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import jakarta.validation.constraints.NotNull;
 
 @Repository
 public class IdentificationKeyDaoImpl extends DaoBase implements IIdentificationKeyDao {

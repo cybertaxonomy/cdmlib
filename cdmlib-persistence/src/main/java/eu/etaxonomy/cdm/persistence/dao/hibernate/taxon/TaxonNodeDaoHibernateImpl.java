@@ -21,12 +21,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -67,6 +61,11 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dto.compare.SortableTaxonNodeQueryResultComparator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 /**
  * @author a.mueller
@@ -1103,7 +1102,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            List<TaxonBase> taxonList = (List)taxonDao.loadList(taxonIdList, null, null);
+            List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
             for (TaxonBase taxonBase : taxonList){
                 if (taxonBase != null){
                     Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
@@ -1254,7 +1253,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             case COUNT:
             default: return hql;
             }
-
         }
     }
 

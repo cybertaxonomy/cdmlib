@@ -601,7 +601,6 @@ public class DeduplicationHelper {
 		return collectionRoles;
 	}
 
-
 	private <T extends CdmBase> void makeMergeProperty(T cdmBase1, T cdmBase2, Type propertyType, String propertyName, SessionFactoryImpl sessionFactory, boolean isCollection) throws MergeException{
 
 		try {

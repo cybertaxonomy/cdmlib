@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate;
 
 import java.io.IOException;
@@ -48,37 +47,45 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
     private static final Logger logger = LogManager.getLogger();
 
 	private String defaultField;
-	protected Directory directory;
+	@Deprecated
+    protected Directory directory;
 	private final Class<T> type;
 	private Class<? extends T> indexedClasses[];
 
 
-	public AlternativeSpellingSuggestionParser(Class<T> type) {
+	@Deprecated
+    public AlternativeSpellingSuggestionParser(Class<T> type) {
 		this.type = type;
 	}
 
-	public void setIndexedClasses(Class<? extends T> indexedClasses[]) {
+	@Deprecated
+    public void setIndexedClasses(Class<? extends T> indexedClasses[]) {
 		this.indexedClasses = indexedClasses;
 	}
 
-	public abstract void setDirectory(Directory directory);
+	@Deprecated
+    public abstract void setDirectory(Directory directory);
 
-	@Autowired
+	@Deprecated
+    @Autowired
 	public void setHibernateSessionFactory(SessionFactory sessionFactory) {
 		super.setSessionFactory(sessionFactory);
 	}
 
-	public void setDefaultField(String defaultField) {
+	@Deprecated
+    public void setDefaultField(String defaultField) {
 		this.defaultField = defaultField;
 	}
 
-	@Override
+	@Deprecated
+    @Override
     public Query parse(String queryString) throws ParseException {
 		QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
 		return queryParser.parse(queryString);
 	}
 
-	@Override
+	@Deprecated
+    @Override
     public Query suggest(String queryString) throws ParseException {
 		QuerySuggester querySuggester = new QuerySuggester(defaultField, new StandardAnalyzer());
 		Query query = querySuggester.parse(queryString);
@@ -151,7 +158,8 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase>
 		}
 	}
 
-	@Override
+	@Deprecated
+    @Override
     public void refresh() {
 		// Spelling dictionary refresh relied on Hibernate Search 5 IndexReaderAccessor
 		// APIs that no longer exist. Spelling support itself is disabled in the app context.

@@ -247,7 +247,6 @@ public interface ICdmGenericDao {
 
 	public void createFullSampleData();
 
-
     /**
      * Returns the number of objects belonging to a certain class being stored
      * in the database
