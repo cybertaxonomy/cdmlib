@@ -7,6 +7,7 @@
     <session-factory>
 
       <property name="connection.release_mode">after_transaction</property>
+      <!-- Enum converters: registered via META-INF/services MetadataBuilderInitializer -->
 
       <!-- Connection Pooling -->
 <!--       <property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property> -->

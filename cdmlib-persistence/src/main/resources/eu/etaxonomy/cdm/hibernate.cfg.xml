@@ -7,6 +7,8 @@
     <session-factory>
 
       <property name="connection.release_mode">after_transaction</property>
+      <!-- Enum converters: registered via META-INF/services MetadataBuilderInitializer
+           (hibernate.metadata_builder_contributor is JPA-boot only; Spring LSFB ignores it) -->
 
       <!-- Connection Pooling -->
 <!--       <property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property> -->
