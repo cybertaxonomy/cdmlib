@@ -15,7 +15,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
@@ -106,7 +106,7 @@ public class OriginalSourceFormatterTest {
         IWebPage webpage = ReferenceFactory.newWebPage();
         webpage.setAbbrevTitle("A beautiful taxon page");
         VerbatimTimePeriod datePublished = TimePeriodParser.parseStringVerbatim("2001");
-        TimePeriod accessed = TimePeriodParser.parseStringVerbatim("2020");
+        TimePeriodBase accessed = TimePeriodParser.parseStringVerbatim("2020");
         webpage.setDatePublished(datePublished);
         Person person = Person.NewInstance(null, "Miller", "A.", "Adam");
         webpage.setAuthorship(person);
@@ -151,7 +151,7 @@ public class OriginalSourceFormatterTest {
         datePublished.setContinued(true);
         database.setDatePublished(datePublished);
 
-        TimePeriod sourceAccessed = TimePeriodParser.parseStringVerbatim("2020");
+        TimePeriodBase sourceAccessed = TimePeriodParser.parseStringVerbatim("2020");
 
         //assert with author
         Assert.assertEquals("Should be author and source.accessed", "Miller 2020", formatter.format((Reference)database, null, sourceAccessed));

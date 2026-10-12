@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
@@ -61,7 +61,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         }
         Reference reference = source.getCitation();
         String microReference = source.getCitationMicroReference();
-        TimePeriod accessed = source.getAccessed();
+        TimePeriodBase accessed = source.getAccessed();
         if (reference == null && isBlank(microReference) && accessed == null){
             return null;
         }
@@ -82,11 +82,11 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         return format(reference, microReference, null, null);
     }
 
-    public String format(Reference reference, String microReference, TimePeriod accessed){
+    public String format(Reference reference, String microReference, TimePeriodBase accessed){
         return format(reference, microReference, accessed, null);
     }
 
-    public String format(Reference reference, String microReference, TimePeriod accessed, String uniqueString){
+    public String format(Reference reference, String microReference, TimePeriodBase accessed, String uniqueString){
         if (reference == null){
             return null;
         }
@@ -123,7 +123,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
    /**
      * Implementation is temporarily. May change or be further improved in future.
      */
-    private String handleLongformCitation(Reference reference, String microReference, TimePeriod accessed) {
+    private String handleLongformCitation(Reference reference, String microReference, TimePeriodBase accessed) {
 
         ReferenceDefaultCacheStrategy referenceFormatter = ReferenceDefaultCacheStrategy.NewInstance(withHTML);
 
@@ -133,7 +133,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         }
 
         String fullRefCitation = CdmUtils.concat(". ", refCitation, microReference);
-        String accessedStr = TimePeriod.isBlank(accessed) ? null : "[accessed: "+accessed.toString()+"]";
+        String accessedStr = TimePeriodBase.isBlank(accessed) ? null : "[accessed: "+accessed.toString()+"]";
 
         String withDateCitation = CdmUtils.concat(" ", fullRefCitation, accessedStr);
         if (withDateCitation != null) {
@@ -155,13 +155,13 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         }
     }
 
-    private String getShortCitationDateAndDetail(Reference reference, String microReference, TimePeriod accessed, String uniqueString) {
+    private String getShortCitationDateAndDetail(Reference reference, String microReference, TimePeriodBase accessed, String uniqueString) {
         String dateStr = getDateString(reference, accessed);
         dateStr = CdmUtils.concat("", dateStr, uniqueString);
         return getShortTimePeriodAndDetail(dateStr, microReference, withYearBrackets);
     }
 
-    private String getDateString(Reference reference, TimePeriod accessed) {
+    private String getDateString(Reference reference, TimePeriodBase accessed) {
         String result = null;
         if (!isEmpty(accessed)) {
             return timePeriodString(accessed);
@@ -185,7 +185,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         return Nz(result);
     }
 
-    private String timePeriodString(TimePeriod timePeriod) {
+    private String timePeriodString(TimePeriodBase timePeriod) {
         String result = null;
         if (timePeriod != null) {
             if (isNotBlank(timePeriod.getFreeText())){
@@ -212,7 +212,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
      * it is concatenated with separator ":"
      * @return the concatenated string
      */
-    private String handleCitationDetailInTitleCache(Reference reference, String citationDetail, TimePeriod accessed, String uniqueString) {
+    private String handleCitationDetailInTitleCache(Reference reference, String citationDetail, TimePeriodBase accessed, String uniqueString) {
         String titleCache = reference.getTitleCache();
 
         //remove date published
@@ -256,7 +256,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
         return result.trim();
     }
 
-    private boolean isEmpty(TimePeriod timePeriod) {
+    private boolean isEmpty(TimePeriodBase timePeriod) {
         return timePeriod == null || timePeriod.isEmpty();
     }
 }

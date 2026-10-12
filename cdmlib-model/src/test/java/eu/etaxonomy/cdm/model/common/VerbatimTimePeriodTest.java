@@ -8,7 +8,11 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 
@@ -260,13 +264,14 @@ public class VerbatimTimePeriodTest {
         Integer endMonth = 12;
         Integer endYear = 1799;
         String freeText = "A free period";
+        //TODO switch back to TimePeriod after migration to hibernate 6
         VerbatimTimePeriod tp1 = VerbatimTimePeriod.NewVerbatimInstance(startYear,endYear);
         tp1.setStartDay(startDay);
         tp1.setStartMonth(startMonth);
         tp1.setEndDay(endDay);
         tp1.setEndMonth(endMonth);
         tp1.setFreeText(freeText);
-        TimePeriod tpClone = tp1.clone();
+        TimePeriodBase tpClone = tp1.clone();
         Assert.assertEquals("Start year must be 1788.", startYear, tpClone.getStartYear());
         Assert.assertEquals("Start month must be 6.", startMonth, tpClone.getStartMonth());
         Assert.assertEquals("Start day must be 25.", startDay, tpClone.getStartDay());

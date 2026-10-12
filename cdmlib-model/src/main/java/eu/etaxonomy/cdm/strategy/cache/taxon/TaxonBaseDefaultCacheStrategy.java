@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -178,7 +178,7 @@ public class TaxonBaseDefaultCacheStrategy
 
         Reference sec = taxonBase.getSec();
         sec = HibernateProxyHelper.deproxy(sec);
-        TimePeriod sourceAccessed = taxonBase.getSecSource() == null ? null : taxonBase.getSecSource().getAccessed();
+        TimePeriodBase sourceAccessed = taxonBase.getSecSource() == null ? null : taxonBase.getSecSource().getAccessed();
 
         String secRef;
         if (sec == null){

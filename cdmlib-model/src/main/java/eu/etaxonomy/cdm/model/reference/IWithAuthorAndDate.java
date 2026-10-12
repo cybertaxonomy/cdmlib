@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.model.reference;
 
-import jakarta.persistence.Transient;
-
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
+import jakarta.persistence.Transient;
 
 /**
  * Interface representing all {@link Reference references} which have
@@ -60,5 +60,5 @@ public interface IWithAuthorAndDate {
      */
     @Transient
     @Deprecated
-    public VerbatimTimePeriod setDatePublished(TimePeriod datePublished);
+    public VerbatimTimePeriod setDatePublished(TimePeriodBase datePublished);
 }

@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
@@ -720,8 +720,8 @@ public class Reference
     @Override
     @Transient
     @Deprecated
-    public VerbatimTimePeriod setDatePublished(TimePeriod datePublished){
-        VerbatimTimePeriod newTimePeriod = VerbatimTimePeriod.toVerbatim(datePublished);
+    public VerbatimTimePeriod setDatePublished(TimePeriodBase datePublished){
+        VerbatimTimePeriod newTimePeriod = TimePeriodBase.toVerbatim(datePublished);
         setDatePublished(newTimePeriod);
         return newTimePeriod;
     }

@@ -15,6 +15,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 
 /**
  * @author a.mueller
@@ -36,7 +37,7 @@ public class TimePeriodFormatter {
 
     private TimePeriodFormatter(){}
 
-    public String format (TimePeriod timePeriod){
+    public String format (TimePeriodBase timePeriod){
         String result = null;
         if (StringUtils.isNotBlank(timePeriod.getFreeText())){
             result = timePeriod.getFreeText();
@@ -49,7 +50,7 @@ public class TimePeriodFormatter {
     /**
      * Returns the concatenation of <code>start</code> and <code>end</code>
      */
-    public String getTimePeriod(TimePeriod tp){
+    public String getTimePeriod(TimePeriodBase tp){
         String result = null;
         if (tp.isContinued()){
             String strStart = tp.getStart() != null ? tp.getStart().toString(partialFormatter): null;
@@ -85,7 +86,7 @@ public class TimePeriodFormatter {
         return partial != null && partial.getFields().length>0;
     }
 
-    public String getYear(TimePeriod tp){
+    public String getYear(TimePeriodBase tp){
         String result = "";
         if (tp.getStartYear() != null){
             result += String.valueOf(tp.getStartYear());

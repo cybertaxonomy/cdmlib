@@ -207,7 +207,7 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         TaxonBase taxonBase = Taxon.NewInstance(name, sec);
         Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 1982", taxonBase.getTitleCache());
 
-        sec.setDatePublished(null);
+        sec.setDatePublished((VerbatimTimePeriod)null);
         taxonBase.setTitleCache(null, false);
         Assert.assertEquals("Abies alba (L.) Mill. sec. MLW", taxonBase.getTitleCache());
 

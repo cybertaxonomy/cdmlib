@@ -49,7 +49,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 })
 @XmlRootElement(name = "ExtendedTimePeriod")
 @Embeddable
-public class ExtendedTimePeriod extends TimePeriod {
+public class ExtendedTimePeriod extends TimePeriodBase {
 
     private static final long serialVersionUID = -6543644293635460526L;
     @SuppressWarnings("unused")
@@ -237,39 +237,39 @@ public class ExtendedTimePeriod extends TimePeriod {
         return getPartialValue(getExtremeEnd(), DAY_TYPE);
     }
 
-    public TimePeriod setExtremeStartYear(Integer year){
+    public TimePeriodBase setExtremeStartYear(Integer year){
         return setExtremeStartField(year, YEAR_TYPE);
     }
 
-    public TimePeriod setExtremeStartMonth(Integer month) throws IndexOutOfBoundsException{
+    public TimePeriodBase setExtremeStartMonth(Integer month) throws IndexOutOfBoundsException{
         return setExtremeStartField(month, MONTH_TYPE);
     }
 
-    public TimePeriod setExtremeStartDay(Integer day) throws IndexOutOfBoundsException{
+    public TimePeriodBase setExtremeStartDay(Integer day) throws IndexOutOfBoundsException{
         return setExtremeStartField(day, DAY_TYPE);
     }
 
-    public TimePeriod setExtremeEndYear(Integer year){
+    public TimePeriodBase setExtremeEndYear(Integer year){
         return setExtremeEndField(year, YEAR_TYPE);
     }
 
-    public TimePeriod setExtremeEndMonth(Integer month) throws IndexOutOfBoundsException{
+    public TimePeriodBase setExtremeEndMonth(Integer month) throws IndexOutOfBoundsException{
         return setExtremeEndField(month, MONTH_TYPE);
     }
 
-    public TimePeriod setExtremeEndDay(Integer day) throws IndexOutOfBoundsException{
+    public TimePeriodBase setExtremeEndDay(Integer day) throws IndexOutOfBoundsException{
         return setExtremeEndField(day, DAY_TYPE);
     }
 
     @Transient
-    private TimePeriod setExtremeStartField(Integer value, DateTimeFieldType type)
+    private TimePeriodBase setExtremeStartField(Integer value, DateTimeFieldType type)
             throws IndexOutOfBoundsException{
         extremeStart = setPartialField(extremeStart, value, type);
         return this;
     }
 
     @Transient
-    private TimePeriod setExtremeEndField(Integer value, DateTimeFieldType type)
+    private TimePeriodBase setExtremeEndField(Integer value, DateTimeFieldType type)
             throws IndexOutOfBoundsException{
         extremeEnd = setPartialField(getExtremeEnd(), value, type);
         return this;
