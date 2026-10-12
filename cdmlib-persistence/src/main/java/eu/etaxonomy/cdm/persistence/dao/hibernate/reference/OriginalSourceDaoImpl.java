@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.reference;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.metamodel.EntityType;
 
 /**
  * @author a.mueller
@@ -54,34 +56,77 @@ public class OriginalSourceDaoImpl
         if (clazz == null){
             clazz = (Class)SingleSourcedEntityBase.class;
         }
-        Query<S> q = getSession().createQuery(
-                "SELECT c " +
-                "FROM " + clazz.getName() + " AS c " +
-                "INNER JOIN c.source AS source " +
-                "WHERE source.id= :sourceId ", clazz
-            );
-        q.setParameter("sourceId", sourceId);
-
-        S result = q.uniqueResult();
-        return result;
+        // Hibernate 6: MappedSuperclass (e.g. SingleSourcedEntityBase) cannot be used in FROM
+        for (Class<?> entityClass : entityRootsWithAttribute(clazz, "source")) {
+            @SuppressWarnings("unchecked")
+            Query<S> q = getSession().createQuery(
+                    "SELECT c FROM " + entityClass.getName() + " AS c "
+                    + "INNER JOIN c.source AS source "
+                    + "WHERE source.id = :sourceId", (Class<S>) entityClass);
+            q.setParameter("sourceId", sourceId);
+            S result = q.uniqueResult();
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
     }
 
 	@Override
-	public <S extends IdentifiableEntity> S findIdentifiableBySourceId(Class<S> clazz, int sourceId){
+    public <S extends IdentifiableEntity> S findIdentifiableBySourceId(Class<S> clazz, int sourceId){
         if (clazz == null){
             clazz = (Class)IdentifiableEntity.class;
         }
-	    Query<S> q = getSession().createQuery(
-                "SELECT c " +
-                "FROM " + clazz.getName() + " AS c " +
-                "INNER JOIN c.sources AS source " +
-                "WHERE source.id= :sourceId ", clazz
-            );
-	    q.setParameter("sourceId", sourceId);
-
-        S result = q.uniqueResult();
-	    return result;
+        // Hibernate 6: MappedSuperclass (e.g. IdentifiableEntity) cannot be used in FROM;
+        // query each concrete entity root that inherits "sources".
+        for (Class<?> entityClass : entityRootsWithAttribute(clazz, "sources")) {
+            @SuppressWarnings("unchecked")
+            Query<S> q = getSession().createQuery(
+                    "SELECT c FROM " + entityClass.getName() + " AS c "
+                    + "INNER JOIN c.sources AS source "
+                    + "WHERE source.id = :sourceId", (Class<S>) entityClass);
+            q.setParameter("sourceId", sourceId);
+            S result = q.uniqueResult();
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
 	}
+
+    /**
+     * Entity classes assignable from {@code base} that declare {@code attributeName},
+     * restricted to inheritance roots (avoids querying both TaxonBase and Taxon).
+     */
+    private List<Class<?>> entityRootsWithAttribute(Class<?> base, String attributeName) {
+        List<Class<?>> candidates = new ArrayList<>();
+        for (EntityType<?> et : getSession().getMetamodel().getEntities()) {
+            Class<?> javaType = et.getJavaType();
+            if (javaType == null || !base.isAssignableFrom(javaType)) {
+                continue;
+            }
+            try {
+                et.getAttribute(attributeName);
+                candidates.add(javaType);
+            } catch (IllegalArgumentException noAttr) {
+                // attribute not on this entity
+            }
+        }
+        List<Class<?>> roots = new ArrayList<>();
+        for (Class<?> candidate : candidates) {
+            boolean subclassOfOther = false;
+            for (Class<?> other : candidates) {
+                if (other != candidate && other.isAssignableFrom(candidate)) {
+                    subclassOfOther = true;
+                    break;
+                }
+            }
+            if (!subclassOfOther) {
+                roots.add(candidate);
+            }
+        }
+        return roots;
+    }
 
 	@Override
     public <S extends ISourceable> Map<String, S> findOriginalSourcesByIdInSource(Class<S> clazz, Set<String> idInSourceSet, String idNamespace) {
