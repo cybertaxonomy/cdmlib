@@ -4999,7 +4999,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         PROTECTEDTITLECACHE boolean not null,
         TITLECACHE varchar(800),
         APPENDEDPHRASE varchar(255),
-        TAXONSTATUS varchar(10) not null default 'OK',
+        TAXONSTATUS varchar(10) not null default 'ACC',
         PUBLISH boolean not null,
         USENAMECACHE boolean not null,
         CONCEPTDEFINITIONS varchar(255),
