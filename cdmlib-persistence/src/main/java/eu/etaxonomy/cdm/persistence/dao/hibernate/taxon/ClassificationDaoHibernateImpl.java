@@ -377,11 +377,12 @@ public class ClassificationDaoHibernateImpl
          String selectWhat = doCount ? "COUNT(tn)" : "tn";
          String whereUnpublished = includeUnpublished? "" : " AND t.publish = :publish ";
 
+         // Distinct aliases required: Hibernate 6 mishandles reused 'tn' in outer + subquery
          String subSelect =
-                   " SELECT tn.parent "
-                 + " FROM TaxonNode AS tn "
-                 + "     JOIN tn.classification AS c "
-                 + "     JOIN tn.taxon AS t "
+                   " SELECT sn.parent "
+                 + " FROM TaxonNode AS sn "
+                 + "     JOIN sn.classification AS c "
+                 + "     JOIN sn.taxon AS t "
                  + " WHERE t = :taxon "
                  + "   AND c = :classification "
                  + whereUnpublished;
