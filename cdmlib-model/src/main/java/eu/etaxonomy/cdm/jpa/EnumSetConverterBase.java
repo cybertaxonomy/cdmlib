@@ -54,45 +54,22 @@ public abstract class EnumSetConverterBase<E extends Enum<E> & IKeyTerm>
 
     @Override
     public EnumSet<E> convertToEntityAttribute(String dbData) {
+        EnumSet<E> result = EnumSet.noneOf(enumClass);
         if (StringUtils.isBlank(dbData) || dbData.equals(SEP)) {
-            return EnumSet.noneOf(enumClass);
+            return result;
         }
-
-        Set<E> resultSet = EnumSet.noneOf(enumClass);
-        String[] keys = dbData.split(SEP);
-
-        for (String key : keys) {
-           if (key.isEmpty()) {
-               continue;
-           }
-           for (E enumConstant : enumClass.getEnumConstants()) {
-               if (enumConstant.getKey().equals(dbData)) {
-                   resultSet.add(enumConstant);
-                   break;
-               }
-           }
+        for (String key : dbData.split(SEP)) {
+            if (key.isEmpty()) {
+                continue;
+            }
+            for (E enumConstant : enumClass.getEnumConstants()) {
+                if (enumConstant.getKey().equals(key)) {
+                    result.add(enumConstant);
+                    break;
+                }
+            }
         }
-
-        return EnumSet.copyOf(resultSet);
-
-        //AI version:
-
-//        EnumSet<E> result = EnumSet.noneOf(enumClass);
-//        if (dbData == null) {
-//            return result;
-//        }
-//        String[] splits = dbData.split(SEP);
-//        for (String split : splits) {
-//            if (StringUtils.isNotEmpty(split)) {
-//                E term = (E) KeyTermLookup.getTerm(enumClass, split);
-//                if (term == null) {
-//                    throw new IllegalArgumentException(
-//                            split + " is not a valid key value for enumeration " + enumClass.getCanonicalName());
-//                }
-//                result.add(term);
-//            }
-//        }
-//        return result;
+        return result;
     }
 
     // ******** FOR QUERIES ********* //
@@ -103,7 +80,9 @@ public abstract class EnumSetConverterBase<E extends Enum<E> & IKeyTerm>
                     "Enum is not of type IKeyTerm and can not be handled by EnumSet converter");
         }
         IKeyTerm keyValue = (IKeyTerm) enumValue;
-        return cb.like(root.get("types"), "%#" + keyValue.getKey() + "#%");
+        // Cast to String so Hibernate 6 does not apply the EnumSet AttributeConverter
+        // to the LIKE pattern (would ClassCastException String → EnumSet)
+        return cb.like(root.get("types").as(String.class), "%#" + keyValue.getKey() + "#%");
     }
 
     public static <F extends Enum<F>> Predicate hasAllEnumValues(Set<F> enumValues, CriteriaBuilder cb, Root<?> root) {
