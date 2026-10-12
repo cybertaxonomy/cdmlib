@@ -104,7 +104,7 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 	@Deprecated
     protected Map<String, DataSourceInfo> testDataSources(Map<String, SimpleDriverDataSource> dataSources) {
 
-		Map<String, DataSourceInfo> dataSourceInfos = new HashMap<String, DataSourceInfo>();
+		Map<String, DataSourceInfo> dataSourceInfos = new HashMap<>();
 
 		for(String key : dataSources.keySet()){
 			SimpleDriverDataSource datasource = dataSources.get(key);

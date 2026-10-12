@@ -29,7 +29,6 @@ import jakarta.persistence.criteria.Root;
  * @author a.mueller
  * @since 25-02-2019
  */
-@SuppressWarnings({"unchecked"})
 public abstract class EnumSetConverterBase<E extends Enum<E> & IKeyTerm>
         implements AttributeConverter<EnumSet<E>, String> {
 
