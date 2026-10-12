@@ -121,7 +121,9 @@ public abstract class OriginalSourceBase
     @XmlElement(name = "CdmSource")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.EAGER, orphanRemoval=true)  //EAGER to avoid LIEs cdmSource should always be part of the OriginalSource itself
+    // LAZY: EAGER caused Hibernate 6.1 AssertionFailure ("force initializing collection loading")
+    // when cascading deletes load OriginalSourceBase while another collection is initializing
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     private CdmLinkSource cdmSource;
 

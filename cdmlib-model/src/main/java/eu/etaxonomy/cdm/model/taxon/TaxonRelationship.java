@@ -66,7 +66,9 @@ public class TaxonRelationship
     @XmlElement(name = "RelatedFrom")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch=FetchType.EAGER)
+    // LAZY: EAGER caused Hibernate 6.1 AssertionFailure ("force initializing collection loading")
+    // when loading relationsFrom/To while related taxon's secSource (OneToOne unique-key) initializes
+    @ManyToOne(fetch=FetchType.LAZY)
     //see #5477 at least MAN and proparte synonym relations need to update the TaxonBase index of the
     //related taxon to fully work; reindex when the related taxon's indexed properties (e.g. publish) change
     @IndexedEmbedded(includeDepth=1)
@@ -75,7 +77,8 @@ public class TaxonRelationship
     @XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch=FetchType.EAGER)
+    // LAZY: see relatedFrom
+    @ManyToOne(fetch=FetchType.LAZY)
     @IndexedEmbedded(includeDepth=1)
     private Taxon relatedTo;
 
