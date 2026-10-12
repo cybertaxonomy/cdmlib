@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import java.io.Serializable;
+
 /**
  * Revision status for a taxon (and other entities in future).
  *
@@ -33,9 +35,11 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "RevisionStatusInfo")
 @Embeddable
-public class RevisionStatusInfo {
+public class RevisionStatusInfo implements Serializable{
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    private static final long serialVersionUID = 6421912152072920423L;
+
+	@ManyToOne(fetch = FetchType.LAZY)
     private RevisionStatus status;
 
     private ZonedDateTime changed;
