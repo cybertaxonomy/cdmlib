@@ -419,7 +419,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         // 1. searching for a taxon (Rethera)
         //long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas);
 
-        @SuppressWarnings("rawtypes")
         List<TaxonBase> results = taxonDao.getTaxaByName(doTaxa, noSynonyms, noMisapplied, noCommonNames, false, "Rethera", null, subtree, MatchMode.BEGINNING, namedAreas,
                 includeUnpublished, null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
