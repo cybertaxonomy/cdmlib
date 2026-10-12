@@ -30,6 +30,7 @@ import org.hibernate.Session;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -51,6 +52,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
 import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFactory;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import jakarta.persistence.Lob;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
@@ -1052,32 +1054,38 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     //TODO: there is a very similar implementation somewhere else
+    /**
+     * Note: since hibernate 6 case-insensitivity for {@link Lob} are
+     * implemented via hibernate specific iLike.
+     */
     protected <S extends T> Predicate predicateForMatchMode(String param,
             String queryString, MatchMode matchMode,
             CriteriaBuilder cb, From<?,?> root, boolean ignoreCase) {
 
+        String pattern = queryString == null ? "" : queryString;
+        Expression<String> path = root.get(param);
         Predicate result;
         if (ignoreCase) {
-            String lowerQueryString = queryString == null ? "" : queryString.toLowerCase();
+            // HibernateCriteriaBuilder.ilike works for VARCHAR and CLOB/@Lob
+            HibernateCriteriaBuilder hcb = (HibernateCriteriaBuilder) cb;
             if (matchMode == null) {
-                result = cb.like(cb.lower(root.get(param)), lowerQueryString);
+                result = hcb.ilike(path, pattern);
             } else if (matchMode == MatchMode.EXACT) {
-                result = cb.equal(cb.lower(root.get(param)), lowerQueryString);
+                result = hcb.ilike(path, pattern);
             } else if (matchMode == MatchMode.BEGINNING || matchMode == MatchMode.END
                     || matchMode == MatchMode.ANYWHERE || matchMode == MatchMode.LIKE) {
-                result = cb.like(cb.lower(root.get(param)), matchMode.queryStringFrom(lowerQueryString));
+                result = hcb.ilike(path, matchMode.queryStringFrom(pattern));
             } else {
                 throw new RuntimeException("Unsupported MatchMode: " + matchMode.name());
             }
-        }else {
-            String lowerQueryString = queryString == null ? "" : queryString;
+        } else {
             if (matchMode == null) {
-                result = cb.like(root.get(param), lowerQueryString);
+                result = cb.like(path, pattern);
             } else if (matchMode == MatchMode.EXACT) {
-                result = cb.equal(root.get(param), lowerQueryString);
+                result = cb.equal(path, pattern);
             } else if (matchMode == MatchMode.BEGINNING || matchMode == MatchMode.END
                     || matchMode == MatchMode.ANYWHERE || matchMode == MatchMode.LIKE) {
-                result = cb.like(root.get(param), matchMode.queryStringFrom(lowerQueryString));
+                result = cb.like(path, matchMode.queryStringFrom(pattern));
             } else {
                 throw new RuntimeException("Unsupported MatchMode: " + matchMode.name());
             }

@@ -10,25 +10,13 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.From;
-import jakarta.persistence.criteria.Order;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,6 +26,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.hibernate.search.backend.lucene.LuceneExtension;
 import org.hibernate.search.engine.search.query.SearchQuery;
 import org.hibernate.search.mapper.orm.Search;
@@ -51,6 +40,15 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.NativeSqlOrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.RandomOrder;
+import jakarta.persistence.Lob;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.From;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 public abstract class DaoBase {
 
@@ -499,10 +497,17 @@ public abstract class DaoBase {
         return builder.like(path.get(field), pattern);
     }
 
+    /**
+     * Note: since hibernate 6 case-insensitivity for {@link Lob} are
+     * implemented via hibernate specific iLike.
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <T extends CdmBase> Predicate predicateILike(CriteriaBuilder builder,
             Path<T> path, String field, String pattern) {
 
-        return builder.like(builder.lower(path.get(field)), pattern.toLowerCase());
+        HibernateCriteriaBuilder hcb =
+                (HibernateCriteriaBuilder) builder;
+        return hcb.ilike((jakarta.persistence.criteria.Expression) path.get(field), pattern);
     }
 
     protected <T extends CdmBase> Predicate predicateEqual(CriteriaBuilder builder,
