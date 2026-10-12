@@ -14,10 +14,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -37,6 +33,9 @@ import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dto.TeamOrPersonUuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 @Repository
 public class AgentDaoImpl
@@ -86,9 +85,13 @@ public class AgentDaoImpl
 	@Override
     public List<Person> getMembers(Team team, Integer pageSize,	Integer pageNumber) {
 		checkNotInPriorView("AgentDaoImpl.getMembers(Team team, Integer pageSize,	Integer pageNumber)");
-		Query<Person> query = getSession().createQuery("select teamMember from Team team join team.teamMembers teamMember where team = :team order by sortindex", Person.class);
+		Query<Person> query = getSession().createQuery(
+		        "SELECT teamMember "
+		        + " FROM Team team JOIN team.teamMembers teamMember "
+		        + " WHERE team = :team"
+		        + " ORDER BY index(teamMember)",
+		        Person.class);
 		query.setParameter("team", team);
-		//query.addOrder( Order.asc("sortindex") );
 		addPageSizeAndNumber(query, pageSize, pageNumber);
         List<Person> result = query.list();
 		return result;
