@@ -377,6 +377,11 @@ public class AssemblerTest extends UnitilsJUnit4 {
             // Handle explicit exceptions allowed by the proxy
             if ("getHibernateLazyInitializer".equals(methodName)) {
                 return new UninitializedLazyInitializer();
+            } else if ("asHibernateProxy".equals(methodName)) {
+                // Hibernate 6: Hibernate.isInitialized() uses asHibernateProxy()
+                return invocation.getMock();
+            } else if ("writeReplace".equals(methodName)) {
+                return invocation.getMock();
             } else if ("toString".equals(methodName)) {
                 return wrappedClass.toString();
             } else if ("hashCode".equals(methodName)) {
