@@ -21,6 +21,7 @@ import jakarta.persistence.OrderColumn;
 import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -48,6 +49,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  */
 @MappedSuperclass
 @Audited
+@XmlTransient // so identifiers belongs to IdentifiableEntity for JAXB propOrder
 public abstract class IdentifiableEntityBase
         extends SourcedEntityBase<IdentifiableSource> {
 

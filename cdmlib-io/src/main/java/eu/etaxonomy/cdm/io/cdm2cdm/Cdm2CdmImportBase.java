@@ -66,6 +66,7 @@ import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.IIntextReferencable;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntityBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.IntextReference;
@@ -1170,7 +1171,8 @@ public abstract class Cdm2CdmImportBase
         T result = (T) handlePersisted((SourcedEntityBase<?>)identifiableEntity, state);
         //complete
         handleCollection(result, IdentifiableEntity.class, "extensions", Extension.class, state);
-        handleCollection(result, IdentifiableEntity.class, "identifiers", Identifier.class, state);
+        // identifiers live on IdentifiableEntityBase (H6 OrderColumn / generic MappedSuperclass workaround)
+        handleCollection(result, IdentifiableEntityBase.class, "identifiers", Identifier.class, state);
         handleCollection(result, IdentifiableEntity.class, "links", ExternalLink.class, state);
         if (result instanceof IHasCredits) {
             Class<?> creditableClass = result instanceof CreditableEntity ? CreditableEntity.class : result.getClass();
