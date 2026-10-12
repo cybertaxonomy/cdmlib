@@ -18,6 +18,7 @@ import java.util.Set;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyJoinColumn;
@@ -164,8 +165,14 @@ public class TaxonNode
     @XmlElement(name = "placementNote")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @MapKeyJoinColumn(name="placementNote_mapkey_id") // required again for Hibernate 6 Map binding
-    @JoinTable(name = "TaxonNode_PlacementNote")  //to make possible to add also unplacedNote
+    // Explicit join + map-key column: DB column is placementNote_KEY (SchemaUpdater_5120),
+    // not the Hibernate-6 default placementNote_mapkey_id used by other Multilanguage maps
+    @JoinTable(
+            name = "TaxonNode_PlacementNote",
+            joinColumns = @JoinColumn(name = "TaxonNode_id"),
+            inverseJoinColumns = @JoinColumn(name = "placementNote_id")
+    )
+    @MapKeyJoinColumn(name = "placementNote_KEY")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     private Map<Language,LanguageString> placementNote = new HashMap<>();
 
