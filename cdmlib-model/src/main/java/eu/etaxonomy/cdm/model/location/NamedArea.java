@@ -16,22 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Transient;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlIDREF;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlSchemaType;
-import jakarta.xml.bind.annotation.XmlSeeAlso;
-import jakarta.xml.bind.annotation.XmlType;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,6 +32,21 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlIDREF;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
@@ -482,21 +481,21 @@ public class NamedArea extends DefinedTermBase<NamedArea> {
 
 	protected void setDefaultContinentTerms(TermVocabulary<NamedArea> termVocabulary) {
 		continentMap = new HashMap<>();
-		for (NamedArea term : termVocabulary.getTerms()){
+		for (NamedArea term : HibernateProxyHelper.deproxyAll(termVocabulary.getTerms())){
 			continentMap.put(term.getUuid(), term);  //TODO casting
 		}
 	}
 
 	protected void setDefaultWaterbodyTerms(TermVocabulary<NamedArea> termVocabulary) {
 		waterbodyMap = new HashMap<>();
-		for (NamedArea term : termVocabulary.getTerms()){
+		for (NamedArea term : HibernateProxyHelper.deproxyAll(termVocabulary.getTerms())){
 			waterbodyMap.put(term.getUuid(), term);  //TODO casting
 		}
 	}
 
 	protected void setTdwgDefaultTerms(TermVocabulary<NamedArea> tdwgTermVocabulary) {
         tdwgTermMap = new HashMap<>();
-        for (NamedArea term : tdwgTermVocabulary.getTerms()){
+        for (NamedArea term : HibernateProxyHelper.deproxyAll(tdwgTermVocabulary.getTerms())){
             tdwgTermMap.put(term.getUuid(), term);  //TODO casting
             addTdwgArea(term);
         }
@@ -556,7 +555,7 @@ public class NamedArea extends DefinedTermBase<NamedArea> {
         	this.setDefaultWaterbodyTerms(termVocabulary);
         }else{
 	    	termMap = new HashMap<>();
-	        for (NamedArea term : termVocabulary.getTerms()){
+	        for (NamedArea term : HibernateProxyHelper.deproxyAll(termVocabulary.getTerms())){
 	            termMap.put(term.getUuid(), term);
 	        }
         }

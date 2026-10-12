@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.hibernate;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -69,6 +72,14 @@ public class HibernateProxyHelper {
 	     }
 	     return entity;
 	}
+
+
+     public static <T> Set<T> deproxyAll(Set<T> collection){
+         if (collection == null){
+             return null;
+         }
+         return collection.stream().map(i->deproxy(i)).collect(Collectors.toSet());
+    }
 
 	 /**
 	  * Unwrap the target instance from the proxy if possible otherwise return null.

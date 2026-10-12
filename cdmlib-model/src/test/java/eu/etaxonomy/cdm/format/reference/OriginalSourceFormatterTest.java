@@ -15,6 +15,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -151,7 +152,7 @@ public class OriginalSourceFormatterTest {
         datePublished.setContinued(true);
         database.setDatePublished(datePublished);
 
-        TimePeriodBase sourceAccessed = TimePeriodParser.parseStringVerbatim("2020");
+        TimePeriod sourceAccessed = TimePeriodParser.parseString("2020");
 
         //assert with author
         Assert.assertEquals("Should be author and source.accessed", "Miller 2020", formatter.format((Reference)database, null, sourceAccessed));
