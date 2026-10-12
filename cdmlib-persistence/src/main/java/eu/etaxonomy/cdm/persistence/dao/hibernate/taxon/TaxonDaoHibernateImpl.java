@@ -351,10 +351,12 @@ public class TaxonDaoHibernateImpl
             Set<NamedArea> areasExpanded = new HashSet<>();
             if(namedAreas != null && namedAreas.size() > 0){
                 // expand areas and restrict by distribution area
+                // Use partOf.id: under Hibernate 6, "parentArea = :area" (entity compare via JOIN)
+                // can match the area itself instead of its children (see expandNamedAreas).
                 Query<NamedArea> areaQuery = getSession().createQuery("SELECT childArea "
-                        + " FROM NamedArea AS childArea LEFT JOIN childArea.partOf as parentArea "
-                        + " WHERE parentArea = :area", NamedArea.class);
-                expandNamedAreas(namedAreas, areasExpanded, areaQuery);
+                        + " FROM NamedArea AS childArea "
+                        + " WHERE childArea.partOf.id = :areaId", NamedArea.class);
+                expandNamedAreas(namedAreas, areasExpanded, areaQuery, new HashSet<>());
             }
             boolean doAreaRestriction = areasExpanded.size() > 0;
 
@@ -604,14 +606,22 @@ public class TaxonDaoHibernateImpl
         }
     }
 
-    private void expandNamedAreas(Collection<NamedArea> namedAreas, Set<NamedArea> areasExpanded, Query<NamedArea> areaQuery) {
-        for(NamedArea a : namedAreas){
+    /**
+     * Recursively collects {@code namedAreas} and all areas that have them as {@code partOf}.
+     * {@code visitedIds} guards against cycles; needed especially if HQL ever returns an area
+     * as its own child (Hibernate 6 entity comparison via JOIN alias).
+     */
+    private void expandNamedAreas(Collection<NamedArea> namedAreas, Set<NamedArea> areasExpanded,
+            Query<NamedArea> areaQuery, Set<Integer> visitedIds) {
+        for (NamedArea a : namedAreas) {
+            if (a == null || !visitedIds.add(a.getId())) {
+                continue;
+            }
             areasExpanded.add(a);
-            areaQuery.setParameter("area", a);
+            areaQuery.setParameter("areaId", a.getId());
             List<NamedArea> childAreas = areaQuery.list();
-            if(childAreas.size() > 0){
-                areasExpanded.addAll(childAreas);
-                expandNamedAreas(childAreas, areasExpanded, areaQuery);
+            if (!childAreas.isEmpty()) {
+                expandNamedAreas(childAreas, areasExpanded, areaQuery, visitedIds);
             }
         }
     }
