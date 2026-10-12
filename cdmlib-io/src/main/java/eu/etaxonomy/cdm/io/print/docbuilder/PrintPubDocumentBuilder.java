@@ -238,7 +238,10 @@ public class PrintPubDocumentBuilder {
         }
 
         if (!runs.isEmpty()) {
-            elements.add(new PrintPubTextRunElement(runs));
+            PrintPubTextRole role = request.indentSynonyms() ? PrintPubTextRole.SYNONYM_INDENT
+                    : PrintPubTextRole.SYNONYM;
+
+            elements.add(new PrintPubTextRunElement(null, runs, role));
         }
 
         if (StringUtils.isNotBlank(groupDto.typeSpecimenString)) {

@@ -130,6 +130,20 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         typeDesignationIndent.setStyleNameAttribute("PrintPubTypeDesignationIndent");
         typeDesignationIndent.setProperty(OdfParagraphProperties.MarginLeft, "0.8cm");
         typeDesignationIndent.setProperty(OdfParagraphProperties.TextIndent, "-0.8cm");
+
+        // ---------- SYNONYMS ----------
+
+        OdfStyle synonym = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+
+        synonym.setStyleNameAttribute("PrintPubSynonym");
+        synonym.setProperty(OdfParagraphProperties.MarginLeft, "0cm");
+        synonym.setProperty(OdfParagraphProperties.TextIndent, "0cm");
+
+        OdfStyle synonymIndent = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+
+        synonymIndent.setStyleNameAttribute("PrintPubSynonymIndent");
+        synonymIndent.setProperty(OdfParagraphProperties.MarginLeft, "0.8cm");
+        synonymIndent.setProperty(OdfParagraphProperties.TextIndent, "-0.8cm");
     }
 
     private void createTaxonNameStyle(String styleName, String fontSize, String marginTop, String marginBottom) {
@@ -247,6 +261,14 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
 
         case TYPE_DESIGNATION_INDENT:
             styleName = "PrintPubTypeDesignationIndent";
+            break;
+
+        case SYNONYM:
+            styleName = "PrintPubSynonym";
+            break;
+
+        case SYNONYM_INDENT:
+            styleName = "PrintPubSynonymIndent";
             break;
 
         case BIBLIOGRAPHY:

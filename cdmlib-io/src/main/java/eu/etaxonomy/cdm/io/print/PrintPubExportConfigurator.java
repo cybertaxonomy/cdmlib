@@ -61,6 +61,7 @@ public class PrintPubExportConfigurator
 
     private boolean indentFacts;
     private boolean indentTypeDesignations;
+    private boolean indentSynonyms;
 
     // 5. Fact sorting
     private UUID featureTreeUuid;
@@ -305,5 +306,13 @@ public class PrintPubExportConfigurator
 
     public void setIndentTypeDesignations(boolean indentTypeDesignations) {
         this.indentTypeDesignations = indentTypeDesignations;
+    }
+
+    public boolean isIndentSynonyms() {
+        return indentSynonyms;
+    }
+
+    public void setIndentSynonyms(boolean indentSynonyms) {
+        this.indentSynonyms = indentSynonyms;
     }
 }

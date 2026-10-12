@@ -39,7 +39,8 @@ public record PrintPubDocumentRequest(
         boolean includeIpniId,
         boolean includeProtologueUris,
         boolean indentFacts,
-        boolean indentTypeDesignations
+        boolean indentTypeDesignations,
+        boolean indentSynonyms
         ) {
 
     public PrintPubDocumentRequest {
@@ -106,6 +107,7 @@ public record PrintPubDocumentRequest(
 
         private boolean indentFacts;
         private boolean indentTypeDesignations;
+        private boolean indentSynonyms;
 
         private FeatureSortMode featureSortMode =
                 FeatureSortMode.ALPHABETICAL;
@@ -225,12 +227,17 @@ public record PrintPubDocumentRequest(
 		    return this;
 		}
 
+		public Builder indentSynonyms(boolean value) {
+            this.indentSynonyms = value;
+            return this;
+        }
+
         public PrintPubDocumentRequest build() {
 
 			return new PrintPubDocumentRequest(documentTitle, taxa, bibliography, includeSynonyms,
 					includeSynonymConceptReferences, oneLinePerHomotypicGroup, includeScientificNameIndex,
 					includeCommonNameIndex, includeAppendix, includeEmptyIds, includeWfoId, includeIpniId,
-					includeProtologueUris, indentFacts, indentTypeDesignations);
+					includeProtologueUris, indentFacts, indentTypeDesignations, indentSynonyms);
         }
     }
 }
