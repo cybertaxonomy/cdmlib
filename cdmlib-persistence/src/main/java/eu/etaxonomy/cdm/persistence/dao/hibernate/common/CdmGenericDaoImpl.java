@@ -32,6 +32,7 @@ import org.hibernate.internal.SessionImpl;
 import org.hibernate.metamodel.MappingMetamodel;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.query.Query;
+import org.hibernate.type.BasicType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
 import org.hibernate.type.EntityType;
@@ -504,8 +505,20 @@ public class CdmGenericDaoImpl
 	}
 
 	protected static boolean isNoDoType(Type propertyType) {
-		boolean result = false;
-		// AttributeConverters / CompositeUserType / built-in basic types that need no deep graph walk
+		// Hibernate 6: AttributeConverter / JDBC basic types need no deep graph walk
+		if (propertyType instanceof BasicType) {
+			return true;
+		}
+		String propertyTypeName = propertyType.getName();
+		if (propertyTypeName != null) {
+			// ConvertedBasicType names: "converted::eu.etaxonomy.cdm.jpa.UuidConverter"
+			// or "BasicType adapter for AttributeConverter<…>"
+			if (propertyTypeName.startsWith("converted::")
+					|| propertyTypeName.contains("AttributeConverter")) {
+				return true;
+			}
+		}
+		// CompositeUserType / legacy type classes (not always BasicType)
 		Class<?>[] classes = new Class[]{
 				WsdlDefinitionConverter.class,
 				UuidConverter.class,
@@ -523,8 +536,6 @@ public class CdmGenericDaoImpl
 				BigDecimalCompositeUserType.class,
 				};
 		Set<String> classNames = new HashSet<>();
-
-		//From AI, really needed?
 		classNames.add(StandardBasicTypes.STRING.getName());
 		classNames.add(StandardBasicTypes.BOOLEAN.getName());
 		classNames.add(StandardBasicTypes.INTEGER.getName());
@@ -533,8 +544,6 @@ public class CdmGenericDaoImpl
 		classNames.add(StandardBasicTypes.DOUBLE.getName());
 		classNames.add(StandardBasicTypes.MATERIALIZED_CLOB.getName());
 		classNames.add(StandardBasicTypes.ZONED_DATE_TIME.getName());
-		// converted basic types often appear under these Hibernate type names
-		classNames.add("converted::eu.etaxonomy.cdm.hibernate.converter");
 
 		for (Class<?> clazz: classes){
 			classNames.add(clazz.getCanonicalName());
@@ -542,16 +551,7 @@ public class CdmGenericDaoImpl
 				return true;
 			}
 		}
-		String propertyTypeClassName = propertyType.getName();
-		if (classNames.contains(propertyTypeClassName)){
-			return true;
-		}
-		// AttributeConverter-backed types: name often contains the converter FQCN
-		if (propertyTypeClassName != null
-				&& propertyTypeClassName.contains("eu.etaxonomy.cdm.hibernate.converter")) {
-			return true;
-		}
-		return result;
+		return propertyTypeName != null && classNames.contains(propertyTypeName);
 	}
 
     @Override
