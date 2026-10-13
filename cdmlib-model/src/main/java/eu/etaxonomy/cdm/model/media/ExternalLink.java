@@ -13,9 +13,12 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Length;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
+import org.hibernate.type.SqlTypes;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -75,7 +78,12 @@ public class ExternalLink extends VersionableEntity{
     // the URI to link to
     @XmlElement(name = "URI")
     @Convert(converter = UriConverter.class)
+    // Workaround for Hibernate 6.1 / Envers (HHH-16253): Envers keeps length but drops LOB on _AUD
+    // (falls back to varchar(255)). LONG32 exceeds dialect max VARCHAR → expected type upgrades to CLOB.
+    // Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
+    @Column(length = Length.LONG32)
     @Lob
+    @JdbcTypeCode(SqlTypes.CLOB)
     private URI uri;
 
     @XmlElement(name = "Description")

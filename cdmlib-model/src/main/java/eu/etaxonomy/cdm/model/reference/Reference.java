@@ -18,9 +18,12 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Length;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
+import org.hibernate.type.SqlTypes;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
@@ -169,10 +172,15 @@ public class Reference
 	@Audited
 	private ReferenceType type;
 
-	//Title of the reference
+	// Title of the reference.
+	// Historical mapping used length=4096 as intended content size; the column itself is CLOB (@Lob).
+	// Column length is Length.LONG32 only as Envers HHH-16253 workaround (Envers drops LOB on _AUD and
+	// would otherwise expect varchar(4096) against existing CLOB). Prefer app-level checks for ~4096 chars.
+	// Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
 	@XmlElement(name ="Title" )
-	@Column(length=4096, name="title")
+	@Column(name="title", length = Length.LONG32)
 	@Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
 	@FullTextField
 	@Match(MatchMode.EQUAL_REQUIRED) //TODO correct? was EQUAL_REQUIRED before, but with abbrevTitle this is not realistic anymore, see also #6427
     //TODO Val #3379
@@ -316,8 +324,12 @@ public class Reference
 	private VerbatimTimePeriod datePublished = VerbatimTimePeriod.NewVerbatimInstance();
 
     @XmlElement(name ="Abstract" )
-	@Column(length=CLOB_LENGTH, name="referenceAbstract")
+	// Workaround for Hibernate 6.1 / Envers (HHH-16253): Envers keeps length but drops LOB on _AUD
+	// (falls back to varchar(255)). LONG32 exceeds dialect max VARCHAR → expected type upgrades to CLOB.
+	// Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
+	@Column(name="referenceAbstract", length = Length.LONG32)
 	@Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
     @FullTextField
     //TODO Val #3379
 //	@NullOrNotEmpty
@@ -328,7 +340,12 @@ public class Reference
 	@XmlElement(name = "URI")
 	@KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
 	@Convert(converter = UriConverter.class)
-    @Lob
+	// Workaround for Hibernate 6.1 / Envers (HHH-16253): Envers keeps length but drops LOB on _AUD
+	// (falls back to varchar(255)). LONG32 exceeds dialect max VARCHAR → expected type upgrades to CLOB.
+	// Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
+	@Column(length = Length.LONG32)
+	@Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
 	private URI uri;
 
 	//flag to subselect only references that could be useful for nomenclatural citations.

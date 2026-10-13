@@ -5,12 +5,16 @@ package eu.etaxonomy.cdm.model.molecular;
 
 import java.io.Serializable;
 
+import org.hibernate.Length;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
+import org.hibernate.type.SqlTypes;
 
 import eu.etaxonomy.cdm.jpa.ShiftConverter;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -61,7 +65,12 @@ public class SingleReadAlignment extends VersionableEntity {
 
 	//TODO XML mapping / user type
 	@Convert(converter = ShiftConverter.class)
+	// Workaround for Hibernate 6.1 / Envers (HHH-16253): Envers keeps length but drops LOB on _AUD
+	// (falls back to varchar(255)). LONG32 exceeds dialect max VARCHAR → expected type upgrades to CLOB.
+	// Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
+	@Column(length = Length.LONG32)
     @Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
     private Shift[] shifts = new Shift[0];
 
 	private Integer firstSeqPosition;
@@ -71,7 +80,12 @@ public class SingleReadAlignment extends VersionableEntity {
 	private Integer rightCutPosition;
 
 	@XmlElement(name = "EditedSequence")
+	// Workaround for Hibernate 6.1 / Envers (HHH-16253): Envers keeps length but drops LOB on _AUD
+	// (falls back to varchar(255)). LONG32 exceeds dialect max VARCHAR → expected type upgrades to CLOB.
+	// Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
+	@Column(length = Length.LONG32)
     @Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
     private String editedSequence;
 
 	@XmlElement(name = "ReverseComplement")

@@ -17,21 +17,26 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Length;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.type.SqlTypes;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.compare.term.TermLanguageComparator;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.jpa.UriConverter;
 import eu.etaxonomy.cdm.model.common.Language;
+import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -75,7 +80,12 @@ public class TermVocabulary<T extends DefinedTermBase>
 	@XmlElement(name = "TermSourceURI")
 	@KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
 	@Convert(converter = UriConverter.class)
-    @Lob
+	// Workaround for Hibernate 6.1 / Envers (HHH-16253): Envers keeps length but drops LOB on _AUD
+	// (falls back to varchar(255)). LONG32 exceeds dialect max VARCHAR → expected type upgrades to CLOB.
+	// Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
+	@Column(length = Length.LONG32)
+	@Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
 	private URI termSourceUri;
 
 	@XmlElementWrapper(name = "Terms")

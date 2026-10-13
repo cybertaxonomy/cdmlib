@@ -14,13 +14,17 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Length;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
+import org.hibernate.type.SqlTypes;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.jpa.UriConverter;
 import eu.etaxonomy.cdm.model.agent.Person;
+import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -84,7 +88,12 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
     // http://en.wikipedia.org/wiki/Linkback
     @XmlElement(name = "LinkbackUri")
     @Convert(converter = UriConverter.class)
+    // Workaround for Hibernate 6.1 / Envers (HHH-16253): Envers keeps length but drops LOB on _AUD
+    // (falls back to varchar(255)). LONG32 exceeds dialect max VARCHAR → expected type upgrades to CLOB.
+    // Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
+    @Column(length = Length.LONG32)
     @Lob
+    @JdbcTypeCode(SqlTypes.CLOB)
     private URI linkbackUri;
 
 // ******************************* FACTORY *******************************/

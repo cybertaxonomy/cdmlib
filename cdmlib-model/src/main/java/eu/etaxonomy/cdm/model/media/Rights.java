@@ -10,7 +10,10 @@ package eu.etaxonomy.cdm.model.media;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Length;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
+import org.hibernate.type.SqlTypes;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
@@ -20,6 +23,7 @@ import eu.etaxonomy.cdm.jpa.UriConverter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -63,7 +67,12 @@ public class Rights extends AnnotatableLanguageStringBase {
 	@XmlElement(name = "URI")
 	@KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
 	@Convert(converter = UriConverter.class)
-    @Lob
+	// Workaround for Hibernate 6.1 / Envers (HHH-16253): Envers keeps length but drops LOB on _AUD
+	// (falls back to varchar(255)). LONG32 exceeds dialect max VARCHAR → expected type upgrades to CLOB.
+	// Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
+	@Column(length = Length.LONG32)
+	@Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
 	private URI uri;
 
 	@XmlElement(name = "AbbreviatedText")

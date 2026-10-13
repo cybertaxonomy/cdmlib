@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.molecular;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Transient;
@@ -21,6 +22,9 @@ import jakarta.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Length;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
@@ -51,7 +55,12 @@ public class SequenceString implements Cloneable, Serializable{
 
 	/**{@link #getString()}*/
 	@XmlElement(name = "String")
+	// Workaround for Hibernate 6.1 / Envers (HHH-16253): Envers keeps length but drops LOB on _AUD
+	// (falls back to varchar(255)). LONG32 exceeds dialect max VARCHAR → expected type upgrades to CLOB.
+	// Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
+	@Column(length = Length.LONG32)
     @Lob
+	@JdbcTypeCode(SqlTypes.CLOB)
 	private String string;
 
 	@XmlElement(name = "Length")
