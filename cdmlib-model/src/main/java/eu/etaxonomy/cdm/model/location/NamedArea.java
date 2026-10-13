@@ -481,21 +481,21 @@ public class NamedArea extends DefinedTermBase<NamedArea> {
 
 	protected void setDefaultContinentTerms(TermVocabulary<NamedArea> termVocabulary) {
 		continentMap = new HashMap<>();
-		for (NamedArea term : HibernateProxyHelper.deproxyAll(termVocabulary.getTerms())){
+		for (NamedArea term : termVocabulary.getTerms()){
 			continentMap.put(term.getUuid(), term);  //TODO casting
 		}
 	}
 
 	protected void setDefaultWaterbodyTerms(TermVocabulary<NamedArea> termVocabulary) {
 		waterbodyMap = new HashMap<>();
-		for (NamedArea term : HibernateProxyHelper.deproxyAll(termVocabulary.getTerms())){
+		for (NamedArea term : termVocabulary.getTerms()){
 			waterbodyMap.put(term.getUuid(), term);  //TODO casting
 		}
 	}
 
 	protected void setTdwgDefaultTerms(TermVocabulary<NamedArea> tdwgTermVocabulary) {
         tdwgTermMap = new HashMap<>();
-        for (NamedArea term : HibernateProxyHelper.deproxyAll(tdwgTermVocabulary.getTerms())){
+        for (NamedArea term : tdwgTermVocabulary.getTerms()){
             tdwgTermMap.put(term.getUuid(), term);  //TODO casting
             addTdwgArea(term);
         }
@@ -555,7 +555,7 @@ public class NamedArea extends DefinedTermBase<NamedArea> {
         	this.setDefaultWaterbodyTerms(termVocabulary);
         }else{
 	    	termMap = new HashMap<>();
-	        for (NamedArea term : HibernateProxyHelper.deproxyAll(termVocabulary.getTerms())){
+	        for (NamedArea term : termVocabulary.getTerms()){
 	            termMap.put(term.getUuid(), term);
 	        }
         }

@@ -159,7 +159,7 @@ public class TermVocabulary<T extends DefinedTermBase>
     }
 
 	public Set<T> getTerms() {
-		return terms;
+		return HibernateProxyHelper.deproxyAll(terms);
 	}
 
 	public void addTerm(T term) {
