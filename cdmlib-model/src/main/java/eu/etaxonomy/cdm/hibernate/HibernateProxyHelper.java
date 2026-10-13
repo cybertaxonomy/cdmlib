@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.hibernate;
 
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -78,7 +79,13 @@ public class HibernateProxyHelper {
          if (collection == null){
              return null;
          }
-         return collection.stream().map(i->deproxy(i)).collect(Collectors.toSet());
+         if (collection instanceof TreeSet<T>) {
+             TreeSet<T> newTreeSet = new TreeSet<>(((TreeSet<T>)collection).comparator());
+             collection.stream().map(i->deproxy(i)).forEach(e->newTreeSet.add(e));
+             return newTreeSet;
+         }else {
+             return collection.stream().map(i->deproxy(i)).collect(Collectors.toSet());
+         }
     }
 
 	 /**
