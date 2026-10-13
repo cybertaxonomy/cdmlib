@@ -252,14 +252,19 @@
     <!-- PLUGINS -->
     <plugins>
       <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>10.0.26</version>
+        <!-- Jetty 10 = javax.servlet; Spring 6 needs jakarta.servlet (Servlet 6 / EE10) -->
+        <groupId>org.eclipse.jetty.ee10</groupId>
+        <artifactId>jetty-ee10-maven-plugin</artifactId>
+        <version>12.0.16</version>
         <configuration>
           <stopKey>stop</stopKey>
           <stopPort>9199</stopPort>
           <scan>10</scan>
           <useTestScope>true</useTestScope>
+          <!-- Skip crypto jars without Servlet annotations (avoids scanning multi-release Java 25 classes) -->
+          <webApp>
+            <webInfIncludeJarPattern>.*/(?!bcprov-|bcpkix-|bcutil-)[^/]+\.jar$</webInfIncludeJarPattern>
+          </webApp>
           <!-- jvmArgs will only be used when running mvn jetty:run-forked (<deployMode>FORK</deployMode> in jetty 10+) -->
           <jvmArgs>-Xmx2000M 
             -Dcdm.datasource=${datasource}
