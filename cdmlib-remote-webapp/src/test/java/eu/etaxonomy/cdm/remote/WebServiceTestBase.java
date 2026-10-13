@@ -8,10 +8,17 @@
 */
 package eu.etaxonomy.cdm.remote;
 
+import java.util.Collections;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -26,6 +33,7 @@ public class WebServiceTestBase extends Assert {
     private String baseUri = "";
 
     RestTemplate template = new RestTemplate();
+
 
     @Before
     public void setUp() {
@@ -53,6 +61,12 @@ public class WebServiceTestBase extends Assert {
             uri.append("?").append(query);
         }
         logger.debug("httpGetJson: " + uri.toString());
-        return template.getForObject(uri.toString(), String.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        ResponseEntity<String> entity = template.exchange(
+                uri.toString(), HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        assertNotNull("HTTP response body is null for " + uri
+                + " (status=" + entity.getStatusCode() + ")", entity.getBody());
+        return entity.getBody();
     }
 }

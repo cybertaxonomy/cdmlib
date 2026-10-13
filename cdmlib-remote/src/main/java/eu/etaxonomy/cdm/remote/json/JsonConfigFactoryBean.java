@@ -149,6 +149,11 @@ public class JsonConfigFactoryBean implements FactoryBean<JsonConfig> {
 		jsonConfig.setCycleDetectionStrategy(cycleDetectionStrategy);
 
 		jsonConfig.setIgnoreJPATransient(ignoreJPATransient);
+		// json-lib 2.4 only registers javax.persistence.Transient via setIgnoreJPATransient;
+		// after Jakarta migration the model uses jakarta.persistence.Transient
+		if (ignoreJPATransient) {
+			jsonConfig.addIgnoreFieldAnnotation("jakarta.persistence.Transient");
+		}
 
 		jsonConfig.setDefaultValueProcessorMatcher(defaultValueProcessorMatcher);
 
