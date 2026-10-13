@@ -32,7 +32,7 @@ public abstract class EntityTestBase extends TermTestBase {
 			try {
 				return (Class<CdmBase>)Class.forName(className);
 			} catch (ClassNotFoundException e) {
-				logger.warn(e.getMessage());
+				logger.warn("ClassNotFoundException: " + e.getMessage());
 				return null;
 			}
 		}else{

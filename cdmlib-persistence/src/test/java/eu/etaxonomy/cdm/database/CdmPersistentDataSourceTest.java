@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 /**
  * @author a.mueller
  */
-@Ignore
 public class CdmPersistentDataSourceTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
@@ -289,15 +288,12 @@ public class CdmPersistentDataSourceTest {
 		} catch (IOException e) {
 			fail("Exception occurred in datasource input stream read");
 		}
-
 	}
 
-
-	@Ignore
 	@Test
+	@Ignore
 	public void testGetDataSourceOutputStream() {
 		FileOutputStream os = CdmPersistentSourceUtils.getCdmSourceOutputStream();
 		assertNotNull(os);
 	}
-
 }

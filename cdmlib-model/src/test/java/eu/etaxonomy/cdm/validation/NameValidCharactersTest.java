@@ -13,20 +13,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.groups.Default;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.validator.internal.constraintvalidators.bv.PatternValidator;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.groups.Default;
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though
@@ -77,9 +76,8 @@ public class NameValidCharactersTest extends ValidationTestBase  {
 	 * diaeresis is allowed under the botanical code.
 	 */
 	@Test
-	@Ignore // setting this to ignore because the character is not showsn correctly in mac os.
 	public final void testAllowedAccents() {
-		name.setSpecificEpithet("bals�mea");
+		name.setSpecificEpithet("bals"+UTF8.a_UMLAUT+"mea");
 
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());

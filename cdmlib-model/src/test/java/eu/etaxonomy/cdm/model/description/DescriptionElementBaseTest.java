@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  * @author k.luther
  * @since 11.04.2011
  */
-public class DescriptionElementTest extends EntityTestBase {
+public class DescriptionElementBaseTest extends EntityTestBase {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();

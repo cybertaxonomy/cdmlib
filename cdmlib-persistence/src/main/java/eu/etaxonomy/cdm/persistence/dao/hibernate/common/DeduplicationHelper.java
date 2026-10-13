@@ -152,7 +152,7 @@ public class DeduplicationHelper {
 			//flush
 			session.flush();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.warn("Exception during merge");
 		    throw new MergeException(e);
 		}
 	}
