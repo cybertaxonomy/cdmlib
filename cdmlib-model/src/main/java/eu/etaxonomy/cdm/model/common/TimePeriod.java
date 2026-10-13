@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
@@ -35,9 +34,10 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlType(name = "TimePeriod")
 @XmlRootElement(name = "TimePeriod")
 @Embeddable
-public class TimePeriod extends TimePeriodBase implements Cloneable, Serializable, ICheckEmpty {
+public class TimePeriod extends TimePeriodBase {
 
     private static final long serialVersionUID = 3405969418194981401L;
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
 // ********************** FACTORY METHODS **************************/
