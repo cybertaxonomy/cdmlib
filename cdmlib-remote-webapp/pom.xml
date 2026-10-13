@@ -302,6 +302,7 @@
               <log4j.configuration>${log4jFile}</log4j.configuration>
           </systemProperties>
         </configuration>
+        <!-- JDBC on plugin (= container) classpath; protected via jetty.xml addProtectedClasses -->
         <dependencies>
           <dependency>
             <groupId>com.h2database</groupId>
@@ -318,11 +319,6 @@
             <artifactId>mariadb-java-client</artifactId>
             <version>${mariadb.version}</version>
           </dependency>
-<!--          <dependency>-->
-<!--            <groupId>com.mchange</groupId>-->
-<!--            <artifactId>c3p0</artifactId>-->
-<!--            <version>${c3p0.version}</version>-->
-<!--          </dependency>-->
         </dependencies>
         <executions>
           <execution>

@@ -24,4 +24,22 @@
 			<Arg><New class="org.eclipse.jetty.server.ForwardedRequestCustomizer"/></Arg> 
 			</Call> -->
 	</New>
+
+	<!-- JDBC drivers are on the Jetty plugin (container) classpath and, via useTestScope,
+	     also on the webapp classpath (cdmlib-db). Protect them so the webapp uses the
+	     container loader — otherwise jetty:stop hits LinkageError / NoClassDefFoundError
+	     during H2 INFORMATION_SCHEMA.LOB_MAP cleanup (org.h2.engine.Session). -->
+	<Call class="org.eclipse.jetty.ee.WebAppClassLoading" name="addProtectedClasses">
+		<Arg>
+			<Ref refid="Server" />
+		</Arg>
+		<Arg>
+			<Array type="java.lang.String">
+				<Item>org.h2.</Item>
+				<Item>com.mysql.</Item>
+				<Item>org.mariadb.</Item>
+				<Item>org.postgresql.</Item>
+			</Array>
+		</Arg>
+	</Call>
 </Configure>
