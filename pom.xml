@@ -42,8 +42,8 @@
     <poi.version>5.5.1</poi.version>                    <!-- checked 2026-05 -->
     <jackson.version>2.22.3</jackson.version>
     <jackson.annotations.version>2.22</jackson.annotations.version>
-	<!-- CAUTION when upgrading, 1.8x requires another log4j binding: https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html -->
-    <slf4j.version>2.0.19</slf4j.version>               <!-- checked 2022-06 -->
+	<!-- SLF4J 2.x needs log4j-slf4j2-impl (not log4j-slf4j-impl): https://logging.apache.org/log4j/2.x/log4j-slf4j2-impl.html -->
+    <slf4j.version>2.0.19</slf4j.version>
 	<log4j.version>2.26.1</log4j.version>
 	<jaxb.version>2.3.3</jaxb.version>
 	<jaxb.api.version>2.3.1</jaxb.api.version>
@@ -725,7 +725,7 @@
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j-impl</artifactId>
+        <artifactId>log4j-slf4j2-impl</artifactId>
         <version>${log4j.version}</version>
       </dependency>
       <!-- dozer depends on jcl-over-slf4j -->
@@ -785,7 +785,7 @@
             <artifactId>hibernate</artifactId>
           </exclusion>
           <exclusion>
-            <!-- we use log4j-slf4j-impl -->
+            <!-- we use log4j-slf4j2-impl -->
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
           </exclusion>
