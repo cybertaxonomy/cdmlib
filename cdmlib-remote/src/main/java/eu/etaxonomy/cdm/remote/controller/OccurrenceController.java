@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * TODO write controller documentation
@@ -43,7 +43,7 @@ import io.swagger.annotations.Api;
  * @since 24.03.2009
  */
 @Controller
-@Api("occurrence")
+@Tag(name = "occurrence")
 @RequestMapping(value = {"/occurrence/{uuid}"})
 public class OccurrenceController extends AbstractIdentifiableController<SpecimenOrObservationBase, IOccurrenceService>{
 

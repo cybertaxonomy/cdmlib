@@ -19,14 +19,14 @@ import eu.etaxonomy.cdm.api.service.IMetadataService;
 import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @date May 19, 2020
  */
 @RestController
-@Api("metadata")
+@Tag(name = "metadata")
 @RequestMapping(value = {"/metadata"})
 public class MetadataController {
 

@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  *
@@ -25,7 +25,7 @@ import io.swagger.annotations.Api;
  *
  */
 @Controller
-@Api("portal_description")
+@Tag(name = "portal_description")
 @RequestMapping(value = {"/portal/description"})
 public class DescriptionListPortalController extends DescriptionListController {
 

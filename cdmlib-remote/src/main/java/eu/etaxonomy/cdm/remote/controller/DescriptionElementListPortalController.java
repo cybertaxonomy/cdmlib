@@ -15,14 +15,14 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since Jun 25, 2013
  */
 @Controller
-@Api("portal_descriptionElement")
+@Tag(name = "portal_descriptionElement")
 @RequestMapping(value = {"/portal/descriptionElement"})
 public class DescriptionElementListPortalController extends DescriptionElementListController {
 

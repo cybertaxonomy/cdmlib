@@ -74,7 +74,7 @@ import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.TaxonInformation;
 import eu.etaxonomy.cdm.remote.view.HtmlView;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * The controller class for the namespace 'name_catalogue'. This web service namespace
@@ -85,7 +85,7 @@ import io.swagger.annotations.Api;
  * @since 15-Apr-2012
  */
 @Controller
-@Api("name_catalogue")
+@Tag(name = "name_catalogue")
 @RequestMapping(value = { "/name_catalogue" })
 public class NameCatalogueController
         extends AbstractController<TaxonName, INameService>

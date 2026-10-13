@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * TODO write controller documentation
@@ -24,7 +24,7 @@ import io.swagger.annotations.Api;
  * @since 24.03.2009
  */
 @Controller
-@Api("reference")
+@Tag(name = "reference")
 @RequestMapping(value = {"/reference"})
 public class ReferenceListController extends AbstractIdentifiableListController<Reference, IReferenceService> {
 

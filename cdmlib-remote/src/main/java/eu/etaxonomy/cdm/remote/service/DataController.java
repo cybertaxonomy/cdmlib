@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.api.service.lsid.LSIDDataService;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller which accepts requests for the data representation of an object
@@ -43,8 +43,7 @@ import io.swagger.annotations.Api;
  * @see com.ibm.lsid.server.servlet.DataServlet
  */
 @Controller
-@Api(value="lsid_authority_data",
-description="Controller which accepts incoming requests to the LSIDDataService.")
+@Tag(name = "lsid_authority_data", description = "Controller which accepts incoming requests to the LSIDDataService.")
 public class DataController {
 
     private LSIDDataService lsidDataService;

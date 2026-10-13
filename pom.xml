@@ -67,6 +67,8 @@
     <c3p0.version>0.9.5.2</c3p0.version>
     <!-- 1.83 adds META-INF/versions/25 (class file 69); Jetty annotation scan / older ASM fail on it -->
     <bouncycastle.version>1.82</bouncycastle.version>
+    <!-- springdoc 2.6.x ↔ Boot 3.3 / Spring 6.1; 2.8.x needs Spring 6.2 (isDefaultCandidate) -->
+    <springdoc.version>2.6.0</springdoc.version>
   </properties>
   
   <scm>
@@ -1324,10 +1326,16 @@
         <version>${bouncycastle.version}</version>
       </dependency>
       <dependency>
-          <!-- used in eu.etaxonomy.cdm.io.markup and for swagger -->
+          <!-- used in eu.etaxonomy.cdm.io.markup and OpenAPI / springdoc -->
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
           <version>33.7.1-jre</version>
+      </dependency>
+      <!-- pin: guava 33.x → 1.0.1, springdoc webjars-locator-lite → 1.0.0 -->
+      <dependency>
+          <groupId>org.jspecify</groupId>
+          <artifactId>jspecify</artifactId>
+          <version>1.0.1</version>
       </dependency>
       <dependency>
           <!-- converge guava 1.0.1 vs caffeine/jena 1.0.0 -->
@@ -1707,15 +1715,18 @@
       	<artifactId>plexus-utils</artifactId>
       	<version>4.1.0</version>
       </dependency>
-      <!-- swagger (rest service doc) -->
+      <!-- OpenAPI annotations (controllers); formerly swagger-annotations 1.5 / springfox -->
       <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-annotations</artifactId>
-        <!-- should match the springfox-swagger2 depends on -->
-        <version>1.5.10</version>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-annotations-jakarta</artifactId>
+        <version>2.2.28</version>
       </dependency>
-
-      <!-- dependencies for swagger-springmvc, added explicitely -->
+      <dependency>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        <version>${springdoc.version}</version>
+      </dependency>
+      <!-- Jackson pins (also used outside springdoc) -->
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
@@ -1730,12 +1741,6 @@
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
         <version>${jackson.annotations.version}</version>
-      </dependency> 
-      <!-- END of dependencies for swagger-springmvc, added explicitely -->
-      <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-swagger2</artifactId>
-        <version>2.6.1</version>
       </dependency>
       
       <!-- ******* DATABASES DRIVER ******* -->

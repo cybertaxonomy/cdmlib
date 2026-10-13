@@ -22,14 +22,14 @@ import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since 24.03.2011
  */
 @Controller
-@Api("polytomousKey")
+@Tag(name = "polytomousKey")
 @RequestMapping(value = {"/polytomousKey/{uuid}"})
 public class PolytomousKeyController extends AbstractIdentifiableController<PolytomousKey, IPolytomousKeyService> {
 

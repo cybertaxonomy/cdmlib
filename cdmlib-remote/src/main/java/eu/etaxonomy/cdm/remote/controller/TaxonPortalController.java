@@ -91,7 +91,7 @@ import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * The TaxonPortalController class is a Spring MVC Controller.
@@ -115,7 +115,7 @@ import io.swagger.annotations.Api;
  * @since 20.07.2009
  */
 @Controller
-@Api("portal_taxon")
+@Tag(name = "portal_taxon")
 @RequestMapping(value = {"/portal/taxon/{uuid}"})
 public class TaxonPortalController extends TaxonController{
 

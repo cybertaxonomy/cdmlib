@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * The ExternalGeoController class is a Spring MVC Controller.
@@ -80,7 +80,7 @@ import io.swagger.annotations.Api;
  */
 
 @Controller
-@Api(value="mapServiceParameters")
+@Tag(name = "mapServiceParameters")
 @RequestMapping(value = { "ext/edit/mapServiceParameters/" })
 public class ExternalGeoController extends BaseController<TaxonBase, ITaxonService> {
 

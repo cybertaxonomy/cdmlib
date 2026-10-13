@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.model.permission.User;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
@@ -26,7 +26,7 @@ import io.swagger.annotations.Api;
  *
  */
 @Controller
-@Api("user")
+@Tag(name = "user")
 @RequestMapping(value = {"/user"})
 public class UserController extends AbstractController<User, IUserService> {
 

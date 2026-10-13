@@ -14,8 +14,8 @@
     https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/cdmlib-remote-webappConfigurationAndBootstrapping
    -->
   <!-- 
-    Initialize SpringMVCConfig and its dependency SpringSwaggerConfig.
-    All further component scans are defined in this mvc configuration class 
+    Initialize CdmSpringMVCConfigDefault (!swagger) or CdmSpringMVCConfigWithSwagger + CdmOpenApiConfig.
+    All further component scans are defined in these MVC configuration classes.
   -->
   <context:component-scan base-package="eu/etaxonomy/cdm/remote/config" />
 </beans>

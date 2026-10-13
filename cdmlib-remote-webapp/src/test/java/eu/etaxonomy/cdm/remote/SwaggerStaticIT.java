@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.remote;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
@@ -22,74 +24,47 @@ import eu.etaxonomy.cdm.remote.config.SwaggerGroupsConfig;
 import eu.etaxonomy.cdm.remote.staticSwagger.StaticSwaggerApiDoc;
 
 /**
- * The resources produced by this tests are delivered by the {@link StaticSwaggerApiDoc} controller.
+ * Fetches live OpenAPI docs (springdoc) into {@code swagger-static/} for packaging
+ * into the WAR and serving via {@link StaticSwaggerApiDoc} when the {@code swagger}
+ * profile is not active.
  * <p>
- * Ignored until springfox is replaced by springdoc-openapi (Jakarta / Spring 6).
+ * Requires Jetty with {@code spring.profiles.active=remoting,swagger}.
+ * Still ignored until static serving is adapted from Swagger 2 ({@code /v2/api-docs})
+ * to OpenAPI 3 ({@code /v3/api-docs/{group}}).
  *
  * @author a.kohlbecker
  * @since Mar 3, 2014
  */
-@Ignore("Requires springfox/swagger profile; blocked on Jakarta until springdoc-openapi migration")
+@Ignore("Re-enable after StaticSwaggerApiDoc is updated for OpenAPI 3 / springdoc group URLs")
 public class SwaggerStaticIT extends WebServiceTestBase {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private String[] swaggerResourcesPaths = new String[]{"", "/configuration/ui", "/configuration/security" };
-
-    @Test
     @Ignore
-    public void fetchSwaggerResources() {
-/*
-        String swagger2Endpoint= "/swagger-resources";
-
-        String staticResourcesFolder = "./target/classes/"+ StaticSwaggerApiDoc.SWAGGER_STATIC + "/swagger-resources";
-
-        logger.info("clearing old content ...");
-        FileUtils.deleteQuietly(new File(staticResourcesFolder));
-        FileUtils.deleteQuietly(new File(staticResourcesFolder + StaticSwaggerApiDoc.JSON));
-
-        staticResourcesFolder = staticResourcesFolder.replace("/", File.separator);
-
-        for(String path : swaggerResourcesPaths){
-            String resourcePath = swagger2Endpoint + path;
-            logger.info("fetching swagger-resources file from " + resourcePath);
-            String response =  httpGetJson(resourcePath, null);
-            try {
-                File targetFile = new File(staticResourcesFolder + path + StaticSwaggerApiDoc.JSON);
-                new File(targetFile.getParent()).mkdirs();
-                FileUtils.write(targetFile, response, Charset.defaultCharset());
-                logger.info(response.length() + " characters of swagger-resources written to " + targetFile.getAbsolutePath());
-            } catch (IOException e) {
-                logger.error(e);
-             }
-        }*/
-    }
-    
 /*
     @Test
-    @Ignore
-    public void fetchSwaggerGroups(){
+    public void fetchOpenApiGroups() {
 
-        String swagger2Endpoint= "/v2/api-docs";
-        String staticApiDocFolder = "./target/classes/"+ StaticSwaggerApiDoc.SWAGGER_STATIC + "/api-docs/";
+        String openApiEndpoint = "/v3/api-docs";
+        String staticApiDocFolder = "./target/classes/" + StaticSwaggerApiDoc.SWAGGER_STATIC + "/api-docs/";
 
         staticApiDocFolder = staticApiDocFolder.replace("/", File.separator);
+        new File(staticApiDocFolder).mkdirs();
 
-        for(SwaggerGroupsConfig group : SwaggerGroupsConfig.values()) {
-            logger.info(group.groupName());
-            String response = httpGetJson(swagger2Endpoint, "group=" + group.groupName());
-            response = response.replaceAll(",\"host\":\"([^\"]*)", ",\"host\":\"" + StaticSwaggerApiDoc.HOST);
-            response = response.replaceAll(",\"basePath\":\"([^\"]*)", ",\"basePath\":\"" + StaticSwaggerApiDoc.BASE_PATH);
+        for (SwaggerGroupsConfig group : SwaggerGroupsConfig.values()) {
+            String groupPath = URLEncoder.encode(group.groupName(), StandardCharsets.UTF_8)
+                    .replace("+", "%20");
+            String resourcePath = openApiEndpoint + "/" + groupPath;
+            logger.info("fetching OpenAPI group: " + group.groupName() + " from " + resourcePath);
+            String response = httpGetJson(resourcePath, null);
             try {
-                FileUtils.write(new File(staticApiDocFolder + group.name() + StaticSwaggerApiDoc.JSON), response, Charset.defaultCharset());
+                FileUtils.write(new File(staticApiDocFolder + group.name() + StaticSwaggerApiDoc.JSON),
+                        response, Charset.defaultCharset());
+                logger.info(response.length() + " characters written for group " + group.name());
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                logger.error(e);
             }
         }
-
-//        File pwd = new File("pom.xml");
-//        System.err.println(pwd.getAbsolutePath());
     }
     */
 }

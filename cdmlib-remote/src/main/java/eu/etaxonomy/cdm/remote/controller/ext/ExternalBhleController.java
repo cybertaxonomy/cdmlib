@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.ext.dc.DublinCoreSchemaAdapter;
 import eu.etaxonomy.cdm.ext.sru.SruServiceWrapper;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * The ExternalGeoController class is a Spring MVC Controller.
@@ -39,7 +39,7 @@ import io.swagger.annotations.Api;
  * @since 18.06.2009
  */
 //@Controller // http://gso.gbv.de/sru/DB=2.1/ is defunctional!!! thus this controller is disabled
-@Api(value="ext_bhl-e", description="Provides searche via the SRU (search and retrieve) API of BHL-E ")
+@Tag(name = "ext_bhl-e", description = "Provides searche via the SRU (search and retrieve) API of BHL-E ")
 @RequestMapping(value = { "/ext/bhl-e/" })
 public class ExternalBhleController {
 

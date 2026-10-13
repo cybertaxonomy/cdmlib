@@ -41,14 +41,14 @@ import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since Jun 25, 2013
  */
 @Controller
-@Api("portal_description")
+@Tag(name = "portal_description")
 @Transactional(readOnly=true)
 @RequestMapping(value = {
             "/portal/description/{uuid}",

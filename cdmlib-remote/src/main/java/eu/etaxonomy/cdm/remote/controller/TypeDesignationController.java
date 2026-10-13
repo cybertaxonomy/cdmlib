@@ -41,14 +41,14 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since Jul 31, 2018
  */
 @Controller
-@Api(value = "typeDesignation")
+@Tag(name = "typeDesignation")
 @RequestMapping(value = {"/typedesignation/{uuid}"})
 /* can not use BaseController since the getMethod needs to call service.loadTypeDesignation() which is generically not possible */
 public class TypeDesignationController extends AbstractController<TaxonName, INameService>  {

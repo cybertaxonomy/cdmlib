@@ -73,7 +73,7 @@ import eu.etaxonomy.cdm.remote.dto.common.StringResultDTO;
 import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * TODO write controller documentation
@@ -82,7 +82,7 @@ import io.swagger.annotations.Api;
  * @since 20.07.2009
  */
 @Controller
-@Api("taxon")
+@Tag(name = "taxon")
 @RequestMapping(value = {"/taxon/{uuid}"})
 public class TaxonController extends AbstractIdentifiableController<TaxonBase, ITaxonService>{
 

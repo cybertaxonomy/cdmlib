@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * The AgentListController class is a Spring MVC Controller.
@@ -70,7 +70,7 @@ import io.swagger.annotations.Api;
  * @since 24.03.2009
  */
 @Controller
-@Api(value = "agent")
+@Tag(name = "agent")
 @RequestMapping(value = {"/agent"})
 public class AgentListController extends AbstractIdentifiableListController<AgentBase, IAgentService> {
 

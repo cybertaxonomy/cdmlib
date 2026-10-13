@@ -14,14 +14,14 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since Jun 24, 2013
  */
 @Controller
-@Api("portal_termTree")
+@Tag(name = "portal_termTree")
 @RequestMapping(value = {"/portal/termTree"})
 public class TermTreeListPortalController extends TermTreeListController {
 

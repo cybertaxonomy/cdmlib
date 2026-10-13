@@ -27,14 +27,14 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since Oct 11, 2016
  */
 @Controller
-@Api("nomenclaturalStatus")
+@Tag(name = "nomenclaturalStatus")
 @RequestMapping(value = {"/nomenclaturalStatus/{uuid}"})
 public class NomenclaturalStatusController extends AbstractController<TaxonName, INameService> {
 

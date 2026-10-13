@@ -49,14 +49,14 @@ import eu.etaxonomy.cdm.remote.dto.polytomouskey.LinkedPolytomousKeyNodeRowDto;
 import eu.etaxonomy.cdm.remote.dto.polytomouskey.PolytomousKeyNodeLinkDto;
 import eu.etaxonomy.cdm.remote.dto.polytomouskey.TaxonLinkDto;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author l.morris
  * @since Feb 21, 2013
  */
 @Controller
-@Api("polytomousKeyDTO")
+@Tag(name = "polytomousKeyDTO")
 @RequestMapping(value = {"/dto/polytomousKey/"})
 public class PolytomousKeyNodeDtoController extends AbstractController<PolytomousKey, IPolytomousKeyService> {
 

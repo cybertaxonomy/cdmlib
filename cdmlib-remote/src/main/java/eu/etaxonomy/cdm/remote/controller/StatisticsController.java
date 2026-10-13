@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * this controller provides a method to count different entities in the entire
@@ -46,7 +46,7 @@ import io.swagger.annotations.Api;
  * @since 07.11.2012
  */
 @Controller
-@Api("statistics")
+@Tag(name = "statistics")
 @RequestMapping(value = { "/statistics" })
 public class StatisticsController {
 

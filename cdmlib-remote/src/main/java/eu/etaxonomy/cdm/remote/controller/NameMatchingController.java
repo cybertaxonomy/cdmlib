@@ -48,14 +48,14 @@ import eu.etaxonomy.cdm.api.service.NameMatchingServiceImpl.SingleNameMatchingRe
 import eu.etaxonomy.cdm.api.service.exception.NameMatchingParserException;
 import eu.etaxonomy.cdm.persistence.dto.NameMatchingParts;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author andreabee90
  * @since 05.03.2024
  */
 @RestController
-@Api("name_matching")
+@Tag(name = "name_matching")
 @RequestMapping(value = {"/namematch/" })
 public class NameMatchingController {
 

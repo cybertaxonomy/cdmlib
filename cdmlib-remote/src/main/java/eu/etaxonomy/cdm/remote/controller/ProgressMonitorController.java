@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.api.service.ProgressMonitorManager;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Andreas Kohlbecker
@@ -38,7 +38,7 @@ import io.swagger.annotations.Api;
  */
 @Controller
 @CrossOrigin(origins="*")
-@Api(value="progress", description="Provides access to information on long running processes. "
+@Tag(name = "progress", description = "Provides access to information on long running processes. "
         + "URIs to the resources exposed by this controller are provided in the responses to the"
         + "HTTP requests that trigger long term processes.")
 @RequestMapping(value="/progress/")

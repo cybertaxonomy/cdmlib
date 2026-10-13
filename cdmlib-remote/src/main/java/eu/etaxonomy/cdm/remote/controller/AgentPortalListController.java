@@ -11,14 +11,14 @@ package eu.etaxonomy.cdm.remote.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since May 27, 2020
  */
 @Controller
-@Api(value = "agent")
+@Tag(name = "agent")
 @RequestMapping(value = {"/portal/agent"})
 public class AgentPortalListController extends AgentListController {
 

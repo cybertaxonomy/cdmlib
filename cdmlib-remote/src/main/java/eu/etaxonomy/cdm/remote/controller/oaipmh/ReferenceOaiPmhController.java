@@ -29,10 +29,10 @@ import eu.etaxonomy.cdm.remote.controller.IdDoesNotExistException;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.MetadataPrefix;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.SetSpec;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
-@Api("OAI-PMH References")
+@Tag(name = "OAI-PMH References")
 @RequestMapping(value = "/reference/oai", params = "verb")
 public class ReferenceOaiPmhController extends AbstractOaiPmhController<Reference, IReferenceService> {
 

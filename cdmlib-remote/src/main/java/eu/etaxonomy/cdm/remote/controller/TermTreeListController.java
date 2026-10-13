@@ -31,10 +31,10 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
-@Api("termTree")
+@Tag(name = "termTree")
 @RequestMapping(value = {"/termTree"})
 public class TermTreeListController extends AbstractIdentifiableListController<TermTree, ITermTreeService> {
 

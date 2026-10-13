@@ -15,13 +15,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.hc.core5.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 //import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,8 +34,9 @@ import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.remote.exception.NoRecordsMatchException;
-
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * TODO write controller documentation
@@ -48,7 +45,7 @@ import io.swagger.annotations.Api;
  * @since 24.03.2009
  */
 @Controller
-@Api("media")
+@Tag(name = "media")
 @RequestMapping(value = {"/media/{uuid}"})
 public class MediaController extends AbstractIdentifiableController<Media, IMediaService>{
 
@@ -74,7 +71,7 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
     public Map<String, String> doGetMediaMetaData(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "applyFilterPreset", defaultValue = "true") Boolean applyFilterPreset,
-            HttpServletRequest request,
+            @SuppressWarnings("unused") HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         Map<String, String> result;

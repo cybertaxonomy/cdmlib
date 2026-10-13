@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * TODO write controller documentation
@@ -39,7 +39,7 @@ import io.swagger.annotations.Api;
  * @since 24.03.2009
  */
 @Controller
-@Api("reference")
+@Tag(name = "reference")
 @RequestMapping(value = {"/reference/{uuid}"})
 public class ReferenceController extends AbstractIdentifiableController<Reference, IReferenceService>{
 

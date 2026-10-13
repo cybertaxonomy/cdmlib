@@ -45,10 +45,10 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.editor.term.RegistrationStatusList;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.Operation;
 
 /**
  * TODO write controller documentation
@@ -57,7 +57,7 @@ import io.swagger.annotations.ApiOperation;
  * @since 24.03.2009
  */
 @Controller
-@Api("registration")
+@Tag(name = "registration")
 public class RegistrationWrapperDTOController
             extends AbstractController<Registration, IRegistrationService>{
 
@@ -96,12 +96,9 @@ public class RegistrationWrapperDTOController
         binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
     }
 
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "identifier", value = "The persitent identifier of the Registration.", required = true, dataType = "string", paramType = "path"),
-    })
-    @ApiOperation(value = "Finds Registration by persitent identifier.",
-        notes = "The identifier passed as paramter must be unique in the database otherwise the server will responde with the HTTP error code: " + HttpServletResponse.SC_PRECONDITION_FAILED,
-        response = Registration.class
+    @Parameter(name = "identifier", description = "The persitent identifier of the Registration.", required = true, in = ParameterIn.PATH)
+    @Operation(summary = "Finds Registration by persitent identifier.",
+        description = "The identifier passed as paramter must be unique in the database otherwise the server will responde with the HTTP error code: " + HttpServletResponse.SC_PRECONDITION_FAILED
     )
     @RequestMapping(value="/registrationDTO", method = RequestMethod.GET, params={"identifier"})
     public RegistrationWrapperDTO doGetByIdentifier(
@@ -122,11 +119,8 @@ public class RegistrationWrapperDTOController
         }
     }
 
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "identifier", value = "The persitent identifier of the Registration.", required = true, dataType = "string", paramType = "path"),
-    })
-    @ApiOperation(value = "Finds Registrations by persistent identifier."
-    )
+    @Parameter(name = "identifier", description = "The persitent identifier of the Registration.", required = true, in = ParameterIn.PATH)
+    @Operation(summary = "Finds Registrations by persistent identifier.")
     @RequestMapping(value="/registrationDTO", method = RequestMethod.GET, params={"identifier", "validateUniqueness"})
     public Pager<RegistrationWrapperDTO> doPageByIdentifier(
             @RequestParam(value = "identifier", required = true) String identifier,

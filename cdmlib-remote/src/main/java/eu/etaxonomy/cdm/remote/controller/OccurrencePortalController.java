@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * TODO write controller documentation
@@ -40,7 +40,7 @@ import io.swagger.annotations.Api;
  * @since 24.03.2009
  */
 @Controller
-@Api("portal_occurrence")
+@Tag(name = "portal_occurrence")
 @RequestMapping(value = {"/portal/occurrence/{uuid}"})
 public class OccurrencePortalController extends OccurrenceController {
 

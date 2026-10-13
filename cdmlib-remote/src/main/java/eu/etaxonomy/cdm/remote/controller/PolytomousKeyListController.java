@@ -30,14 +30,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.dto.common.StringResultDTO;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since 24.03.2011
  */
 @Controller
-@Api("polytomousKey")
+@Tag(name = "polytomousKey")
 @RequestMapping(value = {"/polytomousKey"})
 public class PolytomousKeyListController extends AbstractIdentifiableListController<PolytomousKey, IPolytomousKeyService> {
 

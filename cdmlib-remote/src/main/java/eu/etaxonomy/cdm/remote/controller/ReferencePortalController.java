@@ -13,14 +13,14 @@ import java.util.Arrays;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author l.morris
  * @since Jun 13, 2013
  */
 @Controller
-@Api("portal_reference")
+@Tag(name = "portal_reference")
 @RequestMapping(value = {"/portal/reference/{uuid}"})
 public class ReferencePortalController extends ReferenceController {
 

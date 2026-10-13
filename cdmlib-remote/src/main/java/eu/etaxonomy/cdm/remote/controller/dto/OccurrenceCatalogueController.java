@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.remote.dto.occurrencecatalogue.OccurrenceSearch;
 import eu.etaxonomy.cdm.remote.dto.occurrencecatalogue.OccurrenceSearch.OccurrenceSearchResponse;
 import eu.etaxonomy.cdm.remote.view.HtmlView;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * The controller class for the namespace 'occurrence_catalogue'. This web service namespace
@@ -64,7 +64,7 @@ import io.swagger.annotations.Api;
  * @since March-2014
  */
 @Controller
-@Api("occurrence_catalogue")
+@Tag(name = "occurrence_catalogue")
 @RequestMapping(value = { "/occurrence_catalogue" })
 public class OccurrenceCatalogueController
         extends AbstractController<SpecimenOrObservationBase, IOccurrenceService>

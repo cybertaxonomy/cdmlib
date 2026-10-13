@@ -16,27 +16,22 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 /**
- * Activate this profile by setting the
- * <code>spring.profiles.active=swagger</code> either as system property or
- * as the web application argument
+ * Activate with {@code spring.profiles.active=swagger} (optionally together with {@code remoting}).
+ * Uses live springdoc-openapi instead of {@link eu.etaxonomy.cdm.remote.staticSwagger.StaticSwaggerApiDoc}.
+ * <p>
+ * Swagger UI assets are served by {@link SwaggerUiWebjarController} (not springdoc resource handlers).
  *
  * @author a.kohlbecker
  * @since Feb 22, 2016
- *
  */
 @Profile("swagger")
-// @EnableWebMvc // do not add this since we are overriding
-// WebMvcConfigurationSupport directly
 @Configuration
 @Import(value = { PreloadedBeans.class })
-// can not be replaced by @DependsOn("...") ?
-// @DependsOn("objectMapperConfigurer")
 @ComponentScan(basePackages = {
-        "springfox.documentation.spring.web", // --> CdmSwaggerConfig
         "eu.etaxonomy.cdm.api.service.l10n",
         "eu.etaxonomy.cdm.remote.controller",
         "eu.etaxonomy.cdm.remote.service",
-        "eu.etaxonomy.cdm.remote.config" })
+        "eu.etaxonomy.cdm.remote.config" }) // includes CdmOpenApiConfig, SwaggerUiWebjarController
 public class CdmSpringMVCConfigWithSwagger extends CdmSpringMVCConfig {
 
     private static final Logger logger = LogManager.getLogger();
@@ -44,8 +39,7 @@ public class CdmSpringMVCConfigWithSwagger extends CdmSpringMVCConfig {
     public CdmSpringMVCConfigWithSwagger() {
         super();
         logger.info(" ==========================================");
-        logger.info("  Spring Configuration Profile: Swagger");
+        logger.info("  Spring Configuration Profile: Swagger (springdoc-openapi)");
         logger.info(" ==========================================");
     }
-
 }

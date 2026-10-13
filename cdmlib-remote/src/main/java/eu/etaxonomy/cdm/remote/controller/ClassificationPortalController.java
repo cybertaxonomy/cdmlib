@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * The ClassificationController class is a Spring MVC Controller.
@@ -41,7 +41,7 @@ import io.swagger.annotations.Api;
  * TODO this controller should be a portal controller!!
  */
 @Controller
-@Api("portal_classification")
+@Tag(name = "portal_classification")
 @RequestMapping(value = {"/portal/classification/{uuid}"})
 public class ClassificationPortalController extends ClassificationController {
 

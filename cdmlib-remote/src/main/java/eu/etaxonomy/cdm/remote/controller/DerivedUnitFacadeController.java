@@ -39,14 +39,14 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since 28.06.2010
  */
 @Controller
-@Api("derivedUnitFacade")
+@Tag(name = "derivedUnitFacade")
 @RequestMapping(value = {"/derivedUnitFacade/{uuid}"})
 public class DerivedUnitFacadeController
         extends AbstractController<SpecimenOrObservationBase, IOccurrenceService>{

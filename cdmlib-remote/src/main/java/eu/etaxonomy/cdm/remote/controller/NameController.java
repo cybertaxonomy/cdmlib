@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.remote.service.RegistrableEntityFilter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * TODO write controller documentation
@@ -50,7 +50,7 @@ import io.swagger.annotations.Api;
  * @since 24.03.2009
  */
 @Controller
-@Api("name")
+@Tag(name = "name")
 @RequestMapping(value = {"/name/{uuid}"})
 public class NameController extends AbstractIdentifiableController<TaxonName, INameService>{
 

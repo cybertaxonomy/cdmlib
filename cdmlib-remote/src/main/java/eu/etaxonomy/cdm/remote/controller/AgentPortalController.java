@@ -14,7 +14,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
@@ -22,7 +22,7 @@ import io.swagger.annotations.Api;
  *
  */
 @Controller
-@Api("portal_agent")
+@Tag(name = "portal_agent")
 @RequestMapping(value = {"/portal/agent/{uuid}"})
 public class AgentPortalController extends AgentController {
 

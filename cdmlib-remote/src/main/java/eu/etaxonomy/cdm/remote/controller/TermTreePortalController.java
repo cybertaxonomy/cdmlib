@@ -27,14 +27,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.model.term.TermTree;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since Jun 24, 2013
  */
 @Controller
-@Api("portal_termTree")
+@Tag(name = "portal_termTree")
 @RequestMapping(value = {"/portal/termTree/{uuid}"})
 public class TermTreePortalController extends TermTreeController {
 

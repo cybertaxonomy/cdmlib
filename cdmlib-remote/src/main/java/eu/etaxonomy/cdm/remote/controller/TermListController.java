@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * TODO write controller documentation
@@ -28,7 +28,7 @@ import io.swagger.annotations.Api;
  *
  */
 @Controller
-@Api("term")
+@Tag(name = "term")
 @RequestMapping(value = {"/term"})
 public class TermListController extends AbstractIdentifiableListController<DefinedTermBase, ITermService> {
 

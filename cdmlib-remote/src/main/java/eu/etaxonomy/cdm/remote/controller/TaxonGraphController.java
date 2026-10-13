@@ -29,14 +29,14 @@ import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since Oct 2, 2018
  */
 @Controller
-@Api("taxonGraph")
+@Tag(name = "taxonGraph")
 @RequestMapping(value = {"/taxonGraph"})
 public class TaxonGraphController {
 

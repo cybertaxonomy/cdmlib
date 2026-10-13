@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * TODO write controller documentation
@@ -42,7 +42,7 @@ import io.swagger.annotations.Api;
  * @since 24.03.2009
  */
 @Controller
-@Api("name")
+@Tag(name = "name")
 @RequestMapping(value = {"/name"})
 public class NameListController extends AbstractIdentifiableListController<TaxonName, INameService> {
 

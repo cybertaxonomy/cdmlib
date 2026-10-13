@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * The AgentController class is a Spring MVC Controller.
@@ -69,7 +69,7 @@ import io.swagger.annotations.Api;
  * @since 24.03.2009
  */
 @Controller
-@Api(value = "agent")
+@Tag(name = "agent")
 @RequestMapping(value = {"/agent/{uuid}"})
 public class AgentController extends AbstractIdentifiableController<AgentBase, IAgentService> {
 

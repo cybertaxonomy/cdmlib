@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.model.media.Media;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * TODO write controller documentation
@@ -24,7 +24,7 @@ import io.swagger.annotations.Api;
  * @since 24.03.2009
  */
 @Controller
-@Api("media")
+@Tag(name = "media")
 @RequestMapping(value = {"/media"})
 public class MediaListController extends AbstractIdentifiableListController<Media, IMediaService> {
 

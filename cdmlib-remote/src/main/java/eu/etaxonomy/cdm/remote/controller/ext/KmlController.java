@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 import de.micromata.opengis.kml.v_2_2_0.Kml;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * <p>
@@ -70,7 +70,7 @@ import io.swagger.annotations.Api;
  */
 @CrossOrigin(origins = "*")
 @Controller
-@Api(value="mapServiceParameters")
+@Tag(name = "mapServiceParameters")
 @RequestMapping(value = { "kml" })
 public class KmlController extends BaseController<TaxonBase, ITaxonService> {
 

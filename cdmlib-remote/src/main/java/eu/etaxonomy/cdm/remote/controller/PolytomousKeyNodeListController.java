@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
@@ -23,7 +23,7 @@ import io.swagger.annotations.Api;
  *
  */
 @Controller
-@Api("polytomousKeyNode")
+@Tag(name = "polytomousKeyNode")
 @RequestMapping(value = {"/polytomousKeyNode"})
 public class PolytomousKeyNodeListController extends BaseListController<PolytomousKeyNode, IPolytomousKeyNodeService> {
 

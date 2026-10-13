@@ -22,10 +22,10 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.SetSpec;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
-@Api("OAI-PMH Taxa")
+@Tag(name = "OAI-PMH Taxa")
 @RequestMapping(value = "/taxon/oai", params = "verb")
 public class TaxonOaiPmhController
         extends AbstractOaiPmhController<TaxonBase, ITaxonService> {

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * TODO write controller documentation
@@ -25,7 +25,7 @@ import io.swagger.annotations.Api;
  */
 
 @Controller
-@Api("feature")
+@Tag(name = "feature")
 @RequestMapping(value = {"/feature"}) //FIXME refactor type mappings
 public class FeatureListController extends AbstractIdentifiableListController<DescriptionBase, IDescriptionService>{
 

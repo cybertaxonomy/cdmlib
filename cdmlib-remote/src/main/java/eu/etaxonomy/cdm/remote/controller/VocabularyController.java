@@ -30,14 +30,14 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since 22.07.2010
  */
 @Controller
-@Api("termVocabulary")
+@Tag(name = "termVocabulary")
 @RequestMapping(value = {"/termVocabulary/{uuid}"})
 public class VocabularyController extends AbstractIdentifiableController<TermVocabulary, IVocabularyService> {
 

@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since Sep 9, 2020
  */
 @Controller
-@Api(value="portal_polytomousKeyNode")
+@Tag(name = "portal_polytomousKeyNode")
 @RequestMapping(value = {"/portal/polytomousKeyNode/{uuid}"})
 public class PolytomousKeyNodePortalController extends PolytomousKeyNodeController {
 

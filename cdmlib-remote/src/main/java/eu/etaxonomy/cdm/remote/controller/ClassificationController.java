@@ -47,14 +47,14 @@ import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since 03.06.2010
  */
 @Controller
-@Api("classification")
+@Tag(name = "classification")
 @RequestMapping(value = {"/classification/{uuid}"})
 public class ClassificationController extends AbstractIdentifiableController<Classification,IClassificationService> {
 

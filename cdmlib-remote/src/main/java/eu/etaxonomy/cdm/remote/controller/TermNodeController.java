@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import eu.etaxonomy.cdm.api.service.ITermNodeService;
 import eu.etaxonomy.cdm.model.term.TermNode;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author n.hoffmann
  * @since Aug 6, 2010
  */
 @Controller
-@Api("termNode")
+@Tag(name = "termNode")
 @RequestMapping(value = {"/termNode/{uuid}"})
 public class TermNodeController extends BaseController<TermNode, ITermNodeService> {
     private static final List<String> TERM_INIT_STRATEGY = Arrays.asList(new String []{

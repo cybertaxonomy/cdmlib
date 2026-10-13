@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller which accepts requests for the metadata representation of an object
@@ -40,8 +40,7 @@ import io.swagger.annotations.Api;
  * @see com.ibm.lsid.server.servlet.MetadataServlet
  */
 @Controller(value = "lsidMetadataController")
-@Api(value="lsid_authority_metadata",
-description="Controller which accepts incoming requests to the LSIDMetadataService.")
+@Tag(name = "lsid_authority_metadata", description = "Controller which accepts incoming requests to the LSIDMetadataService.")
 public class MetadataController {
 
     private LSIDMetadataService lsidMetadataService;

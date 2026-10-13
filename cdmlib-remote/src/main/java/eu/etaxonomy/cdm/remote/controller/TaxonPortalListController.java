@@ -39,14 +39,14 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since 26.08.2014
  */
 @Controller
-@Api("portal_taxon")
+@Tag(name = "portal_taxon")
 @RequestMapping(value = {"/portal/taxon"})
 public class TaxonPortalListController extends TaxonListController {
 

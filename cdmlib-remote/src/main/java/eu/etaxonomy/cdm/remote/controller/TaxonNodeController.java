@@ -30,14 +30,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since Jun 13, 2016
  */
 @Controller
-@Api("taxonNode")
+@Tag(name = "taxonNode")
 @RequestMapping(value = {"/taxonNode/{uuid}"})
 //NOTE by AM: it seems that TaxonNodeController does not inherit from BaseController
 //            because doGet method return type is a TaxonNodeDTO not TaxonNode as expected

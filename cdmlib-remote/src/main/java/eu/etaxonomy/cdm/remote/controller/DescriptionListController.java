@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * TODO write controller documentation
@@ -80,7 +80,7 @@ import io.swagger.annotations.Api;
  * @since 24.03.2009
  */
 @Controller
-@Api("description")
+@Tag(name = "description")
 @RequestMapping(value = {"/description"})
 public class DescriptionListController
         extends AbstractIdentifiableListController<DescriptionBase, IDescriptionService> {

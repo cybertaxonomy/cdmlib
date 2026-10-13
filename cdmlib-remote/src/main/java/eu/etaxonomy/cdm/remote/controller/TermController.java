@@ -26,14 +26,14 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author a.kohlbecker
  * @since 22.07.2010
  */
 @Controller
-@Api("term")
+@Tag(name = "term")
 @RequestMapping(value = {"/term/{uuid}"})
 public class TermController
         extends AbstractIdentifiableController<DefinedTermBase, ITermService> {

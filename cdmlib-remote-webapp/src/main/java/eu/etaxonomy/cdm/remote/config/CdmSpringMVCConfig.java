@@ -27,8 +27,8 @@ import org.springframework.web.context.support.ServletContextResource;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.XmlViewResolver;
 
@@ -51,10 +51,11 @@ import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
  * @author a.kohlbecker
  * @since Jul 1, 2014
  */
-// @EnableWebMvc // do not add this since we are overriding WebMvcConfigurationSupport directly
+// DelegatingWebMvcConfiguration (not bare WebMvcConfigurationSupport) so WebMvcConfigurer
+// beans such as springdoc SwaggerWebMvcConfigurer are applied (swagger-ui resources).
 @Import(value={PreloadedBeans.class}) // can not be replaced by @DependsOn("...") ?
 //@DependsOn("objectMapperConfigurer")
-public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
+public abstract class CdmSpringMVCConfig extends DelegatingWebMvcConfiguration  {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -126,27 +127,29 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
 
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
-        // TODO does it work?
+        super.addInterceptors(registry);
         registry.addInterceptor(localeContextHandlerInterceptor);
         logger.debug("addInterceptors");
     }
 
     @Override
-    public void addFormatters(FormatterRegistry registry) {
+    protected void addFormatters(FormatterRegistry registry) {
+        super.addFormatters(registry);
         registry.addConverter(new RestrictionConverter(jsonObjectMapper));
     }
 
     @Override
     protected void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-        // DefaultServletHandlerConfigurer: delegates unhandled requests by forwarding to
-        // the Servlet container's "default" servlet, since the DispatcherServlet is mapped to "/"
-        // so static content as welcome files are handled by the default servlet
+        super.configureDefaultServletHandling(configurer);
+        // delegates unhandled requests to the Servlet container's "default" servlet
+        // (DispatcherServlet is mapped to "/"); welcome files / static content
         configurer.enable();
         logger.debug("configureDefaultServletHandling");
     }
 
     @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+    protected void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        super.configureContentNegotiation(configurer);
         configurer
             .favorPathExtension(true)   //TODO remove after adapting dataportal code #10216
             .favorParameter(true)

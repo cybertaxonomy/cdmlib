@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 import de.digitalcollections.iiif.model.jackson.IiifObjectMapper;
 import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Serves media lists as iiif manifest files ( for the IIIF Presentation API see https://iiif.io/api/presentation/2.1/#resource-structure).
@@ -63,7 +63,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @CrossOrigin(origins = "*")
-@Api("iiif")
+@Tag(name = "iiif")
 @RequestMapping(value = {"/iiif"}, produces = "application/json; charset=utf-8")
 public class ManifestController {
 

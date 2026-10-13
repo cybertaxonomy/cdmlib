@@ -35,10 +35,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.remote.controller.util.ProgressMonitorUtil;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
-@Api("manage")
+@Tag(name = "manage")
 @CrossOrigin(origins="*")
 @RequestMapping(value = { "/manage" })
 public class ManagementController {

@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.remote.service.RegistrableEntityFilter;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * The NamePortalController class is a Spring MVC Controller.
@@ -64,7 +64,7 @@ import io.swagger.annotations.Api;
  * @since 24.03.2009
  */
 @Controller
-@Api("portal_name")
+@Tag(name = "portal_name")
 @RequestMapping(value = {"/portal/name/{uuid}"})
 public class NamePortalController extends BaseController<TaxonName, INameService> {
 

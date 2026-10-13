@@ -57,7 +57,6 @@
         <forceSchemaCreate>true</forceSchemaCreate>
         <log4jFile>${project.build.directory}/target/test-classes/log4j2.xml</log4jFile>
         <beanDefinitionFile>${project.build.directory}/test-classes/datasources.xml</beanDefinitionFile>
-        <!-- remoting: avoid springfox (javax.servlet) until springdoc-openapi migration; was swagger -->
         <spring.profiles>remoting</spring.profiles>
       </properties>
       <build>
@@ -100,7 +99,7 @@
         <forceSchemaCreate>false</forceSchemaCreate>
         <integrationTest.log4j.configuration>${project.build.directory}/target/test-classes/log4j2.xml</integrationTest.log4j.configuration>
         <beanDefinitionFile>${project.build.directory}/test-classes/datasources.xml</beanDefinitionFile>
-        <!-- remoting: avoid springfox (javax.servlet) until springdoc-openapi migration; was swagger -->
+        <!-- remoting only for regular ITs; use remoting,swagger for live OpenAPI / SwaggerStaticIT -->
         <spring.profiles>remoting</spring.profiles>
       </properties>
       <build>
@@ -124,7 +123,7 @@
                   </systemPropertyVariables>
                   <excludes>
                     <exclude>**/ForceSchemaCreateIT.java</exclude>
-                    <!-- needs springfox / swagger profile; blocked on Jakarta until springdoc migration -->
+                    <!-- needs spring.profiles=remoting,swagger; run manually / dedicated profile -->
                     <exclude>**/SwaggerStaticIT.java</exclude>
                   </excludes>
                 </configuration>
@@ -173,14 +172,18 @@
       <artifactId>spring-oxm</artifactId>
     </dependency>
 
-    <!-- swagger -->
+    <!-- springdoc-openapi (replaces springfox); active with spring.profiles=swagger -->
     <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger2</artifactId>
-      <scope>test</scope>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <exclusions>
+        <!-- Boot starter-logging brings log4j-to-slf4j; conflicts with cdmlib log4j-slf4j2-impl -->
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-    <!-- dependencies for springfox-swagger2, added explicitly to pin the 
-      version these dependencies are also required by the cdmlib! -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
@@ -189,12 +192,10 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
     </dependency>
-    <!-- needed here? It is already mentioned in cdmlib-model -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
     </dependency>
-    <!-- END of dependencies for swagger-springmvc, added explicitely -->
 
     <!-- testing -->
     <dependency>
@@ -297,7 +298,6 @@
               <!-- datasources.xml is prepared by <plugins><resources>..</resources> above -->
               <cdm.beanDefinitionFile>${beanDefinitionFile}</cdm.beanDefinitionFile>
               <cdm.forceSchemaCreate>${forceSchemaCreate}</cdm.forceSchemaCreate>
-              <!-- remoting until springdoc migration; swagger profile needs springfox/javax.servlet -->
               <spring.profiles.active>${spring.profiles}</spring.profiles.active>
               <log4j.configuration>${log4jFile}</log4j.configuration>
           </systemProperties>

@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.remote.editor.LSIDAuthorityPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Controller which accepts incoming requests to the LSIDAuthorityService
@@ -60,8 +60,7 @@ import io.swagger.annotations.Api;
  * @see com.ibm.lsid.server.servlet.AuthorityServlet
  */
 @Controller
-@Api(value="lsid_authority",
-    description="Controller which accepts incoming requests to the LSIDAuthorityService.")
+@Tag(name = "lsid_authority", description = "Controller which accepts incoming requests to the LSIDAuthorityService.")
 public class AuthorityController {
 
     private LSIDAuthorityService lsidAuthorityService;

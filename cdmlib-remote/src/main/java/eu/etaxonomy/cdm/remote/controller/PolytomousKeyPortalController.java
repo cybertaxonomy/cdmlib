@@ -28,8 +28,8 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
 /**
  * @author a.kohlbecker
@@ -38,7 +38,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @Deprecated
 @Controller
-@Api(value="portal_polytomousKeyNode", description="Deprecated !")
+@Tag(name = "portal_polytomousKeyNode", description = "Deprecated !")
 @RequestMapping(value = {"/portal/polytomousKey/{uuid}"})
 public class PolytomousKeyPortalController extends BaseController<PolytomousKey, IPolytomousKeyService> {
 
@@ -54,7 +54,7 @@ public class PolytomousKeyPortalController extends BaseController<PolytomousKey,
      * @Deprecated ONLY FOR TESTING PURPOSES
      */
     @Deprecated
-    @ApiOperation(notes="ONLY FOR TESTING PURPOSES", value = "/portal/polytomousKey/{uuid}/loadWithNodes")
+    @Operation(summary = "/portal/polytomousKey/{uuid}/loadWithNodes", description = "ONLY FOR TESTING PURPOSES")
     @RequestMapping(value = {"loadWithNodes"}, method = RequestMethod.GET)
     public ModelAndView doLoadWithNodes(
             @PathVariable("uuid") UUID uuid,

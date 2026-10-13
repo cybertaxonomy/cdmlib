@@ -31,10 +31,10 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.Operation;
 
 /**
  * TODO write controller documentation
@@ -43,7 +43,7 @@ import io.swagger.annotations.ApiOperation;
  * @since 24.03.2009
  */
 @Controller
-@Api("registration")
+@Tag(name = "registration")
 @RequestMapping(value = {"/registration"})
 public class RegistrationController extends BaseController<Registration, IRegistrationService> {
 
@@ -82,11 +82,9 @@ public class RegistrationController extends BaseController<Registration, IRegist
         return reg;
     }
 
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "identifier", value = "The persitent identifier of the Registration.", required = true, dataType = "string", paramType = "path"),
-    })
-    @ApiOperation(value = "Finds Registration by persitent identifier.",
-        notes = "The identifier passed as paramter must be unique in the database otherwise the server will responde with the HTTP error code: " + HttpServletResponse.SC_PRECONDITION_FAILED
+    @Parameter(name = "identifier", description = "The persitent identifier of the Registration.", required = true, in = ParameterIn.PATH)
+    @Operation(summary = "Finds Registration by persitent identifier.",
+        description = "The identifier passed as paramter must be unique in the database otherwise the server will responde with the HTTP error code: " + HttpServletResponse.SC_PRECONDITION_FAILED
     )
     @RequestMapping(method = RequestMethod.GET)
     public Registration doGetByIdentifier(
@@ -109,11 +107,9 @@ public class RegistrationController extends BaseController<Registration, IRegist
         }
     }
 
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "identifier", value = "The persitent identifier of the Registration.", required = true, dataType = "string", paramType = "path"),
-    })
-    @ApiOperation(value = "Finds status of a Registration by persitent identifier.",
-        notes = "The identifier passed as paramter must be unique in the database otherwise the server will responde with the HTTP error code: " + HttpServletResponse.SC_PRECONDITION_FAILED
+    @Parameter(name = "identifier", description = "The persitent identifier of the Registration.", required = true, in = ParameterIn.PATH)
+    @Operation(summary = "Finds status of a Registration by persitent identifier.",
+        description = "The identifier passed as paramter must be unique in the database otherwise the server will responde with the HTTP error code: " + HttpServletResponse.SC_PRECONDITION_FAILED
     )
     @RequestMapping(value="status", method = RequestMethod.GET, params={"identifier"})
     public ModelAndView doStatusByIdentifier(
@@ -139,9 +135,7 @@ public class RegistrationController extends BaseController<Registration, IRegist
         }
     }
 
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "identifier", value = "The persitent identifier of the Registration", required = true, dataType = "string", paramType = "path"),
-    })
+    @Parameter(name = "identifier", description = "The persitent identifier of the Registration", required = true, in = ParameterIn.PATH)
     @RequestMapping(method = RequestMethod.GET, params={"identifier", "validateUniqueness"})
     public Pager<Registration> doPageByIdentifier(
             @RequestParam(value = "identifier", required = true) String identifier,
