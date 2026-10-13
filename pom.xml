@@ -65,6 +65,8 @@
     <mariadb.version>3.5.10</mariadb.version>
     <postgresql.version>42.7.13</postgresql.version>
     <c3p0.version>0.9.5.2</c3p0.version>
+    <!-- 1.83 adds META-INF/versions/25 (class file 69); Jetty annotation scan / older ASM fail on it -->
+    <bouncycastle.version>1.82</bouncycastle.version>
   </properties>
   
   <scm>
@@ -1320,6 +1322,11 @@
             <artifactId>commons-logging</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcprov-jdk18on</artifactId>
+        <version>${bouncycastle.version}</version>
       </dependency>
       <dependency>
           <!-- used in eu.etaxonomy.cdm.io.markup and for swagger -->
