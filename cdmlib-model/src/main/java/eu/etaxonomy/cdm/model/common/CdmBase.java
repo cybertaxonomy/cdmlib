@@ -128,7 +128,9 @@ public abstract class CdmBase
     @XmlJavaTypeAdapter(UUIDAdapter.class)
     @XmlID
     @Convert(converter = UuidConverter.class)
-    @NaturalId // This has the effect of placing a "unique" constraint on the database column
+    // mutable: CdmBase allows setUuid() after construction (imports, fixed test UUIDs, etc.);
+    // Hibernate 6 enforces immutable @NaturalId by default and would reject such changes
+    @NaturalId(mutable = true) // also places a unique constraint on the database column
     @Column(length=36)  //TODO needed? Type UUID will always assure that is exactly 36
     @Match(MatchMode.IGNORE)
     @NotNull
