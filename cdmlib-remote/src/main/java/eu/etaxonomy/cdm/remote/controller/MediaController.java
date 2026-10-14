@@ -18,7 +18,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 //import org.mortbay.log.Log;
@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.remote.exception.NoRecordsMatchException;
+
 import io.swagger.annotations.Api;
 
 /**
@@ -89,7 +90,7 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
                 if(applyFilterPreset) {
                    result = service.readResourceMetadataFiltered(mediaRepresentation);
                 } else {
-                    uri = mediaRepresentation.getParts().get(0).getUri();
+                    uri = mediaRepresentation.getUri();
                     if (uri == null) {
                         return null;
                     }

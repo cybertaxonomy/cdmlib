@@ -8,13 +8,25 @@
 */
 package eu.etaxonomy.cdm.persistence.query;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Property;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.From;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
 
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
+/**
+ * Grouping definition for {@code groupBy} queries using the JPA Criteria API
+ * (Hibernate 6 compatible; replaces the former Hibernate Criteria API).
+ *
+ * @author ben.clark
+ */
 public class Grouping {
 
 	private String associatedObject;
@@ -60,21 +72,43 @@ public class Grouping {
 		return order;
 	}
 
-	public void addOrder(Criteria criteria) {
-		if(order != null) {
-			if(order.equals(SortOrder.ASCENDING)) {
-				criteria.addOrder(Order.asc(this.name));
-			} else {
-				criteria.addOrder(Order.desc(this.name));
-			}
-		}
+	/**
+	 * Adds this grouping to a JPA Criteria query.
+	 *
+	 * @param joins map of already created joins, keyed by association path
+	 */
+	public void addToCriteria(CriteriaBuilder cb, Root<?> root, Map<String, From<?, ?>> joins,
+			List<Selection<?>> selections, List<Expression<?>> groupByExpressions,
+			List<Order> orders) {
+
+		Expression<?> expression = resolvePath(root, joins);
+		selections.add(expression.alias(name));
+		groupByExpressions.add(expression);
+		addOrder(cb, expression, orders);
 	}
 
-	public void addProjection(ProjectionList projectionList) {
-		if(associatedObjectAlias != null) {
-		    projectionList.add(Property.forName(associatedObjectAlias + "." + propertyName).group(), name);
-		} else {
-			projectionList.add(Property.forName(propertyName).group(), name);
+	protected Expression<?> resolvePath(Root<?> root, Map<String, From<?, ?>> joins) {
+		From<?, ?> from = root;
+		if (associatedObject != null) {
+			from = joins.computeIfAbsent(associatedObject,
+					key -> root.join(key, JoinType.INNER));
+		}
+		if (propertyName == null || propertyName.isEmpty()) {
+			return from;
+		}
+		if ("class".equals(propertyName)) {
+			return from.type();
+		}
+		return from.get(propertyName);
+	}
+
+	protected void addOrder(CriteriaBuilder cb, Expression<?> expression, List<Order> orders) {
+		if (order != null) {
+			if (order.equals(SortOrder.ASCENDING)) {
+				orders.add(cb.asc(expression));
+			} else {
+				orders.add(cb.desc(expression));
+			}
 		}
 	}
 }

@@ -12,7 +12,6 @@ import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;

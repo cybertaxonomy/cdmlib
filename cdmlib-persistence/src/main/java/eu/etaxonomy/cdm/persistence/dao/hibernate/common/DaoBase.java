@@ -39,7 +39,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.search.FullTextQuery;
+import org.hibernate.search.backend.lucene.LuceneExtension;
+import org.hibernate.search.engine.search.query.SearchQuery;
+import org.hibernate.search.mapper.orm.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
@@ -240,27 +242,64 @@ public abstract class DaoBase {
         }
     }
 
-    protected void addOrder(FullTextQuery fullTextQuery, List<OrderHint> orderHints) {
-        //FIXME preliminary hardcoded type:
-        SortField.Type type = SortField.Type.STRING;
-
-        if(orderHints != null && !orderHints.isEmpty()) {
-            org.apache.lucene.search.Sort sort = new Sort();
-            SortField[] sortFields = new SortField[orderHints.size()];
-            for(int i = 0; i < orderHints.size(); i++) {
-                OrderHint orderHint = orderHints.get(i);
-                switch(orderHint.getSortOrder()) {
-                case ASCENDING:
-                    sortFields[i] = new SortField(orderHint.getPropertyName(), type, true);
-                    break;
-                case DESCENDING:
-                default:
-                    sortFields[i] = new SortField(orderHint.getPropertyName(), type, false);
-                }
-            }
-            sort.setSort(sortFields);
-            fullTextQuery.setSort(sort);
+    /**
+     * Builds a Lucene {@link Sort} from the given order hints, using
+     * {@link OrderHint#toSortField()} (SortedSetDocValues / {@code __sort} fields).
+     *
+     * @return the sort, or {@code null} if no order hints are given
+     */
+    protected Sort createLuceneSort(List<OrderHint> orderHints) {
+        if(orderHints == null || orderHints.isEmpty()) {
+            return null;
         }
+        SortField[] sortFields = new SortField[orderHints.size()];
+        for(int i = 0; i < orderHints.size(); i++) {
+            sortFields[i] = orderHints.get(i).toSortField();
+        }
+        return new Sort(sortFields);
+    }
+
+    /**
+     * Executes a native Lucene query via Hibernate Search 6
+     * ({@code fromLuceneQuery} / optional {@code fromLuceneSort}).
+     */
+    protected <E> List<E> executeFullTextSearch(Class<E> entityType,
+            org.apache.lucene.search.Query luceneQuery, List<OrderHint> orderHints,
+            Integer pageSize, Integer pageNumber) {
+
+        Sort luceneSort = createLuceneSort(orderHints);
+        SearchQuery<E> searchQuery;
+        if(luceneSort != null) {
+            searchQuery = Search.session(getSession())
+                    .search(entityType)
+                    .extension(LuceneExtension.get())
+                    .where(f -> f.fromLuceneQuery(luceneQuery))
+                    .sort(f -> f.fromLuceneSort(luceneSort))
+                    .toQuery();
+        } else {
+            searchQuery = Search.session(getSession())
+                    .search(entityType)
+                    .extension(LuceneExtension.get())
+                    .where(f -> f.fromLuceneQuery(luceneQuery))
+                    .toQuery();
+        }
+
+        if(pageSize != null) {
+            int offset = pageNumber != null ? pageNumber * pageSize : 0;
+            return searchQuery.fetchHits(offset, pageSize);
+        }
+        return searchQuery.fetchAllHits();
+    }
+
+    /**
+     * Counts hits for a native Lucene query via Hibernate Search 6.
+     */
+    protected long countFullTextResults(Class<?> entityType, org.apache.lucene.search.Query luceneQuery) {
+        return Search.session(getSession())
+                .search(entityType)
+                .extension(LuceneExtension.get())
+                .where(f -> f.fromLuceneQuery(luceneQuery))
+                .fetchTotalHitCount();
     }
 
     /**

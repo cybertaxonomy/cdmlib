@@ -11,8 +11,7 @@ package eu.etaxonomy.cdm.ext.occurrence.gbif;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.core5.http.NameValuePair;
 
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
@@ -32,7 +31,7 @@ public class GbifQueryGenerator {
      * @return the query URL string
      */
     public List<NameValuePair> generateQueryParams(OccurenceQuery query){
-        List<NameValuePair> queryParamsGET = new ArrayList<NameValuePair>();
+        List<NameValuePair> queryParamsGET = new ArrayList<>();
         // only look for preserved specimens
 
         if (checkForValidQuery(query)) {

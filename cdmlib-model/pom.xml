@@ -2,7 +2,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>6.0.0</version>
+    <version>6.1.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -13,32 +13,13 @@
   <build>
     <plugins>
         <plugin>
-          <groupId>org.openrewrite.maven</groupId>
-          <artifactId>rewrite-maven-plugin</artifactId>
-          <version>6.37.0</version>
-          <configuration>
-            <activeRecipes>
-             <!-- <recipe>org.openrewrite.java.OrderImports</recipe> -->
-              <recipe>org.openrewrite.java.migrate.Java8toJava11</recipe>
-            </activeRecipes>
-          </configuration>
-          <dependencies>
-          <dependency>
-              <groupId>org.openrewrite.recipe</groupId>
-              <artifactId>rewrite-migrate-java</artifactId>
-              <version>3.33.0</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-    
-        <plugin>
           <groupId>dev.aspectj</groupId>
           <artifactId>aspectj-maven-plugin</artifactId>
-          <version>1.13.1</version>
+          <version>1.14.1</version>
           <configuration>
-            <source>11</source>
-            <target>11</target>
-            <complianceLevel>11</complianceLevel>
+            <source>17</source>
+            <target>17</target>
+            <complianceLevel>17</complianceLevel>
             <aspectLibraries>
               <aspectLibrary>
                 <groupId>org.springframework</groupId>
@@ -55,11 +36,10 @@
             </execution>
           </executions>
           <dependencies>
-            <!-- AspectJ Version die Java 11 unterstützt -->
             <dependency>
               <groupId>org.aspectj</groupId>
               <artifactId>aspectjtools</artifactId>
-              <version>1.9.20.1</version>
+              <version>1.9.25.1</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -106,26 +86,33 @@
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-commons</artifactId>
     </dependency>
+    <!-- JAXB -->
     <dependency>
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-runtime</artifactId>
     </dependency>
     <dependency>
+        <!-- old jaxb version, still required for Spring 5 -->
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-impl</artifactId>
+    </dependency>
+    
+    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-envers</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
+      <groupId>org.hibernate.search</groupId>
       <artifactId>hibernate-search-engine</artifactId>
+    </dependency>
+    <!-- provides the @Indexed, @FullTextField, @IndexedEmbedded, ... mapping annotations -->
+    <dependency>
+      <groupId>org.hibernate.search</groupId>
+      <artifactId>hibernate-search-mapper-pojo-base</artifactId>
     </dependency>
     <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>
-    </dependency>
-    <!-- for KeywordAnalyzer in NonViralName -->
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-analyzers-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -141,7 +128,7 @@
       <artifactId>spring-aspects</artifactId>
     </dependency>
     <dependency>
-      <groupId>net.sf.opencsv</groupId>
+      <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
     </dependency>
     <dependency>
@@ -195,6 +182,10 @@
     <dependency>
       <groupId>org.passay</groupId>
       <artifactId>passay</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-text</artifactId>
     </dependency>
   </dependencies>
 </project>

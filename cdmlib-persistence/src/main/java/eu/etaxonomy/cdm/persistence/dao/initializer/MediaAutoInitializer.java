@@ -13,7 +13,6 @@ import java.util.Optional;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 
-
 /**
  * @author a.kohlbecker
  * @since Jan 15, 2013
@@ -26,13 +25,13 @@ public class MediaAutoInitializer extends AutoPropertyInitializer<Media> {
         beanInitializer.initializeInstance(bean.getAllTitles());
         beanInitializer.initializeInstance(bean.getAllDescriptions());
         for (MediaRepresentation r : bean.getRepresentations()){
-            beanInitializer.initializeInstance(r.getParts());
+            beanInitializer.initializeInstance(r.getMediaMetaData());
         }
     }
 
 
     @Override
     public Optional<String> hibernateFetchJoin(Class<?> clazz, String beanAlias){
-    	return Optional.of(String.format(" LEFT JOIN FETCH %1$s.representations r LEFT JOIN FETCH %1$s.title LEFT JOIN FETCH r.mediaRepresentationParts ", beanAlias));
+    	return Optional.of(String.format(" LEFT JOIN FETCH %1$s.representations r LEFT JOIN FETCH %1$s.title LEFT JOIN FETCH r.mediaMetaData ", beanAlias));
     }
 }

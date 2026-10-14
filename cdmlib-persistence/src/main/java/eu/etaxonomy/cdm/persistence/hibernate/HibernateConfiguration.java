@@ -27,7 +27,8 @@ public class HibernateConfiguration implements Serializable{
 
     public final static String FORMAT_SQL = "hibernate.format_sql";
 
-    public final static String REGISTER_SEARCH = "hibernate.search.autoregister_listeners";
+    /** HS6 replacement for the former {@code hibernate.search.autoregister_listeners}. */
+    public final static String REGISTER_SEARCH = "hibernate.search.enabled";
 
     public final static String REGISTER_ENVERS = EnversIntegrator.AUTO_REGISTER;
 

@@ -6,9 +6,9 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.sql.ResultSet;
@@ -21,6 +21,11 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -1449,18 +1454,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         	fireWarningEvent(message, "unknown location", 2, 0);
         }
         ImageFile imageFile = ImageFile.NewInstance(uri, null, cdmImageInfo);
-
-        MediaRepresentation representation = MediaRepresentation.NewInstance();
-
-        if(cdmImageInfo != null){
-        	representation.setMimeType(cdmImageInfo.getMimeType());
-        	representation.setSuffix(cdmImageInfo.getSuffix());
-        }
         if (uriString.endsWith(".json")) {
-            representation.setMimeType("application/json");
+            imageFile.setMimeType("application/json");
         }
-        representation.addRepresentationPart(imageFile);
-        return representation;
+        return imageFile;
     }
 
 
@@ -1609,5 +1606,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
                 ((Team)agent).getTeamMembers().stream().forEach(m->getAgentService().save(m));
             }
         }
+    }
+
+    protected CSVReader csvReader(Reader reader, char separator) {
+        CSVParser parser = new CSVParserBuilder()
+                .withSeparator(separator)
+                .build();
+        return new CSVReaderBuilder(reader)
+            .withCSVParser(parser)
+            .build();
     }
 }

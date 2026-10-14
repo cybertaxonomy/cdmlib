@@ -45,15 +45,15 @@ public class MediaDto2Loader {
         String hql = "SELECT new map(m.id as mediaId, m.uuid as uuid, m.titleCache as label, "
                 +     " m.artist as artist, "
                 +     " r.id as repId, r.uuid as repUuid, r.mimeType as mimeType, "
-                +     " r.suffix as suffix, p.uri as uri,  p.size as size, "
-                +     " type(p) as clazz, "  //TODO #10582 throws exception if mediaRepresentationPart is missing
-                +     " p.height as heigth, p.width as width) "
+                +     " r.suffix as suffix, r.uri as uri,  r.size as size, "
+                +     " type(r) as clazz, "  //TODO #10582 maybe throws exception if mediaRepresentation
+                                             //            is missing; not yet tested after #3556 was fixed
+                +     " r.height as heigth, r.width as width) "
                 + " FROM Media m "
                 + "      LEFT JOIN m.representations r "
-                + "      LEFT JOIN r.mediaRepresentationParts p "
                 + "      LEFT JOIN m.artist artist "
                 + " WHERE m.id IN :baseIds "
-                + " ORDER BY m.id, r.id, p.id "
+                + " ORDER BY m.id, r.id "
                 ;
 
         Map<String,Object> params = new HashMap<>();

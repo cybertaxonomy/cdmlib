@@ -11,9 +11,7 @@ package eu.etaxonomy.cdm.common;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import org.apache.commons.lang3.StringUtils;
-
 
 /**
  * A class for handling DOIs (http://www.doi.org).

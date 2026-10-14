@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,7 +29,6 @@ import javax.validation.ValidatorFactory;
 
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -36,6 +36,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.model.validation.CRUDEventType;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidation;
@@ -56,6 +57,8 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
     private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
     private static final String SYNONYM = "eu.etaxonomy.cdm.model.taxon.Synonym";
     private static final String GATHERING_EVENT = "eu.etaxonomy.cdm.model.occurrence.GatheringEvent";
+
+    private static final ZonedDateTime created = DateTimeUtil.of(2014, 1, 1);
 
     @SpringBeanByType
     private EntityValidationCrudJdbcImpl validationCrudJdbcDao;
@@ -150,8 +153,6 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
 
         // All same as in @DataSet:
 
-        DateTime created = new DateTime(2014, 1, 1, 0, 0);
-
         Employee emp = new Employee();
         emp.setId(100);
         emp.setUuid(UUID.fromString("f8de74c6-aa56-4de3-931e-87b61da0218c"));
@@ -202,8 +203,6 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
 
         // All identical to @DataSet:
 
-        DateTime created = new DateTime(2014, 1, 1, 0, 0);
-
         Employee emp = new Employee();
         emp.setId(100);
         emp.setUuid(UUID.fromString("f8de74c6-aa56-4de3-931e-87b61da0218c"));
@@ -248,8 +247,6 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
     // having 1 entityconstraintviolation)
     public void testSameErrorOtherEntity() {
 
-        DateTime created = new DateTime(2014, 1, 1, 0, 0);
-
         // Not in @DataSet
         Employee emp = new Employee();
         emp.setId(200);
@@ -292,8 +289,6 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
     // things behave as expected (2 entityvalidations, each
     // having 1 entityconstraintviolation)
     public void testOneOldOneNewError() {
-
-        DateTime created = new DateTime(2014, 1, 1, 0, 0);
 
         // Same entity as in @DataSet
         Employee emp = new Employee();
@@ -352,8 +347,6 @@ public class EntityValidationCrudJdbcImplTest extends CdmIntegrationTest {
     // EntityValidation record with its validation counter
     // increased.
     public void testAllErrorsSolved() {
-
-        DateTime created = new DateTime(2014, 1, 1, 0, 0);
 
         Employee emp = new Employee();
         emp.setId(100);

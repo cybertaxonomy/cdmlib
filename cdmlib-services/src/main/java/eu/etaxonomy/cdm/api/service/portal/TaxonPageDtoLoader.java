@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.portal;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,7 +24,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.dto.SpecimenOrObservationBaseDTO;
@@ -814,7 +814,7 @@ public class TaxonPageDtoLoader extends TaxonPageDtoLoaderBase {
      */
     private LocalDateTime getLastUpdated(LocalDateTime existingLastDate, VersionableEntity dateToAddEntity) {
 
-        DateTime dateToAdd = dateToAddEntity.getUpdated() != null ? dateToAddEntity.getUpdated() : dateToAddEntity.getCreated();
+        ZonedDateTime dateToAdd = dateToAddEntity.getUpdated() != null ? dateToAddEntity.getUpdated() : dateToAddEntity.getCreated();
 
         LocalDateTime javaLocalDateTimeOfEntity = DtoUtil.fromDateTime(dateToAdd);
 

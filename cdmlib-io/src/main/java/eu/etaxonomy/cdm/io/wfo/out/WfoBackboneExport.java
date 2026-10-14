@@ -270,7 +270,8 @@ public class WfoBackboneExport
 
             //... tax status, TODO 2 are there other status for accepted or other reasons for being ambiguous
             boolean isUnplaced = taxonNode.getStatus() != null && taxonNode.getStatus() == TaxonNodeStatus.UNPLACED;
-            String taxonStatus = (taxon.isDoubtful() || isUnplaced) ? "ambiguous" : "Accepted";
+            boolean isDoubtfulOrProvisional = taxon.getTaxonStatus().isDoubtful() || taxon.getTaxonStatus().isProvisionally();
+            String taxonStatus = (isDoubtfulOrProvisional || isUnplaced) ? "ambiguous" : "Accepted";
             csvLine[table.getIndex(WfoBackboneExportTable.TAX_STATUS)] = taxonStatus;
 
             //remarks

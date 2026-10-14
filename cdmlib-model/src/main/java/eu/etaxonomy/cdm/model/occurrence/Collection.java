@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.occurrence;
-
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,9 +25,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -60,7 +60,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy
 @XmlRootElement(name = "Collection")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.Collection")
+//@Indexed
 @Audited
 @Configurable
 @Table(name = "Collection", indexes = {@javax.persistence.Index(name = "collectionTitleCacheIndex", columnList = "titleCache")})
@@ -72,28 +72,28 @@ public class Collection
 	private static final Logger logger = LogManager.getLogger();
 
 	@XmlElement(name = "Code")
-	@Field(analyze = Analyze.NO)
+	@KeywordField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
 	private String code;
 
 	@XmlElement(name = "CodeStandard")
-	@Field(analyze = Analyze.NO)
+	@KeywordField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
 	private String codeStandard;
 
 	@XmlElement(name = "Name")
-	@Field
+	@FullTextField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
 	private String name;
 
 	@XmlElement(name = "TownOrLocation")
-	@Field
+	@FullTextField
     //TODO Val #3379
 //	@NullOrNotEmpty
 	@Column(length=255)
@@ -104,6 +104,7 @@ public class Collection
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
+	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private Institution institute;
 
 	@XmlElement(name = "SuperCollection")

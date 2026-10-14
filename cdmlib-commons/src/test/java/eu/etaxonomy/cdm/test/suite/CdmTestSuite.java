@@ -8,10 +8,11 @@
  */
 package eu.etaxonomy.cdm.test.suite;
 
-import eu.etaxonomy.cdm.common.CdmUtilsTest;
-import eu.etaxonomy.cdm.common.XmlHelpTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
+import eu.etaxonomy.cdm.common.CdmUtilsTest;
+import eu.etaxonomy.cdm.common.XmlHelpTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(

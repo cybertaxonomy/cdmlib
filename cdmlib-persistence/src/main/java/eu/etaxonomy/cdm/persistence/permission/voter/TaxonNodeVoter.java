@@ -8,12 +8,10 @@
 */
 package eu.etaxonomy.cdm.persistence.permission.voter;
 
-import java.util.Collection;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.security.access.ConfigAttribute;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -35,24 +33,26 @@ public class TaxonNodeVoter extends CdmPermissionVoter {
     }
 
     @Override
-    protected Integer furtherVotingDescisions(CdmAuthority CdmAuthority, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes,
-            ValidationResult validationResult) {
+    protected CdmVote furtherVotingDescisions(CdmAuthority cdmAuthority, TargetEntityStates targetEntityStates,
+            CdmAuthority requiredAuthority, ValidationResult validationResult) {
 
-        boolean isUuidMatchInParentNodes = CdmAuthority.hasTargetUuid() && findTargetUuidInParentNodes(CdmAuthority.getTargetUUID(), (TaxonNode)targetEntityStates.getEntity());
-        if ( isUuidMatchInParentNodes  && validationResult.isClassMatch && validationResult.isPermissionMatch){
+        boolean isUuidMatchInParentNodes = cdmAuthority.hasTargetUuid()
+                && findTargetUuidInParentNodes(cdmAuthority.getTargetUUID(),
+                        (TaxonNode) targetEntityStates.getEntity());
+        if (isUuidMatchInParentNodes && validationResult.isClassMatch && validationResult.isPermissionMatch) {
             logger.debug("permission, class and uuid in parent nodes are matching => ACCESS_GRANTED");
-            return ACCESS_GRANTED;
+            return CdmVote.GRANTED;
         }
         return null;
     }
 
-    private boolean findTargetUuidInParentNodes(UUID targetUuid, TaxonNode node){
+    private boolean findTargetUuidInParentNodes(UUID targetUuid, TaxonNode node) {
         if (targetUuid.equals(node.getUuid())) {
             return true;
         } else {
             TaxonNode parentNode = HibernateProxyHelper.deproxy(node, TaxonNode.class).getParent();
-            if (parentNode != null){
-                 return findTargetUuidInParentNodes(targetUuid, parentNode);
+            if (parentNode != null) {
+                return findTargetUuidInParentNodes(targetUuid, parentNode);
             }
         }
         return false;
@@ -60,10 +60,9 @@ public class TaxonNodeVoter extends CdmPermissionVoter {
 
     @Override
     public boolean isOrpahn(CdmBase object) {
-        if(object instanceof TaxonNode){
-            return ((TaxonNode)object).getParent() == null;
+        if (object instanceof TaxonNode) {
+            return ((TaxonNode) object).getParent() == null;
         }
         return false;
     }
-
 }

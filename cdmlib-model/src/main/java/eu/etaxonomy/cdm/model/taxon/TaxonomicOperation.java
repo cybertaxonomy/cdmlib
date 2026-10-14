@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 

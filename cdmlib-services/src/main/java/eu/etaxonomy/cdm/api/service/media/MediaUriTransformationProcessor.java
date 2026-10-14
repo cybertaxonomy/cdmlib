@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 
 /**
@@ -132,38 +131,39 @@ public class MediaUriTransformationProcessor {
         return pathQueryFragment;
     }
 
-    public List<MediaRepresentation> makeNewMediaRepresentationsFor(MediaRepresentationPart part) {
+    public List<MediaRepresentation> makeNewMediaRepresentationsFor(MediaRepresentation representation) {
 
         List<MediaRepresentation> repr = new ArrayList<>();
 
-        String pathQueryFragment = buildPathQueryFragment(part.getUri());
+        String pathQueryFragment = buildPathQueryFragment(representation.getUri());
         if (pathQueryFragment == null) {
-            logger.error("Missing path query fragment, for media representation part with UUID: " + part.getUuid());
+            logger.error("Missing path query fragment, for media representation with UUID: " + representation.getUuid());
             return repr;
         }
 
         for (MediaUriTransformation transformation : transformations) {
 
             try {
-                Optional<URI> newUri = uriTransformation(part.getUri(), pathQueryFragment, transformation);
+                Optional<URI> newUri = uriTransformation(representation.getUri(), pathQueryFragment, transformation);
                 if (newUri.isPresent()) {
-                    MediaRepresentation mRepresentation = MediaRepresentation.NewInstance(transformation.getMimeType(),
-                            null);
-                    MediaRepresentationPart newPart;
-                    if (transformation.getMimeType() != null && transformation.getMimeType().startsWith("image/")) {
-                        if (part instanceof ImageFile) {
-                            ImageFile originalImageFile = (ImageFile) part;
+                    MediaRepresentation mRepresentation;
+                    String mimeType = transformation.getMimeType();
+                    if (mimeType != null && mimeType.startsWith("image/")) {
+
+                        if (representation instanceof ImageFile) {
+                            ImageFile originalImageFile = (ImageFile) representation;
                             Point newSize = calculateTargetSize(transformation, originalImageFile.getWidth(),
                                     originalImageFile.getHeight());
-                            newPart = ImageFile.NewInstance(newUri.get(), null, newSize.y, newSize.x);
+                            mRepresentation = ImageFile.NewInstance(newUri.get(), mimeType, null,
+                                    null, newSize.y, newSize.x);
                         } else {
-                            newPart = ImageFile.NewInstance(newUri.get(), null, transformation.getHeight(),
+                            mRepresentation = ImageFile.NewInstance(newUri.get(), mimeType, null,
+                                    null, transformation.getHeight(),
                                     transformation.getWidth());
                         }
                     } else {
-                        newPart = MediaRepresentationPart.NewInstance(newUri.get(), null);
+                        mRepresentation = MediaRepresentation.NewInstance(newUri.get(), mimeType, null, null);
                     }
-                    mRepresentation.addRepresentationPart(newPart);
                     repr.add(mRepresentation);
                 }
 

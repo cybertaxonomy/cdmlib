@@ -8,14 +8,27 @@
  */
 
 package eu.etaxonomy.cdm.api.service.lsid;
+
 import java.io.InputStream;
+
 import com.ibm.lsid.server.LSIDServerException;
 import com.ibm.lsid.server.LSIDService;
 
 import eu.etaxonomy.cdm.model.common.LSID;
-/** * LSIDDataService interface which was altered from com.ibm.lsid.server.LSIDDataService, * replacing the LSIDRequestContext with a simple LSID. My thinking behind this is that provided the  * LSIDDataService has no responsibility for security, then there is no need to pass that * information to it (in an LSIDRequestContext). This allows better separation of concerns in that methods * requiring authentication and authorization can be secured transparently within CATE without the need for  * the LSIDAuthorityService to know anything about it. I could be wrong, of course. * 
+
+/**
+ * LSIDDataService interface which was altered from com.ibm.lsid.server.LSIDDataService,
+ * replacing the LSIDRequestContext with a simple LSID. My thinking behind this is that provided the 
+ * LSIDDataService has no responsibility for security, then there is no need to pass that
+ * information to it (in an LSIDRequestContext). This allows better separation of concerns in that methods
+ * requiring authentication and authorization can be secured transparently within CATE without the need for 
+ * the LSIDAuthorityService to know anything about it. I could be wrong, of course.
+ * 
  * @author Ben Szekely (<a href="mailto:bhszekel@us.ibm.com">bhszekel@us.ibm.com</a>) 
- * @author ben *  * @see com.ibm.lsid.server.LSIDDataService * @see com.ibm.lsid.server.LSIDRequestContext 
+ * @author ben
+ * 
+ * @see com.ibm.lsid.server.LSIDDataService
+ * @see com.ibm.lsid.server.LSIDRequestContext 
  */
 public interface LSIDDataService extends LSIDService {
 	/**

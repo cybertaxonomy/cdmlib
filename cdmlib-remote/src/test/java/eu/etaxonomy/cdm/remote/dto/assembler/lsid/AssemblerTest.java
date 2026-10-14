@@ -15,6 +15,7 @@ import static org.mockito.Mockito.withSettings;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +29,6 @@ import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 import org.junit.Assert;
@@ -44,6 +44,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import com.github.dozermapper.core.Mapper;
 import com.ibm.lsid.MalformedLSIDException;
 
+import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -126,8 +127,8 @@ public class AssemblerTest extends UnitilsJUnit4 {
         sec.setLsid(new LSID("urn:lsid:example.org:references:1"));
 
         taxon = Taxon.NewInstance(name, (Reference)sec);
-        taxon.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
-        taxon.setUpdated(new DateTime(2005, 12, 25, 12, 0, 0, 0));
+        taxon.setCreated(ZonedDateTime.of(2004, 12, 25, 12, 0, 0, 0, DateTimeUtil.BERLIN));
+        taxon.setUpdated(ZonedDateTime.of(2005, 12, 25, 12, 0, 0, 0, DateTimeUtil.BERLIN));
         taxon.setTitleCache("titleCache", true);
         taxon.setLsid(lsid);
 
@@ -162,7 +163,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         book = ReferenceFactory.newBook();
         book.setTitle("Book.title");
         book.setAuthorship(authorship);
-        book.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
+        book.setCreated(ZonedDateTime.of(2004, 12, 25, 12, 0, 0, 0, DateTimeUtil.BERLIN));
         book.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(new Partial(DateTimeFieldType.year(), 1800)));
         book.setEdition("1st Edition");
         book.setIsbn("isbn");
@@ -179,7 +180,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         bookSection.setPages("999 ff.");
         bookSection.setTitle("BookSection.title");
         bookSection.setAuthorship(authorship);
-        bookSection.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
+        bookSection.setCreated(ZonedDateTime.of(2004, 12, 25, 12, 0, 0, 0, DateTimeUtil.BERLIN));
         bookSection.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(new Partial(DateTimeFieldType.year(), 1800)));
         bookSection.setReferenceAbstract("referenceAbstract");
         bookSection.setUri(new URI("http://persitent.books.foo/myBookSection"));
@@ -218,7 +219,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertEquals("IdentifiableEntity.titleCache should be copied into BaseThing.title",taxon.getTitleCache(),taxonConcept.getTitle());
         assertEquals("IdentifiableEntity.lsid should be copied into BaseThing.identifier",taxon.getLsid().toString(),taxonConcept.getIdentifier().toString());
         assertEquals("BaseThing.sameAs should refer to the proxy version of the lsid","http://lsid.example.org/" + taxon.getLsid().toString(),taxonConcept.getSameAs());
-        assertEquals("CdmBase.created should be copied into BaseThing.created",new DateTime(2004, 12, 25, 12, 0, 0, 0),taxonConcept.getCreated());
+        assertEquals("CdmBase.created should be copied into BaseThing.created", ZonedDateTime.of(2004, 12, 25, 12, 0, 0, 0, DateTimeUtil.BERLIN),taxonConcept.getCreated());
         assertNotNull("TaxonBase.sec should be mapped into BaseThing.publishedInCitation",taxonConcept.getPublishedInCitation());
         assertEquals("TaxonBase.sec.titleCache should be mapped into BaseThing.publishedInCitation.title",sec.getTitleCache(),taxonConcept.getPublishedInCitation().getTitle());
         assertNotNull("TaxonBase.sec.authorship should be mapped into TaxonConcept.accordingTo",taxonConcept.getAccordingTo());

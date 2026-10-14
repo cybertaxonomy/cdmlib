@@ -9,41 +9,41 @@
 package eu.etaxonomy.cdm.model.media;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
- * A media representation is basically anything having a <a
- * href="http://iana.org/assignments/media-types/">MIME Media Type</a>. A media
- * representation consists of one or more parts. Each of them having the same
- * MIME Type, file suffix (if existing) and quality (more or less).
- * E.g. a list of jpg files that represent a scanned article of multiple pages.
+ * A media representation is basically anything having a
+ * <a href="http://iana.org/assignments/media-types/">MIME Media Type</a>
+ * that can be referenced by an URI.
+ * <p>
+ * Formerly split into {@code MediaRepresentation} and {@code MediaRepresentationPart};
+ * the part attributes ({@link #uri}, {@link #size}, metadata) are now held here directly.
+ * Typed variants are {@link ImageFile}, {@link AudioFile} and {@link MovieFile}.
  *
  * @author m.doering
  * @since 08-Nov-2007 13:06:34
@@ -53,7 +53,9 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
         "mimeType",
         "suffix",
         "media",
-        "mediaRepresentationParts"
+        "uri",
+        "size",
+        "mediaMetaData"
 })
 @Entity
 @Audited
@@ -63,160 +65,168 @@ public class MediaRepresentation extends VersionableEntity {
     private static final long serialVersionUID = -1520078266008619806L;
     private static final Logger logger = LogManager.getLogger();
 
-	//http://www.iana.org/assignments/media-types
-	@XmlElement(name = "MimeType")
-	private String mimeType;
+    //http://www.iana.org/assignments/media-types
+    @XmlElement(name = "MimeType")
+    private String mimeType;
 
-	//the file suffix (e.g. jpg, tif, mov)
-	@XmlElement(name = "Suffix")
-	private String suffix;
+    //the file suffix (e.g. jpg, tif, mov)
+    @XmlElement(name = "Suffix")
+    private String suffix;
 
-	@XmlElement(name = "Media")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Media media;
+    @XmlElement(name = "Media")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Media media;
 
-	@XmlElementWrapper(name = "MediaRepresentationParts")
-    @XmlElements({
-        @XmlElement(name = "AudioFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = AudioFile.class),
-        @XmlElement(name = "ImageFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = ImageFile.class),
-        @XmlElement(name = "MovieFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MovieFile.class)
-    })
-    @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true)
-	@OrderColumn(name="sortIndex")
-	@JoinColumn (name = "representation_id",  nullable=false)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
-	private List<MediaRepresentationPart> mediaRepresentationParts = new ArrayList<>();
+    // where the media file is stored
+    @XmlElement(name = "URI")
+    @Type(type="uriUserType")
+    private URI uri;
+
+    // in bytes
+    @XmlElement(name = "Size")
+    private Integer size;
+
+    @XmlElementWrapper(name = "MediaMetaDatas")
+    @XmlElement(name = "MediaMetaData")
+    @OneToMany (mappedBy="mediaRepresentation", fetch= FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
+    private Set<MediaMetaData> mediaMetaData = new HashSet<>();
 
 //********************* FACTORY ***********************************************/
 
-	/**
-	 * Factory method
-	 * @return
-	 */
-	public static MediaRepresentation NewInstance(){
-		logger.debug("NewInstance");
-		return new MediaRepresentation();
-	}
+    public static MediaRepresentation NewInstance(){
+        return new MediaRepresentation();
+    }
 
-	/**
-	 * Factory method which sets the mime type and the suffix
-	 * @return
-	 */
-	public static MediaRepresentation NewInstance(String mimeType, String suffix){
-		MediaRepresentation result  = new MediaRepresentation();
-		result.setMimeType(mimeType);
-		result.setSuffix(suffix);
-		return result;
-	}
+    /**
+     * Factory method which creates a new media representation for the given
+     * {@link URI uri} and size. If {@code clazz} is a subclass of
+     * {@link MediaRepresentation}, an instance of that type is created.
+     * Returns <code>null</code> if uri is empty.
+     */
+    public static <T extends MediaRepresentation> MediaRepresentation NewInstance(
+            URI uri, String mimeType, String suffix, Integer size, Class<T> clazz) {
+        if (uri == null || isBlank(uri.toString())){
+            return null;
+        }
+        MediaRepresentation result;
+        if (clazz != null && clazz != MediaRepresentation.class){
+            try {
+                Constructor<T> constr = clazz.getDeclaredConstructor();
+                constr.setAccessible(true);
+                result = constr.newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }else{
+            result = new MediaRepresentation();
+        }
+        result.setMimeType(mimeType);
+        result.setSuffix(suffix);
+        result.setUri(uri);
+        result.setSize(size);
+        return result;
+    }
 
-	/**
-	 * Factory method which creates a new media representation and adds a media representation part
-	 * for the {@link URI uri} and the given size.
-	 * Returns <code>null</code> if uri is empty
-	 * @return
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 */
-	public static<T extends MediaRepresentationPart> MediaRepresentation NewInstance(String mimeType, String suffix, URI uri, Integer size, Class<T> clazz) {
-		if (uri == null || isBlank(uri.toString())){
-			return null;
-		}
-		MediaRepresentationPart part;
-		if (clazz != null){
-			try {
-				Constructor<T> constr = clazz.getDeclaredConstructor();
-				constr.setAccessible(true);
-				part = constr.newInstance();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-			part.setUri(uri);
-			part.setSize(size);
-		}else{
-			part = MediaRepresentationPart.NewInstance(uri, size);
-		}
-		MediaRepresentation result  = new MediaRepresentation();
-		result.setMimeType(mimeType);
-		result.setSuffix(suffix);
-		result.addRepresentationPart(part);
-		return result;
-	}
+    public static MediaRepresentation NewInstance(URI uri, String mimeType,
+            String suffix, Integer size) {
+        MediaRepresentation result = new MediaRepresentation(uri, mimeType, suffix, size);
+        return result;
+    }
 
 // ************************ CONSTRUCTOR *********************************/
 
-	protected MediaRepresentation(){
-		super();
-	}
+    protected MediaRepresentation(){}
+
+    protected MediaRepresentation(URI uri, String mimeType, String suffix, Integer size) {
+        this();
+        this.setUri(uri);
+        this.setMimeType(mimeType);
+        this.setSuffix(suffix);
+        this.setSize(size);
+    }
+
 
 //***************  Getter /Setter *************************************/
 
 
-	public String getMimeType(){
-		return this.mimeType;
-	}
-	public void setMimeType(String mimeType){
-		this.mimeType = mimeType;
-	}
+    public String getMimeType(){
+        return this.mimeType;
+    }
+    public void setMimeType(String mimeType){
+        this.mimeType = mimeType;
+    }
 
 
-	public String getSuffix(){
-		return this.suffix;
-	}
-	public void setSuffix(String suffix){
-		this.suffix = suffix;
-	}
+    public String getSuffix(){
+        return this.suffix;
+    }
+    public void setSuffix(String suffix){
+        this.suffix = suffix;
+    }
 
-	public Media getMedia() {
-		return media;
-	}
+    public Media getMedia() {
+        return media;
+    }
 
-	/**
-	 * @deprecated for internal (bidirectional) use only
-	 * @param media
-	 */
-	@Deprecated
-	protected void setMedia(Media media) {
-		this.media = media;
-	}
+    /**
+     * @deprecated for internal (bidirectional) use only
+     */
+    @Deprecated
+    protected void setMedia(Media media) {
+        this.media = media;
+    }
 
+    public URI getUri() {
+        return this.uri;
+    }
 
-	public List<MediaRepresentationPart> getParts(){
-		return this.mediaRepresentationParts;
-	}
+    public void setUri(URI uri) {
+        this.uri = uri;
+    }
 
-	@SuppressWarnings("deprecation")
-	public void addRepresentationPart(MediaRepresentationPart mediaRepresentationPart){
-		if (mediaRepresentationPart != null){
-			this.getParts().add(mediaRepresentationPart);
-			mediaRepresentationPart.setMediaRepresentation(this);
-		}
-	}
-	@SuppressWarnings("deprecation")
-	public void removeRepresentationPart(MediaRepresentationPart representationPart){
-		this.getParts().remove(representationPart);
-		if (representationPart != null){
-			representationPart.setMediaRepresentation(null);
-		}
-	}
+    public Integer getSize() {
+        return this.size;
+    }
+    public void setSize(Integer size) {
+        this.size = size;
+    }
+
+    public void addMediaMetaData(MediaMetaData metaData){
+        this.mediaMetaData.add(metaData);
+        if(metaData.getMediaRepresentation() != this){
+            metaData.setMediaRepresentation(this);
+        }
+    }
+
+    public Set<MediaMetaData> getMediaMetaData() {
+        return mediaMetaData;
+    }
+
+    public void removeMediaMetaData(MediaMetaData metaData){
+        this.mediaMetaData.remove(metaData);
+        if(metaData.getMediaRepresentation() == this){
+            metaData.setMediaRepresentation(null);
+        }
+    }
 
 //************************* CLONE **************************/
 
-	@Override
-	public MediaRepresentation clone() throws CloneNotSupportedException{
-		MediaRepresentation result = (MediaRepresentation)super.clone();
+    @Override
+    public MediaRepresentation clone() throws CloneNotSupportedException{
+        MediaRepresentation result = (MediaRepresentation)super.clone();
 
-		//media representations
-		result.mediaRepresentationParts = new ArrayList<>();
-		for (MediaRepresentationPart mediaRepresentationPart: this.mediaRepresentationParts){
-			result.mediaRepresentationParts.add(mediaRepresentationPart.clone());
-		}
-		//media
-		//this.getMedia().addRepresentation(result);
-		this.setMedia(null);
+        result.mediaMetaData = new HashSet<>();
+        for (MediaMetaData metaData : this.getMediaMetaData()) {
+            result.addMediaMetaData(metaData.clone());
+        }
 
-		//no changes to: mimeType, suffix
-		return result;
-	}
+        //media
+        this.setMedia(null);
+
+        //no changes to: mimeType, suffix, size, uri
+        return result;
+    }
 }

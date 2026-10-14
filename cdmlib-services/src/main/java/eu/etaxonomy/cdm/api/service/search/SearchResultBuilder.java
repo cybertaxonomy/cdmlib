@@ -27,7 +27,6 @@ import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.grouping.GroupDocs;
 import org.apache.lucene.search.grouping.TopGroups;
 import org.apache.lucene.util.BytesRef;
-import org.hibernate.search.engine.ProjectionConstants;
 
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -269,7 +268,7 @@ public class SearchResultBuilder implements ISearchResultBuilder {
      */
     private String findId(Map<CdmBaseType,String> idFieldMap, Document doc) {
 
-        String docClassName = doc.getValues(ProjectionConstants.OBJECT_CLASS)[0];
+        String docClassName = doc.getValues(LuceneIndexFields.OBJECT_CLASS)[0];
 
         String id = null;
         for(CdmBaseType baseType  : idFieldMap.keySet()){

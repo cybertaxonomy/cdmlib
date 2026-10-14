@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-
 /**
  * Interface for export transformer classes. Mainly to transform defined terms and enumerations.
  *

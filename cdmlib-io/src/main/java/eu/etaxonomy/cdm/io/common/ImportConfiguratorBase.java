@@ -9,14 +9,13 @@
 package eu.etaxonomy.cdm.io.common;
 
 import java.lang.reflect.Method;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
@@ -337,10 +336,10 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
         this.featureTreeTitle = featureTreeTitle;
     }
 
-    private static final DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
     protected String getDateString(){
-        return formatter.print(new DateTime());
+        return FORMATTER.format(LocalDate.now());
     }
 
     /**

@@ -42,8 +42,13 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.TypeBinding;
 
+import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
@@ -60,7 +65,6 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
@@ -96,6 +100,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Entity
 @Audited
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@TypeBinding(binder = @TypeBinderRef(type = GroupByTaxonClassBridge.class))
 public abstract class DescriptionElementBase
         extends AnnotatableEntity
         implements ISourceable<DescriptionElementSource>,
@@ -110,7 +115,8 @@ public abstract class DescriptionElementBase
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded // no depth for terms
+    @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW) // no depth for terms
     private Feature feature;
 
     @XmlElementWrapper(name = "Modifiers")
@@ -119,7 +125,8 @@ public abstract class DescriptionElementBase
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DescriptionElementBase_Modifier")
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Set<DefinedTerm> modifiers = new HashSet<>();
 
     @XmlElement(name = "ModifyingText")
@@ -129,6 +136,7 @@ public abstract class DescriptionElementBase
     @MapKeyJoinColumn(name="modifyingtext_mapkey_id")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Map<Language,LanguageString> modifyingText = new HashMap<>();
 
     @XmlElementWrapper(name = "Media")
@@ -144,7 +152,9 @@ public abstract class DescriptionElementBase
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded(includeEmbeddedObjectId=true)
+    // Deep reindex: DescriptionBaseClassBridge / GroupByTaxon read taxon + classification
+    // through inDescription (HS5 ContainedIn on DescriptionBase.descriptionElements).
+    @IndexedEmbedded
     private DescriptionBase<?> inDescription;
 
 	@XmlElement(name = "TimePeriod")

@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
+
 import io.swagger.annotations.Api;
 
 /**
@@ -69,7 +70,7 @@ public class TypeDesignationController extends AbstractController<TaxonName, INa
 
         logger.info("doGetMediaUris() - " + requestPathAndQuery(request));
         List<MediaDTO> dtos = new ArrayList<>();
-        TypeDesignationBase<?> td = service.loadTypeDesignation(uuid, Arrays.asList("typeSpecimen.mediaSpecimen.representations.mediaRepresentationParts"));
+        TypeDesignationBase<?> td = service.loadTypeDesignation(uuid, Arrays.asList("typeSpecimen.mediaSpecimen.representations"));
         if(td instanceof SpecimenTypeDesignation){
             SpecimenTypeDesignation std = (SpecimenTypeDesignation)td;
             DerivedUnit du = HibernateProxyHelper.deproxy(std.getTypeSpecimen());

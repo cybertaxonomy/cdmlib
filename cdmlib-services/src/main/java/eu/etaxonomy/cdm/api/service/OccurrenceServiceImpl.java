@@ -28,6 +28,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.SortedSetSortField;
 import org.apache.lucene.search.grouping.TopGroups;
 import org.apache.lucene.util.BytesRef;
 import org.hibernate.TransientObjectException;
@@ -666,7 +667,7 @@ public class OccurrenceServiceImpl
         luceneSearch.setQuery(finalQueryBuilder.build());
 
         // --- sorting
-        SortField[] sortFields = new SortField[] {SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.Type.STRING, false) };
+        SortField[] sortFields = new SortField[] {SortField.FIELD_SCORE, new SortedSetSortField("titleCache__sort", false) };
         luceneSearch.setSortFields(sortFields);
 
         if (highlightFragments) {

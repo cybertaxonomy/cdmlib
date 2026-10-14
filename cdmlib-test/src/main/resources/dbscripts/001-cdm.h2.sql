@@ -2444,8 +2444,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
 
     insert into PUBLIC.HIBERNATE_SEQUENCES(sequence_name, next_val) values ('INSTITUTIONALMEMBERSHIP',9);
 
-    insert into PUBLIC.HIBERNATE_SEQUENCES(sequence_name, next_val) values ('MEDIAREPRESENTATIONPART',9);
-
     insert into PUBLIC.HIBERNATE_SEQUENCES(sequence_name, next_val) values ('DESCRIPTIONBASE',9);
 
     insert into PUBLIC.HIBERNATE_SEQUENCES(sequence_name, next_val) values ('HOMOTYPICALGROUP',9);
@@ -3273,12 +3271,18 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
     );
 
     create table PUBLIC.MEDIAREPRESENTATION (
-       ID integer not null,
+       DTYPE varchar(31) not null,
+        ID integer not null,
         CREATED timestamp,
         UUID varchar(36),
         UPDATED timestamp,
         MIMETYPE varchar(255),
         SUFFIX varchar(255),
+        SIZE integer,
+        URI clob,
+        DURATION integer,
+        HEIGHT integer,
+        WIDTH integer,
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         MEDIA_ID integer,
@@ -3288,61 +3292,21 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
     create table PUBLIC.MEDIAREPRESENTATION_AUD (
        ID integer not null,
         REV integer not null,
+        DTYPE varchar(31) not null,
         REVTYPE tinyint,
         CREATED timestamp,
         UUID varchar(36),
         UPDATED timestamp,
         MIMETYPE varchar(255),
         SUFFIX varchar(255),
+        SIZE integer,
+        URI clob,
+        DURATION integer,
+        HEIGHT integer,
+        WIDTH integer,
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         MEDIA_ID integer,
-        primary key (ID, REV)
-    );
-
-    create table PUBLIC.MEDIAREPRESENTATION_MEDIAREPRESENTATIONPART_AUD (
-       REV integer not null,
-        REPRESENTATION_ID integer not null,
-        ID integer not null,
-        SORTINDEX integer not null,
-        REVTYPE tinyint,
-        primary key (REV, REPRESENTATION_ID, ID, SORTINDEX)
-    );
-
-    create table PUBLIC.MEDIAREPRESENTATIONPART (
-       DTYPE varchar(31) not null,
-        ID integer not null,
-        CREATED timestamp,
-        UUID varchar(36),
-        UPDATED timestamp,
-        SIZE integer,
-        URI clob,
-        DURATION integer,
-        HEIGHT integer,
-        WIDTH integer,
-        CREATEDBY_ID integer,
-        UPDATEDBY_ID integer,
-        REPRESENTATION_ID integer not null,
-        SORTINDEX integer,
-        primary key (ID)
-    );
-
-    create table PUBLIC.MEDIAREPRESENTATIONPART_AUD (
-       ID integer not null,
-        REV integer not null,
-        DTYPE varchar(31) not null,
-        REVTYPE tinyint,
-        CREATED timestamp,
-        UUID varchar(36),
-        UPDATED timestamp,
-        SIZE integer,
-        URI clob,
-        CREATEDBY_ID integer,
-        UPDATEDBY_ID integer,
-        REPRESENTATION_ID integer,
-        DURATION integer,
-        HEIGHT integer,
-        WIDTH integer,
         primary key (ID, REV)
     );
 
@@ -5035,7 +4999,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         PROTECTEDTITLECACHE boolean not null,
         TITLECACHE varchar(800),
         APPENDEDPHRASE varchar(255),
-        DOUBTFUL boolean not null,
+        TAXONSTATUS varchar(10) not null default 'ACC',
         PUBLISH boolean not null,
         USENAMECACHE boolean not null,
         CONCEPTDEFINITIONS varchar(255),
@@ -5044,6 +5008,8 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CURRENTCONCEPTPERIOD_END varchar(255),
         CURRENTCONCEPTPERIOD_FREETEXT varchar(255),
         CURRENTCONCEPTPERIOD_START varchar(255),
+        REVISIONSTATUS_CHANGED timestamp,
+        REVISIONSTATUS_STATUS_ID integer,
         TAXONSTATUSUNKNOWN boolean,
         TAXONTYPES varchar(255),
 		TYPE VARCHAR(10),
@@ -5084,7 +5050,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         PROTECTEDTITLECACHE boolean,
         TITLECACHE varchar(800),
         APPENDEDPHRASE varchar(255),
-        DOUBTFUL boolean,
+        TAXONSTATUS varchar(10),
         PUBLISH boolean,
         USENAMECACHE boolean,
         CONCEPTDEFINITIONS varchar(255),
@@ -5093,6 +5059,8 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CURRENTCONCEPTPERIOD_END varchar(255),
         CURRENTCONCEPTPERIOD_FREETEXT varchar(255),
         CURRENTCONCEPTPERIOD_START varchar(255),
+        REVISIONSTATUS_CHANGED timestamp,
+        REVISIONSTATUS_STATUS_ID integer,
         TAXONSTATUSUNKNOWN boolean,
         TAXONTYPES varchar(255),
 		TYPE VARCHAR(10),
@@ -5247,6 +5215,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         INFRAGENERICEPITHET varchar(255),
         INFRASPECIFICEPITHET varchar(255),
         AUTONYMFLAG varchar(10),
+        GENDER varchar(1),
         MONOMHYBRID boolean not null,
         NAMEAPPROBATION varchar(255),
         NAMECACHE varchar(255),
@@ -5317,6 +5286,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         INFRAGENERICEPITHET varchar(255),
         INFRASPECIFICEPITHET varchar(255),
         AUTONYMFLAG varchar(10),
+        GENDER varchar(1),
         MONOMHYBRID boolean,
         NAMEAPPROBATION varchar(255),
         NAMECACHE varchar(255),
@@ -6502,9 +6472,6 @@ create index PUBLIC.identifierIndex on PUBLIC.IDENTIFIER (IDENTIFIER);
 
     alter table PUBLIC.MEDIAREPRESENTATION 
        add constraint UK_spthhq2u1quivt0ogwhkrm2nm unique (UUID);
-
-    alter table PUBLIC.MEDIAREPRESENTATIONPART 
-       add constraint UK_39r3g6unkr1ihlkis8e5evts7 unique (UUID);
 
     alter table PUBLIC.NAMERELATIONSHIP 
        add constraint UK_cwn9kp29mwken47qmosriq5mm unique (UUID);
@@ -9645,7 +9612,7 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
     alter table PUBLIC.MEDIAMETADATA 
        add constraint FKj27xjdoy7xih43f1fc0fs7b5h 
        foreign key (MEDIAREPRESENTATION_ID) 
-       references PUBLIC.MEDIAREPRESENTATIONPART;
+       references PUBLIC.MEDIAREPRESENTATION;
 
     alter table PUBLIC.MEDIAMETADATA_AUD 
        add constraint FKph85imftnqlcjatgdra3uecyu 
@@ -9669,31 +9636,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
 
     alter table PUBLIC.MEDIAREPRESENTATION_AUD 
        add constraint FKjc158ij9ht51r5hyh7s0p9dsg 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.MEDIAREPRESENTATION_MEDIAREPRESENTATIONPART_AUD 
-       add constraint FKedbbs2rqub7pwtsgb768cbfvo 
-       foreign key (REV) 
-       references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.MEDIAREPRESENTATIONPART 
-       add constraint FKh56c61h8ii9xxfnpc77gw5qja 
-       foreign key (CREATEDBY_ID) 
-       references PUBLIC.USERACCOUNT;
-
-    alter table PUBLIC.MEDIAREPRESENTATIONPART 
-       add constraint FKbb49cpq7yu07t0xs2inavrncn 
-       foreign key (UPDATEDBY_ID) 
-       references PUBLIC.USERACCOUNT;
-
-    alter table PUBLIC.MEDIAREPRESENTATIONPART 
-       add constraint FKig3s3bjcy5bkcxbmg73xwakbj 
-       foreign key (REPRESENTATION_ID) 
-       references PUBLIC.MEDIAREPRESENTATION;
-
-    alter table PUBLIC.MEDIAREPRESENTATIONPART_AUD 
-       add constraint FKoddk6oed4b7rfff43y7ohiaqt 
        foreign key (REV) 
        references PUBLIC.AUDITEVENT;
 
@@ -11266,6 +11208,11 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
        add constraint FKfb64jyfxe0di03m6okc3l5bso 
        foreign key (ACCEPTEDTAXON_ID) 
        references PUBLIC.TAXONBASE;
+
+    alter table PUBLIC.TAXONBASE 
+       add constraint FKtaxonbase_revisionstatus_status 
+       foreign key (REVISIONSTATUS_STATUS_ID) 
+       references PUBLIC.DEFINEDTERMBASE;
 
     alter table PUBLIC.TAXONBASE_ANNOTATION 
        add constraint FKhod10mprpi6uhsfowir3vthjh 

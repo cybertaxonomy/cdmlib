@@ -66,7 +66,8 @@
               <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
               <prop key="hibernate.show_sql">false</prop>
               <prop key="hibernate.format_sql">false</prop>
-              <prop key="hibernate.search.default.indexBase">${user.home}/.cdmLibrary/</prop>
+              <prop key="hibernate.search.backend.directory.type">local-filesystem</prop>
+              <prop key="hibernate.search.backend.directory.root">${user.home}/.cdmLibrary/</prop>
             </props>
         </property>
     </bean>

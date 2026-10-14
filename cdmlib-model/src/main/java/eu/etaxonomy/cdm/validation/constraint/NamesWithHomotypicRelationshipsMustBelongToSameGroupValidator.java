@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation.constraint;
 
 import javax.validation.ConstraintValidator;
@@ -15,7 +14,6 @@ import javax.validation.ConstraintValidatorContext;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup;
-
 
 public class NamesWithHomotypicRelationshipsMustBelongToSameGroupValidator implements
 		ConstraintValidator<NamesWithHomotypicRelationshipsMustBelongToSameGroup, NameRelationship> {

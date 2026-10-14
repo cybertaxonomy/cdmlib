@@ -9,12 +9,12 @@
 package eu.etaxonomy.cdm.database.data;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.Session;
-import org.joda.time.DateTime;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.ibm.lsid.MalformedLSIDException;
@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.RevisionStatus;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.WikiDataItemId;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -86,7 +87,6 @@ import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaMetaData;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MovieFile;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
@@ -538,19 +538,19 @@ public class FullCoverageDataGenerator {
 
 	private void buildMedia(List<CdmBase> entitiesToSave){
 
-	    AudioFile audioFile = AudioFile.NewInstance(URI.create("http://a.b.de"), 22);
-		ImageFile imageFile = ImageFile.NewInstance(URI.create("http://b.c.de"), 44, 467, 55);
-		MovieFile movieFile = MovieFile.NewInstance(URI.create("http://b.c.de"), 67);
-		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance("mime", "media");
-
-		mediaRepresentation.addRepresentationPart(movieFile);
-		mediaRepresentation.addRepresentationPart(imageFile);
-		mediaRepresentation.addRepresentationPart(audioFile);
+	    AudioFile audioFile = AudioFile.NewInstance(URI.create("http://a.b.de"),
+	            "audio/mpeg", "mp3", 22);
+		ImageFile imageFile = ImageFile.NewInstance(URI.create("http://b.c.de"),
+		        "image/jpeg", "jpg", 44, 467, 55);
+		MovieFile movieFile = MovieFile.NewInstance(URI.create("http://b.c.de"),
+		        "video/mpeg", "mpg", 67);
 		Media media = Media.NewInstance();
-		media.addRepresentation(mediaRepresentation);
+		media.addRepresentation(movieFile);
+		media.addRepresentation(imageFile);
+		media.addRepresentation(audioFile);
 
 		media.putTitle(Language.ENGLISH(), "Media title");
-		media.setMediaCreated(TimePeriod.NewInstance(DateTime.now()));
+		media.setMediaCreated(TimePeriod.NewInstance(ZonedDateTime.now()));
 		media.putDescription(Language.ENGLISH(), "Media description");
 		handleIdentifiableEntity(media, entitiesToSave);
 
@@ -659,7 +659,7 @@ public class FullCoverageDataGenerator {
 		entitiesToSave.add(mu);
 		dnaQuality.setConcentrationUnit(mu);
 		dnaQuality.setPurificationMethod("purification method");
-		dnaQuality.setQualityCheckDate(DateTime.now());
+		dnaQuality.setQualityCheckDate(ZonedDateTime.now());
 		dnaQuality.setQualityTerm(null); //TODO
 		dnaQuality.setRatioOfAbsorbance260_230(22.0);
 		dnaQuality.setRatioOfAbsorbance260_280(3.9);
@@ -688,8 +688,9 @@ public class FullCoverageDataGenerator {
 
 		TaxonName synName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Synonym syn = Synonym.NewInstance(synName, sec, "123");
+		entitiesToSave.add(syn);
 		taxon.addSynonym(syn, SynonymType.HETEROTYPIC_SYNONYM_OF);
-		taxon.setDoubtful(true);
+		taxon.setDoubtful(true); //#11039
 		handleIdentifiableEntity(syn, entitiesToSave);
 
 		Taxon concept = createNewTaxon(name, createNewReference(entitiesToSave), entitiesToSave);
@@ -697,6 +698,7 @@ public class FullCoverageDataGenerator {
 				sec, "444");
 		taxRel.setOperation(TaxonomicOperation.NewInstance(TaxonomicOperationType.SPLIT));
 		taxon.setTaxonStatusUnknown(true);
+		taxon.setRevisionStatus(RevisionStatus.COMPLETED(), ZonedDateTime.now());
 		handleAnnotatableEntity(taxRel);
 		concept.setConcept(true);
 		concept.setNameUsage(true);
@@ -933,7 +935,7 @@ public class FullCoverageDataGenerator {
 		Registration registration = Registration.NewInstance("registration identifier",
 		        "specificIdentifier", speciesZooName, null);
 		registration.addTypeDesignation(specimenDesig);
-		registration.setRegistrationDate(DateTime.now());
+		registration.setRegistrationDate(ZonedDateTime.now());
 		Registration blockingRegistration = Registration.NewInstance();
 		registration.addBlockedBy(blockingRegistration);
 		registration.setRegistrationCenter(createNewInstitution(entitiesToSave));
@@ -974,7 +976,7 @@ public class FullCoverageDataGenerator {
 		//Credits
 	    if (identifiableEntity instanceof IHasCredits) {
 	        Person creditor = createNewPerson("Creditor", entitiesToSave);
-	        Credit credit = Credit.NewInstance(creditor, TimePeriod.NewInstance(DateTime.now(), DateTime.now()), "credit");
+	        Credit credit = Credit.NewInstance(creditor, TimePeriod.NewInstance(ZonedDateTime.now(), ZonedDateTime.now()), "credit");
 	        ((IHasCredits)identifiableEntity).addCredit(credit);
 	    }
 

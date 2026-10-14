@@ -8,18 +8,18 @@
 */
 package eu.etaxonomy.cdm.strategy.merge;
 
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -72,7 +72,7 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 	private Annotation annotation2;
 	private String annotationString2;
 	private String title2 = "Title2";
-	private DateTime created2 = new DateTime(1999, 3, 1, 0, 0, 0, 0);
+	private ZonedDateTime created2 = DateTimeUtil.of(1999, 3, 1);
 	private VerbatimTimePeriod datePublished2 = VerbatimTimePeriod.NewVerbatimInstance(2002);
 	private int hasProblem2 = 1;
 	private LSID lsid2;
@@ -207,8 +207,8 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 		Assert.assertSame("Cache strategy is transient and shouldn't change therefore", cacheStrategy1, book1.cacheStrategy());
 
 		//UserType
-		Assert.assertSame("Created must be created2", created2, book1.getCreated());
-		//TODO updated should have the actual date if any value has changed
+		Assert.assertEquals("Created must be created2", created2, book1.getCreated());
+		//TODO updated should have the current date if any value has changed
 		Assert.assertSame("Created must be created2", null, book1.getUpdated());
 		Assert.assertEquals("Created must be datePublsihed2", datePublished2, book1.getDatePublished());
 		//TODO this may not be correct

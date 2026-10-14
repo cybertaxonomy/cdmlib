@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.media;
 
 import java.util.HashMap;
@@ -32,6 +31,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -43,7 +43,9 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -107,6 +109,7 @@ public class Media
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @MapKeyJoinColumn(name="title_mapkey_id")
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.REFRESH})
     @NotNull
     @NotEmpty(groups = Level2.class)
@@ -116,6 +119,7 @@ public class Media
     @XmlElement(name ="MediaCreated" )
     @Embedded
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private TimePeriod mediaCreated;
 
     // TODO once hibernate annotations support custom collection type
@@ -127,13 +131,19 @@ public class Media
     @JoinTable(name = "Media_Description")
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.REFRESH})
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @NotNull
     private Map<Language,LanguageString> description = new HashMap<>();
 
     //A single medium such as a picture can have multiple representations in files.
     //Common are multiple resolutions or file formats for images for example
     @XmlElementWrapper(name = "MediaRepresentations")
-    @XmlElement(name = "MediaRepresentation")
+    @XmlElements({
+        @XmlElement(name = "MediaRepresentation", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MediaRepresentation.class),
+        @XmlElement(name = "AudioFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = AudioFile.class),
+        @XmlElement(name = "ImageFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = ImageFile.class),
+        @XmlElement(name = "MovieFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MovieFile.class)
+    })
     @OneToMany(mappedBy="media",fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
     @NotNull
@@ -145,6 +155,7 @@ public class Media
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private AgentBase<?> artist;
 
     @XmlElement(name = "Link")
@@ -152,6 +163,7 @@ public class Media
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     private ExternalLink link;
 
@@ -178,7 +190,7 @@ public class Media
      */
     public static Media NewInstance(URI uri, Integer size, String mimeType, String suffix){
     	//TODO improve type recognition
-    	Class<? extends MediaRepresentationPart> clazz = null;
+    	Class<? extends MediaRepresentation> clazz = null;
     	if (isNotBlank(mimeType)){
     		if (mimeType.matches("image.*")){
     			clazz = ImageFile.class;
@@ -193,7 +205,7 @@ public class Media
     			clazz = ImageFile.class;
     		}
     	}
-    	MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix, uri, size,clazz);
+    	MediaRepresentation representation = MediaRepresentation.NewInstance(uri, mimeType, suffix, size, clazz);
         if (representation == null){
             return null;
         }
@@ -377,12 +389,9 @@ public class Media
                 if (representation.getMimeType() != null && representation.getMimeType().equals("application/json")) {
                     isManifest = true;
                 }
-                if (!isManifest && representation.getParts() != null && representation.getParts().size() > 0) {
-                    for (MediaRepresentationPart part: representation.getParts()) {
-                        if (part.getUri().toString().contains("json")) {
-                            isManifest = true;
-                        }
-                    }
+                if (!isManifest && representation.getUri() != null
+                        && representation.getUri().toString().contains("json")) {
+                    isManifest = true;
                 }
             }
         }

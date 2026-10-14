@@ -18,11 +18,13 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.RevisionStatusInfo;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
@@ -160,6 +162,21 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
             boolean includeSharedTaxa, boolean includeHybrids);
     public Set<TaxonBase> setPublishForSubtreeRelatedTaxa(TreeIndex subTreeIndex, boolean publish,
             Set<UUID> relationTypes, boolean includeSharedTaxa, boolean includeHybrids,
+            IProgressMonitor monitor);
+
+//----------------------------- REVISION STATUS FOR SUBTREE -------------------------------/
+
+    public int countRevisionStatusForSubtreeAcceptedTaxa(TreeIndex subTreeIndex,
+            boolean overwriteExisting, boolean includeSharedTaxa, boolean includeHybrids);
+    public Set<Taxon> setRevisionStatusForSubtreeAcceptedTaxa(TreeIndex subTreeIndex,
+            RevisionStatusInfo revisionStatus, boolean overwriteExisting,
+            boolean includeSharedTaxa, boolean includeHybrids, IProgressMonitor monitor);
+
+    public int countRevisionStatusForSubtreeRelatedTaxa(TreeIndex subTreeIndex,
+            boolean overwriteExisting, boolean includeSharedTaxa, boolean includeHybrids);
+    public Set<Taxon> setRevisionStatusForSubtreeRelatedTaxa(TreeIndex subTreeIndex,
+            RevisionStatusInfo revisionStatus, Set<UUID> relationTypes,
+            boolean overwriteExisting, boolean includeSharedTaxa, boolean includeHybrids,
             IProgressMonitor monitor);
 
 //---------------------------------------------------------------------------------/

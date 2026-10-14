@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
@@ -19,6 +18,7 @@ import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.api.filter.Restriction;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.RevisionStatusForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
@@ -222,6 +222,13 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * Sets the publish flag for all taxa and/or synonyms of the subtree.
      */
     public UpdateResult setPublishForSubtree(PublishForSubtreeConfigurator configurator);
+
+    /**
+     * Sets the revision status for all accepted taxa (and optionally related taxa)
+     * of the subtree. Synonyms are not supported because revision status exists
+     * only on {@link eu.etaxonomy.cdm.model.taxon.Taxon}.
+     */
+    public UpdateResult setRevisionStatusForSubtree(RevisionStatusForSubtreeConfigurator configurator);
 
     /**
      * Returns the total count of taxon nodes according to the given filter.

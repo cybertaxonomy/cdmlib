@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,13 +67,14 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
 
         List<NameValuePair> pairs = new ArrayList<>();
 
-        // find the appropriate schemadapter using the schemaShortName
+        // find the appropriate schema adapter using the schemaShortName
         if(query.schemaShortName == null){
             query.schemaShortName = "MOBOT.OpenUrl.Utilities.OpenUrlResponse";
         }
         SchemaAdapterBase<OpenUrlReference> schemaAdapter = schemaAdapterMap.get(query.schemaShortName);
         if (schemaAdapter == null) {
             logger.error("No SchemaAdapter found for " + query.schemaShortName);
+            return null;
         }
 
         addNameValuePairTo(pairs, "format", "xml");

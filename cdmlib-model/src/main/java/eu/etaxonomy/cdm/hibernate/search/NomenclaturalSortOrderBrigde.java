@@ -11,11 +11,11 @@ package eu.etaxonomy.cdm.hibernate.search;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.SortedDocValuesField;
-import org.apache.lucene.util.BytesRef;
-import org.hibernate.search.bridge.LuceneOptions;
+import org.hibernate.search.engine.backend.document.IndexFieldReference;
+import org.hibernate.search.engine.backend.types.Searchable;
+import org.hibernate.search.engine.backend.types.Sortable;
+import org.hibernate.search.mapper.pojo.bridge.binding.TypeBindingContext;
+import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.TypeBinder;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.INonViralName;
@@ -24,10 +24,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * Creates a special sort column to allow nomenclatural ordering of taxa and names.
- * This class bridge can handle all {@link TaxonBase} and {@link INonViralName}s
+ * This type binder can handle all {@link TaxonBase} and {@link INonViralName}s
  * instances. {@link ViralNames} are not supported!
- * <p>
- * Ignores the <code>name</code> parameter!
  * <p>
  * The order follows the hql equivalent:
  * <pre>order by
@@ -44,7 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @author a.kohlbecker
  * @since Oct 9, 2013
  */
-public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
+public class NomenclaturalSortOrderBrigde implements TypeBinder {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -55,20 +53,39 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
     public final static String NAME_SORT_FIELD_NAME = "nomenclaturalOrder__sort";
 
     @Override
-    public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
+    public void bind(TypeBindingContext context) {
+
+        //the name is reached through an association, so as with the former HS5 class bridge
+        //changes to the name do not trigger a reindexing of the taxon
+        context.dependencies().useRootOnly();
+
+        IndexFieldReference<String> nameSortRef = context.indexSchemaElement()
+                .field(NAME_SORT_FIELD_NAME,
+                        f -> f.asString().searchable(Searchable.NO).sortable(Sortable.YES))
+                .toReference();
+
+        context.bridge(Object.class, (target, entity, writeContext) -> {
+            String sortValue = sortValue(entity);
+        // Always write a sort value so SortedSetSortField grouping never skips the document
+        target.addValue(nameSortRef, sortValue != null ? sortValue : "");
+        });
+    }
+
+    private static String sortValue(Object entity) {
+
         TaxonName taxonName = null;
-        value = CdmBase.deproxy(value);
+        Object value = CdmBase.deproxy(entity);
         if(value instanceof TaxonBase) {
             taxonName = ((TaxonBase)value).getName();
             if (taxonName == null){
-            	return;
+                return null;
             }
         }else if(value instanceof TaxonName){
             taxonName = (TaxonName)value;
         }
         if(taxonName == null) {
             logger.error("Unsupported type: " + value.getClass().getName());
-            return;
+            return null;
         }
 
         // compile sort field
@@ -98,7 +115,6 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
             txt.append(StringUtils.rightPad(rankStr, 2, PAD_CHAR));
         }
 
-        Field nameSortField = new SortedDocValuesField(NAME_SORT_FIELD_NAME, new BytesRef(txt.toString()));
-        LuceneDocumentUtility.setOrReplaceDocValueField(nameSortField, document);
+        return txt.toString();
     }
 }

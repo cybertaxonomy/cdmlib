@@ -29,7 +29,7 @@ import org.springframework.web.servlet.View;
  * recommended to flatten these out before handing your data over to this
  * view.
  * <p>
- *<b>This is a experimental class, can be changed in the future</b>
+ *<b>This is an experimental class, can be changed in the future</b>
  *
  * @author a.oppermann
  */

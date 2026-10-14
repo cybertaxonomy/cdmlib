@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.database.DataSourceReloader;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.remote.controller.util.ProgressMonitorUtil;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
+
 import io.swagger.annotations.Api;
 
 @Controller
@@ -42,10 +43,11 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = { "/manage" })
 public class ManagementController {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     // @Autowired
-    private DataSourceReloader datasoucrceLoader;
+    private DataSourceReloader datasourceLoader;
 
     @Autowired
     public ICdmMassIndexer indexer;
@@ -80,11 +82,11 @@ public class ManagementController {
      */
     // @RequestMapping(value = { "/manager/datasources/list" }, method =
     // RequestMethod.GET)
-    protected ModelAndView doList(HttpServletRequest request,
-            HttpServletResponse respone) throws Exception {
+    protected ModelAndView doList(@SuppressWarnings("unused") HttpServletRequest request,
+            @SuppressWarnings("unused") HttpServletResponse respone) throws Exception {
 
         ModelAndView mv = new ModelAndView();
-        Map<String, DataSourceInfo> dataSourceInfos = datasoucrceLoader.test();
+        Map<String, DataSourceInfo> dataSourceInfos = datasourceLoader.test();
         mv.addObject(dataSourceInfos);
 
         return mv;
@@ -92,11 +94,11 @@ public class ManagementController {
 
     // @RequestMapping(value = { "/manager/datasources/reload" }, method =
     // RequestMethod.GET)
-    public ModelAndView doReload(HttpServletRequest request,
-            HttpServletResponse respone) throws Exception {
+    public ModelAndView doReload(@SuppressWarnings("unused") HttpServletRequest request,
+            @SuppressWarnings("unused") HttpServletResponse respone) throws Exception {
 
         ModelAndView mv = new ModelAndView();
-        Map<String, DataSourceInfo> dataSourceInfos = datasoucrceLoader
+        Map<String, DataSourceInfo> dataSourceInfos = datasourceLoader
                 .reload();
         mv.addObject(dataSourceInfos);
 

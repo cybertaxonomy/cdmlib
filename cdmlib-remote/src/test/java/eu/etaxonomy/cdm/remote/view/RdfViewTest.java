@@ -15,6 +15,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,8 +27,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.oxm.Marshaller;
@@ -38,6 +37,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import com.github.dozermapper.core.Mapper;
 
+import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.InfoItem;
@@ -80,7 +80,7 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		taxonConcept.setHasName(taxonName);
 		taxonConcept.setIdentifier(new URI("urn:lsid:example.org:taxonconcepts:1"));
 		taxonConcept.setTitle("Lorem ipsum");
-		taxonConcept.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0,DateTimeZone.UTC));
+		taxonConcept.setCreated(ZonedDateTime.of(2004, 12, 25, 12, 0, 0, 0, DateTimeUtil.UTC));
 
 		Relation relation = new Relation();
 		relation.setResource(new URI("http://www.example.org/"));

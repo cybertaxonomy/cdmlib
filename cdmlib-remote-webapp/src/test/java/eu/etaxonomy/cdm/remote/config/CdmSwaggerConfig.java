@@ -26,6 +26,7 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import eu.etaxonomy.cdm.model.CdmAssignableTypeFilter;
 import eu.etaxonomy.cdm.model.CdmTypeScanner;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;

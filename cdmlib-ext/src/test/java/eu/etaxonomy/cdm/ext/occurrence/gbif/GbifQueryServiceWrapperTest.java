@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.hc.client5.http.ClientProtocolException;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -146,11 +146,7 @@ public class GbifQueryServiceWrapperTest {
     	GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
     	try {
     		service.query(query);
-    	} catch (ClientProtocolException e) {
-    		Assert.fail(e.getMessage());
-    	} catch (IOException e) {
-    		Assert.fail(e.getMessage());
-    	} catch (URISyntaxException e) {
+    	} catch (IOException | URISyntaxException e) {
     		Assert.fail(e.getMessage());
     	}
     }

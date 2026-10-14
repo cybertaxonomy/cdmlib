@@ -9,16 +9,16 @@
 package eu.etaxonomy.cdm.io.excel.stream;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -56,12 +56,14 @@ public class ExcelToStreamConverter<STATE extends ExcelStreamImportState> {
 		this.source = source;
 	}
 
-	public IReader<ExcelRecordStream> getWorksheetStream(STATE state) throws IOException, HttpException, InvalidFormatException{
-//		POIFSFileSystem fs = new POIFSFileSystem(UriUtils.getInputStream(source));
-//		HSSFWorkbook wb = new HSSFWorkbook(fs);
-		Workbook wb = WorkbookFactory.create(UriUtils.getInputStream(source));
+	public IReader<ExcelRecordStream> getWorksheetStream(STATE state) throws IOException, HttpException {
 
-		Map<TermUri, Integer> map = new HashMap<TermUri, Integer>();
+	    Workbook wb;
+	    try(InputStream is = UriUtils.getInputStream(source)){
+	        wb = WorkbookFactory.create(is);
+	    }
+
+		Map<TermUri, Integer> map = new HashMap<>();
 		for (int i = 0 ; i < wb.getNumberOfSheets(); i++){
 			String wsName = wb.getSheetName(i);
 			TermUri termUri = convertSheetName2TermUri(wsName);

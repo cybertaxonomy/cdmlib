@@ -8,17 +8,22 @@
 */
 package eu.etaxonomy.cdm.persistence.query;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.CriteriaQuery;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.type.IntegerType;
-import org.hibernate.type.Type;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.From;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
 
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 /**
+ * Groups by year / month / day of a date property using JPA Criteria functions
+ * (Hibernate 6 compatible).
+ *
  * @author ben.clark
  */
 public class GroupByDate extends Grouping {
@@ -31,151 +36,33 @@ public class GroupByDate extends Grouping {
 	}
 
 	@Override
-	public void addProjection(ProjectionList projectionList) {
-		if(resolution.equals(Resolution.YEAR)) {
-			StringBuffer selectSqlString = getYearSelect();
-			StringBuffer projectSqlString = getYearProjection();
-			projectionList.add(Projections.sqlGroupProjection(selectSqlString.toString(), projectSqlString.toString(), new String[] {"year"}, new Type[] { IntegerType.INSTANCE }),name);
-		} else if(resolution.equals(Resolution.MONTH)) {
-			StringBuffer selectSqlString = getYearMonthSelect();
-			StringBuffer projectSqlString = getYearMonthProjection();
-			projectionList.add(Projections.sqlGroupProjection(selectSqlString.toString(), projectSqlString.toString(), new String[] {"year","month"}, new Type[] { IntegerType.INSTANCE, IntegerType.INSTANCE }),name);
-		} else {
-			StringBuffer selectSqlString = getYearMonthDaySelect();
-			StringBuffer projectSqlString = getYearMonthDayProjection();
-			projectionList.add(Projections.sqlGroupProjection(selectSqlString.toString(), projectSqlString.toString(), new String[] {"year","month", "day"}, new Type[] { IntegerType.INSTANCE, IntegerType.INSTANCE, IntegerType.INSTANCE }),name);
+	public void addToCriteria(CriteriaBuilder cb, Root<?> root, Map<String, From<?, ?>> joins,
+			List<Selection<?>> selections, List<Expression<?>> groupByExpressions,
+			List<Order> orders) {
+
+		Expression<?> datePath = resolvePath(root, joins);
+		Expression<Integer> year = cb.function("year", Integer.class, datePath);
+		selections.add(year.alias("year"));
+		groupByExpressions.add(year);
+		addOrder(cb, year, orders);
+
+		if (resolution == Resolution.MONTH || resolution == Resolution.DAY) {
+			Expression<Integer> month = cb.function("month", Integer.class, datePath);
+			selections.add(month.alias("month"));
+			groupByExpressions.add(month);
+			addOrder(cb, month, orders);
 		}
-	}
-
-	@Override
-    public void addOrder(Criteria criteria) {
-		if(getOrder() != null) {
-			if(getOrder().equals(SortOrder.ASCENDING)) {
-				if(resolution.equals(Resolution.YEAR)) {
-				  criteria.addOrder(asc(this.getPropertyName(),"year"));
-				} else if(resolution.equals(Resolution.MONTH)) {
-				  criteria.addOrder(asc(this.getPropertyName(),"year"));
-			      criteria.addOrder(asc(this.getPropertyName(),"month"));
-				} else {
-				  criteria.addOrder(asc(this.getPropertyName(),"year"));
-				  criteria.addOrder(asc(this.getPropertyName(),"month"));
-				  criteria.addOrder(asc(this.getPropertyName(),"day"));
-				}
-			} else {
-				if(resolution.equals(Resolution.YEAR)) {
-					  criteria.addOrder(desc(this.getPropertyName(),"year"));
-				} else if(resolution.equals(Resolution.MONTH)) {
-					  criteria.addOrder(desc(this.getPropertyName(),"year"));
-				      criteria.addOrder(desc(this.getPropertyName(),"month"));
-				} else {
-					  criteria.addOrder(desc(this.getPropertyName(),"year"));
-					  criteria.addOrder(desc(this.getPropertyName(),"month"));
-					  criteria.addOrder(desc(this.getPropertyName(),"month"));
-				}
-			}
+		if (resolution == Resolution.DAY) {
+			Expression<Integer> day = cb.function("day", Integer.class, datePath);
+			selections.add(day.alias("day"));
+			groupByExpressions.add(day);
+			addOrder(cb, day, orders);
 		}
-	}
-
-	//"year({alias}.property) as year"
-	private StringBuffer getYearSelect() {
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("year({alias}.");
-		stringBuffer.append(getPropertyName());
-		stringBuffer.append(") as year");
-		return stringBuffer;
-	}
-
-	private StringBuffer getYearMonthSelect() {
-		StringBuffer stringBuffer = getYearSelect();
-		stringBuffer.append(", month({alias}.");
-		stringBuffer.append(getPropertyName());
-		stringBuffer.append(") as month");
-		return stringBuffer;
-	}
-
-	private StringBuffer getYearMonthDaySelect() {
-		StringBuffer stringBuffer = getYearProjection();
-		stringBuffer.append(", day(");
-		if(getAssociatedObj() != null) {
-		  stringBuffer.append(getAssociatedObjectAlias());
-		  stringBuffer.append(".");
-		}
-		stringBuffer.append(getPropertyName());
-		stringBuffer.append(") as day");
-		return stringBuffer;
-	}
-
-	//"year({alias}.property) as year"
-	private StringBuffer getYearProjection() {
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("year({alias}.");
-		stringBuffer.append(getPropertyName());
-		stringBuffer.append(")");
-		return stringBuffer;
-	}
-
-	private StringBuffer getYearMonthProjection() {
-		StringBuffer stringBuffer = getYearProjection();
-		stringBuffer.append(", month({alias}.");
-		stringBuffer.append(getPropertyName());
-		stringBuffer.append(")");
-		return stringBuffer;
-	}
-
-	private StringBuffer getYearMonthDayProjection() {
-		StringBuffer stringBuffer = getYearProjection();
-		stringBuffer.append(", day(");
-		if(getAssociatedObj() != null) {
-		  stringBuffer.append(getAssociatedObjectAlias());
-		  stringBuffer.append(".");
-		}
-		stringBuffer.append(getPropertyName());
-		stringBuffer.append(")");
-		return stringBuffer;
 	}
 
 	public enum Resolution {
 		DAY,
 		MONTH,
 		YEAR;
-	}
-
-	public  Order asc(String propertyName, String function) {
-		return new GroupByDateOrder(propertyName, function, true);
-	}
-
-	public  Order desc(String propertyName, String function) {
-		return new GroupByDateOrder(propertyName, function, false);
-	}
-
-	public class GroupByDateOrder extends Order {
-        private static final long serialVersionUID = 4463504020211978634L;
-        String function;
-		String propertyName;
-		boolean ascending;
-
-		protected GroupByDateOrder(String propertyName, String function, boolean ascending) {
-			super(propertyName,ascending);
-			this.propertyName = propertyName;
-			this.ascending = ascending;
-			this.function = function;
-		}
-
-		@Override
-		public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) {
-			StringBuffer stringBuffer = new StringBuffer();
-			stringBuffer.append(function);
-			stringBuffer.append("(this_.");
-			stringBuffer.append(propertyName);
-			stringBuffer.append(")");
-
-			if(ascending) {
-				stringBuffer.append(" asc");
-			} else {
-				stringBuffer.append(" desc");
-			}
-
-			return stringBuffer.toString();
-		}
 	}
 }

@@ -299,7 +299,8 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @param propertyPaths paths initialized on the returned objects - only applied to the objects returned from the first grouping
      * @return a list of arrays of objects, each matching the grouping objects supplied in the parameters.
      */
-    public List<Object[]> group(Class<? extends T> clazz,Integer limit, Integer start, List<Grouping> groups, List<String> propertyPaths);
+    public List<Object[]> group(Class<? extends T> clazz,Integer limit, Integer start,
+            List<Grouping> groups, List<String> propertyPaths);
 
     /**
      * @param id

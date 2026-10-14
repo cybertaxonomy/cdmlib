@@ -6,12 +6,15 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+
 import javax.persistence.Embeddable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
@@ -22,20 +25,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.LocalDate;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -80,16 +82,14 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
     @XmlElement(name = "Start")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
     @Type(type="partialUserType")
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = PartialBridge.class)
+    @KeywordField(valueBridge = @ValueBridgeRef(type = PartialBridge.class))
     @JsonIgnore // currently used for swagger model scanner
     private Partial start;
 
     @XmlElement(name = "End")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
     @Type(type="partialUserType")
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = PartialBridge.class)
+    @KeywordField(valueBridge = @ValueBridgeRef(type = PartialBridge.class))
     @JsonIgnore // currently used for swagger model scanner
     private Partial end;
 
@@ -127,6 +127,10 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
         return NewInstance(startCalendar, null);
     }
 
+    public static final TimePeriod NewInstance(ZonedDateTime startDate){
+        return TimePeriod.NewInstance(startDate, null);
+    }
+
     /**
      * Factory method to create a TimePeriod from a <code>ReadableInstant</code>(e.g. <code>DateTime</code>).
      * The <code>ReadableInstant</code> is stored as the starting instant.
@@ -134,6 +138,14 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
      */
     public static final TimePeriod NewInstance(ReadableInstant readableInstant){
         return NewInstance(readableInstant, null);
+    }
+
+    /**
+     * Factory method to create a TimePeriod from a starting and an ending <code>Calendar</code>
+     * @return
+     */
+    public static final TimePeriod NewInstance(ZonedDateTime startDateTime, ZonedDateTime endDateTime){
+        return new TimePeriod(zonedDateTimeToPartial(startDateTime), zonedDateTimeToPartial(endDateTime), null);
     }
 
     /**
@@ -162,10 +174,16 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
 
 //****************** PARTIAL CONVERTERS ******************/
 
+    public static Partial zonedDateTimeToPartial(ZonedDateTime dateTime){
+        if (dateTime == null) {
+            return null;
+        }
+        Calendar calendar = GregorianCalendar.from(dateTime);
+        return calendarToPartial(calendar);
+    }
+
     /**
      * Transforms a {@link Calendar} into a <code>Partial</code>
-     * @param calendar
-     * @return
      */
     public static Partial calendarToPartial(Calendar calendar){
         if (calendar == null){
@@ -246,6 +264,41 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
         }else{
             return partial.get(type);
         }
+    }
+
+    public static ZonedDateTime zonedDateTimeFromPartial(Partial partial,
+            ZonedDateTime defaultDateTime) {
+
+        if (partial == null) {
+            return defaultDateTime;
+        }
+        defaultDateTime = defaultDateTime == null ? ZonedDateTime.now() : defaultDateTime;
+
+        ZonedDateTime result = defaultDateTime;
+
+        //go through all fields
+        for (int i = 0; i < partial.size(); i++) {
+            DateTimeFieldType jodaType = partial.getFieldType(i);
+            int value = partial.getValue(i);
+
+            if (jodaType == DateTimeFieldType.year()) {
+                result = result.with(ChronoField.YEAR, value);
+            } else if (jodaType == DateTimeFieldType.monthOfYear()) {
+                result = result.with(ChronoField.MONTH_OF_YEAR, value);
+            } else if (jodaType == DateTimeFieldType.dayOfMonth()) {
+                result = result.with(ChronoField.DAY_OF_MONTH, value);
+            } else if (jodaType == DateTimeFieldType.hourOfDay()) {
+                result = result.with(ChronoField.HOUR_OF_DAY, value);
+            } else if (jodaType == DateTimeFieldType.minuteOfHour()) {
+                result = result.with(ChronoField.MINUTE_OF_HOUR, value);
+            } else if (jodaType == DateTimeFieldType.secondOfMinute()) {
+                result = result.with(ChronoField.SECOND_OF_MINUTE, value);
+            } else if (jodaType == DateTimeFieldType.millisOfSecond()) {
+                result = result.with(ChronoField.MILLI_OF_SECOND, value);
+            }
+        }
+
+        return result;
     }
 
 //****************** TIME PERIOD CONVERTERS ******************/

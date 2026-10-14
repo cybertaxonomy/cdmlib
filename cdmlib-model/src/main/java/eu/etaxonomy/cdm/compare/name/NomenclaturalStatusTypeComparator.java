@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.compare.name;
 import java.io.Serializable;
 import java.util.Comparator;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;

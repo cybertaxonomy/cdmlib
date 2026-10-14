@@ -20,7 +20,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
+
 import eu.etaxonomy.cdm.io.common.SimpleImport;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -52,7 +54,7 @@ public class RepresentationCsvImport
     protected void doInvoke(RepresentationCsvImportConfigurator config) {
         try {
             InputStreamReader inputReader = config.getSource();
-            CSVReader csvReader = new CSVReader(inputReader, ',');
+            CSVReader csvReader = csvReader(inputReader, ',');
             List<String[]> lines = csvReader.readAll();
             if (lines.isEmpty()){
                 logger.info("Import file is empty");
@@ -92,7 +94,7 @@ public class RepresentationCsvImport
             getTermService().saveOrUpdate(termsToSave);
             getVocabularyService().saveOrUpdate(vocsToSave);
 
-        } catch (IOException e) {
+        } catch (IOException | CsvException e) {
             throw new RuntimeException(e);
         }
     }

@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.sandbox.queries.FuzzyLikeThisQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
+import org.apache.lucene.search.FuzzyQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.WildcardQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -626,55 +626,49 @@ public class NameServiceImpl
         String searchSuffix = "~" + similarity;
 
         Builder finalQueryBuilder = new Builder();
-        finalQueryBuilder.setDisableCoord(false);
         Builder textQueryBuilder = new Builder();
-        textQueryBuilder.setDisableCoord(false);
 
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonName.class);
         QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonName.class);
 
-//    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+//    	SortField[] sortFields = new SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
 //    	luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
         luceneSearch.setCdmTypRestriction(clazz);
 
-        FuzzyLikeThisQuery fltq = new FuzzyLikeThisQuery(maxNoOfResults, luceneSearch.getAnalyzer());
+        // FuzzyLikeThisQuery was removed from Lucene; approximate with per-field FuzzyQuery clauses
+        Builder fuzzyBuilder = new Builder();
+        int maxEdits = Math.max(0, Math.min(2, Math.round((1.0f - accuracy) * 2)));
         if(nvn.getGenusOrUninomial() != null && !nvn.getGenusOrUninomial().equals("")) {
-            fltq.addTerms(nvn.getGenusOrUninomial().toLowerCase(), "genusOrUninomial", accuracy, 3);
+            fuzzyBuilder.add(new FuzzyQuery(new Term("genusOrUninomial", nvn.getGenusOrUninomial().toLowerCase()), maxEdits), Occur.SHOULD);
         } else {
-            //textQuery.add(new RegexQuery (new Term ("genusOrUninomial", "^[a-zA-Z]*")), Occur.MUST_NOT);
             textQueryBuilder.add(queryFactory.newTermQuery("genusOrUninomial", "_null_", false), Occur.MUST);
         }
 
         if(nvn.getInfraGenericEpithet() != null && !nvn.getInfraGenericEpithet().equals("")){
-            fltq.addTerms(nvn.getInfraGenericEpithet().toLowerCase(), "infraGenericEpithet", accuracy, 3);
+            fuzzyBuilder.add(new FuzzyQuery(new Term("infraGenericEpithet", nvn.getInfraGenericEpithet().toLowerCase()), maxEdits), Occur.SHOULD);
         } else {
-            //textQuery.add(new RegexQuery (new Term ("infraGenericEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
             textQueryBuilder.add(queryFactory.newTermQuery("infraGenericEpithet", "_null_", false), Occur.MUST);
         }
 
         if(nvn.getSpecificEpithet() != null && !nvn.getSpecificEpithet().equals("")){
-            fltq.addTerms(nvn.getSpecificEpithet().toLowerCase(), "specificEpithet", accuracy, 3);
+            fuzzyBuilder.add(new FuzzyQuery(new Term("specificEpithet", nvn.getSpecificEpithet().toLowerCase()), maxEdits), Occur.SHOULD);
         } else {
-            //textQuery.add(new RegexQuery (new Term ("specificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
             textQueryBuilder.add(queryFactory.newTermQuery("specificEpithet", "_null_", false), Occur.MUST);
         }
 
         if(nvn.getInfraSpecificEpithet() != null && !nvn.getInfraSpecificEpithet().equals("")){
-            fltq.addTerms(nvn.getInfraSpecificEpithet().toLowerCase(), "infraSpecificEpithet", accuracy, 3);
+            fuzzyBuilder.add(new FuzzyQuery(new Term("infraSpecificEpithet", nvn.getInfraSpecificEpithet().toLowerCase()), maxEdits), Occur.SHOULD);
         } else {
-            //textQuery.add(new RegexQuery (new Term ("infraSpecificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
             textQueryBuilder.add(queryFactory.newTermQuery("infraSpecificEpithet", "_null_", false), Occur.MUST);
         }
 
         if(nvn.getAuthorshipCache() != null && !nvn.getAuthorshipCache().equals("")){
-            fltq.addTerms(nvn.getAuthorshipCache().toLowerCase(), "authorshipCache", accuracy, 3);
-        } else {
-            //textQuery.add(new RegexQuery (new Term ("authorshipCache", "^[a-zA-Z]*")), Occur.MUST_NOT);
+            fuzzyBuilder.add(new FuzzyQuery(new Term("authorshipCache", nvn.getAuthorshipCache().toLowerCase()), maxEdits), Occur.SHOULD);
         }
 
-        textQueryBuilder.add(fltq, Occur.MUST);
+        textQueryBuilder.add(fuzzyBuilder.build(), Occur.MUST);
 
         BooleanQuery textQuery = textQueryBuilder.build();
         finalQueryBuilder.add(textQuery, Occur.MUST);
@@ -697,18 +691,16 @@ public class NameServiceImpl
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonName.class);
         QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonName.class);
 
-//    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+//    	SortField[] sortFields = new SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
 //    	luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
         luceneSearch.setCdmTypRestriction(clazz);
-        FuzzyLikeThisQuery fltq = new FuzzyLikeThisQuery(maxNoOfResults, luceneSearch.getAnalyzer());
-
-        fltq.addTerms(name, "nameCache", accuracy, 3);
+        int maxEdits = Math.max(0, Math.min(2, Math.round((1.0f - accuracy) * 2)));
+        FuzzyQuery fuzzyQuery = new FuzzyQuery(new Term("nameCache", name), maxEdits);
 
         BooleanQuery finalQuery = new BooleanQuery.Builder()
-                .setDisableCoord(false)
-                .add(fltq, Occur.MUST)
+                .add(fuzzyQuery, Occur.MUST)
                 .build();
 
         luceneSearch.setQuery(finalQuery);
@@ -729,7 +721,7 @@ public class NameServiceImpl
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonName.class);
         QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonName.class);
 
-//    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+//    	SortField[] sortFields = new SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
 //    	luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria

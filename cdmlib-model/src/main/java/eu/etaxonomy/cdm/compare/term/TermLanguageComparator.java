@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.compare.term;
 
 import java.util.Comparator;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

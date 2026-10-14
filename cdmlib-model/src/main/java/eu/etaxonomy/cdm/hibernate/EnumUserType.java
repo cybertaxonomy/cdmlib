@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Serializable;
@@ -39,6 +38,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCodeEdition;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStanding;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameGender;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.ConceptDefinition;
 import eu.etaxonomy.cdm.model.taxon.ConceptStatus;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
+import eu.etaxonomy.cdm.model.taxon.TaxonStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicOperationType;
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
@@ -129,6 +130,9 @@ public class EnumUserType<E extends Enum<E>>
         //RankClass
         }else if (clazz.equals(RankClass.class)){
         	return RankClass.getByKey(val);
+        //Gender
+        }else if (clazz.equals(TaxonNameGender.class)){
+            return TaxonNameGender.getByKey(val);
         //SynonymType
         }else if (clazz.equals(SynonymType.class)){
             return SynonymType.getByKey(val);
@@ -159,6 +163,9 @@ public class EnumUserType<E extends Enum<E>>
         //TaxonNodeStatus
         }else if (clazz.equals(TaxonNodeStatus.class)){
             return TaxonNodeStatus.getByKey(val);
+        //TaxonStatus #11039
+        }else if (clazz.equals(TaxonStatus.class)){
+            return TaxonStatus.getByKey(val);
         //DescriptionType
         }else if (clazz.equals(DescriptionType.class)){
             return DescriptionType.getByKey(val);

@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
-
 public abstract class SpecimenOrObservationBaseDTO<T extends SpecimenOrObservationBase<?>>
         extends TypedEntityReference<T>{
 

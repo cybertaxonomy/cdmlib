@@ -8,22 +8,23 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.hibernate.search.bridge.StringBridge;
+import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
+import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContext;
 
 /**
  * @deprecated use the solr HTMLStripStandardTokenizerFactory instead
  *  why is the solr implementation a better option?
  */
 @Deprecated
-public class StripHtmlBridge implements StringBridge {
+public class StripHtmlBridge implements ValueBridge<String, String> {
 
     @Override
-    public String objectToString(Object object) {
-        if(object != null) {
-          String string = (String) object;
-          return string.replaceAll("\\<.*?\\>", "");
-        } else {
-          return null;
-        }
+    public String toIndexedValue(String value, ValueBridgeToIndexedValueContext context) {
+        return value == null ? null : value.replaceAll("\\<.*?\\>", "");
+    }
+
+    @Override
+    public String parse(String value) {
+        return value;
     }
 }

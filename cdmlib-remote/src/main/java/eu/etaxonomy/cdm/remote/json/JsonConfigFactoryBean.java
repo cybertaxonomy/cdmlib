@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.json;
 
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.FactoryBean;
 
 import eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor;
+
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.DefaultValueProcessor;
 import net.sf.json.processors.DefaultValueProcessorMatcher;

@@ -18,7 +18,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
-import org.apache.http.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -26,7 +26,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -40,14 +39,14 @@ public class MediaServiceImplTest extends CdmTransactionalIntegrationTest {
 
     static final private String imageFileName1 = "IPTC-PhotometadataRef-Std2019.1.jpg";
     static private MediaRepresentation repr1;
-    static private MediaRepresentationPart part1;
 
     @BeforeClass
     static public void makeMedia() throws URISyntaxException {
         URL mediaURL = MediaServiceImplTest.class.getResource(imageFileName1);
-        part1 = ImageFile.NewInstance(URI.fromUrl(mediaURL), null);
-        repr1 = MediaRepresentation.NewInstance("image/jpeg", "jpg");
-        repr1.addRepresentationPart(part1);
+        ImageFile imageFile = ImageFile.NewInstance(URI.fromUrl(mediaURL), null);
+        imageFile.setMimeType("image/jpeg");
+        imageFile.setSuffix("jpg");
+        repr1 = imageFile;
     }
 
     @Test

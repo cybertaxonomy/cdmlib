@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.MediaSpecimenDefaultCacheStrat
 })
 @XmlRootElement(name = "MediaSpecimen")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
+@Indexed
 @Audited
 public class MediaSpecimen
         extends DerivedUnit {

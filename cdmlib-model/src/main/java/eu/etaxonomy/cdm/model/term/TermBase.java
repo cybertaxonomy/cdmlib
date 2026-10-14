@@ -35,9 +35,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
@@ -74,8 +73,7 @@ public abstract class TermBase
     private static final Logger logger = LogManager.getLogger();
 
     @XmlElement(name = "URI")
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = UriBridge.class)
+    @KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
     @Type(type="uriUserType")
     private URI uri;
 

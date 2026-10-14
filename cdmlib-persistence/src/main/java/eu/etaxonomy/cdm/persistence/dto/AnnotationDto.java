@@ -10,9 +10,8 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.UUID;
-
-import org.joda.time.DateTime;
 
 /**
  * @author K.Luther
@@ -27,7 +26,8 @@ public class AnnotationDto extends CdmBaseDto implements Serializable, Comparabl
     private UUID typeUuid;
     private String typeLabel;
 
-    public AnnotationDto(UUID uuid, Integer id, UUID typeUuid, String typeLabel, String text, DateTime created, String createdBy, DateTime updated, String updatedBy) {
+    public AnnotationDto(UUID uuid, Integer id, UUID typeUuid, String typeLabel,
+            String text, ZonedDateTime created, String createdBy, ZonedDateTime updated, String updatedBy) {
         super(uuid, id, created, createdBy, updated, updatedBy);
         this.typeUuid = typeUuid;
         this.typeLabel = typeLabel;

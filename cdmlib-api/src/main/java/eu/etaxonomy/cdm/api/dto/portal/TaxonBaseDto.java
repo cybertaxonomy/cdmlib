@@ -228,7 +228,7 @@ public class TaxonBaseDto extends IdentifiableDto {
     }
 
     //TaxonBase info
-    //appendedPhras, useNameCache, doubtful, name, publish
+    //appendedPhrase, useNameCache, taxonStatus (#11039), name, publish
     // => should all be part of the typedLabel
 
     //secsource  ?? how to handle? part of bibliography

@@ -20,7 +20,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -59,8 +58,8 @@ public abstract class CsvDemoRecordBase {
 	protected static final boolean IS_NOT_FIRST = true;
 //	protected static final String SEP = ",";
 
-	protected Map<String, URI> knownFields = new HashMap<String, URI>();
-	protected Set<TermUri> knownTermFields = new HashSet<TermUri>();
+	protected Map<String, URI> knownFields = new HashMap<>();
+	protected Set<TermUri> knownTermFields = new HashSet<>();
 
 	public abstract void write(PrintWriter writer);
 	protected abstract void registerKnownFields();
@@ -70,7 +69,6 @@ public abstract class CsvDemoRecordBase {
 	protected CsvDemoExportConfigurator config;
 
 	private Integer id;
-	private UUID uuid;
 
 	protected CsvDemoRecordBase(CsvDemoMetaDataRecord metaDataRecord, CsvDemoExportConfigurator config){
 		this.metaDataRecord = metaDataRecord;
@@ -86,14 +84,6 @@ public abstract class CsvDemoRecordBase {
 		return id;
 	}
 
-	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
-	}
-
-/*	public UUID getUuid() {
-		return uuid;
-	}*/
-
 	protected void printNotes(Set<Annotation> notes, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		printNotes(notes, writer, addSeparator, fieldKey.getUriString());
 	}
@@ -103,9 +93,6 @@ public abstract class CsvDemoRecordBase {
 		print(value, writer, addSeparator, fieldKey);
 	}
 
-//	protected void print(Object object, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
-//		print(object == null ? null : object.toString(), writer, addSeparator, fieldKey);
-//	}
 	protected void print(CsvDemoId dwcaId, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(dwcaId == null ? null : dwcaId.getId(), writer, addSeparator, fieldKey);
 	}
@@ -287,15 +274,6 @@ public abstract class CsvDemoRecordBase {
 		}else{
 			//TODO
 			return language.getIso639_2();
-		}
-	}
-
-	protected String getDate(DateTime date) {
-		if (date == null){
-			return "";
-		}else{
-			//TODO
-			return date.toString();
 		}
 	}
 

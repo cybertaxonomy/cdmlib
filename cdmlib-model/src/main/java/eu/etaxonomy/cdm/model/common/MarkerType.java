@@ -19,8 +19,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 
 import eu.etaxonomy.cdm.model.term.AvailableForIdentifiableBase;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -36,7 +35,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 @XmlType(name = "MarkerType")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
+//@Indexed
 @Audited
 public class MarkerType extends AvailableForIdentifiableBase<MarkerType> {
 
@@ -69,7 +68,7 @@ public class MarkerType extends AvailableForIdentifiableBase<MarkerType> {
 	protected static Map<UUID, MarkerType> termMap = null;
 
     @XmlAttribute(name = "isTechnical")
-    @Field(analyze = Analyze.NO)
+    @GenericField
     private boolean isTechnical=false;
 
  // ***************************** FACTORY METHODD ************************/

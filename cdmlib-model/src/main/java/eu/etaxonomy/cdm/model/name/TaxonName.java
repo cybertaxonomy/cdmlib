@@ -51,14 +51,14 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Fields;
-import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.Store;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -151,6 +151,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "specificEpithet",
     "infraSpecificEpithet",
     "autonymFlag",
+    "gender",
     "combinationAuthorship",
     "exCombinationAuthorship",
     "basionymAuthorship",
@@ -193,7 +194,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @CorrectRanksForCode(groups = Level2.class)
 @NameMustHaveAuthority(groups = Level2.class)
 @NoDuplicateNames(groups = Level3.class)
-@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonName")
+@Indexed
 public class TaxonName
             extends IdentifiableEntity<INameCacheStrategy>
             implements ITaxonNameBase, INonViralName, IViralName, IBacterialName, IZoologicalName,
@@ -218,6 +219,18 @@ public class TaxonName
     @Audited //needed ?
     private NomenclaturalCode nameType;
 
+    /**
+     * The gender of a taxon name of rank genus. Relevant to validate
+     * correct epithet endings of specific or subspecific names.
+     */
+    @XmlAttribute(name ="NameType")
+    @Column(name="gender", length=1)
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.name.TaxonNameGender")}
+    )
+    @Audited
+    private TaxonNameGender gender;
+
     @XmlElement(name = "FullTitleCache")
     @Column(length=800, name="fullTitleCache")  //see #1592
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
@@ -238,7 +251,7 @@ public class TaxonName
     private Set<TaxonNameDescription> descriptions = new HashSet<>();
 
     @XmlElement(name = "AppendedPhrase")
-    @Field
+    @FullTextField
     @CacheUpdate(value ="nameCache")
     //TODO Val #3379
 //    @NullOrNotEmpty
@@ -309,7 +322,8 @@ public class TaxonName
     @OneToMany(fetch= FetchType.LAZY, mappedBy = "name", orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
     @NotNull
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Set<NomenclaturalStatus> status = new HashSet<>();
 
     @XmlElementWrapper(name = "TaxonBases")
@@ -318,7 +332,8 @@ public class TaxonName
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="name", fetch= FetchType.LAZY)
     @NotNull
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Set<TaxonBase> taxonBases = new HashSet<>();
 
     @XmlElement(name = "Rank")
@@ -328,7 +343,8 @@ public class TaxonName
     @CacheUpdate(value ="nameCache")
     //TODO Val #3379, handle maybe as groups = Level2.class ??
 //    @NotNull
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Rank rank;
 
     //#6581
@@ -339,6 +355,7 @@ public class TaxonName
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private NomenclaturalSource nomenclaturalSource;
 
     @XmlElementWrapper(name = "Registrations")
@@ -347,17 +364,16 @@ public class TaxonName
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="name", fetch= FetchType.LAZY)
     @NotNull
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Set<Registration> registrations = new HashSet<>();
 
 //****** Non-ViralName attributes ***************************************/
 
     @XmlElement(name = "NameCache")
-    @Fields({
-        @Field(name = "nameCache_tokenized"),
-        @Field(store = Store.YES, index = Index.YES, analyze = Analyze.YES)
-    })
-    @Analyzer(impl = org.apache.lucene.analysis.core.KeywordAnalyzer.class)
+    //the HS5 mapping applied a KeywordAnalyzer to both fields, which in HS6 is expressed by keyword fields
+    @KeywordField(name = "nameCache_tokenized")
+    @KeywordField(projectable = Projectable.YES)
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
     @NotEmpty(groups = Level2.class) // implicitly NotNull
@@ -369,7 +385,9 @@ public class TaxonName
     protected boolean protectedNameCache;
 
     @XmlElement(name = "GenusOrUninomial")
-    @Field(analyze = Analyze.YES, indexNullAs=Field.DEFAULT_NULL_TOKEN)
+    //HS6 only supports indexNullAs on non-analyzed fields, and NameServiceImpl relies on
+    //exact term queries for the null token, so the epithets are indexed as keywords
+    @KeywordField(indexNullAs = "_null_")
     @Match(MatchMode.EQUAL_REQUIRED)
     @CacheUpdate("nameCache")
     @Column(length=255)
@@ -379,7 +397,7 @@ public class TaxonName
     private String genusOrUninomial;
 
     @XmlElement(name = "InfraGenericEpithet")
-    @Field(analyze = Analyze.YES,indexNullAs=Field.DEFAULT_NULL_TOKEN)
+    @KeywordField(indexNullAs = "_null_")
     @CacheUpdate("nameCache")
     //TODO Val #3379
 //    @NullOrNotEmpty
@@ -388,7 +406,7 @@ public class TaxonName
     private String infraGenericEpithet;
 
     @XmlElement(name = "SpecificEpithet")
-    @Field(analyze = Analyze.YES,indexNullAs=Field.DEFAULT_NULL_TOKEN)
+    @KeywordField(indexNullAs = "_null_")
     @CacheUpdate("nameCache")
     //TODO Val #3379
 //    @NullOrNotEmpty
@@ -397,7 +415,7 @@ public class TaxonName
     private String specificEpithet;
 
     @XmlElement(name = "InfraSpecificEpithet")
-    @Field(analyze = Analyze.YES,indexNullAs=Field.DEFAULT_NULL_TOKEN)
+    @KeywordField(indexNullAs = "_null_")
     @CacheUpdate("nameCache")
     //TODO Val #3379
 //    @NullOrNotEmpty
@@ -418,6 +436,7 @@ public class TaxonName
     @ManyToOne(fetch = FetchType.LAZY)
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private TeamOrPersonBase<?> combinationAuthorship;
 
     @XmlElement(name = "ExCombinationAuthorship")
@@ -426,6 +445,7 @@ public class TaxonName
     @ManyToOne(fetch = FetchType.LAZY)
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private TeamOrPersonBase<?> exCombinationAuthorship;
 
     //#6943
@@ -435,6 +455,7 @@ public class TaxonName
     @ManyToOne(fetch = FetchType.LAZY)
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private TeamOrPersonBase<?> inCombinationAuthorship;
 
     @XmlElement(name = "BasionymAuthorship")
@@ -443,6 +464,7 @@ public class TaxonName
     @ManyToOne(fetch = FetchType.LAZY)
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private TeamOrPersonBase<?> basionymAuthorship;
 
     @XmlElement(name = "ExBasionymAuthorship")
@@ -451,6 +473,7 @@ public class TaxonName
     @ManyToOne(fetch = FetchType.LAZY)
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private TeamOrPersonBase<?> exBasionymAuthorship;
 
     //#6943
@@ -460,13 +483,12 @@ public class TaxonName
     @ManyToOne(fetch = FetchType.LAZY)
     @CacheUpdate("authorshipCache")
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private TeamOrPersonBase<?> inBasionymAuthorship;
 
     @XmlElement(name = "AuthorshipCache")
-    @Fields({
-        @Field(name = "authorshipCache_tokenized"),
-        @Field(analyze = Analyze.NO)
-    })
+    @FullTextField(name = "authorshipCache_tokenized")
+    @KeywordField
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"combinationAuthorship", "basionymAuthorship", "exCombinationAuthorship", "exBasionymAuthorship"} )
     //TODO Val #3379
@@ -518,7 +540,7 @@ public class TaxonName
 // ViralName attributes ************************* /
 
     @XmlElement(name = "Acronym")
-    @Field
+    @FullTextField
     //TODO Val #3379
 //  @NullOrNotEmpty
     @Column(length=255)
@@ -528,31 +550,31 @@ public class TaxonName
 
     //Author team and year of the subgenus name
     @XmlElement(name = "SubGenusAuthorship")
-    @Field
+    @FullTextField
     private String subGenusAuthorship;
 
     //Approbation of name according to approved list, validation list, or validly published, paper in IJSB after 1980
     @XmlElement(name = "NameApprobation")
-    @Field
+    @FullTextField
     private String nameApprobation;
 
     //ZOOLOGICAL NAME
 
     //Name of the breed of an animal
     @XmlElement(name = "Breed")
-    @Field
+    @FullTextField
     @NullOrNotEmpty
     @Column(length=255)
     private String breed;
 
     @XmlElement(name = "PublicationYear")
-    @Field(analyze = Analyze.NO)
+    @GenericField
     @CacheUpdate(value ="authorshipCache")
     @Min(0)
     private Integer publicationYear;
 
     @XmlElement(name = "OriginalPublicationYear")
-    @Field(analyze = Analyze.NO)
+    @GenericField
     @CacheUpdate(value ="authorshipCache")
     @Min(0)
     private Integer originalPublicationYear;
@@ -905,6 +927,15 @@ public class TaxonName
     @Override
     public void setAutonymFlag(Boolean autonymFlag) {
         this.autonymFlag = TriState.fromBoolean(autonymFlag);
+    }
+
+    @Override
+    public TaxonNameGender getGender() {
+        return gender;
+    }
+    @Override
+    public void setGender(TaxonNameGender gender) {
+        this.gender = gender;
     }
 
     /**

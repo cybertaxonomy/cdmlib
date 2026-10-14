@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.strategy.match;
 
+import java.time.ZonedDateTime;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -61,7 +63,7 @@ public class DefaultMatchStrategyTest extends TermTestBase {
 	private Annotation annotation2;
 	private String annotationString2;
 	private String title2 = "Title2";
-	private DateTime created2 = new DateTime(1999, 3, 1, 0, 0, 0, 0);
+	private ZonedDateTime created2 = DateTimeUtil.of(1999, 3, 1);
 	private VerbatimTimePeriod datePublished2 = VerbatimTimePeriod.NewVerbatimInstance(2002);
 	private int hasProblem2 = 1;
 	private LSID lsid2;

@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.model.metadata;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -21,7 +23,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -51,7 +52,7 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-	private static final String dbSchemaVersion = CdmVersion.V_05_58_00.versionString;
+	private static final String dbSchemaVersion = CdmVersion.V_06_01_00.versionString;
 
 	public enum CdmVersion {
 	    V_05_12_00("5.12.0.0.20191202"),
@@ -89,7 +90,8 @@ public class CdmMetaData extends CdmBase{
         V_05_48_00("5.48.0.0.20241211"),
         V_05_49_00("5.49.0.0.20250102"),
         V_05_54_00("5.54.0.0.20251006"),
-        V_05_58_00("5.58.0.0.20260423")
+        V_05_58_00("5.58.0.0.20260423"),
+        V_06_01_00("6.01.0.0.20260918")
         ;
 
         private String versionString;
@@ -140,7 +142,7 @@ public class CdmMetaData extends CdmBase{
         // schema version
         result.add(new CdmMetaData(CdmMetaDataPropertyName.DB_SCHEMA_VERSION, dbSchemaVersion));
         // database create time
-        result.add(new CdmMetaData(CdmMetaDataPropertyName.DB_CREATE_DATE, new DateTime().toString()));
+        result.add(new CdmMetaData(CdmMetaDataPropertyName.DB_CREATE_DATE, ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE)));
         result.add(new CdmMetaData(CdmMetaDataPropertyName.INSTANCE_ID, UUID.randomUUID().toString()));
         result.add(new CdmMetaData(CdmMetaDataPropertyName.INSTANCE_NAME, UNNAMED));
         return result;

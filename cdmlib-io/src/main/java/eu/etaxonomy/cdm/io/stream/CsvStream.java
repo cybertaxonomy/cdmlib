@@ -15,7 +15,9 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ObservableBase;
 import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
@@ -132,7 +134,7 @@ public class CsvStream extends ObservableBase
 				}
 
 
-			} catch (IOException e) {
+			} catch (IOException | CsvValidationException e) {
 				//TODO handle as event
 				throw new RuntimeException(e);
 			}

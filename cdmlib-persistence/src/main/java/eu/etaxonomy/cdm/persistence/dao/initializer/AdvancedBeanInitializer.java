@@ -29,13 +29,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.collection.internal.AbstractPersistentCollection;
 import org.hibernate.collection.internal.PersistentMap;
 import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.CollectionProxy;
 import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.MapProxy;
 import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.SortedMapProxy;
 import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -452,9 +452,8 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
                 AutoInit autoInit = addAutoinitFetchLoading(clazz, "c");
                 hql = String.format(hql, clazz.getSimpleName(), autoInit.leftJoinFetch);
                 if (logger.isTraceEnabled()){logger.trace(hql);}
-                Query query = genericDao.getHqlQuery(hql);
+                Query<Object> query = genericDao.getHqlQuery(hql);
                 query.setParameterList("idSet", idSet);
-                @SuppressWarnings("unchecked")
                 List<Object> list = query.list();
 
                 if (logger.isTraceEnabled()){

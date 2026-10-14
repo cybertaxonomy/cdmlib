@@ -80,6 +80,7 @@ public class IpniServiceTest extends TermTestBase {
 		//expected web service result: 3379-1%1.1%Greuter%Werner Rodolfo%Greuter%PS%1938-%>Greuter, Werner Rodolfo
 		if(authorList == null){
             Assert.fail("No results.");
+            return;
 		}
 		if (testInternetConnectivity(authorList)){
 
@@ -135,6 +136,7 @@ public class IpniServiceTest extends TermTestBase {
 		if (testInternetConnectivity(nameList)){
 		    if(nameList == null){
                 Assert.fail("No results.");
+                return;
             }
 			Assert.assertEquals("There should be exactly 1 result for 'Abies albertiana'", 1, nameList.size());
 			IBotanicalName name = nameList.get(0);
@@ -174,6 +176,7 @@ public class IpniServiceTest extends TermTestBase {
 		if (testInternetConnectivity(nameList)){
 		    if(nameList == null){
                 Assert.fail("No results.");
+                return;
             }
 			Assert.assertEquals("There should be exactly 1 result for 'Abies', 'alba', 'B*', Infraspecific ", 1, nameList.size());
 			IBotanicalName name = nameList.get(0);
@@ -200,6 +203,7 @@ public class IpniServiceTest extends TermTestBase {
 		if (testInternetConnectivity(refList)){
 		    if (refList == null){
 	            Assert.fail("The list is empty, maybe the ipni service is not available.");
+	            return;
 	        }
 			Assert.assertEquals("There should be exactly 1 result for 'Species Plantarum, Edition 3'", 1, refList.size());
 			Reference ref = refList.get(0);
@@ -211,12 +215,14 @@ public class IpniServiceTest extends TermTestBase {
 			refList = service1.getPublications("Flora of Macar", null, services, config);
 			if (refList == null){
                 Assert.fail("The list is empty, maybe the ipni service is not available.");
+                return;
             }
 			Assert.assertNotNull("Empty resultset should not throw exception and should not be null", refList);
 
 			refList = service1.getPublications("Flora Europaea [ed. 2]", null, services, config);
 			if (refList == null){
 			    Assert.fail("The list is empty, maybe the ipni service is not available.");
+			    return;
 			}
 			Assert.assertEquals("There should be exactly 1 result for 'Flora Europaea [ed. 2]'", 1, refList.size());
 			ref = refList.get(0);
@@ -232,18 +238,12 @@ public class IpniServiceTest extends TermTestBase {
 
 	@Test
 	public void testNameID(){
-		ICdmRepository services = null;
-		IpniServiceNamesConfigurator config = null;
+
 		InputStream content = service1.getNamesById("416415-1");
-
-
 		Assert.assertNotNull(content);
 	}
 
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.ext.ipni.IpniService#getServiceUrl()}.
-	 */
 	@Test
 	public void testGetServiceUrl() {
 		Assert.assertNotNull("Service should not be null", service1);

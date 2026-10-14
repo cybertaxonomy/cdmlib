@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -90,6 +90,7 @@ import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
+
 import io.swagger.annotations.Api;
 
 /**
@@ -997,7 +998,7 @@ public class TaxonPortalController extends TaxonController{
 //        method = RequestMethod.GET)
 //    public List<Media> doGetMedia(
 //            @PathVariable("uuid") UUID uuid,
-//            @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
+//            @RequestParam(value = "type", required = false) Class<? extends MediaRepresentation> type,
 //            @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
 //            @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
 //            @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
@@ -1028,7 +1029,7 @@ public class TaxonPortalController extends TaxonController{
             method = RequestMethod.GET)
     public List<Media> doGetMedia(
             @PathVariable("uuid") UUID uuid,
-            @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
+            @RequestParam(value = "type", required = false) Class<? extends MediaRepresentation> type,
             @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
             @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
             @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
@@ -1113,7 +1114,7 @@ public class TaxonPortalController extends TaxonController{
             method = RequestMethod.GET)
     public List<Media> doGetSubtreeMedia(
             @PathVariable("uuid") UUID uuid,
-            @RequestParam(value = "type", required = false) Class<? extends MediaRepresentationPart> type,
+            @RequestParam(value = "type", required = false) Class<? extends MediaRepresentation> type,
             @RequestParam(value = "mimeTypes", required = false) String[] mimeTypes,
             @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
             @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,

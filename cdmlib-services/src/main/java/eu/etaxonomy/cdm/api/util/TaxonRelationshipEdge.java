@@ -13,7 +13,6 @@ import java.util.Set;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
-
 /**
  * Holds a ({@link TaxonRelationshipType})
  * and gives it a direction which is one of:

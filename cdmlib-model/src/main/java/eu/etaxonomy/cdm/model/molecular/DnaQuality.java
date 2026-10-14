@@ -6,9 +6,9 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.molecular;
 
+import java.time.ZonedDateTime;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
@@ -24,17 +24,11 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.joda.time.DateTime;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 
-import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -111,12 +105,10 @@ public class DnaQuality extends VersionableEntity {
 
     @XmlElement (name = "QualityCheckDate", type= String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    @Type(type="dateTimeUserType")
     @Basic(fetch = FetchType.LAZY)
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = DateTimeBridge.class)
+    @GenericField
     @Audited
-    private DateTime qualityCheckDate;
+    private ZonedDateTime qualityCheckDate;
 
 
 // ******************* CONSTRUCTOR *************************/
@@ -170,11 +162,11 @@ public class DnaQuality extends VersionableEntity {
 		this.concentrationUnit = concentrationUnit;
 	}
 
-	public DateTime getQualityCheckDate() {
+	public ZonedDateTime getQualityCheckDate() {
 		return qualityCheckDate;
 	}
 
-	public void setQualityCheckDate(DateTime qualityCheckDate) {
+	public void setQualityCheckDate(ZonedDateTime qualityCheckDate) {
 		this.qualityCheckDate = qualityCheckDate;
 	}
 

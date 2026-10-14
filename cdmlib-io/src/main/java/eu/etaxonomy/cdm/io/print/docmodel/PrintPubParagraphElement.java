@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.print.docmodel;
 
 import eu.etaxonomy.cdm.io.print.render.IPrintPubDocumentInterpreter;
@@ -17,7 +16,6 @@ import eu.etaxonomy.cdm.io.print.render.IPrintPubDocumentInterpreter;
  * Supports optional indentation and is used for free text such as type
  * statements or synonym entries.
  */
-
 public class PrintPubParagraphElement implements IPrintPubDocumentElement {
 
 	private final String text;

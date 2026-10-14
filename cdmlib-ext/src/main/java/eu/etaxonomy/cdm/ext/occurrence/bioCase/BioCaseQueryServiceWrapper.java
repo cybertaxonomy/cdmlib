@@ -19,15 +19,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.hc.client5.http.ClientProtocolException;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jdom.Document;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+import org.jdom2.Document;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Element;
@@ -84,7 +84,7 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
             String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(doc);
 
             //POST parameters
-            List<NameValuePair> queryParamsPOST = new ArrayList<NameValuePair>();
+            List<NameValuePair> queryParamsPOST = new ArrayList<>();
             queryParamsPOST.add(SUBMIT_PARAM);
             addNameValuePairTo(queryParamsPOST, QUERY_PARAM_NAME, xmlOutputString);
             UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(queryParamsPOST);
@@ -170,7 +170,7 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
             String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(doc);
 
             //POST parameters
-            List<NameValuePair> queryParamsPOST = new ArrayList<NameValuePair>();
+            List<NameValuePair> queryParamsPOST = new ArrayList<>();
             queryParamsPOST.add(SUBMIT_PARAM);
             addNameValuePairTo(queryParamsPOST, QUERY_PARAM_NAME, xmlOutputString);
             UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(queryParamsPOST);

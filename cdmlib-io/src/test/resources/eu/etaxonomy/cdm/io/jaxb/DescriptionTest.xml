@@ -371,7 +371,7 @@
         </name:BotanicalName>
     </TaxonomicNames>
     <TaxonBases>
-        <taxon:Taxon id="1" uuid="urn-uuid-806212d3-7279-4e25-a38f-66986907331f" isDoubtful="false">
+        <taxon:Taxon id="1" uuid="urn-uuid-806212d3-7279-4e25-a38f-66986907331f">
             <common:TitleCache>Aus aus L.</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <taxon:Name>urn-uuid-a9036d14-7be1-42bc-bb74-87be966f3a01</taxon:Name>

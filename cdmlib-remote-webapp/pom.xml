@@ -4,7 +4,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>6.0.0</version>
+    <version>6.1.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>cdmlib-remote-webapp</artifactId>
@@ -63,7 +63,7 @@
         <plugins>
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.22.2</version>
+            <version>3.6.0</version>
             <configuration>
               <forkCount>3</forkCount>
               <reuseForks>true</reuseForks>
@@ -105,7 +105,7 @@
         <plugins>
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.22.2</version>
+            <version>3.6.0</version>
             <configuration>
               <forkCount>3</forkCount>
               <reuseForks>true</reuseForks>
@@ -169,21 +169,6 @@
       <artifactId>spring-oxm</artifactId>
     </dependency>
 
-    <!-- XmlView -->
-    <dependency>
-      <!-- this is also offered by cdmlib-remote. Can it be removed? -->
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-      <exclusions>
-        <!-- https://stackoverflow.com/questions/17077922/maven-xpp3-versus-xpp3-min -->
-        <!-- But maybe we can exclude xpp3 instead, not sure if it is directly needed or only for xstream -->
-        <exclusion>
-            <groupId>xpp3</groupId>
-            <artifactId>xpp3_min</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
     <!-- swagger -->
     <dependency>
       <groupId>io.springfox</groupId>
@@ -236,27 +221,33 @@
   <build>
     <resources>
       <resource>
-        <!-- replace the place holders like ${...} in datasources.xml -->
-        <filtering>true</filtering>
-        <directory>src/test/resources</directory>
-        <targetPath>../test-classes</targetPath>
-        <includes>
-          <include>datasources.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <!-- all other test resources without filtering -->
-        <directory>src/test/resources</directory>
-        <targetPath>../test-classes</targetPath>
-        <excludes>
-          <exclude>datasources.xml</exclude>
-        </excludes>
-      </resource>
-      <resource>
         <!-- all main resources without filtering -->
         <directory>src/main/resources</directory>
       </resource>
     </resources>
+    <testResources>
+      <testResource>
+        <!-- replace the place holders like ${...} in datasources.xml.
+          This must be declared as testResource (not as resource with a
+          "../test-classes" targetPath as before), otherwise the default,
+          unfiltered testResources binding (process-test-resources phase,
+          which runs after process-resources) copies the unfiltered
+          src/test/resources/datasources.xml over this filtered copy,
+          leaving placeholders like ${project.build.directory} unresolved. -->
+        <filtering>true</filtering>
+        <directory>src/test/resources</directory>
+        <includes>
+          <include>datasources.xml</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <!-- all other test resources without filtering -->
+        <directory>src/test/resources</directory>
+        <excludes>
+          <exclude>datasources.xml</exclude>
+        </excludes>
+      </testResource>
+    </testResources>
     
     <!-- PLUGINS -->
     <plugins>
@@ -332,9 +323,6 @@
             <goals>
               <goal>start</goal>
             </goals>
-            <configuration>
-              <scanIntervalSeconds>0</scanIntervalSeconds>
-            </configuration>
           </execution>
           <execution>
             <id>stop-jetty</id>
@@ -348,7 +336,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version>           
+        <version>3.5.1</version>           
         <executions>
           <execution>
             <!-- The war must be created after running the integration-tests, 
@@ -364,7 +352,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.5.0</version>
         <configuration>
           <escapeWindowsPaths>false</escapeWindowsPaths>
         </configuration>

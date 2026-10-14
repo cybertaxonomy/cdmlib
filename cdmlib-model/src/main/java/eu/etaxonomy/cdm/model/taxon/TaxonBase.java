@@ -6,12 +6,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
@@ -32,15 +32,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.ClassBridge;
-import org.hibernate.search.annotations.ClassBridges;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.Store;
-import org.hibernate.search.bridge.builtin.BooleanBridge;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
+import org.hibernate.search.mapper.pojo.common.annotation.Param;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.TypeBinding;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
@@ -48,7 +50,7 @@ import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByRankAndNameComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
-import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
+import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.model.common.CreditableEntity;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IPublishable;
@@ -88,7 +90,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
 @XmlType(name = "TaxonBase", propOrder = {
         "name",
         "secSource",
-        "doubtful",
+        "taxonStatus",
         "appendedPhrase",
         "useNameCache",
         "publish"
@@ -98,17 +100,11 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
 //@PreFilter("hasPermission(filterObject, 'edit')")
 @Table(name = "TaxonBase", indexes = {@Index(name = "taxonBaseTitleCacheIndex", columnList = "titleCache")})
 @TaxonNameCannotBeAcceptedAndSynonym(groups = Level3.class)
-@ClassBridges({
-        @ClassBridge(name = "classInfo",
-                index = org.hibernate.search.annotations.Index.YES,
-                store = Store.YES,
-                impl = ClassInfoBridge.class),
-        @ClassBridge(name = AcceptedTaxonBridge.ACC_TAXON, // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names, see also ACC_TAXON_BRIDGE_PREFIX
-                index = org.hibernate.search.annotations.Index.YES,
-                store = Store.YES,
-                impl = AcceptedTaxonBridge.class),
-        @ClassBridge(impl = eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde.class)
-})
+// ClassInfoBridge is declared on CdmBase for all indexed types
+@TypeBinding(binder = @TypeBinderRef(type = AcceptedTaxonBridge.class,
+        params = @Param(name = "fieldName", value = AcceptedTaxonBridge.ACCEPTED_TAXON)))
+@TypeBinding(binder = @TypeBinderRef(type = eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde.class))
+@TypeBinding(binder = @TypeBinderRef(type = GroupByTaxonClassBridge.class))
 public abstract class TaxonBase
         extends CreditableEntity<ITaxonCacheStrategy>
         implements  IPublishable, IIntextReferenceTarget{
@@ -132,15 +128,26 @@ public abstract class TaxonBase
         }
     }
 
-    //The assignment to the Taxon or to the Synonym class is not definitive
-    @XmlAttribute(name = "isDoubtful")
-    private boolean doubtful;
+    /**
+     * Editorial / taxonomic acceptance status of this taxon or synonym.
+     * See #11039
+     */
+    @XmlAttribute(name = "TaxonStatus")
+    @Column(name = "taxonStatus", length = 10)
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.taxon.TaxonStatus")}
+    )
+    @NotNull
+    private TaxonStatus taxonStatus = getDefaultStatus();
 
     @XmlElement(name = "Name")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded(includeEmbeddedObjectId=true)
+    // id is contributed as String by NotNullAwareIdBridge; includeEmbeddedObjectId would
+    // add an Integer document-id field at name.id and conflict with that binder (HSEARCH600126)
+    @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull(groups = Level2.class)
     private TaxonName name;
@@ -153,6 +160,7 @@ public abstract class TaxonBase
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE,CascadeType.DELETE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private SecundumSource secSource;
 
     @XmlElement(name = "AppendedPhrase")
@@ -162,7 +170,7 @@ public abstract class TaxonBase
     private boolean useNameCache = false;
 
     @XmlAttribute(name = "publish")
-    @Field(analyze = Analyze.NO, store = Store.YES, bridge= @FieldBridge(impl=BooleanBridge.class))
+    @GenericField(projectable = Projectable.YES)
     private boolean publish = true;
 
 // ************* CONSTRUCTORS *************/
@@ -231,20 +239,49 @@ public abstract class TaxonBase
     }
 
     /**
-     * Returns the boolean value indicating whether the assignment of <i>this</i>
-     * (abstract) taxon to the {@link Taxon Taxon} or to the {@link Synonym Synonym} class
-     * is definitive (false) or not (true). If this flag is set the use of <i>this</i> (abstract)
-     * taxon as an "accepted/correct" name or as a (junior) "synonym" might
-     * still change in the course of taxonomical working process.
+     * Returns the {@link TaxonStatus} of <i>this</i> (abstract) taxon.
+     * See #11039
      */
-    public boolean isDoubtful(){
-        return this.doubtful;
+    public TaxonStatus getTaxonStatus(){
+        return this.taxonStatus;
     }
     /**
-     * @see  #isDoubtful()
+     * @see #getTaxonStatus()
+     * See #11039
+     */
+    public void setTaxonStatus(TaxonStatus taxonStatus){
+        this.taxonStatus = taxonStatus == null ? getDefaultStatus() : taxonStatus;
+    }
+    @Transient
+    public String getTaxonStatusSymbol() {
+        return taxonStatus == null ? "" : taxonStatus.getSymbol();
+    }
+
+    /**
+     * Returns the default status for the according subclas.
+     * E.g. "Accepted" for a Taxon.
+     */
+    protected abstract @NotNull TaxonStatus getDefaultStatus();
+
+    /**
+     * Returns <code>true</code> if the {@link TaxonStatus} is {@link TaxonStatus#DOUBTFUL}.
+     * Convenience for the former boolean doubtful flag.
+     * See #11039
+     */
+    public boolean isDoubtful(){
+        return this.taxonStatus == TaxonStatus.DOUBTFUL;
+    }
+    /**
+     * If <code>true</code>, sets the status to {@link TaxonStatus#DOUBTFUL}.
+     * If <code>false</code> sets the default to the subclass's default.
+     * ({@link TaxonStatus#ACCEPTED} / {@link TaxonStatus#SYNONYM}).
+     * See #11039
+     *
+     * @see #isDoubtful()
+     * @see #setTaxonStatus(TaxonStatus)
      */
     public void setDoubtful(boolean doubtful){
-        this.doubtful = doubtful;
+        setTaxonStatus(doubtful ? TaxonStatus.DOUBTFUL : getDefaultStatus());
     }
 
     /**

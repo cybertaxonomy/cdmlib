@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.parser;
 
 import eu.etaxonomy.cdm.model.name.INonViralName;
@@ -15,7 +14,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.IStrategy;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
-
 
 /**
  * Supplies several parser methods for non viral taxon name strings and for nomenclatural

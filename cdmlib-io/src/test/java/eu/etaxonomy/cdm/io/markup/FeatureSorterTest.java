@@ -13,8 +13,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.io.markup.FeatureSorter;
-
 public class FeatureSorterTest {
 
 	static UUID uuid1a = UUID.randomUUID();

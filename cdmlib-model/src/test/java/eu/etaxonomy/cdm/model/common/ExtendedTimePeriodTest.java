@@ -12,7 +12,6 @@ import static org.junit.Assert.*;
 
 import java.util.Calendar;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTimeFieldType;

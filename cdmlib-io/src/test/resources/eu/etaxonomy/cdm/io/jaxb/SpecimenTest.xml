@@ -124,7 +124,7 @@
         </name:TaxonName>
     </TaxonomicNames>
     <TaxonBases>
-        <taxon:Taxon id="1" uuid="urn-uuid-dcf295c9-a5ec-4b03-8daa-a69741d1611c" isDoubtful="false">
+        <taxon:Taxon id="1" uuid="urn-uuid-dcf295c9-a5ec-4b03-8daa-a69741d1611c">
             <common:TitleCache>Aus aus L.</common:TitleCache>
              <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <taxon:Name>urn-uuid-e7542758-5311-47b2-b4f8-bb770822ae40</taxon:Name>

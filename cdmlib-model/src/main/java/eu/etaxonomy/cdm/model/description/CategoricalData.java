@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,15 +27,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.validation.Level2;
@@ -68,7 +70,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @XmlRootElement(name = "CategoricalData")
 @Entity
 @Audited
-@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
+@Indexed
 public class CategoricalData
         extends DescriptionElementBase
         implements IHasModifyingText {
@@ -85,7 +87,8 @@ public class CategoricalData
     @XmlElement(name = "State")
     @OneToMany(fetch = FetchType.LAZY, mappedBy="categoricalData", orphanRemoval=true)
     @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-    @IndexedEmbedded(depth = 3)
+    @IndexedEmbedded(includeDepth = 3)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @NotEmpty(groups = Level2.class)
     private List<StateData> stateData = new ArrayList<>();
 

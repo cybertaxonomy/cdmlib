@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
-
 /**
  * Updates the xxxObj_type field in Annotations, Markers, Extensions, Identifiers.
  * Not needed anymore as long as we gave up bidirectionality #5743

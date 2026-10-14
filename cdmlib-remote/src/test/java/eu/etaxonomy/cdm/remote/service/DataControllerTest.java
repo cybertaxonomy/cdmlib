@@ -3,7 +3,6 @@ package eu.etaxonomy.cdm.remote.service;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;

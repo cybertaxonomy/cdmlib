@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service.search;
 
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

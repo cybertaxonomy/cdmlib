@@ -19,14 +19,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.NumericField;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.molecular.Cloning;
@@ -52,7 +51,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 })
 @XmlRootElement(name = "PreservationMethod")
 @Entity
-//TODO @Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
+//@Indexed
 @Audited
 public class PreservationMethod extends MaterialOrMethodEvent {
 
@@ -64,12 +63,12 @@ public class PreservationMethod extends MaterialOrMethodEvent {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded // no depth for terms
+    @IndexedEmbedded
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW) // no depth for terms
     private DefinedTerm medium;
 
 	@XmlElement(name = "Temperature")
-	@Field(analyze = Analyze.NO)
-	@NumericField
+	@GenericField
 	private Double temperature;
 
 	// ******************** FACTORY METHOD ******************/

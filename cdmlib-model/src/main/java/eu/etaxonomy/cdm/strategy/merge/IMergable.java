@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.strategy.merge;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
-
 /**
  * This is an interface to tag all those classes which can be merged via an
  * <code>eu.etaxonomy.cdm.strategy.merge.IMergeStrategy</code>.

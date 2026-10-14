@@ -9,13 +9,13 @@
 package eu.etaxonomy.cdm.remote.view;
 
 import java.io.File;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -87,7 +87,7 @@ public class JsonToCsvViewTest extends UnitilsJUnit4 {
 
         Taxon taxon = Taxon.NewInstance(null, null);
         taxon.setTitleCache("TitleCache", true);
-        taxon.setCreated(new DateTime());
+        taxon.setCreated(ZonedDateTime.now());
 
         demoRecord.setScientificName(taxon.getTitleCache());
         demoRecord.setAuthorName("Author");

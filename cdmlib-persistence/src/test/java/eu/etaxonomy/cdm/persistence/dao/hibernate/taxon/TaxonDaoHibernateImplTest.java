@@ -1279,7 +1279,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         List<Grouping> groups = new ArrayList<>();
         groups.add(new GroupByCount("count",null));
         groups.add(new GroupByDate("created", "dateGroup", SortOrder.ASCENDING, GroupByDate.Resolution.MONTH));
-        List<Object[]> results = taxonDao.group(null, null, null, groups,null);
+        List<Object[]> results = taxonDao.group(null, null, null, groups, null);
         if(logger.isTraceEnabled()){
             System.out.println("count\tyear\tmonth");
             for(Object[] result : results) {

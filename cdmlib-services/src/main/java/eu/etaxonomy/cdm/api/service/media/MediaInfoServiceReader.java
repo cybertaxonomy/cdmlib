@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service.media;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.http.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cybertaxonomy.media.info.model.MediaInfo;
@@ -71,14 +71,17 @@ public class MediaInfoServiceReader extends AbstactMediaMetadataReader {
 
     @Override
     public AbstactMediaMetadataReader read() throws IOException, HttpException {
-        logger.info("reading metadata from " + metadataUri);
-        InputStream jsonStream = UriUtils.getInputStream(metadataUri);
-        ObjectMapper mapper = new ObjectMapper();
-        MediaInfo mediaInfo = mapper.readValue(jsonStream, MediaInfo.class);
-        dozerMapper.map(mediaInfo, getCdmImageInfo());
-        // TODO how to do this with Dozer?:
-        mediaInfo.getMetaData().entrySet().forEach(e -> processPutMetadataEntry(e.getKey(), e.getValue()));
-        return this;
+
+        try (InputStream jsonStream = UriUtils.getInputStream(metadataUri)){
+            logger.info("reading metadata from " + metadataUri);
+
+            ObjectMapper mapper = new ObjectMapper();
+            MediaInfo mediaInfo = mapper.readValue(jsonStream, MediaInfo.class);
+            dozerMapper.map(mediaInfo, getCdmImageInfo());
+            // TODO how to do this with Dozer?:
+            mediaInfo.getMetaData().entrySet().forEach(e -> processPutMetadataEntry(e.getKey(), e.getValue()));
+            return this;
+        }
     }
 
 }

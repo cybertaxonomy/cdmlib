@@ -30,7 +30,7 @@
 	Note:
 		
 		* When the number of records returned are greater than the page size multiple calls to the web service must be made to return the subequent pages.
-		
+
 	
 	Example Requests :
 		
@@ -64,16 +64,16 @@ class": "DefaultPagerImpl",
 
     {
         "class": "SearchResult",
-        "docs": [ … ],
-        "entity": { … },
-        "fieldHighlightMap": { … },
+        "docs": [ ï¿½ ],
+        "entity": { ï¿½ },
+        "fieldHighlightMap": { ï¿½ },
         "maxScore": 0.11066758632659912,
         "score": 0.11066758632659912
     },
     {
         "class": "SearchResult",
         "docs": [
-            { … }
+            { ï¿½ }
         ],
         "entity": {
             "appendedPhrase": "",

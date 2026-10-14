@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.time.ZonedDateTime;
 
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,14 +82,14 @@ public class RegistrationTest {
         registration.setStatus(RegistrationStatus.CURATION);
         assertNull(registration.getRegistrationDate());
 
-        DateTime before = DateTime.now();
+        ZonedDateTime before = ZonedDateTime.now();
         Thread.sleep(10);
         // The Registration.registrationDate should be set to now when the status is set to PUBLISHED.
         registration.updateStatusAndDate(RegistrationStatus.PUBLISHED);
         assertNotNull(registration.getRegistrationDate());
         assertTrue(registration.getRegistrationDate().isAfter(before));
         Thread.sleep(10);
-        assertTrue(registration.getRegistrationDate().isBeforeNow());
+        assertTrue(registration.getRegistrationDate().isBefore(ZonedDateTime.now()));
 
         // When status changes from PUBLISHED to something else the registrationDate should be resetted to null.
         registration.updateStatusAndDate(RegistrationStatus.CURATION);

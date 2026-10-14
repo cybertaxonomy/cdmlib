@@ -12,21 +12,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.queryparser.complexPhrase.ComplexPhraseQueryParser;
 import org.hibernate.SessionFactory;
-import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
-import org.hibernate.search.indexes.IndexReaderAccessor;
+import org.hibernate.search.backend.lucene.LuceneExtension;
+import org.hibernate.search.backend.lucene.scope.LuceneIndexScope;
+import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.mapping.SearchMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.kohlbecker
@@ -43,37 +41,17 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
     private final Map<Class<? extends CdmBase>, QueryParser> queryParsers = new HashMap<>();
     private final Map<Class<? extends CdmBase>, QueryParser> complexPhraseQueryParsers = new HashMap<>();
 
-
-    private SearchFactory getCurrentSearchFactory() {
-        return Search.getFullTextSession(sessionFactory.getCurrentSession()).getSearchFactory();
-    }
-
-    /**
-     * TODO the abstract base class DescriptionElementBase can not be used, so
-     * we are using an arbitrary subclass to find the DirectoryProvider, future
-     * versions of hibernate search may allow using abstract base classes see
-     * {@link http://stackoverflow.com/questions/492184/how-do-you-find-all-subclasses-of-a-given-class-in-java}
-     *
-     * @param type must not be null
-     * @return
-     */
-    protected Class<? extends CdmBase> pushAbstractBaseTypeDown(Class<? extends CdmBase> type) {
-        if(type == null) {
-            throw new NullPointerException("parameter type must not be null");
-        }
-        if (type.equals(DescriptionElementBase.class)) {
-            return TextData.class;
-        }
-        if (type.equals(TaxonBase.class)) {
-            return Taxon.class;
-        }
-        return type;
+    private SearchMapping getSearchMapping() {
+        return Search.mapping(sessionFactory);
     }
 
     @Override
     public IndexReader getIndexReaderFor(Class<? extends CdmBase> clazz) {
-        IndexReader reader = getCurrentSearchFactory().getIndexReaderAccessor().open(pushAbstractBaseTypeDown(clazz));
-        return reader;
+        // Scope on a parent type covers all indexed subtypes (separate indexes in HS6).
+        LuceneIndexScope scope = getSearchMapping()
+                .scope(clazz)
+                .extension(LuceneExtension.get());
+        return scope.openIndexReader();
     }
 
     @Override
@@ -99,31 +77,18 @@ public class LuceneIndexToolProviderImpl implements ILuceneIndexToolProvider {
 
 
     /**
-     * <b>WARING</b> This method might return an Analyzer
-     * which is not suitable for all fields of the lucene document. This method
-     * internally uses the simplified method from {@link {
-     * @link org.hibernate.search.SearchFactory#getAnalyzer(Class)}
-     *
-     * TODO implement method which allows to retrieve the correct Analyzer
-     * per document field, this method will have another signature.
-     *
-     * @return the Analyzer suitable for the lucene index of the given
-     *         <code>clazz</code>
+     * Returns a {@link StandardAnalyzer}, which matches {@code AnalyzerNames.DEFAULT}
+     * used by most CDM index fields. Per-type {@code IndexingScopedAnalyzer} from HS5
+     * is no longer available via a simple mapper API in HS6.
      */
     @Override
     public Analyzer getAnalyzerFor(Class<? extends CdmBase> clazz) {
-        Analyzer analyzer = getCurrentSearchFactory().getAnalyzer(pushAbstractBaseTypeDown(clazz));
-        return analyzer;
+        return new StandardAnalyzer();
     }
 
     @Override
     public QueryFactory newQueryFactoryFor(Class<? extends CdmBase> clazz){
-        return new QueryFactory(this, pushAbstractBaseTypeDown(clazz));
-    }
-
-    @Override
-    public IndexReaderAccessor getIndexReaderAccessor(){
-        return getCurrentSearchFactory().getIndexReaderAccessor();
+        return new QueryFactory(this, clazz);
     }
 
 }

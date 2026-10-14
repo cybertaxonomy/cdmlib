@@ -56,11 +56,9 @@
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
-                <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
-                <prop key="hibernate.search.default.indexBase">./target/index</prop>
-                <!--  hibernate.search.default.exclusive_index_use=false
-                      locks must not only be released after application shutdown in test environment -->
-                <prop key="hibernate.search.default.exclusive_index_use">false</prop>
+                <prop key="hibernate.search.backend.directory.type">local-heap</prop>
+                <!-- local-heap: avoid Lucene write.lock clashes with the Unitils SessionFactory -->
+                <!-- exclusive_index_use has no HS6 equivalent -->
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2CorrectedDialectTest</prop>
                 <prop key="implicitNamingStrategy">org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl"</prop>
             </props>

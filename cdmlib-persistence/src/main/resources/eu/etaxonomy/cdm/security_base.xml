@@ -33,7 +33,7 @@
     <!--
       ============================== SECURITY ==============================
     -->
-    <bean id="accessDecisionManager" class="eu.etaxonomy.cdm.persistence.permission.UnanimousBasedUnrevokable">
+    <bean id="cdmAuthorizationManager" class="eu.etaxonomy.cdm.persistence.permission.UnanimousBasedUnrevokable">
         <constructor-arg>
             <list>
                 <bean class="eu.etaxonomy.cdm.persistence.permission.voter.GrantAlwaysVoter" />
@@ -55,7 +55,7 @@
         CdmPermissionEvaluator.hasPermissions() evaluates the CdmPermissions like TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
     -->
     <bean id="cdmPermissionEvaluator" class="eu.etaxonomy.cdm.persistence.permission.CdmPermissionEvaluator">
-        <property name="accessDecisionManager" ref="accessDecisionManager" />
+        <property name="authorizationManager" ref="cdmAuthorizationManager" />
     </bean>
 
     <!-- The CdmSecurityHibernateInterceptor checks onSave() and on flushDirty() if the currently authenticated principal or token  has

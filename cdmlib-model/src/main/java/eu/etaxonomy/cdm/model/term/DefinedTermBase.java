@@ -44,11 +44,13 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
-import org.hibernate.search.annotations.ClassBridge;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.TypeBinding;
 
-import au.com.bytecode.opencsv.CSVWriter;
+import com.opencsv.CSVWriter;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -62,6 +64,7 @@ import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.RevisionStatus;
 import eu.etaxonomy.cdm.model.common.WikiDataItemId;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -108,6 +111,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
         Feature.class,
         Language.class,
         MarkerType.class,
+        RevisionStatus.class,
         MeasurementUnit.class,
         NamedAreaType.class,
         NomenclaturalCode.class,
@@ -127,7 +131,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 @Entity
 @Audited
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@ClassBridge(impl = DefinedTermBaseClassBridge.class)
+@TypeBinding(binder = @TypeBinderRef(type = DefinedTermBaseClassBridge.class))
 //TODO Comparable implemented only for fixing failing JAXB import, may be removed when this is fixed
 //Note: generics T behind DefinedTermBase is problematic as it does not allow to subclass a non-abstract
 //      without generics. E.g. Character extends Feature . If Feature does not use generics, Character
@@ -219,8 +223,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase<T>>
     private String symbol2;
 
     @XmlElement(name = "WikiDataId")
-    @Field
-    @FieldBridge(impl = WikiDataItemIdBridge.class)
+    @KeywordField(valueBridge = @ValueBridgeRef(type = WikiDataItemIdBridge.class))
     @Type(type="wikiDataItemIdUserType")
     @Column(length=16)
     private WikiDataItemId wikiDataItemId;

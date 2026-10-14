@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.service.lsid.impl;
 
 import java.io.InputStream;
 
-
 import org.springframework.stereotype.Component;
 
 import com.ibm.lsid.LSIDException;

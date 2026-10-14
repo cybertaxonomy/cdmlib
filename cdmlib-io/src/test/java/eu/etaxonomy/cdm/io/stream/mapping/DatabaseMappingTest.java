@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.stream.mapping;
 
-
 import java.sql.SQLException;
 import java.util.Set;
 

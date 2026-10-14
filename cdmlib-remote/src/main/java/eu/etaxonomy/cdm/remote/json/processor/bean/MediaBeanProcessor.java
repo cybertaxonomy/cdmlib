@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.media.Media;
+
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 

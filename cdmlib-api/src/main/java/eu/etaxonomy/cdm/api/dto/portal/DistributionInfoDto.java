@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistribution;
 
-
-
 /**
  * DTO which holds all information required by the dataportal to display
  * distributions.<BR>

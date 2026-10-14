@@ -34,8 +34,6 @@ public class MediaTest extends EntityTestBase {
     private Team team1;
     private MediaRepresentation mediaRepresentation1;
     private MediaRepresentation mediaRepresentation2;
-    private MediaRepresentationPart mediaRepresentationPart1;
-    private MediaRepresentationPart mediaRepresentationPart2;
     private LanguageString languageString1;
     private final String germanDescription = "media1Desc2";
     private Rights rights1;
@@ -62,20 +60,10 @@ public class MediaTest extends EntityTestBase {
         languageString1 = LanguageString.NewInstance("media1Desc", Language.DEFAULT());
         media1.putDescription(languageString1);
         media1.putDescription(Language.GERMAN(), "media1Desc2");
-        mediaRepresentation1 = MediaRepresentation.NewInstance();
-        mediaRepresentation2 = MediaRepresentation.NewInstance();
+        mediaRepresentation1 = ImageFile.NewInstance(uriString1, 100, 100, 100);
+        mediaRepresentation2 = ImageFile.NewInstance(uriString2, 1000, 100, 100);
         mediaRepresentation1.setMimeType("MimeType1");
         mediaRepresentation2.setMimeType("MimeType1");
-        mediaRepresentationPart1 = ImageFile.NewInstance(uriString1, 100);
-        mediaRepresentationPart2 = ImageFile.NewInstance(uriString2, 1000);
-        ((ImageFile) mediaRepresentationPart1).setHeight(100);
-        ((ImageFile) mediaRepresentationPart1).setWidth(100);
-
-        ((ImageFile) mediaRepresentationPart2).setHeight(100);
-        ((ImageFile) mediaRepresentationPart2).setWidth(100);
-
-        mediaRepresentation1.addRepresentationPart(mediaRepresentationPart1);
-        mediaRepresentation2.addRepresentationPart(mediaRepresentationPart2);
         media1.addRepresentation(mediaRepresentation1);
         media1.addRepresentation(mediaRepresentation2);
         rights1 = Rights.NewInstance();

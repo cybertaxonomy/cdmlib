@@ -8,13 +8,11 @@
 */
 package eu.etaxonomy.cdm.persistence.permission.voter;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.security.access.ConfigAttribute;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -39,28 +37,30 @@ public class SpecimenOrObservationBaseVoter extends CdmPermissionVoter {
     }
 
     @Override
-    protected Integer furtherVotingDescisions(CdmAuthority CdmAuthority, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes,
-            ValidationResult validationResult) {
+    protected CdmVote furtherVotingDescisions(CdmAuthority cdmAuthority, TargetEntityStates targetEntityStates,
+            CdmAuthority requiredAuthority, ValidationResult validationResult) {
 
-        boolean isUuidMatchInOriginals = CdmAuthority.hasTargetUuid()
-                && propagateGrantsFromOriginal(CdmAuthority.getTargetUUID(), (SpecimenOrObservationBase)targetEntityStates.getEntity());
-        if ( isUuidMatchInOriginals  && validationResult.isClassMatch && validationResult.isPermissionMatch){
+        boolean isUuidMatchInOriginals = cdmAuthority.hasTargetUuid()
+                && propagateGrantsFromOriginal(cdmAuthority.getTargetUUID(),
+                        (SpecimenOrObservationBase) targetEntityStates.getEntity());
+        if (isUuidMatchInOriginals && validationResult.isClassMatch && validationResult.isPermissionMatch) {
             logger.debug("permission, class and uuid in originals are matching => ACCESS_GRANTED");
-            return ACCESS_GRANTED;
+            return CdmVote.GRANTED;
         }
         return null;
     }
 
-    private boolean propagateGrantsFromOriginal(UUID targetUuid, SpecimenOrObservationBase<?>  sob){
+    private boolean propagateGrantsFromOriginal(UUID targetUuid, SpecimenOrObservationBase<?> sob) {
 
         if (targetUuid.equals(sob.getUuid())) {
             return true;
         } else {
-            if(sob instanceof DerivedUnit) {
-                Set<SpecimenOrObservationBase> originals = HibernateProxyHelper.deproxy(sob, DerivedUnit.class).getOriginals();
-                if(originals != null && originals.size() == 1){
+            if (sob instanceof DerivedUnit) {
+                Set<SpecimenOrObservationBase> originals = HibernateProxyHelper.deproxy(sob, DerivedUnit.class)
+                        .getOriginals();
+                if (originals != null && originals.size() == 1) {
                     SpecimenOrObservationBase original = originals.iterator().next();
-                    return  propagateGrantsFromOriginal(targetUuid, original);
+                    return propagateGrantsFromOriginal(targetUuid, original);
                 }
                 //TODO AM: what if original.size()> 1?
             }
@@ -73,5 +73,4 @@ public class SpecimenOrObservationBaseVoter extends CdmPermissionVoter {
         // we always return true here to allow deleting the reference
         return true;
     }
-
 }

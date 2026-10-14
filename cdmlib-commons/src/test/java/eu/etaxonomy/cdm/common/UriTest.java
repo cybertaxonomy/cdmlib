@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.common;
 
 import java.net.URISyntaxException;
 
-
 import org.junit.Assert;
 import org.junit.Test;
 

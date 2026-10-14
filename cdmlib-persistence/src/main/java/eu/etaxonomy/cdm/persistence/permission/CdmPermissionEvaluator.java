@@ -11,16 +11,12 @@ package eu.etaxonomy.cdm.persistence.permission;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.security.access.AccessDecisionManager;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.ConfigAttribute;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -40,18 +36,17 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
 
     protected static final Logger logger = LogManager.getLogger();
 
-    private AccessDecisionManager accessDecisionManager;
+    private AuthorizationManager<CdmAuthorizationTarget> authorizationManager;
 
-    public AccessDecisionManager getAccessDecisionManager() {
-        return accessDecisionManager;
+    public AuthorizationManager<CdmAuthorizationTarget> getAuthorizationManager() {
+        return authorizationManager;
     }
 
     public CdmPermissionEvaluator() {
-
     }
 
-    public void setAccessDecisionManager(AccessDecisionManager accessDecisionManager) {
-        this.accessDecisionManager = accessDecisionManager;
+    public void setAuthorizationManager(AuthorizationManager<CdmAuthorizationTarget> authorizationManager) {
+        this.authorizationManager = authorizationManager;
     }
 
     @Override
@@ -182,22 +177,16 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
             return true;
         }
 
-        // === run voters
-        Collection<ConfigAttribute> attributes = new HashSet<>();
-        attributes.add(evalPermission);
-
-        logger.debug("AccessDecisionManager will decide ...");
-        try {
-            accessDecisionManager.decide(authentication, targetEntityStates, attributes);
-        } catch (InsufficientAuthenticationException e) {
-            logger.debug("AccessDecisionManager denied by " + e, e);
-            return false;
-        } catch (AccessDeniedException e) {
-            logger.debug("AccessDecisionManager denied by " + e, e);
-            return false;
+        // === run AuthorizationManager (voters via UnanimousBasedUnrevokable)
+        logger.debug("AuthorizationManager will decide ...");
+        AuthorizationDecision decision = authorizationManager.check(
+                () -> authentication,
+                new CdmAuthorizationTarget(targetEntityStates, evalPermission));
+        boolean granted = decision != null && decision.isGranted();
+        if (!granted && logger.isDebugEnabled()) {
+            logger.debug("AuthorizationManager denied");
         }
-
-        return true;
+        return granted;
     }
 
     @Override

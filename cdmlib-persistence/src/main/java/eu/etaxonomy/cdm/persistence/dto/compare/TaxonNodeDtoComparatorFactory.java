@@ -13,12 +13,14 @@ import java.util.Comparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 
 /**
+ * Factory for taxon node DTO comparators.
+ *
  * @author muellera
  * @since 02.09.2026
  */
 public class TaxonNodeDtoComparatorFactory {
 
-    public static Comparator<ISortableTaxonNodeDto> getDtoComparator(TaxonNodeSortMode sortMode) {
+    public static Comparator<ISortableTaxonNodeDto> bySortMode(TaxonNodeSortMode sortMode) {
         switch (sortMode) {
         case NaturalOrder :
             return new TaxonNodeDtoNaturalComparator();
@@ -30,5 +32,4 @@ public class TaxonNodeDtoComparatorFactory {
             throw new IllegalArgumentException("Unsupported sort mode: " + sortMode);
         }
     }
-
 }

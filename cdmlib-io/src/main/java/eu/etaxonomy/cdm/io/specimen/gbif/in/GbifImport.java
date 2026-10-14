@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.ClientProtocolException;
+import org.apache.hc.client5.http.ClientProtocolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -63,7 +63,7 @@ public class GbifImport
     @Override
     protected void doInvoke(SpecimenImportStateBase state) {
        // GbifImportState gbifImportState = (GbifImportState)state;
-        SpecimenImportConfiguratorBase config = state.getConfig();
+        SpecimenImportConfiguratorBase<?,?,?> config = state.getConfig();
 
             state.setTx(startTransaction());
             logger.info("INVOKE Specimen Import from Gbif webservice");

@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.compare.description;
 
 import java.util.Set;
 
-
 import org.junit.Assert;
 import org.junit.Test;
 

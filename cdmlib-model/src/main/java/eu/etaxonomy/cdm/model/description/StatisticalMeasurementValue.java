@@ -6,13 +6,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
-
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,14 +27,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @XmlType(name = "StatisticalMeasureValue")
 @XmlRootElement(name = "StatisticalMeasureValue")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
+@Indexed
 @Audited
 public class StatisticalMeasurementValue
         extends VersionableEntity
@@ -91,7 +91,8 @@ public class StatisticalMeasurementValue
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY )
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private QuantitativeData quantitativeData;
 
 // ***************** FACTORY ****************************/
@@ -122,7 +123,6 @@ public class StatisticalMeasurementValue
 
 // ***************** GETTER / SETTER **************************/
 
-
 	/**
 	 * Returns the type of {@link StatisticalMeasure statistical measure} used in
 	 * <i>this</i> statistical measurement value.
@@ -136,7 +136,6 @@ public class StatisticalMeasurementValue
 	public void setType(StatisticalMeasure type){
 		this.type = type;
 	}
-
 
 	/**
 	 * Returns the numerical value used to describe the {@link Feature feature}
@@ -238,5 +237,4 @@ public class StatisticalMeasurementValue
 	            (type!=null?type:"[no type]")
 	            +"="+value;
 	}
-
 }

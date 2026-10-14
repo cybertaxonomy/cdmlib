@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.print.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
@@ -19,10 +20,14 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  */
 public class PrintPubNameDTO {
 
+    public UUID uuid;
+
     public List<TaggedText> taggedNameList;
     public String scientificName;
 
     public List<String> links = new ArrayList<>();
     public List<String> wfoIds = new ArrayList<>();
     public List<String> ipniIds = new ArrayList<>();
+
+    public PrintPubTaxonHeadingLevel headingLevel = PrintPubTaxonHeadingLevel.LOWER;
 }

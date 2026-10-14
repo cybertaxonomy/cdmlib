@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.format.taxon;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.UTF8;
@@ -99,7 +98,9 @@ public class TaxonRelationshipFormatter {
             return null;
         }
 
-        String doubtfulTaxonStr = relatedTaxon.isDoubtful() ? DOUBTFUL_TAXON_MARKER : "";
+        String doubtfulTaxonStr = relatedTaxon.getTaxonStatusSymbol();
+        doubtfulTaxonStr = StringUtils.isNotBlank(doubtfulTaxonStr) ?
+                (doubtfulTaxonStr + UTF8.NARROW_NO_BREAK) : doubtfulTaxonStr;
         String doubtfulRelationStr = taxonRelationship.isDoubtful() ? "?" : "";
 
         TaxonName name = relatedTaxon.getName();

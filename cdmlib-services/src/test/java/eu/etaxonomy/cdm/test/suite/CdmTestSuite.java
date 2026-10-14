@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.api.service.TaxonServiceImplTest;
 import eu.etaxonomy.cdm.api.service.TermServiceImplTest;
 import eu.etaxonomy.cdm.test.integration.TermLoaderIntegrationTest;
 
-
 @Ignore
 @RunWith(Suite.class)
 @Suite.SuiteClasses(

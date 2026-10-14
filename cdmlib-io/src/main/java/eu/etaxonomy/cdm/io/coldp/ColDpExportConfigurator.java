@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.coldp;
 
 import java.io.File;
 
-import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
@@ -37,7 +37,7 @@ public class ColDpExportConfigurator
 
     private boolean createZipFile = true;
 
-    private TaxonNodeDtoSortMode taxonNodeSortMode;
+    private TaxonNodeSortMode taxonNodeSortMode;
 
     private boolean includeFullName = false;
 
@@ -140,10 +140,10 @@ public class ColDpExportConfigurator
         this.createZipFile = createZipFile;
     }
 
-    public TaxonNodeDtoSortMode getTaxonNodeSortMode() {
+    public TaxonNodeSortMode getTaxonNodeSortMode() {
         return taxonNodeSortMode;
     }
-    public void setTaxonNodeSortMode(TaxonNodeDtoSortMode taxonNodeSortMode) {
+    public void setTaxonNodeSortMode(TaxonNodeSortMode taxonNodeSortMode) {
         this.taxonNodeSortMode = taxonNodeSortMode;
     }
 

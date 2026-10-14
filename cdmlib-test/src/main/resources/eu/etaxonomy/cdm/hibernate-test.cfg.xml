@@ -34,6 +34,8 @@
 
 <hibernate-configuration>
     <session-factory>
-        <property name="hibernate.search.default.indexBase">./target/index</property>
+        <property name="hibernate.search.backend.directory.type">local-heap</property>
+        <!-- local-heap avoids write.lock conflicts when Unitils opens a second SessionFactory
+             on the same JVM (see class javadoc above); HS5 used exclusive_index_use=false -->
     </session-factory>
 </hibernate-configuration>

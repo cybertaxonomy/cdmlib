@@ -9,10 +9,11 @@
 
 package eu.etaxonomy.cdm.io.print.docmodel;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.io.print.render.IPrintPubDocumentInterpreter;
 
@@ -34,13 +35,23 @@ public class PrintPubTextRunElement implements IPrintPubDocumentElement {
         ITALIC,
         LINE_BREAK,
         BOLD_ITALIC,
-        CDM_REFERENCE
+        CDM_REFERENCE,
+        REFERENCE_MARK,
+        PAGE_REFERENCE
     }
 
     public enum PrintPubTextRole {
         BODY,
-        TAXON_NAME,
-        FACT_GROUP
+        TAXON_NAME_HIGHER,
+        TAXON_NAME_INTERMEDIATE,
+        TAXON_NAME_LOWER,
+        SYNONYM,
+        SYNONYM_INDENT,
+        FACT_GROUP,
+        FACT_GROUP_INDENT,
+        TYPE_DESIGNATION,
+        TYPE_DESIGNATION_INDENT,
+        BIBLIOGRAPHY
     }
 
     public static class Run {
@@ -51,9 +62,19 @@ public class PrintPubTextRunElement implements IPrintPubDocumentElement {
         public final String rawMarkup;
         public final String tagName;
         public final Map<String, String> attributes;
+        public final UUID uuid;
 
         public Run(RunType type, String text) {
             this(type, text, null, null, null);
+        }
+
+        public Run(RunType type, UUID uuid) {
+            this.type = type;
+            this.uuid = uuid;
+            this.text = null;
+            this.rawMarkup = null;
+            this.attributes = null;
+            this.tagName = null;
         }
 
         public Run(
@@ -68,8 +89,9 @@ public class PrintPubTextRunElement implements IPrintPubDocumentElement {
             this.rawMarkup = rawMarkup;
             this.tagName = tagName;
             this.attributes = attributes == null
-                    ? new LinkedHashMap<String, String>()
-                    : new LinkedHashMap<String, String>(attributes);
+                    ? new HashMap<>()
+                    : new HashMap<>(attributes);
+            this.uuid = null;
         }
 
         public String getAttribute(String key) {

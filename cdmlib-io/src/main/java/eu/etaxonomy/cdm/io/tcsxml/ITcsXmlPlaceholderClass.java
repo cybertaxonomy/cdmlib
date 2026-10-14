@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.tcsxml;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
 import eu.etaxonomy.cdm.model.reference.Reference;

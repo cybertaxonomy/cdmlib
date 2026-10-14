@@ -9,73 +9,133 @@
 package eu.etaxonomy.cdm.hibernate.search;
 
 import java.util.Set;
-
+import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.hibernate.search.bridge.LuceneOptions;
+import org.hibernate.search.engine.backend.document.DocumentElement;
+import org.hibernate.search.engine.backend.document.IndexObjectFieldReference;
+import org.hibernate.search.engine.backend.document.model.dsl.IndexSchemaObjectField;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.bridge.TypeBridge;
+import org.hibernate.search.mapper.pojo.bridge.binding.TypeBindingContext;
+import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.TypeBinder;
+import org.hibernate.search.mapper.pojo.bridge.runtime.TypeBridgeWriteContext;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 /**
- * Adds fields for related to and related from taxon relations.
+ * Adds fields for related to and related from taxon relations. The relationship type
+ * uuid is the dynamic leaf of the field name:
+ * <ul>
+ * <li><code>relation.from.id.{relationship-type-uuid}</code></li>
+ * <li><code>relation.to.id.{relationship-type-uuid}</code></li>
+ * </ul>
+ * The former HS5 layout <code>relation.{uuid}.from.id</code> cannot be expressed in
+ * Hibernate Search 6.1 because {@code *} in {@code matchingPathGlob} matches across dots
+ * and would turn the leaf into an object field.
  *
  * @author a.kohlbecker
  * @since Sep 24, 2013
  */
-public class TaxonRelationshipClassBridge extends AbstractClassBridge {
+public class TaxonRelationshipClassBridge implements TypeBinder {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private static final String FROM = ".from.";
-    private static final String TO = ".to.";
+    public static final String FROM_ID_PREFIX = "relation.from.id.";
+    public static final String TO_ID_PREFIX = "relation.to.id.";
 
     @Override
-    public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
+    public void bind(TypeBindingContext context) {
 
-        if(value instanceof Taxon){
+        // Reindex the taxon when its relationship collections change so relation.* fields stay current
+        context.dependencies()
+                .use("relationsFromThisTaxon")
+                .use("relationsToThisTaxon");
 
-            String fieldName = name;
-            if(!fieldName.isEmpty()){
-                fieldName += ".";
-            }
+        IndexSchemaObjectField relation = context.indexSchemaElement().objectField("relation");
+        DirectionFields fromFields = declareDirectionIdField(relation, "from");
+        DirectionFields toFields = declareDirectionIdField(relation, "to");
+        IndexObjectFieldReference relationRef = relation.toReference();
 
-            Taxon taxon = (Taxon)value;
+        context.bridge(Object.class, new Bridge(relationRef, fromFields, toFields));
+    }
 
-            String directionName = FROM;
-            addRelationsFields(fieldName, document, directionName, taxon.getRelationsToThisTaxon());
+    private static DirectionFields declareDirectionIdField(IndexSchemaObjectField relation,
+            String direction) {
 
-            directionName = TO;
-            addRelationsFields(fieldName, document, directionName, taxon.getRelationsFromThisTaxon());
+        IndexSchemaObjectField directionField = relation.objectField(direction);
+        IndexSchemaObjectField idField = directionField.objectField("id");
+        idField.fieldTemplate(direction + "TypeId", f -> f.asString().projectable(Projectable.YES))
+                .matchingPathGlob("*")
+                .multiValued();
+        IndexObjectFieldReference idRef = idField.toReference();
+        IndexObjectFieldReference directionRef = directionField.toReference();
+        return new DirectionFields(directionRef, idRef);
+    }
 
-        } else {
-            logger.error("Unsupported type " + value.getClass());
+    private static final class DirectionFields {
+        private final IndexObjectFieldReference directionRef;
+        private final IndexObjectFieldReference idRef;
+
+        private DirectionFields(IndexObjectFieldReference directionRef, IndexObjectFieldReference idRef) {
+            this.directionRef = directionRef;
+            this.idRef = idRef;
         }
     }
 
-    private void addRelationsFields(String name, Document document, String directionName,
-            Set<TaxonRelationship> relations) {
+    private static final class Bridge implements TypeBridge<Object> {
 
+        private final IndexObjectFieldReference relationRef;
+        private final DirectionFields fromFields;
+        private final DirectionFields toFields;
 
-        for(TaxonRelationship rel : relations){
+        private Bridge(IndexObjectFieldReference relationRef, DirectionFields fromFields,
+                DirectionFields toFields) {
+            this.relationRef = relationRef;
+            this.fromFields = fromFields;
+            this.toFields = toFields;
+        }
 
-            Taxon relTaxon;
-            if(directionName.equals(FROM)){
-                relTaxon = rel.getFromTaxon();
-            } else {
-                relTaxon = rel.getToTaxon();
+        @Override
+        public void write(DocumentElement target, Object entity, TypeBridgeWriteContext writeContext) {
+            if (!(entity instanceof Taxon)) {
+                logger.error("Unsupported type " + entity.getClass());
+                return;
             }
+            Taxon taxon = (Taxon) entity;
+            boolean hasFrom = taxon.getRelationsToThisTaxon() != null
+                    && !taxon.getRelationsToThisTaxon().isEmpty();
+            boolean hasTo = taxon.getRelationsFromThisTaxon() != null
+                    && !taxon.getRelationsFromThisTaxon().isEmpty();
+            if (!hasFrom && !hasTo) {
+                return;
+            }
+            DocumentElement relation = target.addObject(relationRef);
+            if (hasFrom) {
+                addRelationsFields(relation, fromFields, taxon.getRelationsToThisTaxon(),
+                        TaxonRelationship::getFromTaxon);
+            }
+            if (hasTo) {
+                addRelationsFields(relation, toFields, taxon.getRelationsFromThisTaxon(),
+                        TaxonRelationship::getToTaxon);
+            }
+        }
 
-            Field relField = new StringField(
-                    name + "relation." + (rel.getType() != null ? rel.getType().getUuid().toString() : "NULL") + directionName + "id",
-                    Integer.toString(relTaxon.getId()),
-                    idFieldOptions.getStore());
-            relField.setBoost(idFieldOptions.getBoost());
-            document.add(relField);
+        private static void addRelationsFields(DocumentElement relation, DirectionFields fields,
+                Set<TaxonRelationship> relations, Function<TaxonRelationship, Taxon> relatedTaxon) {
+
+            DocumentElement direction = relation.addObject(fields.directionRef);
+            DocumentElement idObject = direction.addObject(fields.idRef);
+            for (TaxonRelationship rel : relations) {
+                Taxon relTaxon = relatedTaxon.apply(rel);
+                if (relTaxon == null) {
+                    continue;
+                }
+                String typeUuid = rel.getType() != null ? rel.getType().getUuid().toString() : "NULL";
+                idObject.addValue(typeUuid, Integer.toString(relTaxon.getId()));
+            }
         }
     }
 }

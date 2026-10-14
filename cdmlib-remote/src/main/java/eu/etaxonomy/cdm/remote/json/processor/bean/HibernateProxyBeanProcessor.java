@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+
 import net.sf.json.CycleSetAccess;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;

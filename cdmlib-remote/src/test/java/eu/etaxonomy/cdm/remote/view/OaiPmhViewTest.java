@@ -8,6 +8,7 @@
  */
 package eu.etaxonomy.cdm.remote.view;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,7 +20,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.hibernate.envers.RevisionType;
-import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -36,6 +36,7 @@ import com.github.dozermapper.core.Mapper;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -158,7 +159,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 
         Taxon taxon = Taxon.NewInstance((TaxonName)null, null);
         taxon.setTitleCache("TitleCache", true);
-        taxon.setCreated(new DateTime());
+        taxon.setCreated(ZonedDateTime.now());
         taxon.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:1"));
 
         AuditEventRecord<Taxon> auditEventRecord = new AuditEventRecordImpl<Taxon>(new Object[] {taxon, new AuditEvent(),RevisionType.ADD});
@@ -179,7 +180,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 
         Taxon taxon = Taxon.NewInstance(null, null);
         taxon.setTitleCache("TitleCache", true);
-        taxon.setCreated(new DateTime());
+        taxon.setCreated(ZonedDateTime.now());
         taxon.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:1"));
 
         AuditEventRecord<Taxon> auditEventRecord = new AuditEventRecordImpl<Taxon>(new Object[] {taxon, new AuditEvent(),RevisionType.ADD});
@@ -228,8 +229,8 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 
         model.put("metadataPrefix", MetadataPrefix.OAI_DC);
 
-        DateTime from = new DateTime(1990,2,1,12,0,0, 0);
-        DateTime until = new DateTime();
+        ZonedDateTime from = ZonedDateTime.of(1990,2,1,12,0,0, 0, DateTimeUtil.BERLIN);
+        ZonedDateTime until = ZonedDateTime.now();
         model.put("from",from);
         model.put("until", until);
 
@@ -237,7 +238,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
         for(int i = 0; i < 10; i++) {
             TaxonBase taxon = Taxon.NewInstance(null, null);
             taxon.setTitleCache("TitleCache", true);
-            taxon.setCreated(new DateTime());
+            taxon.setCreated(ZonedDateTime.now());
             taxon.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:"+i));
             if((i % 3) == 0 ) {
                 AuditEventRecord<TaxonBase> auditEventRecord = new AuditEventRecordImpl<>(new Object[] {taxon, new AuditEvent(), RevisionType.DEL});
@@ -264,8 +265,8 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 
         model.put("metadataPrefix", MetadataPrefix.OAI_DC);
 
-        DateTime from = new DateTime(1990,2,1,12,0,0, 0);
-        DateTime until = new DateTime();
+        ZonedDateTime from = ZonedDateTime.of(1990,2,1,12,0,0,0, DateTimeUtil.BERLIN);
+        ZonedDateTime until = ZonedDateTime.now();
         model.put("from",from);
         model.put("until", until);
 
@@ -273,7 +274,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
         for(int i = 0; i < 10; i++) {
             TaxonBase taxon = Taxon.NewInstance(null, null);
             taxon.setTitleCache("TitleCache", true);
-            taxon.setCreated(new DateTime());
+            taxon.setCreated(ZonedDateTime.now());
             taxon.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:"+i));
             if((i % 3) == 0 ) {
                 AuditEventRecord<TaxonBase> auditEventRecord = new AuditEventRecordImpl<>(new Object[] {taxon, new AuditEvent(), RevisionType.DEL});

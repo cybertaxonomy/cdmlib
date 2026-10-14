@@ -8,54 +8,67 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.SortedDocValuesField;
-import org.apache.lucene.util.BytesRef;
-import org.hibernate.search.bridge.LuceneOptions;
+import org.hibernate.search.engine.backend.document.IndexFieldReference;
+import org.hibernate.search.engine.backend.document.IndexObjectFieldReference;
+import org.hibernate.search.engine.backend.document.model.dsl.IndexSchemaObjectField;
+import org.hibernate.search.engine.backend.types.Searchable;
+import org.hibernate.search.engine.backend.types.Sortable;
+import org.hibernate.search.mapper.pojo.bridge.binding.TypeBindingContext;
+import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.TypeBinder;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * The <code>GroupByTaxonClassBridge</code> adds the field
- * <code>groupby_taxon.id</code> to the lucene document which can be used to
+ * <code>groupby_taxon.id__sort</code> to the lucene document which can be used to
  * group search results based on the taxon which is associated with the indexed
  * cdm entity. So any cdm class which is involved in querying for taxa must
- * use this class bridge, e.g.:
+ * use this type binder, e.g.:
  *
   <pre>
-   @ClassBridge(impl=GroupByTaxonClassBridge.class))
+   @TypeBinding(binder = @TypeBinderRef(type = GroupByTaxonClassBridge.class))
   </pre>
- * or
- *
- * <pre>
-   @ClassBridges({
-     @ClassBridge(impl=GroupByTaxonClassBridge.class),
-     @ClassBridge(impl=DescriptionBaseClassBridge.class),
-     })
-  }
- * </pre>
  *
  * @author a.kohlbecker
  * @since Oct 4, 2012
  */
-public class GroupByTaxonClassBridge extends AbstractClassBridge{
-
-    private static final Logger logger = LogManager.getLogger();
+public class GroupByTaxonClassBridge implements TypeBinder {
 
     public static final String GROUPBY_TAXON_FIELD = "groupby_taxon.id__sort";
 
-    public GroupByTaxonClassBridge() {
-        super();
-    }
+    /**
+     * Path of {@link #GROUPBY_TAXON_FIELD} when a {@link DescriptionBase} is indexed
+     * via {@code DescriptionElementBase.inDescription}. Prefer this for description-element
+     * searches: the root-level binder on {@link DescriptionElementBase} may not see the
+     * taxon association during mass indexing, while the binder on {@link DescriptionBase}
+     * always runs in the embedded context.
+     */
+    public static final String EMBEDDED_IN_DESCRIPTION_GROUPBY_TAXON_FIELD =
+            "inDescription." + GROUPBY_TAXON_FIELD;
 
-    protected Taxon getAssociatedTaxon(Object entity) {
+    private static final String GROUPBY_TAXON_OBJECT = "groupby_taxon";
+    private static final String ID_SORT_FIELD = "id" + NotNullAwareIdBridge.SORT_FIELD_SUFFIX;
 
+    protected static Taxon getAssociatedTaxon(Object entity) {
+
+        entity = HibernateProxyHelper.deproxy(entity);
+
+        if (entity instanceof DescriptionElementBase) {
+            DescriptionBase<?> description = ((DescriptionElementBase) entity).getInDescription();
+            if (description != null) {
+                description = HibernateProxyHelper.deproxy(description);
+            }
+            if (description instanceof TaxonDescription) {
+                return ((TaxonDescription) description).getTaxon();
+            }
+            return null;
+        }
         if (entity instanceof DescriptionBase<?>) {
             if (entity instanceof TaxonDescription) {
                 return ((TaxonDescription) entity).getTaxon();
@@ -66,6 +79,9 @@ public class GroupByTaxonClassBridge extends AbstractClassBridge{
             if (entity instanceof Taxon) {
                 return (Taxon)entity;
             }
+            if (entity instanceof Synonym) {
+                return ((Synonym) entity).getAcceptedTaxon();
+            }
             return null;
         }
 
@@ -73,13 +89,36 @@ public class GroupByTaxonClassBridge extends AbstractClassBridge{
     }
 
     @Override
-    public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
+    public void bind(TypeBindingContext context) {
 
-        Taxon taxon = getAssociatedTaxon(value);
-        if(taxon != null){
-            Field field = new SortedDocValuesField(GROUPBY_TAXON_FIELD, new BytesRef(String.valueOf(taxon.getId())));
-            LuceneDocumentUtility.setOrReplaceDocValueField(field, document);
+        // DescriptionElement needs inDescription loaded to resolve the group key.
+        // Taxon/Synonym only need the root entity (Synonym groups by its own id).
+        if (context.bridgedElement().isAssignableTo(DescriptionElementBase.class)) {
+            context.dependencies().use("inDescription");
+        } else {
+            context.dependencies().useRootOnly();
         }
-    }
 
+        IndexSchemaObjectField groupByTaxonField = context.indexSchemaElement()
+                .objectField(GROUPBY_TAXON_OBJECT);
+        IndexFieldReference<String> idSortRef = groupByTaxonField
+                .field(ID_SORT_FIELD, f -> f.asString().searchable(Searchable.NO).sortable(Sortable.YES))
+                .toReference();
+        IndexObjectFieldReference groupByTaxonRef = groupByTaxonField.toReference();
+
+        context.bridge(Object.class, (target, entity, writeContext) -> {
+            Object unproxied = HibernateProxyHelper.deproxy(entity);
+            // Synonyms must group by their own id; using the accepted taxon would merge
+            // them into the accepted taxon's SearchResult and drop the synonym hit count.
+            if (unproxied instanceof Synonym) {
+                target.addObject(groupByTaxonRef)
+                        .addValue(idSortRef, String.valueOf(((Synonym) unproxied).getId()));
+                return;
+            }
+            Taxon taxon = getAssociatedTaxon(unproxied);
+            if(taxon != null){
+                target.addObject(groupByTaxonRef).addValue(idSortRef, String.valueOf(taxon.getId()));
+            }
+        });
+    }
 }

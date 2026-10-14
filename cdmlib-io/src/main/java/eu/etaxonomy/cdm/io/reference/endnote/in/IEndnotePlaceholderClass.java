@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.reference.endnote.in;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import eu.etaxonomy.cdm.io.tcsxml.ITcsXmlPlaceholderClass;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;

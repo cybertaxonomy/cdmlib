@@ -20,7 +20,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -288,15 +287,6 @@ public abstract class CsvRecordBaseRedlist {
 		}else{
 			//TODO
 			return language.getIso639_2();
-		}
-	}
-
-	protected String getDate(DateTime date) {
-		if (date == null){
-			return "";
-		}else{
-			//TODO
-			return date.toString();
 		}
 	}
 

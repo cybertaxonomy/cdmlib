@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.strategy.match;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
-
 /**
  * This is an interface to tag all those classes which can be tested for matching via an
  * <code>eu.etaxonomy.cdm.strategy.match.IMatchStrategy</code>.

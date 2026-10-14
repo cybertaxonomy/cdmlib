@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>6.0.0</version>
+    <version>6.1.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -26,7 +26,7 @@
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
 		<!-- TODO upgrading to 3.2.0 shows an exception, needs further research -->
-        <version>3.1.0</version>
+        <version>3.5.0</version>
         <executions>
           <execution>
             <id>copy-resources</id>
@@ -145,23 +145,26 @@
       <artifactId>spring-oxm</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>net.sf.json-lib</groupId>
+      <artifactId>json-lib</artifactId>
+<!--       classifier required as json-lib exists on maven central as json-lib-2.4-jdk15.jar and xxx-jdk13.jar, see 9887 -->
+<!-- upgrading to org.json:json as mentioned in mnvrepository is not possible as these are completely different
+     libraries with different focus. Better migrate to jackson 
+     When removing json-lib also remove below xom:xom -->
+      <classifier>jdk15</classifier>
+    </dependency>
+
     <!-- XmlView -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
-      <exclusions>
-        <!-- https://stackoverflow.com/questions/17077922/maven-xpp3-versus-xpp3-min -->
-        <!-- But maybe we can exclude xpp3 instead, not sure if it is directly needed or only for xstream -->
-        <exclusion>
-            <groupId>xpp3</groupId>
-            <artifactId>xpp3_min</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <!-- JsonView -->
     <dependency>
-      <!-- for xml serialization (net.sf.json.xml.XMLSerializer) -->
+      <!-- for xml serialization (net.sf.json.xml.XMLSerializer) 
+            Only optionally needed (?) for json-lib -->
       <groupId>xom</groupId>
       <artifactId>xom</artifactId>
       <exclusions>

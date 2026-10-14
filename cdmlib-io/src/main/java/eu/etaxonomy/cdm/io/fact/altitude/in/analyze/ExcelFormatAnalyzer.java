@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.io.fact.altitude.in.analyze;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +19,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.io.fact.in.FactExcelImportConfiguratorBase;
 
@@ -95,8 +95,8 @@ public class ExcelFormatAnalyzer<CONFIG extends FactExcelImportConfiguratorBase<
             result.addFatalError("Now source defined. Import not possible.");
             return;
         }
-        try {
-            InputStream stream = UriUtils.getInputStream(uri);
+        try (InputStream stream = UriUtils.getInputStream(uri)) {
+
             Workbook wb = WorkbookFactory.create(stream);
 
             List<String> worksheetNames = new ArrayList<>();

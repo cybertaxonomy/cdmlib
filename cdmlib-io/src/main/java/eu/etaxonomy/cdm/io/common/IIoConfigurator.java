@@ -3,7 +3,6 @@
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.util.Set;
@@ -16,7 +15,6 @@ import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
-
 
 /**
  * @author a.babadshanjan

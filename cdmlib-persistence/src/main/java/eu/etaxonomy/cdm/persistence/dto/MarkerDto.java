@@ -10,9 +10,8 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.UUID;
-
-import org.joda.time.DateTime;
 
 /**
  * @author K.Luther
@@ -31,7 +30,8 @@ public class MarkerDto extends CdmBaseDto implements Serializable, Comparable<Ma
 
     }
 
-    public MarkerDto(UUID uuid, Integer id, UUID typeUuid, String type, Boolean value, DateTime created, String createdBy, DateTime updated, String updatedBy) {
+    public MarkerDto(UUID uuid, Integer id, UUID typeUuid, String type, Boolean value,
+            ZonedDateTime created, String createdBy, ZonedDateTime updated, String updatedBy) {
         super(uuid, id, created, createdBy, updated, updatedBy);
         this.typeUuid = typeUuid;
         this.type = type;

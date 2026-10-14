@@ -9,13 +9,13 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
@@ -37,7 +37,7 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 //	BASIC
 	private String identifier;
 	private String title;
-	private DateTime publicationDate;
+	private ZonedDateTime publicationDate;
 	private String expectedCitation;
 	private String abstractInfo;
 	private String additionalInformation;
@@ -108,11 +108,11 @@ public class DwcaEmlRecord extends DwcaRecordBase {
 		this.title = title;
 	}
 
-	public DateTime getPublicationDate() {
+	public ZonedDateTime getPublicationDate() {
 		return publicationDate;
 	}
 
-	public void setPublicationDate(DateTime publicationDate) {
+	public void setPublicationDate(ZonedDateTime publicationDate) {
 		this.publicationDate = publicationDate;
 	}
 

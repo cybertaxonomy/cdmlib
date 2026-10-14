@@ -77,7 +77,7 @@ import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
 @XmlRootElement(name = "PolytomousKey")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.description.PolytomousKey")
+//@Indexed
 @Audited
 public class PolytomousKey
         extends CreditableEntity<PolytomousKeyDefaultCacheStrategy>

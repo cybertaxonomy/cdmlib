@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.dto.portal.config.CondensedDistributionConfiguration;
-import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
@@ -56,7 +56,7 @@ public class CdmLightExportConfigurator
     private boolean isShowTypeOfDesignationIdentifier = true;
     private boolean isShowSynSecForHomotypicGroup = false;
 
-    private TaxonNodeDtoSortMode taxonNodeSortMode;
+    private TaxonNodeSortMode taxonNodeSortMode;
 
     //filter
     private boolean isExcludeImportSources = true;
@@ -281,10 +281,10 @@ public class CdmLightExportConfigurator
         this.isFilterIntextReferences = isRemoveIntextReferences;
     }
 
-    public TaxonNodeDtoSortMode getTaxonNodeSortMode() {
+    public TaxonNodeSortMode getTaxonNodeSortMode() {
         return taxonNodeSortMode;
     }
-    public void setTaxonNodeSortMode(TaxonNodeDtoSortMode taxonNodeSortMode) {
+    public void setTaxonNodeSortMode(TaxonNodeSortMode taxonNodeSortMode) {
         this.taxonNodeSortMode = taxonNodeSortMode;
     }
 

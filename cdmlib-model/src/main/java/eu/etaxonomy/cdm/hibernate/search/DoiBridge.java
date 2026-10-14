@@ -6,10 +6,10 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.hibernate.search.bridge.StringBridge;
+import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
+import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContext;
 
 import eu.etaxonomy.cdm.common.DOI;
 
@@ -17,13 +17,15 @@ import eu.etaxonomy.cdm.common.DOI;
  * @author a.mueller
  * @since Sep 05, 2013
  */
-public class DoiBridge implements StringBridge {
+public class DoiBridge implements ValueBridge<DOI, String> {
 
     @Override
-    public String objectToString(Object object) {
-        if(object != null) {
-            return ((DOI)object).toString();
-        }
-        return null;
+    public String toIndexedValue(DOI value, ValueBridgeToIndexedValueContext context) {
+        return value == null ? null : value.toString();
+    }
+
+    @Override
+    public String parse(String value) {
+        return value;
     }
 }

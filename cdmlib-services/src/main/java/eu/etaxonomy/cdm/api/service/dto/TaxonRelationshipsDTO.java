@@ -8,13 +8,12 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.dto.SourceDTO;
 import eu.etaxonomy.cdm.api.dto.portal.TaxonPageDto;
@@ -29,8 +28,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
-import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
 
 /**
  * DTO to transfer a list of taxon relationships for a given taxon.
@@ -67,6 +66,7 @@ public class TaxonRelationshipsDTO {
         private Set<UUID> classificationsUUIDs;
 
 
+        @Deprecated
         public TaxonRelationDTO(TaxonRelationship relation, Direction direction, List<Language> languages) {
             Taxon relatedTaxon = direction == Direction.relatedTo? relation.getToTaxon()
                     : relation.getFromTaxon();
@@ -95,33 +95,42 @@ public class TaxonRelationshipsDTO {
         }
 
 
+        @Deprecated
         public UUID getTaxonUuid() {
             return taxonUuid;
         }
+        @Deprecated
         public void setTaxonUuid(UUID taxonUuid) {
             this.taxonUuid = taxonUuid;
         }
+        @Deprecated
         public boolean isDoubtful() {
             return doubtful;
         }
+        @Deprecated
         public void setDoubtful(boolean doubtful) {
             this.doubtful = doubtful;
         }
 
+        @Deprecated
         public Direction getDirection() {
             return direction;
         }
+        @Deprecated
         public void setDirection(Direction direction) {
             this.direction = direction;
         }
 
+        @Deprecated
         public String getCache() {
             return cache;
         }
+        @Deprecated
         public void setCache(String cache) {
             this.cache = cache;
         }
 
+        @Deprecated
         public List<TaggedText> getTaggedText() {
             return taggedText;
         }
@@ -129,38 +138,48 @@ public class TaxonRelationshipsDTO {
 //            this.taggedText = taggedText;
 //        }
 
+        @Deprecated
         public boolean isMisapplication() {
             return misapplication;
         }
+        @Deprecated
         public void setMisapplication(boolean misapplication) {
             this.misapplication = misapplication;
         }
 
+        @Deprecated
         public boolean isSynonym() {
             return synonym;
         }
+        @Deprecated
         public void setSynonym(boolean synonym) {
             this.synonym = synonym;
         }
 
+        @Deprecated
         public TermDto getType() {
             return type;
         }
+        @Deprecated
         public void setType(TermDto type) {
             this.type = type;
         }
 
+        @Deprecated
         public UUID getTypeUuid() {
             return typeUuid;
         }
+        @Deprecated
         public void setTypeUuid(UUID typeUuid) {
             this.typeUuid = typeUuid;
         }
 
+        @Deprecated
         public Set<UUID> getClassificationsUUIDs() {
             return classificationsUUIDs;
         }
 
+        @Deprecated
         @Override
         public String toString(){
             return taxonUuid == null? super.toString() : taxonUuid.toString();
@@ -171,10 +190,11 @@ public class TaxonRelationshipsDTO {
 
     private List<List<TaggedText>> misapplications = new ArrayList<>();
 
-    private DateTime date = DateTime.now();
+    private ZonedDateTime date = ZonedDateTime.now();
 
     //** ******************* CONSTRUCTOR **************************/
 
+    @Deprecated
     public TaxonRelationshipsDTO() {}
 
 //    public TaxonRelationshipsDTO(UUID taxonUuid) {
@@ -184,24 +204,29 @@ public class TaxonRelationshipsDTO {
 
  // ************************** GETTER / SETTER  ***********************/
 
+    @Deprecated
     public List<TaxonRelationDTO> getRelations() {
         return relations;
     }
 
+    @Deprecated
     public void setIncludedTaxa(List<TaxonRelationDTO> relations) {
         this.relations = relations;
     }
 
+    @Deprecated
     public void addRelation(TaxonRelationDTO relation){
         relations.add(relation);
     }
 
+    @Deprecated
     public TaxonRelationDTO addRelation(TaxonRelationship relation, Direction direction, List<Language> languages) {
         TaxonRelationDTO newRelation = new TaxonRelationDTO(relation, direction, languages);
         relations.add(newRelation);
         return newRelation;
     }
 
+    @Deprecated
     public void createMisapplicationString() {
         List<List<TaggedText>> result = new ArrayList<>();
 
@@ -298,13 +323,16 @@ public class TaxonRelationshipsDTO {
         }
     }
 
-    public DateTime getDate() {
+    @Deprecated
+    public ZonedDateTime getDate() {
         return date;
     }
-    public void setDate(DateTime date) {
+    @Deprecated
+    public void setDate(ZonedDateTime date) {
         this.date = date;
     }
 
+    @Deprecated
     public int getSize(){
         return relations.size();
     }
@@ -318,6 +346,7 @@ public class TaxonRelationshipsDTO {
 //        return false;
 //    }
 
+    @Deprecated
     @Override
     public String toString(){
         String result = "";
@@ -332,9 +361,11 @@ public class TaxonRelationshipsDTO {
         return result;
     }
 
+    @Deprecated
     public List<List<TaggedText>> getMisapplications() {
         return misapplications;
     }
+    @Deprecated
     public void setMisapplications(List<List<TaggedText>> misapplications) {
         this.misapplications = misapplications;
     }

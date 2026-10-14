@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,8 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.service.exception.TypeDesignationSetException;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -35,7 +34,7 @@ public class RegistrationWorkingSet {
 
     private UUID publicationUnitUuid = null;
 
-    private DateTime created = null;
+    private ZonedDateTime created = null;
 
     private String citationString = null;
 
@@ -173,11 +172,11 @@ public class RegistrationWorkingSet {
         return citationString;
     }
 
-    public DateTime getRegistrationDate() {
+    public ZonedDateTime getRegistrationDate() {
         return registrationWrapperDTOs.isEmpty()? null: registrationWrapperDTOs.get(0).getRegistrationDate();
     }
 
-    public DateTime getCreationDate() {
+    public ZonedDateTime getCreationDate() {
         return registrationWrapperDTOs.isEmpty()? null: registrationWrapperDTOs.get(0).getCreated();
     }
 
@@ -185,7 +184,7 @@ public class RegistrationWorkingSet {
      * The creation time stamp of a registration set always is
      * the creation DateTime of the oldest Registration contained
      */
-    public DateTime getCreated(){
+    public ZonedDateTime getCreated(){
         return created;
     }
 

@@ -8,30 +8,31 @@
 */
 package eu.etaxonomy.cdm.hibernate.search;
 
-import org.hibernate.search.bridge.StringBridge;
+import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
+import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContext;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
-public class PartialBridge implements StringBridge {
+public class PartialBridge implements ValueBridge<Partial, String> {
 
 	@Override
-    public String objectToString(Object object) {
-		if(object != null) {
-			Partial partial = ((Partial)object);
-			StringBuilder stringBuilder = new StringBuilder();
-			if(partial.isSupported(DateTimeFieldType.year())) {
-			    stringBuilder.append(partial.get(DateTimeFieldType.year()));
-
-			    if(partial.isSupported(DateTimeFieldType.monthOfYear())) {
-				    stringBuilder.append(partial.get(DateTimeFieldType.monthOfYear()));
-
-				    if(partial.isSupported(DateTimeFieldType.dayOfYear())) {
-					    stringBuilder.append(partial.get(DateTimeFieldType.dayOfYear()));
- 				    }
-			    }
-		        return stringBuilder.toString();
-			}
+    public String toIndexedValue(Partial value, ValueBridgeToIndexedValueContext context) {
+		if(value == null || !value.isSupported(DateTimeFieldType.year())) {
+		    return null;
 		}
-		return null;
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(value.get(DateTimeFieldType.year()));
+		if(value.isSupported(DateTimeFieldType.monthOfYear())) {
+		    stringBuilder.append(value.get(DateTimeFieldType.monthOfYear()));
+		    if(value.isSupported(DateTimeFieldType.dayOfYear())) {
+			    stringBuilder.append(value.get(DateTimeFieldType.dayOfYear()));
+		    }
+		}
+		return stringBuilder.toString();
 	}
+
+    @Override
+    public String parse(String value) {
+        return value;
+    }
 }

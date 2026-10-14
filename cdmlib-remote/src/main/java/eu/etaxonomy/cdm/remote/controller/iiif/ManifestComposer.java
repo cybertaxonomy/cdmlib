@@ -21,19 +21,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.digitalcollections.iiif.model.ImageContent;
-import de.digitalcollections.iiif.model.MetadataEntry;
-import de.digitalcollections.iiif.model.MimeType;
-import de.digitalcollections.iiif.model.PropertyValue;
-import de.digitalcollections.iiif.model.enums.ViewingDirection;
-import de.digitalcollections.iiif.model.sharedcanvas.Canvas;
-import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
-import de.digitalcollections.iiif.model.sharedcanvas.Resource;
-import de.digitalcollections.iiif.model.sharedcanvas.Sequence;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
@@ -49,7 +40,6 @@ import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
@@ -58,6 +48,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
 import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter;
+
+import de.digitalcollections.iiif.model.ImageContent;
+import de.digitalcollections.iiif.model.MetadataEntry;
+import de.digitalcollections.iiif.model.MimeType;
+import de.digitalcollections.iiif.model.PropertyValue;
+import de.digitalcollections.iiif.model.enums.ViewingDirection;
+import de.digitalcollections.iiif.model.sharedcanvas.Canvas;
+import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
+import de.digitalcollections.iiif.model.sharedcanvas.Resource;
+import de.digitalcollections.iiif.model.sharedcanvas.Sequence;
 
 /**
  * Factory class for creating iiif manifests.
@@ -190,8 +190,8 @@ public class ManifestComposer {
         // MediaRepresentation fullSizeRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
         // MediaRepresentation thumbnailRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, 100, 100, tumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
         if(logger.isDebugEnabled()){
-            logger.debug("fullSizeRepresentation: " + fullSizeRepresentation.getParts().get(0).getUri());
-            logger.debug("thumbnailRepresentation: " + thumbnailRepresentation.getParts().get(0).getUri());
+            logger.debug("fullSizeRepresentation: " + fullSizeRepresentation.getUri());
+            logger.debug("thumbnailRepresentation: " + thumbnailRepresentation.getUri());
         }
 
         List<ImageContent> thumbnailImageContents;
@@ -477,27 +477,19 @@ public class ManifestComposer {
     private List<MetadataEntry> mediaRepresentationMetaData(MediaRepresentation representation) {
 
         List<MetadataEntry> metadata = new ArrayList<>();
-        boolean needsPrefix = representation.getParts().size() > 1;
-        int partIndex = 1;
 
-        for (MediaRepresentationPart part : representation.getParts()) {
-            String prefix = "";
-            if (needsPrefix) {
-                prefix = "Part" + partIndex + " ";
-            }
-            if (part.getUri() != null) {
-                try {
-                    CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfo(part.getUri(), true);
-                    Map<String, String> result = cdmImageInfo.getMetaData();
-                    if(result != null){
-                        for (String key : result.keySet()) {
-                            metadata.add(new MetadataEntry(key, result.get(key)));
-                        }
+        if (representation.getUri() != null) {
+            try {
+                CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfo(representation.getUri(), true);
+                Map<String, String> result = cdmImageInfo.getMetaData();
+                if(result != null){
+                    for (String key : result.keySet()) {
+                        metadata.add(new MetadataEntry(key, result.get(key)));
                     }
-                } catch (IOException | HttpException e) {
-                    logger.error("Problem while loading image metadata", e);
-                    metadata.add(new MetadataEntry(prefix + " Error:", "Problem while loading image metadata <br/><small>(" + e.getLocalizedMessage() + ")</small>"));
                 }
+            } catch (IOException | HttpException e) {
+                logger.error("Problem while loading image metadata", e);
+                metadata.add(new MetadataEntry(" Error:", "Problem while loading image metadata <br/><small>(" + e.getLocalizedMessage() + ")</small>"));
             }
         }
 
@@ -722,25 +714,23 @@ public class ManifestComposer {
 
     private List<ImageContent> representationPartsToImageContent(MediaRepresentation representation) {
         List<ImageContent> imageContents = new ArrayList<>();
-        for(MediaRepresentationPart part : representation.getParts()){
-            if(part.getUri() != null){
-                ImageContent ic = new ImageContent(part.getUri().toString());
-                if(part instanceof ImageFile){
-                    ImageFile image = (ImageFile)part;
-                    if(image.getWidth() != null && image.getWidth() > 0){
-                        ic.setWidth(image.getWidth());
-                    }
-                    if(image.getHeight() != null && image.getHeight() > 0){
-                        ic.setHeight(image.getHeight());
-                    }
-                    if(representation.getMimeType() != null){
-                        ic.setFormat(MimeType.fromTypename(representation.getMimeType()));
-                    } else {
-                        ic.setFormat(MimeType.MIME_IMAGE);
-                    }
+        if(representation.getUri() != null){
+            ImageContent ic = new ImageContent(representation.getUri().toString());
+            if(representation instanceof ImageFile){
+                ImageFile image = (ImageFile)representation;
+                if(image.getWidth() != null && image.getWidth() > 0){
+                    ic.setWidth(image.getWidth());
                 }
-                imageContents.add(ic);
+                if(image.getHeight() != null && image.getHeight() > 0){
+                    ic.setHeight(image.getHeight());
+                }
+                if(representation.getMimeType() != null){
+                    ic.setFormat(MimeType.fromTypename(representation.getMimeType()));
+                } else {
+                    ic.setFormat(MimeType.MIME_IMAGE);
+                }
             }
+            imageContents.add(ic);
         }
         return imageContents;
     }

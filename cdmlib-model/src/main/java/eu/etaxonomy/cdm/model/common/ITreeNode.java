@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.Collection;
 import java.util.List;
 
-
 import org.hibernate.event.spi.SaveOrUpdateEventListener;
 
 /**

@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -63,7 +63,7 @@ public class SruServiceWrapper extends ServiceWrapperBase<Reference> {
 	 */
 	public List<Reference> doSearchRetrieve(String cqlQuery, String recordSchema){
 
-		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+		List<NameValuePair> pairs = new ArrayList<>();
 
 		SchemaAdapterBase<Reference> schemaAdapter = schemaAdapterMap.get(recordSchema);
 		if(schemaAdapter == null){

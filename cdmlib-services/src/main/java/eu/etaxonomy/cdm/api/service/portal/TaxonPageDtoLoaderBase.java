@@ -57,7 +57,6 @@ import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.NamedSource;
@@ -443,19 +442,15 @@ public abstract class TaxonPageDtoLoaderBase {
             loadBaseData(config, rep, repDto);
             repDto.setMimeType(rep.getMimeType());
             repDto.setSuffix(rep.getSuffix());
-            if (!rep.getParts().isEmpty()) {
-                //TODO handle message if n(parts) > 1
-                MediaRepresentationPart part = rep.getParts().get(0);
-                repDto.setUri(part.getUri());
-                repDto.setClazz(part.getClass().getSimpleName());
-                repDto.setSize(part.getSize());
-                if (part.isInstanceOf(ImageFile.class)) {
-                    ImageFile image = CdmBase.deproxy(part, ImageFile.class);
-                    repDto.setHeight(image.getHeight());
-                    repDto.setWidth(image.getWidth());
-                }
-                //TODO AudioFile etc.
+            repDto.setUri(rep.getUri());
+            repDto.setClazz(rep.getClass().getSimpleName());
+            repDto.setSize(rep.getSize());
+            if (rep.isInstanceOf(ImageFile.class)) {
+                ImageFile image = CdmBase.deproxy(rep, ImageFile.class);
+                repDto.setHeight(image.getHeight());
+                repDto.setWidth(image.getWidth());
             }
+            //TODO AudioFile etc.
             representations.addItem(repDto);
         }
         if (representations.getCount() > 0) {

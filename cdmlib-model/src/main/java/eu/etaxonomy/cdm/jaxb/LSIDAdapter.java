@@ -13,7 +13,6 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import eu.etaxonomy.cdm.model.common.LSID;
 
-
 public class LSIDAdapter extends XmlAdapter<String, LSID>{
 
 	public String marshal(LSID lsid) throws Exception {

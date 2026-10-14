@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>6.0.0</version>
+    <version>6.1.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -44,7 +44,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.5.1</version>
         <executions>
           <execution>
             <goals>
@@ -187,21 +187,13 @@
     </dependency>
 
     <!-- ******* DATABASES DRIVER ******* -->
-
-    <!-- for other databases see also #6025 -->
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <scope>compile</scope>
-    </dependency>
     
-    <!-- still creates problems in cdmlib-remote-webapp testing with MySQL connector -->
-<!--     <dependency> -->
-<!--       <groupId>eu.etaxonomy</groupId> -->
-<!--       <artifactId>cdmlib-db</artifactId> -->
-<!--       <version>${project.version}</version> -->
-<!--       <scope>compile</scope> -->
-<!--     </dependency> -->
+    <dependency> 
+       <groupId>eu.etaxonomy</groupId> 
+       <artifactId>cdmlib-db</artifactId> 
+       <version>${project.version}</version> 
+       <scope>compile</scope> 
+     </dependency> 
 
 	<!-- Profiling -->
 	<dependency>
@@ -213,22 +205,6 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <exclusions>
-        <exclusion>
-          <!-- has overlaps with jakarta-activation -->
-          <groupId>javax.activation</groupId>
-          <artifactId>javax.activation-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <!-- we use jakarta.xml.bind-api instead -->
-          <groupId>javax.xml.bind</groupId>
-          <artifactId>jaxb-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>jakarta.xml.bind</groupId>
-          <artifactId>jakarta.xml.bind-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>eu.etaxonomy</groupId>

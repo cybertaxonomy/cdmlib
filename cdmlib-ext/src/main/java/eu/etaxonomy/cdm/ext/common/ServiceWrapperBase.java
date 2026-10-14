@@ -17,11 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.hc.client5.http.ClientProtocolException;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -105,7 +105,7 @@ public class ServiceWrapperBase<T extends CdmBase> {
     private InputStream executeHttp(URI uri, Map<String, String> requestHeaders, HttpMethod httpMethod, HttpEntity entity) throws IOException, ClientProtocolException {
         logger.debug("sending "+httpMethod+" request: " + uri);
 
-	    HttpResponse response = UriUtils.getResponseByType(uri, requestHeaders, httpMethod, entity);
+	    ClassicHttpResponse response = UriUtils.getResponseByType(uri, requestHeaders, httpMethod, entity);
 
 	    if(UriUtils.isOk(response)){
 	        InputStream stream = response.getEntity().getContent();

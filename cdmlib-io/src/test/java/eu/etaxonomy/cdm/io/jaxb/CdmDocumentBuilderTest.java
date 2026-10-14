@@ -9,11 +9,11 @@
 package eu.etaxonomy.cdm.io.jaxb;
 
 import java.io.InputStreamReader;
-import eu.etaxonomy.cdm.common.URI;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 
 public class CdmDocumentBuilderTest {

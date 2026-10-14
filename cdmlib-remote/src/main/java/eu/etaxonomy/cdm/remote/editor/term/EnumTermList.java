@@ -8,7 +8,6 @@ import java.util.Set;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
-
 /**
  * @author a.kohlbecker
  * @since Jun 25, 2013

@@ -149,7 +149,7 @@ public class TaxonNodeFilterDaoHibernateImpl
         }
 
         //sort
-        Comparator<ISortableTaxonNodeDto> comparator = TaxonNodeDtoComparatorFactory.getDtoComparator(filter.getBaseSortMode());
+        Comparator<ISortableTaxonNodeDto> comparator = TaxonNodeDtoComparatorFactory.bySortMode(filter.getBaseSortMode());
         sortRecursively(tempRoot, filter, comparator);
 
         //tree->list

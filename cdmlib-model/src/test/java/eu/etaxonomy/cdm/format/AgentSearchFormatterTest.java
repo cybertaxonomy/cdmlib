@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.format;
 import java.util.Arrays;
 import java.util.List;
 
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +19,6 @@ import eu.etaxonomy.cdm.format.agent.AgentSearchFormatter;
 import eu.etaxonomy.cdm.format.agent.AgentSearchFormatter.CacheType;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-
 
 /**
  * Test for {@link AgentSearchFormatter}.

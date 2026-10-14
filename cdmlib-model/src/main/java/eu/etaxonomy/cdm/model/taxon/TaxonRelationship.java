@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.taxon;
 
 import javax.persistence.Entity;
@@ -21,15 +20,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexingDependency;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -57,7 +56,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlRootElement(name = "TaxonRelationship")
 @Entity
 @Audited
-@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonRelationship")
+@Indexed
 public class TaxonRelationship
         extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
 
@@ -68,23 +67,24 @@ public class TaxonRelationship
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
-    @ContainedIn  //see #5477 at least MAN and proparte synonym relations need to update the TaxonBase index of the related taxon to fully work
+    //see #5477 at least MAN and proparte synonym relations need to update the TaxonBase index of the
+    //related taxon to fully work; reindex when the related taxon's indexed properties (e.g. publish) change
+    @IndexedEmbedded(includeDepth=1)
     private Taxon relatedFrom;
 
     @XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    @IndexedEmbedded(includeEmbeddedObjectId=true, depth=1)
-    @ContainedIn
+    @IndexedEmbedded(includeDepth=1)
     private Taxon relatedTo;
 
     @XmlElement(name = "Type")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    @IndexedEmbedded(depth=1)
+    @IndexedEmbedded(includeDepth=1)
+    @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private TaxonRelationshipType type;
 
     @XmlElement(name = "Type")

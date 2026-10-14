@@ -75,15 +75,11 @@ public class ClassificationDaoHibernateImpl
                 q.setFirstResult(start);
             }
         }
-//        long start_t = System.currentTimeMillis();
+
         results = q.list();
-//        System.err.println("dao.listRankSpecificRootNodes() - query[" + queryIndex + "].list() " + (System.currentTimeMillis() - start_t));
-//        start_t = System.currentTimeMillis();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
-//        System.err.println("dao.listRankSpecificRootNodes() - defaultBeanInitializer.initializeAll() " + (System.currentTimeMillis() - start_t));
 
         return results;
-
     }
 
     @Override
@@ -334,6 +330,7 @@ public class ClassificationDaoHibernateImpl
                          + ", ct.name.monomHybrid"
                          + ", ct.name.binomHybrid"
                          + ", ct.name.trinomHybrid"
+                         + ", revStatus.idInVocabulary"
 
 //     	                 + ", entry(cn.placementNote) "  //cn.placementNote
 //    	                 + ", cn.taxon.name.rank.orderIndex "
@@ -353,6 +350,7 @@ public class ClassificationDaoHibernateImpl
                  + "   LEFT JOIN ctn.rank r "
                  + "   LEFT JOIN ct.secSource ss "
                  + "   LEFT JOIN ss.citation sec "
+                 + "   LEFT JOIN ct.revisionStatus.status AS revStatus "
                  + " WHERE t = :taxon "
                  + "   AND c = :classification";
          if (!includeUnpublished){

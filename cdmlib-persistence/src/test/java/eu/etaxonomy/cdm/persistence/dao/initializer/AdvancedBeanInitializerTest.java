@@ -268,7 +268,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
 
         deacivatedAutoIntitializers = clearAutoinitializers();
         // load bean with autoinitializers deactivated
-        factory.getCurrentSession().setFlushMode(FlushMode.MANUAL); // TODO this is only needed due to #7377 and should be removed otherwise
+        factory.getCurrentSession().setHibernateFlushMode(FlushMode.MANUAL); // TODO this is only needed due to #7377 and should be removed otherwise
         Taxon taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("name.nomenclaturalSource.citation.authorship"));
         assertTrue(Hibernate.isInitialized(taxon.getName())); // name
         TaxonName name = taxon.getName();

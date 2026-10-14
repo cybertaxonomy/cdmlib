@@ -70,6 +70,9 @@ public class CdmListenerIntegrator implements Integrator {
 
         eventRegistry.appendListeners(EventType.PRE_INSERT, new CdmPreDataChangeListener());
         eventRegistry.appendListeners(EventType.PRE_UPDATE, new CdmPreDataChangeListener());
+
+        eventRegistry.appendListeners(EventType.PRE_INSERT, new RevisionStatusChangeListener());
+        eventRegistry.appendListeners(EventType.PRE_UPDATE, new RevisionStatusChangeListener());
     }
 
     @Override

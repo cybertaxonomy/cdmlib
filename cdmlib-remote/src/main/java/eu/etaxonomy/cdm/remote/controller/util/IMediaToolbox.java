@@ -13,7 +13,6 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils.MissingValueStrategy;
 
 /**
@@ -28,7 +27,7 @@ public interface IMediaToolbox {
      * and <code>mimeTypes</code> and finally return the list of matching MediaRepresentations ordered by the ranging of the match.
      *
      */
-    public List<Media> processAndFilterPreferredMediaRepresentations(Class<? extends MediaRepresentationPart> type,
+    public List<Media> processAndFilterPreferredMediaRepresentations(Class<? extends MediaRepresentation> type,
             String[] mimeTypes, Integer widthOrDuration, Integer height, Integer size, List<Media> taxonGalleryMedia) throws IOException;
 
     /**
@@ -40,7 +39,7 @@ public interface IMediaToolbox {
      * @deprecated needs to be replaced, see https://dev.e-taxonomy.eu/redmine/issues/9160
      */
     @Deprecated
-    public List<Media> filterPreferredMediaRepresentations(List<Media> mediaList, Class<? extends MediaRepresentationPart> type,
+    public List<Media> filterPreferredMediaRepresentations(List<Media> mediaList, Class<? extends MediaRepresentation> type,
             String[] mimeTypes, Integer widthOrDuration, Integer height, Integer size);
 
     /**
@@ -59,7 +58,7 @@ public interface IMediaToolbox {
      * @throws IOException
      */
     public MediaRepresentation processAndFindBestMatchingRepresentation(Media media,
-            Class<? extends MediaRepresentationPart> type, Integer size, Integer height, Integer widthOrDuration,
+            Class<? extends MediaRepresentation> type, Integer size, Integer height, Integer widthOrDuration,
             String[] mimeTypes, MissingValueStrategy missingValStrategy) throws IOException;
 
 }

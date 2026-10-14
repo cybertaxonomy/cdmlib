@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.RevisionStatus;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
@@ -66,6 +67,7 @@ public enum VocabularyEnum {
 	NameFeature("a7ca3eef-4092-49e1-beec-ed5096193e5e", Feature.class, 0),
 	TdwgArea("1fb40504-d1d7-44b0-9731-374fbe6cac77", NamedArea.class, 1),
 	PresenceAbsenceTerm("adbbbe15-c4d3-47b7-80a8-c7d104e53a05", PresenceAbsenceTerm.class, 1),
+	RevisionStatus("7c51ba8d-848e-4326-8a5b-1f4d39a0ce66", RevisionStatus.class, 1),
 	Sex("9718b7dd-8bc0-4cad-be57-3c54d4d432fe", DefinedTerm.class, 0),
 	DerivationEventType("398b50bb-348e-4fe0-a7f5-a75afd846d1f", DerivationEventType.class, 0),
 //	PreservationMethod("a7dc20c9-e6b3-459e-8f05-8d6d8fceb465", DefinedTerm.class),

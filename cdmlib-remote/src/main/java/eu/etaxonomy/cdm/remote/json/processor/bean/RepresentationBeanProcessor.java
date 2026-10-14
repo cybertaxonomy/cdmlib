@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.Representation;
+
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 

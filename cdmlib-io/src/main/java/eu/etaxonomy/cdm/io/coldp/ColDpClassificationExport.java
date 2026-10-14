@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.io.coldp;
 
 import java.io.File;
+import java.time.chrono.ChronoLocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,19 +23,17 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
-import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupComparator;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationGroupContainer;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -73,7 +73,6 @@ import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -97,6 +96,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.compare.TaxonNodeDtoComparatorFactory;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -164,12 +164,12 @@ public class ColDpClassificationExport
             if (state.getRootId() != null) {
                 List<TaxonNodeDto> childrenOfRoot = state.getNodeChildrenMap().get(state.getRootId());
 
-                TaxonNodeDtoSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
+                TaxonNodeSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
                 if (sortMode == null) {
-                    sortMode = TaxonNodeDtoSortMode.RankAndAlphabeticalOrder;
+                    sortMode = TaxonNodeSortMode.RankAndAlphabeticalOrder;
                 }
                 if (childrenOfRoot != null) {
-                    Collections.sort(childrenOfRoot, sortMode.comparator());
+                    Collections.sort(childrenOfRoot, TaxonNodeDtoComparatorFactory.bySortMode(sortMode));
                     OrderHelper helper = new OrderHelper(state.getRootId());
                     helper.setOrderIndex(state.getActualOrderIndexAndUpdate());
                     state.getOrderHelperMap().put(state.getRootId(), helper);
@@ -223,11 +223,11 @@ public class ColDpClassificationExport
         if (children == null) {
             return null;
         }
-        TaxonNodeDtoSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
+        TaxonNodeSortMode sortMode = state.getConfig().getTaxonNodeSortMode();
         if (sortMode == null) {
-            sortMode = TaxonNodeDtoSortMode.RankAndAlphabeticalOrder;
+            sortMode = TaxonNodeSortMode.RankAndAlphabeticalOrder;
         }
-        Collections.sort(children, sortMode.comparator());
+        Collections.sort(children, TaxonNodeDtoComparatorFactory.bySortMode(sortMode));
         // TODO 3 taxon ordering: nochmal checken!!! - s.auch seq index
         OrderHelper helperChild;
         List<OrderHelper> childrenHelper = new ArrayList<>();
@@ -507,22 +507,20 @@ public class ColDpClassificationExport
         //handle single media
         for (Media media : mediaSet) {
             for (MediaRepresentation repr : media.getRepresentations()){
-                for (MediaRepresentationPart part : repr.getParts()){
-                        handleMediaRepresentation(state, taxon, part);
-                }
+                handleMediaRepresentation(state, taxon, repr);
             }
         }
     }
 
-    private void handleMediaRepresentation(ColDpExportState state, Taxon taxon, MediaRepresentationPart part) {
-        if (part == null || state.getMediaStore().contains(part.getUuid())) {
+    private void handleMediaRepresentation(ColDpExportState state, Taxon taxon, MediaRepresentation representation) {
+        if (representation == null || state.getMediaStore().contains(representation.getUuid())) {
             return;
         }
 
-        state.addMediaToStore(part);
+        state.addMediaToStore(representation);
         ColDpExportTable table = ColDpExportTable.MEDIA;
         String[] csvLine = new String[table.getSize()];
-        part = HibernateProxyHelper.deproxy(part);
+        representation = HibernateProxyHelper.deproxy(representation);
 
         csvLine[table.getIndex(ColDpExportTable.TAXON_ID)] = getId(state, taxon);
 
@@ -530,17 +528,17 @@ public class ColDpClassificationExport
         csvLine[table.getIndex(ColDpExportTable.SOURCE_ID)] = null;
 
         //url
-        if (part.getUri() != null) {
-            csvLine[table.getIndex(ColDpExportTable.MEDIA_URL)] = part.getUri().toString();
+        if (representation.getUri() != null) {
+            csvLine[table.getIndex(ColDpExportTable.MEDIA_URL)] = representation.getUri().toString();
         }
 
         //TODO 3 media type, still open?
-        csvLine[table.getIndex(ColDpExportTable.TYPE)] = part.getMediaRepresentation().getMimeType();
+        csvLine[table.getIndex(ColDpExportTable.TYPE)] = representation.getMimeType();
 
         //TODO 3 media format
         csvLine[table.getIndex(ColDpExportTable.MEDIA_FORMAT)] = null;
 
-        Media media = part.getMediaRepresentation().getMedia();
+        Media media = representation.getMedia();
 
         //title
         csvLine[table.getIndex(ColDpExportTable.MEDIA_TITLE)] = getTitleCache(media);
@@ -557,7 +555,7 @@ public class ColDpClassificationExport
         //TODO 5 media link
         csvLine[table.getIndex(ColDpExportTable.LINK)] = null;
 
-        state.getProcessor().put(table, part, csvLine);
+        state.getProcessor().put(table, representation, csvLine);
     }
 
     private String toIsoDate(TimePeriod mediaCreated) {
@@ -571,7 +569,7 @@ public class ColDpClassificationExport
             //TODO 2 date, log warning, also if mediaCreated.getEnd() != null or so
             return null;
         } else {
-            DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+            org.joda.time.format.DateTimeFormatter formatter = new DateTimeFormatterBuilder()
                     .appendYear(4, 4).appendLiteral('-')
                     .appendMonthOfYear(2).appendLiteral('-')
                     .appendDayOfMonth(2)
@@ -583,16 +581,11 @@ public class ColDpClassificationExport
     /**
      * transforms the given date to an iso date
      */
-    protected String toIsoDate(DateTime dateTime) {
+    protected String toIsoDate(ChronoLocalDate dateTime) {
         if (dateTime == null) {
             return null;
         }
-        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                .appendYear(4, 4).appendLiteral('-')
-                .appendMonthOfYear(2).appendLiteral('-')
-                .appendDayOfMonth(2)
-                .toFormatter();
-        return formatter.print(dateTime);
+        return DateTimeFormatter.ISO_LOCAL_DATE.format(dateTime);
     }
 
     private void handleDescriptions(ColDpExportState state, Taxon taxon) {
@@ -2315,17 +2308,14 @@ public class ColDpClassificationExport
         boolean first = true;
         while (it.hasNext()) {
             MediaRepresentation rep = it.next();
-            List<MediaRepresentationPart> parts = rep.getParts();
-            for (MediaRepresentationPart part : parts) {
-                if (first) {
-                    if (part.getUri() != null) {
-                        mediaUriString += part.getUri().toString();
-                        first = false;
-                    }
-                } else {
-                    if (part.getUri() != null) {
-                        mediaUriString += ", " + part.getUri().toString();
-                    }
+            if (first) {
+                if (rep.getUri() != null) {
+                    mediaUriString += rep.getUri().toString();
+                    first = false;
+                }
+            } else {
+                if (rep.getUri() != null) {
+                    mediaUriString += ", " + rep.getUri().toString();
                 }
             }
         }

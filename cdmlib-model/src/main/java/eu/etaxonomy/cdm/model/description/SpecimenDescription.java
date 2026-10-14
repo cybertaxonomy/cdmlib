@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.HashSet;
@@ -35,10 +34,8 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.FieldBridge;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.IHasCredits;
 import eu.etaxonomy.cdm.model.media.IHasLink;
 import eu.etaxonomy.cdm.model.media.IHasRights;
@@ -66,7 +63,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @XmlRootElement(name = "SpecimenDescription")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
+//@Indexed
 @Audited
 @Configurable
 public class SpecimenDescription
@@ -83,7 +80,6 @@ public class SpecimenDescription
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
     @JoinColumn(name="specimen_id")
-    @FieldBridge(impl=NotNullAwareIdBridge.class)
     private SpecimenOrObservationBase<?> describedSpecimenOrObservation;
 
     //#10772

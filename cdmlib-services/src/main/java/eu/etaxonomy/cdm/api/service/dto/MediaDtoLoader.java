@@ -15,7 +15,6 @@ import eu.etaxonomy.cdm.api.dto.MediaDTO;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 
 /**
@@ -32,7 +31,7 @@ public class MediaDtoLoader {
 
     /**
      * Creates a list of {@link MediaDTO}s from the Media entity.
-     * For each MediaRepresentationPart a single MediaDTO is being created.
+     * For each MediaRepresentation a single MediaDTO is being created.
      * TODO this needs to be changed so that it is possible to filter the representations by preferences,
      * see {@link MediaUtils#findBestMatchingRepresentation(Media, Class, Integer, Integer, Integer, String[], eu.etaxonomy.cdm.model.media.MediaUtils.MissingValueStrategy)}
      */
@@ -42,11 +41,9 @@ public class MediaDtoLoader {
         @SuppressWarnings("unchecked")
         MediaDTO dto = new MediaDTO((Class<Media>)CdmBase.deproxy(entity).getClass(), entity.getUuid());
         for (MediaRepresentation rep :entity.getRepresentations()){
-            for(MediaRepresentationPart p : rep.getParts()){
-                if(p.getUri() != null){
-                    dto.setUri(p.getUri().toString());
-                    break;
-                }
+            if(rep.getUri() != null){
+                dto.setUri(rep.getUri().toString());
+                break;
             }
         }
         dto.setSources(SourceDtoLoader.fromEntities(entity.getSources()));

@@ -13,10 +13,9 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.jena.rdf.model.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
-
-import org.apache.jena.rdf.model.Resource;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;

@@ -13,34 +13,40 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.reflect.Field;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.spell.Dictionary;
 import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 import org.hibernate.CacheMode;
-import org.hibernate.FlushMode;
-import org.hibernate.ObjectNotFoundException;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
-import org.hibernate.search.batchindexing.MassIndexerProgressMonitor;
-import org.hibernate.search.indexes.spi.DirectoryBasedIndexManager;
-import org.hibernate.search.indexes.spi.IndexManager;
-import org.hibernate.search.spi.SearchIntegrator;
+import org.hibernate.search.backend.lucene.LuceneExtension;
+import org.hibernate.search.backend.lucene.scope.LuceneIndexScope;
+import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.entity.SearchIndexedEntity;
+import org.hibernate.search.mapper.orm.mapping.SearchMapping;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.search.mapper.pojo.massindexing.MassIndexingMonitor;
+import org.hibernate.search.util.common.SearchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
@@ -54,10 +60,6 @@ import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 /**
  * @author Andreas Kohlbecker
@@ -71,11 +73,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     private final Set<Class<? extends CdmBase>> indexedClasses = new HashSet<>();
 
-    /*
-     * flag to enable old hibernate search 3.1 mode
-     */
-    private static final boolean HS_31_MODE = false;
-
     private HibernateTransactionManager transactionManager;
 
     @Autowired
@@ -88,77 +85,18 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         return session;
     }
 
-    /**
-     * Reindex method based on hibernate search  3.1
-     */
-    protected <T extends CdmBase>void reindex_31(Class<T> type, IProgressMonitor monitor) {
-
-        //TODO set the application in maintenance mode: making
-        // queries to the index is not recommended when a MassIndexer is busy.
-        // fullTextSession.createIndexer().startAndWait();
-
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-
-        fullTextSession.setHibernateFlushMode(FlushMode.MANUAL);
-        fullTextSession.setCacheMode(CacheMode.IGNORE);
-
-        logger.info("start indexing " + type.getName());
-        monitor.subTask("indexing " + type.getSimpleName());
-
-        Long countResult = countEntities(type);
-        int batchSize = sweetestBatchSize(type);
-        int numOfBatches = calculateNumOfBatches(countResult, batchSize);
-
-        SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
-        subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
-
-        // Scrollable results will avoid loading too many objects in memory
-        ScrollableResults results = fullTextSession.createCriteria(type).setFetchSize(batchSize).scroll(ScrollMode.FORWARD_ONLY);
-        long index = 0;
-        int batchesWorked = 0;
-
-
-        try {
-            while (results.next()) {
-                index++;
-                fullTextSession.index(results.get(0)); // index each element
-                if (index % batchSize == 0 || index == countResult) {
-                    batchesWorked++;
-                    try {
-                        fullTextSession.flushToIndexes(); // apply changes to indexes
-                    } catch(ObjectNotFoundException e){
-                        // TODO report this issue to progress monitor once it can report on errors
-                        logger.error("possibly invalid data, thus skipping this batch and continuing with next one", e);
-                    } finally {
-                        fullTextSession.clear(); // clear since the queue is processed
-                        getSession().clear(); // clear session to free memory
-                        subMonitor.worked(1);
-                        logger.info("\tbatch " + batchesWorked + "/" + numOfBatches + " processed");
-                    }
-                }
-            }
-        } catch (RuntimeException e) {
-            //TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
-            monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
-            monitor.done();
-            throw	e;
-        }
-        logger.info("end indexing " + type.getName());
-        subMonitor.done();
-    }
-
     protected <T extends CdmBase> void createDictionary(Class<T> type, IProgressMonitor monitor)  {
-        String indexName = null;
-        if(type.isAnnotationPresent(org.hibernate.search.annotations.Indexed.class)) {
-            indexName = type.getAnnotation(org.hibernate.search.annotations.Indexed.class).index();
-        } else {
-            //TODO:give some indication that this class is infact not indexed
+
+        SearchMapping mapping = getSearchMapping();
+        try {
+            mapping.indexedEntity(type);
+        } catch (SearchException e) {
+            logger.info("Skipping dictionary creation for non-indexed type {}", type.getName());
             return;
         }
-        SearchFactory searchFactory = Search.getFullTextSession(getSession()).getSearchFactory();
-        IndexManager indexManager = obtainIndexManager(searchFactory, indexName);
 
-        IndexReader indexReader = searchFactory.getIndexReaderAccessor().open(type);
+        LuceneIndexScope scope = mapping.scope(type).extension(LuceneExtension.get());
+        IndexReader indexReader = scope.openIndexReader();
         List<String> idFields = getIndexedDeclaredFields(type);
 
         monitor.subTask("creating dictionary " + type.getSimpleName());
@@ -166,16 +104,20 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
         subMonitor.beginTask("Creating dictionary " + type.getSimpleName(), 1);
 
-        Directory directory = ((DirectoryBasedIndexManager) indexManager).getDirectoryProvider().getDirectory();
         SpellChecker spellChecker = null;
         try {
+            // Use a RAM directory for the spell checker index; the former HS5
+            // DirectoryBasedIndexManager API is no longer available.
+            Directory directory = FSDirectory.open(
+                    java.nio.file.Paths.get(System.getProperty("java.io.tmpdir"),
+                            "cdm-spellcheck", type.getSimpleName()));
             spellChecker = new SpellChecker(directory);
             Iterator<String> itr = idFields.iterator();
             while(itr.hasNext()) {
                 String indexedField = itr.next();
                 logger.info("creating dictionary for field " + indexedField);
                 Dictionary dictionary = new LuceneDictionary(indexReader, indexedField);
-                IndexWriterConfig iwc = new IndexWriterConfig(searchFactory.getAnalyzer(type));
+                IndexWriterConfig iwc = new IndexWriterConfig(new StandardAnalyzer());
                 spellChecker.indexDictionary(dictionary, iwc, true);
             }
             subMonitor.internalWorked(1);
@@ -190,7 +132,11 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
             monitor.done();
         } finally {
-            searchFactory.getIndexReaderAccessor().close(indexReader);
+            try {
+                indexReader.close();
+            } catch (IOException e) {
+                logger.error("IOException when closing index reader", e);
+            }
         }
         if (spellChecker != null) {
             try {
@@ -205,10 +151,25 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         subMonitor.done();
     }
 
-    private IndexManager obtainIndexManager(SearchFactory searchFactory, String indexName){
-        SearchIntegrator searchIntegrator = searchFactory.unwrap(SearchIntegrator.class );
-        IndexManager indexManager = searchIntegrator.getIndexManager(indexName);
-        return indexManager;
+    private SearchMapping getSearchMapping() {
+        return Search.mapping(transactionManager.getSessionFactory());
+    }
+
+    /**
+     * Logs the configured Lucene index storage location (once per purge/reindex call).
+     * Index files for each entity live under {@code <root>/<indexName>/}.
+     */
+    private void logIndexDirectory() {
+        Map<String, Object> props = transactionManager.getSessionFactory().getProperties();
+        Object directoryType = props.get("hibernate.search.backend.directory.type");
+        Object directoryRoot = props.get("hibernate.search.backend.directory.root");
+        if (directoryRoot != null) {
+            String absolute = Paths.get(directoryRoot.toString()).toAbsolutePath().normalize().toString();
+            logger.info("Hibernate Search index location: type={}, root={} (absolute={})",
+                    directoryType, directoryRoot, absolute);
+        } else {
+            logger.info("Hibernate Search index location: type={}, root=<not set>", directoryType);
+        }
     }
 
     private int sweetestBatchSize(Class<? extends CdmBase> type){
@@ -219,7 +180,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         if(memoryMXBean != null){
             logger.debug("NonHeapMemoryUsage: "+memoryMXBean.getHeapMemoryUsage());
              MemoryUsage memusage = memoryMXBean.getHeapMemoryUsage();
-             freeMemoryMB =( memusage.getMax() - memusage.getUsed()) / (1024 * 1024);
+             freeMemoryMB = (memusage.getMax() - memusage.getUsed()) / (1024 * 1024);
         } else {
             // will be smaller than the actual free mem since Runtime does not
             // know about Committed heap mem
@@ -241,7 +202,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
 
         int batchSize = (int) Math.floor( factor * freeMemoryMB);
-        logger.info("calculated batch size sweet spot for indexing " + type.getSimpleName()
+        logger.info("Calculated batch size sweet spot for indexing " + type.getSimpleName()
                 + " with " +  freeMemoryMB +  "MB free mem is " + batchSize);
         return batchSize;
     }
@@ -259,44 +220,14 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     protected <T extends CdmBase>void purge(Class<T> type, IProgressMonitor monitor) {
 
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
         logger.info("purging " + type.getName());
-        fullTextSession.purgeAll(type);
+        Search.session(getSession()).workspace(type).purge();
 
-        // TODO
-        // toggle on/off flag doSpellIndex introduced for debugging, see ticket:
-        //  #3721 (CdmMassIndexer.purge throwing errors due to LockObtainFailedException)
-        // remove once this is fixed
+        // Spell-check index purge relied on HS5 DirectoryBasedIndexManager; disabled under HS6.
         boolean doSpellIndex = false;
 
         if(doSpellIndex){
-            SearchFactory searchFactory = fullTextSession.getSearchFactory();
-            IndexManager indexManager = obtainIndexManager(searchFactory, type.getName());
-            if(indexManager == null){
-                logger.info("No IndexManager found for " + type.getName() + ", thus nothing to purge");
-                return;
-            }
-
-            Directory directory = ((DirectoryBasedIndexManager) indexManager).getDirectoryProvider().getDirectory();
-            SpellChecker spellChecker = null;
-            try {
-                spellChecker = new SpellChecker(directory);
-                spellChecker.clearIndex();
-            } catch (IOException e) {
-                logger.error("IOException when creating dictionary", e);
-                //TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
-                monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
-                monitor.done();
-            }
-
-            if (spellChecker != null) {
-                try {
-                    logger.info("closing spellchecker ");
-                    spellChecker.close();
-                } catch (IOException e) {
-                    logger.error("IOException when closing spellchecker", e);
-                }
-            }
+            logger.warn("Spell index purge is not supported under Hibernate Search 6");
         }
     }
 
@@ -310,42 +241,22 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             types = indexedClasses();
         }
 
-        if(HS_31_MODE) {
-
-        }
+        logIndexDirectory();
 
         monitor.setTaskName("CdmMassIndexer");
-        int steps = types.size() + (HS_31_MODE ? 1 /* +1 for optimize */ : 0);
-        monitor.beginTask("Reindexing " + types.size() + " classes", steps);
+        int nSteps = types.size();
+        monitor.beginTask("Reindexing " + nSteps + " classes", nSteps);
 
-        boolean optimize = true;
-
-        long start = System.currentTimeMillis();
+        var start = Instant.now();
         for(Class<? extends CdmBase> type : types){
-            long perTypeStart = System.currentTimeMillis();
+            var perTypeStart = Instant.now();
 
-            if(HS_31_MODE) {
-                // TODO remove this mode and all related code once the old reindex method is vanished
-                reindex_31(type, monitor);
-            } else {
-                reindex_55(type, monitor);
-                optimize = false;
-            }
+            reindexSingleClass(type, monitor);
 
-
-            logger.info("Indexing of " + type.getSimpleName() + " in " + ((System.currentTimeMillis() - perTypeStart) / 1000) + "s");
+            logger.info("Indexing of " + type.getSimpleName() + " in " + Duration.between(perTypeStart, Instant.now()).toSeconds() + "s");
         }
 
-        if(HS_31_MODE) {
-            monitor.subTask("Optimizing Index");
-            SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
-            subMonitor.beginTask("Optimizing Index",1);
-            optimize();
-            logger.info("end index optimization");
-            subMonitor.worked(1);
-            subMonitor.done();
-        }
-        logger.info("reindexing completed in " + ((System.currentTimeMillis() - start) / 1000) + "s");
+        logger.info("reindexing completed in " + Duration.between(start, Instant.now()).toSeconds() + "s");
 
         //monitor.worked(1);
         monitor.done();
@@ -353,17 +264,14 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     }
 
     /**
-     * new reindex method which benefits from
+     * Reindex method which uses
      * the mass indexer available in hibernate search 5.5
      *
      * @param type
      * @param monitor
      * @throws InterruptedException
      */
-    protected void reindex_55(Class<? extends CdmBase> type, IProgressMonitor monitor) {
-
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-
+    protected void reindexSingleClass(Class<? extends CdmBase> type, IProgressMonitor monitor) {
 
         logger.info("start indexing " + type.getName());
         monitor.subTask("indexing " + type.getSimpleName());
@@ -375,18 +283,17 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         SubProgressMonitor subMonitor = SubProgressMonitor.NewInstance(monitor, 1);
         subMonitor.beginTask("Indexing " + type.getSimpleName(), numOfBatches);
 
-
-        MassIndexerProgressMonitor indexerMonitorWrapper = new MassIndexerProgressMonitorWrapper(subMonitor, batchSize);
+        MassIndexingMonitor indexerMonitorWrapper = new MassIndexerProgressMonitorWrapper(subMonitor, batchSize);
 
         try {
-            fullTextSession
-            .createIndexer(type)
-            .batchSizeToLoadObjects(batchSize)
-            .cacheMode(CacheMode.IGNORE)
-            .threadsToLoadObjects(4) // optimize http://docs.jboss.org/hibernate/stable/search/reference/en-US/html_single/#search-batchindexing-threadsandconnections
-            .idFetchSize(150) //TODO optimize
-            .progressMonitor(indexerMonitorWrapper)
-            .startAndWait();
+            Search.session(getSession())
+                .massIndexer(type)
+                .batchSizeToLoadObjects(batchSize)
+                .cacheMode(CacheMode.IGNORE)
+                .threadsToLoadObjects(4)
+                .idFetchSize(150)
+                .monitor(indexerMonitorWrapper)
+                .startAndWait();
         } catch (InterruptedException ie) {
             logger.info("Mass indexer has been interrupted");
             subMonitor.isCanceled();
@@ -411,11 +318,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     }
     protected void optimize() {
-
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-        fullTextSession.getSearchFactory().optimize();
-        fullTextSession.flushToIndexes();
-        fullTextSession.clear();
+        Search.session(getSession()).workspace().mergeSegments();
+        getSession().clear();
     }
 
     @Override
@@ -425,6 +329,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             monitor = new NullProgressMonitor();
         }
 
+        logIndexDirectory();
+
         monitor.setTaskName("CdmMassIndexer");
         int steps = indexedClasses().size() + 1; // +1 for optimize
         monitor.beginTask("Purging " + indexedClasses().size() + " classes", steps);
@@ -433,10 +339,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             purge(type, monitor);
             monitor.worked(1);
         }
-        // need to flush to the index before optimizing
-        // the purge method is not doing the flushing by itself
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-        fullTextSession.flushToIndexes();
 
         // optimize
         optimize();
@@ -450,14 +352,15 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     /**
      * Returns a list of declared indexable fields within a class through reflection.
      */
-    private List<String> getIndexedDeclaredFields(Class clazz) {
+    private List<String> getIndexedDeclaredFields(Class<?> clazz) {
         List<String> idFields = new ArrayList<String>();
-        if(clazz.isAnnotationPresent(org.hibernate.search.annotations.Indexed.class)) {
+        if(clazz.isAnnotationPresent(Indexed.class)) {
             Field[] declaredFields = clazz.getDeclaredFields();
             for(int i=0;i<declaredFields.length;i++ ) {
                 logger.info("checking field " + declaredFields[i].getName());
-                if(declaredFields[i].isAnnotationPresent(org.hibernate.search.annotations.Field.class) ||
-                        declaredFields[i].isAnnotationPresent(org.hibernate.search.annotations.Fields.class)) {
+                if(declaredFields[i].isAnnotationPresent(FullTextField.class) ||
+                        declaredFields[i].isAnnotationPresent(KeywordField.class) ||
+                        declaredFields[i].isAnnotationPresent(GenericField.class)) {
                     idFields.add(declaredFields[i].getName());
                     logger.info("adding field " + declaredFields[i].getName());
                 }
@@ -468,15 +371,13 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     @Override
     public Set<Class<? extends CdmBase>> indexedClasses() {
+
         // if no indexed classes have been 'manually' set then
         // the default is the full list
         if(indexedClasses.size() == 0) {
-            indexedClasses.add(DescriptionElementBase.class);
-            indexedClasses.add(TaxonBase.class);
-            indexedClasses.add(Classification.class);
-            indexedClasses.add(TaxonName.class);
-            indexedClasses.add(SpecimenOrObservationBase.class);
-            indexedClasses.add(TaxonRelationship.class);
+            SearchMapping mapping = getSearchMapping();
+            Collection<? extends SearchIndexedEntity<?>> all = mapping.allIndexedEntities();
+            all.forEach(sie->indexedClasses.add((Class<? extends CdmBase>)sie.javaClass()));
         }
         return indexedClasses;
     }

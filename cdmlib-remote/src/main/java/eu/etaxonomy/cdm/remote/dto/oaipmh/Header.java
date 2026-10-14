@@ -4,11 +4,10 @@
 // Any modifications to this file will be lost upon recompilation of the source schema.
 // Generated on: 2009.11.02 at 12:58:05 PM GMT
 //
-
-
 package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +17,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 
@@ -62,7 +59,7 @@ public class Header {
 
     @XmlElement(required = true)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    protected DateTime datestamp;
+    protected ZonedDateTime datestamp;
 
     protected List<String> setSpec;
 
@@ -98,10 +95,10 @@ public class Header {
      *
      * @return
      *     possible object is
-     *     {@link DateTime }
+     *     {@link ZonedDateTime }
      *
      */
-    public DateTime getDatestamp() {
+    public ZonedDateTime getDatestamp() {
         return datestamp;
     }
 
@@ -110,10 +107,10 @@ public class Header {
      *
      * @param value
      *     allowed object is
-     *     {@link DateTime }
+     *     {@link ZonedDateTime }
      *
      */
-    public void setDatestamp(DateTime value) {
+    public void setDatestamp(ZonedDateTime value) {
         this.datestamp = value;
     }
 

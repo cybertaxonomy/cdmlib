@@ -6,8 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
-
 package eu.etaxonomy.cdm.io.print.util;
 
 import java.util.ArrayList;
@@ -44,7 +42,7 @@ public class PrintPubNonNestedHtmlTokenizer {
         final Map<String, String> attributes;
 
         PrintPubHtmlToken(PrintPubHtmlTokenType type, String value) {
-            this(type, value, null, null, new LinkedHashMap<String, String>());
+            this(type, value, null, null, new LinkedHashMap<>());
         }
 
         PrintPubHtmlToken(
@@ -59,7 +57,7 @@ public class PrintPubNonNestedHtmlTokenizer {
             this.rawMarkup = rawMarkup;
             this.tagName = tagName;
             this.attributes = attributes == null
-                    ? new LinkedHashMap<String, String>()
+                    ? new LinkedHashMap<>()
                     : attributes;
         }
 
@@ -71,9 +69,9 @@ public class PrintPubNonNestedHtmlTokenizer {
 
     private static final Pattern TOKEN_PATTERN = Pattern.compile(
             "<cdm:reference\\b[^>]*>.*?</cdm:reference>"
-            + "|<b>.*?</b>"
-            + "|<i>.*?</i>"
-            + "|<br\\s*/?>"
+            + "|(?i)(<b>.*?</b>)"
+            + "|(?i)(<i>.*?</i>)"
+            + "|(?i)(<br\\s*/?>\\r?\n?\\s*)"
             + "|[^<>]+",
             Pattern.DOTALL
     );
@@ -83,7 +81,8 @@ public class PrintPubNonNestedHtmlTokenizer {
     );
 
     public static List<PrintPubHtmlToken> tokenize(String input) {
-        List<PrintPubHtmlToken> tokens = new ArrayList<PrintPubHtmlToken>();
+
+        List<PrintPubHtmlToken> tokens = new ArrayList<>();
 
         if (input == null || input.isEmpty()) {
             return tokens;
@@ -103,7 +102,7 @@ public class PrintPubNonNestedHtmlTokenizer {
                         extractAttributes(part)
                 ));
 
-            } else if (part.startsWith("<b>")) {
+            } else if (part.toLowerCase().startsWith("<b>")) {
                 tokens.add(new PrintPubHtmlToken(
                         PrintPubHtmlTokenType.BOLD,
                         part.substring(3, part.length() - 4),
@@ -112,7 +111,7 @@ public class PrintPubNonNestedHtmlTokenizer {
                         null
                 ));
 
-            } else if (part.startsWith("<i>")) {
+            } else if (part.toLowerCase().startsWith("<i>")) {
                 tokens.add(new PrintPubHtmlToken(
                         PrintPubHtmlTokenType.ITALIC,
                         part.substring(3, part.length() - 4),
@@ -121,7 +120,7 @@ public class PrintPubNonNestedHtmlTokenizer {
                         null
                 ));
 
-            } else if (part.startsWith("<br")) {
+            } else if (part.toLowerCase().startsWith("<br")) {
                 tokens.add(new PrintPubHtmlToken(
                         PrintPubHtmlTokenType.BR,
                         "",

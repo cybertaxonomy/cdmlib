@@ -19,7 +19,6 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 
 /**
  * @author a.kohlbecker
@@ -32,10 +31,8 @@ public class MediaUriTransformationProcessorTest {
     private static final String PATTERN_1 = "digilib/Scaler/\\?fn=([^\\/]+)/([^\\&]+)(.*)";
 
     private MediaRepresentation makeImageMediaRepresentation(int width, int height) throws URISyntaxException {
-        MediaRepresentation repr = MediaRepresentation.NewInstance("image/jpeg", null);
-        ImageFile part = ImageFile.NewInstance(new URI(URI_STRING_1), null, height, width);
-        repr.addRepresentationPart(part);
-        return repr;
+        return ImageFile.NewInstance(new URI(URI_STRING_1),
+                "image/jpeg", null, null, height, width);
     }
 
     @Test
@@ -94,7 +91,7 @@ public class MediaUriTransformationProcessorTest {
     public void testMakeMedia() throws URISyntaxException {
 
         URI uri = new URI(URI_STRING_1);
-        MediaRepresentationPart part = MediaRepresentationPart.NewInstance(uri, null);
+        MediaRepresentation rep = MediaRepresentation.NewInstance(uri, null, null, null);
 
         MediaUriTransformation transformation1 = new MediaUriTransformation();
         transformation1.setPathQueryFragment(new SearchReplace(PATTERN_1, "digilib/Scaler/IIIF/$1!$2/400,200/full/0/default.jpg"));
@@ -105,11 +102,11 @@ public class MediaUriTransformationProcessorTest {
         MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
         processor.add(transformation1);
 
-        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(part);
+        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(rep);
 
-        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/400,200/full/0/default.jpg", representations.get(0).getParts().get(0).getUri().toString());
-        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
-        ImageFile image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/400,200/full/0/default.jpg", representations.get(0).getUri().toString());
+        assertEquals(ImageFile.class, representations.get(0).getClass());
+        ImageFile image = (ImageFile)representations.get(0);
         assertEquals(transformation1.getWidth(), image.getWidth());
         assertEquals(transformation1.getHeight(), image.getHeight());
     }
@@ -130,7 +127,7 @@ public class MediaUriTransformationProcessorTest {
 
         MediaRepresentation repr = makeImageMediaRepresentation(2000, 1500);
 
-        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr.getParts().get(0));
+        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr);
         assertTrue(representations.isEmpty());
     }
 
@@ -148,11 +145,11 @@ public class MediaUriTransformationProcessorTest {
 
         MediaRepresentation repr = makeImageMediaRepresentation(2000, 1500); // aspect ratio = 4/3
 
-        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr.getParts().get(0));
+        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr);
 
-        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/400,/full/0/default.jpg", representations.get(0).getParts().get(0).getUri().toString());
-        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
-        ImageFile image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/400,/full/0/default.jpg", representations.get(0).getUri().toString());
+        assertEquals(ImageFile.class, representations.get(0).getClass());
+        ImageFile image = (ImageFile)representations.get(0);
         assertEquals(Integer.valueOf(400), image.getWidth());
         assertEquals(Integer.valueOf(300), image.getHeight());
     }
@@ -172,11 +169,11 @@ public class MediaUriTransformationProcessorTest {
 
         MediaRepresentation repr = makeImageMediaRepresentation(2000, 1500); // aspect ratio = 4/3
 
-        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr.getParts().get(0));
+        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr);
 
-        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/,300/full/0/default.jpg", representations.get(0).getParts().get(0).getUri().toString());
-        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
-        ImageFile image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/,300/full/0/default.jpg", representations.get(0).getUri().toString());
+        assertEquals(ImageFile.class, representations.get(0).getClass());
+        ImageFile image = (ImageFile)representations.get(0);
         assertEquals(Integer.valueOf(400), image.getWidth());
         assertEquals(Integer.valueOf(300), image.getHeight());
     }
@@ -195,22 +192,22 @@ public class MediaUriTransformationProcessorTest {
 
         MediaRepresentation repr = makeImageMediaRepresentation(2000, 1500); // aspect ratio = 4/3
 
-        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr.getParts().get(0));
+        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr);
 
-        assertEquals("https://pictures.bgbm.org/digilib/Scaler/?fn=Cyprus/Salvia_aethiopis_A1.jpg&mo=crop&dw=200&dh=147&uvfix=1", representations.get(0).getParts().get(0).getUri().toString());
-        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
-        ImageFile image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals("https://pictures.bgbm.org/digilib/Scaler/?fn=Cyprus/Salvia_aethiopis_A1.jpg&mo=crop&dw=200&dh=147&uvfix=1", representations.get(0).getUri().toString());
+        assertEquals(ImageFile.class, representations.get(0).getClass());
+        ImageFile image = (ImageFile)representations.get(0);
         assertEquals(Integer.valueOf(200), image.getWidth());
         assertEquals(Integer.valueOf(147), image.getHeight());
 
         // aspect ratio = 3/4
         MediaRepresentation repr2 = makeImageMediaRepresentation(1500, 2000);
 
-        representations = processor.makeNewMediaRepresentationsFor(repr2.getParts().get(0));
+        representations = processor.makeNewMediaRepresentationsFor(repr2);
 
-        assertEquals("https://pictures.bgbm.org/digilib/Scaler/?fn=Cyprus/Salvia_aethiopis_A1.jpg&mo=crop&dw=200&dh=147&uvfix=1", representations.get(0).getParts().get(0).getUri().toString());
-        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
-        image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals("https://pictures.bgbm.org/digilib/Scaler/?fn=Cyprus/Salvia_aethiopis_A1.jpg&mo=crop&dw=200&dh=147&uvfix=1", representations.get(0).getUri().toString());
+        assertEquals(ImageFile.class, representations.get(0).getClass());
+        image = (ImageFile)representations.get(0);
         assertEquals(Integer.valueOf(200), image.getWidth());
         assertEquals(Integer.valueOf(147), image.getHeight());
     }
@@ -229,22 +226,22 @@ public class MediaUriTransformationProcessorTest {
 
         MediaRepresentation repr = makeImageMediaRepresentation(2000, 1500); // aspect ratio = 4/3
 
-        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr.getParts().get(0));
+        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr);
 
-        assertEquals("https://pictures.bgbm.org/digilib/Scaler/?fn=Cyprus/Salvia_aethiopis_A1.jpg&mo=crop&dw=147&dh=200&uvfix=1", representations.get(0).getParts().get(0).getUri().toString());
-        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
-        ImageFile image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals("https://pictures.bgbm.org/digilib/Scaler/?fn=Cyprus/Salvia_aethiopis_A1.jpg&mo=crop&dw=147&dh=200&uvfix=1", representations.get(0).getUri().toString());
+        assertEquals(ImageFile.class, representations.get(0).getClass());
+        ImageFile image = (ImageFile)representations.get(0);
         assertEquals(Integer.valueOf(147), image.getWidth());
         assertEquals(Integer.valueOf(200), image.getHeight());
 
         // aspect ratio = 3/4
         MediaRepresentation repr2 = makeImageMediaRepresentation(1500, 2000);
 
-        representations = processor.makeNewMediaRepresentationsFor(repr2.getParts().get(0));
+        representations = processor.makeNewMediaRepresentationsFor(repr2);
 
-        assertEquals("https://pictures.bgbm.org/digilib/Scaler/?fn=Cyprus/Salvia_aethiopis_A1.jpg&mo=crop&dw=147&dh=200&uvfix=1", representations.get(0).getParts().get(0).getUri().toString());
-        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
-        image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals("https://pictures.bgbm.org/digilib/Scaler/?fn=Cyprus/Salvia_aethiopis_A1.jpg&mo=crop&dw=147&dh=200&uvfix=1", representations.get(0).getUri().toString());
+        assertEquals(ImageFile.class, representations.get(0).getClass());
+        image = (ImageFile)representations.get(0);
         assertEquals(Integer.valueOf(147), image.getWidth());
         assertEquals(Integer.valueOf(200), image.getHeight());
     }
@@ -264,22 +261,22 @@ public class MediaUriTransformationProcessorTest {
         // aspect ratio = 4/3
         MediaRepresentation repr1 = makeImageMediaRepresentation(2000, 1500);
 
-        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr1.getParts().get(0));
+        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr1);
 
-        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/400,400/full/0/default.jpg", representations.get(0).getParts().get(0).getUri().toString());
-        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
-        ImageFile image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/400,400/full/0/default.jpg", representations.get(0).getUri().toString());
+        assertEquals(ImageFile.class, representations.get(0).getClass());
+        ImageFile image = (ImageFile)representations.get(0);
         assertEquals(Integer.valueOf(400), image.getWidth());
         assertEquals(Integer.valueOf(400), image.getHeight());
 
         // aspect ratio = 3/4
         MediaRepresentation repr2 = makeImageMediaRepresentation(1500, 2000);
 
-        representations = processor.makeNewMediaRepresentationsFor(repr2.getParts().get(0));
+        representations = processor.makeNewMediaRepresentationsFor(repr2);
 
-        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/400,400/full/0/default.jpg", representations.get(0).getParts().get(0).getUri().toString());
-        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
-        image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/400,400/full/0/default.jpg", representations.get(0).getUri().toString());
+        assertEquals(ImageFile.class, representations.get(0).getClass());
+        image = (ImageFile)representations.get(0);
         assertEquals(Integer.valueOf(400), image.getWidth());
         assertEquals(Integer.valueOf(400), image.getHeight());
     }
@@ -299,22 +296,22 @@ public class MediaUriTransformationProcessorTest {
         // aspect ratio = 4/3
         MediaRepresentation repr1 = makeImageMediaRepresentation(2000, 1500);
 
-        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr1.getParts().get(0));
+        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr1);
 
-        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/!400,400/full/0/default.jpg", representations.get(0).getParts().get(0).getUri().toString());
-        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
-        ImageFile image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/!400,400/full/0/default.jpg", representations.get(0).getUri().toString());
+        assertEquals(ImageFile.class, representations.get(0).getClass());
+        ImageFile image = (ImageFile)representations.get(0);
         assertEquals(Integer.valueOf(400), image.getWidth());
         assertEquals(Integer.valueOf(300), image.getHeight());
 
         // aspect ratio = 3/4
         MediaRepresentation repr2 = makeImageMediaRepresentation(1500, 2000);
 
-        representations = processor.makeNewMediaRepresentationsFor(repr2.getParts().get(0));
+        representations = processor.makeNewMediaRepresentationsFor(repr2);
 
-        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/!400,400/full/0/default.jpg", representations.get(0).getParts().get(0).getUri().toString());
-        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
-        image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/!400,400/full/0/default.jpg", representations.get(0).getUri().toString());
+        assertEquals(ImageFile.class, representations.get(0).getClass());
+        image = (ImageFile)representations.get(0);
         assertEquals(Integer.valueOf(300), image.getWidth());
         assertEquals(Integer.valueOf(400), image.getHeight());
     }
@@ -334,10 +331,10 @@ public class MediaUriTransformationProcessorTest {
         // aspect ratio = 4/3
         MediaRepresentation repr1 = makeImageMediaRepresentation(2000, 1500);
 
-        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr1.getParts().get(0));
+        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr1);
 
-        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
-        ImageFile image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals(ImageFile.class, representations.get(0).getClass());
+        ImageFile image = (ImageFile)representations.get(0);
         assertEquals(Integer.valueOf(300), image.getWidth());
         assertEquals(Integer.valueOf(225), image.getHeight());
 
@@ -348,10 +345,10 @@ public class MediaUriTransformationProcessorTest {
         transformation1.setHeight(300);
         transformation1.setMaxExtend(true);
 
-        representations = processor.makeNewMediaRepresentationsFor(repr2.getParts().get(0));
+        representations = processor.makeNewMediaRepresentationsFor(repr2);
 
-        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
-        image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals(ImageFile.class, representations.get(0).getClass());
+        image = (ImageFile)representations.get(0);
         assertEquals(Integer.valueOf(225), image.getWidth());
         assertEquals(Integer.valueOf(300), image.getHeight());
     }

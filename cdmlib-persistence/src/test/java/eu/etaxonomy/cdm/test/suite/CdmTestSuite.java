@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.test.suite;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,7 +16,6 @@ import org.junit.runners.Suite;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotationDaoImplTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBaseTest;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.TaxonGraphTest;
-
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

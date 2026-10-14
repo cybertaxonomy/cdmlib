@@ -6,13 +6,11 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.cache.media;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,7 +21,6 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 
 public class MediaDefaultCacheStrategy
@@ -64,26 +61,22 @@ public class MediaDefaultCacheStrategy
 		//get first image uri
 		if (isBlank(result)){
 			for (MediaRepresentation mediaRepresentation : media.getRepresentations()){
-				for (MediaRepresentationPart part : mediaRepresentation.getParts()){
-					result = (part == null || part.getUri() == null) ? null : part.getUri().toString();
-					if (isBlank(result)){
-						continue;
-					}
-					@SuppressWarnings("null")
-                    int lastSlashPos = result.lastIndexOf("/");
-					if (lastSlashPos != -1 && lastSlashPos + 1 < result.length()){
-					    int lastDotPos = result.lastIndexOf(".");
-					    if (lastDotPos == -1 || lastDotPos < lastSlashPos){
-					        result = result.substring(lastSlashPos + 1);
-					    }else{
-					        result = result.substring(lastSlashPos + 1, lastDotPos);
-					    }
-					}
-					break;
+				result = (mediaRepresentation == null || mediaRepresentation.getUri() == null)
+				        ? null : mediaRepresentation.getUri().toString();
+				if (isBlank(result)){
+					continue;
 				}
-				if (! isBlank(result)){
-					break;
+				@SuppressWarnings("null")
+                int lastSlashPos = result.lastIndexOf("/");
+				if (lastSlashPos != -1 && lastSlashPos + 1 < result.length()){
+				    int lastDotPos = result.lastIndexOf(".");
+				    if (lastDotPos == -1 || lastDotPos < lastSlashPos){
+				        result = result.substring(lastSlashPos + 1);
+				    }else{
+				        result = result.substring(lastSlashPos + 1, lastDotPos);
+				    }
 				}
+				break;
 			}
 			if (isBlank(result)){
 				result = "- empty media - <" + media.getUuid() + ">";

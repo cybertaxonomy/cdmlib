@@ -7,7 +7,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>6.0.0</version>
+    <version>6.1.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -21,7 +21,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.5.1</version>
         <executions>
           <execution>
             <goals>
@@ -110,7 +110,7 @@
     </dependency>
     <dependency>
       <groupId>org.docx4j</groupId>
-      <artifactId>docx4j-JAXB-Internal</artifactId>
+      <artifactId>docx4j-JAXB-ReferenceImpl</artifactId>
     </dependency>
     <dependency>
       <groupId>xml-resolver</groupId>

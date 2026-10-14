@@ -6,16 +6,15 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Types;
+import java.time.ZonedDateTime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.common.DbExportBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -142,7 +141,7 @@ public class MethodMapper
 			return Types.VARCHAR;
 		}else if (returnType == Boolean.class){
 			return Types.BOOLEAN;
-		}else if (returnType == DateTime.class){
+		}else if (returnType == ZonedDateTime.class){
 			return Types.DATE;
 		}else{
 			logger.warn("Return type not supported yet: " + returnType.getSimpleName());

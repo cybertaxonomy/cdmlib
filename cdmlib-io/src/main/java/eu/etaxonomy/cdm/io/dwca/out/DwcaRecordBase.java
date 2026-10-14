@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,7 +20,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -302,7 +302,7 @@ public abstract class DwcaRecordBase {
 		}
 	}
 
-	protected String getDate(DateTime date) {
+	protected String getDate(ZonedDateTime date) {
 		if (date == null){
 			return "";
 		}else{

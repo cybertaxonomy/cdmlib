@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.api.dto;
 
 import java.io.Serializable;
 
-
 public class DerivedUnitStatusDto implements Serializable{
 
 	private static final long serialVersionUID = 6463365950608923394L;

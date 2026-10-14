@@ -27,8 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
+import org.hibernate.search.mapper.orm.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -172,7 +171,7 @@ public class OccurrenceDaoHibernateImpl
 
     @Override
     public void rebuildIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+        var indexingPlan = Search.session(getSession()).indexingPlan();
 
         for(SpecimenOrObservationBase<?> occurrence : list(null,null)) { // re-index all taxon base
 
@@ -197,9 +196,9 @@ public class OccurrenceDaoHibernateImpl
                     }
                 }
             }
-            fullTextSession.index(occurrence);
+            indexingPlan.addOrUpdate(occurrence);
         }
-        fullTextSession.flushToIndexes();
+        indexingPlan.execute();
     }
 
     @Override

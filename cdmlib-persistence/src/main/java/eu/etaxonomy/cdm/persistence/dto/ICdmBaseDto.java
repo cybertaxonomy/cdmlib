@@ -9,9 +9,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
-
-import org.joda.time.DateTime;
 
 /**
  * @author K.Luther
@@ -21,8 +20,8 @@ import org.joda.time.DateTime;
 public interface ICdmBaseDto {
     public UUID getUuid();
     public int getId();
-    public DateTime getCreated();
+    public ZonedDateTime getCreated();
     public String getCreatedBy();
-    public DateTime getUpdated();
+    public ZonedDateTime getUpdated();
     public String getUpdatedBy();
 }

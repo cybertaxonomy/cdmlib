@@ -45,12 +45,12 @@ public class PrintPubBibliographyCollector {
 
             designation = CdmBase.deproxy(designation);
 
+            //designation source
             NamedSource designationSource = designation.getDesignationSource();
-
             collectSourceReference(state, designationSource, designationCategory);
 
+            //other sources
             for (OriginalSourceBase source : designation.getSources()) {
-
                 collectSourceReference(state, source, otherCategory);
             }
         }

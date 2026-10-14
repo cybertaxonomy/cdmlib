@@ -8,7 +8,9 @@
 */
 package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
+
+import org.joda.time.Partial;
 
 import com.github.dozermapper.core.CustomConverter;
 import com.github.dozermapper.core.MappingException;
@@ -25,17 +27,18 @@ public class TimePeriodConverter implements CustomConverter {
 		}
 		if (source instanceof TimePeriod) {
 
-			//convert from TimePeriod -> DateTime
-			//FIXME .toDateTime(null) most probably not correct
-			if(((TimePeriod)source).getStart() != null){
-				return ((TimePeriod)source).getStart().toDateTime(null);
+			//convert from TimePeriod -> ZonedDateTime
+			//FIXME null as default most probably not correct
+		    Partial start = ((TimePeriod)source).getStart();
+			if(start != null){
+			    return TimePeriod.zonedDateTimeFromPartial(start, null);
 			} else {
 				return null;
 			}
 
-		} else if (source instanceof DateTime) {
+		} else if (source instanceof ZonedDateTime) {
 
-			//convert from DateTime -> TimePeriod
+			//convert from ZonedDateTime -> TimePeriod
 			//FIXME implement
 			return null;
 		} else {

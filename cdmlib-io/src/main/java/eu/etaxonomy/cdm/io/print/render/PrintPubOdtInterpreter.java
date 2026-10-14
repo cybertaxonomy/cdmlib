@@ -16,6 +16,8 @@ import org.odftoolkit.odfdom.dom.OdfDocumentNamespace;
 import org.odftoolkit.odfdom.dom.element.text.TextHElement;
 import org.odftoolkit.odfdom.dom.element.text.TextLineBreakElement;
 import org.odftoolkit.odfdom.dom.element.text.TextPElement;
+import org.odftoolkit.odfdom.dom.element.text.TextReferenceMarkElement;
+import org.odftoolkit.odfdom.dom.element.text.TextReferenceRefElement;
 import org.odftoolkit.odfdom.dom.element.text.TextSpanElement;
 import org.odftoolkit.odfdom.dom.style.OdfStyleFamily;
 import org.odftoolkit.odfdom.dom.style.props.OdfParagraphProperties;
@@ -94,16 +96,64 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
         }
 
         // ---------- TAXON NAME STYLE ----------
-        OdfStyle taxonName = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
 
-        taxonName.setStyleNameAttribute("PrintPubTaxonName");
+        createTaxonNameStyle("PrintPubTaxonNameHigher", "18pt", "0.4cm", "0.15cm");
+        createTaxonNameStyle("PrintPubTaxonNameIntermediate", "16pt", "0.3cm", "0.1cm");
+        createTaxonNameStyle("PrintPubTaxonNameLower", "14pt", "0.2cm", "0.05cm");
 
-        // slightly larger than body
-        taxonName.setProperty(OdfTextProperties.FontSize, "16pt");
+        // ---------- BIBLIOGRAPHY ----------
 
-        // optional visual tuning
-        taxonName.setProperty(OdfParagraphProperties.MarginTop, "0.3cm");
-        taxonName.setProperty(OdfParagraphProperties.MarginBottom, "0.1cm");
+        OdfStyle bibliography = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+
+        bibliography.setStyleNameAttribute("PrintPubBibliography");
+        bibliography.setProperty(OdfParagraphProperties.MarginLeft, "1cm");
+        bibliography.setProperty(OdfParagraphProperties.TextIndent, "-1cm");
+
+        // ---------- FACT GROUP ----------
+
+        OdfStyle factGroup = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+
+        factGroup.setStyleNameAttribute("PrintPubFactGroup");
+        factGroup.setProperty(OdfParagraphProperties.MarginLeft, "0.5cm");
+        factGroup.setProperty(OdfParagraphProperties.TextIndent, "-0.5cm");
+
+        // ---------- TYPE DESIGNATIONS ----------
+
+        OdfStyle typeDesignation = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+
+        typeDesignation.setStyleNameAttribute("PrintPubTypeDesignation");
+        typeDesignation.setProperty(OdfParagraphProperties.MarginLeft, "0cm");
+        typeDesignation.setProperty(OdfParagraphProperties.TextIndent, "0cm");
+
+        OdfStyle typeDesignationIndent = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+
+        typeDesignationIndent.setStyleNameAttribute("PrintPubTypeDesignationIndent");
+        typeDesignationIndent.setProperty(OdfParagraphProperties.MarginLeft, "0.8cm");
+        typeDesignationIndent.setProperty(OdfParagraphProperties.TextIndent, "-0.8cm");
+
+        // ---------- SYNONYMS ----------
+
+        OdfStyle synonym = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+
+        synonym.setStyleNameAttribute("PrintPubSynonym");
+        synonym.setProperty(OdfParagraphProperties.MarginLeft, "0cm");
+        synonym.setProperty(OdfParagraphProperties.TextIndent, "0cm");
+
+        OdfStyle synonymIndent = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+
+        synonymIndent.setStyleNameAttribute("PrintPubSynonymIndent");
+        synonymIndent.setProperty(OdfParagraphProperties.MarginLeft, "0.8cm");
+        synonymIndent.setProperty(OdfParagraphProperties.TextIndent, "-0.8cm");
+    }
+
+    private void createTaxonNameStyle(String styleName, String fontSize, String marginTop, String marginBottom) {
+
+        OdfStyle style = contentDom.getOrCreateAutomaticStyles().newStyle(OdfStyleFamily.Paragraph);
+
+        style.setStyleNameAttribute(styleName);
+        style.setProperty(OdfTextProperties.FontSize, fontSize);
+        style.setProperty(OdfParagraphProperties.MarginTop, marginTop);
+        style.setProperty(OdfParagraphProperties.MarginBottom, marginBottom);
     }
 
     @Override
@@ -123,6 +173,7 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
 
         } else if (element instanceof PrintPubTextRunElement) {
             renderTextRun((PrintPubTextRunElement) element);
+
         }
     }
 
@@ -179,35 +230,84 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
 
     private void renderTextRun(PrintPubTextRunElement element) {
 
-        TextPElement p = contentDom.newOdfElement(TextPElement.class);
+        TextPElement paragraph = contentDom.newOdfElement(TextPElement.class);
 
         String styleName;
+
         switch (element.getRole()) {
-        case TAXON_NAME:
-            styleName = "PrintPubTaxonName";
+        case TAXON_NAME_HIGHER:
+            styleName = "PrintPubTaxonNameHigher";
             break;
+
+        case TAXON_NAME_INTERMEDIATE:
+            styleName = "PrintPubTaxonNameIntermediate";
+            break;
+
+        case TAXON_NAME_LOWER:
+            styleName = "PrintPubTaxonNameLower";
+            break;
+
+        case FACT_GROUP_INDENT:
+            styleName = "PrintPubFactGroup";
+            break;
+
         case FACT_GROUP:
-            styleName = "PrintPubBody"; // or future variant
+            styleName = "PrintPubBody";
             break;
+
+        case TYPE_DESIGNATION:
+            styleName = "PrintPubTypeDesignation";
+            break;
+
+        case TYPE_DESIGNATION_INDENT:
+            styleName = "PrintPubTypeDesignationIndent";
+            break;
+
+        case SYNONYM:
+            styleName = "PrintPubSynonym";
+            break;
+
+        case SYNONYM_INDENT:
+            styleName = "PrintPubSynonymIndent";
+            break;
+
+        case BIBLIOGRAPHY:
+            styleName = "PrintPubBibliography";
+            break;
+
         case BODY:
+            styleName = "PrintPubBody";
+            break;
         default:
             styleName = "PrintPubBody";
+            break;
         }
 
-        p.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", styleName);
+        paragraph.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", styleName);
 
         if (element.getLabel() != null) {
             TextSpanElement label = contentDom.newOdfElement(TextSpanElement.class);
             label.setAttributeNS(OdfDocumentNamespace.TEXT.getUri(), "text:style-name", "PrintPubBold");
             label.setTextContent(element.getLabel() + ": ");
-            p.appendChild(label);
+            paragraph.appendChild(label);
         }
 
         for (PrintPubTextRunElement.Run run : element.getRuns()) {
 
             if (run.type == PrintPubTextRunElement.RunType.LINE_BREAK) {
-                p.appendChild(contentDom.newOdfElement(TextLineBreakElement.class));
+                paragraph.appendChild(contentDom.newOdfElement(TextLineBreakElement.class));
                 continue;
+            } else if (run.type == PrintPubTextRunElement.RunType.REFERENCE_MARK) {
+                TextReferenceMarkElement mark = new TextReferenceMarkElement(contentDom);
+                mark.setTextNameAttribute(run.uuid.toString());
+                paragraph.appendChild(mark);
+                continue;
+            } else if (run.type == PrintPubTextRunElement.RunType.PAGE_REFERENCE) {
+                TextReferenceRefElement ref = new TextReferenceRefElement(contentDom);
+                ref.setTextRefNameAttribute(run.uuid.toString());
+                ref.setTextReferenceFormatAttribute("page");
+                ref.setTextContent("1"); // placeholder, freshly computed when opening / printing
+                textRoot.appendChild(ref);
             }
 
             TextSpanElement span = contentDom.newOdfElement(TextSpanElement.class);
@@ -222,10 +322,10 @@ public class PrintPubOdtInterpreter implements IPrintPubDocumentInterpreter {
             }
 
             span.setTextContent(run.text);
-            p.appendChild(span);
+            paragraph.appendChild(span);
         }
 
-        textRoot.appendChild(p);
+        textRoot.appendChild(paragraph);
     }
 
     // =============================

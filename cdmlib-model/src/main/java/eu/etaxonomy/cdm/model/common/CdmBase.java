@@ -13,11 +13,13 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.time.ZonedDateTime;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
@@ -39,26 +41,26 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.DocumentId;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.Store;
-import org.joda.time.DateTime;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
+import org.hibernate.search.mapper.pojo.common.annotation.Param;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.DocumentId;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.PropertyBinding;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.TypeBinding;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
+import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
-import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.NewEntityListener;
@@ -67,7 +69,6 @@ import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
-
 
 /**
  * The base class for all CDM domain classes implementing UUIDs and bean property change event firing.
@@ -88,6 +89,9 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
         "createdBy"
 })
 @MappedSuperclass
+// HS6 no longer writes _hibernate_class; ClassInfoBridge replaces ProjectionConstants.OBJECT_CLASS
+@TypeBinding(binder = @TypeBinderRef(type = ClassInfoBridge.class,
+        params = @Param(name = ClassInfoBridge.FIELD_NAME_PARAM, value = "classInfo")))
 public abstract class CdmBase
         implements Serializable, ICdmBase, ISelfDescriptive, Cloneable{
 
@@ -112,7 +116,8 @@ public abstract class CdmBase
 //	@GeneratedValue(generator = "enhanced-table")
     @GeneratedValue(generator = "custom-enhanced-table")
     @DocumentId
-    @FieldBridge(impl=NotNullAwareIdBridge.class)
+    //the binder adds the "id__notNull" and sort fields which a plain identifier bridge can not contribute
+    @PropertyBinding(binder = @PropertyBinderRef(type = NotNullAwareIdBridge.class))
     @Match(MatchMode.IGNORE)
     @NotNull
     @Min(0)
@@ -127,20 +132,17 @@ public abstract class CdmBase
     @Column(length=36)  //TODO needed? Type UUID will always assure that is exactly 36
     @Match(MatchMode.IGNORE)
     @NotNull
-    @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
-    @FieldBridge(impl = UuidBridge.class)
+    @KeywordField(projectable = Projectable.YES)
     @Audited
     protected UUID uuid;
 
     @XmlElement (name = "Created", type= String.class)
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    @Type(type="dateTimeUserType")
     @Basic(fetch = FetchType.LAZY)
     @Match(MatchMode.IGNORE)
-    @Field(analyze = Analyze.NO)
-    @FieldBridge(impl = DateTimeBridge.class)
+    @GenericField
     @Audited
-    private DateTime created;
+    private ZonedDateTime created;
 
     @XmlElement (name = "CreatedBy")
     @XmlIDREF
@@ -156,7 +158,7 @@ public abstract class CdmBase
      */
     public CdmBase() {
         this.uuid = UUID.randomUUID();
-        this.created = new DateTime().withMillisOfSecond(0);
+        this.created = ZonedDateTime.now().withNano(0);
     }
 
     //TODO are these 2 methods really needed, looks they are not used except for NewEntityListenerTest
@@ -277,14 +279,13 @@ public abstract class CdmBase
     }
 
     @Override
-    public DateTime getCreated() {
+    public ZonedDateTime getCreated() {
         return created;
     }
     @Override
-    public void setCreated(DateTime created) {
+    public void setCreated(ZonedDateTime created) {
         if (created != null){
-            created = created.withMillisOfSecond(0);
-            //created.set(Calendar.MILLISECOND, 0);  //old, can be deleted
+            created = created.withNano(0);
         }
         this.created = created;
     }
@@ -578,7 +579,7 @@ public abstract class CdmBase
         //TODO ?
         result.setId(0);
         result.setUuid(UUID.randomUUID());
-        result.setCreated(new DateTime());
+        result.setCreated(ZonedDateTime.now().withNano(0));
         result.setCreatedBy(null);
 
         //no changes to: -

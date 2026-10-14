@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.hibernate.search.Search;
+import org.hibernate.search.mapper.orm.Search;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -519,7 +519,7 @@ public class DistributionAggregation
         getSession().flush();
         try {
             logger.debug("flushing to indexes ...");
-            Search.getFullTextSession(getSession()).flushToIndexes();
+            Search.session(getSession()).indexingPlan().execute();
         } catch (HibernateException e) {
             /* IGNORE - Hibernate Search Event listeners not configured ... */
             if(!e.getMessage().startsWith("Hibernate Search Event listeners not configured")){

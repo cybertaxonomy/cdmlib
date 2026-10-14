@@ -82,7 +82,7 @@
         </name:ZoologicalName>
     </TaxonomicNames>
     <TaxonBases>
-        <taxon:Taxon id="1" uuid="urn-uuid-2deca426-359b-43fa-be96-fd530a28b0df" isDoubtful="false">            
+        <taxon:Taxon id="1" uuid="urn-uuid-2deca426-359b-43fa-be96-fd530a28b0df">            
             <common:LSID>urn:lsid:example.org:taxonconcept:1</common:LSID>
             <common:TitleCache><i xmlns="http://www.w3.org/1999/xhtml">Acherontia</i> Laspeyres, 1809</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
@@ -100,7 +100,7 @@
                 </taxon:FromThisTaxonRelationship>
             </taxon:RelationsFromThisTaxon>
         </taxon:Taxon>
-        <taxon:Taxon id="2" uuid="urn-uuid-5ded5fee-b816-46cf-b4ae-0931d564cd54" isDoubtful="false">
+        <taxon:Taxon id="2" uuid="urn-uuid-5ded5fee-b816-46cf-b4ae-0931d564cd54">
             <common:TitleCache>Acherontia atropos (Linnaeus, 1758) sec Laspeyres 1809</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <taxon:Name>urn-uuid-b1e3894b-4339-44f8-8ee6-d1828a8857be</taxon:Name>
@@ -109,7 +109,7 @@
               <taxon:ToThisTaxonRelationship>urn-uuid-71d6b608-d13d-492c-870a-9536be49239e</taxon:ToThisTaxonRelationship>
             </taxon:RelationsToThisTaxon>
         </taxon:Taxon>
-        <taxon:Synonym isDoubtful="false" id="0" uuid="urn-uuid-406dbfb0-2f5a-11de-8c30-0800200c9a66">
+        <taxon:Synonym id="0" uuid="urn-uuid-406dbfb0-2f5a-11de-8c30-0800200c9a66">
             <common:TitleCache>Acherontia atropos charon (Closs, 1910)</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <taxon:Name>urn-uuid-838fafd3-25a1-4aae-8b50-ecbcbad3c915</taxon:Name>

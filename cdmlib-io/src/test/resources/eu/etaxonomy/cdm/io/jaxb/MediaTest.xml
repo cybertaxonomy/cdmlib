@@ -68,18 +68,13 @@
             </media:MediaTitle>
             <media:MediaCreated>2006-10-01T00:00:00.000</media:MediaCreated>
             <media:MediaRepresentations>
-                <media:MediaRepresentation id="1" uuid="urn-uuid-2d7fa0d1-4546-4867-b80f-e2bb4d48afb3">
+                <media:ImageFile id="1" uuid="urn-uuid-2d7fa0d1-4546-4867-b80f-e2bb4d48afb3">
                     <media:MimeType>image/png</media:MimeType>
                     <media:Media>urn-uuid-39a306b3-c4fd-4c8c-b0e8-22d8001e8410</media:Media>
-                    <media:MediaRepresentationParts>
-                        <media:ImageFile id="1" uuid="urn-uuid-207e2af0-46a7-4fb9-a32a-284bf585950e">
-                            <media:URI>file:src/test/resources/image.png</media:URI>
-                            <media:MediaRepresentation>urn-uuid-2d7fa0d1-4546-4867-b80f-e2bb4d48afb3</media:MediaRepresentation>
-                            <media:Height>1200</media:Height>
-                            <media:Width>1600</media:Width>
-                        </media:ImageFile>
-                    </media:MediaRepresentationParts>
-                </media:MediaRepresentation>
+                    <media:URI>file:src/test/resources/image.png</media:URI>
+                    <media:Height>1200</media:Height>
+                    <media:Width>1600</media:Width>
+                </media:ImageFile>
             </media:MediaRepresentations>
             <media:Rights>
                 <media:Right id="1" uuid="urn-uuid-4aec134e-bca8-4e1f-b115-84bb4f8f7923">

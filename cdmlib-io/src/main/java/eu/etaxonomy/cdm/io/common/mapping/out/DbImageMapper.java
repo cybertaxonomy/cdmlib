@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 
 /**
  * TODO under construction (maybe needs to be a multi-attribute mapper as it maps to taxon column
@@ -53,22 +52,17 @@ public class DbImageMapper
 				Set<MediaRepresentation> representations = image.getRepresentations();
 
 				for (MediaRepresentation representation : representations) {
-					List<MediaRepresentationPart> representationParts = representation.getParts();
+					URI mediaUri = representation.getUri();
 
-					for (MediaRepresentationPart representationPart : representationParts) {
-						URI mediaUri = representationPart.getUri();
+					// Add image data
+					String thumb = null;
+					Integer taxonFk = null; //getState().getDbId(taxonBase.getName());
 
-						// Add image data
-						String thumb = null;
-						Integer taxonFk = null; //getState().getDbId(taxonBase.getName());
-
-						if (taxonFk != null && mediaUri != null) {
+					if (taxonFk != null && mediaUri != null) {
 //							doCount(count++, modCount, pluralString);
 //							invokeImages(thumb, mediaUri, taxonFk, connection);
-						}
 					}
 				}
-
 			}
 		}else{
 			throw new ClassCastException("CdmBase for "+this.getClass().getName() +" must be of type TextData, but was " + cdmBase.getClass());

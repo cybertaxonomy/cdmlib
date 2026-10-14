@@ -5,7 +5,6 @@ package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 //This example is provided WITHOUT ANY WARRANTY either expressed or implied.
 //You may study, use, modify, and distribute it for non-commercial purposes.
 //For any commercial use, see http://www.davidflanagan.com/javaexamples
-
 import java.io.*;
 
 /**

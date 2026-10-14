@@ -9,8 +9,7 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.time.LocalDateTime;
-
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 
 /**
  * @author muellera
@@ -19,12 +18,12 @@ import org.joda.time.DateTime;
 public class DtoUtil {
 
 
-    public static LocalDateTime fromDateTime(DateTime dateToAdd) {
+    public static LocalDateTime fromDateTime(ZonedDateTime dateToAdd) {
 
         LocalDateTime result = dateToAdd == null ? null:
-            LocalDateTime.of(dateToAdd.getYear(), dateToAdd.getMonthOfYear(),
-                    dateToAdd.getDayOfMonth(), dateToAdd.getHourOfDay(),
-                    dateToAdd.getMinuteOfHour(), dateToAdd.getSecondOfMinute());
+            LocalDateTime.of(dateToAdd.getYear(), dateToAdd.getMonth(),
+                    dateToAdd.getDayOfMonth(), dateToAdd.getHour(),
+                    dateToAdd.getMinute(), dateToAdd.getSecond());
         return result;
     }
 }

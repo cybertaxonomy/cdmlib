@@ -111,7 +111,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 @XmlRootElement(name = "Feature")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
+//@Indexed
 @Audited
 public class Feature extends AvailableForTermBase<Feature> {
 
@@ -155,7 +155,7 @@ public class Feature extends AvailableForTermBase<Feature> {
         //  inverseJoinColumns
     )
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-//    @IndexedEmbedded(depth = 2)
+//    @IndexedEmbedded(includeDepth = 2)
     private Set<Representation> inverseRepresentations = new HashSet<>();
 
 	//#10328 the maximum number of entries per dataset, null = unlimited

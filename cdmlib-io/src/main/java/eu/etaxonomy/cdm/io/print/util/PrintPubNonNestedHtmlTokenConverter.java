@@ -21,7 +21,7 @@ public class PrintPubNonNestedHtmlTokenConverter {
     public static List<PrintPubTextRunElement.Run> toRuns(
             List<PrintPubNonNestedHtmlTokenizer.PrintPubHtmlToken> tokens) {
 
-        List<PrintPubTextRunElement.Run> runs = new ArrayList<PrintPubTextRunElement.Run>();
+        List<PrintPubTextRunElement.Run> runs = new ArrayList<>();
 
         for (PrintPubNonNestedHtmlTokenizer.PrintPubHtmlToken t : tokens) {
             switch (t.type) {

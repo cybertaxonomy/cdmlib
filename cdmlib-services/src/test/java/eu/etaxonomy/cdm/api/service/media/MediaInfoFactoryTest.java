@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.apache.http.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import org.cybertaxonomy.media.info.model.MediaInfo;
 import org.junit.Before;
 import org.junit.Test;
@@ -120,14 +120,14 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
         URI transformedUri = list.get(0);
         assertEquals("https://image.bgbm.org/metadata/info?file=mediacloud/org1/1adb62d8-0b67-4128-927b-b713d164f98e/original", transformedUri.toString());
         if(UriUtils.isInternetAvailable(new URI("https://image.bgbm.org/"))){
-            InputStream jsonStream = UriUtils.getInputStream(transformedUri);
-            ObjectMapper mapper = new ObjectMapper();
-            MediaInfo mediaInfo = mapper.readValue(jsonStream, MediaInfo.class);
-            assertEquals(937, mediaInfo.getHeight());
-            assertEquals(1400, mediaInfo.getWidth());
+            try (InputStream jsonStream = UriUtils.getInputStream(transformedUri)){
+                ObjectMapper mapper = new ObjectMapper();
+                MediaInfo mediaInfo = mapper.readValue(jsonStream, MediaInfo.class);
+                assertEquals(937, mediaInfo.getHeight());
+                assertEquals(1400, mediaInfo.getWidth());
+            }
         }
     }
-
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

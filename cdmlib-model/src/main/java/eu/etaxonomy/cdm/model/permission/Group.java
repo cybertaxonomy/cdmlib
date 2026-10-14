@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.permission;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,13 +28,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.search.annotations.Field;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @XmlRootElement(name = "Group")
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
-//@Indexed(index = "eu.etaxonomy.cdm.model.common.Group")
+//@Indexed
 @Table(name = "PermissionGroup")
 public class Group extends CdmBase {
 
@@ -83,7 +83,7 @@ public class Group extends CdmBase {
 
     @XmlElement(name = "Name")
     @Column(unique = true)
-    @Field
+    @FullTextField
     @NotNull
     @Pattern(regexp=User.USERNAME_REGEX)
     private String name;

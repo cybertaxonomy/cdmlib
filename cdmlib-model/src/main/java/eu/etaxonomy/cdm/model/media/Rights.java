@@ -20,20 +20,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.AnnotatableLanguageStringBase;
+import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * Typically, rights information includes a statement about various property
@@ -62,8 +60,7 @@ public class Rights extends AnnotatableLanguageStringBase {
 
 	//external location of copyright text
 	@XmlElement(name = "URI")
-	@Field(analyze = Analyze.NO)
-    @FieldBridge(impl = UriBridge.class)
+	@KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
 	@Type(type="uriUserType")
 	private URI uri;
 

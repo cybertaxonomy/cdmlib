@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.RevisionStatusForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
@@ -49,6 +50,7 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeComparatorFactory;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -56,6 +58,8 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.RevisionStatus;
+import eu.etaxonomy.cdm.model.common.RevisionStatusInfo;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -116,9 +120,6 @@ public class TaxonNodeServiceImpl
     @Autowired
     private ITaxonService taxonService;
 
-//    @Autowired
-//    private IReferenceService referenceService;
-
     @Autowired
     private IDescriptiveDataSetService dataSetService;
 
@@ -160,7 +161,8 @@ public class TaxonNodeServiceImpl
         taxonNode = load(taxonNode.getUuid());
         List<TaxonNode> childNodes;
         if (recursive == true){
-            Comparator<TaxonNode> comparator = sortMode == null? null : sortMode.comparator();
+            Comparator<TaxonNode> comparator = sortMode == null? null
+                    : TaxonNodeComparatorFactory.bySortMode(sortMode);
             childNodes = dao.listChildrenOf(taxonNode, null, null, recursive, includeUnpublished, propertyPaths, comparator);
         }else if (includeUnpublished){
             childNodes = new ArrayList<>(taxonNode.getChildNodes());
@@ -174,7 +176,7 @@ public class TaxonNodeServiceImpl
         }
 
         if (recursive == false && sortMode != null){
-            Comparator<TaxonNode> comparator = sortMode.comparator();
+            Comparator<TaxonNode> comparator = TaxonNodeComparatorFactory.bySortMode(sortMode);
         	Collections.sort(childNodes, comparator);
         }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
@@ -1227,6 +1229,99 @@ public class TaxonNodeServiceImpl
         return result;
     }
 
+    @Override
+    @Transactional(readOnly=false)
+    public UpdateResult setRevisionStatusForSubtree(RevisionStatusForSubtreeConfigurator config){
+
+        UpdateResult result = new UpdateResult();
+        IProgressMonitor monitor = config.getMonitor();
+        if (monitor == null){
+            monitor = DefaultProgressMonitor.NewInstance();
+        }
+        monitor.beginTask("Update revision status for subtree", 100);
+        monitor.subTask("Check start conditions");
+
+        if (config.getSubtreeUuid() == null){
+            result.setError();
+            result.addException(new NullPointerException("No subtree given"));
+            monitor.done();
+            return result;
+        }
+        monitor.worked(1);
+
+        TaxonNode subTree = find(config.getSubtreeUuid());
+        if (subTree == null){
+            result.setError();
+            result.addException(new NullPointerException("Subtree does not exist"));
+            monitor.done();
+            return result;
+        }
+        monitor.worked(1);
+
+        RevisionStatusInfo revisionStatus = config.getRevisionStatus();
+        if (revisionStatus != null && revisionStatus.getStatus() != null){
+            RevisionStatus status = genericDao.find(RevisionStatus.class, revisionStatus.getStatus().getUuid());
+            if (status == null){
+                result.setError();
+                result.addException(new NullPointerException("Revision status term does not exist"));
+                monitor.done();
+                return result;
+            }
+            revisionStatus = RevisionStatusInfo.NewInstance(status, revisionStatus.getChanged());
+        }
+        monitor.worked(1);
+
+        monitor.subTask("Count records");
+        boolean includeAcceptedTaxa = config.isIncludeAcceptedTaxa();
+        boolean includeSharedTaxa = config.isIncludeSharedTaxa();
+        boolean includeHybrids = config.isIncludeHybrids();
+        boolean overwriteExisting = config.isOverwriteExisting();
+        boolean includeRelatedTaxa = config.isIncludeProParteSynonyms() || config.isIncludeMisapplications();
+        try {
+            TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
+            int count = includeAcceptedTaxa
+                    ? dao.countRevisionStatusForSubtreeAcceptedTaxa(subTreeIndex, overwriteExisting, includeSharedTaxa, includeHybrids)
+                    : 0;
+            monitor.worked(3);
+            count += includeRelatedTaxa
+                    ? dao.countRevisionStatusForSubtreeRelatedTaxa(subTreeIndex, overwriteExisting, includeSharedTaxa, includeHybrids)
+                    : 0;
+            monitor.worked(3);
+            if (monitor.isCanceled()){
+                return result;
+            }
+
+            SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor, 90,
+                    "Updating revision status for subtree", count);
+            if (includeAcceptedTaxa){
+                monitor.subTask("Update Accepted Taxa");
+                Set<Taxon> updatedTaxa = dao.setRevisionStatusForSubtreeAcceptedTaxa(subTreeIndex,
+                        revisionStatus, overwriteExisting, includeSharedTaxa, includeHybrids, subMonitor);
+                result.addUpdatedObjects(updatedTaxa);
+                if (monitor.isCanceled()){
+                    return result;
+                }
+            }
+            if (includeRelatedTaxa){
+                monitor.subTask("Update Related Taxa");
+                Set<UUID> relationTypes = getRelationTypesForSubtree(config);
+                Set<Taxon> updatedTaxa = dao.setRevisionStatusForSubtreeRelatedTaxa(subTreeIndex,
+                        revisionStatus, relationTypes, overwriteExisting, includeSharedTaxa,
+                        includeHybrids, subMonitor);
+                result.addUpdatedObjects(updatedTaxa);
+                if (monitor.isCanceled()){
+                    return result;
+                }
+            }
+        } catch (Exception e) {
+            result.setError();
+            result.addException(e);
+        }
+
+        monitor.done();
+        return result;
+    }
+
     private Set<UUID> getRelationTypesForSubtree(ForSubtreeConfiguratorBase config) {
         Set<UUID> relationTypes = new HashSet<>();
         if (config.isIncludeMisapplications()){
@@ -1309,7 +1404,7 @@ public class TaxonNodeServiceImpl
 
         List<TaxonNode> parentNodes = load(nodeUuids, propertyPaths);
         if (sortMode != null){
-            parentNodes.sort(sortMode.comparator());
+            parentNodes.sort(TaxonNodeComparatorFactory.bySortMode(sortMode));
         }
         if (openChildren){
             //TODO we could remove nodes which are children of other nodes in parentNodes list here as they are duplicates

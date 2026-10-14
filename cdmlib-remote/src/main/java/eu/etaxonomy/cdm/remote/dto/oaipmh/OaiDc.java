@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
 import java.net.URI;
+import java.time.ZonedDateTime;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,8 +9,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 
@@ -53,7 +52,7 @@ public class OaiDc {
 
     @XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     @XmlJavaTypeAdapter(DateTimeAdapter.class)
-    private DateTime date;
+    private ZonedDateTime date;
 
     @XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
     private String type;
@@ -197,11 +196,11 @@ public class OaiDc {
 		return contributor;
 	}
 
-	public DateTime getDate() {
+	public ZonedDateTime getDate() {
 		return date;
 	}
 
-	public void setDate(DateTime date) {
+	public void setDate(ZonedDateTime date) {
 		this.date = date;
 	}
 

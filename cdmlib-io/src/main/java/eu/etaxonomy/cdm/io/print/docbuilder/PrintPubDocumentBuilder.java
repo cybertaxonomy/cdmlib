@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.io.print.docmodel.PrintPubPageBreakElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubParagraphElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubSectionHeaderElement;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement;
+import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement.PrintPubTextRole;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement.Run;
 import eu.etaxonomy.cdm.io.print.docmodel.PrintPubTextRunElement.RunType;
 import eu.etaxonomy.cdm.io.print.dto.PrintPubFactDTO;
@@ -160,13 +161,39 @@ public class PrintPubDocumentBuilder {
 
     private PrintPubTextRunElement renderTaxonHeading(PrintPubTaxonSummaryDTO taxonDto) {
 
-        List<Run> runs = new ArrayList<>(runsFromTaggedNameForTitle(taxonDto.nameDTO.taggedNameList));
+        List<Run> runs = new ArrayList<>();
+
+        PrintPubNameDTO nameDto = taxonDto.nameDTO;
+
+        if (nameDto != null) {
+
+            if (nameDto.uuid != null) {
+                runs.add(new Run(RunType.REFERENCE_MARK, nameDto.uuid));
+            }
+
+            runs.addAll(runsFromTaggedNameForTitle(nameDto.taggedNameList));
+        }
 
         if (StringUtils.isNotBlank(taxonDto.secReferenceCitation)) {
             runs.add(new Run(RunType.TEXT, ACC_SEC_MARKER + taxonDto.secReferenceCitation));
         }
 
-        return new PrintPubTextRunElement(null, runs, PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME);
+        return new PrintPubTextRunElement(null, runs, taxonNameRole(nameDto));
+    }
+
+    private PrintPubTextRunElement.PrintPubTextRole taxonNameRole(PrintPubNameDTO nameDto) {
+
+        if (nameDto == null || nameDto.headingLevel == null) {
+            return PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME_LOWER;
+        }
+
+        return switch (nameDto.headingLevel) {
+        case HIGHER -> PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME_HIGHER;
+
+        case INTERMEDIATE -> PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME_INTERMEDIATE;
+
+        case LOWER -> PrintPubTextRunElement.PrintPubTextRole.TAXON_NAME_LOWER;
+        };
     }
 
     private List<IPrintPubDocumentElement> renderSynonyms(PrintPubDocumentRequest request,
@@ -175,17 +202,19 @@ public class PrintPubDocumentBuilder {
         List<IPrintPubDocumentElement> elements = new ArrayList<>();
         boolean oneLinePerHomotypicGroup = request.oneLinePerHomotypicGroup();
 
-        //homotypic synonyms
+        // homotypic synonyms
         if (taxonDto.homotypicSynonymGroup != null) {
             PrintPubSynonymGroupDTO groupDto = taxonDto.homotypicSynonymGroup;
             boolean isHomotypicToAccepted = true;
-            handleHomotypicGroup(request, groupDto, citations, elements, oneLinePerHomotypicGroup, isHomotypicToAccepted);
+            handleHomotypicGroup(request, groupDto, citations, elements, oneLinePerHomotypicGroup,
+                    isHomotypicToAccepted);
         }
 
-        //heterotypic synonyms
+        // heterotypic synonyms
         for (PrintPubSynonymGroupDTO groupDto : taxonDto.heterotypicSynonymGroups) {
             boolean isHomotypicToAccepted = false;
-            handleHomotypicGroup(request, groupDto, citations, elements, oneLinePerHomotypicGroup, isHomotypicToAccepted);
+            handleHomotypicGroup(request, groupDto, citations, elements, oneLinePerHomotypicGroup,
+                    isHomotypicToAccepted);
         }
 
         return elements;
@@ -209,11 +238,23 @@ public class PrintPubDocumentBuilder {
         }
 
         if (!runs.isEmpty()) {
-            elements.add(new PrintPubTextRunElement(runs));
+            PrintPubTextRole role = request.indentSynonyms() ? PrintPubTextRole.SYNONYM_INDENT
+                    : PrintPubTextRole.SYNONYM;
+
+            elements.add(new PrintPubTextRunElement(null, runs, role));
         }
 
         if (StringUtils.isNotBlank(groupDto.typeSpecimenString)) {
-            additionalElements.add(new PrintPubParagraphElement(groupDto.typeSpecimenString));
+
+            List<Run> typeRuns = PrintPubNonNestedHtmlTokenConverter
+                    .toRuns(PrintPubNonNestedHtmlTokenizer.tokenize(groupDto.typeSpecimenString));
+
+            if (!typeRuns.isEmpty()) {
+                PrintPubTextRole role = request.indentTypeDesignations() ? PrintPubTextRole.TYPE_DESIGNATION_INDENT
+                        : PrintPubTextRole.TYPE_DESIGNATION;
+
+                additionalElements.add(new PrintPubTextRunElement(null, typeRuns, role));
+            }
         }
 
         elements.addAll(additionalElements);
@@ -269,15 +310,9 @@ public class PrintPubDocumentBuilder {
             return elements;
         }
 
-        Map<PrintPubFeatureKey, List<PrintPubFactDTO>> groups =
-                dto.facts.stream()
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.groupingBy(
-                                fact -> new PrintPubFeatureKey(
-                                        fact.featureUuid,
-                                        fact.label),
-                                LinkedHashMap::new,
-                                Collectors.toList()));
+        Map<PrintPubFeatureKey, List<PrintPubFactDTO>> groups = dto.facts.stream().filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(fact -> new PrintPubFeatureKey(fact.featureUuid, fact.label),
+                        LinkedHashMap::new, Collectors.toList()));
 
         for (Map.Entry<PrintPubFeatureKey, List<PrintPubFactDTO>> entry : groups.entrySet()) {
 
@@ -293,7 +328,7 @@ public class PrintPubDocumentBuilder {
             String label = StringUtils.defaultIfBlank(key.getLabel(), "Facts");
 
             elements.add(new PrintPubTextRunElement(label, combinedRuns,
-                    PrintPubTextRunElement.PrintPubTextRole.FACT_GROUP));
+                    request.indentFacts() ? PrintPubTextRole.FACT_GROUP_INDENT : PrintPubTextRole.FACT_GROUP));
         }
 
         return elements;
@@ -349,7 +384,18 @@ public class PrintPubDocumentBuilder {
                 continue;
             }
 
-            elements.add(new PrintPubParagraphElement(reference.getTitleCache()));
+            String title = reference.getTitleCache();
+
+            if (StringUtils.isBlank(title)) {
+                continue;
+            }
+
+            List<Run> runs = PrintPubNonNestedHtmlTokenConverter.toRuns(PrintPubNonNestedHtmlTokenizer.tokenize(title));
+
+            if (!runs.isEmpty()) {
+                elements.add(
+                        new PrintPubTextRunElement(null, runs, PrintPubTextRunElement.PrintPubTextRole.BIBLIOGRAPHY));
+            }
         }
 
         return elements;
@@ -370,6 +416,10 @@ public class PrintPubDocumentBuilder {
 
         for (PrintPubNameDTO nameDto : names) {
             List<Run> nameRuns = runsFromTaggedName(nameDto.taggedNameList, TITLE_CACHE_TAGS);
+            if (nameDto.uuid != null) {
+                nameRuns.add(new Run(RunType.TEXT, "..."));
+                nameRuns.add(new Run(RunType.PAGE_REFERENCE, nameDto.uuid));
+            }
             elements.add(new PrintPubTextRunElement(nameRuns));
         }
 
@@ -382,13 +432,10 @@ public class PrintPubDocumentBuilder {
             return Stream.empty();
         }
 
-        return taxonDtos.stream()
-                .filter(Objects::nonNull)
-                .flatMap(taxon -> Stream.concat(
-                        Stream.ofNullable(taxon.nameDTO),
-                        synonymScientificNameDtos(taxon)))
+        return taxonDtos.stream().filter(Objects::nonNull)
+                .flatMap(taxon -> Stream.concat(Stream.ofNullable(taxon.nameDTO), synonymScientificNameDtos(taxon)))
                 .distinct()
-                .sorted((n1,n2)-> String.CASE_INSENSITIVE_ORDER.compare(n1.scientificName, n2.scientificName));
+                .sorted((n1, n2) -> String.CASE_INSENSITIVE_ORDER.compare(n1.scientificName, n2.scientificName));
     }
 
     private Stream<PrintPubNameDTO> synonymScientificNameDtos(PrintPubTaxonSummaryDTO taxon) {
@@ -405,9 +452,7 @@ public class PrintPubDocumentBuilder {
             groupSet.add(taxon.homotypicSynonymGroup);
         }
 
-        return groupSet.stream()
-                .filter(group -> group.synonyms != null)
-                .flatMap(group -> group.synonyms.stream())
+        return groupSet.stream().filter(group -> group.synonyms != null).flatMap(group -> group.synonyms.stream())
                 .map(synonym -> synonym.nameDTO);
     }
 
@@ -513,7 +558,7 @@ public class PrintPubDocumentBuilder {
 
         for (TaggedText taggedText : taggedName) {
 
-            if(!supportedTags.contains(taggedText.getType())) {
+            if (!supportedTags.contains(taggedText.getType())) {
                 continue;
             }
             String text = taggedText.getText();
@@ -574,6 +619,7 @@ public class PrintPubDocumentBuilder {
 
         runs.add(new Run(RunType.TEXT, prefix));
 
+        runs.add(new Run(RunType.REFERENCE_MARK, synonym.nameDTO.uuid));
         List<Run> nameRuns = runsFromTaggedName(synonym.nameDTO.taggedNameList, FULL_TITLE_CACHE_TAGS);
 
         if (!nameRuns.isEmpty()) {

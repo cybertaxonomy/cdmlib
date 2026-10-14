@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.cdm2cdm;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -26,7 +27,6 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplication;
@@ -108,7 +108,6 @@ import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaMetaData;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -314,8 +313,6 @@ public abstract class Cdm2CdmImportBase
             return handlePersistedMedia((Media)cdmBase, state);
         }else if(cdmBase instanceof MediaRepresentation){
             return handlePersistedMediaRepresentation((MediaRepresentation)cdmBase, state);
-        }else if(cdmBase instanceof MediaRepresentationPart){
-            return handlePersistedMediaRepresentationPart((MediaRepresentationPart)cdmBase, state);
         }else if(cdmBase instanceof Marker){
             return handlePersistedMarker((Marker)cdmBase, state);
         }else if(cdmBase instanceof Annotation){
@@ -693,17 +690,8 @@ public abstract class Cdm2CdmImportBase
     protected MediaRepresentation handlePersistedMediaRepresentation(MediaRepresentation mediaRepresentation, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         MediaRepresentation result = handlePersisted((VersionableEntity)mediaRepresentation, state);
 
-        handleCollection(result, MediaRepresentation.class, "mediaRepresentationParts", MediaRepresentationPart.class, state);
+        handleCollection(result, MediaRepresentation.class, "mediaMetaData", MediaMetaData.class, state);
         setInvisible(result, "media", detach(result.getMedia(), state));
-        //complete
-        return result;
-    }
-
-    protected MediaRepresentationPart handlePersistedMediaRepresentationPart(MediaRepresentationPart part, Cdm2CdmImportState state) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        MediaRepresentationPart result = handlePersisted((VersionableEntity)part, state);
-        //rep, mediaMetaData
-        handleCollection(result, MediaRepresentationPart.class, "mediaMetaData", MediaMetaData.class, state);
-        setInvisible(result, MediaRepresentationPart.class, "mediaRepresentation", detach(result.getMediaRepresentation(), state));
         //complete
         return result;
     }
@@ -1169,7 +1157,7 @@ public abstract class Cdm2CdmImportBase
             externallyManaged.setExternalLink(URI.create(state.getConfig().getExternallyManagedBaseURI()
                     + subdomain + result.getUuid()));  //TODO
             externallyManaged.setImportMethod(ExternallyManagedImport.CDM_TERMS);
-            externallyManaged.setLastRetrieved(DateTime.now());
+            externallyManaged.setLastRetrieved(ZonedDateTime.now());
             result.setExternallyManaged(externallyManaged);
         }
     }
@@ -1505,7 +1493,9 @@ public abstract class Cdm2CdmImportBase
         }
     }
 
-    private DateTime makeCreatedUpdatedWhen(DateTime createdOriginal, Cdm2CdmImportState state, boolean isUpdatedBy) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    private ZonedDateTime makeCreatedUpdatedWhen(ZonedDateTime createdOriginal, Cdm2CdmImportState state, boolean isUpdatedBy)
+            throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+
         CreatedUpdatedMode mode = isUpdatedBy? state.getConfig().getUpdatedMode() : state.getConfig().getCreatedMode();
 
         switch (mode) {

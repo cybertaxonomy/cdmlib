@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>6.0.0</version>
+    <version>6.1.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -21,7 +21,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>5.1.4</version>   <!-- updated 2022-01 -->
+        <version>6.2.0</version>   <!-- updated 2022-01 -->
         <extensions>true</extensions>
         <configuration>
           <instructions>
@@ -34,6 +34,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.6.0</version>
         <configuration>
           <argLine>-Xms256m -Xmx512m
             -Dfile.encoding=${project.build.sourceEncoding}</argLine>
@@ -137,10 +138,6 @@
     <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-text</artifactId>
     </dependency>
   </dependencies>
 </project>

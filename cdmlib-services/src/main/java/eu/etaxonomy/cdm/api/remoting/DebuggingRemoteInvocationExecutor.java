@@ -15,11 +15,13 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.search.util.common.SearchException;
 import org.springframework.remoting.support.RemoteInvocation;
 import org.springframework.remoting.support.RemoteInvocationExecutor;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
+import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 
@@ -30,6 +32,10 @@ import eu.etaxonomy.cdm.model.description.Distribution;
  * <p>
  * The execution duration in milliseconds will be written to the log when the log level for this
  * class is set to <code>DEBUG</code>.
+ * <p>
+ * Also converts Hibernate Search {@link SearchException}s (which embed a non-serializable
+ * {@code EventContext}) into plain {@link RuntimeException}s so HttpInvoker can marshal them
+ * to remoting clients (e.g. TaxEditor).
  *
  * @author a.kohlbecker
  * @since Feb 17, 2020
@@ -80,12 +86,98 @@ public class DebuggingRemoteInvocationExecutor implements RemoteInvocationExecut
             logger.debug("invoking: " + targetInvocationStr);
             start = System.currentTimeMillis();
         }
-        Object invocationResult = invocation.invoke(targetObject);
-        if (doMeasure) {
-            logger.debug("invocation: " + targetInvocationStr + " completed [" + (System.currentTimeMillis() - start) + " ms]");
+        try {
+            Object invocationResult = invocation.invoke(targetObject);
+            if (doMeasure) {
+                logger.debug("invocation: " + targetInvocationStr + " completed [" + (System.currentTimeMillis() - start) + " ms]");
+            }
+            sanitizeReturnValue(invocationResult);
+            return invocationResult;
+        } catch (InvocationTargetException e) {
+            Throwable target = e.getTargetException();
+            if (containsSearchException(target)) {
+                RuntimeException remotingSafe = toRemotingSafeException(target);
+                logger.warn("Replacing non-serializable Hibernate Search exception for remoting: "
+                        + remotingSafe.getMessage());
+                throw new InvocationTargetException(remotingSafe);
+            }
+            throw e;
         }
+    }
 
-        return invocationResult;
+    /**
+     * {@link UpdateResult} may carry {@link SearchException}s that later fail HttpInvoker
+     * serialization. Replace them in place.
+     */
+    private void sanitizeReturnValue(Object invocationResult) {
+        if (invocationResult instanceof UpdateResult) {
+            UpdateResult updateResult = (UpdateResult) invocationResult;
+            ArrayList<Exception> original = new ArrayList<>(updateResult.getExceptions());
+            updateResult.getExceptions().clear();
+            for (Exception exception : original) {
+                if (containsSearchException(exception)) {
+                    updateResult.addException(toRemotingSafeException(exception));
+                } else {
+                    updateResult.addException(exception);
+                }
+            }
+        }
+    }
+
+    /**
+     * Recursively replaces {@link SearchException} (and subclasses) with a plain
+     * {@link RuntimeException} carrying the same message and stack trace. SearchException
+     * holds a non-{@link java.io.Serializable} {@code EventContext} field which breaks
+     * Java serialization used by Spring HttpInvoker.
+     */
+    static RuntimeException toRemotingSafeException(Throwable throwable) {
+        if (throwable == null) {
+            return null;
+        }
+        Throwable cause = throwable.getCause();
+        Throwable safeCause = null;
+        if (cause != null && cause != throwable) {
+            safeCause = containsSearchException(cause) ? toRemotingSafeException(cause) : cause;
+        }
+        if (isSearchException(throwable)) {
+            RuntimeException replacement = new RuntimeException(
+                    throwable.getClass().getName() + ": " + throwable.getMessage(),
+                    safeCause);
+            replacement.setStackTrace(throwable.getStackTrace());
+            return replacement;
+        }
+        if (safeCause != null && safeCause != cause) {
+            RuntimeException replacement = new RuntimeException(
+                    throwable.getClass().getName() + ": " + throwable.getMessage(),
+                    safeCause);
+            replacement.setStackTrace(throwable.getStackTrace());
+            return replacement;
+        }
+        if (throwable instanceof RuntimeException) {
+            return (RuntimeException) throwable;
+        }
+        RuntimeException replacement = new RuntimeException(throwable.getMessage(), throwable);
+        replacement.setStackTrace(throwable.getStackTrace());
+        return replacement;
+    }
+
+    static boolean containsSearchException(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (isSearchException(current)) {
+                return true;
+            }
+            Throwable next = current.getCause();
+            if (next == current) {
+                break;
+            }
+            current = next;
+        }
+        return false;
+    }
+
+    private static boolean isSearchException(Throwable throwable) {
+        return throwable instanceof SearchException;
     }
 
     private String targetCdmServiceInterfaces(Object targetObject) {

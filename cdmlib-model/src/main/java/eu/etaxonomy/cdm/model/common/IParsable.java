@@ -12,7 +12,6 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
-
 /**
  * @author a.mueller
  * @since 21.05.2008

@@ -12,7 +12,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
-
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;

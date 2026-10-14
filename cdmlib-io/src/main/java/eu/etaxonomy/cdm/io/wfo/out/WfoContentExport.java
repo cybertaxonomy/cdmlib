@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.wfo.out;
 
 import java.io.File;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,14 +20,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.Partial;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -47,7 +44,6 @@ import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -555,36 +551,14 @@ public class WfoContentExport
         return false;
     }
 
-    private String toIsoDate(TimePeriod mediaCreated) {
-        //TODO 2 date, what if end or freetext exist?
-        Partial partial = mediaCreated.getStart();
-        if (partial == null || !partial.isSupported(DateTimeFieldType.year())
-                || !partial.isSupported(DateTimeFieldType.monthOfYear()) && partial.isSupported(DateTimeFieldType.dayOfMonth())) {
-            //TODO 2 date, log warning, also if mediaCreated.getEnd() != null or so
-            return null;
-        } else {
-            DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                    .appendYear(4, 4).appendLiteral('-')
-                    .appendMonthOfYear(2).appendLiteral('-')
-                    .appendDayOfMonth(2)
-                    .toFormatter();
-            return partial.toString(formatter);
-        }
-    }
-
     /**
      * transforms the given date to an iso date
      */
-    protected String toIsoDate(DateTime dateTime) {
+    protected String toIsoDate(ZonedDateTime dateTime) {
         if (dateTime == null) {
             return null;
         }
-        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                .appendYear(4, 4).appendLiteral('-')
-                .appendMonthOfYear(2).appendLiteral('-')
-                .appendDayOfMonth(2)
-                .toFormatter();
-        return formatter.print(dateTime);
+        return dateTime.format(DateTimeUtil.DATE_FORMATTER);
     }
 
     private String getRemarks(AnnotatableEntity entity) {

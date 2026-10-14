@@ -223,10 +223,6 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.DateTime">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
-        </entry>
         <entry key="java.util.Calendar">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
@@ -234,6 +230,10 @@
         <entry key="org.joda.time.Partial">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
+        </entry>
+        <entry key="java.time.ZonedDateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.ZonedDateTimeJSONValueProcessor" />
         </entry>
         <entry key="java.lang.Class">
           <bean
@@ -320,10 +320,6 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.DateTime">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
-        </entry>
         <entry key="java.util.Calendar">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
@@ -331,6 +327,10 @@
         <entry key="org.joda.time.Partial">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
+        </entry>
+        <entry key="java.time.ZonedDateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.ZonedDateTimeJSONValueProcessor" />
         </entry>
         <entry key="java.lang.Class">
           <bean
@@ -520,10 +520,6 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.DateTime">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
-        </entry>
         <entry key="java.util.Calendar">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
@@ -531,6 +527,10 @@
         <entry key="org.joda.time.Partial">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
+        </entry>
+        <entry key="java.time.ZonedDateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.ZonedDateTimeJSONValueProcessor" />
         </entry>
         <entry key="java.lang.Class">
           <bean
@@ -604,10 +604,6 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.DateTime">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
-        </entry>
         <entry key="java.util.Calendar">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
@@ -615,6 +611,10 @@
         <entry key="org.joda.time.Partial">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
+        </entry>
+        <entry key="java.time.ZonedDateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.ZonedDateTimeJSONValueProcessor" />
         </entry>
         <entry key="java.util.Map">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
@@ -659,10 +659,6 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
         </entry>
-        <entry key="org.joda.time.DateTime">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
-        </entry>
         <entry key="java.util.Calendar">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
@@ -670,6 +666,10 @@
         <entry key="org.joda.time.Partial">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
+        </entry>
+        <entry key="java.time.ZonedDateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.ZonedDateTimeJSONValueProcessor" />
         </entry>
         <entry key="java.util.Map">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />

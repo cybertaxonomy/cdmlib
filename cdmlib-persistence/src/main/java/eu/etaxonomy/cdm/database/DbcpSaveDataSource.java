@@ -6,15 +6,9 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database;
 
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,19 +21,10 @@ public class DbcpSaveDataSource extends BasicDataSource {
     @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger();
 
-	/* FIXME This is a workaround to solve a problem with dbcp connection pooling.
-	 * Remove this when dbcp connection pool gets configured correctly
-	 */
-	@Override
-	protected synchronized DataSource createDataSource() throws SQLException {
-		super.createDataSource();
-		connectionPool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
-		return dataSource;
-	}
-
     @Override
     public java.util.logging.Logger getParentLogger() {
-        // TODO java 11
-        return null;
+        return java.util.logging.Logger.getLogger("eu.etaxonomy.cdm");
+        //or throw
+        //throw new SQLFeatureNotSupportedException("Log4j is used. JUL is not supported.");
     }
 }

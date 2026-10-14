@@ -6,11 +6,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
 
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.persistence.Basic;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -23,17 +24,11 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.joda.time.DateTime;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 
-import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -60,7 +55,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
         "updated",
         "updatedBy"
 })
-@XmlJavaTypeAdapter(value = DateTimeAdapter.class, type = DateTime.class)
+@XmlJavaTypeAdapter(value = DateTimeAdapter.class, type = ZonedDateTime.class)
 @MappedSuperclass
 @Audited
 public abstract class VersionableEntity
@@ -73,14 +68,10 @@ public abstract class VersionableEntity
 
 	@XmlElement(name ="Updated", type = String.class)
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
-	//@XmlElement(name ="Updated")
-	//@XmlElement(name ="Updated")
-	@Type(type="dateTimeUserType")
 	@Basic(fetch = FetchType.LAZY)
 	@Match(MatchMode.IGNORE)
-	@Field(analyze = Analyze.NO)
-	@FieldBridge(impl = DateTimeBridge.class)
-	private DateTime updated;
+	@GenericField
+	private ZonedDateTime updated;
 
 	@XmlElement(name = "UpdatedBy")
 	@XmlIDREF
@@ -99,11 +90,11 @@ public abstract class VersionableEntity
 	}
 
 	@Override
-    public DateTime getUpdated(){
+    public ZonedDateTime getUpdated(){
 		return this.updated;
 	}
 	@Override
-    public void setUpdated(DateTime updated){
+    public void setUpdated(ZonedDateTime updated){
 		this.updated = updated;
 	}
 

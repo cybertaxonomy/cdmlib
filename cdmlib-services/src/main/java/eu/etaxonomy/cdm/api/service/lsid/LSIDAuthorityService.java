@@ -14,6 +14,7 @@ import com.ibm.lsid.server.LSIDService;
 
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.LSIDAuthority;
+
 /**
  * LSIDAuthorityService interface which was altered from com.ibm.lsid.server.LSIDAuthorityService,
  * replacing the LSIDRequestContext with a simple LSID. My thinking behind this is that provided the

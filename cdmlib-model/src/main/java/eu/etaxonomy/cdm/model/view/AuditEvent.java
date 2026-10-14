@@ -6,23 +6,22 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.view;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.UUID;
+
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
-import org.joda.time.DateTime;
 
 @Entity
 @RevisionEntity
@@ -46,9 +45,8 @@ public class AuditEvent implements Serializable {
     @RevisionNumber
     private Integer revisionNumber;
 
-    @Type(type="dateTimeUserType")
     @Basic(fetch = FetchType.LAZY)
-    private DateTime date;
+    private ZonedDateTime date;
 
     @RevisionTimestamp
     private Long timestamp;
@@ -57,7 +55,7 @@ public class AuditEvent implements Serializable {
 
     public AuditEvent() {
         this.uuid = UUID.randomUUID();
-        this.date = new DateTime();
+        this.date = ZonedDateTime.now().withNano(0);
     }
 
 //***************** GETTER/ SETTER *************************/
@@ -74,10 +72,10 @@ public class AuditEvent implements Serializable {
 	}
 
 
-	public DateTime getDate() {
+	public ZonedDateTime getDate() {
 		return date;
 	}
-	public void setDate(DateTime date) {
+	public void setDate(ZonedDateTime date) {
 		this.date = date;
 	}
 

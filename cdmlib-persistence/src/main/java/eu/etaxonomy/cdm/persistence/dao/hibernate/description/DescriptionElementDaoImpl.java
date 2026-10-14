@@ -16,10 +16,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hibernate.Hibernate;
-import org.hibernate.search.FullTextQuery;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
+import org.hibernate.search.mapper.orm.Search;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -54,16 +51,9 @@ public class DescriptionElementDaoImpl
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
-
-            FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-            FullTextQuery fullTextQuery = null;
-
-            if(clazz == null) {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-            } else {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
-            }
-            return fullTextQuery.getResultSize();
+            @SuppressWarnings("unchecked")
+            Class<DescriptionElementBase> entityType = (Class<DescriptionElementBase>) (clazz == null ? type : clazz);
+            return countFullTextResults(entityType, query);
         } catch (ParseException e) {
             throw new QueryParseException(e, queryString);
         }
@@ -77,22 +67,11 @@ public class DescriptionElementDaoImpl
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
-            FullTextQuery fullTextQuery = null;
-            FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-            if(clazz == null) {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-            } else {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
-            }
-            addOrder(fullTextQuery,orderHints);
-
-            this.addPageSizeAndNumber(fullTextQuery, pageSize, pageNumber);
-
             @SuppressWarnings("unchecked")
-            List<DescriptionElementBase> results = fullTextQuery.list();
+            Class<DescriptionElementBase> entityType = (Class<DescriptionElementBase>) (clazz == null ? type : clazz);
+            List<DescriptionElementBase> results = executeFullTextSearch(entityType, query, orderHints, pageSize, pageNumber);
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
-
         } catch (ParseException e) {
             throw new QueryParseException(e, queryString);
         }
@@ -100,33 +79,30 @@ public class DescriptionElementDaoImpl
 
     @Override
     public void purgeIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+        var searchSession = Search.session(getSession());
         for(Class<? extends DescriptionElementBase> clazz : indexedClasses) {
-            fullTextSession.purgeAll(clazz); // remove all description element base from indexes
+            searchSession.workspace(clazz).purge();
         }
-        fullTextSession.flushToIndexes();
     }
 
     @Override
     public void rebuildIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+        var indexingPlan = Search.session(getSession()).indexingPlan();
 
         for(DescriptionElementBase descriptionElementBase : list(null,null)) { // re-index all descriptionElements
             Hibernate.initialize(descriptionElementBase.getInDescription());
             Hibernate.initialize(descriptionElementBase.getFeature());
-            fullTextSession.index(descriptionElementBase);
+            indexingPlan.addOrUpdate(descriptionElementBase);
         }
-        fullTextSession.flushToIndexes();
+        indexingPlan.execute();
     }
 
     @Override
     public void optimizeIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-        SearchFactory searchFactory = fullTextSession.getSearchFactory();
+        var searchSession = Search.session(getSession());
         for(Class<? extends DescriptionElementBase> clazz : indexedClasses) {
-            searchFactory.optimize(clazz); // optimize the indices ()
+            searchSession.workspace(clazz).mergeSegments();
         }
-        fullTextSession.flushToIndexes();
     }
 
     public int count(String queryString) {
@@ -135,12 +111,7 @@ public class DescriptionElementDaoImpl
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
-
-            FullTextSession fullTextSession = Search.getFullTextSession(this.getSession());
-            org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-
-            return fullTextQuery.getResultSize();
-
+            return Math.toIntExact(countFullTextResults(type, query));
         } catch (ParseException e) {
             throw new QueryParseException(e, queryString);
         }

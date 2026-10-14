@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.strategy.cache.agent;
 import java.util.List;
 import java.util.UUID;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

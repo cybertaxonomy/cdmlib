@@ -75,6 +75,7 @@
       <mapping class="eu.etaxonomy.cdm.model.common.LSIDAuthority"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Marker"/>
       <mapping class="eu.etaxonomy.cdm.model.common.MarkerType"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.RevisionStatus"/>
       
       <!-- Description Package -->
       <mapping class="eu.etaxonomy.cdm.model.description.CategoricalData"/>
@@ -122,7 +123,6 @@
       <mapping class="eu.etaxonomy.cdm.model.media.Media"/>
       <mapping class="eu.etaxonomy.cdm.model.media.MediaMetaData"/>
       <mapping class="eu.etaxonomy.cdm.model.media.MediaRepresentation"/>
-      <mapping class="eu.etaxonomy.cdm.model.media.MediaRepresentationPart"/>
       <mapping class="eu.etaxonomy.cdm.model.media.MovieFile"/>
       <mapping class="eu.etaxonomy.cdm.model.media.Rights"/>
       <mapping class="eu.etaxonomy.cdm.model.media.RightsType"/>

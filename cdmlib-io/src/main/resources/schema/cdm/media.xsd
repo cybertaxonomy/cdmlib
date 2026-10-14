@@ -37,7 +37,12 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
           <xs:element name="MediaRepresentations" minOccurs="0" >
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="MediaRepresentation" type="media:MediaRepresentation" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="MediaRepresentation" type="media:MediaRepresentation"/>
+                  <xs:element name="AudioFile" type="media:AudioFile"/>
+                  <xs:element name="ImageFile" type="media:ImageFile"/>
+                  <xs:element name="MovieFile" type="media:MovieFile"/>
+                </xs:choice>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -91,14 +96,12 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
           <xs:element name="MimeType" type="xs:string" minOccurs="0"/>
           <xs:element name="Suffix" type="xs:string" minOccurs="0"/>
           <xs:element name="Media" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="MediaRepresentationParts" minOccurs="0">
+          <xs:element name="URI" type="xs:string" minOccurs="0"/>
+          <xs:element name="Size" type="xs:int" minOccurs="0"/>
+          <xs:element name="MediaMetaDatas" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                  <xs:element name="AudioFile" type="media:AudioFile"/>
-                  <xs:element name="ImageFile" type="media:ImageFile"/>
-                  <xs:element name="MovieFile" type="media:MovieFile"/>
-                </xs:choice>
+                <xs:element name="MediaMetaData" type="media:MediaMetaData" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -107,9 +110,21 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="MediaMetaData">
+    <xs:complexContent>
+      <xs:extension base="common:VersionableEntity">
+        <xs:sequence>
+          <xs:element name="Key" type="xs:string" minOccurs="0"/>
+          <xs:element name="Value" type="xs:string" minOccurs="0"/>
+          <xs:element name="MediaRepresentation" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="AudioFile">
     <xs:complexContent>
-      <xs:extension base="media:MediaRepresentationPart">
+      <xs:extension base="media:MediaRepresentation">
         <xs:sequence>
           <xs:element name="Duration" type="xs:int"/>
         </xs:sequence>
@@ -117,21 +132,9 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="MediaRepresentationPart">
-    <xs:complexContent>
-      <xs:extension base="common:VersionableEntity">
-        <xs:sequence>
-          <xs:element name="URI" type="xs:string" minOccurs="0"/>
-          <xs:element name="Size" type="xs:int" minOccurs="0"/>
-          <xs:element name="MediaRepresentation" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="ImageFile">
     <xs:complexContent>
-      <xs:extension base="media:MediaRepresentationPart">
+      <xs:extension base="media:MediaRepresentation">
         <xs:sequence>
           <xs:element name="Height" type="xs:int"/>
           <xs:element name="Width" type="xs:int"/>
@@ -142,7 +145,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <xs:complexType name="MovieFile">
     <xs:complexContent>
-      <xs:extension base="media:MediaRepresentationPart">
+      <xs:extension base="media:MediaRepresentation">
         <xs:sequence>
           <xs:element name="Duration" type="xs:int"/>
         </xs:sequence>
@@ -161,4 +164,3 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
     </xs:complexContent>
   </xs:complexType>
 </xs:schema>
-

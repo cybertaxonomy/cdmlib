@@ -13,35 +13,34 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStreamReader;
-import eu.etaxonomy.cdm.common.URI;
 
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 
 public class MediaTest {
 
-	    private String resource = "/eu/etaxonomy/cdm/io/jaxb/MediaTest.xml";
+    private String resource = "/eu/etaxonomy/cdm/io/jaxb/MediaTest.xml";
 
-	    @Test
-	    public void testUnmarshalMedia() throws Exception {
-	        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
-	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
-	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
+    @Test
+    public void testUnmarshalMedia() throws Exception {
+        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
+        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
+        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 
-			Media media = dataSet.getMedia().get(0);
-			assertNotNull("Media must not be null",media);
-			assertNotNull("Media.mediaRepresentations must not be null",media.getRepresentations());
-			assertFalse("Media.mediaRepresentations must not be empty",media.getRepresentations().isEmpty());
+		Media media = dataSet.getMedia().get(0);
+		assertNotNull("Media must not be null",media);
+		assertNotNull("Media.mediaRepresentations must not be null", media.getRepresentations());
+		assertFalse("Media.mediaRepresentations must not be empty", media.getRepresentations().isEmpty());
 
-			MediaRepresentation mediaRepresentation = media.getRepresentations().iterator().next();
-			assertEquals("Media must equal MediaRepresentation.media",media,mediaRepresentation.getMedia());
-
-			assertNotNull("MediaRepresentation.mediaRepresentationParts must not be null",mediaRepresentation.getParts());
-			assertFalse("MediaRepresentation.mediaRepresentationParts must not be empty",mediaRepresentation.getParts().isEmpty());
-			MediaRepresentationPart mediaRepresentationPart = mediaRepresentation.getParts().get(0);
-			assertEquals("MediaRepresentationPart.mediaRepresentation must equal MediaRepresentation",mediaRepresentation,mediaRepresentationPart.getMediaRepresentation());
-	    }
+		MediaRepresentation mediaRepresentation = media.getRepresentations().iterator().next();
+		assertEquals("Media must equal MediaRepresentation.media", media, mediaRepresentation.getMedia());
+		assertNotNull("MediaRepresentation.uri must not be null", mediaRepresentation.getUri());
+		assertEquals("Representation must be ImageFile", ImageFile.class, mediaRepresentation.getClass());
+		assertEquals(Integer.valueOf(1200), ((ImageFile) mediaRepresentation).getHeight());
+		assertEquals(Integer.valueOf(1600), ((ImageFile) mediaRepresentation).getWidth());
+    }
 }

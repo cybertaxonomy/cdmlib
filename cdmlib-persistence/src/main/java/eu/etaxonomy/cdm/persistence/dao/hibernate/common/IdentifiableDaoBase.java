@@ -26,9 +26,7 @@ import org.hibernate.Session;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
+import org.hibernate.search.mapper.orm.Search;
 
 import eu.etaxonomy.cdm.api.filter.EntityFilter;
 import eu.etaxonomy.cdm.api.filter.IdentifiableEntityFilters;
@@ -317,19 +315,9 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
-
-            FullTextSession fullTextSession = Search.getFullTextSession(this.getSession());
-            org.hibernate.search.FullTextQuery fullTextQuery = null;
-
-            if(clazz == null) {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-            } else {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
-            }
-
-            int  result = fullTextQuery.getResultSize();
-            return result;
-
+            @SuppressWarnings("unchecked")
+            Class<T> entityType = (Class<T>) (clazz == null ? type : clazz);
+            return countFullTextResults(entityType, query);
         } catch (ParseException e) {
             throw new QueryParseException(e, queryString);
         }
@@ -337,31 +325,28 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
     @Override
     public void optimizeIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-        SearchFactory searchFactory = fullTextSession.getSearchFactory();
+        var searchSession = Search.session(getSession());
         for(Class<?> clazz : indexedClasses) {
-            searchFactory.optimize(clazz); // optimize the indices ()
+            searchSession.workspace(clazz).mergeSegments();
         }
-        fullTextSession.flushToIndexes();
     }
 
     @Override
     public void purgeIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+        var searchSession = Search.session(getSession());
         for(Class<?> clazz : indexedClasses) {
-            fullTextSession.purgeAll(clazz); // remove all objects of type t from indexes
+            searchSession.workspace(clazz).purge();
         }
-        fullTextSession.flushToIndexes();
     }
 
     @Override
     public void rebuildIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+        var indexingPlan = Search.session(getSession()).indexingPlan();
 
         for(T t : list(null,null)) { // re-index all objects
-            fullTextSession.index(t);
+            indexingPlan.addOrUpdate(t);
         }
-        fullTextSession.flushToIndexes();
+        indexingPlan.execute();
     }
 
     @Override
@@ -371,32 +356,11 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
-
-            FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-            org.hibernate.search.FullTextQuery fullTextQuery = null;
-
-            if(clazz == null) {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-            } else {
-                fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
-            }
-
-            addOrder(fullTextQuery,orderHints);
-
-            if(pageSize != null) {
-                fullTextQuery.setMaxResults(pageSize);
-                if(pageNumber != null) {
-                    fullTextQuery.setFirstResult(pageNumber * pageSize);
-                } else {
-                    fullTextQuery.setFirstResult(0);
-                }
-            }
-
             @SuppressWarnings("unchecked")
-			List<T> result = fullTextQuery.list();
+            Class<T> entityType = (Class<T>) (clazz == null ? type : clazz);
+            List<T> result = executeFullTextSearch(entityType, query, orderHints, pageSize, pageNumber);
             defaultBeanInitializer.initializeAll(result, propertyPaths);
             return result;
-
         } catch (ParseException e) {
             throw new QueryParseException(e, queryString);
         }

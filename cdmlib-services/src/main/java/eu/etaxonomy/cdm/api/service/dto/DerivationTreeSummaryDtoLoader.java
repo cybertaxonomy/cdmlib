@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
@@ -89,9 +88,9 @@ public class DerivationTreeSummaryDtoLoader {
                         //contig file
                         ContigFile contigFile = null;
                         if (sequence.getContigFile() != null) {
-                            MediaRepresentationPart contigMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(sequence.getContigFile());
-                            if (contigMediaRepresentationPart != null) {
-                                contigFile = molecularData.addContigFile(new Link(contigMediaRepresentationPart.getUri(), "contig"));
+                            MediaRepresentation contigMediaRepresentation = MediaUtils.getFirstMediaRepresentationPart(sequence.getContigFile());
+                            if (contigMediaRepresentation != null) {
+                                contigFile = molecularData.addContigFile(new Link(contigMediaRepresentation.getUri(), "contig"));
                             }
                         }
                         else{
@@ -101,9 +100,9 @@ public class DerivationTreeSummaryDtoLoader {
                         if (sequence.getSingleReads() != null) {
                             int readCount = 1;
                             for (SingleRead singleRead : sequence.getSingleReads()) {
-                                MediaRepresentationPart pherogramMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(singleRead.getPherogram());
-                                if (pherogramMediaRepresentationPart != null && contigFile != null) {
-                                    contigFile.addPrimerLink(pherogramMediaRepresentationPart.getUri(), "read"+readCount++);
+                                MediaRepresentation pherogramMediaRepresentation = MediaUtils.getFirstMediaRepresentationPart(singleRead.getPherogram());
+                                if (pherogramMediaRepresentation != null && contigFile != null) {
+                                    contigFile.addPrimerLink(pherogramMediaRepresentation.getUri(), "read"+readCount++);
                                 }
                             }
                         }
@@ -152,12 +151,9 @@ public class DerivationTreeSummaryDtoLoader {
         URI mediaUri = null;
         Collection<MediaRepresentation> mediaRepresentations = mediaSpecimen.getMediaSpecimen().getRepresentations();
         if (mediaRepresentations != null && !mediaRepresentations.isEmpty()) {
-            Collection<MediaRepresentationPart> mediaRepresentationParts = mediaRepresentations.iterator().next().getParts();
-            if (mediaRepresentationParts != null && !mediaRepresentationParts.isEmpty()) {
-                MediaRepresentationPart part = mediaRepresentationParts.iterator().next();
-                if (part.getUri() != null) {
-                    mediaUri = part.getUri();
-                }
+            MediaRepresentation mediaRepresentation = mediaRepresentations.iterator().next();
+            if (mediaRepresentation != null && mediaRepresentation.getUri() != null) {
+                mediaUri = mediaRepresentation.getUri();
             }
         }
         return mediaUri;
