@@ -1307,6 +1307,13 @@
         <artifactId>odfdom-java</artifactId>
         <!-- higher version available, but requires jena updated-->
         <version>0.13.0</version>
+        <exclusions>
+          <exclusion>
+            <!-- via commons-validator; we use jcl-over-slf4j instead -->
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
           <!-- used in eu.etaxonomy.cdm.io.markup and for swagger -->
