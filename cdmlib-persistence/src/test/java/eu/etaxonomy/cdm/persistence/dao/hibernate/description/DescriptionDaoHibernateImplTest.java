@@ -415,6 +415,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     }
     //#11040
     @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
     public void testGetNodeOfIndividualAssociationForSpecimenRevisionStatus() {
 
         //create test data
