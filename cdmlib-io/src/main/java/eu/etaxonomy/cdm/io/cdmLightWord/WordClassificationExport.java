@@ -1884,7 +1884,7 @@ public class WordClassificationExport
 
                 String sec = "";
                 String nameString = name.getFullTitleCache();
-                String doubtful = "";
+                String statusSymbol = "";
 
                 if (state.getConfig().isAddHTML()){
                     nameString = createNameWithItalics(name.getTaggedFullTitle()) ;
@@ -1995,11 +1995,7 @@ public class WordClassificationExport
                      if (taxonBase.getSec() != null){
                          sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxonBase.getSecSource());
                      }
-                     if (taxonBase.isDoubtful()){
-                         doubtful = "?";
-                     }else{
-                         doubtful = "";
-                     }
+                     statusSymbol= taxonBase.getTaxonStatusSymbol();
                      if (taxonBase instanceof Synonym){
                          if (isNotBlank(sec)){
                              sec = " syn. sec. " + sec + " ";
@@ -2007,8 +2003,8 @@ public class WordClassificationExport
                              sec = "";
                          }
 
-                         typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + nonRelNames + relNames;
-                         typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec + nonRelNames + relNames;
+                         typifiedNamesWithoutAccepted += synonymSign + statusSymbol + nameString + nonRelNames + relNames;
+                         typifiedNamesWithoutAcceptedWithSec += synonymSign + statusSymbol + nameString + sec + nonRelNames + relNames;
                      }else{
 //                         sec = "";
                          if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
@@ -2032,11 +2028,7 @@ public class WordClassificationExport
                         if (tb.getSec() != null){
                             sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(tb.getSecSource());
                         }
-                        if (tb.isDoubtful()){
-                            doubtful = "?";
-                        }else{
-                            doubtful = "";
-                        }
+                        statusSymbol= tb.getTaxonStatusSymbol();
                         if (tb instanceof Synonym){
                             if (StringUtils.isNotBlank(sec)){
                                 sec = " syn. sec. " + sec + " ";
@@ -2057,13 +2049,13 @@ public class WordClassificationExport
                         }
                     }
                     if (!isAccepted){
-                        typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + "; ";
-                        typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec;
+                        typifiedNamesWithoutAccepted += synonymSign + statusSymbol + nameString + "; ";
+                        typifiedNamesWithoutAcceptedWithSec += synonymSign + statusSymbol + nameString + sec;
                         typifiedNamesWithoutAcceptedWithSec = typifiedNamesWithoutAcceptedWithSec.trim() + "; ";
                     }
                 }
-                typifiedNamesString += synonymSign + doubtful + nameString + nonRelNames + relNames;
-                typifiedNamesWithSecString += synonymSign + doubtful + nameString + sec + nonRelNames + relNames;
+                typifiedNamesString += synonymSign + statusSymbol + nameString + nonRelNames + relNames;
+                typifiedNamesWithSecString += synonymSign + statusSymbol + nameString + sec + nonRelNames + relNames;
 
 
                 csvLine[table.getIndex(WordClassificationExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();

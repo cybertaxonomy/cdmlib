@@ -55,7 +55,8 @@ public enum UTF8 {
 	ELLIPSIS("\u2026"),
 	EQUALS_SIGN("\u003D"),       // = U+003D EQUALS SIGN
 	IDENTICAL_TO("\u2261"),      // ≡ U+2261 IDENTICAL TO
-	MINUS("\u2212")  // − U+2212 MINUS SIGN as used for invalid names and in mathematics
+	MINUS("\u2212"),  // − U+2212 MINUS SIGN as used for invalid names and in mathematics
+	PROVISIONALLY("\u231B") // Shows an hourglass
 	;
 
 	private String value;

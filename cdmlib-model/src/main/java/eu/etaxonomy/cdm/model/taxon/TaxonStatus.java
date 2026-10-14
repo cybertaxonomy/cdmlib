@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
@@ -39,37 +40,39 @@ public enum TaxonStatus
      * Taxon or synonym assignment without doubt (default).
      */
     @XmlEnumValue("Accepted")
-    ACCEPTED(UUID.fromString("ee74d076-b89c-4491-9d6e-04e5359b2b79"), "Accepted", "ACC", true, false),
+    ACCEPTED(UUID.fromString("ee74d076-b89c-4491-9d6e-04e5359b2b79"), "Accepted", "ACC", true, false, ""),
 
     /**
      * The assignment to accepted taxon or synonym is doubtful.
      */
     @XmlEnumValue("Doubtful")
-    DOUBTFUL(UUID.fromString("e073d533-dd5a-4aad-95e7-335a0d94391f"), "Doubtful", "DOU", true, true),
+    DOUBTFUL(UUID.fromString("e073d533-dd5a-4aad-95e7-335a0d94391f"), "Doubtful", "DOU", true, true, "?"),
 
     /**
      * Provisionally accepted taxon.
      */
     @XmlEnumValue("Provisionally Accepted")
-    PROVISIONALLY_ACCEPTED(UUID.fromString("ad6418fc-267d-419e-bf9f-336e077911b7"), "Provisionally Accepted", "PAC", true, false),
+    PROVISIONALLY_ACCEPTED(UUID.fromString("ad6418fc-267d-419e-bf9f-336e077911b7"), "Provisionally Accepted", "PAC", true, false, UTF8.PROVISIONALLY.toString()),
 
     /**
      * Synonym.
      */
     @XmlEnumValue("Synonym")
-    SYNONYM(UUID.fromString("ddfb069c-5d98-40bd-b229-9a2fa871e700"), "Synonym", "SYN", false, true),
+    SYNONYM(UUID.fromString("ddfb069c-5d98-40bd-b229-9a2fa871e700"), "Synonym", "SYN", false, true, ""),
 
     ;
 
 // **************** END ENUM **********************/
 
-    private boolean supportsAccepted;
-    private boolean supportsSynonym;
+    private final boolean supportsAccepted;
+    private final boolean supportsSynonym;
+    private final String symbol;
 
-    private TaxonStatus(UUID uuid, String defaultString, String key, boolean supportsAccepted, boolean supportsSynonym){
+    private TaxonStatus(UUID uuid, String defaultString, String key, boolean supportsAccepted, boolean supportsSynonym, String symbol){
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, null);
         this.supportsAccepted = supportsAccepted;
         this.supportsSynonym = supportsSynonym;
+        this.symbol = symbol;
     }
 
     public static final EnumSet<TaxonStatus> forAccepted(){
@@ -90,7 +93,18 @@ public enum TaxonStatus
             }
         }
         return EnumSet.copyOf(result);
+    }
 
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public boolean isDoubtful() {
+        return this == DOUBTFUL;
+    }
+
+    public boolean isProvisionally() {
+        return this == PROVISIONALLY_ACCEPTED;
     }
 
 // *************************** DELEGATE **************************************/

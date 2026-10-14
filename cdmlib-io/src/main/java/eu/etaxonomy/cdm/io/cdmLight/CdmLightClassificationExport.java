@@ -1948,7 +1948,7 @@ public class CdmLightClassificationExport
 
                 String sec = "";
                 String nameString = name.getFullTitleCache();
-                String doubtful = "";
+                String statusSymbol = "";
 
                 if (state.getConfig().isAddHTML()){
                     nameString = createNameWithItalics(name.getTaggedFullTitle()) ;
@@ -2071,11 +2071,7 @@ public class CdmLightClassificationExport
                          }
                      }
 
-                     if (taxonBase.isDoubtful()){
-                         doubtful = "?";
-                     }else{
-                         doubtful = "";
-                     }
+                     statusSymbol = taxonBase.getTaxonStatusSymbol();
                      if (taxonBase instanceof Synonym){
                          if (isNotBlank(sec)){
                              if (!state.getConfig().isShowSynSecForHomotypicGroup()) {
@@ -2103,11 +2099,11 @@ public class CdmLightClassificationExport
                          }
                      }
                      if (!isAccepted){
-                         typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + nonRelNames + relNames +"; ";
+                         typifiedNamesWithoutAccepted += synonymSign + statusSymbol + nameString + nonRelNames + relNames +"; ";
                          if (!state.getConfig().isShowSynSecForHomotypicGroup()) {
-                             typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec + nonRelNames + relNames;
+                             typifiedNamesWithoutAcceptedWithSec += synonymSign + statusSymbol + nameString + sec + nonRelNames + relNames;
                          }else {
-                             typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + nonRelNames + relNames;
+                             typifiedNamesWithoutAcceptedWithSec += synonymSign + statusSymbol + nameString + nonRelNames + relNames;
                          }
                          typifiedNamesWithoutAcceptedWithSec = typifiedNamesWithoutAcceptedWithSec.trim() + "; ";
                      }else {
@@ -2128,11 +2124,7 @@ public class CdmLightClassificationExport
                             }
 
                         }
-                        if (tb.isDoubtful()){
-                            doubtful = "?";
-                        }else{
-                            doubtful = "";
-                        }
+                        statusSymbol = tb.getTaxonStatusSymbol();
                         if (tb instanceof Synonym ){
                             Synonym syn = CdmBase.deproxy(tb, Synonym.class);
                             Taxon acc = syn.getAcceptedTaxon();
@@ -2158,22 +2150,22 @@ public class CdmLightClassificationExport
                         }
                     }
                     if (!isAccepted){
-                        typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString +  nonRelNames + relNames +"; ";
+                        typifiedNamesWithoutAccepted += synonymSign + statusSymbol + nameString +  nonRelNames + relNames +"; ";
                         if (state.getConfig().isShowSynSecForHomotypicGroup() ) {
-                            typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + nonRelNames + relNames;
+                            typifiedNamesWithoutAcceptedWithSec += synonymSign + statusSymbol + nameString + nonRelNames + relNames;
                         } else {
-                            typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec+ nonRelNames + relNames;
+                            typifiedNamesWithoutAcceptedWithSec += synonymSign + statusSymbol + nameString + sec+ nonRelNames + relNames;
                         }
                         typifiedNamesWithoutAcceptedWithSec = typifiedNamesWithoutAcceptedWithSec.trim() + "; ";
                     }else {
                         sec = " sec. " + sec;
                     }
                 }
-                typifiedNamesString += synonymSign + doubtful + nameString + nonRelNames + relNames;
+                typifiedNamesString += synonymSign + statusSymbol + nameString + nonRelNames + relNames;
                 if (state.getConfig().isShowSynSecForHomotypicGroup() &&  !isAccepted) {
-                    typifiedNamesWithSecString += synonymSign + doubtful + nameString.trim() + nonRelNames + relNames;
+                    typifiedNamesWithSecString += synonymSign + statusSymbol + nameString.trim() + nonRelNames + relNames;
                 }else {
-                    typifiedNamesWithSecString += synonymSign + doubtful + nameString.trim() + sec + nonRelNames + relNames;
+                    typifiedNamesWithSecString += synonymSign + statusSymbol + nameString.trim() + sec + nonRelNames + relNames;
                 }
                 typifiedNamesWithSecString = typifiedNamesWithSecString.trim() + " ";
                 index++;

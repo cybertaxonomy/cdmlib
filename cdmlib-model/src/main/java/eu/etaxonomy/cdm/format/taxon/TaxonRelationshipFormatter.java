@@ -98,7 +98,9 @@ public class TaxonRelationshipFormatter {
             return null;
         }
 
-        String doubtfulTaxonStr = relatedTaxon.isDoubtful() ? DOUBTFUL_TAXON_MARKER : "";
+        String doubtfulTaxonStr = relatedTaxon.getTaxonStatusSymbol();
+        doubtfulTaxonStr = StringUtils.isNotBlank(doubtfulTaxonStr) ?
+                (doubtfulTaxonStr + UTF8.NARROW_NO_BREAK) : doubtfulTaxonStr;
         String doubtfulRelationStr = taxonRelationship.isDoubtful() ? "?" : "";
 
         TaxonName name = relatedTaxon.getName();

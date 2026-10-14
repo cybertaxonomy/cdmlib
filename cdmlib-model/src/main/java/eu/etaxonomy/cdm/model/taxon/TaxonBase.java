@@ -252,6 +252,10 @@ public abstract class TaxonBase
     public void setTaxonStatus(TaxonStatus taxonStatus){
         this.taxonStatus = taxonStatus == null ? getDefaultStatus() : taxonStatus;
     }
+    @Transient
+    public String getTaxonStatusSymbol() {
+        return taxonStatus == null ? "" : taxonStatus.getSymbol();
+    }
 
     /**
      * Returns the default status for the according subclas.

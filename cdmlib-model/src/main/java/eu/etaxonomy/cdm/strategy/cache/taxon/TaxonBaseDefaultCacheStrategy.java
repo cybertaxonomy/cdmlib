@@ -71,8 +71,9 @@ public class TaxonBaseDefaultCacheStrategy
             return tags;
         }
 
-        if (taxonBase.isDoubtful()){
-            tags.add(new TaggedText(TagEnum.separator, "?"));
+        String statusSymbol = taxonBase.getTaxonStatusSymbol();
+        if (isNotBlank(statusSymbol)){
+            tags.add(new TaggedText(TagEnum.separator, statusSymbol));
         }
 
         boolean isMisapplication = isMisapplication(taxonBase);
