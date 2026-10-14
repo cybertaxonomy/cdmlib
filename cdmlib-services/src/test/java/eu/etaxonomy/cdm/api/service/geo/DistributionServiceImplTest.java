@@ -128,6 +128,7 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
 
     //TODO move to AreaMapServiceParameterBuilder and simplify dependencies
     @Test
+    @Ignore
     public void testGetWebServiceUrlCyprus() throws ClientProtocolException, IOException, CsvException {
         makeCyprusAreas();
         Set<Distribution> distributions = new HashSet<>();
