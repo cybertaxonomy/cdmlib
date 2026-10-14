@@ -119,7 +119,7 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
     @RequestMapping(
             value = { "specimensOrOccurences/{uuid-list}" }
             , method = RequestMethod.GET
-//            , produces = "application/vnd.google-earth.kml+xml"
+            , produces = "application/vnd.google-earth.kml+xml"
     )
     public void doGetSpecimensOrOccurencesKml(
             @PathVariable("uuid-list") UuidList uuidList,
@@ -141,7 +141,7 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
     @RequestMapping(
             value = { "typeDesignations/{uuid-list}" }
             , method = RequestMethod.GET
-//            , produces = "application/vnd.google-earth.kml+xml"
+            , produces = "application/vnd.google-earth.kml+xml"
     )
     public void doGetTypeDesignationsKml(
             @PathVariable("uuid-list") UuidList uuidList,
@@ -178,7 +178,7 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
     @RequestMapping(
             value = { "taxonOccurrencesFor/{uuid}" }
             , method = RequestMethod.GET
-//            , produces = "application/vnd.google-earth.kml+xml"
+            , produces = "application/vnd.google-earth.kml+xml"
     )
     public void doGetTaxonOccurrenceKml(
             @PathVariable("uuid") UUID uuid,
@@ -229,8 +229,8 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
      * content type "application/vnd.google-earth.kml+xml"
      */
     private void createKmlResponse(HttpServletResponse response, Kml kml) throws FileNotFoundException, IOException {
-        response.setContentType("application/xml");
-//        response.setContentType("application/vnd.google-earth.kml+xml");
+//        response.setContentType("application/xml");
+        response.setContentType("application/vnd.google-earth.kml+xml");
         response.setCharacterEncoding("UTF-8");
         kml.marshal(response.getOutputStream());
     }
