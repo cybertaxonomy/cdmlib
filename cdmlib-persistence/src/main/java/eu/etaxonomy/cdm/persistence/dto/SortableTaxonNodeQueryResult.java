@@ -44,6 +44,7 @@ public class SortableTaxonNodeQueryResult implements ISortableTaxonNodeDto {
     private Integer childrenCount;
     private UUID secUuid;
     private List<TaggedText> taggedName;
+    private String revisionStatus;
 
     private List<LanguageString> placementNote = new ArrayList<>();
 
@@ -71,7 +72,38 @@ public class SortableTaxonNodeQueryResult implements ISortableTaxonNodeDto {
             Boolean trinomHybrid
 
             ) {
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, rank, parentNodeUuid,
+                sortIndex, classificationUuid, taxonIsPublished, status, childrenCount, secUuid,
+                nameType, genusOrUninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, apendedPhrase,
+                protectedTitleCache, protectedNameCache, nameCache, authorshipCache, publicationYear,
+                nomomHybrid, binomHybrid, trinomHybrid, null);
+    }
+
+    /**
+     * @param revisionStatus the idInVocabulary of the taxon's {@link eu.etaxonomy.cdm.model.common.RevisionStatus}
+     */
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid,
+            String taxonTitleCache, String nameTitleCache, Rank rank, UUID parentNodeUuid,
+            Integer sortIndex, UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status,
+            Integer childrenCount, UUID secUuid,
+            NomenclaturalCode nameType,
+            String genusOrUninomial,
+            String infragenericEpithet,
+            String specificEpithet,
+            String infraspecificEpithet,
+            String apendedPhrase,
+            Boolean protectedTitleCache,
+            Boolean protectedNameCache,
+            String nameCache,
+            String authorshipCache,
+            Integer publicationYear,
+            Boolean nomomHybrid,
+            Boolean binomHybrid,
+            Boolean trinomHybrid,
+            String revisionStatus
+            ) {
         this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, rank, parentNodeUuid, sortIndex, classificationUuid, taxonIsPublished, status, childrenCount, secUuid);
+        this.revisionStatus = revisionStatus;
         TaxonName name = getName(rank, nameType,
                 genusOrUninomial,
                 infragenericEpithet,
@@ -148,6 +180,20 @@ public class SortableTaxonNodeQueryResult implements ISortableTaxonNodeDto {
 //        }
     }
 
+    /**
+     * @param revisionStatus the idInVocabulary of the taxon's {@link eu.etaxonomy.cdm.model.common.RevisionStatus}
+     */
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid,
+            String taxonTitleCache, String nameTitleCache, Rank rank, UUID parentNodeUuid,
+            Integer sortIndex, UUID classificationUuid, Boolean taxonIsPublished, TaxonNodeStatus status,
+            LanguageString placementNote,
+            Integer childrenCount, UUID secUuid, String revisionStatus
+            ) {
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, rank, parentNodeUuid,
+                sortIndex, classificationUuid, taxonIsPublished, status, placementNote, childrenCount, secUuid);
+        this.revisionStatus = revisionStatus;
+    }
+
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid,
             String taxonTitleCache, String nameTitleCache, Rank rank, UUID parentNodeUuid,
             Integer sortIndex, UUID classificationUuid, Boolean taxonPublish, TaxonNodeStatus status,
@@ -171,6 +217,12 @@ public class SortableTaxonNodeQueryResult implements ISortableTaxonNodeDto {
             null, null,null, null, null);
     }
 
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex, UUID taxonUuid,
+            String taxonTitleCache, String nameTitleCache, Rank rank, UUID parentNodeUuid, String revisionStatus) {
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, nameTitleCache, rank, parentNodeUuid);
+        this.revisionStatus = revisionStatus;
+    }
+
     /**
      * @param rank {@link Rank.#UNKNOWN_RANK()} will be used in case this is <code>null</code>
      */
@@ -178,6 +230,12 @@ public class SortableTaxonNodeQueryResult implements ISortableTaxonNodeDto {
             UUID taxonUuid, String taxonTitleCache, Rank rank, UUID parentNodeUuid) {
         this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, rank, parentNodeUuid,
                 null, null, null, null, null);
+    }
+
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex,
+            UUID taxonUuid, String taxonTitleCache, Rank rank, UUID parentNodeUuid, String revisionStatus) {
+        this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, rank, parentNodeUuid);
+        this.revisionStatus = revisionStatus;
     }
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String treeIndex,
@@ -204,6 +262,11 @@ public class SortableTaxonNodeQueryResult implements ISortableTaxonNodeDto {
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, UUID taxonUuid, String taxonTitleCache, String treeIndex) {
         this(taxonNodeUuid, taxonNodeId, treeIndex, taxonUuid, taxonTitleCache, null, null);
+    }
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, UUID taxonUuid, String taxonTitleCache, String treeIndex,
+            String revisionStatus) {
+        this(taxonNodeUuid, taxonNodeId, taxonUuid, taxonTitleCache, treeIndex);
+        this.revisionStatus = revisionStatus;
     }
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache) {
         this(taxonNodeUuid, taxonNodeId, null, null, taxonTitleCache, null, null);
@@ -318,6 +381,13 @@ public class SortableTaxonNodeQueryResult implements ISortableTaxonNodeDto {
         this.secUuid = secUuid;
     }
 
+    public String getRevisionStatus() {
+        return revisionStatus;
+    }
+    public void setRevisionStatus(String revisionStatus) {
+        this.revisionStatus = revisionStatus;
+    }
+
 
     public List<TaggedText> getTaggedName() {
         return taggedName;
@@ -347,6 +417,7 @@ public class SortableTaxonNodeQueryResult implements ISortableTaxonNodeDto {
                     queryDTO.isTaxonIsPublish(), queryDTO.getStatus(), queryDTO.getPlacementNote(),
                     queryDTO.getChildrenCount(), queryDTO.getSecUuid(),
                     queryDTO.getTaggedName());
+            nodeDto.setRevisionStatus(queryDTO.getRevisionStatus());
             nodeDtos.add(nodeDto);
         }
         return nodeDtos;

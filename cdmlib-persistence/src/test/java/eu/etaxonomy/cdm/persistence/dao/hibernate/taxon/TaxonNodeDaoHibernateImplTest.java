@@ -38,7 +38,9 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.RevisionStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -511,6 +513,108 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
     }
 
+
+    //#11040
+    @Test
+    public void testRevisionStatusInTaxonNodeDto(){
+
+        //create test data
+        RevisionStatus inProcess = (RevisionStatus)termDao.findByUuid(RevisionStatus.uuidInProcess);
+        RevisionStatus completed = (RevisionStatus)termDao.findByUuid(RevisionStatus.uuidCompleted);
+        assertNotNull("Revision status terms must exist in test DB", inProcess);
+        assertNotNull("Revision status terms must exist in test DB", completed);
+
+        Classification classification = Classification.NewInstance("Revision status test");
+        classificationDao.save(classification);
+
+        TaxonName genusName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
+        genusName.setGenusOrUninomial("Revisiona");
+        Taxon genus = Taxon.NewInstance(genusName, null);
+        genus.setRevisionStatus(inProcess, null);
+        TaxonNode genusNode = classification.addChildTaxon(genus, null, null);
+
+        TaxonName completedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        completedName.setGenusOrUninomial("Revisiona");
+        completedName.setSpecificEpithet("completa");
+        Taxon completedTaxon = Taxon.NewInstance(completedName, null);
+        completedTaxon.setRevisionStatus(completed, null);
+        TaxonNode completedNode = genusNode.addChildTaxon(completedTaxon, null, null);
+
+        TaxonName noStatusName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        noStatusName.setGenusOrUninomial("Revisiona");
+        noStatusName.setSpecificEpithet("nulla");
+        Taxon noStatusTaxon = Taxon.NewInstance(noStatusName, null);
+        TaxonNode noStatusNode = genusNode.addChildTaxon(noStatusTaxon, null, null);
+
+        taxonNodeDao.save(genusNode);
+        taxonNodeDao.save(completedNode);
+        taxonNodeDao.save(noStatusNode);
+        commitAndStartNewTransaction(null);
+
+        String inProcessId = inProcess.getIdInVocabulary();
+        String completedId = completed.getIdInVocabulary();
+        assertNotNull(inProcessId);
+        assertNotNull(completedId);
+
+        //entity constructor
+        TaxonNode loadedGenusNode = taxonNodeDao.load(genusNode.getUuid());
+        assertEquals(inProcessId, new TaxonNodeDto(loadedGenusNode).getRevisionStatus());
+        TaxonNode loadedNoStatusNode = taxonNodeDao.load(noStatusNode.getUuid());
+        assertNull(new TaxonNodeDto(loadedNoStatusNode).getRevisionStatus());
+
+        //getTaxonNodeDto / getTaxonNodeDtos
+        TaxonNodeDto genusDto = taxonNodeDao.getTaxonNodeDto(genusNode.getUuid());
+        assertEquals(inProcessId, genusDto.getRevisionStatus());
+        assertEquals(completedId, taxonNodeDao.getTaxonNodeDto(completedNode.getUuid()).getRevisionStatus());
+        assertNull(taxonNodeDao.getTaxonNodeDto(noStatusNode.getUuid()).getRevisionStatus());
+        List<TaxonNodeDto> dtos = taxonNodeDao.getTaxonNodeDtos(Arrays.asList(completedNode.getUuid(), noStatusNode.getUuid()));
+        assertRevisionStatus(dtos, completedNode.getUuid(), completedId);
+        assertRevisionStatus(dtos, noStatusNode.getUuid(), null);
+
+        //getTaxonNodeDtosWithoutParent
+        dtos = taxonNodeDao.getTaxonNodeDtosWithoutParent(Arrays.asList(genusNode.getUuid(), completedNode.getUuid(), noStatusNode.getUuid()));
+        assertRevisionStatus(dtos, genusNode.getUuid(), inProcessId);
+        assertRevisionStatus(dtos, completedNode.getUuid(), completedId);
+        assertRevisionStatus(dtos, noStatusNode.getUuid(), null);
+
+        //child node queries
+        dtos = taxonNodeDao.listChildNodesAsTaxonNodeDto(genusDto);
+        assertEquals(2, dtos.size());
+        assertRevisionStatus(dtos, completedNode.getUuid(), completedId);
+        assertRevisionStatus(dtos, noStatusNode.getUuid(), null);
+
+        dtos = taxonNodeDao.listChildNodesAsUuidAndTitleCache(genusDto);
+        assertEquals(2, dtos.size());
+        assertRevisionStatus(dtos, completedNode.getUuid(), completedId);
+        assertRevisionStatus(dtos, noStatusNode.getUuid(), null);
+
+        //parent query
+        TaxonNodeDto completedDto = taxonNodeDao.getTaxonNodeDto(completedNode.getUuid());
+        TaxonNodeDto parentDto = taxonNodeDao.getParentUuidAndTitleCache(completedDto);
+        assertEquals(genusNode.getUuid(), parentDto.getUuid());
+        assertEquals(inProcessId, parentDto.getRevisionStatus());
+
+        //title cache search
+        dtos = taxonNodeDao.getUuidAndTitleCache(null, "Revisiona*", classification.getUuid(), true);
+        assertEquals(3, dtos.size());
+        assertRevisionStatus(dtos, genusNode.getUuid(), inProcessId);
+        assertRevisionStatus(dtos, completedNode.getUuid(), completedId);
+        assertRevisionStatus(dtos, noStatusNode.getUuid(), null);
+
+        //classification children
+        Classification loadedClassification = classificationDao.load(classification.getUuid());
+        Taxon loadedGenus = (Taxon)taxonDao.load(genus.getUuid());
+        dtos = classificationDao.listChildrenOf(loadedGenus, loadedClassification, null, true, null, null);
+        assertEquals(2, dtos.size());
+        assertRevisionStatus(dtos, completedNode.getUuid(), completedId);
+        assertRevisionStatus(dtos, noStatusNode.getUuid(), null);
+    }
+
+    private void assertRevisionStatus(List<TaxonNodeDto> dtos, UUID nodeUuid, String expectedStatus) {
+        TaxonNodeDto dto = dtos.stream().filter(d->nodeUuid.equals(d.getUuid())).findFirst().orElse(null);
+        assertNotNull("No DTO found for node " + nodeUuid, dto);
+        assertEquals("Wrong revision status for node " + nodeUuid, expectedStatus, dto.getRevisionStatus());
+    }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

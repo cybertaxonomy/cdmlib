@@ -34,23 +34,35 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.RevisionStatus;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -66,6 +78,15 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 
     @SpringBeanByType
     private ITaxonDao taxonDao;
+
+    @SpringBeanByType
+    private ITaxonNodeDao taxonNodeDao;
+
+    @SpringBeanByType
+    private IClassificationDao classificationDao;
+
+    @SpringBeanByType
+    private IOccurrenceDao occurrenceDao;
 
     private Set<Feature> features;
 
@@ -392,6 +413,63 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     	Assert.assertEquals(1, list.size());
 
     }
+    //#11040
+    @Test
+    public void testGetNodeOfIndividualAssociationForSpecimenRevisionStatus() {
+
+        //create test data
+        RevisionStatus completed = (RevisionStatus)definedTermDao.findByUuid(RevisionStatus.uuidCompleted);
+        assertNotNull("Revision status term must exist in test DB", completed);
+
+        DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
+        occurrenceDao.save(specimen);
+
+        Classification classification = Classification.NewInstance("Revision status test");
+        classificationDao.save(classification);
+
+        Taxon completedTaxon = createTaxonWithSpecimen("completa", specimen);
+        completedTaxon.setRevisionStatus(completed, null);
+        Taxon noStatusTaxon = createTaxonWithSpecimen("nulla", specimen);
+
+        TaxonNode completedNode = classification.addChildTaxon(completedTaxon, null, null);
+        TaxonNode noStatusNode = classification.addChildTaxon(noStatusTaxon, null, null);
+        taxonNodeDao.save(completedNode);
+        taxonNodeDao.save(noStatusNode);
+        commitAndStartNewTransaction(null);
+
+        //test
+        List<SortableTaxonNodeQueryResult> results = descriptionDao.getNodeOfIndividualAssociationForSpecimen(specimen.getUuid(), classification.getUuid());
+        assertEquals(2, results.size());
+        List<TaxonNodeDto> dtos = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(results);
+        assertEquals(2, dtos.size());
+        assertRevisionStatus(dtos, completedNode.getUuid(), completed.getIdInVocabulary());
+        assertRevisionStatus(dtos, noStatusNode.getUuid(), null);
+
+        //without classification filter
+        results = descriptionDao.getNodeOfIndividualAssociationForSpecimen(specimen.getUuid(), null);
+        dtos = SortableTaxonNodeQueryResult.toTaxonNodeDtoList(results);
+        assertRevisionStatus(dtos, completedNode.getUuid(), completed.getIdInVocabulary());
+        assertRevisionStatus(dtos, noStatusNode.getUuid(), null);
+    }
+
+    private Taxon createTaxonWithSpecimen(String epithet, DerivedUnit specimen) {
+        TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        name.setGenusOrUninomial("Revisiona");
+        name.setSpecificEpithet(epithet);
+        Taxon taxon = Taxon.NewInstance(name, null);
+        TaxonDescription description = TaxonDescription.NewInstance(taxon);
+        description.addElement(IndividualsAssociation.NewInstance(specimen));
+        taxonDao.save(taxon);
+        descriptionDao.save(description);
+        return taxon;
+    }
+
+    private void assertRevisionStatus(List<TaxonNodeDto> dtos, UUID nodeUuid, String expectedStatus) {
+        TaxonNodeDto dto = dtos.stream().filter(d->nodeUuid.equals(d.getUuid())).findFirst().orElse(null);
+        assertNotNull("No DTO found for node " + nodeUuid, dto);
+        assertEquals("Wrong revision status for node " + nodeUuid, expectedStatus, dto.getRevisionStatus());
+    }
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }

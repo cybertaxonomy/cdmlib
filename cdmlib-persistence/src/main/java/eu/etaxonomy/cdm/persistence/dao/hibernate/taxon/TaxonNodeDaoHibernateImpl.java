@@ -222,9 +222,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
     @Override
     public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(TaxonNodeDto parent) {
         String queryString =
-                  " SELECT tn.uuid, tn.id, t.titleCache "
+                  " SELECT tn.uuid, tn.id, t.titleCache, revStatus.idInVocabulary "
                 + " FROM TaxonNode tn "
                 + "    INNER JOIN tn.taxon AS t "
+                + "    LEFT OUTER JOIN t.revisionStatus.status AS revStatus "
                 + " WHERE tn.parent.uuid = :parentId";
 
         Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
@@ -234,7 +235,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
         List<TaxonNodeDto> list = new ArrayList<>();
         for(Object[] object : result){
-            list.add(new TaxonNodeDto((UUID) object[0],(Integer) object[1], (String) object[2]));
+            TaxonNodeDto dto = new TaxonNodeDto((UUID) object[0],(Integer) object[1], (String) object[2]);
+            dto.setRevisionStatus((String) object[3]);
+            list.add(dto);
         }
         return list;
     }
@@ -259,6 +262,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         for(SortableTaxonNodeQueryResult stnqr : result){
             TaxonNodeDto newNode = new TaxonNodeDto(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonUuid(), stnqr.getTreeIndex(), stnqr.getNameTitleCache(),stnqr.getTaxonTitleCache(),
                     stnqr.getRank().getOrderIndex(), parent.getUuid(),stnqr.getSortIndex(),parent.getClassificationUUID(), stnqr.isTaxonIsPublish(), stnqr.getStatus(), stnqr.getPlacementNote(), stnqr.getChildrenCount(), stnqr.getSecUuid(), null);
+            newNode.setRevisionStatus(stnqr.getRevisionStatus());
 
             list.add(newNode);
         }
@@ -279,7 +283,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         }
         List<TaxonNodeDto> list = new ArrayList<>();
         for(SortableTaxonNodeQueryResult stnqr : result){
-            list.add(new TaxonNodeDto(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
+            TaxonNodeDto dto = new TaxonNodeDto(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache());
+            dto.setRevisionStatus(stnqr.getRevisionStatus());
+            list.add(dto);
         }
 
         return list;
@@ -288,13 +294,14 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
     private Query<SortableTaxonNodeQueryResult> createQueryForUuidAndTitleCache(Integer limit, UUID classificationUuid, String pattern, boolean includeDoubtful){
         String doubtfulPattern = "";
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + " node.uuid, node.id, node.treeIndex, t.uuid, t.titleCache, rank, parent.uuid"
+                + " node.uuid, node.id, node.treeIndex, t.uuid, t.titleCache, rank, parent.uuid, revStatus.idInVocabulary"
                 + ") "
                 + " FROM TaxonNode AS node "
                 + "   JOIN node.taxon as t " // FIXME why not inner join here?
                 + "   INNER JOIN t.name AS name "
                 + "   LEFT OUTER JOIN node.parent as parent"
                 + "   LEFT OUTER JOIN name.rank AS rank "
+                + "   LEFT OUTER JOIN t.revisionStatus.status AS revStatus "
                 + " WHERE ";
 
       if (classificationUuid != null){
@@ -367,9 +374,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
     public TaxonNodeDto getParentUuidAndTitleCache(TaxonNodeDto child) {
         String queryString = ""
                 + " SELECT tn.parent.uuid, tn.parent.id, tn.parent.taxon.titleCache, "
-                + "                  tn.parent.classification.titleCache "
+                + "                  tn.parent.classification.titleCache, revStatus.idInVocabulary "
                 + " FROM TaxonNode tn"
-                + "    LEFT OUTER JOIN tn.parent.taxon"
+                + "    LEFT OUTER JOIN tn.parent.taxon AS parentTaxon"
+                + "    LEFT OUTER JOIN parentTaxon.revisionStatus.status AS revStatus"
                 + " WHERE tn.id = :childId";
         Query<Object[]> query =  getSession().createQuery(queryString, Object[].class);
         query.setParameter("childId", child.getId());
@@ -383,7 +391,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             String taxonTitleCache = (String) object[2];
             String classificationTitleCache = (String) object[3];
             if(taxonTitleCache != null){
-                list.add(new TaxonNodeDto(uuid,id, taxonTitleCache));
+                TaxonNodeDto dto = new TaxonNodeDto(uuid,id, taxonTitleCache);
+                dto.setRevisionStatus((String) object[4]);
+                list.add(dto);
             }
             else{
                 list.add(new TaxonNodeDto(uuid,id, classificationTitleCache));
@@ -1362,7 +1372,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
 
 	        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid, index(tn), cl.uuid,  t.publish, tn.status, note, tn.countChildren, sec.uuid "
+                + "tn.uuid, tn.id, tn.treeIndex, t.uuid, t.titleCache, name.titleCache, rank, p.uuid, index(tn), cl.uuid,  t.publish, tn.status, note, tn.countChildren, sec.uuid, revStatus.idInVocabulary "
                 + ") "
                 + " FROM TaxonNode p "
                 + "   INNER JOIN p.childNodes AS tn"
@@ -1372,7 +1382,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
                 + "   LEFT OUTER JOIN t.secSource as secSource "
                 + "   LEFT OUTER JOIN secSource.citation as sec "
                 + "	  LEFT OUTER JOIN tn.placementNote as note "
-                + "   LEFT OUTER JOIN name.rank AS rank ";
+                + "   LEFT OUTER JOIN name.rank AS rank "
+                + "   LEFT OUTER JOIN t.revisionStatus.status AS revStatus ";
         return queryString;
     }
 
@@ -1400,10 +1411,11 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 
     public String getTaxonNodeDtoQueryWithoutParent() {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-		+	"tn.uuid, tn.id, t.uuid, t.titleCache, tn.treeIndex"// rank "
+		+	"tn.uuid, tn.id, t.uuid, t.titleCache, tn.treeIndex, revStatus.idInVocabulary"// rank "
             + ") "
             + " FROM TaxonNode tn "
-            + "   LEFT JOIN tn.taxon AS t "     ;
+            + "   LEFT JOIN tn.taxon AS t "
+            + "   LEFT OUTER JOIN t.revisionStatus.status AS revStatus ";
 
         return queryString;
     }

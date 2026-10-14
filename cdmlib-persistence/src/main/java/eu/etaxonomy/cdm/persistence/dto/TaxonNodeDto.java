@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.RevisionStatus;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -74,6 +75,7 @@ public class TaxonNodeDto
     private Integer rankOrderIndex = null;
 
     private TaxonStatus taxonStatus = TaxonStatus.Accepted;
+    private String revisionStatus = null;
 
     private UUID classificationUUID = null;
     private UUID parentUUID = null;
@@ -152,6 +154,9 @@ public class TaxonNodeDto
             this.setAbbrevTitleCache(taxon.getTitleCache());
             rankOrderIndex =taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getOrderIndex() : null;
             taxonIsPublish = taxon.isPublish();
+            if (taxon.getRevisionStatus() != null && taxon.getRevisionStatus().getStatus() != null) {
+                revisionStatus = taxon.getRevisionStatus().getStatus().getIdInVocabulary();
+            }
         }else{
             if (classification != null){
                 setTitleCache(classification.getTitleCache());
@@ -195,6 +200,7 @@ public class TaxonNodeDto
         rankOrderIndex =synonym.getNullSafeRank() != null ? synonym.getNullSafeRank().getOrderIndex() : null;
         taxonStatus = isHomotypic ? TaxonStatus.SynonymObjective : TaxonStatus.Synonym;
         classificationUUID = null;
+        
     }
 
     public Integer getTaxonomicChildrenCount() {
@@ -238,6 +244,16 @@ public class TaxonNodeDto
 
     public TaxonStatus getTaxonStatus() {
         return taxonStatus;
+    }
+
+    /**
+     * @return the idInVocabulary of the taxon's {@link RevisionStatus}, or <code>null</code>
+     */
+    public String getRevisionStatus() {
+        return revisionStatus;
+    }
+    public void setRevisionStatus(String revisionStatus) {
+        this.revisionStatus = revisionStatus;
     }
 
     public UUID getClassificationUUID() {

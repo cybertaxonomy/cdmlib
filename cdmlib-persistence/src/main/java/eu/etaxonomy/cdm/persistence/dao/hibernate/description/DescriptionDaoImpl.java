@@ -507,7 +507,7 @@ public class DescriptionDaoImpl
 
     @Override
     public List<SortableTaxonNodeQueryResult> getNodeOfIndividualAssociationForSpecimen(UUID specimenUuid, UUID classificationUuid){
-        String selectString = " new " +SortableTaxonNodeQueryResult.class.getName()+"(n.uuid, n.id, n.treeIndex, t.uuid, t.titleCache, t.name.titleCache, t.name.rank, n.parent.uuid) ";
+        String selectString = " new " +SortableTaxonNodeQueryResult.class.getName()+"(n.uuid, n.id, n.treeIndex, t.uuid, t.titleCache, t.name.titleCache, t.name.rank, n.parent.uuid, revStatus.idInVocabulary) ";
         Query<SortableTaxonNodeQueryResult> query = prepareGetIndividualAssociationForSpecimen(specimenUuid, classificationUuid, selectString);
         List<SortableTaxonNodeQueryResult> results = query.list();
         return results;
@@ -581,6 +581,7 @@ public class DescriptionDaoImpl
                 " LEFT JOIN de.inDescription AS d" +
                 " LEFT JOIN d.taxon AS t" +
                 " LEFT JOIN t.taxonNodes AS n" +
+                " LEFT JOIN t.revisionStatus.status AS revStatus" +
                 " LEFT JOIN de.associatedSpecimenOrObservation AS specimen ";
         String classificationString = "";
         if (classificationUuid != null){
