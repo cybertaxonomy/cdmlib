@@ -1373,7 +1373,7 @@ public class NameCatalogueController
      * Build map with taxon flag key-value pairs.
      */
     private Map<String, String> buildFlagMap(TaxonBase tb) {
-        Map<String, String> flags = new Hashtable<String, String>();
+        Map<String, String> flags = new Hashtable<>();
         flags.put(DOUBTFUL_FLAG, Boolean.toString(tb.isDoubtful()));
         return flags;
     }
