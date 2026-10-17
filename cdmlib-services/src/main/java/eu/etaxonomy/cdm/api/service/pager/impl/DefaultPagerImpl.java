@@ -40,7 +40,7 @@ public class DefaultPagerImpl<T> extends AbstractPagerImpl<T> {
      * @param pageSize The size of pages (can be null or 0 if all results should be returned if available)
      * @param records A list of objects in this page (can be empty if there were no results)
      */
-    public DefaultPagerImpl(Integer currentIndex, Long count, Integer pageSize,  List<T> records) {
+    public DefaultPagerImpl(Integer currentIndex, Long count, Integer pageSize, List<T> records) {
         super(currentIndex, count, pageSize, records);
     }
 
