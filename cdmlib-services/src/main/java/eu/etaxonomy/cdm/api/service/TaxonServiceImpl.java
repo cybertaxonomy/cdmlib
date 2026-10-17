@@ -1972,6 +1972,12 @@ public class TaxonServiceImpl
         if(searchModes == null){
             searchModes = EnumSet.of(TaxaAndNamesSearchMode.doTaxa);
         }
+        //return empty pager if no result is expected
+        EnumSet<TaxaAndNamesSearchMode> searchModesWithoutUnpublished = EnumSet.copyOf(searchModes);
+        searchModesWithoutUnpublished.remove(TaxaAndNamesSearchMode.includeUnpublished);
+        if (searchModesWithoutUnpublished.isEmpty()) {
+            return new DefaultPagerImpl<>(pageNumber, 0l, pageSize, new ArrayList<>());
+        }
 
         // set sort order and thus override any sort orders which may have been
         // defined by prepare*Search methods
@@ -2231,6 +2237,12 @@ public class TaxonServiceImpl
                 multiIndexByAreaFilterBuilder.add(taxonAreaJoinQuery2, Occur.SHOULD);
             }
         }//end pro parte synonyms
+
+
+        //return empty pager if no lucene searches are empty
+        if (luceneSearches.isEmpty()) {
+            return new DefaultPagerImpl<>(pageNumber, 0l, pageSize, new ArrayList<>(0));
+        }
 
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider,
                 luceneSearches.toArray(new LuceneSearch[luceneSearches.size()]));
