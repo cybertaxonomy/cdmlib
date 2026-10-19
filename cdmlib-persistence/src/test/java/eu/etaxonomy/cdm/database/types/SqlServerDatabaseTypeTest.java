@@ -22,19 +22,19 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
  * @author a.mueller
  * @since 18.12.2008
  */
-public class SqlServer2000DatabaseTypeTest {
+public class SqlServerDatabaseTypeTest {
 
-	private CdmPersistentDataSource dataSource;
-	private static DatabaseTypeEnum enumType;
-	private String server;
-	private String dbName;
-	private int port;
-	private String username;
-	private String password;
+    private CdmPersistentDataSource dataSource;
+    private static DatabaseTypeEnum enumType;
+    private String server;
+    private String dbName;
+    private int port;
+    private String username;
+    private String password;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		enumType = DatabaseTypeEnum.SqlServer2005;
+		enumType = DatabaseTypeEnum.SqlServer;
 	}
 
 	@Before
@@ -54,7 +54,6 @@ public class SqlServer2000DatabaseTypeTest {
 	 */
 	@Test
 	public void testGetConnectionStringICdmDataSource() {
-		//OLD: String expected = "jdbc:microsoft:sqlserver://" + server + ":" + port + ";databaseName=" + dbName + ";SelectMethod=cursor";
 		String expected = "jdbc:sqlserver://" + server + ":" + port + ";databaseName=" + dbName + ";SelectMethod=cursor";
 		assertEquals(expected, enumType.getConnectionString(dataSource));
 	}
@@ -65,9 +64,8 @@ public class SqlServer2000DatabaseTypeTest {
 	@Test
 	public void testGetConnectionStringICdmDataSourceInt() {
 		port = 357;
-		//OLD: String expected = "jdbc:microsoft:sqlserver://" + server + ":" + port + ";databaseName=" + dbName + ";SelectMethod=cursor";
 		String expected = "jdbc:sqlserver://" + server + ":" + port + ";databaseName=" + dbName + ";SelectMethod=cursor";
-		assertEquals(expected, ((SqlServer2005DatabaseType)enumType.getDatabaseType()).getConnectionString(dataSource, port));
+		assertEquals(expected, ((SqlServerDatabaseType)enumType.getDatabaseType()).getConnectionString(dataSource, port));
 	}
 
 	/**

@@ -12,16 +12,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.SQLServer2005Dialect;
+import org.hibernate.dialect.SQLServerDialect;
 
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
  * @author a.mueller
- *
  */
-public class SqlServer2005DatabaseType extends DatabaseTypeBase {
+public class SqlServerDatabaseType extends DatabaseTypeBase {
 
 	//name
 	protected String typeName = "SQL Server";
@@ -38,7 +37,7 @@ public class SqlServer2005DatabaseType extends DatabaseTypeBase {
     protected int defaultPort = 1433;
 
     //hibernate dialect
-    protected Dialect hibernateDialect = new SQLServer2005Dialect();
+    protected Dialect hibernateDialect = new SQLServerDialect();
 
     @Override
     public String getConnectionString(ICdmDataSource ds, int port){
@@ -79,10 +78,9 @@ public class SqlServer2005DatabaseType extends DatabaseTypeBase {
     }
 
 	//Constructor
-    public SqlServer2005DatabaseType() {
+    public SqlServerDatabaseType() {
     	init (typeName, classString, urlString, defaultPort,  hibernateDialect );
 	}
-
 
     /**
      * Deletes all foreign keys between tables in a sql server database.
@@ -104,9 +102,7 @@ public class SqlServer2005DatabaseType extends DatabaseTypeBase {
 				sql = " ALTER TABLE "+tableName+" DROP CONSTRAINT "+fk + "";
 				sqlServerDataSource.executeUpdate(sql);
 			}
-
 		}
 		return true;
     }
-
 }

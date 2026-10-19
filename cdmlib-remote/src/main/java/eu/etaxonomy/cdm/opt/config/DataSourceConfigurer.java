@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.dialect.H2CorrectedDialect;
 import org.hibernate.dialect.MariaDb11Dialect;
 import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
-import org.hibernate.dialect.PostgreSQL82Dialect;
+import org.hibernate.dialect.PostgreSQLDialect;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -457,7 +457,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
                 return H2CorrectedDialect.class.getName();
             }
             if(url.contains(":postgresql:")){
-                return PostgreSQL82Dialect.class.getName();
+                return PostgreSQLDialect.class.getName();
             }
         }
 

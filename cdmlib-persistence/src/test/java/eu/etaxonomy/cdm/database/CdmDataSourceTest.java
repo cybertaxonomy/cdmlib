@@ -80,26 +80,26 @@ public class CdmDataSourceTest {
 	}
 
 	@Test
-	public void testNewSqlServer2005InstanceStringStringStringString() {
-		ICdmDataSource ds = CdmDataSource.NewSqlServer2005Instance(server, database, -1, username, pwd);
-		assertNotNull("NewSqlServer2005Instance(String, String, String, String) should not return null ", ds);
+	public void testNewSqlServerInstanceStringStringStringString() {
+		ICdmDataSource ds = CdmDataSource.NewSqlServerInstance(server, database, -1, username, pwd);
+		assertNotNull("NewSqlServerInstance(String, String, String, String) should not return null ", ds);
 		assertEquals(server, ds.getServer());
 		assertEquals(database, ds.getDatabase());
 		assertEquals(username, ds.getUsername());
 		assertEquals(pwd, ds.getPassword());
-		assertEquals(DatabaseTypeEnum.SqlServer2005, ds.getDatabaseType());
+		assertEquals(DatabaseTypeEnum.SqlServer, ds.getDatabaseType());
 	}
 
 	@Test
-	public void testNewSqlServer2005InstanceStringStringIntStringString() {
-		ICdmDataSource ds = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, pwd);
-		assertNotNull("NewSqlServer2005Instance(String, String, String, String) should not return null ", ds);
+	public void testNewSqlServerInstanceStringStringIntStringString() {
+		ICdmDataSource ds = CdmDataSource.NewSqlServerInstance(server, database, port, username, pwd);
+		assertNotNull("NewSqlServerInstance(String, String, String, String) should not return null ", ds);
 		assertEquals(server, ds.getServer());
 		assertEquals(database, ds.getDatabase());
 		assertEquals(username, ds.getUsername());
 		assertEquals(pwd, ds.getPassword());
 		assertEquals(port, ds.getPort());
-		assertEquals(DatabaseTypeEnum.SqlServer2005, ds.getDatabaseType());
+		assertEquals(DatabaseTypeEnum.SqlServer, ds.getDatabaseType());
 	}
 
 	@Test

@@ -17,33 +17,27 @@ import org.hibernate.mapping.Index;
 import org.hibernate.tool.schema.spi.Exporter;
 
 /**
- * Hibernate Dialect for mariadb. For now, this is mostly of {@link MySQL5MyISAMUtf8Dialect}
- * but using {@link MariaDB103Dialect} as base class.
+ * Hibernate Dialect for MariaDB. Same MyISAM/UTF-8 behaviour as
+ * {@link MySQL5MyISAMUtf8Dialect}, based on {@link MariaDBDialect}
+ * (replaces removed {@code MariaDB103Dialect} in Hibernate 6.6+).
  *
  * @author muellera
  * @since 14.01.2026
  */
-public class MariaDb11Dialect extends MariaDB103Dialect {
+public class MariaDb11Dialect extends MariaDBDialect {
 
-    private MySqlIsamIndexExporter mySqlIsamIndexExporter = new MySqlIsamIndexExporter( this );
+    private final MySqlIsamIndexExporter mySqlIsamIndexExporter = new MySqlIsamIndexExporter(this);
 
     public MariaDb11Dialect() {
-
+        super(DatabaseVersion.make(11, 0));
     }
 
-    //works only starting with hibernate 5.6+
-//    @Override
-//    protected boolean supportsReservedKeywordQuerying() {
-//        return false;
-//    }
-
-    //workaround
     @Override
     public IdentifierHelper buildIdentifierHelper(
             IdentifierHelperBuilder builder,
             DatabaseMetaData dbMetaData) throws SQLException {
 
-        // Verhindert die Abfrage der RESERVED-Spalte
+        // Avoid querying the RESERVED column from DatabaseMetaData
         builder.setAutoQuoteKeywords(false);
 
         return super.buildIdentifierHelper(builder, dbMetaData);
