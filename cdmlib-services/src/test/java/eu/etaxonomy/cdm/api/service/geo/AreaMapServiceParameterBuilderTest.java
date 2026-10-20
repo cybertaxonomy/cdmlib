@@ -113,12 +113,13 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
                 result.matches(".*ad=country_earth(%3A|:)gmi_cntry:.:DEU.*"));
     }
     */
-/*
+
     @Test
     @Ignore
     public void testGetWebServiceUrlTdwg() throws MalformedURLException, IOException {
         //String webServiceUrl = "http://www.test.de/webservice";
         Set<Distribution> distributions = new HashSet<>();
+        /*
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("SPA"), PresenceAbsenceTerm.PRESENT()));
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("GER"), PresenceAbsenceTerm.INTRODUCED()));
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("14"), PresenceAbsenceTerm.CULTIVATED()));
@@ -165,6 +166,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
 
         // request map image from webservice
         subTestWithEditMapService(result);
+        */
     }
 
     private void subTestWithEditMapService(String queryString)throws MalformedURLException, IOException {

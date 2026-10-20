@@ -36,7 +36,7 @@ public class SwaggerStaticIT extends WebServiceTestBase {
     @Test
     @Ignore
     public void fetchSwaggerResources() {
-
+/*
         String swagger2Endpoint= "/swagger-resources";
 
         String staticResourcesFolder = "./target/classes/"+ StaticSwaggerApiDoc.SWAGGER_STATIC + "/swagger-resources";
@@ -58,10 +58,11 @@ public class SwaggerStaticIT extends WebServiceTestBase {
                 logger.info(response.length() + " characters of swagger-resources written to " + targetFile.getAbsolutePath());
             } catch (IOException e) {
                 logger.error(e);
-            }
-        }
+             }
+        }*/
     }
-
+    
+/*
     @Test
     @Ignore
     public void fetchSwaggerGroups(){
@@ -87,4 +88,5 @@ public class SwaggerStaticIT extends WebServiceTestBase {
 //        File pwd = new File("pom.xml");
 //        System.err.println(pwd.getAbsolutePath());
     }
+    */
 }
