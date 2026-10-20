@@ -127,6 +127,7 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
 
 
     //TODO move to AreaMapServiceParameterBuilder and simplify dependencies
+    /*
     @Test
     @Ignore
     public void testGetWebServiceUrlCyprus() throws ClientProtocolException, IOException, CsvException {
@@ -162,6 +163,7 @@ public class DistributionServiceImplTest extends CdmTransactionalIntegrationTest
         // request map image from webservice
         subTestWithEditMapService(result);
     }
+    */
 
     private void makeCyprusAreas() throws IOException, CsvException {
 

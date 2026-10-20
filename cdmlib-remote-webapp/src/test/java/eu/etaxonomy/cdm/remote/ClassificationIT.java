@@ -16,7 +16,7 @@ import org.junit.Test;
  * @since Mar 3, 2014
  */
 public class ClassificationIT extends WebServiceTestBase {
-
+/*
     @Test
     @Ignore
     public void checkInstanceIsOnline(){
@@ -24,4 +24,5 @@ public class ClassificationIT extends WebServiceTestBase {
         assertTrue("Response does not contain 'My Classification' but: " + response,
                 response.contains("My Classification"));
     }
+    */
 }

@@ -84,7 +84,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
         System.setProperty("ONLY-A-TEST", "TRUE"); // allows EditGeoServiceUtilities to skip some line of code
         editMapServiceUri = new URI(EDIT_MAPSERVICE_URI_STRING);
     }
-
+/*
     @Test
     @Ignore
     public void testGetWebServiceUrlCountry() {
@@ -112,7 +112,8 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
         Assert.assertTrue("WebServiceUrl must contain country part for Germany, but was " + result,
                 result.matches(".*ad=country_earth(%3A|:)gmi_cntry:.:DEU.*"));
     }
-
+    */
+/*
     @Test
     @Ignore
     public void testGetWebServiceUrlTdwg() throws MalformedURLException, IOException {
@@ -186,7 +187,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
             assertTrue(content.matches(".*\"geoserver\":.*"));
         }
     }
-
+/*
     @Test
     @Ignore
     public void testGetWebServiceUrlBangka() throws ClientProtocolException, IOException {
@@ -227,7 +228,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
         // request map image from webservice
         subTestWithEditMapService(result);
     }
-
+*/
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }
