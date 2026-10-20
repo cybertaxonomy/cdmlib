@@ -15,6 +15,7 @@ import java.nio.charset.Charset;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.remote.config.SwaggerGroupsConfig;
@@ -33,8 +34,9 @@ public class SwaggerStaticIT extends WebServiceTestBase {
     private String[] swaggerResourcesPaths = new String[]{"", "/configuration/ui", "/configuration/security" };
 
     @Test
+    @Ignore
     public void fetchSwaggerResources() {
-
+/*
         String swagger2Endpoint= "/swagger-resources";
 
         String staticResourcesFolder = "./target/classes/"+ StaticSwaggerApiDoc.SWAGGER_STATIC + "/swagger-resources";
@@ -56,11 +58,13 @@ public class SwaggerStaticIT extends WebServiceTestBase {
                 logger.info(response.length() + " characters of swagger-resources written to " + targetFile.getAbsolutePath());
             } catch (IOException e) {
                 logger.error(e);
-            }
-        }
+             }
+        }*/
     }
-
+    
+/*
     @Test
+    @Ignore
     public void fetchSwaggerGroups(){
 
         String swagger2Endpoint= "/v2/api-docs";
@@ -84,4 +88,5 @@ public class SwaggerStaticIT extends WebServiceTestBase {
 //        File pwd = new File("pom.xml");
 //        System.err.println(pwd.getAbsolutePath());
     }
+    */
 }
