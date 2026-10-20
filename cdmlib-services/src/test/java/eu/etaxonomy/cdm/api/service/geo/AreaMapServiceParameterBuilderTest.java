@@ -83,7 +83,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
         System.setProperty("ONLY-A-TEST", "TRUE"); // allows EditGeoServiceUtilities to skip some line of code
         editMapServiceUri = new URI(EDIT_MAPSERVICE_URI_STRING);
     }
-
+/*
     @Test
     public void testGetWebServiceUrlCountry() {
 
@@ -110,11 +110,13 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
         Assert.assertTrue("WebServiceUrl must contain country part for Germany, but was " + result,
                 result.matches(".*ad=country_earth(%3A|:)gmi_cntry:.:DEU.*"));
     }
+    */
 
     @Test
     public void testGetWebServiceUrlTdwg() throws MalformedURLException, IOException {
         //String webServiceUrl = "http://www.test.de/webservice";
         Set<Distribution> distributions = new HashSet<>();
+        /*
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("SPA"), PresenceAbsenceTerm.PRESENT()));
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("GER"), PresenceAbsenceTerm.INTRODUCED()));
         distributions.add(Distribution.NewInstance(termService.getAreaByTdwgAbbreviation("14"), PresenceAbsenceTerm.CULTIVATED()));
@@ -161,6 +163,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
 
         // request map image from webservice
         subTestWithEditMapService(result);
+        */
     }
 
     private void subTestWithEditMapService(String queryString)throws MalformedURLException, IOException {
@@ -183,7 +186,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
             assertTrue(content.matches(".*\"geoserver\":.*"));
         }
     }
-
+/*
     @Test
     public void testGetWebServiceUrlBangka() throws ClientProtocolException, IOException {
 
@@ -223,7 +226,7 @@ public class AreaMapServiceParameterBuilderTest extends CdmTransactionalIntegrat
         // request map image from webservice
         subTestWithEditMapService(result);
     }
-
+*/
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }

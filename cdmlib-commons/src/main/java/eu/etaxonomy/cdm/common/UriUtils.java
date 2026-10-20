@@ -123,8 +123,12 @@ public class UriUtils {
         if ("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme)){
             ClassicHttpResponse response = UriUtils.getResponse(uri, requestHeaders);
             if(UriUtils.isOk(response)){
-                InputStream stream = getContent(response);
-                return stream;
+                try {
+                    return getContent(response);
+                } catch (IOException e) {
+                    response.close();
+                    throw e;
+                }
             } else {
                 int statusCode = response.getCode();
                 response.close();
@@ -157,25 +161,27 @@ public class UriUtils {
         if(! uri.isAbsolute()){
         	throw new IOException(URI_IS_NOT_ABSOLUTE);
         }else if ("http".equals(uri.getScheme()) || "https".equals(uri.getScheme())){
-            HttpResponse response = UriUtils.getResponse(uri, requestHeaders); // FIXME must use HTTP HEAD!
-            if(UriUtils.isOk(response)){
-                Header[] contentLengths = response.getHeaders("Content-Length");
+            // the response must be closed, otherwise the pooled connection is never released
+            try (ClassicHttpResponse response = UriUtils.getResponse(uri, requestHeaders)) { // FIXME must use HTTP HEAD!
+                if(UriUtils.isOk(response)){
+                    Header[] contentLengths = response.getHeaders("Content-Length");
 
-                if(contentLengths == null || contentLengths.length == 0){
-                    throw new HttpException("Could not retrieve Content-Length");
+                    if(contentLengths == null || contentLengths.length == 0){
+                        throw new HttpException("Could not retrieve Content-Length");
+                    }
+
+                    if(contentLengths.length > 1){
+                        throw new HttpException("Multiple Content-Length headers sent");
+                    }
+
+                    Header contentLength = contentLengths[0];
+                    String value = contentLength.getValue();
+
+                    return Long.valueOf(value);
+
+                } else {
+                    throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
                 }
-
-                if(contentLengths.length > 1){
-                    throw new HttpException("Multiple Content-Length headers sent");
-                }
-
-                Header contentLength = contentLengths[0];
-                String value = contentLength.getValue();
-
-                return Long.valueOf(value);
-
-            } else {
-                throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
             }
         }else if ("file".equals(uri.getScheme())){
             File file = new File(uri.getJavaUri());

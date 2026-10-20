@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.ext.common;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -21,6 +22,7 @@ import org.apache.hc.client5.http.ClientProtocolException;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -105,14 +107,14 @@ public class ServiceWrapperBase<T extends CdmBase> {
     private InputStream executeHttp(URI uri, Map<String, String> requestHeaders, HttpMethod httpMethod, HttpEntity entity) throws IOException, ClientProtocolException {
         logger.debug("sending "+httpMethod+" request: " + uri);
 
-	    ClassicHttpResponse response = UriUtils.getResponseByType(uri, requestHeaders, httpMethod, entity);
-
-	    if(UriUtils.isOk(response)){
-	        InputStream stream = response.getEntity().getContent();
-	        return stream;
-	    } else {
-	        logger.error("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
-	        return null;
+	    // read the content completely and close the response, otherwise the pooled connection is never released
+	    try (ClassicHttpResponse response = UriUtils.getResponseByType(uri, requestHeaders, httpMethod, entity)) {
+	        if(UriUtils.isOk(response)){
+	            return new ByteArrayInputStream(EntityUtils.toByteArray(response.getEntity()));
+	        } else {
+	            logger.error("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
+	            return null;
+	        }
 	    }
     }
 
