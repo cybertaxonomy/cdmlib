@@ -291,7 +291,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
                 .batchSizeToLoadObjects(batchSize)
                 .cacheMode(CacheMode.IGNORE)
                 .threadsToLoadObjects(4)
-                .idFetchSize(Integer.MIN_VALUE)  //was 150
+                .idFetchSize(150) //only as workaround revert the changes temporarily
+                //.idFetchSize(Integer.MIN_VALUE)  //was 150
                 .monitor(indexerMonitorWrapper)
                 .startAndWait();
         } catch (InterruptedException ie) {
