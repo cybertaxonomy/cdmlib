@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.ext.ipni;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +29,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -281,26 +283,28 @@ public class IpniService  implements IIpniService{
 
             URI newUri = URI.fromUrl(newUrl);
             logger.info("Firing request for URI: " + newUri);
-            ClassicHttpResponse response = UriUtils.getResponse(newUri, null);
+            // response must be closed, otherwise the pooled connection is never released
+            try (ClassicHttpResponse response = UriUtils.getResponse(newUri, null);
+                    // get the content at the resource
+                    InputStream content = response.getEntity().getContent()) {
 
-            int responseCode = response.getCode();
+                int responseCode = response.getCode();
 
-            // get the content at the resource
-            InputStream content = response.getEntity().getContent();
-            // build the result
-            List<? extends IdentifiableEntity<?>> result;
-            if (serviceType.equals(ServiceType.AUTHOR)){
-            	result = buildAuthorList(content, repository, config);
-            }else if (serviceType.equals(ServiceType.NAME)){
-            	result = buildNameList(content, repository, config);
-            }else {
-            	result = buildPublicationList(content, repository, config);
-            }
-            if(responseCode == HttpURLConnection.HTTP_OK){
-                    return result;
-            }else{
-                //TODO error handling
-            	logger.error("No Http_OK");
+                // build the result
+                List<? extends IdentifiableEntity<?>> result;
+                if (serviceType.equals(ServiceType.AUTHOR)){
+                	result = buildAuthorList(content, repository, config);
+                }else if (serviceType.equals(ServiceType.NAME)){
+                	result = buildNameList(content, repository, config);
+                }else {
+                	result = buildPublicationList(content, repository, config);
+                }
+                if(responseCode == HttpURLConnection.HTTP_OK){
+                        return result;
+                }else{
+                    //TODO error handling
+                	logger.error("No Http_OK");
+                }
             }
 
         } catch (IOException e) {
@@ -327,11 +331,10 @@ public class IpniService  implements IIpniService{
             URI newUri = URI.fromUrl(newUrl);
             logger.info("Firing request for URI: " + newUri);
 
-            ClassicHttpResponse response = UriUtils.getResponse(newUri, null);
-
-            // get the content at the resource
-            InputStream content = response.getEntity().getContent();
-            return content;
+            // read the content completely and close the response, otherwise the pooled connection is never released
+            try (ClassicHttpResponse response = UriUtils.getResponse(newUri, null)) {
+                return new ByteArrayInputStream(EntityUtils.toByteArray(response.getEntity()));
+            }
 
 	   } catch (IOException e) {
            logger.error("No content for request: " + request);
