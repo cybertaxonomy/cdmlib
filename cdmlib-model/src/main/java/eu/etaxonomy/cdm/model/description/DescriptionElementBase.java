@@ -16,6 +16,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
@@ -158,6 +162,15 @@ public abstract class DescriptionElementBase
     private DescriptionBase<?> inDescription;
 
 	@XmlElement(name = "TimePeriod")
+	@Embedded
+	// Explicit names: TimePeriodBase is @MappedSuperclass; Hibernate 6 does not apply
+	// ImplicitNamingStrategyComponentPathImpl to those inherited fields, so TemporalData's
+	// second period embeddable would otherwise collide on column "end".
+	@AttributeOverrides({
+		@AttributeOverride(name = "start", column = @Column(name = "timeperiod_start")),
+		@AttributeOverride(name = "end", column = @Column(name = "timeperiod_end")),
+		@AttributeOverride(name = "freeText", column = @Column(name = "timeperiod_freeText"))
+	})
     private TimePeriod timeperiod = TimePeriod.NewInstance();
 
     @XmlElementWrapper(name = "Sources")

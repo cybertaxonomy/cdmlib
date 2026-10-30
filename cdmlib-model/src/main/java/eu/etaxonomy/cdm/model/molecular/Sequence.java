@@ -12,7 +12,10 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
@@ -32,6 +35,7 @@ import jakarta.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Length;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -118,6 +122,14 @@ public class Sequence
 
 	/** @see #getConsensusSequence() */
 	@XmlElement(name = "ConsensusSequence")
+	@Embedded
+	// Explicit columns: two SequenceString embeds would both map to "length"/"string"
+	// without path prefix (breaks Envers Sequence_AUD under Hibernate 6.6+).
+	// Names match ImplicitNamingStrategyComponentPathImpl + existing DB schema.
+	@AttributeOverrides({
+		@AttributeOverride(name = "string", column = @Column(name = "consensusSequence_string", length = Length.LONG32)),
+		@AttributeOverride(name = "length", column = @Column(name = "consensusSequence_length"))
+	})
     private SequenceString consensusSequence = SequenceString.NewInstance();
 
 	@XmlAttribute(name = "isBarcode")
@@ -125,6 +137,11 @@ public class Sequence
 
 	/** @see #getBarcodeSequence()*/
 	@XmlElement(name = "BarcodeSequencePart")
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name = "string", column = @Column(name = "barcodeSequencePart_string", length = Length.LONG32)),
+		@AttributeOverride(name = "length", column = @Column(name = "barcodeSequencePart_length"))
+	})
     private SequenceString barcodeSequencePart = SequenceString.NewInstance();
 
 	/** @see #getGeneticAccessionNumber()*/
