@@ -10,28 +10,22 @@
     ">
 
   <bean class="eu.etaxonomy.cdm.config.ConfigFileUtil" scope="singleton" />
-  
+
   <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
       <property name="sessionFactory" ref="sessionFactory" />
   </bean>
 
-  <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" depends-on="tableGeneratorGlobalOverride">
+  <!--
+    Hibernate 6.2+ / Spring 6.1: do not use LocalSessionFactoryBean (NoSuchMethodError on
+    setImplicitNamingStrategy). CdmHibernateSessionFactoryBean bootstraps via Hibernate
+    Configuration (fluent API OK) + hibernate.cfg.xml. SessionFactory is also an EMF in H6.
+  -->
+  <bean id="sessionFactory" class="eu.etaxonomy.cdm.persistence.hibernate.CdmHibernateSessionFactoryBean"
+        depends-on="tableGeneratorGlobalOverride">
     <property name="implicitNamingStrategy">
         <bean class="org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl" />
     </property>
-<!--  <property name="entityInterceptor">
-        <bean class="eu.etaxonomy.cdm.persistence.hibernate.CdmHibernateInterceptor" />
-      </property>
--->
     <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
-
-      <!--
-            If dataSource is set, this will override corresponding settings in Hibernate properties.
-            If this is set, the Hibernate settings should not define a connection provider to
-            avoid meaningless double configuration.
-
-            see also org.springframework.orm.hibernate3.AbstractSessionFactoryBean.setDataSource(DataSource dataSource)
-         -->
     <property name="dataSource" ref="dataSource"/>
     <property name="hibernateProperties" ref="hibernateProperties"/>
   </bean>
