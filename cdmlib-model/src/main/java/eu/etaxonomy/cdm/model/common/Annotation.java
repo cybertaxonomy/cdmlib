@@ -65,7 +65,7 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
     @XmlElementWrapper(name = "IntextReferences", nillable = true)
     @XmlElement(name = "IntextReference")
     @OneToMany(mappedBy="annotation", fetch=FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
 //  @Merge(MergeMode.ADD_CLONE)
     private Set<IntextReference> intextReferences = new HashSet<>();
 

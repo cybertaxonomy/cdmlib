@@ -72,7 +72,7 @@ public class SingleRead extends EventBase {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	private AmplificationResult amplificationResult;
 
 	/** @see #getPrimer()*/
@@ -85,14 +85,14 @@ public class SingleRead extends EventBase {
 	/** @see #getSequence()*/
 	/**{@link #getSequence()}*/
 	@XmlElement(name = "Sequence")
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private SequenceString sequence = SequenceString.NewInstance();
 
 	@XmlElement(name = "Pherogram")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	private Media pherogram;
 
 	/** @see #getDirection()*/
@@ -104,7 +104,7 @@ public class SingleRead extends EventBase {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	private MaterialOrMethodEvent materialOrMethod;
 
 	// ******************** FACTORY METHOD ******************/

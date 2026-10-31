@@ -60,7 +60,7 @@ public class SingleReadAlignment extends VersionableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	private SingleRead singleRead;
 
 	//TODO XML mapping / user type

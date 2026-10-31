@@ -110,7 +110,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DELETE})
 	@NotNull
 	private Set<Representation> keyRepresentations = new HashSet<>();
 

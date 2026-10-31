@@ -89,7 +89,7 @@ public class IntextReference extends CdmLinkBase {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private OriginalSourceBase source;
 
     @XmlElement(name = "Media")

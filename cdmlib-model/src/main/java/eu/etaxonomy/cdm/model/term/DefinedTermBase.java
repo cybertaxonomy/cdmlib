@@ -192,7 +192,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase<T>>
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Media> media = new HashSet<>();
 
     @XmlElement(name = "TermVocabulary")

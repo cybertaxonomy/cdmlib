@@ -104,7 +104,7 @@ public class User extends CdmBase implements UserDetails {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.REFRESH}) // see #2414 (Group updating doesn't work)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}) // see #2414 (Group updating doesn't work)
     @NotAudited
     protected Set<GrantedAuthority> grantedAuthorities = new HashSet<>();  //authorities of this user only
 
@@ -147,7 +147,7 @@ public class User extends CdmBase implements UserDetails {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = AuthorityBase.class)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     @NotAudited
     protected Set<AuthorityBase> authorities = new HashSet<>();
 

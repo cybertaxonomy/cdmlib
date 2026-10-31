@@ -23,9 +23,9 @@ import jakarta.xml.bind.annotation.XmlType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+
+import jakarta.persistence.CascadeType;
 
 import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -54,8 +54,8 @@ public abstract class SingleSourcedEntityBase
     @XmlElement(name = "source")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private NamedSource source;
 
 // ************ CONSTRUCTOR ********************************************/

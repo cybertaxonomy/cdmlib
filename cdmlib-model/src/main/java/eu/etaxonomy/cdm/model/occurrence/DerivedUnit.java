@@ -135,7 +135,7 @@ public class DerivedUnit
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	@IndexedEmbedded(includeDepth = 4)
 	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	private DerivationEvent derivedFrom;
@@ -157,8 +157,9 @@ public class DerivedUnit
     //#2506
 	@XmlElementWrapper(name = "OccurrenceStatuses")
     @XmlElement(name = "OccurrenceStatus")
-    @OneToMany(fetch= FetchType.LAZY, mappedBy = "unit", orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch= FetchType.LAZY, mappedBy = "unit", orphanRemoval=true,
+            cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE,
+                    jakarta.persistence.CascadeType.REMOVE})
     @NotNull
     @IndexedEmbedded(includeDepth=1)
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
@@ -170,7 +171,7 @@ public class DerivedUnit
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	private PreservationMethod preservation;
 
 

@@ -23,8 +23,6 @@ import jakarta.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 /**
@@ -52,8 +50,9 @@ public class LanguageString
 	//TODO do we need to add it to JAXB? #4706
 	@XmlElementWrapper(name = "IntextReferences", nillable = true)
 	@XmlElement(name = "IntextReference")
-	@OneToMany(mappedBy="languageString", fetch=FetchType.LAZY, orphanRemoval=true)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@OneToMany(mappedBy="languageString", fetch=FetchType.LAZY, orphanRemoval=true,
+            cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE,
+                    jakarta.persistence.CascadeType.REMOVE})
 //	@Merge(MergeMode.ADD_CLONE)
     private Set<IntextReference> intextReferences = new HashSet<>();
 

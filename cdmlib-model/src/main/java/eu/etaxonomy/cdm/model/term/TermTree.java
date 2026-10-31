@@ -83,7 +83,7 @@ public class TermTree<T extends DefinedTermBase>
 
 	@XmlElement(name = "Root")
 	@OneToOne(fetch = FetchType.LAZY, targetEntity=TermNode.class)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	private TermNode<T> root;
 
 //******************** FACTORY METHODS ******************************************/

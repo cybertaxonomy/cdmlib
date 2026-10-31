@@ -93,7 +93,7 @@ public class TermVocabulary<T extends DefinedTermBase>
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="vocabulary", fetch=FetchType.LAZY, targetEntity = DefinedTermBase.class)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	@IndexedEmbedded(includeDepth = 2)
 	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
 	protected Set<T> terms = newTermSet();

@@ -103,7 +103,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private NamedSource designationSource;
 
     @XmlElementWrapper(name = "TypifiedNames")

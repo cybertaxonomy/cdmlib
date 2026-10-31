@@ -39,15 +39,14 @@ import eu.etaxonomy.cdm.model.term.TermType;
 /**
  * Registers nested {@code @Converter(autoApply = true)} enum converters.
  * <p>
- * CDM configures Hibernate via Spring {@code LocalSessionFactoryBean} /
- * native {@code Configuration} with an explicit class list (no JPA classpath
- * scan). Nested converters inside enums are therefore not discovered.
- * Without registration, Hibernate falls back to ordinal {@code SMALLINT}
- * mapping and fails reading VARCHAR keys such as {@code "LA"}.
+ * Needed when Hibernate is bootstrapped with an explicit class list
+ * ({@code hibernate.cfg.xml} / no {@code packagesToScan}): nested converters
+ * inside enums are then not discovered. Without registration, Hibernate falls
+ * back to ordinal {@code SMALLINT} mapping and fails reading VARCHAR keys
+ * such as {@code "LA"}.
  * <p>
- * Discovered via {@link MetadataBuilderInitializer} (Java ServiceLoader),
- * which is applied on both native and JPA bootstrap. Also implements
- * {@link MetadataBuilderContributor} for the JPA
+ * Discovered via {@link MetadataBuilderInitializer} (Java ServiceLoader).
+ * Also implements {@link MetadataBuilderContributor} for the JPA
  * {@code hibernate.metadata_builder_contributor} property.
  *
  * @author muellera

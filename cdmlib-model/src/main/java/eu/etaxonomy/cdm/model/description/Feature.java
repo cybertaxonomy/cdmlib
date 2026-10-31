@@ -151,7 +151,7 @@ public class Feature extends AvailableForTermBase<Feature> {
         joinColumns=@JoinColumn(name="DefinedTermBase_id")
         //  inverseJoinColumns
     )
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
 //    @IndexedEmbedded(includeDepth = 2)
     private Set<Representation> inverseRepresentations = new HashSet<>();
 

@@ -164,7 +164,7 @@ public class Person
     @XmlElementWrapper(name = "InstitutionalMemberships", nillable = true)
     @XmlElement(name = "InstitutionalMembership")
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "person")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
 	protected Set<InstitutionalMembership> institutionalMemberships;
 
 // *********************** FACTORY **********************************/

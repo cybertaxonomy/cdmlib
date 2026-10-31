@@ -63,7 +63,7 @@ public class DerivationEvent extends EventBase {
 	@XmlElement(name = "Original")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	@ManyToMany(fetch = FetchType.LAZY,mappedBy="derivationEvents")
 	@IndexedEmbedded(includeDepth = 3)
 	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
@@ -74,7 +74,7 @@ public class DerivationEvent extends EventBase {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="derivedFrom")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	protected Set<DerivedUnit> derivatives = new HashSet<>();
 
 	@XmlElement(name = "Institution")

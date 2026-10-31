@@ -106,7 +106,7 @@ public class TaxonNode
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private Taxon taxon;
 
     @XmlElement(name = "parent")
@@ -150,7 +150,7 @@ public class TaxonNode
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="taxonNode", fetch=FetchType.LAZY, orphanRemoval = true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<>();
 
     /**
@@ -173,7 +173,7 @@ public class TaxonNode
             inverseJoinColumns = @JoinColumn(name = "placementNote_id")
     )
     @MapKeyJoinColumn(name = "placementNote_KEY")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private Map<Language,LanguageString> placementNote = new HashMap<>();
 
 //	private Taxon originalConcept;

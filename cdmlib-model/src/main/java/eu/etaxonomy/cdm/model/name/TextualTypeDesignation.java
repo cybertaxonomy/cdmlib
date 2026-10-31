@@ -64,7 +64,7 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true)
     @MapKeyJoinColumn(name="text_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @PropertyBinding(binder = @PropertyBinderRef(type=MultilanguageTextFieldBridge.class,
             params = @Param(name="fieldName", value="text")))
     @NotNull

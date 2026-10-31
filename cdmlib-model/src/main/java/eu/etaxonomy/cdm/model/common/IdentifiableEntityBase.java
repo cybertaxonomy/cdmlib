@@ -59,7 +59,7 @@ public abstract class IdentifiableEntityBase
     @XmlElement(name = "Identifier")
     @OrderColumn(name = "sortIndex")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
-    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
+    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
     protected List<Identifier> identifiers = new ArrayList<>();

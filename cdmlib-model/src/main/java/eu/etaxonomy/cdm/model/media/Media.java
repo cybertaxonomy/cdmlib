@@ -110,7 +110,7 @@ public class Media
     @MapKeyJoinColumn(name="title_mapkey_id")
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.REFRESH})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DELETE, CascadeType.REFRESH})
     @NotNull
     @NotEmpty(groups = Level2.class)
     private Map<Language,LanguageString> title = new HashMap<>();
@@ -129,7 +129,7 @@ public class Media
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @MapKeyJoinColumn(name="description_mapkey_id")
     @JoinTable(name = "Media_Description")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.REFRESH})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DELETE, CascadeType.REFRESH})
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @NotNull
@@ -145,7 +145,7 @@ public class Media
         @XmlElement(name = "MovieFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MovieFile.class)
     })
     @OneToMany(mappedBy="media",fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
     @NotNull
     @NotEmpty(groups = Level2.class)
     private Set<MediaRepresentation> representations = new HashSet<>();
@@ -164,13 +164,13 @@ public class Media
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private ExternalLink link;
 
     @XmlElementWrapper(name = "Rights", nillable = true)
     @XmlElement(name = "Rights")
     @ManyToMany(fetch = FetchType.LAZY)  //#5762 M:N now
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     //TODO
     @Merge(MergeMode.ADD_CLONE)
     @NotNull

@@ -82,13 +82,13 @@ public class DnaSample extends DerivedUnit {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Sequence> sequences = new HashSet<>();
 
 	@XmlElementWrapper(name = "AmplificationResults")
 	@XmlElement(name = "AmplificationResult")
 	@OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY)
-	@Cascade( { CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
 	private final Set<AmplificationResult> amplificationResults = new HashSet<>();
 
@@ -98,7 +98,7 @@ public class DnaSample extends DerivedUnit {
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private DnaQuality dnaQuality;
 
 // ******************* CONSTRUCTOR *************************/

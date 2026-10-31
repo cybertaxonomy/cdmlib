@@ -145,7 +145,7 @@ public abstract class TaxonBase
     // add an Integer document-id field at name.id and conflict with that binder (HSEARCH600126)
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     @NotNull(groups = Level2.class)
     private TaxonName name;
 
@@ -154,7 +154,7 @@ public abstract class TaxonBase
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, mappedBy="sourcedTaxon")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE,CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DELETE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)

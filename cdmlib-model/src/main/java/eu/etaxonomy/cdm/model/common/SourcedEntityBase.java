@@ -25,8 +25,6 @@ import jakarta.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
@@ -59,8 +57,9 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
 
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "Source")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true,
+            cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE,
+                    jakarta.persistence.CascadeType.REMOVE})
     @Merge(MergeMode.ADD_CLONE)
     //TODO should be Set<SOURCE> but this currently throws exception in DefaultMergeStrategyTest
     //TODO once fixed, fix also IdentifiableDao.getSources() generics

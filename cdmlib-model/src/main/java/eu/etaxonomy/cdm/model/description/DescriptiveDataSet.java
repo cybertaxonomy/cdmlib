@@ -83,7 +83,7 @@ public class DescriptiveDataSet
 	@XmlElementWrapper(name = "Representations")
 	@XmlElement(name = "Representation")
     @OneToMany(fetch=FetchType.EAGER)
-	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
+	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
 	private Set<Representation> representations = new HashSet<>();
 
 	@XmlElement(name = "DescriptiveSystem")
@@ -138,7 +138,7 @@ public class DescriptiveDataSet
     @XmlElementWrapper(name = "Rights", nillable = true)
     @XmlElement(name = "Rights")
     @ManyToMany(fetch = FetchType.LAZY)  //#5762 M:N now
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     //TODO
     @Merge(MergeMode.ADD_CLONE)
     @NotNull

@@ -100,7 +100,7 @@ public class Group extends CdmBase {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private Set <GrantedAuthority> grantedAuthorities = new HashSet<>();
 
     @XmlElementWrapper(name = "Authorities")
@@ -108,7 +108,7 @@ public class Group extends CdmBase {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = AuthorityBase.class)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private Set <AuthorityBase> authorities = new HashSet<>();
 
 

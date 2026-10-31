@@ -87,13 +87,13 @@ public class Contact implements Serializable, Cloneable {
 	@XmlElement(name = "PhoneNumber")
 	@ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "contact_phonenumbers_element")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
 	private List<String> phoneNumbers = new ArrayList<>();
 
     @XmlElementWrapper(name = "Addresses", nillable = true)
     @XmlElement(name = "Address")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	protected Set<Address> addresses = new HashSet<>();
 
 	public static Contact NewInstance() {

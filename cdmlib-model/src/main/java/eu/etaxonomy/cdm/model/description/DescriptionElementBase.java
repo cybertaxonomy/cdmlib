@@ -43,8 +43,6 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
@@ -135,10 +133,10 @@ public abstract class DescriptionElementBase
 
     @XmlElement(name = "ModifyingText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE})
     @JoinTable(name = "DescriptionElementBase_ModifyingText")
     @MapKeyJoinColumn(name="modifyingtext_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Map<Language,LanguageString> modifyingText = new HashMap<>();
@@ -147,9 +145,9 @@ public abstract class DescriptionElementBase
     @XmlElement(name = "Medium")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE})
     @OrderColumn(name="sortIndex")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private List<Media> media = new ArrayList<>();
 
     @XmlElement(name = "InDescription")
@@ -175,8 +173,9 @@ public abstract class DescriptionElementBase
 
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "DescriptionElementSource")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sourcedElement", orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sourcedElement", orphanRemoval=true,
+            cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE,
+                    jakarta.persistence.CascadeType.REMOVE})
     @Merge(MergeMode.ADD_CLONE)
     private Set<DescriptionElementSource> sources = new HashSet<>();
 

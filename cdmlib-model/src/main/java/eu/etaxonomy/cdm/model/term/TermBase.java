@@ -18,8 +18,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.Length;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
 import org.hibernate.type.SqlTypes;
@@ -39,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.term.TermDefaultCacheStrategy;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.FetchType;
@@ -99,8 +98,8 @@ public abstract class TermBase
 
     @XmlElementWrapper(name = "Representations")
     @XmlElement(name = "Representation")
-    @OneToMany(fetch=FetchType.EAGER, orphanRemoval=true)
-    @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch=FetchType.EAGER, orphanRemoval=true,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
     private Set<Representation> representations = new HashSet<>();
 

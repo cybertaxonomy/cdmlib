@@ -111,7 +111,7 @@ public class AmplificationResult extends AnnotatableEntity{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	@IndexedEmbedded
 	@IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Amplification amplification;
@@ -121,14 +121,14 @@ public class AmplificationResult extends AnnotatableEntity{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="amplificationResult" , fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	private Set<SingleRead> singleReads = new HashSet<>();
 
     @XmlElement(name = "Cloning")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private Cloning cloning;
 
 	/** @see #getSuccessful() */
@@ -150,7 +150,7 @@ public class AmplificationResult extends AnnotatableEntity{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	private Media gelPhoto;
 
 

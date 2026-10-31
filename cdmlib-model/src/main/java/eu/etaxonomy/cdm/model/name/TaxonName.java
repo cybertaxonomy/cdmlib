@@ -240,7 +240,7 @@ public class TaxonName
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
     @OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     private Set<TaxonNameDescription> descriptions = new HashSet<>();
 
@@ -283,8 +283,10 @@ public class TaxonName
     @XmlElement(name = "HomotypicalGroup")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    // Prefer Hibernate SAVE_UPDATE over JPA CascadeType.PERSIST: groups are often shared/detached;
+    // JPA PERSIST then fails with "detached entity passed to persist".
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     @Match(MatchMode.IGNORE)
     @CacheUpdate(noUpdate ="titleCache")
     //TODO Val #3379
@@ -294,7 +296,7 @@ public class TaxonName
     @XmlElementWrapper(name = "RelationsFromThisName")
     @XmlElement(name = "RelationFromThisName")
     @OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.RELATION)
     @NotNull
     @Valid
@@ -305,7 +307,7 @@ public class TaxonName
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.RELATION)
     @NotNull
     @Valid
@@ -314,7 +316,7 @@ public class TaxonName
     @XmlElementWrapper(name = "NomenclaturalStatuses")
     @XmlElement(name = "NomenclaturalStatus")
     @OneToMany(fetch= FetchType.LAZY, mappedBy = "name", orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE,CascadeType.DELETE})
     @NotNull
     @IndexedEmbedded(includeDepth=1)
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
@@ -345,8 +347,9 @@ public class TaxonName
     @XmlElement(name = "NomenclaturalSource")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, mappedBy="sourcedName")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, mappedBy="sourcedName",
+            cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE,
+                    jakarta.persistence.CascadeType.REMOVE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
@@ -495,7 +498,7 @@ public class TaxonName
     @XmlElementWrapper(name = "HybridRelationsFromThisName")
     @XmlElement(name = "HybridRelationsFromThisName")
     @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     @Merge(MergeMode.RELATION)
     @NotNull
     private Set<HybridRelationship> hybridParentRelations = new HashSet<>();
@@ -503,7 +506,7 @@ public class TaxonName
     @XmlElementWrapper(name = "HybridRelationsToThisName")
     @XmlElement(name = "HybridRelationsToThisName")
     @OneToMany(mappedBy="relatedTo", fetch = FetchType.LAZY, orphanRemoval=true) //a hybrid relation can be deleted automatically if the child is deleted.
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.RELATION)
     @NotNull
     private Set<HybridRelationship> hybridChildRelations = new HashSet<>();

@@ -94,7 +94,7 @@ public class TermNode<T extends DefinedTermBase>
     //see https://dev.e-taxonomy.eu/redmine/issues/3722
     @OrderColumn(name="sortIndex", nullable=true)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermNode.class) //no orphanRemoval (#10101)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})  //TODO , CascadeType.DELETE makes sense but needs testing in TaxEditor first
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})  //TODO , CascadeType.DELETE makes sense but needs testing in TaxEditor first
 	private List<TermNode<T>> children = new ArrayList<>();
 
     @XmlElementWrapper(name = "OnlyApplicableIf")
@@ -102,7 +102,7 @@ public class TermNode<T extends DefinedTermBase>
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @JoinTable(name="TermNode_OnlyApplicableIf")
     private final Set<FeatureState> onlyApplicableIf = new HashSet<>();
 
@@ -111,7 +111,7 @@ public class TermNode<T extends DefinedTermBase>
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @JoinTable(name="TermNode_InapplicableIf")
     private final Set<FeatureState> inapplicableIf = new HashSet<>();
 

@@ -21,8 +21,6 @@ import jakarta.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
@@ -69,8 +67,8 @@ public class MediaSpecimen
 	@XmlElement(name = "sequence")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	@ManyToOne(fetch = FetchType.LAZY,
+            cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE})
 	private Media mediaSpecimen;
 
 // ****************** FACTORY METHOD *****************/

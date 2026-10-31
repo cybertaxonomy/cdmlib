@@ -86,7 +86,7 @@ public class CategoricalData
     @XmlElementWrapper(name = "States")
     @XmlElement(name = "State")
     @OneToMany(fetch = FetchType.LAZY, mappedBy="categoricalData", orphanRemoval=true)
-    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded(includeDepth = 3)
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @NotEmpty(groups = Level2.class)

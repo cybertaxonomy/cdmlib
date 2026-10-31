@@ -374,7 +374,7 @@ public class Reference
     @XmlElement(name = "Credit")
     @OrderColumn(name="sortIndex")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     //TODO
     @Merge(MergeMode.ADD_CLONE)
     @NotNull

@@ -86,7 +86,7 @@ public class SpecimenDescription
     @XmlElementWrapper(name = "Rights", nillable = true)
     @XmlElement(name = "Rights")
     @ManyToMany(fetch = FetchType.LAZY)  //#5762 M:N now
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name="DescriptionBase_RightsInfo",
         joinColumns=@JoinColumn(name="DescriptionBase_id")
     )

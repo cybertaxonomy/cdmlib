@@ -87,7 +87,7 @@ public class Classification
 
     @XmlElement(name = "Name")
     @OneToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "name_id", referencedColumnName = "id")
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
@@ -97,7 +97,7 @@ public class Classification
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private TaxonNode rootNode;
 
 	@XmlElement(name = "TimePeriod")
@@ -115,7 +115,7 @@ public class Classification
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
 	@MapKeyJoinColumn(name="description_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
 	@JoinTable(name = "Classification_Description")
 //    @PropertyBinding(binder = @PropertyBinderRef(type=MultilanguageTextFieldBridge.class,
 //            params = @Param(name="fieldName", value="text")))
@@ -127,7 +127,7 @@ public class Classification
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private NamedSource source;
 
 // ********************** FACTORY METHODS *********************************************/

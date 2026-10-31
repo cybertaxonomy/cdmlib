@@ -96,7 +96,7 @@ public class FieldUnit
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-    @Cascade( { CascadeType.SAVE_UPDATE,CascadeType.MERGE })
+    @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE })
     @IndexedEmbedded(includeDepth = 2)
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @Valid

@@ -110,7 +110,7 @@ public class Amplification extends EventBase {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private Primer forwardPrimer;
 
     /** @see #getReversePrimer()*/
@@ -118,7 +118,7 @@ public class Amplification extends EventBase {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private Primer reversePrimer;
 
 
@@ -126,7 +126,7 @@ public class Amplification extends EventBase {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private MaterialOrMethodEvent purification;
 
 	@XmlElement(name = "Institution")

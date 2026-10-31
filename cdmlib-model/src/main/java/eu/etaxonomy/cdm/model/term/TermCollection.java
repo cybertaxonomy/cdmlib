@@ -63,7 +63,7 @@ public abstract class TermCollection<TERM extends DefinedTermBase, REL extends T
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="graph", fetch=FetchType.LAZY, targetEntity = TermRelationBase.class)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     @IndexedEmbedded(includeDepth = 2)
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     private Set<REL> termRelations = new HashSet<>();

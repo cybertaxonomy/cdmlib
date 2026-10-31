@@ -14,8 +14,6 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.engine.backend.types.Projectable;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
@@ -116,8 +114,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         @XmlElement(name = "TextData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TextData.class),
         @XmlElement(name = "TemporalData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TemporalData.class)
     })
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription", orphanRemoval=true)
-    @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription", orphanRemoval=true,
+            cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE,
+                    jakarta.persistence.CascadeType.REMOVE})
     private Set<DescriptionElementBase> descriptionElements = new HashSet<>();
 
     @XmlElement(name = "ImageGallery")

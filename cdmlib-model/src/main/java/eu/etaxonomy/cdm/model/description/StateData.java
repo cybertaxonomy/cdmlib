@@ -118,7 +118,7 @@ public class StateData
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY)
     @MapKeyJoinColumn(name="modifyingtext_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     @PropertyBinding(binder = @PropertyBinderRef(type=MultilanguageTextFieldBridge.class,
             params = @Param(name="fieldName", value="modifyingText")))
     private Map<Language,LanguageString> modifyingText = new HashMap<>();

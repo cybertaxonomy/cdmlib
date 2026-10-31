@@ -83,7 +83,7 @@ public class TextData
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true)
     @MapKeyJoinColumn(name="multilanguagetext_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @PropertyBinding(binder = @PropertyBinderRef(type=MultilanguageTextFieldBridge.class,
             params = @Param(name="fieldName", value="text")))
     @NotNull

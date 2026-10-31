@@ -94,7 +94,7 @@ public class QuantitativeData
 	@XmlElementWrapper(name = "StatisticalValues")
 	@XmlElement(name = "StatisticalValue")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="quantitativeData", orphanRemoval=true)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
 	@NotEmpty(groups = Level2.class)
 	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet<>();
 

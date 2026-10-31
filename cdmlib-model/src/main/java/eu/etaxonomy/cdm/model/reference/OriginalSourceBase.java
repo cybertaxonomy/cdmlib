@@ -124,13 +124,13 @@ public abstract class OriginalSourceBase
     // LAZY: EAGER caused Hibernate 6.1 AssertionFailure ("force initializing collection loading")
     // when cascading deletes load OriginalSourceBase while another collection is initializing
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private CdmLinkSource cdmSource;
 
     @XmlElementWrapper(name = "Links", nillable = true)
     @XmlElement(name = "Link")
     @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
 	private Set<ExternalLink> links = new HashSet<>();
 

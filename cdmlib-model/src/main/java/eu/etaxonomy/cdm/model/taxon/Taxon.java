@@ -139,7 +139,7 @@ public class Taxon
     @XmlElementWrapper(name = "RelationsFromThisTaxon")
     @XmlElement(name = "FromThisTaxonRelationship")
     @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
 //    @Valid
     private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<>();
@@ -150,7 +150,7 @@ public class Taxon
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
 //    @Valid
     private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<>();
 
@@ -169,7 +169,7 @@ public class Taxon
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="taxon", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     // Deep reindex when TaxonNode.classification / treeIndex change (HS5 ContainedIn on TaxonNode.taxon).
     @IndexedEmbedded
     private Set<TaxonNode> taxonNodes = new HashSet<>();

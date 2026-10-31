@@ -94,7 +94,7 @@ public class TaxonRelationship
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     private TaxonomicOperation operation;
 
 // *************************** CONSTRUCTOR ********************************/

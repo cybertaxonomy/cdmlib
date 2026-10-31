@@ -58,7 +58,7 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany (fetch= FetchType.LAZY, orphanRemoval=true)
 	@MapKeyJoinColumn(name="label_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
 //    @IndexedEmbedded
     private Map<Language, LanguageString> label = new HashMap<>();
 

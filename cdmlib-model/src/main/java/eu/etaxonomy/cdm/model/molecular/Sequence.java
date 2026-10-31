@@ -117,7 +117,7 @@ public class Sequence
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	private Media contigFile;
 
 	/** @see #getConsensusSequence() */
@@ -159,7 +159,7 @@ public class Sequence
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="consensusAlignment", fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
 	private Set<SingleReadAlignment> singleReadAlignments = new HashSet<>();
 
 	/** @see #getDnaMarker() */

@@ -103,7 +103,7 @@ public class MediaRepresentation extends VersionableEntity {
     @XmlElementWrapper(name = "MediaMetaDatas")
     @XmlElement(name = "MediaMetaData")
     @OneToMany (mappedBy="mediaRepresentation", fetch= FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
     private Set<MediaMetaData> mediaMetaData = new HashSet<>();
 
 //********************* FACTORY ***********************************************/

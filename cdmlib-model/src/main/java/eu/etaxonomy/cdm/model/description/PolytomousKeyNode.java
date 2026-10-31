@@ -170,7 +170,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlElement(name = "Child")
 	@OrderColumn(name = "sortIndex", nullable=true)  //, base = 0
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent") //no orphanRemoval (#10101)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
 	private List<PolytomousKeyNode> children = new ArrayList<>();
 
 	@XmlElement(name = "Parent")
@@ -184,14 +184,14 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
 	private KeyStatement statement;
 
 	@XmlElement(name = "Question")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
 	private KeyStatement question;
 
 	@XmlElement(name = "Feature")
@@ -228,7 +228,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY)
 	@MapKeyJoinColumn(name="modifyingtext_mapkey_id")
-    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
+    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE })
 	private Map<Language, LanguageString> modifyingText = new HashMap<>();
 
 // ************************** FACTORY ********************************/

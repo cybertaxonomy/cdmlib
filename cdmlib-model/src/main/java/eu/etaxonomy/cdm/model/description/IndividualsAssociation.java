@@ -71,7 +71,7 @@ public class IndividualsAssociation extends DescriptionElementBase {
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
 	@MapKeyJoinColumn(name="description_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE })
 	@JoinTable(name = "IndividualsAssociation_LanguageString")  //to distinguish from other DescriptionElementBase_LanguageString cases
 	private Map<Language,LanguageString> description = new HashMap<>();
 

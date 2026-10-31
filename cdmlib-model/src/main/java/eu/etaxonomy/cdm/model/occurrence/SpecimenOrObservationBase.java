@@ -145,7 +145,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
     @OneToMany(mappedBy="describedSpecimenOrObservation", fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
     @NotNull
     private Set<SpecimenDescription> descriptions = new HashSet<>();
 
@@ -153,7 +153,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlElementWrapper(name = "Determinations")
     @XmlElement(name = "Determination")
     @OneToMany(mappedBy="identifiedUnit", orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded(includeDepth = 2)
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @NotNull
@@ -210,7 +210,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @MapKeyJoinColumn(name="definition_mapkey_id")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @IndexedEmbedded
     @IndexingDependency(reindexOnUpdate = ReindexOnUpdate.SHALLOW)
     @NotNull
@@ -222,7 +222,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     protected Set<DerivationEvent> derivationEvents = new HashSet<>();
 

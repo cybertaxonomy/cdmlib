@@ -75,7 +75,7 @@ public class TaxonInteraction
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
 	@MapKeyJoinColumn(name="description_mapkey_id")
     @JoinTable(name = "TaxonInteraction_LanguageString")  //to distinguish from other DescriptionElementBase_LanguageString
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DELETE})
     private Map<Language,LanguageString> description = new HashMap<>();
 
 	@XmlElement(name = "Taxon2")
