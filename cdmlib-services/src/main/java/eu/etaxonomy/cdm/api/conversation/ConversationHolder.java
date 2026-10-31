@@ -100,10 +100,9 @@ public class ConversationHolder {
     private TransactionDefinition definition;
 
     /**
-     * This conversations transaction
+     * This conversation's transaction
      */
     private TransactionStatus transactionStatus;
-
 
     private boolean closed = false;
 
@@ -118,10 +117,6 @@ public class ConversationHolder {
 
     /**
      * Create a new Conversation holder and bind it immediately.
-     *
-     * @param dataSource
-     * @param sessionFactory
-     * @param transactionManager
      */
     public ConversationHolder(DataSource dataSource, SessionFactory sessionFactory,
             PlatformTransactionManager transactionManager) {
@@ -370,12 +365,8 @@ public class ConversationHolder {
         // binding / unbinding / closing session as well as starting / committing transactions.
         Session session = sessionFactory.openSession();
         session.setHibernateFlushMode(getDefaultFlushMode());
-
         return session;
     }
-
-
-
 
     /**
      * @return the session factory that is bound to this conversation manager
@@ -461,6 +452,5 @@ public class ConversationHolder {
     public void setDefaultFlushMode(FlushMode defaultFlushMode) {
         this.defaultFlushMode = defaultFlushMode;
     }
-
 
 }

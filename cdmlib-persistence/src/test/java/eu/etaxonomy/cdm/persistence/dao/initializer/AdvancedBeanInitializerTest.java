@@ -314,7 +314,6 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         }
     }
 
-
     @Override
     // @Test
     public void createTestDataSet() throws FileNotFoundException {

@@ -213,7 +213,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     }
 
     private <T> Long countEntities(Class<T> type) {
-        Object countResultObj = getSession().createQuery("select count(*) from " + type.getName()).uniqueResult();
+        Object countResultObj = getSession().createQuery("SELECT count(*) FROM " + type.getName()).uniqueResult();
         Long countResult = (Long)countResultObj;
         return countResult;
     }

@@ -92,8 +92,9 @@ public class Cdm2CdmVocabularyImport
                 }
             }
         } catch (Exception e) {
-            logger.warn("Exception during detache vocabulary " + otherVoc.getUuid());
-            e.printStackTrace();
+            String message = "Exception during detach vocabulary " + otherVoc.getUuid();
+            logger.warn(message, e);
+            state.getResult().addException(e, message, "doSingleVocabulary");
         }
         try {
             if (thisVoc != null){
@@ -103,8 +104,9 @@ public class Cdm2CdmVocabularyImport
                 state.clearToSave();
             }
         } catch (Exception e) {
-            logger.warn("Exception during save vocabulary " + otherVoc.getUuid());
-             e.printStackTrace();
+            String message = "Exception during save vocabulary " + otherVoc.getUuid();
+            logger.warn(message, e);
+            state.getResult().addException(e, message, "doSingleVocabulary");
         }
     }
 
@@ -118,8 +120,9 @@ public class Cdm2CdmVocabularyImport
                 state.addToSave(thisTerm);
             }
         } catch (Exception e) {
-            logger.warn("Exception during detache node " + otherTerm.getUuid());
-            e.printStackTrace();
+            String message = "Exception during detach term " + otherTerm.getUuid();
+            logger.warn(message, e);
+            state.getResult().addException(e, message, "doSingleTerm");
         }
     }
 
@@ -138,8 +141,9 @@ public class Cdm2CdmVocabularyImport
                 }
             }
         } catch (Exception e) {
-            logger.warn("Exception during detache term graph " + otherGraph.getUuid());
-            e.printStackTrace();
+            String message = "Exception during detach term graph " + otherGraph.getUuid();
+            logger.warn(message, e);
+            state.getResult().addException(e, message, "doSingleGraph");
         }
         try {
             if (thisGraph != null){
@@ -149,8 +153,9 @@ public class Cdm2CdmVocabularyImport
                 state.clearToSave();
             }
         } catch (Exception e) {
-            logger.warn("Exception during save vocabulary " + otherGraph.getUuid());
-            e.printStackTrace();
+            String message = "Exception during save term graph " + otherGraph.getUuid();
+            logger.warn(message, e);
+            state.getResult().addException(e, message, "doSingleGraph");
         }
     }
 
@@ -173,8 +178,9 @@ public class Cdm2CdmVocabularyImport
                 doSingleNode(state, otherChild, thisNode);
             }
         } catch (Exception e) {
-            logger.warn("Exception during detache node " + otherNode.getUuid());
-            e.printStackTrace();
+            String message = "Exception during detach/save node " + otherNode.getUuid();
+            logger.warn(message, e);
+            state.getResult().addException(e, message, "doSingleNode");
         }
     }
 

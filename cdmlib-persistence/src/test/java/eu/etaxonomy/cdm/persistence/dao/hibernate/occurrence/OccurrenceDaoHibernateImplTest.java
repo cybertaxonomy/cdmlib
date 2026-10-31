@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import jakarta.validation.ConstraintViolationException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.h2.util.StringUtils;
@@ -62,6 +60,7 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import jakarta.validation.ConstraintViolationException;
 
 public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
@@ -165,7 +164,7 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 
 	    //This is for testing if an occurrence status can be loaded if it has
 	    //no type although OccurrenceStatus.type has a NotNull constraint.
-	    //Result: it can be loaded and during update an constraint violation
+	    //Result: it can be loaded and during update a constraint violation
 	    //only takes place if the occurrence status record itself is changed.
 	    //I tested with changing the specimen or adding an annotation to the
 	    //occurrence status with no constraint violation observed.
@@ -182,8 +181,13 @@ public class OccurrenceDaoHibernateImplTest extends CdmTransactionalIntegrationT
 	    try {
             commitAndStartNewTransaction(new String[]{/*"OccurrenceStatus","OccurrenceStatus_Annotation","Annotation","SpecimenOrObservationBase" */});
             Assert.fail("Updating status without type should throw an exception");
-        } catch (ConstraintViolationException e) {
+        } catch (Throwable e1) {
             //constraint violation expected
+            while (!(e1 instanceof ConstraintViolationException)
+                    && e1.getCause() != null){
+                e1 = e1.getCause();
+            }
+            ConstraintViolationException e = (ConstraintViolationException)e1;
             Assert.assertEquals(1, e.getConstraintViolations().size());
             Assert.assertEquals("Occurrence status must have a type defined", e.getConstraintViolations().iterator().next().getMessage());
         }

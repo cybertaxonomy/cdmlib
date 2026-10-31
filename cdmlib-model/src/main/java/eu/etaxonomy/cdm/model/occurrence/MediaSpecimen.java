@@ -8,6 +8,15 @@
 */
 package eu.etaxonomy.cdm.model.occurrence;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.MediaSpecimenDefaultCacheStrategy;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
@@ -18,15 +27,6 @@ import jakarta.xml.bind.annotation.XmlIDREF;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
-
-import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.strategy.cache.occurrence.MediaSpecimenDefaultCacheStrategy;
 
 /**
  * Instances of MediaSpecimen represent a specimen which IS a media (photo, drawing, ...).
@@ -68,7 +68,7 @@ public class MediaSpecimen
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY,
-            cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE})
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Media mediaSpecimen;
 
 // ****************** FACTORY METHOD *****************/

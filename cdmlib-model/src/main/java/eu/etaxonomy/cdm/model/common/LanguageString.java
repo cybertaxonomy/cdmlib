@@ -11,6 +11,11 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
@@ -20,10 +25,6 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.hibernate.envers.Audited;
 
 /**
  * This class is an instantiable class for the base class {@link AnnotatableLanguageStringBase}.
@@ -51,8 +52,7 @@ public class LanguageString
 	@XmlElementWrapper(name = "IntextReferences", nillable = true)
 	@XmlElement(name = "IntextReference")
 	@OneToMany(mappedBy="languageString", fetch=FetchType.LAZY, orphanRemoval=true,
-            cascade = {jakarta.persistence.CascadeType.PERSIST, jakarta.persistence.CascadeType.MERGE,
-                    jakarta.persistence.CascadeType.REMOVE})
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 //	@Merge(MergeMode.ADD_CLONE)
     private Set<IntextReference> intextReferences = new HashSet<>();
 

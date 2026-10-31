@@ -256,7 +256,9 @@ public class InferredSynonymsServiceImplTest extends CdmTransactionalIntegration
         Taxon species = (Taxon)taxonService.find(acherontiaLachesisTaxonUuid);
         TaxonNode speciesNode = species.getTaxonNode(classification);
         Taxon infraGenTaxon = (Taxon)taxonService.find(acherontiaBonsaTaxonUuid);
-        speciesNode.getParent().addChildTaxon(infraGenTaxon, null).addChildNode(speciesNode, null, null);
+        TaxonNode newChild = speciesNode.getParent().addChildTaxon(infraGenTaxon, null);
+        newChild.addChildNode(speciesNode, null, null);
+        classificationService.saveTreeNode(newChild);
 
         //... inferred epithet
         List<Synonym> inferredSynonyms = inferredSynonymService.computeInferredSynonyms(taxonUuid,

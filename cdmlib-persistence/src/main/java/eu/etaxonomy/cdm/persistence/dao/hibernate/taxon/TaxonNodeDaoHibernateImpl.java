@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.RevisionStatus;
 import eu.etaxonomy.cdm.model.common.RevisionStatusInfo;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -879,21 +878,16 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
                     }
                 }
             }
-            commitAndRestartTransaction(newSec);
+            commitAndRestartTransaction();
             monitor.worked(taxonIdList.size());
         }
         return result;
     }
 
-    private void commitAndRestartTransaction(CdmBase... cdmBaseToUpdate) {
+    private void commitAndRestartTransaction() {
         getSession().getTransaction().commit();
         getSession().clear();
         getSession().beginTransaction();
-        for (CdmBase cdmBase : cdmBaseToUpdate){
-            if (cdmBase != null){
-                getSession().update(cdmBase);
-            }
-        }
     }
 
     @Override
@@ -1098,10 +1092,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
             query.setParameterList("relTypeUuid", relTypeUuids);
         }
 
-        RevisionStatus statusEntity = revisionStatus == null ? null : revisionStatus.getStatus();
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
-            @SuppressWarnings({ "unchecked", "rawtypes" })
             List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
             for (TaxonBase taxonBase : taxonList){
                 if (taxonBase != null){
@@ -1116,7 +1108,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
                     }
                 }
             }
-            commitAndRestartTransaction(statusEntity);
+            commitAndRestartTransaction();
         }
         return result;
     }
