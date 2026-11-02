@@ -23,7 +23,6 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.FlushMode;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
@@ -268,7 +267,6 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
 
         deacivatedAutoIntitializers = clearAutoinitializers();
         // load bean with autoinitializers deactivated
-        factory.getCurrentSession().setHibernateFlushMode(FlushMode.MANUAL); // TODO this is only needed due to #7377 and should be removed otherwise
         Taxon taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("name.nomenclaturalSource.citation.authorship"));
         assertTrue(Hibernate.isInitialized(taxon.getName())); // name
         TaxonName name = taxon.getName();
@@ -276,11 +274,6 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship())); // authorship
         Team team = HibernateProxyHelper.deproxy(name.getNomenclaturalReference().getAuthorship(), Team.class);
 
-        // FIXME : the below assertion fail due to #7377 if the session flushmode is AUTO, this is not critical but an inconsistency.
-        //    In AdvancedBeanInitializer.bulkLoadLazyBeans(BeanInitNode node) the query.list()
-        //    with "QueryImpl( SELECT c FROM TeamOrPersonBase as c  WHERE c.id IN (:idSet) )" triggers an autoFlush.
-        //    In turn of the autoflush the team.titleCache is generated which causes the teamMembers to be initialized
-        //
         // members should not initialized since they where not included in the property path
         assertFalse("members should not be intitialized since they where not included in the property path", Hibernate.isInitialized(team.getTeamMembers()));
 
