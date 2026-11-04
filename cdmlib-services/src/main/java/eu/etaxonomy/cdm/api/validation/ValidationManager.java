@@ -15,7 +15,6 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
@@ -27,6 +26,7 @@ import eu.etaxonomy.cdm.persistence.dao.jdbc.validation.EntityValidationCrudJdbc
 import eu.etaxonomy.cdm.persistence.hibernate.Level2ValidationEventListener;
 import eu.etaxonomy.cdm.persistence.hibernate.Level3ValidationEventListener;
 import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
+import jakarta.annotation.PostConstruct;
 
 /**
  * This bean
@@ -68,7 +68,7 @@ public class ValidationManager {
 
     private TaskScheduler scheduler;
 
-    @Bean(initMethod = "initialize")
+    @PostConstruct
     public void initializeManager(){
         registerValidationListeners();
         initTaskExecutor();

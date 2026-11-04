@@ -25,7 +25,6 @@ import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -36,6 +35,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.term.VocabularyEnum;
+import jakarta.annotation.PostConstruct;
 
 public class TestingTermInitializer extends DefaultTermInitializer {
 
@@ -75,7 +75,7 @@ public class TestingTermInitializer extends DefaultTermInitializer {
         this.termsDtd = termsDtd;
     }
 
-    @Bean(initMethod = "initialize")
+    @PostConstruct
     @Override
     public void initialize() {
         super.initialize();
