@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.dialect.H2CorrectedDialect;
+import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.MariaDb11Dialect;
 import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
 import org.hibernate.dialect.PostgreSQLDialect;
@@ -215,7 +215,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
             try {
                 connection = dataSource.getConnection();
                 String metadataTableName = "CdmMetaData";
-                if(inferHibernateDialectName(dataSource).equals(H2CorrectedDialect.class.getName())){
+                if(inferHibernateDialectName(dataSource).equals(H2Dialect.class.getName())){
                     metadataTableName = metadataTableName.toUpperCase();
                 }
                 ResultSet tables = connection.getMetaData().getTables(connection.getCatalog(), null, metadataTableName, null);
@@ -454,7 +454,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
                 return MariaDb11Dialect.class.getName();
             }
             if(url.contains(":h2:")){
-                return H2CorrectedDialect.class.getName();
+                return H2Dialect.class.getName();
             }
             if(url.contains(":postgresql:")){
                 return PostgreSQLDialect.class.getName();

@@ -28,7 +28,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.dialect.H2CorrectedDialect;
+import org.hibernate.dialect.H2Dialect;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 import org.hibernate.property.access.spi.Getter;
@@ -81,7 +81,7 @@ public class CdmModelCacher {
     	final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
     			.configure(hibernateConfigFile) // configures settings from hibernate.cfg.xml
     			// Hibernate 6 requires an explicit dialect when building Metadata without JDBC
-    			.applySetting(AvailableSettings.DIALECT, H2CorrectedDialect.class.getName())
+    			.applySetting(AvailableSettings.DIALECT, H2Dialect.class.getName())
     			.build();
 
     	Map<String, CdmModelFieldPropertyFromClass> modelClassMap = new HashMap<>();

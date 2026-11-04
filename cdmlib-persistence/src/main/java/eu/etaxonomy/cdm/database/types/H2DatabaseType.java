@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.H2CorrectedDialect;
+import org.hibernate.dialect.H2Dialect;
 
 import eu.etaxonomy.cdm.database.H2Mode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -50,7 +50,7 @@ public class H2DatabaseType extends DatabaseTypeBase {
     private final int defaultPort = 9092;
 
     //hibernate dialect
-    private final Dialect hibernateDialect = new H2CorrectedDialect();
+    private final Dialect hibernateDialect = new H2Dialect();
 
     //init method
     private final String initMethod = "init";
