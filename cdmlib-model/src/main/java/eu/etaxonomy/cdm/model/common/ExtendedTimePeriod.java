@@ -13,6 +13,7 @@ import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.joda.time.DateTimeFieldType;
@@ -49,6 +50,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 })
 @XmlRootElement(name = "ExtendedTimePeriod")
 @Embeddable
+@Audited
 public class ExtendedTimePeriod extends TimePeriodBase {
 
     private static final long serialVersionUID = -6543644293635460526L;

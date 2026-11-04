@@ -18,6 +18,7 @@ import java.util.GregorianCalendar;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 import org.joda.time.DateTime;
@@ -56,6 +57,7 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
         "freeText"
 })
 @MappedSuperclass
+@Audited
 public abstract class TimePeriodBase implements Cloneable, Serializable, ICheckEmpty {
 
     private static final long serialVersionUID = 3405969418194981401L;

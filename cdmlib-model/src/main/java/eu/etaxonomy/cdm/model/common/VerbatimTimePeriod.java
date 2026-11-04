@@ -13,6 +13,7 @@ import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
 
@@ -36,6 +37,7 @@ import jakarta.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "VerbatimTimePeriod")
 @Embeddable
+@Audited
 public class VerbatimTimePeriod extends TimePeriodBase {
 
     private static final long serialVersionUID = -6543644293635460526L;

@@ -15,6 +15,7 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.envers.Audited;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
 
@@ -34,6 +35,7 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlType(name = "TimePeriod")
 @XmlRootElement(name = "TimePeriod")
 @Embeddable
+@Audited
 public class TimePeriod extends TimePeriodBase {
 
     private static final long serialVersionUID = 3405969418194981401L;
