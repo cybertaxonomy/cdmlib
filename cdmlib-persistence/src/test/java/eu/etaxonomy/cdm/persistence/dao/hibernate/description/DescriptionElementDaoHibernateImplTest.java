@@ -233,14 +233,6 @@ public class DescriptionElementDaoHibernateImplTest
 		logger.warn("testCountString not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.description.DescriptionElementDaoImpl#suggestQuery(java.lang.String)}.
-	 */
-	@Test
-	public void testSuggestQuery() {
-		logger.warn("Not yet implemented");
-	}
-
 	@Test  //test cascading for modifying text (and others)
 	@DataSet( loadStrategy=CleanSweepInsertLoadStrategy.class)
 	@ExpectedDataSet(factory=MultiSchemaXmlDataSetFactory.class)

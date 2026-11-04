@@ -90,7 +90,6 @@ public class TaxonDaoHibernateImpl
               extends IdentifiableDaoBase<TaxonBase>
               implements ITaxonDao {
 
-//    private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
     private static final Logger logger = LogManager.getLogger();
 
     @SuppressWarnings("unchecked")
@@ -104,12 +103,6 @@ public class TaxonDaoHibernateImpl
 
     @Autowired
     private ITaxonNameDao taxonNameDao;
-
-////    spelling support currently disabled in appcontext, see spelling.xml ... "
-////    @Autowired(required = false)   //TODO switched of because it caused problems when starting CdmApplicationController
-//    public void setAlternativeSpellingSuggestionParser(AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser) {
-//        this.alternativeSpellingSuggestionParser = alternativeSpellingSuggestionParser;
-//    }
 
     @Override
     public TaxonBase load(UUID uuid, List<String> propertyPaths){
@@ -1078,28 +1071,6 @@ public class TaxonDaoHibernateImpl
             indexingPlan.addOrUpdate(taxonBase);
         }
         indexingPlan.execute();
-    }
-
-    @Override
-    public String suggestQuery(String queryString) {
-        throw new RuntimeException("Query suggestion currently not implemented in TaxonDaoHibernateImpl");
-//        checkNotInPriorView("TaxonDaoHibernateImpl.suggestQuery(String queryString)");
-//        String alternativeQueryString = null;
-//        if (alternativeSpellingSuggestionParser != null) {
-//            try {
-//
-//                alternativeSpellingSuggestionParser.parse(queryString);
-//                org.apache.lucene.search.Query alternativeQuery = alternativeSpellingSuggestionParser.suggest(queryString);
-//                if (alternativeQuery != null) {
-//                    alternativeQueryString = alternativeQuery
-//                            .toString("name.titleCache");
-//                }
-//
-//            } catch (ParseException e) {
-//                throw new QueryParseException(e, queryString);
-//            }
-//        }
-//        return alternativeQueryString;
     }
 
     @Override

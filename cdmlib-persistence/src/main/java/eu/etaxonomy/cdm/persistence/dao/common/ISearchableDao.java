@@ -44,15 +44,6 @@ public interface ISearchableDao<T extends CdmBase> {
 //	public <S extends T> List<S> search(Class<S> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
-	 * Suggest a query that will return hits based upon an existing lucene query string (that is presumably misspelt and returns no hits)
-	 * Used to implement "did you mean?"-type functionality using the lucene spellchecker.
-	 *
-	 * @param string Query string to check
-	 * @return a suggested query string that will return hits or null if no such alternative spelling can be found.
-	 */
-	public String suggestQuery(String string);
-
-	/**
 	 * Removes all entities of type T from the index
 	 */
 	public void purgeIndex();

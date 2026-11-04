@@ -17,9 +17,7 @@
           default service configuration (same as in services.xml)
         ======================================================================
      -->
-    <context:component-scan base-package="eu/etaxonomy/cdm/persistence">
-        <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.persistence\.dao\.hibernate\.taxon\.TaxonAlternativeSpellingSuggestionParser"/>
-    </context:component-scan>
+    <context:component-scan base-package="eu/etaxonomy/cdm/persistence"/>
 
     <context:component-scan base-package="eu/etaxonomy/cdm/search" />
 

@@ -366,11 +366,6 @@ public abstract class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public String suggestQuery(String string) {
-        throw new UnsupportedOperationException("suggestQuery is not supported for objects of class " + type.getName());
-    }
-
-    @Override
     public long countByTitle(String queryString, MatchMode matchMode, List<EntityFilter<T>> filter) {
 
         checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<EntityFilter<T>> filter)");

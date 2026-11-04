@@ -85,13 +85,4 @@
         </constructor-arg>
     </bean>
 
-<!--
-    We do not use spelling suggestions anymore. This one relates to springmodules which is
-    somewhat outdated. Once we work again with spelling suggestions we better use a modern
-    approache, e.g. annotation based.
-    <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
-      <property name="location" value="file:./target/index/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
-      <property name="create" value="true"/>
-    </bean> -->
-
 </beans>
