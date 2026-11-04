@@ -68,7 +68,7 @@ import jakarta.xml.bind.annotation.XmlType;
 @MappedSuperclass
 @Audited
 public abstract class TermBase
-        extends CreditableEntity
+        extends CreditableEntity<IIdentifiableEntityCacheStrategy<TermBase>>
         implements IHasTermType, IExternallyManaged {
 
     private static final long serialVersionUID = 1471561531632115822L;

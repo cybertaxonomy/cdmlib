@@ -80,7 +80,7 @@ import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
 //@Indexed
 @Audited
 public class PolytomousKey
-        extends CreditableEntity
+        extends CreditableEntity<PolytomousKeyDefaultCacheStrategy>
         implements IIdentificationKey, IIntextReferenceTarget, IHasCredits,
                 IHasLink {
 
