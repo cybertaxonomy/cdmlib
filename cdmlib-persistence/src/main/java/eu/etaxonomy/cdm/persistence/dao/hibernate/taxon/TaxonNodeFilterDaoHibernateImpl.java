@@ -57,8 +57,8 @@ public class TaxonNodeFilterDaoHibernateImpl
 
     private static final String DISTRIBUTION_FEATURE_UUID = Feature.uuidDistribution.toString();
 
-    private static final String HQL_TRUE = " 1 "; //maybe we can/should use 'true' instead, needs to be checked for all DB types
-    private static final String HQL_FALSE = " 0 "; //maybe we can/should use 'false' instead, needs to be checked for all DB types
+    private static final String HQL_TRUE = " true ";
+    private static final String HQL_FALSE = " false ";
 
     @Autowired
     private ITaxonNodeDao taxonNodeDao;

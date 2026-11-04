@@ -1166,8 +1166,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
         if(excludeHybrids){
 
             String hybridWhere =  " AND (n is NULL OR "
-                    + " (n.monomHybrid=0 AND n.binomHybrid=0 "
-                    + "   AND n.trinomHybrid=0 AND n.hybridFormula=0 )) ";
+                    + " (n.monomHybrid=false AND n.binomHybrid=false "
+                    + "   AND n.trinomHybrid=false AND n.hybridFormula=false )) ";
 
             whereStr += hybridWhere; //String.format(hybridWhere, t);
         }

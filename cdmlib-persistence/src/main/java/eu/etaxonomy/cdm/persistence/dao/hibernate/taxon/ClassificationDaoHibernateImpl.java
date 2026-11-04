@@ -116,7 +116,7 @@ public class ClassificationDaoHibernateImpl
         String whereSubtree = subtree != null ? " AND tn.treeIndex like :treeIndexLike " : "";
         TreeIndex treeIndex = TreeIndex.NewInstance(subtree);
         String whereHighest =
-                treeIndex == null ? " tn.parent.parent = null ":
+                treeIndex == null ? " tn.parent.parent IS null ":
                 treeIndex.isTreeRoot() ? " tn.parent.treeIndex = :treeIndex ":
                             " tn.treeIndex = :treeIndex "   ;
 
