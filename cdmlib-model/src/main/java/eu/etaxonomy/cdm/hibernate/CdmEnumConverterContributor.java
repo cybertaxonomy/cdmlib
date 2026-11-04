@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.hibernate;
 
 import org.hibernate.boot.MetadataBuilder;
 import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.spi.MetadataBuilderContributor;
 import org.hibernate.boot.spi.MetadataBuilderInitializer;
 
 import eu.etaxonomy.cdm.model.common.AuthorityType;
@@ -46,22 +45,14 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * such as {@code "LA"}.
  * <p>
  * Discovered via {@link MetadataBuilderInitializer} (Java ServiceLoader).
- * Also implements {@link MetadataBuilderContributor} for the JPA
- * {@code hibernate.metadata_builder_contributor} property.
  *
  * @author muellera
  * @since 09.10.2026
  */
-public class CdmEnumConverterContributor
-        implements MetadataBuilderInitializer, MetadataBuilderContributor {
+public class CdmEnumConverterContributor implements MetadataBuilderInitializer {
 
     @Override
     public void contribute(MetadataBuilder metadataBuilder, StandardServiceRegistry serviceRegistry) {
-        contribute(metadataBuilder);
-    }
-
-    @Override
-    public void contribute(MetadataBuilder metadataBuilder) {
         // force autoApply=true (do not rely on annotation discovery alone)
         metadataBuilder.applyAttributeConverter(AuthorityType.AuthorityTypeConverter.class, true);
         metadataBuilder.applyAttributeConverter(ExternallyManagedImport.ExternallyManagedImportConverter.class, true);
@@ -87,3 +78,4 @@ public class CdmEnumConverterContributor
         metadataBuilder.applyAttributeConverter(TermType.TermTypeConverter.class, true);
     }
 }
+
