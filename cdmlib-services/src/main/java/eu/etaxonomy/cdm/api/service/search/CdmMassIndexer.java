@@ -36,6 +36,9 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.hibernate.CacheMode;
 import org.hibernate.SessionFactory;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.MySQLDialect;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.search.backend.lucene.LuceneExtension;
 import org.hibernate.search.backend.lucene.scope.LuceneIndexScope;
 import org.hibernate.search.mapper.orm.Search;
@@ -286,13 +289,27 @@ public class CdmMassIndexer implements ICdmMassIndexer {
                 .batchSizeToLoadObjects(batchSize)
                 .cacheMode(CacheMode.IGNORE)
                 .threadsToLoadObjects(4)
-                .idFetchSize(Integer.MIN_VALUE)  //was 150
+                .idFetchSize(resolveIdFetchSize())
                 .monitor(indexerMonitorWrapper)
                 .startAndWait();
         } catch (InterruptedException ie) {
             logger.info("Mass indexer has been interrupted");
             subMonitor.isCanceled();
         }
+    }
+
+    /**
+     * MySQL/MariaDB need {@link Integer#MIN_VALUE} so the JDBC driver streams IDs
+     * instead of preloading the whole result set. Other databases (e.g. H2) reject
+     * negative fetch sizes.
+     */
+    private int resolveIdFetchSize() {
+        Dialect dialect = sessionFactory.unwrap(SessionFactoryImplementor.class)
+                .getJdbcServices().getDialect();
+        if (dialect instanceof MySQLDialect) {
+            return Integer.MIN_VALUE;
+        }
+        return 150;
     }
 
     @Override
