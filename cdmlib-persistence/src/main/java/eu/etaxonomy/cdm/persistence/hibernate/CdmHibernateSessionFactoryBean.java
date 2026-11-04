@@ -20,6 +20,7 @@ import org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.JdbcSettings;
 import org.hibernate.resource.jdbc.spi.PhysicalConnectionHandlingMode;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
@@ -91,10 +92,10 @@ public class CdmHibernateSessionFactoryBean
         // Spring LocalSessionFactoryBuilder defaults
         configuration.setProperty(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS,
                 SpringSessionContext.class.getName());
-        configuration.setProperty(AvailableSettings.CONNECTION_HANDLING,
+        configuration.setProperty(JdbcSettings.CONNECTION_HANDLING,
                 PhysicalConnectionHandlingMode.DELAYED_ACQUISITION_AND_HOLD.name());
         if (dataSource != null) {
-            configuration.getProperties().put(AvailableSettings.DATASOURCE, dataSource);
+            configuration.getProperties().put(JdbcSettings.DATASOURCE, dataSource);
         }
         if (implicitNamingStrategy != null) {
             configuration.setImplicitNamingStrategy(implicitNamingStrategy);
