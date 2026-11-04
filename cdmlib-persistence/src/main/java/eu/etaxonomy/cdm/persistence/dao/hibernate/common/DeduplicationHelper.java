@@ -308,9 +308,7 @@ public class DeduplicationHelper {
             collectionRoles = metamodelImpl.getCollectionRolesByEntityParticipant(rootName);
             for (String collectionRole : collectionRoles){
                 CollectionPersister collMetadata2 = metamodelImpl.getCollectionDescriptor(collectionRole);
-                String role = collMetadata2.getRole();
-				Type elType = collMetadata2.getElementType();
-				logger.debug(role);
+				logger.debug(collMetadata2.getRole());
 			}
 		}
 	}

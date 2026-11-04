@@ -36,7 +36,6 @@ import org.hibernate.type.BasicType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
 import org.hibernate.type.EntityType;
-import org.hibernate.type.EnumType;
 import org.hibernate.type.ForeignKeyDirection;
 import org.hibernate.type.OneToOneType;
 import org.hibernate.type.SerializableType;
@@ -536,7 +535,6 @@ public class CdmGenericDaoImpl
 				PartialConverter.class,
 				SerializableType.class,
 				UriConverter.class,
-				EnumType.class,
 				Enum.class,
 				EnumSet.class,
 				DoiConverter.class,
