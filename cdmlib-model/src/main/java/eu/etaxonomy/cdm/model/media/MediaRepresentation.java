@@ -8,18 +8,18 @@
 */
 package eu.etaxonomy.cdm.model.media;
 
+import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.Length;
 import java.lang.reflect.Constructor;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Length;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.envers.Audited;
-import org.hibernate.type.SqlTypes;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.jpa.UriConverter;
@@ -88,9 +88,8 @@ public class MediaRepresentation extends VersionableEntity {
     // where the media file is stored
     @XmlElement(name = "URI")
     @Convert(converter = UriConverter.class)
-    // Workaround for Hibernate 6.1 / Envers (HHH-16253): Envers keeps length but drops LOB on _AUD
-    // (falls back to varchar(255)). LONG32 exceeds dialect max VARCHAR → expected type upgrades to CLOB.
-    // Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
+    // Envers can drop @Lob on _AUD (→ varchar(255) vs legacy CLOB). LONG32 exceeds dialect max VARCHAR
+    // so expected type upgrades to CLOB; @JdbcTypeCode reinforces CLOB. Keep until Envers preserves LOB reliably.
     @Column(length = Length.LONG32)
     @Lob
     @JdbcTypeCode(SqlTypes.CLOB)

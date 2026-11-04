@@ -8,15 +8,15 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
+import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.Length;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.wsdl.Definition;
 
-import org.hibernate.Length;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.type.SqlTypes;
 
 import com.ibm.lsid.MalformedLSIDException;
 
@@ -71,11 +71,10 @@ public class LSIDAuthority extends CdmBase {
 	// the wsdl describing how to invoke operations on the authority
     @XmlTransient
 	@Convert(converter = WsdlDefinitionConverter.class)
-	// Workaround for Hibernate 6.1 / Envers (HHH-16253): Envers keeps length but drops LOB on _AUD
-	// (falls back to varchar(255)). LONG32 exceeds dialect max VARCHAR → expected type upgrades to CLOB.
-	// Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
+	// Envers can drop @Lob on _AUD (→ varchar(255) vs legacy CLOB). LONG32 exceeds dialect max VARCHAR
+	// so expected type upgrades to CLOB; @JdbcTypeCode reinforces CLOB. Keep until Envers preserves LOB reliably.
 	@Column(length = Length.LONG32)
-    @Lob
+	@Lob
 	@JdbcTypeCode(SqlTypes.CLOB)
 	private Definition authorityWSDL;
 

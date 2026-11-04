@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.model.metadata;
 
+import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.Length;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,9 +25,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Length;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
@@ -137,9 +137,9 @@ public final class CdmPreference implements Serializable {
 	@EmbeddedId
 	private PrefKey key;
 
-	// Workaround for Hibernate 6.1 / Envers (HHH-16253): Envers keeps length but drops LOB on _AUD
-	// (falls back to varchar(255)). LONG32 exceeds dialect max VARCHAR → expected type upgrades to CLOB.
-	// Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
+	// VALUE_LENGTH enforced in setter.
+	// Envers can drop @Lob on _AUD (→ varchar(255) vs legacy CLOB). LONG32 exceeds dialect max VARCHAR
+	// so expected type upgrades to CLOB; @JdbcTypeCode reinforces CLOB. Keep until Envers preserves LOB reliably.
 	@Column(length = Length.LONG32)
 	@Lob
 	@JdbcTypeCode(SqlTypes.CLOB)

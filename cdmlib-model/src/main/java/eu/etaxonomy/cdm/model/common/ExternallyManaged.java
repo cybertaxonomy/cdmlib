@@ -8,15 +8,15 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
+import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.Length;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Length;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
-import org.hibernate.type.SqlTypes;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
@@ -78,9 +78,7 @@ public class ExternallyManaged implements Cloneable, Serializable, ICheckEmpty{
     @XmlElement(name = "ExternalLink")
     @KeywordField(valueBridge = @ValueBridgeRef(type = UriBridge.class))
     @Convert(converter = UriConverter.class)
-    // Workaround for Hibernate 6.1 / Envers (HHH-16253): Envers keeps length but drops LOB on _AUD
-    // (falls back to varchar(255)). LONG32 exceeds dialect max VARCHAR → expected type upgrades to CLOB.
-    // Remove @JdbcTypeCode / reconsider length when on a Hibernate version that preserves CLOB on audit tables.
+    // Envers/H6 Lob workaround — see LanguageStringBase
     @Column(name="externalLink", length = Length.LONG32)
     @Lob
     @JdbcTypeCode(SqlTypes.CLOB)

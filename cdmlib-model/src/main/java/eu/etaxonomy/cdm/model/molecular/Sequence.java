@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.molecular;
 
+import org.hibernate.Length;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,7 +36,6 @@ import jakarta.xml.bind.annotation.XmlType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Length;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
