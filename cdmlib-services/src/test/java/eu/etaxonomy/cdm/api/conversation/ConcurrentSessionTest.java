@@ -31,7 +31,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.orm.hibernate5.HibernateSystemException;
-import org.springframework.orm.hibernate5.SessionHolder;
+import org.springframework.orm.jpa.EntityManagerHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.hibernate.CdmSessionUtils;
 import eu.etaxonomy.cdm.test.function.TestConversationEnabled;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -109,6 +110,11 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         targetDataSource = dataSource instanceof TransactionAwareDataSourceProxy ?
                 ((TransactionAwareDataSourceProxy)dataSource).getTargetDataSource():
                 dataSource;
+    }
+
+    /** Session visible to DAOs under Variant C (EntityManagerHolder), not SpringSessionContext. */
+    private Session currentBoundSession() {
+        return CdmSessionUtils.getTransactionalSession(sessionFactory);
     }
 
     @After
@@ -261,13 +267,13 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         assertNull(TransactionSynchronizationManager.getResource(sessionFactory));
 
         conversationHolder1 = new ConversationHolder(targetDataSource, sessionFactory, transactionManager);
-        SessionHolder sessionHolder1 = (SessionHolder)TransactionSynchronizationManager.getResource(sessionFactory);
-        Session session1 = sessionHolder1.getSession();
+        EntityManagerHolder emHolder1 = (EntityManagerHolder)TransactionSynchronizationManager.getResource(sessionFactory);
+        Session session1 = emHolder1.getEntityManager().unwrap(Session.class);
         assertNotSame("The sessions should not be the same", h4Session1, session1);
         TaxonBase taxonBase2 = taxonService.find(taxonUuid1);
-        SessionHolder sessionHolder2 = (SessionHolder)TransactionSynchronizationManager.getResource(sessionFactory);
-        Session session2 = sessionHolder2.getSession();
-        assertEquals("The session holders should be equal", sessionHolder1, sessionHolder2);
+        EntityManagerHolder emHolder2 = (EntityManagerHolder)TransactionSynchronizationManager.getResource(sessionFactory);
+        Session session2 = emHolder2.getEntityManager().unwrap(Session.class);
+        assertEquals("The entity manager holders should be equal", emHolder1, emHolder2);
         assertEquals("The sessions should be equal", session1, session2);
         conversationHolder1.close();
 
@@ -714,29 +720,29 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 
         conversationHolder1.bind();
         TaxonBase taxon1 = taxonService.find(taxonUuid1);
-        assertSame(conversationHolder1.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+        assertSame(conversationHolder1.getSession(), currentBoundSession());
 
         conversationHolder2.bind();
         TaxonBase taxon2 = taxonService.find(taxonUuid2);
-        assertSame(conversationHolder2.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+        assertSame(conversationHolder2.getSession(), currentBoundSession());
 
         conversationHolder3.bind();
         TaxonBase taxon3 = taxonService.find(taxonUuid1);
-        assertSame(conversationHolder3.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+        assertSame(conversationHolder3.getSession(), currentBoundSession());
 
         conversationHolder2.bind();
         TaxonName name2 = taxon2.getName();
-        assertSame(conversationHolder2.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+        assertSame(conversationHolder2.getSession(), currentBoundSession());
 
         conversationHolder3.bind();
         TaxonName name3 = taxon3.getName();
-        assertSame(conversationHolder3.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+        assertSame(conversationHolder3.getSession(), currentBoundSession());
 
         // Lazy loading somehow works without binding the session first
         TaxonName name1 = taxon1.getName();
         assertNotSame(name1, name3);
         assertEquals(name1, name3);
-        assertNotSame(conversationHolder1.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+        assertNotSame(conversationHolder1.getSession(), currentBoundSession());
 
     }
 
@@ -754,37 +760,37 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         conversationHolder1.bind();
         conversationHolder1.startTransaction();
         TaxonBase taxon1 = taxonService.find(taxonUuid1);
-        assertSame(conversationHolder1.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+        assertSame(conversationHolder1.getSession(), currentBoundSession());
         conversationHolder1.commit();
 
         conversationHolder2.bind();
         conversationHolder2.startTransaction();
         TaxonBase taxon2 = taxonService.find(taxonUuid2);
-        assertSame(conversationHolder2.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+        assertSame(conversationHolder2.getSession(), currentBoundSession());
         conversationHolder2.commit();
 
         conversationHolder3.bind();
         conversationHolder3.startTransaction();
         TaxonBase taxon3 = taxonService.find(taxonUuid1);
-        assertSame(conversationHolder3.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+        assertSame(conversationHolder3.getSession(), currentBoundSession());
         conversationHolder3.commit();
 
         conversationHolder2.bind();
         conversationHolder2.startTransaction();
         TaxonName name2 = taxon2.getName();
-        assertSame(conversationHolder2.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+        assertSame(conversationHolder2.getSession(), currentBoundSession());
         conversationHolder2.commit();
 
         conversationHolder3.bind();
         conversationHolder3.startTransaction();
         TaxonName name3 = taxon3.getName();
-        assertSame(conversationHolder3.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+        assertSame(conversationHolder3.getSession(), currentBoundSession());
 
         // Lazy loading somehow works without binding the session first
         TaxonName name1 = taxon1.getName();
         assertNotSame(name1, name3);
         assertEquals(name1, name3);
-        assertNotSame(conversationHolder1.getSession(), conversationHolder1.getSessionFactory().getCurrentSession());
+        assertNotSame(conversationHolder1.getSession(), currentBoundSession());
 
     }
 

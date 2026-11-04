@@ -17,11 +17,15 @@ import jakarta.persistence.criteria.Root;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate5.SessionHolder;
+import org.springframework.orm.jpa.EntityManagerHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -69,8 +73,26 @@ public class TestingTermVocabularyDao {
     public SessionFactory getSessionFactory() {
         return factory;
     }
+    /**
+     * Same resolution as persistence {@code CdmSessionUtils} (cannot depend on
+     * cdmlib-persistence from this module). Prefers JPA {@link EntityManagerHolder}.
+     */
     protected Session getSession(){
-        Session session = factory.getCurrentSession();
-        return session;
+        Object resource = TransactionSynchronizationManager.getResource(factory);
+        if (resource instanceof EntityManagerHolder) {
+            EntityManagerHolder emHolder = (EntityManagerHolder) resource;
+            if (emHolder.getEntityManager() != null) {
+                return emHolder.getEntityManager().unwrap(Session.class);
+            }
+        }
+        if (resource instanceof SessionHolder) {
+            return ((SessionHolder) resource).getSession();
+        }
+        try {
+            return factory.getCurrentSession();
+        } catch (HibernateException e) {
+            throw new HibernateException(
+                    "No transactional Session/EntityManager bound for " + factory, e);
+        }
     }
 }
