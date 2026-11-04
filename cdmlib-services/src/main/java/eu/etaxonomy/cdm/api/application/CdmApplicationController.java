@@ -22,6 +22,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
+import jakarta.persistence.EntityManager;
 
 /**
  * @author a.mueller
@@ -407,12 +409,18 @@ public class CdmApplicationController
 
 	/* **** flush ********** */
 	public void flush(){
-		SessionFactory sf = (SessionFactory) applicationContext.getBean("sessionFactory");
-		sf.getCurrentSession().flush();
+	    getEntityManager().flush();
+
+	    //with hibernate specific configuration use:
+//	    CdmSessionUtils.getTransactionalEntityManager(getSessionFactory()).flush();
 	}
 
 	public SessionFactory getSessionFactory(){
 		return (SessionFactory) applicationContext.getBean("sessionFactory");
+	}
+
+	private EntityManager getEntityManager() {
+	    return EntityManagerFactoryUtils.getTransactionalEntityManager(getSessionFactory());
 	}
 
 	@Override

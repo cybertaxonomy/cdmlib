@@ -462,5 +462,12 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
         @Override
         public void setIdentifier(Object id) {}
+
+        // Hibernate 6.3+: required by LazyInitializer
+        @Override
+        public Class<?> getImplementationClass() {return null;}
+
+        @Override
+        public String getImplementationEntityName() {return null;}
     }
 }

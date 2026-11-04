@@ -11,23 +11,18 @@
 
   <bean class="eu.etaxonomy.cdm.config.ConfigFileUtil" scope="singleton" />
 
-  <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-      <property name="sessionFactory" ref="sessionFactory" />
+  <!--
+    Session access via CdmSessionUtils (EntityManagerHolder), not SpringSessionContext. #11057
+  -->
+  <bean id="sessionFactory"
+        class="eu.etaxonomy.cdm.persistence.hibernate.CdmLocalContainerEntityManagerFactoryBean"
+        depends-on="tableGeneratorGlobalOverride">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="jpaProperties" ref="hibernateProperties"/>
   </bean>
 
-  <!--
-    Hibernate 6.2+ / Spring 6.1: do not use LocalSessionFactoryBean (NoSuchMethodError on
-    setImplicitNamingStrategy). CdmHibernateSessionFactoryBean bootstraps via Hibernate
-    Configuration (fluent API OK) + hibernate.cfg.xml. SessionFactory is also an EMF in H6.
-  -->
-  <bean id="sessionFactory" class="eu.etaxonomy.cdm.persistence.hibernate.CdmHibernateSessionFactoryBean"
-        depends-on="tableGeneratorGlobalOverride">
-    <property name="implicitNamingStrategy">
-        <bean class="org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl" />
-    </property>
-    <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
-    <property name="dataSource" ref="dataSource"/>
-    <property name="hibernateProperties" ref="hibernateProperties"/>
+  <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+      <property name="entityManagerFactory" ref="sessionFactory" />
   </bean>
 
     <!--

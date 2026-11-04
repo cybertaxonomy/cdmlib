@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -76,6 +75,7 @@ import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService;
 import eu.etaxonomy.cdm.api.service.security.IAccountRegistrationService;
 import eu.etaxonomy.cdm.api.service.security.IPasswordResetService;
+import eu.etaxonomy.cdm.persistence.hibernate.CdmSessionUtils;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 
 /**
@@ -121,7 +121,7 @@ public class CdmRepository implements ICdmApplication, ApplicationContextAware {
 	//@Qualifier("termService")
 	private ITermService termService;
 	//@Autowired
-	private HibernateTransactionManager transactionManager;
+	private PlatformTransactionManager transactionManager;
 	@Autowired
 	//@Qualifier("descriptionService")
 	private IDescriptionService descriptionService;
@@ -366,7 +366,7 @@ public class CdmRepository implements ICdmApplication, ApplicationContextAware {
 
 	@Autowired
 	public void setTransactionManager(PlatformTransactionManager transactionManager){
-		this.transactionManager = (HibernateTransactionManager) transactionManager;
+		this.transactionManager = transactionManager;
 	}
 
 	@Override
@@ -549,7 +549,7 @@ public class CdmRepository implements ICdmApplication, ApplicationContextAware {
      * @return the session bound to the current thread
      */
     public Session getSession() throws HibernateException {
-        return factory.getCurrentSession();
+        return CdmSessionUtils.getTransactionalSession(factory);
     }
 
     /**

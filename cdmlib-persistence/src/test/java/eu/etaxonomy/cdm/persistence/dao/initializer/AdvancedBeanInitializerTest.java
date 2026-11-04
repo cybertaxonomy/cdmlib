@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.hibernate.CdmSessionUtils;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -299,7 +300,7 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> //Note: to run the
 
     protected void assureSessionClear() {
         try {
-            factory.getCurrentSession().clear();
+            CdmSessionUtils.getTransactionalEntityManager(factory).clear();
             logger.debug("session cleared");
         } catch (HibernateException e){
             logger.debug("no session");

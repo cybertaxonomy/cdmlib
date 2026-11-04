@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.hibernate.CdmSessionUtils;
 import eu.etaxonomy.cdm.persistence.query.NativeSqlOrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.RandomOrder;
@@ -76,19 +77,18 @@ public abstract class DaoBase {
     }
 
     protected Session getSession(){
-
-        Session session ;
         try {
-            session = factory.getCurrentSession();
+            return CdmSessionUtils.getTransactionalSession(factory);
         } catch (HibernateException e) {
+            // Legacy fallback (#7106): open a non-transactional session. Prefer fixing
+            // missing TX boundaries over relying on this path (Envers needs an active TX).
             String stackTrace = "";
             for(StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
                 stackTrace = stackTrace + System.lineSeparator() + stackTraceElement.toString();
             }
             logger.warn("[#7106] Opening new session in turn of a HibernateException: " + e.getMessage() + System.lineSeparator() + stackTrace);
-            session = factory.openSession();
+            return factory.openSession();
         }
-        return session;
     }
 
     public void flush(){

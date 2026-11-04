@@ -19,8 +19,8 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +50,7 @@ public class SortIndexUpdaterWrapper implements Serializable {
     private static final String POLYTOMOUS_KEY_NODE = "PolytomousKeyNode";
 
     @Autowired
-    private HibernateTransactionManager transactionManager;
+    private PlatformTransactionManager transactionManager;
 //    @Autowired
 //    private CdmRepository repository;  //TODO not unique therefore byName or so is needed
     @Autowired

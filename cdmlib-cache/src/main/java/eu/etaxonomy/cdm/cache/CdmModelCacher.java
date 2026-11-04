@@ -18,7 +18,6 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -119,11 +118,7 @@ public class CdmModelCacher {
 
     private void addGetters(PersistentClass persistentClass, CdmModelFieldPropertyFromClass cmgmfc) {
         if (persistentClass != null) {
-            @SuppressWarnings("unchecked")
-            Iterator<Property> propertyIt = persistentClass.getPropertyIterator();
-
-            while(propertyIt.hasNext()){
-                Property property = propertyIt.next();
+            for (Property property : persistentClass.getProperties()) {
                 Getter getter = property.getGetter(persistentClass.getMappedClass());
                 if(getter != null && getter.getMember() != null) {
                     Field field = (Field)getter.getMember();

@@ -855,7 +855,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //the marker should not prevent the deletion
         DeleteResult result = service.deleteSynonym(synonym1, new SynonymDeletionConfigurator());
         if (!result.isOk()){
-        	Assert.fail();
+        	Assert.fail("deleteSynonym not ok: status=" + result.getStatus()
+        	        + ", exceptions=" + result.getExceptions()
+        	        + ", related=" + result.getRelatedObjects());
         }
 
         commitAndStartNewTransaction(tableNames);
@@ -1474,7 +1476,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         DeleteResult result = service.deleteTaxon(speciesTaxon.getUuid(), config, speciesTaxon.getTaxonNodes().iterator().next().getClassification().getUuid());
         if (!result.isOk()){
-        	Assert.fail();
+        	Assert.fail("deleteTaxon not ok: status=" + result.getStatus()
+        	        + ", exceptions=" + result.getExceptions()
+        	        + ", related=" + result.getRelatedObjects());
         }
         commitAndStartNewTransaction(null);
 
@@ -1538,7 +1542,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         config.setDeleteInAllClassifications(true);
         DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, null);
         if (!result.isOk()){
-            Assert.fail();
+            Assert.fail("deleteTaxon not ok: status=" + result.getStatus()
+                    + ", exceptions=" + result.getExceptions()
+                    + ", related=" + result.getRelatedObjects());
         }
         commitAndStartNewTransaction(null);
         Taxon tax = (Taxon)service.find(uuid);

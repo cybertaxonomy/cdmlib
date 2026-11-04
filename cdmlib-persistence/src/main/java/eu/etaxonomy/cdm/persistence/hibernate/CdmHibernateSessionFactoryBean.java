@@ -28,18 +28,21 @@ import org.springframework.core.io.Resource;
 import org.springframework.orm.hibernate5.SpringSessionContext;
 
 /**
- * SessionFactory bootstrap for Hibernate ORM 6.2+ without Spring's
- * {@code LocalSessionFactoryBean}, which is binary-incompatible
- * ({@code setImplicitNamingStrategy} changed from {@code void} to fluent
- * {@code Configuration} return type).
+ * Native SessionFactory bootstrap via Hibernate {@link Configuration}
+ * (fallback when not using JPA {@code LocalContainerEntityManagerFactoryBean}).
  * <p>
- * Uses Hibernate's {@link Configuration} API (compatible with fluent setters)
- * and the same Spring integration defaults as
+ * Prefer {@link CdmLocalContainerEntityManagerFactoryBean} +
+ * {@link SessionFactoryFromEntityManagerFactoryBean} with
+ * {@code HibernateTransactionManager} (hybrid JPA bootstrap). This class
+ * remains for native {@code hibernate.cfg.xml} Configuration bootstrap.
+ * <p>
+ * Avoids Spring's {@code LocalSessionFactoryBean}, which is binary-incompatible
+ * with Hibernate 6.2+ ({@code setImplicitNamingStrategy} changed from
+ * {@code void} to fluent {@code Configuration} return type).
+ * <p>
+ * Applies the same Spring integration defaults as
  * {@code LocalSessionFactoryBuilder} ({@link SpringSessionContext},
  * {@link PhysicalConnectionHandlingMode#DELAYED_ACQUISITION_AND_HOLD}).
- * <p>
- * The resulting {@link SessionFactory} also implements
- * {@link jakarta.persistence.EntityManagerFactory} (Hibernate 6).
  */
 public class CdmHibernateSessionFactoryBean
         implements FactoryBean<SessionFactory>, InitializingBean, DisposableBean {

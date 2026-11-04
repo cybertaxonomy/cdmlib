@@ -22,7 +22,6 @@ import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -136,7 +135,7 @@ public class BatchValidator implements Runnable, ApplicationContextAware {
     }
 
     private PlatformTransactionManager getTransactionManager() {
-        PlatformTransactionManager txManager = appContext.getBean(HibernateTransactionManager.class);
+        PlatformTransactionManager txManager = appContext.getBean(PlatformTransactionManager.class);
         return txManager;
     }
 

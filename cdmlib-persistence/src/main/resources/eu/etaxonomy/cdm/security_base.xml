@@ -9,15 +9,13 @@
     http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop-4.3.xsd
     ">
 
-    <bean id="sessionFactory" class="eu.etaxonomy.cdm.persistence.hibernate.CdmHibernateSessionFactoryBean"
+    <!-- Overrides sessionFactory from persistence.xml to add the security interceptor -->
+    <bean id="sessionFactory"
+          class="eu.etaxonomy.cdm.persistence.hibernate.CdmLocalContainerEntityManagerFactoryBean"
           depends-on="tableGeneratorGlobalOverride">
-        <property name="implicitNamingStrategy">
-          <bean class="org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl" />
-        </property>
         <property name="entityInterceptor" ref="securityHibernateInterceptor" />
-        <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
         <property name="dataSource" ref="dataSource"/>
-        <property name="hibernateProperties" ref="hibernateProperties"/>
+        <property name="jpaProperties" ref="hibernateProperties"/>
     </bean>
 
 

@@ -8,7 +8,6 @@
 */
 package org.hibernate.dialect;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import org.hibernate.boot.Metadata;
@@ -18,6 +17,7 @@ import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.hibernate.internal.util.StringHelper;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Index;
+import org.hibernate.mapping.Selectable;
 import org.hibernate.tool.schema.internal.StandardIndexExporter;
 
 /**
@@ -74,10 +74,11 @@ public class MySqlIsamIndexExporter extends StandardIndexExporter {
                 .append( " (" );
 
         boolean first = true;
-        final Iterator<Column> columnItr = index.getColumnIterator();
-        final Map<Column, String> columnOrderMap = index.getColumnOrderMap();
-        while ( columnItr.hasNext() ) {
-            final Column column = columnItr.next();
+        final Map<Selectable, String> columnOrderMap = index.getSelectableOrderMap();
+        for ( Selectable selectable : index.getSelectables() ) {
+            if ( !( selectable instanceof Column column ) ) {
+                continue;
+            }
             if ( first ) {
                 first = false;
             }
@@ -88,11 +89,11 @@ public class MySqlIsamIndexExporter extends StandardIndexExporter {
             // Prefix long varchar indexes so MyISAM's 1000-byte key limit is not exceeded
             // (utf8: 255*3=765; titleCache is mapped with length 800).
             // Note: column.getLength() may report 255 even for longer mapped columns.
-            String length = column.getLength() > 254 ? "(255)" : "";
+            String length = column.getLength() != null && column.getLength() > 254 ? "(255)" : "";
             buf.append( column.getQuotedName( dialect ) + length );
             //*** DEGNAHC *******/
-            if ( columnOrderMap.containsKey( column ) ) {
-                buf.append( " " ).append( columnOrderMap.get( column ) );
+            if ( columnOrderMap.containsKey( selectable ) ) {
+                buf.append( " " ).append( columnOrderMap.get( selectable ) );
             }
         }
         buf.append( ")" );

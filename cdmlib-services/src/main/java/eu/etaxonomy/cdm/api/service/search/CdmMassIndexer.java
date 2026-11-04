@@ -35,7 +35,7 @@ import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.hibernate.CacheMode;
-import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.search.backend.lucene.LuceneExtension;
 import org.hibernate.search.backend.lucene.scope.LuceneIndexScope;
 import org.hibernate.search.mapper.orm.Search;
@@ -48,9 +48,7 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordFie
 import org.hibernate.search.mapper.pojo.massindexing.MassIndexingMonitor;
 import org.hibernate.search.util.common.SearchException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -60,6 +58,8 @@ import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.persistence.hibernate.CdmSessionUtils;
+import jakarta.persistence.EntityManager;
 
 /**
  * @author Andreas Kohlbecker
@@ -73,16 +73,11 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     private final Set<Class<? extends CdmBase>> indexedClasses = new HashSet<>();
 
-    private HibernateTransactionManager transactionManager;
-
     @Autowired
-    public void setTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = (HibernateTransactionManager)transactionManager;
-    }
+    private SessionFactory sessionFactory;
 
-    protected Session getSession(){
-        Session session = transactionManager.getSessionFactory().getCurrentSession();
-        return session;
+    private EntityManager getEntityManager(){
+        return CdmSessionUtils.getTransactionalEntityManager(sessionFactory);
     }
 
     protected <T extends CdmBase> void createDictionary(Class<T> type, IProgressMonitor monitor)  {
@@ -152,7 +147,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     }
 
     private SearchMapping getSearchMapping() {
-        return Search.mapping(transactionManager.getSessionFactory());
+        return Search.mapping(sessionFactory);
     }
 
     /**
@@ -160,7 +155,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
      * Index files for each entity live under {@code <root>/<indexName>/}.
      */
     private void logIndexDirectory() {
-        Map<String, Object> props = transactionManager.getSessionFactory().getProperties();
+        Map<String, Object> props = sessionFactory.getProperties();
         Object directoryType = props.get("hibernate.search.backend.directory.type");
         Object directoryRoot = props.get("hibernate.search.backend.directory.root");
         if (directoryRoot != null) {
@@ -213,15 +208,15 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     }
 
     private <T> Long countEntities(Class<T> type) {
-        Object countResultObj = getSession().createQuery("SELECT count(*) FROM " + type.getName()).uniqueResult();
-        Long countResult = (Long)countResultObj;
-        return countResult;
+        return getEntityManager()
+                .createQuery("SELECT count(*) FROM " + type.getName(), Long.class)
+                .getSingleResult();
     }
 
     protected <T extends CdmBase>void purge(Class<T> type, IProgressMonitor monitor) {
 
         logger.info("purging " + type.getName());
-        Search.session(getSession()).workspace(type).purge();
+        Search.session(getEntityManager()).workspace(type).purge();
 
         // Spell-check index purge relied on HS5 DirectoryBasedIndexManager; disabled under HS6.
         boolean doSpellIndex = false;
@@ -286,7 +281,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         MassIndexingMonitor indexerMonitorWrapper = new MassIndexerProgressMonitorWrapper(subMonitor, batchSize);
 
         try {
-            Search.session(getSession())
+            Search.session(getEntityManager())
                 .massIndexer(type)
                 .batchSizeToLoadObjects(batchSize)
                 .cacheMode(CacheMode.IGNORE)
@@ -318,8 +313,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
 
     }
     protected void optimize() {
-        Search.session(getSession()).workspace().mergeSegments();
-        getSession().clear();
+        Search.session(getEntityManager()).workspace().mergeSegments();
+        getEntityManager().clear();
     }
 
     @Override

@@ -56,7 +56,8 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
     private static final Logger logger = LogManager.getLogger();
 
     private static final String LIE_TEAMMEMBERS_NOSESSION = "failed to lazily initialize a collection of role: eu.etaxonomy.cdm.model.agent.Team.teamMembers, could not initialize proxy - no Session";
-    private static final String LIE_NOSESSION = "could not initialize proxy .* no Session";
+    /** Hibernate 6: "Could not initialize proxy [Type#id] - no session" (was: "could not initialize proxy - no Session") */
+    private static final String LIE_NOSESSION = "(?i)could not initialize proxy .* no session";
 
     private static final UUID taxonUuid = UUID.fromString("23c35977-01b5-452c-9225-ecce440034e0");
 
