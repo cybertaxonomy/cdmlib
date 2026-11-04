@@ -1407,11 +1407,22 @@ public class TaxonServiceImpl
             config = new SynonymDeletionConfigurator();
         }
 
-        result = isDeletable(synonym.getUuid(), config);
+        // Resolve in the current session via Session.get: reuses a managed instance (H6-safe),
+        // or loads a fresh one if the caller passed a detached entity (e.g. after endTransaction).
+        Synonym managed = HibernateProxyHelper.deproxy(
+                dao.findByUuidPreferManaged(synonym.getUuid()), Synonym.class);
+        if (managed == null){
+            result.setAbort();
+            result.addException(new Exception("The synonym was already deleted."));
+            return result;
+        }
+        synonym = managed;
+
+        result = isDeletable(synonym, config);
 
         if (result.isOk()){
 
-            synonym = HibernateProxyHelper.deproxy(this.load(synonym.getUuid()), Synonym.class);
+            synonym = HibernateProxyHelper.deproxy(synonym, Synonym.class);
 
             //remove synonym
             Taxon accTaxon = synonym.getAcceptedTaxon();
@@ -2657,20 +2668,31 @@ public class TaxonServiceImpl
 
     @Override
     public DeleteResult isDeletable(UUID taxonBaseUuid, DeleteConfiguratorBase config){
+        // Prefer managed: entity may already be in the persistence context (e.g. deleteSynonym).
+        TaxonBase taxonBase = dao.findByUuidPreferManaged(taxonBaseUuid);
+        return isDeletable(taxonBase, config);
+    }
+
+    /**
+     * Prefer this overload when the entity is already attached; avoids UUID re-hydration
+     * that can fail under Hibernate 6 when the instance is already managed.
+     */
+    private DeleteResult isDeletable(TaxonBase taxonBase, DeleteConfiguratorBase config){
         DeleteResult result = new DeleteResult();
-        TaxonBase taxonBase = load(taxonBaseUuid);
+        if (taxonBase == null){
+            result.setAbort();
+            result.addException(new Exception("The taxon was already deleted."));
+            return result;
+        }
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(taxonBase);
         if (taxonBase instanceof Taxon){
             TaxonDeletionConfigurator taxonConfig = (TaxonDeletionConfigurator) config;
-            List<String> propertyPaths = new ArrayList<>();
-            propertyPaths.add("taxonNodes");
-            Taxon taxon = (Taxon)load(taxonBaseUuid, propertyPaths);
 
             result = isDeletableForTaxon(references, taxonConfig );
 
             if (taxonConfig.isDeleteNameIfPossible()){
                 if (taxonBase.getName() != null){
-                    DeleteResult nameResult = nameService.isDeletable(taxonBase.getName().getUuid(), taxonConfig.getNameDeletionConfig(), taxon.getUuid());
+                    DeleteResult nameResult = nameService.isDeletable(taxonBase.getName(), taxonConfig.getNameDeletionConfig(), taxonBase.getUuid());
                     if (!nameResult.isOk()){
                         result.addExceptions(nameResult.getExceptions());
                     }
@@ -2681,7 +2703,7 @@ public class TaxonServiceImpl
             SynonymDeletionConfigurator synonymConfig = (SynonymDeletionConfigurator) config;
             result = isDeletableForSynonym(references, synonymConfig);
             if (synonymConfig.isDeleteNameIfPossible() && taxonBase.getName() != null){
-                DeleteResult nameResult = nameService.isDeletable(taxonBase.getName().getUuid(), synonymConfig.getNameDeletionConfig(), taxonBase.getUuid());
+                DeleteResult nameResult = nameService.isDeletable(taxonBase.getName(), synonymConfig.getNameDeletionConfig(), taxonBase.getUuid());
                 if (!nameResult.isOk()){
                     result.addExceptions(nameResult.getExceptions());
 

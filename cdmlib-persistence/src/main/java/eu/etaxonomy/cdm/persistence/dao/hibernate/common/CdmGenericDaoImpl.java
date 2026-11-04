@@ -185,13 +185,24 @@ public class CdmGenericDaoImpl
 	public List<CdmBase> getCdmBasesWithItemInCollection(Class<?> itemClass,
 	        Class<?> clazz, String propertyName, CdmBase item, Integer limit){
 
-		String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName, "other");
-		Query<CdmBase> query = getSession().createQuery(queryStr, CdmBase.class)
+		// Select ids first. Loading full "other" entities via the cartesian "member of"
+		// query can hit Hibernate 6 EntityInitializerImpl AssertionError when `item`
+		// is already managed in the persistence context (e.g. during deleteSynonym /
+		// getReferencingObjectsForDeletion).
+		String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName, "other.id");
+		Query<Integer> query = getSession().createQuery(queryStr, Integer.class)
 		        .setParameter("referencedObject", item);
 		if (limit != null){
 		    query.setMaxResults(limit);
 		}
-		List<CdmBase> result = query.list();
+		List<Integer> ids = query.list();
+		List<CdmBase> result = new ArrayList<>(ids.size());
+		for (Integer id : ids) {
+		    CdmBase entity = (CdmBase) getSession().get(clazz, id);
+		    if (entity != null) {
+		        result.add(entity);
+		    }
+		}
 		return result;
 	}
 

@@ -545,4 +545,10 @@ public interface INameService
      * Checks whether the name can be deleted if the taxon with taxonUuid will be deleted, too
      */
     public DeleteResult isDeletable(UUID nameUuid, DeleteConfiguratorBase config, UUID taxonUuid);
+
+    /**
+     * Like {@link #isDeletable(UUID, DeleteConfiguratorBase, UUID)} but uses an already
+     * loaded name instance (avoids reloading a managed entity by UUID).
+     */
+    public DeleteResult isDeletable(TaxonName name, DeleteConfiguratorBase config, UUID taxonUuid);
 }

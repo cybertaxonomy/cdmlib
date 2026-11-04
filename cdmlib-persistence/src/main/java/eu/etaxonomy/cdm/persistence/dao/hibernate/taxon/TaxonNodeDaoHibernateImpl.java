@@ -127,7 +127,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoBaseImpl<TaxonNode>
 			        taxonDao.saveOrUpdate(taxon);
     				taxon = HibernateProxyHelper.deproxy(taxonDao.findByUuid(taxon.getUuid()), Taxon.class);
     				taxonDao.delete(taxon);
-
 			    }
 			}
 		}

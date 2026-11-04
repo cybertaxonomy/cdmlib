@@ -344,6 +344,17 @@ public interface ICdmEntityDao<T extends CdmBase> {
     public T findByUuid(UUID Uuid) throws DataAccessException;
 
     /**
+     * Like {@link #findByUuid(UUID)}, but resolves via id + {@code Session.get}
+     * so an already-managed persistence-context instance is reused.
+     * <p>
+     * Use only when the entity may already be attached (e.g. delete / {@code isDeletable}
+     * reloading an instance that is still in the session). Criteria re-hydration of a
+     * managed entity can fail under Hibernate 6 with {@code EntityInitializerImpl}
+     * AssertionError. Prefer passing the existing entity when possible.
+     */
+    public T findByUuidPreferManaged(UUID uuid) throws DataAccessException;
+
+    /**
      * Method to find CDM Entity by Uuid, by making sure that the underlying
      * hibernate session is not flushed (Session.FLUSH_MODE set to MANUAL temporarily)
      * when performing the read query.

@@ -378,6 +378,34 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
+    public T findByUuidPreferManaged(UUID uuid) throws DataAccessException {
+        return findByUuidPreferManaged(uuid, INCLUDE_UNPUBLISHED);
+    }
+
+    private T findByUuidPreferManaged(UUID uuid, boolean includeUnpublished) throws DataAccessException {
+
+        CriteriaBuilder cb = getCriteriaBuilder();
+        CriteriaQuery<Integer> cq = cb.createQuery(Integer.class);
+        Root<T> root = cq.from(type);
+        Predicate where = predicateUuid(cb, root, uuid);
+        if (IPublishable.class.isAssignableFrom(type) && !includeUnpublished) {
+            where = cb.and(where, predicateBoolean(cb, root, "publish", Boolean.TRUE));
+        }
+        cq.select(root.get("id"))
+          .where(where)
+          .orderBy(cb.desc(root.get("created")));
+
+        List<Integer> ids = getSession().createQuery(cq).getResultList();
+        if (ids.isEmpty()) {
+            return null;
+        }
+        if (ids.size() > 1) {
+            logger.error("findByUuidPreferManaged() delivers more than one result for UUID: " + uuid);
+        }
+        return getSession().get(type, ids.get(0));
+    }
+
+    @Override
     public T findByUuidWithoutFlush(UUID uuid) throws DataAccessException {
         return findByUuidWithoutFlush(type, uuid);
     }

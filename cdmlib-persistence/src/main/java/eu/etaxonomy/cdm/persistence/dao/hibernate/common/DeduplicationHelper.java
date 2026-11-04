@@ -21,6 +21,7 @@ import javax.naming.Reference;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.MappingException;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionFactoryImpl;
@@ -105,6 +106,14 @@ public class DeduplicationHelper {
 			//check null and types
 			checkMergeValid(cdmBase1, cdmBase2, mergeStrategy);
 
+			// Initialize List collections that reference cdmBase2 while the persistence context
+			// is still consistent. Hibernate 6.6 can hit EntityInitializerImpl AssertionError
+			// when lazy-loading an @OrderColumn PersistentList (e.g. Team.teamMembers) after
+			// merge / saveOrUpdate / flush have mutated the PC (see testMergePersons / #5652).
+			if (cdmBase2.getId() > 0) {
+				preInitializeListReferences(cdmBase2, clazz2);
+			}
+
 			//merge objects
 			//externel impl
 			//internal impl
@@ -125,6 +134,8 @@ public class DeduplicationHelper {
 			}
 
 			if (cdmBase2.getId() > 0){
+				// preInitialize may have loaded a managed twin via teamMembers etc.
+				evictManagedTwinIfDifferent(cdmBase2);
 				session.saveOrUpdate(cdmBase2);
 				session.flush();
 				//rearrange references pointing to cdmBase2 to cdmBase1 in future
@@ -428,6 +439,47 @@ public class DeduplicationHelper {
 			return;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Eagerly load {@link List} collections that contain {@code cdmBase2} while the
+	 * persistence context is still consistent. Must run before merge / saveOrUpdate / flush.
+	 */
+	private void preInitializeListReferences(CdmBase cdmBase2, Class<? extends CdmBase> clazz)
+			throws Exception {
+		Set<ReferenceHolder> holderSet = genericDao.getOrMakeHolderSet(clazz);
+		for (ReferenceHolder refHolder : holderSet) {
+			if (!refHolder.isCollection()) {
+				continue;
+			}
+			List<CdmBase> referencingObjects = genericDao.getCdmBasesWithItemInCollection(
+					refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, cdmBase2, null);
+			for (CdmBase referencingObject : referencingObjects) {
+				Field referencingField = getFieldRecursive(refHolder.otherClass, refHolder.propertyName);
+				referencingField.setAccessible(true);
+				Object collection = referencingField.get(referencingObject);
+				if (collection instanceof List && !Hibernate.isInitialized(collection)) {
+					Hibernate.initialize(collection);
+				}
+			}
+		}
+	}
+
+	/**
+	 * If the session already holds another instance with the same id (e.g. loaded as a
+	 * collection element during {@link #preInitializeListReferences}), evict it so
+	 * {@code saveOrUpdate} of the caller's instance does not throw
+	 * {@link org.hibernate.NonUniqueObjectException}.
+	 */
+	private void evictManagedTwinIfDifferent(CdmBase entity) {
+		if (entity == null || entity.getId() <= 0) {
+			return;
+		}
+		Class<?> entityClass = HibernateProxyHelper.getClassWithoutInitializingProxy(entity);
+		Object managed = session.get(entityClass, entity.getId());
+		if (managed != null && managed != entity) {
+			session.evict(managed);
 		}
 	}
 

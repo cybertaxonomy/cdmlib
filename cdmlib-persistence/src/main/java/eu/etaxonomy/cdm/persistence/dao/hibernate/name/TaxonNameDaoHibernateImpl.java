@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.query.Query;
@@ -625,25 +626,43 @@ public class TaxonNameDaoHibernateImpl
         Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
 
         getSession().saveOrUpdate(persistentObject);
-        UUID homotypicalGroupUUID = persistentObject.getHomotypicalGroup().getUuid();
-
+        HomotypicalGroup homotypicalGroup = HibernateProxyHelper.deproxy(
+                persistentObject.getHomotypicalGroup(), HomotypicalGroup.class);
+        Integer homotypicalGroupId = homotypicalGroup != null ? homotypicalGroup.getId() : null;
 
         for (TaxonBase taxonBase: taxonBases){
             taxonDao.delete(taxonBase);
         }
-        HomotypicalGroup homotypicalGroup = homotypicalGroupDao.load(homotypicalGroupUUID);
-        homotypicalGroup = HibernateProxyHelper.deproxy(homotypicalGroup);
 
-        if (homotypicalGroup != null){
-            if (homotypicalGroup.getTypifiedNames().contains(persistentObject)){
-                homotypicalGroup.getTypifiedNames().remove(persistentObject);
-                homotypicalGroupDao.saveOrUpdate(homotypicalGroup);
-            }
+        // Do not touch HomotypicalGroup.typifiedNames (inverse PersistentSet). Under Hibernate 6,
+        // lazy-loading that collection while related names are managed often hits
+        // EntityInitializerImpl AssertionError. Owning side is TaxonName.homotypicalGroup.
+        // Keep inverse side in sync only if already initialized; never force-load it.
+        if (homotypicalGroup != null
+                && Hibernate.isInitialized(homotypicalGroup)
+                && Hibernate.isInitialized(homotypicalGroup.getTypifiedNames())) {
+            homotypicalGroup.getTypifiedNames().remove(persistentObject);
         }
 
         getSession().delete(persistentObject);
-        if (homotypicalGroup.getTypifiedNames().isEmpty()){
-            homotypicalGroupDao.delete(homotypicalGroup);
+        getSession().flush();
+
+        if (homotypicalGroupId != null) {
+            long remainingNames = getSession()
+                    .createQuery("select count(n.id) from TaxonName n where n.homotypicalGroup.id = :hgId", Long.class)
+                    .setParameter("hgId", homotypicalGroupId)
+                    .uniqueResult();
+            if (remainingNames == 0){
+                // Evict first so commit cannot flush a stale managed HG (empty/loaded typifiedNames),
+                // then bulk-delete — avoids session.delete(hg) which would init typifiedNames.
+                if (homotypicalGroup != null && getSession().contains(homotypicalGroup)) {
+                    getSession().evict(homotypicalGroup);
+                }
+                getSession()
+                        .createMutationQuery("delete from HomotypicalGroup hg where hg.id = :hgId")
+                        .setParameter("hgId", homotypicalGroupId)
+                        .executeUpdate();
+            }
         }
         return persistentObject.getUuid();
     }
