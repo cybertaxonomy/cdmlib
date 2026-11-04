@@ -37,7 +37,14 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	private final String classString = "org.h2.Driver";
 
 	//url
-	private final String urlString = "jdbc:h2:";
+    private final String urlString = "jdbc:h2:";
+
+    /**
+     * H2 2.x reserved words used as CDM column names ({@code VALUE}, {@code TYPE}, …).
+     * Appended to every generated JDBC URL.
+     */
+    private static final String H2_URL_PARAMS =
+            ";NON_KEYWORDS=VALUE,TYPE,ROLE,SIZE;DATABASE_TO_UPPER=TRUE";
 
     //port
     private final int defaultPort = 9092;
@@ -59,16 +66,18 @@ public class H2DatabaseType extends DatabaseTypeBase {
 		if (path == null){
 			path = getDefaultPath();
 		}
+        String base;
         if (mode.equals(H2Mode.IN_MEMORY)){
-        	return  urlString + "mem:";
+        	base = urlString + "mem:";
         }else if (mode.equals(H2Mode.EMBEDDED)){
-    		return urlString + "file:" + path + "/" + ds.getDatabase();
+    		base = urlString + "file:" + path + "/" + ds.getDatabase();
         }else if (mode.equals(H2Mode.TCP)){
-        	return urlString + "tcp://" + ds.getServer() + ":" + port + "/" + path + "/" + ds.getDatabase();
+        	base = urlString + "tcp://" + ds.getServer() + ":" + port + "/" + path + "/" + ds.getDatabase();
         }else{
         	logger.warn("Unrecognized mode for Database H2");
         	return null;
         }
+        return base + H2_URL_PARAMS;
     }
 
 	@Override

@@ -59,7 +59,7 @@
     <jena.version>4.6.1</jena.version> <!-- 4.7.0 still creates problems with term loading (AnnotationType.UNHANDLED-->
     <doclint>none</doclint>
     <!-- DBs -->
-    <h2.version>1.4.196</h2.version>
+    <h2.version>2.3.232</h2.version>
     <mysql.version>26.7.0</mysql.version>
     <mariadb.version>3.5.10</mariadb.version>
     <postgresql.version>42.7.13</postgresql.version>

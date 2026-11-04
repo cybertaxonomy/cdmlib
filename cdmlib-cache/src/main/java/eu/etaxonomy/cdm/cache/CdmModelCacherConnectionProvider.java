@@ -8,6 +8,8 @@
  */
 package eu.etaxonomy.cdm.cache;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.sql.DataSource;
@@ -37,10 +39,16 @@ public class CdmModelCacherConnectionProvider extends DatasourceConnectionProvid
 	private DataSource getDataSourcePreliminary() {
 		String database = "modelCacher";
 		URL location = this.getClass().getProtectionDomain().getCodeSource().getLocation();
-		String path = location.getFile().replace("classes/", "tmp/h2/"+database);
-//		String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2_" + database;
+		// H2 2.x rejects URL-style paths like "/C:/..." from URL.getFile(); use a real filesystem path.
+		File classesDir;
+		try {
+			classesDir = new File(location.toURI());
+		} catch (URISyntaxException e) {
+			classesDir = new File(location.getPath());
+		}
+		File path = new File(classesDir.getParentFile(), "tmp" + File.separator + "h2" + File.separator + database);
         String username = "sa";
-        CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("temp", username, "", path);
+        CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("temp", username, "", path.getAbsolutePath());
         return dataSource;
 	}
 }

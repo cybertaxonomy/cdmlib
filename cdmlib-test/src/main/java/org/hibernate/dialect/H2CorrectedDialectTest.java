@@ -10,44 +10,17 @@ package org.hibernate.dialect;
 
 import java.sql.Types;
 
-import org.hibernate.type.SqlTypes;
-
 /**
- *  This is a copy of the H2CorrectedDialect in cdmlib-persistence which is needed
- *  by the DdlCreator. Once H2CorrectedDialect is removed from cdmlib-persistence
- *  we can also remove this class.
+ * Copy of {@link H2CorrectedDialect} for {@code cdmlib-test} / {@code DdlCreator}
+ * (avoids a hard dependency cycle on cdmlib-persistence).
  */
 public class H2CorrectedDialectTest extends H2Dialect {
 
 	@Override
 	protected String columnType(int sqlTypeCode) {
 		if (sqlTypeCode == Types.FLOAT) {
-			return "double"; //do we really want this
-		}
-		// H2 1.4.x cannot parse "timestamp($p) with time zone" / "time($p) with time zone"
-		if (sqlTypeCode == SqlTypes.TIMESTAMP_WITH_TIMEZONE
-				|| sqlTypeCode == SqlTypes.TIMESTAMP_UTC) {
-			return columnType(SqlTypes.TIMESTAMP);
-		}
-		if (sqlTypeCode == SqlTypes.TIME_WITH_TIMEZONE
-				|| sqlTypeCode == SqlTypes.TIME_UTC) {
-			return columnType(SqlTypes.TIME);
+			return "double";
 		}
 		return super.columnType(sqlTypeCode);
-	}
-
-	@Override
-	public TimeZoneSupport getTimeZoneSupport() {
-		return TimeZoneSupport.NONE;
-	}
-
-	@Override
-	public boolean supportsTemporalLiteralOffset() {
-		return false;
-	}
-
-	@Override
-	public boolean supportsTimeLiteralOffset() {
-		return false;
 	}
 }
