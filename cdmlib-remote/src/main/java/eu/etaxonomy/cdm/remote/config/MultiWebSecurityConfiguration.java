@@ -33,7 +33,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 import eu.etaxonomy.cdm.config.ConfigFileUtil;
 
@@ -70,9 +70,9 @@ public class MultiWebSecurityConfiguration {
     @Bean
     @Order(1)
     public SecurityFilterChain loginSecurityFilterChain(HttpSecurity http) throws Exception {
-        // AntPathRequestMatcher: avoid MvcRequestMatcher (needs HandlerMappingIntrospector in servlet context)
+        // PathPatternRequestMatcher: avoid MvcRequestMatcher (needs HandlerMappingIntrospector in servlet context)
         http
-            .securityMatcher(AntPathRequestMatcher.antMatcher("/oauth/authorize"))
+            .securityMatcher(PathPatternRequestMatcher.withDefaults().matcher("/oauth/authorize"))
             .authorizeHttpRequests(auth -> auth.anyRequest().fullyAuthenticated())
             .csrf(AbstractHttpConfigurer::disable)
             .httpBasic(Customizer.withDefaults())
@@ -87,7 +87,7 @@ public class MultiWebSecurityConfiguration {
     @Order(2)
     public SecurityFilterChain remotingSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-            .securityMatcher(AntPathRequestMatcher.antMatcher("/remoting/**"))
+            .securityMatcher(PathPatternRequestMatcher.withDefaults().matcher("/remoting/**"))
             .authorizeHttpRequests(auth -> auth.anyRequest()
                     .hasAnyRole("ADMIN", "PROJECT_MANAGER", "REMOTING"))
             .csrf(AbstractHttpConfigurer::disable)
@@ -106,7 +106,7 @@ public class MultiWebSecurityConfiguration {
     @Order(4)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-            .securityMatcher(AntPathRequestMatcher.antMatcher("/**"))
+            .securityMatcher(PathPatternRequestMatcher.withDefaults().matcher("/**"))
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
             .csrf(AbstractHttpConfigurer::disable)
             .httpBasic(Customizer.withDefaults());

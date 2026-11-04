@@ -35,7 +35,7 @@ import org.springframework.security.oauth2.server.authorization.settings.Authori
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 import com.nimbusds.jose.jwk.JWKSet;
@@ -77,23 +77,27 @@ public class OAuth2ServerConfiguration {
     @Bean
     @Order(3)
     public SecurityFilterChain resourceServerSecurityFilterChain(HttpSecurity http) throws Exception {
-        // AntPathRequestMatcher: Security runs in the root WebApplicationContext; MvcRequestMatcher
+        // PathPatternRequestMatcher: Security runs in the root WebApplicationContext; MvcRequestMatcher
         // would require HandlerMappingIntrospector from the DispatcherServlet child context.
+        PathPatternRequestMatcher.Builder path = PathPatternRequestMatcher.withDefaults();
         http
             .securityMatcher(new OrRequestMatcher(
-                    AntPathRequestMatcher.antMatcher("/manage/**"),
-                    AntPathRequestMatcher.antMatcher("/**description/accumulateDistributions"),
-                    AntPathRequestMatcher.antMatcher("/user/me"),
-                    AntPathRequestMatcher.antMatcher("/user/**")))
+                    path.matcher("/manage/**"),
+                    path.matcher("/description/accumulateDistributions"),
+                    path.matcher("/portal/description/accumulateDistributions"),
+                    path.matcher("/user/me"),
+                    path.matcher("/user/**")))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.OPTIONS, "/manage/**")).permitAll()
-                    .requestMatchers(AntPathRequestMatcher.antMatcher("/manage/**")).access((authentication, context) ->
+                    .requestMatchers(path.matcher(HttpMethod.OPTIONS, "/manage/**")).permitAll()
+                    .requestMatchers(path.matcher("/manage/**")).access((authentication, context) ->
                             manageClientDecision(authentication.get()))
-                    .requestMatchers(AntPathRequestMatcher.antMatcher("/**description/accumulateDistributions")).access((authentication, context) ->
+                    .requestMatchers(path.matcher("/description/accumulateDistributions")).access((authentication, context) ->
                             manageClientDecision(authentication.get()))
-                    .requestMatchers(AntPathRequestMatcher.antMatcher("/user/me")).authenticated()
-                    .requestMatchers(AntPathRequestMatcher.antMatcher("/user/**")).hasAnyRole("ADMIN", "USER_MANAGER")
+                    .requestMatchers(path.matcher("/portal/description/accumulateDistributions")).access((authentication, context) ->
+                            manageClientDecision(authentication.get()))
+                    .requestMatchers(path.matcher("/user/me")).authenticated()
+                    .requestMatchers(path.matcher("/user/**")).hasAnyRole("ADMIN", "USER_MANAGER")
                     .anyRequest().permitAll())
             .csrf(AbstractHttpConfigurer::disable)
             .httpBasic(Customizer.withDefaults())

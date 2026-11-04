@@ -36,7 +36,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.ResponseErrorHandler;
+import org.springframework.web.client.NoOpResponseErrorHandler;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -317,17 +317,8 @@ public class ServerRunning implements MethodRule {
                 connection.setInstanceFollowRedirects(false);
             }
         });
-        client.setErrorHandler(new ResponseErrorHandler() {
-            // Pass errors through in response entity for status code analysis
-            @Override
-            public boolean hasError(ClientHttpResponse response) throws IOException {
-                return false;
-            }
-
-            @Override
-            public void handleError(ClientHttpResponse response) throws IOException {
-            }
-        });
+        // Pass errors through in response entity for status code analysis
+        client.setErrorHandler(new NoOpResponseErrorHandler());
         return client;
     }
 
