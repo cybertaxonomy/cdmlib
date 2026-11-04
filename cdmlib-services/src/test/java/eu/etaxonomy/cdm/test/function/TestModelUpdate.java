@@ -100,6 +100,8 @@ public class TestModelUpdate {
         String username = "edit";
         String serverSql = "130.133.70.26";
 //        server = "160.45.63.175";
+//        server = "160.45.63.171";
+//        dbType = DatabaseTypeEnum.MariaDB;
 
         if (dbType == DatabaseTypeEnum.MySQL){
             return CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
