@@ -84,6 +84,10 @@ public class CdmHibernateSessionFactoryBean
         if (hibernateProperties != null) {
             configuration.addProperties(hibernateProperties);
         }
+        if (!configuration.getProperties().containsKey("hibernate.search.mapping.configurer")) {
+            configuration.setProperty("hibernate.search.mapping.configurer",
+                    "eu.etaxonomy.cdm.persistence.hibernate.search.CdmHibernateSearchMappingConfigurer");
+        }
         // Spring LocalSessionFactoryBuilder defaults
         configuration.setProperty(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS,
                 SpringSessionContext.class.getName());

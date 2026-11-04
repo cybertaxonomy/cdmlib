@@ -68,6 +68,8 @@
               <prop key="hibernate.format_sql">false</prop>
               <prop key="hibernate.search.backend.directory.type">local-filesystem</prop>
               <prop key="hibernate.search.backend.directory.root">${user.home}/.cdmLibrary/</prop>
+              <!-- Avoid HSEARCH900016 (Jandex FileSystemAlreadyExistsException on JARs under Tomcat) -->
+              <prop key="hibernate.search.mapping.configurer">eu.etaxonomy.cdm.persistence.hibernate.search.CdmHibernateSearchMappingConfigurer</prop>
             </props>
         </property>
     </bean>

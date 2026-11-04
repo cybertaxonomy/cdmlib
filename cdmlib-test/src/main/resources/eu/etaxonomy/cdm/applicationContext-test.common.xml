@@ -57,6 +57,7 @@
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.search.backend.directory.type">local-heap</prop>
+                <prop key="hibernate.search.mapping.configurer">eu.etaxonomy.cdm.persistence.hibernate.search.CdmHibernateSearchMappingConfigurer</prop>
                 <!-- local-heap: avoid Lucene write.lock clashes with the Unitils SessionFactory -->
                 <!-- exclusive_index_use has no HS6 equivalent -->
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2CorrectedDialectTest</prop>

@@ -130,6 +130,9 @@ public class CdmLocalContainerEntityManagerFactoryBean extends LocalContainerEnt
         if (entityInterceptor != null) {
             map.put(AvailableSettings.INTERCEPTOR, entityInterceptor);
         }
+        // HS 7 Jandex JAR scan: FileSystemAlreadyExistsException → HSEARCH900016 under Tomcat
+        map.putIfAbsent("hibernate.search.mapping.configurer",
+                "eu.etaxonomy.cdm.persistence.hibernate.search.CdmHibernateSearchMappingConfigurer");
 
         super.afterPropertiesSet();
     }

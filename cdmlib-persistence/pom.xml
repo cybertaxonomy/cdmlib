@@ -48,13 +48,7 @@
     </dependency>
     <dependency>
       <groupId>org.hibernate.search</groupId>
-      <artifactId>hibernate-search-mapper-orm-orm6</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss</groupId>
-          <artifactId>jandex</artifactId>
-        </exclusion>
-      </exclusions>
+      <artifactId>hibernate-search-mapper-orm</artifactId>
     </dependency>
     <dependency>
       <groupId>org.hibernate.search</groupId>
@@ -87,7 +81,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-analyzers-common</artifactId>
+      <artifactId>lucene-analysis-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.lucene</groupId>
