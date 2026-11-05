@@ -8,16 +8,15 @@
 */
 package eu.etaxonomy.cdm.validation;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.Set;
 
+import eu.etaxonomy.cdm.test.TermTestBase;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-
-import org.junit.Assert;
-
-import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * Class providing some base functionality for validator testing
@@ -62,9 +61,9 @@ public abstract class ValidationTestBase extends TermTestBase{
             }
         }
         if (! hasViolation  && requiresViolation){
-            Assert.fail("constraint violations are missing an validator class " + validatorClass.getSimpleName());
+            fail("constraint violations are missing an validator class " + validatorClass.getSimpleName());
         }else if (hasViolation  && ! requiresViolation){
-            Assert.fail("constraint violations should not exist for validator class " + validatorClass.getSimpleName());
+            fail("constraint violations should not exist for validator class " + validatorClass.getSimpleName());
         }
         return;
     }

@@ -8,12 +8,13 @@
 */
 package eu.etaxonomy.cdm.strategy.cache;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -23,7 +24,7 @@ public class TaggedCacheHelperTest {
 
     private List<TaggedText> tags;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         tags = new ArrayList<>();
         tags.add(TaggedText.NewInstance(TagEnum.label, "My"));
@@ -32,20 +33,20 @@ public class TaggedCacheHelperTest {
 
     @Test
     public void test() {
-        Assert.assertEquals("My taxon", TaggedTextFormatter.createString(tags));
+        assertEquals("My taxon", TaggedTextFormatter.createString(tags));
 
         tags.add(1, TaggedText.NewInstance(TagEnum.separator, ":"));
-        Assert.assertEquals("My:taxon", TaggedTextFormatter.createString(tags));
+        assertEquals("My:taxon", TaggedTextFormatter.createString(tags));
     }
 
     @Test
     public void testHtmlRules() {
         HTMLTagRules rules = new HTMLTagRules();
         rules.addRule(TagEnum.label, "b");
-        Assert.assertEquals("<b>My taxon</b>", TaggedTextFormatter.createString(tags, rules));
+        assertEquals("<b>My taxon</b>", TaggedTextFormatter.createString(tags, rules));
 
         tags.add(1, TaggedText.NewInstance(TagEnum.separator, ":"));
-        Assert.assertEquals("<b>My</b>:<b>taxon</b>", TaggedTextFormatter.createString(tags, rules));
+        assertEquals("<b>My</b>:<b>taxon</b>", TaggedTextFormatter.createString(tags, rules));
     }
 
 }

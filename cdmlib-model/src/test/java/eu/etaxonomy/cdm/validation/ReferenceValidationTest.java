@@ -8,20 +8,17 @@
 */
 package eu.etaxonomy.cdm.validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URISyntaxException;
 import java.util.Set;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.groups.Default;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.reference.IBook;
@@ -30,6 +27,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.validation.constraint.InReferenceValidator;
 import eu.etaxonomy.cdm.validation.constraint.NoRecursiveInReferenceValidator;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.groups.Default;
 
 /**
  * @author ben.clark
@@ -41,7 +40,7 @@ public class ReferenceValidationTest extends ValidationTestBase {
 
     private IBook book;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		book = ReferenceFactory.newBook();
 		book.setTitleCache("Lorem ipsum", true);
@@ -56,20 +55,20 @@ public class ReferenceValidationTest extends ValidationTestBase {
 	@Test
 	public final void testLevel2ValidationWithValidBook() {
         Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class, Default.class);
-        assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should be no constraint violations as this book is valid at level 2");
 	}
 
 	@Test
 	public final void testLevel2ValidationWithValidISBN() {
         Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
-        assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should be no constraint violations as this book is valid at level 2");
 	}
 
 	@Test
 	public final void testLevel2ValidationWithInValidISBN() {
 		book.setIsbn("1-9197954-99-5");
         Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
-        assertFalse("There should be a constraint violation as this book has an invalid ISBN number",constraintViolations.isEmpty());
+        assertFalse(constraintViolations.isEmpty(), "There should be a constraint violation as this book has an invalid ISBN number");
 	}
 
 	@Test
@@ -77,10 +76,10 @@ public class ReferenceValidationTest extends ValidationTestBase {
 		try {
 			book.setUri(new URI("http://www.e-taxonomy.eu"));
 		} catch (URISyntaxException e) {
-			Assert.fail("URI is not valid");
+			fail("URI is not valid");
 		}
         Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
-        assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should be no constraint violations as this book is valid at level 2");
 	}
 
    @Test
@@ -91,13 +90,13 @@ public class ReferenceValidationTest extends ValidationTestBase {
         bookSection.setTitle("");
         bookSection.setInReference((Reference)book);
         Set<ConstraintViolation<IBookSection>> constraintViolations  = validator.validate(bookSection, Level3.class);
-        assertTrue("There should be one constraint violation as this book has a valid Ref",constraintViolations.size() == 0);
+        assertTrue(constraintViolations.size() == 0, "There should be one constraint violation as this book has a valid Ref");
 
         Reference article = ReferenceFactory.newArticle();
         article.setTitleCache("article", true);
         bookSection.setInReference(article);
         constraintViolations  = validator.validate(bookSection, Level3.class);
-//        assertTrue("There should be a constraint violation as this book has an invalid inReference",constraintViolations.size() == 1);
+//        assertTrue(constraintViolations.size() == 1, "There should be a constraint violation as this book has an invalid inReference");
         assertHasConstraintOnValidator((Set)constraintViolations, InReferenceValidator.class);
     }
 
@@ -105,7 +104,7 @@ public class ReferenceValidationTest extends ValidationTestBase {
 	public final void testValidationAfterCasting(){
 		((Reference)book).castReferenceToArticle();
 		Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
-        assertFalse("There should be one constraint violations as this article is not valid at level 2 (has an isbn)", constraintViolations.isEmpty());
+        assertFalse(constraintViolations.isEmpty(), "There should be one constraint violations as this article is not valid at level 2 (has an isbn)");
 	}
 
 	@Test

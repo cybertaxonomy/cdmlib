@@ -8,10 +8,13 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.media;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.net.URISyntaxException;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -33,29 +36,29 @@ public class MediaDefaultCacheStrategyTest extends TermTestBase {
 		try {
 			Media media = Media.NewInstance();
 			media.putTitle(Language.DEFAULT(), "My best media");
-			Assert.assertEquals("Wrong title cache for media", "My best media", media.getTitleCache());
+			assertEquals("My best media", media.getTitleCache(), "Wrong title cache for media");
 
 			media = Media.NewInstance();
-			Assert.assertTrue("Wrong title cache for empty media", media.getTitleCache().startsWith("- empty"));
+			assertTrue(media.getTitleCache().startsWith("- empty"), "Wrong title cache for empty media");
 
 			Person person = Person.NewTitledInstance("Artist");
 			media.setArtist(person);
-			Assert.assertEquals("Wrong title cache for media with artist", "Artist", media.getTitleCache());
+			assertEquals("Artist", media.getTitleCache(), "Wrong title cache for media with artist");
 
 			MediaRepresentation representation = MediaRepresentation.NewInstance(new URI("www.abc.de/myFileName.jpg&mo=file"), null, null, 0, null);
 			media.addRepresentation(representation);
-			Assert.assertEquals("Wrong title cache for media with artist", "Artist", media.getTitleCache());
+			assertEquals("Artist", media.getTitleCache(), "Wrong title cache for media with artist");
 
 			media.setArtist(null);
-			Assert.assertEquals("Wrong title cache for media", "myFileName", media.getTitleCache());
+			assertEquals("myFileName", media.getTitleCache(), "Wrong title cache for media");
 			media.removeRepresentation(representation);
 
 			representation = MediaRepresentation.NewInstance(new URI("www.abc.de/"), null, null, 0, null);
 			media.addRepresentation(representation);
-			Assert.assertEquals("Wrong title cache for media", "www.abc.de/", media.getTitleCache());
+			assertEquals("www.abc.de/", media.getTitleCache(), "Wrong title cache for media");
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-			Assert.fail("URI syntax exception");
+			fail("URI syntax exception");
 		}
 	}
 

@@ -8,20 +8,19 @@
 */
 package eu.etaxonomy.cdm.validation;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
-
-import jakarta.validation.ConstraintViolation;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.validator.internal.constraintvalidators.bv.NotNullValidator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import jakarta.validation.ConstraintViolation;
 
 /**
  * @author a.mueller
@@ -34,12 +33,12 @@ public class ValidPointTest extends ValidationTestBase{
 	private GatheringEvent gatheringEvent;
 	private Point point = new Point();
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		gatheringEvent = GatheringEvent.NewInstance();
 
 		Set<ConstraintViolation<GatheringEvent>> constraintViolations  = validator.validate(gatheringEvent, Level2.class);
-        assertTrue("There should not be a constraint violation as gathering with NO exact location is allowed",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as gathering with NO exact location is allowed");
 	}
 
 /****************** TESTS *****************************/
@@ -48,7 +47,7 @@ public class ValidPointTest extends ValidationTestBase{
 	public final void testNoPoint() {
 
         Set<ConstraintViolation<GatheringEvent>> constraintViolations  = validator.validate(gatheringEvent, Level2.class);
-        assertTrue("There should not be a constraint violation as gathering with NO exact location is allowed",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as gathering with NO exact location is allowed");
  	}
 
 	@Test

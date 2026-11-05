@@ -8,14 +8,16 @@
 */
 package eu.etaxonomy.cdm.model.molecular;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URISyntaxException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -33,7 +35,7 @@ public class MolecularTest extends EntityTestBase {
 	private PhylogeneticTree phyloTree;
 	private Sequence seq;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		dnaSample = DnaSample.NewInstance();
 		seq = new Sequence();
@@ -81,9 +83,9 @@ public class MolecularTest extends EntityTestBase {
 //		LanguageString titleClone = test.getTitle(Language.ENGLISH());
 //		assertEquals(title, titleClone);
 
-		assertTrue (sequenceClone.getGeneticAccessionNumber().equals(seq.getGeneticAccessionNumber()));
+		assertTrue(sequenceClone.getGeneticAccessionNumber().equals(seq.getGeneticAccessionNumber()));
 		assertNotNull(sequenceClone.getGenBankUri());
-		assertTrue (sequenceClone.getGenBankUri().equals(seq.getGenBankUri()));
+		assertTrue(sequenceClone.getGenBankUri().equals(seq.getGenBankUri()));
 
 		DnaSample dnaSampleClone = dnaSample.clone();
 		Sequence[] seqArray = new Sequence[dnaSample.getSequences().size()];

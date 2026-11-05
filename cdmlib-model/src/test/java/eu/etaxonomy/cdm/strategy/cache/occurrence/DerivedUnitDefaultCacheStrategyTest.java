@@ -8,11 +8,12 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.occurrence;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -101,7 +102,7 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
 
 //****************************** SET UP *****************************************/
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         specimen = DerivedUnit.NewPreservedSpecimenInstance();
 
@@ -171,23 +172,23 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
         addEcology(fieldUnit, ecology);
         addPlantDescription(fieldUnit, plantDescription);
         collection.setCode("B");
-        Assert.assertEquals(correctCache, specimen.getTitleCache());
+        assertEquals(correctCache, specimen.getTitleCache());
 
         //collection without code but with name
         collection.setCode(null);
         collection.setName("Herbarium Berolinense");
-        Assert.assertEquals(correctCache.replace("B: 8909756", "Herbarium Berolinense: 8909756"), specimen.getTitleCache());
+        assertEquals(correctCache.replace("B: 8909756", "Herbarium Berolinense: 8909756"), specimen.getTitleCache());
 
         //test status
         collection.setCode("B");
         Reference statusSource = ReferenceFactory.newBook(); //TODO not yet handled in cache strategy as we do not have tagged text here
         statusSource.setTitle("Status test");
         specimen.addStatus(OccurrenceStatus.NewInstance(DefinedTerm.getTermByUuid(DefinedTerm.uuidDestroyed), statusSource, "335"));
-        Assert.assertEquals(correctCache.replace("8909756", "8909756, destroyed"), specimen.getTitleCache());
+        assertEquals(correctCache.replace("8909756", "8909756, destroyed"), specimen.getTitleCache());
 
         //test 2 status
         specimen.addStatus(OccurrenceStatus.NewInstance(DefinedTerm.getTermByUuid(DefinedTerm.uuidLost), statusSource, "335"));
-        Assert.assertEquals(correctCache.replace("8909756", "8909756, destroyed, lost"), specimen.getTitleCache());
+        assertEquals(correctCache.replace("8909756", "8909756, destroyed, lost"), specimen.getTitleCache());
 
     }
 
@@ -198,7 +199,7 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
         addEcology(fieldUnit, ecology);
         addPlantDescription(fieldUnit, plantDescription);
         collection.setCode("B");
-        Assert.assertEquals(correctCache, specimen.getTitleCache());
+        assertEquals(correctCache, specimen.getTitleCache());
     }
 
     //#6381
@@ -207,39 +208,39 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
         addPlantDescription(fieldUnit, plantDescription);
         collection.setCode("B");
         String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: 8909756); flowers blue";
-        Assert.assertEquals(correctCache, specimen.getTitleCache());
+        assertEquals(correctCache, specimen.getTitleCache());
 
         specimen.setAccessionNumber(null);
         correctCache = correctCache.replace("B: 8909756", "B: B12345678");
-        Assert.assertEquals(correctCache, specimen.getTitleCache());
+        assertEquals(correctCache, specimen.getTitleCache());
 
         specimen.setBarcode(null);
         correctCache = correctCache.replace("B: B12345678", "B: UU879873590");
-        Assert.assertEquals(correctCache, specimen.getTitleCache());
+        assertEquals(correctCache, specimen.getTitleCache());
 
         //no deduplication of collection code in accession number according to #6865
         specimen.setAccessionNumber("B 12345");
         correctCache = correctCache.replace("B: UU879873590", "B: B 12345");
-        Assert.assertEquals(correctCache, specimen.getTitleCache());
+        assertEquals(correctCache, specimen.getTitleCache());
         specimen.setAccessionNumber("B12345");
         correctCache = correctCache.replace("B 12345", "B12345");
-        Assert.assertEquals(correctCache, specimen.getTitleCache());
+        assertEquals(correctCache, specimen.getTitleCache());
 
         //but deduplication should take place if explicitly set
         specimen.setAccessionNumber("B 12345");
         specimen.setCacheStrategy(DerivedUnitDefaultCacheStrategy.NewInstance(false, false, true));
         correctCache = correctCache.replace("B: B12345", "B: 12345");
-        Assert.assertEquals(correctCache, specimen.getTitleCache());
+        assertEquals(correctCache, specimen.getTitleCache());
 
         //with trailing full stop #9849
         specimen.setCacheStrategy(DerivedUnitDefaultCacheStrategy.NewInstance(false, true, true));
         correctCache = correctCache + ".";
-        Assert.assertEquals(correctCache, specimen.getTitleCache());
+        assertEquals(correctCache, specimen.getTitleCache());
 
         //skip field unit
         specimen.setCacheStrategy(DerivedUnitDefaultCacheStrategy.NewInstance(true, false, false));
         correctCache = "Greuter, Pl. Dahlem. 456 (B: B 12345)";
-        Assert.assertEquals(correctCache, specimen.getTitleCache());
+        assertEquals(correctCache, specimen.getTitleCache());
 
     }
 
@@ -252,10 +253,10 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
         fieldUnit.addDerivationEvent(derivationEvent);
         gatheringEvent = GatheringEvent.NewInstance();
         fieldUnit.setGatheringEvent(gatheringEvent);
-        Assert.assertEquals("DerivedUnit#0<"+specimen.getUuid()+">", specimen.getTitleCache());
+        assertEquals("DerivedUnit#0<"+specimen.getUuid()+">", specimen.getTitleCache());
 
         specimen.setBarcode("B996633");
-        Assert.assertEquals("(B996633)", specimen.getTitleCache());  //maybe brackets will be removed in future
+        assertEquals("(B996633)", specimen.getTitleCache());  //maybe brackets will be removed in future
 
     }
 

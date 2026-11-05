@@ -8,9 +8,10 @@
 */
 package eu.etaxonomy.cdm.format.description;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -31,7 +32,7 @@ public class DefaultCategoricalDescriptionBuilderTest {
     private StateData stateData2;
     private StateData stateData3;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         state1 = State.NewInstance("state1 text", "state1", "st.1");
         state1.getRepresentations().iterator().next().setPlural("state1s");
@@ -49,18 +50,18 @@ public class DefaultCategoricalDescriptionBuilderTest {
         FormatKey[] formatKey = null;
         CategoricalDataFormatter formatter = new CategoricalDataFormatter(catData, formatKey);
         String text = formatter.format(catData, formatKey);
-        Assert.assertEquals("state1", text);
+        assertEquals("state1", text);
         catData.addStateData(stateData2);
         text = formatter.format(catData, formatKey);
-        Assert.assertEquals("state1, state2", text);
+        assertEquals("state1, state2", text);
         catData.addStateData(stateData3);
         text = formatter.format(catData, formatKey);
-        Assert.assertEquals("state1, state2, state3", text);
+        assertEquals("state1, state2, state3", text);
 
         //plural
         stateData1.setUsePlural(true);
         text = formatter.format(catData, formatKey);
-        Assert.assertEquals("state1s, state2, state3", text);
+        assertEquals("state1s, state2, state3", text);
 
         //TODO test with modifiers and maybe with other basedata like timeperiod etc.
     }

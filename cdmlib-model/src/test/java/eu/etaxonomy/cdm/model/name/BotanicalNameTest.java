@@ -8,13 +8,17 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -28,12 +32,10 @@ public class BotanicalNameTest extends EntityTestBase{
     private static final Logger logger = LogManager.getLogger();
 
 	private TaxonName botanicalName1;
-	private IBotanicalName botanicalName2;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		botanicalName1 = TaxonNameFactory.NewBotanicalInstance(null);
-		botanicalName2 = TaxonNameFactory.NewBotanicalInstance(null);
 	}
 
 /****** TESTS *******************************/
@@ -149,10 +151,10 @@ public class BotanicalNameTest extends EntityTestBase{
 		botanicalName1.setRank(Rank.GENUS());
 		botanicalName1.setAnamorphic(true);
 		TaxonName clone = botanicalName1.clone();
-		Assert.assertEquals("Anamorphic should be equal", true, clone.isAnamorphic());
+		assertEquals(true, clone.isAnamorphic(), "Anamorphic should be equal");
 		botanicalName1.setAnamorphic(false);
 		clone = botanicalName1.clone();
-		Assert.assertEquals("Anamorphic should be equal", false, clone.isAnamorphic());
+		assertEquals(false, clone.isAnamorphic(), "Anamorphic should be equal");
 	}
 
     @Test

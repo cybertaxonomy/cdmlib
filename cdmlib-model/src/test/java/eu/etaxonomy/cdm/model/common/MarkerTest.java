@@ -8,12 +8,17 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -33,7 +38,7 @@ public class MarkerTest extends EntityTestBase {
 	private static MarkerType markerType1;
 	private static AnnotatableEntity annotatedObject1;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		flag1 = true;
 		markerType1 = MarkerType.TO_BE_CHECKED();

@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -35,13 +35,13 @@ public class ExtensionTypeTest extends EntityTestBase {
 		UUID uuidRdf = UUID.fromString("f3684e25-dcad-4c1e-a5d8-16cddf1c4f5b");
 		ExtensionType rdfExtension = ExtensionType.getTermByUuid(uuidRdf);
 		Assert.notNull(rdfExtension, "RdfExtension must not be null");
-		assertEquals("Wrong label for extension type rdf", "RDF",rdfExtension.getRepresentation(Language.ENGLISH()).getAbbreviatedLabel());
+		assertEquals("RDF", rdfExtension.getRepresentation(Language.ENGLISH()).getAbbreviatedLabel(), "Wrong label for extension type rdf");
 	}
 
 	@Test
 	public void testDOI(){
 		ExtensionType doiExtension = ExtensionType.DOI();
 		Assert.notNull(doiExtension, "DoiExtension must not be null");
-		assertEquals("Wrong label for extension type rdf", "DOI",doiExtension.getLabel());
+		assertEquals("DOI", doiExtension.getLabel(), "Wrong label for extension type rdf");
 	}
 }

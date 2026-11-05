@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.strategy.parser;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -30,19 +32,19 @@ public class ParserProblemTest {
 	@Test
 	public void testWarningList() {
 		List<ParserProblem> list = ParserProblem.warningList(5);
-		assertEquals("list must include 2 warnings", 2, list.size());
-		assertTrue("Warning list should include warning 0", list.contains(ParserProblem.CheckRank));
-		assertTrue("Warning list should include warning 2", list.contains(ParserProblem.NameReferenceSeparation));
+		assertEquals(2, list.size(), "list must include 2 warnings");
+		assertTrue(list.contains(ParserProblem.CheckRank), "Warning list should include warning 0");
+		assertTrue(list.contains(ParserProblem.NameReferenceSeparation), "Warning list should include warning 2");
 	}
 
 	@Test
 	public void testAddProblem(){
 		int warning = ParserProblem.addProblem(0, ParserProblem.NameReferenceSeparation);
 		int expected = (int)Math.pow(2, ParserProblem.NameReferenceSeparation.ordinal()) ;
-		assertEquals("Unexpected value for addWarning", expected,warning);
+		assertEquals(expected, warning, "Unexpected value for addWarning");
 		warning = ParserProblem.addProblem(warning, ParserProblem.CheckDetailOrYear);
 		expected = expected + (int)Math.pow(2, ParserProblem.CheckDetailOrYear.ordinal()) ;
-		assertEquals("Unexpected value for addWarning", expected,warning);
+		assertEquals(expected, warning, "Unexpected value for addWarning");
 	}
 
 	@Test
@@ -50,41 +52,41 @@ public class ParserProblemTest {
 		int warning = ParserProblem.addProblem(0, ParserProblem.NameReferenceSeparation);
 		warning = ParserProblem.addProblem(warning, ParserProblem.CheckRank);
 		warning = ParserProblem.addProblem(warning, ParserProblem.CheckDetailOrYear);
-		assertEquals("Number of problems must be 3", 3, ParserProblem.warningList(warning).size());
-		assertTrue("Check Rank must be a problem", ParserProblem.warningList(warning).contains(ParserProblem.CheckRank));
+		assertEquals(3, ParserProblem.warningList(warning).size(), "Number of problems must be 3");
+		assertTrue(ParserProblem.warningList(warning).contains(ParserProblem.CheckRank), "Check Rank must be a problem");
 
 		warning = ParserProblem.removeProblem(warning, ParserProblem.CheckRank);
-		assertEquals("Number of problems must be 2", 2, ParserProblem.warningList(warning).size());
-		assertFalse("Check Rank must not be a problem anymore", ParserProblem.warningList(warning).contains(ParserProblem.CheckRank));
+		assertEquals(2, ParserProblem.warningList(warning).size(), "Number of problems must be 2");
+		assertFalse(ParserProblem.warningList(warning).contains(ParserProblem.CheckRank), "Check Rank must not be a problem anymore");
 
 		warning = ParserProblem.removeProblem(warning, ParserProblem.CheckRank);
-		assertEquals("Number of problems must be 2", 2, ParserProblem.warningList(warning).size());
-		assertFalse("Check Rank must not be a problem anymore", ParserProblem.warningList(warning).contains(ParserProblem.CheckRank));
+		assertEquals(2, ParserProblem.warningList(warning).size(), "Number of problems must be 2");
+		assertFalse(ParserProblem.warningList(warning).contains(ParserProblem.CheckRank), "Check Rank must not be a problem anymore");
 
 		warning = ParserProblem.removeProblem(warning, null);
-		assertEquals("Number of problems must be 2", 2, ParserProblem.warningList(warning).size());
-		assertFalse("Check Rank must not be a problem anymore", ParserProblem.warningList(warning).contains(ParserProblem.CheckRank));
+		assertEquals(2, ParserProblem.warningList(warning).size(), "Number of problems must be 2");
+		assertFalse(ParserProblem.warningList(warning).contains(ParserProblem.CheckRank), "Check Rank must not be a problem anymore");
 	}
 
 	@Test
 	public void testAddProblems(){
-		assertEquals("Unexpected value for addWarning", 23, ParserProblem.addProblems(21, 6));
+		assertEquals(23, ParserProblem.addProblems(21, 6), "Unexpected value for addWarning");
 	}
 
 	@Test
 	public void testIsError() {
-		assertTrue("NameReferenceSeparation must be error", ParserProblem.NameReferenceSeparation.isError());
+		assertTrue(ParserProblem.NameReferenceSeparation.isError(), "NameReferenceSeparation must be error");
 	}
 
 	@Test
 	public void testIsWarning() {
-		assertTrue("CheckDetail must be warning", ParserProblem.CheckDetailOrYear.isWarning());
+		assertTrue(ParserProblem.CheckDetailOrYear.isWarning(), "CheckDetail must be warning");
 	}
 
 	@Test
 	public void testHasError() {
 		int warning = ParserProblem.addProblem(0, ParserProblem.NameReferenceSeparation);
 		warning = ParserProblem.addProblem(warning, ParserProblem.CheckDetailOrYear);
-		assertTrue("warning list with NameReferenceSeparation must have error", ParserProblem.hasError(warning));
+		assertTrue(ParserProblem.hasError(warning), "warning list with NameReferenceSeparation must have error");
 	}
 }

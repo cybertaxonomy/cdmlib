@@ -8,15 +8,17 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.name;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.lang.reflect.Method;
 import java.util.GregorianCalendar;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -61,7 +63,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	private Reference citationRef;
 	private ReferenceFactory refFactory;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		strategy = TaxonNameDefaultCacheStrategy.NewInstance();
 		familyName = TaxonNameFactory.PARSED_BOTANICAL(familyNameString, Rank.FAMILY());
@@ -83,7 +85,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase {
 		exBasAuthor = Person.NewInstance();
 		exBasAuthor.setNomenclaturalTitleCache(exBasAuthorString, true);
 
-		citationRef = refFactory.newBook();
+		citationRef = ReferenceFactory.newBook();
 		// Gard. Dict. ed. 8, no. 1. 1768.
 		citationRef.setTitle("Gard. Dict.");
 		//citationRef.setPlacePublished("");
@@ -126,7 +128,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	@Test
 	public final void testGetNameCache() {
 		assertEquals(subSpeciesNameString, subSpeciesName.getNameCache());
-		assertNull(subSpeciesNameString, strategy.getNameCache(null));
+		assertNull(strategy.getNameCache(null), subSpeciesNameString);
 	}
 
 	/**
@@ -134,7 +136,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	 */
 	@Test
 	public final void testGetTitleCache() {
-		assertNull(subSpeciesNameString, strategy.getTitleCache(null));
+		assertNull(strategy.getTitleCache(null), subSpeciesNameString);
 		subSpeciesName.setCombinationAuthorship(author);
 		subSpeciesName.setExCombinationAuthorship(exAuthor);
 		subSpeciesName.setBasionymAuthorship(basAuthor);
@@ -165,11 +167,11 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase {
 
 	@Test
 	public final void testGetFullTitleCache() {
-		assertNull("Full title cache of null object should return null", strategy.getFullTitleCache(null));
+		assertNull(strategy.getFullTitleCache(null), "Full title cache of null object should return null");
 		//NOTE: Unclear if the date part should contain the full date or only the year. Undefined Behaviour.
 		assertEquals("Abies alba app phrase, Gard. Dict., ed. 8, 1. 2 Apr 1968, nom. illeg.", strategy.getFullTitleCache(speciesName));
 
-//		assertNull(subSpeciesNameString, strategy.getFullTitleCache(null));
+//		assertNull(strategy.getFullTitleCache(null), subSpeciesNameString);
 //		assertEquals("Abies alba app phrase L. Gard. Dict. ed. 8, 1. 1768, nom. illeg.", strategy.getFullTitleCache(speciesName));
 	}
 
@@ -187,7 +189,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase {
 		subSpeciesName.setExBasionymAuthorship(exBasAuthor);
 		assertEquals("(" + exBasAuthorString + " ex " + basAuthorString + ")" +  " " + exAuthorString + " ex " + authorString  , strategy.getAuthorshipCache(subSpeciesName));
 
-		assertNull(subSpeciesNameString, strategy.getAuthorshipCache(null));
+		assertNull(strategy.getAuthorshipCache(null), subSpeciesNameString);
 	}
 
 	@Test

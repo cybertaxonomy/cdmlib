@@ -8,8 +8,11 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -19,16 +22,16 @@ public class CdmClassTest {
 
     @Test
     public void testDescribedClasses() {
-        Assert.assertEquals(3, CdmClass.DESCRIBED().size());
-        Assert.assertTrue(CdmClass.DESCRIBED().contains(CdmClass.TAXON));
-        Assert.assertFalse(CdmClass.DESCRIBED().contains(CdmClass.DISTRIBUTION));
+        assertEquals(3, CdmClass.DESCRIBED().size());
+        assertTrue(CdmClass.DESCRIBED().contains(CdmClass.TAXON));
+        assertFalse(CdmClass.DESCRIBED().contains(CdmClass.DISTRIBUTION));
     }
 
     @Test
     public void testDescribtionElementClasses() {
-        Assert.assertEquals(8, CdmClass.DESCRIPTION_ELEMENT_SUB().size());
-        Assert.assertTrue(CdmClass.DESCRIPTION_ELEMENT_SUB().contains(CdmClass.DISTRIBUTION));
-        Assert.assertFalse(CdmClass.DESCRIPTION_ELEMENT_SUB().contains(CdmClass.TAXON));
+        assertEquals(8, CdmClass.DESCRIPTION_ELEMENT_SUB().size());
+        assertTrue(CdmClass.DESCRIPTION_ELEMENT_SUB().contains(CdmClass.DISTRIBUTION));
+        assertFalse(CdmClass.DESCRIPTION_ELEMENT_SUB().contains(CdmClass.TAXON));
     }
 
 }

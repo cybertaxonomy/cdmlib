@@ -8,11 +8,12 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -25,7 +26,7 @@ public class ZoologicalNameTest {
 
 	private IZoologicalName zooName1;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		zooName1 = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES(), "Aus", null, "bus", "infracus", null, null, null, null);
 	}
@@ -38,8 +39,8 @@ public class ZoologicalNameTest {
 		zooName1.setPublicationYear(1956);
 		zooName1.setOriginalPublicationYear(1867);
 		IZoologicalName clone = zooName1.clone();
-		Assert.assertEquals("Breed should be equal", "breed", clone.getBreed());
-		Assert.assertEquals("Publication year should be equal", Integer.valueOf(1956), clone.getPublicationYear());
-		Assert.assertEquals("Original publication year should be equal", Integer.valueOf(1867), clone.getOriginalPublicationYear());
+		assertEquals("breed", clone.getBreed(), "Breed should be equal");
+		assertEquals(Integer.valueOf(1956), clone.getPublicationYear(), "Publication year should be equal");
+		assertEquals(Integer.valueOf(1867), clone.getOriginalPublicationYear(), "Original publication year should be equal");
 	}
 }

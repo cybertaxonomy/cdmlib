@@ -8,17 +8,19 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
@@ -36,7 +38,7 @@ public class NonViralNameTest extends EntityTestBase {
 	private INonViralName nonViralName1;
 	private INonViralName nonViralName2;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		nonViralName1 = TaxonNameFactory.NewBotanicalInstance(null);
 		nonViralName2 = TaxonNameFactory.NewBotanicalInstance(null);
@@ -194,23 +196,23 @@ public class NonViralNameTest extends EntityTestBase {
 		nonViralName1.setGenusOrUninomial("Abies");
 		nonViralName1.setSpecificEpithet("alba");
 		nonViralName1.setNomenclaturalReference(ref1);
-		Assert.assertEquals("Abies alba", nonViralName1.getNameCache());
+		assertEquals("Abies alba", nonViralName1.getNameCache());
 
 		nonViralName1.setCombinationAuthorship(team1);
 		assertEquals(team1, nonViralName1.getCombinationAuthorship());
 		assertEquals(strTeam1, nonViralName1.getAuthorshipCache());
-		Assert.assertEquals("Abies alba "+strTeam1, nonViralName1.getTitleCache());
-		Assert.assertEquals("Abies alba "+strTeam1+ ", RefTitle", nonViralName1.getFullTitleCache());
+		assertEquals("Abies alba "+strTeam1, nonViralName1.getTitleCache());
+		assertEquals("Abies alba "+strTeam1+ ", RefTitle", nonViralName1.getFullTitleCache());
 
 		nonViralName1.setAuthorshipCache(strTeam2);
 		assertEquals(strTeam2, nonViralName1.getAuthorshipCache());
 		nonViralName1.setGenusOrUninomial("Calendula");
-		Assert.assertEquals("Calendula alba "+strTeam2, nonViralName1.getTitleCache());
+		assertEquals("Calendula alba "+strTeam2, nonViralName1.getTitleCache());
 
 		nonViralName1.setAuthorshipCache(strTeam3);
-		Assert.assertEquals("Calendula alba "+strTeam3, nonViralName1.getTitleCache());
+		assertEquals("Calendula alba "+strTeam3, nonViralName1.getTitleCache());
 
-		Assert.assertEquals("Calendula alba "+strTeam3+ ", RefTitle", nonViralName1.getFullTitleCache());
+		assertEquals("Calendula alba "+strTeam3+ ", RefTitle", nonViralName1.getFullTitleCache());
 
 		nonViralName1.setCombinationAuthorship(null);
 		assertEquals(null, nonViralName1.getCombinationAuthorship());
@@ -249,13 +251,13 @@ public class NonViralNameTest extends EntityTestBase {
 
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public final void testAddHybridRelationship() {
 		INonViralName nonViralName1 = TaxonNameFactory.NewNonViralInstance(null);
 		assertEquals(0, nonViralName1.getHybridParentRelations().size());
 		assertEquals(0, nonViralName1.getHybridChildRelations().size());
 		TaxonName botanicalName2 = TaxonNameFactory.NewNonViralInstance(null);
-		botanicalName2.addHybridRelationship(null);
+		assertThrows(IllegalArgumentException.class, () -> botanicalName2.addHybridRelationship(null));
 	}
 
 	@Test
@@ -314,20 +316,20 @@ public class NonViralNameTest extends EntityTestBase {
 
 
 		INonViralName clone = (nonViralName1).clone();
-		Assert.assertEquals("Genus should be equal", "Aus", clone.getGenusOrUninomial());
-		Assert.assertEquals("Infragenus should be equal", "Infaus", clone.getInfraGenericEpithet());
-		Assert.assertEquals("Specific epithet should be equal", "bus", clone.getSpecificEpithet());
-		Assert.assertEquals("Infraspecific epithet should be equal", "infrabus", clone.getInfraSpecificEpithet());
-		Assert.assertEquals("BinomHybrid should be equal", true, clone.isBinomHybrid());
-		Assert.assertSame("Combination author should be the same", combinationAuthor, clone.getCombinationAuthorship());
-		Assert.assertEquals("NameCache should be equal", nonViralName1.getNameCache(), clone.getNameCache());
-		Assert.assertEquals("AuthorshipCache should be equal", nonViralName1.getAuthorshipCache(), clone.getAuthorshipCache());
+		assertEquals("Aus", clone.getGenusOrUninomial(), "Genus should be equal");
+		assertEquals("Infaus", clone.getInfraGenericEpithet(), "Infragenus should be equal");
+		assertEquals("bus", clone.getSpecificEpithet(), "Specific epithet should be equal");
+		assertEquals("infrabus", clone.getInfraSpecificEpithet(), "Infraspecific epithet should be equal");
+		assertEquals(true, clone.isBinomHybrid(), "BinomHybrid should be equal");
+		assertSame(combinationAuthor, clone.getCombinationAuthorship(), "Combination author should be the same");
+		assertEquals(nonViralName1.getNameCache(), clone.getNameCache(), "NameCache should be equal");
+		assertEquals(nonViralName1.getAuthorshipCache(), clone.getAuthorshipCache(), "AuthorshipCache should be equal");
 
 		clone.setSpecificEpithet("sub");
-		Assert.assertEquals("NameCache should be changed", "Aus (\u00D7Infaus) sub subsp. infrabus", clone.getNameCache());
+		assertEquals("Aus (\u00D7Infaus) sub subsp. infrabus", clone.getNameCache(), "NameCache should be changed");
 
 		//hybrid parents of clone
-		Assert.assertEquals("There should be exactly 2 hybrid relationships in which the clone takes the child role", 2, clone.getHybridChildRelations().size());
+		assertEquals(2, clone.getHybridChildRelations().size(), "There should be exactly 2 hybrid relationships in which the clone takes the child role");
 		Set<TaxonName> parentSet = new HashSet<>();
 		Set<TaxonName> childSet = new HashSet<>();
 		for (Object object : clone.getHybridChildRelations()){
@@ -337,19 +339,19 @@ public class NonViralNameTest extends EntityTestBase {
 			TaxonName relatedTo = childRelation.getRelatedTo();
 			childSet.add(relatedTo);
 		}
-		Assert.assertTrue("Parent set should contain parent1", parentSet.contains(parent));
-		Assert.assertTrue("Parent set should contain parent2", parentSet.contains(parent2));
-		Assert.assertTrue("Child set should contain clone", childSet.contains(clone));
+		assertTrue(parentSet.contains(parent), "Parent set should contain parent1");
+		assertTrue(parentSet.contains(parent2), "Parent set should contain parent2");
+		assertTrue(childSet.contains(clone), "Child set should contain clone");
 
 		//hybrid child of clone
-		Assert.assertEquals("There should be exactly 1 hybrid relationship in which the clone takes the parent role", 1, clone.getHybridParentRelations().size());
+		assertEquals(1, clone.getHybridParentRelations().size(), "There should be exactly 1 hybrid relationship in which the clone takes the parent role");
 		HybridRelationship parentRelation = clone.getHybridParentRelations().iterator().next();
-		Assert.assertSame("Clone should be parent in parentRelationship", clone, parentRelation.getRelatedFrom());
-		Assert.assertSame("Child should be child in parentRelationship", child, parentRelation.getRelatedTo());
-		Assert.assertSame("Relationship type should be cloned correctly", HybridRelationshipType.FEMALE_PARENT(), parentRelation.getType());
-		Assert.assertEquals("Rule should be cloned correctly", "child rule", parentRelation.getRuleConsidered());
-        Assert.assertEquals("Rule should be cloned correctly", childRel.getRuleConsidered(), parentRelation.getRuleConsidered());
+		assertSame(clone, parentRelation.getRelatedFrom(), "Clone should be parent in parentRelationship");
+		assertSame(child, parentRelation.getRelatedTo(), "Child should be child in parentRelationship");
+		assertSame(HybridRelationshipType.FEMALE_PARENT(), parentRelation.getType(), "Relationship type should be cloned correctly");
+		assertEquals("child rule", parentRelation.getRuleConsidered(), "Rule should be cloned correctly");
+        assertEquals(childRel.getRuleConsidered(), parentRelation.getRuleConsidered(), "Rule should be cloned correctly");
         //TODO string can be same but RuleConsidered object must differ, but this has no getter currently
-//	    Assert.assertNotSame("Rule should be cloned correctly", childRel.getRuleConsidered(), parentRelation.getRuleConsidered());
+//	    assertNotSame(childRel.getRuleConsidered(), parentRelation.getRuleConsidered(), "Rule should be cloned correctly");
 	}
 }

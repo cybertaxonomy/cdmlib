@@ -8,19 +8,18 @@
 */
 package eu.etaxonomy.cdm.model.taxon;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -31,7 +30,6 @@ import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -57,7 +55,7 @@ public class TaxonTest extends EntityTestBase {
 	private Taxon misTaxon1;
 	private Taxon misTaxon2;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		Person linne = Person.NewInstance("L.", "Linné", null, "Carl");
 		sec= ReferenceFactory.newBook();
@@ -131,11 +129,11 @@ public class TaxonTest extends EntityTestBase {
 	public void testAddAndRemoveDescriptionTaxonDescription() {
 		TaxonDescription desc = TaxonDescription.NewInstance();
 		rootT.addDescription(desc);  //test if reflection method in addDescription() works
-		assertTrue("The description has not properly been added to the taxon", rootT.getDescriptions().contains(desc));
-		assertEquals("The taxon has not properly been added to the description", rootT, desc.getTaxon());
+		assertTrue(rootT.getDescriptions().contains(desc), "The description has not properly been added to the taxon");
+		assertEquals(rootT, desc.getTaxon(), "The taxon has not properly been added to the description");
 		rootT.removeDescription(desc); //test if reflection method in removeDescription() works
-		assertFalse("The description has not properly been removed from the taxon", rootT.getDescriptions().contains(desc));
-		assertEquals("The taxon has not properly been removed from the description", null, desc.getTaxon());
+		assertFalse(rootT.getDescriptions().contains(desc), "The description has not properly been removed from the taxon");
+		assertEquals(null, desc.getTaxon(), "The taxon has not properly been removed from the description");
 	}
 
 	@Test
@@ -143,31 +141,31 @@ public class TaxonTest extends EntityTestBase {
 		Taxon taxon = Taxon.NewInstance(null, null);
 		taxon.addTaxonRelation(Taxon.NewInstance(null, null), TaxonRelationshipType.CONTRADICTION(), null, null);
 		Set<TaxonRelationship> relationships = taxon.getTaxonRelations();
-		assertTrue("There should be exactly one relationship", relationships.size() == 1);
+		assertTrue(relationships.size() == 1, "There should be exactly one relationship");
 	}
 
 	@Test
 	public void testRemoveTaxonRelation() {
 		Taxon taxon = Taxon.NewInstance(null, null);
 		taxon.addTaxonRelation(Taxon.NewInstance(null, null), TaxonRelationshipType.CONTRADICTION(), null, null);
-		assertTrue("There should be exactly one taxon relationship", taxon.getTaxonRelations().size() == 1);
+		assertTrue(taxon.getTaxonRelations().size() == 1, "There should be exactly one taxon relationship");
 		TaxonRelationship relationship = (TaxonRelationship) taxon.getTaxonRelations().toArray()[0];
-		assertNotNull("Relationship should not be null", relationship);
+		assertNotNull(relationship, "Relationship should not be null");
 		taxon.removeTaxonRelation(relationship);
-		assertTrue("There should be no taxon relationships", taxon.getTaxonRelations().size() == 0);
+		assertTrue(taxon.getTaxonRelations().size() == 0, "There should be no taxon relationships");
 	}
 
 	@Test
 	public void testAddTaxonRelationTaxonRelationship() {
 		Taxon taxon = Taxon.NewInstance(null, null);
 		taxon.addTaxonRelation(Taxon.NewInstance(null, null), TaxonRelationshipType.CONTRADICTION(), null, null);
-		assertTrue("There should be exactly one taxon relationship", taxon.getTaxonRelations().size() == 1);
+		assertTrue(taxon.getTaxonRelations().size() == 1, "There should be exactly one taxon relationship");
 		TaxonRelationship relationship = (TaxonRelationship) taxon.getTaxonRelations().toArray()[0];
-		assertNotNull("Relationship should not be null", relationship);
+		assertNotNull(relationship, "Relationship should not be null");
 		taxon.removeTaxonRelation(relationship);
-		assertTrue("There should be no taxon relationships", taxon.getTaxonRelations().size() == 0);
+		assertTrue(taxon.getTaxonRelations().size() == 0, "There should be no taxon relationships");
 		taxon.addTaxonRelation(relationship);
-		assertEquals("There should be exactly one taxon relationships", 1, taxon.getTaxonRelations().size());
+		assertEquals(1, taxon.getTaxonRelations().size(), "There should be exactly one taxon relationships");
 	}
 
     @Test
@@ -180,8 +178,7 @@ public class TaxonTest extends EntityTestBase {
         // get the homotypic group of that synonym
         HomotypicalGroup homotypicGroupOfSynonym = synonym1.getHomotypicGroup();
         // everything is fine
-        Assert.assertEquals("We should have two names in the homotypic group",
-                2, homotypicGroupOfSynonym.getTypifiedNames().size());
+        assertEquals(2, homotypicGroupOfSynonym.getTypifiedNames().size(), "We should have two names in the homotypic group");
     }
 
     @Test
@@ -193,12 +190,11 @@ public class TaxonTest extends EntityTestBase {
         // add a synonym to the taxon
         taxon.addHomotypicSynonym(synonym);
         //synonym type must be homotypic
-        Assert.assertEquals("Synonym must be homotypic", SynonymType.HOMOTYPIC_SYNONYM_OF, synonym.getType());
+        assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF, synonym.getType(), "Synonym must be homotypic");
         // get the homotypic group of that synonym
         HomotypicalGroup homotypicGroupOfSynonym = synonym.getHomotypicGroup();
         // everything is fine
-        Assert.assertEquals("We should have two names in the homotypic group",
-                2, homotypicGroupOfSynonym.getTypifiedNames().size());
+        assertEquals(2, homotypicGroupOfSynonym.getTypifiedNames().size(), "We should have two names in the homotypic group");
     }
 
 	@Test
@@ -215,7 +211,7 @@ public class TaxonTest extends EntityTestBase {
 		// add another synonym into the homotypic group we just created
 		Synonym synonym2 = taxon.addHeterotypicSynonymName(synonymName2, null, null, homotypicGroupOfSynonym);
 		// everything is fine
-		Assert.assertEquals("We should have two synonyms in the group", 2, taxon.getSynonymsInGroup(homotypicGroupOfSynonym).size());
+		assertEquals(2, taxon.getSynonymsInGroup(homotypicGroupOfSynonym).size(), "We should have two synonyms in the group");
 
 		// removing the synonym from the taxon
 		taxon.removeSynonym(synonym2);
@@ -224,14 +220,12 @@ public class TaxonTest extends EntityTestBase {
 		HomotypicalGroup homotypicGroupViaTaxon = taxon.getHeterotypicSynonymyGroups().iterator().next();
 
 		// the group is for sure the same as the synonyms one
-		Assert.assertSame("Accessing the homotypic group via the taxon methods should result in the same object",
-		        homotypicGroupOfSynonym, homotypicGroupViaTaxon);
+		assertSame(homotypicGroupOfSynonym, homotypicGroupViaTaxon, "Accessing the homotypic group via the taxon methods should result in the same object");
 
 		// although it might be correct that the synonym is not deleted from the taxonomic group
 		// we would not expect it to be here, since we just deleted it from the taxon and are accessing synonyms
 		// via methods in Taxon
-		Assert.assertEquals("When accessing the homotypic groups via taxon we would not expect the synonym we just deleted",
-				1, taxon.getSynonymsInGroup(homotypicGroupViaTaxon).size());
+		assertEquals(1, taxon.getSynonymsInGroup(homotypicGroupViaTaxon).size(), "When accessing the homotypic groups via taxon we would not expect the synonym we just deleted");
 	}
 
 	@Test

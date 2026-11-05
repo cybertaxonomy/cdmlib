@@ -8,15 +8,15 @@
 */
 package eu.etaxonomy.cdm.model.term;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -31,7 +31,7 @@ public class OrderedTermTest extends EntityTestBase {
 	private OrderedTerm otb3;
 	private OrderedTerm otb4;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		otb1 = OrderedTerm.NewInstance(TermType.Unknown, null, null, null);
 		otb2 = OrderedTerm.NewInstance(TermType.Unknown, "term", "label", null);
@@ -68,10 +68,10 @@ public class OrderedTermTest extends EntityTestBase {
 		otb3.vocabulary = voc;
 
 		int comp = otb1.compareTo(otb2);
-		assertTrue("expected:  1 > 4", comp > 0  );
-		assertTrue("expected:  1 = 1", otb1.compareTo(otb1) == 0  );
-		assertTrue("expected:  4 = 4", otb2.compareTo(otb3) == 0  );
-		assertTrue("expected:  5 < 1", otb3.compareTo(otb1) < 0  );
+		assertTrue(comp > 0, "expected:  1 > 4");
+		assertTrue(otb1.compareTo(otb1) == 0, "expected:  1 = 1");
+		assertTrue(otb2.compareTo(otb3) == 0, "expected:  4 = 4");
+		assertTrue(otb3.compareTo(otb1) < 0, "expected:  5 < 1");
 
 		Rank genus = Rank.GENUS();
 		Rank species = Rank.SPECIES();

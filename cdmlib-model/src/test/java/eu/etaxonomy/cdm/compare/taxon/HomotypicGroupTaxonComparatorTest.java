@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.compare.taxon;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -18,9 +21,8 @@ import java.util.UUID;
 import org.apache.commons.collections4.comparators.ReverseComparator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -32,7 +34,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -69,7 +70,7 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
     private Synonym synonym2;
     private Synonym synonym3;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         sec = ReferenceFactory.newBook();
 
@@ -131,30 +132,26 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         list.addAll(taxon1.getSynonyms());
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-        Assert.assertEquals("basionym for first group should come first", botName4, list.get(0).getName());
-        Assert.assertEquals(botName2, list.get(1).getName());
-        Assert.assertEquals(botName5, list.get(2).getName());
-        Assert.assertEquals(botName3, list.get(3).getName());
+        assertEquals(botName4, list.get(0).getName(), "basionym for first group should come first");
+        assertEquals(botName2, list.get(1).getName());
+        assertEquals(botName5, list.get(2).getName());
+        assertEquals(botName3, list.get(3).getName());
 
         //add replaced synonym relation between basionyms
         botName4.addReplacedSynonym(botName5, null, null, null, null);
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
-        Assert.assertEquals("basionym of second group should come first now as it is the replaced synonym",
-                            botName5, list.get(0).getName());
-        Assert.assertEquals(botName3, list.get(1).getName());
-        Assert.assertEquals("replacement name should come after replaced synonym but first in basionym group",
-                            botName4, list.get(2).getName());
-        Assert.assertEquals(botName2, list.get(3).getName());
+        assertEquals(botName5, list.get(0).getName(), "basionym of second group should come first now as it is the replaced synonym");
+        assertEquals(botName3, list.get(1).getName());
+        assertEquals(botName4, list.get(2).getName(), "replacement name should come after replaced synonym but first in basionym group");
+        assertEquals(botName2, list.get(3).getName());
 
         //set a name as first name
         Collections.sort(list, new HomotypicGroupTaxonComparator(synonym2));
 
-        Assert.assertEquals("name2 should come first now",
-                            botName2, list.get(0).getName());
-        Assert.assertEquals("name2 should be followed by its basionym", botName4, list.get(1).getName());
-        Assert.assertEquals("other basionym group should come later but with basionym first",
-                            botName5, list.get(2).getName());
-        Assert.assertEquals(botName3, list.get(3).getName());
+        assertEquals(botName2, list.get(0).getName(), "name2 should come first now");
+        assertEquals(botName4, list.get(1).getName(), "name2 should be followed by its basionym");
+        assertEquals(botName5, list.get(2).getName(), "other basionym group should come later but with basionym first");
+        assertEquals(botName3, list.get(3).getName());
     }
 
     @Test
@@ -172,7 +169,7 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         list.addAll(taxon1.getSynonyms());
         UUID uuidFirst =  UUID.fromString("00000001-fd5f-4a91-bf28-ea432bd1dab5");
         UUID uuidSecond = UUID.fromString("ffffffff-fd5f-4a91-bf28-ea432bd1dab5");
-        Assert.assertTrue(uuidFirst.toString().compareTo(uuidSecond.toString())<-1);
+        assertTrue(uuidFirst.toString().compareTo(uuidSecond.toString())<-1);
 
         botName4.getHomotypicalGroup().setUuid(uuidFirst);
         botName5.getHomotypicalGroup().setUuid(uuidSecond);
@@ -180,10 +177,10 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         //start test
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-        Assert.assertEquals("basionym for first group should come first", botName4, list.get(0).getName());
-        Assert.assertEquals(botName2, list.get(1).getName());
-        Assert.assertEquals(botName5, list.get(2).getName());
-        Assert.assertEquals(botName3, list.get(3).getName());
+        assertEquals(botName4, list.get(0).getName(), "basionym for first group should come first");
+        assertEquals(botName2, list.get(1).getName());
+        assertEquals(botName5, list.get(2).getName());
+        assertEquals(botName3, list.get(3).getName());
 
         //set a name as first name
         //TODO
@@ -191,10 +188,10 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         //but this is still under discussion and may change in future
         Collections.sort(list, new HomotypicGroupTaxonComparator(synonym3));
 
-        Assert.assertEquals(botName4, list.get(0).getName());
-        Assert.assertEquals(botName2, list.get(1).getName());
-        Assert.assertEquals(botName3, list.get(2).getName());
-        Assert.assertEquals(botName5, list.get(3).getName());
+        assertEquals(botName4, list.get(0).getName());
+        assertEquals(botName2, list.get(1).getName());
+        assertEquals(botName3, list.get(2).getName());
+        assertEquals(botName5, list.get(3).getName());
     }
 
     @Test
@@ -219,29 +216,27 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         list.addAll(taxon1.getSynonyms());
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-        Assert.assertEquals("basionym with date should comes first", botName5, list.get(0).getName());
-        Assert.assertEquals(botName3, list.get(1).getName());
-        Assert.assertEquals(botName4, list.get(2).getName());
-        Assert.assertEquals(botName2, list.get(3).getName());
+        assertEquals(botName5, list.get(0).getName(), "basionym with date should comes first");
+        assertEquals(botName3, list.get(1).getName());
+        assertEquals(botName4, list.get(2).getName());
+        assertEquals(botName2, list.get(3).getName());
 
         //even with nom. illeg. the name with date should come first
         NomenclaturalStatus illegStatus = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE());
         botName5.addStatus(illegStatus);
 
-        Assert.assertEquals("basionym with date should comes first", botName5, list.get(0).getName());
-        Assert.assertEquals(botName3, list.get(1).getName());
-        Assert.assertEquals(botName4, list.get(2).getName());
-        Assert.assertEquals(botName2, list.get(3).getName());
+        assertEquals(botName5, list.get(0).getName(), "basionym with date should comes first");
+        assertEquals(botName3, list.get(1).getName());
+        assertEquals(botName4, list.get(2).getName());
+        assertEquals(botName2, list.get(3).getName());
 
         //add replaced synonym relation between basionyms
         botName5.addReplacedSynonym(botName4, null, null, null, null);
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
-        Assert.assertEquals("basionym of second group should come first now as it is the replaced synonym",
-                            botName4, list.get(0).getName());
-        Assert.assertEquals(botName2, list.get(1).getName());
-        Assert.assertEquals("replacement name should come after replaced synonym but first in basionym group",
-                            botName5, list.get(2).getName());
-        Assert.assertEquals(botName3, list.get(3).getName());
+        assertEquals(botName4, list.get(0).getName(), "basionym of second group should come first now as it is the replaced synonym");
+        assertEquals(botName2, list.get(1).getName());
+        assertEquals(botName5, list.get(2).getName(), "replacement name should come after replaced synonym but first in basionym group");
+        assertEquals(botName3, list.get(3).getName());
     }
 
     @Test
@@ -269,20 +264,18 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         list.addAll(taxon1.getSynonyms());
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-        Assert.assertEquals("basionym with rank species should comes first", botName5, list.get(0).getName());
-        Assert.assertEquals(botName3, list.get(1).getName());
-        Assert.assertEquals(botName4, list.get(2).getName());
-        Assert.assertEquals(botName2, list.get(3).getName());
+        assertEquals(botName5, list.get(0).getName(), "basionym with rank species should comes first");
+        assertEquals(botName3, list.get(1).getName());
+        assertEquals(botName4, list.get(2).getName());
+        assertEquals(botName2, list.get(3).getName());
 
         //add replaced synonym relation between basionyms
         botName5.addReplacedSynonym(botName4, null, null, null, null);
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
-        Assert.assertEquals("basionym of second group should come first now as it is the replaced synonym",
-                            botName4, list.get(0).getName());
-        Assert.assertEquals(botName2, list.get(1).getName());
-        Assert.assertEquals("replacement name should come after replaced synonym but first in basionym group",
-                            botName5, list.get(2).getName());
-        Assert.assertEquals(botName3, list.get(3).getName());
+        assertEquals(botName4, list.get(0).getName(), "basionym of second group should come first now as it is the replaced synonym");
+        assertEquals(botName2, list.get(1).getName());
+        assertEquals(botName5, list.get(2).getName(), "replacement name should come after replaced synonym but first in basionym group");
+        assertEquals(botName3, list.get(3).getName());
     }
 
     @Test
@@ -313,10 +306,10 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         list.addAll(taxon1.getSynonyms());
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-        Assert.assertEquals("basionym should comes first", botName5, list.get(0).getName());
-        Assert.assertEquals("subspecies should come next", botName4, list.get(1).getName());
-        Assert.assertEquals("variety with b should come next", botName2, list.get(2).getName());
-        Assert.assertEquals("variety with c should come last", botName3, list.get(3).getName());
+        assertEquals(botName5, list.get(0).getName(), "basionym should comes first");
+        assertEquals(botName4, list.get(1).getName(), "subspecies should come next");
+        assertEquals(botName2, list.get(2).getName(), "variety with b should come next");
+        assertEquals(botName3, list.get(3).getName(), "variety with c should come last");
     }
 
     @Test
@@ -338,30 +331,30 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         list.addAll(taxon1.getSynonyms());
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-        Assert.assertEquals("basionym for non nom. illeg. group should come first", botName2, list.get(0).getName());
-        Assert.assertEquals(botName5, list.get(1).getName());
-        Assert.assertEquals(botName3, list.get(2).getName());
-        Assert.assertEquals("Nom illeg should come last", botName4, list.get(3).getName());
+        assertEquals(botName2, list.get(0).getName(), "basionym for non nom. illeg. group should come first");
+        assertEquals(botName5, list.get(1).getName());
+        assertEquals(botName3, list.get(2).getName());
+        assertEquals(botName4, list.get(3).getName(), "Nom illeg should come last");
 
         //name having a nom. illeg. as basionym should stay in its basionym group
         //NOTE: this is dirty data as nom. illeg. is not allowed as basionym by the code
         botName2.addBasionym(botName4);
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-        Assert.assertEquals("basionym for non nom. illeg. group should come first", botName5, list.get(0).getName());
-        Assert.assertEquals(botName3, list.get(1).getName());
-        Assert.assertEquals("Nom illeg basionym group should come last", botName4, list.get(2).getName());
-        Assert.assertEquals("Names with nom. illeg. as basionym should stay in basionym group", botName2, list.get(3).getName());
+        assertEquals(botName5, list.get(0).getName(), "basionym for non nom. illeg. group should come first");
+        assertEquals(botName3, list.get(1).getName());
+        assertEquals(botName4, list.get(2).getName(), "Nom illeg basionym group should come last");
+        assertEquals(botName2, list.get(3).getName(), "Names with nom. illeg. as basionym should stay in basionym group");
 
         //non basionym nom. illeg. should not change the order
         botName4.removeStatus(illegStatus);
         botName2.addStatus(illegStatus);
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-        Assert.assertEquals("basionym for non nom. illeg. group should come first", botName4, list.get(0).getName());
-        Assert.assertEquals(botName2, list.get(1).getName());
-        Assert.assertEquals("Nom illeg basionym group should come last", botName5, list.get(2).getName());
-        Assert.assertEquals("Names with nom. illeg. as basionym should stay in basionym group", botName3, list.get(3).getName());
+        assertEquals(botName4, list.get(0).getName(), "basionym for non nom. illeg. group should come first");
+        assertEquals(botName2, list.get(1).getName());
+        assertEquals(botName5, list.get(2).getName(), "Nom illeg basionym group should come last");
+        assertEquals(botName3, list.get(3).getName(), "Names with nom. illeg. as basionym should stay in basionym group");
     }
 
     @Test  //failing selenium test
@@ -377,8 +370,8 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         list.addAll(taxon1.getSynonyms());
         Collections.sort(list, new HomotypicGroupTaxonComparator(taxon1));
 
-        Assert.assertEquals("Earlier nom. illeg. should come next", botName3, list.get(0).getName());
-        Assert.assertEquals("Later name should come last", botName2, list.get(1).getName());
+        assertEquals(botName3, list.get(0).getName(), "Earlier nom. illeg. should come next");
+        assertEquals(botName2, list.get(1).getName(), "Later name should come last");
     }
 
     @Test
@@ -388,7 +381,7 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         taxon1.addHomotypicSynonymName(botName5);
         botName3.addBasionym(botName5);
 
-        Assert.assertEquals(botName1.getHomotypicalGroup(), botName5.getHomotypicalGroup());
+        assertEquals(botName1.getHomotypicalGroup(), botName5.getHomotypicalGroup());
         botName5.addBasionym(botName1);
         botName1.addBasionym(botName3);
 
@@ -396,23 +389,23 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         list.add(taxon1);
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-        Assert.assertEquals(botName1, list.get(0).getName());
-        Assert.assertEquals(botName3, list.get(1).getName());
-        Assert.assertEquals(botName5, list.get(2).getName());
+        assertEquals(botName1, list.get(0).getName());
+        assertEquals(botName3, list.get(1).getName());
+        assertEquals(botName5, list.get(2).getName());
 
         //additional basionym for botName3
         taxon1.addHomotypicSynonymName(botName2);
-        Assert.assertEquals(botName1.getHomotypicalGroup(), botName2.getHomotypicalGroup());
+        assertEquals(botName1.getHomotypicalGroup(), botName2.getHomotypicalGroup());
         botName3.addBasionym(botName2);
         list.clear();
         list.addAll(taxon1.getSynonyms());
         list.add(taxon1);
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-        Assert.assertEquals(botName1, list.get(0).getName());
-        Assert.assertEquals(botName2, list.get(1).getName());
-        Assert.assertEquals(botName3, list.get(2).getName());
-        Assert.assertEquals(botName5, list.get(3).getName());
+        assertEquals(botName1, list.get(0).getName());
+        assertEquals(botName2, list.get(1).getName());
+        assertEquals(botName3, list.get(2).getName());
+        assertEquals(botName5, list.get(3).getName());
     }
 
     @Test
@@ -422,7 +415,7 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         taxon1.addHomotypicSynonymName(botName5);
         botName3.addReplacedSynonym(botName5, null, null, null, null);
 
-        Assert.assertEquals(botName1.getHomotypicalGroup(), botName5.getHomotypicalGroup());
+        assertEquals(botName1.getHomotypicalGroup(), botName5.getHomotypicalGroup());
         botName5.addReplacedSynonym(botName1, null, null, null, null);
         botName1.addReplacedSynonym(botName3, null, null, null, null);
 
@@ -430,9 +423,9 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         list.add(taxon1);
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-        Assert.assertEquals(botName1, list.get(0).getName());
-        Assert.assertEquals(botName3, list.get(1).getName());
-        Assert.assertEquals(botName5, list.get(2).getName());
+        assertEquals(botName1, list.get(0).getName());
+        assertEquals(botName3, list.get(1).getName());
+        assertEquals(botName5, list.get(2).getName());
     }
 
     @Test
@@ -445,15 +438,15 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         list.addAll(taxon1.getSynonyms());
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-        Assert.assertEquals("Bbb should come before Eee in same homotypic group", botName2, list.get(0).getName());
-        Assert.assertEquals("Bbb should come before Eee in same homotypic group", botName5, list.get(1).getName());
+        assertEquals(botName2, list.get(0).getName(), "Bbb should come before Eee in same homotypic group");
+        assertEquals(botName5, list.get(1).getName(), "Bbb should come before Eee in same homotypic group");
 
         //with nomenclatural standing
         botName2.addRelationshipToName(botName3, NameRelationshipType.MISSPELLING());
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
-        Assert.assertEquals("Invalid designation should come after valid name", botName5, list.get(0).getName());
-        Assert.assertEquals("Invalid designation should come after valid name", botName2, list.get(1).getName());
+        assertEquals(botName5, list.get(0).getName(), "Invalid designation should come after valid name");
+        assertEquals(botName2, list.get(1).getName(), "Invalid designation should come after valid name");
 
     }
 
@@ -464,7 +457,7 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         String name3 = "Opuntia rubiflora Davidson";
         List<String> strList = Arrays.asList(new String[]{name2, name3});
         Collections.sort(strList);
-        Assert.assertEquals("Non hybrid name should come first in alphabetical order", name3, strList.get(0));
+        assertEquals(name3, strList.get(0), "Non hybrid name should come first in alphabetical order");
 
         botName2 = TaxonNameFactory.PARSED_BOTANICAL(name2);
         botName3 = TaxonNameFactory.PARSED_BOTANICAL(name3);
@@ -474,12 +467,12 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         HomotypicGroupTaxonComparator comparator = new HomotypicGroupTaxonComparator(null);
         Collections.sort(list, comparator);
 
-        Assert.assertEquals("Hybrid should come after non-hybrid", botName3, list.get(0).getName());
-        Assert.assertEquals("Hybrid should come after non-hybrid", botName2, list.get(1).getName());
+        assertEquals(botName3, list.get(0).getName(), "Hybrid should come after non-hybrid");
+        assertEquals(botName2, list.get(1).getName(), "Hybrid should come after non-hybrid");
 
         ReverseComparator<TaxonBase> reverseComparator = new ReverseComparator<>(comparator);
         Collections.sort(list, reverseComparator);
-        Assert.assertEquals("Hybrid should come before non-hybrid in reverse order", botName2, list.get(0).getName());
-        Assert.assertEquals("Hybrid should come before non-hybrid in reverse order", botName3, list.get(1).getName());
+        assertEquals(botName2, list.get(0).getName(), "Hybrid should come before non-hybrid in reverse order");
+        assertEquals(botName3, list.get(1).getName(), "Hybrid should come before non-hybrid in reverse order");
     }
 }

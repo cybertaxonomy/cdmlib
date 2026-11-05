@@ -8,9 +8,10 @@
 */
 package eu.etaxonomy.cdm.format.description;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -37,7 +38,7 @@ public class CategoricalDataFormatterTest extends TermTestBase {
     private StateData stateData2;
     private StateData stateData3;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         state1 = State.NewInstance("state1 text", "state1", "st.1");
         state1.getRepresentations().iterator().next().setPlural("state1s");
@@ -55,18 +56,18 @@ public class CategoricalDataFormatterTest extends TermTestBase {
         FormatKey[] formatKey = null;
         CategoricalDataFormatter formatter = new CategoricalDataFormatter(catData, formatKey);
         String text = formatter.format(catData, formatKey);
-        Assert.assertEquals("state1", text);
+        assertEquals("state1", text);
         catData.addStateData(stateData2);
         text = formatter.format(catData, formatKey);
-        Assert.assertEquals("state1, state2", text);
+        assertEquals("state1, state2", text);
         catData.addStateData(stateData3);
         text = formatter.format(catData, formatKey);
-        Assert.assertEquals("state1, state2, state3", text);
+        assertEquals("state1, state2, state3", text);
 
         //plural
         stateData1.setUsePlural(true);
         text = formatter.format(catData, formatKey);
-        Assert.assertEquals("state1s, state2, state3", text);
+        assertEquals("state1s, state2, state3", text);
 
         //state modifier
         stateData1.addModifier(DefinedTerm.SEX_FEMALE());  //use female and male here to avoid having to create a new modifier
@@ -76,7 +77,7 @@ public class CategoricalDataFormatterTest extends TermTestBase {
 
         text = formatter.format(catData, formatKey);
         //TODO do we want a separator between 2 statedata modifiers, here male and unknown?
-        Assert.assertEquals("female state1s, textmodi state2, male unknown state3", text);
+        assertEquals("female state1s, textmodi state2, male unknown state3", text);
 
         //TODO test with additional basedata like timeperiod etc.
 
@@ -92,16 +93,16 @@ public class CategoricalDataFormatterTest extends TermTestBase {
 
         //fully empty
         String text = formatter.format(catData, formatKey);
-        Assert.assertEquals("", text);  //behavior may change in future
+        assertEquals("", text);  //behavior may change in future
 
         //data unavailable
         catData.setNoDataStatus(NoDescriptiveDataStatus.DataUnavailable);
         text = formatter.format(catData, formatKey);
-        Assert.assertEquals("data unavailable", text);
+        assertEquals("data unavailable", text);
 
         //data unavailable, but still data exists
         catData.addStateData(stateData2);
         text = formatter.format(catData, formatKey);
-        Assert.assertEquals("data unavailable (state2)", text);
+        assertEquals("data unavailable (state2)", text);
     }
 }

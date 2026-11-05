@@ -8,14 +8,17 @@
 */
 package eu.etaxonomy.cdm.model.term;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.SortedSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -32,7 +35,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	private OrderedTermVocabulary<OrderedTerm> oVoc1;
 	private OrderedTermVocabulary<OrderedTerm> oVoc2;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		otb1 = OrderedTerm.NewInstance(TermType.Unknown, "otb1", "high", null);
 		otb1.setId(1);

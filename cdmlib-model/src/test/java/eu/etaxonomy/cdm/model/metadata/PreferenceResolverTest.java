@@ -8,12 +8,15 @@
 */
 package eu.etaxonomy.cdm.model.metadata;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 
@@ -23,14 +26,14 @@ import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
  */
 public class PreferenceResolverTest {
 
-    CdmPreference pref1;
-    CdmPreference pref2;
-    CdmPreference pref3;
-    CdmPreference pref3b;
-    CdmPreference pref4;
-    PrefKey key;
+    private CdmPreference pref1;
+    private CdmPreference pref2;
+    private CdmPreference pref3;
+    private CdmPreference pref3b;
+    private CdmPreference pref4;
+    private PrefKey key;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         pref1 = CdmPreference.NewInstance(PreferenceSubject.NewInstance("/taxeditor/distributionEditor/"),
                 PreferencePredicate.AvailableDistributionAreaVocabularies,
@@ -56,11 +59,11 @@ public class PreferenceResolverTest {
     public void test() {
         List<CdmPreference> list = Arrays.asList(new CdmPreference[]{pref2, pref1, pref3, pref4}) ;
         CdmPreference result = PreferenceResolver.resolve(list, key);
-        Assert.assertSame(pref1, result);
+        assertSame(pref1, result);
 
         list = Arrays.asList(new CdmPreference[]{pref2, pref3, pref4}) ;
         result = PreferenceResolver.resolve(list, key);
-        Assert.assertSame(pref3, result);
+        assertSame(pref3, result);
     }
 
     //test exception for >1 preferences with equally matching keys
@@ -71,14 +74,14 @@ public class PreferenceResolverTest {
         //assure pref3 is best matching
         list = Arrays.asList(new CdmPreference[]{pref2, pref3, pref4}) ;
         result = PreferenceResolver.resolve(list, key);
-        Assert.assertSame(pref3, result);
+        assertSame(pref3, result);
 
         list = Arrays.asList(new CdmPreference[]{pref2, pref3, pref3b, pref4}) ;
         try {
             result = PreferenceResolver.resolve(list, key);
-            Assert.fail();
+            fail();
         } catch (IllegalArgumentException e) {
-            Assert.assertEquals(PreferenceResolver.MULTI_BEST_MATCHING, e.getMessage());
+            assertEquals(PreferenceResolver.MULTI_BEST_MATCHING, e.getMessage());
         }
     }
 }

@@ -8,16 +8,18 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.name;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -60,7 +62,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     private static final String subSpeciesNameString = "Abies alba subsp. beta";
 
     private static final String authorString = "L.";
-    private static final String exAuthorString = "Exaut.";
     private static final String inAuthorString = "Inaut. B.";
     private static final String basAuthorString = "Basio, A.";
     private static final String exBasAuthorString = "ExBas. N.";
@@ -81,7 +82,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     private TeamOrPersonBase<?> inBasAuthor;
     private Reference citationRef;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         strategy = TaxonNameDefaultCacheStrategy.NewInstance();
         familyName = TaxonNameFactory.PARSED_BOTANICAL(familyNameString, Rank.FAMILY());
@@ -115,16 +116,16 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
     @Test
     public void testGetTitleCache() {
-        Assert.assertEquals(speciesNameString, speciesName.getTitleCache());
+        assertEquals(speciesNameString, speciesName.getTitleCache());
         //TODO not yet completed
     }
 
     @Test
     public void testGetFullTitleCache() {
         subSpeciesName.setNomenclaturalReference(citationRef);
-        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle, subSpeciesName.getFullTitleCache());
+        assertEquals(subSpeciesNameString + ", " +  referenceTitle, subSpeciesName.getFullTitleCache());
         subSpeciesName.setNomenclaturalMicroReference("25");
-        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25", subSpeciesName.getFullTitleCache());
+        assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25", subSpeciesName.getFullTitleCache());
         //TODO not yet completed
     }
 
@@ -133,15 +134,15 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         //no status
         subSpeciesName.setNomenclaturalReference(citationRef);
         subSpeciesName.setNomenclaturalMicroReference("25");
-        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25", subSpeciesName.getFullTitleCache());
+        assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25", subSpeciesName.getFullTitleCache());
         //1 status
         subSpeciesName.addStatus(NomenclaturalStatusType.ILLEGITIMATE(), null, null);
         subSpeciesName.setFullTitleCache(null, false);
-        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25, nom. illeg.", subSpeciesName.getFullTitleCache());
+        assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25, nom. illeg.", subSpeciesName.getFullTitleCache());
         //2 status (ordered) - ordering see #10478#note-9
         subSpeciesName.addStatus(NomenclaturalStatusType.PRO_HYBRID(), null, null);
         subSpeciesName.setFullTitleCache(null, false);
-        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25, pro hybr., nom. illeg.", subSpeciesName.getFullTitleCache());
+        assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25, pro hybr., nom. illeg.", subSpeciesName.getFullTitleCache());
     }
 
     @Test
@@ -151,27 +152,27 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 		botName.setGenusOrUninomial(strTaraxacum);
 		botName.setInfraGenericEpithet(strTaraxacum);
 		botName.setAuthorshipCache("Author");
-		Assert.assertFalse(botName.getFullTitleCache().contains("bot."));
+		assertFalse(botName.getFullTitleCache().contains("bot."));
 		//TODO #4288
 //		System.out.println(botName.getFullTitleCache());
     }
 
     @Test
     public void testGetNameCache() {
-        assertEquals("Species Name should be Abies alba", speciesNameString, speciesName.getNameCache());
+        assertEquals(speciesNameString, speciesName.getNameCache(), "Species Name should be Abies alba");
         speciesName.setNameCache("Any species");
-        assertEquals("Species Name should be Any species", "Any species", speciesName.getNameCache());
-        assertEquals("Species Name should be Any species", "Any species", speciesName.getTitleCache());
-        assertEquals("subSpeciesNameString should be correct", subSpeciesNameString, subSpeciesName.getNameCache());
+        assertEquals("Any species", speciesName.getNameCache(), "Species Name should be Any species");
+        assertEquals("Any species", speciesName.getTitleCache(), "Species Name should be Any species");
+        assertEquals(subSpeciesNameString, subSpeciesName.getNameCache(), "subSpeciesNameString should be correct");
         IBotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
         botName.setGenusOrUninomial("Lepidocaryum");
         botName.setSpecificEpithet("tenue");
         botName.setInfraSpecificEpithet("tenue");
-        assertEquals("", "Lepidocaryum tenue var. tenue", botName.getNameCache());
+        assertEquals("Lepidocaryum tenue var. tenue", botName.getNameCache(), "");
         IBotanicalName specName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         specName.setGenusOrUninomial("Genus");
         specName.setSpecificEpithet("");
-        assertEquals("Empty species string must not result in trailing whitespace", "Genus", specName.getNameCache());
+        assertEquals("Genus", specName.getNameCache(), "Empty species string must not result in trailing whitespace");
 
         //unranked taxa
         String unrankedCache;
@@ -183,7 +184,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         unrankedName.setSpecificEpithet("species");
         unrankedCache = strategy.getNameCache(unrankedName);
 
-        Assert.assertEquals("Correct unranked cache expected", "Genus species [infraspec.] infraspecific", unrankedCache);
+        assertEquals("Genus species [infraspec.] infraspecific", unrankedCache, "Correct unranked cache expected");
 
             //infrageneric
         unrankedName.setRank(Rank.INFRAGENERICTAXON());
@@ -191,41 +192,41 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         unrankedName.setSpecificEpithet(null);
         unrankedName.setInfraGenericEpithet("Infrageneric");
         unrankedCache = strategy.getNameCache(unrankedName);
-        Assert.assertEquals("Correct unranked cache expected", "Genus [unranked] Infrageneric", unrankedCache);
+        assertEquals("Genus [unranked] Infrageneric", unrankedCache, "Correct unranked cache expected");
 
         //bot. specific ranks
         botName = TaxonNameFactory.NewBotanicalInstance(Rank.SECTION_BOTANY());
         botName.setGenusOrUninomial("Genus");
         botName.setInfraGenericEpithet("Infragenus");
-        Assert.assertEquals("", "Genus sect. Infragenus", botName.getNameCache());
+        assertEquals("Genus sect. Infragenus", botName.getNameCache(), "");
         botName.setRank(Rank.SUBSECTION_BOTANY());
         botName.setNameCache(null, false);
-        Assert.assertEquals("", "Genus subsect. Infragenus", botName.getNameCache());
+        assertEquals("Genus subsect. Infragenus", botName.getNameCache(), "");
 
         //zool. specific ranks (we don't have markers here therefore no problem should exist
         IZoologicalName zooName = TaxonNameFactory.NewZoologicalInstance(Rank.SECTION_ZOOLOGY());
         zooName.setGenusOrUninomial("Genus");
         zooName.setInfraGenericEpithet("Infragenus");
-        Assert.assertEquals("", "Genus", zooName.getNameCache());
+        assertEquals("Genus", zooName.getNameCache(), "");
         zooName.setRank(Rank.SUBSECTION_ZOOLOGY());
-        Assert.assertEquals("", "Genus", zooName.getNameCache());
+        assertEquals("Genus", zooName.getNameCache(), "");
     }
 
     @Test
     public void testNameCacheWithInfraGenericEpithet() {
         speciesName.setInfraGenericEpithet("Infraabies");
-        assertEquals("Species Name should be Abies (Infraabies) alba", "Abies (Infraabies) alba", speciesName.getNameCache());
+        assertEquals("Abies (Infraabies) alba", speciesName.getNameCache(), "Species Name should be Abies (Infraabies) alba");
 
         IBotanicalName botName = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
         botName.setGenusOrUninomial("Lepidocaryum");
         botName.setInfraGenericEpithet("Infralepi");
         botName.setSpecificEpithet("tenue");
         botName.setInfraSpecificEpithet("tenue");
-        assertEquals("Name cache should be Lepidocaryum (Infralepi) tenue var. tenue", "Lepidocaryum (Infralepi) tenue var. tenue", botName.getNameCache());
+        assertEquals("Lepidocaryum (Infralepi) tenue var. tenue", botName.getNameCache(), "Name cache should be Lepidocaryum (Infralepi) tenue var. tenue");
 
         botName.setInfraGenericEpithet(" ");
         botName.setNameCache(null, false);
-        assertEquals("Empty infrageneric epithet must be neglegted", "Lepidocaryum tenue var. tenue", botName.getNameCache());
+        assertEquals("Lepidocaryum tenue var. tenue", botName.getNameCache(), "Empty infrageneric epithet must be neglegted");
     }
 
     @Test
@@ -256,40 +257,40 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     public void testHybridNames() {
         //Note \u00D7 : hybrid sign (multiplication sign)
         this.speciesName.setCombinationAuthorship(author);
-        Assert.assertEquals(author.getNomenclaturalTitleCache(), speciesName.getAuthorshipCache());
-        Assert.assertEquals("Should be Abies alba L.", "Abies alba L.", speciesName.getTitleCache());
+        assertEquals(author.getNomenclaturalTitleCache(), speciesName.getAuthorshipCache());
+        assertEquals("Abies alba L.", speciesName.getTitleCache(), "Should be Abies alba L.");
 
         speciesName.setBinomHybrid(true);
         speciesName.setTitleCache(null, false);
-        Assert.assertEquals("Should be Abies \u00D7alba L.", "Abies \u00D7alba L.", speciesName.getTitleCache());
+        assertEquals("Abies \u00D7alba L.", speciesName.getTitleCache(), "Should be Abies \u00D7alba L.");
         speciesName.setMonomHybrid(true);
         speciesName.setTitleCache(null, false);
-        Assert.assertEquals("Should be '\u00D7Abies \u00D7alba L.'", "\u00D7Abies \u00D7alba L.", speciesName.getTitleCache());
+        assertEquals("\u00D7Abies \u00D7alba L.", speciesName.getTitleCache(), "Should be '\u00D7Abies \u00D7alba L.'");
 
-        Assert.assertEquals("Should be 'Genus'", "Genus", genusName.getTitleCache());
+        assertEquals("Genus", genusName.getTitleCache(), "Should be 'Genus'");
         genusName.setMonomHybrid(true);
         genusName.setTitleCache(null, false);
-        Assert.assertEquals("Should be '\u00D7Genus'", "\u00D7Genus", genusName.getTitleCache());
+        assertEquals("\u00D7Genus", genusName.getTitleCache(), "Should be '\u00D7Genus'");
 
-        Assert.assertEquals("Should be 'Abies alba subsp. beta'", subSpeciesNameString, subSpeciesName.getTitleCache());
+        assertEquals(subSpeciesNameString, subSpeciesName.getTitleCache(), "Should be 'Abies alba subsp. beta'");
         subSpeciesName.setTrinomHybrid(true);
         subSpeciesName.setTitleCache(null, false);
-        Assert.assertEquals("Should be 'Abies alba nothosubsp. beta or nbeta'", "Abies alba nothosubsp. beta", subSpeciesName.getTitleCache());
+        assertEquals("Abies alba nothosubsp. beta", subSpeciesName.getTitleCache(), "Should be 'Abies alba nothosubsp. beta or nbeta'");
         subSpeciesName.setMonomHybrid(true);
         subSpeciesName.setTitleCache(null, false);
-        Assert.assertEquals("Should be '\u00D7Abies alba nothosubsp. beta'", "\u00D7Abies alba nothosubsp. beta", subSpeciesName.getTitleCache());
+        assertEquals("\u00D7Abies alba nothosubsp. beta", subSpeciesName.getTitleCache(), "Should be '\u00D7Abies alba nothosubsp. beta'");
 
-        Assert.assertEquals("Should be 'Genus subg. InfraGenericPart'", "Genus subg. InfraGenericPart", subGenusName.getTitleCache());
+        assertEquals("Genus subg. InfraGenericPart", subGenusName.getTitleCache(), "Should be 'Genus subg. InfraGenericPart'");
         subGenusName.setBinomHybrid(true);
         subGenusName.setTitleCache(null, false);
-        Assert.assertEquals("Should be 'Genus nothosubg. InfraGenericPart'", "Genus nothosubg. InfraGenericPart", subGenusName.getTitleCache());
+        assertEquals("Genus nothosubg. InfraGenericPart", subGenusName.getTitleCache(), "Should be 'Genus nothosubg. InfraGenericPart'");
     }
 
     @Test
     public void testHybridFormula(){
         this.speciesName.setCombinationAuthorship(author);
-        Assert.assertEquals(author.getNomenclaturalTitleCache(), speciesName.getAuthorshipCache());
-        Assert.assertEquals("Should be 'Abies alba L.'", "Abies alba L.", speciesName.getTitleCache());
+        assertEquals(author.getNomenclaturalTitleCache(), speciesName.getAuthorshipCache());
+        assertEquals("Abies alba L.", speciesName.getTitleCache(), "Should be 'Abies alba L.'");
 
         INonViralName hybridName = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         INonViralName secondParent = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
@@ -299,13 +300,13 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         hybridName.addHybridParent(secondParent, HybridRelationshipType.SECOND_PARENT(), null);
         hybridName.setHybridFormula(true);
 
-        Assert.assertEquals("", "Abies alba L. \u00D7 Second parent Mill.", hybridName.getTitleCache());
+        assertEquals("Abies alba L. \u00D7 Second parent Mill.", hybridName.getTitleCache(), "");
         //Note: handling of empty nameCache of parents may change in future
-        Assert.assertEquals("", "Abies alba \u00D7", hybridName.getNameCache());
+        assertEquals("Abies alba \u00D7", hybridName.getNameCache(), "");
         secondParent.setGenusOrUninomial("Second");
         secondParent.setSpecificEpithet("parent");
         hybridName.setNameCache(null, false);
-        Assert.assertEquals("", "Abies alba \u00D7 Second parent", hybridName.getNameCache());
+        assertEquals("Abies alba \u00D7 Second parent", hybridName.getNameCache(), "");
     }
 
     //#9778
@@ -314,33 +315,33 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         //grex
         subSpeciesName.setRank(Rank.GREX_INFRASPEC());
-        Assert.assertEquals("Abies alba grex beta", strategy.getTitleCache(subSpeciesName));
+        assertEquals("Abies alba grex beta", strategy.getTitleCache(subSpeciesName));
         //subgrex
         subSpeciesName.setRank(Rank.SUBGREX());
-        Assert.assertEquals("Abies alba subgrex beta", strategy.getTitleCache(subSpeciesName));
+        assertEquals("Abies alba subgrex beta", strategy.getTitleCache(subSpeciesName));
         //proles
         subSpeciesName.setRank(Rank.PROLES());
-        Assert.assertEquals("Abies alba proles beta", strategy.getTitleCache(subSpeciesName));
+        assertEquals("Abies alba proles beta", strategy.getTitleCache(subSpeciesName));
         //proles
         subSpeciesName.setRank(Rank.SUBPROLES());
-        Assert.assertEquals("Abies alba subproles beta", strategy.getTitleCache(subSpeciesName));
+        assertEquals("Abies alba subproles beta", strategy.getTitleCache(subSpeciesName));
         //lusus
         subSpeciesName.setRank(Rank.LUSUS());
-        Assert.assertEquals("Abies alba lusus beta", strategy.getTitleCache(subSpeciesName));
+        assertEquals("Abies alba lusus beta", strategy.getTitleCache(subSpeciesName));
         //sublusus
         subSpeciesName.setRank(Rank.SUBLUSUS());
-        Assert.assertEquals("Abies alba sublusus beta", strategy.getTitleCache(subSpeciesName));
+        assertEquals("Abies alba sublusus beta", strategy.getTitleCache(subSpeciesName));
     }
 
     @Test
     public void testWithoutRank() {
         subSpeciesName.setRank(null);
-        Assert.assertEquals("Abies alba beta", strategy.getTitleCache(subSpeciesName));
+        assertEquals("Abies alba beta", strategy.getTitleCache(subSpeciesName));
 
         subSpeciesName.setTrinomHybrid(true);
         //Not sure if selfstanding notho is correct here, for now only to indicate that there is the hybridflag set
         //TODO still misses for binom, and monom Hybridflag.
-        Assert.assertEquals("Abies alba notho beta", strategy.getTitleCache(subSpeciesName));
+        assertEquals("Abies alba notho beta", strategy.getTitleCache(subSpeciesName));
     }
 
     //#9754
@@ -350,24 +351,23 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         //cultivar
         speciesName.setRank(Rank.CULTIVAR());
         speciesName.setCultivarEpithet("Cultus");
-        Assert.assertEquals("Abies alba 'Cultus'", strategy.getTitleCache(speciesName));
+        assertEquals("Abies alba 'Cultus'", strategy.getTitleCache(speciesName));
 
         speciesName.setBinomHybrid(true);
-        Assert.assertEquals("Abies \u00D7alba 'Cultus'", strategy.getTitleCache(speciesName));
+        assertEquals("Abies \u00D7alba 'Cultus'", strategy.getTitleCache(speciesName));
 
         speciesName.setBinomHybrid(false);
         speciesName.setSpecificEpithet(null);
-        Assert.assertEquals("Abies 'Cultus'", strategy.getTitleCache(speciesName));
+        assertEquals("Abies 'Cultus'", strategy.getTitleCache(speciesName));
 
         speciesName.setCombinationAuthorship(author);
-        Assert.assertEquals("Abies 'Cultus' L.", strategy.getTitleCache(speciesName));
+        assertEquals("Abies 'Cultus' L.", strategy.getTitleCache(speciesName));
         speciesName.setBasionymAuthorship(basAuthor);
         speciesName.setExCombinationAuthorship(exAuthor);
         speciesName.setExBasionymAuthorship(exBasAuthor);
-        Assert.assertEquals("Basionym and ex-authors should not be considered for cultivar names"
-                , "Abies 'Cultus' L.", strategy.getTitleCache(speciesName));
+        assertEquals("Abies 'Cultus' L.", strategy.getTitleCache(speciesName), "Basionym and ex-authors should not be considered for cultivar names");
         speciesName.setNomenclaturalReference(citationRef);
-        Assert.assertEquals("Abies 'Cultus' L., My Reference", strategy.getFullTitleCache(speciesName));
+        assertEquals("Abies 'Cultus' L., My Reference", strategy.getFullTitleCache(speciesName));
         speciesName.setCombinationAuthorship(null);
         speciesName.setBasionymAuthorship(null);
         speciesName.setExCombinationAuthorship(null);
@@ -375,38 +375,38 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setNomenclaturalReference(null);
 
         speciesName.setCultivarEpithet(null);
-        Assert.assertEquals("Correct formatting for incorrect name needs to be discussed", "Abies ''", strategy.getTitleCache(speciesName));
+        assertEquals("Abies ''", strategy.getTitleCache(speciesName), "Correct formatting for incorrect name needs to be discussed");
 
         //cultivar group
         speciesName.setRank(Rank.CULTIVARGROUP());
-        Assert.assertEquals("Abies Group", strategy.getTitleCache(speciesName)); //not sure if this is correct for an empty group field
+        assertEquals("Abies Group", strategy.getTitleCache(speciesName)); //not sure if this is correct for an empty group field
         speciesName.setCultivarGroupEpithet("Cultus Group");
-        Assert.assertEquals("Abies Cultus Group", strategy.getTitleCache(speciesName));
+        assertEquals("Abies Cultus Group", strategy.getTitleCache(speciesName));
 
         speciesName.setCultivarGroupEpithet("Cultus Gruppe");
-        Assert.assertEquals("Abies Cultus Gruppe", strategy.getTitleCache(speciesName));
+        assertEquals("Abies Cultus Gruppe", strategy.getTitleCache(speciesName));
         speciesName.setCultivarGroupEpithet("Cultus Gp");
-        Assert.assertEquals("Abies Cultus Gp", strategy.getTitleCache(speciesName));
+        assertEquals("Abies Cultus Gp", strategy.getTitleCache(speciesName));
         speciesName.setCultivarGroupEpithet("Gruppo Cultus");
-        Assert.assertEquals("Abies Gruppo Cultus", strategy.getTitleCache(speciesName));
+        assertEquals("Abies Gruppo Cultus", strategy.getTitleCache(speciesName));
         speciesName.setCultivarGroupEpithet("Druppo Cultus");
-        Assert.assertEquals("Abies Druppo Cultus Group", strategy.getTitleCache(speciesName));
+        assertEquals("Abies Druppo Cultus Group", strategy.getTitleCache(speciesName));
         speciesName.setCultivarGroupEpithet(null);
-        Assert.assertEquals("Correct formatting for missing epithet needs to be discussed", "Abies Group", strategy.getTitleCache(speciesName));
+        assertEquals("Abies Group", strategy.getTitleCache(speciesName), "Correct formatting for missing epithet needs to be discussed");
 
         //grex
         speciesName.setRank(Rank.GREX_ICNCP());
         speciesName.setCultivarGroupEpithet("Lovely");
-        Assert.assertEquals("Abies Lovely grex", strategy.getTitleCache(speciesName));
+        assertEquals("Abies Lovely grex", strategy.getTitleCache(speciesName));
         speciesName.setCultivarGroupEpithet(null);
-        Assert.assertEquals("Correct formatting for missing epithet needs to be discussed", "Abies grex", strategy.getTitleCache(speciesName));
+        assertEquals("Abies grex", strategy.getTitleCache(speciesName), "Correct formatting for missing epithet needs to be discussed");
 
         //subspecies name
         subSpeciesName.setRank(Rank.CULTIVAR());
         subSpeciesName.setCultivarEpithet("Cultus");
-        Assert.assertEquals("Infraspecific epithet in cultivars can not be handled correctly yet", "Abies alba beta 'Cultus'", strategy.getTitleCache(subSpeciesName));
+        assertEquals("Abies alba beta 'Cultus'", strategy.getTitleCache(subSpeciesName), "Infraspecific epithet in cultivars can not be handled correctly yet");
         subSpeciesName.setInfraSpecificEpithet("var. beta");
-        Assert.assertEquals("Abies alba var. beta 'Cultus'", strategy.getTitleCache(subSpeciesName));
+        assertEquals("Abies alba var. beta 'Cultus'", strategy.getTitleCache(subSpeciesName));
 
 
         //graft chimaera
@@ -415,14 +415,14 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setRank(Rank.GRAFTCHIMAERA());
         speciesName.setGenusOrUninomial("Laburnocytisus");
         speciesName.setCultivarEpithet("Adamii");
-        Assert.assertEquals("+ Laburnocytisus 'Adamii'", strategy.getTitleCache(speciesName));
+        assertEquals("+ Laburnocytisus 'Adamii'", strategy.getTitleCache(speciesName));
         //tbc
 
         //denomination class (only dummy implementation, may change in future)
         speciesName.setRank(Rank.DENOMINATIONCLASS());
         speciesName.setGenusOrUninomial("Laburnocytisus");
         speciesName.setCultivarEpithet("Adamii");
-        Assert.assertEquals("Laburnocytisus 'Adamii'", strategy.getTitleCache(speciesName));
+        assertEquals("Laburnocytisus 'Adamii'", strategy.getTitleCache(speciesName));
 
         //appended phrase
         speciesName.setRank(Rank.CULTIVAR());
@@ -430,7 +430,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setSpecificEpithet("alba");
         speciesName.setCultivarEpithet("Cultus");
         speciesName.setAppendedPhrase("appended");
-        Assert.assertEquals("Abies alba 'Cultus' appended", strategy.getTitleCache(speciesName));
+        assertEquals("Abies alba 'Cultus' appended", strategy.getTitleCache(speciesName));
     }
 
     //10299
@@ -438,14 +438,14 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     public void testVerbatimDate() {
 
         subSpeciesName.setNomenclaturalReference(citationRef);
-        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle, subSpeciesName.getFullTitleCache());
+        assertEquals(subSpeciesNameString + ", " +  referenceTitle, subSpeciesName.getFullTitleCache());
         subSpeciesName.setNomenclaturalMicroReference("25");
-        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25", subSpeciesName.getFullTitleCache());
+        assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25", subSpeciesName.getFullTitleCache());
         VerbatimTimePeriod datePublished = TimePeriodParser.parseStringVerbatim("1988");
         datePublished.setVerbatimDate("1989");
         citationRef.setDatePublished(datePublished);
         subSpeciesName.setFullTitleCache(null, false);
-        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25. 1988 [\"1989\"]", subSpeciesName.getFullTitleCache());
+        assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25. 1988 [\"1989\"]", subSpeciesName.getFullTitleCache());
     }
 
     //3665
@@ -454,62 +454,62 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         TaxonName originalName = speciesName.clone();
     	originalName.setSpecificEpithet("alpa");
-    	Assert.assertEquals("Preconditions are wrong", "Abies alpa", originalName.getTitleCache());
-        Assert.assertEquals("Name cache should not show original spelling", "Abies alpa", originalName.getNameCache());
+    	assertEquals("Abies alpa", originalName.getTitleCache(), "Preconditions are wrong");
+        assertEquals("Abies alpa", originalName.getNameCache(), "Name cache should not show original spelling");
 
     	speciesName.setOriginalSpelling(originalName);
-    	Assert.assertEquals("Abies alba [as \"alpa\"]", speciesName.getFullTitleCache());
-        Assert.assertEquals("Abies alba", speciesName.getTitleCache());
-        Assert.assertEquals("Name cache should not show original spelling", "Abies alba", speciesName.getNameCache());
+    	assertEquals("Abies alba [as \"alpa\"]", speciesName.getFullTitleCache());
+        assertEquals("Abies alba", speciesName.getTitleCache());
+        assertEquals("Abies alba", speciesName.getNameCache(), "Name cache should not show original spelling");
 
     	originalName.setGenusOrUninomial("Apies");
     	speciesName.setFullTitleCache(null, false);
     	originalName.setNameCache(null, false);
     	//TODO update cache of current name (species name)
-    	Assert.assertEquals("Abies alba [as \"Apies alpa\"]", speciesName.getFullTitleCache());
-        Assert.assertEquals("Abies alba", speciesName.getTitleCache());
-        Assert.assertEquals("Name cache should not show original spelling", "Abies alba", speciesName.getNameCache());
+    	assertEquals("Abies alba [as \"Apies alpa\"]", speciesName.getFullTitleCache());
+        assertEquals("Abies alba", speciesName.getTitleCache());
+        assertEquals("Abies alba", speciesName.getNameCache(), "Name cache should not show original spelling");
         originalName.setSpecificEpithet("alba");
         originalName.setNameCache(null, false);
         speciesName.setFullTitleCache(null, false);
         //not fully sure if it is wanted that here only the genus name is given and not the specific epithet too, may change if required by users
-        Assert.assertEquals("Abies alba [as \"Apies\"]", speciesName.getFullTitleCache());
+        assertEquals("Abies alba [as \"Apies\"]", speciesName.getFullTitleCache());
 
         //subspecies
         originalName = subSpeciesName.clone();
         originalName.setInfraSpecificEpithet("peta");
-        Assert.assertEquals("Preconditions are wrong", "Abies alba subsp. peta", originalName.getTitleCache());
+        assertEquals("Abies alba subsp. peta", originalName.getTitleCache(), "Preconditions are wrong");
         subSpeciesName.setOriginalSpelling(originalName);
-        Assert.assertEquals("Abies alba subsp. beta [as \"peta\"]", subSpeciesName.getFullTitleCache());
-        Assert.assertEquals("Abies alba subsp. beta", subSpeciesName.getTitleCache());
+        assertEquals("Abies alba subsp. beta [as \"peta\"]", subSpeciesName.getFullTitleCache());
+        assertEquals("Abies alba subsp. beta", subSpeciesName.getTitleCache());
         originalName.setSpecificEpithet("alpa");
         originalName.setNameCache(null, false);
         subSpeciesName.setFullTitleCache(null, false);
-        Assert.assertEquals("Abies alba subsp. beta [as \"alpa subsp. peta\"]", subSpeciesName.getFullTitleCache());
+        assertEquals("Abies alba subsp. beta [as \"alpa subsp. peta\"]", subSpeciesName.getFullTitleCache());
 
         originalName.setInfraSpecificEpithet("beta");
         originalName.setNameCache(null, false);
         subSpeciesName.setFullTitleCache(null, false);
         //not fully sure if it is wanted that here only the specific epithet is given and not the infra specific epithet too, may change if required by users
-        Assert.assertEquals("Abies alba subsp. beta [as \"alpa\"]", subSpeciesName.getFullTitleCache());
+        assertEquals("Abies alba subsp. beta [as \"alpa\"]", subSpeciesName.getFullTitleCache());
 
     	INonViralName correctName = NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabrata J.R.Turnbull & A.T.Middleton");
     	TaxonName originalSpelling = (TaxonName)NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabratus");
     	correctName.setOriginalSpelling(originalSpelling);
-    	Assert.assertEquals("Nepenthes glabrata", correctName.getNameCache());
-    	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton", correctName.getTitleCache());
-    	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton [as \"glabratus\"]", correctName.getFullTitleCache());
+    	assertEquals("Nepenthes glabrata", correctName.getNameCache());
+    	assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton", correctName.getTitleCache());
+    	assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton [as \"glabratus\"]", correctName.getFullTitleCache());
 
     	correctName.setNomenclaturalReference(citationRef);
-        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, My Reference [as \"glabratus\"]", correctName.getFullTitleCache());
+        assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, My Reference [as \"glabratus\"]", correctName.getFullTitleCache());
         citationRef.setProtectedTitleCache(false);
         citationRef.setTitle("Sp. Pl.");
         citationRef.setDatePublished(TimePeriodParser.parseStringVerbatim("1988"));
         correctName.setFullTitleCache(null, false);
-        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \"glabratus\"]", correctName.getFullTitleCache());
+        assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \"glabratus\"]", correctName.getFullTitleCache());
         correctName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
         correctName.setFullTitleCache(null, false);
-        Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \"glabratus\"], nom. illeg.", correctName.getFullTitleCache());
+        assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \"glabratus\"], nom. illeg.", correctName.getFullTitleCache());
     }
 
     //3667
@@ -518,34 +518,34 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         TaxonName originalName = subSpeciesName.clone();
         originalName.setSpecificEpithet("alpa");
-        Assert.assertEquals("Preconditions are wrong", "Abies alpa subsp. beta", originalName.getTitleCache());
+        assertEquals("Abies alpa subsp. beta", originalName.getTitleCache(), "Preconditions are wrong");
 
         subSpeciesName.setOriginalSpelling(originalName);
 
         List<TaggedText> taggedFullTitle = subSpeciesName.cacheStrategy().getTaggedFullTitle(subSpeciesName);
-        Assert.assertEquals(7, taggedFullTitle.size());
-        Assert.assertEquals(new TaggedText(TagEnum.name, "Abies"), taggedFullTitle.get(0));
-        Assert.assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
-        Assert.assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(2));
-        Assert.assertEquals(new TaggedText(TagEnum.name, "beta"), taggedFullTitle.get(3));
-        Assert.assertEquals(new TaggedText(TagEnum.nameInSourceSeparator, " [as \""), taggedFullTitle.get(4));
-        Assert.assertEquals(new TaggedText(TagEnum.name, "alpa"), taggedFullTitle.get(5));
-        Assert.assertEquals(new TaggedText(TagEnum.nameInSourceSeparator, "\"]"), taggedFullTitle.get(6));
+        assertEquals(7, taggedFullTitle.size());
+        assertEquals(new TaggedText(TagEnum.name, "Abies"), taggedFullTitle.get(0));
+        assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
+        assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(2));
+        assertEquals(new TaggedText(TagEnum.name, "beta"), taggedFullTitle.get(3));
+        assertEquals(new TaggedText(TagEnum.nameInSourceSeparator, " [as \""), taggedFullTitle.get(4));
+        assertEquals(new TaggedText(TagEnum.name, "alpa"), taggedFullTitle.get(5));
+        assertEquals(new TaggedText(TagEnum.nameInSourceSeparator, "\"]"), taggedFullTitle.get(6));
 
         originalName.setInfraSpecificEpithet("peta");
         originalName.setNameCache(null, false);
         taggedFullTitle = subSpeciesName.cacheStrategy().getTaggedFullTitle(subSpeciesName);
-        Assert.assertEquals(9, taggedFullTitle.size());
-        Assert.assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
-        Assert.assertEquals(new TaggedText(TagEnum.name, "Abies"), taggedFullTitle.get(0));
-        Assert.assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
-        Assert.assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(2));
-        Assert.assertEquals(new TaggedText(TagEnum.name, "beta"), taggedFullTitle.get(3));
-        Assert.assertEquals(new TaggedText(TagEnum.nameInSourceSeparator, " [as \""), taggedFullTitle.get(4));
-        Assert.assertEquals(new TaggedText(TagEnum.name, "alpa"), taggedFullTitle.get(5));
-        Assert.assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(6));
-        Assert.assertEquals(new TaggedText(TagEnum.name, "peta"), taggedFullTitle.get(7));
-        Assert.assertEquals(new TaggedText(TagEnum.nameInSourceSeparator, "\"]"), taggedFullTitle.get(8));
+        assertEquals(9, taggedFullTitle.size());
+        assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
+        assertEquals(new TaggedText(TagEnum.name, "Abies"), taggedFullTitle.get(0));
+        assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
+        assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(2));
+        assertEquals(new TaggedText(TagEnum.name, "beta"), taggedFullTitle.get(3));
+        assertEquals(new TaggedText(TagEnum.nameInSourceSeparator, " [as \""), taggedFullTitle.get(4));
+        assertEquals(new TaggedText(TagEnum.name, "alpa"), taggedFullTitle.get(5));
+        assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(6));
+        assertEquals(new TaggedText(TagEnum.name, "peta"), taggedFullTitle.get(7));
+        assertEquals(new TaggedText(TagEnum.nameInSourceSeparator, "\"]"), taggedFullTitle.get(8));
     }
 
     @Test
@@ -553,111 +553,111 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Reference ref = ReferenceFactory.newGeneric();
         ref.setTitleCache("GenericRef",true);
         this.subSpeciesName.setNomenclaturalReference(ref);
-        Assert.assertEquals("Expected full title cache has error", "Abies alba subsp. beta, GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("Abies alba subsp. beta, GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
         subSpeciesName.setCombinationAuthorship(author);
         subSpeciesName.setBasionymAuthorship(basAuthor);
-        Assert.assertEquals("Expected full title cache has error", "Abies alba subsp. beta (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("Abies alba subsp. beta (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
         //cascade name change to fullTitleCache
         subSpeciesName.setRank(Rank.SPECIES());
         subSpeciesName.setProtectedNameCache(true);
-        Assert.assertNull("name cache should be null", subSpeciesName.getNameCache());
+        assertNull(subSpeciesName.getNameCache(), "name cache should be null");
         subSpeciesName.setProtectedNameCache(false);
-        Assert.assertNotNull("name cache should not be null", subSpeciesName.getNameCache());
-        Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache());
-        Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) L.", subSpeciesName.getTitleCache());
-        Assert.assertEquals("Expected full title cache has error", "Abies alba", subSpeciesName.getNameCache());
+        assertNotNull(subSpeciesName.getNameCache(), "name cache should not be null");
+        assertEquals("Abies alba (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
+        assertEquals("Abies alba (Basio, A.) L.", subSpeciesName.getTitleCache(), "Expected full title cache has error");
+        assertEquals("Abies alba", subSpeciesName.getNameCache(), "Expected full title cache has error");
 
         subSpeciesName.setProtectedNameCache(true);
         subSpeciesName.setSpecificEpithet("gamma");
-        Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache());
-        Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) L.", subSpeciesName.getTitleCache());
-        Assert.assertEquals("Expected full title cache has error", "Abies alba", subSpeciesName.getNameCache());
+        assertEquals("Abies alba (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
+        assertEquals("Abies alba (Basio, A.) L.", subSpeciesName.getTitleCache(), "Expected full title cache has error");
+        assertEquals("Abies alba", subSpeciesName.getNameCache(), "Expected full title cache has error");
         //make original status
         subSpeciesName.setRank(Rank.SUBSPECIES());
-        Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("Abies alba (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
 
         //author change
         author.setNomenclaturalTitleCache("M.", true);
-        Assert.assertEquals("Expected full title cache has error", "(Basio, A.) M.", subSpeciesName.getAuthorshipCache());
-        Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
-        Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M.", subSpeciesName.getTitleCache());
+        assertEquals("(Basio, A.) M.", subSpeciesName.getAuthorshipCache(), "Expected full title cache has error");
+        assertEquals("Abies alba (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
+        assertEquals("Abies alba (Basio, A.) M.", subSpeciesName.getTitleCache(), "Expected full title cache has error");
 
         //protectedTitleCache
         subSpeciesName.setProtectedTitleCache(true);
         subSpeciesName.setProtectedNameCache(false);
         subSpeciesName.setGenusOrUninomial("Pinus");
         subSpeciesName.setSpecificEpithet("alba");
-        Assert.assertEquals("Expected full title cache has error", "Pinus alba subsp. beta", subSpeciesName.getNameCache());
-        Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
-        Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M.", subSpeciesName.getTitleCache());
+        assertEquals("Pinus alba subsp. beta", subSpeciesName.getNameCache(), "Expected full title cache has error");
+        assertEquals("Abies alba (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
+        assertEquals("Abies alba (Basio, A.) M.", subSpeciesName.getTitleCache(), "Expected full title cache has error");
 
         subSpeciesName.setTitleCache("Pinus beta C.", true);
-        Assert.assertEquals("Expected full title cache has error", "Pinus beta C., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("Pinus beta C., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
         subSpeciesName.setProtectedTitleCache(false);
 
-        Assert.assertEquals("Expected full title cache has error", "Pinus alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("Pinus alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
 
         //protected full title cache set
         subSpeciesName.setFullTitleCache("ABC");
-        Assert.assertEquals("Expected full title cache has error", "ABC", subSpeciesName.getFullTitleCache());
+        assertEquals("ABC", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
         subSpeciesName.setProtectedFullTitleCache(false);
-        Assert.assertEquals("Expected full title cache has error", "Pinus alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("Pinus alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
 
         //protected title cache set
         subSpeciesName.setProtectedTitleCache(false);
-        Assert.assertEquals("Expected full title cache has error", "Pinus alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("Pinus alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
 
         //protectedNameCache set
         subSpeciesName.setProtectedNameCache(true);
-        Assert.assertEquals("Expected full title cache has error", "Pinus alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("Pinus alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
         subSpeciesName.setNameCache("P. alba subsp. beta");
-        Assert.assertEquals("Expected full title cache has error", "P. alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("P. alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
 
         subSpeciesName.setGenusOrUninomial("A.");
         subSpeciesName.setProtectedNameCache(false);
-        Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("A. alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
         subSpeciesName.setNameCache("P. alba subsp. beta");
-        Assert.assertEquals("Expected full title cache has error", "P. alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("P. alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
 
         //protected authorship
         subSpeciesName.setProtectedAuthorshipCache(true);
-        Assert.assertEquals("Expected full title cache has error", "P. alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("P. alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
         subSpeciesName.setAuthorshipCache("Ciard.");
-        Assert.assertEquals("Expected full title cache has error", "P. alba subsp. beta Ciard., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("P. alba subsp. beta Ciard., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
 
         author.setNomenclaturalTitleCache("X.", true);
         subSpeciesName.setProtectedAuthorshipCache(false);
-        Assert.assertEquals("Expected full title cache has error", "P. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("P. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
 
         //clear
         subSpeciesName.setProtectedNameCache(false);
-        Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("A. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
 
         //appended phrase
         subSpeciesName.setProtectedNameCache(true);
-        Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("A. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
         subSpeciesName.setAppendedPhrase("app phrase");
-        Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("A. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
         subSpeciesName.setProtectedNameCache(false);
-        Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta app phrase (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("A. alba subsp. beta app phrase (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
         subSpeciesName.setAppendedPhrase("[\"app phrase\"]");
-        Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta [\"app phrase\"] (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+        assertEquals("A. alba subsp. beta [\"app phrase\"] (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
 
         subSpeciesName.setAppendedPhrase("app2 phrase2");
         subSpeciesName.setProtectedNameCache(true);
-        Assert.assertNull("NameCache should be null", subSpeciesName.getNameCache());
+        assertNull(subSpeciesName.getNameCache(), "NameCache should be null");
         subSpeciesName.setProtectedNameCache(false);
         subSpeciesName.setAppendedPhrase(null);
 
         //ref + nomRef
         Reference book = ReferenceFactory.newBook();
         book.setTitle("Booktitle");
-        Assert.assertNotNull("TitleCache should not be null", subSpeciesName.getTitleCache());
+        assertNotNull(subSpeciesName.getTitleCache(), "TitleCache should not be null");
         subSpeciesName.setNomenclaturalReference(book);
         subSpeciesName.setNomenclaturalMicroReference("22");
-        Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta (Basio, A.) X., Booktitle: 22", subSpeciesName.getFullTitleCache());
+        assertEquals("A. alba subsp. beta (Basio, A.) X., Booktitle: 22", subSpeciesName.getFullTitleCache(), "Expected full title cache has error");
         subSpeciesName.setProtectedTitleCache(true);
-        Assert.assertNotNull("TitleCache should not be null", subSpeciesName.getTitleCache());
+        assertNotNull(subSpeciesName.getTitleCache(), "TitleCache should not be null");
 
         //year
         IZoologicalName zooName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
@@ -667,19 +667,19 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         zooName.setCombinationAuthorship(author);
         zooName.setNomenclaturalReference(book);
         zooName.setNomenclaturalMicroReference("22");
-        Assert.assertEquals("Expected full title cache has error", "Homo sapiens (Basio, A.) X., Booktitle: 22", zooName.getFullTitleCache());
+        assertEquals("Homo sapiens (Basio, A.) X., Booktitle: 22", zooName.getFullTitleCache(), "Expected full title cache has error");
 
         zooName.setOriginalPublicationYear(1922);
         zooName.setPublicationYear(1948);
-        Assert.assertEquals("Expected full title cache has error", "Homo sapiens (Basio, A., 1922) X., 1948, Booktitle: 22", zooName.getFullTitleCache());
+        assertEquals("Homo sapiens (Basio, A., 1922) X., 1948, Booktitle: 22", zooName.getFullTitleCache(), "Expected full title cache has error");
         zooName.setOriginalPublicationYear(1923);
         zooName.setProtectedAuthorshipCache(true);
-        Assert.assertNull("AuthorshipCache should be null", zooName.getAuthorshipCache());
+        assertNull(zooName.getAuthorshipCache(), "AuthorshipCache should be null");
         zooName.setProtectedAuthorshipCache(false);
-        Assert.assertNotNull("AuthorshipCache should not be null", zooName.getAuthorshipCache());
+        assertNotNull(zooName.getAuthorshipCache(), "AuthorshipCache should not be null");
         zooName.setPublicationYear(1949);
         zooName.setProtectedAuthorshipCache(true);
-        Assert.assertNull("AuthorshipCache should be null", zooName.getAuthorshipCache());
+        assertNull(zooName.getAuthorshipCache(), "AuthorshipCache should be null");
 
     }
 
@@ -739,9 +739,9 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         //test ordinary infrageneric
         List<TaggedText> subGenusNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName, false);
         String subGenusNameCache = TaggedTextFormatter.createString(subGenusNameCacheTagged);
-        assertEquals("Subgenus name should be 'Genus subg. subgenus'.", "Genus subg. subgenus", subGenusNameCache);
+        assertEquals("Genus subg. subgenus", subGenusNameCache, "Subgenus name should be 'Genus subg. subgenus'.");
         String subGenusTitle = strategy.getTitleCache(nonViralName);
-        assertEquals("Subgenus name should be 'Genus subg. subgenus Anyauthor'.", "Genus subg. subgenus Anyauthor", subGenusTitle);
+        assertEquals("Genus subg. subgenus Anyauthor", subGenusTitle, "Subgenus name should be 'Genus subg. subgenus Anyauthor'.");
 
         //test species aggregates and species groups
         nonViralName.setRank(Rank.SPECIESAGGREGATE());
@@ -752,13 +752,13 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         List<TaggedText> aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName, false);
 
         String aggrNameCache = TaggedTextFormatter.createString(aggrNameCacheTagged);
-        assertEquals("Species aggregate name should be 'Genus myspecies aggr.'.", "Genus myspecies aggr.", aggrNameCache);
+        assertEquals("Genus myspecies aggr.", aggrNameCache, "Species aggregate name should be 'Genus myspecies aggr.'.");
         String aggrNameTitle = strategy.getTitleCache(nonViralName);
-        Assert.assertTrue("Species aggregate should not include author information.", aggrNameTitle.indexOf(author) == -1);
-        assertEquals("Species aggregate name should be 'Genus myspecies aggr.'.", "Genus myspecies aggr.", aggrNameTitle);
+        assertTrue(aggrNameTitle.indexOf(author) == -1, "Species aggregate should not include author information.");
+        assertEquals("Genus myspecies aggr.", aggrNameTitle, "Species aggregate name should be 'Genus myspecies aggr.'.");
         nonViralName.setRank(Rank.SPECIESGROUP());
         String groupNameTitle = strategy.getTitleCache(nonViralName);
-        assertEquals("Species group name should be 'Genus myspecies species group'.", "Genus myspecies species group", groupNameTitle);
+        assertEquals("Genus myspecies species group", groupNameTitle, "Species group name should be 'Genus myspecies species group'.");
 
         //test species aggregates and species groups with infrageneric information
         //TODO check if groups do ever have infrageneric epithets
@@ -768,15 +768,15 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName, false);
         aggrNameCache = TaggedTextFormatter.createString(aggrNameCacheTagged);
-        assertEquals("Species aggregate name should be 'Genus (Infragenus) myspecies aggr.'.", "Genus (Infragenus) myspecies aggr.", aggrNameCache);
+        assertEquals("Genus (Infragenus) myspecies aggr.", aggrNameCache, "Species aggregate name should be 'Genus (Infragenus) myspecies aggr.'.");
 
         aggrNameTitle = strategy.getTitleCache(nonViralName);
-        Assert.assertTrue("Species aggregate should not include author information.", aggrNameTitle.indexOf(author) == -1);
-        assertEquals("Species aggregate name should be 'Genus (Infragenus) myspecies aggr.'.", "Genus (Infragenus) myspecies aggr.", aggrNameTitle);
+        assertTrue(aggrNameTitle.indexOf(author) == -1, "Species aggregate should not include author information.");
+        assertEquals("Genus (Infragenus) myspecies aggr.", aggrNameTitle, "Species aggregate name should be 'Genus (Infragenus) myspecies aggr.'.");
 
         nonViralName.setRank(Rank.SPECIESGROUP());
         groupNameTitle = strategy.getTitleCache(nonViralName);
-        assertEquals("Species group name should be 'Genus (Infragenus) myspecies species group'.", "Genus (Infragenus) myspecies species group", groupNameTitle);
+        assertEquals("Genus (Infragenus) myspecies species group", groupNameTitle, "Species group name should be 'Genus (Infragenus) myspecies species group'.");
 
         //aggregates with author and nom.ref. information #4288
         nonViralName.setRank(Rank.SPECIESAGGREGATE());
@@ -786,7 +786,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         aggrNameCacheTagged = strategy.getTaggedTitle(nonViralName);
         aggrNameCache = TaggedTextFormatter.createString(aggrNameCacheTagged);
-        assertEquals("Species aggregate name should be 'Genus myspecies L.'.", "Genus myspecies L.", aggrNameCache);
+        assertEquals("Genus myspecies L.", aggrNameCache, "Species aggregate name should be 'Genus myspecies L.'.");
 
     }
 
@@ -796,33 +796,33 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesAggregate.setGenusOrUninomial("Mygenus");
         speciesAggregate.setSpecificEpithet("myspecies");
         List<TaggedText> taggedName = strategy.getTaggedName(speciesAggregate);
-        Assert.assertEquals("1rd tag must be genus epithet", "Mygenus", taggedName.get(0).getText());
-        Assert.assertEquals("2rd tag must be species epithet", "myspecies", taggedName.get(1).getText());
-        Assert.assertEquals("3rd tag must be aggregate marker", "aggr.",taggedName.get(2).getText());
+        assertEquals("Mygenus", taggedName.get(0).getText(), "1rd tag must be genus epithet");
+        assertEquals("myspecies", taggedName.get(1).getText(), "2rd tag must be species epithet");
+        assertEquals("aggr.", taggedName.get(2).getText(), "3rd tag must be aggregate marker");
     }
 
     @Test
     public void testGetTaggedNameSubspecies(){
         List<TaggedText> taggedName = strategy.getTaggedName(subSpeciesName);
-        Assert.assertEquals("First tag should be 'Abies'", "Abies", taggedName.get(0).getText());
-        Assert.assertEquals("Second tag should be 'alba'", "alba", taggedName.get(1).getText());
-        Assert.assertEquals("Third tag should be subspecies rank, and rank abbreviatioin should be subsp.", "subsp.", taggedName.get(2).getText());
-        Assert.assertEquals("Fourth tag should be 'beta'", "beta", taggedName.get(3).getText());
+        assertEquals("Abies", taggedName.get(0).getText(), "First tag should be 'Abies'");
+        assertEquals("alba", taggedName.get(1).getText(), "Second tag should be 'alba'");
+        assertEquals("subsp.", taggedName.get(2).getText(), "Third tag should be subspecies rank, and rank abbreviatioin should be subsp.");
+        assertEquals("beta", taggedName.get(3).getText(), "Fourth tag should be 'beta'");
         //to be continued
     }
 
     @Test
     public void testTitleCacheHtmlTagged(){
     	HTMLTagRules rules = new HTMLTagRules().addRule(TagEnum.name, "i");
-    	Assert.assertEquals("<i>Abies alba</i>", strategy.getTitleCache(speciesName, rules));
+    	assertEquals("<i>Abies alba</i>", strategy.getTitleCache(speciesName, rules));
     	rules.addRule(TagEnum.name, "b");
-    	Assert.assertEquals("<b><i>Abies alba</i></b>", strategy.getTitleCache(speciesName, rules));
+    	assertEquals("<b><i>Abies alba</i></b>", strategy.getTitleCache(speciesName, rules));
     	speciesName.setCombinationAuthorship(author);
-    	Assert.assertEquals("<b><i>Abies alba</i></b> L.", strategy.getTitleCache(speciesName, rules));
+    	assertEquals("<b><i>Abies alba</i></b> L.", strategy.getTitleCache(speciesName, rules));
     	rules.addRule(TagEnum.authors, "i");
-    	Assert.assertEquals("<b><i>Abies alba</i></b> <i>L.</i>", strategy.getTitleCache(speciesName, rules));
+    	assertEquals("<b><i>Abies alba</i></b> <i>L.</i>", strategy.getTitleCache(speciesName, rules));
     	rules = new HTMLTagRules().addRule(TagEnum.name, "i").addRule(TagEnum.name, "b").addRule(TagEnum.authors, "b");
-    	Assert.assertEquals("<b><i>Abies alba</i> L.</b>", strategy.getTitleCache(speciesName, rules));
+    	assertEquals("<b><i>Abies alba</i> L.</b>", strategy.getTitleCache(speciesName, rules));
     }
 
     @Test //#10924
@@ -833,14 +833,13 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         name.setInfraSpecificEpithet("atropurpurea");
         Team combTeam = Team.NewTitledInstance("Combauthor", "Combauthor");
         name.setCombinationAuthorship(combTeam);
-        Assert.assertEquals("", "Euphorbia atropurpurea Combauthor var. atropurpurea", name.getTitleCache());
+        assertEquals("Euphorbia atropurpurea Combauthor var. atropurpurea", name.getTitleCache(), "");
 
         name.setAutonymFlag(false);
-        Assert.assertEquals("", "Euphorbia atropurpurea var. atropurpurea Combauthor", name.getTitleCache());
+        assertEquals("Euphorbia atropurpurea var. atropurpurea Combauthor", name.getTitleCache(), "");
 
         name.setRank(Rank.SUBSPECIES());
-        Assert.assertEquals("The autonym flag is valid only for names below rank subspecies",
-                "Euphorbia atropurpurea Combauthor subsp. atropurpurea", name.getTitleCache());
+        assertEquals("Euphorbia atropurpurea Combauthor subsp. atropurpurea", name.getTitleCache(), "The autonym flag is valid only for names below rank subspecies");
 
     }
 
@@ -855,7 +854,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     	Team exCombTeam = Team.NewTitledInstance("Excomb", "Excomb");
     	name.setExCombinationAuthorship(exCombTeam);
 
-    	Assert.assertEquals("", "Euphorbia atropurpurea Excomb ex Combauthor f. atropurpurea", name.getTitleCache());
+    	assertEquals("Euphorbia atropurpurea Excomb ex Combauthor f. atropurpurea", name.getTitleCache(), "");
     }
 
     @Test //#6656
@@ -870,7 +869,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         name.setTrinomHybrid(true);
 
         String expected = String.format("Ophrys %skastelli E. Klein nothosubsp. kastelli", UTF8.HYBRID.toString());
-        Assert.assertEquals("", expected, name.getTitleCache());
+        assertEquals(expected, name.getTitleCache(), "");
     }
 
     @Test
@@ -885,20 +884,20 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         name.setCombinationAuthorship(combTeam);
 
         INameCacheStrategy formatter = name.cacheStrategy();
-        Assert.assertEquals("", "Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name));
+        assertEquals("Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name), "");
         formatter.setEtAlPosition(3);
-        Assert.assertEquals("", "Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name));
+        assertEquals("Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name), "");
         formatter.setEtAlPosition(2);
-        Assert.assertEquals("", "Ophrys kastelli Mill. & al.", formatter.getTitleCache(name));
+        assertEquals("Ophrys kastelli Mill. & al.", formatter.getTitleCache(name), "");
         //null and <2 are handled as "no position defined"
         formatter.setEtAlPosition(1);
-        Assert.assertEquals("", "Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name));
+        assertEquals("Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name), "");
         formatter.setEtAlPosition(null);
-        Assert.assertEquals("", "Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name));
+        assertEquals("Ophrys kastelli Mill., Ball. & Cill.", formatter.getTitleCache(name), "");
 
         name.setBasionymAuthorship(combTeam);
         formatter.setEtAlPosition(2);
-        Assert.assertEquals("", "Ophrys kastelli (Mill. & al.) Mill. & al.", formatter.getTitleCache(name));
+        assertEquals("Ophrys kastelli (Mill. & al.) Mill. & al.", formatter.getTitleCache(name), "");
 
     }
 
@@ -908,7 +907,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setCombinationAuthorship(author);
         speciesName.setBasionymAuthorship(basAuthor);
         String expectedWithoutInAuthor = speciesNameString + " (" + basAuthorString + ") " + authorString;
-        Assert.assertEquals(expectedWithoutInAuthor, speciesName.getTitleCache());
+        assertEquals(expectedWithoutInAuthor, speciesName.getTitleCache());
 
         //with in-authors
         speciesName.setNameType(NomenclaturalCode.Fungi);
@@ -916,17 +915,16 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setInCombinationAuthorship(inAuthor);
         String expectedWithInAuthor = speciesNameString + " (" + basAuthorString + " in "+inBasAuthorString+") " + authorString + " in "+inAuthorString;
         speciesName.setTitleCache(null, false);
-        Assert.assertEquals(expectedWithInAuthor, speciesName.getTitleCache());
+        assertEquals(expectedWithInAuthor, speciesName.getTitleCache());
 
         //... for zoo-names
         speciesName.setNameType(NomenclaturalCode.ICZN);
         speciesName.setTitleCache(null, false);
-        Assert.assertEquals(expectedWithInAuthor, speciesName.getTitleCache());
+        assertEquals(expectedWithInAuthor, speciesName.getTitleCache());
 
         //... for botanical names
         speciesName.setNameType(NomenclaturalCode.ICNAFP);
         speciesName.setTitleCache(null, false);
-        Assert.assertEquals("For now we do not allow in-authors for botanical names (except for fungi)",
-                expectedWithoutInAuthor, speciesName.getTitleCache());
+        assertEquals(expectedWithoutInAuthor, speciesName.getTitleCache(), "For now we do not allow in-authors for botanical names (except for fungi)");
     }
 }

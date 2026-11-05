@@ -10,8 +10,8 @@ package eu.etaxonomy.cdm.validation;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
@@ -43,7 +43,7 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 	private Reference beforeLineeRef;
     private Reference afterLineeRef;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 
 		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());

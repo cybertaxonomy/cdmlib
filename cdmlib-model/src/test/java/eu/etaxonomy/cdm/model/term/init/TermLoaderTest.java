@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.model.term.init;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,9 +18,8 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
  */
 public class TermLoaderTest {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
 	private TermLoader termLoader;
@@ -42,7 +43,7 @@ public class TermLoaderTest {
 	private UUID uuidGenus;
 	private UUID uuidTautonymy;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		termLoader = new TermLoader();
 		terms = new HashMap<>();
@@ -70,8 +71,8 @@ public class TermLoaderTest {
 	public void testUnloadAllTerms(){
 		DefaultTermInitializer initializer = new DefaultTermInitializer();
 		initializer.initialize();
-		Assert.assertNotNull("Editorial annotation type should be loaded", AnnotationType.EDITORIAL());
+		assertNotNull(AnnotationType.EDITORIAL(), "Editorial annotation type should be loaded");
 		termLoader.unloadAllTerms();
-		Assert.assertNull("Editorial annotation type should be unloaded now", AnnotationType.EDITORIAL());
+		assertNull(AnnotationType.EDITORIAL(), "Editorial annotation type should be unloaded now");
 	}
 }

@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.compare.taxon;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -15,8 +17,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -25,7 +26,6 @@ import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -57,16 +57,16 @@ public class TaxonComparatorTest extends TermTestBase {
 //        3: 1943
 //        1: 1945
 //        2:
-        Assert.assertEquals(list.get(0).getId(), 3);
-        Assert.assertEquals(getYear(list.get(0)), "1759");
-        Assert.assertEquals(list.get(1).getId(), 1);
-        Assert.assertEquals(getYear(list.get(1)), "1759");
-        Assert.assertEquals(list.get(2).getId(), 5);
-        Assert.assertEquals(getYear(list.get(2)), "1823");
-        Assert.assertEquals(list.get(3).getId(), 4);
-        Assert.assertEquals(getYear(list.get(3)), "1943");
-        Assert.assertEquals(list.get(4).getId(), 2);
-        Assert.assertEquals(getYear(list.get(4)), "");
+        assertEquals(3, list.get(0).getId());
+        assertEquals("1759", getYear(list.get(0)));
+        assertEquals(1, list.get(1).getId());
+        assertEquals("1759", getYear(list.get(1)));
+        assertEquals(5, list.get(2).getId());
+        assertEquals("1823", getYear(list.get(2)));
+        assertEquals(4, list.get(3).getId());
+        assertEquals("1943", getYear(list.get(3)));
+        assertEquals(2, list.get(4).getId());
+        assertEquals("", getYear(list.get(4)));
     }
 
     private List<TaxonBase> createTestData() {
@@ -177,10 +177,10 @@ public class TaxonComparatorTest extends TermTestBase {
 //        2: Species (Abies magnifica A.Murray)
 //        4: subSpecies (Abies magnifica var. shastensis Lemmon)
 //        3: Species (Abies procera Rehder)
-        Assert.assertEquals(list.get(0).getId(), 5);
-        Assert.assertEquals(list.get(1).getId(), 1);
-        Assert.assertEquals(list.get(2).getId(), 2);
-        Assert.assertEquals(list.get(3).getId(), 4);
-        Assert.assertEquals(list.get(4).getId(), 3);
+        assertEquals(list.get(0).getId(), 5);
+        assertEquals(list.get(1).getId(), 1);
+        assertEquals(list.get(2).getId(), 2);
+        assertEquals(list.get(3).getId(), 4);
+        assertEquals(list.get(4).getId(), 3);
     }
 }

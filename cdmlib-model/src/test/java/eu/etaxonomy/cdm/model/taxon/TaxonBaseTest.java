@@ -8,17 +8,17 @@
 */
 package eu.etaxonomy.cdm.model.taxon;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -46,7 +46,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	private Synonym synonym1;
 	private Taxon freeT;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		sec= ReferenceFactory.newBook();
 		sec.setTitleCache("Schoenes saftiges Allg�u", true);

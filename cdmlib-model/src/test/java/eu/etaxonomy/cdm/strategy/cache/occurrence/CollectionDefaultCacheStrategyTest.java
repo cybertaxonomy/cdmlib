@@ -8,9 +8,10 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.occurrence;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 
@@ -24,7 +25,7 @@ public class CollectionDefaultCacheStrategyTest {
 
     private CollectionDefaultCacheStrategy formatter;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         formatter = new CollectionDefaultCacheStrategy();
     }
@@ -37,36 +38,36 @@ public class CollectionDefaultCacheStrategyTest {
         collection.setTownOrLocation("Berlin ");
 
         //default
-        Assert.assertEquals ("B - Herbarium berolinense (Berlin)", formatter.getTitleCache(collection));
+        assertEquals("B - Herbarium berolinense (Berlin)", formatter.getTitleCache(collection));
 
         //no code
         collection.setCode(null);
-        Assert.assertEquals ("Herbarium berolinense (Berlin)", formatter.getTitleCache(collection));
+        assertEquals("Herbarium berolinense (Berlin)", formatter.getTitleCache(collection));
 
         //no name
         collection.setCode("B");
         collection.setName(null);
-        Assert.assertEquals ("B (Berlin)", formatter.getTitleCache(collection));
+        assertEquals("B (Berlin)", formatter.getTitleCache(collection));
 
         //no code & name
         collection.setCode(null);
-        Assert.assertEquals ("Berlin", formatter.getTitleCache(collection));
+        assertEquals("Berlin", formatter.getTitleCache(collection));
 
         //no town
         collection = Collection.NewInstance("B", "Herbarium berolinense");
-        Assert.assertEquals ("B - Herbarium berolinense", formatter.getTitleCache(collection));
+        assertEquals("B - Herbarium berolinense", formatter.getTitleCache(collection));
 
         //equal code and name
         collection.setCode("Herbarium berolinense");
-        Assert.assertEquals ("Herbarium berolinense", formatter.getTitleCache(collection));
+        assertEquals("Herbarium berolinense", formatter.getTitleCache(collection));
         collection.setCode(" Herbarium berolinense ");
-        Assert.assertEquals ("Herbarium berolinense", formatter.getTitleCache(collection));
+        assertEquals("Herbarium berolinense", formatter.getTitleCache(collection));
         collection.setCode("Herbarium berolinense  ");
-        Assert.assertEquals ("Herbarium berolinense", formatter.getTitleCache(collection));
+        assertEquals("Herbarium berolinense", formatter.getTitleCache(collection));
 
         //empty
         collection = Collection.NewInstance();
-        Assert.assertEquals ("Collection#0<"+collection.getUuid()+">",
+        assertEquals("Collection#0<"+collection.getUuid()+">",
                 formatter.getTitleCache(collection));
     }
 }

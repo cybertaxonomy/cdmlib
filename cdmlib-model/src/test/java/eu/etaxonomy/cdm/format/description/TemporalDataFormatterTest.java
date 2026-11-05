@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.format.description;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -37,9 +38,9 @@ public class TemporalDataFormatterTest {
         TemporalDataFormatter formatter = TemporalDataFormatter.NewInstance();
         td.setFeature(Feature.FLOWERING_PERIOD());
         td.setPeriod(ExtendedTimePeriod.NewExtendedMonthInstance(4, 5, 3, 6));
-        Assert.assertEquals("(Mar"+sep+")Apr"+sep+"May("+sep+"Jun)", formatter.format(td));
+        assertEquals("(Mar"+sep+")Apr"+sep+"May("+sep+"Jun)", formatter.format(td));
 
         td.putModifyingText(Language.GERMAN(), "Meistens");
-        Assert.assertEquals("Meistens (Mar"+sep+")Apr"+sep+"May("+sep+"Jun)", formatter.format(td));
+        assertEquals("Meistens (Mar"+sep+")Apr"+sep+"May("+sep+"Jun)", formatter.format(td));
     }
 }

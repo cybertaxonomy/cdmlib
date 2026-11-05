@@ -8,10 +8,11 @@
 */
 package eu.etaxonomy.cdm.format.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.joda.time.Partial;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
@@ -25,7 +26,7 @@ public class TimePeriodPartialFormatterTest {
     private Partial start;
     private static TimePeriodPartialFormatter formatter = TimePeriodPartialFormatter.INSTANCE();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         TimePeriod tp = TimePeriodParser.parseString("15.4.1782 - 30.5.1783");
         start = tp.getStart();
@@ -34,7 +35,7 @@ public class TimePeriodPartialFormatterTest {
 
     @Test
     public void test() {
-        Assert.assertEquals("15 Apr 1782", start.toString(formatter));
+        assertEquals("15 Apr 1782", start.toString(formatter));
     }
 
 }

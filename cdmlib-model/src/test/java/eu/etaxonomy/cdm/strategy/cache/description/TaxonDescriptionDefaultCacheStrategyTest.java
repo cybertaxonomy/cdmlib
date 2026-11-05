@@ -8,9 +8,10 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.description;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -22,14 +23,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
- *
  */
 public class TaxonDescriptionDefaultCacheStrategyTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 	}
 
@@ -47,14 +44,12 @@ public class TaxonDescriptionDefaultCacheStrategyTest {
 		sec.setTitleCache("My sec", true);
 		Taxon taxon = Taxon.NewInstance(botName, sec);
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
-		Assert.assertEquals("Wrong title cache for description", "Factual data set for Genus species", taxonDescription.generateTitle());
+		assertEquals("Factual data set for Genus species", taxonDescription.generateTitle(), "Wrong title cache for description");
 		taxonDescription.setImageGallery(true);
-		Assert.assertEquals("Wrong title cache for description", "Image gallery for Genus species", taxonDescription.generateTitle());
+		assertEquals("Image gallery for Genus species", taxonDescription.generateTitle(), "Wrong title cache for description");
 		taxonDescription = TaxonDescription.NewInstance();
-		Assert.assertEquals("Wrong title cache for description", "Factual data set", taxonDescription.generateTitle());
+		assertEquals("Factual data set", taxonDescription.generateTitle(), "Wrong title cache for description");
 		taxonDescription.setImageGallery(true);
-		Assert.assertEquals("Wrong title cache for description", "Image gallery", taxonDescription.generateTitle());
-
+		assertEquals("Image gallery", taxonDescription.generateTitle(), "Wrong title cache for description");
 	}
-
 }

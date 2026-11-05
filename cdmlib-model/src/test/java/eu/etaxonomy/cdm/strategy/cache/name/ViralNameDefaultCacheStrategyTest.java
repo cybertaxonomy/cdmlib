@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.name;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -33,7 +33,7 @@ public class ViralNameDefaultCacheStrategyTest extends TermTestBase {
     private TaxonNameDefaultCacheStrategy strategy;
     private TaxonName viralName;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         strategy = TaxonNameDefaultCacheStrategy.NewInstance();
         viralName = TaxonNameFactory.NewViralInstance(Rank.SPECIES()); //TODO do viral names have ranks? See comment on #IViralName
@@ -48,9 +48,9 @@ public class ViralNameDefaultCacheStrategyTest extends TermTestBase {
 
     @Test
     public final void testTitle() {
-        Assert.assertEquals("", strategy.getTitleCache(viralName));
+        assertEquals("", strategy.getTitleCache(viralName));
 
         viralName.setTitleCache("My virus", true);
-        Assert.assertEquals("My virus", strategy.getTitleCache(viralName));
+        assertEquals("My virus", strategy.getTitleCache(viralName));
    }
 }

@@ -8,11 +8,12 @@
 */
 package eu.etaxonomy.cdm.model.agent;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.GregorianCalendar;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 
@@ -23,7 +24,7 @@ public class InstitutionalMembershipTest {
 
 	private InstitutionalMembership mship;
 
-	@Before
+	@BeforeEach
 	public void onSetUp() throws Exception {
 
 		mship = InstitutionalMembership.NewInstance();
@@ -39,6 +40,6 @@ public class InstitutionalMembershipTest {
 
 	@Test
 	public void testMembershipInit() {
-		Assert.assertNotNull(mship);
+		assertNotNull(mship);
 	}
 }

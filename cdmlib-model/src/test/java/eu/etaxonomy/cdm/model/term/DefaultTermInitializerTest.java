@@ -8,16 +8,16 @@
 */
 package eu.etaxonomy.cdm.model.term;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -33,7 +33,7 @@ public class DefaultTermInitializerTest {
 	@SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpBeforeClass() {
         TermLoader termLoader = new TermLoader();
         termLoader.unloadAllTerms();
@@ -41,18 +41,18 @@ public class DefaultTermInitializerTest {
 
 	@Test
 	public void testInitialize(){
-		assertNull("At the beginning of the initialization test the default language should still be null but is not", Language.DEFAULT());
+		assertNull(Language.DEFAULT(), "At the beginning of the initialization test the default language should still be null but is not");
 		DefaultTermInitializer initalizer = new DefaultTermInitializer();
 		initalizer.initialize();
-		assertNotNull("Default language should be english but is null", Language.DEFAULT());
+		assertNotNull(Language.DEFAULT(), "Default language should be english but is null");
 		TermVocabulary<Language> voc = Language.DEFAULT().getVocabulary();
-		assertNotNull("language for language vocabulary representation was null but must be default language", voc.getRepresentation(Language.DEFAULT()));
+		assertNotNull(voc.getRepresentation(Language.DEFAULT()), "language for language vocabulary representation was null but must be default language");
 
 		Set<MeasurementUnit> units = Feature.ALTITUDE().getRecommendedMeasurementUnits();
-		Assert.assertEquals("Recommended measurement unit should exist", 1, units.size());
-		Assert.assertEquals(MeasurementUnit.uuidMeter, units.iterator().next().getUuid());
+		assertEquals(1, units.size(), "Recommended measurement unit should exist");
+		assertEquals(MeasurementUnit.uuidMeter, units.iterator().next().getUuid());
 
 		IdentifierType idTypeIF = IdentifierType.IDENTIFIER_NAME_IF();
-		Assert.assertEquals("https://www.indexfungorum.org/names/NamesRecord.asp?RecordID={@ID}", idTypeIF.getUrlPattern());
+		assertEquals("https://www.indexfungorum.org/names/NamesRecord.asp?RecordID={@ID}", idTypeIF.getUrlPattern());
 	}
 }

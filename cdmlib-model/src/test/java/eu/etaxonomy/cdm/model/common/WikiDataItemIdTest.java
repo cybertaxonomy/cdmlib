@@ -8,8 +8,8 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *  Test class for testing the {@link WikiDataItemId} class.
@@ -25,23 +25,23 @@ public class WikiDataItemIdTest {
     public void testValidParser() {
         String validWikiDataItemId = "12345";
         WikiDataItemId wikiDataItemId = WikiDataItemId.fromString(validWikiDataItemId);
-        Assert.assertEquals("http://www.wikidata.org/entity/Q12345", wikiDataItemId.asURI());
+        assertEquals("http://www.wikidata.org/entity/Q12345", wikiDataItemId.asURI());
 
         validWikiDataItemId = "97399423534634";
         wikiDataItemId = WikiDataItemId.fromString(validWikiDataItemId);
-        Assert.assertEquals("http://www.wikidata.org/entity/Q97399423534634", wikiDataItemId.asURI());
+        assertEquals("http://www.wikidata.org/entity/Q97399423534634", wikiDataItemId.asURI());
 
         validWikiDataItemId = "Q12345";
         wikiDataItemId = WikiDataItemId.fromString(validWikiDataItemId);
-        Assert.assertEquals("http://www.wikidata.org/entity/Q12345", wikiDataItemId.asURI());
+        assertEquals("http://www.wikidata.org/entity/Q12345", wikiDataItemId.asURI());
 
         validWikiDataItemId = "https://www.wikidata.org/entity/Q12345";
         wikiDataItemId = WikiDataItemId.fromString(validWikiDataItemId);
-        Assert.assertEquals("http://www.wikidata.org/entity/Q12345", wikiDataItemId.asURI());
+        assertEquals("http://www.wikidata.org/entity/Q12345", wikiDataItemId.asURI());
 
         validWikiDataItemId = "http://www.wikidata.org/entity/Q12345";
         wikiDataItemId = WikiDataItemId.fromString(validWikiDataItemId);
-        Assert.assertEquals("http://www.wikidata.org/entity/Q12345", wikiDataItemId.asURI());
+        assertEquals("http://www.wikidata.org/entity/Q12345", wikiDataItemId.asURI());
     }
 
     @Test
@@ -58,10 +58,10 @@ public class WikiDataItemIdTest {
         WikiDataItemId wikiDataItemId1 = WikiDataItemId.fromString(validWikiDataItemId);
         validWikiDataItemId = "https://www.wikidata.org/entity/Q12345";
         WikiDataItemId wikiDataItemId2 = WikiDataItemId.fromString(validWikiDataItemId);
-        Assert.assertEquals("WikiIDs must be equal. Checksum should not make it different", wikiDataItemId1, wikiDataItemId2);
+        assertEquals(wikiDataItemId1, wikiDataItemId2, "WikiIDs must be equal. Checksum should not make it different");
         validWikiDataItemId = "Q12346";
         WikiDataItemId wikiDataItemId3 = WikiDataItemId.fromString(validWikiDataItemId);
-        Assert.assertNotEquals("Different WikiIDs must not be equal", wikiDataItemId1, wikiDataItemId3);
+        assertNotEquals(wikiDataItemId1, wikiDataItemId3, "Different WikiIDs must not be equal");
     }
 
     @Test
@@ -69,14 +69,14 @@ public class WikiDataItemIdTest {
 
         String validWikiDataItemId = "Q23456";
         WikiDataItemId wikiDataItemId = WikiDataItemId.fromString(validWikiDataItemId);
-        Assert.assertEquals(WikiDataItemId.HTTP_WIKIDATA_ORG + validWikiDataItemId, wikiDataItemId.asURI());
+        assertEquals(WikiDataItemId.HTTP_WIKIDATA_ORG + validWikiDataItemId, wikiDataItemId.asURI());
     }
 
 
     private void testInvalid(String invalidWikiDataItemId) {
         try {
             WikiDataItemId.fromString(invalidWikiDataItemId);
-            Assert.fail("WikiDataItemId should not be parsable: " + invalidWikiDataItemId);
+            fail("WikiDataItemId should not be parsable: " + invalidWikiDataItemId);
         } catch (IllegalArgumentException e) {
             //OK
         }

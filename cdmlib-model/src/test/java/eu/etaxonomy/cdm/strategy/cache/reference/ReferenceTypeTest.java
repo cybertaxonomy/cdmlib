@@ -8,8 +8,10 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
@@ -22,82 +24,82 @@ public class ReferenceTypeTest {
 
 	@Test
 	public void testIsPrintedUnit(){
-		Assert.assertTrue("Proceedings must be printed unit", ReferenceType.Proceedings.isPrintedUnit());
-		Assert.assertTrue("Book must be printed unit", ReferenceType.Book.isPrintedUnit());
-		Assert.assertFalse("Article must not be printed unit", ReferenceType.Article.isPrintedUnit());
-		Assert.assertFalse("BookSection must not be printed unit", ReferenceType.BookSection.isPrintedUnit());
-		Assert.assertFalse("CdDvd must not be printed unit", ReferenceType.CdDvd.isPrintedUnit());
-		Assert.assertFalse("Generic must not be printed unit", ReferenceType.Generic.isPrintedUnit());
-		Assert.assertFalse("Database must not be printed unit", ReferenceType.Database.isPrintedUnit());
-		Assert.assertFalse("InProceedings must not be printed unit", ReferenceType.InProceedings.isPrintedUnit());
-		Assert.assertFalse("Journal must not be printed unit", ReferenceType.Journal.isPrintedUnit());
-		Assert.assertFalse("Map must not be printed unit", ReferenceType.Map.isPrintedUnit());
-		Assert.assertFalse("Patent must not be printed unit", ReferenceType.Patent.isPrintedUnit());
-		Assert.assertFalse("PersonalCommunication must not be printed unit", ReferenceType.PersonalCommunication.isPrintedUnit());
-		Assert.assertFalse("PrintSeries must not be printed unit", ReferenceType.PrintSeries.isPrintedUnit());
-		Assert.assertFalse("Report must not be printed unit", ReferenceType.Report.isPrintedUnit());
-		Assert.assertFalse("Thesis must not be printed unit", ReferenceType.Thesis.isPrintedUnit());
-		Assert.assertFalse("WebPage must not be printed unit", ReferenceType.WebPage.isPrintedUnit());
+		assertTrue(ReferenceType.Proceedings.isPrintedUnit(), "Proceedings must be printed unit");
+		assertTrue(ReferenceType.Book.isPrintedUnit(), "Book must be printed unit");
+		assertFalse(ReferenceType.Article.isPrintedUnit(), "Article must not be printed unit");
+		assertFalse(ReferenceType.BookSection.isPrintedUnit(), "BookSection must not be printed unit");
+		assertFalse(ReferenceType.CdDvd.isPrintedUnit(), "CdDvd must not be printed unit");
+		assertFalse(ReferenceType.Generic.isPrintedUnit(), "Generic must not be printed unit");
+		assertFalse(ReferenceType.Database.isPrintedUnit(), "Database must not be printed unit");
+		assertFalse(ReferenceType.InProceedings.isPrintedUnit(), "InProceedings must not be printed unit");
+		assertFalse(ReferenceType.Journal.isPrintedUnit(), "Journal must not be printed unit");
+		assertFalse(ReferenceType.Map.isPrintedUnit(), "Map must not be printed unit");
+		assertFalse(ReferenceType.Patent.isPrintedUnit(), "Patent must not be printed unit");
+		assertFalse(ReferenceType.PersonalCommunication.isPrintedUnit(), "PersonalCommunication must not be printed unit");
+		assertFalse(ReferenceType.PrintSeries.isPrintedUnit(), "PrintSeries must not be printed unit");
+		assertFalse(ReferenceType.Report.isPrintedUnit(), "Report must not be printed unit");
+		assertFalse(ReferenceType.Thesis.isPrintedUnit(), "Thesis must not be printed unit");
+		assertFalse(ReferenceType.WebPage.isPrintedUnit(), "WebPage must not be printed unit");
 	}
 
 	@Test
 	public void testIsPublication(){
-		Assert.assertTrue("Proceedings must be publication", ReferenceType.Proceedings.isPublication());
-		Assert.assertTrue("Book must be publication", ReferenceType.Book.isPublication());
-		Assert.assertFalse("Article must not be publication", ReferenceType.Article.isPublication());
-		Assert.assertFalse("BookSection must not be publication", ReferenceType.BookSection.isPublication());
-		Assert.assertTrue("CdDvd must be publication", ReferenceType.CdDvd.isPublication());
-		Assert.assertTrue("Generic must be publication", ReferenceType.Generic.isPublication());
-		Assert.assertTrue("Database must be publication", ReferenceType.Database.isPublication());
-		Assert.assertFalse("InProceedings must not be publication", ReferenceType.InProceedings.isPublication());
-		Assert.assertTrue("Journal must be publication", ReferenceType.Journal.isPublication());
-		Assert.assertTrue("Map must be publication", ReferenceType.Map.isPublication());
-		Assert.assertFalse("Patent must not be publication", ReferenceType.Patent.isPublication());
-		Assert.assertFalse("PersonalCommunication must not be publication", ReferenceType.PersonalCommunication.isPublication());
-		Assert.assertTrue("PrintSeries must be publication", ReferenceType.PrintSeries.isPublication());
-		Assert.assertTrue("Report must be publication", ReferenceType.Report.isPublication());
-		Assert.assertTrue("Thesis must be publication", ReferenceType.Thesis.isPublication());
-		Assert.assertTrue("WebPage must be publication", ReferenceType.WebPage.isPublication());
+		assertTrue(ReferenceType.Proceedings.isPublication(), "Proceedings must be publication");
+		assertTrue(ReferenceType.Book.isPublication(), "Book must be publication");
+		assertFalse(ReferenceType.Article.isPublication(), "Article must not be publication");
+		assertFalse(ReferenceType.BookSection.isPublication(), "BookSection must not be publication");
+		assertTrue(ReferenceType.CdDvd.isPublication(), "CdDvd must be publication");
+		assertTrue(ReferenceType.Generic.isPublication(), "Generic must be publication");
+		assertTrue(ReferenceType.Database.isPublication(), "Database must be publication");
+		assertFalse(ReferenceType.InProceedings.isPublication(), "InProceedings must not be publication");
+		assertTrue(ReferenceType.Journal.isPublication(), "Journal must be publication");
+		assertTrue(ReferenceType.Map.isPublication(), "Map must be publication");
+		assertFalse(ReferenceType.Patent.isPublication(), "Patent must not be publication");
+		assertFalse(ReferenceType.PersonalCommunication.isPublication(), "PersonalCommunication must not be publication");
+		assertTrue(ReferenceType.PrintSeries.isPublication(), "PrintSeries must be publication");
+		assertTrue(ReferenceType.Report.isPublication(), "Report must be publication");
+		assertTrue(ReferenceType.Thesis.isPublication(), "Thesis must be publication");
+		assertTrue(ReferenceType.WebPage.isPublication(), "WebPage must be publication");
 	}
 
 
 	@Test
 	public void testIsVolumeReference(){
-		Assert.assertTrue("Proceedings must be volume reference", ReferenceType.Proceedings.isVolumeReference());
-		Assert.assertTrue("Book must be volume reference", ReferenceType.Book.isVolumeReference());
-		Assert.assertTrue("Article must be volume reference", ReferenceType.Article.isVolumeReference());
-		Assert.assertFalse("BookSection must not be volume reference", ReferenceType.BookSection.isVolumeReference());
-		Assert.assertFalse("CdDvd must not be volume reference", ReferenceType.CdDvd.isVolumeReference());
-		Assert.assertTrue("Generic must be volume reference", ReferenceType.Generic.isVolumeReference());
-		Assert.assertFalse("Database must not be volume reference", ReferenceType.Database.isVolumeReference());
-		Assert.assertFalse("InProceedings must not be volume reference", ReferenceType.InProceedings.isVolumeReference());
-		Assert.assertFalse("Journal must not be volume reference", ReferenceType.Journal.isVolumeReference());
-		Assert.assertFalse("Map must not be volume reference", ReferenceType.Map.isVolumeReference());
-		Assert.assertFalse("Patent must not be volume reference", ReferenceType.Patent.isVolumeReference());
-		Assert.assertFalse("PersonalCommunication must not be volume reference", ReferenceType.PersonalCommunication.isVolumeReference());
-		Assert.assertFalse("PrintSeries must not be volume reference", ReferenceType.PrintSeries.isVolumeReference());
-		Assert.assertFalse("Report must not be volume reference", ReferenceType.Report.isVolumeReference());
-		Assert.assertFalse("Thesis must not be volume reference", ReferenceType.Thesis.isVolumeReference());
-		Assert.assertFalse("WebPage must not be volume reference", ReferenceType.WebPage.isVolumeReference());
+		assertTrue(ReferenceType.Proceedings.isVolumeReference(), "Proceedings must be volume reference");
+		assertTrue(ReferenceType.Book.isVolumeReference(), "Book must be volume reference");
+		assertTrue(ReferenceType.Article.isVolumeReference(), "Article must be volume reference");
+		assertFalse(ReferenceType.BookSection.isVolumeReference(), "BookSection must not be volume reference");
+		assertFalse(ReferenceType.CdDvd.isVolumeReference(), "CdDvd must not be volume reference");
+		assertTrue(ReferenceType.Generic.isVolumeReference(), "Generic must be volume reference");
+		assertFalse(ReferenceType.Database.isVolumeReference(), "Database must not be volume reference");
+		assertFalse(ReferenceType.InProceedings.isVolumeReference(), "InProceedings must not be volume reference");
+		assertFalse(ReferenceType.Journal.isVolumeReference(), "Journal must not be volume reference");
+		assertFalse(ReferenceType.Map.isVolumeReference(), "Map must not be volume reference");
+		assertFalse(ReferenceType.Patent.isVolumeReference(), "Patent must not be volume reference");
+		assertFalse(ReferenceType.PersonalCommunication.isVolumeReference(), "PersonalCommunication must not be volume reference");
+		assertFalse(ReferenceType.PrintSeries.isVolumeReference(), "PrintSeries must not be volume reference");
+		assertFalse(ReferenceType.Report.isVolumeReference(), "Report must not be volume reference");
+		assertFalse(ReferenceType.Thesis.isVolumeReference(), "Thesis must not be volume reference");
+		assertFalse(ReferenceType.WebPage.isVolumeReference(), "WebPage must not be volume reference");
 	}
 
 	@Test
 	public void testIsSection(){
-		Assert.assertTrue("Proceedings must be section", ReferenceType.Proceedings.isSection());
-		Assert.assertTrue("Book must be section", ReferenceType.Book.isSection());
-		Assert.assertTrue("Article must be section", ReferenceType.Article.isSection());
-		Assert.assertTrue("BookSection must be section", ReferenceType.BookSection.isSection());
-		Assert.assertFalse("CdDvd must not be section", ReferenceType.CdDvd.isSection());
-		Assert.assertFalse("Generic must not be section", ReferenceType.Generic.isSection());
-		Assert.assertFalse("Database must not be section", ReferenceType.Database.isSection());
-		Assert.assertTrue("InProceedings must be section", ReferenceType.InProceedings.isSection());
-		Assert.assertFalse("Journal must not be section", ReferenceType.Journal.isSection());
-		Assert.assertFalse("Map must not be section", ReferenceType.Map.isSection());
-		Assert.assertFalse("Patent must not be section", ReferenceType.Patent.isSection());
-		Assert.assertFalse("PersonalCommunication must not be section", ReferenceType.PersonalCommunication.isSection());
-		Assert.assertFalse("PrintSeries must not be section", ReferenceType.PrintSeries.isSection());
-		Assert.assertFalse("Report must not be section", ReferenceType.Report.isSection());
-		Assert.assertFalse("Thesis must not be section", ReferenceType.Thesis.isSection());
-		Assert.assertTrue("WebPage must be section", ReferenceType.WebPage.isSection());
+		assertTrue(ReferenceType.Proceedings.isSection(), "Proceedings must be section");
+		assertTrue(ReferenceType.Book.isSection(), "Book must be section");
+		assertTrue(ReferenceType.Article.isSection(), "Article must be section");
+		assertTrue(ReferenceType.BookSection.isSection(), "BookSection must be section");
+		assertFalse(ReferenceType.CdDvd.isSection(), "CdDvd must not be section");
+		assertFalse(ReferenceType.Generic.isSection(), "Generic must not be section");
+		assertFalse(ReferenceType.Database.isSection(), "Database must not be section");
+		assertTrue(ReferenceType.InProceedings.isSection(), "InProceedings must be section");
+		assertFalse(ReferenceType.Journal.isSection(), "Journal must not be section");
+		assertFalse(ReferenceType.Map.isSection(), "Map must not be section");
+		assertFalse(ReferenceType.Patent.isSection(), "Patent must not be section");
+		assertFalse(ReferenceType.PersonalCommunication.isSection(), "PersonalCommunication must not be section");
+		assertFalse(ReferenceType.PrintSeries.isSection(), "PrintSeries must not be section");
+		assertFalse(ReferenceType.Report.isSection(), "Report must not be section");
+		assertFalse(ReferenceType.Thesis.isSection(), "Thesis must not be section");
+		assertTrue(ReferenceType.WebPage.isSection(), "WebPage must be section");
 	}
 }

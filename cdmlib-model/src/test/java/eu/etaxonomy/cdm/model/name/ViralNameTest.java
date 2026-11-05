@@ -8,11 +8,12 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -24,7 +25,7 @@ public class ViralNameTest {
     private static final Logger logger = LogManager.getLogger();
 
 	private IViralName viralName1;
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		viralName1 = TaxonNameFactory.NewViralInstance(Rank.SPECIES());
 	}
@@ -35,6 +36,6 @@ public class ViralNameTest {
 	public void testClone() {
 		viralName1.setAcronym("MJU455");
 		IViralName clone = viralName1.clone();
-		Assert.assertEquals("Acronym should be equal", "MJU455", clone.getAcronym());
+		assertEquals("MJU455", clone.getAcronym(), "Acronym should be equal");
 	}
 }

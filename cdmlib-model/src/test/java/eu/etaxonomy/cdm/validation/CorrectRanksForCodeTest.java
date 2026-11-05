@@ -8,24 +8,23 @@
 */
 package eu.etaxonomy.cdm.validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.groups.Default;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.validation.constraint.CorrectRanksForCodeValidator;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.groups.Default;
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though
@@ -43,7 +42,7 @@ public class CorrectRanksForCodeTest extends ValidationTestBase {
 
 	private IBotanicalName name;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setNameCache("Aus aus");
@@ -62,15 +61,15 @@ public class CorrectRanksForCodeTest extends ValidationTestBase {
         name.setGenusOrUninomial("Aus");
         name.setSpecificEpithet("aus");
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class, Default.class);
-        assertTrue("There should be no constraint violations as this name has a rank according to the code", constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should be no constraint violations as this name has a rank according to the code");
         name.setNameType(NomenclaturalCode.ICNAFP);
         constraintViolations  = validator.validate(name, Level2.class, Default.class);
-        assertFalse("There should be a constraint violation as this name of rank cultivar has code ICNafp", constraintViolations.isEmpty());
+        assertFalse(constraintViolations.isEmpty(), "There should be a constraint violation as this name of rank cultivar has code ICNafp");
         assertHasConstraintOnValidator((Set)constraintViolations, CorrectRanksForCodeValidator.class);
 
         name.setNameType(NomenclaturalCode.ICNCP);
         name.setRank(Rank.SPECIES());
-        assertFalse("There should be a constraint violation as this name of rank cultivar has code ICNafp", constraintViolations.isEmpty());
+        assertFalse(constraintViolations.isEmpty(), "There should be a constraint violation as this name of rank cultivar has code ICNafp");
         assertHasConstraintOnValidator((Set)constraintViolations, CorrectRanksForCodeValidator.class);
 	}
 
@@ -80,10 +79,10 @@ public class CorrectRanksForCodeTest extends ValidationTestBase {
         name.setRank(Rank.SECTION_ZOOLOGY());
         name.setGenusOrUninomial("Aus");
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class, Default.class);
-        assertTrue("There should be no constraint violations as this name has a rank according to the code", constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should be no constraint violations as this name has a rank according to the code");
         name.setNameType(NomenclaturalCode.ICNAFP);
         constraintViolations  = validator.validate(name, Level2.class, Default.class);
-        assertFalse("There should be a constraint violation as this name has a zoological rank but code ICNafp", constraintViolations.isEmpty());
+        assertFalse(constraintViolations.isEmpty(), "There should be a constraint violation as this name has a zoological rank but code ICNafp");
         assertHasConstraintOnValidator((Set)constraintViolations, CorrectRanksForCodeValidator.class);
 	}
 
@@ -94,10 +93,10 @@ public class CorrectRanksForCodeTest extends ValidationTestBase {
         name.setGenusOrUninomial("Aus");
         name.setInfraGenericEpithet("bus");
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Level2.class, Default.class);
-        assertTrue("There should be no constraint violations as this name has a rank according to the code", constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should be no constraint violations as this name has a rank according to the code");
         name.setNameType(NomenclaturalCode.ICZN);
         constraintViolations  = validator.validate(name, Level2.class, Default.class);
-        assertFalse("There should be a constraint violation as this name has a botanical rank but code ICZN", constraintViolations.isEmpty());
+        assertFalse(constraintViolations.isEmpty(), "There should be a constraint violation as this name has a botanical rank but code ICZN");
         assertHasConstraintOnValidator((Set)constraintViolations, CorrectRanksForCodeValidator.class);
     }
 }

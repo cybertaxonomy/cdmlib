@@ -8,8 +8,10 @@
 */
 package eu.etaxonomy.cdm.strategy.parser;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -28,89 +30,89 @@ public class NameTypeParserTest extends TermTestBase {
 		NameTypeDesignationStatus type;
 		try {
 			type = NameTypeParser.parseNameTypeStatus(typeString);
-			Assert.assertEquals("Type should be original designation", NameTypeDesignationStatus.ORIGINAL_DESIGNATION(), type);
+			assertEquals(NameTypeDesignationStatus.ORIGINAL_DESIGNATION(), type, "Type should be original designation");
 		} catch (UnknownCdmTypeException e) {
-			Assert.fail(typeString + " not recognized");
+			fail(typeString + " not recognized");
 		}
 		typeString = "original desig.";
 		try {
 			type = NameTypeParser.parseNameTypeStatus(typeString);
-			Assert.assertEquals("Type should be original designation", NameTypeDesignationStatus.ORIGINAL_DESIGNATION(), type);
+			assertEquals(NameTypeDesignationStatus.ORIGINAL_DESIGNATION(), type, "Type should be original designation");
 		} catch (UnknownCdmTypeException e) {
-			Assert.fail(typeString + " not recognized");
+			fail(typeString + " not recognized");
 		}
 		typeString = "ORIginAL DESig.";
 		try {
 			type = NameTypeParser.parseNameTypeStatus(typeString);
-			Assert.assertEquals("Type should be original designation", NameTypeDesignationStatus.ORIGINAL_DESIGNATION(), type);
+			assertEquals(NameTypeDesignationStatus.ORIGINAL_DESIGNATION(), type, "Type should be original designation");
 		} catch (UnknownCdmTypeException e) {
-			Assert.fail(typeString + " not recognized");
+			fail(typeString + " not recognized");
 		}
 
 		//present desig
 		typeString = "present designation";
 		try {
 			type = NameTypeParser.parseNameTypeStatus(typeString);
-			Assert.assertEquals("Type should be present designation", NameTypeDesignationStatus.PRESENT_DESIGNATION(), type);
+			assertEquals(NameTypeDesignationStatus.PRESENT_DESIGNATION(), type, "Type should be present designation");
 		} catch (UnknownCdmTypeException e) {
-			Assert.fail(typeString + " not recognized");
+			fail(typeString + " not recognized");
 		}
 		//subsequent desig
 		typeString = "subsequent designation";
 		try {
 			type = NameTypeParser.parseNameTypeStatus(typeString);
-			Assert.assertEquals("Type should be subsequent designation", NameTypeDesignationStatus.SUBSEQUENT_DESIGNATION(), type);
+			assertEquals(NameTypeDesignationStatus.SUBSEQUENT_DESIGNATION(), type, "Type should be subsequent designation");
 		} catch (UnknownCdmTypeException e) {
-			Assert.fail(typeString + " not recognized");
+			fail(typeString + " not recognized");
 		}
 		//monotypy
 		typeString = "monotypy";
 		try {
 			type = NameTypeParser.parseNameTypeStatus(typeString);
-			Assert.assertEquals("Type should be 'monotypy'", NameTypeDesignationStatus.MONOTYPY(), type);
+			assertEquals(NameTypeDesignationStatus.MONOTYPY(), type, "Type should be 'monotypy'");
 		} catch (UnknownCdmTypeException e) {
-			Assert.fail(typeString + " not recognized");
+			fail(typeString + " not recognized");
 		}
 		//subs. monotypy
 		typeString = "subsequent monotypy";
 		try {
 			type = NameTypeParser.parseNameTypeStatus(typeString);
-			Assert.assertEquals("Type should be 'subsequent monotypy'", NameTypeDesignationStatus.SUBSEQUENT_MONOTYPY(), type);
+			assertEquals(NameTypeDesignationStatus.SUBSEQUENT_MONOTYPY(), type, "Type should be 'subsequent monotypy'");
 		} catch (UnknownCdmTypeException e) {
-			Assert.fail(typeString + " not recognized");
+			fail(typeString + " not recognized");
 		}
 
 		//tautonomy
 		typeString = "tautonomy";
 		try {
 			type = NameTypeParser.parseNameTypeStatus(typeString);
-			Assert.assertEquals("Type should be tautonomy", NameTypeDesignationStatus.TAUTONYMY(), type);
+			assertEquals(NameTypeDesignationStatus.TAUTONYMY(), type, "Type should be tautonomy");
 		} catch (UnknownCdmTypeException e) {
-			Assert.fail(typeString + " not recognized");
+			fail(typeString + " not recognized");
 		}
 		//lectotype
 		typeString = "lectotype";
 		try {
 			type = NameTypeParser.parseNameTypeStatus(typeString);
-			Assert.assertEquals("Type should be lectotype", NameTypeDesignationStatus.LECTOTYPE(), type);
+			assertEquals(NameTypeDesignationStatus.LECTOTYPE(), type, "Type should be lectotype");
 		} catch (UnknownCdmTypeException e) {
-			Assert.fail(typeString + " not recognized");
+			fail(typeString + " not recognized");
 		}
 		//automatic
 		typeString = "automatic";
 		try {
 			type = NameTypeParser.parseNameTypeStatus(typeString);
-			Assert.assertEquals("Type should be automatic", NameTypeDesignationStatus.AUTOMATIC(), type);
+			assertEquals(NameTypeDesignationStatus.AUTOMATIC(), type, "Type should be automatic");
 		} catch (UnknownCdmTypeException e) {
-			Assert.fail(typeString + " not recognized");
+			fail(typeString + " not recognized");
 		}
 		//automatic
 		typeString = "not applicable";
 		try {
 			type = NameTypeParser.parseNameTypeStatus(typeString);
-			Assert.assertEquals("Type should be 'not applicable'", NameTypeDesignationStatus.NOT_APPLICABLE(), type);
+			assertEquals(NameTypeDesignationStatus.NOT_APPLICABLE(), type, "Type should be 'not applicable'");
 		} catch (UnknownCdmTypeException e) {
-			Assert.fail(typeString + " not recognized");
+			fail(typeString + " not recognized");
 		}
 	}
 }

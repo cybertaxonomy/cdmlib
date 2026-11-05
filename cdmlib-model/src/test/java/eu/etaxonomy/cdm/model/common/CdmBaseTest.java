@@ -8,14 +8,14 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -26,9 +26,9 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -83,12 +83,12 @@ public class CdmBaseTest extends EntityTestBase{
 		return new TestCdmBaseClass();
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDownAfterClass() throws Exception {
 		cdmBase = null;
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		cdmBase = getTestCdmBase();
 	}
@@ -145,7 +145,7 @@ public class CdmBaseTest extends EntityTestBase{
 		assertTrue(cdmBase.hasListeners("uuid"));
 
 		cdmBase.setUuid(uuid);
-		org.junit.Assert.assertTrue(listener.isChanged());
+		assertTrue(listener.isChanged());
 	}
 
 	/**

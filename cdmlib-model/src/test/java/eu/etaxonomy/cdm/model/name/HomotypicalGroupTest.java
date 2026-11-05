@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -34,7 +36,7 @@ public class HomotypicalGroupTest extends EntityTestBase {
 	private static TaxonName name3;
 	private static TaxonName name4;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name2 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
@@ -48,24 +50,24 @@ public class HomotypicalGroupTest extends EntityTestBase {
 	public void testGetBasionyms() {
 		name1.addBasionym(name2);
 		Set<TaxonName> basionyms =  name1.getHomotypicalGroup().getBasionyms();
-		Assert.assertNotNull("Basionym set should not be null", basionyms);
-		Assert.assertEquals("Number of basionyms should be 1", 1, basionyms.size());
+		assertNotNull(basionyms, "Basionym set should not be null");
+		assertEquals(1, basionyms.size(), "Number of basionyms should be 1");
 		name3.addBasionym(name2);
 		basionyms =  name2.getHomotypicalGroup().getBasionyms();
-		Assert.assertEquals("Number of basionyms should be 1", 1, basionyms.size());
-		Assert.assertEquals("", name2, basionyms.iterator().next());
+		assertEquals(1, basionyms.size(), "Number of basionyms should be 1");
+		assertEquals(name2, basionyms.iterator().next(), "");
 		name3.addBasionym(name4);
 		basionyms =  name2.getHomotypicalGroup().getBasionyms();
-		Assert.assertEquals("Number of basionyms should be 2", 2, basionyms.size());
-//		Assert.assertEquals("", name2, basionyms.iterator().next());
+		assertEquals(2, basionyms.size(), "Number of basionyms should be 2");
+//		assertEquals(name2, basionyms.iterator().next(), "");
 	}
 
 	@Test
 	public void testGetReplacedSynonym() {
 		name3.addReplacedSynonym(name4, null, null, null, null);
 		Set<TaxonName> replacedSyn =  name3.getHomotypicalGroup().getReplacedSynonym();
-		Assert.assertNotNull("Replaced synonym set should not be null", replacedSyn);
-		Assert.assertEquals("Number of replaced synonym should be 1", 1, replacedSyn.size());
+		assertNotNull(replacedSyn, "Replaced synonym set should not be null");
+		assertEquals(1, replacedSyn.size(), "Number of replaced synonym should be 1");
 	}
 
 	@Test
@@ -74,7 +76,7 @@ public class HomotypicalGroupTest extends EntityTestBase {
 		name3.addBasionym(name2);
 		name4.addReplacedSynonym(name2, null, null, null, null);
 		Set<NameRelationship> rels = name2.getHomotypicalGroup().getBasionymAndReplacedSynonymRelations();
-		Assert.assertEquals("Number of relations should be 3", 3, rels.size());
+		assertEquals(3, rels.size(), "Number of relations should be 3");
 	}
 
 	@Test
@@ -82,10 +84,10 @@ public class HomotypicalGroupTest extends EntityTestBase {
 		name1.addBasionym(name2);
 		name4.addReplacedSynonym(name2, null, null, null, null);
 		Set<TaxonName> unrelatedNames = name2.getHomotypicalGroup().getUnrelatedNames();
-		Assert.assertEquals("Number of unrelatedNames should be 0", 0, unrelatedNames.size());
+		assertEquals(0, unrelatedNames.size(), "Number of unrelatedNames should be 0");
 		name1.getHomotypicalGroup().merge(name3.getHomotypicalGroup());
 		unrelatedNames = name2.getHomotypicalGroup().getUnrelatedNames();
-		Assert.assertEquals("Number of unrelatedNames should be 1", 1, unrelatedNames.size());
+		assertEquals(1, unrelatedNames.size(), "Number of unrelatedNames should be 1");
 	}
 
 	@Test
@@ -97,10 +99,10 @@ public class HomotypicalGroupTest extends EntityTestBase {
 
 		name3.getHomotypicalGroup().setGroupBasionym(name1);
 
-		Assert.assertEquals(1, name2.getBasionyms().size());
-		Assert.assertEquals(1, name3.getBasionyms().size());
-		Assert.assertEquals(1, name4.getBasionyms().size());
-		Assert.assertEquals(name1, name4.getBasionym());
+		assertEquals(1, name2.getBasionyms().size());
+		assertEquals(1, name3.getBasionyms().size());
+		assertEquals(1, name4.getBasionyms().size());
+		assertEquals(name1, name4.getBasionym());
 	}
 
 	@Test
@@ -113,19 +115,19 @@ public class HomotypicalGroupTest extends EntityTestBase {
 		HomotypicalGroup hg = name3.getHomotypicalGroup();
 		hg.setGroupBasionym(name1);
 
-		Assert.assertEquals(1, name2.getBasionyms().size());
-		Assert.assertEquals(1, name3.getBasionyms().size());
-		Assert.assertEquals(1, name4.getBasionyms().size());
-		Assert.assertEquals(name1, name4.getBasionym());
-		Assert.assertEquals(1, hg.getBasionyms().size());
+		assertEquals(1, name2.getBasionyms().size());
+		assertEquals(1, name3.getBasionyms().size());
+		assertEquals(1, name4.getBasionyms().size());
+		assertEquals(name1, name4.getBasionym());
+		assertEquals(1, hg.getBasionyms().size());
 
 		HomotypicalGroup.removeGroupBasionym(name1);
-		Assert.assertEquals(0, hg.getBasionyms().size());
+		assertEquals(0, hg.getBasionyms().size());
 
-		Assert.assertEquals(0, name2.getBasionyms().size());
-		Assert.assertEquals(0, name3.getBasionyms().size());
-		Assert.assertEquals(0, name4.getBasionyms().size());
-		Assert.assertEquals(null, name4.getBasionym());
+		assertEquals(0, name2.getBasionyms().size());
+		assertEquals(0, name3.getBasionyms().size());
+		assertEquals(0, name4.getBasionyms().size());
+		assertEquals(null, name4.getBasionym());
 
 	}
 
@@ -139,9 +141,9 @@ public class HomotypicalGroupTest extends EntityTestBase {
 //		group1.setGroupBasionym(name1);
 //		HomotypicalGroup clone =(HomotypicalGroup)group1.clone();
 //
-//		Assert.assertEquals(clone.getTypifiedNames().size(), group1.getTypifiedNames().size());
+//		assertEquals(clone.getTypifiedNames().size(), group1.getTypifiedNames().size());
 //		TaxonName cloneBasionym = clone.getBasionyms().iterator().next();
 //		TaxonName group1Basionym = group1.getBasionyms().iterator().next();
-//		Assert.assertNotSame(cloneBasionym, group1Basionym);
+//		assertNotSame(cloneBasionym, group1Basionym);
 //	}
 }

@@ -8,17 +8,20 @@
 */
 package eu.etaxonomy.cdm.model.metadata;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
  * @since 2013-07-03
- *
  */
 public class CdmPreferenceTest {
 
@@ -26,30 +29,20 @@ public class CdmPreferenceTest {
 	private String predicate;
 	private String value;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		subject = "/";
 		predicate = "eu.etaxonomy.cdm.model.name.NomenclaturalCode";
 		value = "ICZN";
-
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmPreference#CdmPreferences(java.lang.String, java.lang.String, java.lang.String)}.
-	 */
 	@Test
 	public void testCdmPreferences() {
 		CdmPreference prefs = new CdmPreference(subject, predicate, value);
-		Assert.assertEquals(subject, prefs.getSubjectString());
-		Assert.assertEquals(predicate, prefs.getPredicate());
-		Assert.assertEquals(value, prefs.getValue());
-
-
+		assertEquals(subject, prefs.getSubjectString());
+		assertEquals(predicate, prefs.getPredicate());
+		assertEquals(value, prefs.getValue());
 	}
-
 
 	@Test
 	public void testConstraints() {
@@ -62,43 +55,43 @@ public class CdmPreferenceTest {
 		CdmPreference prefs = null;
 		try {
 			prefs = new CdmPreference(null, predicate, value);
-			Assert.fail("Subject must not be null");
+			fail("Subject must not be null");
 		} catch (Exception e) {
 			//ok
 		}
 		try {
 			prefs = new CdmPreference(veryLongText400, predicate, value);
-			Assert.fail("Subject must not be longer then 255");
+			fail("Subject must not be longer then 255");
 		} catch (Exception e) {
 			//ok
 		}
 
 		try {
 			prefs = new CdmPreference(subject, null, value);
-			Assert.fail("Predicate must not be null");
+			fail("Predicate must not be null");
 		} catch (Exception e) {
 			//ok
 		}
 		try {
 			prefs = new CdmPreference(subject, veryLongText400, value);
-			Assert.fail("Predicate must not be longer then 255");
+			fail("Predicate must not be longer then 255");
 		} catch (Exception e) {
 			//ok
 		}
 
 		try {
 			prefs = new CdmPreference(subject, predicate, null);
-	         Assert.assertEquals(subject, prefs.getSubjectString());
-	         Assert.assertEquals(predicate, prefs.getPredicate());
-	         Assert.assertNull(value, null);
+	         assertEquals(subject, prefs.getSubjectString());
+	         assertEquals(predicate, prefs.getPredicate());
+	         assertNull(null, value);
 		} catch (Exception e) {
-			Assert.fail("Currently null values are allowed in preferences");
+			fail("Currently null values are allowed in preferences");
 
 		}
 		//commented as we allow >65k length now
 //		try {
 //			prefs = new CdmPreference(subject, predicate, veryLongText1200);
-//			Assert.fail("Value must not be longer then 1023");
+//			fail("Value must not be longer then 1023");
 //		} catch (Exception e) {
 //			//ok
 //		}
@@ -111,17 +104,17 @@ public class CdmPreferenceTest {
         try {
             subject2 = "/TaxonNode[#t1#18681#6392#5358#9#2#]/";
             prefs = new CdmPreference(subject2, predicate, value);
-            Assert.assertEquals(subject2, prefs.getSubjectString());
-            Assert.assertEquals(predicate, prefs.getPredicate());
-            Assert.assertEquals(value, prefs.getValue());
+            assertEquals(subject2, prefs.getSubjectString());
+            assertEquals(predicate, prefs.getPredicate());
+            assertEquals(value, prefs.getValue());
         } catch (Exception e) {
-            Assert.fail("Syntax for " + subject2 + " should be ok");
+            fail("Syntax for " + subject2 + " should be ok");
         }
 
         try {
             subject2 = "/TaxonNode[#t1#18681#6392#5358#9#2#]x";
             prefs = new CdmPreference(subject2, predicate, value);
-            Assert.fail("Syntax for " + subject2 + " should fail");
+            fail("Syntax for " + subject2 + " should fail");
         } catch (Exception e) {
             //ok
         }
@@ -129,17 +122,17 @@ public class CdmPreferenceTest {
         try {
             subject2 = "/NamedArea[111bdf38-7a32-440a-9808-8af1c9e54b51]/";
             prefs = new CdmPreference(subject2, predicate, value);
-            Assert.assertEquals(subject2, prefs.getSubjectString());
-            Assert.assertEquals(predicate, prefs.getPredicate());
-            Assert.assertEquals(value, prefs.getValue());
+            assertEquals(subject2, prefs.getSubjectString());
+            assertEquals(predicate, prefs.getPredicate());
+            assertEquals(value, prefs.getValue());
         } catch (Exception e) {
-            Assert.fail();
+            fail();
         }
 
         try {
             subject2 = "/Taxon3Node[#t1#18681#6392#5358#9#2#]";
             prefs = new CdmPreference(subject2, predicate, value);
-            Assert.fail("Syntax for " + subject2 + " should fail");
+            fail("Syntax for " + subject2 + " should fail");
         } catch (Exception e) {
            //ok
         }
@@ -147,7 +140,7 @@ public class CdmPreferenceTest {
         try {
             prefs = CdmPreference.NewVaadinInstance(PreferencePredicate.AvailableDistributionStatus, value);
         } catch (Exception e) {
-            Assert.fail("Syntax for /Vaadin/ should not fail");
+            fail("Syntax for /Vaadin/ should not fail");
         }
 
     }
@@ -157,33 +150,33 @@ public class CdmPreferenceTest {
         //null
         CdmPreference prefs = new CdmPreference(subject, predicate, null);
         List<UUID> list = prefs.getValueUuidList();
-        Assert.assertTrue(list.isEmpty());
+        assertTrue(list.isEmpty());
         //empty
         prefs = new CdmPreference(subject, predicate, " ");
         list = prefs.getValueUuidList();
-        Assert.assertTrue(list.isEmpty());
+        assertTrue(list.isEmpty());
         //singleUuid
         prefs = new CdmPreference(subject, predicate, "1ef35078-fb4a-451d-a15a-127235245358");
         list = prefs.getValueUuidList();
-        Assert.assertEquals(1, list.size());
-        Assert.assertEquals(UUID.fromString("1ef35078-fb4a-451d-a15a-127235245358"), list.get(0));
+        assertEquals(1, list.size());
+        assertEquals(UUID.fromString("1ef35078-fb4a-451d-a15a-127235245358"), list.get(0));
         //mulitple uuids and varying separators
         prefs = new CdmPreference(subject, predicate, "1ef35078-fb4a-451d-a15a-127235245358,a1184db8-e476-4410-b085-d8844ada47e8;43b2cd7d-401b-4565-853f-88ae1c43c55a");
         list = prefs.getValueUuidList();
-        Assert.assertEquals(3, list.size());
-        Assert.assertEquals(UUID.fromString("1ef35078-fb4a-451d-a15a-127235245358"), list.get(0));
-        Assert.assertEquals(UUID.fromString("43b2cd7d-401b-4565-853f-88ae1c43c55a"), list.get(2));
+        assertEquals(3, list.size());
+        assertEquals(UUID.fromString("1ef35078-fb4a-451d-a15a-127235245358"), list.get(0));
+        assertEquals(UUID.fromString("43b2cd7d-401b-4565-853f-88ae1c43c55a"), list.get(2));
         //trailing and preceding separators and whitespaces
         prefs = new CdmPreference(subject, predicate, " ; 1ef35078-fb4a-451d-a15a-127235245358 , a1184db8-e476-4410-b085-d8844ada47e8;43b2cd7d-401b-4565-853f-88ae1c43c55a , ");
         list = prefs.getValueUuidList();
-        Assert.assertEquals(3, list.size());
-        Assert.assertEquals(UUID.fromString("1ef35078-fb4a-451d-a15a-127235245358"), list.get(0));
-        Assert.assertEquals(UUID.fromString("43b2cd7d-401b-4565-853f-88ae1c43c55a"), list.get(2));
+        assertEquals(3, list.size());
+        assertEquals(UUID.fromString("1ef35078-fb4a-451d-a15a-127235245358"), list.get(0));
+        assertEquals(UUID.fromString("43b2cd7d-401b-4565-853f-88ae1c43c55a"), list.get(2));
         //non uuids
         prefs = new CdmPreference(subject, predicate, "xxx 1ef35078-fb4a-451d-a15a-127235245358");
         try {
             list = prefs.getValueUuidList();
-            Assert.fail("Parsing non UUIDs must throw exception");
+            fail("Parsing non UUIDs must throw exception");
         } catch (IllegalArgumentException e) {
             //correct
         }

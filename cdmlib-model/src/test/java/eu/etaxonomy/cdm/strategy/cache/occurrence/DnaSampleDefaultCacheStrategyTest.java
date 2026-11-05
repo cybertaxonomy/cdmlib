@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.occurrence;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.UUID;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -33,32 +35,32 @@ public class DnaSampleDefaultCacheStrategyTest extends TermTestBase {
         dnaSample.setUuid(UUID.fromString("b5fa679f-12a1-4f47-906a-28b41c90f019"));
         DnaSampleDefaultCacheStrategy strategy = new DnaSampleDefaultCacheStrategy();
 
-        Assert.assertEquals("DnaSample#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(dnaSample));
+        assertEquals("DnaSample#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(dnaSample));
 
         Collection collection = Collection.NewInstance();
         collection.setCode("B");
         dnaSample.setCollection(collection);
-        Assert.assertEquals("B", strategy.getTitleCache(dnaSample));
+        assertEquals("B", strategy.getTitleCache(dnaSample));
 
         dnaSample.setAccessionNumber("123");
-        Assert.assertEquals("B 123", strategy.getTitleCache(dnaSample));
+        assertEquals("B 123", strategy.getTitleCache(dnaSample));
 
         Identifier identifier = Identifier.NewInstance(dnaSample, "id3", IdentifierType.IDENTIFIER_NAME_IPNI());
-        Assert.assertEquals("B 123", strategy.getTitleCache(dnaSample));
+        assertEquals("B 123", strategy.getTitleCache(dnaSample));
         dnaSample.setCollection(null);
         dnaSample.setAccessionNumber(null);
-        Assert.assertEquals("id3", strategy.getTitleCache(dnaSample));
+        assertEquals("id3", strategy.getTitleCache(dnaSample));
 
         dnaSample.putDefinition(Language.ENGLISH(), "sample definition");
-        Assert.assertEquals("id3", strategy.getTitleCache(dnaSample));
+        assertEquals("id3", strategy.getTitleCache(dnaSample));
         dnaSample.removeIdentifier(identifier);
-        Assert.assertEquals("sample definition", strategy.getTitleCache(dnaSample));
+        assertEquals("sample definition", strategy.getTitleCache(dnaSample));
 
         dnaSample.addImportSource("123", "dna", null, null);
-        Assert.assertEquals("sample definition", strategy.getTitleCache(dnaSample));
+        assertEquals("sample definition", strategy.getTitleCache(dnaSample));
         dnaSample.removeDefinition(Language.ENGLISH());
-        Assert.assertEquals("dna:123", strategy.getTitleCache(dnaSample));
+        assertEquals("dna:123", strategy.getTitleCache(dnaSample));
 
-        Assert.assertNull(strategy.getTitleCache(null));
+        assertNull(strategy.getTitleCache(null));
     }
 }

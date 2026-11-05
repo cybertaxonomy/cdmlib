@@ -8,10 +8,11 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
 
@@ -21,9 +22,8 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.MutableDateTime;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -42,9 +42,9 @@ public class ExtendedTimePeriodTest {
     private static final Integer month = 1;
     private static final Integer day = 5;
 
-    private static final String SEP = TimePeriod.SEP;
+    private static final String SEP = TimePeriodBase.SEP;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         onlyStartYear = ExtendedTimePeriod.NewExtendedYearInstance(1922);
         onlyEndYear = ExtendedTimePeriod.NewExtendedYearInstance(null, 1857);
@@ -59,23 +59,23 @@ public class ExtendedTimePeriodTest {
     @Test
     public void testNewExtendedInstance() {
         ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance();
-        Assert.assertNotNull(tp);
-        Assert.assertTrue("VerbatimTimeperiod should be empty",tp.isEmpty());
+        assertNotNull(tp);
+        assertTrue(tp.isEmpty(), "VerbatimTimeperiod should be empty");
     }
 
     @Test
     public void testNewExtendedInstancePartial() {
         ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(new Partial().with(DateTimeFieldType.dayOfWeek(), 5));
-        Assert.assertNotNull(tp);
-        Assert.assertFalse("VerbatimTimeperiod should not be empty",tp.isEmpty());
+        assertNotNull(tp);
+        assertFalse(tp.isEmpty(), "VerbatimTimeperiod should not be empty");
     }
 
     @Test
     public void testNewExtendedInstancePartialPartial() {
         ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(new Partial().with(DateTimeFieldType.dayOfMonth(),day));
-        Assert.assertNotNull(tp);
-        Assert.assertFalse("VerbatimTimeperiod should not be empty",tp.isEmpty());
-        Assert.assertEquals("VerbatimTimeperiod's should not be empty", day, tp.getStartDay());
+        assertNotNull(tp);
+        assertFalse(tp.isEmpty(), "VerbatimTimeperiod should not be empty");
+        assertEquals(day, tp.getStartDay(), "VerbatimTimeperiod's should not be empty");
     }
 
     @Test
@@ -99,9 +99,9 @@ public class ExtendedTimePeriodTest {
         Calendar cal = Calendar.getInstance();
         cal.set(1982, 1, day);
         ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(cal);
-        Assert.assertNotNull(tp);
-        Assert.assertFalse("Timeperiod should not be empty",tp.isEmpty());
-        Assert.assertEquals("Timeperiod's should not be empty", day, tp.getStartDay());
+        assertNotNull(tp);
+        assertFalse(tp.isEmpty(), "Timeperiod should not be empty");
+        assertEquals(day, tp.getStartDay(), "Timeperiod's should not be empty");
     }
 
     @Test
@@ -124,36 +124,36 @@ public class ExtendedTimePeriodTest {
         Integer year4 = 1986;
         cal4.set(year4, month4, day4);
         ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(cal, cal2, cal3, cal4);
-        Assert.assertNotNull(tp);
-        Assert.assertFalse("Timeperiod should not be empty",tp.isEmpty());
-        Assert.assertEquals("Timeperiod's start year shold be equal to year", year, tp.getStartYear());
+        assertNotNull(tp);
+        assertFalse(tp.isEmpty(), "Timeperiod should not be empty");
+        assertEquals(year, tp.getStartYear(), "Timeperiod's start year shold be equal to year");
         //Calendar starts counting months with 0
-        Assert.assertEquals("Timeperiod's start month should be equal to month+1 ", (Integer)(month +1), tp.getStartMonth());
-        Assert.assertEquals("Timeperiod's start day should be equal to day", day, tp.getStartDay());
+        assertEquals((Integer)(month +1), tp.getStartMonth(), "Timeperiod's start month should be equal to month+1 ");
+        assertEquals(day, tp.getStartDay(), "Timeperiod's start day should be equal to day");
 
-        Assert.assertEquals("Timeperiod's end year should be equal to year2", year2, tp.getEndYear());
+        assertEquals(year2, tp.getEndYear(), "Timeperiod's end year should be equal to year2");
         //Calendar starts counting months with 0
-        Assert.assertEquals("Timeperiod's end month should be equal with month2(+1)", (Integer)(month2+1), tp.getEndMonth());
-        Assert.assertEquals("Timeperiod's end day should be equal with day2", day2, tp.getEndDay());
+        assertEquals((Integer)(month2+1), tp.getEndMonth(), "Timeperiod's end month should be equal with month2(+1)");
+        assertEquals(day2, tp.getEndDay(), "Timeperiod's end day should be equal with day2");
 
-        Assert.assertEquals("Timeperiod's extreme start year shold be equal to year3", year3, tp.getExtremeStartYear());
+        assertEquals(year3, tp.getExtremeStartYear(), "Timeperiod's extreme start year shold be equal to year3");
         //Calendar starts counting months with 0
-        Assert.assertEquals("Timeperiod's extreme start month should be equal to month3+1 ", (Integer)(month3 +1), tp.getExtremeStartMonth());
-        Assert.assertEquals("Timeperiod's extreme start day should be equal to day3", day3, tp.getExtremeStartDay());
+        assertEquals((Integer)(month3 +1), tp.getExtremeStartMonth(), "Timeperiod's extreme start month should be equal to month3+1 ");
+        assertEquals(day3, tp.getExtremeStartDay(), "Timeperiod's extreme start day should be equal to day3");
 
-        Assert.assertEquals("Timeperiod's extreme end year should be equal to year4", year4, tp.getExtremeEndYear());
+        assertEquals(year4, tp.getExtremeEndYear(), "Timeperiod's extreme end year should be equal to year4");
         //Calendar starts counting months with 0
-        Assert.assertEquals("Timeperiod's extreme end month should be equal with month4(+1)", (Integer)(month4+1), tp.getExtremeEndMonth());
-        Assert.assertEquals("Timeperiod's extreme end day should be equal with day4", day4, tp.getExtremeEndDay());
+        assertEquals((Integer)(month4+1), tp.getExtremeEndMonth(), "Timeperiod's extreme end month should be equal with month4(+1)");
+        assertEquals(day4, tp.getExtremeEndDay(), "Timeperiod's extreme end day should be equal with day4");
     }
 
     @Test
     public void testNewExtendedInstanceReadableInstant() {
         ReadableInstant readInst = new MutableDateTime();
         ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(readInst);
-        Assert.assertNotNull(tp);
-        Assert.assertFalse("Timeperiod should not be empty",tp.isEmpty());
-        Assert.assertEquals("Timeperiod's should not be empty", (Integer)readInst.get(DateTimeFieldType.dayOfMonth()), tp.getStartDay());
+        assertNotNull(tp);
+        assertFalse(tp.isEmpty(), "Timeperiod should not be empty");
+        assertEquals((Integer)readInst.get(DateTimeFieldType.dayOfMonth()), tp.getStartDay(), "Timeperiod's should not be empty");
     }
 
     @Test
@@ -165,32 +165,32 @@ public class ExtendedTimePeriodTest {
         ReadableInstant readInst4 = new MutableDateTime();
         ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(readInst, readInst2, readInst3, readInst4);
 
-        Assert.assertNotNull(tp);
-        Assert.assertFalse("Timeperiod should not be empty",tp.isEmpty());
-        Assert.assertEquals("Timeperiod's day should be equal to readable instant day", (Integer)readInst.get(DateTimeFieldType.dayOfMonth()), tp.getStartDay());
-        Assert.assertEquals("Timeperiod's day should be equal to readable instant day", (Integer)readInst2.get(DateTimeFieldType.dayOfMonth()), tp.getEndDay());
+        assertNotNull(tp);
+        assertFalse(tp.isEmpty(), "Timeperiod should not be empty");
+        assertEquals((Integer)readInst.get(DateTimeFieldType.dayOfMonth()), tp.getStartDay(), "Timeperiod's day should be equal to readable instant day");
+        assertEquals((Integer)readInst2.get(DateTimeFieldType.dayOfMonth()), tp.getEndDay(), "Timeperiod's day should be equal to readable instant day");
     }
 
     @Test
     public void testCalendarToPartial() {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, day);
-        Partial part = TimePeriod.calendarToPartial(cal);
-        Assert.assertEquals("Partial's day should not be equal to calednars day", day, (Integer)part.get(DateTimeFieldType.dayOfMonth()));
+        Partial part = TimePeriodBase.calendarToPartial(cal);
+        assertEquals(day, (Integer)part.get(DateTimeFieldType.dayOfMonth()), "Partial's day should not be equal to calednars day");
     }
 
     @Test
     public void testReadableInstantToPartial() {
         ReadableInstant readInst = new MutableDateTime();
-        Partial part = TimePeriod.readableInstantToPartial(readInst);
+        Partial part = TimePeriodBase.readableInstantToPartial(readInst);
         part.get(DateTimeFieldType.dayOfMonth());
-        Assert.assertEquals("Partial's day should not be equal to calednars day", (Integer)part.get(DateTimeFieldType.dayOfMonth()), (Integer)part.get(DateTimeFieldType.dayOfMonth()));
+        assertEquals((Integer)part.get(DateTimeFieldType.dayOfMonth()), (Integer)part.get(DateTimeFieldType.dayOfMonth()), "Partial's day should not be equal to calednars day");
     }
 
     @Test
     public void testTimePeriod() {
         TimePeriod tp = new TimePeriod();
-        Assert.assertNotNull("Time period must be created",tp);
+        assertNotNull(tp, "Time period must be created");
     }
 
     @Test
@@ -204,26 +204,26 @@ public class ExtendedTimePeriodTest {
 
         ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(startDate);
         String startString = tp.toString();
-        assertNull("Freetext should be not set", tp.getFreeText());
+        assertNull(tp.getFreeText(), "Freetext should be not set");
         tp.setStart(newStartDate);
         String changedString = tp.toString();
-        Assert.assertTrue("Setting the partial should change the string representation of the TimePeriod", !startString.equals(changedString));
+        assertTrue(!startString.equals(changedString), "Setting the partial should change the string representation of the TimePeriod");
 
 //        //
 //        tp = TimePeriodParser.parseStringVerbatim("1752");
-//        assertNull("Freetext should be not set", tp.getFreeText());
+//        assertNull(tp.getFreeText(), "Freetext should be not set");
 //        startString = tp.toString();
 //        tp.setStart(newStartDate);
 //        changedString = tp.toString();
-//        Assert.assertTrue("Setting a partial for a parsed time period should change the string representation of the TimePeriod ", !startString.equals(changedString));
+//        assertTrue(!startString.equals(changedString), "Setting a partial for a parsed time period should change the string representation of the TimePeriod ");
 //
 //        //
 //        tp = TimePeriodParser.parseStringVerbatim("any strange date");
-//        assertNotNull("Freetext should be set", tp.getFreeText());
+//        assertNotNull(tp.getFreeText(), "Freetext should be set");
 //        startString = tp.toString();
 //        tp.setStart(newStartDate);
 //        changedString = tp.toString();
-//        Assert.assertEquals("Setting a partial for a time period having the freetext set should not change the string representation of the TimePeriod  ", startString, changedString);
+//        assertEquals(startString, changedString, "Setting a partial for a time period having the freetext set should not change the string representation of the TimePeriod  ");
 //
 
         //
@@ -233,7 +233,7 @@ public class ExtendedTimePeriodTest {
 //      tp.setStart(newStartDate);
 //      changedString = tp.toString();
 //
-//      Assert.assertTrue("Setting a partial for a parsed time period should change the string representation of the TimePeriod ", !startString.equals(changedString));
+//      assertTrue(!startString.equals(changedString), "Setting a partial for a parsed time period should change the string representation of the TimePeriod ");
     }
 
     @Test
@@ -253,8 +253,8 @@ public class ExtendedTimePeriodTest {
         TimePeriod tp = new TimePeriod();
         Partial start = new Partial(DateTimeFieldType.year(), 1999);
         tp.setStart(start);
-        Assert.assertEquals("Start year should be 1999", Integer.valueOf(1999), tp.getStartYear());
-        Assert.assertEquals("Start should be 'start'", start, tp.getStart());
+        assertEquals(Integer.valueOf(1999), tp.getStartYear(), "Start year should be 1999");
+        assertEquals(start, tp.getStart(), "Start should be 'start'");
     }
 
     @Test
@@ -262,17 +262,17 @@ public class ExtendedTimePeriodTest {
         TimePeriod tp = new TimePeriod();
         Partial end = new Partial(DateTimeFieldType.year(), 1999);
         tp.setEnd(end);
-        Assert.assertEquals("End year should be 1999", Integer.valueOf(1999), tp.getEndYear());
-        Assert.assertEquals("End should be 'end'", end, tp.getEnd());
+        assertEquals(Integer.valueOf(1999), tp.getEndYear(), "End year should be 1999");
+        assertEquals(end, tp.getEnd(), "End should be 'end'");
     }
 
     @Test
     public void testGetYear() {
         TimePeriod tp = new TimePeriod();
         tp.setStartYear(1999);
-        Assert.assertEquals("Year should be 1999", "1999", tp.getYear());
+        assertEquals("1999", tp.getYear(), "Year should be 1999");
         tp.setEndYear(2002);
-        Assert.assertEquals("Year should be 1999"+SEP+"2002", "1999"+SEP+"2002", tp.getYear());
+        assertEquals("1999"+SEP+"2002", tp.getYear(), "Year should be 1999"+SEP+"2002");
     }
 
     @Test
@@ -301,21 +301,21 @@ public class ExtendedTimePeriodTest {
         tp1.setExtremeEndMonth(endMonth2);
         tp1.setFreeText(freeText);
         ExtendedTimePeriod tpClone = tp1.clone();
-        Assert.assertEquals("Start year must be 1788.", startYear, tpClone.getStartYear());
-        Assert.assertEquals("Start month must be 6.", startMonth, tpClone.getStartMonth());
-        Assert.assertEquals("Start day must be 25.", startDay, tpClone.getStartDay());
-        Assert.assertEquals("End year must be 1799.", endYear, tpClone.getEndYear());
-        Assert.assertEquals("End month must be 12.", endMonth, tpClone.getEndMonth());
-        Assert.assertEquals("End day must be 21.", endDay, tpClone.getEndDay());
+        assertEquals(startYear, tpClone.getStartYear(), "Start year must be 1788.");
+        assertEquals(startMonth, tpClone.getStartMonth(), "Start month must be 6.");
+        assertEquals(startDay, tpClone.getStartDay(), "Start day must be 25.");
+        assertEquals(endYear, tpClone.getEndYear(), "End year must be 1799.");
+        assertEquals(endMonth, tpClone.getEndMonth(), "End month must be 12.");
+        assertEquals(endDay, tpClone.getEndDay(), "End day must be 21.");
 
         ExtendedTimePeriod tpCloneExtended = tpClone;
-        Assert.assertEquals("Extreme start year must be 1787.", startYear2, tpCloneExtended.getExtremeStartYear());
-        Assert.assertEquals("Extreme start month must be 5.", startMonth2, tpCloneExtended.getExtremeStartMonth());
-        Assert.assertEquals("Extreme start day must be 24.", startDay2, tpCloneExtended.getExtremeStartDay());
-        Assert.assertEquals("Extreme end year must be 1798.", endYear2, tpCloneExtended.getExtremeEndYear());
-        Assert.assertEquals("Extreme end month must be 11.", endMonth2, tpCloneExtended.getExtremeEndMonth());
-        Assert.assertEquals("Extreme end day must be 20.", endDay2, tpCloneExtended.getExtremeEndDay());
-        Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
+        assertEquals(startYear2, tpCloneExtended.getExtremeStartYear(), "Extreme start year must be 1787.");
+        assertEquals(startMonth2, tpCloneExtended.getExtremeStartMonth(), "Extreme start month must be 5.");
+        assertEquals(startDay2, tpCloneExtended.getExtremeStartDay(), "Extreme start day must be 24.");
+        assertEquals(endYear2, tpCloneExtended.getExtremeEndYear(), "Extreme end year must be 1798.");
+        assertEquals(endMonth2, tpCloneExtended.getExtremeEndMonth(), "Extreme end month must be 11.");
+        assertEquals(endDay2, tpCloneExtended.getExtremeEndDay(), "Extreme end day must be 20.");
+        assertEquals(tp1, tpClone, "Cloned time period must be equal to originial");
     }
 
     @Test
@@ -328,40 +328,40 @@ public class ExtendedTimePeriodTest {
 
         ExtendedTimePeriod tp1 = ExtendedTimePeriod.NewExtendedYearInstance(startYear);
         ExtendedTimePeriod tpClone = tp1.clone();
-        Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
+        assertEquals(tp1, tpClone, "Cloned time period must be equal to originial");
 
         tp1.setStartMonth(startMonth);
-        Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
+        assertFalse(tp1.equals(tpClone), "Cloned time period must not be equal to originial");
         tpClone = tp1.clone();
-        Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
+        assertEquals(tp1, tpClone, "Cloned time period must be equal to originial");
 
 
         tp1.setEndYear(endYear);
-        Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
+        assertFalse(tp1.equals(tpClone), "Cloned time period must not be equal to originial");
         tpClone = tp1.clone();
-        Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
+        assertEquals(tp1, tpClone, "Cloned time period must be equal to originial");
 
         tp1.setEndDay(endDay);
-        Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
+        assertFalse(tp1.equals(tpClone), "Cloned time period must not be equal to originial");
         tpClone = tp1.clone();
-        Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
+        assertEquals(tp1, tpClone, "Cloned time period must be equal to originial");
 
         tp1.setFreeText(freeText);
-        Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
+        assertFalse(tp1.equals(tpClone), "Cloned time period must not be equal to originial");
         tpClone = tp1.clone();
-        Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
+        assertEquals(tp1, tpClone, "Cloned time period must be equal to originial");
 
         tp1 = ExtendedTimePeriod.NewExtendedInstance();
-        Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
+        assertFalse(tp1.equals(tpClone), "Cloned time period must not be equal to originial");
         ExtendedTimePeriod tp2 = ExtendedTimePeriod.NewExtendedInstance();
-        Assert.assertEquals("Empty time periods must be equal", tp1, tp2);
+        assertEquals(tp1, tp2, "Empty time periods must be equal");
 
         tp1.setFreeText(freeText);
-        Assert.assertFalse("Tp2 must not be equal to originial", tp1.equals(tp2));
+        assertFalse(tp1.equals(tp2), "Tp2 must not be equal to originial");
         tp2.setFreeText("jldskjlfi");
-        Assert.assertFalse("Tp2 must not be equal to originial", tp1.equals(tpClone));
+        assertFalse(tp1.equals(tpClone), "Tp2 must not be equal to originial");
         tp2.setFreeText(freeText);
-        Assert.assertEquals("Tp2 must be equal", tp1, tp2);
+        assertEquals(tp1, tp2, "Tp2 must be equal");
     }
 
 }

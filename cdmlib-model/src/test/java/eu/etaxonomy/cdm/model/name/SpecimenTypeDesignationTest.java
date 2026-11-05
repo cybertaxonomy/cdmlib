@@ -8,16 +8,16 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -35,7 +35,7 @@ public class SpecimenTypeDesignationTest extends EntityTestBase {
 	private SpecimenTypeDesignation term1 = null;
 	private SpecimenTypeDesignation term2 = null;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		term1 = new SpecimenTypeDesignation();
 		term2 = new SpecimenTypeDesignation(DerivedUnit.NewPreservedSpecimenInstance(),

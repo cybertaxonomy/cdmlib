@@ -8,8 +8,12 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -39,24 +43,24 @@ public class TypeDesignationBaseTest extends EntityTestBase {
         registration1.addTypeDesignation(originalDesignation);
 
         //pre assert
-        Assert.assertTrue(originalDesignation instanceof TypeDesignationBase);
-        Assert.assertEquals(1, name1.getTypeDesignations().size());
-        Assert.assertTrue(name1.getTypeDesignations().contains(originalDesignation));
-        Assert.assertTrue(originalDesignation.getRegistrations().contains(registration1));
-        Assert.assertNotNull(status);
+        assertTrue(originalDesignation instanceof TypeDesignationBase);
+        assertEquals(1, name1.getTypeDesignations().size());
+        assertTrue(name1.getTypeDesignations().contains(originalDesignation));
+        assertTrue(originalDesignation.getRegistrations().contains(registration1));
+        assertNotNull(status);
 
         //clone
         SpecimenTypeDesignation clonedDesignation = originalDesignation.clone();
 
         //post assert
-        Assert.assertEquals(2, name1.getTypeDesignations().size());
-        Assert.assertTrue(name1.getTypeDesignations().contains(clonedDesignation));
-        Assert.assertTrue(clonedDesignation.getTypifiedNames().contains(name1));
-        Assert.assertEquals(2, registration1.getTypeDesignations().size());
-        Assert.assertTrue(registration1.getTypeDesignations().contains(clonedDesignation));
-        Assert.assertTrue(clonedDesignation.getRegistrations().contains(registration1));
+        assertEquals(2, name1.getTypeDesignations().size());
+        assertTrue(name1.getTypeDesignations().contains(clonedDesignation));
+        assertTrue(clonedDesignation.getTypifiedNames().contains(name1));
+        assertEquals(2, registration1.getTypeDesignations().size());
+        assertTrue(registration1.getTypeDesignations().contains(clonedDesignation));
+        assertTrue(clonedDesignation.getRegistrations().contains(registration1));
 
-        Assert.assertSame(citation, clonedDesignation.getCitation());
-        Assert.assertSame(status, clonedDesignation.getTypeStatus());
+        assertSame(citation, clonedDesignation.getCitation());
+        assertSame(status, clonedDesignation.getTypeStatus());
     }
 }

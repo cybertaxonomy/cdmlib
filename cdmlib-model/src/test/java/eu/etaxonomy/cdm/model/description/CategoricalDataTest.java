@@ -8,15 +8,19 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -35,7 +39,7 @@ public class CategoricalDataTest {
 
     private CategoricalData categorialData;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         categorialData = CategoricalData.NewInstance();
         Media media = Media.NewInstance(null, 1000, "jpeg", null);
@@ -74,7 +78,7 @@ public class CategoricalDataTest {
         data.addStateData(stateData2);
 
         List<DefinedTermBase<?>> states = data.getStatesOnly();
-        Assert.assertEquals("There should be 2 states", 2, states.size());
+        assertEquals(2, states.size(), "There should be 2 states");
 
     }
 
@@ -88,7 +92,7 @@ public class CategoricalDataTest {
         State useCategory1 = State.NewInstance("My first use category", "use category 1", null);
         useCategoryVocabulary.addTerm(useCategory1);
         data.addStateData(useCategory1);
-        Assert.assertEquals("There should be 1 state now", 1, data.getStateData().size());
+        assertEquals(1, data.getStateData().size(), "There should be 1 state now");
 
         State useCategory2 = State.NewInstance("My favorite use category", "use category 2", null);
         useCategoryVocabulary.addTerm(useCategory2);
@@ -99,10 +103,10 @@ public class CategoricalDataTest {
 
         // setting new states and thus removing useCategory1
         List<StateData> stateDataList = data.setStateDataOnly(newStates);
-        Assert.assertEquals("There should be 2 StateData objects", 2, stateDataList.size());
-        Assert.assertEquals("There should be 2 StateData objects", 2, data.getStateData().size());
-        Assert.assertFalse("Category 1 should not be included anymore", data.getStatesOnly().contains(useCategory1));
-        Assert.assertTrue("Category 2 should be included", data.getStatesOnly().contains(useCategory2));
+        assertEquals(2, stateDataList.size(), "There should be 2 StateData objects");
+        assertEquals(2, data.getStateData().size(), "There should be 2 StateData objects");
+        assertFalse(data.getStatesOnly().contains(useCategory1), "Category 1 should not be included anymore");
+        assertTrue(data.getStatesOnly().contains(useCategory2), "Category 2 should be included");
 
     }
 

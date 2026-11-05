@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.model.reference;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 
 /**
@@ -37,7 +37,7 @@ public class PublicationBaseTest {
 	private String place1;
 	private String place2;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		publisher1 = "publisher1";
 		publisher2 = "publisher2";
@@ -49,14 +49,14 @@ public class PublicationBaseTest {
 
 	@Test
 	public void testAddPublisherStringString() {
-		assertEquals("No publisher is set", null, reference.getPublisher());
+		assertEquals(null, reference.getPublisher(), "No publisher is set");
 		reference.setPublisher(publisher1, place1);
-		assertEquals("The publishers is publisher1", publisher1, reference.getPublisher());
-		assertEquals("The place is place1", place1, reference.getPlacePublished());
+		assertEquals(publisher1, reference.getPublisher(), "The publishers is publisher1");
+		assertEquals(place1, reference.getPlacePublished(), "The place is place1");
 		reference.setPublisher(publisher2, place2);
-		assertEquals("Second publisher must be publisher2", publisher2, reference.getPublisher());
+		assertEquals(publisher2, reference.getPublisher(), "Second publisher must be publisher2");
 
-		assertEquals("Second publication place must be place2", place2, reference.getPlacePublished());
+		assertEquals(place2, reference.getPlacePublished(), "Second publication place must be place2");
 	}
 
 	@Test
@@ -78,8 +78,8 @@ public class PublicationBaseTest {
 		reference.setPublisher(publisher1, place1);
 //		publicationBase.addPublisher(publisher2, place2);
 		Reference clone = (Reference)reference.clone();
-		assertEquals("Publisher place must be equal in original publication and cloned publication", place1, clone.getPlacePublished());
-		Assert.assertSame(place1, reference.getPublisher(), clone.getPublisher());
+		assertEquals(place1, clone.getPlacePublished(), "Publisher place must be equal in original publication and cloned publication");
+		assertSame(reference.getPublisher(), clone.getPublisher(), place1);
 	}
 
     @Test

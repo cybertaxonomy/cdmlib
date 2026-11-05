@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.compare.taxon;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -90,40 +92,40 @@ public class TaxonNodeNaturalComparatorTest {
         int i = 0;
         logger.debug("order using default settings");
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_1, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_1, taxonNodes.get(i).getTaxon().getName().getNameCache());
 
         i++;
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_2, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_2, taxonNodes.get(i).getTaxon().getName().getNameCache());
 
         i++;
         logger.debug(taxonNodes.get(3).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_3, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_3, taxonNodes.get(i).getTaxon().getName().getNameCache());
 
         i++;
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_4, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_4, taxonNodes.get(i).getTaxon().getName().getNameCache());
 
         //add aditional taxon
         TaxonNode node5 = classification.addChildTaxon(taxon_5, 1, null, null);
         node5.setTreeIndex("#t1#1#30#");
-        Assert.assertTrue(node5.getSortIndex() == 1);
+        assertTrue(node5.getSortIndex() == 1);
         taxonNodes.add(node5);
         Collections.sort(taxonNodes, taxonNodeComparator);
 
         i = 0;
 
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_1, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_1, taxonNodes.get(i).getTaxon().getName().getNameCache());
         i++;
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_2, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_2, taxonNodes.get(i).getTaxon().getName().getNameCache());
         i++;
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_5, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_5, taxonNodes.get(i).getTaxon().getName().getNameCache());
         i++;
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_3, taxonNodes.get(i).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_3, taxonNodes.get(i).getTaxon().getName().getNameCache());
 
     }
 

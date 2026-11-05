@@ -8,13 +8,14 @@
 */
 package eu.etaxonomy.cdm.model.occurrence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.ZonedDateTime;
 import java.util.Comparator;
@@ -24,9 +25,8 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 
 import com.ibm.lsid.MalformedLSIDException;
@@ -69,7 +69,7 @@ public class SpecimenTest extends EntityTestBase {
 
 	private DerivedUnit specimen;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		specimen = DerivedUnit.NewPreservedSpecimenInstance();
 	}
@@ -95,76 +95,76 @@ public class SpecimenTest extends EntityTestBase {
 
 	@Test
 	public void testBidirectionalSpecimenDescription(){
-		Assert.assertNotNull("Specimen should exist", specimen);
+		assertNotNull(specimen, "Specimen should exist");
 
 		SpecimenDescription desc = SpecimenDescription.NewInstance(specimen);
-		Assert.assertNotNull("Description should exist.", desc);
-		Assert.assertSame("Descriptions specimen should be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
-		Assert.assertTrue("Specimen should contain description", specimen.getDescriptions().contains(desc));
+		assertNotNull(desc, "Description should exist.");
+		assertSame(desc.getDescribedSpecimenOrObservation(), specimen, "Descriptions specimen should be set correctly");
+		assertTrue(specimen.getDescriptions().contains(desc), "Specimen should contain description");
 
 		SpecimenDescription desc2 = SpecimenDescription.NewInstance();
-		Assert.assertNotNull("Description should exist.", desc2);
+		assertNotNull(desc2, "Description should exist.");
 		specimen.addDescription(desc2);
-		Assert.assertSame("Description2 specimen should be set correctly", desc2.getDescribedSpecimenOrObservation(),specimen);
-		Assert.assertSame("Descriptions specimen should still be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
-		Assert.assertTrue("Specimen should contain description2", specimen.getDescriptions().contains(desc2));
-		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
+		assertSame(desc2.getDescribedSpecimenOrObservation(), specimen, "Description2 specimen should be set correctly");
+		assertSame(desc.getDescribedSpecimenOrObservation(), specimen, "Descriptions specimen should still be set correctly");
+		assertTrue(specimen.getDescriptions().contains(desc2), "Specimen should contain description2");
+		assertTrue(specimen.getDescriptions().contains(desc), "Specimen should still contain description");
 
 		SpecimenDescription desc3 = SpecimenDescription.NewInstance();
-		Assert.assertNotNull("Description should exist.", desc3);
+		assertNotNull(desc3, "Description should exist.");
 		desc3.setDescribedSpecimenOrObservation(specimen);
-		Assert.assertSame("Description3 specimen should be set correctly", desc3.getDescribedSpecimenOrObservation(),specimen);
-		Assert.assertSame("Descriptions2 specimen should still be set correctly", desc2.getDescribedSpecimenOrObservation(),specimen);
-		Assert.assertSame("Descriptions specimen should still be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
-		Assert.assertTrue("Specimen should contain description3", specimen.getDescriptions().contains(desc3));
-		Assert.assertTrue("Specimen should still contain description2", specimen.getDescriptions().contains(desc2));
-		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
+		assertSame(desc3.getDescribedSpecimenOrObservation(), specimen, "Description3 specimen should be set correctly");
+		assertSame(desc2.getDescribedSpecimenOrObservation(), specimen, "Descriptions2 specimen should still be set correctly");
+		assertSame(desc.getDescribedSpecimenOrObservation(), specimen, "Descriptions specimen should still be set correctly");
+		assertTrue(specimen.getDescriptions().contains(desc3), "Specimen should contain description3");
+		assertTrue(specimen.getDescriptions().contains(desc2), "Specimen should still contain description2");
+		assertTrue(specimen.getDescriptions().contains(desc), "Specimen should still contain description");
 
 		//change specimen of a given description
 		DerivedUnit specimen2 = DerivedUnit.NewPreservedSpecimenInstance();
-		Assert.assertNotNull("Specimen should exist.", specimen2);
+		assertNotNull(specimen2, "Specimen should exist.");
 		desc3.setDescribedSpecimenOrObservation(specimen2);
-		Assert.assertSame("Description3 new specimen should be set correctly", desc3.getDescribedSpecimenOrObservation(),specimen2);
-		Assert.assertSame("Descriptions2 specimen should still be set correctly", desc2.getDescribedSpecimenOrObservation(),specimen);
-		Assert.assertSame("Descriptions specimen should still be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
-		Assert.assertTrue("Specimen2 should contain description3", specimen2.getDescriptions().contains(desc3));
-		Assert.assertEquals("Specimen2 should contain exactly 1 description", 1, specimen2.getDescriptions().size());
-		Assert.assertFalse("Specimen should no longer contain description3", specimen.getDescriptions().contains(desc3));
-		Assert.assertTrue("Specimen should still contain description2", specimen.getDescriptions().contains(desc2));
-		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
+		assertSame(desc3.getDescribedSpecimenOrObservation(), specimen2, "Description3 new specimen should be set correctly");
+		assertSame(desc2.getDescribedSpecimenOrObservation(), specimen, "Descriptions2 specimen should still be set correctly");
+		assertSame(desc.getDescribedSpecimenOrObservation(), specimen, "Descriptions specimen should still be set correctly");
+		assertTrue(specimen2.getDescriptions().contains(desc3), "Specimen2 should contain description3");
+		assertEquals(1, specimen2.getDescriptions().size(), "Specimen2 should contain exactly 1 description");
+		assertFalse(specimen.getDescriptions().contains(desc3), "Specimen should no longer contain description3");
+		assertTrue(specimen.getDescriptions().contains(desc2), "Specimen should still contain description2");
+		assertTrue(specimen.getDescriptions().contains(desc), "Specimen should still contain description");
 
 		//remove description which is not contained
 		specimen.removeDescription(desc3);
-		Assert.assertSame("Nothing should have changed", desc3.getDescribedSpecimenOrObservation(),specimen2);
-		Assert.assertSame("Nothing should have changed", desc2.getDescribedSpecimenOrObservation(),specimen);
-		Assert.assertSame("Nothing should have changed", desc.getDescribedSpecimenOrObservation(),specimen);
-		Assert.assertTrue("Nothing should have changed", specimen2.getDescriptions().contains(desc3));
-		Assert.assertEquals("Nothing should have changed", 1, specimen2.getDescriptions().size());
-		Assert.assertFalse("Nothing should have changed", specimen.getDescriptions().contains(desc3));
-		Assert.assertTrue("Nothing should have changed", specimen.getDescriptions().contains(desc2));
-		Assert.assertTrue("Nothing should have changed", specimen.getDescriptions().contains(desc));
+		assertSame(desc3.getDescribedSpecimenOrObservation(), specimen2, "Nothing should have changed");
+		assertSame(desc2.getDescribedSpecimenOrObservation(), specimen, "Nothing should have changed");
+		assertSame(desc.getDescribedSpecimenOrObservation(), specimen, "Nothing should have changed");
+		assertTrue(specimen2.getDescriptions().contains(desc3), "Nothing should have changed");
+		assertEquals(1, specimen2.getDescriptions().size(), "Nothing should have changed");
+		assertFalse(specimen.getDescriptions().contains(desc3), "Nothing should have changed");
+		assertTrue(specimen.getDescriptions().contains(desc2), "Nothing should have changed");
+		assertTrue(specimen.getDescriptions().contains(desc), "Nothing should have changed");
 
 		//remove description
 		specimen.removeDescription(desc2);
-		Assert.assertNull("Descriptions2 specimen should not exist anymore", desc2.getDescribedSpecimenOrObservation());
-		Assert.assertSame("Description3 specimen should still be set correctly", desc3.getDescribedSpecimenOrObservation(),specimen2);
-		Assert.assertSame("Descriptions specimen should still be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
-		Assert.assertTrue("Specimen2 should still contain description3", specimen2.getDescriptions().contains(desc3));
-		Assert.assertEquals("Specimen2 should still contain exactly 1 description", 1, specimen2.getDescriptions().size());
-		Assert.assertFalse("Specimen should not contain description2 anymore", specimen.getDescriptions().contains(desc2));
-		Assert.assertFalse("Specimen should still no longer contain description3", specimen.getDescriptions().contains(desc3));
-		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
+		assertNull(desc2.getDescribedSpecimenOrObservation(), "Descriptions2 specimen should not exist anymore");
+		assertSame(desc3.getDescribedSpecimenOrObservation(), specimen2, "Description3 specimen should still be set correctly");
+		assertSame(desc.getDescribedSpecimenOrObservation(), specimen, "Descriptions specimen should still be set correctly");
+		assertTrue(specimen2.getDescriptions().contains(desc3), "Specimen2 should still contain description3");
+		assertEquals(1, specimen2.getDescriptions().size(), "Specimen2 should still contain exactly 1 description");
+		assertFalse(specimen.getDescriptions().contains(desc2), "Specimen should not contain description2 anymore");
+		assertFalse(specimen.getDescriptions().contains(desc3), "Specimen should still no longer contain description3");
+		assertTrue(specimen.getDescriptions().contains(desc), "Specimen should still contain description");
 
 		//remove description by setting null specimen
 		desc3.setDescribedSpecimenOrObservation(null);
-		Assert.assertNull("Description3 specimen should not exist anymore", desc3.getDescribedSpecimenOrObservation());
-		Assert.assertNull("Descriptions2 specimen should still not exist anymore", desc2.getDescribedSpecimenOrObservation());
-		Assert.assertSame("Descriptions specimen should still be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
-		Assert.assertFalse("Specimen2 should not contain description3 anymore", specimen2.getDescriptions().contains(desc3));
-		Assert.assertEquals("Specimen2 should contain no description now", 0, specimen2.getDescriptions().size());
-		Assert.assertFalse("Specimen should still no longer contain description2", specimen.getDescriptions().contains(desc2));
-		Assert.assertFalse("Specimen should still no longer contain description3", specimen.getDescriptions().contains(desc3));
-		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
+		assertNull(desc3.getDescribedSpecimenOrObservation(), "Description3 specimen should not exist anymore");
+		assertNull(desc2.getDescribedSpecimenOrObservation(), "Descriptions2 specimen should still not exist anymore");
+		assertSame(desc.getDescribedSpecimenOrObservation(), specimen, "Descriptions specimen should still be set correctly");
+		assertFalse(specimen2.getDescriptions().contains(desc3), "Specimen2 should not contain description3 anymore");
+		assertEquals(0, specimen2.getDescriptions().size(), "Specimen2 should contain no description now");
+		assertFalse(specimen.getDescriptions().contains(desc2), "Specimen should still no longer contain description2");
+		assertFalse(specimen.getDescriptions().contains(desc3), "Specimen should still no longer contain description3");
+		assertTrue(specimen.getDescriptions().contains(desc), "Specimen should still contain description");
 	}
 
 	@Test
@@ -174,37 +174,37 @@ public class SpecimenTest extends EntityTestBase {
 		DerivedUnit specimen2 = DerivedUnit.NewPreservedSpecimenInstance();
 
 		specimen.addSpecimenTypeDesignation(desig1);
-		Assert.assertEquals("Specimen1 should be the designations specimen", specimen, desig1.getTypeSpecimen());
-		Assert.assertEquals("specimen1 should have exactly 1 designation", 1, specimen.getSpecimenTypeDesignations().size());
-		Assert.assertEquals("specimen1's designation should be desig1", desig1, specimen.getSpecimenTypeDesignations().iterator().next());
+		assertEquals(specimen, desig1.getTypeSpecimen(), "Specimen1 should be the designations specimen");
+		assertEquals(1, specimen.getSpecimenTypeDesignations().size(), "specimen1 should have exactly 1 designation");
+		assertEquals(desig1, specimen.getSpecimenTypeDesignations().iterator().next(), "specimen1's designation should be desig1");
 
 		specimen.addSpecimenTypeDesignation(desig2);
-		Assert.assertEquals("Specimen1 should be the desig2's specimen", specimen, desig2.getTypeSpecimen());
-		Assert.assertEquals("specimen1 should have exactly 2 designation", 2, specimen.getSpecimenTypeDesignations().size());
+		assertEquals(specimen, desig2.getTypeSpecimen(), "Specimen1 should be the desig2's specimen");
+		assertEquals(2, specimen.getSpecimenTypeDesignations().size(), "specimen1 should have exactly 2 designation");
 
 		specimen2.addSpecimenTypeDesignation(desig2);
-		Assert.assertEquals("Specimen2 should have replaced specimen1 as desig2's specimen", specimen2, desig2.getTypeSpecimen());
-		Assert.assertEquals("Specimen2 should have exactly 1 designation", 1, specimen2.getSpecimenTypeDesignations().size());
-		Assert.assertEquals("Specimen1's designation should be desig2", desig2, specimen2.getSpecimenTypeDesignations().iterator().next());
-		Assert.assertEquals("specimen1 should have exactly 1 designation", 1, specimen.getSpecimenTypeDesignations().size());
+		assertEquals(specimen2, desig2.getTypeSpecimen(), "Specimen2 should have replaced specimen1 as desig2's specimen");
+		assertEquals(1, specimen2.getSpecimenTypeDesignations().size(), "Specimen2 should have exactly 1 designation");
+		assertEquals(desig2, specimen2.getSpecimenTypeDesignations().iterator().next(), "Specimen1's designation should be desig2");
+		assertEquals(1, specimen.getSpecimenTypeDesignations().size(), "specimen1 should have exactly 1 designation");
 
 		specimen2.removeSpecimenTypeDesignation(desig2);
-		Assert.assertEquals("Desig2 should not have a specimen anymore", null, desig2.getTypeSpecimen());
-		Assert.assertEquals("Specimen2 should have no designation", 0, specimen2.getSpecimenTypeDesignations().size());
-		Assert.assertEquals("specimen1 should have exactly 1 designation", 1, specimen.getSpecimenTypeDesignations().size());
+		assertEquals(null, desig2.getTypeSpecimen(), "Desig2 should not have a specimen anymore");
+		assertEquals(0, specimen2.getSpecimenTypeDesignations().size(), "Specimen2 should have no designation");
+		assertEquals(1, specimen.getSpecimenTypeDesignations().size(), "specimen1 should have exactly 1 designation");
 
 		specimen.addSpecimenTypeDesignation(desig2);
-		Assert.assertEquals("Specimen1 should be the desig2's specimen", specimen, desig2.getTypeSpecimen());
-		Assert.assertEquals("specimen1 should have exactly 2 designation", 2, specimen.getSpecimenTypeDesignations().size());
+		assertEquals(specimen, desig2.getTypeSpecimen(), "Specimen1 should be the desig2's specimen");
+		assertEquals(2, specimen.getSpecimenTypeDesignations().size(), "specimen1 should have exactly 2 designation");
 
 		desig1.setTypeSpecimen(null);
-		Assert.assertEquals("Desig1 should not have a specimen anymore", null, desig1.getTypeSpecimen());
-		Assert.assertEquals("Specimen1 should have 1 designation", 1, specimen.getSpecimenTypeDesignations().size());
-		Assert.assertEquals("Specimen1's designation should be desig2", desig2, specimen.getSpecimenTypeDesignations().iterator().next());
+		assertEquals(null, desig1.getTypeSpecimen(), "Desig1 should not have a specimen anymore");
+		assertEquals(1, specimen.getSpecimenTypeDesignations().size(), "Specimen1 should have 1 designation");
+		assertEquals(desig2, specimen.getSpecimenTypeDesignations().iterator().next(), "Specimen1's designation should be desig2");
 
 		desig1.setTypeSpecimen(specimen);
-		Assert.assertEquals("Desig1 should have specimen1 as specimen again", specimen, desig1.getTypeSpecimen());
-		Assert.assertEquals("Specimen1 should have 2 designation", 2, specimen.getSpecimenTypeDesignations().size());
+		assertEquals(specimen, desig1.getTypeSpecimen(), "Desig1 should have specimen1 as specimen again");
+		assertEquals(2, specimen.getSpecimenTypeDesignations().size(), "Specimen1 should have 2 designation");
 	}
 
 	@Test
@@ -233,7 +233,7 @@ public class SpecimenTest extends EntityTestBase {
 			lsid = new LSID("urn:lsid:example.com:foo:1");
 		} catch (MalformedLSIDException e) {
 			e.printStackTrace();
-			Assert.fail();
+			fail();
 		}
 //		DerivedUnit nextVersion = DerivedUnit.NewPreservedSpecimenInstance();
 //		DerivedUnit previousVersion = DerivedUnit.NewPreservedSpecimenInstance();
@@ -360,10 +360,10 @@ public class SpecimenTest extends EntityTestBase {
 		assertEquals(1, specimenClone.getSources().size());
 		//test status
 		assertEquals(1, specimenClone.getStatus().size());
-		assertEquals("unit should be adapted to new unit", specimenClone, specimenClone.getStatus().iterator().next().getUnit());
-	    assertEquals("old status should still link to old specimen", specimen, specimen.getStatus().iterator().next().getUnit());
-	    assertSame("Type should be same", specimen.getStatus().iterator().next().getType(), specimenClone.getStatus().iterator().next().getType());
-	    assertNotNull("... and not null", specimen.getStatus().iterator().next().getType());
+		assertEquals(specimenClone, specimenClone.getStatus().iterator().next().getUnit(), "unit should be adapted to new unit");
+	    assertEquals(specimen, specimen.getStatus().iterator().next().getUnit(), "old status should still link to old specimen");
+	    assertSame(specimen.getStatus().iterator().next().getType(), specimenClone.getStatus().iterator().next().getType(), "Type should be same");
+	    assertNotNull(specimen.getStatus().iterator().next().getType(), "... and not null");
 	}
 
     @Test

@@ -8,10 +8,11 @@
 */
 package eu.etaxonomy.cdm.aspectj;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.NewEntityListener;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -43,6 +44,6 @@ public class NewEntityListenerTest
         INonViralName nvn = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
         Annotation newAnnotation = Annotation.NewDefaultLanguageInstance("test");
         nvn.addAnnotation(newAnnotation);
-        Assert.assertEquals(newAnnotation, lastPropValue);
+        assertEquals(newAnnotation, lastPropValue);
     }
 }

@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.aspectj;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -16,8 +16,8 @@ import java.beans.PropertyChangeListener;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.LogUtils;
 import eu.etaxonomy.cdm.model.name.INonViralName;
@@ -61,7 +61,7 @@ public class PropertyChangeTest implements PropertyChangeListener {
 			assertEquals(b.isAnamorphic(), lastPropValue);
 		}
 
-		@Before
+		@BeforeEach
 		public void updateDebugLevel(){
 		    LogUtils.setLevel(logger, Level.INFO);
 		}

@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.location;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.Set;
@@ -17,8 +17,8 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
@@ -41,20 +41,20 @@ public class TdwgAreaTest extends EntityTestBase {
 	public void testGetAreaByTdwgAbbreviation() {
 		Language.ENGLISH(); // to make sure Terms are already loaded
 		NamedArea area = getAreaByTdwgAbbreviation("GER");
-		Assert.assertEquals("Germany", area.getLabel(Language.ENGLISH()));
-		Assert.assertNull(getAreaByTdwgAbbreviation("A1R"));
+		assertEquals("Germany", area.getLabel(Language.ENGLISH()));
+		assertNull(getAreaByTdwgAbbreviation("A1R"));
 	}
 
 	@Test
 	public void testGetAreaByTdwgLabel() {
-		Assert.assertEquals("Germany", getAreaByTdwgLabel("Germany").getLabel(Language.ENGLISH()));
-		Assert.assertNull(getAreaByTdwgLabel("A1R"));
+		assertEquals("Germany", getAreaByTdwgLabel("Germany").getLabel(Language.ENGLISH()));
+		assertNull(getAreaByTdwgLabel("A1R"));
 	}
 
 	@Test
 	public void testIsTdwgAreaLabel() {
-		Assert.assertTrue(isTdwgAreaLabel("Germany"));
-		Assert.assertFalse(isTdwgAreaLabel("sf2fe"));
+		assertTrue(isTdwgAreaLabel("Germany"));
+		assertFalse(isTdwgAreaLabel("sf2fe"));
 	}
 
 //	/**
@@ -63,7 +63,7 @@ public class TdwgAreaTest extends EntityTestBase {
 //	@Test
 //	public void testAddTdwgArea() {
 //		String testAreaLabel = "TestArea";
-//		Assert.assertFalse(isTdwgAreaLabel(testAreaLabel));
+//		assertFalse(isTdwgAreaLabel(testAreaLabel));
 //		NamedArea area = NamedArea.NewInstance("", testAreaLabel, "");
 //		TdwgArea.addTdwgArea(area);
 //		Field labelMapField = null;
@@ -73,7 +73,7 @@ public class TdwgAreaTest extends EntityTestBase {
 //			Object obj = labelMapField.get(null);
 //			Map<String, UUID> map = (Map<String, UUID>)obj;
 //			UUID uuid = map.get(testAreaLabel.toLowerCase());
-//			Assert.assertEquals(area.getUuid(), uuid);
+//			assertEquals(area.getUuid(), uuid);
 //		} catch (Exception e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
@@ -87,8 +87,8 @@ public class TdwgAreaTest extends EntityTestBase {
 		assert britain != null : "NamedArea must exist";
 		assert northernEurope != null : "NamedArea must exist";
 
-		Assert.assertTrue("Northern Europe should include Britain", northernEurope.getIncludes().contains(britain));
-		assertEquals("Britain should be part of Northern Europe", britain.getPartOf(),northernEurope);
+		assertTrue(northernEurope.getIncludes().contains(britain), "Northern Europe should include Britain");
+		assertEquals(britain.getPartOf(), northernEurope, "Britain should be part of Northern Europe");
 	}
 
 	@Test
@@ -98,8 +98,8 @@ public class TdwgAreaTest extends EntityTestBase {
 		assert britain != null : "NamedArea must exist";
 		assert northernEurope != null : "NamedArea must exist";
 
-		assertEquals("Northern Europe should be TDWG Level 2",northernEurope.getLevel(),NamedAreaLevel.TDWG_LEVEL2());
-		assertEquals("Britain should be TDWG Level 3",britain.getLevel(),NamedAreaLevel.TDWG_LEVEL3());
+		assertEquals(northernEurope.getLevel(), NamedAreaLevel.TDWG_LEVEL2(), "Northern Europe should be TDWG Level 2");
+		assertEquals(britain.getLevel(), NamedAreaLevel.TDWG_LEVEL3(), "Britain should be TDWG Level 3");
 	}
 
 	@Test
@@ -107,7 +107,7 @@ public class TdwgAreaTest extends EntityTestBase {
 		DefaultTermInitializer initializer = new DefaultTermInitializer();
 		initializer.initialize();
 		NamedArea saoTome = NamedArea.getTdwgTermByUuid(UUID.fromString("c64e07cc-0a58-44b3-ac91-c216d1b91c1f"));
-		assertEquals("Utf8 error", "S\u00E3o Tom\u00E9", saoTome.getLabel());
+		assertEquals("S\u00E3o Tom\u00E9", saoTome.getLabel(), "Utf8 error");
 	}
 
 	@Test
@@ -126,7 +126,7 @@ public class TdwgAreaTest extends EntityTestBase {
 
 		set.add(area3);
 		set.add(area4);
-		Assert.assertEquals("There must be 2 areas in the set", 2, set.size());
+		assertEquals(2, set.size(), "There must be 2 areas in the set");
 	}
 
 //	@Test

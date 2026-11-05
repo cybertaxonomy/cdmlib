@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -30,7 +30,7 @@ public class TaxonInteractionTest extends EntityTestBase {
     private Taxon taxon;
     private TaxonInteraction taxonInteraction;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         taxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null), null);

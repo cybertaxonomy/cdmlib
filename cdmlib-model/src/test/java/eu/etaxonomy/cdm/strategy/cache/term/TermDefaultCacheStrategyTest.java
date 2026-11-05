@@ -8,13 +8,14 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.term;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -34,7 +35,7 @@ public class TermDefaultCacheStrategyTest extends TermTestBase {
 
 //************************* SET UP ****************************************
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		strategy = TermDefaultCacheStrategy.NewInstance(null);
 	}
@@ -44,13 +45,13 @@ public class TermDefaultCacheStrategyTest extends TermTestBase {
 	@Test
 	public void testGetUuid() {
 		String uuid = "9cdf52c1-bac4-4b6c-a7f9-1a87401bd8f9";
-		Assert.assertEquals("UUID should be equal", uuid, strategy.getUuid().toString());
+		assertEquals(uuid, strategy.getUuid().toString(), "UUID should be equal");
 	}
 
 	@Test
 	public void testGetTitleCache() {
-		Assert.assertEquals("Genus title cache should be 'Genus'", "Genus", Rank.GENUS().getTitleCache());
-		Assert.assertEquals("Nom. Illeg. title cache should be 'Illegitimate'", "Illegitimate", NomenclaturalStatusType.ILLEGITIMATE().getTitleCache());
+		assertEquals("Genus", Rank.GENUS().getTitleCache(), "Genus title cache should be 'Genus'");
+		assertEquals("Illegitimate", NomenclaturalStatusType.ILLEGITIMATE().getTitleCache(), "Nom. Illeg. title cache should be 'Illegitimate'");
 	}
 
 	@Test
@@ -59,6 +60,6 @@ public class TermDefaultCacheStrategyTest extends TermTestBase {
 		NamedArea newTerm = NamedArea.NewInstance();
 		newTerm.setUuid(UUID.fromString(newTermUuid));
 
-		Assert.assertEquals("Term with no representation must return a title that makes some sense", "NamedArea<e3a6e29d-314a-4e06-be70-cbfe093842ec>", newTerm.getTitleCache());
+		assertEquals("NamedArea<e3a6e29d-314a-4e06-be70-cbfe093842ec>", newTerm.getTitleCache(), "Term with no representation must return a title that makes some sense");
 	}
 }

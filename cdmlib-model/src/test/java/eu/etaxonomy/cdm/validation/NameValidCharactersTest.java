@@ -8,16 +8,16 @@
 */
 package eu.etaxonomy.cdm.validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.validator.internal.constraintvalidators.bv.PatternValidator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -42,7 +42,7 @@ public class NameValidCharactersTest extends ValidationTestBase  {
 
     private IBotanicalName name;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setGenusOrUninomial("Abies");
@@ -65,10 +65,10 @@ public class NameValidCharactersTest extends ValidationTestBase  {
 
 
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class);
-        assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as this name is valid at the default level");
 
         constraintViolations  = validator.validate(name, Default.class, Level2.class);
-        assertFalse("There should be a constraint violation as this name is valid at the default level, but contains a letter with a grave and an acute",constraintViolations.isEmpty());
+        assertFalse(constraintViolations.isEmpty(), "There should be a constraint violation as this name is valid at the default level, but contains a letter with a grave and an acute");
 	}
 
 	/**
@@ -80,10 +80,10 @@ public class NameValidCharactersTest extends ValidationTestBase  {
 		name.setSpecificEpithet("bals"+UTF8.a_UMLAUT+"mea");
 
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class);
-        assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as this name is valid at the default level");
 
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
-        assertTrue("There should not be a constraint violation as this name is valid at both levels, despite containing a diaeresis",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as this name is valid at both levels, despite containing a diaeresis");
 	}
 
 	/**
@@ -95,10 +95,10 @@ public class NameValidCharactersTest extends ValidationTestBase  {
 		name.setGenusOrUninomial("abies");
 
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class);
-        assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as this name is valid at the default level");
 
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
-        assertFalse("There should be a constraint violation as this name is valid at the default level, the first letter of the genus part is not capitalized",constraintViolations.isEmpty());
+        assertFalse(constraintViolations.isEmpty(), "There should be a constraint violation as this name is valid at the default level, the first letter of the genus part is not capitalized");
 	}
 
 	/**
@@ -110,10 +110,10 @@ public class NameValidCharactersTest extends ValidationTestBase  {
 		name.setGenusOrUninomial("ABies");
 
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class);
-        assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as this name is valid at the default level");
 
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
-        assertFalse("There should be a constraint violation as this name is valid at the default level, the second letter of the genus part is capitalized",constraintViolations.isEmpty());
+        assertFalse(constraintViolations.isEmpty(), "There should be a constraint violation as this name is valid at the default level, the second letter of the genus part is capitalized");
 	}
 
 	/**

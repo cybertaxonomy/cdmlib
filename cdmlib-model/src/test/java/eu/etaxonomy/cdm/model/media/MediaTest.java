@@ -8,11 +8,17 @@
 */
 package eu.etaxonomy.cdm.model.media;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -47,11 +53,11 @@ public class MediaTest extends EntityTestBase {
             uriString2 = new URI("http://Path_to_image_2/");
         } catch (Exception e) {
             e.printStackTrace();
-            Assert.fail("Error in URI syntax");
+            fail("Error in URI syntax");
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         media1 = Media.NewInstance();
         team1 = Team.NewInstance();
@@ -80,121 +86,121 @@ public class MediaTest extends EntityTestBase {
     public void testClone() {
         try {
             Media mediaClone = media1.clone();
-            Assert.assertSame("Artist must be the same", team1, mediaClone.getArtist());
-            Assert.assertTrue("Clone must have a default language description", mediaClone.getAllDescriptions().containsKey(Language.DEFAULT()));
-            Assert.assertEquals("Description1.text must be the equal", languageString1.getText(), mediaClone.getAllDescriptions().get(Language.DEFAULT()).getText() );
-            Assert.assertSame("Description1.language must be the same", languageString1.getLanguage(), mediaClone.getAllDescriptions().get(Language.DEFAULT()).getLanguage() );
-            Assert.assertTrue("Clone must have a german description", mediaClone.getAllDescriptions().containsKey(Language.GERMAN()));
-            Assert.assertEquals("German description must equal media1Desc2", germanDescription, mediaClone.getAllDescriptions().get(Language.GERMAN()).getText() );
+            assertSame(team1, mediaClone.getArtist(), "Artist must be the same");
+            assertTrue(mediaClone.getAllDescriptions().containsKey(Language.DEFAULT()), "Clone must have a default language description");
+            assertEquals(languageString1.getText(), mediaClone.getAllDescriptions().get(Language.DEFAULT()).getText(), "Description1.text must be the equal");
+            assertSame(languageString1.getLanguage(), mediaClone.getAllDescriptions().get(Language.DEFAULT()).getLanguage(), "Description1.language must be the same");
+            assertTrue(mediaClone.getAllDescriptions().containsKey(Language.GERMAN()), "Clone must have a german description");
+            assertEquals(germanDescription, mediaClone.getAllDescriptions().get(Language.GERMAN()).getText(), "German description must equal media1Desc2");
 
-            Assert.assertEquals("Media created year must be 2002", "2002", mediaClone.getMediaCreated().getYear());
-            Assert.assertEquals("Number of media representations must be 2", 2, mediaClone.getRepresentations().size());
-            Assert.assertNotSame("Only media representation must not be mediaRepresentation1", mediaRepresentation1, mediaClone.getRepresentations().iterator().next());
-            Assert.assertEquals("Only meda representation must have same MimeType as mediaRepresentation1", mediaRepresentation1.getMimeType(), mediaClone.getRepresentations().iterator().next().getMimeType());
+            assertEquals("2002", mediaClone.getMediaCreated().getYear(), "Media created year must be 2002");
+            assertEquals(2, mediaClone.getRepresentations().size(), "Number of media representations must be 2");
+            assertNotSame(mediaRepresentation1, mediaClone.getRepresentations().iterator().next(), "Only media representation must not be mediaRepresentation1");
+            assertEquals(mediaRepresentation1.getMimeType(), mediaClone.getRepresentations().iterator().next().getMimeType(), "Only meda representation must have same MimeType as mediaRepresentation1");
 
 //            #5762
-//            Assert.assertTrue("Rights must contain rights1", mediaClone.getRights().contains(rights1));
-            Assert.assertTrue("Rights must contain 1 rights object", mediaClone.getRights().size() == 1);
-            Assert.assertTrue("Rights must not be cloned", mediaClone.getRights().iterator().next().equals(rights1));
+//            assertTrue(mediaClone.getRights().contains(rights1), "Rights must contain rights1");
+            assertTrue(mediaClone.getRights().size() == 1, "Rights must contain 1 rights object");
+            assertTrue(mediaClone.getRights().iterator().next().equals(rights1), "Rights must not be cloned");
 
-            Assert.assertTrue("Clone must have a default language title", mediaClone.getAllTitles().containsKey(Language.DEFAULT()));
-            Assert.assertSame("Title.language must be the same", languageString2.getLanguage(), mediaClone.getAllTitles().get(Language.DEFAULT()).getLanguage() );
-            Assert.assertEquals("Title.text must be equal", languageString2.getText(), mediaClone.getAllTitles().get(Language.DEFAULT()).getText() );
+            assertTrue(mediaClone.getAllTitles().containsKey(Language.DEFAULT()), "Clone must have a default language title");
+            assertSame(languageString2.getLanguage(), mediaClone.getAllTitles().get(Language.DEFAULT()).getLanguage(), "Title.language must be the same");
+            assertEquals(languageString2.getText(), mediaClone.getAllTitles().get(Language.DEFAULT()).getText(), "Title.text must be equal");
 
         } catch (CloneNotSupportedException e) {
-            Assert.fail("Media must be cloneable");
+            fail("Media must be cloneable");
         }
 
     }
 
     @Test
     public void testAddRepresentation() {
-        Assert.assertTrue("Representations must contain mediaRepresentation1", media1.getRepresentations().contains(mediaRepresentation1));
+        assertTrue(media1.getRepresentations().contains(mediaRepresentation1), "Representations must contain mediaRepresentation1");
     }
 
     @Test
     public void testRemoveRepresentation() {
-        Assert.assertTrue("Representations must contain mediaRepresentation1", media1.getRepresentations().contains(mediaRepresentation1));
+        assertTrue(media1.getRepresentations().contains(mediaRepresentation1), "Representations must contain mediaRepresentation1");
         media1.removeRepresentation(mediaRepresentation1);
-        Assert.assertFalse("Representations must not contain mediaRepresentation1", media1.getRepresentations().contains(mediaRepresentation1));
-        Assert.assertEquals("Number of representations must be 1", 1, media1.getRepresentations().size());
+        assertFalse(media1.getRepresentations().contains(mediaRepresentation1), "Representations must not contain mediaRepresentation1");
+        assertEquals(1, media1.getRepresentations().size(), "Number of representations must be 1");
         media1.removeRepresentation(mediaRepresentation2);
-        Assert.assertFalse("Representations must not contain mediaRepresentation2", media1.getRepresentations().contains(mediaRepresentation2));
-        Assert.assertEquals("Number of representations must be 0", 0, media1.getRepresentations().size());
+        assertFalse(media1.getRepresentations().contains(mediaRepresentation2), "Representations must not contain mediaRepresentation2");
+        assertEquals(0, media1.getRepresentations().size(), "Number of representations must be 0");
     }
 
     @Test
     public void testAddRights() {
-        Assert.assertTrue("Rights must contain rights1", media1.getRights().contains(rights1));
+        assertTrue(media1.getRights().contains(rights1), "Rights must contain rights1");
     }
 
     @Test
     public void testRemoveRights() {
-        Assert.assertTrue("Rights must contain rights1", media1.getRights().contains(rights1));
+        assertTrue(media1.getRights().contains(rights1), "Rights must contain rights1");
         media1.removeRights(rights1);
-        Assert.assertFalse("Rights must not contain rights1", media1.getRights().contains(rights1));
-        Assert.assertEquals("Number of rights must be 0", 0, media1.getRights().size());
+        assertFalse(media1.getRights().contains(rights1), "Rights must not contain rights1");
+        assertEquals(0, media1.getRights().size(), "Number of rights must be 0");
     }
 
     @Test
     public void testAddTitle() {
-        Assert.assertSame("Title must be the same", languageString2, media1.getAllTitles().get(Language.DEFAULT()) );
+        assertSame(languageString2, media1.getAllTitles().get(Language.DEFAULT()), "Title must be the same");
     }
 
     @Test
     public void testRemoveTitle() {
-        Assert.assertSame("Title must be the same", languageString2, media1.getAllTitles().get(Language.DEFAULT()) );
+        assertSame(languageString2, media1.getAllTitles().get(Language.DEFAULT()), "Title must be the same");
         media1.removeTitle(Language.GERMAN());
-        Assert.assertEquals("Number of titles must be 1", 1, media1.getAllTitles().size());
+        assertEquals(1, media1.getAllTitles().size(), "Number of titles must be 1");
         media1.removeTitle(Language.DEFAULT());
-        Assert.assertEquals("Number of titles must be 0", 0, media1.getAllTitles().size());
-        Assert.assertFalse("Title must not contain languageString2", languageString2.equals(media1.getAllTitles().get(Language.DEFAULT())));
+        assertEquals(0, media1.getAllTitles().size(), "Number of titles must be 0");
+        assertFalse(languageString2.equals(media1.getAllTitles().get(Language.DEFAULT())), "Title must not contain languageString2");
     }
 
     @Test
     public void testGetMediaCreated() {
-        Assert.assertEquals("Media created year must be 2002", "2002", media1.getMediaCreated().getYear());
+        assertEquals("2002", media1.getMediaCreated().getYear(), "Media created year must be 2002");
     }
 
     @Test
     public void testGetDescription() {
-        Assert.assertTrue("Clone must have a default language description", media1.getAllDescriptions().containsKey(Language.DEFAULT()));
-        Assert.assertSame("Description1 must be the same", languageString1, media1.getAllDescriptions().get(Language.DEFAULT()) );
+        assertTrue(media1.getAllDescriptions().containsKey(Language.DEFAULT()), "Clone must have a default language description");
+        assertSame(languageString1, media1.getAllDescriptions().get(Language.DEFAULT()), "Description1 must be the same");
     }
 
     @Test
     public void testAddDescriptionLanguageString() {
-        Assert.assertEquals("Number of descriptions must be 2", 2, media1.getAllDescriptions().size() );
-        Assert.assertTrue("Clone must have a default language description", media1.getAllDescriptions().containsKey(Language.DEFAULT()));
-        Assert.assertSame("Description1 must be the same", languageString1, media1.getAllDescriptions().get(Language.DEFAULT()) );
+        assertEquals(2, media1.getAllDescriptions().size(), "Number of descriptions must be 2");
+        assertTrue(media1.getAllDescriptions().containsKey(Language.DEFAULT()), "Clone must have a default language description");
+        assertSame(languageString1, media1.getAllDescriptions().get(Language.DEFAULT()), "Description1 must be the same");
         media1.putDescription(languageString2);
-        Assert.assertEquals("Number of descriptions must be 2", 2, media1.getAllDescriptions().size() );
-        Assert.assertEquals("Default language description must be languageString2", languageString2, media1.getAllDescriptions().get(Language.DEFAULT()) );
+        assertEquals(2, media1.getAllDescriptions().size(), "Number of descriptions must be 2");
+        assertEquals(languageString2, media1.getAllDescriptions().get(Language.DEFAULT()), "Default language description must be languageString2");
     }
 
     @Test
     public void testAddDescriptionStringLanguage() {
-        Assert.assertTrue("Clone must have a german language description", media1.getAllDescriptions().containsKey(Language.GERMAN()));
-        Assert.assertSame("Description1 must be the same", "media1Desc2", media1.getAllDescriptions().get(Language.GERMAN()).getText() );
+        assertTrue(media1.getAllDescriptions().containsKey(Language.GERMAN()), "Clone must have a german language description");
+        assertSame("media1Desc2", media1.getAllDescriptions().get(Language.GERMAN()).getText(), "Description1 must be the same");
         media1.putDescription(Language.DEFAULT(), "testDesc");
-        Assert.assertEquals("Number of descriptions must be 2", 2, media1.getAllDescriptions().size() );
+        assertEquals(2, media1.getAllDescriptions().size(), "Number of descriptions must be 2");
         media1.putDescription(Language.DEFAULT(), "testDesc2");
-        Assert.assertEquals("Number of descriptions must be 2", 2, media1.getAllDescriptions().size() );
-        Assert.assertSame("Default language description must be 'testDesc2'", "testDesc2", media1.getAllDescriptions().get(Language.DEFAULT()).getText() );
+        assertEquals(2, media1.getAllDescriptions().size(), "Number of descriptions must be 2");
+        assertSame("testDesc2", media1.getAllDescriptions().get(Language.DEFAULT()).getText(), "Default language description must be 'testDesc2'");
     }
 
     @Test
     public void testRemoveDescription() {
-        Assert.assertEquals("Number of descriptions must be 2", 2, media1.getAllDescriptions().size() );
-        Assert.assertTrue("Clone must have a default language description", media1.getAllDescriptions().containsKey(Language.DEFAULT()));
-        Assert.assertSame("Description1 must be the same", languageString1, media1.getAllDescriptions().get(Language.DEFAULT()) );
+        assertEquals(2, media1.getAllDescriptions().size(), "Number of descriptions must be 2");
+        assertTrue(media1.getAllDescriptions().containsKey(Language.DEFAULT()), "Clone must have a default language description");
+        assertSame(languageString1, media1.getAllDescriptions().get(Language.DEFAULT()), "Description1 must be the same");
         media1.removeDescription(Language.JAPANESE());
-        Assert.assertEquals("Number of descriptions must be 2", 2, media1.getAllDescriptions().size() );
+        assertEquals(2, media1.getAllDescriptions().size(), "Number of descriptions must be 2");
         media1.removeDescription(Language.DEFAULT());
-        Assert.assertEquals("Number of descriptions must be 1", 1, media1.getAllDescriptions().size() );
+        assertEquals(1, media1.getAllDescriptions().size(), "Number of descriptions must be 1");
         media1.removeDescription(Language.DEFAULT());
-        Assert.assertEquals("Number of descriptions must be 1", 1, media1.getAllDescriptions().size() );
+        assertEquals(1, media1.getAllDescriptions().size(), "Number of descriptions must be 1");
         media1.removeDescription(Language.GERMAN());
-        Assert.assertEquals("Number of descriptions must be 0", 0, media1.getAllDescriptions().size() );
+        assertEquals(0, media1.getAllDescriptions().size(), "Number of descriptions must be 0");
     }
 }

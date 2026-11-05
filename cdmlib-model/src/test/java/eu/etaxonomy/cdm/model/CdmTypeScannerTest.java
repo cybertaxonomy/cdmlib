@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.model;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -37,6 +37,6 @@ public class CdmTypeScannerTest {
 
         Collection<Class<? extends CdmBase>> classes = scanner.scanTypesIn("eu/etaxonomy/cdm/model");
         assertTrue(classes.contains(TaxonDescription.class));
-        assertTrue("abstract base classes are missing", classes.contains(DescriptionBase.class));
+        assertTrue(classes.contains(DescriptionBase.class), "abstract base classes are missing");
     }
 }

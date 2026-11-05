@@ -8,10 +8,12 @@
 */
 package eu.etaxonomy.cdm.compare.description;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -37,11 +39,11 @@ public class DistributionNodeByAreaLabelComparatorTest extends TermTestBase {
         nodeId2.setLabel("Germany");
 
         Integer result1 = comparator.compare(node1, node2);
-        Assert.assertNotEquals(Integer.valueOf(0), result1);
+        assertNotEquals(Integer.valueOf(0), result1);
 
         Integer result2 = comparator.compare(node2, node1);
-        Assert.assertNotEquals(Integer.valueOf(0), result2);
+        assertNotEquals(Integer.valueOf(0), result2);
 
-        Assert.assertTrue(result1.equals(-result2));
+        assertTrue(result1.equals(-result2));
     }
 }

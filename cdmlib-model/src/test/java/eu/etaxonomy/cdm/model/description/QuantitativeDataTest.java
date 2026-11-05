@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -26,7 +26,7 @@ public class QuantitativeDataTest extends EntityTestBase {
 
     private QuantitativeData quantData;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         quantData = QuantitativeData.NewInstance();
 

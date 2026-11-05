@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.model.reference;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -19,7 +19,7 @@ import org.junit.Test;
  */
 public class OriginalSourceTypeTest {
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 	}
 

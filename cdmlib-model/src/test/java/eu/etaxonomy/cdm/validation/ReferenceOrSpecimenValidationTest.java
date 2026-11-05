@@ -8,18 +8,15 @@
 */
 package eu.etaxonomy.cdm.validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.groups.Default;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -27,6 +24,8 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.groups.Default;
 
 /**
  * @author a.mueller
@@ -41,7 +40,7 @@ public class ReferenceOrSpecimenValidationTest extends ValidationTestBase {
     private Reference book;
     private DerivedUnit specimen;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		book = ReferenceFactory.newBook();
 		book.setTitleCache("Lorem ipsum", true);
@@ -56,19 +55,19 @@ public class ReferenceOrSpecimenValidationTest extends ValidationTestBase {
         DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
 
 	    Set<ConstraintViolation<DescriptionElementSource>> constraintViolations  = validator.validate(source, Default.class);
-        assertTrue("Source with neither reference nor specimen should not fail", constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "Source with neither reference nor specimen should not fail");
 
         source.setCitation(book);
         constraintViolations  = validator.validate(source, Default.class);
-        assertTrue("Source with only reference should not fail", constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "Source with only reference should not fail");
 
         source.setSpecimen(specimen);
         constraintViolations  = validator.validate(source, Default.class);
-        assertFalse("Source with both reference and specimen should fail", constraintViolations.isEmpty());
+        assertFalse(constraintViolations.isEmpty(), "Source with both reference and specimen should fail");
 
         source.setCitation(null);
         constraintViolations  = validator.validate(source, Default.class);
-        assertTrue("Source with only specimen specimen should not fail", constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "Source with only specimen specimen should not fail");
 
 	}
 

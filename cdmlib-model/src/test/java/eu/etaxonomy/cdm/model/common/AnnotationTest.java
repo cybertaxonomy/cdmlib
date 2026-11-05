@@ -8,14 +8,17 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URISyntaxException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -38,7 +41,7 @@ public class AnnotationTest extends EntityTestBase {
 	private static URI linkbackUri;
 	private static AnnotatableEntity annotatedObject;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		commentator = Person.NewInstance();
 		commentator.setTitleCache("automatic importer", true);

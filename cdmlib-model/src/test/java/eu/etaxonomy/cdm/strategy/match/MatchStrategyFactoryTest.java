@@ -8,11 +8,14 @@
 */
 package eu.etaxonomy.cdm.strategy.match;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
@@ -52,7 +55,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
 
 	private Institution institution1;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		institution1 = Institution.NewNamedInstance("Institution1");
 	}
@@ -62,15 +65,15 @@ public class MatchStrategyFactoryTest extends TermTestBase {
 	@Test
 	public void testNewInstance() {
 		matchStrategy = MatchStrategyFactory.NewDefaultInstance(Reference.class);
-		Assert.assertNotNull(matchStrategy);
-//		Assert.assertEquals(Reference.class, matchStrategy.getMatchClass());
+		assertNotNull(matchStrategy);
+//		assertEquals(Reference.class, matchStrategy.getMatchClass());
 	}
 
     @Test
     public void testParsedPerson() throws MatchException {
 
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedPersonInstance();
-        Assert.assertNotNull(matchStrategy);
+        assertNotNull(matchStrategy);
         Person fullPerson;
         Person parsedPerson;
         MatchResult result;
@@ -81,83 +84,69 @@ public class MatchStrategyFactoryTest extends TermTestBase {
 
         result = matchStrategy.invoke(parsedPerson, fullPerson);
 //        System.out.println(result);
-        Assert.assertTrue("Same nom.title. should match", result.isSuccessful());
+        assertTrue(result.isSuccessful(), "Same nom.title. should match");
 
         //differing nom. title.
         parsedPerson.setNomenclaturalTitle("Wrong");
         result = matchStrategy.invoke(fullPerson, parsedPerson, FAIL_ALL);
-        Assert.assertFalse("Differing nom.title should not match",
-                matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful(), "Differing nom.title should not match");
 
         //differing family
         parsedPerson = getDefaultParsedPerson();
         parsedPerson.setFamilyName("Wrong");
-        Assert.assertFalse("Differing family name should not match",
-                matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful(), "Differing family name should not match");
         fullPerson.setFamilyName(null);
-        Assert.assertFalse("Only parsed with family name should not match. Wrong direction.",
-                matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful(), "Only parsed with family name should not match. Wrong direction.");
 
         //
         parsedPerson = getDefaultParsedPerson();
         parsedPerson.setInitials("D.");
-        Assert.assertFalse("Differing nom. title should not match",
-                matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful());
+        assertFalse(matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful(), "Differing nom. title should not match");
 
         //nom. title. (2)
         fullPerson = getDefaultFullPerson();
         parsedPerson = getDefaultParsedPerson();
         fullPerson.setNomenclaturalTitle("Wro.");
-        Assert.assertFalse("Differing nom. title should not match",
-                matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful());
+        assertFalse(matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful(), "Differing nom. title should not match");
 
         //collector Title
         fullPerson = getDefaultFullPerson();
         parsedPerson = getDefaultParsedPerson();
         parsedPerson.setCollectorTitle("Collector");
         result = matchStrategy.invoke(fullPerson, parsedPerson, FAIL_ALL);
-        Assert.assertFalse("Differing collectorTitle should not match",
-                matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful(), "Differing collectorTitle should not match");
 
 
         //fullPerson protected
         fullPerson = getDefaultFullPerson();
         parsedPerson = getDefaultParsedPerson();
         fullPerson.setTitleCache(fullPerson.getTitleCache(), true);
-        Assert.assertFalse("Differing protected title should not match",
-                matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful());
+        assertFalse(matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful(), "Differing protected title should not match");
 
         //parsedPerson protected
         fullPerson = getDefaultFullPerson();
         parsedPerson = getDefaultParsedPerson();
         parsedPerson.setTitleCache(parsedPerson.getTitleCache(), true);
-        Assert.assertFalse("Differing nom. title should not match",
-                matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful());
+        assertFalse(matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful(), "Differing nom. title should not match");
 
         //test (protected) titleCaches
         fullPerson = getDefaultFullPerson();
         parsedPerson = getDefaultParsedPerson();
-        Assert.assertTrue("show again that default persons match, for next test",
-                matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
-        Assert.assertFalse("Show that even if both match the titleCaches must not necessarily be equal",
-                fullPerson.getTitleCache().equals(parsedPerson.getTitleCache()));
+        assertTrue(matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful(), "show again that default persons match, for next test");
+        assertFalse(fullPerson.getTitleCache().equals(parsedPerson.getTitleCache()), "Show that even if both match the titleCaches must not necessarily be equal");
 
         parsedPerson.setTitleCache(fullPerson.getTitleCache(), true);
-        Assert.assertFalse("One protected and one unprotected titleCache should not match even "
-                + "if the titleCache is equal",
-                matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful(), "One protected and one unprotected titleCache should not match even "
+                + "if the titleCache is equal");
 
         parsedPerson.setTitleCache("xxx", true);
-        Assert.assertFalse("",
-                matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful());
+        assertFalse(matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful(), "");
 
         fullPerson.setTitleCache("xxx", true);
-        Assert.assertTrue("Protected but equal titleCaches should match",
-                matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+        assertTrue(matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful(), "Protected but equal titleCaches should match");
 
         parsedPerson.setTitleCache("yyy", true);
-        Assert.assertFalse("Differing protected titleCaches should not match",
-                matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful(), "Differing protected titleCaches should not match");
     }
 
     protected Person getDefaultFullPerson() {
@@ -199,7 +188,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
     public void testParsedTeam() throws MatchException {
 
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedTeamInstance();
-        Assert.assertNotNull(matchStrategy);
+        assertNotNull(matchStrategy);
         Team fullTeam;
         Team parsedTeam;
         MatchResult matchResult;
@@ -208,56 +197,49 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         parsedTeam = getDefaultParsedTeam();
 
         //should match
-        Assert.assertTrue("Same nom.title. should match",
-                matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
+        assertTrue(matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful(), "Same nom.title. should match");
 
         //differing nom. title.
         parsedTeam.setNomenclaturalTitleCache("Wrong", true);
-        Assert.assertFalse("Differing nom.title. should not match",
-                matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful(), "Differing nom.title. should not match");
 
         //differing family
         parsedTeam = getDefaultParsedTeam();
         parsedTeam.getTeamMembers().get(0).setFamilyName("Wrong");
         matchResult = matchStrategy.invoke(parsedTeam, fullTeam, true);
-        Assert.assertFalse("Differing family name should not match", matchResult.isSuccessful());
+        assertFalse(matchResult.isSuccessful(), "Differing family name should not match");
         parsedTeam.getTeamMembers().get(0).setNomenclaturalTitle("Wrong.");
         matchResult = matchStrategy.invoke(parsedTeam, fullTeam, true);
         System.out.println(matchResult);
-        Assert.assertFalse("Differing family name should not match", matchResult.isSuccessful());
+        assertFalse(matchResult.isSuccessful(), "Differing family name should not match");
 
         //
         parsedTeam = getDefaultParsedTeam();
         parsedTeam.getTeamMembers().get(0).setInitials("D.");
-        Assert.assertFalse("Differing nom. title should not match",
-                matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful(), "Differing nom. title should not match");
 
         //nom. title. (2)
         fullTeam = getDefaultFullTeam();
         parsedTeam = getDefaultParsedTeam();
         fullTeam.setNomenclaturalTitleCache("Wro.", true);
-        Assert.assertFalse("Differing nom. title should not match",
-                matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful(), "Differing nom. title should not match");
 
         //fullPerson protected
         fullTeam = getDefaultFullTeam();
         parsedTeam = getDefaultParsedTeam();
         fullTeam.setTitleCache(fullTeam.getTitleCache(), true);
-        Assert.assertFalse("Differing protected title should not match",
-                matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful(), "Differing protected title should not match");
 
         //parsedPerson protected
         fullTeam = getDefaultFullTeam();
         parsedTeam = getDefaultParsedTeam();
         parsedTeam.setTitleCache(parsedTeam.getTitleCache(), true);
-        Assert.assertFalse("Differing nom. title should not match",
-                matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful(), "Differing nom. title should not match");
 
         fullTeam = getDefaultFullTeam();
         parsedTeam = getDefaultParsedTeam();
         fullTeam.setHasMoreMembers(true);
-        Assert.assertFalse("Differing nom. title should not match",
-                matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful(), "Differing nom. title should not match");
     }
 
     private Team getDefaultFullTeam() {
@@ -313,31 +295,25 @@ public class MatchStrategyFactoryTest extends TermTestBase {
 
         IParsedMatchStrategy collector_matchStrategy = MatchStrategyFactory.NewParsedCollectorPersonInstance();
 
-        Assert.assertFalse("Differing collectorTitle should not match",
-                collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+        assertFalse(collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful(), "Differing collectorTitle should not match");
 
         parsedPerson = getDefaultParsedCollector();
 
-        Assert.assertTrue("Equal collectorTitle should match even if full person has further values",
-              collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+        assertTrue(collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful(), "Equal collectorTitle should match even if full person has further values");
 
         //test (protected) titleCaches
-        Assert.assertFalse("Show that even if both match the titleCaches must not necessarily be equal",
-                fullPerson.getTitleCache().equals(parsedPerson.getTitleCache()));
+        assertFalse(fullPerson.getTitleCache().equals(parsedPerson.getTitleCache()), "Show that even if both match the titleCaches must not necessarily be equal");
 
         parsedPerson.setTitleCache(fullPerson.getTitleCache(), true);
-        Assert.assertFalse("One protected and one unprotected titleCache should not match even "
-                + "if the titleCache is equal",
-                collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+        assertFalse(collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful(), "One protected and one unprotected titleCache should not match even "
+                + "if the titleCache is equal");
 
         fullPerson.setTitleCache("xxx", true);
         parsedPerson.setTitleCache("xxx", true);
-        Assert.assertTrue("Protected but equal titleCaches should match",
-                collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+        assertTrue(collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful(), "Protected but equal titleCaches should match");
 
         parsedPerson.setTitleCache("yyy", true);
-        Assert.assertFalse("Differing protected titleCaches should not match",
-                collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+        assertFalse(collector_matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful(), "Differing protected titleCaches should not match");
 
     }
 
@@ -348,26 +324,23 @@ public class MatchStrategyFactoryTest extends TermTestBase {
 
         IParsedMatchStrategy collector_matchStrategy = MatchStrategyFactory.NewParsedCollectorTeamInstance();
 
-        Assert.assertTrue("Differing collectorTitle should not match",
-                collector_matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
+        assertTrue(collector_matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful(), "Differing collectorTitle should not match");
 
         parsedTeam.getTeamMembers().get(0).setCollectorTitle("Collector");
         parsedTeam.updateCaches();
-        Assert.assertFalse("Differing collectorTitle should not match",
-                collector_matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
+        assertFalse(collector_matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful(), "Differing collectorTitle should not match");
         //reset
         parsedTeam = getDefaultParsedCollectorTeam();
 
         //test protected titleCache true
         parsedTeam.setProtectedNomenclaturalTitleCache(true);
-        Assert.assertFalse("Differing protected titleCaches should not match",
-                collector_matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
+        assertFalse(collector_matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful(), "Differing protected titleCaches should not match");
     }
 
     @Test
     public void testParsedBook() throws MatchException {
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedBookInstance();
-        Assert.assertNotNull(matchStrategy);
+        assertNotNull(matchStrategy);
         IBook fullBook;
         IBook parsedBook;
 
@@ -376,98 +349,80 @@ public class MatchStrategyFactoryTest extends TermTestBase {
 
         //should match
         parsedBook = getDefaultParsedBook();
-        Assert.assertTrue("Same abbrev. title should match",
-                matchStrategy.invoke(parsedBook, fullBook).isSuccessful());
+        assertTrue(matchStrategy.invoke(parsedBook, fullBook).isSuccessful(), "Same abbrev. title should match");
         fullBook.setDoi(DOI.fromString("10.1234/abc"));
-        Assert.assertTrue("DOI only with full book should match as abbrev title identifies the book",
-                matchStrategy.invoke(parsedBook, fullBook).isSuccessful());
+        assertTrue(matchStrategy.invoke(parsedBook, fullBook).isSuccessful(), "DOI only with full book should match as abbrev title identifies the book");
 
         //differing nom. title.
         parsedBook.setAbbrevTitle("Wrong");
-        Assert.assertFalse("Differing abbrev. title. should not match",
-                matchStrategy.invoke(parsedBook, fullBook).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedBook, fullBook).isSuccessful(), "Differing abbrev. title. should not match");
 
         //differing family
         parsedBook = getDefaultParsedBook();
         parsedBook.setTitle("Wrong title");
-        Assert.assertFalse("Differing title should not match",
-                matchStrategy.invoke(parsedBook, fullBook).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedBook, fullBook).isSuccessful(), "Differing title should not match");
         fullBook.setTitle(null);
-        Assert.assertFalse("Title only for parsed book should not match. Wrong direction.",
-                matchStrategy.invoke(parsedBook, fullBook).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedBook, fullBook).isSuccessful(), "Title only for parsed book should not match. Wrong direction.");
 
         //change author
         fullBook = getDefaultFullBook();
         parsedBook = getDefaultParsedBook();
         ((Team)fullBook.getAuthorship()).getTeamMembers().get(0).setNomenclaturalTitle("Wrong");
-        Assert.assertFalse("Differing author in nomencl. title should not match",
-                matchStrategy.invoke(parsedBook, fullBook).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedBook, fullBook).isSuccessful(), "Differing author in nomencl. title should not match");
 
         //change author
         fullBook = getDefaultFullBook();
         parsedBook = getDefaultParsedBook();
         ((Team)fullBook.getAuthorship()).getTeamMembers().get(0).setFamilyName("Changed");
-        Assert.assertTrue("Full book family name author changed should still match",
-                matchStrategy.invoke(parsedBook, fullBook).isSuccessful());
+        assertTrue(matchStrategy.invoke(parsedBook, fullBook).isSuccessful(), "Full book family name author changed should still match");
     }
 
     @Test
     public void testParsedBookSection() throws MatchException {
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedBookSectionInstance();
-        Assert.assertNotNull(matchStrategy);
+        assertNotNull(matchStrategy);
         IBookSection fullBookSection;
         IBookSection parsedBookSection;
 
         fullBookSection = getMatchingFullBookSection();
         parsedBookSection = getDefaultParsedBookSection();
-        Assert.assertTrue("Only author, book and date published should match",
-                matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful() );
+        assertTrue(matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful(), "Only author, book and date published should match");
         fullBookSection.setDoi(DOI.fromString("10.1234/abc"));
-        Assert.assertFalse("Full book section having additional parameters should not match if parsed article has no identifying parameter like (abbrev)title or page",
-                matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful(), "Full book section having additional parameters should not match if parsed article has no identifying parameter like (abbrev)title or page");
         fullBookSection.setDoi(null);
         fullBookSection.setReferenceAbstract("My abstract");
-        Assert.assertFalse("Full book section having additional parameters should not match if parsed article has no identifying parameter like (abbrev)title or page",
-                matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful(), "Full book section having additional parameters should not match if parsed article has no identifying parameter like (abbrev)title or page");
 
         //should match
         fullBookSection = getDefaultFullBookSection();
-        Assert.assertFalse("Abbrev. title must be equal or null",
-                matchStrategy.invoke(fullBookSection, parsedBookSection).isSuccessful());
+        assertFalse(matchStrategy.invoke(fullBookSection, parsedBookSection).isSuccessful(), "Abbrev. title must be equal or null");
         parsedBookSection.setAbbrevTitle(fullBookSection.getAbbrevTitle());
-        Assert.assertFalse("Still not match because pages are not equal (parsed is null)",
-                matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful(), "Still not match because pages are not equal (parsed is null)");
         parsedBookSection.setPages(fullBookSection.getPages());
-        Assert.assertFalse("Now they should match",
-                matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful(), "Now they should match");
 
         //differing nom. title.
         parsedBookSection.setAbbrevTitle("Wrong");
-        Assert.assertFalse("Differing abbrev. title. should not match",
-                matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful(), "Differing abbrev. title. should not match");
 
         //differing family
         parsedBookSection = getDefaultParsedBookSection();
         parsedBookSection.setTitle("Wrong title");
-        Assert.assertFalse("Differing title should not match",
-                matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful(), "Differing title should not match");
         fullBookSection.setTitle(null);
-        Assert.assertFalse("Title only for parsed book should not match. Wrong direction.",
-                matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful(), "Title only for parsed book should not match. Wrong direction.");
 
         //change author
         fullBookSection = getMatchingFullBookSection();
         parsedBookSection = getDefaultParsedBookSection();
         fullBookSection.getAuthorship().setNomenclaturalTitleCache("Wrong", true);
-        Assert.assertFalse("Differing author in nomencl. title should not match",
-                matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful(), "Differing author in nomencl. title should not match");
 
         //change author
         fullBookSection = getMatchingFullBookSection();
         parsedBookSection = getDefaultParsedBookSection();
         ((Person)fullBookSection.getAuthorship()).setFamilyName("Changed");
-        Assert.assertTrue("Full book family name author changed should still match",
-                matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful());
+        assertTrue(matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful(), "Full book family name author changed should still match");
     }
 
     private IBook getDefaultFullBook() {
@@ -523,57 +478,49 @@ public class MatchStrategyFactoryTest extends TermTestBase {
     public void testParsedArticle() throws MatchException {
 
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedArticleInstance();
-        Assert.assertNotNull(matchStrategy);
+        assertNotNull(matchStrategy);
         IArticle fullArticle;
         IArticle parsedArticle;
 
         fullArticle = getMatchingFullArticle();
         parsedArticle = getDefaultParsedArticle();
-        Assert.assertTrue("Having only paramters both have in common like author, book and date published "
-                + "should match", matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertTrue(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Having only paramters both have in common like author, book and date published "
+                + "should match");
         fullArticle.setDoi(DOI.fromString("10.1234/abc"));
-        Assert.assertFalse("Full article having additional parameters should not match if parsed article has no identifying parameter like (abbrev)title or page",
-                matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Full article having additional parameters should not match if parsed article has no identifying parameter like (abbrev)title or page");
 
         //no match due to missing abbrev title match
         fullArticle = getDefaultFullArticle();
-        Assert.assertFalse("Abbrev. title must be equal or null", matchStrategy.invoke(parsedArticle,
-                fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle,
+                fullArticle).isSuccessful(), "Abbrev. title must be equal or null");
         parsedArticle.setAbbrevTitle(fullArticle.getAbbrevTitle());
-        Assert.assertFalse("Still not match because pages are not equal (parsed is null)",
-                matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Still not match because pages are not equal (parsed is null)");
         //FIXME in future this should not fail, but parsed articles never have really pages, they only have page or a page span in the parsed detail which is not the same as the pages of the article
         parsedArticle.setPages(fullArticle.getPages());
-        Assert.assertFalse("Now they should match",
-                matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Now they should match");
 
         //differing nom. title.
         parsedArticle.setAbbrevTitle("Wrong");
-        Assert.assertFalse("Differing abbrev. title. should not match",
-                matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Differing abbrev. title. should not match");
 
         //differing family
         parsedArticle = getDefaultParsedArticle();
         parsedArticle.setTitle("Wrong title");
-        Assert.assertFalse("Differing title should not match",
-                matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Differing title should not match");
         fullArticle.setTitle(null);
-        Assert.assertFalse("Title only for parsed book should not match. Wrong direction.",
-                matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Title only for parsed book should not match. Wrong direction.");
 
         //change author
         fullArticle = getMatchingFullArticle();
         parsedArticle = getDefaultParsedArticle();
         fullArticle.getAuthorship().setNomenclaturalTitleCache("Wrong", true);
-        Assert.assertFalse("Differing author in nomencl. title should not match",
-                matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Differing author in nomencl. title should not match");
 
         //change author
         fullArticle = getMatchingFullArticle();
         parsedArticle = getDefaultParsedArticle();
         ((Team)fullArticle.getAuthorship()).getTeamMembers().get(0).setFamilyName("Changed");
-        Assert.assertTrue("Full book family name author changed should still match",
-                matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertTrue(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Full book family name author changed should still match");
     }
 
     /**
@@ -638,44 +585,44 @@ public class MatchStrategyFactoryTest extends TermTestBase {
     @Test
     public void testParsedReference() throws MatchException {
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedReferenceInstance();
-        Assert.assertNotNull(matchStrategy);
+        assertNotNull(matchStrategy);
         IArticle fullArticle;
         IArticle parsedArticle;
 
         fullArticle = getMatchingFullArticle();
         parsedArticle = getDefaultParsedArticle();
-        Assert.assertTrue("Only author, book and date published should match", matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful() );
+        assertTrue(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Only author, book and date published should match");
 
         //should match
         fullArticle = getDefaultFullArticle();
-        Assert.assertFalse("Abbrev. title must be equal or null", matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Abbrev. title must be equal or null");
         parsedArticle.setAbbrevTitle(fullArticle.getAbbrevTitle());
-        Assert.assertFalse("Still not match because pages are not equal (parsed is null)", matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Still not match because pages are not equal (parsed is null)");
         parsedArticle.setPages(fullArticle.getPages());
-        Assert.assertFalse("Now they should match", matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Now they should match");
 
         //differing nom. title.
         parsedArticle.setAbbrevTitle("Wrong");
-        Assert.assertFalse("Differing abbrev. title. should not match", matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Differing abbrev. title. should not match");
 
         //differing family
         parsedArticle = getDefaultParsedArticle();
         parsedArticle.setTitle("Wrong title");
-        Assert.assertFalse("Differing title should not match", matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Differing title should not match");
         fullArticle.setTitle(null);
-        Assert.assertFalse("Title only for parsed book should not match. Wrong direction.", matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Title only for parsed book should not match. Wrong direction.");
 
         //change author
         fullArticle = getMatchingFullArticle();
         parsedArticle = getDefaultParsedArticle();
         fullArticle.getAuthorship().setNomenclaturalTitleCache("Wrong", true);
-        Assert.assertFalse("Differing author in nomencl. title should not match", matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertFalse(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Differing author in nomencl. title should not match");
 
         //change author
         fullArticle = getMatchingFullArticle();
         parsedArticle = getDefaultParsedArticle();
         ((Team)fullArticle.getAuthorship()).getTeamMembers().get(0).setFamilyName("Changed");
-        Assert.assertTrue("Full book family name author changed should still match", matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        assertTrue(matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful(), "Full book family name author changed should still match");
     }
 
     /**
@@ -715,11 +662,11 @@ public class MatchStrategyFactoryTest extends TermTestBase {
     @Test
     public void testParsedOriginalSpelling() throws MatchException {
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedOriginalSpellingInstance();
-        Assert.assertNotNull(matchStrategy);
+        assertNotNull(matchStrategy);
 
         TaxonName fullName = getDefaultFullName();
         TaxonName parsedName = getDefaultParsedName();
-        Assert.assertTrue("Only ... should match", matchStrategy.invoke(parsedName, fullName).isSuccessful() );
+        assertTrue(matchStrategy.invoke(parsedName, fullName).isSuccessful(), "Only ... should match");
 
         //TODO
     }
@@ -729,17 +676,17 @@ public class MatchStrategyFactoryTest extends TermTestBase {
     //     they probably follow the same rules
     public void testParsedHybridParent() throws MatchException {
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedHybridParentInstance();
-        Assert.assertNotNull(matchStrategy);
+        assertNotNull(matchStrategy);
 
         TaxonName fullName = getDefaultFullName();
         TaxonName parsedName = getDefaultParsedName();
-        Assert.assertTrue("Only ... should match", matchStrategy.invoke(parsedName, fullName).isSuccessful() );
+        assertTrue(matchStrategy.invoke(parsedName, fullName).isSuccessful(), "Only ... should match");
 
         parsedName.setCombinationAuthorship(null);
-        Assert.assertFalse("Authors must match exactly", matchStrategy.invoke(parsedName, fullName).isSuccessful() );
+        assertFalse(matchStrategy.invoke(parsedName, fullName).isSuccessful(), "Authors must match exactly");
 
         parsedName.setCombinationAuthorship(getDefaultParsedPerson());
-        Assert.assertFalse("Authors must not differ", matchStrategy.invoke(parsedName, fullName).isSuccessful() );
+        assertFalse(matchStrategy.invoke(parsedName, fullName).isSuccessful(), "Authors must not differ");
 
         //TODO testParsedHybridParent tbc, test not yet complete
     }

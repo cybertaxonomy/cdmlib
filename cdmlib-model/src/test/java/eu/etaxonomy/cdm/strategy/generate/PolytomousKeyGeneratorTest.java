@@ -1,6 +1,9 @@
 package eu.etaxonomy.cdm.strategy.generate;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,10 +15,9 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -133,7 +135,7 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
 
 	private PolytomousKeyGenerator generator = new PolytomousKeyGenerator();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 
 	    featureShape = createFeature("Shape of the head", uuidFeatureShape, CATEGORICAL);
@@ -304,10 +306,10 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
         if (debug) {result.print(System.out);}
 
 	    //Assertions
-		assertNotNull("Key should exist.", result);
+		assertNotNull(result, "Key should exist.");
         PolytomousKeyNode root = result.getRoot();
-        Assert.assertEquals(featureShape, root.getFeature());
-        Assert.assertNull(root.getTaxon());
+        assertEquals(featureShape, root.getFeature());
+        assertNull(root.getTaxon());
 
         //circular
         PolytomousKeyNode circularNode = root.getChildAt(0);
@@ -359,14 +361,14 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
         configurator.setMerge(true);
         PolytomousKey result = generator.invoke(configurator);
         result.setTitleCache("Merge Key", true);
-        assertNotNull("Key should exist (merge mode ON).", result);
+        assertNotNull(result, "Key should exist (merge mode ON).");
         if (debug) {result.print(System.out);}
 
         //Assertions
-        assertNotNull("Key should exist.", result);
+        assertNotNull(result, "Key should exist.");
         PolytomousKeyNode root = result.getRoot();
-        Assert.assertEquals(featureShape, root.getFeature());
-        Assert.assertNull(root.getTaxon());
+        assertEquals(featureShape, root.getFeature());
+        assertNull(root.getTaxon());
 
         //triangular or oval
         PolytomousKeyNode triangularNode = root.getChildAt(0);
@@ -418,37 +420,37 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
         configurator.setMerge(true);
         PolytomousKey result = generator.invoke(configurator);
         result.setTitleCache("Merge Key with feature reuse", true);
-        assertNotNull("Key should exist (merge mode with feature reuse).", result);
+        assertNotNull(result, "Key should exist (merge mode with feature reuse).");
         if (debug) {result.print(System.out);}
 
         //Assertions
-        assertNotNull("Key should exist.", result);
+        assertNotNull(result, "Key should exist.");
         PolytomousKeyNode root = result.getRoot();
-        Assert.assertEquals(featureShape, root.getFeature());
+        assertEquals(featureShape, root.getFeature());
 
         //triangular or oval
         PolytomousKeyNode ovalOrTriangularNode = root.getChildren().stream()
                 .filter(pkn->pkn.getStatement().getLabelText(Language.DEFAULT()).equals("Oval or Triangular"))
                 .findFirst().get();
-        Assert.assertEquals("Oval or Triangular", label(ovalOrTriangularNode));
+        assertEquals("Oval or Triangular", label(ovalOrTriangularNode));
 
             //blue
             PolytomousKeyNode blueNode = ovalOrTriangularNode.getChildAt(0);
-            Assert.assertEquals(blue.getLabel(), label(blueNode));
+            assertEquals(blue.getLabel(), label(blueNode));
 
                 //triangular
                 PolytomousKeyNode triangularNode = blueNode.getChildAt(0);
-                Assert.assertEquals("Shape of head should be reused in this branch", "Triangular", label(triangularNode));
+                assertEquals("Triangular", label(triangularNode), "Shape of head should be reused in this branch");
 
             //yellow
             PolytomousKeyNode yellowNode = ovalOrTriangularNode.getChildAt(1);
-            Assert.assertEquals(yellow.getLabel(), label(yellowNode));
+            assertEquals(yellow.getLabel(), label(yellowNode));
 
                 //triangular
                 PolytomousKeyNode ovalNode = yellowNode.getChildAt(1);
-                Assert.assertEquals("Shape of head should be reused in this branch, "
+                assertEquals("Oval", label(ovalNode), "Shape of head should be reused in this branch, "
                         + "but only for remaining states triangular and oval. "
-                        + "'Circular' must not be available anymore", "Oval", label(ovalNode));
+                        + "'Circular' must not be available anymore");
 
         PolytomousKeyNode circularNode = root.getChildren().stream()
                 .filter(pkn->pkn.getStatement().getLabelText(Language.DEFAULT()).equals("Circular"))
@@ -456,11 +458,11 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
 
             //presence yes
             PolytomousKeyNode presenceNode = circularNode.getChildAt(0);
-            Assert.assertEquals(yes.getLabel(), label(presenceNode));
+            assertEquals(yes.getLabel(), label(presenceNode));
 
                 //blue
                 blueNode = presenceNode.getChildAt(0);
-                Assert.assertEquals(blue.getLabel(), label(blueNode));
+                assertEquals(blue.getLabel(), label(blueNode));
 
                     //length
                     PolytomousKeyNode lowerNode = blueNode.getChildAt(0);
@@ -488,13 +490,13 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
 
         PolytomousKey result = generator.invoke(configurator);
         result.setTitleCache("Merge Key with dependency", true);
-        assertNotNull("Key should exist (dependency on)", result);
+        assertNotNull(result, "Key should exist (dependency on)");
         if (debug) {result.print(System.out);}
 
         //Assertions
-        assertNotNull("Key should exist.", result);
+        assertNotNull(result, "Key should exist.");
         PolytomousKeyNode root = result.getRoot();
-        Assert.assertEquals(featureShape, root.getFeature());
+        assertEquals(featureShape, root.getFeature());
 
         //circular
         PolytomousKeyNode circularNode = root.getChildAt(1);
@@ -511,13 +513,13 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
 
         result = generator.invoke(configurator);
         result.setTitleCache("Merge Key without dependency", true);
-        assertNotNull("Key should exist (dependency off)", result);
+        assertNotNull(result, "Key should exist (dependency off)");
         if (debug) {result.print(System.out);}
 
         //Assertions
-        assertNotNull("Key should exist.", result);
+        assertNotNull(result, "Key should exist.");
         root = result.getRoot();
-        Assert.assertEquals(featureShape, root.getFeature());
+        assertEquals(featureShape, root.getFeature());
 
         //circular
         circularNode = root.getChildAt(1);
@@ -556,14 +558,14 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
         PolytomousKeyGeneratorConfigurator configurator = createDefaultConfig();
         PolytomousKey result = generator.invoke(configurator);
         result.setTitleCache("Merge Key", true);
-        assertNotNull("Key should exist (merge mode ON).", result);
+        assertNotNull(result, "Key should exist (merge mode ON).");
         if (debug) {result.print(System.out);}
 
         //Assertions
-        assertNotNull("Key should exist.", result);
+        assertNotNull(result, "Key should exist.");
         PolytomousKeyNode root = result.getRoot();
-        Assert.assertEquals(featureShape, root.getFeature());
-        Assert.assertNull(root.getTaxon());
+        assertEquals(featureShape, root.getFeature());
+        assertNull(root.getTaxon());
 
         //triangular or oval
         PolytomousKeyNode triangularNode = root.getChildAt(0);
@@ -642,14 +644,14 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
         if (debug) {result.print(System.out);}
 
         //Assertions
-        assertNotNull("Key should exist.", result);
+        assertNotNull(result, "Key should exist.");
         PolytomousKeyNode root = result.getRoot();
-        Assert.assertEquals("Root feature should be 'presence' as it inherits score from 'length of wings'", featurePresence, root.getFeature());
+        assertEquals(featurePresence, root.getFeature(), "Root feature should be 'presence' as it inherits score from 'length of wings'");
         //...otherwise it would be color, both have a score of 12.0 but presence comes first in list
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testMultipleDependencies() {
 
         //TODO test only if multiple dependencies are supported for 1 parent feature; not yet implemented; requires restructuring the feature tree, created by createDefaultConfig()
@@ -664,9 +666,9 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
 //        if (debug) {result.print(System.out);}
 //
 //        //Assertions
-//        assertNotNull("Key should exist.", result);
+//        assertNotNull(result, "Key should exist.");
 //        PolytomousKeyNode root = result.getRoot();
-//        Assert.assertEquals("Root feature should be 'presence' as it inherits score from 'length of wings'", featurePresence, root.getFeature());
+//        assertEquals(featurePresence, root.getFeature(), "Root feature should be 'presence' as it inherits score from 'length of wings'");
 //        //...otherwise it would be colour, both have a score of 12.0 but presence comes first in list
     }
 
@@ -675,15 +677,15 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
      * and has the given statement label.
      */
     private void assertInnerNode(PolytomousKeyNode node, String label, Feature feature) {
-        Assert.assertEquals(label, label(node));
-        Assert.assertEquals(feature, node.getFeature());
-        Assert.assertNull(node.getTaxon());
+        assertEquals(label, label(node));
+        assertEquals(feature, node.getFeature());
+        assertNull(node.getTaxon());
     }
 
     private void assertInnerNodeWithTaxon(PolytomousKeyNode node, String label, Feature feature, Taxon taxon) {
-        Assert.assertEquals(label, label(node));
-        Assert.assertEquals(feature, node.getFeature());
-        Assert.assertEquals(taxon, node.getTaxon());
+        assertEquals(label, label(node));
+        assertEquals(feature, node.getFeature());
+        assertEquals(taxon, node.getTaxon());
     }
 
     private PolytomousKeyNode assertInnerNode(PolytomousKeyNode node, State state, Feature feature) {
@@ -696,10 +698,10 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
     }
 
     private void assertSingleTaxon(PolytomousKeyNode node, Taxon taxon, String statement) {
-        Assert.assertNotNull(node.getStatement());
-        Assert.assertEquals(statement, label(node));
-        Assert.assertTrue(node.getChildren().isEmpty());
-        Assert.assertEquals(taxon, node.getTaxon());
+        assertNotNull(node.getStatement());
+        assertEquals(statement, label(node));
+        assertTrue(node.getChildren().isEmpty());
+        assertEquals(taxon, node.getTaxon());
     }
 
     private void assertSingleTaxon(PolytomousKeyNode node, Taxon taxon, State state) {
@@ -711,15 +713,15 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
     }
 
     private void assertIsTaxonList(PolytomousKeyNode node, String label, Taxon... taxa) {
-        Assert.assertNotNull(node.getStatement());
-        Assert.assertEquals(label, label(node));
-        Assert.assertNull(node.getFeature());
-        Assert.assertNull(node.getTaxon());
-        Assert.assertTrue(node.getChildren().size() > 1);
+        assertNotNull(node.getStatement());
+        assertEquals(label, label(node));
+        assertNull(node.getFeature());
+        assertNull(node.getTaxon());
+        assertTrue(node.getChildren().size() > 1);
         for (PolytomousKeyNode child : node.getChildren()){
-            Assert.assertTrue(Arrays.asList(taxa).contains(child.getTaxon()));
-            Assert.assertNull(child.getStatement());
-            Assert.assertTrue(child.getChildren().isEmpty());
+            assertTrue(Arrays.asList(taxa).contains(child.getTaxon()));
+            assertNull(child.getStatement());
+            assertTrue(child.getChildren().isEmpty());
         }
     }
 

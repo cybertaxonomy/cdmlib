@@ -8,10 +8,11 @@
 */
 package eu.etaxonomy.cdm.compare.reference;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.UUID;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.NamedSource;
@@ -53,31 +54,31 @@ public class SourceComparatorTest {
 
         //both null
         SourceComparator comparator = SourceComparator.Instance();
-        Assert.assertEquals(expected, comparator.compare(source1, source2));
+        assertEquals(expected, comparator.compare(source1, source2));
 
         //1  has citation
         source1.setCitation(ReferenceFactory.newBook());
-        Assert.assertEquals(expected, comparator.compare(source1, source2));
+        assertEquals(expected, comparator.compare(source1, source2));
 
         //1 has date published
         source1.getCitation().setDatePublished(VerbatimTimePeriod.NewVerbatimInstance());
-        Assert.assertEquals(expected, comparator.compare(source1, source2));
+        assertEquals(expected, comparator.compare(source1, source2));
 
         //1 has year
         source1.getCitation().getDatePublished().setStartYear(1988);
-        Assert.assertEquals(4, comparator.compare(source1, source2));
+        assertEquals(4, comparator.compare(source1, source2));
 
         //2 also has year, year is equal
         source2.setCitation(ReferenceFactory.newBook());
         source2.getCitation().setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1988));
-        Assert.assertEquals(expected, comparator.compare(source1, source2));
+        assertEquals(expected, comparator.compare(source1, source2));
 
         //2 year is later
         source2.getCitation().getDatePublished().setStartYear(1989);
-        Assert.assertEquals(-1, comparator.compare(source1, source2));
+        assertEquals(-1, comparator.compare(source1, source2));
 
         //2 year is earlier
         source2.getCitation().getDatePublished().setStartYear(1987);
-        Assert.assertEquals(1, comparator.compare(source1, source2));
+        assertEquals(1, comparator.compare(source1, source2));
     }
 }

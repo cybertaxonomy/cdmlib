@@ -8,12 +8,14 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -29,7 +31,7 @@ public class NameTypeDesignationTest extends EntityTestBase {
 	private NameTypeDesignation term1 = null;
 	private NameTypeDesignation term2 = null;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		term1 = new NameTypeDesignation();
 		term2 = new NameTypeDesignation(TaxonNameFactory.NewZoologicalInstance(null), null, null, null, null, true, false, false);

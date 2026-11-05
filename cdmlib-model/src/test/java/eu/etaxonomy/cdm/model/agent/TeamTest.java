@@ -8,14 +8,18 @@
 */
 package eu.etaxonomy.cdm.model.agent;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -23,6 +27,7 @@ import org.junit.Test;
  */
 public class TeamTest {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
 	private Team teamProtected;
@@ -32,7 +37,7 @@ public class TeamTest {
 	private Person member3;
 	private boolean eventWasFired = false;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		teamProtected = Team.NewInstance();
 		teamProtected.setTitleCache("Team1", true);
@@ -58,79 +63,79 @@ public class TeamTest {
 
 	@Test
 	public void testGetTitleCache() {
-		Assert.assertEquals("Title Cache of team 1 must be 'Team1'", "Team1", teamProtected.getTitleCache());
+		assertEquals("Team1", teamProtected.getTitleCache(), "Title Cache of team 1 must be 'Team1'");
 	}
 
 	@Test
 	public void testGetNomenclaturalTitleCache() {
-		Assert.assertEquals("Nom title Cache of team 1 must be 'NomTeam1'", "NomTeam1", teamProtected.getNomenclaturalTitleCache());
+		assertEquals("NomTeam1", teamProtected.getNomenclaturalTitleCache(), "Nom title Cache of team 1 must be 'NomTeam1'");
 	}
 
 	@Test
 	public void testSetNomenclaturalTitleString() {
 		eventWasFired = false;
 		teamProtected.setNomenclaturalTitleCache("NomTeam1a", true);
-		Assert.assertTrue("setNomenclaturalTitle(String, boolean) needs to fire property change event", eventWasFired);
-		Assert.assertEquals("Nom title Cache of team 1 must be 'NomTeam1a'", "NomTeam1a", teamProtected.getNomenclaturalTitleCache());
+		assertTrue(eventWasFired, "setNomenclaturalTitle(String, boolean) needs to fire property change event");
+		assertEquals("NomTeam1a", teamProtected.getNomenclaturalTitleCache(), "Nom title Cache of team 1 must be 'NomTeam1a'");
 	}
 
 	@Test
 	public void testSetNomenclaturalTitleStringBoolean() {
 		eventWasFired = false;
 		teamProtected.setNomenclaturalTitleCache("New Nom Title", false);
-		Assert.assertTrue("setNomenclaturalTitle(String, boolean) needs to fire property change event", eventWasFired);
-		Assert.assertFalse("Protected title cache must be false for 'team protected'", teamProtected.isProtectedNomenclaturalTitleCache() );
-		//Assert.assertEquals("Nom title Cache of team 1 must be 'New Nom Title'", "New Nom Title", teamProtected.getNomenclaturalTitle());
+		assertTrue(eventWasFired, "setNomenclaturalTitle(String, boolean) needs to fire property change event");
+		assertFalse(teamProtected.isProtectedNomenclaturalTitleCache(), "Protected title cache must be false for 'team protected'");
+		//assertEquals("New Nom Title", teamProtected.getNomenclaturalTitle(), "Nom title Cache of team 1 must be 'New Nom Title'");
 	}
 
 	@Test
 	public void testIsSetProtectedNomenclaturalTitleCache() {
-		Assert.assertTrue("Protected title cache must be true for 'team protected'", teamProtected.isProtectedNomenclaturalTitleCache() );
+		assertTrue(teamProtected.isProtectedNomenclaturalTitleCache(), "Protected title cache must be true for 'team protected'");
 		teamProtected.setProtectedNomenclaturalTitleCache(false);
-		Assert.assertFalse("Protected title cache must be false for 'team protected'", teamProtected.isProtectedNomenclaturalTitleCache() );
+		assertFalse(teamProtected.isProtectedNomenclaturalTitleCache(), "Protected title cache must be false for 'team protected'");
 	}
 
 	@Test
 	public void testAddGetRemoveTeamMemberPerson() {
-		Assert.assertEquals("Number of team members should be 1", 1,teamWithMembers.getTeamMembers().size());
-		Assert.assertSame("Only team member should be 'Member1'", member1, teamWithMembers.getTeamMembers().get(0));
+		assertEquals(1, teamWithMembers.getTeamMembers().size(), "Number of team members should be 1");
+		assertSame(member1, teamWithMembers.getTeamMembers().get(0), "Only team member should be 'Member1'");
 		teamWithMembers.addTeamMember(member2);
-		Assert.assertEquals("Number of team members should be 2", 2,teamWithMembers.getTeamMembers().size());
-		Assert.assertSame("First team member should be 'Member1'", member1, teamWithMembers.getTeamMembers().get(0));
-		Assert.assertSame("Second team member should be 'Member2'", member2, teamWithMembers.getTeamMembers().get(1));
+		assertEquals(2, teamWithMembers.getTeamMembers().size(), "Number of team members should be 2");
+		assertSame(member1, teamWithMembers.getTeamMembers().get(0), "First team member should be 'Member1'");
+		assertSame(member2, teamWithMembers.getTeamMembers().get(1), "Second team member should be 'Member2'");
 		teamWithMembers.addTeamMember(member3);
-		Assert.assertEquals("Number of team members should be 3", 3,teamWithMembers.getTeamMembers().size());
-		Assert.assertSame("First team member should be 'Member1'", member1, teamWithMembers.getTeamMembers().get(0));
-		Assert.assertSame("Second team member should be 'Member2'", member2, teamWithMembers.getTeamMembers().get(1));
-		Assert.assertSame("Third team member should be 'Member3'", member3, teamWithMembers.getTeamMembers().get(2));
+		assertEquals(3, teamWithMembers.getTeamMembers().size(), "Number of team members should be 3");
+		assertSame(member1, teamWithMembers.getTeamMembers().get(0), "First team member should be 'Member1'");
+		assertSame(member2, teamWithMembers.getTeamMembers().get(1), "Second team member should be 'Member2'");
+		assertSame(member3, teamWithMembers.getTeamMembers().get(2), "Third team member should be 'Member3'");
 		teamWithMembers.removeTeamMember(member2);
-		Assert.assertEquals("Number of team members should be 2", 2,teamWithMembers.getTeamMembers().size());
-		Assert.assertSame("First team member should be 'Member1'", member1, teamWithMembers.getTeamMembers().get(0));
-		Assert.assertSame("Second team member should be 'Member3'", member3, teamWithMembers.getTeamMembers().get(1));
+		assertEquals(2, teamWithMembers.getTeamMembers().size(), "Number of team members should be 2");
+		assertSame(member1, teamWithMembers.getTeamMembers().get(0), "First team member should be 'Member1'");
+		assertSame(member3, teamWithMembers.getTeamMembers().get(1), "Second team member should be 'Member3'");
 		teamWithMembers.addTeamMember(member2, 1);
-		Assert.assertEquals("Number of team members should be 3", 3,teamWithMembers.getTeamMembers().size());
-		Assert.assertSame("First team member should be 'Member1'", member1, teamWithMembers.getTeamMembers().get(0));
-		Assert.assertSame("Second team member should be 'Member2'", member2, teamWithMembers.getTeamMembers().get(1));
-		Assert.assertSame("Third team member should be 'Member3'", member3, teamWithMembers.getTeamMembers().get(2));
+		assertEquals(3, teamWithMembers.getTeamMembers().size(), "Number of team members should be 3");
+		assertSame(member1, teamWithMembers.getTeamMembers().get(0), "First team member should be 'Member1'");
+		assertSame(member2, teamWithMembers.getTeamMembers().get(1), "Second team member should be 'Member2'");
+		assertSame(member3, teamWithMembers.getTeamMembers().get(2), "Third team member should be 'Member3'");
 		teamWithMembers.removeTeamMember(member2);
 		teamWithMembers.addTeamMember(member2, 5);
-		Assert.assertEquals("Number of team members should be 3", 3,teamWithMembers.getTeamMembers().size());
-		Assert.assertSame("First team member should be 'Member1'", member1, teamWithMembers.getTeamMembers().get(0));
-		Assert.assertSame("Second team member should be 'Member3'", member3, teamWithMembers.getTeamMembers().get(1));
-		Assert.assertSame("Third team member should be 'Member2'", member2, teamWithMembers.getTeamMembers().get(2));
+		assertEquals(3, teamWithMembers.getTeamMembers().size(), "Number of team members should be 3");
+		assertSame(member1, teamWithMembers.getTeamMembers().get(0), "First team member should be 'Member1'");
+		assertSame(member3, teamWithMembers.getTeamMembers().get(1), "Second team member should be 'Member3'");
+		assertSame(member2, teamWithMembers.getTeamMembers().get(2), "Third team member should be 'Member2'");
 		teamWithMembers.addTeamMember(member2, 1);
-		Assert.assertEquals("Number of team members should be 3", 3,teamWithMembers.getTeamMembers().size());
-		Assert.assertSame("First team member should be 'Member1'", member1, teamWithMembers.getTeamMembers().get(0));
-		Assert.assertSame("Second team member should be 'Member2'", member2, teamWithMembers.getTeamMembers().get(1));
-		Assert.assertSame("Third team member should be 'Member3'", member3, teamWithMembers.getTeamMembers().get(2));
+		assertEquals(3, teamWithMembers.getTeamMembers().size(), "Number of team members should be 3");
+		assertSame(member1, teamWithMembers.getTeamMembers().get(0), "First team member should be 'Member1'");
+		assertSame(member2, teamWithMembers.getTeamMembers().get(1), "Second team member should be 'Member2'");
+		assertSame(member3, teamWithMembers.getTeamMembers().get(2), "Third team member should be 'Member3'");
 		teamProtected.addTeamMember(member1, 3);
-		Assert.assertEquals("Number of team members should be 1", 1,teamProtected.getTeamMembers().size());
+		assertEquals(1, teamProtected.getTeamMembers().size(), "Number of team members should be 1");
 	}
 
 	@Test
 	public void testAddRemoveTeamMemberPersonFireEvent() {
 		eventWasFired = false;
 		teamProtected.addTeamMember(member2);
-		Assert.assertTrue("addTeamMember(Person) needs to fire property change event", eventWasFired);
+		assertTrue(eventWasFired, "addTeamMember(Person) needs to fire property change event");
 	}
 }

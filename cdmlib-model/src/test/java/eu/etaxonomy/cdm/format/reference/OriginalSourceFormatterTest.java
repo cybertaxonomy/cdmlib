@@ -8,9 +8,10 @@
 */
 package eu.etaxonomy.cdm.format.reference;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -42,7 +43,7 @@ public class OriginalSourceFormatterTest {
     private static OriginalSourceFormatter formatterLongCitation = OriginalSourceFormatter.INSTANCE_LONG_CITATION;
     private static OriginalSourceFormatter formatterWithHtml = OriginalSourceFormatter.INSTANCE_LONG_CITATION_WITH_HTML;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         //book / section
@@ -55,44 +56,41 @@ public class OriginalSourceFormatterTest {
         book1.setTitle("My book");
         book1.setAuthorship(bookTeam1);
         book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book", book1.getTitleCache());
+        assertEquals("Book Author 1975: My book", book1.getTitleCache(), "Unexpected title cache.");
 
         book1.setTitleCache(null, false);
         book1.setEdition("ed. 3");
 
-        Assert.assertEquals("Unexpected title cache.", "Book Author 1975", formatter.format(book1, null));
-        Assert.assertEquals("Unexpected title cache.", "Book Author 1975", formatter.format(book1, ""));
-        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: 55", formatter.format(book1, "55"));
-        Assert.assertEquals("Unexpected title cache.", "Book Author (1975: 55)",
-                formatterWithBrackets.format(book1, "55"));
-        Assert.assertEquals("Unexpected title cache.", "Book Author (1975b)",
-                formatterWithBrackets.format(book1, null, null, "b"));
-        Assert.assertEquals("Unexpected title cache.", "Book Author (1975b: 66)",
-                formatterWithBrackets.format(book1, "66", null, "b"));
+        assertEquals("Book Author 1975", formatter.format(book1, null), "Unexpected title cache.");
+        assertEquals("Book Author 1975", formatter.format(book1, ""), "Unexpected title cache.");
+        assertEquals("Book Author 1975: 55", formatter.format(book1, "55"), "Unexpected title cache.");
+        assertEquals("Book Author (1975: 55)", formatterWithBrackets.format(book1, "55"), "Unexpected title cache.");
+        assertEquals("Book Author (1975b)", formatterWithBrackets.format(book1, null, null, "b"), "Unexpected title cache.");
+        assertEquals("Book Author (1975b: 66)", formatterWithBrackets.format(book1, "66", null, "b"), "Unexpected title cache.");
 
         //1 person
         Person person1 = Person.NewInstance("Pers.", "Person", "P.", "Percy");
         Team team = Team.NewInstance(person1);
         book1.setAuthorship(team);
-        Assert.assertEquals("Unexpected title cache.", "Person 1975: 55", formatter.format(book1, "55"));
+        assertEquals("Person 1975: 55", formatter.format(book1, "55"), "Unexpected title cache.");
         team.setHasMoreMembers(true);
-        Assert.assertEquals("Unexpected title cache.", "Person & al. 1975: 55", formatter.format(book1, "55"));
+        assertEquals("Person & al. 1975: 55", formatter.format(book1, "55"), "Unexpected title cache.");
         team.setHasMoreMembers(false);
 
         //2 persons
         Person person2 = Person.NewInstance("Lers.", "Lerson", "L.", "Lercy");
         team.addTeamMember(person2);
-        Assert.assertEquals("Unexpected title cache.", "Person & Lerson 1975: 55", formatter.format(book1, "55"));
+        assertEquals("Person & Lerson 1975: 55", formatter.format(book1, "55"), "Unexpected title cache.");
         team.setHasMoreMembers(true);
-        Assert.assertEquals("Unexpected title cache.", "Person & al. 1975: 55", formatter.format(book1, "55"));
+        assertEquals("Person & al. 1975: 55", formatter.format(book1, "55"), "Unexpected title cache.");
         team.setHasMoreMembers(false);
 
         //3 persons
         Person person3 = Person.NewInstance("Gers.", "Gerson", "G.", "Gercy");
         team.addTeamMember(person3);
-        Assert.assertEquals("Unexpected title cache.", "Person & al. 1975: 55", formatter.format(book1, "55"));
+        assertEquals("Person & al. 1975: 55", formatter.format(book1, "55"), "Unexpected title cache.");
         team.setHasMoreMembers(true);
-        Assert.assertEquals("Unexpected title cache.", "Person & al. 1975: 55", formatter.format(book1, "55"));
+        assertEquals("Person & al. 1975: 55", formatter.format(book1, "55"), "Unexpected title cache.");
         team.setHasMoreMembers(false);  //in case we want to continue test
     }
 
@@ -113,30 +111,22 @@ public class OriginalSourceFormatterTest {
         webpage.setAuthorship(person);
 
         //assert with author
-        Assert.assertEquals("Should be author and source.accessed",
-                "Miller 2020", formatter.format((Reference)webpage, null, accessed));
+        assertEquals("Miller 2020", formatter.format((Reference)webpage, null, accessed), "Should be author and source.accessed");
         //not sure if details is needed but to be on the save side...
-        Assert.assertEquals("Should be author, source.accessed and detail",
-                "Miller 2020: detail", formatter.format((Reference)webpage, "detail", accessed));
-        Assert.assertEquals("Should be author and webpage.datePublished year", "Miller 2001", formatter.format((Reference)webpage, null, null));
-        Assert.assertEquals("Should be author and webpage.datePublished unique year", "Miller 2001c", formatter.format((Reference)webpage, null, null, "c"));
+        assertEquals("Miller 2020: detail", formatter.format((Reference)webpage, "detail", accessed), "Should be author, source.accessed and detail");
+        assertEquals("Miller 2001", formatter.format((Reference)webpage, null, null), "Should be author and webpage.datePublished year");
+        assertEquals("Miller 2001c", formatter.format((Reference)webpage, null, null, "c"), "Should be author and webpage.datePublished unique year");
 
         //assert without author (the expected behavior is still undefined)
         webpage.setAuthorship(null);
         webpage.resetTitleCache();
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "A beautiful taxon page 2020", formatter.format((Reference)webpage, null, accessed));
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "A beautiful taxon page 2020: detail", formatter.format((Reference)webpage, "detail", accessed));
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "A beautiful taxon page 2001", formatter.format((Reference)webpage, null, null));
+        assertEquals("A beautiful taxon page 2020", formatter.format((Reference)webpage, null, accessed), "Formatting of webpages without author is still undefined");
+        assertEquals("A beautiful taxon page 2020: detail", formatter.format((Reference)webpage, "detail", accessed), "Formatting of webpages without author is still undefined");
+        assertEquals("A beautiful taxon page 2001", formatter.format((Reference)webpage, null, null), "Formatting of webpages without author is still undefined");
         webpage.resetTitleCache();
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "A beautiful taxon page 2001", formatter.format((Reference)webpage, null, null));
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "A beautiful taxon page 2001: detail", formatter.format((Reference)webpage, "detail", null));
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "A beautiful taxon page 2001c: detail", formatter.format((Reference)webpage, "detail", null, "c"));
+        assertEquals("A beautiful taxon page 2001", formatter.format((Reference)webpage, null, null), "Formatting of webpages without author is still undefined");
+        assertEquals("A beautiful taxon page 2001: detail", formatter.format((Reference)webpage, "detail", null), "Formatting of webpages without author is still undefined");
+        assertEquals("A beautiful taxon page 2001c: detail", formatter.format((Reference)webpage, "detail", null, "c"), "Formatting of webpages without author is still undefined");
     }
 
     @Test
@@ -155,20 +145,20 @@ public class OriginalSourceFormatterTest {
         TimePeriod sourceAccessed = TimePeriodParser.parseString("2020");
 
         //assert with author
-        Assert.assertEquals("Should be author and source.accessed", "Miller 2020", formatter.format((Reference)database, null, sourceAccessed));
+        assertEquals("Miller 2020", formatter.format((Reference)database, null, sourceAccessed), "Should be author and source.accessed");
         //not sure if details is needed but to be on the save side...
-        Assert.assertEquals("Should be author, source.accessed and detail", "Miller 2020: detail", formatter.format((Reference)database, "detail", sourceAccessed));
+        assertEquals("Miller 2020: detail", formatter.format((Reference)database, "detail", sourceAccessed), "Should be author, source.accessed and detail");
         //TODO not clear yet how to handle the "+"
-        Assert.assertEquals("Should be author and webpage.datePublished year", "Miller 2001+", formatter.format((Reference)database, null, null));
-        Assert.assertEquals("Should be author and webpage.datePublished unique year", "Miller 2001+c", formatter.format((Reference)database, null, null, "c"));
+        assertEquals("Miller 2001+", formatter.format((Reference)database, null, null), "Should be author and webpage.datePublished year");
+        assertEquals("Miller 2001+c", formatter.format((Reference)database, null, null, "c"), "Should be author and webpage.datePublished unique year");
 
         //long form
-        Assert.assertEquals("Should be author and source.accessed", "Miller, A. 2001+: A beautiful taxon page [accessed: 2020]", formatterLongCitation.format((Reference)database, null, sourceAccessed));
+        assertEquals("Miller, A. 2001+: A beautiful taxon page [accessed: 2020]", formatterLongCitation.format((Reference)database, null, sourceAccessed), "Should be author and source.accessed");
         //not sure if details is needed but to be on the save side...
-        Assert.assertEquals("Should be author, source.accessed and detail", "Miller, A. 2001+: A beautiful taxon page. detail [accessed: 2020]", formatterLongCitation.format((Reference)database, "detail", sourceAccessed));
-        Assert.assertEquals("Should be author and webpage.accessed year", "Miller, A. 2001+: A beautiful taxon page", formatterLongCitation.format((Reference)database, null, null));
-        Assert.assertEquals("Should be author and webpage.datePublished year", "Miller, A. 2001+: A beautiful taxon page", formatterLongCitation.format((Reference)database, null, null));
-        Assert.assertEquals("Should be author and webpage.datePublished unique year", "Miller, A. 2001+: A beautiful taxon page", formatterLongCitation.format((Reference)database, null, null, "c"));
+        assertEquals("Miller, A. 2001+: A beautiful taxon page. detail [accessed: 2020]", formatterLongCitation.format((Reference)database, "detail", sourceAccessed), "Should be author, source.accessed and detail");
+        assertEquals("Miller, A. 2001+: A beautiful taxon page", formatterLongCitation.format((Reference)database, null, null), "Should be author and webpage.accessed year");
+        assertEquals("Miller, A. 2001+: A beautiful taxon page", formatterLongCitation.format((Reference)database, null, null), "Should be author and webpage.datePublished year");
+        assertEquals("Miller, A. 2001+: A beautiful taxon page", formatterLongCitation.format((Reference)database, null, null, "c"), "Should be author and webpage.datePublished unique year");
 
 
         //assert without author (the expected behavior is still undefined)
@@ -177,43 +167,30 @@ public class OriginalSourceFormatterTest {
         //database.setUri(URI.create("https://redlist.necca.gov.gr/"));
         //TODO do we really want to show the URI in the short form?
         database.resetTitleCache();
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "A beautiful taxon page. Published at https://abc.de/ 2020", formatter.format((Reference)database, null, sourceAccessed));
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "A beautiful taxon page. Published at https://abc.de/ 2020: detail", formatter.format((Reference)database, "detail", sourceAccessed));
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "A beautiful taxon page. Published at https://abc.de/ 2001+", formatter.format((Reference)database, null, null));
+        assertEquals("A beautiful taxon page. Published at https://abc.de/ 2020", formatter.format((Reference)database, null, sourceAccessed), "Formatting of webpages without author is still undefined");
+        assertEquals("A beautiful taxon page. Published at https://abc.de/ 2020: detail", formatter.format((Reference)database, "detail", sourceAccessed), "Formatting of webpages without author is still undefined");
+        assertEquals("A beautiful taxon page. Published at https://abc.de/ 2001+", formatter.format((Reference)database, null, null), "Formatting of webpages without author is still undefined");
         database.resetTitleCache();
         //TODO is it really correct to have the date at the end here
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "A beautiful taxon page. Published at https://abc.de/ 2001+", formatter.format((Reference)database, null, null));
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "A beautiful taxon page. Published at https://abc.de/ 2001+: detail", formatter.format((Reference)database, "detail", null));
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "A beautiful taxon page. Published at https://abc.de/ 2001+c: detail", formatter.format((Reference)database, "detail", null, "c"));
+        assertEquals("A beautiful taxon page. Published at https://abc.de/ 2001+", formatter.format((Reference)database, null, null), "Formatting of webpages without author is still undefined");
+        assertEquals("A beautiful taxon page. Published at https://abc.de/ 2001+: detail", formatter.format((Reference)database, "detail", null), "Formatting of webpages without author is still undefined");
+        assertEquals("A beautiful taxon page. Published at https://abc.de/ 2001+c: detail", formatter.format((Reference)database, "detail", null, "c"), "Formatting of webpages without author is still undefined");
 
         //long form
-        Assert.assertEquals("Should be author and source.accessed", "2001+: A beautiful taxon page. Published at https://abc.de/ [accessed: 2020]", formatterLongCitation.format((Reference)database, null, sourceAccessed));
+        assertEquals("2001+: A beautiful taxon page. Published at https://abc.de/ [accessed: 2020]", formatterLongCitation.format((Reference)database, null, sourceAccessed), "Should be author and source.accessed");
 
         //section
         database.setAuthorship(person);
         ISection databaseSection = ReferenceFactory.newSection();
         databaseSection.setTitle("My database section");
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "Miller 2020: detail", formatter.format((Reference)database, "detail", sourceAccessed));
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "Miller, A. 2001+: A beautiful taxon page. Published at https://abc.de/. detail [accessed: 2020]",
-                formatterLongCitation.format((Reference)database, "detail", sourceAccessed));
+        assertEquals("Miller 2020: detail", formatter.format((Reference)database, "detail", sourceAccessed), "Formatting of webpages without author is still undefined");
+        assertEquals("Miller, A. 2001+: A beautiful taxon page. Published at https://abc.de/. detail [accessed: 2020]", formatterLongCitation.format((Reference)database, "detail", sourceAccessed), "Formatting of webpages without author is still undefined");
         //... again with source
         DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance((Reference)database, "detail");
         source.setAccessed(sourceAccessed);
-        Assert.assertEquals("Formatting of webpages without author is still undefined",
-                "Miller, A. 2001+: A beautiful taxon page. Published at https://abc.de/. detail [accessed: 2020]",
-                formatterLongCitation.format(source));
+        assertEquals("Miller, A. 2001+: A beautiful taxon page. Published at https://abc.de/. detail [accessed: 2020]", formatterLongCitation.format(source), "Formatting of webpages without author is still undefined");
 
-        Assert.assertEquals("Formatting of webpages with html around url",
-                "Miller, A. 2001+: A beautiful taxon page. Published at <a href=\"https://abc.de/\">https://abc.de/</a>. detail [accessed: 2020]",
-                formatterWithHtml.format(source));
+        assertEquals("Miller, A. 2001+: A beautiful taxon page. Published at <a href=\"https://abc.de/\">https://abc.de/</a>. detail [accessed: 2020]", formatterWithHtml.format(source), "Formatting of webpages with html around url");
 
     }
 
@@ -223,16 +200,16 @@ public class OriginalSourceFormatterTest {
 
         Reference ref = ReferenceFactory.newGeneric();
         ref.setTitleCache("Miller: Protected title cache reference", true);
-        Assert.assertEquals("", "Miller: Protected title cache reference", formatter.format(ref, null, null));
+        assertEquals("Miller: Protected title cache reference", formatter.format(ref, null, null), "");
 
         ref.setDatePublished(TimePeriodParser.parseStringVerbatim("1982"));
-        Assert.assertEquals("", "Miller: Protected title cache reference 1982", formatter.format(ref, null, null));
+        assertEquals("Miller: Protected title cache reference 1982", formatter.format(ref, null, null), "");
 
         ref.setTitleCache("Miller 1982. Protected title cache reference", true);
-        Assert.assertEquals("", "Miller 1982. Protected title cache reference", formatter.format(ref, null, null));
+        assertEquals("Miller 1982. Protected title cache reference", formatter.format(ref, null, null), "");
 
         ref.setTitleCache("Miller 1982: Protected title cache reference", true);
-        Assert.assertEquals("", "Miller 1982: Protected title cache reference", formatter.format(ref, null, null));
+        assertEquals("Miller 1982: Protected title cache reference", formatter.format(ref, null, null), "");
     }
 
     @Test
@@ -242,38 +219,38 @@ public class OriginalSourceFormatterTest {
         book1.setTitle("My book");
         book1.setAuthorship(bookTeam1);
         book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book", book1.getTitleCache());
+        assertEquals("Book Author 1975: My book", book1.getTitleCache(), "Unexpected title cache.");
 
         book1.setTitleCache(null, false);
         book1.setEdition("ed. 3");
 
-        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book, ed. 3", formatterLongCitation.format(book1, null));
-        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book, ed. 3", formatterLongCitation.format(book1, ""));
-        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+        assertEquals("Book Author 1975: My book, ed. 3", formatterLongCitation.format(book1, null), "Unexpected title cache.");
+        assertEquals("Book Author 1975: My book, ed. 3", formatterLongCitation.format(book1, ""), "Unexpected title cache.");
+        assertEquals("Book Author 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"), "Unexpected title cache.");
 
         //1 person
         Person person1 = Person.NewInstance("Pers.", "Person", "P.", "Percy");
         Team team = Team.NewInstance(person1);
         book1.setAuthorship(team);
-        Assert.assertEquals("Unexpected title cache.", "Person, P. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+        assertEquals("Person, P. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"), "Unexpected title cache.");
         team.setHasMoreMembers(true);
-        Assert.assertEquals("Unexpected title cache.", "Person, P. & al. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+        assertEquals("Person, P. & al. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"), "Unexpected title cache.");
         team.setHasMoreMembers(false);
 
         //2 persons
         Person person2 = Person.NewInstance("Lers.", "Lerson", "L.", "Lercy");
         team.addTeamMember(person2);
-        Assert.assertEquals("Unexpected title cache.", "Person, P. & Lerson, L. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+        assertEquals("Person, P. & Lerson, L. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"), "Unexpected title cache.");
         team.setHasMoreMembers(true);
-        Assert.assertEquals("Unexpected title cache.", "Person, P., Lerson, L. & al. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+        assertEquals("Person, P., Lerson, L. & al. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"), "Unexpected title cache.");
         team.setHasMoreMembers(false);
 
         //3 persons
         Person person3 = Person.NewInstance("Gers.", "Gerson", "G.", "Gercy");
         team.addTeamMember(person3);
-        Assert.assertEquals("Unexpected title cache.", "Person, P., Lerson, L. & Gerson, G. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+        assertEquals("Person, P., Lerson, L. & Gerson, G. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"), "Unexpected title cache.");
         team.setHasMoreMembers(true);
-        Assert.assertEquals("Unexpected title cache.", "Person, P., Lerson, L., Gerson, G. & al. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"));
+        assertEquals("Person, P., Lerson, L., Gerson, G. & al. 1975: My book, ed. 3. p 55", formatterLongCitation.format(book1, "55"), "Unexpected title cache.");
         team.setHasMoreMembers(false);  //in case we want to continue test
     }
 
@@ -284,7 +261,7 @@ public class OriginalSourceFormatterTest {
         book1.setTitle("My book");
         book1.setAuthorship(bookTeam1);
         book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book", book1.getTitleCache());
+        assertEquals("Book Author 1975: My book", book1.getTitleCache(), "Unexpected title cache.");
     }
 
 }

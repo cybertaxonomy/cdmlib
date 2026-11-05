@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.Iterator;
 import java.util.TreeSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
@@ -31,9 +33,9 @@ public class PresenceAbsenceTermTest extends EntityTestBase {
 	public void testGetPresenceTermByAbbreviation() {
 		String abbrev = "p";
 		PresenceAbsenceTerm paTerm = PresenceAbsenceTerm.getPresenceAbsenceTermByAbbreviation(abbrev);
-		Assert.assertEquals(PresenceAbsenceTerm.PRESENT(), paTerm);
+		assertEquals(PresenceAbsenceTerm.PRESENT(), paTerm);
 		PresenceAbsenceTerm paTermNotExist = PresenceAbsenceTerm.getPresenceAbsenceTermByAbbreviation("slkjlsl�");
-		Assert.assertNull(paTermNotExist);
+		assertNull(paTermNotExist);
 	}
 
 	@Test
@@ -50,9 +52,9 @@ public class PresenceAbsenceTermTest extends EntityTestBase {
         list.add(term4);
 
         Iterator<PresenceAbsenceTerm> it = list.iterator();
-        Assert.assertEquals(term4, it.next());
-        Assert.assertEquals(term3, it.next());
-        Assert.assertEquals(term1, it.next());
-        Assert.assertEquals(term2, it.next());
+        assertEquals(term4, it.next());
+        assertEquals(term3, it.next());
+        assertEquals(term1, it.next());
+        assertEquals(term2, it.next());
     }
 }

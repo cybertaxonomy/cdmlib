@@ -8,16 +8,14 @@
 */
 package eu.etaxonomy.cdm.validation;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
-import jakarta.validation.ConstraintViolation;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -27,6 +25,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import jakarta.validation.ConstraintViolation;
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though
@@ -50,7 +49,7 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends ValidationTestBase{
     private Reference sec1;
     private Reference sec2;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -73,7 +72,7 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends ValidationTestBase{
 	public void testValidTaxon() {
 		assert taxon1.getName().getTaxonBases().size() == 1;
         Set<ConstraintViolation<Taxon>> constraintViolations  = validator.validate(taxon1, Level3.class);
-        assertTrue("There should be no constraint violations as this taxon does not have the same name as any other taxa",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should be no constraint violations as this taxon does not have the same name as any other taxa");
 	}
 
 	@Test
@@ -81,7 +80,7 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends ValidationTestBase{
 		taxon2.setName(name1);
 		assert taxon1.getName().getTaxonBases().size() == 2;
         Set<ConstraintViolation<Taxon>> constraintViolations  = validator.validate(taxon1, Level3.class);
-        assertTrue("There should be a single constraint violation as this taxon shares the same name as taxon2 and is according to the same authority, sec1",!constraintViolations.isEmpty());
+        assertTrue(!constraintViolations.isEmpty(), "There should be a single constraint violation as this taxon shares the same name as taxon2 and is according to the same authority, sec1");
 	}
 
 	@Test
@@ -90,7 +89,7 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends ValidationTestBase{
 		taxon2.setSec(sec2);
 		assert taxon1.getName().getTaxonBases().size() == 2;
         Set<ConstraintViolation<Taxon>> constraintViolations  = validator.validate(taxon1, Level3.class);
-        assertTrue("There should not be any constraint violations despite both accepted taxa sharing the same name as the sec reference is different",constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be any constraint violations despite both accepted taxa sharing the same name as the sec reference is different");
 	}
 
 	@Test
@@ -98,6 +97,6 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends ValidationTestBase{
 		synonym.setName(name1);
 		assert taxon1.getName().getTaxonBases().size() == 2;
         Set<ConstraintViolation<Taxon>> constraintViolations  = validator.validate(taxon1, Level3.class);
-        assertTrue("There should be a single constraint violation as this taxon shares the same name as synonym and is according to the same authority, sec1",!constraintViolations.isEmpty());
+        assertTrue(!constraintViolations.isEmpty(), "There should be a single constraint violation as this taxon shares the same name as synonym and is according to the same authority, sec1");
 	}
 }

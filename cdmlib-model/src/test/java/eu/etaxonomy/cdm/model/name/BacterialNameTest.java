@@ -8,11 +8,12 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -25,7 +26,7 @@ public class BacterialNameTest {
 
 	private IBacterialName bacterialName1;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		bacterialName1 = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
 	}
@@ -37,7 +38,7 @@ public class BacterialNameTest {
 		bacterialName1.setSubGenusAuthorship("Bacter.");
 		bacterialName1.setNameApprobation("approb");
 		IBacterialName clone = bacterialName1.clone();
-		Assert.assertEquals("SubGenusAuthorship should be equal", "Bacter.", clone.getSubGenusAuthorship());
-		Assert.assertEquals("Name approbation should be equal", "approb", clone.getNameApprobation());
+		assertEquals("Bacter.", clone.getSubGenusAuthorship(), "SubGenusAuthorship should be equal");
+		assertEquals("approb", clone.getNameApprobation(), "Name approbation should be equal");
 	}
 }

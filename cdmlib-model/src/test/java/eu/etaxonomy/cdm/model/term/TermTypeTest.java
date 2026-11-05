@@ -8,9 +8,12 @@
 */
 package eu.etaxonomy.cdm.model.term;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TermTypeTest {
 
@@ -19,7 +22,7 @@ public class TermTypeTest {
 		TermType languageType = TermType.Language;
 		assertEquals(TermType.getByKey("LA"), languageType);
 	}
-	
+
 	@Test
 	public void testKindOf(){
 		assertSame(TermType.Modifier, TermType.DeterminationModifier.getKindOf());
@@ -27,25 +30,25 @@ public class TermTypeTest {
 		assertSame(TermType.Scope, TermType.Sex.getKindOf());
 		assertSame(TermType.Scope, TermType.Stage.getKindOf());
 	}
-	
+
 	@Test
 	public void testGeneralisationOf(){
 		assertTrue(TermType.Modifier.getGeneralizationOf().contains(TermType.DeterminationModifier));
 		assertTrue(TermType.Modifier.getGeneralizationOf().contains(TermType.Scope));
 		assertTrue(TermType.Scope.getGeneralizationOf().contains(TermType.Sex));
 		assertTrue(TermType.Scope.getGeneralizationOf().contains(TermType.Stage));
-		assertFalse("generalisationOf may contain only contain only direct children, but stage is a grandchild", TermType.Modifier.getGeneralizationOf().contains(TermType.Stage));	
+		assertFalse(TermType.Modifier.getGeneralizationOf().contains(TermType.Stage), "generalisationOf may contain only contain only direct children, but stage is a grandchild");
 	}
-	
+
 	@Test
 	public void testGeneralisationOfRecursive(){
 		boolean recursive = true;
 		assertTrue(TermType.Modifier.getGeneralizationOf(recursive).contains(TermType.Scope));
 		assertTrue(TermType.Modifier.getGeneralizationOf(! recursive).contains(TermType.Scope));
 		assertTrue(TermType.Scope.getGeneralizationOf(recursive).contains(TermType.Sex));
-		assertTrue(TermType.Modifier.getGeneralizationOf(recursive).contains(TermType.Stage));		
-		assertFalse(TermType.Modifier.getGeneralizationOf(!recursive).contains(TermType.Stage));		
+		assertTrue(TermType.Modifier.getGeneralizationOf(recursive).contains(TermType.Stage));
+		assertFalse(TermType.Modifier.getGeneralizationOf(!recursive).contains(TermType.Stage));
 	}
-	
+
 
 }

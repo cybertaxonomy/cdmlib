@@ -8,13 +8,13 @@
  */
 package eu.etaxonomy.cdm.hibernate.converter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.jpa.PartialConverter;
 
@@ -25,7 +25,7 @@ public class PartialConverterTest {
 
     private PartialConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new PartialConverter();
     }

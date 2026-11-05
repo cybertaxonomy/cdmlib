@@ -8,11 +8,14 @@
 */
 package eu.etaxonomy.cdm.model.permission;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.EnumSet;
 import java.util.UUID;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testclass for {@link CdmAuthority}.
@@ -27,11 +30,11 @@ public class CdmAuthorityTest {
         CdmAuthority authority = CdmAuthority.NewInstance(PermissionClass.COLLECTION, "prop",
                 EnumSet.allOf(CRUD.class), UUID.fromString("fcc80ea2-6185-4fa1-a2a0-8dedcce6f839"));
 
-        Assert.assertEquals("COLLECTION.prop[CREATE, READ, UPDATE, DELETE]{fcc80ea2-6185-4fa1-a2a0-8dedcce6f839}", authority.toString());
+        assertEquals("COLLECTION.prop[CREATE, READ, UPDATE, DELETE]{fcc80ea2-6185-4fa1-a2a0-8dedcce6f839}", authority.toString());
 
         authority = CdmAuthority.NewInstance(null, null,
                 null, null);
-        Assert.assertEquals("-NO CLASS-[]", authority.toString());
+        assertEquals("-NO CLASS-[]", authority.toString());
     }
 
     @Test
@@ -40,18 +43,18 @@ public class CdmAuthorityTest {
                 EnumSet.allOf(CRUD.class), UUID.fromString("fcc80ea2-6185-4fa1-a2a0-8dedcce6f839"));
         CdmAuthority authority2 = CdmAuthority.NewInstance(PermissionClass.COLLECTION, "xxx",
                 EnumSet.allOf(CRUD.class), UUID.fromString("fcc80ea2-6185-4fa1-a2a0-8dedcce6f839"));
-        Assert.assertFalse(authority.isEqual(authority2));
+        assertFalse(authority.isEqual(authority2));
         authority2 = CdmAuthority.NewInstance(PermissionClass.COLLECTION, "prop",
                 EnumSet.allOf(CRUD.class), UUID.fromString("fcc80ea2-6185-4fa1-a2a0-8dedcce6f839"));
-        Assert.assertTrue(authority.isEqual(authority2));
+        assertTrue(authority.isEqual(authority2));
 
         authority = CdmAuthority.NewInstance(null, "", null, null);
         authority2 = CdmAuthority.NewInstance(null, null, null, null);
-        Assert.assertTrue(authority.isEqual(authority2));
+        assertTrue(authority.isEqual(authority2));
         authority2 = CdmAuthority.NewInstance(null, null, EnumSet.noneOf(CRUD.class), null);
-        Assert.assertTrue(authority.isEqual(authority2));
+        assertTrue(authority.isEqual(authority2));
         authority2 = CdmAuthority.NewInstance(null, null, EnumSet.of(CRUD.CREATE), null);
-        Assert.assertFalse(authority.isEqual(authority2));
+        assertFalse(authority.isEqual(authority2));
     }
 
 }

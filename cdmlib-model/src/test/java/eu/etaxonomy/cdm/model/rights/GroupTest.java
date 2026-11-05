@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.model.rights;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
@@ -30,7 +30,7 @@ public class GroupTest {
 	private GrantedAuthority grantedAuthority;
 	private User user;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		group = Group.NewInstance(groupName);
 		grantedAuthority = GrantedAuthorityImpl.NewInstance(null);
@@ -42,9 +42,9 @@ public class GroupTest {
 	 */
 	@Test
 	public final void testNewInstanceString() {
-		assertNotNull("A new group should have been created.", group);
-		assertEquals("Created object should be of type Group.", Group.class, group.getClass());
-		assertEquals("Created group should have a name.", groupName, group.getName());
+		assertNotNull(group, "A new group should have been created.");
+		assertEquals(Group.class, group.getClass(), "Created object should be of type Group.");
+		assertEquals(groupName, group.getName(), "Created group should have a name.");
 	}
 
 	/**
@@ -62,8 +62,8 @@ public class GroupTest {
 	public final void testAddGrantedAuthority() {
 		group.addGrantedAuthority(grantedAuthority);
 
-		assertEquals("There should be exactly one GrantedAuthority.", 1, group.getGrantedAuthorities().size());
-		assertEquals("The containing GrantedAuthority should match the one we filled it with.", grantedAuthority, group.getGrantedAuthorities().iterator().next());
+		assertEquals(1, group.getGrantedAuthorities().size(), "There should be exactly one GrantedAuthority.");
+		assertEquals(grantedAuthority, group.getGrantedAuthorities().iterator().next(), "The containing GrantedAuthority should match the one we filled it with.");
 	}
 
 	/**
@@ -73,12 +73,12 @@ public class GroupTest {
 	public final void testRemoveGrantedAuthority() {
 		group.addGrantedAuthority(grantedAuthority);
 
-		assertEquals("There should be exactly one GrantedAuthority.", 1, group.getGrantedAuthorities().size());
-		assertEquals("The containing GrantedAuthority should match the one we filled it with.", grantedAuthority, group.getGrantedAuthorities().iterator().next());
+		assertEquals(1, group.getGrantedAuthorities().size(), "There should be exactly one GrantedAuthority.");
+		assertEquals(grantedAuthority, group.getGrantedAuthorities().iterator().next(), "The containing GrantedAuthority should match the one we filled it with.");
 
 		group.removeGrantedAuthority(grantedAuthority);
 
-		assertEquals("There should not contain GrantedAuthorities anymore.", 0, group.getGrantedAuthorities().size());
+		assertEquals(0, group.getGrantedAuthorities().size(), "There should not contain GrantedAuthorities anymore.");
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class GroupTest {
 	public final void testSetName() {
 		String newName = "";
 		group.setName(newName);
-		assertEquals("Groups name should have changed.", newName, group.getName());
+		assertEquals(newName, group.getName(), "Groups name should have changed.");
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class GroupTest {
 	 */
 	@Test
 	public final void testGetName() {
-		assertEquals("Group should have a name", groupName, group.getName());
+		assertEquals(groupName, group.getName(), "Group should have a name");
 	}
 
 	/**
@@ -114,10 +114,10 @@ public class GroupTest {
 	public final void testAddMember() {
 		group.addMember(user);
 
-		assertEquals("Group should have exactly one member.", 1, group.getMembers().size());
-		assertEquals("The member should match the one we filled it with.", user, group.getMembers().iterator().next());
+		assertEquals(1, group.getMembers().size(), "Group should have exactly one member.");
+		assertEquals(user, group.getMembers().iterator().next(), "The member should match the one we filled it with.");
 
-		assertEquals("The user should be in the group", group, user.getGroups().iterator().next());
+		assertEquals(group, user.getGroups().iterator().next(), "The user should be in the group");
 	}
 
 	/**
@@ -127,14 +127,14 @@ public class GroupTest {
 	public final void testRemoveMember() {
 		group.addMember(user);
 
-		assertEquals("Group should have exactly one member.", 1, group.getMembers().size());
-		assertEquals("The member should match the one we filled it with.", user, group.getMembers().iterator().next());
+		assertEquals(1, group.getMembers().size(), "Group should have exactly one member.");
+		assertEquals(user, group.getMembers().iterator().next(), "The member should match the one we filled it with.");
 
 		group.removeMember(user);
 
-		assertEquals("Group should not have members anymore.", 0, group.getMembers().size());
+		assertEquals(0, group.getMembers().size(), "Group should not have members anymore.");
 
-		assertEquals("The user should not be in any groups", 0, user.getGroups().size());
+		assertEquals(0, user.getGroups().size(), "The user should not be in any groups");
 	}
 
 }

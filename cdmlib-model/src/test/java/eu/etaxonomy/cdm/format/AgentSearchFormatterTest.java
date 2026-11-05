@@ -8,12 +8,13 @@
 */
 package eu.etaxonomy.cdm.format;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.format.agent.AgentSearchFormatter;
 import eu.etaxonomy.cdm.format.agent.AgentSearchFormatter.CacheType;
@@ -33,7 +34,7 @@ public class AgentSearchFormatterTest {
     private Team team1;
     private AgentSearchFormatter formatter;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         person1 = Person.NewInstance("Mill.", "A. Miller", "Miller", "A.", "Andrew");
         person1.setId(1);
@@ -47,18 +48,18 @@ public class AgentSearchFormatterTest {
 
     @Test
     public void test() {
-        Assert.assertEquals("Miller, A. - Mill. - A. Miller [1]", formatter.format(person1));
-        Assert.assertEquals("Baller - Ball. [2]", formatter.format(person2));
-        Assert.assertEquals("Miller, A. & Baller - Mill. & Ball. - A. Miller & Baller [3]", formatter.format(team1));
+        assertEquals("Miller, A. - Mill. - A. Miller [1]", formatter.format(person1));
+        assertEquals("Baller - Ball. [2]", formatter.format(person2));
+        assertEquals("Miller, A. & Baller - Mill. & Ball. - A. Miller & Baller [3]", formatter.format(team1));
     }
 
     @Test
     public void testWithCacheTypes() {
-        Assert.assertEquals("Mill. - Miller, A. - A. Miller [1]", formatter.format(person1,
+        assertEquals("Mill. - Miller, A. - A. Miller [1]", formatter.format(person1,
                 AgentSearchFormatter.NOMENCLATURAL_TITLE_FIRST));
-        Assert.assertEquals("A. Miller - Miller, A. - Mill. [1]", formatter.format(person1,
+        assertEquals("A. Miller - Miller, A. - Mill. [1]", formatter.format(person1,
                 AgentSearchFormatter.COLLECTOR_TITLE_FIRST));
         List<CacheType> cacheTypes = Arrays.asList(new CacheType[] {CacheType.BIBLIOGRAPHIC_TITLE, CacheType.COLLECTOR_TITLE});
-        Assert.assertEquals("Miller, A. & Baller - A. Miller & Baller [3]", formatter.format(team1, cacheTypes));
+        assertEquals("Miller, A. & Baller - A. Miller & Baller [3]", formatter.format(team1, cacheTypes));
     }
 }

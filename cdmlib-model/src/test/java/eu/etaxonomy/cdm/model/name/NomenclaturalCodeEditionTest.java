@@ -8,10 +8,15 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -23,10 +28,10 @@ public class NomenclaturalCodeEditionTest {
     public void testGetTitleCache() {
         //no exception should be thrown and no title cache should be null
         for (NomenclaturalCodeEdition edition: NomenclaturalCodeEdition.values()){
-            Assert.assertNotNull(edition.getTitleCache());
+            assertNotNull(edition.getTitleCache());
         }
-        Assert.assertEquals("Shenzhen 2017", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getTitleCache());
-        Assert.assertEquals("ICZN 1961", NomenclaturalCodeEdition.ICZN_1961.getTitleCache());
+        assertEquals("Shenzhen 2017", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getTitleCache());
+        assertEquals("ICZN 1961", NomenclaturalCodeEdition.ICZN_1961.getTitleCache());
     }
 
     /**
@@ -36,9 +41,9 @@ public class NomenclaturalCodeEditionTest {
     public void testGetCode() {
         //no exception should be thrown and no code should be null
         for (NomenclaturalCodeEdition edition: NomenclaturalCodeEdition.values()){
-            Assert.assertNotNull(edition.getCode());
+            assertNotNull(edition.getCode());
         }
-        Assert.assertSame(NomenclaturalCode.ICNAFP, NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getCode());
+        assertSame(NomenclaturalCode.ICNAFP, NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getCode());
     }
 
     @Test
@@ -47,8 +52,8 @@ public class NomenclaturalCodeEditionTest {
         for (NomenclaturalCodeEdition edition: NomenclaturalCodeEdition.values()){
             edition.getWikiDataUri();
         }
-        Assert.assertEquals("https://www.wikidata.org/wiki/Q56701992", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getWikiDataUri().toString());
-        Assert.assertEquals("As long as ICVCN_2011 code has no doi no exception should be thrown", null, NomenclaturalCodeEdition.ICVCN_2011.getWikiDataUri());
+        assertEquals("https://www.wikidata.org/wiki/Q56701992", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getWikiDataUri().toString());
+        assertEquals(null, NomenclaturalCodeEdition.ICVCN_2011.getWikiDataUri(), "As long as ICVCN_2011 code has no doi no exception should be thrown");
     }
 
     @Test
@@ -57,41 +62,41 @@ public class NomenclaturalCodeEditionTest {
         for (NomenclaturalCodeEdition edition: NomenclaturalCodeEdition.values()){
             edition.getDoi();
         }
-        Assert.assertEquals("https://doi.org/10.12705/Code.2018", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getDoi().asURI().toString());
-        Assert.assertEquals("As long as Tokyo code has no doi no exception should be thrown", null, NomenclaturalCodeEdition.ICN_1993_TOKYO.getDoi());
+        assertEquals("https://doi.org/10.12705/Code.2018", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getDoi().asURI().toString());
+        assertEquals(null, NomenclaturalCodeEdition.ICN_1993_TOKYO.getDoi(), "As long as Tokyo code has no doi no exception should be thrown");
     }
 
     @Test
     public void testGetKey() {
         //no exception should be thrown and no key should be null
         for (NomenclaturalCodeEdition edition: NomenclaturalCodeEdition.values()){
-            Assert.assertNotNull(edition.getKey());
+            assertNotNull(edition.getKey());
         }
-        Assert.assertEquals("ICNAFP2017", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getKey());
+        assertEquals("ICNAFP2017", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getKey());
     }
 
     @Test
     public void testGetLabel() {
-        Assert.assertEquals("Shenzhen 2017", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getLabel());
+        assertEquals("Shenzhen 2017", NomenclaturalCodeEdition.ICN_2017_SHENZHEN.getLabel());
     }
 
     @Test
     public void testGetByKey() {
-        Assert.assertSame(NomenclaturalCodeEdition.ICN_2017_SHENZHEN, NomenclaturalCodeEdition.getByKey("ICNAFP2017"));
+        assertSame(NomenclaturalCodeEdition.ICN_2017_SHENZHEN, NomenclaturalCodeEdition.getByKey("ICNAFP2017"));
     }
 
     @Test
     public void testForCode() {
         List<NomenclaturalCodeEdition> editions = NomenclaturalCodeEdition.forCode(NomenclaturalCode.ICNAFP);
-        Assert.assertTrue(editions.contains(NomenclaturalCodeEdition.ICN_2011_MELBOURNE));
-        Assert.assertEquals(20, editions.size());
-        Assert.assertFalse(editions.contains(NomenclaturalCodeEdition.ICZN_1999));
+        assertTrue(editions.contains(NomenclaturalCodeEdition.ICN_2011_MELBOURNE));
+        assertEquals(20, editions.size());
+        assertFalse(editions.contains(NomenclaturalCodeEdition.ICZN_1999));
 
         editions = NomenclaturalCodeEdition.forCode(NomenclaturalCode.NonViral);
-        Assert.assertTrue(editions.contains(NomenclaturalCodeEdition.ICN_2011_MELBOURNE));
-        Assert.assertTrue(editions.contains(NomenclaturalCodeEdition.ICZN_1999));
-        Assert.assertEquals(30, editions.size());
-        Assert.assertFalse(editions.contains(NomenclaturalCodeEdition.ICVCN_2018));
+        assertTrue(editions.contains(NomenclaturalCodeEdition.ICN_2011_MELBOURNE));
+        assertTrue(editions.contains(NomenclaturalCodeEdition.ICZN_1999));
+        assertEquals(30, editions.size());
+        assertFalse(editions.contains(NomenclaturalCodeEdition.ICVCN_2018));
 
     }
 }

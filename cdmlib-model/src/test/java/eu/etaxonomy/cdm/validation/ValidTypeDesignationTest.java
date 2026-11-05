@@ -10,8 +10,8 @@ package eu.etaxonomy.cdm.validation;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -45,7 +45,7 @@ public class ValidTypeDesignationTest extends ValidationTestBase {
     private TaxonName name2;
     private DerivedUnit specimen;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setNameCache("Aus aus");

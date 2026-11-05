@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.format.common;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 
 /**
@@ -25,9 +25,9 @@ public class VerbatimTimePeriodFormatterTest {
 
     private VerbatimTimePeriodFormatter formatter;
 
-    private String endash = TimePeriod.SEP;
+    private String endash = TimePeriodBase.SEP;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         formatter = VerbatimTimePeriodFormatter.NewDefaultInstance();
     }
@@ -36,14 +36,14 @@ public class VerbatimTimePeriodFormatterTest {
     public void test() {
         VerbatimTimePeriod tp1 = VerbatimTimePeriod.NewVerbatimInstance(1788,1799);
         tp1.setVerbatimDate("1785");
-        Assert.assertEquals("1788"+endash+"1799 [\"1785\"]", formatter.format(tp1));
+        assertEquals("1788"+endash+"1799 [\"1785\"]", formatter.format(tp1));
         tp1.setVerbatimDate(null);
         assertNotNull(tp1);
-        Assert.assertEquals("1788"+endash+"1799", formatter.format(tp1));
+        assertEquals("1788"+endash+"1799", formatter.format(tp1));
         tp1.setStartDay(3);
-        Assert.assertEquals("3 MMM 1788"+endash+"1799", formatter.format(tp1));
+        assertEquals("3 MMM 1788"+endash+"1799", formatter.format(tp1));
         tp1.setEndMonth(11);
-        Assert.assertEquals("3 MMM 1788"+endash+"Nov 1799", formatter.format(tp1));
+        assertEquals("3 MMM 1788"+endash+"Nov 1799", formatter.format(tp1));
 
     }
 

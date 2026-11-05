@@ -8,89 +8,56 @@
 */
 package eu.etaxonomy.cdm.model.metadata;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author e.-m.lee
  * @since 09.03.2010
- *
  */
 public class CdmMetaDataTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#getSchemaVersion()}.
-	 */
 	@Test
 	public void testGetSchemaVersion() {
 		//TODO
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#propertyList()}.
-	 */
 	@Test
 	public void testDefaultMetaData() {
 		List<CdmMetaData> propList = CdmMetaData.defaultMetaData();
 		assertNotNull(propList);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#CdmMetaData(eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName, java.lang.String)}.
-	 */
 	@Test
 	public void testCdmMetaData() {
 		//TODO
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#getPropertyName()}.
-	 */
 	@Test
 	public void testGetPropertyName() {
 		//TODO
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#setPropertyName(eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName)}.
-	 */
 	@Test
 	public void testSetPropertyName() {
 		//TODO
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#getValue()}.
-	 */
 	@Test
 	public void testGetValue() {
 		//TODO
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#setValue(java.lang.String)}.
-	 */
 	@Test
 	public void testSetValue() {
 		//TODO
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#getCurrentSchemaVersion(int)}.
-	 */
 	@Test
 	public void testGetDbSchemaVersion() {
 		String strSchemaVersion = CdmMetaData.getDbSchemaVersion();
@@ -98,14 +65,11 @@ public class CdmMetaDataTest {
 		int indexFirst = strSchemaVersion.indexOf(".");
 		assertTrue(indexFirst >0 );
 //		int indexLast = strSchemaVersion.lastIndexOf(".");
-//		assertTrue("DB schema version is not in the correct format", indexLast == 7);
+//		assertTrue(indexLast == 7, "DB schema version is not in the correct format");
 		String regEx = "\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}\\.\\d{8}";
-		assertTrue("DB schema version is not in the correct format", strSchemaVersion.matches(regEx));
+		assertTrue(strSchemaVersion.matches(regEx), "DB schema version is not in the correct format");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#getDatabaseSchemaVersion(java.util.Map, int)}.
-	 */
 	@Test
 	public void testGetDatabaseSchemaVersion() {
 		//TODO
@@ -118,19 +82,19 @@ public class CdmMetaDataTest {
 		String version3 = "2.1.2";
 
 		int compare = CdmMetaData.compareVersion(version1, version2, 4, null);
-		Assert.assertEquals("Result should be -1", -1, compare);
+		assertEquals(-1, compare, "Result should be -1");
 
 		compare = CdmMetaData.compareVersion(version2, version1, 4, null);
-		Assert.assertEquals("Result should be 1", 1, compare);
+		assertEquals(1, compare, "Result should be 1");
 
 		compare = CdmMetaData.compareVersion(version2, version1, 2, null);
-		Assert.assertEquals("Result should be 0", 0, compare);
+		assertEquals(0, compare, "Result should be 0");
 
 		compare = CdmMetaData.compareVersion(version2, version1, null, null);
-		Assert.assertEquals("Result should be 1", 1, compare);
+		assertEquals(1, compare, "Result should be 1");
 
 		compare = CdmMetaData.compareVersion(version1, version3, 3, null);
-		Assert.assertEquals("Result should be 0", 0, compare);
+		assertEquals(0, compare, "Result should be 0");
 
 		boolean exception = false;
 		try{
@@ -139,7 +103,7 @@ public class CdmMetaDataTest {
 			exception = true;
 		}
 
-		Assert.assertTrue("Should have thrown an exception on incorrect input values", exception);
+		assertTrue(exception, "Should have thrown an exception on incorrect input values");
 		exception = false;
 
 		try{
@@ -148,9 +112,7 @@ public class CdmMetaDataTest {
 			exception = true;
 		}
 
-		Assert.assertTrue("Should have thrown an exception on incompatible depth", exception);
+		assertTrue(exception, "Should have thrown an exception on incompatible depth");
 		exception = false;
-
 	}
-
 }

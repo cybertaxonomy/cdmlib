@@ -8,15 +8,19 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -37,7 +41,7 @@ public class TextDataTest extends EntityTestBase {
 	private TextFormat format1;
 	private LanguageString languageString1;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		textDataLeer = TextData.NewInstance();
 		format1 = TextFormat.NewInstance();

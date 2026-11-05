@@ -8,11 +8,12 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.occurrence;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -79,7 +80,7 @@ public class FieldUnitDefaultCacheStrategyTest extends TermTestBase {
 
 //****************************** SET UP *****************************************/
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		fieldUnit = FieldUnit.NewInstance();
 
@@ -139,19 +140,19 @@ public class FieldUnitDefaultCacheStrategyTest extends TermTestBase {
         String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; flowers blue";
         addEcology(fieldUnit, ecology);
         addPlantDescription(fieldUnit, plantDescription);
-        Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
+        assertEquals(correctCache, fieldUnit.getTitleCache());
 
         //freetext without unit
         String altitudeText = "approx. 40";
         fieldUnit.getGatheringEvent().setAbsoluteElevationText(altitudeText);
         String expected = correctCache.replace("alt. 40 m", "alt. "+ altitudeText);
-        Assert.assertEquals(expected, fieldUnit.getTitleCache());
+        assertEquals(expected, fieldUnit.getTitleCache());
 
         //freetext with unit
         String altitudeTextM = "approx. 40 m";
         fieldUnit.getGatheringEvent().setAbsoluteElevationText(altitudeTextM);
         expected = correctCache.replace("alt. 40 m", "alt. "+ altitudeTextM);
-        Assert.assertEquals(expected, fieldUnit.getTitleCache());
+        assertEquals(expected, fieldUnit.getTitleCache());
     }
 
 
@@ -167,31 +168,31 @@ public class FieldUnitDefaultCacheStrategyTest extends TermTestBase {
         //..protected title cache only
         gathering.setCollector(primaryCollector);
         String correctCache = "Germany, 3 May 2005, Kilian 5678";
-        Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
+        assertEquals(correctCache, fieldUnit.getTitleCache());
 
         //..protected title cache with collector title
         primaryCollector.setCollectorTitle("N. Kilian");
         primaryCollector.setCollectorTitleCache(null);  //just in case
         correctCache = "Germany, 3 May 2005, N. Kilian 5678";
-        Assert.assertEquals("existing collector title should be preferred", correctCache, fieldUnit.getTitleCache());
+        assertEquals(correctCache, fieldUnit.getTitleCache(), "existing collector title should be preferred");
 
         //team
         //no protected titleCache
         gathering.setCollector(collector);
         correctCache = "Germany, 3 May 2005, N. Kilian 5678, A. Muller & Kohlbecker";
-        Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
+        assertEquals(correctCache, fieldUnit.getTitleCache());
 
         //protected titleCache
         collector.setTitleCache("Kilian, Muller, Kohlbecker", true);
         correctCache = "Germany, 3 May 2005, Kilian, Muller, Kohlbecker 5678";
-        Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
+        assertEquals(correctCache, fieldUnit.getTitleCache());
 
         //institution
         //not sure if an institution can be a collector at all, but just in case
         Institution institution = Institution.NewNamedInstance("Institute");
         gathering.setCollector(institution);
         correctCache = "Germany, 3 May 2005, Institute 5678";
-        Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
+        assertEquals(correctCache, fieldUnit.getTitleCache());
    }
 
     private void addEcology(FieldUnit fieldUnit, String ecology) {

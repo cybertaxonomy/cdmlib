@@ -8,13 +8,14 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -27,7 +28,7 @@ public class PolytomousKeyNodeTest extends EntityTestBase {
 	private PolytomousKey key1;
 	private Taxon taxon1;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		key1 = PolytomousKey.NewInstance();
 		key1.setTitleCache("My Test Key", true);
@@ -78,15 +79,15 @@ public class PolytomousKeyNodeTest extends EntityTestBase {
 	@Test
 	public void testNodeNumber() {
 		PolytomousKeyNode root = key1.getRoot();
-		Assert.assertEquals("Root should have node number = 1", Integer.valueOf(1), root.getNodeNumber());
+		assertEquals(Integer.valueOf(1), root.getNodeNumber(), "Root should have node number = 1");
 		PolytomousKeyNode child1 = root.getChildAt(0);
-		Assert.assertEquals("Child1 should have node number = 2", Integer.valueOf(2), child1.getNodeNumber());
+		assertEquals(Integer.valueOf(2), child1.getNodeNumber(), "Child1 should have node number = 2");
 		PolytomousKeyNode child2 = root.getChildAt(1);
-		Assert.assertEquals("Child2 should have node number = null", null,child2.getNodeNumber());
+		assertEquals(null, child2.getNodeNumber(), "Child2 should have node number = null");
 		PolytomousKeyNode child3 = child1.getChildAt(0);
-		Assert.assertEquals("Child3 should have node number = 3", Integer.valueOf(3),child3.getNodeNumber());
+		assertEquals(Integer.valueOf(3), child3.getNodeNumber(), "Child3 should have node number = 3");
 		PolytomousKeyNode child4 = child1.getChildAt(1);
-		Assert.assertEquals("Child4 should have node number  = null", null,child4.getNodeNumber());
+		assertEquals(null, child4.getNodeNumber(), "Child4 should have node number  = null");
 	}
 
 	@Test
@@ -107,10 +108,10 @@ public class PolytomousKeyNodeTest extends EntityTestBase {
 		PolytomousKeyNode child = PolytomousKeyNode.NewInstance();
 		parent.addChild(child);
 
-		Assert.assertEquals("Parent node should have one child", 1, parent.getChildren().size());
+		assertEquals(1, parent.getChildren().size(), "Parent node should have one child");
 
 		parent.removeChild(child);
 
-		Assert.assertEquals("Parent node should have no children", 0, parent.getChildren().size());
+		assertEquals(0, parent.getChildren().size(), "Parent node should have no children");
 	}
 }

@@ -8,11 +8,13 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -25,7 +27,7 @@ public class CultivarPlantNameTest {
 
 	private static ICultivarPlantName name1;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		name1 = TaxonNameFactory.NewCultivarInstance(Rank.SPECIES());
 		name1.setGenusOrUninomial("Aus");
@@ -39,8 +41,8 @@ public class CultivarPlantNameTest {
 	@Test
 	public void testClone(){
 		ICultivarPlantName clone = name1.clone();
-		Assert.assertEquals("Cultivar string should be equal", "cultivarus", clone.getCultivarEpithet());
-		Assert.assertEquals("Group string should be equal", "Cult Group", clone.getCultivarGroupEpithet());
-		Assert.assertSame("Cultivar string should even be same as String is unmutable", name1.getCultivarEpithet(), clone.getCultivarEpithet());
+		assertEquals("cultivarus", clone.getCultivarEpithet(), "Cultivar string should be equal");
+		assertEquals("Cult Group", clone.getCultivarGroupEpithet(), "Group string should be equal");
+		assertSame(name1.getCultivarEpithet(), clone.getCultivarEpithet(), "Cultivar string should even be same as String is unmutable");
 	}
 }

@@ -8,16 +8,16 @@
 */
 package eu.etaxonomy.cdm.model.term;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -31,16 +31,14 @@ public class TermTreeTest extends EntityTestBase {
 	private TermNode<Feature> node1;
 	private TermNode<Feature> node2;
 	private TermNode<Feature> node3;
-	private TermNode<Feature> node4;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		testTree = TermTree.NewFeatureInstance();
 
 		node1 = testTree.getRoot().addChild(Feature.ANATOMY());
 		node2 = node1.addChild(Feature.BIOLOGY_ECOLOGY());
 		node3 = node2.addChild(Feature.DESCRIPTION());
-		node4 = node3.addChild(Feature.DISCUSSION());
 	}
 
 //	@Test
@@ -63,7 +61,7 @@ public class TermTreeTest extends EntityTestBase {
     public void testTermTreeTermType(){
 	    try {
             new TermTree<>(null);
-            Assert.fail("Term type must never be null");
+            fail("Term type must never be null");
         } catch (Exception e) {
             //OK
         }
@@ -74,7 +72,7 @@ public class TermTreeTest extends EntityTestBase {
         TermNode<Feature> node21 = node1.addChild(Feature.ADDITIONAL_PUBLICATION(), 1);
 		TermTree<Feature> clone = testTree.clone();
 
-		assertEquals (clone.getRoot().getTerm(), testTree.getRoot().getTerm());
+		assertEquals(clone.getRoot().getTerm(), testTree.getRoot().getTerm());
 		assertNotSame(clone.getRoot(), testTree.getRoot());
 		List<TermNode<Feature>> children = clone.getRootChildren();
 

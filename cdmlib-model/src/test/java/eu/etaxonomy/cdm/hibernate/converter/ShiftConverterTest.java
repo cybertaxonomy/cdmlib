@@ -8,9 +8,11 @@
  */
 package eu.etaxonomy.cdm.hibernate.converter;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.jpa.ShiftConverter;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment.Shift;
@@ -22,27 +24,27 @@ public class ShiftConverterTest {
 
     private ShiftConverter converter;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         converter = new ShiftConverter();
     }
 
     @Test
     public void testConvertToDatabaseColumn() {
-        Assert.assertNull(converter.convertToDatabaseColumn(null));
-        Assert.assertEquals("", converter.convertToDatabaseColumn(new Shift[0]));
-        Assert.assertEquals("2,3", converter.convertToDatabaseColumn(new Shift[] { new Shift(2, 3) }));
-        Assert.assertEquals("2,3;3,-1",
+        assertNull(converter.convertToDatabaseColumn(null));
+        assertEquals("", converter.convertToDatabaseColumn(new Shift[0]));
+        assertEquals("2,3", converter.convertToDatabaseColumn(new Shift[] { new Shift(2, 3) }));
+        assertEquals("2,3;3,-1",
                 converter.convertToDatabaseColumn(new Shift[] { new Shift(2, 3), new Shift(3, -1) }));
     }
 
     @Test
     public void testConvertToEntityAttribute() {
         Shift[] emptyResult = converter.convertToEntityAttribute("");
-        Assert.assertEquals(0, emptyResult.length);
+        assertEquals(0, emptyResult.length);
         Shift[] singleResult = converter.convertToEntityAttribute("2,2");
-        Assert.assertEquals(1, singleResult.length);
-        Assert.assertEquals(2, singleResult[0].position);
-        Assert.assertEquals(2, singleResult[0].shift);
+        assertEquals(1, singleResult.length);
+        assertEquals(2, singleResult[0].position);
+        assertEquals(2, singleResult[0].shift);
     }
 }

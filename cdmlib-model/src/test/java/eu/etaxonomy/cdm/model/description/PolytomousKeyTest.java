@@ -8,15 +8,17 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.PrintStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -28,7 +30,7 @@ public class PolytomousKeyTest extends EntityTestBase {
 	private PolytomousKey key1;
 	private Taxon taxon1;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		key1 = PolytomousKey.NewInstance();
 		key1.setTitleCache("My Test Key", true);
@@ -77,7 +79,7 @@ public class PolytomousKeyTest extends EntityTestBase {
 	@Test
 	public void testNewInstance() {
 		PolytomousKey newKey = PolytomousKey.NewInstance();
-		Assert.assertNotNull(newKey);
+		assertNotNull(newKey);
 	}
 
 	@Test
@@ -88,7 +90,7 @@ public class PolytomousKeyTest extends EntityTestBase {
 	@Test
 	public void testPolytomousKey() {
 		PolytomousKey newKey = new PolytomousKey();
-		Assert.assertNotNull(newKey);
+		assertNotNull(newKey);
 	}
 
 	@Test
@@ -96,16 +98,13 @@ public class PolytomousKeyTest extends EntityTestBase {
 		PrintStream stream = null;
 		String strKey = key1.print(stream);
 //		System.out.println(strKey);
-		Assert.assertEquals(
-				"",
-				"My Test Key\n"
+		assertEquals("My Test Key\n"
 				+ "  1. Is this Aus bus?\n"
 				+ "    a) Yes ... 2, Aus bus L.\n"
 				+ "    b) No ... Cus dus Mill.\n"
 				+ "  2. Leaf\n"
 				+ "    a) Long and wide ... Cus dus subs. rus L., Second Key\n"
-				+ "    b) Small and narrow ... Cus dus subs. zus L., Second Key 1\n",
-				strKey);
+				+ "    b) Small and narrow ... Cus dus subs. zus L., Second Key 1\n", strKey, "");
 	}
 
 

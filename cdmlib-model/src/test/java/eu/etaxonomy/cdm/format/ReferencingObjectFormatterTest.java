@@ -8,11 +8,12 @@
 */
 package eu.etaxonomy.cdm.format;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.math.BigDecimal;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
@@ -68,7 +69,7 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
     private TaxonDescription taxonDescription1;
     private Reference reference1;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         person1 = Person.NewTitledInstance("Linne");
         name1 = NonViralNameParserImpl.NewInstance().parseReferencedName("Abies alba Mill., Sp. Pl.: 123. 1753");
@@ -88,19 +89,19 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
         //default is to return titleCache
 
         //Person
-        Assert.assertEquals("Linne", defaultFormat(person1));
+        assertEquals("Linne", defaultFormat(person1));
 
         //TaxonName
-        Assert.assertEquals("Abies alba Mill.", defaultFormat(name1));
+        assertEquals("Abies alba Mill.", defaultFormat(name1));
 
         //Taxon
-        Assert.assertEquals("Abies alba Mill. sec. Linne 1753", defaultFormat(taxon1));
+        assertEquals("Abies alba Mill. sec. Linne 1753", defaultFormat(taxon1));
 
         //Reference
-        Assert.assertEquals("Linne 1753: Species plantarum", defaultFormat(reference1));
+        assertEquals("Linne 1753: Species plantarum", defaultFormat(reference1));
 
         //TaxonDescription
-        Assert.assertEquals("Description for taxon1", defaultFormat(taxonDescription1));
+        assertEquals("Description for taxon1", defaultFormat(taxonDescription1));
 
     }
 
@@ -110,45 +111,45 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
         //TextData
         TextData textData = TextData.NewInstance(Feature.DESCRIPTION());
         textData.putText(Language.ENGLISH(), "My text data");
-        Assert.assertEquals("My text data", defaultFormat(textData));
+        assertEquals("My text data", defaultFormat(textData));
 
         taxonDescription1.addElement(textData);
-        Assert.assertEquals("My text data (Abies alba Mill. sec. Linne 1753)", defaultFormat(textData));
+        assertEquals("My text data (Abies alba Mill. sec. Linne 1753)", defaultFormat(textData));
 
         //CategoricalData
         CategoricalData catData = CategoricalData.NewInstance(Feature.DESCRIPTION());
         //TODO
-        Assert.assertEquals("Description[[]]", defaultFormat(catData));
+        assertEquals("Description[[]]", defaultFormat(catData));
 
         State state1 = State.NewInstance("State1", "State1", null);
         StateData stateData1 = catData.addStateData(state1);
         catData.addStateData(State.NewInstance("State2", "State2", null));
-        Assert.assertEquals("State1", defaultFormat(stateData1));
-        Assert.assertEquals("State1, State2", defaultFormat(catData));
+        assertEquals("State1", defaultFormat(stateData1));
+        assertEquals("State1, State2", defaultFormat(catData));
 
         taxonDescription1.addElement(catData);
-        Assert.assertEquals("State1, State2 (Abies alba Mill. sec. Linne 1753)", defaultFormat(catData));
-        Assert.assertEquals("State1 (Abies alba Mill. sec. Linne 1753)", defaultFormat(stateData1));
+        assertEquals("State1, State2 (Abies alba Mill. sec. Linne 1753)", defaultFormat(catData));
+        assertEquals("State1 (Abies alba Mill. sec. Linne 1753)", defaultFormat(stateData1));
 
         //Quantitative Data
         QuantitativeData quantData = QuantitativeData.NewMinMaxInstance(Feature.DESCRIPTION(), BigDecimal.valueOf(2d), BigDecimal.valueOf(4d));
         taxonDescription1.addElement(quantData);
         String sep = QuantitativeDataFormatter.lowerUpperSep;
-        Assert.assertEquals("2.0"+sep+"4.0 (Abies alba Mill. sec. Linne 1753)", defaultFormat(quantData));
+        assertEquals("2.0"+sep+"4.0 (Abies alba Mill. sec. Linne 1753)", defaultFormat(quantData));
         StatisticalMeasurementValue minValue = quantData.getStatisticalValues().stream().filter(v->v.getType().equals(StatisticalMeasure.MIN())).findFirst().get();
         //TODO
-        Assert.assertEquals("Min=2.0 (Abies alba Mill. sec. Linne 1753)", defaultFormat(minValue));
+        assertEquals("Min=2.0 (Abies alba Mill. sec. Linne 1753)", defaultFormat(minValue));
 
 
         //Common Name
         CommonTaxonName commonName = CommonTaxonName.NewInstance("Butterblume", Language.GERMAN(), NamedArea.EUROPE());
         taxonDescription1.addElement(commonName);
-        Assert.assertEquals("Butterblume (Abies alba Mill. sec. Linne 1753)", defaultFormat(commonName));
+        assertEquals("Butterblume (Abies alba Mill. sec. Linne 1753)", defaultFormat(commonName));
 
         //Distribution
         Distribution distribution = Distribution.NewInstance(NamedArea.EUROPE(), PresenceAbsenceTerm.PRESENT());
         taxonDescription1.addElement(distribution);
-        Assert.assertEquals("Europe, present (Abies alba Mill. sec. Linne 1753)", defaultFormat(distribution)); //TODO do we really need the status here? Should it be rather short than exact?
+        assertEquals("Europe, present (Abies alba Mill. sec. Linne 1753)", defaultFormat(distribution)); //TODO do we really need the status here? Should it be rather short than exact?
 
         //TaxonInteraction
         TaxonInteraction taxonInteraction = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
@@ -156,20 +157,20 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
         Taxon taxon2 = Taxon.NewInstance(name2, reference1);
         taxonInteraction.setTaxon2(taxon2);
         taxonDescription1.addElement(taxonInteraction);
-        Assert.assertEquals("Hostus plantus Linne (Abies alba Mill. sec. Linne 1753)", defaultFormat(taxonInteraction));
+        assertEquals("Hostus plantus Linne (Abies alba Mill. sec. Linne 1753)", defaultFormat(taxonInteraction));
 
         //IndividualsAssociation
         IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance(null);
         individualsAssociation.setAssociatedSpecimenOrObservation(getDerivedUnit());
         taxonDescription1.addElement(individualsAssociation);
         //May change to a shorter form in future
-        Assert.assertEquals("Germany, 11 Apr 2011, Linne 125 (B: B555) (Abies alba Mill. sec. Linne 1753)", defaultFormat(individualsAssociation));
+        assertEquals("Germany, 11 Apr 2011, Linne 125 (B: B555) (Abies alba Mill. sec. Linne 1753)", defaultFormat(individualsAssociation));
 
         //TemporalData
         ExtendedTimePeriod period = ExtendedTimePeriod.NewExtendedMonthInstance(5, 6);
         TemporalData temporalData = TemporalData.NewInstance(Feature.FLOWERING_PERIOD(), period);
         taxonDescription1.addElement(temporalData);
-        Assert.assertEquals("May"+UTF8.EN_DASH+"Jun (Abies alba Mill. sec. Linne 1753)", defaultFormat(temporalData));
+        assertEquals("May"+UTF8.EN_DASH+"Jun (Abies alba Mill. sec. Linne 1753)", defaultFormat(temporalData));
     }
 
     @Test
@@ -177,11 +178,11 @@ public class ReferencingObjectFormatterTest extends TermTestBase {
 
         //GatheringEvent
         GatheringEvent gatheringEvent = getGatheringEvent();
-        Assert.assertEquals("Linne, 11 Apr 2011, Germany", defaultFormat(gatheringEvent));  //may change in future
+        assertEquals("Linne, 11 Apr 2011, Germany", defaultFormat(gatheringEvent));  //may change in future
 
         //DerivationEvent #10640
         DerivationEvent derivationEvent = getDerivationEvent();
-        Assert.assertEquals("accessioning; Linne 125 -> B: B555", defaultFormat(derivationEvent));
+        assertEquals("accessioning; Linne 125 -> B: B555", defaultFormat(derivationEvent));
     }
 
     private DerivedUnit getDerivedUnit() {

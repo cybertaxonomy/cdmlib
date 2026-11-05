@@ -8,13 +8,15 @@
 */
 package eu.etaxonomy.cdm.compare.taxon;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -75,13 +77,13 @@ public class TaxonNodeByNameComparatorTest {
         int i = 0;
         logger.debug("order using default settings");
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_2, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_2, taxonNodes.get(i++).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_1, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_1, taxonNodes.get(i++).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_3, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_3, taxonNodes.get(i++).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_4, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_4, taxonNodes.get(i++).getTaxon().getName().getNameCache());
 
         // order without ignoring hybrid signs
         taxonNodeByNameComparator.setIgnoreHybridSign(false);
@@ -91,13 +93,13 @@ public class TaxonNodeByNameComparatorTest {
         i = 0;
         logger.debug("order without ignoring hybrid signs");
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_3, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_3, taxonNodes.get(i++).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_4, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_4, taxonNodes.get(i++).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_1, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_1, taxonNodes.get(i++).getTaxon().getName().getNameCache());
         logger.debug(taxonNodes.get(i).getTaxon().getName().getNameCache());
-        Assert.assertEquals(nameCache_2, taxonNodes.get(i++).getTaxon().getName().getNameCache());
+        assertEquals(nameCache_2, taxonNodes.get(i++).getTaxon().getName().getNameCache());
 
     }
 
@@ -122,16 +124,16 @@ public class TaxonNodeByNameComparatorTest {
 
         TaxonNodeByNameComparator taxonNodeByNameComparator = new TaxonNodeByNameComparator();
 
-        Assert.assertEquals(0, taxonNodeByNameComparator.compare(null, null));
-        Assert.assertEquals(-1, taxonNodeByNameComparator.compare(node1, null));
-        Assert.assertEquals(1, taxonNodeByNameComparator.compare(null, node1));
+        assertEquals(0, taxonNodeByNameComparator.compare(null, null));
+        assertEquals(-1, taxonNodeByNameComparator.compare(node1, null));
+        assertEquals(1, taxonNodeByNameComparator.compare(null, node1));
 
 
         node2.getTaxon().setName(null);
-        Assert.assertTrue(taxonNodeByNameComparator.compare(node1, node2) > 0);
+        assertTrue(taxonNodeByNameComparator.compare(node1, node2) > 0);
 
         node2.setTaxon(null);
-        Assert.assertTrue(taxonNodeByNameComparator.compare(node1, node2) > 0);
+        assertTrue(taxonNodeByNameComparator.compare(node1, node2) > 0);
 
     }
 }

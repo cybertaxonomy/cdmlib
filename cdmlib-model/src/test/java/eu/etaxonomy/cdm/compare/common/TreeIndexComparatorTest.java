@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.compare.common;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 
@@ -29,27 +30,27 @@ public class TreeIndexComparatorTest {
         TreeIndex ti10_30_11 = TreeIndex.NewInstance("#t10#10#30#11#");
 
         //both null
-        Assert.assertTrue(0 == comparator.compare(null, null));
+        assertTrue(0 == comparator.compare(null, null));
         //one null
-        Assert.assertTrue(0 > comparator.compare(null, ti10));
-        Assert.assertTrue(0 < comparator.compare(ti10, null));
+        assertTrue(0 > comparator.compare(null, ti10));
+        assertTrue(0 < comparator.compare(ti10, null));
         //equal
-        Assert.assertTrue(0 == comparator.compare(ti10, ti10));
+        assertTrue(0 == comparator.compare(ti10, ti10));
 
         //same start
-        Assert.assertTrue(0 > comparator.compare(ti10, ti10_20));
-        Assert.assertTrue(0 < comparator.compare(ti10_20, ti10));
+        assertTrue(0 > comparator.compare(ti10, ti10_20));
+        assertTrue(0 < comparator.compare(ti10_20, ti10));
 
         //different ends
-        Assert.assertTrue(0 > comparator.compare(ti10_20, ti10_30));
-        Assert.assertTrue(0 < comparator.compare(ti10_30, ti10_20));
+        assertTrue(0 > comparator.compare(ti10_20, ti10_30));
+        assertTrue(0 < comparator.compare(ti10_30, ti10_20));
 
         //different ends
-        Assert.assertTrue(0 > comparator.compare(ti10_20, ti10_30));
-        Assert.assertTrue(0 > comparator.compare(ti10_20, ti10_30_11));
+        assertTrue(0 > comparator.compare(ti10_20, ti10_30));
+        assertTrue(0 > comparator.compare(ti10_20, ti10_30_11));
 
-        Assert.assertTrue(0 < comparator.compare(ti10_30, ti10_20));
-        Assert.assertTrue(0 < comparator.compare(ti10_30_11, ti10_20));
+        assertTrue(0 < comparator.compare(ti10_30, ti10_20));
+        assertTrue(0 < comparator.compare(ti10_30_11, ti10_20));
 
     }
 }

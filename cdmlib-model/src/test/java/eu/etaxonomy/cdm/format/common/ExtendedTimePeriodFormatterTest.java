@@ -8,14 +8,14 @@
 */
 package eu.etaxonomy.cdm.format.common;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.TimePeriodBase;
 
 /**
  * @author a.mueller
@@ -25,9 +25,9 @@ public class ExtendedTimePeriodFormatterTest {
 
     private ExtendedTimePeriodFormatter formatter;
 
-    private String endash = TimePeriod.SEP;
+    private String endash = TimePeriodBase.SEP;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         formatter = ExtendedTimePeriodFormatter.NewDefaultInstance();
     }
@@ -49,7 +49,7 @@ public class ExtendedTimePeriodFormatterTest {
 
         ExtendedTimePeriod tp1 = ExtendedTimePeriod.NewExtendedYearInstance(startYear,endYear,startYear2,endYear2);
         assertNotNull(tp1);
-        Assert.assertEquals("(1787"+endash+")1788"+endash+"1799("+endash+"1800)", formatter.format(tp1));
+        assertEquals("(1787"+endash+")1788"+endash+"1799("+endash+"1800)", formatter.format(tp1));
         tp1.setStartDay(startDay);
         tp1.setStartMonth(startMonth);
         tp1.setEndDay(endDay);
@@ -58,11 +58,11 @@ public class ExtendedTimePeriodFormatterTest {
         tp1.setExtremeStartMonth(startMonth2);
         tp1.setExtremeEndDay(endDay2);
         tp1.setExtremeEndMonth(endMonth2);
-        Assert.assertEquals("(24 May 1787"+endash+")25 Jun 1788"+endash+"21 Dec 1799("+endash+"20 Nov 1800)", formatter.format(tp1)); //date formatting may change in future
+        assertEquals("(24 May 1787"+endash+")25 Jun 1788"+endash+"21 Dec 1799("+endash+"20 Nov 1800)", formatter.format(tp1)); //date formatting may change in future
 
         tp1 = ExtendedTimePeriod.NewExtendedMonthInstance(startMonth, endMonth, startMonth2, endMonth2);
         assertNotNull(tp1);
-        Assert.assertEquals("(May"+endash+")Jun"+endash+"Dec("+endash+"Nov)", formatter.format(tp1));
+        assertEquals("(May"+endash+")Jun"+endash+"Dec("+endash+"Nov)", formatter.format(tp1));
         tp1.setStartDay(startDay);
         tp1.setStartMonth(startMonth);
         tp1.setEndDay(endDay);
@@ -71,10 +71,10 @@ public class ExtendedTimePeriodFormatterTest {
         tp1.setExtremeStartMonth(startMonth2);
         tp1.setExtremeEndDay(endDay2);
         tp1.setExtremeEndMonth(endMonth2);
-        Assert.assertEquals("(24 May"+endash+")25 Jun"+endash+"21 Dec("+endash+"20 Nov)", formatter.format(tp1)); //date formatting may change in future
+        assertEquals("(24 May"+endash+")25 Jun"+endash+"21 Dec("+endash+"20 Nov)", formatter.format(tp1)); //date formatting may change in future
 
         tp1.setFreeText("My extended period");
-        Assert.assertEquals("My extended period", formatter.format(tp1));
+        assertEquals("My extended period", formatter.format(tp1));
 
     }
 
@@ -82,7 +82,7 @@ public class ExtendedTimePeriodFormatterTest {
     public void testEqual() {
         ExtendedTimePeriod tp1 = ExtendedTimePeriod.NewExtendedMonthInstance(5, 5);
         assertNotNull(tp1);
-        Assert.assertEquals("May", formatter.format(tp1));
+        assertEquals("May", formatter.format(tp1));
     }
 
 

@@ -8,15 +8,14 @@
 */
 package eu.etaxonomy.cdm.validation;
 
-import java.util.Set;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import jakarta.validation.ConstraintViolation;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -28,6 +27,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.validation.constraint.BasionymsMustShareEpithetsAndAuthorsValidator;
+import jakarta.validation.ConstraintViolation;
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though
@@ -47,7 +47,7 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
 	private Person author1;
 	private Person author2;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 
 		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -69,13 +69,13 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
 
 	@Test
 	public void testBasionymHasSameAuthorship() {
-        Assert.assertEquals(1, name.getNameRelations().size());
+        assertEquals(1, name.getNameRelations().size());
         NameRelationship basRel = name.getNameRelations().iterator().next();
 	    Set<ConstraintViolation<NameRelationship>> constraintViolations  = validator.validate(basRel, Level3.class);
         assertNoConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
 
         basionymName.setCombinationAuthorship(author2);
-        Assert.assertEquals(1, name.getNameRelations().size());
+        assertEquals(1, name.getNameRelations().size());
         basRel = name.getNameRelations().iterator().next();
         constraintViolations  = validator.validate(basRel, Level3.class);
         assertHasConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
@@ -83,13 +83,13 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
 
 	@Test
     public void testSameSpecificLastEpithet() {
-	    Assert.assertEquals(1, name.getNameRelations().size());
+	    assertEquals(1, name.getNameRelations().size());
        NameRelationship basRel = name.getNameRelations().iterator().next();
        Set<ConstraintViolation<NameRelationship>> constraintViolations  = validator.validate(basRel, Level3.class);
        assertNoConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
 
        basionymName.setSpecificEpithet("bus");
-       Assert.assertEquals(1, name.getNameRelations().size());
+       assertEquals(1, name.getNameRelations().size());
        basRel = name.getNameRelations().iterator().next();
        constraintViolations  = validator.validate(basRel, Level3.class);
        assertHasConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
@@ -99,13 +99,13 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
     public void testSameInfraSpecificEpithet() {
        name.setInfraSpecificEpithet("bus");
        basionymName.setInfraSpecificEpithet("bus");
-       Assert.assertEquals(1, name.getNameRelations().size());
+       assertEquals(1, name.getNameRelations().size());
        NameRelationship basRel = name.getNameRelations().iterator().next();
        Set<ConstraintViolation<NameRelationship>> constraintViolations  = validator.validate(basRel, Level3.class);
        assertNoConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
 
        basionymName.setInfraSpecificEpithet("heptodi");
-       Assert.assertEquals(1, name.getNameRelations().size());
+       assertEquals(1, name.getNameRelations().size());
        basRel = name.getNameRelations().iterator().next();
        constraintViolations  = validator.validate(basRel, Level3.class);
        assertHasConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
@@ -115,13 +115,13 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
     public void testSameLastEpithetSpecificInfraSpecific() {
        name.setInfraSpecificEpithet("bus");
        basionymName.setSpecificEpithet("bus");
-       Assert.assertEquals(1, name.getNameRelations().size());
+       assertEquals(1, name.getNameRelations().size());
        NameRelationship basRel = name.getNameRelations().iterator().next();
        Set<ConstraintViolation<NameRelationship>> constraintViolations  = validator.validate(basRel, Level3.class);
        assertNoConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
 
        basionymName.setSpecificEpithet("heptodi");
-       Assert.assertEquals(1, name.getNameRelations().size());
+       assertEquals(1, name.getNameRelations().size());
        basRel = name.getNameRelations().iterator().next();
        constraintViolations  = validator.validate(basRel, Level3.class);
        assertHasConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
@@ -131,13 +131,13 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
     public void testSameLastEpithetInfraSpecificSpecific() {
        name.setSpecificEpithet("bus");
        basionymName.setInfraSpecificEpithet("bus");
-       Assert.assertEquals(1, name.getNameRelations().size());
+       assertEquals(1, name.getNameRelations().size());
        NameRelationship basRel = name.getNameRelations().iterator().next();
        Set<ConstraintViolation<NameRelationship>> constraintViolations  = validator.validate(basRel, Level3.class);
        assertNoConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
 
        basionymName.setInfraSpecificEpithet("heptodi");
-       Assert.assertEquals(1, name.getNameRelations().size());
+       assertEquals(1, name.getNameRelations().size());
        basRel = name.getNameRelations().iterator().next();
        constraintViolations  = validator.validate(basRel, Level3.class);
        assertHasConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
@@ -161,27 +161,27 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
        zooName.addBasionym(TaxonName.castAndDeproxy(originalCombination));
 
 
-       Assert.assertEquals(1, zooName.getNameRelations().size());
+       assertEquals(1, zooName.getNameRelations().size());
        NameRelationship basRel = zooName.getNameRelations().iterator().next();
        Set<ConstraintViolation<NameRelationship>> constraintViolations  = validator.validate(basRel, Level3.class);
        assertNoConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
 
        originalCombination.setNomenclaturalReference(nomRef2);
-       Assert.assertEquals(1, zooName.getNameRelations().size());
+       assertEquals(1, zooName.getNameRelations().size());
        basRel = zooName.getNameRelations().iterator().next();
        constraintViolations  = validator.validate(basRel, Level3.class);
        assertHasConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
 
        //reset
        originalCombination.setNomenclaturalReference(nomRef);
-       Assert.assertEquals(1, zooName.getNameRelations().size());
+       assertEquals(1, zooName.getNameRelations().size());
        basRel = zooName.getNameRelations().iterator().next();
        constraintViolations  = validator.validate(basRel, Level3.class);
        assertNoConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);
 
        zooName.setNomenclaturalMicroReference("A");
        originalCombination.setNomenclaturalMicroReference("B");
-       Assert.assertEquals(1, zooName.getNameRelations().size());
+       assertEquals(1, zooName.getNameRelations().size());
        basRel = zooName.getNameRelations().iterator().next();
        constraintViolations  = validator.validate(basRel, Level3.class);
        assertHasConstraintOnValidator((Set)constraintViolations, BasionymsMustShareEpithetsAndAuthorsValidator.class);

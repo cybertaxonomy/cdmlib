@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.model.rights;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 
@@ -25,7 +25,7 @@ public class GrantedAuthorityImplTest {
 	private GrantedAuthorityImpl grantedAuthority;
 	private String authority;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		grantedAuthority = GrantedAuthorityImpl.NewInstance(null);
 		authority = "";
@@ -47,5 +47,4 @@ public class GrantedAuthorityImplTest {
 	public final void testCompareTo() {
 		// not implemented yet
 	}
-
 }

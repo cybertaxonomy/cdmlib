@@ -8,6 +8,13 @@
 */
 package eu.etaxonomy.cdm.strategy.merge;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,9 +22,8 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.DateTimeUtil;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -77,7 +83,7 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 	private int hasProblem2 = 1;
 	private LSID lsid2;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		bookMergeStrategy = DefaultMergeStrategy.NewInstance(Reference.class);
 		team1 = Team.NewInstance();
@@ -101,7 +107,6 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 		book1.setParsingProblem(hasProblem1);
 		lsid1 = new LSID("authority1", "namespace1", "object1", "revision1");
 		book1.setLsid(lsid1);
-		book1.setNomenclaturallyRelevant(false);
 
 		book2 = ReferenceFactory.newBook();
 		book2.setAuthorship(team2);
@@ -115,20 +120,19 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 		book2.setParsingProblem(hasProblem2);
 		lsid2 = new LSID("authority2", "namespace2", "object2", "revision2");
 		book2.setLsid(lsid2);
-		book2.setNomenclaturallyRelevant(true);
 	}
 
 //********************* TEST *********************************************/
 
 	@Test
 	public void testNewInstance() {
-		Assert.assertNotNull(bookMergeStrategy);
-		Assert.assertEquals(Reference.class, bookMergeStrategy.getMergeClass());
+		assertNotNull(bookMergeStrategy);
+		assertEquals(Reference.class, bookMergeStrategy.getMergeClass());
 	}
 
 	@Test
 	public void testGetMergeMode() {
-		Assert.assertEquals("Merge mode for title should be MergeMode.FIRST", MergeMode.FIRST, bookMergeStrategy.getMergeMode("title"));
+		assertEquals(MergeMode.FIRST, bookMergeStrategy.getMergeMode("title"), "Merge mode for title should be MergeMode.FIRST");
 	}
 
 	@Test
@@ -136,35 +140,35 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 		//legal value
 		try {
 			bookMergeStrategy.setMergeMode("edition", MergeMode.SECOND);
-			Assert.assertEquals("Merge mode for edition should be", MergeMode.SECOND, bookMergeStrategy.getMergeMode("edition"));
+			assertEquals(MergeMode.SECOND, bookMergeStrategy.getMergeMode("edition"), "Merge mode for edition should be");
 		} catch (MergeException e1) {
-			Assert.fail();
+			fail();
 		}
 		//illegalValue
 		try {
 			bookMergeStrategy.setMergeMode("xxx", MergeMode.SECOND);
-			Assert.fail("A property name must exist, otherwise an exception must be thrown");
+			fail("A property name must exist, otherwise an exception must be thrown");
 		} catch (Exception e) {
 			//ok
 		}
 		//illegalValue
 		try {
 			bookMergeStrategy.setMergeMode("cacheStrategy", MergeMode.SECOND);
-			Assert.fail("CacheStrategy is transient and therefore not a legal merge parameter");
+			fail("CacheStrategy is transient and therefore not a legal merge parameter");
 		} catch (Exception e) {
 			//ok
 		}
 		//illegalValue
 		try {
 			bookMergeStrategy.setMergeMode("id", MergeMode.SECOND);
-			Assert.fail("Identifier merge mode must always be MergeMode.FIRST");
+			fail("Identifier merge mode must always be MergeMode.FIRST");
 		} catch (Exception e) {
 			//ok
 		}
 		//illegalValue
 		try {
 			bookMergeStrategy.setMergeMode("uuid", MergeMode.SECOND);
-			Assert.fail("Identifier merge mode must always be MergeMode.FIRST");
+			fail("Identifier merge mode must always be MergeMode.FIRST");
 		} catch (Exception e) {
 			//ok
 		}
@@ -189,54 +193,53 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 			bookMergeStrategy.invoke(book1, book2);
 		} catch (MergeException e) {
 			throw e;
-			//Assert.fail("An unexpected merge exception occurred: " + e.getMessage() + ";" + e.getCause().getMessage());
+			//fail("An unexpected merge exception occurred: " + e.getMessage() + ";" + e.getCause().getMessage());
 		}
-		Assert.assertEquals("Title should stay the same", title1, book1.getTitle());
-		Assert.assertEquals("Edition should become edition 2", editionString2, book1.getEdition());
-		Assert.assertNull("Volume should be null", book1.getVolume());
+		assertEquals(title1, book1.getTitle(), "Title should stay the same");
+		assertEquals(editionString2, book1.getEdition(), "Edition should become edition 2");
+		assertNull(book1.getVolume(), "Volume should be null");
 
 		//Boolean
-		Assert.assertEquals("Has problem must be hasProblem2", hasProblem2, book1.getParsingProblem());
-		Assert.assertEquals("nomenclaturally relevant must have value true (AND semantics)", true, book1.isNomenclaturallyRelevant() );
+		assertEquals(hasProblem2, book1.getParsingProblem(), "Has problem must be hasProblem2");
 
 		//CdmBase
-		Assert.assertSame("Authorship must be the one of book2", team2, book1.getAuthorship());
-		Assert.assertSame("In Series must be the one of book2", printSeries2, book1.getInReference());
+		assertSame(team2, book1.getAuthorship(), "Authorship must be the one of book2");
+		assertSame(printSeries2, book1.getInReference(), "In Series must be the one of book2");
 
 		//Transient
-		Assert.assertSame("Cache strategy is transient and shouldn't change therefore", cacheStrategy1, book1.cacheStrategy());
+		assertSame(cacheStrategy1, book1.cacheStrategy(), "Cache strategy is transient and shouldn't change therefore");
 
 		//UserType
-		Assert.assertEquals("Created must be created2", created2, book1.getCreated());
+		assertEquals(created2, book1.getCreated(), "Created must be created2");
 		//TODO updated should have the current date if any value has changed
-		Assert.assertSame("Created must be created2", null, book1.getUpdated());
-		Assert.assertEquals("Created must be datePublsihed2", datePublished2, book1.getDatePublished());
+		assertSame(null, book1.getUpdated(), "Created must be created2");
+		assertEquals(datePublished2, book1.getDatePublished(), "Created must be datePublsihed2");
 		//TODO this may not be correct
-		Assert.assertSame("LSID must be LSID2", lsid2, book1.getLsid());
+		assertSame(lsid2, book1.getLsid(), "LSID must be LSID2");
 
 		//TODO
 		//	book1.setProblemEnds(end);
 		//	book1.setProtectedTitleCache(protectedTitleCache);
 
 		//annotations -> ADD_CLONE
-		Assert.assertEquals("Annotations should contain annotations of both books", 2, book1.getAnnotations().size());
+		assertEquals(2, book1.getAnnotations().size(), "Annotations should contain annotations of both books");
 		boolean cloneExists = false;
 		for (Annotation annotation : book1.getAnnotations()){
 			if (annotation == this.annotation2){
 				//Hibernate will not persist the exact same object. Probably this is a bug (the according row in the
 				//M:M table is not deleted and a unique constraints does not allow adding 2 rows with the same annotation_id
 				//This test can be changed once this bug does not exist anymore
-				Assert.fail("Book1 should contain a clone of annotation2 but contains annotation2 itself");
+				fail("Book1 should contain a clone of annotation2 but contains annotation2 itself");
 			}else if (annotationString2.equals(annotation.getText())){
 				cloneExists = true;
 			}
 		}
-		Assert.assertTrue("Book1 should contain a clone of annotation2", cloneExists);
-	//	Assert.assertEquals("Annotations from book2 should be deleted", 0, book2.getAnnotations().size());
+		assertTrue(cloneExists, "Book1 should contain a clone of annotation2");
+	//	assertEquals(0, book2.getAnnotations().size(), "Annotations from book2 should be deleted");
 
 		//identifier
-		Assert.assertSame("Identifier must never be changed", id, book1.getId());
-		Assert.assertSame("Identifier must never be changed", uuid, book1.getUuid());
+		assertSame(id, book1.getId(), "Identifier must never be changed");
+		assertSame(uuid, book1.getUuid(), "Identifier must never be changed");
 
 		//Test Thesis
 		Institution school1 = Institution.NewInstance();
@@ -251,7 +254,7 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 
 		thesisStrategy.setMergeMode("school", MergeMode.SECOND);
 		thesisStrategy.invoke(thesis1, thesis2);
-		Assert.assertSame("school must be school2", school2, thesis1.getSchool());
+		assertSame(school2, thesis1.getSchool(), "school must be school2");
 	}
 
 	@Test
@@ -283,7 +286,6 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 		//authors
 		Team team1 = Team.NewInstance();
 		Team team2 = Team.NewInstance();
-		Person person1 = Person.NewInstance();
 		botName1.setCombinationAuthorship(team1);
 		botName2.setCombinationAuthorship(team2);
 
@@ -298,11 +300,11 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 //			botNameMergeStrategy.invoke(botName1, botName2);
 		} catch (MergeException e) {
 			throw e;
-			//Assert.fail("An unexpected merge exception occurred: " + e.getMessage() + ";" + e.getCause().getMessage());
+			//fail("An unexpected merge exception occurred: " + e.getMessage() + ";" + e.getCause().getMessage());
 		}
 
 		//Boolean
-		Assert.assertEquals("Is anamorphic must be false", true && false, botName2.isAnamorphic());
+		assertEquals(true && false, botName2.isAnamorphic(), "Is anamorphic must be false");
 
 		//NameRelations
 		Set<NameRelationship> toRelations = botName2.getRelationsToThisName();
@@ -312,23 +314,23 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 				basionymRelations.add(toRelation);
 			}
 		}
-		Assert.assertEquals("Number of basionyms must be 1", 1, basionymRelations.size());
-		Assert.assertEquals("Basionym must have same reference", book1, basionymRelations.iterator().next().getCitation());
+		assertEquals(1, basionymRelations.size(), "Number of basionyms must be 1");
+		assertEquals(book1, basionymRelations.iterator().next().getCitation(), "Basionym must have same reference");
 		//TODO merge relation if matches() = true
 
 		//Types
-		Assert.assertEquals("Number of specimen type designations must be 1", 1, botName2.getSpecimenTypeDesignations().size());
+		assertEquals(1, botName2.getSpecimenTypeDesignations().size(), "Number of specimen type designations must be 1");
 		//TODO add to all names etc.
 
 		//Description
-		Assert.assertEquals("Number of descriptions must be 2", 2, botName1.getDescriptions().size());
+		assertEquals(2, botName1.getDescriptions().size(), "Number of descriptions must be 2");
 
 		//Authorships
-		Assert.assertEquals("Combination author must be combination author 1", team1, botName1.getCombinationAuthorship());
+		assertEquals(team1, botName1.getCombinationAuthorship(), "Combination author must be combination author 1");
 
 		//Taxa
-		Assert.assertEquals("TaxonName of taxon1 must be name1", botName1, taxon1.getName());
-		Assert.assertEquals("TaxonName of taxon2 must be name2", botName2, taxon2.getName());
+		assertEquals(botName1, taxon1.getName(), "TaxonName of taxon1 must be name1");
+		assertEquals(botName2, taxon2.getName(), "TaxonName of taxon2 must be name2");
 	}
 
 	@Test
@@ -353,9 +355,9 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 
 		teamMergeStrategy.invoke(team2, team3);
 
-		Assert.assertEquals("Team2 must have 3 persons as members",3, team2.getTeamMembers().size());
-		Assert.assertTrue("Team2 must have person3 as new member", team2.getTeamMembers().contains(person3));
-		Assert.assertSame("Team2 must have person3 as third member",person3, team2.getTeamMembers().get(2));
+		assertEquals(3, team2.getTeamMembers().size(), "Team2 must have 3 persons as members");
+		assertTrue(team2.getTeamMembers().contains(person3), "Team2 must have person3 as new member");
+		assertSame(person3, team2.getTeamMembers().get(2), "Team2 must have person3 as third member");
 
 		//Person
 		Institution institution1 = Institution.NewInstance();
@@ -372,9 +374,9 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 		IMergeStrategy personMergeStrategy = DefaultMergeStrategy.NewInstance(Person.class);
 		personMergeStrategy.invoke(person1, person2);
 
-		Assert.assertEquals("Number of institutional memberships must be 2", 2, person1.getInstitutionalMemberships().size());
+		assertEquals(2, person1.getInstitutionalMemberships().size(), "Number of institutional memberships must be 2");
 		for (InstitutionalMembership institutionalMembership : person1.getInstitutionalMemberships()){
-			Assert.assertSame("Person of institutional memebership must be person1", person1, institutionalMembership.getPerson());
+			assertSame(person1, institutionalMembership.getPerson(), "Person of institutional memebership must be person1");
 		}
 	}
 }

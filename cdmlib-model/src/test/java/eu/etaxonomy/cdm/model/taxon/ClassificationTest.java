@@ -8,12 +8,12 @@
 */
 package eu.etaxonomy.cdm.model.taxon;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -26,9 +26,8 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -68,7 +67,7 @@ public class ClassificationTest {
 	private static Reference ref2;
 	private static Reference ref3;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		treeName1 = "Greuther, 1993";
 		//refFactory = ReferenceFactory.newInstance();
@@ -102,8 +101,8 @@ public class ClassificationTest {
 
 		//test root node
 		List<TaxonNode> rootNodes = classification1.getChildNodes();
-		assertFalse("List of root nodes should not be empty", rootNodes.isEmpty());
-		assertEquals("Number of root nodes should be 1", 1, rootNodes.size());
+		assertFalse(rootNodes.isEmpty(), "List of root nodes should not be empty");
+		assertEquals(1, rootNodes.size(), "Number of root nodes should be 1");
 		TaxonNode root = rootNodes.iterator().next();
 		assertEquals(taxon1, root.getTaxon());
 		assertSame(taxonNode1, root);
@@ -113,11 +112,11 @@ public class ClassificationTest {
 
 		//any node
 		List<TaxonNode> allNodes = classification1.getChildNodes();
-		assertFalse("List of root nodes should not be empty", allNodes.isEmpty());
-		assertEquals("Number of root nodes should be 1", 1, allNodes.size());
+		assertFalse(allNodes.isEmpty(), "List of root nodes should not be empty");
+		assertEquals(1, allNodes.size(), "Number of root nodes should be 1");
 		TaxonNode anyNode = allNodes.iterator().next();
-		assertSame("Taxon for TaxonNode should be the same added to the view", taxon1, anyNode.getTaxon());
-		assertSame("TaxonNode should be the same added to the view", taxonNode1, anyNode);
+		assertSame(taxon1, anyNode.getTaxon(), "Taxon for TaxonNode should be the same added to the view");
+		assertSame(taxonNode1, anyNode, "TaxonNode should be the same added to the view");
 
 	}
 
@@ -138,20 +137,20 @@ public class ClassificationTest {
 		root2.addChildTaxon(taxon3, null, null);
 		String microRef = "p55";
 
-		assertFalse("Root1 must not yet be child of root 2", root2.getChildNodes().contains(root1));
-		assertNotSame("Root2 must not yet be parent of root 1", root2, root1.getParent());
-		assertEquals("view must contain 3 nodes", 3, classification1.getAllNodes().size());
-		assertEquals("view must still contain 2 root", 2, classification1.getChildNodes().size());
-		assertEquals("root2 must have 1 child", 1, root2.getChildNodes().size());
+		assertFalse(root2.getChildNodes().contains(root1), "Root1 must not yet be child of root 2");
+		assertNotSame(root2, root1.getParent(), "Root2 must not yet be parent of root 1");
+		assertEquals(3, classification1.getAllNodes().size(), "view must contain 3 nodes");
+		assertEquals(2, classification1.getChildNodes().size(), "view must still contain 2 root");
+		assertEquals(1, root2.getChildNodes().size(), "root2 must have 1 child");
 
 		classification1.makeTopmostNodeChildOfOtherNode(root1, root2, ref1, microRef);
-		assertTrue("Root1 must be child of root 2", root2.getChildNodes().contains(root1));
-		assertSame("Root2 must be parent of root 1", root2, root1.getParent());
-		assertEquals("view must contain 3 nodes", 3, classification1.getAllNodes().size());
-		assertEquals("view must contain 1 root", 1, classification1.getChildNodes().size());
-		assertEquals("new child node must have the expected reference for parent child relationship", ref1, root1.getReference());
-		assertEquals("new child node must have the expected micro reference for parent child relationship", microRef, root1.getMicroReference());
-		assertEquals("root2 must have 2 children", 2, root2.getChildNodes().size());
+		assertTrue(root2.getChildNodes().contains(root1), "Root1 must be child of root 2");
+		assertSame(root2, root1.getParent(), "Root2 must be parent of root 1");
+		assertEquals(3, classification1.getAllNodes().size(), "view must contain 3 nodes");
+		assertEquals(1, classification1.getChildNodes().size(), "view must contain 1 root");
+		assertEquals(ref1, root1.getReference(), "new child node must have the expected reference for parent child relationship");
+		assertEquals(microRef, root1.getMicroReference(), "new child node must have the expected micro reference for parent child relationship");
+		assertEquals(2, root2.getChildNodes().size(), "root2 must have 2 children");
 	}
 
 	@Test
@@ -190,26 +189,26 @@ public class ClassificationTest {
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
 		TaxonNode rootNode = classification1.addChildTaxon(taxon1, null, null);
 		rootNode.setSynonymToBeUsed(synonym);
-		Assert.assertEquals(0,rootNode.getChildNodes().size());
+		assertEquals(0,rootNode.getChildNodes().size());
 
 		//add child to existing root
 		classification1.addParentChild(taxon1, taxon2, ref1, "Micro1");
-		Assert.assertTrue(classification1.isTaxonInTree(taxon2));
-		Assert.assertFalse(classification1.isTopmostInTree(taxon2));
-		Assert.assertEquals(1,rootNode.getChildNodes().size());
+		assertTrue(classification1.isTaxonInTree(taxon2));
+		assertFalse(classification1.isTopmostInTree(taxon2));
+		assertEquals(1,rootNode.getChildNodes().size());
 		TaxonNode childNode = rootNode.getChildNodes().iterator().next();
-		Assert.assertEquals(taxon2, childNode.getTaxon());
+		assertEquals(taxon2, childNode.getTaxon());
 
 		//relationship already exists
 		classification1.addParentChild(taxon1, taxon2, ref2, "Micro2");
-		Assert.assertTrue(classification1.isTaxonInTree(taxon2));
-		Assert.assertFalse(classification1.isTopmostInTree(taxon2));
-		Assert.assertEquals(2, classification1.getAllNodes().size());
-		Assert.assertEquals(1,rootNode.getChildNodes().size());
+		assertTrue(classification1.isTaxonInTree(taxon2));
+		assertFalse(classification1.isTopmostInTree(taxon2));
+		assertEquals(2, classification1.getAllNodes().size());
+		assertEquals(1,rootNode.getChildNodes().size());
 		childNode = rootNode.getChildNodes().iterator().next();
-		Assert.assertEquals(taxon2, childNode.getTaxon());
-		Assert.assertEquals(ref2, childNode.getReference());
-		Assert.assertEquals("Micro2", childNode.getMicroReference());
+		assertEquals(taxon2, childNode.getTaxon());
+		assertEquals(ref2, childNode.getReference());
+		assertEquals("Micro2", childNode.getMicroReference());
 
 		logger.info("testAddParentChild not yet fully implemented");
 	}

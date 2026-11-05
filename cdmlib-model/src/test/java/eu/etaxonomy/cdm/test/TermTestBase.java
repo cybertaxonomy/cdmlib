@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.test;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
  */
 public abstract class TermTestBase {
 
-    @BeforeClass
+    @BeforeAll
     public final static void intitializeTermsIfNeeded() {
         if(Language.DEFAULT() == null){
             new DefaultTermInitializer().initialize();

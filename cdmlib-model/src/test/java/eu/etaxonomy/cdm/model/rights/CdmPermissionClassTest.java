@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.model.rights;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -38,11 +39,11 @@ public class CdmPermissionClassTest {
     @Test
     public void testTaxonName(){
 
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.TAXONNAME,
                 PermissionClass.getValueOf(TaxonNameFactory.NewZoologicalInstance(Rank.GENUS()))
                 );
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.TAXONNAME,
                 PermissionClass.getValueOf(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()))
                 );
@@ -51,11 +52,11 @@ public class CdmPermissionClassTest {
     @Test
     public void testTaxonBase(){
 
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.TAXONBASE,
                 PermissionClass.getValueOf(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null))
                 );
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.TAXONBASE,
                 PermissionClass.getValueOf(Synonym.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()), null))
                 );
@@ -64,15 +65,15 @@ public class CdmPermissionClassTest {
     @Test
     public void testDesriptionBase(){
 
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.DESCRIPTIONBASE,
                 PermissionClass.getValueOf(TaxonDescription.NewInstance())
                 );
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.DESCRIPTIONBASE,
                 PermissionClass.getValueOf(TaxonNameDescription.NewInstance())
                 );
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.DESCRIPTIONBASE,
                 PermissionClass.getValueOf(SpecimenDescription.NewInstance())
                 );
@@ -81,15 +82,15 @@ public class CdmPermissionClassTest {
     @Test
     public void testDESCRIPTIONELEMENTBASE(){
 
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.DESCRIPTIONELEMENTBASE,
                 PermissionClass.getValueOf(Distribution.NewInstance())
                 );
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.DESCRIPTIONELEMENTBASE,
                 PermissionClass.getValueOf(CategoricalData.NewInstance())
                 );
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.DESCRIPTIONELEMENTBASE,
                 PermissionClass.getValueOf(CommonTaxonName.NewInstance("dmmy", Language.DEFAULT()))
                 );
@@ -97,7 +98,7 @@ public class CdmPermissionClassTest {
 
     @Test
     public void testREFERENCE(){
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.REFERENCE,
                 PermissionClass.getValueOf(ReferenceFactory.newArticle())
                 );
@@ -105,7 +106,7 @@ public class CdmPermissionClassTest {
 
     @Test
     public void testREGISTRATION(){
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.REGISTRATION,
                 PermissionClass.getValueOf(Registration.NewInstance())
                 );
@@ -113,14 +114,13 @@ public class CdmPermissionClassTest {
 
     @Test
     public void testSPECIMENOROBSERVATIONBASE(){
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.SPECIMENOROBSERVATIONBASE,
                 PermissionClass.getValueOf(FieldUnit.NewInstance())
                 );
-        Assert.assertEquals(
+        assertEquals(
                 PermissionClass.SPECIMENOROBSERVATIONBASE,
                 PermissionClass.getValueOf(DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit))
                 );
     }
-
 }

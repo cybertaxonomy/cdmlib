@@ -8,12 +8,13 @@
 */
 package eu.etaxonomy.cdm.model.molecular;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -33,7 +34,7 @@ public class AmplificationTest {
 		amplification.setUuid(uuid);
 
 		amplification.updateCache();
-		Assert.assertEquals("<Amplification:11e6b2d5-3eb5-4434-9c56-5bb4c1102147>", amplification.getLabelCache());
+		assertEquals("<Amplification:11e6b2d5-3eb5-4434-9c56-5bb4c1102147>", amplification.getLabelCache());
 
 		Person author = Person.NewTitledInstance("Person");
 		Institution institution = Institution.NewInstance();
@@ -46,6 +47,6 @@ public class AmplificationTest {
 		amplification.setInstitution(institution);
 
 		amplification.updateCache();
-		Assert.assertEquals("My institute_Person_marker_2008", amplification.getLabelCache());
+		assertEquals("My institute_Person_marker_2008", amplification.getLabelCache());
 	}
 }

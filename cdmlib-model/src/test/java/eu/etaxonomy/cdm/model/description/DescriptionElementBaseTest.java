@@ -8,12 +8,13 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -58,9 +59,9 @@ public class DescriptionElementBaseTest extends EntityTestBase {
 		data.addModifier(scots);
 
 		List<DefinedTerm> modifiers = data.getModifiers(plantPartVoc);
-		Assert.assertEquals("There should be 2 modifiers of type 'plant part'", 2, modifiers.size());
-		Assert.assertEquals("There should be 3 terms in the 'plant part' vocabulary", 3, plantPartVoc.size());
-		Assert.assertEquals("There should be 1 modifiers of type 'ethnic group'", 1, data.getModifiers(ethnicGroupVoc).size());
-		Assert.assertEquals("There should be 3 modifiers all together", 3, data.getModifiers().size());
+		assertEquals(2, modifiers.size(), "There should be 2 modifiers of type 'plant part'");
+		assertEquals(3, plantPartVoc.size(), "There should be 3 terms in the 'plant part' vocabulary");
+		assertEquals(1, data.getModifiers(ethnicGroupVoc).size(), "There should be 1 modifiers of type 'ethnic group'");
+		assertEquals(3, data.getModifiers().size(), "There should be 3 modifiers all together");
 	}
 }

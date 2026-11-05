@@ -25,7 +25,8 @@ public abstract class EntityTestBase extends TermTestBase {
     private static final Logger logger = LogManager.getLogger();
 
 	protected Class<CdmBase> clazzToTest = clazzToTest();
-	protected Class<CdmBase> clazzToTest(){
+	@SuppressWarnings("unchecked")
+    protected Class<CdmBase> clazzToTest(){
 		String testClassName = this.getClass().getName();
 		if (testClassName.endsWith("Test")){
 			String className = testClassName.substring(0, testClassName.length() - "Test".length());

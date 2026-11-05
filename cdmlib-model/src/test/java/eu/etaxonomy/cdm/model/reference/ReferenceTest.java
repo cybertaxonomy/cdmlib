@@ -8,23 +8,20 @@
 */
 package eu.etaxonomy.cdm.model.reference;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
  * @since 02.03.2017
- *
  */
 public class ReferenceTest {
 
     private Reference genericRef;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         genericRef = ReferenceFactory.newGeneric();
     }
@@ -33,16 +30,16 @@ public class ReferenceTest {
     public void testOnlyProtectedTitleCache() {
         String titleCache = "Any reference title cache";
         genericRef.setTitleCache(titleCache, true);
-        Assert.assertEquals(titleCache, genericRef.getTitleCache());
-        Assert.assertEquals(titleCache, genericRef.getAbbrevTitleCache());
+        assertEquals(titleCache, genericRef.getTitleCache());
+        assertEquals(titleCache, genericRef.getAbbrevTitleCache());
     }
 
     @Test
     public void testOnlyProtectedAbbrevTitleCache() {
         String titleCache = "A. ref. tit. ca.";
         genericRef.setAbbrevTitleCache(titleCache, true);
-        Assert.assertEquals(titleCache, genericRef.getAbbrevTitleCache());
-        Assert.assertEquals(titleCache, genericRef.getTitleCache());
+        assertEquals(titleCache, genericRef.getAbbrevTitleCache());
+        assertEquals(titleCache, genericRef.getTitleCache());
     }
 
     /**
@@ -50,8 +47,8 @@ public class ReferenceTest {
      */
     @Test
     public void testTwoEmptyTitleCaches() {
-        Assert.assertEquals("", genericRef.getAbbrevTitleCache());
-        Assert.assertEquals("", genericRef.getTitleCache());
+        assertEquals("", genericRef.getAbbrevTitleCache());
+        assertEquals("", genericRef.getTitleCache());
     }
 
 }

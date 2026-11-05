@@ -8,8 +8,9 @@
 */
 package eu.etaxonomy.cdm.model.taxon;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -28,17 +29,17 @@ public class TaxonRelationshipTypeTest extends EntityTestBase {
 
         //MISAPPLIED_NAME_FOR
         TaxonRelationshipType type = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
-        Assert.assertEquals(UTF8.MINUS.toString(), inverseAbbrev(type));
-        Assert.assertEquals("misapplied for", abbrev(type));
+        assertEquals(UTF8.MINUS.toString(), inverseAbbrev(type));
+        assertEquals("misapplied for", abbrev(type));
 
         //PRO PARTE MISAPPLIED_NAME_FOR
         type = TaxonRelationshipType.PRO_PARTE_MISAPPLIED_NAME_FOR();
-        Assert.assertEquals(UTF8.MINUS + "(p.p.)", inverseAbbrev(type));
-        Assert.assertEquals("p.p. misapplied for", abbrev(type));
+        assertEquals(UTF8.MINUS + "(p.p.)", inverseAbbrev(type));
+        assertEquals("p.p. misapplied for", abbrev(type));
 
         type = TaxonRelationshipType.PARTIAL_MISAPPLIED_NAME_FOR();
-        Assert.assertEquals(UTF8.MINUS + "(part.)", inverseAbbrev(type));
-        Assert.assertEquals("part. misapplied for", abbrev(type));
+        assertEquals(UTF8.MINUS + "(part.)", inverseAbbrev(type));
+        assertEquals("part. misapplied for", abbrev(type));
     }
 
     private String inverseAbbrev(TaxonRelationshipType relType) {

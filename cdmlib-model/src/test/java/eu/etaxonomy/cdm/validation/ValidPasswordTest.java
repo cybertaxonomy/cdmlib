@@ -8,20 +8,19 @@
 */
 package eu.etaxonomy.cdm.validation;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
-
-import jakarta.validation.ConstraintViolation;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.validation.constraint.ValidPasswordValidator;
+import jakarta.validation.ConstraintViolation;
 
 /**
  * See https://dev.e-taxonomy.eu/redmine/issues/9862
@@ -38,7 +37,7 @@ public class ValidPasswordTest  extends ValidationTestBase {
 
     private static final String valid = "Aa345678";
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
     }
@@ -51,12 +50,10 @@ public class ValidPasswordTest  extends ValidationTestBase {
         user = User.NewInstance("testuser", valid);
 
         Set<ConstraintViolation<User>> constraintViolations  = validator.validate(user, Level2.class);
-        assertTrue("There should not be a constraint violation as the 'valid' password fullfils all requirements",
-                constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as the 'valid' password fullfils all requirements");
 
         user.setPassword(StringUtils.leftPad(valid, 256, 'a'));
-        assertTrue("There should not be a constraint violation as up to 256 characters are allowed",
-                constraintViolations.isEmpty());
+        assertTrue(constraintViolations.isEmpty(), "There should not be a constraint violation as up to 256 characters are allowed");
 
     }
 

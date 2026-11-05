@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.model.description;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -27,7 +27,7 @@ public class IndividualsAssociationTest extends EntityTestBase {
 
     private IndividualsAssociation indAssociation;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         indAssociation = IndividualsAssociation.NewInstance();
 

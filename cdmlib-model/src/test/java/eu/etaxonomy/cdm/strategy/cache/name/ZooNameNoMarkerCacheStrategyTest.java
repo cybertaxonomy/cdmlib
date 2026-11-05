@@ -8,15 +8,15 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.name;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -59,7 +59,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	private final Integer publicationYear = 1928;
 	private final Integer originalPublicationYear = 1860;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		strategy = ZooNameNoMarkerCacheStrategy.NewInstance();
 		familyName = TaxonNameFactory.PARSED_ZOOLOGICAL(familyNameString, Rank.FAMILY());
@@ -90,12 +90,12 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	@Test
 	public final void testGetNameCache() {
 		assertEquals(subSpeciesNameString, subSpeciesName.getNameCache());
-		assertNull(subSpeciesNameString, strategy.getNameCache(null));
+		assertNull(strategy.getNameCache(null), subSpeciesNameString);
 	}
 
 	@Test
 	public final void testGetTitleCache() {
-		assertNull(subSpeciesNameString, strategy.getTitleCache(null));
+		assertNull(strategy.getTitleCache(null), subSpeciesNameString);
 		subSpeciesName.setCombinationAuthorship(author);
 		subSpeciesName.setExCombinationAuthorship(exAuthor);
 		subSpeciesName.setBasionymAuthorship(basAuthor);
@@ -141,14 +141,14 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 
 		//cache
 		subSpeciesName.setAuthorshipCache(authorString);
-		assertEquals("AuthorshipCache must be updated", authorString, subSpeciesName.getAuthorshipCache());
-		assertEquals("TitleCache must be updated", "Abies alba beta " + authorString, subSpeciesName.getTitleCache());
+		assertEquals(authorString, subSpeciesName.getAuthorshipCache(), "AuthorshipCache must be updated");
+		assertEquals("Abies alba beta " + authorString, subSpeciesName.getTitleCache(), "TitleCache must be updated");
 		subSpeciesName.setProtectedAuthorshipCache(false);
 		//TODO make this not needed
 		subSpeciesName.setTitleCache(null, false);
-		assertEquals("TitleCache must be updated", "Abies alba beta " + "(ExBas. N. ex Basio, A., 1860) Exaut. ex L., 1928", subSpeciesName.getTitleCache());
+		assertEquals("Abies alba beta " + "(ExBas. N. ex Basio, A., 1860) Exaut. ex L., 1928", subSpeciesName.getTitleCache(), "TitleCache must be updated");
 
-		assertNull("Authorship cache for null must return null", strategy.getAuthorshipCache(null));
+		assertNull(strategy.getAuthorshipCache(null), "Authorship cache for null must return null");
 	}
 
 	@Test

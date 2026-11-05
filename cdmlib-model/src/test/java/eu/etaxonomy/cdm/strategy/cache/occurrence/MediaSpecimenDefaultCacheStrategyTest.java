@@ -8,11 +8,13 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.occurrence;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.UUID;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -39,7 +41,7 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
     private MediaSpecimen specimen;
     private Collection collection;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         strategy = MediaSpecimenDefaultCacheStrategy.NewInstance();
         specimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
@@ -52,55 +54,55 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
     public void testWithoutReference() {
 
         //empty
-//        Assert.assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
-        Assert.assertEquals("[icon]", strategy.getTitleCache(specimen));
+//        assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
+        assertEquals("[icon]", strategy.getTitleCache(specimen));
 
         //with collection
         specimen.setCollection(collection);
-        Assert.assertEquals("[icon] B", strategy.getTitleCache(specimen));
+        assertEquals("[icon] B", strategy.getTitleCache(specimen));
 
         //collection and accession number
         specimen.setAccessionNumber("123");
-        Assert.assertEquals("[icon] B 123", strategy.getTitleCache(specimen));
+        assertEquals("[icon] B 123", strategy.getTitleCache(specimen));
 
         //with collection, accession number and titled media
         Media media = Media.NewInstance();
         media.putTitle(Language.DEFAULT(), "Media title");
         media.setArtist(Person.NewTitledInstance("Artist"));
         specimen.setMediaSpecimen(media);
-        Assert.assertEquals("[icon] B 123 (Media title)", strategy.getTitleCache(specimen));
+        assertEquals("[icon] B 123 (Media title)", strategy.getTitleCache(specimen));
         //#9632 test putXXX
         specimen.getMediaSpecimen().putTitle(Language.DEFAULT(), "Media Second Title");
-        Assert.assertEquals("[icon] B 123 (Media Second Title)", strategy.getTitleCache(specimen));
+        assertEquals("[icon] B 123 (Media Second Title)", strategy.getTitleCache(specimen));
 
         //with collection, accession number, titled media and artist
         specimen.getMediaSpecimen().setArtist(Person.NewTitledInstance("Artist 2"));
-        Assert.assertEquals("[icon] B 123 (Media Second Title)", strategy.getTitleCache(specimen));
+        assertEquals("[icon] B 123 (Media Second Title)", strategy.getTitleCache(specimen));
 
         //remove collection and accession number
         //titled media and artist only
         specimen.setCollection(null);
         specimen.setAccessionNumber(null);
-        Assert.assertEquals("[icon] Media Second Title", strategy.getTitleCache(specimen));
+        assertEquals("[icon] Media Second Title", strategy.getTitleCache(specimen));
 
         //remove title
         //artist only
         media.putTitle(Language.DEFAULT(), null);
-        Assert.assertEquals("[icon] Artist 2", strategy.getTitleCache(specimen));
+        assertEquals("[icon] Artist 2", strategy.getTitleCache(specimen));
 
         //remove artist,
         //empty specimen with only empty media attached
         media.setArtist(null);
-//        Assert.assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
-        Assert.assertEquals("[icon]", strategy.getTitleCache(specimen));
+//        assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
+        assertEquals("[icon]", strategy.getTitleCache(specimen));
 
         //fully empty but with media representation filename
         MediaRepresentation mediaRep = MediaRepresentation.NewInstance(URI.create("https://www.abc.de/test.jpg"), "jpg", null, 20, ImageFile.class);
         media.addRepresentation(mediaRep);
-        Assert.assertEquals("[icon] test", strategy.getTitleCache(specimen));
+        assertEquals("[icon] test", strategy.getTitleCache(specimen));
 
         //null
-        Assert.assertNull(strategy.getTitleCache(null));
+        assertNull(strategy.getTitleCache(null));
     }
 
     //#10537, #10596
@@ -113,30 +115,30 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
         //a publication. They often do not have a media attached but therefore should have a source
 
         //empty
-        //old: Assert.assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
-        Assert.assertEquals("[icon]", strategy.getTitleCache(specimen));
+        //old: assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
+        assertEquals("[icon]", strategy.getTitleCache(specimen));
 
         Media media = Media.NewInstance();
         specimen.setMediaSpecimen(media);
-        //old: Assert.assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
-        Assert.assertEquals("[icon]", strategy.getTitleCache(specimen));
+        //old: assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
+        assertEquals("[icon]", strategy.getTitleCache(specimen));
 
         Reference book = ReferenceFactory.newBook();
         book.setTitle("My book");
         book.setDatePublished(TimePeriodParser.parseStringVerbatim("1972"));
         IdentifiableSource source = IdentifiableSource.NewPrimaryMediaSourceInstance(book, "25");
         specimen.getMediaSpecimen().addSource(source);
-        Assert.assertEquals("[icon] in My book 1972: 25", strategy.getTitleCache(specimen));
+        assertEquals("[icon] in My book 1972: 25", strategy.getTitleCache(specimen));
 
         media.setTitleCache("Media title");
-        Assert.assertEquals("[icon] Media title in My book 1972: 25", strategy.getTitleCache(specimen));
+        assertEquals("[icon] Media title in My book 1972: 25", strategy.getTitleCache(specimen));
 
         //use reference only if no collection data available
         specimen.setCollection(collection);
-        Assert.assertEquals("[icon] B (Media title)", strategy.getTitleCache(specimen));
+        assertEquals("[icon] B (Media title)", strategy.getTitleCache(specimen));
         specimen.setCollection(null);
         specimen.setAccessionNumber("123");
-        Assert.assertEquals("[icon] 123 (Media title)", strategy.getTitleCache(specimen));
+        assertEquals("[icon] 123 (Media title)", strategy.getTitleCache(specimen));
     }
 
 }

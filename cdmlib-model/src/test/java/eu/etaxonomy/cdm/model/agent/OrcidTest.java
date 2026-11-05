@@ -8,8 +8,11 @@
 */
 package eu.etaxonomy.cdm.model.agent;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Test class for testing the {@link ORCID} class.
@@ -25,28 +28,28 @@ public class OrcidTest {
     public void testValidParser() {
         String validOrcid = "0000-0001-5000-0007";
         ORCID orcid = ORCID.fromString(validOrcid);
-        Assert.assertEquals("https://orcid.org/0000-0001-5000-0007", orcid.asURI());
-        Assert.assertEquals("7", orcid.checkDigit());
+        assertEquals("https://orcid.org/0000-0001-5000-0007", orcid.asURI());
+        assertEquals("7", orcid.checkDigit());
 
         validOrcid = "0000000150000007";
         orcid = ORCID.fromString(validOrcid);
-        Assert.assertEquals("https://orcid.org/0000-0001-5000-0007", orcid.asURI());
-        Assert.assertEquals("7", orcid.checkDigit());
+        assertEquals("https://orcid.org/0000-0001-5000-0007", orcid.asURI());
+        assertEquals("7", orcid.checkDigit());
 
         validOrcid = "orcid.org/0000-0001-5000-0007";
         orcid = ORCID.fromString(validOrcid);
-        Assert.assertEquals("https://orcid.org/0000-0001-5000-0007", orcid.asURI());
-        Assert.assertEquals("7", orcid.checkDigit());
+        assertEquals("https://orcid.org/0000-0001-5000-0007", orcid.asURI());
+        assertEquals("7", orcid.checkDigit());
 
         validOrcid = "https://orcid.org/0000-0001-5000-0007";
         orcid = ORCID.fromString(validOrcid);
-        Assert.assertEquals("https://orcid.org/0000-0001-5000-0007", orcid.asURI());
-        Assert.assertEquals("7", orcid.checkDigit());
+        assertEquals("https://orcid.org/0000-0001-5000-0007", orcid.asURI());
+        assertEquals("7", orcid.checkDigit());
 
         validOrcid = "http://orcid.org/0000-0001-5000-0015";
         orcid = ORCID.fromString(validOrcid);
-        Assert.assertEquals("https://orcid.org/0000-0001-5000-0015", orcid.asURI());
-        Assert.assertEquals("5", orcid.checkDigit());
+        assertEquals("https://orcid.org/0000-0001-5000-0015", orcid.asURI());
+        assertEquals("5", orcid.checkDigit());
     }
 
     @Test
@@ -65,10 +68,10 @@ public class OrcidTest {
         ORCID orcid1 = ORCID.fromString(validOrcid);
         validOrcid = "0000000150000007";
         ORCID orcid2 = ORCID.fromString(validOrcid);
-        Assert.assertEquals("ORCIDs must be equal. Checksum should not make it different", orcid1, orcid2);
+        assertEquals(orcid1, orcid2, "ORCIDs must be equal. Checksum should not make it different");
         validOrcid = "0000-0001-5000-001";
         ORCID orcid3 = ORCID.fromString(validOrcid);
-        Assert.assertNotEquals("Different ORCIDs must not be equal", orcid1, orcid3);
+        assertNotEquals(orcid1, orcid3, "Different ORCIDs must not be equal");
     }
 
     @Test
@@ -76,13 +79,13 @@ public class OrcidTest {
 
         String validOrcid = "0000-0001-5000-0007";
         ORCID orcid1 = ORCID.fromString(validOrcid);
-        Assert.assertEquals(ORCID.HTTP_ORCID_ORG + validOrcid, orcid1.asURI());
+        assertEquals(ORCID.HTTP_ORCID_ORG + validOrcid, orcid1.asURI());
     }
 
     private void testInvalid(String invalidOrcid) {
         try {
             ORCID.fromString(invalidOrcid);
-            Assert.fail("ORCID should not be parsable: " + invalidOrcid);
+            fail("ORCID should not be parsable: " + invalidOrcid);
         } catch (IllegalArgumentException e) {
             //OK
         }

@@ -8,15 +8,17 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.term.IdentifierType;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -36,7 +38,7 @@ public class AnnotatableEntityTest extends EntityTestBase {
     private Marker marker;
     private Set<UUID> completeMarkerUuids;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         annotation = Annotation.NewDefaultLanguageInstance("Anno");
         annotation.setAnnotationType(AnnotationType.EDITORIAL());
@@ -56,28 +58,28 @@ public class AnnotatableEntityTest extends EntityTestBase {
 
         boolean ignoreSources = false;
         Identifier annotatableEntity = Identifier.NewInstance("abc", IdentifierType.IDENTIFIER_NAME_WFO());
-        Assert.assertFalse(annotatableEntity.hasSupplementalData());
-        Assert.assertFalse(annotatableEntity.hasSupplementalData(editorialUuids, ignoreSources));
+        assertFalse(annotatableEntity.hasSupplementalData());
+        assertFalse(annotatableEntity.hasSupplementalData(editorialUuids, ignoreSources));
 
         annotatableEntity.addAnnotation(annotation);
-        Assert.assertTrue(annotatableEntity.hasSupplementalData());
-        Assert.assertFalse(annotatableEntity.hasSupplementalData(editorialUuids, ignoreSources));
-        Assert.assertTrue(annotatableEntity.hasSupplementalData(new HashSet<>(), ignoreSources));
-        Assert.assertTrue(annotatableEntity.hasSupplementalData(completeMarkerUuids, ignoreSources));
+        assertTrue(annotatableEntity.hasSupplementalData());
+        assertFalse(annotatableEntity.hasSupplementalData(editorialUuids, ignoreSources));
+        assertTrue(annotatableEntity.hasSupplementalData(new HashSet<>(), ignoreSources));
+        assertTrue(annotatableEntity.hasSupplementalData(completeMarkerUuids, ignoreSources));
 
         //revert
         annotatableEntity.removeAnnotation(annotation);
-        Assert.assertFalse(annotatableEntity.hasSupplementalData());
+        assertFalse(annotatableEntity.hasSupplementalData());
 
         //test with marker
         annotatableEntity.addMarker(marker);
-        Assert.assertTrue(annotatableEntity.hasSupplementalData());
-        Assert.assertFalse(annotatableEntity.hasSupplementalData(completeMarkerUuids, ignoreSources));
-        Assert.assertTrue(annotatableEntity.hasSupplementalData(editorialUuids, ignoreSources));
+        assertTrue(annotatableEntity.hasSupplementalData());
+        assertFalse(annotatableEntity.hasSupplementalData(completeMarkerUuids, ignoreSources));
+        assertTrue(annotatableEntity.hasSupplementalData(editorialUuids, ignoreSources));
 
         //test with missing uuid filter
         editorialUuids = null;
-        Assert.assertTrue(annotatableEntity.hasSupplementalData(editorialUuids, ignoreSources));
+        assertTrue(annotatableEntity.hasSupplementalData(editorialUuids, ignoreSources));
 
     }
 

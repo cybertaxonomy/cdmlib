@@ -8,13 +8,19 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -41,7 +47,7 @@ public class TaxonNameTest extends EntityTestBase {
 	private TaxonName nameBase2;
 	private Reference ref1;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		nameBase1 = TaxonNameFactory.NewNameInstance(NomenclaturalCode.NonViral, null);
 		nameBase2 = TaxonNameFactory.NewNameInstance(NomenclaturalCode.NonViral, Rank.GENUS());
@@ -60,56 +66,46 @@ public class TaxonNameTest extends EntityTestBase {
 	    nameBase1.setAuthorshipCache("Auth.");
 
 	    //before
-	    Assert.assertEquals("Abies Auth.", nameBase1.getFullTitleCache());
+	    assertEquals("Abies Auth.", nameBase1.getFullTitleCache());
 
 	    //after
 	    //add ref
 	    nameBase1.setNomenclaturalReference(ref1);
-	    Assert.assertEquals("Using transient setNomenclaturalReference should reset the fullTitleCache",
-	            "Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache());
+	    assertEquals("Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache(), "Using transient setNomenclaturalReference should reset the fullTitleCache");
 
 	    //add detail
         nameBase1.setNomenclaturalMicroReference("55");
-        Assert.assertEquals("Using transient setNomenclaturalMicroReference should reset the fullTitleCache",
-                "Abies Auth., M. bk.: 55. 1988", nameBase1.getFullTitleCache());
+        assertEquals("Abies Auth., M. bk.: 55. 1988", nameBase1.getFullTitleCache(), "Using transient setNomenclaturalMicroReference should reset the fullTitleCache");
 
         //remove detail
         nameBase1.setNomenclaturalMicroReference(null);
-        Assert.assertEquals("Using the source microcitation setter should reset the fullTitleCache",
-                "Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache());
+        assertEquals("Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache(), "Using the source microcitation setter should reset the fullTitleCache");
 
         //remove ref
         nameBase1.setNomenclaturalReference(null);
-        Assert.assertEquals("Using the source citation setter should reset the fullTitleCache",
-                "Abies Auth.", nameBase1.getFullTitleCache());
+        assertEquals("Abies Auth.", nameBase1.getFullTitleCache(), "Using the source citation setter should reset the fullTitleCache");
 
-        Assert.assertNull("Full emptying the source should remove it from the name (by method checkNullSource)",
-                nameBase1.getNomenclaturalSource());
+        assertNull(nameBase1.getNomenclaturalSource(), "Full emptying the source should remove it from the name (by method checkNullSource)");
 
         //do the same again with setters on source
         //after
         //add ref
         nameBase1.getNomenclaturalSource(true).setCitation(ref1);
-        Assert.assertEquals("Using transient setNomenclaturalReference should reset the fullTitleCache",
-                "Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache());
+        assertEquals("Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache(), "Using transient setNomenclaturalReference should reset the fullTitleCache");
 
         //add detail
         nameBase1.getNomenclaturalSource().setCitationMicroReference("55");
-        Assert.assertEquals("Using transient setNomenclaturalMicroReference should reset the fullTitleCache",
-                "Abies Auth., M. bk.: 55. 1988", nameBase1.getFullTitleCache());
+        assertEquals("Abies Auth., M. bk.: 55. 1988", nameBase1.getFullTitleCache(), "Using transient setNomenclaturalMicroReference should reset the fullTitleCache");
 
         //remove detail
         nameBase1.getNomenclaturalSource().setCitationMicroReference(null);
-        Assert.assertEquals("Using the source microcitation setter should reset the fullTitleCache",
-                "Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache());
+        assertEquals("Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache(), "Using the source microcitation setter should reset the fullTitleCache");
 
         //remove ref
         nameBase1.getNomenclaturalSource().setCitation(null);;
-        Assert.assertEquals("Using the source citation setter should reset the fullTitleCache",
-                "Abies Auth.", nameBase1.getFullTitleCache());
+        assertEquals("Abies Auth.", nameBase1.getFullTitleCache(), "Using the source citation setter should reset the fullTitleCache");
 
-        Assert.assertNull("Full emptying the source should remove it from the name (by method checkNullSource)",
-                nameBase1.getNomenclaturalSource());
+        assertNull(nameBase1.getNomenclaturalSource(), "Full emptying the source should remove it from the name (by method checkNullSource)");
 
 	}
 
@@ -247,21 +243,21 @@ public class TaxonNameTest extends EntityTestBase {
 	@Test
 	public void testGetRank() {
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
-		assertNull("Rank shall be null", name1.getRank());
+		assertNull(name1.getRank(), "Rank shall be null");
 		name1.setRank(Rank.SPECIES());
-		assertNotNull("Rank shall not be null", name1.getRank());
+		assertNotNull(name1.getRank(), "Rank shall not be null");
 		name1.setRank(null);
-		assertNull("Rank shall be null", name1.getRank());
+		assertNull(name1.getRank(), "Rank shall be null");
 
 	}
 
 	@Test
 	public void testGetSetNomenclaturalReference() {
 		Reference nr = nameBase1.getNomenclaturalReference();
-		assertNull("Nomenclatural Reference shall be null", nr);
+		assertNull(nr, "Nomenclatural Reference shall be null");
 		nameBase1.setNomenclaturalReference(ReferenceFactory.newGeneric());
 		nr = nameBase1.getNomenclaturalReference();
-		assertNotNull("Nomenclatural Reference shall not be null", nr);
+		assertNotNull(nr, "Nomenclatural Reference shall not be null");
 	}
 
 	@Test
@@ -355,22 +351,22 @@ public class TaxonNameTest extends EntityTestBase {
 	public void testAddTaxonBase() {
 		Taxon taxon = Taxon.NewInstance(null, null);
 		nameBase2.addTaxonBase(taxon);  //test if reflection method addTaxonBase() works
-		assertTrue("The taxon has not properly been added to the taxonName", nameBase2.getTaxonBases().contains(taxon));
-		assertEquals("The taxon name has not properly been added to the taxon", nameBase2, taxon.getName());
+		assertTrue(nameBase2.getTaxonBases().contains(taxon), "The taxon has not properly been added to the taxonName");
+		assertEquals(nameBase2, taxon.getName(), "The taxon name has not properly been added to the taxon");
 		nameBase2.removeTaxonBase(taxon); //test if reflection method in removeTaxonBase() works
-		assertFalse("The taxon has not properly been removed from the taxon name", nameBase2.getTaxonBases().contains(taxon));
-		assertEquals("The taxon name has not properly been removed from the taxon", null, taxon.getName());
+		assertFalse(nameBase2.getTaxonBases().contains(taxon), "The taxon has not properly been removed from the taxon name");
+		assertEquals(null, taxon.getName(), "The taxon name has not properly been removed from the taxon");
 	}
 
 	@Test
 	public void testAddAndRemoveDescriptionTaxonNameDescription() {
 		TaxonNameDescription description = TaxonNameDescription.NewInstance();
 		nameBase2.addDescription(description);  //test if reflection method in addDescription() works
-		assertTrue("The description has not properly been added to the taxonName", nameBase2.getDescriptions().contains(description));
-		assertEquals("The taxon name has not properly been added to the description", nameBase2, description.getTaxonName());
+		assertTrue(nameBase2.getDescriptions().contains(description), "The description has not properly been added to the taxonName");
+		assertEquals(nameBase2, description.getTaxonName(), "The taxon name has not properly been added to the description");
 		nameBase2.removeDescription(description); //test if reflection method in removeDescription() works
-		assertFalse("The description has not properly been removed from the taxon name", nameBase2.getDescriptions().contains(description));
-		assertEquals("The taxon name has not properly been removed from the description", null, description.getTaxonName());
+		assertFalse(nameBase2.getDescriptions().contains(description), "The description has not properly been removed from the taxon name");
+		assertEquals(null, description.getTaxonName(), "The taxon name has not properly been removed from the description");
 	}
 
 	@Test
@@ -637,57 +633,57 @@ public class TaxonNameTest extends EntityTestBase {
 		//CLONE
 		TaxonName clone = taxonName1.clone();
 		TaxonName genusClone = genusName.clone();
-		assertSame("Rank should be same", taxonName1.getRank(), clone.getRank());
-		assertTrue("TaxonBases should not be cloned", clone.getTaxonBases().isEmpty());
-		assertEquals("TaxonBases of original name should not be empty", 1, taxonName1.getTaxonBases().size());
+		assertSame(taxonName1.getRank(), clone.getRank(), "Rank should be same");
+		assertTrue(clone.getTaxonBases().isEmpty(), "TaxonBases should not be cloned");
+		assertEquals(1, taxonName1.getTaxonBases().size(), "TaxonBases of original name should not be empty");
 		//homotypical groups are not cloned, see documentation
-		assertNotSame("The clone must have a new homotypical group", taxonName1.getHomotypicalGroup(), clone.getHomotypicalGroup());
-		assertNotSame("The genusClone must a new homotypical group", genusName.getHomotypicalGroup(), genusClone.getHomotypicalGroup());
-		assertEquals("Only the name should be part of the new homotypical group", 1, clone.getHomotypicalGroup().getTypifiedNames().size());
+		assertNotSame(taxonName1.getHomotypicalGroup(), clone.getHomotypicalGroup(), "The clone must have a new homotypical group");
+		assertNotSame(genusName.getHomotypicalGroup(), genusClone.getHomotypicalGroup(), "The genusClone must a new homotypical group");
+		assertEquals(1, clone.getHomotypicalGroup().getTypifiedNames().size(), "Only the name should be part of the new homotypical group");
 
 		//description
-		assertEquals("There should be exactly 1 name description", 1, clone.getDescriptions().size());
+		assertEquals(1, clone.getDescriptions().size(), "There should be exactly 1 name description");
 		TaxonNameDescription descriptionClone = clone.getDescriptions().iterator().next();
-		assertEquals("There should be exactly 1 description element", 1, descriptionClone.getElements().size());
+		assertEquals(1, descriptionClone.getElements().size(), "There should be exactly 1 description element");
 		TextData textDataClone = (TextData)descriptionClone.getElements().iterator().next();
 		String text = textDataClone.getText(Language.DEFAULT());
-		assertEquals("Textdata should be equal", "My media text data", text);
-		assertEquals("There should be exactly 1 media attached", 1, textDataClone.getMedia().size());
+		assertEquals("My media text data", text, "Textdata should be equal");
+		assertEquals(1, textDataClone.getMedia().size(), "There should be exactly 1 media attached");
 		Media mediaClone = textDataClone.getMedia().get(0);
-		assertSame("Media must be the same", media, mediaClone);
+		assertSame(media, mediaClone, "Media must be the same");
 
 		//type designation
-		assertEquals("There should be exactly 1 specimen type designation", 1, clone.getTypeDesignations().size());
-		assertNotSame("type designation sets should not be the same", taxonName1.getTypeDesignations(), clone.getTypeDesignations());
+		assertEquals(1, clone.getTypeDesignations().size(), "There should be exactly 1 specimen type designation");
+		assertNotSame(taxonName1.getTypeDesignations(), clone.getTypeDesignations(), "type designation sets should not be the same");
 		SpecimenTypeDesignation specimenTypeDesignationClone = (SpecimenTypeDesignation)clone.getTypeDesignations().iterator().next();
-		assertNotSame("The specimen type designation should not be the same", specimenTypeDesignationOriginal, specimenTypeDesignationClone);
-		assertSame("The derived unit of the specimen type designation needs to be the same", specimenTypeDesignationOriginal.getTypeSpecimen(), specimenTypeDesignationClone.getTypeSpecimen());
-		assertSame("The status of the specimen type designation needs to be the same", specimenTypeDesignationOriginal.getTypeStatus(), specimenTypeDesignationClone.getTypeStatus());
-		assertEquals("The specimen type designation must have exactly 1 typified name which is 'clone'", 1, specimenTypeDesignationClone.getTypifiedNames().size());
-		assertTrue("The specimen type designation must have 'clone' as typified name", specimenTypeDesignationClone.getTypifiedNames().contains(clone));
-//		assertSame("The specimen type designation must have the same homotypical group as the typified name", specimenTypeDesignationClone.getHomotypicalGroup(), clone.getHomotypicalGroup());
+		assertNotSame(specimenTypeDesignationOriginal, specimenTypeDesignationClone, "The specimen type designation should not be the same");
+		assertSame(specimenTypeDesignationOriginal.getTypeSpecimen(), specimenTypeDesignationClone.getTypeSpecimen(), "The derived unit of the specimen type designation needs to be the same");
+		assertSame(specimenTypeDesignationOriginal.getTypeStatus(), specimenTypeDesignationClone.getTypeStatus(), "The status of the specimen type designation needs to be the same");
+		assertEquals(1, specimenTypeDesignationClone.getTypifiedNames().size(), "The specimen type designation must have exactly 1 typified name which is 'clone'");
+		assertTrue(specimenTypeDesignationClone.getTypifiedNames().contains(clone), "The specimen type designation must have 'clone' as typified name");
+//		assertSame(specimenTypeDesignationClone.getHomotypicalGroup(), clone.getHomotypicalGroup(), "The specimen type designation must have the same homotypical group as the typified name");
 
-		assertEquals("There should be exactly 1 name type designation", 1, genusClone.getTypeDesignations().size());
-		assertNotSame("type designation sets should not be the same", genusName.getTypeDesignations(), genusClone.getTypeDesignations());
+		assertEquals(1, genusClone.getTypeDesignations().size(), "There should be exactly 1 name type designation");
+		assertNotSame(genusName.getTypeDesignations(), genusClone.getTypeDesignations(), "type designation sets should not be the same");
 		NameTypeDesignation nameTypeDesignationClone = (NameTypeDesignation)genusClone.getTypeDesignations().iterator().next();
-		assertNotSame("The name type designation should not be the same", nameTypeDesignationOriginal, nameTypeDesignationClone);
-		assertSame("The nyme type of the name type designation needs to be the same", taxonName1, nameTypeDesignationClone.getTypeName());
-		assertSame("The status of the name type designation needs to be the same", nameTypeDesignationOriginal.getTypeStatus(), nameTypeDesignationClone.getTypeStatus());
-		assertEquals("The name type designation must have exactly 1 typified name which is 'genusClone'", 1, nameTypeDesignationClone.getTypifiedNames().size());
-		assertTrue("The name type designation must have 'genusClone' as typified name", nameTypeDesignationClone.getTypifiedNames().contains(genusClone));
-//		assertSame("The name type designation must have the same homotypical group as the typified name", nameTypeDesignationClone.getHomotypicalGroup(), genusClone.getHomotypicalGroup());
+		assertNotSame(nameTypeDesignationOriginal, nameTypeDesignationClone, "The name type designation should not be the same");
+		assertSame(taxonName1, nameTypeDesignationClone.getTypeName(), "The nyme type of the name type designation needs to be the same");
+		assertSame(nameTypeDesignationOriginal.getTypeStatus(), nameTypeDesignationClone.getTypeStatus(), "The status of the name type designation needs to be the same");
+		assertEquals(1, nameTypeDesignationClone.getTypifiedNames().size(), "The name type designation must have exactly 1 typified name which is 'genusClone'");
+		assertTrue(nameTypeDesignationClone.getTypifiedNames().contains(genusClone), "The name type designation must have 'genusClone' as typified name");
+//		assertSame(nameTypeDesignationClone.getHomotypicalGroup(), genusClone.getHomotypicalGroup(), "The name type designation must have the same homotypical group as the typified name");
 
 		//status
-		assertEquals("There should be exactly 1 status", 1, clone.getStatus().size());
-		assertNotSame("Status sets should not be the same", taxonName1.getStatus(), clone.getStatus());
+		assertEquals(1, clone.getStatus().size(), "There should be exactly 1 status");
+		assertNotSame(taxonName1.getStatus(), clone.getStatus(), "Status sets should not be the same");
 		NomenclaturalStatus cloneStatus = clone.getStatus().iterator().next();
-		assertSame("The type of the nomStatus needs to be the same", nomStatus.getType(), cloneStatus.getType());
-		assertSame("The citation of the nomStatus needs to be the same", nomStatus.getCitation(), cloneStatus.getCitation());
-		assertSame("The rule considered of the nomStatus needs to be the same", nomStatus.getRuleConsidered(), cloneStatus.getRuleConsidered());
-		assertNotSame("The nomStatus should be cloned as it is orphan removal", nomStatus, cloneStatus);
+		assertSame(nomStatus.getType(), cloneStatus.getType(), "The type of the nomStatus needs to be the same");
+		assertSame(nomStatus.getCitation(), cloneStatus.getCitation(), "The citation of the nomStatus needs to be the same");
+		assertSame(nomStatus.getRuleConsidered(), cloneStatus.getRuleConsidered(), "The rule considered of the nomStatus needs to be the same");
+		assertNotSame(nomStatus, cloneStatus, "The nomStatus should be cloned as it is orphan removal");
 
 //		//hybrid parents of clone
-//		assertEquals("There should be exactly 2 hybrid relationships in which the clone takes the child role", 2, clone.getChildRelationships().size());
+//		assertEquals(2, clone.getChildRelationships().size(), "There should be exactly 2 hybrid relationships in which the clone takes the child role");
 //		Set<NonViralName> parentSet = new HashSet<>();
 //		Set<NonViralName> childSet = new HashSet<>();
 //		for (Object object : clone.getChildRelationships()){
@@ -697,27 +693,27 @@ public class TaxonNameTest extends EntityTestBase {
 //			NonViralName relatedTo = childRelation.getRelatedTo();
 //			childSet.add(relatedTo);
 //		}
-//		assertTrue("Parent set should contain parent1", parentSet.contains(parent));
-//		assertTrue("Parent set should contain parent2", parentSet.contains(parent2));
-//		assertTrue("Child set should contain clone", childSet.contains(clone));
+//		assertTrue(parentSet.contains(parent), "Parent set should contain parent1");
+//		assertTrue(parentSet.contains(parent2), "Parent set should contain parent2");
+//		assertTrue(childSet.contains(clone), "Child set should contain clone");
 
 		//basionym of clone
-		assertEquals("There should be exactly 1 relationship in which the clone takes the -to- role", 1, clone.getRelationsToThisName().size());
+		assertEquals(1, clone.getRelationsToThisName().size(), "There should be exactly 1 relationship in which the clone takes the -to- role");
 		NameRelationship basionymRelationClone = clone.getRelationsToThisName().iterator().next();
 		assertNotEquals(basionymRelation, basionymRelationClone);
 		//related name should not be cloned, if needed e.g. for basionyms this should be handled by the calling method (see documentation)
-		assertSame("Basionym should be from-object in relationship", basionym, basionymRelationClone.getRelatedFrom());
-		assertSame("Clone should be to-object in relationship", clone, basionymRelationClone.getRelatedTo());
-		assertSame("Relationship type should be cloned correctly", NameRelationshipType.BASIONYM(), basionymRelationClone.getType());
+		assertSame(basionym, basionymRelationClone.getRelatedFrom(), "Basionym should be from-object in relationship");
+		assertSame(clone, basionymRelationClone.getRelatedTo(), "Clone should be to-object in relationship");
+		assertSame(NameRelationshipType.BASIONYM(), basionymRelationClone.getType(), "Relationship type should be cloned correctly");
 
 		//homonym of clone
-		assertEquals("There should be exactly 1 relationship in which the clone takes the from role", 1, clone.getRelationsFromThisName().size());
+		assertEquals(1, clone.getRelationsFromThisName().size(), "There should be exactly 1 relationship in which the clone takes the from role");
 		NameRelationship homonymRelationClone = clone.getRelationsFromThisName().iterator().next();
 		assertNotEquals(homonymRelation, homonymRelationClone);
-        assertSame("Clone should be from-object in relationship", clone, homonymRelationClone.getRelatedFrom());
-		assertSame("Homonym should be to-object in relationship", earlierHomonym, homonymRelationClone.getRelatedTo());
-		assertSame("Relationship type should be cloned correctly", NameRelationshipType.LATER_HOMONYM(), homonymRelationClone.getType());
-		assertEquals("Rule should be cloned correctly", "later homonym rule", homonymRelationClone.getRuleConsidered());
+        assertSame(clone, homonymRelationClone.getRelatedFrom(), "Clone should be from-object in relationship");
+		assertSame(earlierHomonym, homonymRelationClone.getRelatedTo(), "Homonym should be to-object in relationship");
+		assertSame(NameRelationshipType.LATER_HOMONYM(), homonymRelationClone.getType(), "Relationship type should be cloned correctly");
+		assertEquals("later homonym rule", homonymRelationClone.getRuleConsidered(), "Rule should be cloned correctly");
 	}
 
 
@@ -821,19 +817,19 @@ public class TaxonNameTest extends EntityTestBase {
    public void testNomenclaturalStanding() {
        //The status and relationship combinations in this test are not semantically consistent
        //but only used for testing
-       Assert.assertTrue(nameBase1.isNoStatus());
+       assertTrue(nameBase1.isNoStatus());
        nameBase1.addRelationshipFromName(nameBase2, NameRelationshipType.CONSERVED_AGAINST());
-       Assert.assertTrue(nameBase1.isDesignationOnly());
+       assertTrue(nameBase1.isDesignationOnly());
        nameBase1.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.AMBIGUOUS()));
-       Assert.assertTrue("nothing changed", nameBase1.isDesignationOnly());
-       Assert.assertTrue(nameBase1.isInvalid());
+       assertTrue(nameBase1.isDesignationOnly(), "nothing changed");
+       assertTrue(nameBase1.isInvalid());
        nameBase1.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
-       Assert.assertFalse(nameBase1.isIllegitimate());
-       Assert.assertTrue(nameBase1.isDesignationOnly());
+       assertFalse(nameBase1.isIllegitimate());
+       assertTrue(nameBase1.isDesignationOnly());
        nameBase1.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.INVALID()));
-       Assert.assertFalse(nameBase1.isDesignationOnly());
-       Assert.assertTrue(nameBase1.isInvalid());
+       assertFalse(nameBase1.isDesignationOnly());
+       assertTrue(nameBase1.isInvalid());
        nameBase1.addRelationshipToName(nameBase2, NameRelationshipType.CONSERVED_AGAINST());
-       Assert.assertTrue(nameBase1.isValid());
+       assertTrue(nameBase1.isValid());
    }
 }

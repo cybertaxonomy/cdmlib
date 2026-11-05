@@ -10,15 +10,14 @@ package eu.etaxonomy.cdm.validation;
 
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import eu.etaxonomy.cdm.model.agent.Person;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import eu.etaxonomy.cdm.model.agent.Person;
 
 /**
  * @author b.clark
@@ -27,7 +26,7 @@ public class AgentValidationTest {
 
 	private static Validator validator;
 
-	@BeforeClass
+	@BeforeAll
 	public static void onSetUp() throws Exception {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		validator = factory.getValidator();

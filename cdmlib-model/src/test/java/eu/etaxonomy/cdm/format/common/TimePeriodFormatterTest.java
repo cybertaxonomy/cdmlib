@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.format.common;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -26,7 +26,7 @@ public class TimePeriodFormatterTest {
     private TimePeriodFormatter formatter;
     private String endash = UTF8.EN_DASH.toString();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         formatter = TimePeriodFormatter.NewDefaultInstance();
     }
@@ -35,36 +35,36 @@ public class TimePeriodFormatterTest {
     public void test() {
         TimePeriod tp1 = TimePeriod.NewInstance(1788,1799);
         assertNotNull(tp1);
-        Assert.assertEquals("1788"+endash+"1799", formatter.format(tp1));
+        assertEquals("1788"+endash+"1799", formatter.format(tp1));
         tp1.setStartDay(3);
-        Assert.assertEquals("3 MMM 1788"+endash+"1799", formatter.format(tp1));
+        assertEquals("3 MMM 1788"+endash+"1799", formatter.format(tp1));
         tp1.setEndMonth(11);
-        Assert.assertEquals("3 MMM 1788"+endash+"Nov 1799", formatter.format(tp1));
+        assertEquals("3 MMM 1788"+endash+"Nov 1799", formatter.format(tp1));
         tp1.setContinued(true);
-        Assert.assertEquals("3 MMM 1788+", formatter.format(tp1));
+        assertEquals("3 MMM 1788+", formatter.format(tp1));
 
         tp1 = TimePeriod.NewInstance(1788,1799);
         tp1.setContinued(true);
-        Assert.assertEquals("1788+", formatter.format(tp1));
+        assertEquals("1788+", formatter.format(tp1));
         tp1 = TimePeriod.NewInstance((Integer)null);
         tp1.setContinued(true);
         //this is still undefined, could be something like 'xxxx+' in future
-        Assert.assertEquals("+", formatter.format(tp1));
+        assertEquals("+", formatter.format(tp1));
 
         tp1 = TimePeriod.NewInstance(1788, 1788);
-        Assert.assertEquals("1788", formatter.format(tp1));
+        assertEquals("1788", formatter.format(tp1));
         tp1.setStartMonth(2);
         tp1.setEndMonth(4);
-        Assert.assertEquals("Feb"+endash+"Apr 1788", formatter.format(tp1));
+        assertEquals("Feb"+endash+"Apr 1788", formatter.format(tp1));
         tp1.setEndMonth(2);
         tp1.setStartDay(19);
         tp1.setEndDay(25);
-        Assert.assertEquals("19"+endash+"25 Feb 1788", formatter.format(tp1));
+        assertEquals("19"+endash+"25 Feb 1788", formatter.format(tp1));
         tp1.setEndYear(1789);
-        Assert.assertEquals("19 Feb 1788"+endash+"25 Feb 1789", formatter.format(tp1));
+        assertEquals("19 Feb 1788"+endash+"25 Feb 1789", formatter.format(tp1));
         tp1.setEndYear(1788);
         tp1.setEndMonth(3);
-        Assert.assertEquals("19 Feb"+endash+"25 Mar 1788", formatter.format(tp1));
+        assertEquals("19 Feb"+endash+"25 Mar 1788", formatter.format(tp1));
 
     }
 
@@ -72,11 +72,11 @@ public class TimePeriodFormatterTest {
     public void testEmptyEnd() {
         TimePeriod tp1 = TimePeriod.NewInstance(1788,1799);
         assertNotNull(tp1);
-        Assert.assertEquals("1788"+endash+"1799", formatter.format(tp1));
+        assertEquals("1788"+endash+"1799", formatter.format(tp1));
         tp1.setEndYear(null);
-        Assert.assertEquals("1788", formatter.format(tp1));
+        assertEquals("1788", formatter.format(tp1));
         tp1.setEndYear(1799);
         tp1.setStartYear(null);
-        Assert.assertEquals("1799", formatter.format(tp1));
+        assertEquals("1799", formatter.format(tp1));
     }
 }

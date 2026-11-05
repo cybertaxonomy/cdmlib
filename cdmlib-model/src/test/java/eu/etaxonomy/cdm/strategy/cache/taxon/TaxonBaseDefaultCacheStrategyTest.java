@@ -8,13 +8,12 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.taxon;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -55,7 +54,7 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
 	private IBotanicalName name;
 	private Reference sec;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setGenusOrUninomial("Abies");
@@ -67,8 +66,8 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
 
 		name.setCombinationAuthorship(combinationAuthor);
 		name.setBasionymAuthorship(basionymAuthor);
-		assertEquals("Namecache should be Abies alba", expectedNameCache, name.getNameCache());
-		assertEquals("Titlecache should be Abies alba (Mill.) L.", expectedNameTitleCache, name.getTitleCache());
+		assertEquals(expectedNameCache, name.getNameCache(), "Namecache should be Abies alba");
+		assertEquals(expectedNameTitleCache, name.getTitleCache(), "Titlecache should be Abies alba (Mill.) L.");
 		sec = ReferenceFactory.newBook();
 		sec.setTitle("Sp.Pl.");
 	}
@@ -78,28 +77,28 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
 	@Test
 	public void testGetTitleCache() {
 		Taxon taxon = Taxon.NewInstance(name, sec);
-		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.", taxon.getTitleCache());
+		assertEquals(expectedNameTitleCache + " sec. Sp.Pl.", taxon.getTitleCache(), "Taxon titlecache is wrong");
 		//without sec.
 		taxon.setSec(null);
-		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. ???", taxon.getTitleCache());
+		assertEquals(expectedNameTitleCache + " sec. ???", taxon.getTitleCache(), "Taxon titlecache is wrong");
 		//appended phrase without sec.
 		String appendedPhrase = "aff. 'schippii'";
 		taxon.setAppendedPhrase(appendedPhrase);
-		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii'", taxon.getTitleCache());
+		assertEquals(expectedNameTitleCache + " aff. 'schippii'", taxon.getTitleCache(), "Taxon titlecache is wrong");
 		//appended phrase with sec.
 		taxon.setSec(sec);
-		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii' sec. Sp.Pl.", taxon.getTitleCache());
+		assertEquals(expectedNameTitleCache + " aff. 'schippii' sec. Sp.Pl.", taxon.getTitleCache(), "Taxon titlecache is wrong");
 		//use name cache
 		taxon.setUseNameCache(true);
-		assertEquals("Taxon titlecache is wrong", expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxon.getTitleCache());
+		assertEquals(expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxon.getTitleCache(), "Taxon titlecache is wrong");
 		taxon.setDoubtful(true);
-        assertEquals("Taxon titlecache is wrong", "?" + expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxon.getTitleCache());
+        assertEquals("?" + expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxon.getTitleCache(), "Taxon titlecache is wrong");
         //with nom status
         taxon.setAppendedPhrase(null);
         taxon.setUseNameCache(false);
         taxon.setDoubtful(false);
         name.addStatus(NomenclaturalStatusType.ILLEGITIMATE(), null, null);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + ", nom. illeg., sec. Sp.Pl.", taxon.getTitleCache());
+        assertEquals(expectedNameTitleCache + ", nom. illeg., sec. Sp.Pl.", taxon.getTitleCache(), "Taxon titlecache is wrong");
 	}
 
     @Test
@@ -109,41 +108,41 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         nameUsedInSource.setGenusOrUninomial("Pinus");
         nameUsedInSource.setSpecificEpithet("blanca");
         taxon.getSecSource().setNameUsedInSource(nameUsedInSource);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl. (sub Pinus blanca)", taxon.getTitleCache());
+        assertEquals(expectedNameTitleCache + " sec. Sp.Pl. (sub Pinus blanca)", taxon.getTitleCache(), "Taxon titlecache is wrong");
     }
 
 	//same as for accepted taxa but with syn. sec. instead of sec.
     @Test
     public void testSynSec() {
         Synonym syn = Synonym.NewInstance(name, sec);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " syn. sec. Sp.Pl.", syn.getTitleCache());
+        assertEquals(expectedNameTitleCache + " syn. sec. Sp.Pl.", syn.getTitleCache(), "Taxon titlecache is wrong");
         //without sec.
         syn.setSec(null);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " syn. sec. ???", syn.getTitleCache());
+        assertEquals(expectedNameTitleCache + " syn. sec. ???", syn.getTitleCache(), "Taxon titlecache is wrong");
         //appended phrase without sec.
         String appendedPhrase = "aff. 'schippii'";
         syn.setAppendedPhrase(appendedPhrase);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii'", syn.getTitleCache());
+        assertEquals(expectedNameTitleCache + " aff. 'schippii'", syn.getTitleCache(), "Taxon titlecache is wrong");
         //appended phrase with sec.
         syn.setSec(sec);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii' syn. sec. Sp.Pl.", syn.getTitleCache());
+        assertEquals(expectedNameTitleCache + " aff. 'schippii' syn. sec. Sp.Pl.", syn.getTitleCache(), "Taxon titlecache is wrong");
         //use name cache
         syn.setUseNameCache(true);
-        assertEquals("Taxon titlecache is wrong", expectedNameCache + " aff. 'schippii' syn. sec. Sp.Pl.", syn.getTitleCache());
+        assertEquals(expectedNameCache + " aff. 'schippii' syn. sec. Sp.Pl.", syn.getTitleCache(), "Taxon titlecache is wrong");
         syn.setDoubtful(true);
-        assertEquals("Taxon titlecache is wrong", "?" + expectedNameCache + " aff. 'schippii' syn. sec. Sp.Pl.", syn.getTitleCache());
+        assertEquals("?" + expectedNameCache + " aff. 'schippii' syn. sec. Sp.Pl.", syn.getTitleCache(), "Taxon titlecache is wrong");
         //with nom status
         syn.setAppendedPhrase(null);
         syn.setUseNameCache(false);
         syn.setDoubtful(false);
         name.addStatus(NomenclaturalStatusType.ILLEGITIMATE(), null, null);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + ", nom. illeg., syn. sec. Sp.Pl.", syn.getTitleCache());
+        assertEquals(expectedNameTitleCache + ", nom. illeg., syn. sec. Sp.Pl.", syn.getTitleCache(), "Taxon titlecache is wrong");
     }
 
    @Test
     public void testGetTitleCacheWithoutName() {
         Taxon taxon = Taxon.NewInstance(null, sec);
-        assertEquals("Taxon titlecache is wrong", "??? sec. Sp.Pl.", taxon.getTitleCache());
+        assertEquals("??? sec. Sp.Pl.", taxon.getTitleCache(), "Taxon titlecache is wrong");
     }
 
 	//test missing "&" in title cache  #3822
@@ -168,7 +167,7 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
 	    Taxon taxon = Taxon.NewInstance(name, sec);
         taxon.setTitleCache("abc", true);
         taxon.setDoubtful(true);
-        Assert.assertEquals("abc", taxon.getTitleCache());
+        assertEquals("abc", taxon.getTitleCache());
 	}
 
     @Test
@@ -177,7 +176,7 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         sec.setTitleCache("My protected sec ref", true);
         taxon.setDoubtful(true);
         taxon.setSecMicroReference("123");
-        Assert.assertEquals("?Abies alba (L.) Mill. sec. My protected sec ref: 123", taxon.getTitleCache());
+        assertEquals("?Abies alba (L.) Mill. sec. My protected sec ref: 123", taxon.getTitleCache());
     }
 
     @Test
@@ -187,15 +186,13 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
 
         //not atomized
         taxon.setSecMicroReference(secMicroRef);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.: p. 553",
-                taxon.getTitleCache());
+        assertEquals(expectedNameTitleCache + " sec. Sp.Pl.: p. 553", taxon.getTitleCache(), "Taxon titlecache is wrong");
 
         //atomized
         sec.setAuthorship(Team.NewTitledInstance("Team", "T."));
         sec.setDatePublished(TimePeriodParser.parseStringVerbatim("1798"));
         taxon.setTitleCache(null, false);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Team 1798: p. 553",
-                taxon.getTitleCache());
+        assertEquals(expectedNameTitleCache + " sec. Team 1798: p. 553", taxon.getTitleCache(), "Taxon titlecache is wrong");
     }
 
     @Test
@@ -206,31 +203,31 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         sec.setUri(URI.create("https://abc.de"));
         sec.setDatePublished(TimePeriodParser.parseStringVerbatim("2 Jan 1982"));
         TaxonBase taxonBase = Taxon.NewInstance(name, sec);
-        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 1982", taxonBase.getTitleCache());
+        assertEquals("Abies alba (L.) Mill. sec. MLW 1982", taxonBase.getTitleCache());
 
         sec.setDatePublished((VerbatimTimePeriod)null);
         taxonBase.setTitleCache(null, false);
-        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW", taxonBase.getTitleCache());
+        assertEquals("Abies alba (L.) Mill. sec. MLW", taxonBase.getTitleCache());
 
         sec.setAbbrevTitle(null);
         taxonBase.setTitleCache(null, false);
-        Assert.assertEquals("Abies alba (L.) Mill. sec. My long webpage", taxonBase.getTitleCache());
+        assertEquals("Abies alba (L.) Mill. sec. My long webpage", taxonBase.getTitleCache());
 
         sec.setAbbrevTitle("MLW");
         taxonBase.setSecMicroReference("table 1");
-        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW: table 1", taxonBase.getTitleCache());
+        assertEquals("Abies alba (L.) Mill. sec. MLW: table 1", taxonBase.getTitleCache());
 
         sec.setType(ReferenceType.Database);
         taxonBase.setSecMicroReference(null);
-        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW", taxonBase.getTitleCache());
+        assertEquals("Abies alba (L.) Mill. sec. MLW", taxonBase.getTitleCache());
 
         sec.setType(ReferenceType.Map);
         taxonBase.setTitleCache(null, false);
-        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW", taxonBase.getTitleCache());
+        assertEquals("Abies alba (L.) Mill. sec. MLW", taxonBase.getTitleCache());
 
         TimePeriod accessed = TimePeriodParser.parseString("5 Mar 2014");
         taxonBase.getSecSource().setAccessed(accessed);
-        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 2014", taxonBase.getTitleCache());
+        assertEquals("Abies alba (L.) Mill. sec. MLW 2014", taxonBase.getTitleCache());
     }
 
     @Test
@@ -238,16 +235,16 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         //assert default (taxon without relation)
         Taxon man = Taxon.NewInstance(name, sec);
         ITaxonCacheStrategy cacheStrategy = man.cacheStrategy();
-        assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
+        assertEquals(expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man), "Taxon titlecache must use sec");
 
         //make it a MAN only
         Taxon mainTaxon = Taxon.NewInstance(TaxonNameFactory.NewBacterialInstance(Rank.SPECIES()), ReferenceFactory.newBook() );
         mainTaxon.addMisappliedName(man, null, null);
-        assertEquals("Taxon titlecache must use sensu", expectedNameCache + " sensu Sp.Pl., non (L.) Mill.", cacheStrategy.getTitleCache(man));
+        assertEquals(expectedNameCache + " sensu Sp.Pl., non (L.) Mill.", cacheStrategy.getTitleCache(man), "Taxon titlecache must use sensu");
         man.setSec(null);
-        assertEquals("Taxon titlecache must use sensu", expectedNameCache + " auct., non (L.) Mill.", cacheStrategy.getTitleCache(man));
+        assertEquals(expectedNameCache + " auct., non (L.) Mill.", cacheStrategy.getTitleCache(man), "Taxon titlecache must use sensu");
         man.setAppendedPhrase("aucts.");
-        assertEquals("Taxon titlecache must use sensu", expectedNameCache + " aucts., non (L.) Mill.", cacheStrategy.getTitleCache(man));
+        assertEquals(expectedNameCache + " aucts., non (L.) Mill.", cacheStrategy.getTitleCache(man), "Taxon titlecache must use sensu");
         //reset sec + appendedPhrase
         man.setSec(sec);
         man.setAppendedPhrase(null);
@@ -255,21 +252,21 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         //add another from relation
         Taxon relatedTaxon = Taxon.NewInstance(TaxonNameFactory.NewBacterialInstance(Rank.SPECIES()), ReferenceFactory.newBook() );
         TaxonRelationship rel = man.addTaxonRelation(relatedTaxon, TaxonRelationshipType.CONGRUENT_TO(), null, null);
-        assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
+        assertEquals(expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man), "Taxon titlecache must use sec");
         man.removeTaxonRelation(rel);
-        assertEquals("Taxon titlecache must use sensu", expectedNameCache + " sensu Sp.Pl., non (L.) Mill.", cacheStrategy.getTitleCache(man));
+        assertEquals(expectedNameCache + " sensu Sp.Pl., non (L.) Mill.", cacheStrategy.getTitleCache(man), "Taxon titlecache must use sensu");
 
         //add another to relation
         rel = relatedTaxon.addTaxonRelation(man, TaxonRelationshipType.CONGRUENT_TO(), null, null);
-        assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
+        assertEquals(expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man), "Taxon titlecache must use sec");
         man.removeTaxonRelation(rel);
-        assertEquals("Taxon titlecache must use sensu", expectedNameCache + " sensu Sp.Pl., non (L.) Mill.", cacheStrategy.getTitleCache(man));
+        assertEquals(expectedNameCache + " sensu Sp.Pl., non (L.) Mill.", cacheStrategy.getTitleCache(man), "Taxon titlecache must use sensu");
 
         //add taxon node
         Classification c = Classification.NewInstance("Test");
         TaxonNode tn = c.addChildTaxon(man, null);
-        assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
+        assertEquals(expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man), "Taxon titlecache must use sec");
         man.removeTaxonNode(tn);
-        assertEquals("Taxon titlecache must use sensu", expectedNameCache + " sensu Sp.Pl., non (L.) Mill.", cacheStrategy.getTitleCache(man));
+        assertEquals(expectedNameCache + " sensu Sp.Pl., non (L.) Mill.", cacheStrategy.getTitleCache(man), "Taxon titlecache must use sensu");
     }
 }

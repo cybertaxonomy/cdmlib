@@ -8,15 +8,15 @@
 */
 package eu.etaxonomy.cdm.model.name;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.ZonedDateTime;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author a.mueller
@@ -27,7 +27,7 @@ public class RegistrationTest {
     private TaxonName name1;
     private TaxonName name2;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         name1 = TaxonNameFactory.NewBotanicalInstance(null);
         name2 = TaxonNameFactory.NewBotanicalInstance(null);
@@ -38,37 +38,37 @@ public class RegistrationTest {
         Registration registration = Registration.NewInstance();
 
         //Assert start
-        Assert.assertNull(registration.getName());
-        Assert.assertTrue(name1.getRegistrations().size() == 0);
-        Assert.assertTrue(name2.getRegistrations().size() == 0);
+        assertNull(registration.getName());
+        assertTrue(name1.getRegistrations().size() == 0);
+        assertTrue(name2.getRegistrations().size() == 0);
 
         //set name1
         registration.setName(name1);
-        Assert.assertEquals(name1, registration.getName());
-        Assert.assertTrue(name1.getRegistrations().size() == 1);
-        Assert.assertTrue(name1.getRegistrations().contains(registration));
-        Assert.assertTrue(name2.getRegistrations().size() == 0);
+        assertEquals(name1, registration.getName());
+        assertTrue(name1.getRegistrations().size() == 1);
+        assertTrue(name1.getRegistrations().contains(registration));
+        assertTrue(name2.getRegistrations().size() == 0);
 
         //set name2
         registration.setName(name2);
-        Assert.assertEquals(name2, registration.getName());
-        Assert.assertTrue(name1.getRegistrations().size() == 0);
-        Assert.assertTrue(name2.getRegistrations().size() == 1);
-        Assert.assertTrue(name2.getRegistrations().contains(registration));
+        assertEquals(name2, registration.getName());
+        assertTrue(name1.getRegistrations().size() == 0);
+        assertTrue(name2.getRegistrations().size() == 1);
+        assertTrue(name2.getRegistrations().contains(registration));
 
         //set null
         registration.setName(null);
-        Assert.assertNull(registration.getName());
-        Assert.assertTrue(name1.getRegistrations().size() == 0);
-        Assert.assertTrue(name2.getRegistrations().size() == 0);
+        assertNull(registration.getName());
+        assertTrue(name1.getRegistrations().size() == 0);
+        assertTrue(name2.getRegistrations().size() == 0);
 
         //name with 2 registrations
         registration.setName(name1);
         Registration registration2 = Registration.NewInstance();
         registration2.setName(name1);
-        Assert.assertTrue(name1.getRegistrations().size() == 2);
-        Assert.assertTrue(name1.getRegistrations().contains(registration));
-        Assert.assertTrue(name1.getRegistrations().contains(registration2));
+        assertTrue(name1.getRegistrations().size() == 2);
+        assertTrue(name1.getRegistrations().contains(registration));
+        assertTrue(name1.getRegistrations().contains(registration2));
     }
 
     /**
